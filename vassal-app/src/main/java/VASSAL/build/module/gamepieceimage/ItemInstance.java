@@ -127,6 +127,10 @@ public abstract class ItemInstance extends AbstractConfigurable {
     return location;
   }
 
+  public String getDisplayLocation() {
+    return GamePieceLayout.getDisplayLocation(location);
+  }
+
   public void setBgColor(ColorSwatch bgColor) {
     this.bgColor = bgColor;
   }

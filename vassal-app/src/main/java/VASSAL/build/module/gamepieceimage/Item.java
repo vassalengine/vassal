@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.List;
@@ -104,10 +105,15 @@ public abstract class Item extends AbstractConfigurable {
     }
   }
 
-  public static class LocationConfig extends StringEnum {
+  public static class LocationConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return GamePieceLayout.LOCATIONS;
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return GamePieceLayout.LOCATION_I18N_KEYS;
     }
   }
 
@@ -226,6 +232,10 @@ public abstract class Item extends AbstractConfigurable {
 
   public String getDisplayName() {
     return getType();
+  }
+
+  public String getDisplayLocation() {
+    return GamePieceLayout.getDisplayLocation(location);
   }
 
   public String getLocation() {

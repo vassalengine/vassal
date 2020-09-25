@@ -43,12 +43,12 @@ public class LayerControl extends AbstractConfigurable {
   protected LaunchButton launch;
   protected static final String[] COMMANDS = new String[] {CMD_ROTATE_UP, CMD_ROTATE_DN, CMD_RESET, CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE};
   protected static final String[] COMMANDS_DISPLAY_NAMES = new String[] {
-    Resources.getString("Editor.LayerControl.rotate_layer_order_up"),
-    Resources.getString("Editor.LayerControl.rotate_layer_order_down"),
-    Resources.getString("Editor.LayerControl.make_layer_active"),
-    Resources.getString("Editor.LayerControl.make_layer_inactive"),
-    Resources.getString("Editor.LayerControl.switch_layer_between_active_and_inactive"),
-    Resources.getString("Editor.LayerControl.reset_all_layers")
+    "Editor.LayerControl.rotate_layer_order_up",
+    "Editor.LayerControl.rotate_layer_order_down",
+    "Editor.LayerControl.make_layer_active",
+    "Editor.LayerControl.make_layer_inactive",
+    "Editor.LayerControl.switch_layer_between_active_and_inactive",
+    "Editor.LayerControl.reset_all_layers"
   };
   protected String command = CMD_RESET;
   protected boolean skip = true;

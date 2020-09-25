@@ -68,20 +68,37 @@ public class ColorManager extends AbstractConfigurable {
   };
 
   protected static String[] standardColorNames = new String[] {
-    "WHITE",
-    "GRAY",
-    "BLACK",
-    "CLEAR",
-    "RED",
-    "GREEN",
-    "BLUE",
-    "ORANGE",
-    "PINK",
-    "CYAN",
-    "MAGENTA",
-    "YELLOW",
-    "LIGHT GRAY",
-    "DARK GRAY"
+    "WHITE",      // NON-NLS
+    "GRAY",       // NON-NLS
+    "BLACK",      // NON-NLS
+    "CLEAR",      // NON-NLS
+    "RED",        // NON-NLS
+    "GREEN",      // NON-NLS
+    "BLUE",       // NON-NLS
+    "ORANGE",     // NON-NLS
+    "PINK",       // NON-NLS
+    "CYAN",       // NON-NLS
+    "MAGENTA",    // NON-NLS
+    "YELLOW",     // NON-NLS
+    "LIGHT GRAY", // NON-NLS
+    "DARK GRAY"   // NON-NLS
+  };
+
+  protected static String[] standardColorKeys = new String[] {
+    "Editor.ColorManager.white",
+    "Editor.ColorManager.gray",
+    "Editor.ColorManager.black",
+    "Editor.ColorManager.clear",
+    "Editor.ColorManager.red",
+    "Editor.ColorManager.green",
+    "Editor.ColorManager.blue",
+    "Editor.ColorManager.orange",
+    "Editor.ColorManager.pink",
+    "Editor.ColorManager.cyan",
+    "Editor.ColorManager.magenta",
+    "Editor.ColorManager.yellow",
+    "Editor.ColorManager.light_gray",
+    "Editor.ColorManager.dark_gray"
   };
 
   protected static String getStandardColorName(Color c) {
@@ -245,6 +262,23 @@ public class ColorManager extends AbstractConfigurable {
     }
 
     names.addAll(Arrays.asList(standardColorNames));
+    return names.toArray(new String[0]);
+  }
+
+  public String[] getColorDisplayNames() {
+    ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    Collections.sort(a);
+
+    ArrayList<String> names =
+      new ArrayList<>(a.size() + standardColors.length);
+
+    for (ColorSwatch cs : a) {
+      names.add(cs.getConfigureName());
+    }
+
+    for (String key : standardColorKeys) {
+      names.add(Resources.getString(key));
+    }
     return names.toArray(new String[0]);
   }
 }

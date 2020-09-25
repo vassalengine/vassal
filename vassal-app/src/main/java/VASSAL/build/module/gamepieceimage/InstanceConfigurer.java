@@ -298,7 +298,7 @@ public class InstanceConfigurer extends Configurer {
           return getValueList().get(row).getItem().getDisplayName();
         }
         else if (col == LOC_COL) {
-          return getValueList().get(row).getLocation();
+          return getValueList().get(row).getDisplayLocation();
         }
         else
           return null;

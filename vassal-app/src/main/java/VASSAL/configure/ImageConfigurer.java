@@ -42,7 +42,7 @@ public class ImageConfigurer extends FileConfigurer {
     final GameModule gm = GameModule.getGameModule();
 
     if (resourceDirPref == null) {
-      resourceDirPref = new DirectoryConfigurer("imageDir", null);
+      resourceDirPref = new DirectoryConfigurer("imageDir", null); // NON-NLS
       gm.getPrefs().addOption(null, resourceDirPref);
     }
 
