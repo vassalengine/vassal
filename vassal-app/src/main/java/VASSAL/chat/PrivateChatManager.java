@@ -68,7 +68,7 @@ public class PrivateChatManager {
       f.setTitle(Resources.getString("Chat.private_channel", sender.getName())); //$NON-NLS-1$
       f.setJMenuBar(MenuManager.getInstance().getMenuBarFor(f));
       f.getContentPane().add(chat);
-      f.pack();
+      f.setSize(640, 320);
       f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 -
                     f.getSize().width / 2, 0);
     }
