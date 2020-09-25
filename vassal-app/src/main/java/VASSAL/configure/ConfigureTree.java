@@ -1568,7 +1568,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         });
 
         visSetter.accept(advanced.isSelected());
-        
+
         configureTree.setSearchAdvanced(advanced);
 
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
