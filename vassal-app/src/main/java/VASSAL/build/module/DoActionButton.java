@@ -108,12 +108,12 @@ public class DoActionButton extends AbstractConfigurable
 
   public DoActionButton() {
     ActionListener rollAction = e -> {
-        try {
-          doActions();
-        }
-        catch (RecursionLimitException ex) {
-          RecursionLimiter.infiniteLoop(ex);
-        }
+      try {
+        doActions();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
+      }
     };
 
     final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
