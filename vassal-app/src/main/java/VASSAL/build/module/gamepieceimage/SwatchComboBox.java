@@ -24,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -37,6 +39,8 @@ import VASSAL.tools.image.ImageUtils;
 public class SwatchComboBox extends JComboBox<String> {
   private static final long serialVersionUID = 1L;
 
+  private static final Map<String, String> colorMap = new HashMap<>();
+
   public SwatchComboBox() {
     String[] s = ColorManager.getColorManager().getColorNames();
     for (String value : s) {
@@ -44,6 +48,13 @@ public class SwatchComboBox extends JComboBox<String> {
     }
     SwatchRenderer renderer = new SwatchRenderer();
     setRenderer(renderer);
+
+    if (colorMap.size() == 0) {
+      final String[] displayNames =  ColorManager.getColorManager().getColorDisplayNames();
+      for (int i = 0; i < s.length; i++) {
+        colorMap.put(s[i], displayNames[i]);
+      }
+    }
   }
 
   public SwatchComboBox(ItemListener l) {
@@ -96,7 +107,7 @@ public class SwatchComboBox extends JComboBox<String> {
       g.dispose();
 
       setIcon(new ImageIcon(img));
-      setText(value);
+      setText(colorMap.get(value));
       setFont(list.getFont());
 
       return this;

@@ -24,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,8 +37,15 @@ import VASSAL.tools.image.ImageUtils;
 
 public class SizeConfigurer extends StringEnumConfigurer {
 
+  private static final Map<String, String> symbolMap = new HashMap<>();
+
   public SizeConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolSizes());
+    if (symbolMap.size() == 0) {
+      for (Symbol.SizeOption size : Symbol.NatoUnitSymbolSet.SIZES) {
+        symbolMap.put(size.getName(), size.getDisplayName());
+      }
+    }
   }
 
   @Override
@@ -114,7 +123,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
         g.dispose();
 
         setIcon(new ImageIcon(img));
-        setText((String) value);
+        setText(symbolMap.get(value));
         this.setHorizontalTextPosition(SwingConstants.LEFT);
         this.setHorizontalAlignment(SwingConstants.RIGHT);
         setFont(list.getFont());

@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -36,7 +37,6 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 
@@ -54,8 +54,8 @@ public class TextItem extends Item {
   protected static final String TOP = "top"; //$NON-NLS-1$
   protected static final String BOTTOM = "bottom"; //$NON-NLS-1$
 
-  public static final String SRC_VARIABLE = "Specified in individual images"; //$NON-NLS-1$
-  public static final String SRC_FIXED = "Fixed for this layout"; //$NON-NLS-1$
+  public static final String SRC_VARIABLE = "Specified in individual images"; // NON-NLS - No really!
+  public static final String SRC_FIXED = "Fixed for this layout";  // NON-NLS - No really!
 
   protected static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
   protected static final String LABEL = "label"; //$NON-NLS-1$
@@ -95,7 +95,7 @@ public class TextItem extends Item {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
       Resources.getString("Editor.TextItem.font_style"),
-      Resources.getString("Editor.TextItem.text_is"),
+      Resources.getString("Editor.TextItem.text_option"),
       Resources.getString("Editor.TextItem.text")
     );
   }
@@ -104,24 +104,18 @@ public class TextItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[] {
-        FontStyleConfig.class,
-        TextSource.class,
-        String.class
-      }
-    );
+      FontStyleConfig.class,
+      TextSource.class,
+      String.class);
   }
 
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       2, super.getAttributeNames(),
-      new String[] {
-        FONT,
-        SOURCE,
-        TEXT
-      }
-    );
+      FONT,
+      SOURCE,
+      TEXT);
   }
 
   public static class FontStyleConfig implements ConfigurerFactory {
@@ -179,7 +173,7 @@ public class TextItem extends Item {
     }
   }
 
-  private VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
+  private final VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
@@ -330,10 +324,18 @@ public class TextItem extends Item {
     return textSource.equals(SRC_FIXED);
   }
 
-  public static class TextSource extends StringEnum {
+  public static class TextSource extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.TextItem.specified_in_individual_images",
+        "Editor.TextItem.fixed_for_this_layout"
+      };
     }
   }
 

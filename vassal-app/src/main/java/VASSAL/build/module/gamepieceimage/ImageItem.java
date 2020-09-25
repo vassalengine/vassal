@@ -18,6 +18,8 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.build.AutoConfigurable;
+import VASSAL.configure.StringEnum;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -34,8 +36,6 @@ import java.util.List;
 import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
-import VASSAL.build.AutoConfigurable;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
@@ -47,8 +47,8 @@ public class ImageItem extends Item {
 
   public static final String TYPE = "Image"; //$NON-NLS-1$
 
-  public static final String SRC_VARIABLE = "Specified in individual images";
-  public static final String SRC_FIXED = "Fixed for this layout";
+  public static final String SRC_VARIABLE = "Specified in individual images"; // NON-NLS - Yes really!
+  public static final String SRC_FIXED = "Fixed for this layout"; // NON-NLS - Yes really!
 
   protected static final String IMAGE = "image"; //$NON-NLS-1$
   public static final String SOURCE = "source"; //$NON-NLS-1$
@@ -77,7 +77,7 @@ public class ImageItem extends Item {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
       Resources.getString("Editor.image_label"),
-      Resources.getString("Editor.ImageItem.image_is")
+      Resources.getString("Editor.ImageItem.image_option")
     );
   }
 
@@ -86,7 +86,7 @@ public class ImageItem extends Item {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
       Image.class,
-      TextSource.class);
+      TextItem.TextSource.class);
   }
 
   @Override
@@ -161,6 +161,7 @@ public class ImageItem extends Item {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
     }
   }
+
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
     loadImage(defn);
@@ -186,6 +187,11 @@ public class ImageItem extends Item {
   @Override
   public String getType() {
     return TYPE;
+  }
+
+  @Override
+  public String getDisplayName() {
+    return Resources.getString("Editor.ImageItem.component_type");
   }
 
   @Override
@@ -229,7 +235,9 @@ public class ImageItem extends Item {
   }
 
   protected static final class BaseOp extends AbstractTileOpImpl {
-    private BaseOp() { }
+    private BaseOp() {
+
+    }
 
     private static final BaseOp op = new BaseOp();
 

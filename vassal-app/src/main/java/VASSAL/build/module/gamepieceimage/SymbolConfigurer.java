@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.i18n.Resources;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
@@ -25,6 +26,8 @@ import java.awt.Rectangle;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -36,8 +39,17 @@ import VASSAL.tools.image.ImageUtils;
 
 public class SymbolConfigurer extends StringEnumConfigurer {
 
+  private static final Map<String, String> symbolMap = new HashMap<>();
+
   public SymbolConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolNames());
+    if (symbolMap.size() == 0) {
+      String[] symbolNames = Symbol.NatoUnitSymbolSet.getSymbolNames();
+      String[] symbolKeys = Symbol.NatoUnitSymbolSet.getSymbolDisplayNames();
+      for (int i = 0; i < symbolNames.length; i++) {
+        symbolMap.put(symbolNames[i], Resources.getString(symbolKeys[i]));
+      }
+    }
   }
 
   @Override
@@ -110,7 +122,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
         g.dispose();
 
         setIcon(new ImageIcon(img));
-        setText((String) value);
+        setText(symbolMap.get(value));
         this.setHorizontalTextPosition(SwingConstants.LEFT);
         this.setHorizontalAlignment(SwingConstants.RIGHT);
         setFont(list.getFont());
