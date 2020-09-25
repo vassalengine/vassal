@@ -157,7 +157,7 @@ public class WizardSupport {
 
     Action help = null;
     try {
-      help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
+      help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);  //NON-NLS
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);

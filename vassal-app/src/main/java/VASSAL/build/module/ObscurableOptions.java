@@ -187,17 +187,17 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    */
   public void decodeOptions(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
-    String setting = sd.nextToken("");
+    String setting = sd.nextToken(""); //NON-NLS
     if (setting.length() == 0) {
       override = null;
     }
     else {
-      override = setting.equals("true");
+      override = setting.equals("true"); //NON-NLS
     }
     final int count = sd.nextInt(0);
     allowed.clear();
     for (int i = 0; i < count; i++) {
-      setting = sd.nextToken("");
+      setting = sd.nextToken(""); //NON-NLS
       if (setting.length() > 0) {
         allowed.add(setting);
       }
@@ -238,7 +238,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     /** @deprecated Use {@link #SetAllowed(List)} instead. */
     @Deprecated(since = "2020-08-06", forRemoval = true)
     public SetAllowed(Vector<String> allowed) {
-      ProblemDialog.showDeprecated("2020-08-06");
+      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.allowed = allowed;
     }
 

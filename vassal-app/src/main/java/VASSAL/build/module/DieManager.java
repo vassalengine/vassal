@@ -52,29 +52,29 @@ public class DieManager extends AbstractConfigurable {
 
   private Map<String, DieServer> servers;
   private List<InternetDiceButton> dieButtons = new ArrayList<>();
-  private String desc = "Die Manager";
+  private String desc = "Die Manager"; //NON-NLS
   private boolean useMultiRoll;
   private int defaultNDice = 2;
   private int defaultNSides = 6;
 
   private DieServer server;
-  private String lastServerName = "";
+  private String lastServerName = ""; //NON-NLS
   private MultiRoll myMultiRoll;
   final StringEnumConfigurer semail;
 
-  public static final String USE_INTERNET_DICE = "useinternetdice";
-  public static final String DICE_SERVER = "diceserver";
-  public static final String SERVER_PW = "serverpw";
-  public static final String USE_EMAIL = "useemail";
-  public static final String PRIMARY_EMAIL = "primaryemail";
-  public static final String SECONDARY_EMAIL = "secondaryemail";
-  public static final String ADDRESS_BOOK = "addressbook";
-  public static final String MULTI_ROLL = "multiroll";
-  public static final String DIE_MANAGER = "Internet Die Roller";
+  public static final String USE_INTERNET_DICE = "useinternetdice"; //NON-NLS
+  public static final String DICE_SERVER = "diceserver"; //NON-NLS
+  public static final String SERVER_PW = "serverpw"; //NON-NLS
+  public static final String USE_EMAIL = "useemail"; //NON-NLS
+  public static final String PRIMARY_EMAIL = "primaryemail"; //NON-NLS
+  public static final String SECONDARY_EMAIL = "secondaryemail"; //NON-NLS
+  public static final String ADDRESS_BOOK = "addressbook"; //NON-NLS
+  public static final String MULTI_ROLL = "multiroll"; //NON-NLS
+  public static final String DIE_MANAGER = "Internet Die Roller"; //NON-NLS
 
-  public static final String DESC = "description";
-  public static final String DFLT_NSIDES = "dfltnsides";
-  public static final String DFLT_NDICE = "dfltndice";
+  public static final String DESC = "description"; //NON-NLS
+  public static final String DFLT_NSIDES = "dfltnsides"; //NON-NLS
+  public static final String DFLT_NDICE = "dfltndice"; //NON-NLS
 
   public DieManager() {
 
@@ -378,10 +378,10 @@ public class DieManager extends AbstractConfigurable {
       return desc;
     }
     else if (DFLT_NDICE.equals(key)) {
-      return defaultNDice + "";
+      return defaultNDice + ""; //NON-NLS
     }
     else if (DFLT_NSIDES.equals(key)) {
-      return defaultNSides + "";
+      return defaultNSides + ""; //NON-NLS
     }
     else
       return null;

@@ -29,6 +29,7 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
@@ -93,9 +94,9 @@ public class TextItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Font style:  ",
-      "Text is:  ",
-      "Text:  "
+      Resources.getString("Editor.TextItem.font_style"),
+      Resources.getString("Editor.TextItem.text_is"),
+      Resources.getString("Editor.TextItem.text")
     );
   }
 
@@ -178,12 +179,7 @@ public class TextItem extends Item {
     }
   }
 
-  private VisibilityCondition fixedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return textSource.equals(SRC_FIXED);
-    }
-  };
+  private VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
@@ -273,7 +269,7 @@ public class TextItem extends Item {
 
   @Override
   public String getDisplayName() {
-    return "Label";
+    return Resources.getString("Editor.TextItem.component_type");
   }
 
   @Override

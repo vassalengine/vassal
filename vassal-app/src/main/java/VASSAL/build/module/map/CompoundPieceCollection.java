@@ -53,7 +53,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
 
   public String getLayerNameForPiece(GamePiece p) {
-    return "";
+    return ""; //NON-NLS
   }
 
   public int getLayerForName(String layerName) {

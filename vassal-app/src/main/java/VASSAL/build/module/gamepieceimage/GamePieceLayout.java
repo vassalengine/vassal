@@ -37,6 +37,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 
@@ -48,15 +49,15 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected static final String BORDER = "border"; //$NON-NLS-1$
   protected static final String ITEMS = "layout"; //$NON-NLS-1$
 
-  protected static final String N = "Top";
-  protected static final String S = "Bottom";
-  protected static final String E = "Right";
-  protected static final String W = "Left";
-  protected static final String NE = "Top Right";
-  protected static final String NW = "Top Left";
-  protected static final String SE = "Bottom Right";
-  protected static final String SW = "Bottom Left";
-  protected static final String CENTER = "Center";
+  protected static final String N = "Top"; //NON-NLS
+  protected static final String S = "Bottom"; //NON-NLS
+  protected static final String E = "Right"; //NON-NLS
+  protected static final String W = "Left"; //NON-NLS
+  protected static final String NE = "Top Right"; //NON-NLS
+  protected static final String NW = "Top Left"; //NON-NLS
+  protected static final String SE = "Bottom Right"; //NON-NLS
+  protected static final String SW = "Bottom Left"; //NON-NLS
+  protected static final String CENTER = "Center"; //NON-NLS
 
   protected static final int POS_L = 15;
   protected static final int POS_R = 85;
@@ -64,25 +65,25 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected static final int POS_B = 85;
   protected static final int POS_C = 50;
 
-  protected static final String BORDER_PLAIN = "Plain";
-  protected static final String BORDER_FANCY = "Fancy";
-  protected static final String BORDER_3D = "3D";
-  protected static final String BORDER_NONE = "None";
+  protected static final String BORDER_PLAIN = "Plain"; //NON-NLS
+  protected static final String BORDER_FANCY = "Fancy"; //NON-NLS
+  protected static final String BORDER_3D = "3D"; //NON-NLS
+  protected static final String BORDER_NONE = "None"; //NON-NLS
 
   public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
   public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
   public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
   protected static final Map<String, String> compass = new HashMap<>();
   static {
-    compass.put(N, "N");
-    compass.put(S, "S");
-    compass.put(E, "E");
-    compass.put(W, "W");
-    compass.put(NE, "NE");
-    compass.put(NW, "NW");
-    compass.put(SE, "SE");
-    compass.put(SW, "SW");
-    compass.put(CENTER, "CENTER");
+    compass.put(N, "N"); //NON-NLS
+    compass.put(S, "S"); //NON-NLS
+    compass.put(E, "E"); //NON-NLS
+    compass.put(W, "W"); //NON-NLS
+    compass.put(NE, "NE"); //NON-NLS
+    compass.put(NW, "NW"); //NON-NLS
+    compass.put(SE, "SE"); //NON-NLS
+    compass.put(SW, "SW"); //NON-NLS
+    compass.put(CENTER, "CENTER"); //NON-NLS
   }
 
   public static String getCompassPoint(String location) {
@@ -134,10 +135,10 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Counter Width:  ",
-      "Counter Height:  ",
-      "Border Style:  ",
+      Resources.getString("Editor.GamePieceLayout.name"),
+      Resources.getString("Editor.GamePieceLayout.counter_width"),
+      Resources.getString("Editor.GamePieceLayout.counter_height"),
+      Resources.getString("Editor.GamePieceLayout.counter_style"),
       ""  //$NON-NLS-1$
     };
   }
@@ -255,7 +256,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layout"; //$NON-NLS-1$
+    return Resources.getString("Editor.GamePieceLayout.component_type"); //$NON-NLS-1$
   }
 
   public void setWidth(int width) {

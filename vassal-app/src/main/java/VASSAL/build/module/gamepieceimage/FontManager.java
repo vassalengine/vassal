@@ -171,5 +171,4 @@ public class FontManager extends AbstractConfigurable {
     }
     return names.toArray(new String[0]);
   }
-
 }

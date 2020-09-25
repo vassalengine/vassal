@@ -264,7 +264,7 @@ public class Inventory extends AbstractConfigurable
               if (piece != null) {
                 JPopupMenu menu = MenuDisplayer.createPopup(piece);
                 //$NON-NLS-1$
-                menu.addPropertyChangeListener("visible", evt -> {
+                menu.addPropertyChangeListener("visible", evt -> { //NON-NLS
                   if (Boolean.FALSE.equals(evt.getNewValue())) {
                     SwingUtilities.invokeLater(() -> refresh());
                   }

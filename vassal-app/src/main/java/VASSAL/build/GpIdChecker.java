@@ -30,6 +30,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
+import VASSAL.i18n.Resources;
 
 /**
  * Build a cross-reference of all GpId-able elements in a module or ModuleExtension,
@@ -140,8 +141,8 @@ public class GpIdChecker {
      *  unique slot id check.
      */
     if (! extensionsLoaded) {
-      if (id.contains(":")) {
-        id = id.split(":")[1];
+      if (id.contains(":")) {             //NON-NLS
+        id = id.split(":")[1];      //NON-NLS
       }
     }
 
@@ -182,7 +183,7 @@ public class GpIdChecker {
     if (chatter == null) {
       chatter = GameModule.getGameModule().getChatter();
     }
-    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- " + text);
+    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- " + text); //NON-NLS
     mess.execute();
   }
 
@@ -193,13 +194,13 @@ public class GpIdChecker {
    */
   public void fixErrors() {
     if (maxId >= gpIdSupport.getNextGpId()) {
-      chat("Next GPID updated from " + gpIdSupport.getNextGpId() + "  to " + (maxId + 1));
+      chat(Resources.getString("GpIdChecker.next_gpid_updated", gpIdSupport.getNextGpId(), (maxId + 1)));
       gpIdSupport.setNextGpId(maxId + 1);
     }
     for (SlotElement slotElement : errorSlots) {
       final String before = slotElement.getGpId();
       slotElement.updateGpId();
-      chat(slotElement.toString() + " GPID updated from " + before + " to " + slotElement.getGpId());
+      chat(Resources.getString("GpIdChecker.piece_gpid_updated", slotElement.toString(), before, slotElement.getGpId()));
     }
   }
 
@@ -311,7 +312,7 @@ public class GpIdChecker {
 
     @Override
     public String toString() {
-      return marker == null ? "PieceSlot " + slot.getConfigureName() : "Place/Replace trait " + marker.getDescription();
+      return marker == null ? Resources.getString("GpIdChecker.piece_slot", slot.getConfigureName()) : Resources.getString("GpIdChecker.place_replace_trait", marker.getDescription());
     }
 
     public void updateGpId() {

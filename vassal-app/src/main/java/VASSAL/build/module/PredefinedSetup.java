@@ -277,9 +277,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   @Override
   public String toString() {
-    return "PredefinedSetup{" +
-      "name='" + name + '\'' +
-      ", menu='" + isMenu + '\'' +
+    return "PredefinedSetup{" + //NON-NLS
+      "name='" + name + '\'' + //NON-NLS
+      ", menu='" + isMenu + '\'' + //NON-NLS
       '}';
   }
 }

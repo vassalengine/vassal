@@ -21,6 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 public class SymbolItemInstance extends ItemInstance {
@@ -114,12 +115,12 @@ public class SymbolItemInstance extends ItemInstance {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Unit Size:  ",
-      "1st Symbol:  ",
-      "2nd Symbol:  ",
-      "Symbol Color:  ",
-      "Background Color:  ",
-      "Size Color:  "
+      Resources.getString("Editor.SymbolItemInstance.unit_size"),
+      Resources.getString("Editor.SymbolItemInstance.first_symbol"),
+      Resources.getString("Editor.SymbolItemInstance.second_symbol"),
+      Resources.getString("Editor.SymbolItemInstance.symbol_color"),
+      Resources.getString("Editor.SymbolItemInstance.background_color"),
+      Resources.getString("Editor.SymbolItemInstance.size_color")
     };
   }
 
@@ -179,7 +180,6 @@ public class SymbolItemInstance extends ItemInstance {
     if (myConfig != null) {
       myConfig.rebuildViz();
     }
-
   }
 
   @Override

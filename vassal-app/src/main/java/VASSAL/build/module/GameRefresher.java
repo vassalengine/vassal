@@ -197,7 +197,7 @@ public final class GameRefresher implements GameComponent {
     else {
       final String player = GlobalOptions.getInstance().getPlayerId();
       final Chatter chatter = theModule.getChatter();
-      final Command msg = new Chatter.DisplayText(chatter, "----------");
+      final Command msg = new Chatter.DisplayText(chatter, "----------"); //NON-NLS
       msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
       msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
 
@@ -208,7 +208,7 @@ public final class GameRefresher implements GameComponent {
       if (notFoundCount > 0) {
         msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
       }
-      msg.append(new Chatter.DisplayText(chatter, "----------"));
+      msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
       msg.execute();
       command.append(msg);
 
@@ -223,7 +223,7 @@ public final class GameRefresher implements GameComponent {
 
     final Map map = piece.getMap();
     if (map == null) {
-      logger.error("Can't refresh piece " + piece.getName() + ": No Map");
+      logger.error("Can't refresh piece " + piece.getName() + ": No Map"); //NON-NLS
       return;
     }
 
@@ -236,7 +236,7 @@ public final class GameRefresher implements GameComponent {
     // Remove the old Piece if different
     if (piece.equals(newPiece)) {
       notFoundCount++;
-      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
+      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
     }
     else {
       updatedCount++;
@@ -271,7 +271,7 @@ public final class GameRefresher implements GameComponent {
 
     final Map map = piece.getMap();
     if (map == null) {
-      logger.error("Can't refresh piece " + piece.getName() + ": No Map");
+      logger.error("Can't refresh piece " + piece.getName() + ": No Map"); //NON-NLS
       return;
     }
 
@@ -280,7 +280,7 @@ public final class GameRefresher implements GameComponent {
     }
     else {
       notFoundCount++;
-      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
+      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
     }
   }
 
@@ -318,7 +318,7 @@ public final class GameRefresher implements GameComponent {
           exit();
         }
       });
-      setLayout(new MigLayout("wrap 1", "[center]"));
+      setLayout(new MigLayout("wrap 1", "[center]")); //NON-NLS
 
       final JPanel buttonPanel = new JPanel(new MigLayout());
 
@@ -363,7 +363,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     public void addMessage(String mess) {
-      results.setText(results.getText() + "\n" + mess);
+      results.setText(results.getText() + "\n" + mess); //NON-NLS
     }
   }
 }
