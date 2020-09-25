@@ -110,16 +110,16 @@ public class MassKeyCommand extends AbstractConfigurable
   protected FormattedString reportFormat = new FormattedString();
   protected boolean singleMap = true;
 
-  public static final String TARGET_TYPE   = "targetType";
-  public static final String TARGET_MAP    = "targetMap";
-  public static final String TARGET_BOARD  = "targetBoard";
-  public static final String TARGET_ZONE   = "targetZone";
-  public static final String TARGET_REGION = "targetRegion";
-  public static final String TARGET_X      = "targetX";
-  public static final String TARGET_Y      = "targetY";
-  public static final String TARGET_EXACT_MATCH = "targetExactMatch";
-  public static final String TARGET_PROPERTY    = "targetProperty";
-  public static final String TARGET_VALUE       = "targetValue";
+  public static final String TARGET_TYPE   = "targetType"; //NON-NLS
+  public static final String TARGET_MAP    = "targetMap"; //NON-NLS
+  public static final String TARGET_BOARD  = "targetBoard"; //NON-NLS
+  public static final String TARGET_ZONE   = "targetZone"; //NON-NLS
+  public static final String TARGET_REGION = "targetRegion"; //NON-NLS
+  public static final String TARGET_X      = "targetX"; //NON-NLS
+  public static final String TARGET_Y      = "targetY"; //NON-NLS
+  public static final String TARGET_EXACT_MATCH = "targetExactMatch"; //NON-NLS
+  public static final String TARGET_PROPERTY    = "targetProperty"; //NON-NLS
+  public static final String TARGET_VALUE       = "targetValue"; //NON-NLS
 
   protected GlobalCommand.GlobalCommandTarget targetType = GlobalCommand.GlobalCommandTarget.GAME;
   protected Expression targetMap = Expression.createExpression("");
@@ -425,11 +425,11 @@ public class MassKeyCommand extends AbstractConfigurable
       controls2.add(intConfig.getControls());
 
       PropertyChangeListener l = evt -> {
-        intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-        Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
-        if (w != null) {
-          w.pack();
-        }
+          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+          Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
+          if (w != null) {
+            w.pack();
+          }
       };
       PropertyChangeListener l2 = evt -> setValue(getIntValue());
       typeConfig.addPropertyChangeListener(l);
@@ -613,17 +613,17 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, piece -> {
-        boolean valid = false;
-        if (ALWAYS.equals(condition)) {
-          valid = true;
-        }
-        else if (IF_ACTIVE.equals(condition)) {
-          valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, true) != null;
-        }
-        else if (IF_INACTIVE.equals(condition)) {
-          valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, false) != null;
-        }
-        return valid;
+          boolean valid = false;
+          if (ALWAYS.equals(condition)) {
+            valid = true;
+          }
+          else if (IF_ACTIVE.equals(condition)) {
+            valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, true) != null;
+          }
+          else if (IF_INACTIVE.equals(condition)) {
+            valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, false) != null;
+          }
+          return valid;
       });
     }
   }
@@ -682,12 +682,12 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       else {
         filter = piece -> {
-          for (String s : names) {
-            if (Decorator.getInnermost(piece).getName().equals(s)) {
-              return true;
+            for (String s : names) {
+              if (Decorator.getInnermost(piece).getName().equals(s)) {
+                return true;
+              }
             }
-          }
-          return false;
+            return false;
         };
       }
     }
