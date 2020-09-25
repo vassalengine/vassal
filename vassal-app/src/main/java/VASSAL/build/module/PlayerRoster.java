@@ -727,9 +727,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    */
   @Override
   public List<String> getPropertyList() {
-    List<String> l = new ArrayList<>();
-    l.addAll(sides);
-    return l;
+    return sides;
   }
 
   /**

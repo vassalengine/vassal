@@ -388,8 +388,6 @@ public class PrivateMap extends Map {
    */
   @Override
   public List<String> getPropertyList() {
-    List<String> l = new ArrayList<>();
-    l.addAll(Arrays.asList(owners));
-    return l;
+    return Arrays.asList(owners);
   }
 }

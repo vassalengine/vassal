@@ -1218,7 +1218,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // http://svn.gnome.org/viewcvs/gimp/trunk/libgimpwidgets/gimpzoommodel.c
       //
       // See also http://www.virtualdub.org/blog/pivot/entry.php?id=81
-      // for a discussion of calculating continued fractions by convergence.
+      // for a discussion of calculating continued fractions by convergeants.
 
       double z = percentModel.getNumber().doubleValue() / 100.0;
 
@@ -1229,7 +1229,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         swapped = true;
       }
 
-      // calculate convergence
+      // calculate convergeants
       int p0 = 1;
       int q0 = 0;
       int p1 = (int)Math.floor(z);

@@ -1894,6 +1894,33 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
+    private void hitCheck (String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
+      if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
+        progress.checkShowTrait(matchString, item, desc);
+        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + s);
+      }
+    }
+
+    private void stringListHits (Boolean flag, List<String> strings, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
+      if (!flag || (strings == null)) {
+        return;
+      }
+      for (String s : strings) {
+        hitCheck(s, searchString, matchString, item, desc, show, progress);
+      }
+    }
+
+    private void keyListHits (Boolean flag, List<NamedKeyStroke> keys, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
+      if (!flag || (keys == null)) {
+        return;
+      }
+      for (NamedKeyStroke k : keys) {
+        if (k != null) {
+          String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
+          hitCheck(s, searchString, matchString, item, desc, show, progress);
+        }
+      }
+    }
 
     private void showConfigurableHitList(DefaultMutableTreeNode node, String searchString) {
       final Configurable c = (Configurable) node.getUserObject();
@@ -1908,70 +1935,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       SearchTarget st = (SearchTarget) c;
-      String desc = getConfigureName(c.getClass());
+      String item = getConfigureName(c.getClass());
 
-            if (searchParameters.isMatchExpressions()) {
-        List<String> exps = st.getExpressionList();
-              if (exps != null) {
-                for (String s : exps) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-              progress.checkShowTrait(matchString, desc, "");
-              chat("&nbsp;&nbsp;&nbsp;&nbsp;{Expression} " + s);
-                  }
-                }
-              }
-            }
+      stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress);
+      stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress);
+      stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress);
+      stringListHits(searchParameters.isMatchMessages(),    st.getFormattedStringList(), searchString, matchString, item, "", "Message/Field", progress);
 
-            if (searchParameters.isMatchProperties()) {
-        List<String> props = st.getPropertyList();
-              if (props != null) {
-                for (String s : props) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-              progress.checkShowTrait(matchString, desc, "");
-              chat("&nbsp;&nbsp;&nbsp;&nbsp;{Property} " + s);
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchKeys()) {
-        List<NamedKeyStroke> keys = st.getNamedKeyStrokeList();
-              if (keys != null) {
-                for (NamedKeyStroke k : keys) {
-                  if (k != null) {
-                    String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
-                    if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                progress.checkShowTrait(matchString, desc, "");
-                chat("&nbsp;&nbsp;&nbsp;&nbsp;{KeyCommand} " + s);
-                    }
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchMenus()) {
-        List<String> menus = st.getMenuTextList();
-              if (menus != null) {
-                for (String s : menus) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-              progress.checkShowTrait(matchString, desc, "");
-              chat("&nbsp;&nbsp;&nbsp;&nbsp;{UI Text} " + s);
-                  }
-                }
-              }
-            }
-
-            if (searchParameters.isMatchMessages()) {
-        List<String> msgs = st.getFormattedStringList();
-              if (msgs != null) {
-                for (String s : msgs) {
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-              progress.checkShowTrait(matchString, desc, "");
-              chat("&nbsp;&nbsp;&nbsp;&nbsp;{Message/Field} " + s);
-      }
-        }
-      }
-      }
+      keyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress);
     }
 
         
@@ -2021,68 +1992,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
 
-          if (searchParameters.isMatchExpressions()) {
-            List<String> exps = d.getExpressionList();
-            if (exps != null) {
-              for (String s : exps) {
-                if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, "Trait", desc);
-                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{Expression} " + s);
-                }
-              }
-            }
-          }
+          stringListHits(searchParameters.isMatchExpressions(), d.getExpressionList(),      searchString, matchString, "Trait", desc, "Expression",    progress);
+          stringListHits(searchParameters.isMatchProperties(),  d.getPropertyList(),        searchString, matchString, "Trait", desc, "Property",      progress);
+          stringListHits(searchParameters.isMatchMenus(),       d.getMenuTextList(),        searchString, matchString, "Trait", desc, "UI Text",       progress);
+          stringListHits(searchParameters.isMatchMessages(),    d.getFormattedStringList(), searchString, matchString, "Trait", desc, "Message/Field", progress);
 
-          if (searchParameters.isMatchProperties()) {
-            List<String> props = d.getPropertyList();
-            if (props != null) {
-              for (String s : props) {
-                if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, "Trait", desc);
-                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{Property} " + s);
-                }
-              }
-            }
-          }
-
-          if (searchParameters.isMatchKeys()) {
-            List<NamedKeyStroke> keys = d.getNamedKeyStrokeList();
-            if (keys != null) {
-              for (NamedKeyStroke k : keys) {
-                if (k != null) {
-                  String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
-                  if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                    progress.checkShowTrait(matchString, "Trait", desc);
-                    chat("&nbsp;&nbsp;&nbsp;&nbsp;{KeyCommand} " + s);
-                  }
-                }
-              }
-            }
-          }
-
-          if (searchParameters.isMatchMenus()) {
-            List<String> menus = d.getMenuTextList();
-            if (menus != null) {
-              for (String s : menus) {
-                if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, "Trait", desc);
-                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{UI Text} " + s);
-                }
-              }
-            }
-          }
-
-          if (searchParameters.isMatchMessages()) {
-            List<String> msgs = d.getFormattedStringList();
-            if (msgs != null) {
-              for (String s : msgs) {
-                if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
-                  progress.checkShowTrait(matchString, "Trait", desc);
-                  chat("&nbsp;&nbsp;&nbsp;&nbsp;{Message/Field} " + s);
-                }
-              }
-            }
-          }
+          keyListHits(searchParameters.isMatchKeys(),           d.getNamedKeyStrokeList(),  searchString, matchString, "Trait", desc, "KeyCommand",    progress);
         }
         protoskip = false;
         p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer

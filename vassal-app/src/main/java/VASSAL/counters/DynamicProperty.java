@@ -25,6 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.KeyStroke;
@@ -282,11 +283,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
-    for (DynamicKeyCommand dkc : keyCommands) {
-      l.add(dkc.getNamedKeyStroke());
-    }
-    return l;
+    return Arrays.stream(keyCommands).map(dkc -> dkc.getNamedKeyStroke()).collect(Collectors.toList());
   }
 
   /**

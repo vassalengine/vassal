@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
@@ -768,10 +769,6 @@ public class DoActionButton extends AbstractConfigurable
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> keys = new ArrayList<>(hotkeys);
-    keys.add(preLoopKey);
-    keys.add(postLoopKey);
-    keys.add(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
-    return keys;
+    return Arrays.asList(preLoopKey, postLoopKey, NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }
