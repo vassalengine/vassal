@@ -59,12 +59,9 @@ public class AutoConfigurer extends Configurer
 
     target = c;
     setValue(target);
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(final PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setName((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setName((String) evt.getNewValue());
       }
     });
 
@@ -152,7 +149,7 @@ public class AutoConfigurer extends Configurer
       if (se != null) {
         final String[] validValues = se.getValidValues(target);
         final String[] i18nKeys = se.getI18nKeys(target);
-        config = new TranslatingStringEnumConfigurer(key, prompt, validValues, i18nKeys);
+        config = new TranslatingStringEnumConfigurer(key, prompt, validValues, i18nKeys, se.isDisplayNames());
       }
     }
     else if (StringEnum.class.isAssignableFrom(type)) {
@@ -243,7 +240,7 @@ public class AutoConfigurer extends Configurer
           }
         }
       }
-      // Only repack the configurer if an item visiblity has changed.
+      // Only repack the configurer if an item visibility has changed.
       if (visChanged && p.getTopLevelAncestor() instanceof Window) {
         ((Window) p.getTopLevelAncestor()).pack();
       }
