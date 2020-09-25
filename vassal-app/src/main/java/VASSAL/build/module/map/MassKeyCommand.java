@@ -55,6 +55,7 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BooleanAndPieceFilter;
 import VASSAL.counters.Decorator;
@@ -134,7 +135,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public MassKeyCommand() {
     ActionListener al = e -> apply();
-    launch = new LaunchButton("CTRL", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al); // NON-NLS
+    launch = new LaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
   }
 
   @Override
@@ -387,9 +388,9 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
-    protected static final String FIXED = "Fixed number of pieces"; // NON-NLS
-    protected static final String NONE = "No pieces"; // NON-NLS
-    protected static final String ALL = "All pieces"; // NON-NLS
+    protected static final String FIXED = "Fixed number of pieces"; //NON-NLS (really)
+    protected static final String NONE = "No pieces"; //NON-NLS (really)
+    protected static final String ALL = "All pieces"; //NON-NLS (really)
     protected IntConfigurer intConfig;
     protected TranslatingStringEnumConfigurer typeConfig;
     protected JLabel prompt;
@@ -425,11 +426,11 @@ public class MassKeyCommand extends AbstractConfigurable
       controls2.add(intConfig.getControls());
 
       PropertyChangeListener l = evt -> {
-          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-          Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
-          if (w != null) {
-            w.pack();
-          }
+        intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+        Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
+        if (w != null) {
+          w.pack();
+        }
       };
       PropertyChangeListener l2 = evt -> setValue(getIntValue());
       typeConfig.addPropertyChangeListener(l);
@@ -576,7 +577,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
+    return "Global Key Command";
   }
 
   protected LaunchButton getLaunchButton() {
@@ -589,7 +590,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "GlobalKeyCommand"); // NON-NLS
+    return HelpFile.getReferenceManualPage("Map.html", "GlobalKeyCommand");
   }
 
   @Override
@@ -613,17 +614,17 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, piece -> {
-          boolean valid = false;
-          if (ALWAYS.equals(condition)) {
-            valid = true;
-          }
-          else if (IF_ACTIVE.equals(condition)) {
-            valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, true) != null;
-          }
-          else if (IF_INACTIVE.equals(condition)) {
-            valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, false) != null;
-          }
-          return valid;
+        boolean valid = false;
+        if (ALWAYS.equals(condition)) {
+          valid = true;
+        }
+        else if (IF_ACTIVE.equals(condition)) {
+          valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, true) != null;
+        }
+        else if (IF_INACTIVE.equals(condition)) {
+          valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, false) != null;
+        }
+        return valid;
       });
     }
   }
@@ -635,7 +636,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     else if (TARGET_ZONE.equals(key)) {
       return () -> (targetType == GlobalCommand.GlobalCommandTarget.ZONE) && (condition == null);
-        }
+    }
     else if (TARGET_REGION.equals(key)) {
       return () -> (targetType == GlobalCommand.GlobalCommandTarget.REGION) && (condition == null);
     }
@@ -682,12 +683,12 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       else {
         filter = piece -> {
-            for (String s : names) {
-              if (Decorator.getInnermost(piece).getName().equals(s)) {
-                return true;
-              }
+          for (String s : names) {
+            if (Decorator.getInnermost(piece).getName().equals(s)) {
+              return true;
             }
-            return false;
+          }
+          return false;
         };
       }
     }
