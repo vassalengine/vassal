@@ -69,10 +69,10 @@ public class ShapeItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Width:  ",
-      "Height:  ",
-      "Shape:  ",
-      "Bevel:  "
+      Resources.getString("Editor.ShapeItem.width"),
+      Resources.getString("Editor.ShapeItem.height"),
+      Resources.getString("Editor.ShapeItem.shape"),
+      Resources.getString("Editor.ShapeItem.bevel")
     );
   }
 

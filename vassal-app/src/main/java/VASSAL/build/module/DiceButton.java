@@ -127,9 +127,9 @@ public class DiceButton extends AbstractConfigurable {
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, "2d6"); //NON-NLS
-    setAttribute(BUTTON_TEXT, "2d6"); //NON-NLS
-    launch.setAttribute(TOOLTIP, "2d6"); //NON-NLS
+    setAttribute(NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
+    setAttribute(BUTTON_TEXT, Resources.getString("Editor.DiceButton.dice_button_text")); //NON-NLS
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.DiceButton.dice_button_tooltip")); //NON-NLS
   }
 
   public static String getConfigureTypeName() {

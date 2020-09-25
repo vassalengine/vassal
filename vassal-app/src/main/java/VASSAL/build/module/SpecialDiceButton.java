@@ -149,7 +149,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected String getReportSuffix() {
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return " ***  &lt;" //$NON-NLS-1$
-        + GlobalOptions.getInstance().getPlayerId() + "&rt;"; //$NON-NLS-1$
+        + GlobalOptions.getInstance().getPlayerId() + "&gt;"; //$NON-NLS-1$
   }
 
   /**
