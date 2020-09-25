@@ -35,6 +35,7 @@ import javax.swing.SwingUtilities;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -82,7 +83,7 @@ public class FontConfigurer extends Configurer {
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
       Box box = Box.createHorizontalBox();
-      box.add(new JLabel("Font Family:  "));
+      box.add(new JLabel(Resources.getString("Editor.FontConfigurer.font_family")));
 
       family = new JComboBox();
       //String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
@@ -93,21 +94,21 @@ public class FontConfigurer extends Configurer {
       box.add(family);
       p.add(box);
 
-      size = new IntConfigurer(null, "Size:  ", getFontValue().getSize());
+      size = new IntConfigurer(null, Resources.getString("Editor.FontConfigurer.font_size"), getFontValue().getSize());
       p.add(size.getControls());
 
       box = Box.createHorizontalBox();
-      bold = new BooleanConfigurer(null, "Bold", isBold());
+      bold = new BooleanConfigurer(null, Resources.getString("Editor.FontConfigurer.bold_checkbox"), isBold());
       box.add(bold.getControls());
-      italic = new BooleanConfigurer(null, "Italic", isItalic());
+      italic = new BooleanConfigurer(null, Resources.getString("Editor.FontConfigurer.italic_checkbox"), isItalic());
       box.add(italic.getControls());
-      outline = new BooleanConfigurer(null, "Outline", isOutline());
+      outline = new BooleanConfigurer(null, Resources.getString("Editor.FontConfigurer.outline_checkbox"), isOutline());
       box.add(outline.getControls());
       p.add(box);
 
       box = Box.createHorizontalBox();
-      box.add(new JLabel("Sample:  "));
-      demo = new JTextField("The quick brown fox", 20);
+      box.add(new JLabel(Resources.getString("Editor.FontConfigurer.sample_label")));
+      demo = new JTextField(Resources.getString("Editor.FontConfigurer.sample_text"), 20);
       demo.setEditable(false);
       box.add(demo);
       p.add(box);

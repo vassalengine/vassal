@@ -33,7 +33,7 @@ import VASSAL.tools.ErrorDialog;
 
 public class PositionOption extends VASSAL.configure.Configurer
   implements ComponentListener {
-  public static String key = "BoundsOf";
+  public static final String key = "BoundsOf";
   private static Point initialPos = new Point(0, 0);
 
   protected Window theFrame;

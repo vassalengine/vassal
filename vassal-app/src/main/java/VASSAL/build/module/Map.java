@@ -3109,7 +3109,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return createFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$ created in $" + LOCATION + "$"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      String val = Resources.getString("Editor.Map.report_created_in_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() == null) {
@@ -3135,7 +3135,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return moveToFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+      String val = Resources.getString("Editor.Map.report_move_to_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() != null) {
@@ -3154,7 +3154,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return moveWithinFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+      String val = Resources.getString("Editor.Map.report_move_within_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null) {

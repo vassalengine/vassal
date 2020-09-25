@@ -14,6 +14,198 @@
         <method>*</method>
         <justification>BasicModule is never referenced by custom code</justification>
     </difference>
+    <difference>
+        <className>VASSAL/build/module/PieceWindow</className>
+        <differenceType>6006</differenceType>
+        <field>idMgr</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/GamePieceImage</className>
+        <differenceType>6006</differenceType>
+        <field>idMgr</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/GamePieceLayout</className>
+        <differenceType>6006</differenceType>
+        <field>idMgr</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/GamePieceLayout</className>
+        <differenceType>6006</differenceType>
+        <field>compass</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/DrawPile</className>
+        <differenceType>6006</differenceType>
+        <field>idMgr</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/HighlightLastMoved</className>
+        <differenceType>6006</differenceType>
+        <field>instances</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/LOS_Thread</className>
+        <differenceType>6006</differenceType>
+        <field>RANGE_FONT</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/LOS_Thread</className>
+        <differenceType>6006</differenceType>
+        <field>idMgr</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MenuDisplayer</className>
+        <differenceType>6006</differenceType>
+        <field>POPUP_MENU_FONT</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/StackMetrics</className>
+        <differenceType>6006</differenceType>
+        <field>DEFAULT_*</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/metadata/AbstractMetaData</className>
+        <differenceType>6006</differenceType>
+        <field>parser</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ConfigureTree</className>
+        <differenceType>6006</differenceType>
+        <field>POPUP_MENU_FONT</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ConfigureTree</className>
+        <differenceType>6006</differenceType>
+        <field>additionalComponents</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/EditPropertiesAction</className>
+        <differenceType>6006</differenceType>
+        <field>openWindows</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/PieceAccessConfigurer</className>
+        <differenceType>6006</differenceType>
+        <field>PLAYER</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/PieceAccessConfigurer</className>
+        <differenceType>6006</differenceType>
+        <field>SIDE</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/PieceAccessConfigurer</className>
+        <differenceType>6006</differenceType>
+        <field>SIDES</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/StringConfigurer</className>
+        <differenceType>6006</differenceType>
+        <field>DEFAULT_LENGHTH</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/ActionButton</className>
+        <differenceType>6006</differenceType>
+        <field>globalPusher</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>6006</differenceType>
+        <field>deckStackMetrics</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/ImagePicker</className>
+        <differenceType>6006</differenceType>
+        <field>FONT</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Immobilized</className>
+        <differenceType>6006</differenceType>
+        <field>NEVER</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/LocaleConfigurer</className>
+        <differenceType>6006</differenceType>
+        <field>countries</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/LocaleConfigurer</className>
+        <differenceType>6006</differenceType>
+        <field>languages</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/Resources</className>
+        <differenceType>6006</differenceType>
+        <field>DATE_FORMAT</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/TranslateAction</className>
+        <differenceType>6006</differenceType>
+        <field>openWindows</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/TranslateWindow</className>
+        <differenceType>6006</differenceType>
+        <field>*_COLOR</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/preferences/PositionOption</className>
+        <differenceType>6006</differenceType>
+        <field>key</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>6006</differenceType>
+        <field>cache</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6006</differenceType>
+        <field>strokes</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/ImageIOImageLoader</className>
+        <differenceType>6006</differenceType>
+        <field>read*</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VassalVersionTokenizer</className>
+        <differenceType>6006</differenceType>
+        <field>tags</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
 
     <difference>
         <!-- It is okay to add classes to the set of superclasses -->

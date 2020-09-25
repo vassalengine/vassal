@@ -68,7 +68,7 @@ public class Tutorial extends AbstractConfigurable {
       @Override
       public void actionPerformed(ActionEvent e) {
         launch();
-      };
+      }
     };
   }
 
@@ -151,12 +151,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (name.equals(PROMPT_MESSAGE)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return launchOnFirstStartup;
-        }
-      };
+      return () -> launchOnFirstStartup;
     }
     return null;
   }
@@ -239,9 +234,8 @@ public class Tutorial extends AbstractConfigurable {
   }
 
   /**
-   * Get the Command representing this tutorial logfile.  Executing the command loads the tutorial
-   * @return
-   * @throws IOException
+   * @return the Command representing this tutorial logfile.  Executing the command loads the tutorial
+   * @throws IOException oops
    */
   public Command getTutorialCommand() throws IOException {
     return GameModule.getGameModule().getGameState().decodeSavedGame(getTutorialContents());

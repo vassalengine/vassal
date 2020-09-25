@@ -20,8 +20,6 @@ package VASSAL.build.module.gamepieceimage;
 import java.awt.Color;
 import java.awt.Window;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,6 +30,7 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 public class ColorSwatchConfigurer extends Configurer {
@@ -88,16 +87,13 @@ public class ColorSwatchConfigurer extends Configurer {
       p.add(box);
 
       colorBox = Box.createHorizontalBox();
-      config = new ColorConfigurer("", "Select Color  "); //$NON-NLS-1$
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          Color c = (Color) config.getValue();
-          ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
-          setValue(cs);
-          buildSwatches();
-          updateValue();
-        }
+      config = new ColorConfigurer("", Resources.getString("Editor.ColorSwatchConfigurer.select_color")); //$NON-NLS-1$
+      config.addPropertyChangeListener(e -> {
+        Color c = (Color) config.getValue();
+        ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
+        setValue(cs);
+        buildSwatches();
+        updateValue();
       });
       colorBox.add(config.getControls());
       p.add(colorBox);

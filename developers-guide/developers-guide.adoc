@@ -26,6 +26,7 @@ Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
 . *package*: creates build artifacts (.jar files) in `/target`
 * javadoc
 * source: creates source code jar
+* license: downloads licenses
 . *verify*: not used
 . *install*: copies build artifacts into local maven repository
 . *site*: not used
@@ -159,6 +160,17 @@ include::{rootdir}pom.xml[lines=111..115]
 
 * Maven plugin configuration in link:{rootdir}vassal-doc/pom.xml[]
 
+===== License Maven Plugin
+
+[NOTE]
+====
+Runs goal link:https://www.mojohaus.org/license-maven-plugin/aggregate-download-licenses-mojo.html[license:aggregate-download-licenses] in *package* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+
+* Maven plugin configuration in link:{rootdir}release-prepare/pom.xml[]
+
 ==== Build parameters
 
 ===== Version number
@@ -194,6 +206,9 @@ Each build step can be skipped by passing certain parameters.
 
 |Clirr
 |`-Dclirr.skip=true`
+
+|License Maven Plugin
+|`-Dlicense.skipAggregateDownloadLicenses=true`
 
 |===
 

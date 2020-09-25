@@ -84,10 +84,10 @@ public class StackMetrics extends AbstractConfigurable {
   public static final String DOWN_KEY = "down";
   public static final String COLOR = "color";
 
-  public static int DEFAULT_EXSEP_X = 6;
-  public static int DEFAULT_EXSEP_Y = 18;
-  public static int DEFAULT_UNEXSEP_X = 2;
-  public static int DEFAULT_UNEXSEP_Y = 4;
+  public static final int DEFAULT_EXSEP_X = 6;
+  public static final int DEFAULT_EXSEP_Y = 18;
+  public static final int DEFAULT_UNEXSEP_X = 2;
+  public static final int DEFAULT_UNEXSEP_Y = 4;
 
   protected Map map;
 

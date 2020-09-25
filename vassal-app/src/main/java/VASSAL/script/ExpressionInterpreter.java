@@ -95,7 +95,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
-  protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
+  protected static final HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
   
   
   public String getComponentTypeName() {

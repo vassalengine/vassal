@@ -18,8 +18,6 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +31,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.Resources;
 
 /**
  * Container for definitions of Generic Color Definitions
@@ -189,7 +188,7 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Named Colors";
+    return Resources.getString("Editor.ColorManager.component_type");
   }
 
   @Override
@@ -198,14 +197,11 @@ public class ColorManager extends AbstractConfigurable {
     if (b instanceof ColorSwatch) {
       ColorSwatch def = (ColorSwatch) b;
       userColors.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            userColors.remove(evt.getOldValue());
-            userColors.put((String) evt.getNewValue(),
-                           (ColorSwatch) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          userColors.remove(evt.getOldValue());
+          userColors.put((String) evt.getNewValue(),
+                         (ColorSwatch) evt.getSource());
         }
       });
     }
@@ -232,10 +228,7 @@ public class ColorManager extends AbstractConfigurable {
 
     ColorSwatch gcolor = getColorSwatch(colorName);
     if (gcolor != null) {
-      Color color = gcolor.getColor();
-      //if (color != null) {
-      return color;
-      //}
+      return gcolor.getColor();
     }
     return DEFAULT_COLOR;
   }

@@ -84,7 +84,7 @@ public class Resources {
     );
 
   protected Locale locale = Locale.getDefault();
-  protected static String DATE_FORMAT = "{0,date}"; //$NON-NLS-1$
+  protected static final String DATE_FORMAT = "{0,date}"; //$NON-NLS-1$
 
   private Resources() {
     init();

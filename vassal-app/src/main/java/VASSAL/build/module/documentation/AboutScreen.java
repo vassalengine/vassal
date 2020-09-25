@@ -109,7 +109,7 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "About Screen";
+    return Resources.getString("Editor.AboutScreen.component_type");
   }
 
   /**
@@ -131,8 +131,8 @@ public class AboutScreen extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Menu Entry:  ", //$NON-NLS-1$
-      "Image:  " //$NON-NLS-1$
+      Resources.getString("Editor.menu_command"),
+      Resources.getString("Editor.AboutScreen.image")
     };
   }
 

@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -80,12 +79,9 @@ public class NotesWindow extends AbstractConfigurable
     secretNotes = new SecretNotesController();
     frame = new NotesDialog();
     frame.setTitle(Resources.getString("Notes.notes")); //$NON-NLS-1$
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        captureState();
-        frame.setVisible(!frame.isShowing());
-      }
+    ActionListener al = e -> {
+      captureState();
+      frame.setVisible(!frame.isShowing());
     };
     launch = new LaunchButton(Resources.getString("Notes.notes"), TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al); //$NON-NLS-1$
     launch.setAttribute(ICON, "/images/notes.gif"); //$NON-NLS-1$
@@ -171,20 +167,14 @@ public class NotesWindow extends AbstractConfigurable
       JPanel p = new JPanel();
       JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       p.add(saveButton);
-      saveButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          save();
-          setVisible(false);
-        }
+      saveButton.addActionListener(e -> {
+        save();
+        setVisible(false);
       });
       JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
-      cancelButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-          setVisible(false);
-        }
+      cancelButton.addActionListener(e -> {
+        cancel();
+        setVisible(false);
       });
       p.add(cancelButton);
       add(p);

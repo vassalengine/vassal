@@ -360,20 +360,21 @@ public abstract class AbstractMetaData {
    * All uses of this parser <i>must</i> be wrapped in a block synchronized
    * on the parser itself.
    */
-  protected static XMLReader parser;
+  protected static final XMLReader parser = createParser();
 
 // FIXME: Synchronizing on the parser will cause very bad performance if
 // multiple threads are trying to read metadata simultaneously. We should
 // build a mechanism by which we keep a pool of parsers, and allocate a
 // new one only when there is not an unused one available in the pool.
-  static {
+  private static XMLReader createParser() {
     try {
-      parser = SAXParserFactory.newDefaultInstance().newSAXParser().getXMLReader();
+      return SAXParserFactory.newDefaultInstance().newSAXParser().getXMLReader();
     }
     catch (SAXException | ParserConfigurationException e) {
       // This should never happen.
       ErrorDialog.bug(e);
     }
+    return null;
   }
 
   /*************************************************************************

@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.documentation;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
@@ -62,7 +63,7 @@ public class HelpFile extends AbstractConfigurable {
   protected String fileType = ARCHIVE_ENTRY;
 
   public static String getConfigureTypeName() {
-    return "Plain Text Help File";
+    return Resources.getString("Editor.HelpFile.component_type");
   }
 
   public HelpFile() {
@@ -236,8 +237,8 @@ public class HelpFile extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Menu Entry:  ",
-      "Text File:  "
+      Resources.getString("Editor.menu_command"),
+      Resources.getString("Editor.HelpFile.text_file")
     };
   }
 

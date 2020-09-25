@@ -18,7 +18,6 @@
 package VASSAL.build.module;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
@@ -108,15 +107,12 @@ public class DoActionButton extends AbstractConfigurable
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
-    ActionListener rollAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          doActions();
-        }
-        catch (RecursionLimitException ex) {
-          RecursionLimiter.infiniteLoop(ex);
-        }
+    ActionListener rollAction = e -> {
+      try {
+        doActions();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
       }
     };
 
@@ -462,68 +458,28 @@ public class DoActionButton extends AbstractConfigurable
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doReport;
-        }
-      };
+      return () -> doReport;
     }
     else if (SOUND_CLIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doSound;
-        }
-      };
+      return () -> doSound;
     }
     else if (HOTKEYS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doHotkey;
-        }
-      };
+      return () -> doHotkey;
     }
     else if (LOOP_COUNT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
-        }
-      };
+      return () -> doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
     }
     else if (WHILE_EXPRESSION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_WHILE.equals(loopType);
-        }
-      };
+      return () -> doLoop && LoopControl.LOOP_WHILE.equals(loopType);
     }
     else if (UNTIL_EXPRESSION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
-        }
-      };
+      return () -> doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
     }
     else if (List.of(LOOP_TYPE, PRE_LOOP_HOTKEY, POST_LOOP_HOTKEY, INDEX).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop;
-        }
-      };
+      return () -> doLoop;
     }
     else if (List.of(INDEX_PROPERTY, INDEX_START, INDEX_STEP).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && hasIndex;
-        }
-      };
+      return () -> doLoop && hasIndex;
     }
     else {
       return null;
@@ -670,16 +626,14 @@ public class DoActionButton extends AbstractConfigurable
     if (loopException != null) {
       throw loopException;
     }
-
-    return;
   }
 
   /**
    * Execute the set of actions that make up this button and
    * return the set of Commands generated.
    *
-   * @param command
-   * @throws RecursionLimitException
+   * @param command command to execute
+   * @throws RecursionLimitException recursion protection
    */
   protected void executeActions(Command command) throws RecursionLimitException {
     final GameModule mod = GameModule.getGameModule();
@@ -737,7 +691,6 @@ public class DoActionButton extends AbstractConfigurable
         }
       }
     }
-    return;
   }
 
   // Implement Loopable
