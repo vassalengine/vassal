@@ -19,7 +19,6 @@ package VASSAL.build.module.map;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import VASSAL.build.AbstractConfigurable;
@@ -47,23 +46,18 @@ import VASSAL.tools.NamedKeyStroke;
  * so that their centroid is at the center of the map
  */
 public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor {
-  public static final String BUTTON_TEXT = "text";
-  public static final String ICON = "icon";
-  public static final String HOTKEY = "hotkey";
-  public static final String TOOLTIP = "tooltip";
+  public static final String BUTTON_TEXT = "text"; //NON-NLS
+  public static final String ICON = "icon"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected LaunchButton launch;
   protected Map map;
   protected DeckVisitorDispatcher dispatcher;
 
   public PieceRecenterer() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GameModule.getGameModule().sendAndLog(recenter(map));
-      }
-    };
-    launch = new LaunchButton("Recenter", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
+    ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
+    launch = new LaunchButton(Resources.getString("Editor.PieceRecenterer.recenter"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     dispatcher = new DeckVisitorDispatcher(this);
   }
 
@@ -122,7 +116,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.PieceRecenter.component_type"); //$NON-NLS-1$
+    return Resources.getString("Editor.PieceRecenterer.component_type"); //$NON-NLS-1$
   }
 
   @Override
@@ -169,7 +163,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/recenter.gif");
+      return new IconConfigurer(key, name, "/images/recenter.gif"); //NON-NLS
     }
   }
 
@@ -180,7 +174,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "PieceRecenterer");
+    return HelpFile.getReferenceManualPage("Map.html", "PieceRecenterer"); //NON-NLS
   }
 
   @Override

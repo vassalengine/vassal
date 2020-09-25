@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -47,27 +46,21 @@ import VASSAL.tools.filechooser.FileChooser;
 
 public class TextSaver extends AbstractConfigurable {
 
-  protected static final String HOTKEY = "hotkey";
-  protected static final String BUTTON_TEXT = "buttonText";
-  protected static final String TOOLTIP = "tooltip";
-  protected static final String ICON_NAME = "icon";
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  protected static final String ICON_NAME = "icon"; //NON-NLS
 
   protected Map map;
   protected LaunchButton launch;
 
   public TextSaver() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        apply();
-      }
-    };
+    ActionListener al = e -> apply();
 
-    launch = new LaunchButton("Save Text", TOOLTIP, BUTTON_TEXT,
+    launch = new LaunchButton(Resources.getString("Editor.TextSaver.save_text"), TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);
-    launch.setAttribute(TOOLTIP, "Save map contents as plain text file");
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.TextSaver.save_tooltip"));
   }
-
 
   @Override
   public String[] getAttributeNames() {
@@ -130,15 +123,14 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   public void apply() {
-
     switch (JOptionPane.showConfirmDialog
-        (null, "Write contents as seen by opponents?", "", JOptionPane.YES_NO_OPTION)) {
+        (null, Resources.getString("Editor.TextSaver.by_opponents"), "", JOptionPane.YES_NO_OPTION)) {
     case JOptionPane.NO_OPTION:
       writeMapAsText();
       break;
     case JOptionPane.YES_OPTION:
       String myId = GameModule.getUserId();
-      GameModule.setUserId("yendoR117");
+      GameModule.setUserId("yendoR117"); //NON-NLS
       writeMapAsText();
       GameModule.setUserId(myId);
       break;
@@ -169,11 +161,11 @@ public class TextSaver extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "TextCapture");
+    return HelpFile.getReferenceManualPage("Map.html", "TextCapture"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.TextCapture.component_type"); //$NON-NLS-1$
+    return Resources.getString("Editor.Saver.component_type"); //$NON-NLS-1$
   }
 
   /**
