@@ -52,7 +52,7 @@ public class ExtensionsLoader implements CommandEncoder {
 
   public void addTo(GameModule mod) {
     extMgr = new ExtensionsManager(mod);
-    globalExtMgr = new ExtensionsManager("ext");
+    globalExtMgr = new ExtensionsManager("ext"); //NON-NLS
     mod.addCommandEncoder(this);
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
       final DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
@@ -85,7 +85,7 @@ public class ExtensionsLoader implements CommandEncoder {
   }
 
   protected boolean addExtension(File extension) {
-    logger.info("Loading extension " + extension);
+    logger.info("Loading extension " + extension); //NON-NLS
     String extname = extension.getPath();
     boolean success = loadedExtensions.contains(extname);
     if (!success) {

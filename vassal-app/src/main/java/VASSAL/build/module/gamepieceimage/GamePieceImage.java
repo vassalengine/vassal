@@ -35,6 +35,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.UniqueIdManager;
@@ -108,9 +109,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Name:  ",
-      "Background Color:  ",
-      "Border Color:  ",
+      Resources.getString("Editor.GamePieceImage.name"),
+      Resources.getString("Editor.GamePieceImage.background_color"),
+      Resources.getString("Editor.GamePieceImage.border_color"),
       "" //$NON-NLS-1$
     };
   }
@@ -294,7 +295,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Image";
+    return Resources.getString("Editor.GamePieceImage.component_type");
   }
 
   public void refreshConfig() {

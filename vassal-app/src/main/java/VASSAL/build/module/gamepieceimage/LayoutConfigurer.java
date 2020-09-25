@@ -35,25 +35,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 
 public class LayoutConfigurer extends Configurer {
 
-  protected static final String ADD_SYMBOL = "Symbol";
-  protected static final String ADD_IMAGE = "Image";
-  protected static final String ADD_TEXT = "Label";
-  protected static final String ADD_TEXTBOX = "Text Box";
-  protected static final String ADD_SHAPE = "Shape";
-  protected static final String REMOVE = "Remove";
-  protected static final String UP = "Up";
-  protected static final String DOWN = "Down";
+  protected static final String ADD_SYMBOL = Resources.getString("Editor.LayoutConfigurer.symbol");
+  protected static final String ADD_IMAGE = Resources.getString("Editor.LayoutConfigurer.image");
+  protected static final String ADD_TEXT = Resources.getString("Editor.LayoutConfigurer.label");
+  protected static final String ADD_TEXTBOX = Resources.getString("Editor.LayoutConfigurer.text_box");
+  protected static final String ADD_SHAPE = Resources.getString("Editor.LayoutConfigurer.shape");
+  protected static final String REMOVE = Resources.getString("Editor.LayoutConfigurer.remove");
+  protected static final String UP = Resources.getString("Editor.LayoutConfigurer.up");
+  protected static final String DOWN = Resources.getString("Editor.LayoutConfigurer.down");
   protected static final int NO_CURRENT_ITEM = -1;
 
   protected JPanel panel;
@@ -82,7 +81,6 @@ public class LayoutConfigurer extends Configurer {
   @Override
   public Object getValue() {
     if (layout != null) {
-
       layout.setConfigureName(defName.getValueString());
       layout.setHeight((Integer) height.getValue());
       layout.setWidth((Integer) width.getValue());
@@ -100,7 +98,6 @@ public class LayoutConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (panel == null) {
-
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -130,18 +127,15 @@ public class LayoutConfigurer extends Configurer {
         w.pack();
       }
     }
-
     return panel;
   }
 
   @Override
   public String getValueString() {
-
     return null;
   }
 
   protected void repack() {
-
     Window w = SwingUtilities.getWindowAncestor(panel);
     if (w != null) {
       w.pack();
@@ -168,7 +162,7 @@ public class LayoutConfigurer extends Configurer {
       mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
       Box box = Box.createHorizontalBox();
-      box.add(new JLabel("Items"));
+      box.add(new JLabel(Resources.getString("Editor.LayoutConfigurer.items")));
       mainPanel.add(box);
 
       model = new MyTableModel();
@@ -178,19 +172,16 @@ public class LayoutConfigurer extends Configurer {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
       ListSelectionModel rowSM = table.getSelectionModel();
-      rowSM.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-          if (e.getValueIsAdjusting()) return;
+      rowSM.addListSelectionListener(e -> {
+        if (e.getValueIsAdjusting()) return;
 
-          ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-          if (lsm.isSelectionEmpty()) {
-            showItem(NO_CURRENT_ITEM);
-          }
-          else {
-            int selectedRow = lsm.getMinSelectionIndex();
-            showItem(selectedRow);
-          }
+        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        if (lsm.isSelectionEmpty()) {
+          showItem(NO_CURRENT_ITEM);
+        }
+        else {
+          int selectedRow = lsm.getMinSelectionIndex();
+          showItem(selectedRow);
         }
       });
 
@@ -200,38 +191,38 @@ public class LayoutConfigurer extends Configurer {
 
       box = Box.createHorizontalBox();
       addSymbolBtn = new JButton(ADD_SYMBOL);
-      addSymbolBtn.setToolTipText("Add a Symbol to the Layout");
+      addSymbolBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.symbol_tip"));
       addSymbolBtn.addActionListener(this);
       box.add(addSymbolBtn);
       addTextBtn = new JButton(ADD_TEXT);
-      addTextBtn.setToolTipText("Add Text to the Layout");
+      addTextBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.label_tip"));
       addTextBtn.addActionListener(this);
       box.add(addTextBtn);
       addTextBoxBtn = new JButton(ADD_TEXTBOX);
-      addTextBoxBtn.setToolTipText("Add Text Box to the Layout");
+      addTextBoxBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.text_box_tip"));
       addTextBoxBtn.addActionListener(this);
       box.add(addTextBoxBtn);
       addImageBtn = new JButton(ADD_IMAGE);
-      addImageBtn.setToolTipText("Add an Image to the Layout");
+      addImageBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.image_tip"));
       addImageBtn.addActionListener(this);
       box.add(addImageBtn);
       addShapeBtn = new JButton(ADD_SHAPE);
-      addShapeBtn.setToolTipText("Add a Colored Shape to the Layout");
+      addShapeBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.shapetip"));
       addShapeBtn.addActionListener(this);
       box.add(addShapeBtn);
       mainPanel.add(box);
 
       box = Box.createHorizontalBox();
       remBtn = new JButton(REMOVE);
-      remBtn.setToolTipText("Remove the selected Item");
+      remBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.remove_tip"));
       remBtn.addActionListener(this);
       box.add(remBtn);
       upBtn = new JButton(UP);
-      upBtn.setToolTipText("Move the selected Item up the list (draw earlier)");
+      upBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.up_tip"));
       upBtn.addActionListener(this);
       box.add(upBtn);
       dnBtn = new JButton(DOWN);
-      dnBtn.setToolTipText("Move the selected Item down the list (draw later)");
+      dnBtn.setToolTipText(Resources.getString("Editor.LayoutConfigurer.down_tip"));
       dnBtn.addActionListener(this);
       box.add(dnBtn);
       mainPanel.add(box);
@@ -350,7 +341,9 @@ public class LayoutConfigurer extends Configurer {
     class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private final String[] columnNames = new String[] { "Name", "Type", "Position" };
+      private final String[] columnNames = new String[] { Resources.getString("Editor.LayoutConfigurer.name"),
+                                                          Resources.getString("Editor.LayoutConfigurer.type"),
+                                                          Resources.getString("Editor.LayoutConfigurer.Position") };
 
       @Override
       public int getColumnCount() {

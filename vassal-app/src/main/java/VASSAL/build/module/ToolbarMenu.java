@@ -296,5 +296,4 @@ public class ToolbarMenu extends AbstractConfigurable
   public Command getRestoreCommand() {
     return null;
   }
-
 }

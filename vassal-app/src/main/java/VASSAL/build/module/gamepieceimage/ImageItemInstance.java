@@ -22,6 +22,7 @@ import java.awt.Image;
 import java.io.File;
 
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 public class ImageItemInstance extends ItemInstance {
@@ -75,7 +76,7 @@ public class ImageItemInstance extends ItemInstance {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] { "Image:  " };
+    return new String[] { Resources.getString("Editor.ImageItemInstance.image") };
   }
 
   @Override

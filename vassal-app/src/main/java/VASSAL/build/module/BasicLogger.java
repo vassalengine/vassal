@@ -116,11 +116,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     // FIMXE: setting nmemonic from first letter could cause collisions in
     // some languages
     newLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
-    mm.addAction("BasicLogger.begin_logfile", newLogAction);
+    mm.addAction("BasicLogger.begin_logfile", newLogAction); //NON-NLS
     // FIMXE: setting nmemonic from first letter could cause collisions in
     // some languages
     endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
-    mm.addAction("BasicLogger.end_logfile", endLogAction);
+    mm.addAction("BasicLogger.end_logfile", endLogAction); //NON-NLS
 
     JButton button = mod.getToolBar().add(undoAction);
     button.setToolTipText(Resources.getString("BasicLogger.undo_last_move"));  //$NON-NLS-1$
@@ -365,7 +365,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     File file = fc.getSelectedFile();
     if (file.getName().indexOf('.') == -1)
-      file = new File(file.getParent(), file.getName() + ".vlog");
+      file = new File(file.getParent(), file.getName() + ".vlog"); //NON-NLS
 
     // warn user if overwriting log from an old version
     if (file.exists()) {

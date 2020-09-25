@@ -112,7 +112,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public static final String BACKGROUND_COLOR = "backgroundColor"; //$NON-NLS-1$
   public static final String DICE_SET = "diceSet"; //$NON-NLS-1$
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String NONE = "<none>"; //$NON-NLS-1$
+  public static final String NONE = "&lt;none&gt;"; //$NON-NLS-1$
   private static final int[] EMPTY = new int[0];
 
   public SpecialDiceButton() {
@@ -147,9 +147,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return " ***  <" //$NON-NLS-1$
-        + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
+    return " ***  &lt;" //$NON-NLS-1$
+        + GlobalOptions.getInstance().getPlayerId() + "&gt;"; //$NON-NLS-1$
   }
 
   /**
@@ -550,7 +550,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName() + "_result");
+    l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
   }
 
@@ -632,9 +632,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       icons = new Icon[results.length];
       if (results.length > dice.size()) {
         logger.warn(
-          "Special Die Button (" + getConfigureName() +
-          "): more results (" + results.length + ") requested than dice (" +
-          dice.size() + ")"
+          "Special Die Button (" + getConfigureName() + //NON-NLS
+          "): more results (" + results.length + ") requested than dice (" + //NON-NLS
+          dice.size() + ")" //NON-NLS
         );
       }
       for (int i = 0; i < results.length; ++i) {

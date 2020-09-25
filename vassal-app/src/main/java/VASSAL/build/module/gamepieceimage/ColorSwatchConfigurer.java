@@ -61,7 +61,7 @@ public class ColorSwatchConfigurer extends Configurer {
   @Override
   public String getValueString() {
     return "";
-  }
+  } //NON-NLS
 
   public Color getValueColor() {
     return ((ColorSwatch) value).getColor();

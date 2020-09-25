@@ -33,9 +33,9 @@ import VASSAL.i18n.Localization;
  * AWT component of the child to the component of the parent
  */
 public abstract class Widget extends AbstractConfigurable {
-  public static final String NAME = "entryName";
-  public static final String WIDTH = "width";
-  public static final String HEIGHT = "height";
+  public static final String NAME = "entryName"; //NON-NLS
+  public static final String WIDTH = "width";    //NON-NLS
+  public static final String HEIGHT = "height";  //NON-NLS
   protected Element buildElement;
 
   protected Widget parent;

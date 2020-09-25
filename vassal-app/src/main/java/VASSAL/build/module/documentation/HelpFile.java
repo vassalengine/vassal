@@ -67,7 +67,7 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public HelpFile() {
-    this("help", (URL) null);
+    this("help", (URL) null); //NON-NLS
   }
 
   public HelpFile(String title, File contents, String ref)
@@ -164,7 +164,7 @@ public class HelpFile extends AbstractConfigurable {
   /** @deprecated Use {@link URLUtils#toURL(File)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static URL toURL(File f) throws MalformedURLException {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return URLUtils.toURL(f);
   }
 

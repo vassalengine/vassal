@@ -118,11 +118,11 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Menu Text", //$NON-NLS-1$
-      "Logfile",   //$NON-NLS-1$
-      "Launch automatically on first startup",  //$NON-NLS-1$
-      "Auto-launch confirm message",  //$NON-NLS-1$
-      "Welcome message"  //$NON-NLS-1$
+      Resources.getString("Editor.menu_command"),
+      Resources.getString("Editor.Tutorial.logfile"),
+      Resources.getString("Editor.Tutorial.launch_automatically_on_first_startup"),
+      Resources.getString("Editor.Tutorial.auto_launch_confirm_message"),
+      Resources.getString("Editor.Tutorial.welcome_message")
     };
   }
 
@@ -209,7 +209,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
 
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
     hasViewedTutorial = new BooleanConfigurer(key, null, Boolean.FALSE);
@@ -220,7 +220,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem);
+               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
   }
 
   @Override
@@ -243,7 +243,7 @@ public class Tutorial extends AbstractConfigurable {
 
   public InputStream getTutorialContents() throws IOException {
     if (fileName == null) {
-      throw new FileNotFoundException("Tutorial has null filename");
+      throw new FileNotFoundException("Tutorial has null filename"); //NON-NLS
     }
     return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }

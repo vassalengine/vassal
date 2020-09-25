@@ -140,7 +140,7 @@ public class RandomTextButton extends DiceButton {
           }
           else {
             ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
-            result.append("0");
+            result.append("0");  //NON-NLS
           }
         else
           result.append(roll);
@@ -254,6 +254,4 @@ public class RandomTextButton extends DiceButton {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.html", "RandomTextButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
-
-
 }
