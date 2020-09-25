@@ -30,9 +30,9 @@ import VASSAL.command.Command;
  * A Command that encapsulates a private chat message from another
  * {@link VASSAL.chat.SimplePlayer} */
 public class PrivMsgCommand extends Command {
-  private PrivateChatManager mgr;
-  private String msg;
-  private Player p;
+  private final PrivateChatManager mgr;
+  private final String msg;
+  private final Player p;
 
   public PrivMsgCommand(PrivateChatManager mgr, Player sender, String msg) {
     this.mgr = mgr;
@@ -56,7 +56,7 @@ public class PrivMsgCommand extends Command {
         java.awt.Toolkit.getDefaultToolkit().beep();
         for (int i = 0, j = chat.getComponentCount(); i < j; ++i) {
           if (chat.getComponent(i) instanceof JTextField) {
-            (chat.getComponent(i)).requestFocus();
+            chat.getComponent(i).requestFocus();
             break;
           }
         }

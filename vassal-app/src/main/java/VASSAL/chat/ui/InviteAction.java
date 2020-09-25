@@ -20,7 +20,6 @@ package VASSAL.chat.ui;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
@@ -56,15 +55,12 @@ public class InviteAction extends AbstractAction {
   }
 
   public static PlayerActionFactory factory(final LockableChatServerConnection client) {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        final Room r = client.getRoom();
-        if (r instanceof LockableRoom && !((LockableRoom) r).isLocked()) {
-          return null;
-        }
-        return new InviteAction(client, p);
+    return (SimplePlayer p, JTree tree) -> {
+      final Room r = client.getRoom();
+      if (r instanceof LockableRoom && !((LockableRoom) r).isLocked()) {
+        return null;
       }
+      return new InviteAction(client, p);
     };
   }
 }
