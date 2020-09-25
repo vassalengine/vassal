@@ -50,6 +50,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     super(key, name, validValues);
     this.validValues = validValues;
     this.i18nKeys = i18nKeys;
+    this.isDisplayNames = false;
   }
 
   /**
