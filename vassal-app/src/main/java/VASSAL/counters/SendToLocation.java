@@ -556,7 +556,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           newDestInput.setValue(destOption);
         }
       }
-      destInput.addPropertyChangeListener(arg0 -> updateVisibility());
+      newDestInput.addPropertyChangeListener(arg0 -> updateVisibility());
       controls.add(newDestInput.getControls());
 
       mapControls = Box.createHorizontalBox();

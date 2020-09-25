@@ -22,6 +22,7 @@ import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -278,7 +279,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
+    List<String> l = new ArrayList<>();
     for (int row = 0; row < nRows; ++row) {
       for (int col = 0; col < nCols; ++col) {
         l.add((String) table.getValueAt(row, col));
@@ -292,9 +293,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    l.add(launchKey);
-    return l;
+    return Arrays.asList(launchKey);
   }
 
   /**
@@ -302,8 +301,6 @@ public class TableInfo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    ArrayList<String> l = new ArrayList<>();
-    l.add(command);
-    return l;
+    return List.of(command);
   }
 }

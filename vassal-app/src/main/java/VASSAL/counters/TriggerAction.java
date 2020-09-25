@@ -674,7 +674,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     if (loop && LoopControl.LOOP_COUNTED.equals(loopType)) {
       return List.of(indexProperty);
     }
-    return null;
+    return Collections.EMPTY_LIST;
   }
 
   /**

@@ -1858,7 +1858,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * Tracks how we are progressing through searching a target GamePiece or Configurable and its traits/attributes, and whether we need to display headers
      */
-    class TargetProgress {
+    private static class TargetProgress {
       public boolean targetShown = false;
       public boolean traitShown = false;
 
