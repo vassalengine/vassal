@@ -27,4 +27,11 @@ public abstract class TranslatableStringEnum extends StringEnum {
     super();
   }
   public abstract String[] getI18nKeys(AutoConfigurable target);
+
+  /**
+   * @return true if names have already been translated; false means keys will be passed to Resources.getString()
+   */
+  public boolean isDisplayNames() {
+    return false;
+  }
 }
