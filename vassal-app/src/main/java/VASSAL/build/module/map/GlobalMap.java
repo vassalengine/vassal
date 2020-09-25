@@ -101,7 +101,7 @@ public class GlobalMap implements AutoConfigurable,
 
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);
-    launch.setAttribute(TOOLTIP, "Show/Hide overview window");
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.GlobalMap.show_hide_overview_window"));
     launch.setAttribute(HOTKEY,
       NamedKeyStroke.getNamedKeyStroke(
         KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK
@@ -157,13 +157,13 @@ public class GlobalMap implements AutoConfigurable,
     AutoConfigurable.Util.buildAttributes(e, this);
   }
 
-  protected static final String SCALE = "scale";
-  protected static final String COLOR = "color";
-  protected static final String HOTKEY = "hotkey";
-  protected static final String ICON_NAME = "icon";
-  protected static final String TOOLTIP = "tooltip";
-  protected static final String BUTTON_TEXT = "buttonText";
-  protected static final String DEFAULT_ICON = "/images/overview.gif";
+  protected static final String SCALE = "scale"; //NON-NLS
+  protected static final String COLOR = "color"; //NON-NLS
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String ICON_NAME = "icon"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  protected static final String DEFAULT_ICON = "/images/overview.gif"; //NON-NLS
 
   @Override
   public String[] getAttributeNames() {
@@ -371,7 +371,7 @@ public class GlobalMap implements AutoConfigurable,
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "OverviewWindow");
+    return HelpFile.getReferenceManualPage("Map.html", "OverviewWindow"); //NON-NLS
   }
 
   @Override
@@ -580,7 +580,7 @@ public class GlobalMap implements AutoConfigurable,
   @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, "GlobalMap");
+      myI18nData = new ComponentI18nData(this, "GlobalMap");  //NON-NLS
     }
     return myI18nData;
   }

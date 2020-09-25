@@ -174,7 +174,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     public DeckPolicyConfig2() {
       super();
       typeConfig.setValidValues(new String[]{ALL, FIXED});
-      prompt.setText("Affects:  ");
+      prompt.setText(Resources.getString("Editor.DeckGlobalKeyCommand.affects"));
     }
   }
 

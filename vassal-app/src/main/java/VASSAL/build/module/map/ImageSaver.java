@@ -79,7 +79,7 @@ public class ImageSaver extends AbstractConfigurable {
   protected LaunchButton launch;
   protected Map map;
   protected boolean promptToSplit = false;
-  protected static final String DEFAULT_ICON = "/images/camera.gif";
+  protected static final String DEFAULT_ICON = "/images/camera.gif"; //NON-NLS
 
   protected static ProgressDialog dialog;
 
@@ -90,7 +90,7 @@ public class ImageSaver extends AbstractConfigurable {
       new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
 
     // Set defaults for backward compatibility
-    launch.setAttribute(TOOLTIP, "Save Map as PNG image");
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.ImageSaver.save_map_as_png_image"));
     launch.setAttribute(BUTTON_TEXT, "");
     launch.setAttribute(ICON_NAME, DEFAULT_ICON);
   }
@@ -117,10 +117,10 @@ public class ImageSaver extends AbstractConfigurable {
     map.getToolBar().revalidate();
   }
 
-  protected static final String HOTKEY = "hotkey";
-  protected static final String BUTTON_TEXT = "buttonText";
-  protected static final String TOOLTIP = "tooltip";
-  protected static final String ICON_NAME = "icon";
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  protected static final String ICON_NAME = "icon"; //NON-NLS
 
   @Override
   public String[] getAttributeNames() {
@@ -188,19 +188,19 @@ public class ImageSaver extends AbstractConfigurable {
 
     final File file = fc.getSelectedFile();
 
-    dialog = new ProgressDialog(frame, "Saving Map Image",
-                                       "Saving map image...");
+    dialog = new ProgressDialog(frame, Resources.getString("Editor.ImageSaver.saving_map_image_title"),
+                                       Resources.getString("Editor.ImageSaver.saving_map_image_text"));
 
     // force the dialog to be a reasonable width
     // FIXME: this is not really a good way to do this---should do
     // something with the minimum size or font metrics
-    final int l = "Saving map image as ".length() + file.getName().length() + 6;
+    final int l = Resources.getString("Editor.ImageSaver.saving_map_image_as").length() + file.getName().length() + 7;
     final StringBuilder b = new StringBuilder();
-    b.append("N".repeat(Math.max(0, l)));
+    b.append("N".repeat(Math.max(0, l))); //NON-NLS
     dialog.setLabel(b.toString());
 
     dialog.pack();
-    dialog.setLabel("Saving map image as ");
+    dialog.setLabel(Resources.getString("Editor.ImageSaver.saving_map_image_as") + " ");
 
     dialog.setIndeterminate(true);
     dialog.setLocationRelativeTo(frame);
@@ -245,10 +245,10 @@ public class ImageSaver extends AbstractConfigurable {
     final SnapshotTask task = new SnapshotTask(file, x, y, w, h);
 
     task.addPropertyChangeListener(e -> {
-      if ("progress".equals(e.getPropertyName())) {
+      if ("progress".equals(e.getPropertyName())) { //NON-NLS
         dialog.setProgress((Integer) e.getNewValue());
       }
-      else if ("state".equals(e.getPropertyName())) {
+      else if ("state".equals(e.getPropertyName())) { //NON-NLS
         if (e.getNewValue() ==
             SwingWorker.StateValue.DONE) {
           // close the dialog on cancellation or completion
@@ -313,7 +313,7 @@ public class ImageSaver extends AbstractConfigurable {
 
       // update the dialog on the EDT
       SwingUtilities.invokeLater(() -> {
-        dialog.setLabel("Saving map image as " + f.getName() + ":");
+        dialog.setLabel(Resources.getString("Editor.ImageSaver.saving_map_image_as") + " " + f.getName() + ":");
         dialog.setIndeterminate(true);
       });
 
@@ -332,7 +332,7 @@ public class ImageSaver extends AbstractConfigurable {
       // update the dialog on the EDT
       SwingUtilities.invokeLater(() -> dialog.setIndeterminate(false));
 
-      final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next();
+      final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next(); //NON-NLS
       iw.addIIOWriteProgressListener(new IIOWriteProgressListener() {
         @Override
         public void imageComplete(ImageWriter source) { }
@@ -418,9 +418,9 @@ public class ImageSaver extends AbstractConfigurable {
         final String base;
         final String suffix;
         final String s = file.getName();
-        if (s.endsWith(".png")) {
+        if (s.endsWith(".png")) { //NON-NLS
           base = s.substring(0, s.lastIndexOf('.'));
-          suffix = ".png";
+          suffix = ".png"; //NON-NLS
         }
         else {
           base = s;
@@ -518,7 +518,7 @@ public class ImageSaver extends AbstractConfigurable {
 
       try {
         if (output instanceof RenderedImage) {
-          ImageIO.write((RenderedImage) output, "png", out[i]);
+          ImageIO.write((RenderedImage) output, "png", out[i]); //NON-NLS
         }
         else {
           throw new IOException("Bad image type");
@@ -537,7 +537,7 @@ public class ImageSaver extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "ImageCapture");
+    return HelpFile.getReferenceManualPage("Map.html", "ImageCapture"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {
