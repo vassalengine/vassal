@@ -21,6 +21,10 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
+3.4.4 - ???
+
+* 13426: NegativeArraySizeException when receiving first private message
+
 3.4.3 - 24 September 2020
 
 * 13452: Bundle Java 15 with Windows and Mac packages
