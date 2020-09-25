@@ -76,7 +76,7 @@ public class ImageItemInstance extends ItemInstance {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] { Resources.getString("Editor.ImageItemInstance.image") };
+    return new String[] { Resources.getString("Editor.image_label") };
   }
 
   @Override

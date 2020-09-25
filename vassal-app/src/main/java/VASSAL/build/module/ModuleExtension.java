@@ -490,7 +490,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       d.add(uconfig.getControls());
 
       Box b = Box.createHorizontalBox();
-      JButton ok = new JButton(Resources.getString("Editor.ExtensionEditor.save_button"));
+      JButton ok = new JButton(Resources.getString("General.save"));
       ok.addActionListener(e -> {
         setAttribute(VERSION, config.getValue());
         setAttribute(DESCRIPTION, dconfig.getValue());
@@ -498,7 +498,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         d.dispose();
       });
       b.add(ok);
-      JButton cancel = new JButton(Resources.getString("Editor.ExtensionEditor.cancel_button"));
+      JButton cancel = new JButton(Resources.getString("General.cancel"));
       cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);

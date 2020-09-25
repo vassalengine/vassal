@@ -159,7 +159,7 @@ public class MassKeyCommand extends AbstractConfigurable
     if (condition == null) {
       return new String[]{
         Resources.getString(Resources.DESCRIPTION),
-        Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
+        Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
         Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
@@ -175,7 +175,7 @@ public class MassKeyCommand extends AbstractConfigurable
       // Backward compatibility
       return new String[]{
         Resources.getString(Resources.DESCRIPTION),
-        Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
+        Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
         Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$

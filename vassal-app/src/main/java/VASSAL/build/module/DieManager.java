@@ -329,7 +329,7 @@ public class DieManager extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-        Resources.getString("Editor.DieManager.description"), //$NON-NLS-1$
+        Resources.getString("Editor.description_label"), //$NON-NLS-1$
         Resources.getString("Editor.DieManager.ndice"), //$NON-NLS-1$
         Resources.getString("Editor.DieManager.nsides") //$NON-NLS-1$
     };

@@ -520,11 +520,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       Resources.getString("Editor.MapShader.shade_top"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.pattern"), //$NON-NLS-1$
       Resources.getString(Resources.COLOR_LABEL),
-      Resources.getString("Editor.MapShader.image"), //$NON-NLS-1$
+      Resources.getString("Editor.image_label"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.scale"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.opacity"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.border"), //$NON-NLS-1$
-      Resources.getString("Editor.MapShader.border_color"), //$NON-NLS-1$
+      Resources.getString("Editor.border_color"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.border_width"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.border_opacity"), //$NON-NLS-1$
     };
