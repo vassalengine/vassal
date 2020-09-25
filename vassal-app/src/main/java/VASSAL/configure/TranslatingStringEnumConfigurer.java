@@ -35,6 +35,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
   private final String[] i18nKeys;
   private JComboBox<String> box;
   private Box panel;
+  private boolean isDisplayNames;
 
   /**
    * Create a drop-list of localised display values that allows you to select a value from an
@@ -95,6 +96,20 @@ public class TranslatingStringEnumConfigurer extends Configurer {
   }
 
   /**
+   * @return true if our "keys" are actually already translated strings; false if they are really keys
+   */
+  public boolean isDisplayNames() {
+    return isDisplayNames;
+  }
+
+  /**
+   * @param isDisplayNames true if our "keys" are actually already translated strings; false if they are really keys
+   */
+  public void setDisplayNames(boolean isDisplayNames) {
+    this.isDisplayNames = isDisplayNames;
+  }
+
+  /**
    * Get the Controls that make up this Configurer
    * @return A swing Component that holds all of the Configurer controls
    */
@@ -105,7 +120,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
       // Translate the keys based on the current locale
       final String[] displayValues = new String[i18nKeys.length];
       for (int i = 0; i < i18nKeys.length; i++) {
-        displayValues[i] = Resources.getString(i18nKeys[i]);
+        displayValues[i] = isDisplayNames() ? i18nKeys[i] : Resources.getString(i18nKeys[i]);
       }
 
       panel = Box.createHorizontalBox();
