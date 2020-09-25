@@ -1,7 +1,5 @@
 package VASSAL.build.module.map;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import javax.swing.Icon;
@@ -59,12 +57,7 @@ public class LayerControl extends AbstractConfigurable {
   protected CompoundPieceCollection pieceCollection;
 
   public LayerControl() {
-    launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
   }
 
   public void launch() {
