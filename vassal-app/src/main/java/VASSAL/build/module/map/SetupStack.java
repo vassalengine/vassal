@@ -90,7 +90,7 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
@@ -430,10 +430,20 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return id;
   }
 
-  public static class OwningBoardPrompt extends StringEnum {
+  public static class OwningBoardPrompt extends TranslatableStringEnum {
     public static final String ANY = "<any>";
+    public static final String ANY_NAME = Resources.getString("Editor.SetupStack.any_name");
 
     public OwningBoardPrompt() {
+    }
+
+    /**
+     * For this one we need to use pre-translated display names.
+     * @return true
+     */
+    @Override
+    public boolean isDisplayNames() {
+      return true;
     }
 
     @Override
@@ -456,6 +466,30 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       }
       else {
         values = new String[]{ANY};
+      }
+      return values;
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      String[] values;
+      if (target instanceof SetupStack) {
+        ArrayList<String> l = new ArrayList<>();
+        l.add(ANY_NAME);
+        Map m = ((SetupStack) target).map;
+        if (m != null) {
+          l.addAll(Arrays.asList(m.getBoardPicker().getAllowableLocalizedBoardNames()));
+        }
+        else {
+          for (Map m2 : Map.getMapList()) {
+            l.addAll(
+              Arrays.asList(m2.getBoardPicker().getAllowableLocalizedBoardNames()));
+          }
+        }
+        values = l.toArray(new String[0]);
+      }
+      else {
+        values = new String[]{ANY_NAME};
       }
       return values;
     }
