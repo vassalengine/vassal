@@ -18,6 +18,8 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.build.AutoConfigurable;
+import VASSAL.configure.StringEnum;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -152,6 +154,13 @@ public class ImageItem extends Item {
   private final VisibilityCondition falseCond = () -> false;
 
   private final VisibilityCondition fixedCond = () -> imageSource.equals(SRC_FIXED);
+
+  public static class TextSource extends StringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[] { SRC_VARIABLE, SRC_FIXED };
+    }
+  }
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
