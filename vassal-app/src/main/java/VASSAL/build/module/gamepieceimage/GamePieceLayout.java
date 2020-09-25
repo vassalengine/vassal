@@ -37,7 +37,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;

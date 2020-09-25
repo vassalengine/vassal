@@ -29,7 +29,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
@@ -220,7 +219,7 @@ public abstract class Item extends AbstractConfigurable {
     setAllAttributesUntranslatable();
   }
 
-  private VisibilityCondition advancedCond = () -> advanced;
+  private final VisibilityCondition advancedCond = () -> advanced;
 
 
   /**

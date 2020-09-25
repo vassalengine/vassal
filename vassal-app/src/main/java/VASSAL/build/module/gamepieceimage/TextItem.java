@@ -37,7 +37,6 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 
@@ -174,7 +173,7 @@ public class TextItem extends Item {
     }
   }
 
-  private VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
+  private final VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
