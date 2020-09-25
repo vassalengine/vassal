@@ -149,8 +149,7 @@ public class AutoConfigurer extends Configurer
       if (se != null) {
         final String[] validValues = se.getValidValues(target);
         final String[] i18nKeys = se.getI18nKeys(target);
-        config = new TranslatingStringEnumConfigurer(key, prompt, validValues, i18nKeys);
-        ((TranslatingStringEnumConfigurer)config).setDisplayNames(se.isDisplayNames());
+        config = new TranslatingStringEnumConfigurer(key, prompt, validValues, i18nKeys, se.isDisplayNames());
       }
     }
     else if (StringEnum.class.isAssignableFrom(type)) {
