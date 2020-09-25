@@ -18,7 +18,6 @@
 package VASSAL.build.module.map;
 
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -60,26 +59,21 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   protected String showingIcon;
   protected String hiddenIcon;
   protected ComponentI18nData myI18nData;
-  public static final String DEFAULT_SHOWING_ICON = "/images/globe_unselected.gif";
-  public static final String DEFAULT_HIDDEN_ICON = "/images/globe_selected.gif";
+  public static final String DEFAULT_SHOWING_ICON = "/images/globe_unselected.gif"; //NON-NLS
+  public static final String DEFAULT_HIDDEN_ICON = "/images/globe_selected.gif"; //NON-NLS
 
-  public static final String HOTKEY = "hotkey";
-  public static final String HIDDEN_ICON = "hiddenIcon";
-  public static final String SHOWING_ICON = "showingIcon";
-  public static final String LAUNCH_ICON = "icon";
-  public static final String TOOLTIP = "tooltip";
-  public static final String BUTTON_TEXT = "buttonText";
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String HIDDEN_ICON = "hiddenIcon"; //NON-NLS
+  public static final String SHOWING_ICON = "showingIcon"; //NON-NLS
+  public static final String LAUNCH_ICON = "icon"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
+  public static final String BUTTON_TEXT = "buttonText"; //NON-NLS
 
 
   public HidePiecesButton() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        setPiecesVisible(!piecesVisible);
-      }
-    };
+    ActionListener al = e -> setPiecesVisible(!piecesVisible);
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, LAUNCH_ICON, al);
-    launch.setAttribute(TOOLTIP, "Hide all pieces on this map");
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.HidePiecesButton.hide_all_pieces_on_this_map"));
     addMouseListener(this);
   }
 
@@ -154,7 +148,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   @Override
   public String getAttributeValueString(String key) {
-    String s = null;
+    String s;
     if (HIDDEN_ICON.equals(key)) {
       s = hiddenIcon;
     }
@@ -173,8 +167,8 @@ public class HidePiecesButton extends JPanel implements MouseListener,
       Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.HOTKEY_LABEL),
-      Resources.getString("Editor.HidePieceButton.show_icon"), //$NON-NLS-1$
-      Resources.getString("Editor.HidePieceButton.hide_icon"), //$NON-NLS-1$
+      Resources.getString("Editor.HidePiecesButton.show_icon"), //$NON-NLS-1$
+      Resources.getString("Editor.HidePiecesButton.hide_icon"), //$NON-NLS-1$
     };
   }
 
@@ -255,7 +249,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.HidePieceButton.component_type"); //$NON-NLS-1$
+    return Resources.getString("Editor.HidePiecesButton.component_type"); //$NON-NLS-1$
   }
 
   @Override
@@ -284,7 +278,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "HidePieces");
+    return HelpFile.getReferenceManualPage("Map.html", "HidePieces"); //NON-NLS
   }
 
   @Override
@@ -295,7 +289,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, "HidePieces");
+      myI18nData = new ComponentI18nData(this, "HidePieces"); //NON-NLS
     }
     return myI18nData;
   }

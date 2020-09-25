@@ -329,7 +329,8 @@ public class Flare extends AbstractConfigurable
       map.addLocalMouseListener(this);
     }
     else {
-      ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", reportFormat.getFormat()));
+      ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", //NON-NLS
+                                                 reportFormat.getFormat()));
     }
   }
 
@@ -588,7 +589,7 @@ public class Flare extends AbstractConfigurable
   }
 
   /**
-   * @param gameStarting
+   * @param gameStarting true if game is starting
    */
   public void setup(final boolean gameStarting) {
   }
