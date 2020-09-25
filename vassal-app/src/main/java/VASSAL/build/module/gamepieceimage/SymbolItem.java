@@ -211,6 +211,11 @@ public class SymbolItem extends Item {
   }
 
   @Override
+  public String getDisplayName() {
+    return Resources.getString("Editor.SymbolItem.component_type");
+  }
+
+  @Override
   public Dimension getSize() {
     return new Dimension(getWidth(), getHeight());
   }

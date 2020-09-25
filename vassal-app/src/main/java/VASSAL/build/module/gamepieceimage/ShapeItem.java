@@ -80,13 +80,10 @@ public class ShapeItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[] {
-        Integer.class,
-        Integer.class,
-        ShapeConfig.class,
-        Integer.class
-      }
-    );
+      Integer.class,
+      Integer.class,
+      ShapeConfig.class,
+      Integer.class);
   }
 
   @Override
@@ -108,9 +105,9 @@ public class ShapeItem extends Item {
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      return new String[] { Resources.getString("Editor.ShapeItem.rectangle"),
-                            Resources.getString("Editor.ShapeItem.rounded_rectangle"),
-                            Resources.getString("Editor.ShapeItem.oval") }; }
+      return new String[] { "Editor.ShapeItem.rectangle",
+                            "Editor.ShapeItem.rounded_rectangle",
+                            "Editor.ShapeItem.oval" }; }
   }
 
   @Override

@@ -175,9 +175,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      return new String[] { Resources.getString("Editor.always"),
-                            Resources.getString("Editor.never"),
-                            Resources.getString("Editor.DrawPile.use_menu")
+      return new String[] { "Editor.always",
+                            "Editor.never",
+                            "Editor.DrawPile.use_menu"
       };
     }
   }
@@ -187,7 +187,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   public static class AssignedDeckPrompt extends TranslatableStringEnum {
     public static final String NONE = "<none>"; //NON-NLS
-    public static final String NONE_NAME = Resources.getString("Editor.DrawPile.none");
+    public static final String NONE_NAME = "Editor.DrawPile.none";
 
     public AssignedDeckPrompt() {
       // do nothing

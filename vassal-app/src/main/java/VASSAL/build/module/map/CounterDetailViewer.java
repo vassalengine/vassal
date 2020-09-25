@@ -1048,11 +1048,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      return new String[] { Resources.getString("Editor.CounterDetailViewer.top_layer"),
-                            Resources.getString("Editor.CounterDetailViewer.all_layers"),
-                            Resources.getString("Editor.CounterDetailViewer.inc_layers"),
-                            Resources.getString("Editor.CounterDetailViewer.exc_layers"),
-                            Resources.getString("Editor.CounterDetailViewer.filter")
+      return new String[] { "Editor.CounterDetailViewer.top_layer",
+                            "Editor.CounterDetailViewer.all_layers",
+                            "Editor.CounterDetailViewer.inc_layers",
+                            "Editor.CounterDetailViewer.exc_layers",
+                            "Editor.CounterDetailViewer.filter"
       };
     }
   }

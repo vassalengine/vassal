@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +37,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
@@ -71,6 +71,27 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected static final String BORDER_NONE = "None"; //NON-NLS
 
   public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
+  public static final String[] LOCATION_I18N_KEYS = new String[] {
+    "Editor.center",
+    "Editor.top",
+    "Editor.bottom",
+    "Editor.right",
+    "Editor.left",
+    "Editor.top_right",
+    "Editor.top_left",
+    "Editor.bottom_right",
+    "Editor.bottom_left"
+  };
+
+  public static String getDisplayLocation(String location) {
+    for (int i = 0; i < LOCATIONS.length; i++) {
+      if (LOCATIONS[i].equals(location)) {
+        return Resources.getString(LOCATION_I18N_KEYS[i]);
+      }
+    }
+    return location;
+  }
+
   public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
   public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
   protected static final Map<String, String> compass = new HashMap<>();
@@ -171,10 +192,20 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     }
   }
 
-  public static class BorderConfig extends StringEnum {
+  public static class BorderConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{BORDER_PLAIN, BORDER_FANCY, BORDER_3D, BORDER_NONE};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.GamePieceLayout.plain_border",
+        "Editor.GamePieceLayout.fancy_border",
+        "Editor.GamePieceLayout.3D_border",
+        "Editor.GamePieceLayout.no_border"
+      };
     }
   }
 

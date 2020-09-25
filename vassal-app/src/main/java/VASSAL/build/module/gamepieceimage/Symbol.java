@@ -35,7 +35,7 @@ public class Symbol {
 
   protected static final String NATO = "NATO Unit Symbols"; //NON-NLS (no, really!)
   protected static final String[] SYMBOL_SETS = new String[] { NATO };
-  protected static final String[] SYMBOL_SETS_DESC = new String[] { Resources.getString("Editor.Symbol.NATO") };
+  protected static final String[] SYMBOL_SETS_DESC = new String[] { "Editor.Symbol.NATO" };
 
   protected String symbolSetName;
   protected String symbolName1;
@@ -120,22 +120,22 @@ public class Symbol {
 
     protected static String[] getSymbolDisplayNames() {
       return new String[] {
-        Resources.getString("Editor.Symbol.none"),
-        Resources.getString("Editor.Symbol.infantry"),
-        Resources.getString("Editor.Symbol.cavalry_recon"),
-        Resources.getString("Editor.Symbol.armored"),
-        Resources.getString("Editor.Symbol.artillery"),
-        Resources.getString("Editor.Symbol.engineers"),
-        Resources.getString("Editor.Symbol.airborne"),
-        Resources.getString("Editor.Symbol.air_defense"),
-        Resources.getString("Editor.Symbol.air_force"),
-        Resources.getString("Editor.Symbol.anti_tank"),
-        Resources.getString("Editor.Symbol.army_aviation"),
-        Resources.getString("Editor.Symbol.commando"),
-        Resources.getString("Editor.Symbol.glider_borne"),
-        Resources.getString("Editor.Symbol.guerrilla"),
-        Resources.getString("Editor.Symbol.mountain"),
-        Resources.getString("Editor.Symbol.navy")
+        "Editor.Symbol.none",
+        "Editor.Symbol.infantry",
+        "Editor.Symbol.cavalry_recon",
+        "Editor.Symbol.armored",
+        "Editor.Symbol.artillery",
+        "Editor.Symbol.engineers",
+        "Editor.Symbol.airborne",
+        "Editor.Symbol.air_defense",
+        "Editor.Symbol.air_force",
+        "Editor.Symbol.anti_tank",
+        "Editor.Symbol.army_aviation",
+        "Editor.Symbol.commando",
+        "Editor.Symbol.glider_borne",
+        "Editor.Symbol.guerrilla",
+        "Editor.Symbol.mountain",
+        "Editor.Symbol.navy"
       };
     }
 
@@ -184,7 +184,7 @@ public class Symbol {
     }
 
 
-    protected static final SizeOption[] SIZES = new SizeOption[] {
+    public static final SizeOption[] SIZES = new SizeOption[] {
       new SizeOption(SZ_NONE, Resources.getString("Editor.Symbol.Size.none"), 0, ""), //$NON-NLS-1$
       new SizeOption(SZ_INSTALLATION, Resources.getString("Editor.Symbol.Size.installation"), 1, INSTALLATION_SYMBOL),
       new SizeOption(SZ_TEAM, Resources.getString("Editor.Symbol.Size.team"), 1, TEAM_SYMBOL),
@@ -507,7 +507,7 @@ public class Symbol {
     }
   }
 
-  private static class SizeOption {
+  public static class SizeOption {
     String name;
     String displayName;
     String type;

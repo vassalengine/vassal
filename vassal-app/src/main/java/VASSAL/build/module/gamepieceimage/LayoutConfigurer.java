@@ -343,7 +343,7 @@ public class LayoutConfigurer extends Configurer {
 
       private final String[] columnNames = new String[] { Resources.getString("Editor.LayoutConfigurer.name"),
                                                           Resources.getString("Editor.LayoutConfigurer.type"),
-                                                          Resources.getString("Editor.LayoutConfigurer.Position") };
+                                                          Resources.getString("Editor.LayoutConfigurer.position") };
 
       @Override
       public int getColumnCount() {
@@ -369,7 +369,7 @@ public class LayoutConfigurer extends Configurer {
           return (layout.getItem(row)).getDisplayName();
         }
         else if (col == 2) {
-          return (layout.getItem(row)).getLocation();
+          return (layout.getItem(row)).getDisplayLocation();
         }
         else
           return null;
