@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -1550,29 +1551,24 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JCheckBox menus = new JCheckBox(Resources.getString("Editor.search_menus"), searchParameters.isMatchMenus());
         final JCheckBox messages = new JCheckBox(Resources.getString("Editor.search_messages"), searchParameters.isMatchMessages());
 
+        final Consumer<Boolean> visSetter = visible -> {
+          names.setVisible(visible);
+          types.setVisible(visible);
+          traits.setVisible(visible);
+          expressions.setVisible(visible);
+          properties.setVisible(visible);
+          keys.setVisible(visible);
+          menus.setVisible(visible);
+          messages.setVisible(visible);
+        };
+
         advanced.addChangeListener(l -> {
-          names.setVisible(advanced.isSelected());
-          types.setVisible(advanced.isSelected());
-          traits.setVisible(advanced.isSelected());
-          expressions.setVisible(advanced.isSelected());
-          properties.setVisible(advanced.isSelected());
-          keys.setVisible(advanced.isSelected());
-          menus.setVisible(advanced.isSelected());
-          messages.setVisible(advanced.isSelected());
+          visSetter.accept(advanced.isSelected());
           configureTree.getSearchDialog().pack();
         });
 
-        // There's probably some easy way to just "fire the change listener" in the lambda above instead of repeating
-        // this here. If you know how, feel free to put it in.
-        names.setVisible(advanced.isSelected());
-        types.setVisible(advanced.isSelected());
-        traits.setVisible(advanced.isSelected());
-        expressions.setVisible(advanced.isSelected());
-        properties.setVisible(advanced.isSelected());
-        keys.setVisible(advanced.isSelected());
-        menus.setVisible(advanced.isSelected());
-        messages.setVisible(advanced.isSelected());
-
+        visSetter.accept(advanced.isSelected());
+        
         configureTree.setSearchAdvanced(advanced);
 
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
