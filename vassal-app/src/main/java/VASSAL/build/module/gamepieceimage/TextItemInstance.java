@@ -113,8 +113,8 @@ public class TextItemInstance extends ItemInstance {
   public String[] getAttributeDescriptions() {
     return new String[] {
       Resources.getString("Editor.TextItemInstance.value"),
-      Resources.getString("Editor.TextItemInstance.foreground_color"),
-      Resources.getString("Editor.TextItemInstance.background_color"),
+      Resources.getString("Editor.foreground_color"),
+      Resources.getString("Editor.background_color"),
       Resources.getString("Editor.TextItemInstance.outline_color")
     };
   }

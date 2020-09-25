@@ -68,8 +68,8 @@ public class TextBoxItem extends TextItem {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      Resources.getString("Editor.TextBoxItem.width"),
-      Resources.getString("Editor.TextBoxItem.height"),
+      Resources.getString("Editor.width"),
+      Resources.getString("Editor.height"),
       Resources.getString("Editor.TextBoxItem.use_html")
     );
   }
@@ -78,12 +78,9 @@ public class TextBoxItem extends TextItem {
   public Class<?>[] getAttributeTypes() {
     final Class<?>[] c = ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[] {
-        Integer.class,
-        Integer.class,
-        Boolean.class
-      }
-    );
+      Integer.class,
+      Integer.class,
+      Boolean.class);
 
     final String[] names = getAttributeNames();
     // Change the type of the "Text" attribute to multi-line text

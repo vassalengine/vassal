@@ -734,7 +734,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.GameModule.description")    //NON-NLS
+      Resources.getString("Editor.description_label")    //NON-NLS
     };
   }
 

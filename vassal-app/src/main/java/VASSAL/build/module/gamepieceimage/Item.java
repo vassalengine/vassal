@@ -74,11 +74,11 @@ public abstract class Item extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.Item.name"),
+      Resources.getString("Editor.name_label"),
       Resources.getString("Editor.Item.location"),
       Resources.getString("Editor.Item.advanced_options"),
-      Resources.getString("Editor.Item.x_offset"),
-      Resources.getString("Editor.Item.y_offset"),
+      Resources.getString("Editor.x_offset"),
+      Resources.getString("Editor.y_offset"),
       Resources.getString("Editor.Item.rotation_degrees"),
       Resources.getString("Editor.Item.anti_alias")
     };

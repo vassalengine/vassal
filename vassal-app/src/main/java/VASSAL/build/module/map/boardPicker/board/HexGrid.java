@@ -123,8 +123,8 @@ public class HexGrid extends AbstractConfigurable
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.HexGrid.sideways"), //$NON-NLS-1$
-      Resources.getString("Editor.Grid.x_offset"), //$NON-NLS-1$
-      Resources.getString("Editor.Grid.y_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.x_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.y_offset"), //$NON-NLS-1$
       Resources.getString("Editor.HexGrid.hex_height"), //$NON-NLS-1$
       Resources.getString("Editor.HexGrid.hex_width"), //$NON-NLS-1$
       Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$

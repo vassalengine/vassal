@@ -270,7 +270,7 @@ public class InstanceConfigurer extends Configurer {
     class SymbolTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private final String[] columnNames = new String[] { Resources.getString("Editor.InstanceConfigurer.name"),
+      private final String[] columnNames = new String[] { Resources.getString("Editor.name_label"),
                                                           Resources.getString("Editor.InstanceConfigurer.type"),
                                                           Resources.getString("Editor.InstanceConfigurer.position") };
 

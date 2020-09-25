@@ -175,8 +175,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      return new String[] { Resources.getString("Editor.DrawPile.always"),
-                            Resources.getString("Editor.DrawPile.never"),
+      return new String[] { Resources.getString("Editor.always"),
+                            Resources.getString("Editor.never"),
                             Resources.getString("Editor.DrawPile.use_menu")
       };
     }
@@ -279,10 +279,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
         Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.xposition"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.yposition"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.width"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.height"), //$NON-NLS-1$
+        Resources.getString("Editor.xposition"), //$NON-NLS-1$
+        Resources.getString("Editor.yposition"), //$NON-NLS-1$
+        Resources.getString("Editor.width"), //$NON-NLS-1$
+        Resources.getString("Editor.height"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
