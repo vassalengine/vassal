@@ -23,6 +23,7 @@
 
 3.4.4 - ???
 
+* 13454: ClassCastException in SetPersistentPropertyCommand.execute()
 * 13426: NegativeArraySizeException when receiving first private message
 
 3.4.3 - 24 September 2020
