@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
+import VASSAL.i18n.Resources;
 
 /**
  * A Widget that corresponds to a panel with a {@link JComboBox} above
@@ -61,7 +62,7 @@ public class BoxWidget extends Widget
   }
 
   public static String getConfigureTypeName() {
-    return "Pull-down Menu";
+    return Resources.getString("Editor.BoxWidget.component_type");
   }
 
   @Override
@@ -98,7 +99,7 @@ public class BoxWidget extends Widget
   public java.awt.Component getComponent() {
     if (panel == null) {
       rebuild();
-      box = new JComboBox<Widget>();
+      box = new JComboBox<>();
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       multiPanel.setLayout(layout);
@@ -148,7 +149,7 @@ public class BoxWidget extends Widget
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  "};
+    return new String[]{Resources.getString("Editor.BoxWidget.name")};
   }
 
   @Override
