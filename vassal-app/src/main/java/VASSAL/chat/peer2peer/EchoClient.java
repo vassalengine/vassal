@@ -155,7 +155,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
         Thread.sleep((int) (wait * 1000 * rng.nextFloat()));
         ChatServerConnection client = null;
         if (poolType.startsWith("hier")) {
-          client = new SocketNodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
+          client = new NodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
         }
         else {
           client = new P2PClient(new TextClient.Encoder(), msgSvr, welcomer, pool);

@@ -80,7 +80,7 @@ public class NodeHybridClient extends DynamicClient {
         try {
           int port = Integer.parseInt(address.substring(index + 1));
           address = address.substring(0, index);
-          c = new SocketNodeClient(info.getModuleName(), info.getUserName(), encoder, address, port, msgSvr, welcomeMsgSvr);
+          c = new NodeClient(info.getModuleName(), info.getUserName(), encoder, address, port, msgSvr, welcomeMsgSvr);
         }
         // FIXME: review error message
         catch (NumberFormatException ex) {

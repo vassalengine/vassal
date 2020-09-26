@@ -80,7 +80,7 @@ public class NodeClientFactory extends ChatServerFactory {
     final HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
     final GameModule g = GameModule.getGameModule();
 
-    final SocketNodeClient server = new SocketNodeClient(
+    final NodeClient server = new NodeClient(
       g.getGameName(),
       GameModule.getUserId() + "." + System.currentTimeMillis(),
       g,

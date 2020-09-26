@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2013 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2020 by Rodney Kinney, Brent Easton, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -72,8 +74,8 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * @author rkinney
  */
-public abstract class NodeClient implements LockableChatServerConnection,
-    PlayerEncoder, ChatControlsInitializer {
+public class NodeClient implements LockableChatServerConnection,
+    PlayerEncoder, ChatControlsInitializer, SocketWatcher {
   public static final String ZIP_HEADER = "!ZIP!"; //$NON-NLS-1$
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
@@ -100,7 +102,31 @@ public abstract class NodeClient implements LockableChatServerConnection,
   protected PropertyChangeListener profileChangeListener;
   protected NodeRoom pendingSynchToRoom;
 
-  public NodeClient(String moduleName, String playerId, CommandEncoder encoder,
+  private SocketHandler sender;
+  protected NodeServerInfo serverInfo;
+
+  public NodeClient(String moduleName, String playerId, CommandEncoder encoder, NodeServerInfo serverInfo, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
+    this(moduleName, playerId, encoder, msgSvr, welcomer);
+    this.serverInfo = serverInfo;
+    serverStatus = new CgiServerStatus();
+  }
+
+  public NodeClient(String moduleName, String playerId, CommandEncoder encoder, final String host, final int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
+    this(moduleName, playerId, encoder, new NodeServerInfo() {
+      @Override
+      public String getHostName() {
+        return host;
+      }
+
+      @Override
+      public int getPort() {
+        return port;
+      }
+
+    }, msgSvr, welcomer);
+  }
+
+  private NodeClient(String moduleName, String playerId, CommandEncoder encoder,
       MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this.encoder = encoder;
     this.msgSvr = msgSvr;
@@ -196,11 +222,35 @@ public abstract class NodeClient implements LockableChatServerConnection,
     }
   }
 
-  protected abstract void closeConnection();
+  protected void initializeConnection() throws UnknownHostException, IOException {
+    Socket s = new Socket(serverInfo.getHostName(), serverInfo.getPort());
+    sender = new SocketHandler(s, this);
+    sender.start();
+  }
 
-  protected abstract void initializeConnection() throws IOException;
+  protected void closeConnection() {
+    SocketHandler s = sender;
+    sender = null;
+    s.close();
+  }
 
-  public abstract void send(String command);
+  @Override
+  public boolean isConnected() {
+    return sender != null;
+  }
+
+  @Override
+  public void socketClosed(SocketHandler handler) {
+    if (sender != null) {
+      propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
+      propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
+      sender = null;
+    }
+  }
+
+  public void send(String command) {
+    sender.writeLine(command);
+  }
 
   public void setDefaultRoomName(String defaultRoomName) {
     this.defaultRoomName = defaultRoomName;
@@ -503,6 +553,11 @@ public abstract class NodeClient implements LockableChatServerConnection,
       }
       propSupport.firePropertyChange(INCOMING_MSG, null, msg);
     }
+  }
+
+  @Override
+  public void handleMessage(String msg) {
+    handleMessageFromServer(msg);
   }
 
   protected void updateRooms(Node module) {

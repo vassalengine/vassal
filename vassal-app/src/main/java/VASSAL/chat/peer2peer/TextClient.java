@@ -128,7 +128,7 @@ public class TextClient {
     };
     CommandEncoder encoder = new Encoder();
     if (poolType.startsWith("hier")) {
-      clientConnection = new SocketNodeClient(encoder, info, host, port, msgSvr, welcomer);
+      clientConnection = new NodeClient(encoder, info, host, port, msgSvr, welcomer);
     }
     else {
       PeerPool pool;
