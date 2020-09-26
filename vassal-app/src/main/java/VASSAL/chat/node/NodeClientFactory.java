@@ -17,13 +17,47 @@
  */
 package VASSAL.chat.node;
 
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import VASSAL.build.GameModule;
+import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.CommandDecoder;
 
 /**
  * @author rkinney
  */
 public abstract class NodeClientFactory extends ChatServerFactory {
+  private static final Logger logger =
+    LoggerFactory.getLogger(NodeClientFactory.class);
+
   public static final String NODE_TYPE = "node";  //$NON-NLS-1$
   public static final String NODE_HOST = "nodeHost";  //$NON-NLS-1$
   public static final String NODE_PORT = "nodePort";  //$NON-NLS-1$
+
+  protected abstract ChatServerConnection buildServerImpl(Properties param);
+
+  public ChatServerConnection buildServer(Properties param) {
+    final ChatServerConnection server = buildServerImpl(param);
+
+    final GameModule g = GameModule.getGameModule();
+
+    g.getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
+    g.getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
+
+    server.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
+      final String mess = (String) e.getNewValue();
+      GameModule.getGameModule().warn(mess);
+      logger.error("", mess);
+    });
+
+    server.addPropertyChangeListener(
+      ChatServerConnection.INCOMING_MSG, new CommandDecoder()
+    );
+
+    return server;
+  }
 }

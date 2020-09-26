@@ -2,20 +2,13 @@ package VASSAL.chat.node;
 
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
-import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.i18n.Resources;
 
 public class OfficialNodeClientFactory extends NodeClientFactory {
-  private static final Logger logger =
-    LoggerFactory.getLogger(OfficialNodeClientFactory.class);
-
   public static final String OFFICIAL_TYPE = "official"; //$NON-NLS-1$
   public static final String OFFICIAL_HOST = "game.vassalengine.org";
   public static final String OFFICIAL_PORT = "5050";
@@ -24,7 +17,7 @@ public class OfficialNodeClientFactory extends NodeClientFactory {
   private static final String UNKNOWN_USER = Resources.getString("Chat.unknown_user");  //$NON-NLS-1$
 
   @Override
-  public ChatServerConnection buildServer(Properties param) {
+  protected ChatServerConnection buildServerImpl(Properties param) {
     final String host = param.getProperty(NODE_HOST, OFFICIAL_HOST);  //$NON-NLS-1$
     final int port = Integer.parseInt(param.getProperty(NODE_PORT, OFFICIAL_PORT));  //$NON-NLS-1$
 
@@ -45,7 +38,7 @@ public class OfficialNodeClientFactory extends NodeClientFactory {
     final HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
     final GameModule g = GameModule.getGameModule();
 
-    final NodeClient server = new OfficialNodeClient(
+    return new OfficialNodeClient(
       g.getGameName(),
       GameModule.getUserId() + "." + System.currentTimeMillis(),
       g,
@@ -54,18 +47,5 @@ public class OfficialNodeClientFactory extends NodeClientFactory {
       httpMessageServer,
       httpMessageServer
     );
-
-    g.getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
-    g.getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
-
-    server.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
-      final String mess = (String) e.getNewValue();
-      GameModule.getGameModule().warn(mess);
-      logger.error("", mess);
-    });
-
-    server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
-
-    return server;
   }
 }
