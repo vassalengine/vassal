@@ -560,7 +560,7 @@
         <field>typeConfig</field>
         <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
         <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
-        <justification>Incorrect class was being used in first place</justification>
+    <justification>Incorrect class was being used in first place</justification>
     </difference>
 
     <difference>
