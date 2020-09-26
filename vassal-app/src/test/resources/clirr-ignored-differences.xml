@@ -564,14 +564,16 @@
     </difference>
 
     <difference>
-      <className>
-VASSAL.build.module.map.MassKeyCommand
-</className>
+      <className>VASSAL.build.module.map.MassKeyCommand$DeckPolicyConfig</className>
       <differenceType>6004</differenceType>
       <field>typeConfig</field>
-      <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
+      
+<from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
         <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
-        <justification>Incorrect class was being used in first place</justification>
+        
+<justification>
+Needed for localization
+</justification>
     </difference>
 
     <difference>
