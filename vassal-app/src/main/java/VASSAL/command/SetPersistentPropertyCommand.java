@@ -1,7 +1,6 @@
 package VASSAL.command;
 
 import VASSAL.build.GameModule;
-import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.property.PersistentPropertyContainer;
 
@@ -11,7 +10,7 @@ import VASSAL.property.PersistentPropertyContainer;
  * The Undo Command is a SetPropertyCommand to set the value back to the original value.
  */
 public class SetPersistentPropertyCommand extends Command {
-  public static final String COMMAND_PREFIX = "SPP\t";
+  public static final String COMMAND_PREFIX = "SPP\t"; // NON-NLS
   protected Object key;
   protected Object oldValue;
   protected Object newValue;
@@ -30,7 +29,7 @@ public class SetPersistentPropertyCommand extends Command {
     if (target != null) {
       // Not all GamePieces will have persistent Properties
       if (target instanceof PersistentPropertyContainer) {
-        ((Decorator) target).setPersistentProperty(getKey(), getNewValue());
+        ((PersistentPropertyContainer) target).setPersistentProperty(getKey(), getNewValue());
       }
     }
   }
@@ -41,7 +40,7 @@ public class SetPersistentPropertyCommand extends Command {
 
   @Override
   public String getDetails() {
-    return "id=" + id + ",key=" + key + ",old=" + oldValue + ",new=" + newValue;
+    return "id=" + id + ",key=" + key + ",old=" + oldValue + ",new=" + newValue; // NON-NLS
   }
 
   public Object getKey() {
