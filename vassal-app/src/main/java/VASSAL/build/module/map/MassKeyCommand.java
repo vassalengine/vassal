@@ -25,6 +25,8 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import java.awt.Component;
 import java.awt.Window;
@@ -32,6 +34,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -51,7 +54,6 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.counters.BooleanAndPieceFilter;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Embellishment;
@@ -85,9 +87,9 @@ public class MassKeyCommand extends AbstractConfigurable
   public static final String REPORT_FORMAT = "reportFormat"; // NON-NLS
   public static final String CONDITION = "condition"; // NON-NLS
   public static final String DECK_COUNT = "deckCount"; // NON-NLS
-  private static final String IF_ACTIVE = "If layer is active";
-  private static final String IF_INACTIVE = "If layer is inactive";
-  private static final String ALWAYS = "Always";
+  private static final String IF_ACTIVE = "If layer is active"; // NON-NLS
+  private static final String IF_INACTIVE = "If layer is inactive"; // NON-NLS
+  private static final String ALWAYS = "Always"; // NON-NLS
   public static final String CHECK_PROPERTY = "property"; // NON-NLS
   public static final String CHECK_VALUE = "propValue"; // NON-NLS
   public static final String SINGLE_MAP = "singleMap"; // NON-NLS
@@ -204,10 +206,19 @@ public class MassKeyCommand extends AbstractConfigurable
     };
   }
 
-  public static class Prompt extends StringEnum {
+  public static class Prompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, IF_ACTIVE, IF_INACTIVE};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.GlobalKeyCommand.if_layer_is_active",
+        "Editor.GlobalKeyCommand.if_layer_is_inactive",
+        "Editor.GlobalKeyCommand.always"
+      };
     }
   }
 
@@ -264,9 +275,12 @@ public class MassKeyCommand extends AbstractConfigurable
     protected static final String NONE = "No pieces"; // NON-NLS
     protected static final String ALL = "All pieces"; // NON-NLS
     protected IntConfigurer intConfig;
-    protected TranslatingStringEnumConfigurer typeConfig;
+    protected StringEnumConfigurer typeConfig;
+    protected TranslatingStringEnumConfigurer type2Config;
     protected JLabel prompt;
-    protected JPanel controls;
+    protected Box controls;
+    protected JPanel controls2;
+
 
     public DeckPolicyConfig() {
       this(true);
@@ -274,7 +288,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
     public DeckPolicyConfig(boolean showPrompt) {
       super(null, "");
-      typeConfig = new TranslatingStringEnumConfigurer(
+      type2Config = new TranslatingStringEnumConfigurer(
         new String[]{ALL, NONE, FIXED},
         new String[]{
           "Editor.GlobalKeyCommand.all_pieces",
@@ -284,31 +298,31 @@ public class MassKeyCommand extends AbstractConfigurable
       );
       intConfig = new IntConfigurer(null, "");
       if (showPrompt) {
-        controls = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS
+        controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS
         prompt = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
-        controls.add(prompt);
+        controls2.add(prompt);
       }
       else {
-        controls = new JPanel(new MigLayout("ins 0", "[]rel[]")); // NON-NLS
+        controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]")); // NON-NLS
       }
-      controls.add(typeConfig.getControls());
-      controls.add(intConfig.getControls());
+      controls2.add(type2Config.getControls());
+      controls2.add(intConfig.getControls());
       PropertyChangeListener l = evt -> {
-        intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+        intConfig.getControls().setVisible(FIXED.equals(type2Config.getValueString()));
         Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
         if (w != null) {
           w.pack();
         }
       };
       PropertyChangeListener l2 = evt -> setValue(getIntValue());
-      typeConfig.addPropertyChangeListener(l);
-      typeConfig.addPropertyChangeListener(l2);
+      type2Config.addPropertyChangeListener(l);
+      type2Config.addPropertyChangeListener(l2);
       intConfig.addPropertyChangeListener(l2);
     }
 
     @Override
     public Component getControls() {
-      return controls;
+      return controls2;
     }
 
     @Override
@@ -317,7 +331,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
 
     public int getIntValue() {
-      String type = typeConfig.getValueString();
+      String type = type2Config.getValueString();
       if (ALL.equals(type)) {
         return -1;
       }
@@ -331,30 +345,30 @@ public class MassKeyCommand extends AbstractConfigurable
 
     @Override
     public void setValue(Object o) {
-      if (typeConfig != null) {
-        typeConfig.setFrozen(true);
+      if (type2Config != null) {
+        type2Config.setFrozen(true);
         intConfig.setFrozen(true);
         if (o instanceof Integer) {
           Integer i = (Integer) o;
           switch (i) {
           case 0:
-            typeConfig.setValue(NONE);
+            type2Config.setValue(NONE);
             intConfig.setValue(1);
             break;
           case -1:
-            typeConfig.setValue(ALL);
+            type2Config.setValue(ALL);
             intConfig.setValue(1);
             break;
           default:
-            typeConfig.setValue(FIXED);
+            type2Config.setValue(FIXED);
             intConfig.setValue(i);
           }
-          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+          intConfig.getControls().setVisible(FIXED.equals(type2Config.getValueString()));
         }
       }
       super.setValue(o);
-      if (typeConfig != null) {
-        typeConfig.setFrozen(false);
+      if (type2Config != null) {
+        type2Config.setFrozen(false);
         intConfig.setFrozen(false);
       }
     }

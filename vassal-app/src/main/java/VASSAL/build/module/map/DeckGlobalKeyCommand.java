@@ -173,7 +173,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {
     public DeckPolicyConfig2() {
       super();
-      typeConfig.setValidValues(new String[]{ALL, FIXED}, new String[] {
+      type2Config.setValidValues(new String[]{ALL, FIXED}, new String[] {
         "Editor.GlobalKeyCommand.all_pieces",
         "Editor.GlobalKeyCommand.fixed_number_of_pieces"
       });
