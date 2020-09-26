@@ -483,7 +483,7 @@ public class ServerAddressBook {
     addressBook = newAddressBook;
 
     // Ensure that the Address Book has the basic servers in it.
-    boolean legacyServer = false;
+    boolean officialServer = false;
     boolean peerServer = false;
     boolean privateServer = false;
     boolean updated = false;
@@ -491,7 +491,7 @@ public class ServerAddressBook {
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof OfficialEntry) {
-        legacyServer = true;
+        officialServer = true;
       }
       else if (entry instanceof PeerServerEntry) {
         peerServer = true;
@@ -501,7 +501,7 @@ public class ServerAddressBook {
       }
     }
 
-    if (!legacyServer) {
+    if (!officialServer) {
       addressBook.addElement(new OfficialEntry());
       updated = true;
     }
@@ -749,13 +749,13 @@ public class ServerAddressBook {
   }
 
   /**
-   * Address Book entry for the VASSAL legacy server
+   * Address Book entry for the VASSAL server
    *
    */
   private class OfficialEntry extends AddressBookEntry {
     public OfficialEntry() {
       this(new Properties());
-      setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
+      setDescription(Resources.getString("ServerAddressBook.official_server")); //$NON-NLS-1$
       setType(OFFICIAL_TYPE);
     }
 

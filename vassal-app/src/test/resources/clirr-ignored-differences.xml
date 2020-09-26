@@ -117,6 +117,11 @@
         <justification>no longer needed; no one should have extended this class</justification>
     </difference>
     <difference>
+        <className>VASSAL/chat/DynamicClientFactory</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
         <className>VASSAL/chat/ServerAddressBook</className>
         <differenceType>6011</differenceType>
         <field>DYNAMIC_TYPE</field>
@@ -309,6 +314,12 @@
         <method>ClientTest(VASSAL.chat.peer2peer.PeerPool, VASSAL.chat.messageboard.MessageBoard, VASSAL.chat.WelcomeMessageServer, int, int, java.io.FileWriter)</method>
         <justification>no one should have extended this class</justification>
     </difference>
+   <difference>
+        <className>VASSAL/chat/peer2peer/DirectPeerPool</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isServerMode()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
     <difference>
         <className>VASSAL/chat/peer2peer/P2PClient</className>
         <differenceType>7002</differenceType>
@@ -339,6 +350,24 @@
         <method>P2PClient(VASSAL.command.CommandEncoder, VASSAL.chat.messageboard.MessageBoard, VASSAL.chat.WelcomeMessageServer, VASSAL.chat.peer2peer.PeerPool)</method>
         <to>P2PClient(*)</to>
         <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClientFactory</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_CLIENT_MODE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClientFactory</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_MODE_KEY</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClientFactory</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_SERVER_MODE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
     </difference>
     <difference>
         <className>VASSAL/configure/EditPropertiesAction</className>
