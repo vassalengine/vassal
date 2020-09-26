@@ -49,7 +49,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
+
 import VASSAL.build.GameModule;
+import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.node.OfficialNodeClientFactory;
 import VASSAL.chat.node.PrivateNodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
@@ -817,8 +819,8 @@ public class ServerAddressBook {
       this(new Properties());
       setDescription(Resources.getString("ServerAddressBook.private_server")); //$NON-NLS-1$
       setType(PRIVATE_TYPE);
-      setProperty(PrivateNodeClientFactory.HOST, "localhost"); //$NON-NLS-1$
-      setProperty(PrivateNodeClientFactory.PORT, "5050"); //$NON-NLS-1$
+      setProperty(NodeClientFactory.NODE_HOST, "localhost"); //$NON-NLS-1$
+      setProperty(NodeClientFactory.NODE_PORT, "5050"); //$NON-NLS-1$
     }
 
     public PrivateEntry(Properties props) {
@@ -832,7 +834,7 @@ public class ServerAddressBook {
 
     @Override
     public String getDescription() {
-      return super.getDescription() + " " + getProperty(PrivateNodeClientFactory.HOST) + ":" + getProperty(PrivateNodeClientFactory.PORT);
+      return super.getDescription() + " " + getProperty(NodeClientFactory.NODE_HOST) + ":" + getProperty(NodeClientFactory.NODE_PORT);
     }
 
     @Override
@@ -869,13 +871,13 @@ public class ServerAddressBook {
     @Override
     protected void getAdditionalProperties(Properties props) {
       props.setProperty(TYPE_KEY, PRIVATE_TYPE);
-      props.setProperty(PrivateNodeClientFactory.HOST, serverIp.getText());
-      props.setProperty(PrivateNodeClientFactory.PORT, serverPort.getText());
+      props.setProperty(NodeClientFactory.NODE_HOST, serverIp.getText());
+      props.setProperty(NodeClientFactory.NODE_PORT, serverPort.getText());
     }
 
     protected void setAdditionalProperties(Properties props) {
-      serverIp.setText(props.getProperty(PrivateNodeClientFactory.HOST));
-      serverPort.setText(props.getProperty(PrivateNodeClientFactory.PORT));
+      serverIp.setText(props.getProperty(NodeClientFactory.NODE_HOST));
+      serverPort.setText(props.getProperty(NodeClientFactory.NODE_PORT));
     }
   }
 
