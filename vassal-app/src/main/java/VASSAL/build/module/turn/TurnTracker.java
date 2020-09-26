@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.turn;
 
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.ProblemDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -452,10 +453,19 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
 
-  public static class LengthStyleConfig extends StringEnum {
+  public static class LengthStyleConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{LENGTH_VARIABLE, LENGTH_FIXED, LENGTH_MAXIMUM};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        Resources.getString("Editor.TurnTracker.length_variable"),
+        Resources.getString("Editor.TurnTracker.length_fixed"),
+        Resources.getString("Editor.TurnTracker.length_maximum"),
+      };
     }
   }
 
