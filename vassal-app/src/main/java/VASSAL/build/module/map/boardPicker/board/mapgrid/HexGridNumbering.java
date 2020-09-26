@@ -35,8 +35,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -51,6 +49,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import org.slf4j.Logger;
@@ -75,7 +74,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     grid.setGridNumbering(this);
   }
 
-  public static final String STAGGER = "stagger";
+  public static final String STAGGER = "stagger"; //NON-NLS
 
   public HexGrid getGrid() {
     return grid;
@@ -85,7 +84,7 @@ public class HexGridNumbering extends RegularGridNumbering {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.add(
       super.getAttributeDescriptions(),
-      "Odd-numbered rows numbered higher?"
+      Resources.getString("Editor.HexGridNumbering.stagger")
     );
   }
 
@@ -179,7 +178,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
     double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font("Dialog", Font.PLAIN, size);
+    Font f = new Font(Font.DIALOG, Font.PLAIN, size);
     Point p = new Point();
     int alignment = LabelUtils.TOP;
     int offset = -(int) Math.round(deltaY / 2);
@@ -444,22 +443,16 @@ public class HexGridNumbering extends RegularGridNumbering {
             }
           }
         });
-        final JCheckBox reverseBox = new JCheckBox("Reversed");
-        reverseBox.addItemListener(new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            reversed = reverseBox.isSelected();
-            repaint();
-          }
+        final JCheckBox reverseBox = new JCheckBox(Resources.getString("Editor.HexGridNumbering.reversed"));
+        reverseBox.addItemListener(e -> {
+          reversed = reverseBox.isSelected();
+          repaint();
         });
         b.add(reverseBox);
-        final JCheckBox sidewaysBox = new JCheckBox("Sideways");
-        sidewaysBox.addItemListener(new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            grid.setAttribute(HexGrid.SIDEWAYS, sidewaysBox.isSelected() ? Boolean.TRUE : Boolean.FALSE);
-            repaint();
-          }
+        final JCheckBox sidewaysBox = new JCheckBox(Resources.getString("Editor.HexGridNumbering.sideways"));
+        sidewaysBox.addItemListener(e -> {
+          grid.setAttribute(HexGrid.SIDEWAYS, sidewaysBox.isSelected() ? Boolean.TRUE : Boolean.FALSE);
+          repaint();
         });
         b.add(sidewaysBox);
         add(BorderLayout.NORTH, b);
@@ -498,5 +491,4 @@ public class HexGridNumbering extends RegularGridNumbering {
       }
     });
   }
-
 }

@@ -31,8 +31,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
@@ -122,7 +120,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public void setSideways(boolean b) {
-    return;
+
   }
 
   @Override
@@ -577,12 +575,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     Configurer c = super.getConfigurer();
     if (!buttonExists) {
       JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          editGrid();
-        }
-      });
+      b.addActionListener(e -> editGrid());
       ((Container) c.getControls()).add(b);
     }
     return c;
