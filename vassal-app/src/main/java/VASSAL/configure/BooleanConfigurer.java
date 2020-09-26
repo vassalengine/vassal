@@ -17,10 +17,15 @@
  */
 package VASSAL.configure;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
+
 /**
  * Configurer for Boolean values
  */
 public class BooleanConfigurer extends Configurer {
+  protected JPanel p;
   private javax.swing.JCheckBox box;
 
   public BooleanConfigurer(String key, String name, Boolean val) {
@@ -33,6 +38,14 @@ public class BooleanConfigurer extends Configurer {
 
   public BooleanConfigurer(String key, String name) {
     this(key, name, Boolean.FALSE);
+  }
+
+  public BooleanConfigurer (Boolean val) {
+    this(null, null, val);
+  }
+
+  public BooleanConfigurer (boolean val) {
+    this(null, null, val);
   }
 
   @Override
@@ -67,17 +80,21 @@ public class BooleanConfigurer extends Configurer {
 
   @Override
   public java.awt.Component getControls() {
-    if (box == null) {
-      box = new javax.swing.JCheckBox(getName());
+    if (p == null) {
+      if (getName() == null || getName().isEmpty()) {
+        p = new JPanel(new MigLayout("ins 0", "[fill,grow]0[0]")); // NON-NLS
+      }
+      else {
+        p = new JPanel(new MigLayout("ins 0", "[][fill,grow][]")); // NON-NLS
+        p.add(new JLabel(getName()));
+      }
+      box = new ConfigurerCheckBox();
       box.setSelected(booleanValue());
-      box.addItemListener(new java.awt.event.ItemListener() {
-        @Override
-        public void itemStateChanged(java.awt.event.ItemEvent e) {
-          setValue(box.isSelected());
-        }
-      });
+      box.addItemListener(e -> setValue(box.isSelected()));
+      p.add(box);
     }
-    return box;
+
+    return p;
   }
 
   public Boolean booleanValue() {

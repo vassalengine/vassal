@@ -18,10 +18,13 @@ import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ListDataListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -32,8 +35,8 @@ import net.miginfocom.swing.MigLayout;
  * translation keys to be supplied to specify the drop-down values
  */
 public class TranslatingStringEnumConfigurer extends Configurer {
-  private final String[] validValues;
-  private final String[] i18nKeys;
+  private String[] validValues;
+  private String[] i18nKeys;
   private JComboBox<String> box;
   private JPanel panel;
   private boolean isDisplayNames;
@@ -292,6 +295,16 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     return validValues;
   }
 
+  public void setValidValues(String[] values, String[] keys) {
+    this.validValues = values;
+    this.i18nKeys = keys;
+
+    final String[] displayValues = new String[i18nKeys.length];
+    for (int i = 0; i < i18nKeys.length; i++) {
+      displayValues[i] = isDisplayNames() ? i18nKeys[i] : Resources.getString(i18nKeys[i]);
+    }
+    box.setModel(new DefaultComboBoxModel<>(displayValues));
+  }
   /**
    * Set a value into the configurer
    * If the value is one of the list of allowable values, then set the

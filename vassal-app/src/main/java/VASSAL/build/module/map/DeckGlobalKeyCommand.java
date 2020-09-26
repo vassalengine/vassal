@@ -140,8 +140,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
-      Resources.getString("Editor.DeckGlobalKeyCommand.command"), //$NON-NLS-1$
-      Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalKeyCommand.command"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalKeyCommand.matching_properties"), //$NON-NLS-1$
       Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
     };
@@ -173,7 +173,10 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {
     public DeckPolicyConfig2() {
       super();
-      typeConfig.setValidValues(new String[]{ALL, FIXED});
+      typeConfig.setValidValues(new String[]{ALL, FIXED}, new String[] {
+        "Editor.GlobalKeyCommand.all_pieces",
+        "Editor.GlobalKeyCommand.fixed_number_of_pieces"
+      });
       prompt.setText(Resources.getString("Editor.DeckGlobalKeyCommand.affects"));
     }
   }

@@ -23,10 +23,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.BoxLayout;
+import java.util.Objects;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -48,14 +48,15 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Adds a menu item that applies a {@link GlobalCommand} to other pieces
  */
 public class CounterGlobalKeyCommand extends Decorator
-                                     implements TranslatablePiece,
-                                                RecursionLimiter.Loopable {
-  public static final String ID = "globalkey;";
+  implements TranslatablePiece,
+  RecursionLimiter.Loopable {
+  public static final String ID = "globalkey;"; // NON-NLS
   protected KeyCommand[] command;
   protected String commandName;
   protected NamedKeyStroke key;
@@ -82,7 +83,7 @@ public class CounterGlobalKeyCommand extends Decorator
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    commandName = st.nextToken("Global Command");
+    commandName = st.nextToken(Resources.getString("Editor.GlobalkeyCommand.command"));
     key = st.nextNamedKeyStroke('G');
     globalKey = st.nextNamedKeyStroke('K');
     propertiesFilter.setExpression(st.nextToken(""));
@@ -101,12 +102,12 @@ public class CounterGlobalKeyCommand extends Decorator
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
-        .append(key)
-        .append(globalKey)
-        .append(propertiesFilter.getExpression())
-        .append(restrictRange)
-        .append(range)
-        .append(globalCommand.isReportSingle())
+      .append(key)
+      .append(globalKey)
+      .append(propertiesFilter.getExpression())
+      .append(restrictRange)
+      .append(range)
+      .append(globalCommand.isReportSingle())
       .append(fixedRange)
       .append(rangeProperty)
       .append(description)
@@ -173,7 +174,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public String getDescription() {
-    String d = "Global Key Command";
+    String d = Resources.getString("Editor.GlobalkeyCommand.global_key_command");
     if (description.length() > 0) {
       d += " - " + description;
     }
@@ -182,7 +183,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalKeyCommand.html");
+    return HelpFile.getReferenceManualPage("GlobalKeyCommand.html"); // NON-NLS
   }
 
   public Command apply() {
@@ -196,7 +197,7 @@ public class CounterGlobalKeyCommand extends Decorator
           r = Integer.parseInt(rangeValue);
         }
         catch (NumberFormatException e) {
-          reportDataError(this, Resources.getString("Error.non_number_error"), "range[" + rangeProperty + "]=" + rangeValue, e);
+          reportDataError(this, Resources.getString("Error.non_number_error"), "range[" + rangeProperty + "]=" + rangeValue, e); // NON-NLS
         }
       }
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
@@ -211,9 +212,27 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, getCommandDescription(description, "Command name"));
+    return getI18nData(commandName, getCommandDescription(description, Resources.getString("Editor.command_name")));
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof CounterGlobalKeyCommand)) return false;
+    CounterGlobalKeyCommand trait = (CounterGlobalKeyCommand) o;
+
+    if (! Objects.equals(commandName, trait.commandName)) return false;
+    if (! Objects.equals(key, trait.key)) return false;
+    if (! Objects.equals(globalKey, trait.globalKey)) return false;
+    if (! Objects.equals(propertiesFilter.getExpression(), trait.propertiesFilter.getExpression())) return false;
+    if (! Objects.equals(restrictRange, trait.restrictRange)) return false;
+    if (! Objects.equals(range, trait.range)) return false;
+    if (! Objects.equals(globalCommand.isReportSingle(), trait.globalCommand.isReportSingle())) return false;
+    if (! Objects.equals(fixedRange, trait.fixedRange)) return false;
+    if (! Objects.equals(rangeProperty, trait.rangeProperty)) return false;
+    if (! Objects.equals(description, trait.description)) return false;
+    return Objects.equals(globalCommand.getSelectFromDeck(), trait.globalCommand.getSelectFromDeck());
+  }
+  
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected NamedHotKeyConfigurer keyInput;
@@ -223,68 +242,85 @@ public class CounterGlobalKeyCommand extends Decorator
     protected BooleanConfigurer suppress;
     protected BooleanConfigurer restrictRange;
     protected BooleanConfigurer fixedRange;
+    protected JLabel fixedRangeLabel;
     protected IntConfigurer range;
+    protected JLabel rangeLabel;
     protected StringConfigurer rangeProperty;
+    protected JLabel rangePropertyLabel;
     protected StringConfigurer descInput;
     protected JPanel controls;
 
     public Ed(CounterGlobalKeyCommand p) {
 
-      PropertyChangeListener pl = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
+      PropertyChangeListener pl = evt -> {
 
-          boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-          boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
-          range.getControls().setVisible(isRange && isFixed);
-          fixedRange.getControls().setVisible(isRange);
-          rangeProperty.getControls().setVisible(isRange && !isFixed);
+        range.getControls().setVisible(isRange && isFixed);
+        rangeLabel.setVisible(isRange && isFixed);
+        fixedRange.getControls().setVisible(isRange);
+        fixedRangeLabel.setVisible(isRange);
+        rangeProperty.getControls().setVisible(isRange && !isFixed);
+        rangePropertyLabel.setVisible(isRange && !isFixed);
 
-          Window w = SwingUtilities.getWindowAncestor(range.getControls());
-          if (w != null) {
-            w.pack();
-          }
+        Window w = SwingUtilities.getWindowAncestor(range.getControls());
+        if (w != null) {
+          w.pack();
         }
       };
 
       controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls.setLayout(new MigLayout("hidemode 3, gapy 1,ins 0, wrap 2", "[right]rel[fill,grow]")); // NON-NLS
 
-      descInput = new StringConfigurer(null, "Description:  ", p.description);
+      descInput = new StringConfigurer(p.description);
+      controls.add(new JLabel(Resources.getString("Editor.description_label")));
       controls.add(descInput.getControls());
 
-      nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
+      nameInput = new StringConfigurer(p.commandName);
+      controls.add(new JLabel(Resources.getString("Editor.command_name")));
       controls.add(nameInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
+      keyInput = new NamedHotKeyConfigurer(p.key);
+      controls.add(new JLabel(Resources.getString("Editor.keyboard_command")));
       controls.add(keyInput.getControls());
 
-      globalKey = new NamedHotKeyConfigurer(null, "Global Key Command:  ", p.globalKey);
+      globalKey = new NamedHotKeyConfigurer(p.globalKey);
+      controls.add(new JLabel(Resources.getString("Editor.GlobalkeyCommand.global_key_command")));
       controls.add(globalKey.getControls());
 
-      propertyMatch = new PropertyExpressionConfigurer(null, "Matching Properties:  ", p.propertiesFilter);
+      propertyMatch = new PropertyExpressionConfigurer(null, null, p.propertiesFilter);
+      controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.matching_properties")));
       controls.add(propertyMatch.getControls());
 
-      deckPolicy = new MassKeyCommand.DeckPolicyConfig();
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
       deckPolicy.setValue(p.globalCommand.getSelectFromDeck());
+      controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy")));
       controls.add(deckPolicy.getControls());
 
-      restrictRange = new BooleanConfigurer(null, "Restrict Range?", p.restrictRange);
+      restrictRange = new BooleanConfigurer(null, null, p.restrictRange);
+      controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_range")));
       controls.add(restrictRange.getControls());
       restrictRange.addPropertyChangeListener(pl);
 
-      fixedRange = new BooleanConfigurer(null, "Fixed Range?", p.fixedRange);
+      fixedRange = new BooleanConfigurer(null, null, p.fixedRange);
+      fixedRangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.fixed_range"));
+      controls.add(fixedRangeLabel);
       controls.add(fixedRange.getControls());
       fixedRange.addPropertyChangeListener(pl);
 
-      range = new IntConfigurer(null, "Range:  ", p.range);
+      range = new IntConfigurer(p.range);
+      rangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range"));
+      controls.add(rangeLabel);
       controls.add(range.getControls());
 
-      rangeProperty = new StringConfigurer(null, "Range Property:  ", p.rangeProperty);
+      rangeProperty = new StringConfigurer(p.rangeProperty);
+      rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
+      controls.add(rangePropertyLabel);
       controls.add(rangeProperty.getControls());
 
-      suppress = new BooleanConfigurer(null, "Suppress individual reports?", p.globalCommand.isReportSingle());
+      suppress = new BooleanConfigurer(null, null, p.globalCommand.isReportSingle());
+      controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.Editor_MassKey_suppress")));
       controls.add(suppress.getControls());
 
       pl.propertyChange(null);
@@ -299,12 +335,12 @@ public class CounterGlobalKeyCommand extends Decorator
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
-          .append(keyInput.getValueString())
-          .append(globalKey.getValueString())
-          .append(propertyMatch.getValueString())
-          .append(restrictRange.getValueString())
-          .append(range.getValueString())
-          .append(suppress.booleanValue())
+        .append(keyInput.getValueString())
+        .append(globalKey.getValueString())
+        .append(propertyMatch.getValueString())
+        .append(restrictRange.getValueString())
+        .append(range.getValueString())
+        .append(suppress.booleanValue())
         .append(fixedRange.booleanValue())
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())

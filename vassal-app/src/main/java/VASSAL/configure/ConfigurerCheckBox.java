@@ -18,44 +18,33 @@
 package VASSAL.configure;
 
 import java.awt.Insets;
-import javax.swing.JTextField;
-import javax.swing.text.Document;
+import javax.swing.Icon;
+import javax.swing.JCheckBox;
 
 /**
  * Create a standardised field for use as an input field in Configurers
- *  - Set insets so there is a small gap between left edge of configurer and first text
+ *  - Remove the margin at the left side of the Checkbox so they align vertically
  */
-public class ConfigurerTextField extends JTextField {
+public class ConfigurerCheckBox extends JCheckBox {
 
-
-  public ConfigurerTextField() {
+  public ConfigurerCheckBox() {
+    super();
     adjustMargin();
   }
 
-  public ConfigurerTextField(String text) {
+  public ConfigurerCheckBox(Icon icon) {
+    super(icon);
+    adjustMargin();
+  }
+
+  public ConfigurerCheckBox(String text) {
     super(text);
-    adjustMargin();
-  }
-
-  public ConfigurerTextField(int columns) {
-    super(columns);
-    adjustMargin();
-  }
-
-  public ConfigurerTextField(String text, int columns) {
-    super(text, columns);
-    adjustMargin();
-  }
-
-  public ConfigurerTextField(Document doc, String text, int columns) {
-    super(doc, text, columns);
     adjustMargin();
   }
 
   private void adjustMargin() {
     final Insets insets = getMargin();
-    insets.left = 1;
-    insets.right = 1;
+    insets.left = -2;
     setMargin(insets);
   }
 }
