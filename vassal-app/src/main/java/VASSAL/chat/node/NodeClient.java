@@ -47,8 +47,6 @@ import VASSAL.chat.SimpleStatus;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
-import VASSAL.chat.messageboard.Message;
-import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.InviteAction;
@@ -77,8 +75,6 @@ public class NodeClient implements LockableChatServerConnection,
   protected SimpleRoom currentRoom;
   protected String defaultRoomName = DEFAULT_ROOM_NAME; //$NON-NLS-1$
   protected NodeRoom[] allRooms = new NodeRoom[0];
-  protected MessageBoard msgSvr;
-  protected WelcomeMessageServer welcomer;
   protected String moduleName;
   protected String playerId;
   protected MainRoomChecker checker = new MainRoomChecker();
@@ -99,13 +95,14 @@ public class NodeClient implements LockableChatServerConnection,
   protected final String host;
   protected final int port;
 
-  public NodeClient(String moduleName, String playerId, CommandEncoder encoder,  String host, int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
+  protected final WelcomeMessageServer welcomer;
+
+  public NodeClient(String moduleName, String playerId, CommandEncoder encoder,  String host, int port, WelcomeMessageServer welcomer) {
 
     this.host = host;
     this.port = port;
 
     this.encoder = encoder;
-    this.msgSvr = msgSvr;
     this.welcomer = welcomer;
     this.playerId = playerId;
     this.moduleName = moduleName;
@@ -602,18 +599,6 @@ public class NodeClient implements LockableChatServerConnection,
     // with a Room List refresh which can cause Icons to flash unexpectedly.
     // propSupport.firePropertyChange(ROOM, null, currentRoom);
     // propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
-  }
-
-  public MessageBoard getMessageServer() {
-    return msgSvr;
-  }
-
-  public Message[] getMessages() {
-    return msgSvr.getMessages();
-  }
-
-  public void postMessage(String msg) {
-    msgSvr.postMessage(msg);
   }
 
   @Override

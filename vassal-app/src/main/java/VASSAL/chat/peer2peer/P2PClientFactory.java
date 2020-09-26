@@ -52,12 +52,9 @@ public class P2PClientFactory extends ChatServerFactory {
 
   @Override
   public ChatServerConnection buildServer(Properties param) {
-
-    final DummyMessageServer msgServer = new DummyMessageServer();
-
     final P2PClient server = new P2PClient(
       GameModule.getGameModule(),
-      msgServer, msgServer,
+      new DummyMessageServer(),
       new DirectPeerPool(param),
       param
     );
@@ -68,6 +65,7 @@ public class P2PClientFactory extends ChatServerFactory {
       logger.info(mess);
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
+
     return server;
   }
 }

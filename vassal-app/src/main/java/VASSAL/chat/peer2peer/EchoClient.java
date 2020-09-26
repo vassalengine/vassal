@@ -158,7 +158,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
           client = new NodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
         }
         else {
-          client = new P2PClient(new TextClient.Encoder(), msgSvr, welcomer, pool);
+          client = new P2PClient(new TextClient.Encoder(), welcomer, pool);
         }
         client.setUserInfo(new SimplePlayer(userName));
         new EchoClient(client, wait, nRooms,
