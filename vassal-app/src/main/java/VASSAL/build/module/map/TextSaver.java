@@ -165,7 +165,7 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Saver.component_type"); //$NON-NLS-1$
+    return Resources.getString("Editor.TextSaver.component_type"); //$NON-NLS-1$
   }
 
   /**
