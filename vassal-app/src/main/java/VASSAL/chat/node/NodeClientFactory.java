@@ -51,18 +51,6 @@ public class NodeClientFactory extends ChatServerFactory {
     final String host = param.getProperty(NODE_HOST, "game.vassalengine.org");  //$NON-NLS-1$
     final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));  //$NON-NLS-1$
 
-    final NodeServerInfo nodeServerInfo = new NodeServerInfo() {
-      @Override
-      public String getHostName() {
-        return host;
-      }
-
-      @Override
-      public int getPort() {
-        return port;
-      }
-    };
-
     final PeerPoolInfo publicInfo = new PeerPoolInfo() {
       @Override
       public String getModuleName() {
@@ -84,7 +72,8 @@ public class NodeClientFactory extends ChatServerFactory {
       g.getGameName(),
       GameModule.getUserId() + "." + System.currentTimeMillis(),
       g,
-      nodeServerInfo,
+      host,
+      port,
       httpMessageServer,
       httpMessageServer
     );

@@ -17,7 +17,6 @@
  */
 package VASSAL.chat.node;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -103,31 +102,15 @@ public class NodeClient implements LockableChatServerConnection,
   protected NodeRoom pendingSynchToRoom;
 
   private SocketHandler sender;
-  protected NodeServerInfo serverInfo;
 
-  public NodeClient(String moduleName, String playerId, CommandEncoder encoder, NodeServerInfo serverInfo, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
-    this(moduleName, playerId, encoder, msgSvr, welcomer);
-    this.serverInfo = serverInfo;
-    serverStatus = new CgiServerStatus();
-  }
+  protected final String host;
+  protected final int port;
 
-  public NodeClient(String moduleName, String playerId, CommandEncoder encoder, final String host, final int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
-    this(moduleName, playerId, encoder, new NodeServerInfo() {
-      @Override
-      public String getHostName() {
-        return host;
-      }
+  public NodeClient(String moduleName, String playerId, CommandEncoder encoder,  String host, int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
 
-      @Override
-      public int getPort() {
-        return port;
-      }
+    this.host = host;
+    this.port = port;
 
-    }, msgSvr, welcomer);
-  }
-
-  private NodeClient(String moduleName, String playerId, CommandEncoder encoder,
-      MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this.encoder = encoder;
     this.msgSvr = msgSvr;
     this.welcomer = welcomer;
@@ -153,25 +136,27 @@ public class NodeClient implements LockableChatServerConnection,
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
     soundEncoder = new SoundEncoder(this);
     inviteEncoder = new InviteEncoder(this);
-    nameChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        SimplePlayer p = (SimplePlayer) getUserInfo();
-        p.setName((String) evt.getNewValue());
-        setUserInfo(p);
-      }
+
+    nameChangeListener = e -> {
+      final SimplePlayer p = (SimplePlayer) getUserInfo();
+      p.setName((String) e.getNewValue());
+      setUserInfo(p);
     };
-    profileChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        SimplePlayer p = (SimplePlayer) getUserInfo();
-        SimpleStatus s = (SimpleStatus) p.getStatus();
-        s = new SimpleStatus(s.isLooking(), s.isAway(), (String) evt
-            .getNewValue(), s.getClient(), s.getIp(), s.getModuleVersion(), s
-            .getCrc());
-        p.setStatus(s);
-        setUserInfo(p);
-      }
+
+    profileChangeListener = e -> {
+      final SimplePlayer p = (SimplePlayer) getUserInfo();
+      SimpleStatus s = (SimpleStatus) p.getStatus();
+      s = new SimpleStatus(
+        s.isLooking(),
+        s.isAway(),
+        (String) e.getNewValue(),
+        s.getClient(),
+        s.getIp(),
+        s.getModuleVersion(),
+        s.getCrc()
+      );
+      p.setStatus(s);
+      setUserInfo(p);
     };
   }
 
@@ -223,7 +208,7 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void initializeConnection() throws UnknownHostException, IOException {
-    Socket s = new Socket(serverInfo.getHostName(), serverInfo.getPort());
+    Socket s = new Socket(host, port);
     sender = new SocketHandler(s, this);
     sender.start();
   }
