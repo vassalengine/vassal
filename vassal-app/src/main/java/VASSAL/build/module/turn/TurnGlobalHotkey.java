@@ -12,6 +12,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -31,10 +32,10 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Description:  ",
-      "Global Hotkey:  ",
-      "Match Properties:  ",
-      "Report Format:  "
+      Resources.getString("Editor.TurnGlobalHotkey.description"),
+      Resources.getString("Editor.TurnGlobalHotkey.global_hotkey"),
+      Resources.getString("Editor.TurnGlobalHotkey.match_properties"),
+      Resources.getString("Editor.TurnGlobalHotkey.report_format")
     };
   }
 
@@ -112,7 +113,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Global Hotkey";
+    return Resources.getString("Editor.TurnGlobalHotkey.component_type");
   }
 
   @Override
