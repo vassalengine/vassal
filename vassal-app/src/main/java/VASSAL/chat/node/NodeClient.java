@@ -54,7 +54,6 @@ import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.InviteAction;
 import VASSAL.chat.ui.KickAction;
 import VASSAL.chat.ui.LockableRoomTreeRenderer;
-import VASSAL.chat.ui.MessageBoardControlsInitializer;
 import VASSAL.chat.ui.PrivateMessageAction;
 import VASSAL.chat.ui.RoomInteractionControlsInitializer;
 import VASSAL.chat.ui.SendSoundAction;
@@ -85,7 +84,6 @@ public class NodeClient implements LockableChatServerConnection,
   protected MainRoomChecker checker = new MainRoomChecker();
   protected int compressionLimit = 1000;
   protected CommandEncoder encoder;
-  protected MessageBoardControlsInitializer messageBoardControls;
   protected RoomInteractionControlsInitializer roomControls;
   protected SimpleStatusControlsInitializer playerStatusControls;
   protected SoundEncoder soundEncoder;
@@ -113,8 +111,6 @@ public class NodeClient implements LockableChatServerConnection,
     this.moduleName = moduleName;
 
     me = new NodePlayer(playerId);
-    messageBoardControls = new MessageBoardControlsInitializer(Resources
-        .getString("Chat.messages"), msgSvr); //$NON-NLS-1$
     roomControls = new LockableNodeRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
@@ -644,7 +640,6 @@ public class NodeClient implements LockableChatServerConnection,
   @Override
   public void initializeControls(ChatServerControls controls) {
     playerStatusControls.initializeControls(controls);
-    messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     controls.setRoomControlsVisible(true);
     final GameModule g = GameModule.getGameModule();
@@ -669,7 +664,6 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void uninitializeControls(ChatServerControls controls) {
-    messageBoardControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);
     playerStatusControls.uninitializeControls(controls);
     final GameModule g = GameModule.getGameModule();
