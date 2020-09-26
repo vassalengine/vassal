@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2020 by Rodney Kinney, Brent Easton, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
