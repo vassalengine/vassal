@@ -50,11 +50,11 @@ public class ServerConfigurer extends Configurer {
   private static final String CONNECTED = Resources.getString("Server.please_disconnect"); //$NON-NLS-1$
   private static final String DISCONNECTED = Resources.getString("Server.select_server_type"); //$NON-NLS-1$
   private static final String P2P_BUTTON = Resources.getString("Server.direct"); //$NON-NLS-1$
-  private static final String LEGACY_BUTTON = Resources.getString("Server.legacy"); //$NON-NLS-1$
+  private static final String OFFICIAL_BUTTON = Resources.getString("Server.official"); //$NON-NLS-1$
   private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
   protected JComponent controls;
   private HybridClient client;
-  private JRadioButton legacyButton;
+  private JRadioButton officialButton;
   private JRadioButton p2pButton;
   private JLabel header;
 
@@ -88,23 +88,23 @@ public class ServerConfigurer extends Configurer {
       group.add(p2pButton);
       controls.add(p2pButton, "wrap"); //$NON-NLS-1$
 
-      legacyButton = new JRadioButton(LEGACY_BUTTON);
-      legacyButton.addItemListener(e -> {
+      officialButton = new JRadioButton(OFFICIAL_BUTTON);
+      officialButton.addItemListener(e -> {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           noUpdate = true;
           setValue(buildLegacyProperties());
           noUpdate = false;
         }
       });
-      controls.add(legacyButton);
-      group.add(legacyButton);
+      controls.add(officialButton);
+      group.add(officialButton);
     }
     return controls;
   }
 
   private void enableControls(boolean connected) {
     p2pButton.setEnabled(!connected);
-    legacyButton.setEnabled(!connected);
+    officialButton.setEnabled(!connected);
     header.setText(connected ? CONNECTED : DISCONNECTED);
   }
 
@@ -145,7 +145,7 @@ public class ServerConfigurer extends Configurer {
       Properties p = (Properties) o;
       String type = p.getProperty(ChatServerFactory.TYPE_KEY, OfficialNodeClientFactory.OFFICIAL_TYPE);
       if (OfficialNodeClientFactory.OFFICIAL_TYPE.equals(type)) {
-        legacyButton.setSelected(true);
+        officialButton.setSelected(true);
       }
       else if (P2PClientFactory.P2P_TYPE.equals(type)) {
         p2pButton.setSelected(true);

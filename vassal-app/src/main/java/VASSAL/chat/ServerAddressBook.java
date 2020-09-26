@@ -69,7 +69,7 @@ public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
   protected static final String ADDRESS_PREF = "ServerAddressBook"; //$NON-NLS-1$
 
-  protected static final String LEGACY_TYPE = OfficialNodeClientFactory.OFFICIAL_TYPE;
+  protected static final String OFFICIAL_TYPE = OfficialNodeClientFactory.OFFICIAL_TYPE;
   protected static final String PRIVATE_TYPE = PrivateNodeClientFactory.PRIVATE_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
 
@@ -316,7 +316,7 @@ public class ServerAddressBook {
         setCurrentServer(index);
         return;
       }
-      else if (LEGACY_TYPE.equals(type) && LEGACY_TYPE.equals(ep.getProperty(TYPE_KEY))) {
+      else if (OFFICIAL_TYPE.equals(type) && OFFICIAL_TYPE.equals(ep.getProperty(TYPE_KEY))) {
         setCurrentServer(index);
         return;
       }
@@ -464,7 +464,7 @@ public class ServerAddressBook {
    * @return
    */
   public Properties getDefaultServerProperties() {
-    return (new LegacyEntry()).getProperties();
+    return (new OfficialEntry()).getProperties();
   }
 
   private void loadAddressBook() {
@@ -473,7 +473,7 @@ public class ServerAddressBook {
     final DefaultListModel<AddressBookEntry> newAddressBook = new DefaultListModel<>();
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
-      if (entry instanceof LegacyEntry) {
+      if (entry instanceof OfficialEntry) {
         newAddressBook.add(0, entry);
       }
       else {
@@ -490,7 +490,7 @@ public class ServerAddressBook {
 
     for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
-      if (entry instanceof LegacyEntry) {
+      if (entry instanceof OfficialEntry) {
         legacyServer = true;
       }
       else if (entry instanceof PeerServerEntry) {
@@ -502,7 +502,7 @@ public class ServerAddressBook {
     }
 
     if (!legacyServer) {
-      addressBook.addElement(new LegacyEntry());
+      addressBook.addElement(new OfficialEntry());
       updated = true;
     }
 
@@ -573,8 +573,8 @@ public class ServerAddressBook {
 
   private AddressBookEntry buildEntry(Properties newProperties) {
     final String type = newProperties.getProperty(TYPE_KEY);
-    if (LEGACY_TYPE.equals(type)) {
-      return new LegacyEntry(newProperties);
+    if (OFFICIAL_TYPE.equals(type)) {
+      return new OfficialEntry(newProperties);
     }
     else if (PRIVATE_TYPE.equals(type)) {
       return new PrivateEntry(newProperties);
@@ -752,14 +752,14 @@ public class ServerAddressBook {
    * Address Book entry for the VASSAL legacy server
    *
    */
-  private class LegacyEntry extends AddressBookEntry {
-    public LegacyEntry() {
+  private class OfficialEntry extends AddressBookEntry {
+    public OfficialEntry() {
       this(new Properties());
       setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
-      setType(LEGACY_TYPE);
+      setType(OFFICIAL_TYPE);
     }
 
-    public LegacyEntry(Properties props) {
+    public OfficialEntry(Properties props) {
       super(props);
     }
 
