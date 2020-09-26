@@ -22,6 +22,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.i18n.Resources;
 
 /**
  *
@@ -44,7 +45,7 @@ public class ZoneProperty extends GlobalProperty {
   }
 
   public static String getConfigureTypeName() {
-    return "Global Property";
+    return Resources.getString("Editor.ZoneProperty.component_type");
   }
 
   @Override
@@ -70,5 +71,4 @@ public class ZoneProperty extends GlobalProperty {
     propertySource = (PropertySource) parent;
     parentZone = (Zone) parent;
   }
-
 }

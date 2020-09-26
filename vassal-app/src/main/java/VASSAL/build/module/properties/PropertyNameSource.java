@@ -20,13 +20,9 @@ package VASSAL.build.module.properties;
 import java.util.List;
 
 /**
- *
  * @author Brent
- *
  */
 @FunctionalInterface
 public interface PropertyNameSource {
-
-  public List<String> getPropertyNames();
-
+  List<String> getPropertyNames();
 }

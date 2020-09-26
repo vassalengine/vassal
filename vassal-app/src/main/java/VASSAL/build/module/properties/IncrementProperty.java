@@ -43,7 +43,7 @@ public class IncrementProperty implements PropertyChanger {
 
   @Override
   public String getNewValue(String oldValue) {
-    int value = 0;
+    int value;
     try {
       if (oldValue == null || oldValue.length() == 0) {
         value = 0;
@@ -53,7 +53,7 @@ public class IncrementProperty implements PropertyChanger {
       }
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.non_number_error"), "Increment " + prop.getName() + ": oldValue " + "=" + oldValue, e));
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.non_number_error"), "Increment " + prop.getName() + ": oldValue " + "=" + oldValue, e)); //NON-NLS
       return oldValue;
     }
 
@@ -80,7 +80,7 @@ public class IncrementProperty implements PropertyChanger {
     }
     catch (NumberFormatException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.non_number_error"),
-        "Increment " + prop.getName() + ": format=" + format.getFormat() + ", value=" + format.getText(constraints), e));
+        "Increment " + prop.getName() + ": format=" + format.getFormat() + ", value=" + format.getText(constraints), e)); //NON-NLS
       return oldValue;
     }
   }

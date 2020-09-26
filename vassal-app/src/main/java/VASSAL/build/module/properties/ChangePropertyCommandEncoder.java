@@ -28,7 +28,7 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class ChangePropertyCommandEncoder implements CommandEncoder {
-  protected static final String COMMAND_PREFIX = "MutableProperty\t";
+  protected static final String COMMAND_PREFIX = "MutableProperty\t"; //NON-NLS
 
   private final MutablePropertiesContainer container;
 
