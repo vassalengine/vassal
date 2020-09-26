@@ -55,7 +55,9 @@ public class ConfigurerTextField extends JTextField {
   private void adjustMargin() {
     final Insets insets = getMargin();
     insets.left = 1;
+    insets.top = 2;
     insets.right = 1;
+    insets.bottom = 2;
     setMargin(insets);
   }
 }
