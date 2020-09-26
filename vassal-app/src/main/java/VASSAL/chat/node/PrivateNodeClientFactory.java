@@ -34,7 +34,6 @@ public class PrivateNodeClientFactory extends NodeClientFactory {
       public void initializeControls(ChatServerControls controls) {
         super.initializeControls(controls);
         messageBoardControls.uninitializeControls(controls);
-        serverStatusControls.uninitializeControls(controls);
       }
     };
   }

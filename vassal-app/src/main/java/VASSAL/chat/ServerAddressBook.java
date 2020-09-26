@@ -73,13 +73,6 @@ public class ServerAddressBook {
   protected static final String PRIVATE_TYPE = PrivateNodeClientFactory.PRIVATE_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
 
-  @Deprecated(since = "2020-08-17", forRemoval = true)
-  protected static final String P2P_MODE_KEY = P2PClientFactory.P2P_MODE_KEY;
-  @Deprecated(since = "2020-08-17", forRemoval = true)
-  protected static final String P2P_SERVER_MODE = P2PClientFactory.P2P_SERVER_MODE;
-  @Deprecated(since = "2020-08-16", forRemoval = true)
-  protected static final String P2P_CLIENT_MODE = P2PClientFactory.P2P_CLIENT_MODE;
-
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
   protected static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
   protected final int LEAF_ICON_SIZE = IconFamily.SMALL;

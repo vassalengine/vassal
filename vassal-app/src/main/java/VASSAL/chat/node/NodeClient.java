@@ -30,7 +30,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.Compressor;
 import VASSAL.chat.InviteCommand;
 import VASSAL.chat.InviteEncoder;
@@ -42,7 +41,6 @@ import VASSAL.chat.PlayerEncoder;
 import VASSAL.chat.PrivateChatEncoder;
 import VASSAL.chat.PrivateChatManager;
 import VASSAL.chat.Room;
-import VASSAL.chat.ServerStatus;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.SimpleStatus;
@@ -60,7 +58,6 @@ import VASSAL.chat.ui.MessageBoardControlsInitializer;
 import VASSAL.chat.ui.PrivateMessageAction;
 import VASSAL.chat.ui.RoomInteractionControlsInitializer;
 import VASSAL.chat.ui.SendSoundAction;
-import VASSAL.chat.ui.ServerStatusControlsInitializer;
 import VASSAL.chat.ui.ShowProfileAction;
 import VASSAL.chat.ui.SimpleStatusControlsInitializer;
 import VASSAL.chat.ui.SynchAction;
@@ -83,7 +80,6 @@ public class NodeClient implements LockableChatServerConnection,
   protected NodeRoom[] allRooms = new NodeRoom[0];
   protected MessageBoard msgSvr;
   protected WelcomeMessageServer welcomer;
-  protected ServerStatus serverStatus;
   protected String moduleName;
   protected String playerId;
   protected MainRoomChecker checker = new MainRoomChecker();
@@ -91,7 +87,6 @@ public class NodeClient implements LockableChatServerConnection,
   protected CommandEncoder encoder;
   protected MessageBoardControlsInitializer messageBoardControls;
   protected RoomInteractionControlsInitializer roomControls;
-  protected ServerStatusControlsInitializer serverStatusControls;
   protected SimpleStatusControlsInitializer playerStatusControls;
   protected SoundEncoder soundEncoder;
   protected PrivateChatEncoder privateChatEncoder;
@@ -116,7 +111,7 @@ public class NodeClient implements LockableChatServerConnection,
     this.welcomer = welcomer;
     this.playerId = playerId;
     this.moduleName = moduleName;
-    serverStatus = new CgiServerStatus();
+
     me = new NodePlayer(playerId);
     messageBoardControls = new MessageBoardControlsInitializer(Resources
         .getString("Chat.messages"), msgSvr); //$NON-NLS-1$
@@ -130,7 +125,6 @@ public class NodeClient implements LockableChatServerConnection,
         .getString("Chat.send_wakeup"), "wakeUpSound", "phone1.wav")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     roomControls.addPlayerActionFactory(InviteAction.factory(this));
     roomControls.addPlayerActionFactory(KickAction.factory(this));
-    serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this, this);
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
@@ -652,7 +646,6 @@ public class NodeClient implements LockableChatServerConnection,
     playerStatusControls.initializeControls(controls);
     messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
-    serverStatusControls.initializeControls(controls);
     controls.setRoomControlsVisible(true);
     final GameModule g = GameModule.getGameModule();
     g.addCommandEncoder(synchEncoder);
@@ -678,7 +671,6 @@ public class NodeClient implements LockableChatServerConnection,
   public void uninitializeControls(ChatServerControls controls) {
     messageBoardControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);
-    serverStatusControls.uninitializeControls(controls);
     playerStatusControls.uninitializeControls(controls);
     final GameModule g = GameModule.getGameModule();
     g.removeCommandEncoder(synchEncoder);
