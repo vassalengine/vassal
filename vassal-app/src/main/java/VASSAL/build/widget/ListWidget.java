@@ -35,6 +35,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
 import VASSAL.build.module.PieceWindow;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -54,7 +55,7 @@ public class ListWidget extends Widget
   private CardLayout layout;
   private JPanel multiPanel;
   private int width, height, divider;
-  private static final String DIVIDER = "divider";
+  private static final String DIVIDER = "divider"; //NON-NLS
   public static final String SCALE = "scale"; //$NON-NLS-1$
   protected double scale;
 
@@ -66,7 +67,7 @@ public class ListWidget extends Widget
   }
 
   public static String getConfigureTypeName() {
-    return "Scrollable List";
+    return Resources.getString("Editor.ListWidget.component_type");
   }
 
   @Override
@@ -175,7 +176,7 @@ public class ListWidget extends Widget
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Image Scale:  "};
+    return new String[]{Resources.getString("Editor.ListWidget.name"), Resources.getString("Editor.ListWidget.image_scale")};
   }
 
   @Override

@@ -22,6 +22,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Obscurable;
+import VASSAL.i18n.Resources;
 
 /**
  * A CardSlot is identical to a PieceSlot except that it is initialized
@@ -37,14 +38,14 @@ public class CardSlot extends PieceSlot {
   }
 
   public static String getConfigureTypeName() {
-    return "Card";
+    return Resources.getString("Editor.CardSlot.component_type");
   }
 
   @Override
   public Configurer getConfigurer() {
     if (getPiece() == null) {
       GamePiece theCard = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;;;");
-      theCard = GameModule.getGameModule().createPiece(Obscurable.ID + "F;;Face down;B", theCard);
+      theCard = GameModule.getGameModule().createPiece(Obscurable.ID + "F;;" + Resources.getString("Editor.CardSlot.default_hide_command") + ";B", theCard); //NON-NLS
       setPiece(theCard);
     }
     return super.getConfigurer();

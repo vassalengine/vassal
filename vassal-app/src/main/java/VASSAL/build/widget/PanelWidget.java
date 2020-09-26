@@ -66,7 +66,7 @@ public class PanelWidget extends Widget {
   }  
 
   public static String getConfigureTypeName() {
-    return "Panel";
+    return Resources.getString("Editor.PanelWidget.component_type");
   }
 
   @Override
@@ -134,9 +134,9 @@ public class PanelWidget extends Widget {
     super.remove(b);
   }
 
-  public static final String FIXED = "fixed";
-  public static final String COLS = "nColumns";
-  public static final String VERTICAL = "vert";
+  public static final String FIXED = "fixed"; //NON-NLS
+  public static final String COLS = "nColumns"; //NON-NLS
+  public static final String VERTICAL = "vert"; //NON-NLS
 
   /**
    * The attributes of a PanelWidget are:
@@ -159,11 +159,11 @@ public class PanelWidget extends Widget {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Fixed cell size?",
-      "Number of columns:  ",
-      "Vertical layout?",
-      Resources.getString("Editor.PieceWindow.scale")      
+      Resources.getString("Editor.PanelWidget.name"),
+      Resources.getString("Editor.PanelWidget.fixed_cell_size"),
+      Resources.getString("Editor.PanelWidget.number_of_columns"),
+      Resources.getString("Editor.PanelWidget.vertical_layout"),
+      Resources.getString("Editor.PanelWidget.scale")
     };
   }
 
@@ -181,21 +181,11 @@ public class PanelWidget extends Widget {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLS.equals(name)) {
-      VisibilityCondition isFixed = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return fixed;
-        }
-      };
+      VisibilityCondition isFixed = () -> fixed;
       return isFixed;
     }
     else if (VERTICAL.equals(name)) {
-      VisibilityCondition notFixed = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !fixed;
-        }
-      };
+      VisibilityCondition notFixed = () -> !fixed;
       return notFixed;
     }
     else {
@@ -224,7 +214,7 @@ public class PanelWidget extends Widget {
       if (nColumns < 1) {
         // FIXME: also dialog should not permit values < 1 to be entered
         ErrorDialog.dataWarning(
-          new BadDataReport("Panel has < 1 column:", getConfigureName()));
+          new BadDataReport("Panel has &lt; 1 column:", getConfigureName()));  //NON-NLS
 
         nColumns = 1;
       }
