@@ -25,7 +25,6 @@
  */
 package VASSAL.build.module.map;
 
-import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import java.awt.Component;
@@ -275,8 +274,7 @@ public class MassKeyCommand extends AbstractConfigurable
     protected static final String NONE = "No pieces"; // NON-NLS
     protected static final String ALL = "All pieces"; // NON-NLS
     protected IntConfigurer intConfig;
-    protected StringEnumConfigurer typeConfig;
-    protected TranslatingStringEnumConfigurer type2Config;
+    protected TranslatingStringEnumConfigurer typeConfig;
     protected JLabel prompt;
     protected Box controls;
     protected JPanel controls2;
@@ -288,7 +286,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
     public DeckPolicyConfig(boolean showPrompt) {
       super(null, "");
-      type2Config = new TranslatingStringEnumConfigurer(
+      typeConfig = new TranslatingStringEnumConfigurer(
         new String[]{ALL, NONE, FIXED},
         new String[]{
           "Editor.GlobalKeyCommand.all_pieces",
@@ -305,18 +303,18 @@ public class MassKeyCommand extends AbstractConfigurable
       else {
         controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]")); // NON-NLS
       }
-      controls2.add(type2Config.getControls());
+      controls2.add(typeConfig.getControls());
       controls2.add(intConfig.getControls());
       PropertyChangeListener l = evt -> {
-        intConfig.getControls().setVisible(FIXED.equals(type2Config.getValueString()));
+        intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
         Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
         if (w != null) {
           w.pack();
         }
       };
       PropertyChangeListener l2 = evt -> setValue(getIntValue());
-      type2Config.addPropertyChangeListener(l);
-      type2Config.addPropertyChangeListener(l2);
+      typeConfig.addPropertyChangeListener(l);
+      typeConfig.addPropertyChangeListener(l2);
       intConfig.addPropertyChangeListener(l2);
     }
 
@@ -331,7 +329,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
 
     public int getIntValue() {
-      String type = type2Config.getValueString();
+      String type = typeConfig.getValueString();
       if (ALL.equals(type)) {
         return -1;
       }
@@ -345,30 +343,30 @@ public class MassKeyCommand extends AbstractConfigurable
 
     @Override
     public void setValue(Object o) {
-      if (type2Config != null) {
-        type2Config.setFrozen(true);
+      if (typeConfig != null) {
+        typeConfig.setFrozen(true);
         intConfig.setFrozen(true);
         if (o instanceof Integer) {
           Integer i = (Integer) o;
           switch (i) {
           case 0:
-            type2Config.setValue(NONE);
+            typeConfig.setValue(NONE);
             intConfig.setValue(1);
             break;
           case -1:
-            type2Config.setValue(ALL);
+            typeConfig.setValue(ALL);
             intConfig.setValue(1);
             break;
           default:
-            type2Config.setValue(FIXED);
+            typeConfig.setValue(FIXED);
             intConfig.setValue(i);
           }
-          intConfig.getControls().setVisible(FIXED.equals(type2Config.getValueString()));
+          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
         }
       }
       super.setValue(o);
-      if (type2Config != null) {
-        type2Config.setFrozen(false);
+      if (typeConfig != null) {
+        typeConfig.setFrozen(false);
         intConfig.setFrozen(false);
       }
     }
