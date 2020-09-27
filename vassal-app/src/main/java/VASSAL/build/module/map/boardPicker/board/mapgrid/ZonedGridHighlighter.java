@@ -25,6 +25,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.i18n.Resources;
 
 /**
  *
@@ -90,12 +91,12 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   }
 
   public static String getConfigureTypeName() {
-    return "Zone Highlighters";
+    return Resources.getString("Editor.ZonedGridHighlighter.component_type");
   }
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.html", "ZoneHighlighter");
+    return HelpFile.getReferenceManualPage("ZonedGrid.html", "ZoneHighlighter"); //NON-NLS
   }
 
   @Override

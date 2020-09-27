@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import VASSAL.i18n.Resources;
 import org.w3c.dom.Element;
 
 import VASSAL.build.Buildable;
@@ -33,12 +34,12 @@ public class MapWidget extends Widget {
   }
 
   public static String getConfigureTypeName() {
-    return "Map";
+    return Resources.getString("Editor.MapWidget.component_type");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.html", "Map");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "Map"); //NON-NLS
   }
 
   @Override
@@ -109,7 +110,7 @@ public class MapWidget extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  "};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override

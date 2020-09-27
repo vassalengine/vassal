@@ -29,6 +29,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 import VASSAL.tools.ToolBarComponent;
 
@@ -65,7 +66,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   }
 
   public static String getConfigureTypeName() {
-    return "Global Properties";
+    return Resources.getString("Editor.GlobalProperties.component_type");
   }
 
   @Override
@@ -83,7 +84,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.html");
+    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS
   }
 
   @Override

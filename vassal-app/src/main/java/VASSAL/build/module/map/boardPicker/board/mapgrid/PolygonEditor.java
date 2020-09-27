@@ -25,7 +25,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -53,7 +52,6 @@ public class PolygonEditor extends JPanel {
 
   public PolygonEditor(Polygon p) {
     polygon = p;
-    // reset(); // too much of this happening
   }
 
   protected void reset() {
@@ -101,18 +99,15 @@ public class PolygonEditor extends JPanel {
     ModifyPolygon mp = new ModifyPolygon();
     addMouseListener(mp);
     addMouseMotionListener(mp);
-    ActionListener l = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (selected >= 0) {
-          for (int i = selected; i < polygon.npoints - 1; ++i) {
-            polygon.xpoints[i] = polygon.xpoints[i + 1];
-            polygon.ypoints[i] = polygon.ypoints[i + 1];
-          }
-          polygon.npoints--;
-          selected = -1;
-          repaint();
+    ActionListener l = e -> {
+      if (selected >= 0) {
+        for (int i = selected; i < polygon.npoints - 1; ++i) {
+          polygon.xpoints[i] = polygon.xpoints[i + 1];
+          polygon.ypoints[i] = polygon.ypoints[i + 1];
         }
+        polygon.npoints--;
+        selected = -1;
+        repaint();
       }
     };
     registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), WHEN_IN_FOCUSED_WINDOW);
@@ -251,7 +246,7 @@ public class PolygonEditor extends JPanel {
           y2 = polygon.ypoints[i + 1];
         }
 
-        if (y2 == y1 && x2 == x1) // two verteces on top of each other: skip
+        if (y2 == y1 && x2 == x1) // two vertices on top of each other: skip
           continue;
 
         double d = Point2D.distance(x1, y1, x2, y2); // segment length
@@ -266,7 +261,7 @@ public class PolygonEditor extends JPanel {
             selected = i;
           }
         }
-        else if (comp >= d) { // too far out beyond second vertex: just move that vertex: just move that virtex if it's closest
+        else if (comp >= d) { // too far out beyond second vertex: just move that vertex: just move that vertex if it's closest
           dist = Point2D.distance(x0, y0, x2, y2);
           if (dist < minDist) {
             isVertex = true;

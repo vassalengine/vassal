@@ -40,7 +40,7 @@ public class NumericPropertyPrompt extends PropertyPrompt {
 
   @Override
   public String getNewValue(String oldValue) {
-    String s = null;
+    String s;
     do {
       s = (String) JOptionPane.showInputDialog(dialogParent, promptText, null, JOptionPane.QUESTION_MESSAGE, null, null, oldValue);
     } while (s != null && !isValidValue(s));

@@ -55,7 +55,7 @@ public class TurnComponent extends AbstractConfigurable {
     }
     else {
       if (i >= levels.size()) {
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("TurnTracker.level_error", getConfigureName(), getConfigureName(), i, levels.size()), getConfigureName()));
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("TurnTracker.level_error", getConfigureName(), getConfigureName(), i, levels.size()), getConfigureName())); //NON-NLS
         return levels.get(levels.size() - 1);
       }
     }

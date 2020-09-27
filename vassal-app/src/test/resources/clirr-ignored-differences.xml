@@ -502,4 +502,11 @@
         <differenceType>7013</differenceType>
         <method>*</method>
     </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/PropertyChangerConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>typeConfig</field>
+        <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+    </difference>
 </differences>

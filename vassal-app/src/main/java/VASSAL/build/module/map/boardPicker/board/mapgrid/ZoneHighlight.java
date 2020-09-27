@@ -37,8 +37,6 @@ import java.util.Hashtable;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -47,8 +45,9 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
@@ -61,20 +60,20 @@ import VASSAL.tools.imageop.SourceOp;
  */
 public class ZoneHighlight extends AbstractConfigurable  {
 
-  public static final String NAME = "name";
-  public static final String COLOR = "color";
-  public static final String COVERAGE = "coverage";
-  public static final String WIDTH = "width";
-  public static final String STYLE = "style";
-  public static final String IMAGE = "image";
-  public static final String OPACITY = "opacity";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String COVERAGE = "coverage"; //NON-NLS
+  public static final String WIDTH = "width"; //NON-NLS
+  public static final String STYLE = "style"; //NON-NLS
+  public static final String IMAGE = "image"; //NON-NLS
+  public static final String OPACITY = "opacity"; //NON-NLS
 
-  public static final String COVERAGE_FULL = "Entire Zone";
-  public static final String COVERAGE_BORDER = "Zone Border";
-  public static final String STYLE_PLAIN = "Plain";
-  public static final String STYLE_STRIPES = "Striped";
-  public static final String STYLE_CROSS = "Crosshatched";
-  public static final String STYLE_IMAGE = "Tiled Image";
+  public static final String COVERAGE_FULL = "Entire Zone"; //NON-NLS (really)
+  public static final String COVERAGE_BORDER = "Zone Border"; //NON-NLS (really)
+  public static final String STYLE_PLAIN = "Plain"; //NON-NLS (really)
+  public static final String STYLE_STRIPES = "Striped"; //NON-NLS (really)
+  public static final String STYLE_CROSS = "Crosshatched"; //NON-NLS (really)
+  public static final String STYLE_IMAGE = "Tiled Image"; //NON-NLS (really)
 
   protected Color color = null;
   protected String coverage = COVERAGE_FULL;
@@ -187,13 +186,13 @@ public class ZoneHighlight extends AbstractConfigurable  {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Color:  ",
-      "Coverage:  ",
-      "Width:  ",
-      "Style:  ",
-      "Image:  ",
-      "Opacity(%):  "
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.color_label"),
+      Resources.getString("Editor.ZoneHighlight.coverage"),
+      Resources.getString("Editor.ZoneHighlight.width"),
+      Resources.getString("Editor.ZoneHighlight.style"),
+      Resources.getString("Editor.ZoneHighlight.image"),
+      Resources.getString("Editor.ZoneHighlight.opacity")
     };
   }
 
@@ -210,7 +209,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     };
   }
 
-  public static class Coverage extends StringEnum {
+  public static class Coverage extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{
@@ -218,9 +217,17 @@ public class ZoneHighlight extends AbstractConfigurable  {
         COVERAGE_BORDER
       };
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        "Editor.ZoneHighlight.coverage_full",
+        "Editor.ZoneHighlight.coverage_border"
+      };
+    }
   }
 
-  public static class Style extends StringEnum {
+  public static class Style extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{
@@ -228,6 +235,16 @@ public class ZoneHighlight extends AbstractConfigurable  {
         STYLE_STRIPES,
         STYLE_CROSS,
         STYLE_IMAGE
+      };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        "Editor.ZoneHighlight.style_plain",
+        "Editor.ZoneHighlight.style_stripes",
+        "Editor.ZoneHighlight.style_cross",
+        "Editor.ZoneHighlight.style_image"
       };
     }
   }
@@ -251,12 +268,12 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
 
   public static String getConfigureTypeName() {
-    return "Zone Highlight";
+    return Resources.getString("Editor.ZoneHighlight.component_type");
   }
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.html", "ZoneHighlighter");
+    return HelpFile.getReferenceManualPage("ZonedGrid.html", "ZoneHighlighter"); //NON-NLS
   }
 
   @Override
@@ -322,7 +339,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     else if (IMAGE.equals(key)) {
       imageName = (String) val;
-      srcOp = imageName == null || imageName.trim().length() == 0
+      srcOp = imageName.trim().length() == 0
             ? null : Op.load(imageName);
     }
   }
@@ -335,20 +352,10 @@ public class ZoneHighlight extends AbstractConfigurable  {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return STYLE_IMAGE.equals(style);
-        }
-      };
+      return () -> STYLE_IMAGE.equals(style);
     }
     else if (WIDTH.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return COVERAGE_BORDER.equals(coverage);
-        }
-      };
+      return () -> COVERAGE_BORDER.equals(coverage);
     }
     else {
       return super.getAttributeVisibility(name);
@@ -378,8 +385,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
       final JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 100, opacity);
 
       final HashMap<Integer, JLabel> labelTable = new HashMap<>();
-      labelTable.put(0, new JLabel("Transparent"));
-      labelTable.put(100, new JLabel("Opaque"));
+      labelTable.put(0, new JLabel(Resources.getString("Editor.ZoneHighlight.transparent")));
+      labelTable.put(100, new JLabel(Resources.getString("Editor.ZoneHighlight.opaque")));
 
       slider.setMajorTickSpacing(10);
       slider.setPaintTicks(true);
@@ -388,13 +395,10 @@ public class ZoneHighlight extends AbstractConfigurable  {
       slider.setLabelTable(new Hashtable<>(labelTable));
       slider.setPaintLabels(true);
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
-      slider.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          final JSlider source = (JSlider) e.getSource();
-          if (!source.getValueIsAdjusting()) {
-            opacity = source.getValue();
-          }
+      slider.addChangeListener(e -> {
+        final JSlider source = (JSlider) e.getSource();
+        if (!source.getValueIsAdjusting()) {
+          opacity = source.getValue();
         }
       });
 

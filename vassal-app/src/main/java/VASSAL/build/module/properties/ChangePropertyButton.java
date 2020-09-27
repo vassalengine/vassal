@@ -18,8 +18,6 @@
 package VASSAL.build.module.properties;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.Icon;
 
@@ -33,6 +31,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
@@ -45,16 +44,16 @@ import VASSAL.tools.NamedKeyStroke;
  *
  */
 public class ChangePropertyButton extends AbstractConfigurable implements PropertyChangerConfigurer.Constraints {
-  public static final String BUTTON_TEXT = "text";
-  public static final String BUTTON_TOOLTIP = "tooltip";
-  public static final String BUTTON_ICON = "icon";
-  public static final String HOTKEY = "hotkey";
-  public static final String PROPERTY_CHANGER = "propChanger";
+  public static final String BUTTON_TEXT = "text"; //NON-NLS
+  public static final String BUTTON_TOOLTIP = "tooltip"; //NON-NLS
+  public static final String BUTTON_ICON = "icon"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String PROPERTY_CHANGER = "propChanger"; //NON-NLS
 
-  public static final String REPORT_FORMAT = "reportFormat";
-  public static final String OLD_VALUE_FORMAT = "oldValue";
-  public static final String NEW_VALUE_FORMAT = "newValue";
-  public static final String DESCRIPTION_FORMAT = "description";
+  public static final String REPORT_FORMAT = "reportFormat"; //NON-NLS
+  public static final String OLD_VALUE_FORMAT = "oldValue"; //NON-NLS
+  public static final String NEW_VALUE_FORMAT = "newValue"; //NON-NLS
+  public static final String DESCRIPTION_FORMAT = "description"; //NON-NLS
 
   protected LaunchButton launch;
   protected FormattedString report = new FormattedString();
@@ -63,12 +62,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   protected FormattedString format = new FormattedString();
 
   public ChangePropertyButton() {
-    launch = new LaunchButton("Change", BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton(Resources.getString("Editor.ChangePropertyButton.change"), BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, e -> launch());
   }
 
   public void launch() {
@@ -102,12 +96,12 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Button text:  ",
-      "Tooltip Text:  ",
-      "Button icon:  ",
-      "Hotkey:  ",
-      "Report format:  ",
-      "Options:  "
+      Resources.getString("Editor.button_text_label"),
+      Resources.getString("Editor.tooltip_text_label"),
+      Resources.getString("Editor.button_icon_label"),
+      Resources.getString("Editor.hotkey_label"),
+      Resources.getString("Editor.report_format"),
+      Resources.getString("Editor.ChangePropertyButton.options")
     };
   }
 
@@ -190,7 +184,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.html", "ChangePropertyToolbarButton");
+    return HelpFile.getReferenceManualPage("GlobalProperties.html", "ChangePropertyToolbarButton"); //NON-NLS
   }
 
   @Override
@@ -206,7 +200,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   }
 
   public static String getConfigureTypeName() {
-    return "Change-property Toolbar Button";
+    return Resources.getString("Editor.ChangePropertyButton.component_type");
   }
 
   @Override
