@@ -20,6 +20,8 @@ package VASSAL.build.module;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,6 +45,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
@@ -356,5 +359,23 @@ public class NotesWindow extends AbstractConfigurable
     protected Command myUndoCommand() {
       return null;
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOT_KEY)));
   }
 }

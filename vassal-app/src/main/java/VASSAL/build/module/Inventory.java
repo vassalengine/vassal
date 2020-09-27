@@ -36,6 +36,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -78,6 +79,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
@@ -1606,5 +1608,47 @@ public class Inventory extends AbstractConfigurable
     public void valueForPathChanged(TreePath path, Object newValue) {
       throw new UnsupportedOperationException();
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(piecePropertiesFilter.getExpression());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    List<String> l = new ArrayList<>();
+    l.add(nonLeafFormat);
+    if (piecesVisible.shouldBeVisible()) {
+      l.add(pieceFormat);
+    }
+    l.add(sortFormat);
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

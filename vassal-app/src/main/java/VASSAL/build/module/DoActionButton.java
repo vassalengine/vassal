@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
@@ -717,5 +718,57 @@ public class DoActionButton extends AbstractConfigurable
     else {
       return super.getPropertyNames();
     }
+  }
+
+  /**
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    List<String> l = new ArrayList<>();
+    if (doLoop) {
+      if (LoopControl.LOOP_WHILE.equals(loopType)) {
+        l.add(whileExpression.getExpression());
+      }
+      else if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+        l.add(untilExpression.getExpression());
+      }
+      else if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+        l.add(loopCount.getFormat());
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(indexProperty);
+  }
+
+  /**
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(preLoopKey, postLoopKey, NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

@@ -33,6 +33,10 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Defines PieceCollection in which pieces are assigned to an arbitrary number of layers
  * according to a property setting
@@ -232,5 +236,17 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       }
       return visitDefault(top);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    List<String> l = new ArrayList<>();
+    l.add(collection.propertyName);
+    l.addAll(Arrays.asList(collection.layerOrder));
+    return l;
   }
 }

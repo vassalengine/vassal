@@ -29,6 +29,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Box;
@@ -864,6 +865,63 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return translation + "+";
     }
     return translation;
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    if (followProperty) {
+      return List.of(propertyName);
+    }
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    List<NamedKeyStroke> l = new ArrayList<>();
+    if (!alwaysActive) {
+      l.add(activateKeyStroke);
+    }
+    if (!followProperty) {
+      l.add(increaseKeyStroke);
+      l.add(decreaseKeyStroke);
+      l.add(resetKey);
+      l.add(rndKey);
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    List<String> l = new ArrayList<>();
+    if (!alwaysActive) {
+      l.add(activateCommand);
+    }
+    if (!followProperty) {
+      l.add(upCommand);
+      l.add(downCommand);
+      l.add(resetCommand);
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    if (!followProperty) {
+      return List.of(resetLevel.getFormat());
+    }
+    return Collections.emptyList();
   }
 
   @Override

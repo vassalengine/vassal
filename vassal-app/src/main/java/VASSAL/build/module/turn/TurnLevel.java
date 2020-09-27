@@ -390,4 +390,22 @@ public abstract class TurnLevel extends TurnComponent {
     }
     return l;
   }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(turnFormat.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(propertyName);
+  }
 }

@@ -33,6 +33,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -378,5 +379,15 @@ public class PrivateMap extends Map {
       super.setDropTarget(dropTarget);
       listenersActive = true;
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(owners);
   }
 }

@@ -58,6 +58,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -137,10 +138,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if (USE_GRID_LOCATION.equals(name)) {
       return () -> {
         Board b = getConfigureBoard();
-        if (b == null)
-          return false;
-        else
-          return b.getGrid() != null;
+        return b != null && b.getGrid() != null;
       };
     }
     else if (LOCATION.equals(name)) {
@@ -1208,6 +1206,20 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           dragCursor.setVisible(true);
         }
       }
+    }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    if (owningBoardName != null) {
+      return List.of(owningBoardName);
+    }
+    else {
+      return Collections.emptyList();
     }
   }
 }

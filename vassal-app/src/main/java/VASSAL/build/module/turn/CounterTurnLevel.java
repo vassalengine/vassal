@@ -19,7 +19,6 @@
 package VASSAL.build.module.turn;
 
 import java.awt.Component;
-
 import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -265,5 +264,4 @@ public class CounterTurnLevel extends TurnLevel {
       return null;
     }
   }
-
 }

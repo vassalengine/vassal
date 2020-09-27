@@ -21,6 +21,9 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
@@ -267,5 +270,37 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       }
       return buf.toString();
     }
+  }
+
+
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    List<String> l = new ArrayList<>();
+    for (int row = 0; row < nRows; ++row) {
+      for (int col = 0; col < nCols; ++col) {
+        l.add((String) table.getValueAt(row, col));
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(launchKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(command);
   }
 }

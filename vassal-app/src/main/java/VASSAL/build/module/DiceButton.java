@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -472,5 +473,21 @@ public class DiceButton extends AbstractConfigurable {
     final ArrayList<String> l = new ArrayList<>();
     l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 }

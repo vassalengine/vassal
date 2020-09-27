@@ -57,7 +57,7 @@ public class LayerControl extends AbstractConfigurable {
   protected CompoundPieceCollection pieceCollection;
 
   public LayerControl() {
-    launch = new LaunchButton(Resources.getString("Editor.LayerControl.reset_layers"), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
+    launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
   }
 
   public void launch() {
@@ -250,4 +250,5 @@ public class LayerControl extends AbstractConfigurable {
       getMap().getToolBar().remove(launch);
     }
   }
+
 }

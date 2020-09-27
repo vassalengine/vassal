@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -339,5 +340,37 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       SequenceEncoder se = new SequenceEncoder(';');
       return ID + se.append(menuName.getValueString()).append(menuKey.getValueString()).append(prompt.isSelected() ? "" : deckId).append(promptText.getValueString()).getValue();
     }
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(deckId);
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(returnKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(returnCommand);
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(selectDeckPrompt);
   }
 }

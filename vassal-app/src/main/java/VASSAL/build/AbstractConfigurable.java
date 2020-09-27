@@ -20,6 +20,8 @@ package VASSAL.build;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
@@ -27,6 +29,8 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
+import VASSAL.search.SearchTarget;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * An abstract implementation of the {@link Configurable} interface. To make a component which is both buildable from the buildFile (XML)
@@ -34,7 +38,7 @@ import VASSAL.i18n.Translatable;
  * the Configurable functionality. Provides the basis for a component to have a configuration dialog in the Editor, allowing various
  * attributes to be edited, retained, and saved/loaded from the module's buildFile (XML).
  */
-public abstract class AbstractConfigurable extends AbstractBuildable implements AutoConfigurable {
+public abstract class AbstractConfigurable extends AbstractBuildable implements AutoConfigurable, SearchTarget {
   protected PropertyChangeSupport changeSupport;
   protected String name; // Language-independent name used for programmatic identification (including within Modules by e.g. Traits and module components)
   protected String localizedName; // Locale-sensitive name for on-screen display
@@ -205,5 +209,50 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
       ((AutoConfigurer) config).reset();
     }
     return config;
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
   }
 }

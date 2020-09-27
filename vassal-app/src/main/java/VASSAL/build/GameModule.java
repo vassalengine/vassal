@@ -131,7 +131,6 @@ import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.SequenceEncoder;
@@ -1858,5 +1857,13 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     if (r != null) {
       r.addSideChangeListenerToInstance(l);
     }
+  }
+
+  /**
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(gameName, moduleVersion, description);
   }
 }

@@ -52,8 +52,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public static final String WRAP = "wrap"; //NON-NLS
   protected static final String COMMAND_PREFIX = "GlobalProperty\t"; //NON-NLS
   protected TemporaryToolBar tempToolbar = new TemporaryToolBar();
-  protected String description;
-  protected String initialValue;
+  protected String description = "";
+  protected String initialValue = "";
   protected boolean numeric;
   protected String minValue;
   protected String maxValue;
@@ -405,5 +405,32 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   @Override
   public MutablePropertiesContainer getParent() {
     return parentContainer;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(initialValue);
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(property.getName());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(description);
   }
 }

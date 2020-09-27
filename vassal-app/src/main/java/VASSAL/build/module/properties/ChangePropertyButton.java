@@ -18,6 +18,9 @@
 package VASSAL.build.module.properties;
 
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.Icon;
 
@@ -30,9 +33,11 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -241,5 +246,65 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   @Override
   public PropertySource getPropertySource() {
     return property;
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of (report.getFormat());
+  }
+
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Collections.singletonList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    List<String> l = new ArrayList<>();
+
+    PropertyChanger propChanger = getPropertyChanger();
+    if (propChanger != null) {
+      if (propChanger instanceof IncrementProperty) {
+        l.add(((IncrementProperty) propChanger).getIncrement());
+      }
+      else if (propChanger instanceof PropertySetter) {
+        l.add(((PropertySetter) propChanger).getRawValue());
+      }
+      else if (propChanger instanceof PropertyPrompt) {
+        PropertyPrompt pp = (PropertyPrompt) propChanger;
+        l.add(pp.getPrompt());
+        if (pp instanceof EnumeratedPropertyPrompt) {
+          Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
+          for (Expression e : ve) {
+            if (e == null) {
+              continue;
+            }
+            l.add(e.getExpression());
+          }
+        }
+      }
+    }
+
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(BUTTON_TOOLTIP));
   }
 }
