@@ -32,10 +32,10 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.TurnGlobalHotkey.description"),
+      Resources.getString("Editor.description_label"),
       Resources.getString("Editor.TurnGlobalHotkey.global_hotkey"),
       Resources.getString("Editor.TurnGlobalHotkey.match_properties"),
-      Resources.getString("Editor.TurnGlobalHotkey.report_format")
+      Resources.getString("Editor.report_format")
     };
   }
 

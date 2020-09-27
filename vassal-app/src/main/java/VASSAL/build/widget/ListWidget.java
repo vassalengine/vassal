@@ -176,7 +176,7 @@ public class ListWidget extends Widget
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.ListWidget.name"), Resources.getString("Editor.ListWidget.image_scale")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.ListWidget.image_scale")};
   }
 
   @Override

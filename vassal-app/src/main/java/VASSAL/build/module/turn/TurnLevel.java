@@ -282,7 +282,7 @@ public abstract class TurnLevel extends TurnComponent {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.TurnLevel.description"),
+      Resources.getString("Editor.description_label"),
       Resources.getString("Editor.TurnLevel.property_name"),
       Resources.getString("Editor.TurnLevel.turn_level_format")
     };

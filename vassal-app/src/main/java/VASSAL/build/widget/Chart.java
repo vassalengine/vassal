@@ -168,7 +168,7 @@ public class Chart extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.Chart.name"), Resources.getString("Editor.Chart.image")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.image_label")};
   }
 
   @Override

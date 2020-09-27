@@ -288,7 +288,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       Resources.getString("Editor.RegularGridNumbering.location_format"),
       Resources.getString("Editor.RegularGridNumbering.draw_numbering"),
       Resources.getString("Editor.RegularGridNumbering.font_size"),
-      Resources.getString("Editor.RegularGridNumbering.color"),
+      Resources.getString("Editor.color_label"),
       Resources.getString("Editor.RegularGridNumbering.rotate_text_degrees"),
       Resources.getString("Editor.RegularGridNumbering.text_x_offset"),
       Resources.getString("Editor.RegularGridNumbering.text_y_offset")

@@ -194,7 +194,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.HTMLChart.name"), Resources.getString("Editor.HTMLChart.html_file")};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.HTMLChart.html_file")};
   }
 
   @Override

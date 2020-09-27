@@ -96,11 +96,11 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.ChangePropertyButton.button_text"),
-      Resources.getString("Editor.ChangePropertyButton.tooltip_text"),
-      Resources.getString("Editor.ChangePropertyButton.button_icon"),
-      Resources.getString("Editor.ChangePropertyButton.hotkey"),
-      Resources.getString("Editor.ChangePropertyButton.report_format"),
+      Resources.getString("Editor.button_text_label"),
+      Resources.getString("Editor.tooltip_text_label"),
+      Resources.getString("Editor.button_icon_label"),
+      Resources.getString("Editor.hotkey_label"),
+      Resources.getString("Editor.report_format"),
       Resources.getString("Editor.ChangePropertyButton.options")
     };
   }

@@ -393,15 +393,15 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.TurnTracker.name"),
-      Resources.getString("Editor.TurnTracker.button_text"),
-      Resources.getString("Editor.TurnTracker.button_icon"),
-      Resources.getString("Editor.TurnTracker.button_tooltip"),
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.button_text_label"),
+      Resources.getString("Editor.button_icon_label"),
+      Resources.getString("Editor.tooltip_text_label"),
       Resources.getString("Editor.TurnTracker.show_hotkey"),
       Resources.getString("Editor.TurnTracker.next_hotkey"),
       Resources.getString("Editor.TurnTracker.prev_hotkey"),
       Resources.getString("Editor.TurnTracker.turn_name_format"),
-      Resources.getString("Editor.TurnTracker.report_format"),
+      Resources.getString("Editor.report_format"),
       Resources.getString("Editor.TurnTracker.turn_tooltip"),
       Resources.getString("Editor.TurnTracker.turn_length"),
       Resources.getString("Editor.TurnTracker.turn_display")

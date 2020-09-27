@@ -159,7 +159,7 @@ public class PanelWidget extends Widget {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString("Editor.PanelWidget.name"),
+      Resources.getString("Editor.name_label"),
       Resources.getString("Editor.PanelWidget.fixed_cell_size"),
       Resources.getString("Editor.PanelWidget.number_of_columns"),
       Resources.getString("Editor.PanelWidget.vertical_layout"),

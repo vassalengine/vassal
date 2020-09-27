@@ -140,7 +140,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString("Editor.Zone.name"),
+      Resources.getString("Editor.name_label"),
       Resources.getString("Editor.Zone.location_format"),
       Resources.getString("Editor.Zone.shape"),
       Resources.getString("Editor.Zone.use_boards_grid"),

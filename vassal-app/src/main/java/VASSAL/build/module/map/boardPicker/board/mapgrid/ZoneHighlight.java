@@ -186,8 +186,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString("Editor.ZoneHighlight.name"),
-      Resources.getString("Editor.ZoneHighlight.color"),
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.color_label"),
       Resources.getString("Editor.ZoneHighlight.coverage"),
       Resources.getString("Editor.ZoneHighlight.width"),
       Resources.getString("Editor.ZoneHighlight.style"),

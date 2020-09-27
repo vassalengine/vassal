@@ -128,7 +128,7 @@ public class TabWidget extends Widget
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.TabWidget.name")};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override

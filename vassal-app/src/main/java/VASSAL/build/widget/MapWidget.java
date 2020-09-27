@@ -110,7 +110,7 @@ public class MapWidget extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.MapWidget.name")};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override
