@@ -161,12 +161,7 @@ public class TextBoxItemInstance extends ItemInstance {
     }
   }
 
-  private VisibilityCondition valueCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !((TextItem) getItem()).isFixed();
-    }
-  };
+  private VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
 
   public static class FgColorSwatchConfig implements ConfigurerFactory {
     @Override

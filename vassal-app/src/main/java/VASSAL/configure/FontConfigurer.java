@@ -74,7 +74,7 @@ public class FontConfigurer extends Configurer {
       for (String element : s) {
         family.addItem(element);
       }
-      family.setSelectedItem(value == null ? "SansSerif" : ((Font) value).getFamily()); //NON-NLS
+      family.setSelectedItem(value == null ? Font.SANS_SERIF : ((Font) value).getFamily()); //NON-NLS
       family.setMaximumSize(new Dimension(family.getMaximumSize().width, family.getPreferredSize().height));
       p.add(family);
 

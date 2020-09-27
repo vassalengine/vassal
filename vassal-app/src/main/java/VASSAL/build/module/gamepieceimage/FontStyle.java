@@ -16,9 +16,6 @@
  * at http://www.opensource.org.
  */
 
-/**
- * Class tht implements a names Font Swatch
- */
 
 package VASSAL.build.module.gamepieceimage;
 
@@ -32,6 +29,9 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.i18n.Resources;
 
+/**
+ * Class that implements a names Font Swatch
+ */
 public class FontStyle extends AbstractConfigurable {
 
   protected static final String NAME = "name"; //$NON-NLS-1$

@@ -37,8 +37,8 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class LocaleConfigurer extends Configurer {
-  //FIXME needs an i18n strategy and preferably the display version should be [Any Country].
-  protected static final String ANY_COUNTRY = "<Any Country>";
+  //FIXME needs an i18n strategy
+  protected static final String ANY_COUNTRY = "[Any Country]";
   protected Box panel;
   protected static final Map<String, String> languages = new HashMap<>();
   protected static String[] languageList;
