@@ -52,7 +52,7 @@ public class FileConfigurer extends Configurer {
 
   /**
    *
-   * @param key Configureer key
+   * @param key Configurer key
    * @param name Configurer label
    * @param startingDirectory If non-null, points to a preferences setting that specifies the starting directory for the "Select" button
    */

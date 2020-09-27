@@ -19,8 +19,6 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
@@ -34,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AudioClip;
 import VASSAL.tools.AudioSystemClip;
 import VASSAL.tools.Mp3AudioClip;
@@ -48,12 +47,14 @@ import VASSAL.tools.filechooser.FileChooser;
  * local file system.
  */
 public class SoundConfigurer extends Configurer {
-  public static final String DEFAULT = "default";
+  public static final String DEFAULT = "default"; //NON-NLS
   private String defaultResource;
   private String clipName;
   private JPanel controls;
   private JTextField textField;
   private AudioClipFactory clipFactory;
+
+  //FIXME this needs some i18n scheme and preferably the display version should be [disabled] while leaving file version alone.
   private static final String NO_VALUE = "<disabled>";
 
   public SoundConfigurer(String key, String name, String defaultResource) {
@@ -69,29 +70,14 @@ public class SoundConfigurer extends Configurer {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       controls.add(new JLabel(name));
-      JButton b = new JButton("Play");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          play();
-        }
-      });
+      JButton b = new JButton(Resources.getString("Editor.SoundConfigurer.play"));
+      b.addActionListener(e -> play());
       controls.add(b);
-      b = new JButton("Default");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue(DEFAULT);
-        }
-      });
+      b = new JButton(Resources.getString("Editor.SoundConfigurer.default"));
+      b.addActionListener(e -> setValue(DEFAULT));
       controls.add(b);
-      b = new JButton("Select");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          chooseClip();
-        }
-      });
+      b = new JButton(Resources.getString("Editor.SoundConfigurer.select"));
+      b.addActionListener(e -> chooseClip());
       controls.add(b);
       textField = new JTextField();
       textField.setMaximumSize(
@@ -120,7 +106,7 @@ public class SoundConfigurer extends Configurer {
     }
     URL url = null;
     if (DEFAULT.equals(s)) {
-      url = getClass().getResource("/images/" + defaultResource);
+      url = getClass().getResource("/images/" + defaultResource); //NON-NLS
       clipName = s;
     }
     else if (NO_VALUE.equals(s)) {
@@ -157,23 +143,20 @@ public class SoundConfigurer extends Configurer {
 
   @FunctionalInterface
   protected interface AudioClipFactory {
-    public AudioClip getAudioClip(URL url) throws IOException;
+    AudioClip getAudioClip(URL url) throws IOException;
   }
 
   protected AudioClipFactory createAudioClipFactory() {
-    return new AudioClipFactory() {
-      @Override
-      public AudioClip getAudioClip(URL url) {
-        if (url.toString().toLowerCase().endsWith(".mp3")) {
-          return new Mp3AudioClip(url);
+    return url -> {
+      if (url.toString().toLowerCase().endsWith(".mp3")) { //NON-NLS
+        return new Mp3AudioClip(url);
+      }
+      else {
+        try (InputStream in = url.openStream()) {
+          return new AudioSystemClip(in);
         }
-        else {
-          try (InputStream in = url.openStream()) {
-            return new AudioSystemClip(in);
-          }
-          catch (IOException e) {
-            return null;
-          }
+        catch (IOException e) {
+          return null;
         }
       }
     };

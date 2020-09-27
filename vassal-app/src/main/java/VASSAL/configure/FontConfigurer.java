@@ -20,7 +20,6 @@ package VASSAL.configure;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
@@ -42,7 +41,7 @@ public class FontConfigurer extends Configurer {
   private int[] sizes;
 
   public FontConfigurer(String key, String name) {
-    this(key, name, new Font("SansSerif", Font.PLAIN, 12));
+    this(key, name, new Font(Font.SANS_SERIF, Font.PLAIN, 12));
   }
 
   public FontConfigurer(String key, String name, Font val) {
@@ -75,7 +74,7 @@ public class FontConfigurer extends Configurer {
       for (String element : s) {
         family.addItem(element);
       }
-      family.setSelectedItem(value == null ? "SansSerif" : ((Font) value).getFamily());
+      family.setSelectedItem(value == null ? "SansSerif" : ((Font) value).getFamily()); //NON-NLS
       family.setMaximumSize(new Dimension(family.getMaximumSize().width, family.getPreferredSize().height));
       p.add(family);
 
@@ -89,16 +88,11 @@ public class FontConfigurer extends Configurer {
       size.setMaximumSize(new Dimension(size.getMaximumSize().width, size.getPreferredSize().height));
       p.add(size);
 
-      ItemListener l = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent evt) {
-          setValue(new Font(
-            (String) family.getSelectedItem(),
-            Font.PLAIN,
-            (Integer) size.getSelectedItem()
-          ));
-        }
-      };
+      ItemListener l = evt -> setValue(new Font(
+        (String) family.getSelectedItem(),
+        Font.PLAIN,
+        (Integer) size.getSelectedItem()
+      ));
       size.addItemListener(l);
       family.addItemListener(l);
     }
@@ -117,21 +111,18 @@ public class FontConfigurer extends Configurer {
   public static void main(String[] args) {
     final JFrame f = new JFrame();
     f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
-    FontConfigurer c = new FontConfigurer("a", "Font: ", null, new int[]{4, 5, 6, 13});
+    FontConfigurer c = new FontConfigurer("a", "Font: ", null, new int[]{4, 5, 6, 13}); //NON-NLS
     f.add(c.getControls());
     final JTextArea tf = new JTextArea();
-    tf.setText("The quick brown fox jumps over the lazy dog.");
+    tf.setText("The quick brown fox jumps over the lazy dog."); //NON-NLS
     f.add(new ScrollPane(tf));
-    c.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-      @Override
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        Font font = (Font) evt.getNewValue();
-        FontConfigurer fc = new FontConfigurer(null, null, font);
-        fc.setValue(fc.getValueString());
-        font = (Font) fc.getValue();
-        tf.setFont(font);
-        f.pack();
-      }
+    c.addPropertyChangeListener(evt -> {
+      Font font = (Font) evt.getNewValue();
+      FontConfigurer fc = new FontConfigurer(null, null, font);
+      fc.setValue(fc.getValueString());
+      font = (Font) fc.getValue();
+      tf.setFont(font);
+      f.pack();
     });
     f.pack();
     f.setVisible(true);

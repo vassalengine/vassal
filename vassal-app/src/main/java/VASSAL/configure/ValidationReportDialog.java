@@ -18,8 +18,6 @@
 package VASSAL.configure;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.Box;
@@ -30,6 +28,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -42,7 +41,7 @@ public class ValidationReportDialog extends JDialog {
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
     super(GameModule.getGameModule().getPlayerWindow(), false);
-    setTitle("Problems found in module");
+    setTitle(Resources.getString("Editor.ValidationReportDialog.problems"));
     this.callback = cb;
     Box reportBox = Box.createVerticalBox();
     add(reportBox);
@@ -52,18 +51,18 @@ public class ValidationReportDialog extends JDialog {
     final List<String> warnings = report.getWarnings();
     switch (warnings.size()) {
     case 0:
-      reportBox.add(new JLabel("No problems found"));
+      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.no_problems")));
       buttonPanel.add(createOkButton());
       break;
     case 1:
-      reportBox.add(new JLabel("A problem was found in this module."));
+      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.a_problem")));
       reportBox.add(new JLabel(warnings.get(0) + "."));
       buttonPanel.add(createOkButton());
       buttonPanel.add(createCancelButton());
       break;
     default:
-      reportBox.add(new JLabel("The following problems were found in this module."));
-      reportBox.add(new JLabel("If not fixed, they could cause bugs during game play."));
+      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.following_problems")));
+      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.danger_will_robinson")));
       JList<String> list = new JList<>(warnings.toArray(new String[0]));
       list.setVisibleRowCount(Math.min(list.getVisibleRowCount(), warnings.size()));
       reportBox.add(new ScrollPane(list));
@@ -76,25 +75,19 @@ public class ValidationReportDialog extends JDialog {
   }
 
   private JButton createCancelButton() {
-    JButton cancel = new JButton("Cancel");
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        callback.cancel();
-        dispose();
-      }
+    JButton cancel = new JButton(Resources.getString("General.cancel"));
+    cancel.addActionListener(e -> {
+      callback.cancel();
+      dispose();
     });
     return cancel;
   }
 
   private JButton createOkButton() {
-    JButton ok = new JButton("Ignore, save anyway");
-    ok.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        callback.ok();
-        dispose();
-      }
+    JButton ok = new JButton(Resources.getString("Editor.ValidationReportDialog.ignore"));
+    ok.addActionListener(e -> {
+      callback.ok();
+      dispose();
     });
     return ok;
   }

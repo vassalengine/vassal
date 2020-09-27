@@ -63,7 +63,7 @@ public class Language extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Translations";
+    return Resources.getString("Editor.Language.component_type");
   }
 
   @Override

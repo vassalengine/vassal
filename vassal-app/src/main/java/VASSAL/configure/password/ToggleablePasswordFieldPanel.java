@@ -38,7 +38,7 @@ public class ToggleablePasswordFieldPanel {
   private boolean passwordVisible = false;
 
   public ToggleablePasswordFieldPanel(String label, String initialPassword) {
-    panel = new JPanel(new MigLayout("ins 0", "[]rel[][]"));
+    panel = new JPanel(new MigLayout("ins 0", "[]rel[][]")); //NON-NLS
 
     final JLabel passwordLabel = new JLabel(label);
     panel.add(passwordLabel);
@@ -48,10 +48,10 @@ public class ToggleablePasswordFieldPanel {
     passwordField.setText(initialPassword);
     passwordLabel.setLabelFor(passwordField);
 
-    panel.add(passwordField, "pushx, growx, sizegroupy foo");
+    panel.add(passwordField, "pushx, growx, sizegroupy foo"); //NON-NLS
 
-    final Icon eye = IconFactory.getIcon("eye", IconFamily.XSMALL);
-    final Icon noEye = IconFactory.getIcon("eye-slash", IconFamily.XSMALL);
+    final Icon eye = IconFactory.getIcon("eye", IconFamily.XSMALL); //NON-NLS
+    final Icon noEye = IconFactory.getIcon("eye-slash", IconFamily.XSMALL); //NON-NLS
 
     final JButton toggleButton = new JButton(noEye);
     toggleButton.setToolTipText(Resources.getString(
@@ -62,7 +62,7 @@ public class ToggleablePasswordFieldPanel {
       passwordField.setEchoChar(passwordVisible ? (char) 0 : ECHO_CHAR);
       toggleButton.setIcon(passwordVisible ? eye : noEye);
     });
-    panel.add(toggleButton, "sizegroupy foo");
+    panel.add(toggleButton, "sizegroupy foo"); //NON-NLS
   }
 
   public JPanel getPanel() {

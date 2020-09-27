@@ -20,10 +20,7 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +81,7 @@ public class StringArrayConfigurer extends Configurer {
     if (panel == null) {
       panel = new JPanel();
       panel.setBorder(new TitledBorder(name));
-      panel.setLayout(new MigLayout("fill"));
+      panel.setLayout(new MigLayout("fill")); //NON-NLS
 
       Box buttonBox = Box.createHorizontalBox();
       Box leftBox = Box.createVerticalBox();
@@ -93,18 +90,15 @@ public class StringArrayConfigurer extends Configurer {
       updateModel();
 
       list = new JList<>(model);
-      list.setPrototypeCellValue("MMMMMMMM");
+      list.setPrototypeCellValue("MMMMMMMM"); //NON-NLS
       list.setVisibleRowCount(2);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       JButton addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String s = getTextValue();
-          addValue(s);
-          setTextValue("");
-        }
+      addButton.addActionListener(e -> {
+        String s = getTextValue();
+        addValue(s);
+        setTextValue("");
       });
       buttonBox.add(addButton);
 
@@ -113,19 +107,16 @@ public class StringArrayConfigurer extends Configurer {
       buttonBox.add(removeButton);
 
       JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
-      ActionListener insertAction = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          if (value == null) {
-            addValue(getTextValue());
-          }
-          else {
-            int pos = list.getSelectedIndex();
-            if (pos < 0) pos = list.getModel().getSize();
-            setValue(ArrayUtils.insert(pos, (String[]) value, getTextValue()));
-            setTextValue("");
-            list.setSelectedIndex(pos + 1);
-          }
+      ActionListener insertAction = e -> {
+        if (value == null) {
+          addValue(getTextValue());
+        }
+        else {
+          int pos = list.getSelectedIndex();
+          if (pos < 0) pos = list.getModel().getSize();
+          setValue(ArrayUtils.insert(pos, (String[]) value, getTextValue()));
+          setTextValue("");
+          list.setSelectedIndex(pos + 1);
         }
       };
       insertButton.addActionListener(insertAction);
@@ -141,7 +132,7 @@ public class StringArrayConfigurer extends Configurer {
       pane.setLeftComponent(leftBox);
       pane.setRightComponent(new ScrollPane(list));
 
-      panel.add(pane, "grow");
+      panel.add(pane, "grow"); //NON-NLS
     }
     return panel;
   }
@@ -232,14 +223,9 @@ public class StringArrayConfigurer extends Configurer {
   // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
     JFrame f = new JFrame();
-    final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  ");
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(c.getName() + " = " + c.getValueString());
-      }
-    });
-    c.setValue("Rack,Shack,Benny");
+    final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  "); //NON-NLS
+    c.addPropertyChangeListener(evt -> System.err.println(c.getName() + " = " + c.getValueString()));
+    c.setValue("Rack,Shack,Benny"); //NON-NLS
     f.add(c.getControls());
     f.pack();
     f.setVisible(true);

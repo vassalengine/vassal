@@ -19,10 +19,6 @@ package VASSAL.configure;
 
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,6 +31,7 @@ import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ZipUpdater;
 import VASSAL.tools.filechooser.FileChooser;
@@ -44,64 +41,51 @@ public class ModuleUpdaterDialog extends JDialog {
 
   public ModuleUpdaterDialog(Frame owner) throws HeadlessException {
     super(owner, false);
-    setTitle("Module Updater");
+    setTitle(Resources.getString("Editor.ModuleUpdaterDialog.title"));
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     final FileConfigurer fileConfig =
-      new FileConfigurer(null, "File containing older version:  ");
+      new FileConfigurer(null, Resources.getString("Editor.ModuleUpdaterDialog.file_older"));
     add(fileConfig.getControls());
 
     Box b = Box.createHorizontalBox();
 
-    final JButton saveButton = new JButton("Create Updater");
+    final JButton saveButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.create_updater"));
     saveButton.setEnabled(false);
-    fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        saveButton.setEnabled(fileConfig.getValue() != null);
-      }
-    });
-    saveButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final FileChooser fc = GameModule.getGameModule().getFileChooser();
-        if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
-          return;
+    fileConfig.addPropertyChangeListener(evt -> saveButton.setEnabled(fileConfig.getValue() != null));
+    saveButton.addActionListener(e -> {
+      final FileChooser fc = GameModule.getGameModule().getFileChooser();
+      if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
+        return;
 
-        final File output = fc.getSelectedFile();
-        ZipUpdater updater = null;
-        try {
-          updater = new ZipUpdater((File) fileConfig.getValue());
-          updater.createUpdater(
-            new File(GameModule.getGameModule().getArchiveWriter().getName()),
-            output
-          );
+      final File output = fc.getSelectedFile();
+      ZipUpdater updater = null;
+      try {
+        updater = new ZipUpdater((File) fileConfig.getValue());
+        updater.createUpdater(
+          new File(GameModule.getGameModule().getArchiveWriter().getName()),
+          output
+        );
+      }
+      // FIXME: review error message
+      catch (IOException e1) {
+        String msg = e1.getMessage();
+        if (msg == null) {
+          msg = Resources.getString("Editor.ModuleUpdaterDialog.unable");
         }
-        // FIXME: review error message
-        catch (IOException e1) {
-          String msg = e1.getMessage();
-          if (msg == null) {
-            msg = "Unable to create updater.";
-          }
-          JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg,
-            "Error writing updater", JOptionPane.ERROR_MESSAGE);
-        }
+        JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg,
+          Resources.getString("Editor.ModuleUpdaterDialog.error_writing"), JOptionPane.ERROR_MESSAGE);
       }
     });
 
-    JButton cancelButton = new JButton("Close");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
-    JButton helpButton = new JButton("Help");
+    JButton cancelButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.close"));
+    cancelButton.addActionListener(e -> dispose());
+    JButton helpButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.help"));
     add(b);
     HelpFile hf = null;
     try {
       hf = new HelpFile(null, new File(new File(
         VASSAL.build.module.Documentation.getDocumentationBaseDir(),
-        "ReferenceManual"), "ModuleUpdater.html"));
+        "ReferenceManual"), "ModuleUpdater.html")); //NON-NLS
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
