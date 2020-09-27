@@ -84,7 +84,7 @@ LAUNCH4J:=$(DISTDIR)/launch4j/launch4j/launch4j
 
 SKIPS:=
 
-jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true
+jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses
 jar: $(LIBDIR)/Vengine.jar
 
 compile:

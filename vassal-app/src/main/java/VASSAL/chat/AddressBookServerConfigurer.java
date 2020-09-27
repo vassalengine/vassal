@@ -33,7 +33,7 @@ import VASSAL.i18n.Resources;
 
 /**
  * Improved version of ServerConfigurer that includes an Address Book of
- * commonly visited Jabber servers and P2P clients.
+ * commonly visited private servers and P2P clients.
  *
  */
 public class AddressBookServerConfigurer extends Configurer {

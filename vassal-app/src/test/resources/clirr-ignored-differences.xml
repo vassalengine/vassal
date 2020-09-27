@@ -93,6 +93,283 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/chat/DynamicClient</className>
+        <differenceType>6011</differenceType>
+        <field>JABBER_URL</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/DynamicClient</className>
+        <differenceType>6011</differenceType>
+        <field>LEGACY_URL</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/DynamicClient</className>
+        <differenceType>7002</differenceType>
+        <method>DynamicClient(java.lang.String)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/DynamicClient</className>
+        <differenceType>7002</differenceType>
+        <method>void setOverrides(java.util.Properties)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/DynamicClientFactory</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>DYNAMIC_TYPE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>JABBER_TYPE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>LEGACY_TYPE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_CLIENT_MODE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_MODE_KEY</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerAddressBook</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_SERVER_MODE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Properties buildJabberProperties()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/ServerConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Properties getJabberConfigProperties()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/AccountInfo</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/Interceptor</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberClient</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberClientFactory</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberPlayer</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberPlayer$Manager</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberRoom</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberRoom$Manager</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberRoom$JabberRoomConfig</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/JabberStatus</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/LockableJabberRoomControls</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/ModuleAccountInfo</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/jabber/PacketProcessor</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>6001</differenceType>
+        <field>messageBoardControls</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>6001</differenceType>
+        <field>msgSvr</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>6001</differenceType>
+        <field>serverStatus</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>6001</differenceType>
+        <field>serverStatusControls</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>6006</differenceType>
+        <field>welcomer</field>
+        <justification>no one should have extended this class</justification>
+    </difference>
+     <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.chat.messageboard.MessageBoard getMessageServer()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.chat.messageboard.Message[] getMessages()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>7002</differenceType>
+        <method>void postMessage(java.lang.String)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClient</className>
+        <differenceType>7004</differenceType>
+        <method>NodeClient(java.lang.String, java.lang.String, VASSAL.command.CommandEncoder, VASSAL.chat.messageboard.MessageBoard, VASSAL.chat.WelcomeMessageServer)</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeClientFactory</className>
+        <differenceType>3005</differenceType>
+        <justification>it's a base class now</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeHybridClient</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/NodeServerInfo</className>
+        <differenceType>8001</differenceType>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/node/SocketNodeClient</className>
+        <differenceType>8001</differenceType>
+        <justification>folded in to NodeClient; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/ClientTest</className>
+        <differenceType>7004</differenceType>
+        <method>ClientTest(VASSAL.chat.peer2peer.PeerPool, VASSAL.chat.messageboard.MessageBoard, VASSAL.chat.WelcomeMessageServer, int, int, java.io.FileWriter)</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+   <difference>
+        <className>VASSAL/chat/peer2peer/DirectPeerPool</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isServerMode()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClient</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.chat.messageboard.MessageBoard getMessageServer()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClient</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.chat.messageboard.Message[] getMessages()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClient</className>
+        <differenceType>7002</differenceType>
+        <method>void postMessage(java.lang.String)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClient</className>
+        <differenceType>7004</differenceType>
+        <method>P2PClient(VASSAL.command.CommandEncoder, VASSAL.chat.messageboard.MessageBoard, VASSAL.chat.WelcomeMessageServer, VASSAL.chat.peer2peer.PeerPool, java.util.Properties)</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClient</className>
+        <differenceType>7005</differenceType>
+        <method>P2PClient(VASSAL.command.CommandEncoder, VASSAL.chat.messageboard.MessageBoard, VASSAL.chat.WelcomeMessageServer, VASSAL.chat.peer2peer.PeerPool)</method>
+        <to>P2PClient(*)</to>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClientFactory</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_CLIENT_MODE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClientFactory</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_MODE_KEY</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/peer2peer/P2PClientFactory</className>
+        <differenceType>6011</differenceType>
+        <field>P2P_SERVER_MODE</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
         <className>VASSAL/configure/EditPropertiesAction</className>
         <differenceType>6006</differenceType>
         <field>openWindows</field>
