@@ -70,7 +70,7 @@ public abstract class Launcher {
       lreq = LaunchRequest.parseArgs(args);
     }
     catch (LaunchRequestException e) {
-      System.err.println("VASSAL: " + e.getMessage());
+      System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
       System.exit(1);
     }
 
@@ -134,8 +134,8 @@ public abstract class Launcher {
         // What we've got here is failure to communicate.
         ErrorDialog.show(
           e,
-          "Error.communication_error",
-          Resources.getString(getClass().getSimpleName() + ".app_name")
+          "Error.communication_error", //NON-NLS
+          Resources.getString(getClass().getSimpleName() + ".app_name") //NON-NLS
         );
         System.exit(1);
       }
@@ -160,7 +160,7 @@ public abstract class Launcher {
           ErrorDialog.showDetails(
             e1,
             ThrowableUtils.getStackTrace(e1),
-            "Error.module_load_failed",
+            "Error.module_load_failed", //NON-NLS
             e1.getMessage()
           );
         }
@@ -174,14 +174,14 @@ public abstract class Launcher {
             ErrorDialog.showDetails(
               e1,
               ThrowableUtils.getStackTrace(e1),
-              "Error.module_load_failed",
+              "Error.module_load_failed", //NON-NLS
               e1.getMessage()
             );
 
             ErrorDialog.show(
               e2,
-              "Error.communication_error",
-              Resources.getString(getClass().getSimpleName() + ".app_name")
+              "Error.communication_error", //NON-NLS
+              Resources.getString(getClass().getSimpleName() + ".app_name") //NON-NLS
             );
           }
         }
@@ -237,12 +237,9 @@ public abstract class Launcher {
       final GameModule module = GameModule.getGameModule();
       if (module != null) {
         try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-              module.getPlayerWindow().toFront();
-              shutdown = module.shutDown();
-            }
+          SwingUtilities.invokeAndWait(() -> {
+            module.getPlayerWindow().toFront();
+            shutdown = module.shutDown();
           });
         }
         catch (InterruptedException e) {
