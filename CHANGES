@@ -1,5 +1,6 @@
 3.4.4 - ???
 
+* 13458: Reinstate behavior of floating point expression evaluation
 * 13454: ClassCastException in SetPersistentPropertyCommand.execute()
 * 13426: NegativeArraySizeException when receiving first private message
 
