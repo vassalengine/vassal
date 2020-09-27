@@ -17,10 +17,10 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -35,8 +35,8 @@ import javax.swing.JPanel;
 public class ConfigurerWindow extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  protected JButton okButton = new JButton("Ok");
-  protected JButton canButton = new JButton("Cancel");
+  protected JButton okButton = new JButton(Resources.getString("General.ok"));
+  protected JButton canButton = new JButton(Resources.getString("General.cancel"));
   protected boolean cancelled;
 
   public ConfigurerWindow(Configurer c) {
@@ -57,32 +57,23 @@ public class ConfigurerWindow extends JDialog {
 
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     add(c.getControls());
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Configurer.NAME_PROPERTY
-          .equals(evt.getPropertyName())) {
-          setTitle((String) evt.getNewValue());
-        }
+    c.addPropertyChangeListener(evt -> {
+      if (Configurer.NAME_PROPERTY
+        .equals(evt.getPropertyName())) {
+        setTitle((String) evt.getNewValue());
       }
     });
     setTitle(c.getName());
 
-    okButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        c.getValue();
-        dispose();
-        cancelled = false;
-      }
+    okButton.addActionListener(e -> {
+      c.getValue();
+      dispose();
+      cancelled = false;
     });
 
-    canButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        dispose();
-        cancelled = true;
-      }
+    canButton.addActionListener(e -> {
+      dispose();
+      cancelled = true;
     });
 
     final JPanel buttonPanel = new JPanel();

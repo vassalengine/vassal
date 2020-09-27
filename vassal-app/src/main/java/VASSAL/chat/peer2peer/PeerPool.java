@@ -27,7 +27,7 @@ import org.litesoft.p2pchat.PendingPeerManager;
  * Date: Mar 11, 2003
  */
 public interface PeerPool {
-  public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException;
-  public void disconnect();
-  public void connectFailed(PeerInfo peerInfo);
+  void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException;
+  void disconnect();
+  void connectFailed(PeerInfo peerInfo);
 }

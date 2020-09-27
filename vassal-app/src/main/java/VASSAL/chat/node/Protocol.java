@@ -96,7 +96,7 @@ public class Protocol {
   public static String[] decodeJoinCommand(String cmd) {
     String[] info = null;
     if (cmd.startsWith(JOIN)) {
-      final String[] parts = cmd.split("\\t");
+      final String[] parts = cmd.split("\\t"); //NON-NLS
       if (parts.length == 2) {
         info = new String[] {parts[1]};
       }
@@ -290,8 +290,8 @@ public class Protocol {
   /**
    * Sent by the owner of a room to kick another player back to the Main Room
    *
-   * @param p
-   * @return
+   * @param kickeeId
+   * @return player
    */
   public static String encodeKickCommand(String kickeeId) {
     return KICK + kickeeId;

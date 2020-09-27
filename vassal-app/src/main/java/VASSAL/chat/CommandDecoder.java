@@ -25,7 +25,7 @@ import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 
 /**
- * Listens for incoming messages (PropertyChangeEvents with name {@link ChatServerConnection.INCOMING_MSG}) and
+ * Listens for incoming messages (PropertyChangeEvents with name {ChatServerConnection.INCOMING_MSG}) and
  * interprets the message as a command to be executed
  *
  * @author rodneykinney

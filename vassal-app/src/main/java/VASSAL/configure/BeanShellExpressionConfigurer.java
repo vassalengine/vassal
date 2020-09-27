@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FunctionBuilder;
 import java.awt.Component;
 import java.awt.Window;
@@ -96,9 +97,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       target = null;
     }
     strip();
-    up = IconFactory.getIcon("go-up", IconFamily.XSMALL);
-    down = IconFactory.getIcon("go-down", IconFamily.XSMALL);
-    extraDetails = new JButton("Insert");
+    up = IconFactory.getIcon("go-up", IconFamily.XSMALL);   //NON-NLS
+    down = IconFactory.getIcon("go-down", IconFamily.XSMALL); //NON-NLS
+    extraDetails = new JButton(Resources.getString("Editor.BeanShell.insert"));
     extraDetails.addActionListener(e -> {
       setSelectedText(nameField.getSelectedText());
       doPopup();
@@ -136,12 +137,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]"));
+      expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
       expressionPanel.add(new JLabel(getName()));
       validator = new Validator();
       nameField = new JTextField(30);
       nameField.setText(getValueString());
-      expressionPanel.add(nameField, "growx");
+      expressionPanel.add(nameField, "growx"); //NON-NLS
       nameField.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent evt) {
@@ -153,7 +154,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         }
       });
       expressionPanel.add(validator);
-      expressionPanel.add(extraDetails, "wrap");
+      expressionPanel.add(extraDetails, "wrap"); //NON-NLS
 
       nameField.setEditable(! isDisplayOnly());
       extraDetails.setVisible(! isDisplayOnly());
@@ -163,10 +164,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       detailPanel = new JPanel();
       detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
 
-      errorMessage = new StringConfigurer(null, "Error Message:  ", "");
+      errorMessage = new StringConfigurer(null, "Error Message:  ", "");  //NON-NLS
       errorMessage.getControls().setEnabled(false);
-      variables = new JLabel("Vassal Properties:  ");
-      methods = new JLabel("Methods:  ");
+      variables = new JLabel("Vassal Properties:  ");  //NON-NLS
+      methods = new JLabel("Methods:  ");  //NON-NLS
 
       detailPanel.add(errorMessage.getControls());
       detailPanel.add(variables);
@@ -259,14 +260,14 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         valid = Character.isJavaIdentifierPart(c);
       }
     }
-    return valid ? name : "GetProperty(\"" + name + "\")";
+    return valid ? name : "GetProperty(\"" + name + "\")";  //NON-NLS
   }
 
   protected void setDetails(String error, List<String> v, List<String> m) {
     errorMessage.setValue(error);
-    String s = "Vassal Properties:  " + (v == null ? "" : v.toString());
+    String s = "Vassal Properties:  " + (v == null ? "" : v.toString());  //NON-NLS
     variables.setText(s);
-    s = "Methods:  " + (m == null ? "" : m.toString());
+    s = "Methods:  " + (m == null ? "" : m.toString()); //NON-NLS
     methods.setText(s);
   }
 
@@ -310,8 +311,8 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     private static final long serialVersionUID = 1L;
 
     public Validator() {
-      cross = IconFactory.getIcon("no", IconFamily.XSMALL);
-      tick = IconFactory.getIcon("yes", IconFamily.XSMALL);
+      cross = IconFactory.getIcon("no", IconFamily.XSMALL);  //NON-NLS
+      tick = IconFactory.getIcon("yes", IconFamily.XSMALL); //NON-NLS
 
       BufferedImage image = new BufferedImage(cross.getIconWidth(), cross.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
       none = new ImageIcon(image);

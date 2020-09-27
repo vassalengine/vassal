@@ -39,11 +39,8 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     this.numRooms = numRooms;
     this.log = log;
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this);
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getNewValue()); //$NON-NLS-1$
-      }
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, evt -> {
+      System.err.println(evt.getNewValue()); //$NON-NLS-1$
     });
     client.setConnected(true);
     client.setRoom(new SimpleRoom("Room0")); //$NON-NLS-1$
