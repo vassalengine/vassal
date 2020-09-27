@@ -123,7 +123,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
         : bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
     double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font("Dialog", Font.PLAIN, size);
+    Font f = new Font(Font.DIALOG, Font.PLAIN, size);
     int column = minCol;
     for (double x = xmin; x < xmax; x += deltaX, column += reversed ? -1 : 1) {
       int printRow, printColumn;
@@ -139,7 +139,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
         }
 
         // When rotating text, keep basic label position as in center along edge
-        int newX = 0, newY = 0;
+        int newX, newY;
         switch (rotateTextDegrees) {
         case 90:
           newX = (int) (x + deltaX / 2);

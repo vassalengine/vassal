@@ -49,7 +49,7 @@ public class ModuleMetaData extends AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(ModuleMetaData.class);
 
-  public static final String ZIP_ENTRY_NAME = "moduledata";
+  public static final String ZIP_ENTRY_NAME = "moduledata"; //NON-NLS
   public static final String DATA_VERSION = "1";
 
   protected Attribute nameAttr;
@@ -116,7 +116,7 @@ public class ModuleMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile
-      DefaultHandler handler = null;
+      DefaultHandler handler;
 
       ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
       if (data == null) {

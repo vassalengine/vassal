@@ -33,7 +33,6 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.image.LabelUtils;
 
-
 public class Region extends AbstractConfigurable {
 
   private Point origin = new Point(0, 0);
@@ -139,7 +138,6 @@ public class Region extends AbstractConfigurable {
     return null;
   }
 
-
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
@@ -175,7 +173,6 @@ public class Region extends AbstractConfigurable {
       }
       origin.y = (Integer) val;
     }
-
   }
 
   @Override
@@ -214,8 +211,6 @@ public class Region extends AbstractConfigurable {
     if (myGrid.container.contains(newP)) {
       moveOrigin(dx, dy);
     }
-
-    return;
   }
 
   /*
@@ -273,7 +268,6 @@ public class Region extends AbstractConfigurable {
 
     selectionRect.setLocation(posX - (width / 2), posY - 1);
     selectionRect.setSize(width, height + labelOffset + 1);
-
   }
 }
 

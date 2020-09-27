@@ -39,6 +39,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 
@@ -216,7 +217,7 @@ public abstract class TurnLevel extends TurnComponent {
       for (int i = 0; i < s.length; i++) {
         s[i] = getTurnLevel(i).getConfigureName();
       }
-      StringEnumConfigurer e = new StringEnumConfigurer(null, " Select:  ", s);
+      StringEnumConfigurer e = new StringEnumConfigurer(null, Resources.getString("Editor.TurnLevel.select"), s);
       e.setValue(getTurnLevel(currentSubLevel).getConfigureName());
       e.addPropertyChangeListener(e1 -> {
         String option = ((StringEnumConfigurer) e1.getSource()).getValueString();
@@ -281,9 +282,9 @@ public abstract class TurnLevel extends TurnComponent {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Description:  ",
-      "Property Name:  ",
-      "Turn Level Format ($levelx$):  "
+      Resources.getString("Editor.description_label"),
+      Resources.getString("Editor.TurnLevel.property_name"),
+      Resources.getString("Editor.TurnLevel.turn_level_format")
     };
   }
 

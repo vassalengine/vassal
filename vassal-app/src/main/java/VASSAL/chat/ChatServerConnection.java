@@ -41,7 +41,6 @@ public interface ChatServerConnection extends ServerConnection {
 
   String DEFAULT_ROOM_NAME = "Main Room"; //$NON-NLS-1$
 
-
   /** Return the room currently occupied by the player */
   Room getRoom();
 
@@ -59,5 +58,4 @@ public interface ChatServerConnection extends ServerConnection {
 
   /** Send a Command to a particular player */
   void sendTo(Player recipient, Command c);
-
 }

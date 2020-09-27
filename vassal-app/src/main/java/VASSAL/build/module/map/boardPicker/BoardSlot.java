@@ -22,8 +22,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.geom.AffineTransform;
 
 import javax.swing.Box;
@@ -68,13 +66,10 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
 
     reverseCheckBox =
       new JCheckBox(Resources.getString("BoardPicker.flip")); //$NON-NLS-1$
-    reverseCheckBox.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        if (getBoard() != null) {
-          getBoard().setReversed(reverseCheckBox.isSelected());
-          picker.repaint();
-        }
+    reverseCheckBox.addItemListener(e -> {
+      if (getBoard() != null) {
+        getBoard().setReversed(reverseCheckBox.isSelected());
+        picker.repaint();
       }
     });
 
@@ -122,7 +117,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
   public void setBoard(final Board b) {
     board = b;
     if (b != null) {
-      reverseCheckBox.setVisible("true".equals(
+      reverseCheckBox.setVisible("true".equals(//NON-NLS
         b.getAttributeValueString(Board.REVERSIBLE))); //$NON-NLS-1$
       reverseCheckBox.setSelected(b.isReversed());
 

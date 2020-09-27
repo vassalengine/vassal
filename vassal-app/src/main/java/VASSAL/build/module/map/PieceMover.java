@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -103,11 +104,11 @@ public class PieceMover extends AbstractBuildable
                         implements MouseListener,
                                    GameComponent,
                                    Comparator<GamePiece> {
-  /** The Preferences key for autoreporting moves. */
+  /** The Preferences key for auto-reporting moves. */
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
-  public static final String NAME = "name";
+  public static final String NAME = "name"; //NON-NLS
 
-  public static final String HOTKEY = "hotkey";
+  public static final String HOTKEY = "hotkey"; //NON-NLS
 
   protected Map map;                           // Map we're the PieceMover for.
   protected Point dragBegin;
@@ -391,7 +392,7 @@ public class PieceMover extends AbstractBuildable
     final String value = getMarkOption();
     if (GlobalOptions.PROMPT.equals(value)) {
       BooleanConfigurer config = new BooleanConfigurer(
-        Map.MARK_MOVED, "Mark Moved Pieces", Boolean.TRUE);
+        Map.MARK_MOVED, Resources.getString("Editor.PieceMover.mark_moved_pieces"), Boolean.TRUE);
       GameModule.getGameModule().getPrefs().addOption(config);
     }
 
@@ -658,14 +659,14 @@ public class PieceMover extends AbstractBuildable
         // the Deck does not want to contain. Removing them from the
         // draggedPieces list will cause them to be left behind where the
         // drag started. NB. Pieces that have been dragged from a face-down
-        // Deck will be be Obscued to us, but will be Obscured by the dummy
+        // Deck will be be Obscured to us, but will be Obscured by the dummy
         // user Deck.NO_USER
         if (mergeWith instanceof Deck) {
           final ArrayList<GamePiece> newList = new ArrayList<>(0);
           for (GamePiece piece : draggedPieces) {
             if (((Deck) mergeWith).mayContain(piece)) {
               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
-              if (!isObscuredToMe || (isObscuredToMe && Deck.NO_USER.equals(piece.getProperty(Properties.OBSCURED_BY)))) {
+              if (!isObscuredToMe || Deck.NO_USER.equals(piece.getProperty(Properties.OBSCURED_BY))) {
                 newList.add(piece);
               }
             }
@@ -906,8 +907,8 @@ public class PieceMover extends AbstractBuildable
       theDragHandler = myHandler;
     }
 
-    static final int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
-    static final int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
+    static final int CURSOR_ALPHA = 127; // pseudo cursor is 50% transparent
+    static final int EXTRA_BORDER = 4; // pseudo cursor is includes a 4 pixel border
 
 
     protected JLabel dragCursor; // An image label. Lives on current DropTarget's
@@ -916,7 +917,7 @@ public class PieceMover extends AbstractBuildable
     private final Point drawOffset = new Point(); // translates event coords to local
                                             // drawing coords
     private Rectangle boundingBox; // image bounds
-    private int originalPieceOffsetX; // How far drag STARTED from gamepiece's
+    private int originalPieceOffsetX; // How far drag STARTED from gamepieces
                                       // center
     private int originalPieceOffsetY; // I.e. on original map
     protected double dragPieceOffCenterZoom = 1.0; // zoom at start of drag
@@ -928,7 +929,7 @@ public class PieceMover extends AbstractBuildable
     protected double dragCursorZoom = 1.0; // Current cursor scale (zoom)
     Component dragWin; // the component that initiated the drag operation
     Component dropWin; // the drop target the mouse is currently over
-    JLayeredPane drawWin; // the component that owns our psuedo-cursor
+    JLayeredPane drawWin; // the component that owns our pseudo-cursor
     // Seems there can be only one DropTargetListener a drop target. After we
     // process a drop target
     // event, we manually pass the event on to this listener.

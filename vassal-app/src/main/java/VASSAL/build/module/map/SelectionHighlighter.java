@@ -47,14 +47,14 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 public class SelectionHighlighter extends AbstractConfigurable implements Highlighter {
-  public static final String NAME = "name";
-  public static final String MATCH = "match";
-  public static final String COLOR = "color";
-  public static final String THICKNESS = "thickness";
-  public static final String USE_IMAGE = "useImage";
-  public static final String IMAGE = "image";
-  public static final String X_OFFSET = "xoffset";
-  public static final String Y_OFFSET = "yoffset";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String MATCH = "match"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String THICKNESS = "thickness"; //NON-NLS
+  public static final String USE_IMAGE = "useImage"; //NON-NLS
+  public static final String IMAGE = "image"; //NON-NLS
+  public static final String X_OFFSET = "xoffset"; //NON-NLS
+  public static final String Y_OFFSET = "yoffset"; //NON-NLS
   protected PropertyExpression matchProperties = new PropertyExpression();
   protected Color color = Color.RED;
   protected int thickness = 3;
@@ -250,7 +250,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "SelectionHighlighter");
+    return HelpFile.getReferenceManualPage("Map.html", "SelectionHighlighter"); //NON-NLS
   }
 
   @Override

@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
+import VASSAL.i18n.Resources;
 
 /**
  * A Widget that corresponds to a JTabbedPane.
@@ -46,7 +47,7 @@ public class TabWidget extends Widget
   public TabWidget() { }
 
   public static String getConfigureTypeName() {
-    return "Tabbed Panel";
+    return Resources.getString("Editor.TabWidget.component_type");
   }
 
   @Override
@@ -127,7 +128,7 @@ public class TabWidget extends Widget
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  "};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override

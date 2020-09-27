@@ -49,7 +49,7 @@ import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
 
 public class MenuDisplayer extends MouseAdapter implements Buildable {
-  public static final Font POPUP_MENU_FONT = new Font("Dialog", Font.PLAIN, 10);
+  public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 10);
 
   protected Map map;
   protected PieceFinder targetSelector;

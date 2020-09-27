@@ -31,26 +31,17 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 
 /**
- * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
- * every time the user attempts to connect
+ * Refreshes every time the user attempts to connect
  *
  * @author rkinney
  *
  */
 public class DynamicClient extends HybridClient {
-
-  public static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$
-  public static final String JABBER_URL = "http://www.vassalengine.org/util/getJabberServerImpl"; //$NON-NLS-1$
-
   private static final Logger log = LoggerFactory.getLogger(DynamicClient.class);
 
   private boolean connecting;
 
   public DynamicClient() {
-  }
-
-  @Deprecated(since = "2020-08-16", forRemoval = true)
-  public DynamicClient(String serverConfigURL) {
   }
 
   protected ChatServerConnection buildDelegate() throws IOException {
@@ -100,12 +91,5 @@ public class DynamicClient extends HybridClient {
         }
       }
     }
-  }
-
-  /**
-   * @deprecated method does nothing and will be removed
-   */
-  @Deprecated
-  public void setOverrides(Properties override) {
   }
 }

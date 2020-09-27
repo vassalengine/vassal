@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.turn;
 
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.ProblemDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -52,7 +53,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
@@ -66,7 +66,6 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
@@ -110,26 +109,25 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected static final String NEW_TURN = "newTurn"; //$NON-NLS-1$
   protected static final String LEVEL = "level"; //$NON-NLS-1$
 
-  protected static final String TURN_FONT = "Dialog";
+  protected static final String TURN_FONT = "Dialog"; //NON-NLS
   protected static String SET_COMMAND;
   protected static String DOCK_COMMAND;
   protected static String UNDOCK_COMMAND;
 
-  protected static final String NEXT = "Next";
-  protected static final String PREV = "Prev";
-  protected static final String SET = "Set";
+  protected static final String NEXT = "Next"; //NON-NLS (really)
+  protected static final String PREV = "Prev"; //NON-NLS (really)
+  protected static final String SET = "Set"; //NON-NLS (really)
 
   protected static final String PROP_VALUE = "_value"; //$NON-NLS-1$
   protected static final String PROP_COMMAND = "_command"; //$NON-NLS-1$
 
-  protected static final String LENGTH_VARIABLE = "Variable";
-  protected static final String LENGTH_MAXIMUM = "Maximum";
-  protected static final String LENGTH_FIXED = "Fixed";
+  protected static final String LENGTH_VARIABLE = "Variable"; //NON-NLS (really)
+  protected static final String LENGTH_MAXIMUM = "Maximum"; //NON-NLS (really)
+  protected static final String LENGTH_FIXED = "Fixed"; //NON-NLS (really)
 
   protected FormattedString turnFormat = new FormattedString(String.join(LEVEL, "$", "1$ $", "2$ $", "3$ $", "4$")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-  protected FormattedString reportFormat = new FormattedString("* &lt;$" + GlobalOptions.PLAYER_ID //$NON-NLS-1$
-      + "$&gt; Turn Updated from $" + OLD_TURN + "$ to $" + NEW_TURN + "$"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  protected FormattedString reportFormat = new FormattedString(Resources.getString("Editor.TurnTracker.report_default"));
 
   protected TurnWindow turnWindow;
   protected TurnWidget turnWidget;
@@ -395,18 +393,18 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Name:  ",
-      "Button text:  ",
-      "Button Icon:  ",
-      "Button Tooltip:  ",
-      "Show/hide Hotkey:  ",
-      "Next Turn Hotkey:  ",
-      "Previous Turn Hotkey:  ",
-      "Turn Name Format:  ",
-      "Report Format:  ",
-      "Turn Label Tooltip Text:  ",
-      "Turn Label Length:  ",
-      "Turn label Display length:  "
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.button_text_label"),
+      Resources.getString("Editor.button_icon_label"),
+      Resources.getString("Editor.tooltip_text_label"),
+      Resources.getString("Editor.TurnTracker.show_hotkey"),
+      Resources.getString("Editor.TurnTracker.next_hotkey"),
+      Resources.getString("Editor.TurnTracker.prev_hotkey"),
+      Resources.getString("Editor.TurnTracker.turn_name_format"),
+      Resources.getString("Editor.report_format"),
+      Resources.getString("Editor.TurnTracker.turn_tooltip"),
+      Resources.getString("Editor.TurnTracker.turn_length"),
+      Resources.getString("Editor.TurnTracker.turn_display")
     };
   }
 
@@ -454,10 +452,19 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
 
-  public static class LengthStyleConfig extends StringEnum {
+  public static class LengthStyleConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{LENGTH_VARIABLE, LENGTH_FIXED, LENGTH_MAXIMUM};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        Resources.getString("Editor.TurnTracker.length_variable"),
+        Resources.getString("Editor.TurnTracker.length_fixed"),
+        Resources.getString("Editor.TurnTracker.length_maximum"),
+      };
     }
   }
 
@@ -479,7 +486,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   public static String getConfigureTypeName() {
-    return "Turn Counter";
+    return Resources.getString("Editor.TurnTracker.component_type");
   }
 
   @Override
@@ -904,8 +911,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     public void setNextStroke(NamedKeyStroke key) {
-      final String tooltip = Resources.getString("TurnTracker.next_turn") +
-        (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key));
+      final String tooltip = Resources.getString("TurnTracker.next_turn") + (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key)); //NON-NLS
       nextButton.setToolTipText(tooltip);
     }
 

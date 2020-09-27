@@ -44,8 +44,6 @@ import VASSAL.chat.SimpleStatus;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
-import VASSAL.chat.messageboard.Message;
-import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.RoomInteractionControlsInitializer;
@@ -62,7 +60,6 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private PendingPeerManager ppm;
   protected ActivePeerManager peerMgr;
   private PeerPool pool;
-  private MessageBoard msgSvr;
   private WelcomeMessageServer welcomeMessageServer;
   private RoomManager roomMgr;
   private RoomTracker tracker;
@@ -77,13 +74,12 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private PropertyChangeListener nameChangeListener;
   private Properties params;
 
-  public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
-    this(encoder, msgSvr, welcomeMessageServer, pool, new Properties());
+  public P2PClient(CommandEncoder encoder, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
+    this(encoder, welcomeMessageServer, pool, new Properties());
   }
 
-  public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool, Properties param) {
+  public P2PClient(CommandEncoder encoder, WelcomeMessageServer welcomeMessageServer, PeerPool pool, Properties param) {
     this.encoder = encoder;
-    this.msgSvr = msgSvr;
     this.welcomeMessageServer = welcomeMessageServer;
     this.pool = pool;
     this.params = param;
@@ -254,18 +250,6 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   @Override
   public boolean isConnected() {
     return connected;
-  }
-
-  public Message[] getMessages() {
-    return msgSvr.getMessages();
-  }
-
-  public void postMessage(String msg) {
-    msgSvr.postMessage(msg);
-  }
-
-  public MessageBoard getMessageServer() {
-    return msgSvr;
   }
 
   public ServerStatus getStatusServer() {
