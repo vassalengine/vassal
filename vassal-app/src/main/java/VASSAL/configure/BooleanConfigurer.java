@@ -70,12 +70,7 @@ public class BooleanConfigurer extends Configurer {
     if (box == null) {
       box = new javax.swing.JCheckBox(getName());
       box.setSelected(booleanValue());
-      box.addItemListener(new java.awt.event.ItemListener() {
-        @Override
-        public void itemStateChanged(java.awt.event.ItemEvent e) {
-          setValue(box.isSelected());
-        }
-      });
+      box.addItemListener(e -> setValue(box.isSelected()));
     }
     return box;
   }

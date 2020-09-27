@@ -362,7 +362,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           d.setTitle(target.getConfigureName() == null ? moveCmd : moveCmd + " " + target.getConfigureName());
           d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
           Box box = Box.createHorizontalBox();
-          box.add(new JLabel("Move to position"));
+          box.add(new JLabel(Resources.getString("Editor.ConfigureTree.move_to_position")));
           box.add(Box.createHorizontalStrut(10));
           final JComboBox<String> select = new JComboBox<>();
           TreeNode parentNode = getTreeNode(target).getParent();
@@ -376,18 +376,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           select.setSelectedIndex(currentIndex);
           box.add(select);
           JButton ok = new JButton(Resources.getString(Resources.OK));
-          ok.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              int index = select.getSelectedIndex();
-              if (currentIndex != index) {
-                Configurable parent = getParent(targetNode);
-                if (remove(parent, target)) {
-                  insert(parent, target, index);
-                }
+          ok.addActionListener(e1 -> {
+            int index = select.getSelectedIndex();
+            if (currentIndex != index) {
+              Configurable parent = getParent(targetNode);
+              if (remove(parent, target)) {
+                insert(parent, target, index);
               }
-              d.dispose();
             }
+            d.dispose();
           });
           d.add(box);
           d.add(ok);
@@ -531,7 +528,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildImportAction(final Configurable target) {
-    Action a = new AbstractAction("Add Imported Class") {
+    Action a = new AbstractAction(Resources.getString("Editor.ConfigureTree.add_imported_class")) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -564,8 +561,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
           // FIXME: review error message
           catch (Exception ex) {
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n"
-                + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n" //NON-NLS
+                + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
           }
         }
       }
@@ -578,7 +575,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Action a = null;
     final ConfigureTree tree = this;
     if (getTreeNode(target).getParent() != null) {
-      String desc = "Add Multiple " + (hasChild(target, CardSlot.class) ? "Cards" : "Pieces");
+      Resources.getString("Editor.ConfigureTree.add_cards");
+      String desc = hasChild(target, CardSlot.class) ? Resources.getString("Editor.ConfigureTree.add_cards") : Resources.getString("Editor.ConfigureTree.add_pieces");
       a = new AbstractAction(desc) {
         private static final long serialVersionUID = 1L;
 
@@ -626,7 +624,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
-    AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
+    AbstractAction action = new AbstractAction(Resources.getString("Editor.ConfigureTree.add_component", getConfigureName(newConfig))) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -692,7 +690,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildCloneAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
     if (targetNode.getParent() != null) {
-      return new AbstractAction("Clone") {
+      return new AbstractAction(Resources.getString("Editor.ConfigureTree.clone")) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -788,8 +786,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     // FIXME: review error message
     catch (IllegalBuildException err) {
-      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot delete " + getConfigureName(child) + " from " + getConfigureName(parent) + "\n"
-          + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot delete " + getConfigureName(child) + " from " + getConfigureName(parent) + "\n" //NON-NLS
+          + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
       return false;
     }
   }
@@ -815,8 +813,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       // FIXME: review error message
       catch (IllegalBuildException err) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(theChild) + " before " + getConfigureName(oldContents[i]),
-            "Illegal configuration", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(theChild) + " before " + getConfigureName(oldContents[i]), //NON-NLS
+            "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
         for (int j = index; j < i; ++j) {
           parent.add(oldContents[j]);
           oldContents[j].addTo(parent);
@@ -835,7 +833,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     // FIXME: review error message
     catch (IllegalBuildException err) {
-      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't add " + getConfigureName(child) + "\n" + err.getMessage(), "Illegal configuration",
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't add " + getConfigureName(child) + "\n" + err.getMessage(), "Illegal configuration", //NON-NLS
           JOptionPane.ERROR_MESSAGE);
       succeeded = false;
     }
@@ -912,7 +910,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Configurable importConfigurable() {
     final String className = JOptionPane.showInputDialog(
       getTopLevelAncestor(),
-      "Enter fully-qualified name of Java class to import");
+      Resources.getString("Editor.ConfigureTree.java_name"));
 
     if (className == null) return null;
 
@@ -1517,5 +1515,4 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
   }
-
 }
