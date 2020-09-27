@@ -26,7 +26,7 @@ import VASSAL.i18n.Resources;
 
 public class OfficialNodeClientFactory extends NodeClientFactory {
   public static final String OFFICIAL_TYPE = "official"; //$NON-NLS-1$
-  public static final String OFFICIAL_HOST = "game.vassalengine.org";
+  public static final String OFFICIAL_HOST = "game.vassalengine.org"; //NON-NLS
   public static final String OFFICIAL_PORT = "5050";
 
   private static final String UNNAMED_MODULE = Resources.getString("Chat.unknown_module");  //$NON-NLS-1$

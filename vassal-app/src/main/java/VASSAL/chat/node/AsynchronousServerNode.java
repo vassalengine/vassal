@@ -111,10 +111,10 @@ public class AsynchronousServerNode extends ServerNode {
           if (c.length > 0) {
             try {
               final Properties roomProps = new PropertiesEncoder(rooms[i].getInfo()).getProperties();
-              final String roomOwner = roomProps.getProperty("owner");
-              final String playerId = new PropertiesEncoder(c[0].getInfo()).getProperties().getProperty("id");
+              final String roomOwner = roomProps.getProperty("owner");  //NON-NLS
+              final String playerId = new PropertiesEncoder(c[0].getInfo()).getProperties().getProperty("id");  //NON-NLS
               if (roomOwner == null || (! roomOwner.equals(playerId))) {
-                roomProps.setProperty("owner", playerId);
+                roomProps.setProperty("owner", playerId); //NON-NLS
                 rooms[i].setInfo(new PropertiesEncoder(roomProps).toString());
               }
             }

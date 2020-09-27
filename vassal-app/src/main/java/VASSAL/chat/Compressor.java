@@ -77,21 +77,18 @@ public abstract class Compressor {
       f.add(tf);
       f.pack();
       f.setVisible(true);
-      tf.addActionListener(new java.awt.event.ActionListener() {
-        @Override
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-          try {
-            final String s = evt.getActionCommand();
-            System.err.println("Input (" + s.length() + ") = " + s); //$NON-NLS-1$ //$NON-NLS-2$
-            final String comp = new String(compress(s.getBytes()));
-            System.err.println("Compressed (" + comp.length() + ") = " + comp); //$NON-NLS-1$ //$NON-NLS-2$
-            final String decomp = new String(decompress(comp.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
-            System.err.println("Decompressed (" + decomp.length() + ") = " + decomp); //$NON-NLS-1$ //$NON-NLS-2$
-          }
-          // FIXME: review error message
-          catch (IOException ex) {
-            ex.printStackTrace();
-          }
+      tf.addActionListener(evt -> {
+        try {
+          final String s = evt.getActionCommand();
+          System.err.println("Input (" + s.length() + ") = " + s); //$NON-NLS-1$ //$NON-NLS-2$
+          final String comp = new String(compress(s.getBytes()));
+          System.err.println("Compressed (" + comp.length() + ") = " + comp); //$NON-NLS-1$ //$NON-NLS-2$
+          final String decomp = new String(decompress(comp.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
+          System.err.println("Decompressed (" + decomp.length() + ") = " + decomp); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        // FIXME: review error message
+        catch (IOException ex) {
+          ex.printStackTrace();
         }
       });
     }

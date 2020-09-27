@@ -23,7 +23,7 @@ package VASSAL.chat.messageboard;
  * Date: Mar 11, 2003
  */
 public interface MessageBoard extends VASSAL.chat.MessageServer {
-  public Message[] getMessages();
+  Message[] getMessages();
 
-  public void postMessage(String msg);
+  void postMessage(String msg);
 }

@@ -20,7 +20,6 @@ package VASSAL.chat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -214,13 +213,7 @@ public class CgiServerStatus implements ServerStatus {
 
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
       new ModuleSummary[0]);
-    Arrays.sort(e, new Comparator<>() {
-      @Override
-      public int compare(ServerStatus.ModuleSummary a,
-                         ServerStatus.ModuleSummary b) {
-        return a.getModuleName().compareTo(b.getModuleName());
-      }
-    });
+    Arrays.sort(e, (a, b) -> a.getModuleName().compareTo(b.getModuleName()));
     return e;
   }
 

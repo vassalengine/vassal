@@ -62,7 +62,7 @@ public class PlayerNode extends Node implements SocketWatcher {
   @Override
   public String getInfo() {
     final String ip = input.getInetAddress().getHostAddress();
-    return info + (ip.length() > 0 ? "|ip=" + ip : "");
+    return info + (ip.length() > 0 ? "|ip=" + ip : ""); //NON-NLS
   }
 
   public boolean equals(Object o) {
@@ -99,7 +99,7 @@ public class PlayerNode extends Node implements SocketWatcher {
       final String joinRoomName = sd.nextToken("");
       final Node room = server.getModule(this).getDescendant(joinRoomName);
       if (room != null) {
-        final boolean locked = "true".equals(room.getInfoProperty(NodeRoom.LOCKED));
+        final boolean locked = "true".equals(room.getInfoProperty(NodeRoom.LOCKED)); //NON-NLS
         if (locked && room.getChildren().length > 0) {
           final String owner = room.getInfoProperty(NodeRoom.OWNER);
           if (info.length < 2 || !owner.equals(info[1])) {

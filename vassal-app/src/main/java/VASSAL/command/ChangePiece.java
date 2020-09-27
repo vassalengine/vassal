@@ -73,7 +73,7 @@ public class ChangePiece extends Command {
             ((StateMergeable) target).mergeState(newState, oldState);
           }
           catch (NoSuchElementException e) {
-            ProblemDialog.showOutdatedModule("Piece: " + target.getName());
+            ProblemDialog.showOutdatedModule("Piece: " + target.getName()); //NON-NLS
           }
         }
         else {

@@ -19,5 +19,5 @@ package VASSAL.command;
 
 @FunctionalInterface
 public interface Logger {
-  public void log(Command c);
+  void log(Command c);
 }

@@ -24,5 +24,5 @@ package VASSAL.chat.node;
 /** Generic interface for sending messages */
 @FunctionalInterface
 public interface MsgSender {
-  public void send(String msg);
+  void send(String msg);
 }

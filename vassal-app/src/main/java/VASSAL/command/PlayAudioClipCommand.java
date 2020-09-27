@@ -23,7 +23,7 @@ import VASSAL.build.GameModule;
 import VASSAL.tools.ReadErrorDialog;
 
 public class PlayAudioClipCommand extends Command {
-  public static final String COMMAND_PREFIX = "AUDIO\t";
+  public static final String COMMAND_PREFIX = "AUDIO\t"; //NON-NLS
   private String clipName;
 
   public PlayAudioClipCommand(String clipName) {
