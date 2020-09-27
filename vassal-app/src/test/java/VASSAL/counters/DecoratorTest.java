@@ -21,8 +21,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import VASSAL.build.module.BasicCommandEncoder;
+import VASSAL.tools.icon.IconFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.ImageIcon;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Base class for all Decorator Tests. Provides
@@ -39,19 +43,24 @@ public class DecoratorTest {
    */
   public void serializeTest(String test, Decorator referenceTrait) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-    // Can't test without a properly constructed BasicPiece as the inner
-    if (referenceTrait.getInner() == null) {
-      referenceTrait.setInner(createBasicPiece());
+    // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
+    try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
+      staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon());
+
+      // Can't test without a properly constructed BasicPiece as the inner
+      if (referenceTrait.getInner() == null) {
+        referenceTrait.setInner(createBasicPiece());
+      }
+
+      // Test we can reconstruct a Piece by passing its type through its Constructor
+      constructorTest(test, referenceTrait);
+
+      // Test we can reconstruct a Piece using the BasicCommandEncoder
+      commandEncoderTest(test, referenceTrait);
+
+      // Test the serialization used in the internal editor matches the standard serialization
+      editorTest(test, referenceTrait);
     }
-
-    // Test we can reconstruct a Piece by passing its type through its Constructor
-    constructorTest(test, referenceTrait);
-
-    // Test we can reconstruct a Piece using the BasicCommandEncoder
-    commandEncoderTest(test, referenceTrait);
-
-    // Test the serialization used in the internal editor matches the standard serialization
-    editorTest(test, referenceTrait);
   }
 
   /**

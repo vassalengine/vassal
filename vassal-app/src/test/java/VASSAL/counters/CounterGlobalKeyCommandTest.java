@@ -28,27 +28,22 @@ import org.mockito.Mockito;
 
 public class CounterGlobalKeyCommandTest extends DecoratorTest {
 
-
   @Test
   public void serializeTests() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
-    try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
+    // Default piece
+    CounterGlobalKeyCommand trait = new CounterGlobalKeyCommand();
+    serializeTest("Default trait", trait); // NON-NLS
 
-      staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon());
-      // Default piece
-      CounterGlobalKeyCommand trait = new CounterGlobalKeyCommand();
-      serializeTest("Default trait", trait); // NON-NLS
-
-      trait.description = "abc";
-      trait.key = new NamedKeyStroke("xyzzy");
-      trait.globalKey = new NamedKeyStroke("plugh");
-      trait.propertiesFilter = new PropertyExpression("{x==2}");
-      trait.restrictRange = true;
-      trait.range = 3;
-      trait.rangeProperty = "test";
-      trait.globalCommand.setReportSingle(true);
-      trait.globalCommand.selectFromDeck = 3;
-      serializeTest("Complex trait", trait);
-    }
+    trait.description = "abc";
+    trait.key = new NamedKeyStroke("xyzzy");
+    trait.globalKey = new NamedKeyStroke("plugh");
+    trait.propertiesFilter = new PropertyExpression("{x==2}");
+    trait.restrictRange = true;
+    trait.range = 3;
+    trait.rangeProperty = "test";
+    trait.globalCommand.setReportSingle(true);
+    trait.globalCommand.selectFromDeck = 3;
+    serializeTest("Complex trait", trait);
   }
 }
