@@ -401,8 +401,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   @Override
   public void removeGrid(MapGrid grid) {
     if (this.grid == grid) {
-      //FIXME shouldn't next line be "this.grid = null"?
-      grid = null;
+      this.grid = null;
     }
   }
 
