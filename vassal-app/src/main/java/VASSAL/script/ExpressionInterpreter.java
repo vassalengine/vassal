@@ -276,8 +276,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (BeanShell.FALSE.equals(value)) {
           setVar(var, false);
         }
-        // Do not attempt to convert int or float Numeric Literals, return them as Strings.
-        else if (StringUtils.containsAny(value, "dDfFlL")) { // NON-NLS
+        else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
           setVar(var, value);
         }
         else {
