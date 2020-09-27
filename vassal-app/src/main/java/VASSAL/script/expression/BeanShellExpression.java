@@ -95,7 +95,7 @@ public class BeanShellExpression extends Expression {
         result = evaluate(piece);
       }
       catch (ExpressionException e) {
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
       }
       return BeanShell.TRUE.equals(result);
     };
