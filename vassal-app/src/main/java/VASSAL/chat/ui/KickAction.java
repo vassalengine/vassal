@@ -38,7 +38,6 @@ public class KickAction extends AbstractAction {
   private SimplePlayer kickee;
   private LockableChatServerConnection client;
 
-
   public KickAction(LockableChatServerConnection client, SimplePlayer target) {
     super(Resources.getString("Chat.kick")); //$NON-NLS-1$
     this.kickee = target;

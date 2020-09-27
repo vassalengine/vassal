@@ -15,6 +15,7 @@ import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.Properties;
+import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.script.expression.IntBuilder;
 import VASSAL.script.expression.StrBuilder;
@@ -30,7 +31,7 @@ import javax.swing.JPopupMenu;
 
 public class BeanShellFunctionMenu extends JPopupMenu {
 
-  protected static final String[] SUM_COUNT_HINTS = new String[]{"WARNING - This function needs to scan many pieces and is relatively slow. Use sparingly", "$property$ variables may be used in the Match Expression and will be evaluated on the source piece.", "See the Reference Manual for detailed usage."};
+  protected static final String[] SUM_COUNT_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
 
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
@@ -42,23 +43,23 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     this.target = target;
     this.configurer = configurer;
 
-    final JMenu constantMenu = new JMenu("Constant");
-    final JMenuItem integerItem = new JMenuItem("Number");
-    integerItem.setToolTipText("A number");
+    final JMenu constantMenu = new JMenu(Resources.getString("Editor.BeanShell.constant"));
+    final JMenuItem integerItem = new JMenuItem(Resources.getString("Editor.BeanShell.number"));
+    integerItem.setToolTipText(Resources.getString("Editor.BeanShell.a_number"));
     integerItem.addActionListener(e -> buildInteger());
     constantMenu.add(integerItem);
 
-    final JMenuItem stringItem = new JMenuItem("String");
-    stringItem.setToolTipText("A character string");
+    final JMenuItem stringItem = new JMenuItem(Resources.getString("Editor.BeanShell.string"));
+    stringItem.setToolTipText(Resources.getString("Editor.BeanShell.a_string"));
     stringItem.addActionListener(e -> buildString());
     constantMenu.add(stringItem);
     add(constantMenu);
 
 
-    final JMenu propertyMenu = new JMenu("Property");
+    final JMenu propertyMenu = new JMenu(Resources.getString("Editor.BeanShell.property"));
 
     if (target != null) {
-      final JMenu pieceMenu = new JMenu("Piece Property");
+      final JMenu pieceMenu = new JMenu(Resources.getString("Editor.BeanShell.piece_property"));
       addProp(pieceMenu, Properties.MOVED);
       addProp(pieceMenu, Properties.SELECTED);
       addProp(pieceMenu, Properties.PIECE_ID);
@@ -66,11 +67,11 @@ public class BeanShellFunctionMenu extends JPopupMenu {
       propertyMenu.add(pieceMenu);
     }
 
-    final JMenu globalsMenu = new JMenu("Global Property");
+    final JMenu globalsMenu = new JMenu(Resources.getString("Editor.BeanShell.global_property"));
     buildGlobalMenu(globalsMenu, GameModule.getGameModule(), true);
     propertyMenu.add(globalsMenu);
 
-    final JMenu vassalMenu = new JMenu("Vassal Property");
+    final JMenu vassalMenu = new JMenu(Resources.getString("Editor.BeanShell.vassal_property"));
     addProp(vassalMenu, GlobalOptions.PLAYER_SIDE);
     addProp(vassalMenu, GlobalOptions.PLAYER_NAME);
     addProp(vassalMenu, GlobalOptions.PLAYER_ID);
@@ -78,77 +79,77 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     add(propertyMenu);
 
-    final JMenu operatorMenu = new JMenu("Operator");
-    addOperator(operatorMenu, "+", "Add");
-    addOperator(operatorMenu, "-", "Subtract");
-    addOperator(operatorMenu, "*", "Multiply");
-    addOperator(operatorMenu, "/", "Divide");
-    addOperator(operatorMenu, "%", "Modulus");
+    final JMenu operatorMenu = new JMenu(Resources.getString("Editor.BeanShell.operator"));
+    addOperator(operatorMenu, "+", Resources.getString("Editor.BeanShell.add"));
+    addOperator(operatorMenu, "-", Resources.getString("Editor.BeanShell.subtract"));
+    addOperator(operatorMenu, "*", Resources.getString("Editor.BeanShell.multiply"));
+    addOperator(operatorMenu, "/", Resources.getString("Editor.BeanShell.divide"));
+    addOperator(operatorMenu, "%", Resources.getString("Editor.BeanShell.modulus"));
     add(operatorMenu);
 
-    final JMenu comparisonMenu = new JMenu("Comparison");
-    addOperator(comparisonMenu, "==", "Equals");
-    addOperator(comparisonMenu, "!=", "Not equals");
-    addOperator(comparisonMenu, ">",  "Greater than");
-    addOperator(comparisonMenu, ">=", "Greater than or equal to");
-    addOperator(comparisonMenu, "<",  "Less than");
-    addOperator(comparisonMenu, "<=", "Less than or equal to");
-    addOperator(comparisonMenu, "=~", "Matches Regular Expression");
-    addOperator(comparisonMenu, "!~", "Does not match Regular Expression");
+    final JMenu comparisonMenu = new JMenu(Resources.getString("Editor.BeanShell.comparison"));
+    addOperator(comparisonMenu, "==", Resources.getString("Editor.BeanShell.equals"));
+    addOperator(comparisonMenu, "!=", Resources.getString("Editor.BeanShell.not_equals"));
+    addOperator(comparisonMenu, ">",  Resources.getString("Editor.BeanShell.greater_than"));
+    addOperator(comparisonMenu, ">=", Resources.getString("Editor.BeanShell.greater_than_or_equal_to"));
+    addOperator(comparisonMenu, "<",  Resources.getString("Editor.BeanShell.less_than"));
+    addOperator(comparisonMenu, "<=", Resources.getString("Editor.BeanShell.less_than_or_equal_to"));
+    addOperator(comparisonMenu, "=~", Resources.getString("Editor.BeanShell.matches_regular_expression"));
+    addOperator(comparisonMenu, "!~", Resources.getString("Editor.BeanShell.does_not_match_regular_expression"));
     add(comparisonMenu);
 
-    final JMenu logicalMenu = new JMenu("Logical");
-    addOperator(logicalMenu, "&&", "And");
-    addOperator(logicalMenu, "||", "Or");
-    addOperator(logicalMenu, "!", "Not");
-    addOperator(logicalMenu, "(", "Left parenthesis");
-    addOperator(logicalMenu, ")", "Right parenthesis");
+    final JMenu logicalMenu = new JMenu(Resources.getString("Editor.BeanShell.logical"));
+    addOperator(logicalMenu, "&&", Resources.getString("Editor.BeanShell.and"));
+    addOperator(logicalMenu, "||", Resources.getString("Editor.BeanShell.or"));
+    addOperator(logicalMenu, "!", Resources.getString("Editor.BeanShell.not"));
+    addOperator(logicalMenu, "(", Resources.getString("Editor.BeanShell.left_parenthesis"));
+    addOperator(logicalMenu, ")", Resources.getString("Editor.BeanShell.right_parenthesis"));
     add(logicalMenu);
 
-    final JMenu mathMenu = new JMenu("Math");
-    addFunction(mathMenu, "Math.abs", "Absolute value of a number", new String[] { "Number"}, "(n)");
-    addFunction(mathMenu, "Math.min", "Minimum of two numbers", new String[] { "Number 1", "Number 2" }, "(m, n)");
-    addFunction(mathMenu, "Math.max", "Maximum of two numbers", new String[] { "Number 1", "Number 2" }, "(m, n)");
+    final JMenu mathMenu = new JMenu(Resources.getString("Editor.BeanShell.math"));
+    addFunction(mathMenu, "Math.abs", Resources.getString("Editor.BeanShell.abs"), new String[] { Resources.getString("Editor.BeanShell.number")}, "(n)"); //NON-NLS
+    addFunction(mathMenu, "Math.min", Resources.getString("Editor.BeanShell.min"), new String[] { Resources.getString("Editor.BeanShell.number1"), Resources.getString("Editor.BeanShell.number2") }, "(m, n)"); //NON-NLS
+    addFunction(mathMenu, "Math.max", Resources.getString("Editor.BeanShell.max"), new String[] { Resources.getString("Editor.BeanShell.number1"), Resources.getString("Editor.BeanShell.number2") }, "(m, n)"); //NON-NLS
 
-    final JMenu propMenu = new JMenu("Property");
-    addFunction(propMenu, "GetProperty", "Get the value of a property", new String[] { "Property name" }, "(prop)");
-    addFunction(propMenu, "GetMapProperty", "Get the value of a Map-level property", new String[] { "Property name", "Map name" }, "(prop, map)");
-    addFunction(propMenu, "GetZoneProperty", "Get the value of a Zone-level property on the current Map", new String[] { "Property name", "Zone name" }, "(prop, zone)");
-    addFunction(propMenu, "GetZoneProperty", "Get the value of a Zone-level property on any Map", new String[] { "Property name", "Zone name", "Map name" }, "(prop, zone, map)");
+    final JMenu propMenu = new JMenu(Resources.getString("Editor.BeanShell.property"));
+    addFunction(propMenu, "GetProperty", Resources.getString("Editor.BeanShell.getproperty"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(prop)"); //NON-NLS
+    addFunction(propMenu, "GetMapProperty", Resources.getString("Editor.BeanShell.getmapproperty"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, map)"); //NON-NLS
+    addFunction(propMenu, "GetZoneProperty", Resources.getString("Editor.BeanShell.getzoneproperty"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.zone_name") }, "(prop, zone)"); //NON-NLS
+    addFunction(propMenu, "GetZoneProperty", Resources.getString("Editor.BeanShell.getzonemapproperty"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.zone_name"), Resources.getString("Editor.BeanShell.map_name") }, "(prop, zone, map)"); //NON-NLS
 
-    final JMenu stringMenu = new JMenu("String");
-    addFunction(stringMenu, ".length", "Return the length of a string", new String[] {"Target String"}, "()");
-    addFunction(stringMenu, ".contains", "Return true if string contains the specified search string", new String[] { "Target String", "Search String" }, "(string)");
-    addFunction(stringMenu, ".startsWith", "Return true if string starts with the specified search string", new String[] { "Target String", "Search String" }, "(string)");
-    addFunction(stringMenu, ".endsWith", "Return true if string ends with the specified search string", new String[] { "Target String", "String String" }, "(string)");
-    addFunction(stringMenu, ".matches", "Return true if string matches the specified Regular Expression", new String[] { "Target String", "Regular Expression" }, "(regExpr)");
-    addFunction(stringMenu, ".indexOf", "Return the position of the specified search string", new String[] { "Target String", "Search String" }, "(string)");
-    addFunction(stringMenu, ".lastIndexOf", "Return the last position of the specified search string", new String[] { "Target String", "Search String" }, "(string)");
-    addFunction(stringMenu, ".substring", "Return substring starting at a given position, up to the end of the string", new String[] { "Target String", "Starting position" }, "(start)");
-    addFunction(stringMenu, ".substring", "Return substring between positions", new String[] { "Target String", "Starting position", "End Position" }, "(start, end)");
-    addFunction(stringMenu, ".replace", "Replace one substring with another", new String[] { "Target String", "String to find", "String to replace" }, "(old, new)");
+    final JMenu stringMenu = new JMenu(Resources.getString("Editor.BeanShell.string"));
+    addFunction(stringMenu, ".length", Resources.getString("Editor.BeanShell.Slength"), new String[] {Resources.getString("Editor.BeanShell.target_string")}, "()"); //NON-NLS
+    addFunction(stringMenu, ".contains", Resources.getString("Editor.BeanShell.Scontains"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.search_string") }, "(string)"); //NON-NLS
+    addFunction(stringMenu, ".startsWith", Resources.getString("Editor.BeanShell.Sstartswith"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.search_string") }, "(string)"); //NON-NLS
+    addFunction(stringMenu, ".endsWith", Resources.getString("Editor.BeanShell.Sendswith"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.search_string") }, "(string)"); //NON-NLS
+    addFunction(stringMenu, ".matches", Resources.getString("Editor.BeanShell.Smatches"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.regex") }, "(regExpr)"); //NON-NLS
+    addFunction(stringMenu, ".indexOf", Resources.getString("Editor.BeanShell.Sindexof"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.search_string") }, "(string)"); //NON-NLS
+    addFunction(stringMenu, ".lastIndexOf", Resources.getString("Editor.BeanShell.Slastindexof"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.search_string") }, "(string)"); //NON-NLS
+    addFunction(stringMenu, ".substring", Resources.getString("Editor.BeanShell.Ssubstring"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.starting_position") }, "(start)"); //NON-NLS
+    addFunction(stringMenu, ".substring", Resources.getString("Editor.BeanShell.Ssubstring2"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.starting_position"), Resources.getString("Editor.BeanShell.ending_position") }, "(start, end)"); //NON-NLS
+    addFunction(stringMenu, ".replace", Resources.getString("Editor.BeanShell.Sreplace"), new String[] { Resources.getString("Editor.BeanShell.target_string"), Resources.getString("Editor.BeanShell.to_find"), Resources.getString("Editor.BeanShell.to_replace") }, "(old, new)"); //NON-NLS
 
-    final JMenu randomMenu = new JMenu("Random");
-    addFunction(randomMenu, "Random", "Return a random whole number between 1 and a number (inclusive)", new String[] { "Highest number" }, "(x)");
-    addFunction(randomMenu, "Random", "Return a random whole number between 2 numbers (inclusive)", new String[] { "Lowest number", "Highest number" }, "(x, y)");
-    addFunction(randomMenu, "IsRandom", "Return true randomly 50% of the time", new String[] {}, "()");
-    addFunction(randomMenu, "IsRandom", "Return true randomly a specified % of the time", new String[] { "Percent" }, "(p)");
+    final JMenu randomMenu = new JMenu(Resources.getString("Editor.BeanShell.random"));
+    addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random1"), new String[] { Resources.getString("Editor.BeanShell.randomhi") }, "(x)"); //NON-NLS
+    addFunction(randomMenu, "Random", Resources.getString("Editor.BeanShell.random2"), new String[] { Resources.getString("Editor.BeanShell.randomlo"), Resources.getString("Editor.BeanShell.randomhi") }, "(x, y)"); //NON-NLS
+    addFunction(randomMenu, "IsRandom", Resources.getString("Editor.BeanShell.random3"), new String[] {}, "()"); //NON-NLS
+    addFunction(randomMenu, "IsRandom", Resources.getString("Editor.BeanShell.random4"), new String[] { Resources.getString("Editor.BeanShell.randomp") }, "(p)"); //NON-NLS
 
-    final JMenu countMenu = new JMenu("Sum & Count");
-    addFunction(countMenu, "SumStack", "Sum the values of the named property in all pieces in the same stack", new String[] { "Property name" }, "(name)");
-    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on all maps", new String[] { "Property name", "Property match expression" }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME});
-    addFunction(countMenu, "Sum", "Sum the values of the named property in matching pieces on the named map", new String[] { "Property name", "Property match expression", "Map Name" }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on all maps", new String[] { "Property match expression" }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME});
-    addFunction(countMenu, "Count", "Count the number of matching pieces on the named map", new String[] { "Property match expression", "Map Name" }, "(expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE});
+    final JMenu countMenu = new JMenu(Resources.getString("Editor.BeanShell.sumcount"));
+    addFunction(countMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
+    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
+    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
+    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS
+    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
 
-    final JMenu functionMenu = new JMenu("Function");
+    final JMenu functionMenu = new JMenu(Resources.getString("Editor.BeanShell.function"));
     functionMenu.add(mathMenu);
     functionMenu.add(propMenu);
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
     functionMenu.add(countMenu);
-    addFunction(functionMenu, "?", "Return a different result depending on a logical expression", new String[] { "Logical expression", "Result if true", "Result if false" }, "(expr ? r1 : r2)");
-    addFunction(functionMenu, "Alert", "Display text in a Dialog box", new String[] { "Text to display" }, "(text)");
+    addFunction(functionMenu, "?", Resources.getString("Editor.BeanShell.ternary"), new String[] { Resources.getString("Editor.BeanShell.logical"), Resources.getString("Editor.BeanShell.if_true"), Resources.getString("Editor.BeanShell.if_false") }, "(expr ? r1 : r2)"); //NON-NLS
+    addFunction(functionMenu, "Alert", Resources.getString("Editor.BeanShell.alert"), new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
 
     add(functionMenu);
   }
@@ -319,7 +320,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
-      final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();
+      final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize(); //NON-NLS
       maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height / itemSize.height);
     }
     return maxScrollItems;

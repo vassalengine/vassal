@@ -67,7 +67,7 @@ public class DynamicClient extends HybridClient {
               DynamicClient.super.setConnected(connect);
             }
             catch (InterruptedException e) {
-              log.error("Error while connecting: interrupted", e);
+              log.error("Error while connecting: interrupted", e); //NON-NLS
             }
             catch (ExecutionException ex) {
               Throwable e = ex.getCause();
@@ -87,7 +87,7 @@ public class DynamicClient extends HybridClient {
           setDelegate(buildDelegate());
         }
         catch (IOException ex) {
-          log.error("Error while connecting", ex);
+          log.error("Error while connecting", ex); //NON-NLS
         }
       }
     }

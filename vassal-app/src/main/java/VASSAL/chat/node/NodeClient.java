@@ -351,10 +351,8 @@ public class NodeClient implements LockableChatServerConnection,
   /**
    * Process an invitation request from a player to join a room
    *
-   * @param player
-   *          Inviting player name
-   * @param room
-   *          Inviting room
+   * @param playerId Inviting player name
+   * @param roomName Inviting room
    */
   @Override
   public void doInvite(String playerId, String roomName) {
@@ -638,7 +636,7 @@ public class NodeClient implements LockableChatServerConnection,
     s = new SimpleStatus(s.isLooking(), s.isAway(), (String) g.getPrefs()
         .getValue(GameModule.PERSONAL_INFO), Info.getVersion(), s.getIp(), g
         .getGameVersion()
-        + ((g.getArchiveWriter() == null) ? "" : " (Editing)"), Long
+        + ((g.getArchiveWriter() == null) ? "" : " " + Resources.getString("Editor.NodeClient.editing")), Long
         .toHexString(g.getCrc()));
     me.setStatus(s);
     g.getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(

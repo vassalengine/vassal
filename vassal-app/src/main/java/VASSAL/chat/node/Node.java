@@ -119,8 +119,8 @@ public class Node implements MsgSender {
 
   /**
    * return the child node with the given id, or null if no match
-   * @param id
-   * @return
+   * @param id id of node
+   * @return node with that id
    */
   public Node getChild(String id) {
     for (Node n : getChildren()) {
@@ -133,8 +133,8 @@ public class Node implements MsgSender {
 
   /**
    * Return the descendant node with the given path relative to this node
-   * @param path
-   * @return
+   * @param path path
+   * @return descendant node
    */
   public Node getDescendant(String path) {
     Node n = this;
@@ -185,8 +185,8 @@ public class Node implements MsgSender {
    * Instantiates parent nodes with appropriate names as necessary.
    * @param base the top-level ancestor of the node to be built.
    *             Its name is not included in the path name
-   * @param path
-   * @return
+   * @param path path
+   * @return node
    */
   public static Node build(Node base, String path) {
     Node node = null;
@@ -206,9 +206,9 @@ public class Node implements MsgSender {
   /**
    * Builds a Node from a pathAndInfo string
    * @see #getPathAndInfo
-   * @param base
-   * @param pathAndInfo
-   * @return
+   * @param base base
+   * @param pathAndInfo pathAndInfo
+   * @return node
    */
   public Node buildWithInfo(Node base, String pathAndInfo) {
     Node node = null;
@@ -250,7 +250,7 @@ public class Node implements MsgSender {
 
   /**
    * Return a string in the format parentId=parentInfo/childId=childInfo/...
-   * @return
+   * @return string
    */
   public String getPathAndInfo() {
     synchronized (children) {
