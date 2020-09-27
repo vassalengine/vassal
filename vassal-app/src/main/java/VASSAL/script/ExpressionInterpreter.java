@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,12 +276,21 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (BeanShell.FALSE.equals(value)) {
           setVar(var, false);
         }
+        else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
+          setVar(var, value);
+        }
         else {
           try {
             setVar(var, Integer.parseInt(value));
           }
-          catch (NumberFormatException e) {
-            setVar(var, value);
+          catch (NumberFormatException ex1) {
+
+            try {
+              setVar(var, Float.parseFloat(value));
+            }
+            catch (NumberFormatException ex2) {
+              setVar(var, value);
+            }
           }
         }
       }

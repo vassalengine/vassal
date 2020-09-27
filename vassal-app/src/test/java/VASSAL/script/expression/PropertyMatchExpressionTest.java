@@ -62,4 +62,32 @@ public class PropertyMatchExpressionTest {
     e = new PropertyMatchExpression(TEST2_EXPR);
     assertThat(e.isDynamic(), is(true));
   }
+
+  /*
+   * Bug 13458 Regression test
+   * Check boolean int and float values are correctly converted to types in expressions
+   */
+  @Test
+  public void test_type_conversion() throws ExpressionException {
+    BasicPiece bp = new BasicPiece();
+    bp.setProperty("boolProp", "true");
+    bp.setProperty("intProp", "42");
+    bp.setProperty("floatProp", ".75");
+
+
+    // Check boolean conversion
+    Expression e = Expression.createExpression("{boolProp}");
+    assertThat("Auto convert boolean string to boolean type", e.evaluate(bp), is(equalTo("true")));
+    e = Expression.createExpression("{boolProp==true}");
+    assertThat("Auto convert boolean string to boolean type", e.evaluate(bp), is(equalTo("true")));
+
+    // Check Int conversion
+    e = Expression.createExpression("{intProp==42}");
+    assertThat("Auto convert int string to int type", e.evaluate(bp), is(equalTo("true")));
+
+    // Check Float conversion
+    e = Expression.createExpression("{floatProp==.75}");
+    assertThat("Auto convert float string to float type", e.evaluate(bp), is(equalTo("true")));
+
+  }
 }
