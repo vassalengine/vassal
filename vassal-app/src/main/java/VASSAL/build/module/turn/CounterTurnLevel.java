@@ -19,7 +19,6 @@
 package VASSAL.build.module.turn;
 
 import java.awt.Component;
-import java.util.List;
 import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -154,8 +153,8 @@ public class CounterTurnLevel extends TurnLevel {
 
     final IntConfigurer config = new IntConfigurer("", " " + getConfigureName() + ":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.addPropertyChangeListener(e -> {
-        current = (Integer) ((IntConfigurer) e.getSource()).getValue();
-        myValue.setPropertyValue(getValueString());
+      current = (Integer) ((IntConfigurer) e.getSource()).getValue();
+      myValue.setPropertyValue(getValueString());
     });
 
     return config.getControls();
