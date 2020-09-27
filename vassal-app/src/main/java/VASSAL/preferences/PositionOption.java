@@ -33,7 +33,7 @@ import VASSAL.tools.ErrorDialog;
 
 public class PositionOption extends VASSAL.configure.Configurer
   implements ComponentListener {
-  public static final String key = "BoundsOf";
+  public static final String key = "BoundsOf"; //NON-NLS
   private static Point initialPos = new Point(0, 0);
 
   protected Window theFrame;
@@ -101,7 +101,7 @@ public class PositionOption extends VASSAL.configure.Configurer
       // as a PositionOption, either currently, or due to editing.
       // Don't throw a bug, just log it.
       if (in.indexOf('\t') > 0) {
-        ErrorDialog.dataWarning(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
+        ErrorDialog.dataWarning(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));  //NON-NLS
       }
       else {
         ErrorDialog.bug(e);

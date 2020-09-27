@@ -111,5 +111,4 @@ public class EnumPreference extends BasicPreference {
     }
     return config;
   }
-
 }

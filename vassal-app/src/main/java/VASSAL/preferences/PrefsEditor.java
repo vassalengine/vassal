@@ -21,7 +21,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -82,38 +81,25 @@ public class PrefsEditor {
 
       // Help button looks up help in Preferences.html, by tab-name
       final JButton help = new JButton(Resources.getString(Resources.HELP));
-      help.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          int index = optionsTab.getSelectedIndex();
-          String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top";
-          HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName);
-          BrowserSupport.openURL(helpFile.getContents().toString());
-        }
+      help.addActionListener(e -> {
+        int index = optionsTab.getSelectedIndex();
+        String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top"; //NON-NLS
+        HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName); //NON-NLS
+        BrowserSupport.openURL(helpFile.getContents().toString());
       });
 
       final JButton ok = new JButton(Resources.getString(Resources.OK));
-      ok.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          save();
-        }
-      });
+      ok.addActionListener(e -> save());
 
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-      cancel.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-        }
-      });
+      cancel.addActionListener(e -> cancel());
 
-      dialog.setLayout(new MigLayout("insets dialog"));
-      dialog.add(optionsTab, "push, grow, wrap unrelated");
+      dialog.setLayout(new MigLayout("insets dialog")); //NON-NLS
+      dialog.add(optionsTab, "push, grow, wrap unrelated"); //NON-NLS
 
-      dialog.add(help, "tag help, split");
-      dialog.add(ok, "tag ok, split");
-      dialog.add(cancel, "tag cancel");
+      dialog.add(help, "tag help, split"); //NON-NLS
+      dialog.add(ok, "tag ok, split"); //NON-NLS
+      dialog.add(cancel, "tag cancel"); //NON-NLS
     }
   }
 
@@ -144,12 +130,7 @@ public class PrefsEditor {
       setupDialog.add(p);
       setupDialog.add(c.getControls());
       JButton b = new JButton(Resources.getString(Resources.OK));
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-          setupDialog.setVisible(false);
-        }
-      });
+      b.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
       p.add(b);
       setupDialog.add(p);

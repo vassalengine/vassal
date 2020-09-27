@@ -18,11 +18,9 @@
 
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import VASSAL.configure.Configurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * A multi-line textbox Module Preference.
@@ -33,7 +31,7 @@ public class TextPreference extends BasicPreference {
   protected TextConfigurer config;
 
   public static String getConfigureTypeName() {
-    return "Text Box Preference";
+    return Resources.getString("Editor.TextPreference.component_type");
   }
 
   @Override
@@ -55,12 +53,7 @@ public class TextPreference extends BasicPreference {
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new TextConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }
-      });
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

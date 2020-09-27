@@ -46,7 +46,7 @@ public class VisibilityOption extends PositionOption {
     StringTokenizer st = new StringTokenizer(in, "\t");
     super.setValue(st.nextToken());
     if (st.hasMoreTokens()) {
-      isVisible = "true".equals(st.nextToken());
+      isVisible = "true".equals(st.nextToken()); //NON-NLS
     }
     else {
       isVisible = true;
