@@ -1159,7 +1159,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (EXTRA_TEXT_PADDING.equals(name)) {
       if (value instanceof String) {
-        extraTextPadding = Integer.valueOf((String)value);
+        extraTextPadding = Integer.parseInt((String)value);
       }
       else {
         extraTextPadding = (Integer) value;
@@ -1167,7 +1167,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (VERTICAL_OFFSET.equals(name)) {
       if (value instanceof String) {
-        verticalOffset = Integer.valueOf((String)value);
+        verticalOffset = Integer.parseInt((String)value);
       }
       else {
         verticalOffset = (Integer) value;
@@ -1175,7 +1175,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (VERTICAL_TOP_TEXT.equals(name)) {
       if (value instanceof String) {
-        verticalTopText = Integer.valueOf((String)value);
+        verticalTopText = Integer.parseInt((String)value);
       }
       else {
         verticalTopText = (Integer) value;

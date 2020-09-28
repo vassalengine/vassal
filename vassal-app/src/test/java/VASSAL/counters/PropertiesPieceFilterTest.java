@@ -224,23 +224,4 @@ public class PropertiesPieceFilterTest {
     }
   }
 
-  /*
-   * Test specifically for a regression of bug 13425.
-   * Legacy property match expression  null != "false" evaluating as true.
-   * That may be valid in a Java sense, but not on a Vassal sense.
-   */
-  @Test
-  public void bug_13425() {
-    // Regression test for Issue 13425
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
-      final GameModule gm = mock(GameModule.class);
-      when(gm.getProperty("mos")).thenReturn(null);
-
-      staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      final BasicPiece bp = new BasicPiece();
-      final PieceFilter filter = PropertiesPieceFilter.parse("mos!=false");
-      assertThat("Bug 13425 regression test", filter.accept(bp), is(true));
-    }
-  }
 }
