@@ -64,8 +64,7 @@ public class NamedKeyManager {
   }
 
   /**
-   * Return a generic marker KeyStroke
-   * @return
+   * @return Return a generic marker KeyStroke
    */
   public static KeyStroke getMarkerKeyStroke() {
     return KeyStroke.getKeyStroke(NAMED_MARKER, 0);
@@ -73,7 +72,7 @@ public class NamedKeyManager {
 
   /**
    * Return the generated KeyStroke associated with the NamedKeyStroke
-   * @param vkey
+   * @param vkey Named Keystroke
    * @return generated KeyStroke
    */
   public KeyStroke getKeyStroke(NamedKeyStroke vkey) {

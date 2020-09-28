@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-
 public class JarArchive extends DataArchive {
   protected String prefix;
 
@@ -50,7 +49,7 @@ public class JarArchive extends DataArchive {
     }
 
     throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName());
+      "'" + fileName + "' not found in " + getName());
   }
 
   @Override
@@ -68,7 +67,7 @@ public class JarArchive extends DataArchive {
       }
     }
 
-    throw new FileNotFoundException(String.format("'%s' not found in %s", fileName, getName()));
+    throw new FileNotFoundException(String.format("'%s' not found in %s", fileName, getName())); //NON-NLS
   }
 
   protected String getAbsolutePath(String file) {

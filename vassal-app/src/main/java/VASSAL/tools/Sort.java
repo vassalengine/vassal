@@ -29,7 +29,7 @@ import java.util.Vector;
 
 /**
  * Quicksort implementation so we can sort using JRE 1.1
- * @deprecated Use {@link java.util.Collections.sort} instead.
+ * @deprecated Use {link java.util.Collections.sort} instead.
  */
 @Deprecated
 public class Sort {
@@ -117,7 +117,7 @@ public class Sort {
    }
    */
   /*
-   * Preform a sort using the specified comparitor object.
+   * Preform a sort using the specified comparator object.
    */
   public static void quicksort(Vector<Object> v, Comparator comp) {
     quicksort(v, 0, v.size() - 1, comp);
@@ -129,13 +129,13 @@ public class Sort {
   @FunctionalInterface
   @Deprecated
   public interface Comparator {
-    public int compare(Object o1, Object o2);
+    int compare(Object o1, Object o2);
   }
 
   /**
    * Compares two String objects
    * @deprecated Use the natural ordering on Strings instead.
-   * @see java.lang.String.compareTo(String)
+   * see java.lang.String.compareTo(String)
    */
   @Deprecated
   public static class Alpha implements Comparator {
@@ -144,7 +144,7 @@ public class Sort {
       String s1 = (String) o1;
       String s2 = (String) o2;
       int len = Math.min(s1.length(), s2.length());
-      int result = 0;
+      int result;
       for (int i = 0; i < len; ++i) {
         result = s1.charAt(i) - s2.charAt(i);
         if (result != 0) {

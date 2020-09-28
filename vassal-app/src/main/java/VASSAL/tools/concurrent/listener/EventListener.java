@@ -33,5 +33,5 @@ public interface EventListener<T> {
    * @param src the source of the event
    * @param event the event
    */
-  public void receive(Object src, T event);
+  void receive(Object src, T event);
 }

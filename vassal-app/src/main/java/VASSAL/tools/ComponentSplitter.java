@@ -399,7 +399,7 @@ public class ComponentSplitter {
     }
 
     /**
-     * Set the base component size to be large enough to accomodate all descendant SplitPane's showing components
+     * Set the base component size to be large enough to accommodate all descendant SplitPane's showing components
      */
     protected void resizeBaseComponent() {
       if (getHideableComponent().isVisible()) {

@@ -17,7 +17,6 @@
  */
 package VASSAL.tools;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -67,12 +66,9 @@ public class LaunchButton extends JButton {
     iconAtt = iconAttribute;
     iconConfig = new IconConfigurer(iconAtt, null, null);
     setAlignmentY(0.0F);
-    keyListener = new NamedKeyStrokeListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (isEnabled() && getParent() != null && getParent().isShowing()) {
-          al.actionPerformed(e);
-        }
+    keyListener = new NamedKeyStrokeListener(e -> {
+      if (isEnabled() && getParent() != null && getParent().isShowing()) {
+        al.actionPerformed(e);
       }
     });
     if (al != null) {
@@ -87,7 +83,7 @@ public class LaunchButton extends JButton {
   public int getBaseline(int width, int height) {
     // Without this, buttons with no text, buttons with single line HTML text,
     // and buttons with multiline HTML text end up having different baselines.
-    // LaunchButtons go into toolbars only, so there should be no allignment
+    // LaunchButtons go into toolbars only, so there should be no alignment
     // issues caused by indicating that the baseline is non-applicable.
     return -1;
   }

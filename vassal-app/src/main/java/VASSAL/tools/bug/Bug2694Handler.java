@@ -41,7 +41,7 @@ public class Bug2694Handler implements BugHandler {
   @Override
   public void handle(Throwable thrown) {
     ErrorDialog.showDetails(
-      thrown, ThrowableUtils.getStackTrace(thrown), "Error.bug2694"
+      thrown, ThrowableUtils.getStackTrace(thrown), "Error.bug2694" //NON-NLS
     );
   }
 }

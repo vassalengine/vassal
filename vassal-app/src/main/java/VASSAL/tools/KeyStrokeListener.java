@@ -70,7 +70,7 @@ public class KeyStrokeListener {
   public void keyPressed(KeyStroke stroke) {
     //BR// We are receiving events directly from components, so we perform our special Mac keyboard translations.
     if ((stroke != null) && (key != null) && stroke.equals(SwingUtils.genericToSystem(key))) {
-      l.actionPerformed(new ActionEvent(this, 0, "Direct Invocation"));
+      l.actionPerformed(new ActionEvent(this, 0, "Direct Invocation")); //NON-NLS
     }
   }
 
