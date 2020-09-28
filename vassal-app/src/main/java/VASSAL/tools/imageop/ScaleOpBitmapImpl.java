@@ -217,8 +217,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     @Override
     public String toString() {
       return getClass().getName() +
-        "[sop=" + sop + ",scale=" + scale +
-        ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]";
+        "[sop=" + sop + ",scale=" + scale + //NON-NLS
+        ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]"; //NON-NLS
     }
   }
 
@@ -259,6 +259,6 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public String toString() {
     return getClass().getName() +
-      "[sop=" + sop + ",scale=" + scale + ",hints=" + hints + "]";
+      "[sop=" + sop + ",scale=" + scale + ",hints=" + hints + "]"; //NON-NLS
   }
 }

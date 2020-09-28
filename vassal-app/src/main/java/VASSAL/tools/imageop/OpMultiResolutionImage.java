@@ -20,8 +20,6 @@ package VASSAL.tools.imageop;
 
 import java.awt.Image;
 import java.awt.image.AbstractMultiResolutionImage;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class OpMultiResolutionImage extends AbstractMultiResolutionImage {
@@ -38,7 +36,7 @@ public class OpMultiResolutionImage extends AbstractMultiResolutionImage {
 
   @Override
   public List<Image> getResolutionVariants() {
-    return Collections.unmodifiableList(Arrays.asList(sop.getImage())); 
+    return List.of(sop.getImage());
   }
 
   @Override

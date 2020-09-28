@@ -66,12 +66,7 @@ public class TilesToImage {
     // and columns, as well as the width of the last column and the height
     // of the last row
     final File bdir = new File(base).getParentFile();
-    final FileFilter filter = new FileFilter() {
-      @Override
-      public boolean accept(File pathname) {
-        return pathname.getPath().startsWith(base);
-      }
-    };
+    final FileFilter filter = pathname -> pathname.getPath().startsWith(base);
 
     final Pattern p  = Pattern.compile(base + "\\((\\d+),(\\d+)\\)@1:");
     int max_row = 0;
@@ -117,6 +112,6 @@ public class TilesToImage {
     }
 
     // write the cobbled image
-    ImageIO.write(img, "PNG", new FileOutputStream(dpath));
+    ImageIO.write(img, "PNG", new FileOutputStream(dpath)); //NON-NLS
   }
 }

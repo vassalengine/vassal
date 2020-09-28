@@ -273,8 +273,8 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
     @Override
     public String toString() {
       return getClass().getName() +
-        "[sop=" + Arrays.toString(sop) + ",scale=" + scale +
-        ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]";
+        "[sop=" + Arrays.toString(sop) + ",scale=" + scale + //NON-NLS
+        ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]"; //NON-NLS
     }
   }
 

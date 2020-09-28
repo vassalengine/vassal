@@ -19,8 +19,6 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Image;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -44,6 +42,6 @@ public class OwningOpMultiResolutionImage extends OpMultiResolutionImage {
 
   @Override
   public List<Image> getResolutionVariants() {
-    return Collections.unmodifiableList(new ArrayList<>(imgs.values()));
+    return List.copyOf(imgs.values());
   } 
 }
