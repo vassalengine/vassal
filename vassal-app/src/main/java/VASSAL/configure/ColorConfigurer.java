@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import VASSAL.build.BadDataReport;
 import VASSAL.tools.ColorButton;
 import VASSAL.tools.ErrorDialog;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
