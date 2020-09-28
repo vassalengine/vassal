@@ -19,9 +19,12 @@ package VASSAL.build;
 
 import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -236,5 +239,33 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   @Override
   public List<String> getPropertyNames() {
     return new ArrayList<>();
+  }
+
+  public SortedSet<String> getImageNames() {
+    final TreeSet<String> s =
+      new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+
+    addImageNamesRecursively(s);
+    return s;
+  }
+
+  protected void addImageNamesRecursively(Collection<String> s) {
+    addLocalImageNames(s);
+
+    for (Buildable child : buildComponents) {
+      if (child instanceof AbstractBuildable) {
+        ((AbstractBuildable) child).addImageNamesRecursively(s);
+      }
+    }
+  }
+
+  public SortedSet<String> getLocalImageNames() {
+    final TreeSet<String> s =
+      new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    addLocalImageNames(s);
+    return s;
+  }
+
+  protected void addLocalImageNames(Collection<String> s) {
   }
 }

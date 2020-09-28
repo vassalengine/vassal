@@ -851,6 +851,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     repaint();
   }
 
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    s.add(launchButton.getIconAttribute());
+  }
+
   /**
    * Set the boards for this map. Each map may contain more than one
    * {@link Board}.

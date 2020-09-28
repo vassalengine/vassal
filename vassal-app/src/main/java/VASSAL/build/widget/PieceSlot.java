@@ -34,6 +34,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
+import java.util.Collection;
+
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
@@ -217,6 +219,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
 
     return c;
+  }
+
+  @Override
+  protected void addImageNamesRecursively(Collection<String> s) {
+    super.addImageNamesRecursively(s);
+
+    if (getPiece() != null) getPiece().addImageNames(s);
   }
 
   public void paint(Graphics g) {

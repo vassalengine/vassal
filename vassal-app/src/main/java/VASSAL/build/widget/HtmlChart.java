@@ -27,6 +27,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -286,6 +289,13 @@ public class HtmlChart extends Widget implements MouseListener {
     }
   }
 
+  private Set<String> imageNames = new HashSet<String>();
+
+  protected void addLocalImageNames(Collection<String> s) {
+    getComponent();   // ugly, forces imageNames to be populated
+    s.addAll(imageNames);
+  }
+
   /**
    * Extended HTML Editor kit to extend the <src> tag to display images
    * from the module DataArchive where no pathname included in the image name.
@@ -313,6 +323,7 @@ public class HtmlChart extends Widget implements MouseListener {
         if (kind != null && element.getName().equals("img")) {  //NON-NLS
           final String imageName = (String) element.getAttributes().getAttribute(HTML.Attribute.SRC);
           if (!imageName.contains("/")) {
+//            imageNames.add(imageName);
             return new ImageComponentView(element);
           }
         }

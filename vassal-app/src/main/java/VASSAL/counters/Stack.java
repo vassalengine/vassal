@@ -26,6 +26,7 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -644,6 +645,12 @@ public class Stack implements GamePiece, StateMergeable {
       setDefaultMetrics(new StackMetrics());
     }
     return defaultMetrics;
+  }
+
+  public void addImageNames(Collection<String> s) {
+    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext(); ) {
+      i.next().addImageNames(s);
+    }
   }
 
   private class VisibleOrderIterator implements Iterator<GamePiece> {

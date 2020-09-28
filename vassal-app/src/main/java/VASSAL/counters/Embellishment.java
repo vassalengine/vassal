@@ -29,6 +29,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -1480,5 +1481,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       data.add(strip(commonName[i]), prefix + "Level " + (i + 1) + " name");
     }
     return data;
+  }
+
+  @Override
+  public void addImageNames(Collection<String> s) {
+    super.addImageNames(s);
+
+    for (String iname : imageName) {
+      s.add(iname);
+    }
   }
 }

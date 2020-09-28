@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -1115,5 +1116,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     l.add(CLICKED_X);
     l.add(CLICKED_Y);
     return l;
+  }
+
+  public void addImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 }

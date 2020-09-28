@@ -30,6 +30,7 @@ import java.awt.event.InputEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -788,5 +789,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(maskName);
+  }
+
+  @Override
+  public void addImageNames(Collection<String> s) {
+    super.addImageNames(s);
+
+    if (obscuredToOthersImage != null) s.add(obscuredToOthersImage);
   }
 }

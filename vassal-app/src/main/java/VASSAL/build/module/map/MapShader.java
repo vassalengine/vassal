@@ -38,6 +38,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -877,6 +878,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     else {
       return super.getAttributeVisibility(name);
     }
+  }
+
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 
   public static String getConfigureTypeName() {

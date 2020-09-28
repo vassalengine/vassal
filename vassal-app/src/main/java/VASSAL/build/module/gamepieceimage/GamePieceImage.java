@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -256,6 +257,11 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       return getLayout().isColoredBorder();
     }
   };
+
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    if (getConfigureName() != null) s.add(getConfigureName());
+  }
 
   @Override
   public void removeFrom(Buildable parent) {

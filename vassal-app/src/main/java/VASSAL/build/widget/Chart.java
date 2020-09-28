@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
+import java.util.Collection;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -189,5 +190,10 @@ public class Chart extends Widget {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.Chart.component_type");
+  }
+
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    if (fileName != null) s.add(fileName);
   }
 }

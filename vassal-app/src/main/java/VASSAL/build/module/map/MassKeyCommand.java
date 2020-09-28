@@ -30,6 +30,7 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -573,5 +574,10 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+  }
+
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    s.add(launch.getIconAttribute());
   }
 }

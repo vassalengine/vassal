@@ -22,6 +22,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Collection;
 
 import javax.swing.KeyStroke;
 
@@ -217,4 +218,6 @@ public interface GamePiece extends PropertySource {
    */
   @Override
   public Object getProperty(Object key);
+
+  public void addImageNames(Collection<String> s);
 }

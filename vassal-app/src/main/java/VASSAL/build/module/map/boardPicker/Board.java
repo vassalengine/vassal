@@ -33,6 +33,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -775,5 +776,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
     this.magnification = magnification;
     fixedBoundaries = false;
     bounds();
+  }
+
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    if (imageFile != null) s.add(imageFile);
   }
 }

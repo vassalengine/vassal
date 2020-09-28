@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -787,5 +788,9 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   protected boolean isSelected() {
     return selected;
+  }
+
+  public void addImageNames(Collection<String> s) {
+    piece.addImageNames(s);
   }
 }

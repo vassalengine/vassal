@@ -34,6 +34,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -311,5 +312,13 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public List<String> getMenuTextList() {
     return List.of(command);
+  }
+
+  @Override
+  public void addImageNames(Collection<String> s) {
+    super.addImageNames(s);
+
+    final String iconName = movedIcon.getValueString();
+    if (iconName != null) s.add(iconName);
   }
 }
