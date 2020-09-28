@@ -18,6 +18,7 @@
 package VASSAL.i18n;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ComponentI18nData {
    * Build from an AutoConfigurable
    *
    * @param c
-   *          AutoConfgurable component
+   *          AutoConfigurable component
    * @param prefix
    *          I18n prefix
    */
@@ -98,9 +99,7 @@ public class ComponentI18nData {
   protected void init(Configurable c, String pfx, String[] names, String[] descriptions, boolean[] translatable) {
     prefix = pfx;
     myComponent = c;
-    for (Configurable child : myComponent.getConfigureComponents()) {
-      children.add(child);
-    }
+    children.addAll(Arrays.asList(myComponent.getConfigureComponents()));
     for (int i = 0; i < translatable.length; i++) {
       Property p = new Property(names[i], descriptions[i]);
       allProperties.put(names[i], p);
@@ -273,7 +272,7 @@ public class ComponentI18nData {
   }
 
   /**
-   * Apply a translatation to the specified attribute. Record the untranslated value in the untranslatedValues array and
+   * Apply a translation to the specified attribute. Record the untranslated value in the untranslatedValues array and
    * set the new value into the real attribute
    *
    * @param attr

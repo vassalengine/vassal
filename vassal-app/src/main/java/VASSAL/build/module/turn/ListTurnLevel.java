@@ -447,4 +447,5 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     myI18nData.setAttributeTranslatable(LIST, true);
     return myI18nData;
   }
+
 }

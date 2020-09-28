@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Chatter;
@@ -589,7 +590,7 @@ public class Flare extends AbstractConfigurable
   }
 
   /**
-   * @param gameStarting true if game is starting
+   * @param gameStarting true if starting a game, false if ending one
    */
   public void setup(final boolean gameStarting) {
   }
@@ -674,5 +675,14 @@ public class Flare extends AbstractConfigurable
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FlareFormattedStringConfigurer(key, name, new String[0]);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
   }
 }

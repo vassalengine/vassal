@@ -38,7 +38,7 @@ public class IntConfigurer extends StringConfigurer {
 
   @Override
   public void setValue(String s) {
-    Integer i = null;
+    Integer i;
     try {
       i = Integer.valueOf(s);
     }

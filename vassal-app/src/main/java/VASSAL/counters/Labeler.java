@@ -34,6 +34,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -375,7 +376,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       }
     }
     else if (!ll.equals(lastCachedLabel)) {
-      // label has chagned, is nonempty
+      // label has changed, is non-empty
       position = null;
       lastCachedLabel = ll;
 
@@ -1015,5 +1016,37 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
     ProblemDialog.showDeprecated("2020-08-27");
     LabelUtils.drawLabel(g, text, x, y, f, hAlign, vAlign, fgColor, bgColor, borderColor);
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(propertyName);
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(labelKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(menuCommand);
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(label, nameFormat.getFormat(), labelFormat.getFormat());
   }
 }

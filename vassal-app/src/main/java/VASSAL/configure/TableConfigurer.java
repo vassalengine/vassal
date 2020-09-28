@@ -18,6 +18,8 @@
 
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Window;
@@ -40,9 +42,9 @@ import javax.swing.SwingUtilities;
  */
 public class TableConfigurer extends Configurer implements ActionListener  {
 
-  public static final String ADD_ACTION = "Add";
-  public static final String DEL_ACTION = "Remove";
-  public static final String INS_ACTION = "Insert";
+  public static final String ADD_ACTION = Resources.getString("Editor.TableConfigurer.add");
+  public static final String DEL_ACTION = Resources.getString("Editor.TableConfigurer.remove");
+  public static final String INS_ACTION = Resources.getString("Editor.TableConfigurer.insert");
 
   protected Box controls;
   protected JPanel contents = null;

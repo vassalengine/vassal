@@ -42,6 +42,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
@@ -295,5 +296,27 @@ public class ToolbarMenu extends AbstractConfigurable
   @Override
   public Command getRestoreCommand() {
     return null;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    List<String> l = new ArrayList<>();
+    l.addAll(menuItems);
+    l.add(getAttributeValueString(BUTTON_TEXT));
+    l.add(getAttributeValueString(TOOLTIP));
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(BUTTON_HOTKEY)));
   }
 }

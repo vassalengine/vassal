@@ -21,9 +21,14 @@ import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JPanel;
 
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.search.SearchTarget;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AutoConfigurable;
@@ -50,7 +55,7 @@ import VASSAL.tools.NamedKeyStroke;
  * therefore providing an un-cluttered view.
  */
 public class HidePiecesButton extends JPanel implements MouseListener,
-    AutoConfigurable, GameComponent, Drawable {
+    AutoConfigurable, GameComponent, Drawable, SearchTarget {
   private static final long serialVersionUID = 1L;
 
   protected boolean piecesVisible = false;
@@ -293,6 +298,51 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     }
     return myI18nData;
   }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
+  }
 }
-
-

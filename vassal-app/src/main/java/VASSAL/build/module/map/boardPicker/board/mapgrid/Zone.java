@@ -734,4 +734,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       PolygonEditor.reset(editor.getPolygon(), s);
     }
   }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(locationFormat);
+  }
 }

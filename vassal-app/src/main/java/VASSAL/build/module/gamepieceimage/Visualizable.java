@@ -21,8 +21,8 @@ package VASSAL.build.module.gamepieceimage;
 import java.awt.Image;
 
 public interface Visualizable {
-  public int getVisualizerHeight();
-  public int getVisualizerWidth();
-  public Image getVisualizerImage();
-  public void rebuildVisualizerImage();
+  int getVisualizerHeight();
+  int getVisualizerWidth();
+  Image getVisualizerImage();
+  void rebuildVisualizerImage();
 }

@@ -18,12 +18,8 @@
 package VASSAL.configure;
 
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -31,6 +27,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import VASSAL.i18n.Resources;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -82,12 +79,9 @@ public class PropertiesWindow extends JDialog {
 
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setTitle((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setTitle((String) evt.getNewValue());
       }
     });
     add(configurer.getControls());
@@ -95,22 +89,12 @@ public class PropertiesWindow extends JDialog {
     setTitle(ConfigureTree.getConfigureName(target));
 
     final Box buttonBox = Box.createHorizontalBox();
-    final JButton okButton = new JButton("Ok");
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    final JButton okButton = new JButton(Resources.getString("General.ok"));
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
-    final JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    final JButton cancelButton = new JButton(Resources.getString("General.cancel"));
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     if (target.getHelpFile() != null) {

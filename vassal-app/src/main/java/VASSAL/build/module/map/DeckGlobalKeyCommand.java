@@ -18,6 +18,8 @@
 package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.KeyStroke;
 
@@ -28,6 +30,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
@@ -208,4 +211,36 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    List<String> l = new ArrayList<>(super.getExpressionList());
+    l.add (propertiesFilter.getExpression());
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    List<String> l = new ArrayList<>(super.getFormattedStringList());
+    l.add(reportFormat.getFormat());
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+    return l;
+  }
 }

@@ -21,8 +21,6 @@ package VASSAL.configure;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.BoxLayout;
@@ -33,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.ImageOp;
@@ -96,23 +95,17 @@ public class IconConfigurer extends Configurer {
       };
       p.setPreferredSize(new Dimension(32, 32));
       controls.add(p);
-      final JButton reset = new JButton("Select");
-      reset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectImage();
-          p.repaint();
-        }
+      final JButton reset = new JButton(Resources.getString("Editor.select"));
+      reset.addActionListener(e -> {
+        selectImage();
+        p.repaint();
       });
       controls.add(reset);
       if (defaultImage != null) {
-        final JButton useDefault = new JButton("Default");
-        useDefault.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            setValue(defaultImage);
-            p.repaint();
-          }
+        final JButton useDefault = new JButton(Resources.getString("Editor.default"));
+        useDefault.addActionListener(e -> {
+          setValue(defaultImage);
+          p.repaint();
         });
         controls.add(useDefault);
       }

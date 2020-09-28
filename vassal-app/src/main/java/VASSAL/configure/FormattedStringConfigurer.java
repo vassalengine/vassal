@@ -23,6 +23,7 @@
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -53,7 +54,7 @@ public class FormattedStringConfigurer
 
   public void setOptions(String[] options) {
     optionsModel.removeAllElements();
-    optionsModel.addElement(Resources.getString("Editor.insert"));
+    optionsModel.addElement(Resources.getString("Editor.FormattedStringConfigurer.insert"));
     for (String option : options) {
       optionsModel.addElement(option);
     }

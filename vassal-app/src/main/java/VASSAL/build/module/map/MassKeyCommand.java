@@ -31,6 +31,7 @@ import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -286,6 +287,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
     public DeckPolicyConfig(boolean showPrompt) {
       super(null, "");
+
       typeConfig = new TranslatingStringEnumConfigurer(
         new String[]{ALL, NONE, FIXED},
         new String[]{
@@ -305,6 +307,7 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       controls2.add(typeConfig.getControls());
       controls2.add(intConfig.getControls());
+
       PropertyChangeListener l = evt -> {
         intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
         Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
@@ -567,4 +570,39 @@ public class MassKeyCommand extends AbstractConfigurable
     return getConfigureTypeName();
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(propertiesFilter.getExpression());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+  }
 }

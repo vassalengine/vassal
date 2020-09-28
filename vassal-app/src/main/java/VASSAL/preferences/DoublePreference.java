@@ -18,11 +18,9 @@
 
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DoubleConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * A Decimal Number Module Preference.
@@ -33,7 +31,7 @@ public class DoublePreference extends BasicPreference {
   protected DoubleConfigurer config;
 
   public static String getConfigureTypeName() {
-    return "Decimal Number Preference";
+    return Resources.getString("Editor.DoublePreference.component_type");
   }
 
   @Override
@@ -60,12 +58,7 @@ public class DoublePreference extends BasicPreference {
     if (config == null) {
       config =
         new DoubleConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }
-      });
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

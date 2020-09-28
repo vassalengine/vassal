@@ -40,7 +40,7 @@ public class MandatoryComponent implements ValidityChecker {
         target.getComponentsOf(requiredChildClass).isEmpty()) {
       report.addWarning(
         ConfigureTree.getConfigureName(target) +
-        " must contain at least one " +
+        " must contain at least one " + //NON-NLS
         ConfigureTree.getConfigureName(requiredChildClass));
     }
   }

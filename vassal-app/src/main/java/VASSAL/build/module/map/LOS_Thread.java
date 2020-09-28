@@ -869,9 +869,9 @@ public class LOS_Thread extends AbstractConfigurable implements
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       return new String[]{
-        "Editor.up",
-        "Editor.down",
-        "Editor.LosThread.round_off",
+        Resources.getString("Editor.up"),
+        Resources.getString("Editor.down"),
+        Resources.getString("Editor.LosThread.round_off"),
       };
     }
   }
@@ -885,9 +885,9 @@ public class LOS_Thread extends AbstractConfigurable implements
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       return new String[]{
-        "Editor.LosThread.ctrl_click",
-        "Editor.never",
-        "Editor.always"
+        Resources.getString("Editor.LosThread.ctrl_click"),
+        Resources.getString("Editor.never"),
+        Resources.getString("Editor.always")
       };
     }
   }
@@ -901,9 +901,9 @@ public class LOS_Thread extends AbstractConfigurable implements
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       return new String[]{
-        "Editor.LosThread.when_persistent",
-        "Editor.never",
-        "Editor.always"
+        Resources.getString("Editor.LosThread.when_persistent"),
+        Resources.getString("Editor.never"),
+        Resources.getString("Editor.always")
       };
     }
   }

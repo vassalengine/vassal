@@ -35,6 +35,8 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -82,7 +84,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected int radius;
   protected boolean alwaysActive;
   protected boolean active;
-  protected String activateCommand;
+  protected String activateCommand = "";
   protected NamedKeyStroke activateKey;
   protected KeyCommand[] commands;
   protected String mapShaderName;
@@ -181,6 +183,24 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   public String getName() {
     return piece.getName();
   }
+  
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(activateKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(activateCommand);
+  }
+
 
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {

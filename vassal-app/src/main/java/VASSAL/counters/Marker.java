@@ -23,6 +23,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -38,7 +39,7 @@ import VASSAL.tools.SequenceEncoder;
  * A generic Decorator that retains in its state the value of a property.
  * That is, if {@link #setProperty(Object,Object)} is invoked with a key
  * that is one of {@link #getKeys()}, the <code>String</code> value of that
- * property will be reflected in the {@link #myGetState(String)} method.
+ * property will be reflected in the #myGetState() method.
  */
 public class Marker extends Decorator implements EditablePiece {
   public static final String ID = "mark;";
@@ -163,8 +164,8 @@ public class Marker extends Decorator implements EditablePiece {
   @Override
   public String getDescription() {
     if (keys != null
-        && keys.length > 0 && keys[0].length() > 0
-        && values.length > 0 && values[0].length() > 0) {
+      && keys.length > 0 && keys[0].length() > 0
+      && values.length > 0 && values[0].length() > 0) {
       return "Marker - " + keys[0] + " = " + values[0];
     }
     else
@@ -187,9 +188,7 @@ public class Marker extends Decorator implements EditablePiece {
   @Override
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<>();
-    for (String key : keys) {
-      l.add(key);
-    }
+    Collections.addAll(l, keys);
     return l;
   }
 
@@ -231,5 +230,22 @@ public class Marker extends Decorator implements EditablePiece {
     public String getType() {
       return Marker.ID + propName.getValueString();
     }
+  }
+
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Arrays.asList(values);
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(values);
   }
 }

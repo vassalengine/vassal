@@ -19,9 +19,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;
 import java.awt.Window;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.Box;
@@ -115,20 +113,10 @@ public class FontConfigurer extends Configurer {
 
       updateValue();
 
-      ItemListener l = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent evt) {
-          updateValue();
-        }
-      };
+      ItemListener l = evt -> updateValue();
       family.addItemListener(l);
 
-      PropertyChangeListener pc = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateValue();
-        }
-      };
+      PropertyChangeListener pc = evt -> updateValue();
       size.addPropertyChangeListener(pc);
       bold.addPropertyChangeListener(pc);
       italic.addPropertyChangeListener(pc);

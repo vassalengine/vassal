@@ -1,6 +1,7 @@
 3.5.0-beta1 - ???
 
 * 13432: MouseOverStackViewer can show > 1 piece of a deck
+* 13417: Added search function to Editor
 * 13415: MouseoverStackViewer has HTML support and additional formatting options
 * 13414: "Help" button (and help information) added to Preferences dialog
 * 13368: Added preference to control drag-at-edge-of-map width
@@ -23,6 +24,7 @@
 
 3.4.4 - ???
 
+* 13458: Reinstate behavior of floating point expression evaluation
 * 13454: ClassCastException in SetPersistentPropertyCommand.execute()
 * 13426: NegativeArraySizeException when receiving first private message
 

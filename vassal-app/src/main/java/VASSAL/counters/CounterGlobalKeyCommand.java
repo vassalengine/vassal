@@ -24,6 +24,9 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import java.util.Objects;
 import javax.swing.JLabel;
@@ -165,6 +168,42 @@ public class CounterGlobalKeyCommand extends Decorator
   @Override
   public Shape getShape() {
     return piece.getShape();
+  }
+  
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key, globalKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(propertiesFilter.getExpression());
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    if (globalCommand != null) {
+      return List.of(globalCommand.getReportFormat());
+    }
+    return Collections.emptyList();
   }
 
   @Override
