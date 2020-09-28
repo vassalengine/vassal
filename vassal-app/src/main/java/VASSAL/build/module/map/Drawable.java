@@ -26,7 +26,7 @@ import VASSAL.build.module.Map;
  *
  * @see Map#addDrawComponent */
 public interface Drawable {
-  public void draw(java.awt.Graphics g, Map map);
+  void draw(java.awt.Graphics g, Map map);
 
-  public boolean drawAboveCounters();
+  boolean drawAboveCounters();
 }
