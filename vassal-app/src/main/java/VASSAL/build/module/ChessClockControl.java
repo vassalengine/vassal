@@ -686,7 +686,7 @@ public class ChessClockControl extends AbstractConfigurable
   /**
    * Our "command" format for passing information about the master clock control between computers (or to/from save and log files)
    */
-  public class UpdateClockControlCommand extends Command {
+  private class UpdateClockControlCommand extends Command {
     private final boolean showing;
     private final boolean online;
 
@@ -735,7 +735,7 @@ public class ChessClockControl extends AbstractConfigurable
   /**
    * Processes right-clicks on our button to put up a context menu
    */
-  class ChessMouseListener implements MouseListener, ActionListener {
+  private class ChessMouseListener implements MouseListener, ActionListener {
     protected JPopupMenu popup;
 
     /**
