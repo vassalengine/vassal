@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.configure.TranslatableStringEnum;
 import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.AbstractConfigurable;
@@ -54,7 +55,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
@@ -80,46 +80,46 @@ public class LOS_Thread extends AbstractConfigurable implements
     UniqueIdManager.Identifyable,
     CommandEncoder {
 
-  public static final String LOS_THREAD_COMMAND = "LOS\t";
+  public static final String LOS_THREAD_COMMAND = "LOS\t"; //NON-NLS
 
-  public static final String NAME = "threadName";
-  public static final String SNAP_LOS = "snapLOS";
-  public static final String SNAP_START = "snapStart";
-  public static final String SNAP_END = "snapEnd";
-  public static final String REPORT = "report";
-  public static final String PERSISTENCE = "persistence";
-  public static final String PERSISTENT_ICON_NAME = "persistentIconName";
-  public static final String GLOBAL = "global";
-  public static final String LOS_COLOR = "threadColor";
-  public static final String HOTKEY = "hotkey";
-  public static final String TOOLTIP = "tooltip";
-  public static final String ICON_NAME = "iconName";
-  public static final String LABEL = "label";
-  public static final String DRAW_RANGE = "drawRange";
-  public static final String HIDE_COUNTERS = "hideCounters";
-  public static final String HIDE_OPACITY = "hideOpacity";
-  public static final String RANGE_BACKGROUND = "rangeBg";
-  public static final String RANGE_FOREGROUND = "rangeFg";
-  public static final String RANGE_SCALE = "scale";
-  public static final String RANGE_ROUNDING = "round";
-  public static final String ROUND_UP = "Up";
-  public static final String ROUND_DOWN = "Down";
-  public static final String ROUND_OFF = "Nearest whole number";
-  public static final Font RANGE_FONT = new Font("Dialog", Font.PLAIN, 11);
-  public static final String DEFAULT_ICON = "/images/thread.gif";
+  public static final String NAME = "threadName"; //NON-NLS
+  public static final String SNAP_LOS = "snapLOS"; //NON-NLS
+  public static final String SNAP_START = "snapStart"; //NON-NLS
+  public static final String SNAP_END = "snapEnd"; //NON-NLS
+  public static final String REPORT = "report"; //NON-NLS
+  public static final String PERSISTENCE = "persistence"; //NON-NLS
+  public static final String PERSISTENT_ICON_NAME = "persistentIconName"; //NON-NLS
+  public static final String GLOBAL = "global"; //NON-NLS
+  public static final String LOS_COLOR = "threadColor"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
+  public static final String ICON_NAME = "iconName"; //NON-NLS
+  public static final String LABEL = "label"; //NON-NLS
+  public static final String DRAW_RANGE = "drawRange"; //NON-NLS
+  public static final String HIDE_COUNTERS = "hideCounters"; //NON-NLS
+  public static final String HIDE_OPACITY = "hideOpacity"; //NON-NLS
+  public static final String RANGE_BACKGROUND = "rangeBg"; //NON-NLS
+  public static final String RANGE_FOREGROUND = "rangeFg"; //NON-NLS
+  public static final String RANGE_SCALE = "scale"; //NON-NLS
+  public static final String RANGE_ROUNDING = "round"; //NON-NLS
+  public static final String ROUND_UP = "Up"; //NON-NLS
+  public static final String ROUND_DOWN = "Down"; //NON-NLS
+  public static final String ROUND_OFF = "Nearest whole number"; //NON-NLS
+  public static final Font RANGE_FONT = new Font("Dialog", Font.PLAIN, 11); //NON-NLS
+  public static final String DEFAULT_ICON = "/images/thread.gif"; //NON-NLS
 
-  public static final String FROM_LOCATION = "FromLocation";
-  public static final String TO_LOCATION = "ToLocation";
-  public static final String CHECK_COUNT = "NumberOfLocationsChecked";
-  public static final String CHECK_LIST = "AllLocationsChecked";
-  public static final String RANGE = "Range";
+  public static final String FROM_LOCATION = "FromLocation"; //NON-NLS
+  public static final String TO_LOCATION = "ToLocation"; //NON-NLS
+  public static final String CHECK_COUNT = "NumberOfLocationsChecked"; //NON-NLS
+  public static final String CHECK_LIST = "AllLocationsChecked"; //NON-NLS
+  public static final String RANGE = "Range"; //NON-NLS
 
-  public static final String NEVER = "Never";
-  public static final String ALWAYS = "Always";
-  public static final String CTRL_CLICK = "Ctrl-Click & Drag";
-  public static final String WHEN_PERSISTENT = "When Persisting";
+  public static final String NEVER = "Never"; //NON-NLS
+  public static final String ALWAYS = "Always"; //NON-NLS
+  public static final String CTRL_CLICK = "Ctrl-Click & Drag"; //NON-NLS
+  public static final String WHEN_PERSISTENT = "When Persisting"; //NON-NLS
 
-  protected static final UniqueIdManager idMgr = new UniqueIdManager("LOS_Thread");
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("LOS_Thread"); //NON-NLS
 
   protected boolean retainAfterRelease = false;
   protected long lastRelease = 0;
@@ -145,7 +145,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected String anchorLocation = "";
   protected String lastLocation = "";
   protected String lastRange = "";
-  protected FormattedString reportFormat = new FormattedString("$playerId$ Checked LOS from $" + FROM_LOCATION + "$ to $" + CHECK_LIST + "$");
+  protected FormattedString reportFormat = new FormattedString(Resources.getString("Editor.LosThread.los_check_string"));
   protected List<String> checkList = new ArrayList<>();
   protected String persistence = CTRL_CLICK;
   protected String persistentIconName;
@@ -780,7 +780,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "LOS");
+    return HelpFile.getReferenceManualPage("Map.html", "LOS"); //NON-NLS
   }
 
   @Override
@@ -860,24 +860,51 @@ public class LOS_Thread extends AbstractConfigurable implements
     return cond;
   }
 
-  public static class RoundingOptions extends StringEnum {
+  public static class RoundingOptions extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ROUND_UP, ROUND_DOWN, ROUND_OFF};
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        Resources.getString("Editor.up"),
+        Resources.getString("Editor.down"),
+        Resources.getString("Editor.LosThread.round_off"),
+      };
+    }
   }
 
-  public static class PersistenceOptions extends StringEnum {
+  public static class PersistenceOptions extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{CTRL_CLICK, NEVER, ALWAYS};
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        Resources.getString("Editor.LosThread.ctrl_click"),
+        Resources.getString("Editor.never"),
+        Resources.getString("Editor.always")
+      };
+    }
   }
 
-  public static class GlobalOptions extends StringEnum {
+  public static class GlobalOptions extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{WHEN_PERSISTENT, NEVER, ALWAYS};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[]{
+        Resources.getString("Editor.LosThread.when_persistent"),
+        Resources.getString("Editor.never"),
+        Resources.getString("Editor.always")
+      };
     }
   }
 
