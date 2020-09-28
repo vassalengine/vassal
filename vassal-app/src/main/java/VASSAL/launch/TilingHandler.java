@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,8 +109,7 @@ public class TilingHandler {
   protected Dimension getImageSize(DataArchive archive, String ipath)
                                                            throws IOException {
     try (InputStream in = archive.getInputStream(ipath)) {
-      final Dimension id = ImageUtils.getImageSize(ipath, in);
-      return id;
+      return ImageUtils.getImageSize(ipath, in);
     }
   }
 
@@ -171,12 +171,12 @@ public class TilingHandler {
 
     final List<String> args = Arrays.asList(
       Info.javaBinPath,
-      "-classpath",
+      "-classpath", //NON-NLS
       System.getProperty("java.class.path"),
-      "-Xmx" + maxheap + "M",
-      "-DVASSAL.id=" + pid,
-      "-Duser.home=" + System.getProperty("user.home"),
-      "-DVASSAL.port=" + port,
+      "-Xmx" + maxheap + "M", //NON-NLS
+      "-DVASSAL.id=" + pid, //NON-NLS
+      "-Duser.home=" + System.getProperty("user.home"), //NON-NLS
+      "-DVASSAL.port=" + port, //NON-NLS
       "VASSAL.tools.image.tilecache.ZipFileImageTiler",
       aname,
       cdir.getAbsolutePath(),
@@ -186,7 +186,7 @@ public class TilingHandler {
     // get the progress dialog
     final ProgressDialog pd = ProgressDialog.createOnEDT(
       ModuleManagerWindow.getInstance(),
-      "Processing Image Tiles",
+      Resources.getString("TilingHandler.processing_image_tiles"),
       " "
     );
 
@@ -217,15 +217,10 @@ public class TilingHandler {
         };
 
         // setup the cancel button in the progress dialog
-        EDT.execute(new Runnable() {
-          @Override
-          public void run() {
-            pd.addActionListener(e -> {
-              pd.setVisible(false);
-              proc.future.cancel(true);
-            });
-          }
-        });
+        EDT.execute(() -> pd.addActionListener(e -> {
+          pd.setVisible(false);
+          proc.future.cancel(true);
+        }));
 
         boolean done = false;
         byte type;
@@ -237,7 +232,7 @@ public class TilingHandler {
             final String ipath = in.readUTF();
 
             EDT.execute(() -> {
-              pd.setLabel("Tiling " + ipath);
+              pd.setLabel(Resources.getString("TilingHandler.tiling") + ipath);
               if (!pd.isVisible()) pd.setVisible(true);
             });
             break;
@@ -262,14 +257,14 @@ public class TilingHandler {
       }
     }
     catch (IOException e) {
-      logger.error("Error during tiling", e);
+      logger.error("Error during tiling", e); //NON-NLS
     }
     finally {
       try {
         ssock.close();
       }
       catch (IOException e) {
-        logger.error("Error while closing the server socket", e);
+        logger.error("Error while closing the server socket", e); //NON-NLS
       }
     }
 
@@ -289,7 +284,7 @@ public class TilingHandler {
   protected void makeHashDirs() throws IOException {
     for (int i = 0; i < 16; ++i) {
       for (int j = 0; j < 16; ++j) {
-        final File d = new File(String.format("%s/%1x/%1x%1x", cdir, i, i, j));
+        final File d = new File(String.format("%s/%1x/%1x%1x", cdir, i, i, j)); //NON-NLS
         FileUtils.forceMkdir(d);
       }
     }
@@ -317,14 +312,13 @@ public class TilingHandler {
 
     // nothing to do if no images need tiling
     if (multi.isEmpty()) {
-      logger.info("No images to tile.");
+      logger.info("No images to tile."); //NON-NLS
       return;
     }
 
     // ensure that the tile directories exist
     makeHashDirs();
 
-    final int tcount = s.first;
     final int max_data_mbytes = (4 * s.second) >> 20;
 
     // fix the max heap

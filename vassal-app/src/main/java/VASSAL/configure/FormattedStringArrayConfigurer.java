@@ -70,6 +70,6 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
 
   @Override
   protected void addTextActionListener(ActionListener a) {
-    return;
+
   }
 }

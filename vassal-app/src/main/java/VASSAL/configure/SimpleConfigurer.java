@@ -46,12 +46,9 @@ public class SimpleConfigurer extends Configurer
     attConfig = attConfigurers;
     target = c;
     setValue(target);
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setName((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setName((String) evt.getNewValue());
       }
     });
   }

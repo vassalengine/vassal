@@ -29,6 +29,7 @@ import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
 import VASSAL.script.expression.ExpressionBuilder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.icon.IconFactory;
@@ -120,9 +121,9 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     public ExpressionButton(Configurer config, int size, EditablePiece piece) {
       this.config = config;
       this.piece = piece;
-      setIcon(IconFactory.getIcon("calculator", IconFamily.XSMALL));
+      setIcon(IconFactory.getIcon("calculator", IconFamily.XSMALL)); //NON-NLS
       setSize(size);
-      setToolTipText("Expression Builder");
+      setToolTipText(Resources.getString("Editor.FormattedExpressionConfigurer.expression_builder"));
       addActionListener(this);
     }
 

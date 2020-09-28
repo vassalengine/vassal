@@ -100,14 +100,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   
   
   public String getComponentTypeName() {
-    return "ExpressionInterpreter";
+    return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
   
   
   public String getComponentName() {
-    return "ExpressionInterpreter";
+    return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
-  
+
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -521,8 +521,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : "");
-      final String data = "Data=[" + value.toString() + "].";
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String data = "Data=[" + value.toString() + "]."; //NON-NLS
       ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
     return result;

@@ -86,32 +86,26 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   protected void save() {
-    ExtensionEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          extension.save();
-          setExtensionName(extension.getDataArchive().getName());
-        }
-        catch (IOException e) {
-          WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
-        }
+    ExtensionEditorWindow.this.saver(() -> {
+      try {
+        extension.save();
+        setExtensionName(extension.getDataArchive().getName());
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
       }
     });
   }
 
   @Override
   protected void saveAs() {
-    ExtensionEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          extension.saveAs();
-          setExtensionName(extension.getDataArchive().getName());
-        }
-        catch (IOException e) {
-          WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
-        }
+    ExtensionEditorWindow.this.saver(() -> {
+      try {
+        extension.saveAs();
+        setExtensionName(extension.getDataArchive().getName());
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
       }
     });
   }

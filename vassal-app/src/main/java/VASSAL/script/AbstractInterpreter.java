@@ -33,8 +33,8 @@ import bsh.UtilEvalError;
 
 public abstract class AbstractInterpreter extends Interpreter {
 
-  protected static final String THIS = "_interp";
-  protected static final String SOURCE = "_source";
+  protected static final String THIS = "_interp"; //NON-NLS
+  protected static final String SOURCE = "_source"; //NON-NLS
   private static final long serialVersionUID = 1L;
 
   protected NameSpace myNameSpace;
@@ -109,7 +109,7 @@ public abstract class AbstractInterpreter extends Interpreter {
   /**
    * Alert(message) Display a message in a dialog box/
    *
-   * @param message
+   * @param message message to display
    */
   public Object alert(String message) {
     JOptionPane.showMessageDialog(null, message);

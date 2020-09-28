@@ -17,8 +17,6 @@
  */
 package VASSAL.i18n;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +37,8 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class LocaleConfigurer extends Configurer {
-
-  protected static final String ANY_COUNTRY = "<Any Country>";
+  //FIXME needs an i18n strategy
+  protected static final String ANY_COUNTRY = "[Any Country]";
   protected Box panel;
   protected static final Map<String, String> languages = new HashMap<>();
   protected static String[] languageList;
@@ -110,24 +108,14 @@ public class LocaleConfigurer extends Configurer {
       panel = Box.createHorizontalBox();
       langBox = new JComboBox(getLanguageList());
       langBox.setSelectedItem(Locale.getDefault().getDisplayLanguage());
-      langBox.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          updateValue();
-        }
-      });
-      panel.add(new JLabel("Language:  "));
+      langBox.addActionListener(e -> updateValue());
+      panel.add(new JLabel(Resources.getString("Editor.LocaleConfigurer.language")));
       panel.add(langBox);
 
       countryBox = new JComboBox(getCountryList());
       countryBox.setSelectedItem(ANY_COUNTRY);
-      countryBox.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          updateValue();
-        }
-      });
-      panel.add(new JLabel("  Country:  "));
+      countryBox.addActionListener(e -> updateValue());
+      panel.add(new JLabel((Resources.getString("Editor.LocaleConfigurer.country"))));
       panel.add(countryBox);
 
     }
@@ -162,7 +150,7 @@ public class LocaleConfigurer extends Configurer {
       ArrayList<String> sortedCountries = new ArrayList<>();
       for (String s : c) {
         String country =
-                (new Locale("en", s)).getDisplayCountry(Locale.getDefault());
+                (new Locale("en", s)).getDisplayCountry(Locale.getDefault()); //NON-NLS
         countries.put(country, s);
         sortedCountries.add(country);
       }

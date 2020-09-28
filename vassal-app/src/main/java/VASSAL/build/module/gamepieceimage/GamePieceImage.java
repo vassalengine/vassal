@@ -248,15 +248,12 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
   }
 
-  private VisibilityCondition borderCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      if (getLayout() == null) {
-        return false;
-      }
-      else {
-        return getLayout().isColoredBorder();
-      }
+  private VisibilityCondition borderCond = () -> {
+    if (getLayout() == null) {
+      return false;
+    }
+    else {
+      return getLayout().isColoredBorder();
     }
   };
 

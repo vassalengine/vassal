@@ -159,7 +159,7 @@ public abstract class Expression {
   /**
    * Factory method to create a Beanshell expression of a value that
    * is known to be a property name.
-   * Used to convert values such as the Follow proprty field in Embellishment
+   * Used to convert values such as the Follow property field in Embellishment
    *
    */
   public static Expression createSimplePropertyExpression (String s) {

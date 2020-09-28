@@ -21,8 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -117,14 +116,11 @@ public abstract class ListConfigurer extends Configurer implements
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
       configControls = Box.createVerticalBox();
 
-      JButton addButton = new JButton("New");
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Configurer c = buildChildConfigurer();
-          getListValue().add(c.getValue());
-          updateControls();
-        }
+      JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
+      addButton.addActionListener(e -> {
+        Configurer c = buildChildConfigurer();
+        getListValue().add(c.getValue());
+        updateControls();
       });
       controls.add(addButton);
       controls.add(configControls);
@@ -142,7 +138,7 @@ public abstract class ListConfigurer extends Configurer implements
   /**
    * The objects in the list are specified by the Configurer returned here
    *
-   * @return
+   * @return objects in the list
    */
   protected abstract Configurer buildChildConfigurer();
 
@@ -165,14 +161,11 @@ public abstract class ListConfigurer extends Configurer implements
         c.addPropertyChangeListener(this);
         configurers.add(c);
         final Box b = Box.createHorizontalBox();
-        JButton delButton = new JButton("Remove");
-        delButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            getListValue().remove(c.getValue());
-            updateControls();
-            repack();
-          }
+        JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
+        delButton.addActionListener(e -> {
+          getListValue().remove(c.getValue());
+          updateControls();
+          repack();
         });
         b.add(delButton);
         b.add(c.getControls());
@@ -221,11 +214,8 @@ public abstract class ListConfigurer extends Configurer implements
     String valueString = getValueString();
     String otherValueString = other.getValueString();
     if (valueString == null) {
-      if (otherValueString != null)
-        return false;
+      return otherValueString == null;
     }
-    else if (!valueString.equals(otherValueString))
-      return false;
-    return true;
+    else return valueString.equals(otherValueString);
   }
 }

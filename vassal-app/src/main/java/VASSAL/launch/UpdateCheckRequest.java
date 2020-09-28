@@ -50,7 +50,7 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
           BrowserSupport.openURL(
-              "https://github.com/vassalengine/vassal/releases");
+              "https://github.com/vassalengine/vassal/releases"); //NON-NLS
         }
       }
     }
