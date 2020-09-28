@@ -43,7 +43,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
@@ -84,33 +84,33 @@ public class ChessClockControl extends AbstractConfigurable
 
   public static final char DELIMITER = '\t';
 
-  public static final String NAME = "name";
+  public static final String NAME = "name"; //NON-NLS
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String BUTTON_TOOLTIP = "buttonTooltip"; //$NON-NLS-1$
 
-  public static final String PAUSE_HOTKEY = "pauseHotkey";
-  public static final String NEXT_HOTKEY = "nextHotkey";
-  public static final String SHOW_HOTKEY = "showHotkey";
+  public static final String PAUSE_HOTKEY = "pauseHotkey"; //NON-NLS
+  public static final String NEXT_HOTKEY = "nextHotkey"; //NON-NLS
+  public static final String SHOW_HOTKEY = "showHotkey"; //NON-NLS
 
-  public static final String SHOW_TENTHSECONDS = "showTenths";
-  public static final String SHOW_SECONDS = "showSeconds";
-  public static final String SHOW_HOURS = "showHours";
-  public static final String SHOW_DAYS = "showDays";
+  public static final String SHOW_TENTHSECONDS = "showTenths"; //NON-NLS
+  public static final String SHOW_SECONDS = "showSeconds"; //NON-NLS
+  public static final String SHOW_HOURS = "showHours"; //NON-NLS
+  public static final String SHOW_DAYS = "showDays"; //NON-NLS
 
-  public static final String STYLE_ALWAYS = "Always";
-  public static final String STYLE_AUTO   = "Auto";
-  public static final String STYLE_NEVER  = "Never";
+  public static final String STYLE_ALWAYS = "Always"; //NON-NLS (really)
+  public static final String STYLE_AUTO   = "Auto"; //NON-NLS (really)
+  public static final String STYLE_NEVER  = "Never"; //NON-NLS (really)
 
-  public static final String CHESSMENU_PAUSE = Resources.getString("ChessClock.pause");
-  public static final String CHESSMENU_SHOW  = Resources.getString("ChessClock.show");
-  public static final String CHESSMENU_HIDE  = Resources.getString("ChessClock.hide");
-  public static final String CHESSMENU_NEXT  = Resources.getString("ChessClock.next");
+  public static final String CHESSMENU_PAUSE = Resources.getString("ChessClock.pause"); //NON-NLS
+  public static final String CHESSMENU_SHOW  = Resources.getString("ChessClock.show"); //NON-NLS
+  public static final String CHESSMENU_HIDE  = Resources.getString("ChessClock.hide"); //NON-NLS
+  public static final String CHESSMENU_NEXT  = Resources.getString("ChessClock.next"); //NON-NLS
 
   public static final String COMMAND_PREFIX = "CLOCKCONTROL" + DELIMITER; //NON-NLS-1$
 
   public ChessClockControl() {
-    setConfigureName("Chess Clock Control");
+    setConfigureName(Resources.getString("Editor.ChessClock.chess_clock_control"));
 
     chessClocksVisible = false;
     onlineGame         = false;
@@ -118,7 +118,7 @@ public class ChessClockControl extends AbstractConfigurable
     ActionListener al = e -> pressControlButton();
 
     chessClockButton = new LaunchButton("Chess Clocks", BUTTON_TOOLTIP, BUTTON_TEXT, SHOW_HOTKEY, ICON, al); //$NON-NLS-1$
-    chessClockButton.setToolTipText("Tooltip Text");
+    chessClockButton.setToolTipText(Resources.getString("Editor.tooltip_text_label"));
     //chessClockButton.setAttribute(ICON, "chessclock.png"); //BR// I have a decent royalty-free icon, but need to figure out vassal-wide licensing ... or just leave it open for module designer?
     chessClockButton.addMouseListener(new ChessMouseListener());
 
@@ -288,7 +288,7 @@ public class ChessClockControl extends AbstractConfigurable
       Resources.getString("Editor.ChessClock.show_tenths_of_seconds"),
       Resources.getString("Editor.ChessClock.show_seconds"),
       Resources.getString("Editor.ChessClock.show_hours"),
-      Resources.getString("Editor.ChessClock.show_minutes")
+      Resources.getString("Editor.ChessClock.show_days")
     };
   }
 
@@ -628,10 +628,18 @@ public class ChessClockControl extends AbstractConfigurable
   /**
    * Autoconfigurer for the days/hours/minutes/seconds/tenths styles
    */
-  public static class TimeStyleConfig extends StringEnum {
+  public static class TimeStyleConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { STYLE_ALWAYS, STYLE_AUTO, STYLE_NEVER };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.ChessClock.always",
+        "Editor.ChessClock.auto",
+        "Editor.ChessClock.never" };
     }
   }
 

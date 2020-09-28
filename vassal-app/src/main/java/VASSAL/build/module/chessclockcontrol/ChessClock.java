@@ -74,11 +74,11 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
 
-  public static final String TICKING_BACKGROUND_COLOR = "tickingBackgroundColor";
-  public static final String TICKING_FONT_COLOR       = "tickingFontColor";
-  public static final String TOCKING_FONT_COLOR       = "tockingFontColor";
+  public static final String TICKING_BACKGROUND_COLOR = "tickingBackgroundColor"; //NON-NLS
+  public static final String TICKING_FONT_COLOR       = "tickingFontColor"; //NON-NLS
+  public static final String TOCKING_FONT_COLOR       = "tockingFontColor"; //NON-NLS
 
-  public static final String GENERIC   = "Player";
+  public static final String GENERIC   = "Player"; //NON-NLS
 
   private static Color defaultColor;       // Stores default look-and-feel colors for buttons
   private static Color defaultFontColor;
@@ -450,36 +450,36 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     if (doDays) {
       if (doTenths) {
-        timerButton.setText(String.format("%s%d:%02d:%02d:%02d.%d", getFormattedButtonText(), days, hours, minutes, seconds, tenths));
+        timerButton.setText(String.format("%s%d:%02d:%02d:%02d.%d", getFormattedButtonText(), days, hours, minutes, seconds, tenths)); //NON-NLS
       }
       else if (doSeconds) {
-        timerButton.setText(String.format("%s%d:%02d:%02d:%02d", getFormattedButtonText(), days, hours, minutes, seconds));
+        timerButton.setText(String.format("%s%d:%02d:%02d:%02d", getFormattedButtonText(), days, hours, minutes, seconds)); //NON-NLS
       }
       else {
-        timerButton.setText(String.format("%s%dd:%02d:%02d", getFormattedButtonText(), days, hours, minutes));
+        timerButton.setText(String.format("%s%dd:%02d:%02d", getFormattedButtonText(), days, hours, minutes)); //NON-NLS
       }
     }
     else {
       hours = hours + days * 24;
       if (doHours) {
         if (doTenths) {
-          timerButton.setText(String.format("%s%d:%02d:%02d.%d", getFormattedButtonText(), hours, minutes, seconds, tenths));
+          timerButton.setText(String.format("%s%d:%02d:%02d.%d", getFormattedButtonText(), hours, minutes, seconds, tenths)); //NON-NLS
         }
         else if (doSeconds) {
-          timerButton.setText(String.format("%s%d:%02d:%02d", getFormattedButtonText(), hours, minutes, seconds));
+          timerButton.setText(String.format("%s%d:%02d:%02d", getFormattedButtonText(), hours, minutes, seconds)); //NON-NLS
         }
         else {
-          timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), hours, minutes));
+          timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), hours, minutes)); //NON-NLS
         }
       }
       else {
         minutes = minutes + hours * 60;
 
         if (doTenths) {
-          timerButton.setText(String.format("%s%d:%02d.%d", getFormattedButtonText(), minutes, seconds, tenths));
+          timerButton.setText(String.format("%s%d:%02d.%d", getFormattedButtonText(), minutes, seconds, tenths)); //NON-NLS
         }
         else {
-          timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), minutes, seconds));
+          timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), minutes, seconds)); //NON-NLS
         }
       }
     }
@@ -507,7 +507,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       instanceIsActive = true;
     }
     else {
-      ErrorDialog.dataWarning(new BadDataReport("Chess Clock can only be added to Chess Clock Control", ""));
+      ErrorDialog.dataWarning(new BadDataReport("Chess Clock can only be added to Chess Clock Control", ""));  //NON-NLS
     }
   }
 
