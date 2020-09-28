@@ -23,19 +23,19 @@ package VASSAL.tools.menu;
  * @since 3.1.0
  */
 public interface ParentProxy {
-  public void add(ChildProxy<?> child);
+  void add(ChildProxy<?> child);
 
-  public void insert(ChildProxy<?> child, int pos);
+  void insert(ChildProxy<?> child, int pos);
 
-  public void remove(ChildProxy<?> child);
+  void remove(ChildProxy<?> child);
 
-  public void remove(int pos);
+  void remove(int pos);
 
-  public int getChildCount();
+  int getChildCount();
 
-  public ChildProxy<?>[] getChildren();
+  ChildProxy<?>[] getChildren();
 
-  public ChildProxy<?> getChild(int pos);
+  ChildProxy<?> getChild(int pos);
 
-  public int getIndex(ChildProxy<?> child);
+  int getIndex(ChildProxy<?> child);
 }

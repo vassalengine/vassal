@@ -33,7 +33,7 @@ public class IPCMessageDispatcher implements Runnable {
     }
     catch (IOException | InterruptedException e) {
       // FIXME
-      log.error("Error while writing into IPC channel", e);
+      log.error("Error while writing into IPC channel", e); //NON-NLS
     }
   }
 }

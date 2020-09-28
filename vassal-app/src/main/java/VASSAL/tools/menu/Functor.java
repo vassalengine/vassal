@@ -24,5 +24,5 @@ package VASSAL.tools.menu;
  */
 @FunctionalInterface
 interface Functor<T> {
-  public void apply(T peer);
+  void apply(T peer);
 }
