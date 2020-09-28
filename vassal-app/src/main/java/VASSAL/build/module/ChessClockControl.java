@@ -27,8 +27,8 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -63,7 +63,7 @@ public class ChessClockControl extends AbstractConfigurable
         implements CommandEncoder, GameComponent, UniqueIdManager.Identifyable {
   protected static UniqueIdManager idMgr = new UniqueIdManager("ChessClockControl"); //$NON-NLS-1$
 
-  protected Set<ChessClock> chessclocks = new HashSet<>();  // List of individual chess clocks attached to our control
+  protected List<ChessClock> chessclocks = new ArrayList<>();  // List of individual chess clocks attached to our control
 
   protected String showTenthSeconds = STYLE_AUTO;  // Configurable clock display style
   protected String showSeconds = STYLE_AUTO;
@@ -146,7 +146,7 @@ public class ChessClockControl extends AbstractConfigurable
   /**
    * @return Our list of chessclocks
    */
-  public Set<ChessClock> getChessClocks() {
+  public List<ChessClock> getChessClocks() {
     return chessclocks;
   }
 
