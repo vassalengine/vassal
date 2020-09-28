@@ -37,9 +37,9 @@ public interface FileStore extends Closeable {
    * @param path the path to the file in the store
    * @return <code>true</code> if the file exists in the store
    *
-   * @throws IOException
+   * @throws IOException oops
    */
-  public boolean contains(String path) throws IOException;
+  boolean contains(String path) throws IOException;
 
   /**
    * Gets an {@link InputStream} to read from the given file.
@@ -47,9 +47,9 @@ public interface FileStore extends Closeable {
    * @param path the path to the file in the store
    * @return an <code>InputStream</code> containing the requested file
    *
-   * @throws IOException
+   * @throws IOException oops
    */
-  public InputStream getInputStream(String path) throws IOException;
+  InputStream getInputStream(String path) throws IOException;
 
   /**
    * Gets the size of a file in the store, in bytes.
@@ -58,9 +58,9 @@ public interface FileStore extends Closeable {
    * @return the size of the file, in bytes
    *
    * @throws FileNotFoundException if <code>path</code> is not in the store
-   * @throws IOException
+   * @throws IOException oops
    */
-  public long getSize(String path) throws IOException;
+  long getSize(String path) throws IOException;
 
   /**
    * Gets the modification time of a file in the store, in milliseconds
@@ -70,18 +70,18 @@ public interface FileStore extends Closeable {
    * @return the mtime of the file
    *
    * @throws FileNotFoundException if <code>path</code> is not in the store
-   * @throws IOException
+   * @throws IOException oops
    */
-  public long getMTime(String path) throws IOException;
+  long getMTime(String path) throws IOException;
 
   /**
    * Gets the list of files in the store.
    *
    * @return the list of files in the store
    *
-   * @throws IOException
+   * @throws IOException oops
    */
-  public List<String> getFiles() throws IOException;
+  List<String> getFiles() throws IOException;
 
   /**
    * Gets the list of files under a given directory of the store.
@@ -90,22 +90,22 @@ public interface FileStore extends Closeable {
    * @return the list of files under the given directory
    *
    * @throws FileNotFoundException if <code>root</code> is not in the store
-   * @throws IOException
+   * @throws IOException oops
    */
-  public List<String> getFiles(String root) throws IOException;
+  List<String> getFiles(String root) throws IOException;
 
   /**
    * Closes the store.
    *
-   * @throws IOException
+   * @throws IOException oops
    */
   @Override
-  public void close() throws IOException;
+  void close() throws IOException;
 
   /**
    * Checks whether the store is closed.
    *
    * @return <code>true</code> if the archive is closed
    */
-  public boolean isClosed();
+  boolean isClosed();
 }

@@ -27,10 +27,10 @@ import VASSAL.tools.opcache.OpObserver;
  * of an <code>ImageOp</code>.
  *
  * <p>Objects implementing <code>ImageOpObserver</code> are intended to
- * be passed as an argument to {@link ImageOp.getImage}, which which
+ * be passed as an argument to {link ImageOp.getImage}, which which
  * call back {@link #imageOpChange} on completion.</p>
  *
- * <p>The most common implementaion of this interface is {@link Repainter},
+ * <p>The most common implementation of this interface is {@link Repainter},
  * which can be used to repaint portions of {@link java.awt.Component}s
  * which are waiting for images to be computed.</p>
  *

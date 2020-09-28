@@ -89,7 +89,7 @@ public class AudioSystemClip implements AudioClip {
           clip.close();
         }
         catch (Exception e2) {
-          log.error("Error while closing clip {}", clip, e2);
+          log.error("Error while closing clip {}", clip, e2); //NON-NLS
         }
       }
       throw e;

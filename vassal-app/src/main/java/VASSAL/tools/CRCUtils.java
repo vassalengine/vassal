@@ -38,11 +38,11 @@ public class CRCUtils {
    * Calculate a cumulative CRC over a series of files
    *
    * NOTE: It is up to the calling routine to ensure that the order of
-   * Files in the list is consistent accross all platforms.
+   * Files in the list is consistent across all platforms.
    *
    * @param files List of files
    * @return CRC
-   * @throws IOException
+   * @throws IOException oops
    */
   public static long getCRC(List<File> files) throws IOException {
     final CRC32 crc = new CRC32();
@@ -58,9 +58,8 @@ public class CRCUtils {
    *
    * @param file File
    * @param crc CRC32 to accumulate
-   * @param bytes size of File (out)
    * @param buffer read buffer
-   * @throws IOException
+   * @throws IOException oops
    */
   private static void buildCRC(File file, CRC32 crc, byte[] buffer) throws IOException {
     try (InputStream in = new FileInputStream(file)) {
@@ -73,9 +72,8 @@ public class CRCUtils {
    *
    * @param in InputStream
    * @param crc CRC32 to accumulate
-   * @param bytes number of bytes read
    * @param buffer read buffer
-   * @throws IOException
+   * @throws IOException oops
    */
   private static void buildCRC(InputStream in, CRC32 crc, byte[] buffer) throws IOException {
 

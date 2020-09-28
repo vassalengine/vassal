@@ -20,7 +20,6 @@ package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * An interface for classes which supply image tiles.
@@ -38,9 +37,9 @@ public interface ImageTileSource {
    * @param scale the scale of the tile
    * @return the tile
    *
-   * @throws IOException if the tile can't be read
+   * @throws ImageIOException if the tile can't be read
    */
-  public BufferedImage getTile(
+  BufferedImage getTile(
     String name,
     int tileX,
     int tileY,
@@ -55,9 +54,9 @@ public interface ImageTileSource {
    * @param scale the scale of the tile
    * @return the size of the tile
    *
-   * @throws IOException if the tile can't be read
+   * @throws ImageIOException if the tile can't be read
    */
-  public Dimension getTileSize(
+  Dimension getTileSize(
     String name,
     int tileX,
     int tileY,
@@ -71,9 +70,9 @@ public interface ImageTileSource {
    * @param tileY the Y coordinate of the tile
    * @param scale the scale of the tile
    *
-   * @throws IOException if the image can't be read
+   * @throws ImageIOException if the image can't be read
    */
-  public boolean tileExists(
+  boolean tileExists(
     String name,
     int tileX,
     int tileY,

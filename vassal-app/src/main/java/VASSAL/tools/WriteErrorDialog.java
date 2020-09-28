@@ -37,7 +37,7 @@ public class WriteErrorDialog {
     ErrorDialog.showDetails(
       t,
       ThrowableUtils.getStackTrace(e),
-      "Error.file_write_error",
+      "Error.file_write_error", //NON-NLS
       filename
     );
   }

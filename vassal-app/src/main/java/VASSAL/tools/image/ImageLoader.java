@@ -43,7 +43,7 @@ public interface ImageLoader {
    * @throws UnrecognizedImageTypeException if the image type is not recognized
    * @throws ImageIOException if reading the image goes wrong
    */
-  public BufferedImage load(
+  BufferedImage load(
     String name,
     InputStream in,
     int typeIfOpaque,
@@ -62,5 +62,5 @@ public interface ImageLoader {
    * @throws UnrecognizedImageTypeException if the image type is not recognized
    * @throws ImageIOException if reading the image goes wrong
    */
-  public Dimension size(String name, InputStream in) throws ImageIOException;
+  Dimension size(String name, InputStream in) throws ImageIOException;
 }

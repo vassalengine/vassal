@@ -26,5 +26,5 @@ package VASSAL.tools.imageop;
  */
 public interface SVGOp extends SourceOp {
   @Override
-  public String getName();
+  String getName();
 }

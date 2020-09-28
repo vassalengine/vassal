@@ -46,6 +46,6 @@ public class TileToImage {
 
     final File tfile = new File(args[0]);
     final BufferedImage img = TileUtils.read(tfile);
-    ImageIO.write(img, "PNG", new FileOutputStream(args[1]));
+    ImageIO.write(img, "PNG", new FileOutputStream(args[1])); //NON-NLS
   }
 }

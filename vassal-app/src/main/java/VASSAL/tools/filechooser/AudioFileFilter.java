@@ -17,6 +17,8 @@
  */
 package VASSAL.tools.filechooser;
 
+import VASSAL.i18n.Resources;
+
 /**
  * A FileFilter for AIFF, AU, and WAV files. Used by file choosers to
  * filter out files which aren't audio files.
@@ -25,10 +27,10 @@ package VASSAL.tools.filechooser;
  */
 public class AudioFileFilter extends ExtensionFileFilter {
   public static final String[] types = {
-    ".aiff", ".au", ".mp3", ".wav"
+    ".aiff", ".au", ".mp3", ".wav"  //NON-NLS
   };
 
   public AudioFileFilter() {
-    super("Audio files", types);
+    super(Resources.getString("Editor.FileFilter.audio"), types);
   }
 }

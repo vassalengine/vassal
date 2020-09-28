@@ -28,7 +28,7 @@ import VASSAL.tools.lang.Reference;
 
 /**
  * Convert a {@link BufferedImage} to a different type, falling back to
- * conversion on disk if convertion in memory fails.
+ * conversion on disk if conversion in memory fails.
  *
  * @since 3.2.0
  * @author Joel Uckelman
@@ -80,7 +80,7 @@ public class FallbackImageTypeConverter implements ImageTypeConverter {
     }
     catch (OutOfMemoryError e) {
       // This is ok, we just don't have enough free heap for the conversion.
-      logger.info("Switching to FileImageTypeConverter...");
+      logger.info("Switching to FileImageTypeConverter..."); //NON-NLS
     }
 
     // Try converting on disk instead.

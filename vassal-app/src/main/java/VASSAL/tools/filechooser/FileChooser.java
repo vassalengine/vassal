@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.configure.DirectoryConfigurer;
@@ -221,8 +222,10 @@ public abstract class FileChooser {
       int value = fc.showSaveDialog(parent);
       if (value == APPROVE_OPTION
           && getSelectedFile().exists()
-          && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(parent, "Overwrite " + getSelectedFile().getName() + "?", "File Exists",
-              JOptionPane.YES_NO_OPTION)) {
+          && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(parent,
+                                                                    Resources.getString("Editor.FileChooser.overwrite", getSelectedFile().getName()),
+                                                                    Resources.getString("Editor.FileChooser.exists"),
+                                                                    JOptionPane.YES_NO_OPTION)) {
         value = CANCEL_OPTION;
       }
       updateDirectoryPreference();

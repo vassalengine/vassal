@@ -26,6 +26,7 @@ import java.util.zip.ZipFile;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
@@ -308,7 +309,7 @@ public class ArchiveWriter extends DataArchive {
 
     if (!StringUtils.isEmpty(defaultExtension) && (filename.lastIndexOf('.') < 0)) {
       filename = filename + defaultExtension;
-      if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), "Overwrite " + filename + "?", "File Exists", JOptionPane.YES_NO_OPTION)) {
+      if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.ArchiveWriter.overwrite", filename), Resources.getString("Editor.ArchiveWriter.file_exists"), JOptionPane.YES_NO_OPTION)) {
         return;
       }
     }

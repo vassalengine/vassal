@@ -21,7 +21,6 @@ package VASSAL.tools;
 import java.util.Iterator;
 
 public class IteratorUtils {
-
   /**
    * A static convenience method for making an <code>Iterator<code>
    * into an <code>Iterable</code>.
@@ -32,5 +31,4 @@ public class IteratorUtils {
   public static <T> Iterable<T> iterate(Iterator<T> i) {
     return () -> i;
   }
-
 }

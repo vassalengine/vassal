@@ -25,7 +25,7 @@ import VASSAL.i18n.Resources;
  */
 public class LoopControl {
 
-  // Limit number of loops before throwing a RecusionLimitException
+  // Limit number of loops before throwing a RecursionLimitException
   public static final int LOOP_LIMIT = 500;
 
   // Loop Types - saved in buildfile
@@ -57,7 +57,7 @@ public class LoopControl {
   }
 
   /**
-   * Convert a localized desciption of a loop type back to a raw type
+   * Convert a localized description of a loop type back to a raw type
    *
    * @param desc
    *          localized description of loop type

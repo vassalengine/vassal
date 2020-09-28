@@ -102,7 +102,7 @@ public class ProcessLauncher {
     InputStreamPump stderrPump,
     String... args) throws IOException {
 
-    logger.info("launching " + StringUtils.join(args, ' '));
+    logger.info("launching " + StringUtils.join(args, ' ')); //NON-NLS
 
     final ProcessBuilder pb = new ProcessBuilder(args);
     pb.directory(workDir);

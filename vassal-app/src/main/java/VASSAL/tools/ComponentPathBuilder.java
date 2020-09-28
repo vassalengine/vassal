@@ -40,10 +40,10 @@ public class ComponentPathBuilder {
 
   /**
    * Return a string identifying the specified {@link Configurable}
-   * components as a paththrough the configuration parent-child hierarchy.
+   * components as a path through the configuration parent-child hierarchy.
    *
-   * @param targetPath
-   * @return
+   * @param targetPath configurable path
+   * @return string path
    */
   public String getId(Configurable[] targetPath) {
     SequenceEncoder se = new SequenceEncoder('/');
@@ -62,8 +62,8 @@ public class ComponentPathBuilder {
    * Return a list of {@link Configurable} components specified by the
    * given identifier.
    *
-   * @param id
-   * @return
+   * @param id identifier
+   * @return list of components
    * @throws PathFormatException if no such component exists
    */
   public Configurable[] getPath(String id) throws PathFormatException {

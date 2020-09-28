@@ -294,10 +294,8 @@ public final class ImportAction extends EditModuleAction {
 
     // no luck so far.  Ask the user.
     if (queryIfNotFound) {
-// FIXME: I18N!
-      JOptionPane.showMessageDialog(comp, "Unable to locate file:\n"
-          + f.getPath() + "\nPlease locate it in the following dialog.",
-          "File Warning", JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(comp, Resources.getString("Editor.ImportAction.unable", f.getPath()),
+          Resources.getString("Editor.ImportAction.warning"), JOptionPane.WARNING_MESSAGE);
 
       if (fc == null) {
         fc = getFileChooser(comp);

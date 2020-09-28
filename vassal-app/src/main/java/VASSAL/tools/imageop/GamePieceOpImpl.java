@@ -72,7 +72,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   @Override
   public Future<BufferedImage> getFuture(OpObserver<BufferedImage> obs)
                                                   throws ExecutionException {
-    // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
+    // GamePieceOpImpl CANNOT be called asynchronously because it cannot
     // reliably report on its dependencies.
     if (obs != null) throw new UnsupportedOperationException();
     return super.getFuture(null);

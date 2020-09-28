@@ -40,12 +40,7 @@ public abstract class AbstractParent<T extends JComponent>
 
     if (child instanceof MenuMarker) return;
 
-    forEachPeer(new Functor<>() {
-      @Override
-      public void apply(T peer) {
-        peer.add(child.createPeer());
-      }
-    });
+    forEachPeer(peer -> peer.add(child.createPeer()));
   }
 
   protected int proxyIndexToRealIndex(int pos) {
@@ -66,12 +61,7 @@ public abstract class AbstractParent<T extends JComponent>
 
     final int rpos = proxyIndexToRealIndex(pos);
 
-    forEachPeer(new Functor<>() {
-      @Override
-      public void apply(T peer) {
-        peer.add(child.createPeer(), rpos);
-      }
-    });
+    forEachPeer(peer -> peer.add(child.createPeer(), rpos));
   }
 
   @Override

@@ -28,13 +28,13 @@ import java.awt.Rectangle;
  */
 public interface CropOp extends ImageOp {
 
-  public Rectangle getRect();
+  Rectangle getRect();
 
-  public int getX0();
+  int getX0();
 
-  public int getY0();
+  int getY0();
 
-  public int getX1();
+  int getX1();
 
-  public int getY1();
+  int getY1();
 }

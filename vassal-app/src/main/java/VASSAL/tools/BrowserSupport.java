@@ -60,7 +60,7 @@ public class BrowserSupport {
     }
 
     // Try xdg-open in case nothing else works
-    final ProcessBuilder pb = new ProcessBuilder("xdg-open", url);
+    final ProcessBuilder pb = new ProcessBuilder("xdg-open", url); //NON-NLS
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     try {
       pb.start();
@@ -70,12 +70,9 @@ public class BrowserSupport {
     }
   }
 
-  private static final HyperlinkListener listener = new HyperlinkListener() {
-    @Override
-    public void hyperlinkUpdate(HyperlinkEvent e) {
-      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        openURL(e.getURL().toString());
-      }
+  private static final HyperlinkListener listener = e -> {
+    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+      openURL(e.getURL().toString());
     }
   };
 
