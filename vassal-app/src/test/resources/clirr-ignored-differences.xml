@@ -483,6 +483,12 @@
         <field>tags</field>
         <justification>should have been final in the first place</justification>
     </difference>
+    <difference>
+        <className>VASSAL/chat/Compressor</className>
+        <differenceType>7002</differenceType>
+        <method>void main(java.lang.String[])</method>
+        <justification>Test code moved to a unit test</justification>
+    </difference>
 
     <difference>
         <!-- It is okay to add classes to the set of superclasses -->
