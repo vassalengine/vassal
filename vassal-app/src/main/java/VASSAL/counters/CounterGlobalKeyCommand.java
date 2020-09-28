@@ -24,6 +24,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import java.util.Objects;
 import javax.swing.JLabel;
