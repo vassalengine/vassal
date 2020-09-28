@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  */
 public class ChessClockControl extends AbstractConfigurable
         implements CommandEncoder, GameComponent, UniqueIdManager.Identifyable {
-  protected static UniqueIdManager idMgr = new UniqueIdManager("ChessClockControl"); //$NON-NLS-1$
+  protected static final UniqueIdManager ID_MGR = new UniqueIdManager("ChessClockControl"); //$NON-NLS-1$
 
   protected List<ChessClock> chessclocks = new ArrayList<>();  // List of individual chess clocks attached to our control
 
@@ -194,7 +194,7 @@ public class ChessClockControl extends AbstractConfigurable
     gameModule.getToolBar().add(getComponent());
     gameModule.addCommandEncoder(this);
     gameModule.getGameState().addGameComponent(this);
-    idMgr.add(this);
+    ID_MGR.add(this);
 
     for (ChessClock c : chessclocks) {
       c.addToToolbar();
@@ -214,7 +214,7 @@ public class ChessClockControl extends AbstractConfigurable
     gameModule.getToolBar().remove(getComponent());
     gameModule.removeCommandEncoder(this);
     gameModule.getGameState().removeGameComponent(this);
-    idMgr.remove(this);
+    ID_MGR.remove(this);
   }
 
   /**
