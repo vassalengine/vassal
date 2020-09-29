@@ -429,8 +429,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     reverseListener.setKeyStroke(getReverseKey());
 
+
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
-    if (myPile != null && myPile.getDeck() == null) {
+
+    // If a New game/Load Game is starting, set this Deck into the matching DrawPile
+    // If a Load Continuation is starting, ignore this Deck and let the DrawPile continue with the existing Deck.
+    // Combined fix for bugs 4507, 10249 & 13461
+    if (myPile != null && ! GameModule.getGameModule().getGameState().isGameStarted()) {
       myPile.setDeck(this);
     }
   }
