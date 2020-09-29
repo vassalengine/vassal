@@ -241,14 +241,21 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
     return new ArrayList<>();
   }
 
+  /**
+   * @return names of all images used by the component and any subcomponents
+   */
   public SortedSet<String> getImageNames() {
     final TreeSet<String> s =
-      new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     addImageNamesRecursively(s);
     return s;
   }
 
+  /**
+   * Adds all images used by this component AND any subcomponents to the collection
+   * @param s Collection to add image names to
+   */
   protected void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s);
 
@@ -259,13 +266,22 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
     }
   }
 
+  /**
+   * @return names of all images used by this component
+   */
   public SortedSet<String> getLocalImageNames() {
     final TreeSet<String> s =
-      new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     addLocalImageNames(s);
     return s;
   }
 
+  /**
+   * Classes extending Abstract buildable should override this method in order to add
+   * the names of any image files they use to the collection.
+   *
+   * @param s Collection to add image names to
+   */
   protected void addLocalImageNames(Collection<String> s) {
   }
 }

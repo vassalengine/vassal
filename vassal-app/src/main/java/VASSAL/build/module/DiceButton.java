@@ -17,15 +17,16 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -53,7 +54,7 @@ import VASSAL.tools.NamedKeyStroke;
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers and displays the
  * result in the Chatter */
-public class DiceButton extends AbstractConfigurable {
+public class DiceButton extends AbstractToolbarItem {
   protected java.util.Random ran;
   protected int nSides = 6, nDice = 2, plus = 0, addToTotal = 0;
   protected boolean reportTotal = false;
@@ -489,5 +490,16 @@ public class DiceButton extends AbstractConfigurable {
   @Override
   public List<String> getMenuTextList() {
     return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    s.add(launch.getIconAttribute());
   }
 }

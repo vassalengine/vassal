@@ -17,16 +17,15 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutableProperty;
@@ -37,7 +36,6 @@ import VASSAL.configure.AudioClipConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedExpressionConfigurer;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
@@ -47,24 +45,19 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.LaunchButton;
 import VASSAL.tools.LoopControl;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This component places a button into the controls window toolbar.
  * Pressing the button displays a message, plays a sound and/or sends hotkeys */
-public class DoActionButton extends AbstractConfigurable
+public class DoActionButton extends AbstractToolbarItem
                             implements RecursionLimiter.Loopable {
 
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String DO_REPORT = "doReport"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
   public static final String DO_SOUND = "doSound"; //$NON-NLS-1$
@@ -83,7 +76,6 @@ public class DoActionButton extends AbstractConfigurable
   public static final String INDEX_START = "indexStart"; //$NON-NLS-1$
   public static final String INDEX_STEP = "indexStep"; //$NON-NLS-1$
 
-  protected LaunchButton launch;
   protected boolean doReport = false;
   protected FormattedString reportFormat =
     new FormattedString(GameModule.getGameModule());
@@ -117,12 +109,7 @@ public class DoActionButton extends AbstractConfigurable
       }
     };
 
-    final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
-    launch = new LaunchButton(
-      description, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, description);
-    setAttribute(TOOLTIP, description);
-    launch.setAttribute(BUTTON_TEXT, description);
+    makeLaunchButton(getConfigureTypeName(), getConfigureTypeName(), rollAction);
   }
 
   public static String getConfigureTypeName() {
@@ -131,12 +118,7 @@ public class DoActionButton extends AbstractConfigurable
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{
-      NAME,
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY,
+    return ArrayUtils.addAll(super.getAttributeNames(),
       DO_REPORT,
       REPORT_FORMAT,
       DO_SOUND,
@@ -154,17 +136,12 @@ public class DoActionButton extends AbstractConfigurable
       INDEX_PROPERTY,
       INDEX_START,
       INDEX_STEP
-    };
+    );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.DESCRIPTION),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(super.getAttributeDescriptions(),
       Resources.getString("Editor.DoAction.display_message"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.DoAction.play_sound"), //$NON-NLS-1$
@@ -182,15 +159,33 @@ public class DoActionButton extends AbstractConfigurable
       Resources.getString("Editor.LoopControl.index_name"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.index_start"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.index_step") //$NON-NLS-1$
-    };
+    );
   }
 
-  public static class IconConfig implements ConfigurerFactory {
-    @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, null);
-    }
+  @Override
+  @SuppressWarnings("unchecked")
+  public Class<?>[] getAttributeTypes() {
+    return ArrayUtils.addAll(super.getAttributeTypes(),
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      SoundConfig.class,
+      Boolean.class,
+      HotkeyConfig.class,
+      Boolean.class,
+      LoopConfig.class,
+      LoopCountConfig.class,
+      PropertyExpression.class,
+      PropertyExpression.class,
+      NamedKeyStroke.class,
+      NamedKeyStroke.class,
+      Boolean.class,
+      String.class,
+      Integer.class,
+      Integer.class
+    );
   }
+
 
   public static class SoundConfig implements ConfigurerFactory {
     @Override
@@ -214,7 +209,6 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   public static class NamedHotkeyListConfigurer extends ListConfigurer {
-
     public NamedHotkeyListConfigurer(String key, String name, List<NamedKeyStroke> list) {
       super(key, name, list);
     }
@@ -223,7 +217,6 @@ public class DoActionButton extends AbstractConfigurable
     protected Configurer buildChildConfigurer() {
       return new NamedHotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
     }
-
   }
 
   public static class LoopConfig implements ConfigurerFactory {
@@ -256,45 +249,6 @@ public class DoActionButton extends AbstractConfigurable
     }
   }
 
-  @Override
-  public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      ReportFormatConfig.class,
-      Boolean.class,
-      SoundConfig.class,
-      Boolean.class,
-      HotkeyConfig.class,
-      Boolean.class,
-      LoopConfig.class,
-      LoopCountConfig.class,
-      PropertyExpression.class,
-      PropertyExpression.class,
-      NamedKeyStroke.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      String.class,
-      Integer.class,
-      Integer.class
-    };
-  }
-
-  @Override
-  public void addTo(Buildable parent) {
-    GameModule.getGameModule().getToolBar().add(getComponent());
-  }
-
-  /**
-   * The component to be added to the control window toolbar
-   */
-  protected Component getComponent() {
-    return launch;
-  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -512,11 +466,6 @@ public class DoActionButton extends AbstractConfigurable
     return new Class<?>[0];
   }
 
-  @Override
-  public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getToolBar().remove(getComponent());
-    GameModule.getGameModule().getToolBar().revalidate();
-  }
 
   @Override
   public HelpFile getHelpFile() {
@@ -761,7 +710,7 @@ public class DoActionButton extends AbstractConfigurable
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+    return super.getMenuTextList();
   }
 
   /**
@@ -769,6 +718,19 @@ public class DoActionButton extends AbstractConfigurable
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(preLoopKey, postLoopKey, NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+    final List<NamedKeyStroke> l = super.getNamedKeyStrokeList();
+    Collections.addAll(l, preLoopKey, postLoopKey);
+    return l;
+  }
+
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    super.addLocalImageNames(s);
   }
 }

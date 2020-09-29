@@ -152,9 +152,6 @@ import VASSAL.tools.version.VersionUtils;
  * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * For legacy reasons, {@link VASSAL.launch.BasicModule} extends {@link GameModule}, but
- * everything of note has been moved inside of GameModule.
- *
  * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger}, {@link Chatter}, and {@link Prefs}.</p>
  */

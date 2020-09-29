@@ -247,6 +247,12 @@ public class ChartWindow extends Widget {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
   @Override
   protected void addLocalImageNames(Collection<String> s) {
     s.add(launch.getIconAttribute());

@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 
+import VASSAL.tools.DataArchive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
         InputStream in = null;
         FileOutputStream out = null;
         try {
-          in = aw.getImageInputStream(u);
+          in = aw.getInputStream(DataArchive.IMAGE_DIR + u);
           out = new FileOutputStream(new File(dir, u));
           IOUtils.copy(in, out);
         }
