@@ -2,8 +2,6 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -54,45 +52,39 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final JScrollPane scroll = new JScrollPane(list);
  
     final JButton ok = new JButton("Ok");
-    ok.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        final ArchiveWriter aw = module.getDataArchive().getWriter();
+    ok.addActionListener(e -> {
+      final ArchiveWriter aw = module.getDataArchive().getWriter();
 
-        final File dir =
-          new File(new File(aw.getName()).getParent(), "removed");
-        dir.mkdir();
+      final File dir =
+        new File(new File(aw.getName()).getParent(), "removed");
+      dir.mkdir();
 
-        for (String u : unused) {
-          System.out.println("removing: " + u);
+      for (String u : unused) {
+        System.out.println("removing: " + u);
 
-          InputStream in = null;
-          FileOutputStream out = null;
-          try {
-            in = aw.getImageInputStream(u);
-            out = new FileOutputStream(new File(dir, u));
-            IOUtils.copy(in, out);
-          }
-          catch (IOException ex) {
-            logger.error("Augh!", ex);
-          }
-          finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
-          }
+        InputStream in = null;
+        FileOutputStream out = null;
+        try {
+          in = aw.getImageInputStream(u);
+          out = new FileOutputStream(new File(dir, u));
+          IOUtils.copy(in, out);
+        }
+        catch (IOException ex) {
+          logger.error("Augh!", ex);
+        }
+        finally {
+          IOUtils.closeQuietly(in);
+          IOUtils.closeQuietly(out);
+        }
 
-          aw.removeImage(u);
-        } 
-
-        RemoveUnusedImagesDialog.this.dispose();
+        aw.removeImage(u);
       }
+
+      RemoveUnusedImagesDialog.this.dispose();
     });
 
     final JButton cancel = new JButton("Cancel");
-    cancel.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        RemoveUnusedImagesDialog.this.dispose();
-      }
-    });
+    cancel.addActionListener(e -> RemoveUnusedImagesDialog.this.dispose());
 
     final JPanel panel = new JPanel();
     final GroupLayout layout = new GroupLayout(panel);
@@ -126,6 +118,4 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     pack();
   }
-
-  
 }
