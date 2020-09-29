@@ -27,7 +27,7 @@ Simply select the appropriate image from the drop-down list.
 At the left, the _mask_ is shown -- the black portions representing areas which can be clicked on to select the piece, and the white areas representing transparent regions, clicking on which will not select the piece.
 This helps verify that the mask is being read properly.
 + a|
-image:images/NonRectangular.png
+image:images/NonRectangular.png[]
 
 Mask confirmation at left shows white where transparent.
 

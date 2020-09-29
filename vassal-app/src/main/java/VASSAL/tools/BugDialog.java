@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -308,8 +307,7 @@ public class BugDialog extends JDialog {
   }
 
   private Component buildConnectionFailedPanel() {
-    final String errorLogPath =
-      new File(Info.getConfDir(), "errorLog").getAbsolutePath();
+    final String errorLogPath = Info.getErrorLogPath().getAbsolutePath();
 
     final FlowLabel label = new FlowLabel(Resources.getString(
       "BugDialog.connection_failed_instructions", errorLogPath));

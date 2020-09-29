@@ -18,7 +18,6 @@
 package VASSAL.build.module.properties;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +25,13 @@ import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringArrayConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -43,10 +43,10 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class PropertyChangerConfigurer extends Configurer {
-  protected static final String PLAIN_TYPE = "Set value directly";
-  protected static final String INCREMENT_TYPE = "Increment numeric value";
-  protected static final String PROMPT_TYPE = "Prompt user";
-  protected static final String SELECT_TYPE = "Prompt user to select from list";
+  protected static final String PLAIN_TYPE = "Set value directly"; //NON-NLS (really)
+  protected static final String INCREMENT_TYPE = "Increment numeric value"; //NON-NLS (really)
+  protected static final String PROMPT_TYPE = "Prompt user"; //NON-NLS (really)
+  protected static final String SELECT_TYPE = "Prompt user to select from list"; //NON-NLS (really)
   protected static final char PLAIN_CODE = 'P';
   protected static final char PROMPT_CODE = 'R';
   protected static final char ENUM_CODE = 'E';
@@ -73,7 +73,7 @@ public class PropertyChangerConfigurer extends Configurer {
   }
   protected Constraints constraints;
   protected JPanel controls;
-  protected StringEnumConfigurer typeConfig;
+  protected TranslatingStringEnumConfigurer typeConfig;
   protected FormattedExpressionConfigurer valueConfig;
   protected StringConfigurer promptConfig;
   protected FormattedExpressionConfigurer incrConfig;
@@ -88,24 +88,33 @@ public class PropertyChangerConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateValue();
-          updateControls();
-        }
+      PropertyChangeListener l = evt -> {
+        updateValue();
+        updateControls();
       };
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
-      typeConfig = new StringEnumConfigurer(null, "Type:  ", new String[]{PLAIN_TYPE, INCREMENT_TYPE, PROMPT_TYPE, SELECT_TYPE});
+      typeConfig = new TranslatingStringEnumConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.type"),
+        new String[]{
+          PLAIN_TYPE,
+          INCREMENT_TYPE,
+          PROMPT_TYPE,
+          SELECT_TYPE
+        },
+        new String[]{
+          "Editor.PropertyChangeConfigurer.plain_type",
+          "Editor.PropertyChangeConfigurer.increment_type",
+          "Editor.PropertyChangeConfigurer.prompt_type",
+          "Editor.PropertyChangeConfigurer.select_type",
+          });
       typeConfig.addPropertyChangeListener(l);
-      valueConfig = new FormattedExpressionConfigurer(null, "New Value:  ", "",  constraints);
+      valueConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.new_value"), "",  constraints);
       valueConfig.addPropertyChangeListener(l);
-      promptConfig = new StringConfigurer(null, "Prompt:  ");
+      promptConfig = new StringConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.prompt"));
       promptConfig.addPropertyChangeListener(l);
-      incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ", "", constraints);
+      incrConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.increment_by"), "", constraints);
       incrConfig.addPropertyChangeListener(l);
-      validValuesConfig = new FormattedStringArrayConfigurer(null, "Valid Values", constraints);
+      validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints);
       validValuesConfig.addPropertyChangeListener(l);
       controls.add(typeConfig.getControls());
       controls.add(valueConfig.getControls());
@@ -212,17 +221,17 @@ public class PropertyChangerConfigurer extends Configurer {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     switch (sd.nextChar(PLAIN_CODE)) {
     case PROMPT_CODE:
-      p = new PropertyPrompt(constraints, sd.nextToken("Enter new value"));
+      p = new PropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.enter_new_value")));
       break;
     case INCR_CODE:
       p = new IncrementProperty(this, sd.nextToken("1"), constraints);
       break;
     case ENUM_CODE:
-      p = new EnumeratedPropertyPrompt(constraints, sd.nextToken("Select new value"), sd.nextStringArray(0), constraints);
+      p = new EnumeratedPropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.select_new_value")), sd.nextStringArray(0), constraints);
       break;
     case PLAIN_CODE:
     default:
-      p = new PropertySetter(sd.nextToken("new value"), constraints);
+      p = new PropertySetter(sd.nextToken("new value"), constraints); //NON-NLS
     }
     setValue(p);
   }

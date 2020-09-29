@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.4.1.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.3.
 </p>
 
 <h2>IMPORTANT</h2>
@@ -11,14 +11,47 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.1.
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-macosx.dmg' target='_new'>Mac OS X</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.1/VASSAL-3.4.1-other.zip'  target='_new'>Other</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-linux.tar.bz2' target='_new'>Linux</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-macosx.dmg' target='_new'>Mac OS X</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-other.zip'  target='_new'>Other</a></li>
 </ul>
 
-<h2>Changes since 3.3.2</h2>
+<h2>Changes since 3.4.2</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13452: Bundle Java 15 with Windows and Mac packages</li>
+<li>13442: Add button for toggling password visibility</li>
+<li>13441: Multiple scaling or rotation of SVG images failed to compound</li>
+<li>13438: NPE in BoardPicker.getSelectedBoardNames() when changing owning Board of an At-Start Stack</li>
+<li>13436: Allow Module Managers from different versions to run simultaneously</li>
+<li>13435: "Bad Module Data" messages with less-than symbols misinterpreted as HTML when HTML turned on in module</li>
+<li>13434: Clarify deprecation messages</li>
+<li>13433: OBSCURED_BY_OTHERS property now returns null instead of a value in face down decks when tested using GKCs</li>
+<li>13430: Pieces move too fast while "Repositioning stack" in HDPI monitors</li>
+<li>13427: Cannot add or edit items when editing an Extension on Linux or Macs</li>
+<li>13404: Use better color picker on Linux</li>
+<li>13342: Player creates saveGame twice in a row when starting a log file</li>
+<li>13307: Background transparency in Text Labels not working</li>
+<li>2569: Improved error message for NoSuchElementException in Decorator.mergeState()</li>
+</ul>
+
+<h2>Changes since 3.4.1</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13425: Legacy property match expressions no longer evaluated == or != correctly </li>
+<li>13416: Chatter fails to update</li>
+<li>13409: Two units in same hex do not stack when hex overlaps two boards</li>
+<li>13405: Piece window appears beside main map and chat pane instead of just the chat pane</li>
+<li>13398: Fix piece drag so that pieces can be moved a few pixels</li>
+<li>13381: Prevent BeanShell from interpreting 1D, 1F, 1L as numbers</li>
+<li>13365: Chatter component does not filter out Alt+Key commands</li>
+<li>13300: Remove "Preference" option for HTML for Chatter</li>
+<li>13279: Pivot was auto-reporting moves when auto-reporting is turned off</li>
+</ul>
+
+<h2>Changes since 3.4.0</h2>
 <h3>Bug fixes</h3>
 <ul>
 <li>13389: Chatter flickers when updated</li>

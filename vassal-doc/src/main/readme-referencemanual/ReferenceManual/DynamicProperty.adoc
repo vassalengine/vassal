@@ -7,7 +7,7 @@
 
 === Dynamic Property
 
-image:images/DynamicProperty.png
+image:images/DynamicProperty.png[]
 
 This trait attaches a <<Properties.adoc#top,Property>> to a Game Piece and allows you to define commands to change the value of the property during play.
 

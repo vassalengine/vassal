@@ -21,7 +21,7 @@ Follow the <<#module,Translating a VASSAL Module>> instructions to translate a m
 [#application]
 ==== Translating the VASSAL Application
 
-image:images/TranslateVassal.png
+image:images/TranslateVassal.png[]
 
 To translate the core VASSAL application, run VASSAL from the command line with the `--translate` option.
 In the resulting dialog window, select the language (and optional country) that you are creating a translation for.

@@ -23,6 +23,7 @@ import VASSAL.configure.ConfigurerFactory;
  * Custom configurers that implement TranslatableConfigurerFactory
  * will
  */
+@FunctionalInterface
 public interface TranslatableConfigurerFactory extends ConfigurerFactory {
 
 }

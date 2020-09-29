@@ -34,5 +34,5 @@ public interface InputStreamPump extends Runnable {
    * @param in the input stream
    * @throws UnsupportedOperationException if called after the pump is started
    */
-  public void setInputStream(InputStream in);
+  void setInputStream(InputStream in);
 }

@@ -43,7 +43,7 @@ public class TranslatableMarker extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Marker Definition";
+    return Resources.getString("Editor.TranslatableMarker.component_type");
   }
 
   @Override

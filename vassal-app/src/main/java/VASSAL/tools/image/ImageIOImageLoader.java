@@ -42,7 +42,7 @@ import VASSAL.tools.lang.Reference;
  *
  * This class handles the assorted problems with various versions of
  * {@link ImageIO}, ensuring that we can reliably load image files to
- * {@link BufferedImages} with a predictable type.
+ * {link BufferedImages} with a predictable type.
  *
  * @since 3.1.0
  * @author Joel Uckelman
@@ -66,9 +66,9 @@ public class ImageIOImageLoader implements ImageLoader {
   protected static final boolean YCbCrBug;
 
   static {
-    BufferedImage img = null;
+    BufferedImage img;
 
-    try (InputStream in = ImageIOImageLoader.class.getResourceAsStream("/images/black.jpg")) {
+    try (InputStream in = ImageIOImageLoader.class.getResourceAsStream("/images/black.jpg")) { //NON-NLS
       // We intentionally bypass the normal image loading system
       // in order to see how ImageIO loads the test image.
       img = ImageIO.read(new MemoryCacheImageInputStream(in));
@@ -101,7 +101,7 @@ public class ImageIOImageLoader implements ImageLoader {
     default:
       // This JVM is broken in an unexpected way!
       throw new IllegalStateException(
-        "Unexpected pixel value 0x" + String.format("%08x", pixel)
+        "Unexpected pixel value 0x" + String.format("%08x", pixel) //NON-NLS
       );
     }
   }
@@ -380,6 +380,7 @@ public class ImageIOImageLoader implements ImageLoader {
     return img;
   }
 
+  @FunctionalInterface
   protected interface Wrapper<T> {
     T run(String name, InputStream in) throws IOException;
   }
@@ -420,7 +421,7 @@ public class ImageIOImageLoader implements ImageLoader {
   }
 
   /** A functor for reading images. */
-  protected static Wrapper<BufferedImage> readImage = new Wrapper<>() {
+  protected static final Wrapper<BufferedImage> readImage = new Wrapper<>() {
     /**
      * Loads an image.
      *
@@ -441,7 +442,7 @@ public class ImageIOImageLoader implements ImageLoader {
   };
 
   /** A functor for reading image dimensions. */
-  protected static Wrapper<Dimension> readSize = new Wrapper<>() {
+  protected static final Wrapper<Dimension> readSize = new Wrapper<>() {
     /**
      * Gets the size of an image.
      *

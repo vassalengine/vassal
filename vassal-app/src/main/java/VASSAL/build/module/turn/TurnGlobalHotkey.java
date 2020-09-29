@@ -12,9 +12,13 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.counters.BasicPiece;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TurnGlobalHotkey extends AbstractConfigurable {
 
@@ -31,10 +35,10 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Description:  ",
-      "Global Hotkey:  ",
-      "Match Properties:  ",
-      "Report Format:  "
+      Resources.getString("Editor.description_label"),
+      Resources.getString("Editor.TurnGlobalHotkey.global_hotkey"),
+      Resources.getString("Editor.TurnGlobalHotkey.match_properties"),
+      Resources.getString("Editor.report_format")
     };
   }
 
@@ -112,7 +116,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Global Hotkey";
+    return Resources.getString("Editor.TurnGlobalHotkey.component_type");
   }
 
   @Override
@@ -130,5 +134,42 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
         GameModule.getGameModule().sendAndLog(c);
       }
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(match.getExpression());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(format.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Collections.singletonList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

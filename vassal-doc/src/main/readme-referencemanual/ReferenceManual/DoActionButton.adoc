@@ -66,4 +66,4 @@ The expression must evaluate to a whole number.
 *Index Property increment value:* An <<Expression.adoc#top,Expression>> that defines how much will be added to the Index Property at the start of each loop.
 The expression must evaluate to a whole number.
 
-image:images/DoActionButton.png +
+image:images/DoActionButton.png[] +

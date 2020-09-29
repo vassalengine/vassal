@@ -45,6 +45,6 @@ This Key Command can be used to activate a trait in the new piece, for example t
 
 *SEE ALSO:*  <<Replace.adoc#top,Replace with Other>> trait.
 
-|image:images/Marker.png
+|image:images/Marker.png[]
 
 |===

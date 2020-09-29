@@ -36,6 +36,7 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import VASSAL.i18n.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -116,11 +117,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       internalExtractContents(in);
     }
     catch (FileNotFoundException e) {
-      logger.error("File not found in data archive: {}", "help/" + getContentsResource(), e);
+      logger.error("File not found in data archive: {}", "help/" + getContentsResource(), e); //NON-NLS
       setFallbackUrl();
     }
     catch (IOException e) {
-      logger.error("Error while reading file {} from data archive", "help/" + getContentsResource(), e);
+      logger.error("Error while reading file {} from data archive", "help/" + getContentsResource(), e); //NON-NLS
       setFallbackUrl();
     }
   }
@@ -130,13 +131,13 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       url = new URL(startingPage);
     }
     catch (MalformedURLException e) {
-      logger.error("Malformed URL: {}", startingPage, e);
+      logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
     }
   }
 
   private void internalExtractContents(ZipInputStream in) throws IOException {
     final File tmp; //$NON-NLS-1$ //$NON-NLS-2$
-    tmp = File.createTempFile("VASSAL", "help");
+    tmp = File.createTempFile("VASSAL", "help"); //NON-NLS
     File output = tmp.getParentFile();
     tmp.delete();
     output = new File(output, "VASSAL"); //$NON-NLS-1$
@@ -257,7 +258,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public static String getConfigureTypeName() {
-    return "HTML Help File"; //$NON-NLS-1$
+    return Resources.getString("Editor.BrowserHelpFile.component_type"); //$NON-NLS-1$
   }
 
   /**
@@ -272,9 +273,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     @Override
     public String[] getAttributeDescriptions() {
       return new String[]{
-        "Menu Entry:  ",
-        "Contents:  ",
-        "Starting Page:  "
+        Resources.getString("Editor.menu_command"),
+        Resources.getString("Editor.BrowserHelpFile.contents"),
+        Resources.getString("Editor.BrowserHelpFile.starting_page")
       };
     }
 
@@ -456,10 +457,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null,
+      myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null, //NON-NLS
           new String[] {TITLE},
           new boolean[] {true},
-          new String[] {"Menu Entry:  "});
+          new String[] {Resources.getString("Editor.menu_command")});
     }
     return myI18nData;
   }

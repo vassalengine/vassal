@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.List;
@@ -28,12 +29,11 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- *
  * The base portion of a Counter Layout component.  Contains the draw() method, but may override specific values from an associated (via the name attribute) {@link ItemInstance}
  */
 public abstract class Item extends AbstractConfigurable {
@@ -74,13 +74,13 @@ public abstract class Item extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Name:  ",
-      "Location:  ",
-      "Advanced Options",
-      "X Offset:  ",
-      "Y Offset:  ",
-      "Rotation (Degrees):  ",
-      "Anti-alias?"
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.Item.location"),
+      Resources.getString("Editor.Item.advanced_options"),
+      Resources.getString("Editor.x_offset"),
+      Resources.getString("Editor.y_offset"),
+      Resources.getString("Editor.Item.rotation_degrees"),
+      Resources.getString("Editor.Item.anti_alias")
     };
   }
 
@@ -104,10 +104,15 @@ public abstract class Item extends AbstractConfigurable {
     }
   }
 
-  public static class LocationConfig extends StringEnum {
+  public static class LocationConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return GamePieceLayout.LOCATIONS;
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return GamePieceLayout.LOCATION_I18N_KEYS;
     }
   }
 
@@ -214,12 +219,7 @@ public abstract class Item extends AbstractConfigurable {
     setAllAttributesUntranslatable();
   }
 
-  private VisibilityCondition advancedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return advanced;
-    }
-  };
+  private final VisibilityCondition advancedCond = () -> advanced;
 
 
   /**
@@ -231,6 +231,10 @@ public abstract class Item extends AbstractConfigurable {
 
   public String getDisplayName() {
     return getType();
+  }
+
+  public String getDisplayLocation() {
+    return GamePieceLayout.getDisplayLocation(location);
   }
 
   public String getLocation() {
@@ -303,5 +307,4 @@ public abstract class Item extends AbstractConfigurable {
     se.append(antialias);
     return se.getValue();
   }
-
 }

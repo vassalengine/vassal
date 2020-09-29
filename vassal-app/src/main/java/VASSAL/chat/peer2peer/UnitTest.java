@@ -108,37 +108,34 @@ public class UnitTest implements UserDialog {
                                                   throws InterruptedException {
     final Object lock = new Object();
 
-    final Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          ServerSocket server;
-          synchronized (lock) {
-            server = new ServerSocket(port);
-            lock.notifyAll();
-          }
+    final Runnable runnable = () -> {
+      try {
+        ServerSocket server;
+        synchronized (lock) {
+          server = new ServerSocket(port);
+          lock.notifyAll();
+        }
 
-          final Socket s = server.accept();
-          PeerReader reader = null;
-          try {
-            reader = new PeerReader(s.getInputStream());
-            while (true) {
-              final String msg = reader.readLine();
-              System.err.println(msg == null ? "" : msg); //$NON-NLS-1$
-              if (msg == null) {
-                break;
-              }
+        final Socket s = server.accept();
+        PeerReader reader = null;
+        try {
+          reader = new PeerReader(s.getInputStream());
+          while (true) {
+            final String msg = reader.readLine();
+            System.err.println(msg == null ? "" : msg); //$NON-NLS-1$
+            if (msg == null) {
+              break;
             }
-            System.err.println("Done"); //$NON-NLS-1$
-            reader.close();
           }
-          finally {
-            if (reader != null) reader.close();
-          }
+          System.err.println("Done"); //$NON-NLS-1$
+          reader.close();
         }
-        catch (IOException e) {
-          e.printStackTrace();
+        finally {
+          if (reader != null) reader.close();
         }
+      }
+      catch (IOException e) {
+        e.printStackTrace();
       }
     };
 

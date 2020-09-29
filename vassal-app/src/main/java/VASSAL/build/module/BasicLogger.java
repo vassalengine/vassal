@@ -72,8 +72,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String END = "end_log";  //$NON-NLS-1$
   public static final String LOG = "LOG\t";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG = "PromptNewLog";  //$NON-NLS-1$
-  public static final String PROMPT_NEW_LOG_START = "PromptNewLogStart";  //$NON-NLS-1$
-  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd";  //$NON-NLS-1$
+  public static final String PROMPT_NEW_LOG_START = "PromptNewLogAtStart"; //$NON-NLS-1$
+  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd"; //$NON-NLS-1$
   public static final String PROMPT_LOG_COMMENT = "promptLogComment";  //$NON-NLS-1$
   protected static final String STEP_ICON = "/images/StepForward16.gif";  //$NON-NLS-1$
   protected static final String UNDO_ICON = "/images/Undo16.gif";  //$NON-NLS-1$
@@ -116,11 +116,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     // FIMXE: setting nmemonic from first letter could cause collisions in
     // some languages
     newLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
-    mm.addAction("BasicLogger.begin_logfile", newLogAction);
+    mm.addAction("BasicLogger.begin_logfile", newLogAction); //NON-NLS
     // FIMXE: setting nmemonic from first letter could cause collisions in
     // some languages
     endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
-    mm.addAction("BasicLogger.end_logfile", endLogAction);
+    mm.addAction("BasicLogger.end_logfile", endLogAction); //NON-NLS
 
     JButton button = mod.getToolBar().add(undoAction);
     button.setToolTipText(Resources.getString("BasicLogger.undo_last_move"));  //$NON-NLS-1$
@@ -177,7 +177,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     });
     undoKeyConfig.fireUpdate();
 
-    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE);  //$NON-NLS-1$
+    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.TRUE);  //$NON-NLS-1$
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$
 
     BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, Resources.getString("BasicLogger.prompt_new_log_after"), Boolean.TRUE);  //$NON-NLS-1$
@@ -206,8 +206,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       logOutput.clear();
       nextInput = 0;
       nextUndo = -1;
-      beginningState =
-        GameModule.getGameModule().getGameState().getRestoreCommand();
+      beginningState = null; // Will create one when we actually start a log
     }
     else {
       if (endLogAction.isEnabled()) {
@@ -239,6 +238,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     return outputFile != null;
   }
 
+  public boolean isReplaying() {
+    return nextInput < logInput.size();
+  }
+
   @Override
   public Command getRestoreCommand() {
     return null;
@@ -251,8 +254,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final Command c = logInput.get(nextInput++);
     c.execute();
     GameModule.getGameModule().sendAndLog(c);
-    stepAction.setEnabled(nextInput < logInput.size());
-    if (!(nextInput < logInput.size())) {
+    stepAction.setEnabled(isReplaying());
+    if (!isReplaying()) {
+      if (GameModule.GameFileMode.REPLAYING_GAME.equals(GameModule.getGameModule().getGameFileMode())) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.REPLAYED_GAME);
+      }
+    }
+    if (!isReplaying()) {
       queryNewLogFile(false);
     }
   }
@@ -357,7 +365,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     File file = fc.getSelectedFile();
     if (file.getName().indexOf('.') == -1)
-      file = new File(file.getParent(), file.getName() + ".vlog");
+      file = new File(file.getParent(), file.getName() + ".vlog"); //NON-NLS
 
     // warn user if overwriting log from an old version
     if (file.exists()) {
@@ -401,8 +409,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
-    gm.appendToTitle(Resources.getString("BasicLogger.logging_to",
-                     outputFile.getName()));
+    gm.setGameFile(outputFile.getName(), GameModule.GameFileMode.LOGGING_GAME);
     GameModule.getGameModule().warn(Resources.getString("BasicLogger.logging_begun"));  //$NON-NLS-1$
     newLogAction.setEnabled(false);
     metadata = new SaveMetaData();
@@ -487,7 +494,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         write();
         GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written"));  //$NON-NLS-1$
         newLogAction.setEnabled(true);
-        GameModule.getGameModule().appendToTitle(null);
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.LOGGED_GAME);
         outputFile = null;
       }
       catch (IOException ex) {

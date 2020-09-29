@@ -39,7 +39,9 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -61,12 +63,15 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
- * Basic class for representing a physical component of the game Can be a counter, a card, or an overlay
+ * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
+ *
+ * Note like traits, BasicPiece implements GamePiece (via TranslatablePiece), but UNLIKE traits it is NOT a
+ * Decorator, and thus must be treated specially.
  */
 public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
 
-  public static final String ID = "piece;";
+  public static final String ID = "piece;"; // NON-NLS
   private static Highlighter highlighter;
   /**
    * Return information about the current location of the piece through getProperty():
@@ -76,25 +81,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * not on a map CurrentZone - If the current map has a multi-zoned grid, then return the name of the Zone the piece is
    * in, or "" if the piece is not in any zone, or not on a map
    */
-  public static final String LOCATION_NAME = "LocationName";
-  public static final String CURRENT_MAP = "CurrentMap";
-  public static final String CURRENT_BOARD = "CurrentBoard";
-  public static final String CURRENT_ZONE = "CurrentZone";
-  public static final String CURRENT_X = "CurrentX";
-  public static final String CURRENT_Y = "CurrentY";
-  public static final String OLD_LOCATION_NAME = "OldLocationName";
-  public static final String OLD_MAP = "OldMap";
-  public static final String OLD_BOARD = "OldBoard";
-  public static final String OLD_ZONE = "OldZone";
-  public static final String OLD_X = "OldX";
-  public static final String OLD_Y = "OldY";
-  public static final String BASIC_NAME = "BasicName";
-  public static final String PIECE_NAME = "PieceName";
-  public static final String DECK_NAME = "DeckName";
-  public static final String DECK_POSITION = "DeckPosition";
-  public static final String CLICKED_X = "ClickedX";
-  public static final String CLICKED_Y = "ClickedY";
-  public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
+  public static final String LOCATION_NAME = "LocationName"; // NON-NLS
+  public static final String CURRENT_MAP = "CurrentMap"; // NON-NLS
+  public static final String CURRENT_BOARD = "CurrentBoard"; // NON-NLS
+  public static final String CURRENT_ZONE = "CurrentZone"; // NON-NLS
+  public static final String CURRENT_X = "CurrentX"; // NON-NLS
+  public static final String CURRENT_Y = "CurrentY"; // NON-NLS
+  public static final String OLD_LOCATION_NAME = "OldLocationName"; // NON-NLS
+  public static final String OLD_MAP = "OldMap"; // NON-NLS
+  public static final String OLD_BOARD = "OldBoard"; // NON-NLS
+  public static final String OLD_ZONE = "OldZone"; // NON-NLS
+  public static final String OLD_X = "OldX"; // NON-NLS
+  public static final String OLD_Y = "OldY"; // NON-NLS
+  public static final String BASIC_NAME = "BasicName"; // NON-NLS
+  public static final String PIECE_NAME = "PieceName"; // NON-NLS
+  public static final String DECK_NAME = "DeckName"; // NON-NLS
+  public static final String DECK_POSITION = "DeckPosition"; // NON-NLS
+  public static final String CLICKED_X = "ClickedX"; // NON-NLS
+  public static final String CLICKED_Y = "ClickedY"; // NON-NLS
+  public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected JPopupMenu popup;
   protected Rectangle imageBounds;
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
@@ -124,23 +129,30 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   /** @deprecated Moved into own traits, retained for backward compatibility */
   @Deprecated
   private char deleteKey;
-  /**
-   * @deprecated Replaced by
-   * @{link #srcOp}.
-   */
+  /** @deprecated Replaced by #srcOp. */
   @Deprecated
-  protected Image image;
-  protected String imageName;
-  private String commonName;
+  protected Image image;           // BasicPiece's own image
+  protected String imageName;      // BasicPiece image name
+  private String commonName;       // BasicPiece's name for the piece (aka "BasicName" property in Vassal Module)
 
   public BasicPiece() {
     this(ID + ";;;;");
   }
 
+  /** creates a BasicPiece by passing complete type information
+   * @param type serialized type information (data about the piece which does not
+   * change during the course of a game) ready to be processed by a {@link SequenceEncoder.Decoder} */
   public BasicPiece(String type) {
     mySetType(type);
   }
 
+  /** Sets the type information for this piece.  See {@link Decorator#myGetType}
+   *  @param type a serialized configuration string to
+   *              set the "type information" of this piece, which is
+   *              information that doesn't change during the course of
+   *              a single game (e.g. Image Files, Context Menu strings,
+   *              etc). Typically ready to be processed e.g. by
+   *              SequenceEncoder.decode() */
   @Override
   public void mySetType(String type) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
@@ -153,6 +165,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     commands = null;
   }
 
+  /** @return The "type information" of a piece or trait is information
+   * that does not change during the course of a game. Image file
+   * names, context menu strings, etc., all should be reflected
+   * in the type. The type information is returned serialized string
+   * form, ready to be decoded by a SequenceEncoder#decode.
+   * @see BasicCommandEncoder */
   @Override
   public String getType() {
     final SequenceEncoder se =
@@ -162,6 +180,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
                   .append(commonName).getValue();
   }
 
+  /** @param map Each GamePiece belongs to a single {@link Map} */
   @Override
   public void setMap(Map map) {
     if (map != this.map) {
@@ -170,11 +189,39 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /** @return Each GamePiece belongs to a single {@link Map} */
   @Override
   public Map getMap() {
     return getParent() == null ? map : getParent().getMap();
   }
 
+  /**
+   * Properties can be associated with a piece -- many may be game-specific, but others
+   * are standard, such as the LocationName property exposed by BasicPiece -- and can
+   * be read through this interface. The properties may or may not need to be encoded in
+   * the piece's {@link #getState} method.
+   *
+   * A request to getProperty() that reaches the BasicPiece will have already checked for
+   * such a property key being available from any outer Decorator/Trait in the stack. Upon
+   * reaching BasicPiece, the search hierarchy for a matching property now becomes:
+   *
+   * (1) Specific named properties supported by BasicPiece. These include BASIC_NAME,
+   * PIECE_NAME, LOCATION_NAME, CURRENT_MAP, CURRENT_BOARD, CURRENT_ZONE, CURRENT_X,
+   * CURRENT_Y.
+   * (2) "Scratchpad" properties - see {@link #setProperty} for full details, but these are
+   * highly temporary properties intended to remain valid only during the execution of a
+   * single key command.
+   * (3) Persistent properties - see {@link #setPersistentProperty} for full details, but
+   * they are stored in the piece and "game state robust" - saved during save/load, and
+   * propagated to other players' clients in a multiplayer game.
+   * (4) The values of any visible "Global Property" in a Vassal module, checking the Zone
+   * level first, then the map level, and finally the module level.
+   *
+   * <br><br>Thus, when using this interface a piece's own properties are preferred to those of
+   * "Global Properties", and those in turn are searched Zone-first then Map, then Module.
+   * @param key String key of property to be returned
+   * @return Object containing new value of the specified property
+   */
   @Override
   public Object getProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
@@ -184,8 +231,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         return getPublicProperty(key);
   }
 
-  /*
-   * Properties visible in a masked unit
+  /**
+   * Properties (see {@link #getProperty}) visible in a masked (see {@link Obscurable}) piece, even when the piece is masked.
+   * @param key String key of property to be returned.
    */
   public Object getPublicProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
@@ -268,6 +316,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return prop;
   }
 
+  /**
+   * Returns the localized text for a specified property if a translation is available, otherwise the non-localized version.
+   * Searches the same hierarchy of properties as {@link #getProperty}.
+   * @param key String key of property to be returned
+   * @return localized text of property, if available, otherwise non-localized value
+   */
   @Override
   public Object getLocalizedProperty(Object key) {
     if (BASIC_NAME.equals(key)) {
@@ -278,8 +332,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
-  /*
-   * Properties visible in a masked unit
+  /**
+   * Returns the localized text for a specified property if a translation is available, otherwise the non-localized version,
+   * but in both cases accounting for the unit's visibility (i.e. Mask/{@link Obscurable} Traits).
+   * Searches the same hierarchy of properties as {@link #getProperty}.
+   * @param key String key of property to be returned
+   * @return  Returns localized text of property, if available, otherwise non-localized value, accounting for Mask status.
    */
   public Object getLocalizedPublicProperty(Object key) {
     if (List.of(
@@ -357,6 +415,33 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return prop;
   }
 
+  /**
+   * Properties can be associated with a piece -- many may be game-specific, but others
+   * are standard, such as the LocationName property exposed by BasicPiece -- and can
+   * be set through this interface. The properties may or may not need to be encoded in
+   * the piece's {@link #getState} method.
+   *
+   * A setProperty() call which reaches BasicPiece will already have passed through all of the outer
+   * Decorator/Traits on the way in without finding one able to match the property.
+   *
+   * <br><br><b>NOTE:</b> Properties outside the piece CANNOT be set by this  method (e.g. Global
+   * Properties), even though they can be read by {@link #getProperty} -- in this the two methods are
+   * not perfect mirrors. This method ALSO does not set persistent properties (they can only be set
+   * by an explicit call to  {@link #setPersistentProperty}).
+   *
+   * <br><br>BasicPiece <i>does</i>, however contain a "scratchpad" for temporary properties, and for
+   * any call to this method that does not match a known property (which is, currently, ANY call which
+   * reaches this method here in BasicPiece), a scratchpad property will be set. Scratchpad properties
+   * are NOT saved when the game is saved, and NO arrangement is made to pass their values to other
+   * players' machines. Thus they should only be used internally for highly temporary values during the
+   * execution of a single key command. Their one other use is to store the piece's Unique ID -- and
+   * although this value is obviously used over periods of time much longer than a single key command,
+   * this is possible because the value is immutable and is refreshed to the same  value whenever the
+   * piece is re-created e.g. when loading a save.
+   *
+   * @param key String key of property to be changed
+   * @param val Object containing new value of the property
+   */
   @Override
   public void setProperty(Object key, Object val) {
     if (props == null) {
@@ -370,6 +455,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /**
+   * Setting a persistent property writes a property value into the piece (creating a new entry in the piece's persistent
+   * property table if the specified key does not yet exist in it). Persistent properties are game-state-robust: they are
+   * saved/restored with saved games, and are passed via {@link Command} to other players' clients in a multiplayer game.
+   * The persistent property value can then be read from the piece via e.g. {@link #getProperty}. When reading back properties
+   * out of a piece, the piece's built-in properties are checked first, then scratchpad properties (see {@link #setProperty}),
+   * then external properties such as Global Properties. If <i>only</i> persistentProperties are to be searched, use
+   * {@link #getPersistentProperty} instead.
+   *
+   * <br><br>In practical terms, setPersistentProperty is used mainly to implement the "Old" properties of BasicPiece (e.g.
+   * "OldLocationName", "OldZone", "OldMap", "OldBoard", "OldX", "OldY"). A Persistent Property is indeed nearly identical
+   * with {@link DynamicProperty} in storage/retrieval characteristics, and simply lacks the in-module interface for setting
+   * values, etc. Module Designers are thus recommended to stick with Dynamic Property traits for these functions.
+   *
+   * @param key String key naming the persistent property to be set. If a corresponding persistent property does not exist it will be created.
+   * @param newValue New value for the persistent property
+   * @return a {@link Command} object which, when passed to another player's client via logfile, server, or saved game, will allow the
+   * result of the "set" operation to be replicated.
+   */
   @Override
   public Command setPersistentProperty(Object key, Object newValue) {
     if (persistentProps == null) {
@@ -380,15 +484,31 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
   }
 
+  /**
+   * @param key String key naming the persistent property whose value is to be returned.
+   * @return the current value of a persistent property, or null if it doesn't exist.
+   */
   @Override
   public Object getPersistentProperty(Object key) {
     return persistentProps == null ? null : persistentProps.get(key);
   }
 
+  /**
+   * @param s Name of a module preference to be read
+   * @return Value of the preference
+   */
   protected Object prefsValue(String s) {
     return GameModule.getGameModule().getPrefs().getValue(s);
   }
 
+  /**
+   * Draws the BasicPiece's image, if it has been set
+   * @param g target Graphics object
+   * @param x x-location of the center of the piece
+   * @param y y-location of the center of the piece
+   * @param obs the Component on which this piece is being drawn
+   * @param zoom the scaling factor.
+   */
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if (imageBounds == null) {
@@ -397,29 +517,44 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     imagePainter.draw(g, x + (int) (zoom * imageBounds.x), y + (int) (zoom * imageBounds.y), zoom, obs);
   }
 
+  /**
+   * @return the set of key commands that will populate the a BasicPiece's right-click menu.
+   * This will normally be an empty array in the present age of the world, but the ability to contain a
+   * clone and delete command is retained for compatibility with Modules Of Ancient Times.
+   * In the case of BasicPiece, this method also keeps track of whether move up/down/to-top/to-bottom commands are enabled.
+   *
+   * This method is chained from "outer" Decorator components of a larger logical game piece, in the process of generating
+   * the complete list of key commands to build the right-click menu -- this process is originated by calling <code>getKeyCommands()</code>
+   * on the piece's outermost Decorator/Trait.
+   */
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<>();
       final GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
-        l.add(new KeyCommand("Clone", KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
+        l.add(new KeyCommand(Resources.getString("Editor.Clone.clone"), KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_DOWN_MASK), target));
       }
       if (deleteKey > 0) {
-        l.add(new KeyCommand("Delete", KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_DOWN_MASK), target));
+        l.add(new KeyCommand(Resources.getString("Editor.Delete.delete"), KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_DOWN_MASK), target));
       }
       commands = l.toArray(new KeyCommand[0]);
     }
     final GamePiece outer = Decorator.getOutermost(this);
-    boolean canAdjustPosition = outer.getMap() != null && outer.getParent() != null && outer.getParent().topPiece() != getParent().bottomPiece();
-    enableCommand("Move up", canAdjustPosition);
-    enableCommand("Move down", canAdjustPosition);
-    enableCommand("Move to top", canAdjustPosition);
-    enableCommand("Move to bottom", canAdjustPosition);
-    enableCommand("Clone", outer.getMap() != null);
-    enableCommand("Delete", outer.getMap() != null);
+    // This code has no function that I can see? There is no way to add these Commands.
+    // boolean canAdjustPosition = outer.getMap() != null && outer.getParent() != null && outer.getParent().topPiece() != getParent().bottomPiece();
+    // enableCommand("Move up", canAdjustPosition);
+    // enableCommand("Move down", canAdjustPosition);
+    // enableCommand("Move to top", canAdjustPosition);
+    // enableCommand("Move to bottom", canAdjustPosition);
+    enableCommand(Resources.getString("Editor.Clone.clone"), outer.getMap() != null);
+    enableCommand(Resources.getString("Editor.Delete.delete"), outer.getMap() != null);
     return commands;
   }
 
+  /**
+   * @param name Name of internal-to-BasicPiece key command whose enabled status it to be set
+   * @param enable true to enable, false to disable.
+   */
   private void enableCommand(String name, boolean enable) {
     for (KeyCommand command : commands) {
       if (name.equals(command.getName())) {
@@ -428,6 +563,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /**
+   * @param stroke KeyStroke to query if corresponding internal-to-BasicPiece command is enabled
+   * @return false if no Keystroke, true if not an internal-to-BasicPiece key command, and enabled status of key command otherwise.
+   */
   private boolean isEnabled(KeyStroke stroke) {
     if (stroke == null) {
       return false;
@@ -440,11 +579,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return true;
   }
 
+  /**
+   * @return piece's position on its map.
+   */
   @Override
   public Point getPosition() {
     return getParent() == null ? new Point(pos) : getParent().getPosition();
   }
 
+  /**
+   * @param p Sets the location of this piece on its {@link Map}
+   */
   @Override
   public void setPosition(Point p) {
     if (getMap() != null && getParent() == null) {
@@ -456,16 +601,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /**
+   * @return the parent {@link Stack} of which this piece is a member, or null if not a member of any Stack
+   */
   @Override
   public Stack getParent() {
     return parent;
   }
 
+  /**
+   * @param s sets the {@link Stack} to which this piece belongs.
+   */
   @Override
   public void setParent(Stack s) {
     parent = s;
   }
 
+  /**
+   * @return bounding box rectangle for BasicPiece's image, if an image has been specified.
+   */
   @Override
   public Rectangle boundingBox() {
     if (imageBounds == null) {
@@ -474,26 +628,67 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return new Rectangle(imageBounds);
   }
 
+  /**
+   * @return the Shape of this piece, for purposes of selecting it by clicking on it with the mouse. In the case
+   * of BasicPiece, this is equivalent to the boundingBox of the BasicPiece image, if one exists. Note that the
+   * shape should be defined in reference to the piece's location, which is ordinarily the center of the basic
+   * image.
+   *
+   * <br><br>For pieces that need a non-rectangular click volume, add a {@link NonRectangular} trait.
+   */
   @Override
   public Shape getShape() {
     return boundingBox();
   }
 
+  /**
+   * @param c GamePiece to check if equal to this one
+   * @return Equality check with specified game piece
+   */
   public boolean equals(GamePiece c) {
     return c == this;
   }
 
+  /**
+   * @return the name of this GamePiece. This is the name typed by the module designer in the configuration box
+   * for the BasicPiece.
+   */
   @Override
   public String getName() {
     return commonName;
   }
 
+  /**
+   * @return the localized name of this GamePiece. This is the translated version of the name typed by the module designer
+   * in the configuration box for the BasicPiece. It is used to fill the "BasicName" property.
+   */
   @Override
   public String getLocalizedName() {
     final String key = TranslatablePiece.PREFIX + getName();
     return Localization.getInstance().translate(key, getName());
   }
 
+  /**
+   * The primary way for the piece or trait to receive events. {@link KeyStroke} events are forward
+   * to this method if they are received while the piece is selected (or as the result of e.g. a Global
+   * Key Command being sent to the piece). The class implementing GamePiece can respond in any way it
+   * likes. Actual key presses by the player, selected  items from the right-click Context Menu, keystrokes
+   * "applied on move" by a Map that the piece has just moved on, and Global Key Commands all send KeyStrokes
+   * (and NamedKeyStrokes) which are passed to pieces and traits through this interface.
+   *
+   * <br><br>In the case of BasicPiece, if a key command gets here, that means it has already been seen by any and all of
+   * its Traits ({@link Decorator}s), as BasicPiece is the innermost member of the Decorator stack. The key events
+   * processed here by BasicPiece include the "move up"/"move down"/"move-to-top"/"move-to-bottom" stack-adjustment
+   * commands, along with legacy support for cloning and deleting.
+   *
+   * @return a {@link Command} that, when executed, will make all changes to the game state (maps, pieces, other
+   * pieces, etc) to duplicate what the piece did in response to this event on another machine. Often a
+   * {@link ChangePiece} command, but for example if this keystroke caused the piece/trait to decide to fire
+   * off a Global Key Command, then the Command returned would include the <i>entire</i> results of that, appended
+   * as subcommands.
+   *
+   * @see VASSAL.build.module.map.ForwardToKeyBuffer
+   */
   @Override
   public Command keyEvent(KeyStroke stroke) {
     getKeyCommands();
@@ -513,13 +708,14 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
         if (GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
-          String s = "* " + outer.getLocalizedName();
+          final String name = outer.getLocalizedName();
           final String loc = getMap().locationName(outer.getPosition());
+          String s;
           if (loc != null) {
-            s += " cloned in " + loc + " * ";
+            s = Resources.getString("BasicPiece.clone_report_1", name, loc);
           }
           else {
-            s += "cloned *";
+            s = Resources.getString("BasicPiece.clone_report_2", name);
           }
           final Command report = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
           report.execute();
@@ -530,13 +726,14 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else if (deleteKey != 0 && KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_DOWN_MASK).equals(stroke)) {
       comm = new RemovePiece(outer);
       if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
-        String s = "* " + outer.getLocalizedName();
+        final String name = outer.getLocalizedName();
         final String loc = getMap().locationName(outer.getPosition());
+        String s;
         if (loc != null) {
-          s += " deleted from " + loc + " * ";
+          s = Resources.getString("BasicPiece.delete_report_1", name, loc);
         }
         else {
-          s += " deleted *";
+          s = Resources.getString("BasicPiece.delete_report_2", name);
         }
         final Command report = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
         comm = comm.append(report);
@@ -610,10 +807,21 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return comm;
   }
 
+  /**
+   * @return The "state information" is information that can change during
+   * the course of a game. State information is saved when the game
+   * is saved and is transferred between players on the server. For
+   * example, the relative order of pieces in a stack is state
+   * information, but whether the stack is expanded is not.
+   *
+   * <br><br>In the case of BasicPiece, the state information includes the current
+   * map, x/y position, the unique Game Piece ID, and the keys and values
+   * of any persistent properties (see {@link #setPersistentProperty})
+   */
   @Override
   public String getState() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    final String mapName = map == null ? "null" : map.getIdentifier();
+    final String mapName = map == null ? "null" : map.getIdentifier(); // NON-NLS
     se.append(mapName);
     final Point p = getPosition();
     se.append(p.x).append(p.y);
@@ -629,6 +837,18 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return se.getValue();
   }
 
+  /**
+   * @param s New state information serialized in string form, ready
+   * to be passed to a SequenceEncoder#decode. The "state information" is
+   * information that can change during the course of a game. State information
+   * is saved when the game is saved and is transferred between players on the
+   * server. For example, the relative order of pieces in a stack is state
+   * information, but whether the stack is expanded is not.
+   *
+   * <br><br>In the case of BasicPiece, the state information includes the current
+   * map, x/y position, the unique Game Piece ID, and the keys and values
+   * of any persistent properties (see {@link #setPersistentProperty})
+   */
   @Override
   public void setState(String s) {
     final GamePiece outer = Decorator.getOutermost(this);
@@ -636,10 +856,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     final String mapId = st.nextToken();
     Map newMap = null;
-    if (!"null".equals(mapId)) {
+    if (!"null".equals(mapId)) { // NON-NLS
       newMap = Map.getMapById(mapId);
       if (newMap == null) {
-        Decorator.reportDataError(this, Resources.getString("Error.not_found", "Map"), "mapId=" + mapId);
+        Decorator.reportDataError(this, Resources.getString("Error.not_found", "Map"), "mapId=" + mapId); // NON-NLS
       }
     }
     final Point newPos = new Point(st.nextInt(0), st.nextInt(0));
@@ -650,11 +870,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         // and set the map to newMap
         newMap.addPiece(outer);
       }
-      else if (oldMap != null) {
+      else { // oldMap can't possibly be null if we get to here
         oldMap.removePiece(outer);
-        setMap(null);
-      }
-      else {
         setMap(null);
       }
     }
@@ -676,6 +893,12 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /**
+   * For BasicPiece, the "merge" of a new state simply involves copying in the
+   * new one in its entirety -- if any difference is detected.
+   * @param newState new serialized game state string
+   * @param oldState old serialized game state string
+   */
   @Override
   public void mergeState(String newState, String oldState) {
     if (!newState.equals(oldState)) {
@@ -683,18 +906,30 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /**
+   * Each GamePiece must have a unique String identifier. These are managed by VASSAL internally and should never
+   * be changed by custom code.
+   * @return unique ID for this piece
+   * @see GameState#getNewPieceId
+   */
   @Override
   public String getId() {
     return id;
   }
 
+  /**
+   * Each GamePiece must have a unique String identifier. These are managed by VASSAL internally and should never
+   * be changed by custom code.
+   * @param id sets unique ID for this piece
+   * @see GameState#getNewPieceId
+   */
   @Override
   public void setId(String id) {
     this.id = id;
   }
 
   /**
-   * Get the Highlighter instance for drawing selected pieces. Note that since this is a static method, all pieces in a
+   * @return the Highlighter instance for drawing selected pieces. Note that since this is a static method, all pieces in a
    * module will always use the same Highlighter
    */
   public static Highlighter getHighlighter() {
@@ -705,48 +940,75 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   /**
-   * Set the Highlighter for all pieces
+   * @param h Set the Highlighter for all pieces
    */
   public static void setHighlighter(Highlighter h) {
     highlighter = h;
   }
 
+  /**
+   * @return Description of what this kind of piece is. Appears in PieceDefiner list of traits.
+   */
   @Override
   public String getDescription() {
-    return "Basic Piece";
+    return Resources.getString("Editor.BasicPiece.trait_description");
   }
 
+  /**
+   * @return the unique gamepiece ID for this piece, as stored in the Property "scratchpad"
+   */
   public String getGpId() {
     String id = (String) getProperty(Properties.PIECE_ID);
     return id == null ? "" : id;
   }
 
+  /**
+   * @param id stores the unique gamepiece ID for this piece into the Property "scratchpad"
+   */
   public void setGpId(String id) {
     setProperty(Properties.PIECE_ID, id == null ? "" : id);
   }
 
+  /**
+   * @return the help file page for this type of piece.
+   */
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("BasicPiece.html");
+    return HelpFile.getReferenceManualPage("BasicPiece.html"); // NON-NLS
   }
 
+  /**
+   * @return The configurer ({@link PieceEditor} for the BasicPiece, which generates the dialog for editing the
+   * BasicPiece's type information in the Editor window.
+   */
   @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+
+  /**
+   * The configurer ({@link PieceEditor} for the BasicPiece, which generates the dialog for editing the
+   * BasicPiece's type information in the Editor window.
+   */
   private static class Ed implements PieceEditor {
     private JPanel panel;
     private KeySpecifier cloneKeyInput;
     private KeySpecifier deleteKeyInput;
     private JTextField pieceName;
     private ImagePicker picker;
-    private String state;
+    private final String state;
 
+    /**
+     * @param p to create PieceEditor for
+     */
     private Ed(BasicPiece p) {
       state = p.getState();
       initComponents(p);
     }
 
+    /**
+     * @param p initializes the editor dialog for the specified BasicPiece
+     */
     private void initComponents(BasicPiece p) {
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -760,37 +1022,49 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       pieceName.setMaximumSize(pieceName.getPreferredSize());
       Box col = Box.createVerticalBox();
       Box row = Box.createHorizontalBox();
-      row.add(new JLabel("Name:  "));
+      row.add(new JLabel(Resources.getString("Editor.name_label")));
       row.add(pieceName);
       col.add(row);
       if (p.cloneKey != 0) {
         row = Box.createHorizontalBox();
-        row.add(new JLabel("To Clone:  "));
+        row.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
         row.add(cloneKeyInput);
         col.add(row);
       }
       if (p.deleteKey != 0) {
         row = Box.createHorizontalBox();
-        row.add(new JLabel("To Delete:  "));
+        row.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
         row.add(deleteKeyInput);
         col.add(row);
       }
       panel.add(col);
     }
 
+    /**
+     * @param p BasicPiece
+     */
     public void reset(BasicPiece p) {
     }
 
+    /**
+     * @return the Component for the BasicPiece configurer
+     */
     @Override
     public Component getControls() {
       return panel;
     }
 
+    /**
+     * @return the current state string for the BasicPiece
+     */
     @Override
     public String getState() {
       return state;
     }
 
+    /**
+     * @return the type information string for the BasicPiece based on the current values of the configurer fields
+     */
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(cloneKeyInput.getKey(), ';');
@@ -799,19 +1073,26 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
   }
 
+  /**
+   * @return String enumeration of type and state information.
+   */
   public String toString() {
-    return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]";
+    return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]"; // NON-NLS
   }
 
+  /**
+   * @return Object encapsulating the internationalization data for the BasicPiece
+   */
   @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
-    data.add(commonName, "Basic piece name");
+    data.add(commonName, Resources.getString("Editor.BasicPiece.basic_piece_name_description"));
     return data;
   }
 
   /**
-   * Return Property names exposed by this trait
+   * @return Property names exposed by the Trait or Piece. In the case of BasicPiece, there are quite a few, mainly
+   * dealing with past and present location.
    */
   @Override
   public List<String> getPropertyNames() {

@@ -96,7 +96,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
   public static final String NO_USER = "nobody"; // Dummy user ID for turning
-  protected static StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
+  protected static final StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
   // cards face down
 
   protected boolean drawOutline = true;
@@ -147,7 +147,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected PropertyExpression restrictExpression = new PropertyExpression();
   protected PropertySource propertySource;
 
+  /**
+   * Special {@link CommandEncoder} to handle loading/saving Decks from files.
+   */
   protected CommandEncoder commandEncoder = new CommandEncoder() {
+    /**
+     * Deserializes a Deck loaded from a file, turning it into a LoadDeckCommand.
+     * @param command String contents of deck
+     * @return {@link LoadDeckCommand} to put the specified contents in the deck
+     */
     @Override
     public Command decode(String command) {
       if (!command.startsWith(LoadDeckCommand.PREFIX)) {
@@ -156,6 +164,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return new LoadDeckCommand(Deck.this);
     }
 
+    /**
+     * Serializes a LoadDeckCommand
+     * @param c LoadDeckCommand
+     * @return string form of command
+     */
     @Override
     public String encode(Command c) {
       if (!(c instanceof LoadDeckCommand)) {
@@ -195,21 +208,40 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     ProblemDialog.showDeprecated("2020-08-06");
   }
 
+  /**
+   * Create an empty deck
+   * @param gameModule The game module
+   */
   public Deck(GameModule gameModule) {
     this(gameModule, ID);
   }
 
+  /**
+   * Creates an empty deck using specified type information
+   * @param gameModule The game module
+   * @param type Type information for the deck (the configuration information that does not change during the game)
+   */
   public Deck(GameModule gameModule, String type) {
     this.gameModule = gameModule;
     mySetType(type);
     gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
+  /**
+   * Creates an empty deck using specified type information
+   * @param gameModule The game module
+   * @param type Type information for the deck (the configuration information that does not change during the game)
+   * @param source PropertySource
+   */
   public Deck(GameModule gameModule, String type, PropertySource source) {
     this(gameModule, type);
     propertySource = source;
   }
 
+  /**
+   * Sets the Deck's property source
+   * @param source PropertySource
+   */
   public void setPropertySource(PropertySource source) {
     propertySource = source;
     if (globalCommands != null) {
@@ -219,19 +251,35 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  /**
+   * Listener for when the local player changes side. Updates all of our counts of expressions of pieces configured to be counted.
+   * @param oldSide local player's old side
+   * @param newSide local player's new side
+   */
   @Override
   public void sideChanged(String oldSide, String newSide) {
     updateCountsAll();
   }
 
+  /**
+   * Adds a Deck Global Key Command (DGKC).
+   * @param globalCommand The command to add
+   */
   public void addGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
     globalCommands.add(globalCommand);
   }
 
+  /**
+   * Removes a Deck Global Key Command (DGKC).
+   * @param globalCommand The command to remove
+   */
   public void removeGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
     globalCommands.remove(globalCommand);
   }
 
+  /**
+   * @return A list of Deck Global Key Commands for this deck, serialized by their encoder.
+   */
   protected String[] getGlobalCommands() {
     String[] commands = new String[globalCommands.size()];
     for (int i = 0; i < globalCommands.size(); i++) {
@@ -240,6 +288,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return commands;
   }
 
+  /**
+   * Sets the list of Deck Global Key Commands for this deck
+   * @param commands The list of commands to set (in serialized string form)
+   */
   protected void setGlobalCommands(String[] commands) {
     globalCommands = new ArrayList<>(commands.length);
     for (String command : commands) {
@@ -266,8 +318,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
-  * Update map-level count property for a piece located at index
-  */
+   * Update map-level count property for a piece located at index
+   * @param index Index (within the Deck, counting from the top) of the piece whose count to update
+   */
   private void updateCounts(int index) {
     if (!doesExpressionCounting()) {
       return;
@@ -289,8 +342,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   /**
-  * Update map-level count property for a piece
-  */
+   * Update map-level count property for a piece
+   * @param p Game piece to update counts for
+   * @param increase if true, increase the count; if false, decrease.
+   */
   private void updateCounts(GamePiece p, boolean increase) {
     if (!doesExpressionCounting() || getMap() == null) {
       return;
@@ -324,6 +379,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     countProperty.setPropertyValue(String.valueOf(pieceCount));
   }
 
+  /**
+   * Inserts a piece into a specific position into the Deck (counting down from the top)
+   * @param p Piece to insert
+   * @param index "How many cards down into the Deck" to put it.
+   */
   @Override
   protected void insertPieceAt(GamePiece p, int index) {
     super.insertPieceAt(p, index);
@@ -331,6 +391,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     fireNumCardsProperty();
   }
 
+  /**
+   * Removes a piece from a specific location in the deck
+   * @param index Piece to remove, counting down from the top
+   */
   @Override
   protected void removePieceAt(int index) {
     int startCount = pieceCount;
@@ -342,6 +406,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
+  /**
+   * Removes all pieces from the Deck.
+   */
   @Override
   public void removeAll() {
     super.removeAll();
@@ -349,6 +416,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     fireNumCardsProperty();
   }
 
+  /**
+   * Sets the Map this Deck appears on
+   * @param map Map to assign Deck to
+   */
   @Override
   public void setMap(Map map) {
     if (map != getMap()) {
@@ -364,6 +435,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     fireNumCardsProperty();
   }
 
+  /** Sets the information for this Deck.  See {@link Decorator#myGetType}
+   *  @param type a serialized configuration string to
+   *              set the "type information" of this Deck, which is
+   *              information that doesn't change during the course of
+   *              a single game (e.g. Image Files, Context Menu strings,
+   *              etc, rules about when deck is shuffled, whether it is
+   *              face-up or face down, etc).
+   */
   protected void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
@@ -829,11 +908,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
          * This statement is the culprit. As far as I can tell, it is not needed as Deck.pieceRemoved()
          * sets OBSCURED_BY if drawing a facedown card from a face down Deck which is the only case
          * where this would be needed.
-         * This will need thorough testing in Deck heavy modules.
+         * Bug 13433
+         * HOWEVER, the nextPiece() iterator is used to select cards to test against property match expressions
+         * which historically assume that this has already been done. To maintain legacy support, we need to record
+         * the original OBSCURED_BY, change it, then the consumers of nextPiece() must change it back.
+         * Note use of scratch-pad props map in BasicPiece, no need to use persistent properties.
          */
-        // if (faceDown) {
-        //  p.setProperty(Properties.OBSCURED_BY, NO_USER);
-        //}
+        p.setProperty(Properties.OBSCURED_BY_PRE_DRAW, p.getProperty(Properties.OBSCURED_BY));
+        if (faceDown) {
+          p.setProperty(Properties.OBSCURED_BY, NO_USER);
+        }
         return p;
       }
     };

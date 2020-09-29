@@ -65,7 +65,7 @@ public class RereadableInputStream extends InputStream {
    * bytes after calling this method will not invalidate the previous mark,
    * but will cause the buffer to be resized.
    *
-   * @param readLimit the initial buffer size
+   * @param readlimit the initial buffer size
    */
   @Override
   public synchronized void mark(int readlimit) {

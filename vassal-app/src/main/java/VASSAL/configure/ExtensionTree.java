@@ -21,7 +21,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -29,7 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -38,6 +36,7 @@ import VASSAL.build.module.ExtensionElement;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.i18n.Resources;
 import VASSAL.launch.EditorWindow;
 import VASSAL.tools.ReflectionUtils;
 
@@ -92,7 +91,7 @@ public class ExtensionTree extends ConfigureTree {
 
   @Override
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
-    return new AbstractAction("Add " + getConfigureName(newConfig)) {
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_component", getConfigureName(newConfig))) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -148,7 +147,7 @@ public class ExtensionTree extends ConfigureTree {
 
   @Override
   protected Action buildImportAction(final Configurable target) {
-    Action a = new AbstractAction("Add Imported Class") {
+    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_imported_class")) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -157,7 +156,6 @@ public class ExtensionTree extends ConfigureTree {
         if (child != null) {
           try {
             child.build(null);
-            final Configurable c = target;
             if (child.getConfigurer() != null) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
@@ -165,7 +163,7 @@ public class ExtensionTree extends ConfigureTree {
                 @Override
                 public void save() {
                   super.save();
-                  insert(c, child, getTreeNode(c).getChildCount());
+                  insert(target, child, getTreeNode(target).getChildCount());
                   if (!isEditable(target)) {
                     ExtensionElement el = new ExtensionElement(child, getPath(getTreeNode(target)));
                     extension.add(el);
@@ -180,22 +178,21 @@ public class ExtensionTree extends ConfigureTree {
               w.setVisible(true);
             }
             else {
-              insert(c, child, getTreeNode(c).getChildCount());
+              insert(target, child, getTreeNode(target).getChildCount());
             }
           }
           // FIXME: review error message
           catch (Exception ex) {
             JOptionPane.showMessageDialog(
               getTopLevelAncestor(),
-              "Error adding " + getConfigureName(child) +
-                " to " + getConfigureName(target) + "\n" + ex.getMessage(),
-              "Illegal configuration",
+              "Error adding " + getConfigureName(child) + //NON-NLS
+                " to " + getConfigureName(target) + "\n" + ex.getMessage(), //NON-NLS
+              "Illegal configuration", //NON-NLS
               JOptionPane.ERROR_MESSAGE);
           }
         }
       }
     };
-    return a;
   }
 
   private boolean isEditable(final Configurable target) {
@@ -214,12 +211,12 @@ public class ExtensionTree extends ConfigureTree {
 
   @Override
   protected Action buildPasteAction(final Configurable target) {
-    Action a = null;
+    Action a;
     if (isEditable(target)) {
       a = super.buildPasteAction(target);
     }
     else {
-      a = new AbstractAction("Paste") {
+      a = new AbstractAction(Resources.getString("Editor.ConfigureTree.paste")) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -303,7 +300,7 @@ public class ExtensionTree extends ConfigureTree {
     if (targetNode.getParent() != null
         && isEditable(targetNode)) {
       final Configurable parent = (Configurable) ((DefaultMutableTreeNode) targetNode.getParent()).getUserObject();
-      action = new AbstractAction("Delete") {
+      action = new AbstractAction(Resources.getString("Editor.ConfigureTree.delete")) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -336,7 +333,7 @@ public class ExtensionTree extends ConfigureTree {
     }
 
     if (parentNode != null) {
-      return new AbstractAction("Clone") {
+      return new AbstractAction(Resources.getString("Editor.ConfigureTree.clone")) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -372,16 +369,6 @@ public class ExtensionTree extends ConfigureTree {
       a = super.buildEditPiecesAction(target);
     }
     return a;
-  }
-
-  @Override
-  public void mousePressed(MouseEvent e) {
-    TreePath path = getPathForLocation(e.getX(), e.getY());
-    if (path != null) {
-      if (isEditable((DefaultMutableTreeNode) path.getLastPathComponent())) {
-        super.mousePressed(e);
-      }
-    }
   }
 
   @Override

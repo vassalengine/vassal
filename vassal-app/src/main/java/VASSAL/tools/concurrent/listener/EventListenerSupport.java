@@ -33,33 +33,33 @@ public interface EventListenerSupport<T> {
    *
    * @param l the listener to add
    */
-  public void addEventListener(EventListener<? super T> l);
+  void addEventListener(EventListener<? super T> l);
 
   /**
    * Removes an {@link EventListener}.
    *
    * @param l the listener to remove
    */
-  public void removeEventListener(EventListener<? super T> l);
+  void removeEventListener(EventListener<? super T> l);
 
   /**
    * Checks whether there are any {@link EventListener}s.
    *
    * @return <code>true</code> if there are any listeners
    */
-  public boolean hasEventListeners();
+  boolean hasEventListeners();
 
   /**
-   * Gets the list of listerners.
+   * Gets the list of listeners.
    *
    * @return the list of listeners
    */
-  public List<EventListener<? super T>> getEventListeners();
+  List<EventListener<? super T>> getEventListeners();
 
   /**
    * Notify the listeners of an event.
    *
    * @param event the event to send
    */
-  public void notify(T event);
+  void notify(T event);
 }

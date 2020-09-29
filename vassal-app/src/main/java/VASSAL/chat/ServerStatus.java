@@ -28,17 +28,17 @@ import java.util.Map;
  */
 public interface ServerStatus {
   /** Return the current connections to the server */
-  public ModuleSummary[] getStatus();
+  ModuleSummary[] getStatus();
 
-  public String[] getSupportedTimeRanges();
+  String[] getSupportedTimeRanges();
 
   /**
    * @return the connections to the server within <code>time</code>
    * milliseconds of the current time
    */
-  public ModuleSummary[] getHistory(String timeRange);
+  ModuleSummary[] getHistory(String timeRange);
 
-  public class ModuleSummary {
+  class ModuleSummary {
     private String moduleName;
     private Map<String, Room> rooms = new HashMap<>();
 

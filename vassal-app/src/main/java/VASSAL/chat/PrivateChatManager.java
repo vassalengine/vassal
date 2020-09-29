@@ -35,8 +35,8 @@ import VASSAL.tools.menu.MenuManager;
 public class PrivateChatManager {
   private ChatServerConnection client;
 
-  private List<Entry> chatters;
-  private List<Player> banned;
+  private final List<Entry> chatters;
+  private final List<Player> banned;
 
   public PrivateChatManager(ChatServerConnection client) {
     chatters = new ArrayList<>();
@@ -68,7 +68,7 @@ public class PrivateChatManager {
       f.setTitle(Resources.getString("Chat.private_channel", sender.getName())); //$NON-NLS-1$
       f.setJMenuBar(MenuManager.getInstance().getMenuBarFor(f));
       f.getContentPane().add(chat);
-      f.pack();
+      f.setSize(640, 320);
       f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 -
                     f.getSize().width / 2, 0);
     }
@@ -87,8 +87,8 @@ public class PrivateChatManager {
   }
 
   private static class Entry {
-    private Player player;
-    private PrivateChatter chatter;
+    private final Player player;
+    private final PrivateChatter chatter;
 
     private Entry(Player p, PrivateChatter chat) {
       if (p == null) {
@@ -99,12 +99,7 @@ public class PrivateChatManager {
     }
 
     public boolean equals(Object o) {
-      if (o instanceof Entry) {
-        return player.equals(((Entry) o).player);
-      }
-      else {
-        return false;
-      }
+      return o instanceof Entry && player.equals(((Entry) o).player);
     }
   }
 }

@@ -87,12 +87,9 @@ public class ServerNode extends Node {
 
     final MsgSender[] senders = Arrays.copyOf(target, target.length);
 
-    return new MsgSender() {
-      @Override
-      public void send(String msg) {
-        for (MsgSender sender : senders) {
-          sender.send(msg);
-        }
+    return msg -> {
+      for (MsgSender sender : senders) {
+        sender.send(msg);
       }
     };
   }
@@ -157,10 +154,8 @@ public class ServerNode extends Node {
    * One client has requested to kick another out of a room. Validate that - Both players are in the same room - Kicker
    * is the owner of the room
    *
-   * @param kickerId
-   *          Id of Kicking player
-   * @param kickeeId
-   *          Id of Player to be kicked
+   * @param kicker Id of Kicking player
+   * @param kickeeId Id of Player to be kicked
    */
   public synchronized void kick(PlayerNode kicker, String kickeeId) {
     // Check the kicker owns the room he is in

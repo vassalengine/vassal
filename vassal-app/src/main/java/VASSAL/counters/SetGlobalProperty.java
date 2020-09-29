@@ -19,7 +19,6 @@ package VASSAL.counters;
 
 import java.awt.Component;
 import java.awt.Window;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -273,15 +272,12 @@ public class SetGlobalProperty extends DynamicProperty {
       };
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          boolean isNumeric = numericConfig.booleanValue();
-          minConfig.getControls().setVisible(isNumeric);
-          maxConfig.getControls().setVisible(isNumeric);
-          wrapConfig.getControls().setVisible(isNumeric);
-          keyCommandListConfig.repack();
-        }
+      PropertyChangeListener l = evt -> {
+        boolean isNumeric = numericConfig.booleanValue();
+        minConfig.getControls().setVisible(isNumeric);
+        maxConfig.getControls().setVisible(isNumeric);
+        wrapConfig.getControls().setVisible(isNumeric);
+        keyCommandListConfig.repack();
       };
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
@@ -290,12 +286,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);
-      levelConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateVisibility();
-        }
-      });
+      levelConfig.addPropertyChangeListener(e -> updateVisibility());
       Box box = Box.createHorizontalBox();
       box.add(new JLabel("Locate Property starting in the:   "));
       box.add(levelConfig.getControls());

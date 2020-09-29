@@ -20,8 +20,6 @@ package VASSAL.chat.ui;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JTree;
 
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Room;
@@ -49,11 +47,6 @@ public class JoinRoomAction extends AbstractAction {
   }
 
   public static RoomActionFactory factory(final ChatServerConnection chatClient) {
-    return new RoomActionFactory() {
-      @Override
-      public Action getAction(Room p, JTree tree) {
-        return new JoinRoomAction(p, chatClient);
-      }
-    };
+    return (p, tree) -> new JoinRoomAction(p, chatClient);
   }
 }

@@ -44,7 +44,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -67,8 +66,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.html.HTMLEditorKit;
@@ -119,7 +116,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
-import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
 
@@ -129,8 +125,8 @@ public class ModuleManagerWindow extends JFrame {
   private static final Logger logger =
     LoggerFactory.getLogger(ModuleManagerWindow.class);
 
-  private static final String SHOW_STATUS_KEY = "showServerStatus";
-  private static final String DIVIDER_LOCATION_KEY = "moduleManagerDividerLocation";
+  private static final String SHOW_STATUS_KEY = "showServerStatus"; //NON-NLS
+  private static final String DIVIDER_LOCATION_KEY = "moduleManagerDividerLocation"; //NON-NLS
   private static final int COLUMNS = 4;
   private static final int KEY_COLUMN = 0;
   private static final int VERSION_COLUMN = 1;
@@ -150,7 +146,7 @@ public class ModuleManagerWindow extends JFrame {
 
   private final CardLayout modulePanelLayout;
   private final JPanel moduleView;
-  private final SplitPane serverStatusView;
+  private ComponentSplitter.SplitPane serverStatusView;
 
   private MyTreeNode rootNode;
   private MyTree tree;
@@ -176,7 +172,7 @@ public class ModuleManagerWindow extends JFrame {
   private static final ModuleManagerWindow instance = new ModuleManagerWindow();
 
   public ModuleManagerWindow() {
-    setTitle("VASSAL");
+    setTitle("VASSAL " + Info.getVersion()); //NON-NLS
     setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
     ApplicationIcons.setFor(this);
@@ -203,7 +199,7 @@ public class ModuleManagerWindow extends JFrame {
           ErrorDialog.bug(ex);
         }
 
-        logger.info("Exiting");
+        logger.info("Exiting"); //NON-NLS
         System.exit(0);
       }
     };
@@ -357,16 +353,16 @@ public class ModuleManagerWindow extends JFrame {
 
     // Load Icons
     moduleIcon = new ImageIcon(
-      getClass().getResource("/images/mm-module.png"));
+      getClass().getResource("/images/mm-module.png")); //NON-NLS
     activeExtensionIcon = new ImageIcon(
-      getClass().getResource("/images/mm-extension-active.png"));
+      getClass().getResource("/images/mm-extension-active.png")); //NON-NLS
     inactiveExtensionIcon = new ImageIcon(
-      getClass().getResource("/images/mm-extension-inactive.png"));
+      getClass().getResource("/images/mm-extension-inactive.png")); //NON-NLS
     openGameFolderIcon = new ImageIcon(
-      getClass().getResource("/images/mm-gamefolder-open.png"));
+      getClass().getResource("/images/mm-gamefolder-open.png")); //NON-NLS
     closedGameFolderIcon = new ImageIcon(
-      getClass().getResource("/images/mm-gamefolder-closed.png"));
-    fileIcon = new ImageIcon(getClass().getResource("/images/mm-file.png"));
+      getClass().getResource("/images/mm-gamefolder-closed.png")); //NON-NLS
+    fileIcon = new ImageIcon(getClass().getResource("/images/mm-file.png")); //NON-NLS
 
     // build module controls
     final JPanel moduleControls = new JPanel(new BorderLayout());
@@ -374,7 +370,7 @@ public class ModuleManagerWindow extends JFrame {
     moduleView = new JPanel(modulePanelLayout);
     buildTree();
     final JScrollPane scroll = new JScrollPane(tree);
-    moduleView.add(scroll, "modules");
+    moduleView.add(scroll, "modules"); //NON-NLS
 
     final JEditorPane l = new JEditorPane("text/html",
       Resources.getString("ModuleManager.quickstart"));
@@ -405,7 +401,7 @@ public class ModuleManagerWindow extends JFrame {
     c.anchor = GridBagConstraints.CENTER;
     p.add(l, c);
 
-    moduleView.add(p, "quickStart");
+    moduleView.add(p, "quickStart"); //NON-NLS
     modulePanelLayout.show(
       moduleView, getModuleCount() == 0 ? "quickStart" : "modules");
     moduleControls.add(moduleView, BorderLayout.CENTER);
@@ -420,10 +416,10 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusControls.setBorder(
       new TitledBorder(Resources.getString("Chat.server_status")));
 
-    serverStatusView = ComponentSplitter.splitAsNewSplitPane(
+    serverStatusView = ComponentSplitter.split(
       moduleControls,
       serverStatusControls,
-      SplitPane.HIDE_RIGHT,
+      ComponentSplitter.SplitPane.HIDE_RIGHT,
       false
     );
     serverStatusView.revalidate();
@@ -445,7 +441,7 @@ public class ModuleManagerWindow extends JFrame {
 
     // Save/load the window position and size in prefs
     final PositionOption option =
-      new PositionOption(PositionOption.key + "ModuleManager", this);
+      new PositionOption(PositionOption.key + "ModuleManager", this); //NON-NLS
     Prefs.getGlobalPrefs().addOption(option);
   }
 
@@ -470,7 +466,7 @@ public class ModuleManagerWindow extends JFrame {
   }
 
   protected void buildTree() {
-    recentModuleConfig = new StringArrayConfigurer("RecentModules", null);
+    recentModuleConfig = new StringArrayConfigurer("RecentModules", null); //NON-NLS
     Prefs.getGlobalPrefs().addOption(null, recentModuleConfig);
     final List<String> missingModules = new ArrayList<>();
     final List<ModuleInfo> moduleList = new ArrayList<>();
@@ -495,7 +491,7 @@ public class ModuleManagerWindow extends JFrame {
       recentModuleConfig.removeValue(s);
     }
 
-    moduleList.sort((f1, f2) -> f1.compareTo(f2));
+    moduleList.sort(AbstractInfo::compareTo);
 
     rootNode = new MyTreeNode(new RootInfo());
 
@@ -582,12 +578,11 @@ public class ModuleManagerWindow extends JFrame {
             final ModuleInfo modInfo = (ModuleInfo) target;
             if (modInfo.isModuleTooNew()) {
               ErrorDialog.show(
-                "Error.module_too_new",
+                "Error.module_too_new", //NON-NLS
                 modInfo.getFile().getPath(),
                 modInfo.getVassalVersion(),
                 Info.getVersion()
               );
-              return;
             }
             else {
               ((ModuleInfo) target).play();
@@ -656,18 +651,15 @@ public class ModuleManagerWindow extends JFrame {
     tree.setToggleClickCount(3);
 
     tree.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    tree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
-      public void valueChanged(TreeSelectionEvent e) {
-        final MyTreeNode node = (MyTreeNode) e.getPath().getLastPathComponent();
-        final AbstractInfo target = node.getNodeInfo();
-        if (target instanceof ModuleInfo) {
-          setSelectedModule(target.getFile());
-        }
-        else {
-          if (node.getParent() != null) {
-            setSelectedModule(node.getParentModuleFile());
-          }
+    tree.addTreeSelectionListener(e -> {
+      final MyTreeNode node = (MyTreeNode) e.getPath().getLastPathComponent();
+      final AbstractInfo target = node.getNodeInfo();
+      if (target instanceof ModuleInfo) {
+        setSelectedModule(target.getFile());
+      }
+      else {
+        if (node.getParent() != null) {
+          setSelectedModule(node.getParentModuleFile());
         }
       }
     });
@@ -1341,7 +1333,7 @@ public class ModuleManagerWindow extends JFrame {
         JOptionPane.showMessageDialog(
           ModuleManagerWindow.this,
           Resources.getString("Install.error_unable_to_create", f.getPath()),
-          "Error",
+          "Error", //NON-NLS
           JOptionPane.ERROR_MESSAGE
         );
 
@@ -1936,7 +1928,7 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public void actionPerformed(ActionEvent e) {
 // FIXME: don't create a new one each time!
-      final File logfile = new File(Info.getHomeDir(), "errorLog");
+      final File logfile = Info.getErrorLogPath();
       final LogPane lp = new LogPane(logfile);
 
 // FIXME: this should have its own key. Probably keys should be renamed
@@ -1944,8 +1936,8 @@ public class ModuleManagerWindow extends JFrame {
 // Help.error_log_dialog_title.
       final JDialog d =
         new JDialog(frame, Resources.getString("Help.error_log"));
-      d.setLayout(new MigLayout("insets 0"));
-      d.add(new JScrollPane(lp), "grow, push, w 500, h 600");
+      d.setLayout(new MigLayout("insets 0")); //NON-NLS
+      d.add(new JScrollPane(lp), "grow, push, w 500, h 600"); //NON-NLS
 
       d.setLocationRelativeTo(frame);
       d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

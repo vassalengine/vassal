@@ -20,7 +20,9 @@ package VASSAL.launch;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 
+@Deprecated(since = "2020-09-01", forRemoval = true)
 public class BasicModule extends GameModule {
+  @Deprecated(since = "2020-09-01", forRemoval = true)
   public BasicModule(DataArchive archive) {
     super(archive);
   }

@@ -38,9 +38,9 @@ public class SingleChildInstance implements ValidityChecker {
   public void validate(Buildable b, ValidationReport report) {
     if (b == target && target.getComponentsOf(childClass).size() > 1) {
       report.addWarning(
-        "No more than one " +
+        "No more than one " + //NON-NLS
         ConfigureTree.getConfigureName(childClass) +
-        " allowed in " +
+        " allowed in " + //NON-NLS
         ConfigureTree.getConfigureName(target));
     }
   }

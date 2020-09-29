@@ -23,9 +23,7 @@ import javax.swing.JOptionPane;
 
 /**
  * Prompts user for a new value
- *
  * @author rkinney
- *
  */
 public class PropertyPrompt implements PropertyChanger {
   protected String promptText;
@@ -38,7 +36,7 @@ public class PropertyPrompt implements PropertyChanger {
 
   @Override
   public String getNewValue(String oldValue) {
-    String newValue = null;
+    String newValue;
     if (constraints != null && constraints.isNumeric()) {
       newValue = new NumericPropertyPrompt(constraints.getComponent(), promptText, constraints.getMinimumValue(), constraints.getMaximumValue()).getNewValue(oldValue);
     }
@@ -53,6 +51,7 @@ public class PropertyPrompt implements PropertyChanger {
     return promptText;
   }
 
+  @FunctionalInterface
   public interface DialogParent {
     Component getComponent();
   }

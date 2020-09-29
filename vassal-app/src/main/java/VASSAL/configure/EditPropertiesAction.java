@@ -38,12 +38,12 @@ public class EditPropertiesAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static Map<Configurable, PropertiesWindow> openWindows = new HashMap<>();
+  protected static final Map<Configurable, PropertiesWindow> openWindows = new HashMap<>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
 
   public EditPropertiesAction(Configurable target, HelpWindow helpWindow, Frame dialogOwner) {
-    super(Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
+    super(Resources.getString("Editor.properties")); //$NON-NLS-1$
     this.helpWindow = helpWindow;
     this.target = target;
     this.dialogOwner = dialogOwner;

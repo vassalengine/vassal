@@ -20,13 +20,13 @@ Click to the left of it to open its subcomponents and you should find a _[Map Bo
 You can then right-click on the _[Map Boards]_ component and select _Add Board_.
 You will then have a _[Board]_ component for your map!
 
-image:images/BoardConfig.png
+image:images/BoardConfig.png[]
 
 You can optionally add a _Grid_ subcomponent to your board to regulate movement by right-clicking the _[Board]_ component and selecting one of the appropriate _Add_ options.
 See _Sub-Components_, below, for more details on grids.
-|image:images/Board.png
+|image:images/Board.png[]
 
-image:images/Board2.png
+image:images/Board2.png[]
 |===
 
 '''''

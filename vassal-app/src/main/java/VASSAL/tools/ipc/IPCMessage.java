@@ -3,15 +3,15 @@ package VASSAL.tools.ipc;
 import java.io.Serializable;
 
 public interface IPCMessage extends Serializable {
-  public long getId();
+  long getId();
 
-  public void setId(long id);
+  void setId(long id);
 
-  public boolean expectsReply();
+  boolean expectsReply();
 
-  public boolean isReply();
+  boolean isReply();
 
-  public long getInReplyTo();
+  long getInReplyTo();
 
-  public void setInReplyTo(long id);
+  void setInReplyTo(long id);
 }

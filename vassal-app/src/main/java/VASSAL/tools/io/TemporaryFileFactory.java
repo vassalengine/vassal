@@ -26,6 +26,7 @@ import java.io.IOException;
  * @since 3.2.0
  * @author Joel Uckelman
  */
+@FunctionalInterface
 public interface TemporaryFileFactory {
   /**
    * Creates a temporary file.
@@ -33,5 +34,5 @@ public interface TemporaryFileFactory {
    * @return a temporary file
    * @throws IOException if the file cannot be created
    */
-  public File create() throws IOException;
+  File create() throws IOException;
 }

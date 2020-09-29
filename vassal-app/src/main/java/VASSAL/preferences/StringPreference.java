@@ -18,11 +18,9 @@
 
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * A String Module Preference.
@@ -33,7 +31,7 @@ public class StringPreference extends BasicPreference {
   protected StringConfigurer config;
 
   public static String getConfigureTypeName() {
-    return "String Preference";
+    return Resources.getString("Editor.StringPreference.component_type");
   }
 
   @Override
@@ -55,12 +53,7 @@ public class StringPreference extends BasicPreference {
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new StringConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }
-      });
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

@@ -24,8 +24,10 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.Box;
@@ -46,11 +48,10 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
- * A trait that acts like a button on a GamePiece, such that clicking on a
- * particular area of the piece invokes a keyboard command
+ * A Trait (aka {@link Decorator} that acts like a button on a GamePiece, such that clicking on a
+ * particular area of the piece invokes a key command
  *
  * @author rkinney
- *
  */
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "button;";
@@ -58,7 +59,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
   protected String description = "";
-  protected static ButtonPusher globalPusher = new ButtonPusher();
+  protected static final ButtonPusher globalPusher = new ButtonPusher();
 
   public ActionButton() {
     this(ID, null);
@@ -99,12 +100,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
-    if (getMap() != null) {
+    if (getMap() != null) { // Do not allow button pushes if piece is not on a map
       pusher.register(getMap());
-    }
-    else {
-      // Do not allow button pushes if piece is not on a map
-      // pusher.register(obs, Decorator.getOutermost(this), x, y);
     }
   }
 
@@ -127,6 +124,16 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public String getDescription() {
     return description.length() == 0 ? "Action Button" : "Action Button - " + description;
   }
+  
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(stroke);
+  }
+
 
   @Override
   public void mySetType(String type) {
@@ -247,9 +254,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
      * that are not Masked or Hidden
      *
      * @param p
-     * @param x
-     * @param y
-     * @param Offset
      *          A function to determine the offset of the target piece. This
      *          callback is done for efficiency reasons, since computing the
      *          offset may be expensive (as in the case of a piece in an

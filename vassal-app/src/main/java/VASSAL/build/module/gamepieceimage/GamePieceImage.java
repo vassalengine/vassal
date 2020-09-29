@@ -35,6 +35,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.UniqueIdManager;
@@ -63,7 +64,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected ColorSwatch borderColor = ColorSwatch.getBlack();
   protected String id;
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
   protected String nameInUse;
   protected Image visImage = null;
 
@@ -108,9 +109,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Name:  ",
-      "Background Color:  ",
-      "Border Color:  ",
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.background_color"),
+      Resources.getString("Editor.border_color"),
       "" //$NON-NLS-1$
     };
   }
@@ -247,15 +248,12 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
   }
 
-  private VisibilityCondition borderCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      if (getLayout() == null) {
-        return false;
-      }
-      else {
-        return getLayout().isColoredBorder();
-      }
+  private VisibilityCondition borderCond = () -> {
+    if (getLayout() == null) {
+      return false;
+    }
+    else {
+      return getLayout().isColoredBorder();
     }
   };
 
@@ -294,7 +292,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Image";
+    return Resources.getString("Editor.GamePieceImage.component_type");
   }
 
   public void refreshConfig() {

@@ -33,10 +33,10 @@ public class Op {
 
   public static SourceOp load(String name) {
     if (!name.startsWith("/")) {
-      name = "images/" + name;
+      name = "images/" + name; //NON-NLS
     }
 
-    if (name.endsWith(".svg")) {
+    if (name.endsWith(".svg")) { //NON-NLS
       return new SourceOpSVGImpl(name);
     }
     else {
@@ -50,10 +50,10 @@ public class Op {
 
   public static SourceOp loadLarge(String name) {
     if (!name.startsWith("/")) {
-      name = "images/" + name;
+      name = "images/" + name; //NON-NLS
     }
 
-    if (name.endsWith(".svg")) {
+    if (name.endsWith(".svg")) { //NON-NLS
       return new SourceOpSVGImpl(name);
     }
     else {
@@ -62,7 +62,13 @@ public class Op {
   }
 
   public static ScaleOp scale(ImageOp sop, double scale) {
-    if (sop instanceof SVGOp) {
+    if (sop instanceof RotateScaleOpSVGImpl) {
+      final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
+      return new RotateScaleOpSVGImpl(
+        rsop, rsop.getAngle(), rsop.getScale() * scale
+      );
+    }
+    else if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, 0.0, scale);
     }
     else if (sop instanceof SourceOpTiledBitmapImpl) {
@@ -75,7 +81,13 @@ public class Op {
   }
 
   public static RotateOp rotate(ImageOp sop, double angle) {
-    if (sop instanceof SVGOp) {
+    if (sop instanceof RotateScaleOpSVGImpl) {
+      final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
+      return new RotateScaleOpSVGImpl(
+        rsop, rsop.getAngle() + angle, rsop.getScale()
+      );
+    }
+    else if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, 1.0);
     }
     else if (angle % 90.0 == 0.0) {
@@ -88,7 +100,13 @@ public class Op {
 
   public static RotateScaleOp rotateScale(ImageOp sop,
                                           double angle, double scale) {
-    if (sop instanceof SVGOp) {
+    if (sop instanceof RotateScaleOpSVGImpl) {
+      final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
+      return new RotateScaleOpSVGImpl(
+        rsop, rsop.getAngle() + angle, rsop.getScale() * scale
+      );
+    }
+    else if (sop instanceof SVGOp) {
       return new RotateScaleOpSVGImpl((SVGOp) sop, angle, scale);
     }
     else {
@@ -117,7 +135,7 @@ public class Op {
       }
       else if (c instanceof ImageNotFoundException) {
         ErrorDialog.dataWarning(new BadDataReport(
-          "Image not found",
+          "Image not found", //NON-NLS
           ((ImageNotFoundException) c).getFile().getName(),
           null
         ));
@@ -125,7 +143,7 @@ public class Op {
       }
       else if (c instanceof UnrecognizedImageTypeException) {
         ErrorDialog.dataWarning(new BadDataReport(
-          "Unrecognized image type",
+          "Unrecognized image type", //NON-NLS
           ((UnrecognizedImageTypeException) c).getFile().getName(),
           c
         ));
@@ -133,7 +151,7 @@ public class Op {
       }
       else if (c instanceof ImageIOException) {
         ErrorDialog.dataWarning(new BadDataReport(
-          "Error reading image",
+          "Error reading image", //NON-NLS
           ((ImageIOException) c).getFile().getName(),
           c
         ));

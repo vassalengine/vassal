@@ -121,6 +121,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    *
    * See: <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator Pattern</a>, <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">Factory Pattern</a>
    */
+  @FunctionalInterface
   public interface DecoratorFactory {
     Decorator createDecorator(String type, GamePiece inner);
   }
@@ -129,6 +130,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * Factory interface for BasicPieces.
    * See: <a href="https://en.wikipedia.org/wiki/Factory_method_pattern">Factory Pattern</a>
    */
+  @FunctionalInterface
   public interface BasicPieceFactory {
     GamePiece createBasicPiece(String type);
   }
@@ -200,7 +202,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * Fallthrough factory to catch unknown types.
    */
   private final DecoratorFactory defaultDecoratorFactory = (type, inner) -> {
-    ErrorDialog.dataWarning(new BadDataReport("Unknown type " + type + " not found in BasicCommandEncoder's list of traits and basic pieces.", ""));
+    ErrorDialog.dataWarning(new BadDataReport("Unknown type " + type + " not found in BasicCommandEncoder's list of traits and basic pieces.", "")); //NON-NLS
     return new Marker(Marker.ID, inner);
   };
 
@@ -261,7 +263,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (innerType != null) {
       GamePiece inner = createPiece(innerType);
       if (inner == null) {
-        ErrorDialog.dataWarning(new BadDataReport("Could not create piece with type " + innerType, type));
+        ErrorDialog.dataWarning(new BadDataReport("Could not create piece with type " + innerType, type)); //NON-NLS
         inner = new BasicPiece();
       }
       Decorator d = createDecorator(type, inner);

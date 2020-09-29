@@ -78,9 +78,9 @@ import VASSAL.tools.WriteErrorDialog;
 public class TranslateWindow extends JDialog implements ListSelectionListener,
     TreeSelectionListener {
   private static final long serialVersionUID = 1L;
-  protected static Color TRANSLATION_NEEDED_COLOR = Color.red;
-  protected static Color TRANSLATION_DONE_COLOR = Color.blue;
-  protected static Color NO_TRANSLATION_NEEDED_COLOR = Color.black;
+  protected static final Color TRANSLATION_NEEDED_COLOR = Color.red;
+  protected static final Color TRANSLATION_DONE_COLOR = Color.blue;
+  protected static final Color NO_TRANSLATION_NEEDED_COLOR = Color.black;
 
   protected Translatable target;
 
@@ -105,7 +105,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
-    setTitle("Translate " + VASSAL.configure.ConfigureTree.getConfigureName((Configurable) target));
+    setTitle(Resources.getString("Editor.TranslateWindow.translate", VASSAL.configure.ConfigureTree.getConfigureName((Configurable) target)));
     JPanel mainPanel = new JPanel(new BorderLayout());
     /*
      * Place Language selector above Tree and Keys
@@ -127,16 +127,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   protected Component getHeaderPanel() {
     JPanel langPanel = new JPanel();
-    langPanel.add(new JLabel("Language:  "));
+    langPanel.add(new JLabel(Resources.getString("Editor.TranslateWindow.language")));
     langBox = new JComboBox<>(Localization.getInstance().getTranslationList());
     langPanel.add(langBox);
-    boxListener = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        commitTableEdit();
-        String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
-        changeLanguage(selectedTranslation);
-      }
+    boxListener = e -> {
+      commitTableEdit();
+      String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
+      changeLanguage(selectedTranslation);
     };
     langBox.addActionListener(boxListener);
     if (Localization.getInstance().getTranslationList().length > 0) {
@@ -144,13 +141,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     langPanel.setMinimumSize(new Dimension(800, 0));
 
-    JButton addButton = new JButton("Add translation");
-    addButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        getNewTranslation();
-      }
-    });
+    JButton addButton = new JButton(Resources.getString("Editor.TranslateWindow.add_translation"));
+    addButton.addActionListener(e -> getNewTranslation());
 
     langPanel.add(addButton);
 
@@ -271,32 +263,24 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     final JPanel buttonBox = new JPanel();
 
     final JButton helpButton = new JButton(Resources.getString(Resources.HELP));
-    helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.html", "module").getContents(), null));
+    helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.html", "module").getContents(), null)); //NON-NLS
     buttonBox.add(helpButton);
 
     final JButton okButton = new JButton(Resources.getString(Resources.OK));
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          save();
-        }
-        catch (IOException e1) {
-          WriteErrorDialog.error(e1,
-            GameModule.getGameModule().getArchiveWriter().getName());
-        }
+    okButton.addActionListener(e -> {
+      try {
+        save();
+      }
+      catch (IOException e1) {
+        WriteErrorDialog.error(e1,
+          GameModule.getGameModule().getArchiveWriter().getName());
       }
     });
     buttonBox.add(okButton);
 
     final JButton cancelButton = new JButton(
       Resources.getString(Resources.CANCEL));
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     return buttonBox;
@@ -370,10 +354,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return;
 
     ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-    if (lsm.isSelectionEmpty()) {
-      return;
-    }
-    else {
+    if (!lsm.isSelectionEmpty()) {
       String key = keys[lsm.getMinSelectionIndex()];
       currentKey = keyTarget.getI18nData().getFullPrefix() + key; //$NON-NLS-1$
     }
@@ -426,8 +407,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected boolean querySave() throws IOException {
-    switch (JOptionPane.showConfirmDialog(this, "Do you want to save these changes now?",
-        "Unsaved Changes", JOptionPane.YES_NO_CANCEL_OPTION)) {
+    switch (JOptionPane.showConfirmDialog(this, Resources.getString("Editor.TranslateWindow.save_now"),
+      Resources.getString("Editor.TranslateWindow.unsaved"), JOptionPane.YES_NO_CANCEL_OPTION)) {
     case JOptionPane.YES_OPTION:
       saveTranslation();
       return true;
@@ -442,7 +423,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Save button clicked
-   * @throws IOException
+   * @throws IOException oops
    */
   protected void save() throws IOException {
     commitTableEdit();
@@ -453,7 +434,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Save the current Translation
-   * @throws IOException
+   * @throws IOException oops
    */
   protected boolean saveTranslation() throws IOException {
     if (currentTranslation != null) {
@@ -464,7 +445,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Reload the current translation from the archive
-   * @throws IOException
+   * @throws IOException oops
    */
   protected void reloadTranslation() throws IOException {
     if (currentTranslation != null) {
@@ -473,7 +454,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   /**
-   * Custome JTable to support CopyButtons in JTable cells
+   * Custom JTable to support CopyButtons in JTable cells
    *
    */
   class MyTable extends JTable {
@@ -521,7 +502,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   /**
-   * Custome Cell Renderer to support CopyButtons in JTable cells
+   * Custom Cell Renderer to support CopyButtons in JTable cells
    *
    */
   protected static class JComponentCellRenderer implements TableCellRenderer {
@@ -637,13 +618,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     public String getColumnName(int col) {
       switch (col) {
       case ATTR_COL:
-        return "Attribute";
+        return Resources.getString("Editor.TranslateWindow.attribute");
       case SOURCE_COL:
-        return "Source Text";
+        return Resources.getString("Editor.TranslateWindow.source_text");
       case CC_COL:
-        return "cc";
+        return Resources.getString("Editor.TranslateWindow.cc");
       case TRAN_COL:
-        return "Translation";
+        return Resources.getString("Editor.TranslateWindow.translation");
       }
       return null;
     }

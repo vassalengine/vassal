@@ -59,11 +59,9 @@ Eligible generals are found by checking first if they have a property _Rank_ whi
 Next their _Side_ property ("Union" or "Confederate") is compared to a Global Property _ActiveSide_ so that we don't accidentally put Ulysses Grant in command of the Confederate army.
 Finally, we filter out Generals who aren't currently in play on the map (either they're in the reinforcement pool, the dead pool, or already in command of another army) by checking to make sure their CurrentZone name corresponds to one of the US or Confederate states in a string list ("Alabama, Arkansas, ...") contained in another Global Property.
 
-|image:images/CounterGlobalKeyCommand.png
-
-image:images/CounterGlobalKeyCommand3.png  +
+|image:images/CounterGlobalKeyCommand.png[]
+image:images/CounterGlobalKeyCommand3.png[] +
 |===
 
-image:images/CounterGlobalKeyCommand2.png
-
+image:images/CounterGlobalKeyCommand2.png[]
 '''''

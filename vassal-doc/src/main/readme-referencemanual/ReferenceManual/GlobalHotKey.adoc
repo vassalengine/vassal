@@ -23,8 +23,7 @@ If left blank, no context menu item will appear.
 A Game Piece is given a Global Hotkey trait with Menu text _Roll Dice,_ Keyboard Command _CTRL+R_ and Global Hotkey _F2_.
 Now, selecting the piece and typing _CTRL+R_ or selecting _Roll Dice_ from the right-click context menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed _F2_ from the keyboard.
 + a|
-image:images/GlobalHotkey.png
-
+image:images/GlobalHotkey.png[]
 When _Ctrl+H_ pressed, send _F2_ to the Toolbar
 
 |===

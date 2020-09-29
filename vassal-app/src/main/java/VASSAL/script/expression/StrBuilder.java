@@ -25,8 +25,6 @@
 
 package VASSAL.script.expression;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -35,6 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import VASSAL.i18n.Resources;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.ButtonFactory;
@@ -45,9 +44,9 @@ public class StrBuilder extends JDialog {
   protected StringConfigurer entry;
 
   public StrBuilder(StringConfigurer c, JDialog parent) {
-    super(parent, "String Builder", true);
+    super(parent, Resources.getString("Editor.StringBuilder.component_type"), true);
     target = c;
-    build("String");
+    build(Resources.getString("Editor.StringBuilder.object_type"));
   }
 
   public StrBuilder(JDialog parent, String string, boolean b) {
@@ -55,37 +54,27 @@ public class StrBuilder extends JDialog {
   }
 
   protected void build(String type) {
-    setLayout(new MigLayout("fillx"));
+    setLayout(new MigLayout("fillx")); //NON-NLS
 
     final JPanel p = new JPanel();
-    p.setLayout(new MigLayout("fillx", "[grow 0]rel[grow 1]"));
+    p.setLayout(new MigLayout("fillx", "[grow 0]rel[grow 1]")); //NON-NLS
 
-    p.add(new JLabel(type + ":"), "growx");
+    p.add(new JLabel(type + ":"), "growx"); //NON-NLS
     entry = new StringConfigurer("", "");
-    p.add(entry.getControls(), "wrap,growx");
+    p.add(entry.getControls(), "wrap,growx"); //NON-NLS
 
 
-    final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
+    final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]")); //NON-NLS
     final JButton okButton = ButtonFactory.getOkButton();
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
     final JButton cancelButton = ButtonFactory.getCancelButton();
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
-    p.add(buttonBox, "span 2,align center");
-    add(p, "growx");
+    p.add(buttonBox, "span 2,align center"); //NON-NLS
+    add(p, "growx"); //NON-NLS
 
     pack();
     setLocationRelativeTo(getParent());

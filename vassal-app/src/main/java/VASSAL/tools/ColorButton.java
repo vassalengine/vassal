@@ -39,7 +39,7 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class ColorButton extends JButton {
   private static final long serialVersionUID = 1L;
-  private static final Font FONT = new Font("Dialog", 0, 10);
+  private static final Font FONT = new Font(Font.DIALOG, 0, 10);
 
   private Color color;
 
@@ -105,8 +105,8 @@ public class ColorButton extends JButton {
         g.setColor(UIManager.getColor("controlText"));
         final Font font = FONT.deriveFont((float)(FONT.getSize() * os_scale));
         g.setFont(font);
-        g.drawString("nil",
-          x + (w - g.getFontMetrics(font).stringWidth("nil")) / 2,
+        g.drawString("nil", //NON-NLS
+          x + (w - g.getFontMetrics(font).stringWidth("nil")) / 2, //NON-NLS
           y + (h + g.getFontMetrics(font).getAscent()) / 2);
       }
 

@@ -77,7 +77,7 @@ public class ModuleManager {
   private static final Logger logger =
     LoggerFactory.getLogger(ModuleManager.class);
 
-  private static final String NEXT_VERSION_CHECK = "nextVersionCheck";
+  private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
 
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
@@ -96,7 +96,7 @@ public class ModuleManager {
     }
     catch (LaunchRequestException e) {
 // FIXME: should be a dialog...
-      System.err.println("VASSAL: " + e.getMessage());
+      System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
       System.exit(1);
     }
 
@@ -105,12 +105,9 @@ public class ModuleManager {
 
     if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
       // show the translation window in translation mode
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          // FIXME: does this window exit on close?
-          new TranslateVassalWindow(null).setVisible(true);
-        }
+      SwingUtilities.invokeLater(() -> {
+        // FIXME: does this window exit on close?
+        new TranslateVassalWindow(null).setVisible(true);
       });
       return;
     }
@@ -134,8 +131,11 @@ public class ModuleManager {
     // (2) No port collisions, because we don't use a predetermined port.
     //
 
-    final File keyfile = new File(Info.getConfDir(), "key");
-    final File lockfile = new File(Info.getConfDir(), "lock");
+    // Different versions of VASSAL can all co-exist, each with own Module Manager
+    String ver = Info.getReportableVersion();
+
+    final File keyfile = new File(Info.getConfDir(), "key-" + ver);
+    final File lockfile = new File(Info.getConfDir(), "lock-" + ver);
 
     int port = 0;
     long key = 0;
@@ -195,7 +195,7 @@ public class ModuleManager {
     }
     catch (IOException e) {
 // FIXME: should be a dialog...
-      System.err.println("VASSAL: IO error");
+      System.err.println("VASSAL: IO error"); //NON-NLS
       e.printStackTrace();
       System.exit(1);
     }
@@ -216,12 +216,12 @@ public class ModuleManager {
       }
     }
     catch (UnknownHostException e) {
-      logger.error("Unable to open socket for loopback device", e);
+      logger.error("Unable to open socket for loopback device", e); //NON-NLS
       System.exit(1);
     }
     catch (IOException e) {
 // FIXME: should be a dialog...
-      logger.error("VASSAL: Problem with socket on port {}", port, e);
+      logger.error("VASSAL: Problem with socket on port {}", port, e); //NON-NLS
       System.exit(1);
     }
   }
@@ -254,7 +254,7 @@ public class ModuleManager {
     this.lock = lock;
 
     // truncate the errorLog
-    final File errorLog = new File(Info.getHomeDir(), "errorLog");
+    final File errorLog = Info.getErrorLogPath();
     new FileOutputStream(errorLog).close();
 
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
@@ -288,7 +288,7 @@ public class ModuleManager {
           try (ZipArchive za = new ZipArchive(pzip)) {
             for (String f : za.getFiles()) {
               final File ofile = new File(
-                pdir, "VASSAL".equals(f) ? "V_Global" : Prefs.sanitize(f)
+                pdir, "VASSAL".equals(f) ? "V_Global" : Prefs.sanitize(f) //NON-NLS
               );
 
               try (InputStream in = za.getInputStream(f);
@@ -299,7 +299,7 @@ public class ModuleManager {
           }
         }
         catch (IOException e) {
-          logger.error("Failed to convert legacy preferences file.", e);
+          logger.error("Failed to convert legacy preferences file.", e); //NON-NLS
         }
       }
     }
@@ -309,12 +309,7 @@ public class ModuleManager {
 
     new CustomVmOptions().ensureCustomVmOptionsFileExistsInConfDir();
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        launch();
-      }
-    });
+    SwingUtilities.invokeLater(this::launch);
 
     // ModuleManagerWindow.getInstance() != null now, so listen on the socket
     final Thread socketListener = new Thread(
@@ -355,7 +350,7 @@ public class ModuleManager {
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
       256
     );
-    globalPrefs.addOption("Importer", initHeapConf);
+    globalPrefs.addOption("Importer", initHeapConf); //NON-NLS
 
     // the maximum heap size for the module importer
     final IntConfigurer maxHeapConf = new IntConfigurer(
@@ -363,7 +358,7 @@ public class ModuleManager {
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       512
     );
-    globalPrefs.addOption("Importer", maxHeapConf);
+    globalPrefs.addOption("Importer", maxHeapConf); //NON-NLS
   }
 
   public void shutDown() throws IOException {
@@ -408,7 +403,7 @@ public class ModuleManager {
             ErrorDialog.showDetails(
               e,
               ThrowableUtils.getStackTrace(e),
-              "Error.socket_error"
+              "Error.socket_error" //NON-NLS
             );
           }
           catch (ClassNotFoundException e) {
@@ -420,7 +415,7 @@ public class ModuleManager {
                 clientSocket.close();
               }
               catch (IOException e) {
-                logger.error("Error while closing client socket", e);
+                logger.error("Error while closing client socket", e); //NON-NLS
               }
             }
           }
@@ -432,7 +427,7 @@ public class ModuleManager {
             serverSocket.close();
           }
           catch (IOException e) {
-            logger.error("Error while closing server socket", e);
+            logger.error("Error while closing server socket", e); //NON-NLS
           }
         }
       }
@@ -440,7 +435,7 @@ public class ModuleManager {
   }
 
   protected void launch() {
-    logger.info("Manager");
+    logger.info("Manager"); //NON-NLS
     final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
     window.setVisible(true);
 
@@ -455,7 +450,7 @@ public class ModuleManager {
 
       if (lr.key != key) {
 // FIXME: translate
-        return "incorrect key";
+        return "incorrect key"; //NON-NLS
       }
 
       final LaunchRequestHandler handler = new LaunchRequestHandler(lr);
@@ -463,7 +458,7 @@ public class ModuleManager {
         SwingUtilities.invokeAndWait(handler);
       }
       catch (InterruptedException e) {
-        return "interrupted";   // FIXME
+        return "interrupted";   // FIXME //NON-NLS
       }
       catch (InvocationTargetException e) {
         ErrorDialog.bug(e);
@@ -473,7 +468,7 @@ public class ModuleManager {
       return handler.getResult();
     }
     else {
-      return "unrecognized command";  // FIXME
+      return "unrecognized command";  // FIXME //NON-NLS
     }
   }
 
@@ -503,7 +498,7 @@ public class ModuleManager {
         break;
       case LOAD:
         if (Player.LaunchAction.isEditing(lr.module))
-          return "module open for editing";   // FIXME
+          return "module open for editing";   // FIXME //NON-NLS
 
         if (lr.module == null && lr.game != null) {
           // attempt to find the module for the saved game or log
@@ -518,13 +513,13 @@ public class ModuleManager {
             else {
               // this is a pre 3.1 save file, can't tell the module name
 // FIXME: show some error here
-              return "cannot find module";
+              return "cannot find module"; //NON-NLS
             }
           }
         }
 
         if (lr.module == null) {
-          return "cannot find module";
+          return "cannot find module"; //NON-NLS
 // FIXME: show some error here
         }
         else if (lr.game == null) {
@@ -537,9 +532,9 @@ public class ModuleManager {
         break;
       case EDIT:
         if (Editor.LaunchAction.isInUse(lr.module))
-          return "module open for play";      // FIXME
+          return "module open for play";      // FIXME //NON-NLS
         if (Editor.LaunchAction.isEditing(lr.module))
-          return "module open for editing";   // FIXME
+          return "module open for editing";   // FIXME //NON-NLS
 
         new Editor.LaunchAction(window, lr.module).actionPerformed(null);
         break;
@@ -551,11 +546,11 @@ public class ModuleManager {
         new Editor.NewModuleLaunchAction(window).actionPerformed(null);
         break;
       case EDIT_EXT:
-        return "not yet implemented";   // FIXME
+        return "not yet implemented";   // FIXME //NON-NLS
       case NEW_EXT:
-        return "not yet implemented";   // FIXME
+        return "not yet implemented";   // FIXME //NON-NLS
       default:
-        return "unrecognized mode";     // FIXME
+        return "unrecognized mode";     // FIXME //NON-NLS
       }
 
       return null;

@@ -32,5 +32,4 @@ import VASSAL.build.GameModule;
   public PlayerIdFormattedString(String s) {
     super(s, GameModule.getGameModule());
   }
-
 }

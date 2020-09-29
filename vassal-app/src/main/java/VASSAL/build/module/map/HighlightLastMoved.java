@@ -39,13 +39,13 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 
 public class HighlightLastMoved extends AbstractConfigurable implements Drawable, MouseListener, GameComponent {
-  public static final String ENABLED = "enabled";
-  public static final String COLOR = "color";
-  public static final String THICKNESS = "thickness";
+  public static final String ENABLED = "enabled"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String THICKNESS = "thickness"; //NON-NLS
 
   protected ColoredBorder highlighter;
   protected GamePiece lastMoved;
-  protected static java.util.Map<Map, HighlightLastMoved> instances = new HashMap<>();
+  protected static final java.util.Map<Map, HighlightLastMoved> instances = new HashMap<>();
 
   protected boolean enabled;
   protected boolean currentlyEnabled;
@@ -224,7 +224,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "LastMoveHighlighter");
+    return HelpFile.getReferenceManualPage("Map.html", "LastMoveHighlighter"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {

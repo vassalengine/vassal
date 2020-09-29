@@ -33,12 +33,13 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Replace;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 
 public class SavedGameUpdater {
   /**
    * Returns a mapping of GamePiece type to the id of a PieceSlot in the module
    * This information is exported from an old module version, then imported into a new module version to update saved games
-   * @return
+   * @return Returns a mapping of GamePiece type to the id of a PieceSlot in the module
    */
   public Properties getPieceSlotsMap() {
     Properties p = new Properties();
@@ -51,7 +52,7 @@ public class SavedGameUpdater {
    *
    * @param pieceSlot the imported piece-slot map from an earlier version of the module
    * @param savedGame the save game to update.  The file gets overwritten.
-   * @throws IOException
+   * @throws IOException oops
    */
   public void updateSavedGame(Properties pieceSlot, File savedGame)
                                                            throws IOException {
@@ -83,7 +84,7 @@ public class SavedGameUpdater {
               final PieceSlot slot = (PieceSlot) path[path.length - 1];
               if (!slot.getPiece().getType().equals(p.getType())) {
                 if (!(p instanceof Decorator)) {
-                  GameModule.getGameModule().getChatter().show("Unable to replace " + p.getName() + ": Basic piece only");
+                  GameModule.getGameModule().getChatter().show(Resources.getString("Editor.SavedGameUpdater.basic_only", p.getName()));
                 }
                 else {
                   ReplaceTrait r = new ReplaceTrait(p, slot.getPiece());
@@ -94,11 +95,11 @@ public class SavedGameUpdater {
           }
           // FIXME: review error message
           catch (ComponentPathBuilder.PathFormatException ex) {
-            GameModule.getGameModule().getChatter().show("Unable to replace " + p.getName() + ": " + ex.getMessage());
+            GameModule.getGameModule().getChatter().show(Resources.getString("Editor.SavedGameUpdater.unable", p.getName(), ex.getMessage()));
           }
         }
         else {
-          GameModule.getGameModule().getChatter().show("Unable to find slot for " + p.getName());
+          GameModule.getGameModule().getChatter().show(Resources.getString("Editor.SavedGameUpdater.no_slot", p.getName()));
           GameModule.getGameModule().getChatter().show(p.getType());
         }
       }
@@ -137,7 +138,7 @@ public class SavedGameUpdater {
     private GamePiece replacement;
 
     public ReplaceTrait(GamePiece original, GamePiece replacement) {
-      super(Replace.ID + "Replace;R;dummy;;0;0;true", original);
+      super(Replace.ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS
       setProperty(VASSAL.counters.Properties.OUTER, original);
       original.setProperty(VASSAL.counters.Properties.OUTER, null);
       this.replacement = replacement;

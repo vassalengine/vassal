@@ -30,6 +30,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.i18n.Resources;
 
 /**
  * Base class for a Module Preference. Module preferences are defined within
@@ -41,12 +42,12 @@ import VASSAL.configure.ConfigurerFactory;
  */
 public abstract class BasicPreference extends AbstractConfigurable {
 
-  public static final String NAME = "name";
-  public static final String TAB = "tab";
-  public static final String DESC = "desc";
-  public static final String DEFAULT = "default";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String TAB = "tab"; //NON-NLS
+  public static final String DESC = "desc"; //NON-NLS
+  public static final String DEFAULT = "default"; //NON-NLS
 
-  protected String tabName = "";
+  protected String tabName;
   protected String variableName = "";
   protected MutableProperty.Impl property = new MutableProperty.Impl("", this);
 
@@ -58,12 +59,12 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {"note", TAB, DESC, NAME, DEFAULT};
+    return new String[] {"note", TAB, DESC, NAME, DEFAULT}; //NON-NLS
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {"", "Preference Tab Name:  ", "Preference Description:  ", "Global Variable Name:  ", "Default Value:  "};
+    return new String[] {"", Resources.getString("Editor.BasicPreference.tab"), Resources.getString("Editor.BasicPreference.desc"), Resources.getString("Editor.BasicPreference.global"), Resources.getString("Editor.BasicPreference.default")};
   }
 
   @Override
@@ -81,7 +82,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new Configurer(null, "note") {
+      return new Configurer(null, "note") { //NON-NLS
         @Override
         public String getValueString() {
           return null;
@@ -91,7 +92,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
         }
         @Override
         public Component getControls() {
-          return new JLabel("Note:  The Preferences window will only be updated after you save and reload the module.");
+          return new JLabel(Resources.getString("Editor.BasicPreference.note"));
         }
       };
     }
@@ -164,7 +165,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalOptions.html");
+    return HelpFile.getReferenceManualPage("GlobalOptions.html"); //NON-NLS
   }
 
   @Override

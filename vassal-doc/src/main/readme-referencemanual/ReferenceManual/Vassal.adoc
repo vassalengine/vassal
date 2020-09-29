@@ -1,5 +1,4 @@
-image:images/Vassal.png
-
+image:images/Vassal.png[]
 == Table of Contents
 
 [cols=",",]

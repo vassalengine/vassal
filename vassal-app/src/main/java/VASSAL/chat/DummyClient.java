@@ -32,10 +32,9 @@ import VASSAL.i18n.Resources;
 /**
  * Empty server
  * @author rkinney
- *
  */
 public class DummyClient implements ChatServerConnection, ChatControlsInitializer {
-  private Player playerInfo = new SimplePlayer("<nobody>"); //$NON-NLS-1$
+  private Player playerInfo = new SimplePlayer("[nobody]"); //$NON-NLS-1$
   private HttpMessageServer httpMessageServer;
   private MessageBoardControlsInitializer msgControls;
   private ServerStatusControlsInitializer statusControls;
@@ -45,7 +44,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
     PeerPoolInfo publicInfo = new PeerPoolInfo() {
       @Override
       public String getModuleName() {
-        return GameModule.getGameModule() == null ? "<unnamed module>" : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
+        return GameModule.getGameModule() == null ? "[unnamed module]" : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
       }
 
       @Override

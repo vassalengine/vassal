@@ -31,7 +31,7 @@ If it is useful for most pieces to snap to legal locations, but for certain type
 
 *Edit Grid:* Clicking the Edit Grid button brings up a graphical interface for positioning and sizing the grid over top of the Map.
 
-|image:images/RectangularGrid.png
+|image:images/RectangularGrid.png[]
 
 |===
 
@@ -47,4 +47,4 @@ Used primarily for automatically reporting moves.
 To add Grid Numbering to a Rectangular Grid, it is necessary to first add the Rectangular Grid.
 Then right+click on the Rectangular Grid's entry in the Editor, and select "Add Grid Numbering" (see diagram at right).
 
-image:images/GridNumAdd2.png
+image:images/GridNumAdd2.png[]

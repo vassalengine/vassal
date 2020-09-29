@@ -17,6 +17,7 @@ package VASSAL.configure;
 import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -34,19 +35,149 @@ public class TranslatingStringEnumConfigurer extends Configurer {
   private final String[] i18nKeys;
   private JComboBox<String> box;
   private Box panel;
+  private boolean isDisplayNames;
 
   /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
    * @param key Configurer Key
    * @param name Configurer Name
-   * @param validValues List of values to maintain
-   * @param i18nKeys List of Trnaslation Keys used to describe the list of values
+   * @param validValues Array of values to maintain
+   * @param i18nKeys Array of Translation Keys used to describe the list of values
    */
   public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys) {
     super(key, name, validValues);
     this.validValues = validValues;
     this.i18nKeys = i18nKeys;
+    this.isDisplayNames = false;
   }
 
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues Array of values to maintain
+   * @param i18nKeys Array of Translation Keys used to describe the list of values
+   * @param isDisplayNames True if we have already been given full translated strings; false if they are "keys" for Resources.getString()
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys, boolean isDisplayNames) {
+    super(key, name, validValues);
+    this.validValues = validValues;
+    this.i18nKeys = i18nKeys;
+    this.isDisplayNames = isDisplayNames;
+  }
+
+
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues List of values to maintain
+   * @param i18nKeys List of Translation Keys used to describe the list of values
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys) {
+    this (key, name, validValues.toArray(new String[0]), i18nKeys.toArray(new String[0]));
+  }
+
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues List of values to maintain
+   * @param i18nKeys List of Translation Keys used to describe the list of values
+   * @param isDisplayNames True if we have already been given full translated strings; false if they are "keys" for Resources.getString()
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys, boolean isDisplayNames) {
+    this (key, name, validValues.toArray(new String[0]), i18nKeys.toArray(new String[0]), isDisplayNames);
+  }
+
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues Array of values to maintain
+   * @param i18nKeys Array of Translation Keys used to describe the list of values
+   * @param initialValue Initial Value to set in the Configurer.
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys, String initialValue) {
+    this (key, name, validValues, i18nKeys);
+    setValue(initialValue);
+  }
+
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues Array of values to maintain
+   * @param i18nKeys Array of Translation Keys used to describe the list of values
+   * @param initialValue Initial Value to set in the Configurer.
+   * @param isDisplayNames True if we have already been given full translated strings; false if they are "keys" for Resources.getString()
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, String[] validValues, String[] i18nKeys, String initialValue, boolean isDisplayNames) {
+    this (key, name, validValues, i18nKeys, isDisplayNames);
+    setValue(initialValue);
+  }
+
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues List of values to maintain
+   * @param i18nKeys List of Translation Keys used to describe the list of values
+   * @param initialValue Initial Value to set in the Configurer.
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys, String initialValue) {
+    this (key, name, validValues, i18nKeys);
+    setValue(initialValue);
+  }
+
+  /**
+   * Create a drop-list of localised display values that allows you to select a value from an
+   * underlying list of 'internal' untranslated values.
+   *
+   * @param key Configurer Key
+   * @param name Configurer Name
+   * @param validValues List of values to maintain
+   * @param i18nKeys List of Translation Keys used to describe the list of values
+   * @param initialValue Initial Value to set in the Configurer.
+   * @param isDisplayNames True if we have already been given full translated strings; false if they are "keys" for Resources.getString()
+   */
+  public TranslatingStringEnumConfigurer(String key, String name, List<String> validValues, List<String> i18nKeys, String initialValue, boolean isDisplayNames) {
+    this (key, name, validValues, i18nKeys, isDisplayNames);
+    setValue(initialValue);
+  }
+
+  /**
+   * @return true if our "keys" are actually already translated strings; false if they are really keys
+   */
+  public boolean isDisplayNames() {
+    return isDisplayNames;
+  }
+
+  /**
+   * @param isDisplayNames true if our "keys" are actually already translated strings; false if they are really keys
+   */
+  public void setDisplayNames(boolean isDisplayNames) {
+    this.isDisplayNames = isDisplayNames;
+  }
+
+  /**
+   * Get the Controls that make up this Configurer
+   * @return A swing Component that holds all of the Configurer controls
+   */
   @Override
   public Component getControls() {
     if (panel == null) {
@@ -54,7 +185,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
       // Translate the keys based on the current locale
       final String[] displayValues = new String[i18nKeys.length];
       for (int i = 0; i < i18nKeys.length; i++) {
-        displayValues[i] = Resources.getString(i18nKeys[i]);
+        displayValues[i] = isDisplayNames() ? i18nKeys[i] : Resources.getString(i18nKeys[i]);
       }
 
       panel = Box.createHorizontalBox();
@@ -81,14 +212,27 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     return panel;
   }
 
+  /**
+   * Set the enabled status of the Configurer controls
+   * @param enabled set the Enabled status of the Configurer
+   */
   public void setEnabled(boolean enabled) {
     box.setEnabled(enabled);
   }
 
-  public void setEditable(boolean enabled) {
-    box.setEditable(enabled);
+  /**
+   * Set whether or not the value showing in the Configurer can be changed by a user
+   * @param editable Set the Editable status of the Configurer
+   */
+  public void setEditable(boolean editable) {
+    box.setEditable(editable);
   }
 
+  /**
+   * Test if a supplied value is one of the underlying 'real' valued managed by the Configurer
+   * @param o Value to test
+   * @return true if the supplied Object is one of the allowed values
+   */
   public boolean isValidValue(Object o) {
     for (String validValue : validValues) {
       if (validValue.equals(o)) {
@@ -98,6 +242,12 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     return false;
   }
 
+  /**
+   * Return the index of the supplied value in the list of allowed values.
+   * Return 0 if the supplied value is not found.
+   * @param o Value to look for
+   * @return The index of the value, or 0 (i.e. first) if not found
+   */
   public int getValueIndex(Object o) {
     for (int i = 0; i < validValues.length; ++i) {
       if (validValues[i].equals(o)) {
@@ -107,6 +257,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     return 0;
   }
 
+  /**
+   * Return the array of valid underlying values.
+   * @return Array of underlying values.
+   */
   public String[] getValidValues() {
     return validValues;
   }
@@ -134,11 +288,20 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     }
   }
 
+  /**
+   * Return the underlying value stored in the Configurer
+   * @return stored value
+   */
   @Override
   public String getValueString() {
     return getValue().toString();
   }
 
+  /**
+   * Set the value stored in the Configurer.
+   * Note that the value must be one of the valid allowed values.
+   * @param s Value to store as Configurer value
+   */
   @Override
   public void setValue(String s) {
     setValue((Object) s);

@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
 
 /**
  * An abstract representation of an operation which may be applied to an
- * {@link Image}. <code>ImageOp</code> is the interface for all such
+ * {link Image}. <code>ImageOp</code> is the interface for all such
  * operations. The results of all operations are memoized (using a
  * memory-sensitive cache), so retrieving results is both fast and
  * memory-efficient.
@@ -57,7 +57,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * could be anything, so any exception may be thrown.
    */
   @Override
-  public BufferedImage eval() throws Exception;
+  BufferedImage eval() throws Exception;
 
   /**
    * Calculates the <code>BufferedImage</code> produced by this operation.
@@ -68,7 +68,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    *
    * @return the resulting <code>BufferedImage</code>
    */
-  public BufferedImage getImage();
+  BufferedImage getImage();
 
   /**
    * Calculates the <code>BufferedImage</code> produced by this operation, and
@@ -105,7 +105,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getFutureTile
    * @see #getFutureImage
    */
-  public BufferedImage getImage(ImageOpObserver obs)
+  BufferedImage getImage(ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
   /**
@@ -116,7 +116,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * be done asynchronously. If the observer is <code>null</code>, then
    * this method will block on completion of the operation.
    *
-   * <p>This implementaion uses a memory-sensitive cache to memoize
+   * <p>This implementation uses a memory-sensitive cache to memoize
    * calls to <code>getFutureImage</code>. It returns a
    * {@code Future<BufferedImage>} so that the request may be cancelled if no
    * longer needed.</p>
@@ -137,7 +137,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getFutureTile
    * @see #getImage
    */
-  public Future<BufferedImage> getFutureImage(ImageOpObserver obs)
+  Future<BufferedImage> getFutureImage(ImageOpObserver obs)
     throws ExecutionException;
 
   /**
@@ -149,7 +149,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getHeight
    * @see #getWidth
    */
-  public Dimension getSize();
+  Dimension getSize();
 
   /**
    * Returns the width of the <code>BufferedImage</code> which would be
@@ -160,7 +160,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getHeight
    * @see #getSize
    */
-  public int getWidth();
+  int getWidth();
 
   /**
    * Returns the height of the <code>BufferedImage</code> which would be
@@ -171,7 +171,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getWidth
    * @see #getSize
    */
-  public int getHeight();
+  int getHeight();
 
   /**
    * Returns the standard size of the <code>BufferedImage</code> tiles
@@ -185,7 +185,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getTileHeight
    * @see #getTileWidth
    */
-  public Dimension getTileSize();
+  Dimension getTileSize();
 
   /**
    * Returns the standard height of the <code>BufferedImage</code> tiles
@@ -195,7 +195,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getTileSize
    * @see #getTileWidth
    */
-  public int getTileHeight();
+  int getTileHeight();
 
   /**
    * Returns the standard width of the <code>BufferedImage</code> tiles which
@@ -205,7 +205,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @see #getTileSize
    * @see #getTileHeight
    */
-  public int getTileWidth();
+  int getTileWidth();
 
   /**
    * Returns the number of tiles along the x-axis. There will always be at
@@ -214,7 +214,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    *
    * @return the number of tiles along the x-axis
    */
-  public int getNumXTiles();
+  int getNumXTiles();
 
   /**
    * Returns the number of tiles along the y-axis. There will always be at
@@ -223,7 +223,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    *
    * @return the number of tiles along the y-axis
    */
-  public int getNumYTiles();
+  int getNumYTiles();
 
   /**
    * Calculates tile <code>(p.x,p.y)</code>, and reports
@@ -249,7 +249,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @throws InterruptedException if the operation was interrupted
    * @throws ExecutionException if the operation failed
    */
-  public BufferedImage getTile(Point p, ImageOpObserver obs)
+  BufferedImage getTile(Point p, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
   /**
@@ -274,7 +274,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @throws InterruptedException if the operation was interrupted
    * @throws ExecutionException if the operation failed
    */
-  public BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
+  BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
   /**
@@ -299,7 +299,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @return a <code>Future</code> for the resulting <code>BufferedImage</code>
    * @throws ExecutionException if the operation failed
    */
-  public Future<BufferedImage> getFutureTile(Point p, ImageOpObserver obs)
+  Future<BufferedImage> getFutureTile(Point p, ImageOpObserver obs)
     throws ExecutionException;
 
   /**
@@ -322,7 +322,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @return a <code>Future</code> for the resulting <code>BufferedImage</code>
    * @throws ExecutionException if the operation failed
    */
-  public Future<BufferedImage> getFutureTile(
+  Future<BufferedImage> getFutureTile(
     int tileX, int tileY, ImageOpObserver obs) throws ExecutionException;
 
   /**
@@ -334,7 +334,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @param p the position of the requested tile
    * @return the <code>ImageOp</code> which produces the requested tile
    */
-  public ImageOp getTileOp(Point p);
+  ImageOp getTileOp(Point p);
 
   /**
    * Returns an <code>ImageOp</code> which can produce the requested tile.
@@ -343,7 +343,7 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @param tileY the y position of the requested tile
    * @return the <code>ImageOp</code> which produces the requested tile
    */
-  public ImageOp getTileOp(int tileX, int tileY);
+  ImageOp getTileOp(int tileX, int tileY);
 
   /**
    * Returns an array of <code>Point</code>s representing the tiles
@@ -353,5 +353,5 @@ public interface ImageOp extends VASSAL.tools.opcache.Op<BufferedImage> {
    * @return the positions of the tiles hit by the rectangle
    * @throws IllegalArgumentException if <code>rect == null</code>.
    */
-  public Point[] getTileIndices(Rectangle rect);
+  Point[] getTileIndices(Rectangle rect);
 }

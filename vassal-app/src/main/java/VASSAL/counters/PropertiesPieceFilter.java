@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import VASSAL.script.expression.BeanShellExpression;
@@ -141,16 +142,13 @@ public class PropertiesPieceFilter {
   private abstract static class ComparisonFilter implements PieceFilter {
     protected String name;
     protected String value;
-    protected Boolean alternate;
+    protected Object alternate; //BR// NB - 3.4.2 - reverted from Boolean because of 13425
 
     public ComparisonFilter(String name, String value) {
       this.name = name;
       this.value = value;
-      if ("true".equals(value)) {
-        alternate = Boolean.TRUE;
-      }
-      else if ("false".equals(value)) {
-        alternate = Boolean.FALSE;
+      if (isBooleanString(value)) {
+        alternate = Boolean.valueOf(value);
       }
     }
 
@@ -180,6 +178,9 @@ public class PropertiesPieceFilter {
       return new FormattedStringExpression(value).toBeanShellString();
     }
 
+    protected static boolean isBooleanString(final String possibleBoolean) {
+      return List.of("true", "false").contains(possibleBoolean);
+    }
   }
 
   private static class EQ extends ComparisonFilter {
@@ -191,8 +192,8 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       String property = String.valueOf(piece.getProperty(name));
       boolean retVal = value.equals(property);
-      if (alternate != null) {
-        retVal = retVal || alternate.equals(Boolean.parseBoolean(property));
+      if (alternate != null && isBooleanString(property)) {
+        retVal |= alternate.equals(Boolean.valueOf(property));
       }
       return retVal;
     }
@@ -217,8 +218,8 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       String property = String.valueOf(piece.getProperty(name));
       boolean retVal = !value.equals(property);
-      if (alternate != null) {
-        retVal = retVal && !alternate.equals(Boolean.parseBoolean(property));
+      if (alternate != null && isBooleanString(property)) {
+        retVal &= !alternate.equals(Boolean.valueOf(property));
       }
       return retVal;
     }

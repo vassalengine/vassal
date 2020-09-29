@@ -27,9 +27,9 @@ import VASSAL.counters.GamePiece;
  * @since 3.1.0
  */
 public interface GamePieceOp extends ImageOp {
-  public GamePiece getPiece();
+  GamePiece getPiece();
 
-  public String getState();
+  String getState();
 
-  public boolean isChanged();
+  boolean isChanged();
 }

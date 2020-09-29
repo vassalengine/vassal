@@ -18,7 +18,6 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.Box;
@@ -51,7 +50,7 @@ public class FontStyleConfigurer extends Configurer {
 
   @Override
   public String getValueString() {
-    return "";
+    return ""; //NON-NLS
   }
 
   public Font getValueFont() {
@@ -98,12 +97,7 @@ public class FontStyleConfigurer extends Configurer {
     fonts.setSelectedItem(value == null ? "Default" : ((FontStyle) value).getConfigureName()); //$NON-NLS-1$
     fontPanel.add(fonts);
 
-    ItemListener l = new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent evt) {
-        updateValue();
-      }
-    };
+    ItemListener l = evt -> updateValue();
 
     fonts.addItemListener(l);
 

@@ -18,8 +18,6 @@
 package VASSAL.build.module;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.beans.PropertyChangeEvent;
@@ -44,6 +42,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
@@ -79,15 +78,10 @@ public class ToolbarMenu extends AbstractConfigurable
   protected Runnable menuBuilder;
 
   public ToolbarMenu() {
-    launch = new LaunchButton(Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton(Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
     menu = new JPopupMenu();
     launch.putClientProperty(MENU_PROPERTY, menu);
-    launch.setToolTipText("Display Menu Options");
+    launch.setToolTipText(Resources.getString("Editor.ToolbarMenu.tooltip_text"));
     GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
@@ -238,12 +232,7 @@ public class ToolbarMenu extends AbstractConfigurable
             final JMenuItem otherItem = (JMenuItem) component;
             JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
-            myItem.addActionListener(new ActionListener() {
-              @Override
-              public void actionPerformed(ActionEvent e) {
-                otherItem.doClick();
-              }
-            });
+            myItem.addActionListener(e -> otherItem.doClick());
             subMenu.add(myItem);
             buttonsToMenuMap.put(otherItem, myItem);
           }
@@ -253,12 +242,7 @@ public class ToolbarMenu extends AbstractConfigurable
         else {
           JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
           mi.setEnabled(b.isEnabled());
-          mi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              b.doClick();
-            }
-          });
+          mi.addActionListener(e -> b.doClick());
           buttonsToMenuMap.put(b, mi);
           menu.add(mi);
         }
@@ -268,12 +252,9 @@ public class ToolbarMenu extends AbstractConfigurable
 
   protected void scheduleBuildMenu() {
     if (menuBuilder == null) {
-      menuBuilder = new Runnable() {
-        @Override
-        public void run() {
-          buildMenu();
-          menuBuilder = null;
-        }
+      menuBuilder = () -> {
+        buildMenu();
+        menuBuilder = null;
       };
       SwingUtilities.invokeLater(menuBuilder);
     }
@@ -317,4 +298,25 @@ public class ToolbarMenu extends AbstractConfigurable
     return null;
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    List<String> l = new ArrayList<>();
+    l.addAll(menuItems);
+    l.add(getAttributeValueString(BUTTON_TEXT));
+    l.add(getAttributeValueString(TOOLTIP));
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(BUTTON_HOTKEY)));
+  }
 }

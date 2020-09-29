@@ -24,6 +24,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -157,9 +159,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   protected boolean matchesFilter() {
     GamePiece outer = Decorator.getOutermost(this);
     if (!propertyMatch.isNull()) {
-      if (!propertyMatch.accept(outer)) {
-        return false;
-      }
+      return propertyMatch.accept(outer);
     }
     return true;
   }
@@ -265,5 +265,23 @@ public class RestrictCommands extends Decorator implements EditablePiece {
         .append(watchKeys.getValueString());
       return ID + se.getValue();
     }
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(propertyMatch.getExpression());
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    List<NamedKeyStroke> l = new ArrayList<>();
+    Collections.addAll(l, watchKeys);
+    return l;
   }
 }

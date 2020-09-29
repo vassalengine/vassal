@@ -37,10 +37,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
 import VASSAL.counters.Deck;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
@@ -52,7 +49,7 @@ import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
 
 public class MenuDisplayer extends MouseAdapter implements Buildable {
-  public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 10);
+  public static final Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 10);
 
   protected Map map;
   protected PieceFinder targetSelector;

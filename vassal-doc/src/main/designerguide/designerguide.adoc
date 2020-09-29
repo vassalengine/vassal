@@ -1,12 +1,17 @@
-image:_images/image1.jpeg[image,width=784,height=1024]
+= Vassal Designer's Guide
+//// default asciidoc attributes
+:doctype: book
+:idprefix:
+:toc: macro
+:sectlinks:
+//// asciidoc pdf attributes
+:pdf-version: 1.7
+//// :compress: //// needs ghostscript
+:front-cover-image: image:_images/image1.jpeg[image,width=784,height=1024]
+:media: screen
+:optimize: screen
 
-*VASSAL 3.1*
-
-*Designer’s Guide*
-
-*VASSAL 3.1 Designerʼs Guide*
-
-Version 1.4, June 2012
+Version {project-version}, {docdate}
 
 *Credits*
 
@@ -23,6 +28,8 @@ _VASSAL_ designed by Rodney Kinney
 Comments on this document and suggestions for improvement are welcomed. Please contact Ed Messina ([.underline]#ed@crucible.cc#) with your comments and suggestions.
 
 Programming skills are not necessary for creating fully functional VASSAL modules.
+
+toc::[]
 
 include::overview.adoc[]
 

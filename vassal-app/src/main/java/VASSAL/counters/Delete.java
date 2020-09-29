@@ -18,10 +18,13 @@
 
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -43,14 +46,14 @@ import VASSAL.tools.SequenceEncoder;
  * This trait adds a command that creates a duplicate of the selected Gamepiece
  */
 public class Delete extends Decorator implements TranslatablePiece {
-  public static final String ID = "delete;";
+  public static final String ID = "delete;"; // NON-NLS
   protected KeyCommand[] keyCommands;
   protected KeyCommand deleteCommand;
   protected String commandName;
   protected NamedKeyStroke key;
 
   public Delete() {
-    this(ID + "Delete;D", null);
+    this(ID + Resources.getString("Editor.Delete.delete") + ";D", null); // NON-NLS
   }
 
   public Delete(String type, GamePiece inner) {
@@ -106,13 +109,10 @@ public class Delete extends Decorator implements TranslatablePiece {
           next = getParent().getPieceAbove(outer);
         if (next != null) {
           final GamePiece selected = next;
-          Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-              // Don't select if the next piece has itself been deleted
-              if (GameModule.getGameModule().getGameState().getPieceForId(selected.getId()) != null) {
-                KeyBuffer.getBuffer().add(selected);
-              }
+          Runnable runnable = () -> {
+            // Don't select if the next piece has itself been deleted
+            if (GameModule.getGameModule().getGameState().getPieceForId(selected.getId()) != null) {
+              KeyBuffer.getBuffer().add(selected);
             }
           };
           SwingUtilities.invokeLater(runnable);
@@ -123,6 +123,23 @@ public class Delete extends Decorator implements TranslatablePiece {
     }
     return c;
   }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
+  }
+
 
   @Override
   public void mySetState(String newState) {
@@ -155,32 +172,32 @@ public class Delete extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return "Delete";
+    return Resources.getString("Editor.Delete.trait_description");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.html", "Delete");
+    return HelpFile.getReferenceManualPage("GamePiece.html", "Delete"); // NON-NLS
   }
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, "Delete command");
+    return getI18nData(commandName, Resources.getString("Editor.Delete.delete_command_description"));
   }
 
   public static class Ed implements PieceEditor {
-    private StringConfigurer nameInput;
-    private NamedHotKeyConfigurer keyInput;
-    private JPanel controls;
+    private final StringConfigurer nameInput;
+    private final NamedHotKeyConfigurer keyInput;
+    private final JPanel controls;
 
     public Ed(Delete p) {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
-      nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
+      nameInput = new StringConfigurer(null, Resources.getString("Editor.command_name"), p.commandName);
       controls.add(nameInput.getControls());
 
-      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
+      keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);
       controls.add(keyInput.getControls());
 
     }

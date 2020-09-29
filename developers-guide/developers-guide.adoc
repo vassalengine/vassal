@@ -1,0 +1,245 @@
+= Developer's guide
+:toc: left
+:toclevels: 4
+:icons: font
+:rootdir: ../
+
+== Build system
+
+=== Maven
+
+==== Build lifecycle
+
+[NOTE]
+Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
+
+. *clean*: deletes everything in `/target`
+. *validate*
+* checkstyle
+. *generate-resources*
+* asciidoctor
+. *compile*: compiles code and copies resources to `/target/classes`
+. *test*: runs unit tests
+* spotbugs
+* clirr
+- Travis runs up to here
+. *package*: creates build artifacts (.jar files) in `/target`
+* javadoc
+* source: creates source code jar
+* license: downloads licenses
+. *verify*: not used
+. *install*: copies build artifacts into local maven repository
+. *site*: not used
+. *deploy*: copies build artifacts and maven meta files to `/snapshots` or `/releases`
+
+==== Maven plugins
+
+===== Checkstyle
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mojo.html[checkstyle:check] in *validate* phase
+====
+
+* Maven plugin version and checkstyle version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
+* Checkstyle configuration in link:{rootdir}vassal-app/src/test/resources/checkstyle-checks.xml[]
+* Exceptions from checks in link:{rootdir}vassal-app/src/test/resources/checkstyle-suppressions.xml[]
+
+===== Source
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-source-plugin/jar-no-fork-mojo.html[source:jar-no-fork] in *package* phase
+====
+
+===== Javadoc
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-javadoc-plugin/jar-mojo.html[javadoc:jar] in *package* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
+
+===== Spotbugs
+
+[NOTE]
+====
+Runs goal link:https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html[spotbugs:check] in *test* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
+* Spotbugs include filter configuration in link:{rootdir}vassal-app/src/test/resources/spotbugs-include-filter.xml[]
+
+===== Clirr
+
+[NOTE]
+====
+Runs goal link:https://www.mojohaus.org/clirr-maven-plugin/check-no-fork-mojo.html[clirr:check-no-fork] in *test* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
+* Configuration of ignores in link:{rootdir}vassal-app/src/test/resources/clirr-ignored-differences.xml[]
+
+===== Asciidoc
+
+[NOTE]
+====
+Runs goal link:https://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidoctor:process-asciidoc] in *generate-resources* phase
+====
+
+Asciidoc documentation:
+
+* https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+* https://asciidoctor.org/docs/user-manual/
+
+The asciidoctor plugin runs once for each of the following:
+
+. convert Reference Manual files to HTML
+. convert Userguide to PDF
+. convert Designer's Guide to PDF
+
+[]
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-doc/pom.xml[]
+
+===== License Maven Plugin
+
+[NOTE]
+====
+Runs goal link:https://www.mojohaus.org/license-maven-plugin/aggregate-download-licenses-mojo.html[license:aggregate-download-licenses] in *package* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}release-prepare/pom.xml[]
+
+==== Build parameters
+
+===== Version number
+
+The internal version number (the one shown in the about screen) is set by the maven parameter `gitVersion` and defaults to the maven version number.
+It is passed from the Makefile during the release process.
+
+===== Skip parameters
+
+Each build step can be skipped by passing certain parameters.
+
+.Skipping build steps
+|===
+|Plugin|Skip parameter
+
+|Main (Skip code compilation)
+|`-Dmaven.main.skip=true`
+
+|Surefire (Unit tests)
+|`-DskipTests=true`
+
+|Checkstyle
+|`-Dcheckstyle.skip=true`
+
+|Spotbugs
+|`-Dspotbugs.skip=true`
+
+|Javadoc
+|`-Dmaven.javadoc.skip=true`
+
+|Asciidoctor
+|`-Dasciidoctor.skip=true`
+
+|Clirr
+|`-Dclirr.skip=true`
+
+|License Maven Plugin
+|`-Dlicense.skipAggregateDownloadLicenses=true`
+
+|===
+
+====== Examples
+* Compile only, build jar in `vassal-app/target`, skip tests, checkstyle, spotbugs, javadoc, asciidoctor, clirr:
+[source]
+----
+mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip=true -Dclirr.skip=true
+----
+
+* Run AsciiDoctor only:
+[source]
+----
+mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
+----
+
+==== Regular TODOs
+
+===== Check for new dependency versions
+
+[source]
+----
+mvn versions:display-dependency-updates
+----
+
+===== Check for maven plugin updates
+
+[source]
+----
+mvn versions:display-plugin-updates
+----
+
+
+==== Configuration of dependent projects
+
+The project's public maven repository can be found at http://www.vassalengine.org/maven/
+
+[source,xml]
+.Example configuration for dependent projects:
+----
+<project>
+  <dependencies>
+    <dependency>
+      <groupId>org.vassalengine</groupId>
+      <artifactId>vassal-app</artifactId>
+      <version>3.4.1</version> <!--1-->
+      </dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>vassal-releases</id>
+      <url>http://www.vassalengine.org/maven/</url>
+    </repository>
+  </repositories>
+</project>
+----
+<1> Use desired Vassal version here
+
+=== make
+
+.List of available make targets:
+[source,makefile]
+----
+include::{rootdir}Makefile[lines=258]
+----
+
+== Release checklist
+
+* [ ] do this
+* [ ] do that
+* [ ] ???
+* [ ] profit
+
+== Running Vassal
+
+=== Player
+
+Main class: `VASSAL.launch.Player` +
+VM arguments: `--standalone /path/to/module/VassalModule.vmod`
+
+=== Editor
+
+Main class: `VASSAL.launch.Editor` +
+VM arguments: `--standalone --edit /path/to/module/VassalModule.vmod`
+
+=== Additional parameters
+
+* To simulate a HiDPI monitor: `-Dsun.java2d.uiScale=2`

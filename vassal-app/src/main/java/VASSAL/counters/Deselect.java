@@ -1,4 +1,3 @@
-
 /*
  *
  * Copyright (c) 2020 by VassalEngine.org, Brian Reynolds
@@ -32,7 +31,6 @@ import javax.swing.KeyStroke;
 import java.util.ArrayList;
 import java.util.List;
 
-import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -91,9 +89,9 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       deselectCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
-      if (commandName.length() > 0 && key != null && ! key.isNull()) {
+      if (commandName.length() > 0 && key != null && !key.isNull()) {
         command =
-            new KeyCommand[]{deselectCommand};
+          new KeyCommand[]{deselectCommand};
       }
       else {
         command = new KeyCommand[0];
@@ -114,8 +112,8 @@ public class Deselect extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     if (deselectCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
-      
-      final Map m = getMap();      
+
+      final Map m = getMap();
 
       if (unstack) {
         Stack stack = outer.getParent();      //BR// If we're now being dragged around as part of a stack                                            
@@ -178,7 +176,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
     public Ed(Deselect p) {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      
+
       descInput = new StringConfigurer(null, Resources.getString("Editor.description_label"), p.description);
       controls.add(descInput.getControls());
 
@@ -187,7 +185,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
 
       keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);
       controls.add(keyInput.getControls());
-      
+
       unstackInput = new BooleanConfigurer(null, Resources.getString("Editor.Deselect.remove_piece_from_stack"), p.unstack);
       controls.add(unstackInput.getControls());
     }
@@ -206,8 +204,8 @@ public class Deselect extends Decorator implements TranslatablePiece {
       return "";
     }
   }
-  
-  
+
+
   /**
    * Return Property names exposed by this trait
    */
@@ -216,5 +214,20 @@ public class Deselect extends Decorator implements TranslatablePiece {
     l.add(Properties.SELECTED);
     return l;
   }
-}
 
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return List.of(key);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
+  }
+}

@@ -17,6 +17,7 @@
  */
 package VASSAL.tools;
 
+@FunctionalInterface
 public interface AudioClip {
-  public void play();
+  void play();
 }

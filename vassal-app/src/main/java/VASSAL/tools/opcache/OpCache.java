@@ -91,7 +91,7 @@ public class OpCache {
     @Override
     public String toString() {
       return this.getClass().getName() +
-        "[op=" + op + ",version=" + version + "]";
+        "[op=" + op + ",version=" + version + "]"; //NON-NLS
     }
   }
 

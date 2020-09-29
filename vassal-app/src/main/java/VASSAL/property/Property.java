@@ -61,7 +61,7 @@ public final class Property<T> {
    * @param type the class of the value of the property
    * @param def  the default value of the property
    * @throws IllegalArgumentException if {@code name} or {@code type}
-   * is {@code{ null}
+   * is {code{ null}
    */
   public Property(String name, Class<T> type, T def) {
     if (name == null) throw new IllegalArgumentException();

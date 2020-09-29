@@ -28,11 +28,10 @@ import VASSAL.counters.EditablePiece;
  */
 public interface TranslatablePiece extends EditablePiece {
 
-  String PREFIX = "Piece.";
+  String PREFIX = "Piece."; //NON-NLS
 
   /**
    * Return a PieceI18nData object returning the I18n data about this GamePiece.
    */
-  public PieceI18nData getI18nData();
-
+  PieceI18nData getI18nData();
 }

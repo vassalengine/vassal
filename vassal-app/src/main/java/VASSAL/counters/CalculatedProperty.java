@@ -138,6 +138,24 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   protected String getExpression() {
     return expression.getExpression();
   }
+  
+  
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(getExpression());
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(name);
+  }
+
 
   /**
    * Return the value of this trait's property.

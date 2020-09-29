@@ -1,7 +1,5 @@
 package VASSAL.build.module.map;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.stream.Stream;
 
 import javax.swing.Icon;
@@ -12,7 +10,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
@@ -26,24 +24,32 @@ import VASSAL.tools.NamedKeyStroke;
  */
 public class LayerControl extends AbstractConfigurable {
 
-  public static final String NAME = "name";
-  public static final String TOOLTIP = "tooltip";
-  public static final String BUTTON_TEXT = "text";
-  public static final String BUTTON_ICON = "icon";
-  public static final String BUTTON_HOTKEY = "hotkey";
-  public static final String COMMAND = "command";
-  public static final String SKIP = "skip";
-  public static final String LAYERS = "layers";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
+  public static final String BUTTON_TEXT = "text"; //NON-NLS
+  public static final String BUTTON_ICON = "icon"; //NON-NLS
+  public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
+  public static final String COMMAND = "command"; //NON-NLS
+  public static final String SKIP = "skip"; //NON-NLS
+  public static final String LAYERS = "layers"; //NON-NLS
 
-  public static final String CMD_ROTATE_UP = "Rotate Layer Order Up";
-  public static final String CMD_ROTATE_DN = "Rotate Layer Order Down";
-  public static final String CMD_ENABLE = "Make Layer Active";
-  public static final String CMD_DISABLE = "Make Layer Inactive";
-  public static final String CMD_TOGGLE = "Switch Layer between Active and Inactive";
-  public static final String CMD_RESET = "Reset All Layers";
+  public static final String CMD_ROTATE_UP = "Rotate Layer Order Up"; //NON-NLS - yes, really
+  public static final String CMD_ROTATE_DN = "Rotate Layer Order Down"; //NON-NLS - yes, really
+  public static final String CMD_ENABLE = "Make Layer Active"; //NON-NLS - yes, really
+  public static final String CMD_DISABLE = "Make Layer Inactive"; //NON-NLS - yes, really
+  public static final String CMD_TOGGLE = "Switch Layer between Active and Inactive"; //NON-NLS - yes, really
+  public static final String CMD_RESET = "Reset All Layers"; //NON-NLS - yes, really
 
   protected LaunchButton launch;
   protected static final String[] COMMANDS = new String[] {CMD_ROTATE_UP, CMD_ROTATE_DN, CMD_RESET, CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE};
+  protected static final String[] COMMANDS_DISPLAY_NAMES = new String[] {
+    "Editor.LayerControl.rotate_layer_order_up",
+    "Editor.LayerControl.rotate_layer_order_down",
+    "Editor.LayerControl.make_layer_active",
+    "Editor.LayerControl.make_layer_inactive",
+    "Editor.LayerControl.switch_layer_between_active_and_inactive",
+    "Editor.LayerControl.reset_all_layers"
+  };
   protected String command = CMD_RESET;
   protected boolean skip = true;
   protected String[] layers = new String[0];
@@ -51,12 +57,7 @@ public class LayerControl extends AbstractConfigurable {
   protected CompoundPieceCollection pieceCollection;
 
   public LayerControl() {
-    launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton(Resources.getString("Editor.LayerControl.reset_layers"), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
   }
 
   public void launch() {
@@ -141,10 +142,15 @@ public class LayerControl extends AbstractConfigurable {
     };
   }
 
-  public static class CommandConfig extends StringEnum {
+  public static class CommandConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return COMMANDS;
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return COMMANDS_DISPLAY_NAMES;
     }
   }
 
@@ -203,20 +209,10 @@ public class LayerControl extends AbstractConfigurable {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (SKIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return command.equals(CMD_ROTATE_UP) || command.equals(CMD_ROTATE_DN);
-        }
-      };
+      return () -> command.equals(CMD_ROTATE_UP) || command.equals(CMD_ROTATE_DN);
     }
     else if (LAYERS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return Stream.of(CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE).anyMatch(s -> command.equals(s));
-        }
-      };
+      return () -> Stream.of(CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE).anyMatch(s -> command.equals(s));
     }
     else {
       return null;
@@ -241,7 +237,7 @@ public class LayerControl extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayers.html");
+    return HelpFile.getReferenceManualPage("GamePieceLayers.html"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {

@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.imageop.Op;
@@ -41,8 +42,8 @@ import VASSAL.tools.imageop.SourceOp;
  * children of its own.
  */
 public class Chart extends Widget {
-  public static final String NAME = "chartName";
-  public static final String FILE = "fileName";
+  public static final String NAME = "chartName"; //NON-NLS
+  public static final String FILE = "fileName"; //NON-NLS
   private Component chart;
   private String fileName;
   private SourceOp srcOp;
@@ -98,7 +99,7 @@ public class Chart extends Widget {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.html", "Chart");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "Chart"); //NON-NLS
   }
 
   @Override
@@ -167,7 +168,7 @@ public class Chart extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Image:  "};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.image_label")};
   }
 
   @Override
@@ -187,6 +188,6 @@ public class Chart extends Widget {
   }
 
   public static String getConfigureTypeName() {
-    return "Chart";
+    return Resources.getString("Editor.Chart.component_type");
   }
 }

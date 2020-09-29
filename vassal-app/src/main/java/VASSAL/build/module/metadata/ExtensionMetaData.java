@@ -40,11 +40,11 @@ public class ExtensionMetaData extends AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(ExtensionMetaData.class);
 
-  public static final String ZIP_ENTRY_NAME = "extensiondata";
+  public static final String ZIP_ENTRY_NAME = "extensiondata"; //NON-NLS
   public static final String DATA_VERSION = "1";
 
-  protected static final String UNIVERSAL_ELEMENT = "universal";
-  protected static final String UNIVERSAL_ATTR = "anyModule";
+  protected static final String UNIVERSAL_ELEMENT = "universal"; //NON-NLS
+  protected static final String UNIVERSAL_ATTR = "anyModule"; //NON-NLS
 
   protected ModuleMetaData moduleData;
   protected boolean universal;
@@ -132,7 +132,7 @@ public class ExtensionMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile.
-      DefaultHandler handler = null;
+      DefaultHandler handler;
 
       ZipEntry data = zip.getEntry(getZipEntryName());
       if (data == null) {
@@ -160,6 +160,7 @@ public class ExtensionMetaData extends AbstractMetaData {
       // module metadata file
       final ModuleMetaData buildFileModuleData = moduleData;
       moduleData = new ModuleMetaData(zip);
+      //FIXME this looks like "something wrong is happening" - checking null right after we assign it?
       if (moduleData == null) {
         moduleData = buildFileModuleData;
       }
@@ -181,7 +182,7 @@ public class ExtensionMetaData extends AbstractMetaData {
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
       if (UNIVERSAL_ELEMENT.equals(qName)) {
-        universal = "true".equals(accumulator.toString().trim());
+        universal = "true".equals(accumulator.toString().trim()); //NON-NLS
       }
       else {
         super.endElement(uri, localName, qName);
@@ -206,7 +207,7 @@ public class ExtensionMetaData extends AbstractMetaData {
         setVersion(getAttr(attrs, VERSION_ATTR));
         setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
         setDescription(getAttr(attrs, DESCRIPTION_ATTR));
-        universal = "true".equals(getAttr(attrs, UNIVERSAL_ATTR));
+        universal = "true".equals(getAttr(attrs, UNIVERSAL_ATTR)); //NON-NLS
         // Build a basic module metadata in case this is an older extension
         // with no metadata from the originating module
         final String moduleName = getAttr(attrs, MODULE_NAME_ATTR);
@@ -216,5 +217,4 @@ public class ExtensionMetaData extends AbstractMetaData {
       }
     }
   }
-
 }

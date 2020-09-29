@@ -60,10 +60,10 @@ public class ZipUpdater implements Runnable {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipUpdater.class);
 
-  public static final String CHECKSUM_RESOURCE = "checksums";
-  public static final String TARGET_ARCHIVE = "target";
-  public static final String UPDATED_ARCHIVE_NAME = "finalName";
-  public static final String ENTRIES_DIR = "entries/";
+  public static final String CHECKSUM_RESOURCE = "checksums"; //NON-NLS
+  public static final String TARGET_ARCHIVE = "target"; //NON-NLS
+  public static final String UPDATED_ARCHIVE_NAME = "finalName"; //NON-NLS
+  public static final String ENTRIES_DIR = "entries/"; //NON-NLS
   private File oldFile;
   private ZipFile oldZipFile;
   private Properties checkSums;
@@ -192,7 +192,7 @@ public class ZipUpdater implements Runnable {
       String updatedName = destination.getName();
       int index = updatedName.lastIndexOf('.');
       String backup = index < 0 || index == updatedName.length() - 1
-          ? updatedName + "Backup" : updatedName.substring(0, index) + "Backup" + updatedName.substring(index);
+          ? updatedName + "Backup" : updatedName.substring(0, index) + "Backup" + updatedName.substring(index);  //NON-NLS
       if (!oldFile.renameTo(new File(backup))) {
         throw new IOException("Unable to create backup file " + backup + ".\nUpdated file is in " + tempFile.getPath());
       }
@@ -217,7 +217,7 @@ public class ZipUpdater implements Runnable {
   }
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
-    if (!updaterFile.getName().endsWith(".jar")) {
+    if (!updaterFile.getName().endsWith(".jar")) { //NON-NLS
       final String newName = updaterFile.getName().replace('.', '_') + ".jar";
       updaterFile = new File(updaterFile.getParentFile(), newName);
     }
@@ -248,11 +248,11 @@ public class ZipUpdater implements Runnable {
             checkSums.put(entry.getName(), goalCrc + "");
           }
 
-          final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF");
+          final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //NON-NLS
           manifestEntry.setMethod(ZipEntry.DEFLATED);
           final StringBuilder buffer = new StringBuilder();
-          buffer.append("Manifest-Version: 1.0\n")
-                .append("Main-Class: VASSAL.tools.ZipUpdater\n");
+          buffer.append("Manifest-Version: 1.0\n") //NON-NLS
+                .append("Main-Class: VASSAL.tools.ZipUpdater\n"); //NON-NLS
           writeEntry(
             new ByteArrayInputStream(buffer.toString().getBytes(StandardCharsets.UTF_8)),
             out,
@@ -282,7 +282,7 @@ public class ZipUpdater implements Runnable {
             sumEntry);
 
           final String className =
-            getClass().getName().replace('.', '/') + ".class";
+            getClass().getName().replace('.', '/') + ".class"; //NON-NLS
           final ZipEntry classEntry = new ZipEntry(className);
           classEntry.setMethod(ZipEntry.DEFLATED);
 
@@ -310,12 +310,12 @@ public class ZipUpdater implements Runnable {
 
   @Override
   public void run() {
-    JOptionPane.showMessageDialog(null, "Unable to update " + fileName + ".\n" + error.getMessage(), "Update failed", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(null, "Unable to update " + fileName + ".\n" + error.getMessage(), "Update failed", JOptionPane.ERROR_MESSAGE); //NON-NLS
     System.exit(0);
   }
 
   public static void main(String[] args) {
-    String oldArchiveName = "<unknown>";
+    String oldArchiveName = "<unknown>";  //NON-NLS
     try {
       if (args.length > 1) {
         oldArchiveName = args[0];

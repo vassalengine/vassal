@@ -22,6 +22,7 @@ package VASSAL.counters;
 /**
  * A filter for GamePieces
  */
+@FunctionalInterface
 public interface PieceFilter {
   public boolean accept(GamePiece piece);
 }

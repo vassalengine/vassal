@@ -154,7 +154,7 @@ class ProcessCallable implements Callable<Integer> {
       closeable.close();
     }
     catch (IOException e) {
-      logger.error("Error while closing stream", e);
+      logger.error("Error while closing stream", e); //NON-NLS
     }
   }
 }

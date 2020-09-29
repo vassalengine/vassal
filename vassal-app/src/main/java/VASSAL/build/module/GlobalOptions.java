@@ -93,7 +93,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public static final boolean FORCE_MAC_LEGACY = true; //BR// Keeps Mac key translation "waiting in the wings"
 
-  private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
+  private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
   private String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
@@ -245,7 +245,7 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @deprecated No replacement */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public boolean isAveragedScaling() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return true;
   }
   
@@ -272,6 +272,13 @@ public class GlobalOptions extends AbstractConfigurable {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, NEVER, PROMPT};
+    }
+  }
+
+  public static class PromptOnOff extends StringEnum {
+    @Override
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{ALWAYS, NEVER};
     }
   }
 
@@ -329,7 +336,7 @@ public class GlobalOptions extends AbstractConfigurable {
       null,
       Prompt.class,
       PlayerIdFormatConfig.class,
-      Prompt.class
+      PromptOnOff.class
     };
   }
 
@@ -420,6 +427,9 @@ public class GlobalOptions extends AbstractConfigurable {
       return promptString;
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
+      if (PROMPT.equals(chatterHTMLSupport)) {
+        return NEVER; //BR// So peeps with the old/bad "preference" option will get a safe result.
+      }
       return chatterHTMLSupport;
     }
     else if (AUTO_REPORT.equals(key)) {
@@ -474,10 +484,6 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
       chatterHTMLSupport = (String) value;
-      if (PROMPT.equals(chatterHTMLSupport)) {
-        BooleanConfigurer config = new BooleanConfigurer(CHATTER_HTML_SUPPORT, Resources.getString("GlobalOptions.chatter_html_support")); //$NON-NLS-1$
-        GameModule.getGameModule().getPrefs().addOption(Resources.getString("Chatter.chat_window"), config);        
-      }
     }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
@@ -549,7 +555,7 @@ public class GlobalOptions extends AbstractConfigurable {
     if (ALWAYS.equals(attValue)) {
       return true;
     }
-    else if (NEVER.equals(attValue)) {
+    else if (NEVER.equals(attValue) || CHATTER_HTML_SUPPORT.equals(prefsPrompt)) {
       return false;
     }
     else {
@@ -571,4 +577,12 @@ public class GlobalOptions extends AbstractConfigurable {
     return l;
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(playerIdFormat.getFormat());
+  }
 }

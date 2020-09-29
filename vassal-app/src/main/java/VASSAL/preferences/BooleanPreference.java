@@ -18,11 +18,9 @@
 
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 
 /**
  * A Checkbox Module Preference.
@@ -33,7 +31,7 @@ public class BooleanPreference extends BasicPreference {
   protected BooleanConfigurer config;
 
   public static String getConfigureTypeName() {
-    return "Checkbox Preference";
+    return Resources.getString("Editor.BooleanPreference.component_type");
   }
 
   @Override
@@ -58,12 +56,7 @@ public class BooleanPreference extends BasicPreference {
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new BooleanConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }
-      });
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

@@ -30,6 +30,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.TemporaryToolBar;
@@ -42,17 +43,17 @@ import VASSAL.tools.ToolBarComponent;
  *
  */
 public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource, MutableProperty {
-  public static final String NAME = "name";
-  public static final String INITIAL_VALUE = "initialValue";
-  public static final String DESCRIPTION = "description";
-  public static final String NUMERIC = "isNumeric";
-  public static final String MIN_VALUE = "min";
-  public static final String MAX_VALUE = "max";
-  public static final String WRAP = "wrap";
-  protected static final String COMMAND_PREFIX = "GlobalProperty\t";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String INITIAL_VALUE = "initialValue"; //NON-NLS
+  public static final String DESCRIPTION = "description"; //NON-NLS
+  public static final String NUMERIC = "isNumeric"; //NON-NLS
+  public static final String MIN_VALUE = "min"; //NON-NLS
+  public static final String MAX_VALUE = "max"; //NON-NLS
+  public static final String WRAP = "wrap"; //NON-NLS
+  protected static final String COMMAND_PREFIX = "GlobalProperty\t"; //NON-NLS
   protected TemporaryToolBar tempToolbar = new TemporaryToolBar();
-  protected String description;
-  protected String initialValue;
+  protected String description = "";
+  protected String initialValue = "";
   protected boolean numeric;
   protected String minValue;
   protected String maxValue;
@@ -64,12 +65,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected MutablePropertiesContainer parentContainer;
 
   public GlobalProperty() {
-    numericVisibility = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return isNumeric();
-      }
-    };
+    numericVisibility = this::isNumeric;
   }
 
   public GlobalProperty(GlobalProperty p) {
@@ -85,13 +81,14 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name",
-      "Initial value:  ",
-      "Description:  ",
-      "Is Numeric",
-      "Minimum value:  ",
-      "Maximum value:  ",
-      "Wrap around"
+      Resources.getString("Editor.GlobalProperty.component_type"),
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.GlobalProperty.initial_value"),
+      Resources.getString("Editor.description_label"),
+      Resources.getString("Editor.GlobalProperty.is_numeric"),
+      Resources.getString("Editor.GlobalProperty.minimum_value"),
+      Resources.getString("Editor.GlobalProperty.maximum_value"),
+      Resources.getString("Editor.GlobalProperty.wrap_around")
     };
   }
 
@@ -138,7 +135,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       description = (String) value;
     }
     else if (NUMERIC.equals(key)) {
-      numeric = Boolean.TRUE.equals(value) || "true".equals(value);
+      numeric = Boolean.TRUE.equals(value) || "true".equals(value); //NON-NLS
     }
     else if (MIN_VALUE.equals(key)) {
       minValue = (String) value;
@@ -147,7 +144,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       maxValue = (String) value;
     }
     else if (WRAP.equals(key)) {
-      wrap = Boolean.TRUE.equals(value) || "true".equals(value);
+      wrap = Boolean.TRUE.equals(value) || "true".equals(value); //NON-NLS
     }
   }
 
@@ -196,7 +193,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.html");
+    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS
   }
 
   @Override
@@ -225,7 +222,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     if (!gameStarting) {
       property.setPropertyValue(initialValue); // Set value back to default for next New Game
     }
-    return;
   }
 
   @Override
@@ -256,7 +252,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   /**
    * A String that identifies this property in an encoded Command
-   * @return
+   * @return propertyId
    */
   protected String getPropertyId() {
     return getConfigureName();
@@ -379,7 +375,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public static String getConfigureTypeName() {
-    return "Global Property";
+    return Resources.getString("Editor.GlobalProperty.component_type");
   }
 
   @Override
@@ -409,5 +405,32 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   @Override
   public MutablePropertiesContainer getParent() {
     return parentContainer;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(initialValue);
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(property.getName());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(description);
   }
 }

@@ -18,7 +18,6 @@
  */
 package VASSAL.build.widget;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,8 +39,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.apache.batik.ext.swing.Resources;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -49,10 +46,8 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
-import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.MenuDisplayer;
 import VASSAL.build.module.map.PieceMover.AbstractDragHandler;
 import VASSAL.command.AddPiece;
@@ -68,6 +63,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -79,11 +75,11 @@ import VASSAL.tools.swing.SwingUtils;
  * PieceSlot's GamePiece. Clicking on a PieceSlot initiates a drag
  */
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
-  public static final String GP_ID = "gpid";
+  public static final String GP_ID = "gpid"; //NON-NLS
   protected GamePiece c;
   protected GamePiece expanded;
   protected String pieceDefinition;
-  protected static final Font FONT = new Font("Dialog", Font.PLAIN, 12);
+  protected static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 12);
   protected final JPanel panel;
   protected int width, height;
   protected String gpId = ""; // Unique PieceSlot Id
@@ -204,7 +200,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       final Command raw = GameModule.getGameModule().decode(pieceDefinition);   
       final AddPiece comm = (raw instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
       if ((comm == null) || comm.isNull()) {
-        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));
+        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));  //NON-NLS
         pieceDefinition = null;
       }
       else {
@@ -244,8 +240,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       final FontMetrics fm = g.getFontMetrics();
       g.drawRect(0, 0, size.width - 1, size.height - 1);
       g.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-      g.drawString(" nil ",
-        size.width / 2 - fm.stringWidth(" nil ") / 2,
+      String s = " " + Resources.getString("Editor.PieceSlot.nil") + " ";
+      g.drawString(s,  //NON-NLS
+        size.width / 2 - fm.stringWidth(s) / 2,  //NON-NLS
         size.height / 2
       );
     }
@@ -397,7 +394,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public static String getConfigureTypeName() {
-    return "Single piece";
+    return Resources.getString("Editor.PieceSlot.component_type");
   }
 
   @Override
@@ -495,7 +492,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.html");
+    return HelpFile.getReferenceManualPage("GamePiece.html"); //NON-NLS
   }
 
   @Override

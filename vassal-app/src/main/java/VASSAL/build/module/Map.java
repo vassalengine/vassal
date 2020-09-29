@@ -55,6 +55,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -174,7 +175,6 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -208,13 +208,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected ArrayList<Drawable> drawComponents = new ArrayList<>();
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
-
-  /**
-   * @deprecated type will change to {@link SplitPane}
-   */
-  @Deprecated(since = "2020-08-05", forRemoval = true)
   protected ComponentSplitter.SplitPane mainWindowDock;
-
   protected BoardPicker picker;
   protected JToolBar toolBar = new JToolBar();
   protected Zoomer zoom;
@@ -255,13 +249,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
 
+  private IntConfigurer preferredScrollConfig;
+
   public Map() {
     getView();
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
-        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +
-        ",gapx 0,hidemode 3";
+        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
+        ",gapx 0,hidemode 3";                                     //NON-NLS
       toolBar.setLayout(new MigLayout(constraints));
     }
     else {
@@ -301,7 +297,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip"; //$NON-NLS-1$
   public static final String EDGE_WIDTH = "edgeWidth"; //$NON-NLS-1$
   public static final String EDGE_HEIGHT = "edgeHeight"; //$NON-NLS-1$
-  public static final String BACKGROUND_COLOR = "backgroundcolor";
+  public static final String BACKGROUND_COLOR = "backgroundcolor"; //NON-NLS
   public static final String HIGHLIGHT_COLOR = "color"; //$NON-NLS-1$
   public static final String HIGHLIGHT_THICKNESS = "thickness"; //$NON-NLS-1$
   public static final String ALLOW_MULTIPLE = "allowMultiple"; //$NON-NLS-1$
@@ -752,7 +748,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
-      mainWindowDock = g.getPlayerWindow().splitControlPanel(layeredPane, SplitPane.HIDE_BOTTOM, true);
+
+      mainWindowDock = ComponentSplitter.split(
+        ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
+        layeredPane,
+        ComponentSplitter.SplitPane.HIDE_BOTTOM,
+        true
+      );
       mainWindowDock.setResizeWeight(0.0);
 
       g.addKeyStrokeSource(
@@ -785,6 +787,27 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         PREFERRED_EDGE_SCROLL_DELAY
       )
     );
+
+    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
+
+    // Create the Configurer for the Pref
+    preferredScrollConfig = new IntConfigurer(
+      PREFERRED_SCROLL_ZONE,
+      Resources.getString("Map.scroll_zone_preference"), //$NON-NLS-1$
+      SCROLL_ZONE
+    );
+
+    // Register the Pref, which copies any existing pref value into the configurer
+    g.getPrefs().addOption(
+      Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+      preferredScrollConfig
+    );
+
+    // Read the current value of the pref
+    SCROLL_ZONE = preferredScrollConfig.getIntValue(60);
+
+    // Listen for any changes to the pref
+    preferredScrollConfig.addPropertyChangeListener(evt -> SCROLL_ZONE = preferredScrollConfig.getIntValue(60));
 
     g.getPrefs().addOption(
       Resources.getString("Prefs.compatibility_tab"), //$NON-NLS-1$
@@ -849,7 +872,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public synchronized void setBoards(Enumeration<Board> boardList) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     setBoards(Collections.list(boardList));
   }
 
@@ -993,6 +1016,16 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     snap.translate(-r.x, -r.y);
     snap = b.snapTo(snap);
     snap.translate(r.x, r.y);
+
+    //CC bugfix13409
+    // If we snapped to a point outside the board b, call sanpTo again with the board we landed into
+    final Board bSnappedTo = findBoard(snap);
+    if (bSnappedTo != null && !b.equals(bSnappedTo)) {
+      final Rectangle rSnappedTo = bSnappedTo.bounds();
+      snap.translate(-rSnappedTo.x, -rSnappedTo.y);
+      snap = bSnappedTo.snapTo(snap);
+      snap.translate(rSnappedTo.x, rSnappedTo.y);
+    }
     // RFE 882378
     // If we have snapped to a point 1 pixel off the edge of the map, move
     // back
@@ -1033,14 +1066,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point mapCoordinates(Point p) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return componentToMap(p);
   }
 
   /** @deprecated Use {@link #componentToMap(Rectangle)} */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Rectangle mapRectangle(Rectangle r) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return componentToMap(r);
   }
 
@@ -1052,14 +1085,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point componentCoordinates(Point p) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return mapToComponent(p);
   }
 
   /** @deprecated  Use {@link #mapToComponent(Rectangle)} */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Rectangle componentRectangle(Rectangle r) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return mapToComponent(r);
   }
 
@@ -1822,7 +1855,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
 
   /** The width of the hot zone for triggering autoscrolling. */
-  public static final int SCROLL_ZONE = 30;
+  public static int SCROLL_ZONE = 60;
+  public static final String PREFERRED_SCROLL_ZONE = "PreferredScrollZone"; //$NON-NLS-1$
 
   /** The horizontal component of the autoscrolling vector, -1, 0, or 1. */
   protected int sx;
@@ -2129,7 +2163,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Enumeration<Board> getAllBoards() {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return Collections.enumeration(boards);
   }
 
@@ -2568,30 +2602,43 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     return null;
   }
 
+
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
   public void appendToTitle(String s) {
-    if (mainWindowDock == null) {
-      Component c = theMap.getTopLevelAncestor();
-      if (s == null) {
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(getDefaultWindowTitle());
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(getDefaultWindowTitle());
-        }
-      }
-      else {
-        if (c instanceof JFrame) {
-          ((JFrame) c).setTitle(((JFrame) c).getTitle() + s);
-        }
-        if (c instanceof JDialog) {
-          ((JDialog) c).setTitle(((JDialog) c).getTitle() + s);
-        }
-      }
+    // replaced by updateTitleBar()
+  }
+
+
+  /**
+   * Updates the title bar of the current window
+   */
+  public void updateTitleBar() {
+    if (mainWindowDock != null) {
+      return;
+    }
+    Component c = theMap.getTopLevelAncestor();
+    if (c instanceof JFrame) {
+      ((JFrame) c).setTitle(getDefaultWindowTitle());
+    }
+    if (c instanceof JDialog) {
+      ((JDialog) c).setTitle(getDefaultWindowTitle());
     }
   }
 
+  /**
+   * @return The correct current default window title
+   */
   protected String getDefaultWindowTitle() {
-    return getLocalizedMapName().length() > 0 ? getLocalizedMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+    if (getLocalizedMapName().length() > 0) {
+      return GameModule.getGameModule().getWindowTitleString("Map.window_named", getLocalizedMapName()); //$NON-NLS-1$
+    }
+    else {
+      return GameModule.getGameModule().getWindowTitleString("Map.window", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+    }
   }
 
   /**
@@ -2632,7 +2679,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Place a piece at the destination point. If necessary, remove the piece from its parent Stack or Map
    * @param piece GamePiece to place
-   * @Point pt location to place the piece
+   * @param pt location to place the piece
    *
    * @return a {@link Command} that reproduces this action
    */
@@ -2723,7 +2770,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @SuppressWarnings("unused")
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public void reposition(GamePiece s, int pos) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
   }
 
   /**
@@ -2786,7 +2833,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      boolean bTriggerRecenter = false;
+      boolean bTriggerRecenter;
       final Point p = mapToComponent(r.getLocation());
       final Rectangle rCurrent = theMap.getVisibleRect();
       Rectangle rNorecenter = new Rectangle(0, 0);
@@ -2803,8 +2850,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // if r is within a band of  n%width/height of border, trigger recenter
       rNorecenter.width = (int) round(rCurrent.width * noRecenterPct);
       rNorecenter.height = (int) round(rCurrent.height * noRecenterPct);
-      rNorecenter.x = rCurrent.x + (int) round(rCurrent.width - rNorecenter.width) / 2;
-      rNorecenter.y = rCurrent.y + (int) round(rCurrent.height - rNorecenter.height) / 2;
+      rNorecenter.x = rCurrent.x + round(rCurrent.width - rNorecenter.width) / 2;
+      rNorecenter.y = rCurrent.y + round(rCurrent.height - rNorecenter.height) / 2;
 
       bTriggerRecenter = p.x < rNorecenter.x || p.x > (rNorecenter.x + rNorecenter.width) ||
         p.y < rNorecenter.y || p.y > (rNorecenter.y + rNorecenter.height);
@@ -2989,7 +3036,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MESSAGE = "message"; //$NON-NLS-1$
 
   /**
-   * Autoconfigurer for map's icon used on its launchbutton
+   * Autoconfigurer for map's icon used on its launch button
    */
   public static class IconConfig implements ConfigurerFactory {
     @Override
@@ -3063,7 +3110,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return createFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$ created in $" + LOCATION + "$"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      String val = Resources.getString("Editor.Map.report_created_in_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() == null) {
@@ -3089,7 +3136,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return moveToFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+      String val = Resources.getString("Editor.Map.report_move_to_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() != null) {
@@ -3108,7 +3155,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return moveWithinFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+      String val = Resources.getString("Editor.Map.report_move_within_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null) {
@@ -3213,7 +3260,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public static Iterator<Map> getAllMaps() {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return getMapList().iterator();
   }
 
@@ -3357,9 +3404,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     /**
      * Constructor for a Merger. This is passed the map, location, and piece we are going to be merging into something.
-     * @param map
-     * @param pt
-     * @param p
+     * @param map map
+     * @param pt point
+     * @param p piece
      */
     public Merger(Map map, Point pt, GamePiece p) {
       this.map = map;
@@ -3402,7 +3449,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
 
     /**
-     * @returns a command to form a new stack with a piece found at the our location, provided all of the conditions to form a
+     * @return a command to form a new stack with a piece found at the our location, provided all of the conditions to form a
      * stack are met. Returns null if the necessary conditions aren't met.
      * @param piece piece to consider forming a new stack with.
      */
@@ -3491,5 +3538,42 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     public Map getMap() {
       return map;
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(moveWithinFormat, moveToFormat, createFormat, changeFormat);
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    List<String> l = new ArrayList<>();
+    if (!GlobalOptions.NEVER.equals(markMovedOption)) {
+      l.add(markUnmovedText);
+      l.add(markUnmovedTooltip);
+    }
+    if (useLaunchButtonEdit) {
+      l.add(getAttributeValueString(BUTTON_NAME));
+      l.add(getAttributeValueString(TOOLTIP));
+    }
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
   }
 }

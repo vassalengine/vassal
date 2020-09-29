@@ -29,6 +29,7 @@ import VASSAL.tools.lang.Reference;
  * @since 3.2.0
  * @author Joel Uckelman
  */
+@FunctionalInterface
 public interface ImageTypeConverter {
   /**
    * Converts an image to the given type.
@@ -39,6 +40,6 @@ public interface ImageTypeConverter {
    *
    * @throws ImageIOException if something goes wrong
    */
-  public BufferedImage convert(Reference<BufferedImage> ref, int type)
-                                                       throws ImageIOException;
+  BufferedImage convert(Reference<BufferedImage> ref, int type)
+                                                      throws ImageIOException;
 }

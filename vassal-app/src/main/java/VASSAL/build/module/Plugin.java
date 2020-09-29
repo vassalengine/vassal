@@ -127,5 +127,4 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
   public void addTo(Buildable parent) {
 
   }
-
 }

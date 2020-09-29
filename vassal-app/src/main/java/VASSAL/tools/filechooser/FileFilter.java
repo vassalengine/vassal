@@ -20,11 +20,11 @@ package VASSAL.tools.filechooser;
 import java.io.File;
 
 /**
- * The file filter abstract base class for {@link VASSAL.tools.FileChooser}.
+ * The file filter abstract base class for {link VASSAL.tools.FileChooser}.
  * This class joins together the {@link javax.swing.filechooser.FileFilter}
- * class and the {@link java.awt.FilenameFilter} interface so that a
- * uniform file chooser may be used  with {@link VASSAL.tools.FileChooser},
- * regardless of the actual (i.e., navive or Swing) file chooser displayed.
+ * class and the {link java.awt.FilenameFilter} interface so that a
+ * uniform file chooser may be used  with {link VASSAL.tools.FileChooser},
+ * regardless of the actual (i.e., naive or Swing) file chooser displayed.
  *
  * @author uckelman
  */

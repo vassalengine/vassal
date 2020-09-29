@@ -17,30 +17,6 @@
  */
 package VASSAL.build;
 
-import VASSAL.build.module.BasicLogger;
-import VASSAL.build.module.GameRefresher;
-import VASSAL.build.module.KeyNamer;
-import VASSAL.build.module.PluginsLoader;
-import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
-import VASSAL.build.module.metadata.AbstractMetaData;
-import VASSAL.build.module.metadata.MetaDataFactory;
-import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.chat.AddressBookServerConfigurer;
-import VASSAL.chat.ChatServerFactory;
-import VASSAL.chat.DynamicClient;
-import VASSAL.chat.DynamicClientFactory;
-import VASSAL.chat.HybridClient;
-import VASSAL.chat.jabber.JabberClientFactory;
-import VASSAL.chat.node.NodeClientFactory;
-import VASSAL.chat.peer2peer.P2PClientFactory;
-import VASSAL.chat.ui.ChatServerControls;
-import VASSAL.configure.AutoConfigurer;
-import VASSAL.configure.PasswordConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.TextConfigurer;
-import VASSAL.i18n.Language;
-import VASSAL.preferences.PositionOption;
-import VASSAL.tools.ProblemDialog;
 import java.awt.FileDialog;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -67,25 +43,30 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
-
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
+import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Inventory;
+import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.MultiActionButton;
@@ -94,6 +75,7 @@ import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.Plugin;
+import VASSAL.build.module.PluginsLoader;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.PrivateMap;
 import VASSAL.build.module.PrototypesContainer;
@@ -102,36 +84,56 @@ import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
+import VASSAL.build.module.turn.TurnTracker;
 import VASSAL.build.module.WizardSupport;
-import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
+import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.build.module.turn.TurnTracker;
-import VASSAL.build.widget.PieceSlot;
+import VASSAL.chat.AddressBookServerConfigurer;
+import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.DynamicClient;
+import VASSAL.chat.HybridClient;
+import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
+import VASSAL.chat.node.PrivateNodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
+import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
+import VASSAL.configure.PasswordConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TextConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.launch.PlayerWindow;
+import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
+import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
@@ -139,8 +141,6 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.version.VersionUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -152,7 +152,7 @@ import org.w3c.dom.Element;
  * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * For legacy reasons, {@link BasicModule} extends {@link GameModule}, but
+ * For legacy reasons, {@link VASSAL.launch.BasicModule} extends {@link GameModule}, but
  * everything of note has been moved inside of GameModule.
  *
  * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
@@ -174,6 +174,37 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public static final String BUILDFILE_OLD = "buildFile";
 
   private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
+
+  // Last type of game save/load for our current game
+  //public static final String SAVED_GAME = "saved";
+  //public static final String LOADED_GAME = "loaded";
+  //public static final String REPLAYED_GAME = "replayed";
+  //public static final String REPLAYING_GAME = "replaying";
+  //public static final String LOGGING_GAME = "logging";
+  //public static final String LOGGED_GAME = "logged";
+  //public static final String NEW_GAME = "new";
+
+  // Last type of game save/load for our current game
+  public enum GameFileMode {
+    SAVED_GAME("saved"),
+    LOADED_GAME("loaded"),
+    REPLAYED_GAME("replayed"),
+    REPLAYING_GAME("replaying"),
+    LOGGING_GAME("logging"),
+    LOGGED_GAME("logged"),
+    NEW_GAME("new");
+
+    private final String prettyName;
+
+    GameFileMode(String prettyName) {
+      this.prettyName = prettyName;
+    }
+
+    @Override
+    public String toString() {
+      return prettyName;
+    }
+  }
 
   private static GameModule theModule;
 
@@ -226,6 +257,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   protected final Object loggingLock = new Object();
   protected Command pausedCommands;
 
+  protected String gameFile     = ""; //NON-NLS
+  protected GameFileMode gameFileMode = GameFileMode.NEW_GAME;
+
   /*
    * Store the currently building GpId source. Only meaningful while
    * the GameModule or an Extension is actually in the process of being built
@@ -244,7 +278,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public JFrame getFrame() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return frame;
   }
 
@@ -253,9 +287,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String toString() {
-    return "BasicModule{" +
-      "name='" + name + '\'' +
-      ", moduleVersion='" + moduleVersion + '\'' +
+    return "BasicModule{" +                                       //NON-NLS
+      "name='" + name + '\'' +                                    //NON-NLS
+      ", moduleVersion='" + moduleVersion + '\'' +                //NON-NLS
       '}';
   }
 
@@ -297,14 +331,14 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public String getI18nPrefix() {
-    return "";
+    return ""; //NON-NLS
   }
 
   /**
    * Constructor for a GameModule.
    * @param archive The .vmod (or .tmp) archive to associate
    */
-  protected GameModule(DataArchive archive) {
+  public GameModule(DataArchive archive) {
     this.archive = archive;
 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -368,12 +402,12 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       }
     }
 
-    MenuManager.getInstance().addAction("Prefs.edit_preferences",
+    MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
       getPrefs().getEditor().getEditAction());
 
     gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
-    MenuManager.getInstance().addAction("GameRefresher.refresh_counters",
+    MenuManager.getInstance().addAction("GameRefresher.refresh_counters", //NON-NLS
       gameRefresher.getRefreshAction());
   }
 
@@ -443,13 +477,15 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * Initialize and register our multiplayer server controls
    */
   protected void initServer() {
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
-    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
+    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
+    ChatServerFactory.register(PrivateNodeClientFactory.PRIVATE_TYPE, new PrivateNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
-    ChatServerFactory.register(JabberClientFactory.JABBER_TYPE, new JabberClientFactory());
+
+    // legacy server used to be stored as node type
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new OfficialNodeClientFactory());
 
     server = new DynamicClient();
-    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
@@ -514,7 +550,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     final String mess = Resources.getString(
       "BasicModule.version_message", getLocalizedGameName(), moduleVersion); //$NON-NLS-1$
     warn(mess);
-    log.warn(mess);
+    log.info(mess);
     initFrameTitle();
   }
 
@@ -577,7 +613,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        WarningDialog.show("GameModule.version_warning",
+        WarningDialog.show("GameModule.version_warning", //NON-NLS
                            vassalVersionCreated, runningVersion);
       }
     }
@@ -633,7 +669,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static int compareVersions(String v1, String v2) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return VersionUtils.compareVersions(v1, v2);
   }
 
@@ -699,7 +735,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.GameModule.description")
+      Resources.getString("Editor.description_label")    //NON-NLS
     };
   }
 
@@ -799,7 +835,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void fireKeyStroke(KeyStroke stroke) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {
         l.keyPressed(stroke);
@@ -953,11 +989,14 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param s message to display in Chat Log
    */
   public void warn(String s) {
+    String s2 = s;
+    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+           .replaceAll(">", "&gt;"); //$NON-NLS
     if (chat == null) {
-      deferredChat.add(s);
+      deferredChat.add(s2);
     }
     else {
-      chat.show(" - " + s); //$NON-NLS-1$
+      chat.show(" - " + s2); //$NON-NLS-1$
     }
   }
   
@@ -992,12 +1031,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
-  /**
-   * @deprecated deprecated without replacement, modify/subclass {@link PlayerWindow} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
   public JComponent getControlPanel() {
-    ProblemDialog.showDeprecated("2020-08-06");
     return controlPanel;
   }
 
@@ -1020,7 +1054,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setGlobalPrefs(@SuppressWarnings("unused") Prefs p) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   /**
@@ -1157,19 +1191,89 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   }
 
   /**
-   * Append the string to the title of the controls window and all Map windows
-   * @param s If null, set the title to the default.
+   * Returns an appropriate Title Bar string for a window, based on the module name,
+   * the last read/written game file, and the manner of interaction with it.
+   * @return appropriate title bar string for a window.
+   * @param key Localization key to be used to generate string
+   * @param name Name of the object whose title bar is to be generated
    */
-  public void appendToTitle(String s) {
-    if (s == null) {
-      frame.setTitle(Resources.getString("GameModule.frame_title", getLocalizedGameName()));  //$NON-NLS-1$
+  public String getWindowTitleString (String key, String name) {
+    if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
+      return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
     else {
-      frame.setTitle(frame.getTitle() + s);
+      return Resources.getString(key + "_title_" + gameFileMode, name, gameFile); //NON-NLS-1$
     }
+  }
+
+  /**
+   * Returns an appropriate Title Bar string for the main module window, based on the module name,
+   * the last read/written game file, and the manner of interaction with it.
+   * @return appropriate title bar string for main module window.
+   */
+  public String getTitleString() {
+    return getWindowTitleString("GameModule.frame", getLocalizedGameName()); //NON-NLS-1$
+  }
+
+  /**
+   * Updates the title bar of the main module window, and all map windows
+   */
+  public void updateTitleBar () {
+    frame.setTitle(getTitleString());  //$NON-NLS-1$
+
     for (Map m : getComponentsOf(Map.class)) {
-      m.appendToTitle(s);
+      m.updateTitleBar();
     }
+  }
+
+  /**
+   * @deprecated use {@link #updateTitleBar()}
+   * @param s String to append to title
+   */
+  @Deprecated(since = "2020-09-16", forRemoval = true)
+  public void appendToTitle(String s) {
+    // replaced by updateTitleBar()
+  }
+  
+
+  /**
+   * Sets the most recent .VSAV / .VLOG file saved, loaded, or logged to, along with
+   * the type of action taken with that file.
+   * @param gameFile Most recent VSAV/VLOG if any
+   * @param mode mode of access
+   */
+  public void setGameFile (String gameFile, GameFileMode mode) {
+    this.gameFile = gameFile;
+    setGameFileMode(mode);
+    updateTitleBar();
+  }
+
+  /**
+   * @return Most recent .VSAV/.VLOG that we've read or written.
+   */
+  public String getGameFile () {
+    return gameFile;
+  }
+
+  /**
+   * Sets the type of interaction we most recently had with saving/loading/replaying/logging, for managing title bars
+   * of windows.
+   * @param mode mode of access
+   */
+  public void setGameFileMode (GameFileMode mode) {
+    if (mode == null) {
+      throw new NullPointerException();
+    }
+    gameFileMode = mode;
+    updateTitleBar();
+  }
+
+  /**
+   * @return Returns the most recent type of interaction we've had for saving/loading/replaying/logging the game, for managing
+   * title bars of windows.
+   */
+  public GameFileMode getGameFileMode () {
+    return gameFileMode;
   }
 
   /**
@@ -1226,7 +1330,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
             p.close();
           }
           catch (IOException e) {
-            log.error("Error while closing module preferences", e);
+            log.error("Error while closing module preferences", e); //NON-NLS
           }
         }
       }
@@ -1254,7 +1358,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
         ReadErrorDialog.error(e, archive.getName());
       }
 
-      log.info("Exiting");
+      log.info("Exiting"); //NON-NLS
     }
 
     return !cancelled;
@@ -1389,8 +1493,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
 
     //Save our old drag threshold
-    oldDragThreshold = System.getProperty("awt.dnd.drag.threshold");
-    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold()));
+    oldDragThreshold = System.getProperty("awt.dnd.drag.threshold"); //NON-NLS
+    System.setProperty("awt.dnd.drag.threshold", Integer.toString(GlobalOptions.getInstance().getDragThreshold())); //NON-NLS
 
     /*
      * Tell any Plugin components that the build is complete so that they
@@ -1407,10 +1511,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public static void unload() {
     // Put our old drag threshold back, or if it wasn't set then return it to an unset state.
     if (oldDragThreshold != null) {
-      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold);
+      System.setProperty("awt.dnd.drag.threshold", oldDragThreshold); //NON-NLS
     }
     else {
-      System.clearProperty("awt.dnd.drag.threshold");
+      System.clearProperty("awt.dnd.drag.threshold"); //NON-NLS
     }
 
     if (theModule != null) {
@@ -1519,9 +1623,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       // are properly set at this point.
 
       final String hstr =
-        DigestUtils.sha1Hex(getGameName() + "_" + getGameVersion());
+        DigestUtils.sha1Hex(getGameName() + "_" + getGameVersion()); //NON-NLS
 
-      final File tc = new File(Info.getConfDir(), "tiles/" + hstr);
+      final File tc = new File(Info.getConfDir(), "tiles/" + hstr); //NON-NLS
       tcache = new ImageTileDiskCache(tc.getAbsolutePath());
     }
 
@@ -1719,7 +1823,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       return CRCUtils.getCRC(files);
     }
     catch (IOException e) {
-      log.error("Error generating CRC", e);
+      log.error("Error generating CRC", e); //NON-NLS
       return 0L;
     }
   }
@@ -1753,5 +1857,13 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     if (r != null) {
       r.addSideChangeListenerToInstance(l);
     }
+  }
+
+  /**
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(gameName, moduleVersion, description);
   }
 }

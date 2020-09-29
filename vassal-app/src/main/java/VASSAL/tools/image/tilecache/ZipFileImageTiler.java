@@ -64,19 +64,14 @@ public class ZipFileImageTiler {
 
   public static void main(String[] args) {
     try {
-      logger.info("Starting");
+      logger.info("Starting"); //NON-NLS
 
       // Oh we have no heads, we have no HEADS!
       System.setProperty("java.awt.headless", "true");
 
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
-        new Thread.UncaughtExceptionHandler() {
-          @Override
-          public void uncaughtException(Thread thread, Throwable thrown) {
-            logger.error(thread.getName(), thrown);
-          }
-        });
+        (thread, thrown) -> logger.error(thread.getName(), thrown));
 
       // Parse the arguments
       final String zpath = args[0];
@@ -93,7 +88,7 @@ public class ZipFileImageTiler {
         }
       }
       catch (IOException e) {
-        logger.error("Error while reading image paths from stdin", e);
+        logger.error("Error while reading image paths from stdin", e); //NON-NLS
       }
 
       final String[] ipaths = pl.toArray(new String[0]);
@@ -108,12 +103,7 @@ public class ZipFileImageTiler {
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
-      final TemporaryFileFactory tfac = new TemporaryFileFactory() {
-        @Override
-        public File create() throws IOException {
-          return File.createTempFile("img", null, new File(tpath));
-        }
-      };
+      final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, new File(tpath));
 
       final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
       final ImageLoader loader = new ImageIOImageLoader(itc);
@@ -133,7 +123,7 @@ public class ZipFileImageTiler {
       }
     }
     finally {
-      logger.info("Exiting");
+      logger.info("Exiting"); //NON-NLS
     }
   }
 
@@ -157,7 +147,7 @@ public class ZipFileImageTiler {
       lo = InetAddress.getByName(null);
     }
     catch (UnknownHostException e) {
-      logger.error("Could not determine local IP address", e);
+      logger.error("Could not determine local IP address", e); //NON-NLS
       return;
     }
 
@@ -168,7 +158,7 @@ public class ZipFileImageTiler {
         loader, slicer);
     }
     catch (IOException e) {
-      logger.error("Error while setting up socket", e);
+      logger.error("Error while setting up socket", e); //NON-NLS
     }
   }
 
@@ -176,29 +166,20 @@ public class ZipFileImageTiler {
                                           ImageLoader loader, TileSlicer slicer) {
 
     try (final DataOutputStream out = new DataOutputStream(os)) {
-      final Callback<String> imageL = new Callback<>() {
-        @Override
-        public void receive(String ipath) throws IOException {
-          out.writeByte(STARTING_IMAGE);
-          out.writeUTF(ipath);
-          out.flush();
-        }
+      final Callback<String> imageL = ipath -> {
+        out.writeByte(STARTING_IMAGE);
+        out.writeUTF(ipath);
+        out.flush();
       };
 
-      final Callback<Void> tileL = new Callback<>() {
-        @Override
-        public void receive(Void obj) throws IOException {
-          out.writeByte(TILE_WRITTEN);
-          out.flush();
-        }
+      final Callback<Void> tileL = obj -> {
+        out.writeByte(TILE_WRITTEN);
+        out.flush();
       };
 
-      final Callback<Void> doneL = new Callback<>() {
-        @Override
-        public void receive(Void obj) throws IOException {
-          out.writeByte(TILING_FINISHED);
-          out.flush();
-        }
+      final Callback<Void> doneL = obj -> {
+        out.writeByte(TILING_FINISHED);
+        out.flush();
       };
 
       try (FileArchive fa = new ZipArchive(zpath)) {
@@ -213,7 +194,7 @@ public class ZipFileImageTiler {
       }
     }
     catch (IOException e) {
-      logger.error("Error while writing to outputstream {}", os, e);
+      logger.error("Error while writing to outputstream {}", os, e); //NON-NLS
     }
   }
 

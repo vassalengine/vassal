@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JTextPane;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.configure.TextConfigurer;
@@ -67,9 +68,9 @@ public class TextBoxItem extends TextItem {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Width:  ",
-      "Height:  ",
-      "Use HTML:  "
+      Resources.getString("Editor.width"),
+      Resources.getString("Editor.height"),
+      Resources.getString("Editor.TextBoxItem.use_html")
     );
   }
 
@@ -77,12 +78,9 @@ public class TextBoxItem extends TextItem {
   public Class<?>[] getAttributeTypes() {
     final Class<?>[] c = ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[] {
-        Integer.class,
-        Integer.class,
-        Boolean.class
-      }
-    );
+      Integer.class,
+      Integer.class,
+      Boolean.class);
 
     final String[] names = getAttributeNames();
     // Change the type of the "Text" attribute to multi-line text
@@ -98,12 +96,7 @@ public class TextBoxItem extends TextItem {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !isHTML;
-        }
-      };
+      return () -> !isHTML;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -255,14 +248,13 @@ public class TextBoxItem extends TextItem {
 
   @Override
   public String getDisplayName() {
-    return "Text Box";
+    return Resources.getString("Editor.TextBoxItem.component_type");
   }
 
   @Override
   public Dimension getSize() {
     return new Dimension(getWidth(), getHeight());
   }
-
 
   public static Item decode(GamePieceLayout l, String s) {
 
@@ -296,6 +288,4 @@ public class TextBoxItem extends TextItem {
 
     return se2.getValue();
   }
-
-
 }

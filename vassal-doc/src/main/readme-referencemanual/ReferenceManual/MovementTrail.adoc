@@ -60,7 +60,7 @@ Otherwise, each player controls the visibility of trails on that player's view.
 
 *Example: Movement Trails in Paths of Glory*
 
-image:images/MovementTrailExample.png
+image:images/MovementTrailExample.png[]
 
-|image:images/MovementTrail.png
+|image:images/MovementTrail.png[]
 |===

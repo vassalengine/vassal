@@ -34,7 +34,7 @@ import java.util.Random;
  * @since 3.2.0
  */
 public class ObfuscatingOutputStream extends FilterOutputStream {
-  public static final String HEADER = "!VCSK";
+  public static final String HEADER = "!VCSK"; //NON-NLS
   private static final Random rand = new Random();
 
   private final byte key;
@@ -42,7 +42,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
 
   /**
    * @param out the stream to wrap
-   * @throws IOException
+   * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
     this(out, (byte) rand.nextInt(256));
@@ -51,7 +51,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   /**
    * @param out the stream to wrap
    * @param key the byte to use as the key
-   * @throws IOException
+   * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out, byte key)
                                                           throws IOException {

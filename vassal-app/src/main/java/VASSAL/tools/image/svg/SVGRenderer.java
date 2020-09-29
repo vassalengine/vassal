@@ -204,9 +204,9 @@ public class SVGRenderer {
                              throws TranscoderException {
       if (SystemUtils.IS_OS_MAC_OSX) {
         final Element g = document.createElementNS(
-          SVGDOMImplementation.SVG_NAMESPACE_URI, "g"
+          SVGDOMImplementation.SVG_NAMESPACE_URI, "g" //NON-NLS
         );
-        g.setAttributeNS(null, "transform", "rotate(0.000001)");
+        g.setAttributeNS(null, "transform", "rotate(0.000001)"); //NON-NLS
 
         // interpose this <g> element between <svg> and its children
         final Element svg = document.getDocumentElement();

@@ -33,7 +33,7 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
-  protected static int DEFAULT_LENGHTH = 12;
+  protected static final int DEFAULT_LENGHTH = 12;
 
   public StringConfigurer(String key, String name) {
     this(key, name, "");

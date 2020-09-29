@@ -50,7 +50,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
@@ -77,6 +76,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
@@ -555,7 +555,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     /**
      * Add a level to the level list. This method expects that the
-     * intput has already been validated.
+     * input has already been validated.
      */
     protected void addLevel() {
       // get the initial scale level
@@ -1290,5 +1290,54 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       ratioNumeratorSpinner.addChangeListener(this);
       ratioDenominatorSpinner.addChangeListener(this);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
+                   getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
+                   getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_IN)),
+                         NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_OUT)),
+                         NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_PICK)));
   }
 }

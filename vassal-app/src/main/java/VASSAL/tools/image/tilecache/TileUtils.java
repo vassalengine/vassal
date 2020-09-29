@@ -174,7 +174,7 @@ public class TileUtils {
    * @throws IOException if the byte array is not the tile signature
    */
   static void checkSignature(byte[] sig) throws IOException {
-    if (!Arrays.equals(sig, "VASSAL".getBytes(StandardCharsets.UTF_8))) {
+    if (!Arrays.equals(sig, "VASSAL".getBytes(StandardCharsets.UTF_8))) { //NON-NLS
       throw new IOException(
         "bad signature: got \"" + new String(sig, StandardCharsets.UTF_8) +
         "\", expected \"VASSAL\""
@@ -289,7 +289,7 @@ public class TileUtils {
     // write the header
     bb = ByteBuffer.allocate(18);
 
-    bb.put("VASSAL".getBytes(StandardCharsets.UTF_8))
+    bb.put("VASSAL".getBytes(StandardCharsets.UTF_8)) //NON-NLS
       .putInt(tile.getWidth())
       .putInt(tile.getHeight())
       .putInt(tile.getType());
