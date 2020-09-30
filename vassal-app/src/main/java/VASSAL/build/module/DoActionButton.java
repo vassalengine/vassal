@@ -109,7 +109,11 @@ public class DoActionButton extends AbstractToolbarItem
       }
     };
 
-    makeLaunchButton(getConfigureTypeName(), getConfigureTypeName(), "", rollAction);
+    makeLaunchButton(true,
+                     getConfigureTypeName(),
+                     getConfigureTypeName(),
+              "",
+                     rollAction);
   }
 
   public static String getConfigureTypeName() {

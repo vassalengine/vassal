@@ -43,27 +43,30 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String ICON = "icon"; //$NON-NLS-1$
 
-  protected LaunchButton launch;
+  protected LaunchButton launch; // Our toolbar "launch button"
 
-  private static String defaultIcon = "";
+  private Boolean configDesc; // True if we configure a name/description field
 
   /**
    * Create a standard toolbar launcher button for this item
    *
-   * @param name    String name of button
+   * @param configDesc True if a description field will be configured
    * @param tooltip String tooltip for button
    * @param action  Action Listener when it is clicked
    */
-  protected void makeLaunchButton(String name, String tooltip, String iconFile, ActionListener action) {
-    launch = new LaunchButton(
-      name, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, action);
-    setAttribute(NAME, name);
-    setAttribute(TOOLTIP, tooltip);
+  protected void makeLaunchButton(Boolean configDesc, String tooltip, String button_text, String iconFile, ActionListener action) {
+    this.configDesc = configDesc;
+    launch = new LaunchButton("", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, action);
+    if (!tooltip.isEmpty()) {
+      setAttribute(TOOLTIP, tooltip);
+    }
+    if (!button_text.isEmpty()) {
+      setAttribute(NAME, button_text);
+      launch.setAttribute(BUTTON_TEXT, button_text);
+    }
     if (!iconFile.isEmpty()) {
       setAttribute(ICON, iconFile);
-      defaultIcon = iconFile;
     }
-    launch.setAttribute(BUTTON_TEXT, name);
   }
 
 
@@ -87,7 +90,12 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[]{NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+    if (configDesc) {
+      return new String[]{NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+    }
+    else {
+      return new String[]{BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+    }
   }
 
   /**
@@ -100,13 +108,23 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.DESCRIPTION),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL)
-    };
+    if (configDesc) {
+      return new String[]{
+        Resources.getString(Resources.DESCRIPTION),
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL)
+      };
+    }
+    else {
+      return new String[]{
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL)
+      };
+    }
   }
 
   /**
@@ -121,13 +139,23 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
-    };
+    if (configDesc) {
+      return new Class<?>[]{
+        String.class,
+        String.class,
+        String.class,
+        IconConfig.class,
+        NamedKeyStroke.class,
+      };
+    }
+    else {
+      return new Class<?>[]{
+        String.class,
+        String.class,
+        IconConfig.class,
+        NamedKeyStroke.class,
+      };
+    }
   }
 
   /**
@@ -142,7 +170,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
      */
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, defaultIcon);
+      return new IconConfigurer(key, name, ((AbstractToolbarItem) c).getLaunchButton().getAttributeValueString(AbstractToolbarItem.ICON));
     }
   }
 
