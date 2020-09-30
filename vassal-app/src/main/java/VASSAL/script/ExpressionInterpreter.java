@@ -291,7 +291,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           argList.append(',');
         }
         final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
-        argList.append('"').append(value.toString()).append('"');
+        argList.append('"').append(value == null ? "" : value.toString()).append('"');
       }
   
       // Re-evaluate the pre-parsed expression now that the undefined variables have
