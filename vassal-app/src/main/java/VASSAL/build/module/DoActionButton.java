@@ -109,7 +109,7 @@ public class DoActionButton extends AbstractToolbarItem
       }
     };
 
-    makeLaunchButton(getConfigureTypeName(), getConfigureTypeName(), rollAction);
+    makeLaunchButton(getConfigureTypeName(), getConfigureTypeName(), "", rollAction);
   }
 
   public static String getConfigureTypeName() {
@@ -253,10 +253,7 @@ public class DoActionButton extends AbstractToolbarItem
   @Override
   @SuppressWarnings("unchecked")
   public void setAttribute(String key, Object o) {
-    if (NAME.equals(key)) {
-      setConfigureName((String) o);
-    }
-    else if (DO_REPORT.equals(key)) {
+    if (DO_REPORT.equals(key)) {
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
@@ -345,16 +342,13 @@ public class DoActionButton extends AbstractToolbarItem
       indexStep = (Integer) o;
     }
     else {
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
   }
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (DO_REPORT.equals(key)) {
+    if (DO_REPORT.equals(key)) {
       return String.valueOf(doReport);
     }
     else if (REPORT_FORMAT.equals(key)) {
@@ -406,7 +400,7 @@ public class DoActionButton extends AbstractToolbarItem
       return String.valueOf(indexStep);
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 

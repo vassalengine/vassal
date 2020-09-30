@@ -45,6 +45,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
 
   protected LaunchButton launch;
 
+  private static String defaultIcon = "";
+
   /**
    * Create a standard toolbar launcher button for this item
    *
@@ -52,12 +54,24 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    * @param tooltip String tooltip for button
    * @param action  Action Listener when it is clicked
    */
-  protected void makeLaunchButton(String name, String tooltip, ActionListener action) {
+  protected void makeLaunchButton(String name, String tooltip, String iconFile, ActionListener action) {
     launch = new LaunchButton(
       name, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, action);
     setAttribute(NAME, name);
     setAttribute(TOOLTIP, tooltip);
+    if (!iconFile.isEmpty()) {
+      setAttribute(ICON, iconFile);
+      defaultIcon = iconFile;
+    }
     launch.setAttribute(BUTTON_TEXT, name);
+  }
+
+
+  /**
+   * @return Launch button for this Toolbar item.
+   */
+  public LaunchButton getLaunchButton () {
+    return launch;
   }
 
 
@@ -128,7 +142,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
      */
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, null);
+      return new IconConfigurer(key, name, defaultIcon);
     }
   }
 
