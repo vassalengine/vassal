@@ -184,7 +184,7 @@ public class Inventory extends AbstractToolbarItem
 
   public Inventory() {
     ActionListener al = e -> launch();
-    makeLaunchButton(true,
+    makeLaunchButton(name,
                      Resources.getString("Inventory.show_inventory"),
                      Resources.getString("Inventory.inventory"),
                      "/images/inventory.gif", //NON-NLS

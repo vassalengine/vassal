@@ -109,7 +109,7 @@ public class DoActionButton extends AbstractToolbarItem
       }
     };
 
-    makeLaunchButton(true,
+    makeLaunchButton(AbstractToolbarItem.NAME,
                      getConfigureTypeName(),
                      getConfigureTypeName(),
               "",

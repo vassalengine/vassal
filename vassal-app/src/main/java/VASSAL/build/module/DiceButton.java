@@ -61,7 +61,6 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
   protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-  protected LaunchButton launch;
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this);
 

@@ -70,7 +70,7 @@ public class ToolbarMenu extends AbstractToolbarItem
   protected Runnable menuBuilder;
 
   public ToolbarMenu() {
-    makeLaunchButton(true,
+    makeLaunchButton(AbstractToolbarItem.DESCRIPTION,
                      Resources.getString("Editor.ToolbarMenu.tooltip_text"),
                      Resources.getString(Resources.MENU), "", e -> launch());
     menu = new JPopupMenu();
