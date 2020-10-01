@@ -35,6 +35,7 @@ import VASSAL.configure.AudioClipConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
@@ -44,6 +45,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.LoopControl;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -75,6 +77,14 @@ public class DoActionButton extends AbstractToolbarItem
   public static final String INDEX_START = "indexStart"; //$NON-NLS-1$
   public static final String INDEX_STEP = "indexStep"; //$NON-NLS-1$
 
+  // These 5 items are identical to those in AbstractToolItem and exist only for "clirr purposes"
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+
+  protected LaunchButton launch;
   protected boolean doReport = false;
   protected FormattedString reportFormat =
     new FormattedString(GameModule.getGameModule());
@@ -108,10 +118,10 @@ public class DoActionButton extends AbstractToolbarItem
       }
     };
 
-    makeLaunchButton(getConfigureTypeName(),
-                     getConfigureTypeName(),
-              "",
-                     rollAction);
+    launch = makeLaunchButton(getConfigureTypeName(),
+                              getConfigureTypeName(),
+                       "",
+                              rollAction);
   }
 
   public static String getConfigureTypeName() {
@@ -188,6 +198,13 @@ public class DoActionButton extends AbstractToolbarItem
     );
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, null);
+    }
+  }
 
   public static class SoundConfig implements ConfigurerFactory {
     @Override

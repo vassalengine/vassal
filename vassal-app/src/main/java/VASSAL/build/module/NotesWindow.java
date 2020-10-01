@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
@@ -39,8 +40,12 @@ import VASSAL.build.module.noteswindow.SecretNotesController;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.LaunchButton;
 
 /**
  * This is a {@link GameComponent} that allows players to type and
@@ -53,7 +58,13 @@ public class NotesWindow extends AbstractToolbarItem
 
   public static final String BUTTON_TEXT = "buttonText"; // non-standard legacy difference from AbstractToolbarItem
 
+  // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+
   protected JDialog frame;
+  protected LaunchButton launch;
   protected TextConfigurer scenarioNotes;
   protected TextConfigurer publicNotes;
   protected PrivateNotesController privateNotes;
@@ -75,12 +86,20 @@ public class NotesWindow extends AbstractToolbarItem
     };
     setNameKey("");                // No description or name configured
     setButtonTextKey(BUTTON_TEXT); // Legacy different button text key
-    makeLaunchButton(Resources.getString("Notes.notes"),
-                     Resources.getString("Notes.notes"),
-              "/images/notes.gif", //NON-NLS
-                     al);
+    launch = makeLaunchButton(Resources.getString("Notes.notes"),
+                              Resources.getString("Notes.notes"),
+                             "/images/notes.gif", //NON-NLS
+                              al);
     frame.pack();
     setup(false);
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, ((NotesWindow) c).launch.getAttributeValueString(ICON));
+    }
   }
 
   /**

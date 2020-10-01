@@ -38,26 +38,29 @@ import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.LaunchButton;
 
 /** Adds a button to a Maps toolbar that adjusts the positions of all pieces
  * so that their centroid is at the center of the map
  */
 public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor {
-  //public static final String BUTTON_TEXT = "text"; //NON-NLS
-  //public static final String ICON = "icon"; //NON-NLS
-  //public static final String HOTKEY = "hotkey"; //NON-NLS
-  //public static final String TOOLTIP = "tooltip"; //NON-NLS
+  // These 4 identical to AbstractToolbarItem and exist for "clirr purposes"
+  public static final String BUTTON_TEXT = "text"; //NON-NLS
+  public static final String ICON = "icon"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
 
+  protected LaunchButton launch;
   protected Map map;
   protected DeckVisitorDispatcher dispatcher;
 
   public PieceRecenterer() {
     ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
     setNameKey("");
-    makeLaunchButton("Editor.PieceRecenterer.recenter",
-                  "Editor.PieceRecenterer.recenter",
-                     "/images/recenter.gif", //NON-NLS
-                            al);
+    launch = makeLaunchButton("Editor.PieceRecenterer.recenter",
+                           "Editor.PieceRecenterer.recenter",
+                              "/images/recenter.gif", //NON-NLS
+                                     al);
     dispatcher = new DeckVisitorDispatcher(this);
   }
 
@@ -130,7 +133,7 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
     return new Class<?>[0];
   }
 
-
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {

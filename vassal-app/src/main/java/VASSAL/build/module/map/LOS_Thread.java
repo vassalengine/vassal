@@ -34,7 +34,10 @@ import java.util.List;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.tools.LaunchButton;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -122,6 +125,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
   protected boolean retainAfterRelease = false;
   protected long lastRelease = 0;
 
+  protected LaunchButton launch;
   protected Map map;
   protected KeyStroke hotkey;
   protected Point anchor;
@@ -167,11 +171,11 @@ public class LOS_Thread extends AbstractToolbarItem implements
     setTooltipKey(TOOLTIP);
     setIconKey(ICON_NAME);
     setHotKeyKey(HOTKEY);
-    makeLaunchButton(Resources.getString("Editor.LosThread.show_los_thread"),
-                     Resources.getString("Editor.LosThread.thread"),
-                     DEFAULT_ICON,
-                     al
-                     );
+    launch = makeLaunchButton(Resources.getString("Editor.LosThread.show_los_thread"),
+                              Resources.getString("Editor.LosThread.thread"),
+                              DEFAULT_ICON,
+                              al
+                              );
   }
 
   /**
@@ -816,6 +820,14 @@ public class LOS_Thread extends AbstractToolbarItem implements
       Integer.class,
       Color.class
     );
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, DEFAULT_ICON);
+    }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {

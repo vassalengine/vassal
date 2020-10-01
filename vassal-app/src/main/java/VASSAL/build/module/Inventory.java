@@ -77,6 +77,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
@@ -106,6 +107,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public class Inventory extends AbstractToolbarItem
                        implements GameComponent,
                                   PlayerRoster.SideChangeListener {
+  protected LaunchButton launch;
   protected CounterInventory results;
   protected JTree tree;
 
@@ -192,12 +194,20 @@ public class Inventory extends AbstractToolbarItem
 
   protected JDialog frame;
 
+  // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+
+
   public Inventory() {
     ActionListener al = e -> launch();
-    makeLaunchButton(Resources.getString("Inventory.show_inventory"),
-                     Resources.getString("Inventory.inventory"),
-                     "/images/inventory.gif", //NON-NLS
-                     al);
+    launch = makeLaunchButton(Resources.getString("Inventory.show_inventory"),
+                              Resources.getString("Inventory.inventory"),
+                             "/images/inventory.gif", //NON-NLS
+                              al);
     getLaunchButton().setEnabled(false);
     getLaunchButton().setVisible(false);
   }
@@ -557,6 +567,14 @@ public class Inventory extends AbstractToolbarItem
       SIDES,
       LAUNCH_FUNCTION
     );
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, "/images/inventory.gif"); //$NON-NLS-1$
+    }
   }
 
   public static class PieceFormatConfig implements TranslatableConfigurerFactory {

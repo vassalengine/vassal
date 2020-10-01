@@ -18,6 +18,8 @@
 package VASSAL.build.module;
 
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -105,6 +107,13 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   public static final String DICE_SET = "diceSet"; //$NON-NLS-1$
   public static final String NONE = "&lt;none&gt;"; //$NON-NLS-1$
   private static final int[] EMPTY = new int[0];
+
+  // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
     dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
@@ -269,6 +278,14 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       Integer.class,
       Color.class
     );
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
+    }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {

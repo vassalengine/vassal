@@ -18,6 +18,11 @@
 package VASSAL.build.module.map;
 
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -69,6 +74,7 @@ public class ImageSaver extends AbstractToolbarItem {
   private static final Logger logger =
     LoggerFactory.getLogger(ImageSaver.class);
 
+  protected LaunchButton launch;
   protected Map map;
   protected boolean promptToSplit = false;
   protected static final String DEFAULT_ICON = "/images/camera.gif"; //NON-NLS
@@ -77,15 +83,21 @@ public class ImageSaver extends AbstractToolbarItem {
 
   protected static ProgressDialog dialog;
 
+  // Clirr purposes
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  protected static final String ICON_NAME = "icon"; //NON-NLS
+
+
   public ImageSaver() {
     final ActionListener al = e -> writeMapAsImage();
 
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT); //NON-NLS
-    makeLaunchButton(Resources.getString("Editor.ImageSaver.save_map_as_png_image"),
-                     "",
-                     DEFAULT_ICON,
-                     al);
+    launch = makeLaunchButton(Resources.getString("Editor.ImageSaver.save_map_as_png_image"),
+                             "",
+                              DEFAULT_ICON,
+                              al);
   }
 
   public ImageSaver(Map m) {
@@ -108,6 +120,14 @@ public class ImageSaver extends AbstractToolbarItem {
     map = (Map) b;
     map.getToolBar().remove(launch);
     map.getToolBar().revalidate();
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, DEFAULT_ICON);
+    }
   }
 
   /**

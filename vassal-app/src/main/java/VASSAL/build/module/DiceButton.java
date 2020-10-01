@@ -59,8 +59,16 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
   protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+  protected LaunchButton launch;
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this);
+
+  // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public static final String DEPRECATED_NAME = "label"; //$NON-NLS-1$
   public static final String N_DICE = "nDice"; //$NON-NLS-1$
@@ -120,10 +128,10 @@ public class DiceButton extends AbstractToolbarItem {
         DR();
       }
     };
-    makeLaunchButton(Resources.getString("Editor.DiceButton.dice_button_text"),
-                     Resources.getString("Editor.DiceButton.dice_button_tooltip"),
-                     "/images/die.gif", //NON-NLS
-                     rollAction);
+    launch = makeLaunchButton(Resources.getString("Editor.DiceButton.dice_button_text"),
+                              Resources.getString("Editor.DiceButton.dice_button_tooltip"),
+                             "/images/die.gif", //NON-NLS
+                              rollAction);
     setAttribute(AbstractToolbarItem.NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
   }
 
@@ -258,6 +266,7 @@ public class DiceButton extends AbstractToolbarItem {
     };
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {

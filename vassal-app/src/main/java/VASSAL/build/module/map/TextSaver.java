@@ -29,23 +29,31 @@ import java.nio.charset.Charset;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 public class TextSaver extends AbstractToolbarItem {
 
-  //protected static final String HOTKEY = "hotkey"; //NON-NLS
   protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
   protected static final String ICON_NAME = "icon"; //NON-NLS
-  //protected static final String TOOLTIP = "tooltip"; //NON-NLS
+
+  // These two identical to AbstractToolbarItem and exist only for clirr purposes
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected Map map;
+  protected LaunchButton launch;
 
   public TextSaver() {
     ActionListener al = e -> apply();
@@ -55,6 +63,14 @@ public class TextSaver extends AbstractToolbarItem {
     makeLaunchButton(Resources.getString("Editor.TextSaver.save_tooltip"),
                      Resources.getString("Editor.TextSaver.save_text"),
                      "", al);
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, ((TextSaver) c).launch.getAttributeValueString(ICON_NAME));
+    }
   }
 
   @Override

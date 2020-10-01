@@ -20,6 +20,7 @@ package VASSAL.build.module.map;
 
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -94,6 +95,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader"); //NON-NLS
 
+  protected LaunchButton launch;
   protected boolean alwaysOn = false;
   protected boolean startsOn = false;
   protected String boardSelection = ALL_BOARDS;
@@ -104,7 +106,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   protected String id;
 
   protected Area boardClip = null;
-
 
   public static final String TYPE = "type"; //NON-NLS
   public static final String DRAW_OVER = "drawOver"; //NON-NLS
@@ -151,7 +152,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   public MapShader() {
     setButtonTextKey(BUTTON_TEXT);
-    makeLaunchButton("", Resources.getString("Editor.MapShader.shade"), "", e -> toggleShading());
+    launch = makeLaunchButton("", Resources.getString("Editor.MapShader.shade"), "", e -> toggleShading());
     getLaunchButton().setEnabled(false);
     setLaunchButtonVisibility();
     setConfigureName(Resources.getString("Editor.MapShader.configure_name"));
@@ -667,6 +668,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     return null;
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
