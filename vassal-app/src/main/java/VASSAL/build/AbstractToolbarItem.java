@@ -30,7 +30,7 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.List;p
 
 /**
  * Creates an item that is both configurable w/ an edit box {@link AbstractConfigurable} and buildable from the

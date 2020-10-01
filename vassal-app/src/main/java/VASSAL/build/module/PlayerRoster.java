@@ -93,7 +93,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
                                     "",
                                     al
       );
-    retireButton.setVisible(false);
+    getLaunchButton().setVisible(false);
 
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   }
@@ -173,16 +173,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public Element getBuildElement(Document doc) {
     Element el = doc.createElement(getClass().getName());
-    String att = retireButton.getAttributeValueString(BUTTON_TEXT);
+    String att = super.getAttributeValueString(BUTTON_TEXT);
     if (att != null)
       el.setAttribute(BUTTON_TEXT, att);
-    att = retireButton.getAttributeValueString(BUTTON_ICON);
+    att = super.getAttributeValueString(BUTTON_ICON);
     if (att != null)
       el.setAttribute(BUTTON_ICON, att);
-    att = retireButton.getAttributeValueString(TOOL_TIP);
+    att = super.getAttributeValueString(TOOL_TIP);
     if (att != null)
       el.setAttribute(TOOL_TIP, att);
-    att = retireButton.getAttributeValueString(BUTTON_KEYSTROKE);
+    att = super.getAttributeValueString(BUTTON_KEYSTROKE);
     if (att != null) {
       el.setAttribute(BUTTON_KEYSTROKE, att);
     }
@@ -383,7 +383,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     else {
       players.clear();
     }
-    retireButton.setVisible(gameStarting && getMySide() != null);
+    getLaunchButton().setVisible(gameStarting && getMySide() != null);
     pickedSide = false;
   }
 
@@ -395,7 +395,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
-    retireButton.setVisible(getMySide() != null);
+    getLaunchButton().setVisible(getMySide() != null);
     pickedSide = true;
   }
 
@@ -667,7 +667,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     if (SIDES.equals(key)) {
       return getSidesAsString();
     }
-    return retireButton.getAttributeValueString(key);
+    return super.getAttributeValueString(key);
   }
 
   /*
@@ -682,7 +682,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       Collections.addAll(sides, s);
     }
     else {
-      retireButton.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
