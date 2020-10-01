@@ -2341,8 +2341,8 @@ public class ADC2Module extends Importer {
     insertComponent(button, getMainMap());
     button.setAttribute(MultiActionButton.BUTTON_TEXT, "");
     button.setAttribute(MultiActionButton.TOOLTIP, "Clear combat status flags.");
-    button.setAttribute(MultiActionButton.BUTTON_ICON, StateFlag.COMBAT.getStatusIconName());
-    button.setAttribute(MultiActionButton.BUTTON_HOTKEY, KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+    button.setAttribute(MultiActionButton.ICON, StateFlag.COMBAT.getStatusIconName());
+    button.setAttribute(MultiActionButton.HOTKEY, KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
     button.setAttribute(MultiActionButton.MENU_ITEMS, StringArrayConfigurer.arrayToString(new String[] {"Attacked", "Defended"}));
   }
 
