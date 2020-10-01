@@ -33,10 +33,11 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.TranslatableStringEnum;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -52,16 +53,12 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.swing.SwingUtils;
@@ -74,7 +71,7 @@ import VASSAL.tools.swing.SwingUtils;
  * {@link Map Grid}, the thread may snap to the grid and report the
  * distance between endpoints of the line
  * */
-public class LOS_Thread extends AbstractConfigurable implements
+public class LOS_Thread extends AbstractToolbarItem implements
     MouseListener, MouseMotionListener,
     Drawable, Configurable,
     UniqueIdManager.Identifyable,
@@ -83,6 +80,11 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String LOS_THREAD_COMMAND = "LOS\t"; //NON-NLS
 
   public static final String NAME = "threadName"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
+  public static final String ICON_NAME = "iconName"; //NON-NLS
+  public static final String LABEL = "label"; //NON-NLS
+
   public static final String SNAP_LOS = "snapLOS"; //NON-NLS
   public static final String SNAP_START = "snapStart"; //NON-NLS
   public static final String SNAP_END = "snapEnd"; //NON-NLS
@@ -91,10 +93,6 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String PERSISTENT_ICON_NAME = "persistentIconName"; //NON-NLS
   public static final String GLOBAL = "global"; //NON-NLS
   public static final String LOS_COLOR = "threadColor"; //NON-NLS
-  public static final String HOTKEY = "hotkey"; //NON-NLS
-  public static final String TOOLTIP = "tooltip"; //NON-NLS
-  public static final String ICON_NAME = "iconName"; //NON-NLS
-  public static final String LABEL = "label"; //NON-NLS
   public static final String DRAW_RANGE = "drawRange"; //NON-NLS
   public static final String HIDE_COUNTERS = "hideCounters"; //NON-NLS
   public static final String HIDE_OPACITY = "hideOpacity"; //NON-NLS
@@ -125,7 +123,6 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected long lastRelease = 0;
 
   protected Map map;
-  protected LaunchButton launch;
   protected KeyStroke hotkey;
   protected Point anchor;
   protected Point arrow;
@@ -164,9 +161,17 @@ public class LOS_Thread extends AbstractConfigurable implements
     persisting = false;
     mirroring = false;
     ActionListener al = e -> launch();
-    launch = new LaunchButton(Resources.getString("Editor.LosThread.thread"), TOOLTIP, LABEL, HOTKEY, ICON_NAME, al);
-    launch.setAttribute(ICON_NAME, DEFAULT_ICON);
-    launch.setAttribute(TOOLTIP, Resources.getString("Editor.LosThread.show_los_thread"));
+
+    setNameKey(NAME);
+    setButtonTextKey(LABEL);
+    setTooltipKey(TOOLTIP);
+    setIconKey(ICON_NAME);
+    setHotKeyKey(HOTKEY);
+    makeLaunchButton(Resources.getString("Editor.LosThread.show_los_thread"),
+                     Resources.getString("Editor.LosThread.thread"),
+                     DEFAULT_ICON,
+                     al
+                     );
   }
 
   /**
@@ -196,7 +201,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     map = (Map) b;
     map.getView().addMouseMotionListener(this);
     map.addDrawComponent(this);
-    map.getToolBar().add(launch);
+    map.getToolBar().add(getLaunchButton());
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getPrefs().addOption(getConfigureName(),
       new BooleanConfigurer(SNAP_LOS,
@@ -218,46 +223,9 @@ public class LOS_Thread extends AbstractConfigurable implements
   public void removeFrom(Buildable b) {
     map = (Map) b;
     map.removeDrawComponent(this);
-    map.getToolBar().remove(launch);
+    map.getToolBar().remove(getLaunchButton());
     GameModule.getGameModule().removeCommandEncoder(this);
     idMgr.remove(this);
-  }
-
-  /**
-   * The attributes of an LOS_Thread are:
-   * <pre>
-   * <code>NAME</code>:  the name of the Preferences tab
-   * <code>LABEL</code>:  the label of the button
-   * <code>HOTKEY</code>:  the hotkey equivalent of the button
-   * <code>DRAW_RANGE</code>:  If true, draw the distance between endpoints of the thread
-   * <code>RANGE_FOREGROUND</code>:  the color of the text when drawing the distance
-   * <code>RANGE_BACKGROUND</code>:  the color of the background rectangle when drawing the distance
-   * <code>HIDE_COUNTERS</code>:  If true, hide all {@link GamePiece}s on the map when drawing the thread
-   * </pre>
-   */
-  @Override
-  public String[] getAttributeNames() {
-    return new String[]{
-      NAME,
-      LABEL,
-      TOOLTIP,
-      ICON_NAME,
-      HOTKEY,
-      REPORT,
-      PERSISTENCE,
-      PERSISTENT_ICON_NAME,
-      GLOBAL,
-      SNAP_START,
-      SNAP_END,
-      DRAW_RANGE,
-      RANGE_SCALE,
-      RANGE_ROUNDING,
-      HIDE_COUNTERS,
-      HIDE_OPACITY,
-      LOS_COLOR,
-      RANGE_FOREGROUND,
-      RANGE_BACKGROUND
-    };
   }
 
   @Override
@@ -267,9 +235,6 @@ public class LOS_Thread extends AbstractConfigurable implements
         value = Boolean.valueOf((String) value);
       }
       drawRange = (Boolean) value;
-    }
-    else if (NAME.equals(key)) {
-      setConfigureName((String) value);
     }
     else if (RANGE_SCALE.equals(key)) {
       if (value instanceof String) {
@@ -345,10 +310,10 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (ICON_NAME.equals(key)) {
       iconName = (String) value;
-      launch.setAttribute(ICON_NAME, iconName);
+      super.setAttribute(ICON_NAME, iconName);
     }
     else {
-      launch.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
@@ -368,9 +333,6 @@ public class LOS_Thread extends AbstractConfigurable implements
   public String getAttributeValueString(String key) {
     if (DRAW_RANGE.equals(key)) {
       return String.valueOf(drawRange);
-    }
-    else if (NAME.equals(key)) {
-      return getConfigureName();
     }
     else if (RANGE_SCALE.equals(key)) {
       return String.valueOf(rangeScale);
@@ -423,12 +385,12 @@ public class LOS_Thread extends AbstractConfigurable implements
       return iconName;
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
   public void setup(boolean show) {
-    launch.setEnabled(show);
+    getLaunchButton().setEnabled(show);
   }
 
   /**
@@ -783,14 +745,45 @@ public class LOS_Thread extends AbstractConfigurable implements
     return HelpFile.getReferenceManualPage("Map.html", "LOS"); //NON-NLS
   }
 
+
+  /**
+   * The attributes of an LOS_Thread are:
+   * <pre>
+   * <code>NAME</code>:  the name of the Preferences tab
+   * <code>LABEL</code>:  the label of the button
+   * <code>HOTKEY</code>:  the hotkey equivalent of the button
+   * <code>DRAW_RANGE</code>:  If true, draw the distance between endpoints of the thread
+   * <code>RANGE_FOREGROUND</code>:  the color of the text when drawing the distance
+   * <code>RANGE_BACKGROUND</code>:  the color of the background rectangle when drawing the distance
+   * <code>HIDE_COUNTERS</code>:  If true, hide all {@link GamePiece}s on the map when drawing the thread
+   * </pre>
+   */
+  @Override
+  public String[] getAttributeNames() {
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
+      REPORT,
+      PERSISTENCE,
+      PERSISTENT_ICON_NAME,
+      GLOBAL,
+      SNAP_START,
+      SNAP_END,
+      DRAW_RANGE,
+      RANGE_SCALE,
+      RANGE_ROUNDING,
+      HIDE_COUNTERS,
+      HIDE_OPACITY,
+      LOS_COLOR,
+      RANGE_FOREGROUND,
+      RANGE_BACKGROUND
+    );
+  }
+
+
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.NAME_LABEL),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.persistence"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.icon_persist"), //$NON-NLS-1$
@@ -802,18 +795,14 @@ public class LOS_Thread extends AbstractConfigurable implements
       Resources.getString("Editor.LosThread.round_fractions"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.hidden"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.opacity"), //$NON-NLS-1$
-      Resources.getString(Resources.COLOR_LABEL),
-    };
+      Resources.getString(Resources.COLOR_LABEL)
+    );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
       ReportFormatConfig.class,
       PersistenceOptions.class,
       IconConfig.class,
@@ -826,14 +815,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       Boolean.class,
       Integer.class,
       Color.class
-    };
-  }
-
-  public static class IconConfig implements ConfigurerFactory {
-    @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, DEFAULT_ICON);
-    }
+    );
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
@@ -981,5 +963,14 @@ public class LOS_Thread extends AbstractConfigurable implements
     protected Command myUndoCommand() {
       return new LOSCommand(target, oldAnchor, oldArrow, oldPersisting, oldMirroring);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
   }
 }

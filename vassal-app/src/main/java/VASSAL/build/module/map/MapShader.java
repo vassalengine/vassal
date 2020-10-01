@@ -18,7 +18,7 @@
 
 package VASSAL.build.module.map;
 
-import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
@@ -45,7 +45,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -64,7 +63,6 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.image.ImageUtils;
@@ -77,15 +75,16 @@ import VASSAL.tools.imageop.Op;
  *
  * @author Brent Easton
  */
-public class MapShader extends AbstractConfigurable implements GameComponent, Drawable, UniqueIdManager.Identifyable {
+public class MapShader extends AbstractToolbarItem implements GameComponent, Drawable, UniqueIdManager.Identifyable {
 
   public static final String NAME = "name"; //NON-NLS
+  public static final String HOT_KEY = "hotkey"; //NON-NLS
+  public static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  public static final String ICON = "icon"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
+
   public static final String ALWAYS_ON = "alwaysOn"; //NON-NLS
   public static final String STARTS_ON = "startsOn"; //NON-NLS
-  public static final String HOT_KEY = "hotkey"; //NON-NLS
-  public static final String ICON = "icon"; //NON-NLS
-  public static final String BUTTON_TEXT = "buttonText"; //NON-NLS
-  public static final String TOOLTIP = "tooltip"; //NON-NLS
   public static final String BOARDS = "boards"; //NON-NLS
   public static final String BOARD_LIST = "boardList"; //NON-NLS
 
@@ -95,7 +94,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader"); //NON-NLS
 
-  protected LaunchButton launch;
   protected boolean alwaysOn = false;
   protected boolean startsOn = false;
   protected String boardSelection = ALL_BOARDS;
@@ -152,10 +150,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected BasicStroke stroke = null;
 
   public MapShader() {
-    launch = new LaunchButton(
-      Resources.getString("Editor.MapShader.shade"), TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, e -> toggleShading()
-    );
-    launch.setEnabled(false);
+    setButtonTextKey(BUTTON_TEXT);
+    makeLaunchButton("", Resources.getString("Editor.MapShader.shade"), "", e -> toggleShading());
+    getLaunchButton().setEnabled(false);
     setLaunchButtonVisibility();
     setConfigureName(Resources.getString("Editor.MapShader.configure_name"));
     reset();
@@ -649,7 +646,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public void setLaunchButtonVisibility() {
-    launch.setVisible(!isAlwaysOn());
+    getLaunchButton().setVisible(!isAlwaysOn());
   }
 
   /*
@@ -659,7 +656,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    */
   @Override
   public void setup(boolean gameStarting) {
-    launch.setEnabled(gameStarting);
+    getLaunchButton().setEnabled(gameStarting);
     if (!gameStarting) {
       boardClip = null;
     }
@@ -687,8 +684,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
-      if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, value);
+      if (super.getAttributeValueString(TOOLTIP) == null) {
+        super.setAttribute(TOOLTIP, value);
       }
     }
     else if (ALWAYS_ON.equals(key)) {
@@ -796,7 +793,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       buildBorderComposite();
     }
     else {
-      launch.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
@@ -851,7 +848,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return borderOpacity + "";
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -945,23 +942,5 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   @Override
   public List<String> getPropertyList() {
     return Arrays.asList(boardList);
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOT_KEY)));
   }
 }
