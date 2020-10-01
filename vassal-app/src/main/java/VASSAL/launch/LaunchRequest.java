@@ -160,12 +160,18 @@ public class LaunchRequest implements Serializable {
   }
 
   /**
-   * For reasons Too Terrible To Contemplate, calling Resources.getString() in a private-static-final declaration
-   * changed the FONT(?!?!) style/weight/something that Vassal uses. So we won't do it that way. Go figure.
-   * 
    * @return Usage string
    */
   private static final String helpMeSpock() {
+    /*
+      NB: Resources has a configurer, which means that calling its methods
+      initializes the Swing graphics subsystem. The init method of StartUp
+      must be called before that if we're going to have a Swing GUI, as it
+      sets some system properties we require. Thus, the help string cannot
+      be a static member of LaunchRequest if any of it is translated, as
+      that would trigger the initialization of Swing before we've called
+      StartUp.initSystemProperties(). You have been warned. :)
+    */
     return Resources.getString("LaunchRequest.usage") + ":\n" +
       "  VASSAL -e [option]... module\n" + //NON-NLS
       "  VASSAL -i [option]... module\n" + //NON-NLS
