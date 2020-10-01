@@ -51,6 +51,8 @@ import VASSAL.i18n.Resources;
 public class NotesWindow extends AbstractToolbarItem
     implements GameComponent, CommandEncoder {
 
+  public static final String BUTTON_TEXT = "buttonText"; // non-standard legacy difference from AbstractToolbarItem
+
   protected JDialog frame;
   protected TextConfigurer scenarioNotes;
   protected TextConfigurer publicNotes;
@@ -71,7 +73,8 @@ public class NotesWindow extends AbstractToolbarItem
       captureState();
       frame.setVisible(!frame.isShowing());
     };
-    setNameKey(""); // No description or name configured
+    setNameKey("");                // No description or name configured
+    setButtonTextKey(BUTTON_TEXT); // Legacy different button text key
     makeLaunchButton(Resources.getString("Notes.notes"),
                      Resources.getString("Notes.notes"),
               "/images/notes.gif", //NON-NLS

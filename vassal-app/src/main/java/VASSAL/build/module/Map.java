@@ -539,6 +539,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
       }
     };
+    setButtonTextKey(BUTTON_NAME); // Uses non-standard "button text" key
     makeLaunchButton("", Resources.getString("Editor.Map.map"), "/images/map.gif", al); //NON-NLS
     getLaunchButton().setEnabled(false);
     getLaunchButton().setVisible(false);

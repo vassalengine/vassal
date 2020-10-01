@@ -80,6 +80,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
@@ -96,7 +97,6 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
@@ -110,8 +110,6 @@ public class Inventory extends AbstractToolbarItem
   protected JTree tree;
 
   public static final String VERSION = "2.1"; //$NON-NLS-1$
-
-  public static final String BUTTON_TEXT = "buttonText"; // non-standard legacy difference from AbstractToolbarItem
 
   // public static final String DEST = "destination";
 
@@ -178,15 +176,24 @@ public class Inventory extends AbstractToolbarItem
   public static final String NUMERIC = "numeric"; //$NON-NLS-1$
   public static final String[] SORT_OPTIONS = { ALPHA, LENGTHALPHA, NUMERIC };
 
+  public static final String LAUNCH_FUNCTION  = "launchFunction"; //NON-NLS
+  public static final String FUNCTION_REFRESH = "functionRefresh"; //NON-NLS
+  public static final String FUNCTION_HIDE    = "functionHide"; //NON-NLS
+  public static final String[] FUNCTION_OPTIONS = { FUNCTION_REFRESH, FUNCTION_HIDE };
+  public static final String[] FUNCTION_KEYS    = { "Editor.Inventory.function_refresh", //NON-NLS
+                                                    "Editor.Inventory.function_hide"}; //NON-NLS
+  protected String launchFunction = FUNCTION_REFRESH;
+
   protected String sortStrategy = ALPHA;
 
   public static final String SORTING = "sorting"; //$NON-NLS-1$
+
+  public static final String BUTTON_FUNCTION = "buttonFunction"; //NON-NLS
 
   protected JDialog frame;
 
   public Inventory() {
     ActionListener al = e -> launch();
-    setButtonTextKey(BUTTON_TEXT);
     makeLaunchButton(Resources.getString("Inventory.show_inventory"),
                      Resources.getString("Inventory.inventory"),
                      "/images/inventory.gif", //NON-NLS
@@ -413,8 +420,13 @@ public class Inventory extends AbstractToolbarItem
   }
 
   protected void launch() {
-    refresh();
-    frame.setVisible(true);
+    if (FUNCTION_HIDE.equals(launchFunction) && frame.isVisible()) {
+      frame.setVisible(false);
+    }
+    else {
+      refresh();
+      frame.setVisible(true);
+    }
   }
 
   private void buildTreeModel() {
@@ -498,7 +510,8 @@ public class Inventory extends AbstractToolbarItem
       Resources.getString("Editor.Inventory.rightclick_piece"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.draw_piece"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.zoom"), //$NON-NLS-1$
-      Resources.getString("Editor.Inventory.available") //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.available"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.function") //$NON-NLS-1$
     );
   }
 
@@ -519,7 +532,8 @@ public class Inventory extends AbstractToolbarItem
       Boolean.class,
       Boolean.class,
       Double.class,
-      String[].class
+      String[].class,
+      FunctionConfig.class
     );
   }
 
@@ -540,7 +554,8 @@ public class Inventory extends AbstractToolbarItem
       SHOW_MENU,
       DRAW_PIECES,
       PIECE_ZOOM,
-      SIDES
+      SIDES,
+      LAUNCH_FUNCTION
     );
   }
 
@@ -555,6 +570,13 @@ public class Inventory extends AbstractToolbarItem
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new StringEnumConfigurer(key, name, SORT_OPTIONS);
+    }
+  }
+
+  public static class FunctionConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new TranslatingStringEnumConfigurer(key, name, FUNCTION_OPTIONS, FUNCTION_KEYS);
     }
   }
 
@@ -631,6 +653,9 @@ public class Inventory extends AbstractToolbarItem
     }
     else if (SORTING.equals(key)) {
       sortStrategy = (String) o;
+    }
+    else if (LAUNCH_FUNCTION.equals(key)) {
+      launchFunction = (String) o;
     }
     else {
       super.setAttribute(key, o);
@@ -714,6 +739,9 @@ public class Inventory extends AbstractToolbarItem
     }
     else if (SORTING.equals(key)) {
       return sortStrategy;
+    }
+    else if (LAUNCH_FUNCTION.equals(key)) {
+      return launchFunction;
     }
     else {
       return super.getAttributeValueString(key);
@@ -1007,7 +1035,6 @@ public class Inventory extends AbstractToolbarItem
     public void setNode(CounterNode node) {
       this.node = node;
     }
-
   }
 
   /**
