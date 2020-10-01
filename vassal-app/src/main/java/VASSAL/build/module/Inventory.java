@@ -1548,22 +1548,4 @@ public class Inventory extends AbstractToolbarItem
     l.add(sortFormat);
     return l;
   }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return super.getMenuTextList();
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return super.getNamedKeyStrokeList();
-  }
 }
