@@ -159,8 +159,14 @@ public class LaunchRequest implements Serializable {
     return args.toArray(new String[0]);
   }
 
-  private static final String help =
-    Resources.getString("LaunchRequest.usage") + ":\n" +
+  /**
+   * For reasons Too Terrible To Contemplate, calling Resources.getString() in a private-static-final declaration
+   * changed the FONT(?!?!) style/weight/something that Vassal uses. So we won't do it that way. Go figure.
+   * 
+   * @return Usage string
+   */
+  private static final String helpMeSpock() {
+    return Resources.getString("LaunchRequest.usage") + ":\n" +
       "  VASSAL -e [option]... module\n" + //NON-NLS
       "  VASSAL -i [option]... module\n" + //NON-NLS
       "  VASSAL -l [option]... module|save|log...\n" + //NON-NLS
@@ -188,6 +194,7 @@ public class LaunchRequest implements Serializable {
       "\n" +
       Resources.getString("LaunchRequest.default") + "\n" +
       "\n";
+  }
 
   /**
    * Parse an argument array to a <code>LaunchRequest</code>.
@@ -268,7 +275,7 @@ public class LaunchRequest implements Serializable {
         setMode(lr, Mode.EDIT);
         break;
       case 'h':
-        System.err.print(help);
+        System.err.print(helpMeSpock());
         System.exit(0);
         break;
       case 'i':
