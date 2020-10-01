@@ -166,19 +166,25 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   public Object getProperty(Object key) {
     Object result = "";
     if (name.length() > 0 && name.equals(key)) {
-      try {
-        RecursionLimiter.startExecution(this);
-        result = evaluate();
+      // Do not attempt to evaluate a Calculated Property if this piece is not on a map
+      if (getMap() == null) {
+        return "";
+      }
+      else {
+        try {
+          RecursionLimiter.startExecution(this);
+          result = evaluate();
+          return result;
+        }
+        catch (RecursionLimitException e) {
+          RecursionLimiter.infiniteLoop(e);
+        }
+        finally {
+          RecursionLimiter.endExecution();
+        }
+
         return result;
       }
-      catch (RecursionLimitException e) {
-        RecursionLimiter.infiniteLoop(e);
-      }
-      finally {
-        RecursionLimiter.endExecution();
-      }
-
-      return result;
     }
     return super.getProperty(key);
   }

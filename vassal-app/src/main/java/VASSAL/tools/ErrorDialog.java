@@ -342,6 +342,9 @@ public class ErrorDialog {
   }
 
   public static void dataWarning(BadDataReport e) {
+    if (! e.isReportable()) {
+      return;
+    }
     logger.warn(e.getMessage() + ": " + e.getData());
     if (e.getCause() != null) logger.error("", e.getCause());
 
