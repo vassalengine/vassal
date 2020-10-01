@@ -477,12 +477,16 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * Initialize and register our multiplayer server controls
    */
   protected void initServer() {
-    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
+    final OfficialNodeClientFactory oncf = new OfficialNodeClientFactory();
+
+    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, oncf);
     ChatServerFactory.register(PrivateNodeClientFactory.PRIVATE_TYPE, new PrivateNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
 
     // legacy server used to be stored as node type
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new OfficialNodeClientFactory());
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, oncf);
+    // redirect removed jabber type to official server
+    ChatServerFactory.register("jabber", oncf);
 
     server = new DynamicClient();
     AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server); //NON-NLS
