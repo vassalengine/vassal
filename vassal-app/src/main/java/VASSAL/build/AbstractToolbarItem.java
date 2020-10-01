@@ -39,13 +39,13 @@ import java.util.List;
 public abstract class AbstractToolbarItem extends AbstractConfigurable {
 
   // These are the "standard keys" - recommended for all new classes extending AbstractToolbarItem
-  public static final String NAME        = "name"; //$NON-NLS-1$
+  public static final String NAME        = "name";    //$NON-NLS-1$
   public static final String TOOLTIP     = "tooltip"; //$NON-NLS-1$
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String HOTKEY      = "hotkey"; //$NON-NLS-1$
-  public static final String ICON        = "icon"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "text";    //$NON-NLS-1$
+  public static final String HOTKEY      = "hotkey";  //$NON-NLS-1$
+  public static final String ICON        = "icon";    //$NON-NLS-1$
 
-  protected LaunchButton launch; // Our toolbar "launch button"
+  protected LaunchButton launch;              // Our toolbar "launch button"
 
   private String nameKey       = NAME;        // Some legacy objects will want to use a non-standard key (or none)
   private String tooltipKey    = TOOLTIP;     // Some legacy objects will want to use a non-standard key
@@ -104,7 +104,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
 
   /**
    * This getAttributeNames() will return the items specific to the Toolbar Button - classes extending this should
-   * add their own items as well.
+   * add their own items as well. If the "nameKey" is blank, then no "name" configure entry will be generated.
+   * Extending classes can use ArrayUtils.addAll(super.getAttributeNames(), key1, ..., keyN), or supply their own
+   * order from scratch.
    * <p>
    * Lists all the buildFile (XML) attribute names for this component.
    * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
@@ -124,7 +126,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
 
   /**
    * This getAttributeDescriptions() will return the items specific to the Toolbar Button - classes extending this should
-   * add their own items as well.
+   * add their own items as well. If the "nameKey" is blank, then no "name" configure entry will be generated.
+   * Extending classes can use ArrayUtils.addAll(super.getAttributeDescriptions(), key1, ..., keyN), or supply their own
+   * order from scratch.
    *
    * @return an array of Strings describing the buildFile (XML) attributes of this component. These strings are used as prompts in the
    * Properties window for this object, when the component is configured in the Editor. The order of descriptions should
@@ -153,7 +157,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
 
   /**
    * This getAttributeTypes() will return the items specific to the Toolbar Button - classes extending this should
-   * add their own items as well.
+   * add their own items as well. If the "nameKey" is blank, then no "name" configure entry will be generated.
+   * Extending classes can use ArrayUtils.addAll(super.getAttributeTypes(), key1, ..., keyN), or supply their own
+   * order from scratch.
    *
    * @return the Class for the buildFile (XML) attributes of this component. Valid classes include: String, Integer, Double, Boolean, Image,
    * Color, and KeyStroke, along with any class for which a Configurer exists in VASSAL.configure. The class determines, among other things,
@@ -183,7 +189,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   }
 
   /**
-   * Configures the toolbar's button icon
+   * Configures the toolbar's button icon. Classes extending AbstractToolbarItem no longer need their own IconConfig
+   * for the toolbar button, though some must presently keep it for binary compatibility.
    */
   public static class IconConfig implements ConfigurerFactory {
     /**
@@ -198,8 +205,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
     }
   }
 
-   /**
-   * Classes extending AbstractToolbarItem should call this as a super() method after checking for their own keys.
+  /**
+   * Classes extending AbstractToolbarItem can call this as a super() method after checking for their own keys, to
+   * avoid needing to deal with the nitty gritty of the toolbar button.
    *
    * Sets a buildFile (XML) attribute value for this component. The <code>key</code> parameter will be one of those listed in {@link #getAttributeNames}.
    * If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
@@ -222,7 +230,8 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   }
 
   /**
-   * Classes extending AbstractToolbarItem should call this as a super() method after checking for their own keys.
+   * Classes extending AbstractToolbarItem can call this as a super() method after checking for their own keys, to
+   * avoid needing to deal with the nitty gritty of the toolbar button.
    *
    * @return a String representation of the XML buildFile attribute with the given name. When initializing a module,
    * this String value will loaded from the XML and passed to {@link #setAttribute}. It is also frequently used for
@@ -248,11 +257,19 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
     return launch;
   }
 
+  /**
+   * Default behavior adds the button to the module toolbar.
+   * @param parent parent Buildable to add this component to as a subcomponent.
+   */
   @Override
   public void addTo(Buildable parent) {
     GameModule.getGameModule().getToolBar().add(getComponent());
   }
 
+  /**
+   * Default behavior assumes we are removing this from the module toolbar
+   * @param b parent
+   */
   @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getToolBar().remove(getComponent());
