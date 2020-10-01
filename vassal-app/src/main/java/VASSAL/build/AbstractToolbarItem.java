@@ -43,26 +43,30 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String ICON = "icon"; //$NON-NLS-1$
 
-  public static final String DESCRIPTION = "description"; //$NON-NLS-1$ // for variants
-
   protected LaunchButton launch; // Our toolbar "launch button"
 
-  private String nameKey = NAME; // True if we configure a name/description field
+  private String nameKey = NAME;              // Some legacy objects will want to use a non-standard key (or none)
+  private String buttonTextKey = BUTTON_TEXT; // Some legacy objects will want to use a non-standard key
+
+  protected void setNameKey (String nameKey) {
+    this.nameKey = nameKey;
+  }
+
+  protected void setButtonTextKey (String buttonTextKey) {
+    this.buttonTextKey = buttonTextKey;
+  }
+
 
   /**
    * Create a standard toolbar launcher button for this item
    *
-   * @param nameKey Config field for "NAME" (default) or "DESCRIPTION", or "" for none. NAME is the preferred/standard usage
-   *                here, but there are some legacy classes that use the DESCRIPTION variant, and some which operate without
-   *                any name/description field at all.
    * @param tooltip String tooltip for button
    * @param button_text Text for button
    * @param iconFile filename for icon default
    * @param action  Action Listener when launch button is clicked
    */
-  protected void makeLaunchButton(String nameKey, String tooltip, String button_text, String iconFile, ActionListener action) {
-    this.nameKey = nameKey;
-    launch = new LaunchButton(button_text, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, action);
+  protected void makeLaunchButton(String tooltip, String button_text, String iconFile, ActionListener action) {
+    launch = new LaunchButton(button_text, TOOLTIP, buttonTextKey, HOTKEY, ICON, action);
     if (!tooltip.isEmpty()) {
       setAttribute(TOOLTIP, tooltip);
     }
@@ -70,7 +74,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
       if (!nameKey.isEmpty()) {
         setAttribute(nameKey, button_text);
       }
-      launch.setAttribute(BUTTON_TEXT, button_text);
+      launch.setAttribute(buttonTextKey, button_text);
     }
     if (!iconFile.isEmpty()) {
       setAttribute(ICON, iconFile);
@@ -99,10 +103,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   @Override
   public String[] getAttributeNames() {
     if (!nameKey.isEmpty()) {
-      return new String[]{nameKey, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+      return new String[]{nameKey, buttonTextKey, TOOLTIP, ICON, HOTKEY};
     }
     else {
-      return new String[]{BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
+      return new String[]{buttonTextKey, TOOLTIP, ICON, HOTKEY};
     }
   }
 
@@ -248,7 +252,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+    return List.of(getAttributeValueString(buttonTextKey), getAttributeValueString(TOOLTIP));
   }
 
   /**

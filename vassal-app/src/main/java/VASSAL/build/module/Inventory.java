@@ -111,6 +111,8 @@ public class Inventory extends AbstractToolbarItem
 
   public static final String VERSION = "2.1"; //$NON-NLS-1$
 
+  public static final String BUTTON_TEXT = "buttonText"; // non-standard legacy difference from AbstractToolbarItem
+
   // public static final String DEST = "destination";
 
   /*
@@ -184,8 +186,8 @@ public class Inventory extends AbstractToolbarItem
 
   public Inventory() {
     ActionListener al = e -> launch();
-    makeLaunchButton(NAME,
-                     Resources.getString("Inventory.show_inventory"),
+    setButtonTextKey(BUTTON_TEXT);
+    makeLaunchButton(Resources.getString("Inventory.show_inventory"),
                      Resources.getString("Inventory.inventory"),
                      "/images/inventory.gif", //NON-NLS
                      al);

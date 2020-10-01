@@ -58,6 +58,8 @@ public class ToolbarMenu extends AbstractToolbarItem
                          implements ContainerListener,
                                     PropertyChangeListener,
                                     GameComponent {
+  public static final String DESCRIPTION = "description"; //NON-NLS //non-standard legacy name key different from AbstractToolbarItem
+
   public static final String MENU_ITEMS = "menuItems"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
@@ -70,8 +72,8 @@ public class ToolbarMenu extends AbstractToolbarItem
   protected Runnable menuBuilder;
 
   public ToolbarMenu() {
-    makeLaunchButton(AbstractToolbarItem.DESCRIPTION,
-                     Resources.getString("Editor.ToolbarMenu.tooltip_text"),
+    setNameKey(DESCRIPTION); // We have a legacy name key that's different from the standard AbstractToolbarItem name key
+    makeLaunchButton(Resources.getString("Editor.ToolbarMenu.tooltip_text"),
                      Resources.getString(Resources.MENU), "", e -> launch());
     menu = new JPopupMenu();
     getLaunchButton().putClientProperty(MENU_PROPERTY, menu);

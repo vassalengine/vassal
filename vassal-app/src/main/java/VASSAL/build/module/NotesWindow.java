@@ -71,8 +71,8 @@ public class NotesWindow extends AbstractToolbarItem
       captureState();
       frame.setVisible(!frame.isShowing());
     };
-    makeLaunchButton("", // No description or name configured
-                     Resources.getString("Notes.notes"),
+    setNameKey(""); // No description or name configured
+    makeLaunchButton(Resources.getString("Notes.notes"),
                      Resources.getString("Notes.notes"),
               "/images/notes.gif", //NON-NLS
                      al);
