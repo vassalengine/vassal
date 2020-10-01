@@ -20,7 +20,6 @@ package VASSAL.build.module;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -703,14 +702,6 @@ public class DoActionButton extends AbstractToolbarItem
   }
 
   /**
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return super.getMenuTextList();
-  }
-
-  /**
    * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
    */
   @Override
@@ -718,16 +709,5 @@ public class DoActionButton extends AbstractToolbarItem
     final List<NamedKeyStroke> l = super.getNamedKeyStrokeList();
     Collections.addAll(l, preLoopKey, postLoopKey);
     return l;
-  }
-
-  /**
-   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
-   * the names of any image files they use to the collection. For "find unused images" and "search".
-   *
-   * @param s Collection to add image names to
-   */
-  @Override
-  protected void addLocalImageNames(Collection<String> s) {
-    super.addLocalImageNames(s);
   }
 }

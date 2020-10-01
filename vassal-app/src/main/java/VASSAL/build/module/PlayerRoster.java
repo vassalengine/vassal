@@ -31,13 +31,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import VASSAL.build.AbstractToolbarItem;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -61,14 +61,15 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Maintains a list of players involved in the current game
  */
-public class PlayerRoster extends AbstractConfigurable implements CommandEncoder, GameComponent, GameSetupStep {
+public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder, GameComponent, GameSetupStep {
   public static final String BUTTON_ICON = "buttonIcon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
+  public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
+
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
-  public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -83,8 +84,15 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public PlayerRoster() {
     ActionListener al = e -> launch();
 
-    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, BUTTON_KEYSTROKE, BUTTON_ICON, al); //$NON-NLS-1$
-    retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
+    setButtonTextKey(BUTTON_TEXT);
+    setTooltipKey(TOOL_TIP);
+    setIconKey(BUTTON_ICON);
+    setHotKeyKey(BUTTON_KEYSTROKE);
+    retireButton = makeLaunchButton(Resources.getString("PlayerRoster.retire"),
+                                    Resources.getString("PlayerRoster.allow_another"),
+                                    "",
+                                    al
+      );
     retireButton.setVisible(false);
 
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
@@ -92,6 +100,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public void removeFrom(Buildable parent) {
+    super.removeFrom(parent);
     final GameModule gm = GameModule.getGameModule();
     gm.getGameState().removeGameComponent(this);
     gm.removeCommandEncoder(this);
@@ -114,7 +123,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         // errors due to nonexistent "Retire" images, by ignoring
         // the buttonIcon attribute when the value is "Retire" but
         // no such image can be found in the archive.
-        if ("buttonIcon".equals(att.getName()) && //$NON-NLS-1$
+        if (BUTTON_ICON.equals(att.getName()) && //$NON-NLS-1$
             "Retire".equals(att.getValue())) { //$NON-NLS-1$
           try {
             GameModule.getGameModule()
@@ -229,7 +238,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     gm.getGameState().addGameComponent(this);
     gm.getGameState().addGameSetupStep(this);
     gm.addCommandEncoder(this);
-    gm.getToolBar().add(retireButton);
+    super.addTo(b);
   }
 
 
@@ -720,7 +729,6 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     };
   }
 
-
   /**
    * {@link VASSAL.search.SearchTarget}
    * @return a list of any Property Names referenced in the Configurable, if any (for search)
@@ -728,23 +736,5 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   @Override
   public List<String> getPropertyList() {
     return sides;
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOL_TIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(BUTTON_KEYSTROKE)));
   }
 }

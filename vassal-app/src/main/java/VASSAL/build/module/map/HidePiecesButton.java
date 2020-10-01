@@ -67,12 +67,13 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   public static final String DEFAULT_SHOWING_ICON = "/images/globe_unselected.gif"; //NON-NLS
   public static final String DEFAULT_HIDDEN_ICON = "/images/globe_selected.gif"; //NON-NLS
 
-  public static final String HOTKEY = "hotkey"; //NON-NLS
-  public static final String HIDDEN_ICON = "hiddenIcon"; //NON-NLS
-  public static final String SHOWING_ICON = "showingIcon"; //NON-NLS
   public static final String LAUNCH_ICON = "icon"; //NON-NLS
   public static final String TOOLTIP = "tooltip"; //NON-NLS
   public static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+
+  public static final String HIDDEN_ICON = "hiddenIcon"; //NON-NLS
+  public static final String SHOWING_ICON = "showingIcon"; //NON-NLS
 
 
   public HidePiecesButton() {

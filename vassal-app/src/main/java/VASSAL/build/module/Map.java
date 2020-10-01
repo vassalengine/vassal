@@ -216,6 +216,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected StackMetrics metrics;
   protected Dimension edgeBuffer = new Dimension(0, 0);
   protected Color bgColor = Color.white;
+  protected LaunchButton launchButton; // Legacy for binary signature
   protected boolean useLaunchButton = false;
   protected boolean useLaunchButtonEdit = false;
   protected String markMovedOption = GlobalOptions.ALWAYS;
@@ -540,7 +541,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       }
     };
     setButtonTextKey(BUTTON_NAME); // Uses non-standard "button text" key
-    makeLaunchButton("", Resources.getString("Editor.Map.map"), "/images/map.gif", al); //NON-NLS
+    launchButton = makeLaunchButton("", Resources.getString("Editor.Map.map"), "/images/map.gif", al); //NON-NLS
     getLaunchButton().setEnabled(false);
     getLaunchButton().setVisible(false);
     if (e != null) {

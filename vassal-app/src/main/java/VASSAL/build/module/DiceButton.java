@@ -18,7 +18,6 @@
 package VASSAL.build.module;
 
 import VASSAL.build.AbstractToolbarItem;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -124,7 +122,7 @@ public class DiceButton extends AbstractToolbarItem {
     };
     makeLaunchButton(Resources.getString("Editor.DiceButton.dice_button_text"),
                      Resources.getString("Editor.DiceButton.dice_button_tooltip"),
-                     "/images/die.gif",
+                     "/images/die.gif", //NON-NLS
                      rollAction);
     setAttribute(AbstractToolbarItem.NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
   }

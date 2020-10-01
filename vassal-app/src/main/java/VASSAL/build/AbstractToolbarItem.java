@@ -37,25 +37,37 @@ import java.util.List;
  * XML buildFile {@link AbstractBuildable}, but which also has a Toolbar launch button.
  */
 public abstract class AbstractToolbarItem extends AbstractConfigurable {
+
+  // These are the "standard keys" - recommended for all new classes extending AbstractToolbarItem
+  public static final String NAME        = "name"; //$NON-NLS-1$
+  public static final String TOOLTIP     = "tooltip"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String HOTKEY      = "hotkey"; //$NON-NLS-1$
+  public static final String ICON        = "icon"; //$NON-NLS-1$
 
   protected LaunchButton launch; // Our toolbar "launch button"
 
-  private String nameKey = NAME;              // Some legacy objects will want to use a non-standard key (or none)
+  private String nameKey       = NAME;        // Some legacy objects will want to use a non-standard key (or none)
+  private String tooltipKey    = TOOLTIP;     // Some legacy objects will want to use a non-standard key
   private String buttonTextKey = BUTTON_TEXT; // Some legacy objects will want to use a non-standard key
+  private String hotKeyKey     = HOTKEY;      // Some legacy objects will want to use a non-standard key
+  private String iconKey       = ICON;        // Some legacy objects will want to use a non-standard key
 
   protected void setNameKey (String nameKey) {
     this.nameKey = nameKey;
   }
-
+  protected void setTooltipKey (String tooltipKey) {
+    this.tooltipKey = tooltipKey;
+  }
   protected void setButtonTextKey (String buttonTextKey) {
     this.buttonTextKey = buttonTextKey;
   }
-
+  protected void setHotKeyKey (String hotKeyKey) {
+    this.hotKeyKey = hotKeyKey;
+  }
+  protected void setIconKey (String iconKey) {
+    this.iconKey = iconKey;
+  }
 
   /**
    * Create a standard toolbar launcher button for this item
@@ -64,11 +76,12 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    * @param button_text Text for button
    * @param iconFile filename for icon default
    * @param action  Action Listener when launch button is clicked
+   * @return launch button
    */
-  protected void makeLaunchButton(String tooltip, String button_text, String iconFile, ActionListener action) {
-    launch = new LaunchButton(button_text, TOOLTIP, buttonTextKey, HOTKEY, ICON, action);
+  protected LaunchButton makeLaunchButton(String tooltip, String button_text, String iconFile, ActionListener action) {
+    launch = new LaunchButton(button_text, tooltipKey, buttonTextKey, hotKeyKey, iconKey, action);
     if (!tooltip.isEmpty()) {
-      setAttribute(TOOLTIP, tooltip);
+      setAttribute(tooltipKey, tooltip);
     }
     if (!button_text.isEmpty()) {
       if (!nameKey.isEmpty()) {
@@ -77,10 +90,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
       launch.setAttribute(buttonTextKey, button_text);
     }
     if (!iconFile.isEmpty()) {
-      setAttribute(ICON, iconFile);
+      setAttribute(iconKey, iconFile);
     }
+    return launch;
   }
-
 
   /**
    * @return Launch button for this Toolbar item.
@@ -88,7 +101,6 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   public LaunchButton getLaunchButton () {
     return launch;
   }
-
 
   /**
    * This getAttributeNames() will return the items specific to the Toolbar Button - classes extending this should
@@ -103,10 +115,10 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   @Override
   public String[] getAttributeNames() {
     if (!nameKey.isEmpty()) {
-      return new String[]{nameKey, buttonTextKey, TOOLTIP, ICON, HOTKEY};
+      return new String[]{nameKey, buttonTextKey, tooltipKey, iconKey, hotKeyKey};
     }
     else {
-      return new String[]{buttonTextKey, TOOLTIP, ICON, HOTKEY};
+      return new String[]{buttonTextKey, tooltipKey, iconKey, hotKeyKey};
     }
   }
 
@@ -252,7 +264,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(buttonTextKey), getAttributeValueString(TOOLTIP));
+    return List.of(getAttributeValueString(buttonTextKey), getAttributeValueString(tooltipKey));
   }
 
   /**
@@ -260,7 +272,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(hotKeyKey)));
   }
 
   /**

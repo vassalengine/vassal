@@ -2,9 +2,7 @@ package VASSAL.build.module.map;
 
 import java.util.stream.Stream;
 
-import javax.swing.Icon;
-
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
@@ -13,8 +11,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Adds a button to the toolbar to manipulate Game Piece Layers
@@ -22,13 +19,8 @@ import VASSAL.tools.NamedKeyStroke;
  * @author Brent Easton
  *
  */
-public class LayerControl extends AbstractConfigurable {
+public class LayerControl extends AbstractToolbarItem {
 
-  public static final String NAME = "name"; //NON-NLS
-  public static final String TOOLTIP = "tooltip"; //NON-NLS
-  public static final String BUTTON_TEXT = "text"; //NON-NLS
-  public static final String BUTTON_ICON = "icon"; //NON-NLS
-  public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
   public static final String COMMAND = "command"; //NON-NLS
   public static final String SKIP = "skip"; //NON-NLS
   public static final String LAYERS = "layers"; //NON-NLS
@@ -40,7 +32,6 @@ public class LayerControl extends AbstractConfigurable {
   public static final String CMD_TOGGLE = "Switch Layer between Active and Inactive"; //NON-NLS - yes, really
   public static final String CMD_RESET = "Reset All Layers"; //NON-NLS - yes, really
 
-  protected LaunchButton launch;
   protected static final String[] COMMANDS = new String[] {CMD_ROTATE_UP, CMD_ROTATE_DN, CMD_RESET, CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE};
   protected static final String[] COMMANDS_DISPLAY_NAMES = new String[] {
     "Editor.LayerControl.rotate_layer_order_up",
@@ -57,7 +48,10 @@ public class LayerControl extends AbstractConfigurable {
   protected CompoundPieceCollection pieceCollection;
 
   public LayerControl() {
-    launch = new LaunchButton(Resources.getString("Editor.LayerControl.reset_layers"), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
+    setNameKey("");
+    makeLaunchButton(Resources.getString("Editor.LayerControl.reset_layers"),
+                     Resources.getString("Editor.LayerControl.reset_layers"),
+                     "", e -> launch());
   }
 
   public void launch() {
@@ -112,34 +106,24 @@ public class LayerControl extends AbstractConfigurable {
     getMap().repaint();
   }
 
-  public LaunchButton getLaunchButton() {
-    return launch;
-  }
-
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString("Editor.LayerControl.action"), //$NON-NLS-1$
-        Resources.getString("Editor.LayerControl.skip_layer"), //$NON-NLS-1$
-        Resources.getString("Editor.LayerControl.affect_layer"), //$NON-NLS-1$
-    };
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
+      Resources.getString("Editor.LayerControl.action"), //$NON-NLS-1$
+      Resources.getString("Editor.LayerControl.skip_layer"), //$NON-NLS-1$
+      Resources.getString("Editor.LayerControl.affect_layer") //$NON-NLS-1$
+    );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      Icon.class,
-      NamedKeyStroke.class,
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
       CommandConfig.class,
       Boolean.class,
       String[].class
-    };
+    );
   }
 
   public static class CommandConfig extends TranslatableStringEnum {
@@ -156,15 +140,17 @@ public class LayerControl extends AbstractConfigurable {
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, COMMAND, SKIP, LAYERS};
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
+      COMMAND,
+      SKIP,
+      LAYERS
+    );
   }
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (COMMAND.equals(key)) {
+    if (COMMAND.equals(key)) {
       return command;
     }
     else if (SKIP.equals(key)) {
@@ -174,7 +160,7 @@ public class LayerControl extends AbstractConfigurable {
       return StringArrayConfigurer.arrayToString(layers);
     }
     else  {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -182,8 +168,8 @@ public class LayerControl extends AbstractConfigurable {
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String)value);
-      if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, value);
+      if (super.getAttributeValueString(TOOLTIP) == null) {
+        super.setAttribute(TOOLTIP, value);
       }
     }
     else if (COMMAND.equals(key)) {
@@ -202,7 +188,7 @@ public class LayerControl extends AbstractConfigurable {
       layers = (String[]) value;
     }
     else {
-      launch.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
@@ -222,8 +208,15 @@ public class LayerControl extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     pieceLayers = (LayeredPieceCollection) parent;
-    pieceLayers.getToolBar().add(launch);
+    pieceLayers.getToolBar().add(getLaunchButton());
     pieceCollection = pieceLayers.getPieceCollection();
+  }
+
+  @Override
+  public void removeFrom(Buildable parent) {
+    if (getMap() != null) {
+      getMap().getToolBar().remove(getLaunchButton());
+    }
   }
 
   public Map getMap() {
@@ -243,12 +236,4 @@ public class LayerControl extends AbstractConfigurable {
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.LayerControl.component_type"); //$NON-NLS-1$
   }
-
-  @Override
-  public void removeFrom(Buildable parent) {
-    if (getMap() != null) {
-      getMap().getToolBar().remove(launch);
-    }
-  }
-
 }

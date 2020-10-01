@@ -33,7 +33,6 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.LaunchButton;
 
 /**
  * @author Michael Blumoehr
@@ -89,7 +88,7 @@ public class RandomTextButton extends DiceButton {
         DR();
       }
     };
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, ranAction);
+    makeLaunchButton("", "", "", ranAction);
     setAttributeTranslatable(FACES, true);
   }
 
@@ -154,7 +153,6 @@ public class RandomTextButton extends DiceButton {
     c.execute();
     c.append(property.setPropertyValue(result.toString()));
     GameModule.getGameModule().sendAndLog(c);
-
   }
 
   @Override
