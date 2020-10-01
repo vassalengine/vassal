@@ -24,6 +24,8 @@
 
 3.4.4 - ???
 
+* 13471: Using BeanShell string functions in Calculated Property crashes Editor
+* 13461: Always initialise Deck on New/Load game
 * 13458: Reinstate behavior of floating point expression evaluation
 * 13454: ClassCastException in SetPersistentPropertyCommand.execute()
 * 13426: NegativeArraySizeException when receiving first private message
