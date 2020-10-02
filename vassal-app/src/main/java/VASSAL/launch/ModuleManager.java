@@ -276,7 +276,7 @@ public class ModuleManager {
     final File pdir = Info.getPrefsDir();
     if (!pdir.exists()) {
       // Check the 3.2.0 through 3.2.7 location
-      File pzip = new File(Info.getHomeDir(), "Preferences");
+      File pzip = new File(Info.getConfDir(), "Preferences");
       if (!pzip.exists()) {
         // Check the pre-3.2 location.
         pzip = new File(System.getProperty("user.home"), "VASSAL/Preferences");

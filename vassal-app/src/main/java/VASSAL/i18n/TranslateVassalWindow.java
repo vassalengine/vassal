@@ -193,7 +193,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     final FileChooser fc = getFileChooser();
     fc.setFileFilter(new ExtensionFileFilter("Property Files",
                      new String[]{".properties"}));
-    fc.setCurrentDirectory(Info.getHomeDir());
+    fc.setCurrentDirectory(Info.getConfDir());
     if (fc.showOpenDialog(this) != FileChooser.APPROVE_OPTION) return;
 
     final File file = fc.getSelectedFile();
@@ -238,7 +238,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     }
     bundle += ".properties";
 
-    fc.setSelectedFile(new File(Info.getHomeDir(), bundle));
+    fc.setSelectedFile(new File(Info.getConfDir(), bundle));
     if (fc.showSaveDialog(this) != FileChooser.APPROVE_OPTION) return false;
 
     final File outputFile = fc.getSelectedFile();

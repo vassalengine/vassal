@@ -143,15 +143,12 @@ public final class Info {
     return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
   }
 
-
   /**
    * @return a version-specific errorLog path
    */
   public static File getErrorLogPath() {
-    return new File (getHomeDir(), "errorLog-" + getVersion());
+    return new File (getConfDir(), "errorLog-" + getVersion());
   }
-
-
 
   private static final int instanceID;
 
@@ -256,7 +253,7 @@ public final class Info {
   }
 
   public static File getConfDir() {
-    return getHomeDir();
+    return homeDir;
   }
 
   public static File getTempDir() {
@@ -267,9 +264,10 @@ public final class Info {
     return new File(getConfDir(), "prefs");
   }
 
-  // FIXME: this is a misleading name for this function
+  /** @deprecated Use {@link #getConfDir()} instead. */
+  @Deprecated(since = "2020-10-02", forRemoval = true)
   public static File getHomeDir() {
-    return homeDir;
+    return getConfDir();
   }
 
   /**
