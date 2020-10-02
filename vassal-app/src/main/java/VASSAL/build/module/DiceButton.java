@@ -329,12 +329,6 @@ public class DiceButton extends AbstractToolbarItem {
     property.addTo((MutablePropertiesContainer)parent);
   }
 
-  /**
-   * The component to be added to the control window toolbar
-   */
-  protected java.awt.Component getComponent() {
-    return launch;
-  }
 
   @Override
   public void setAttribute(String key, Object o) {
@@ -345,7 +339,7 @@ public class DiceButton extends AbstractToolbarItem {
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
       property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
-      launch.setToolTipText((String) o);
+      getLaunchButton().setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {
       if (o instanceof Integer) {
@@ -400,7 +394,7 @@ public class DiceButton extends AbstractToolbarItem {
     }
     else if (TOOLTIP.equals(key)) {
       tooltip = (String) o;
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
     else if (SORT_DICE_RESULTS.equals(key)) {
       if (o instanceof Boolean) {
@@ -442,7 +436,7 @@ public class DiceButton extends AbstractToolbarItem {
       return reportFormat.getFormat();
     }
     else if (TOOLTIP.equals(key)) {
-      return tooltip.length() == 0 ? launch.getAttributeValueString(BUTTON_TEXT) : tooltip;
+      return tooltip.length() == 0 ? super.getAttributeValueString(BUTTON_TEXT) : tooltip;
     }
     else if (SORT_DICE_RESULTS.equals(key)) {
       return String.valueOf(sortDice);
