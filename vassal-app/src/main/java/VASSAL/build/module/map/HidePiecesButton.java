@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -345,5 +346,19 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   @Override
   public List<String> getPropertyList() {
     return Collections.emptyList();
+  }
+
+
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
+  @Override
+  protected void addLocalImageNames(Collection<String> s) {
+    s.add(launch.getIconAttribute());
+    s.add(getAttributeValueString(SHOWING_ICON));
+    s.add(getAttributeValueString(HIDDEN_ICON));
   }
 }

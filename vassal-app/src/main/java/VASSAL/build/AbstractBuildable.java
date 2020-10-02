@@ -17,6 +17,7 @@
  */
 package VASSAL.build;
 
+import VASSAL.search.ImageTarget;
 import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +44,7 @@ import VASSAL.i18n.Translatable;
  * You'll need to implement the methods and specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
-public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource {
+public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource, ImageTarget {
   protected List<Buildable> buildComponents = new ArrayList<>();
 
   // Sub-classes can set this reference to perform validity checking
@@ -282,6 +283,6 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    *
    * @param s Collection to add image names to
    */
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
   }
 }
