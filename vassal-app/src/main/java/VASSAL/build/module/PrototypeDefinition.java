@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import javax.swing.Box;
 
+import VASSAL.search.ImageSearchTarget;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -133,10 +134,13 @@ public class PrototypeDefinition extends AbstractConfigurable
   }
 
   @Override
-  protected void addImageNamesRecursively(Collection<String> s) {
+  public void addImageNamesRecursively(Collection<String> s) {
     super.addImageNamesRecursively(s);
 
-    if (getPiece() != null) getPiece().addImageNames(s);
+    GamePiece p = getPiece();
+    if (p != null && p instanceof ImageSearchTarget) {
+      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    }
   }
 
   public GamePiece getPiece() {

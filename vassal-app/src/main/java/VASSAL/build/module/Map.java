@@ -854,7 +854,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     s.add(getLaunchButton().getIconAttribute());
   }
 

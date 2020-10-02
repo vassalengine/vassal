@@ -42,7 +42,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final GameModule module = GameModule.getGameModule();
     final SortedSet<String> unused = new TreeSet<>();
     Collections.addAll(unused, module.getDataArchive().getImageNames());
-    unused.removeAll(module.getImageNames());
+    unused.removeAll(module.getAllImageNames());
 
     final DefaultListModel lm = new DefaultListModel();
     for (String iname : unused) {

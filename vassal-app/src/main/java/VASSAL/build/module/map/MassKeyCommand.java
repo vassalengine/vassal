@@ -577,7 +577,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     s.add(launch.getIconAttribute());
   }
 }

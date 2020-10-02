@@ -193,7 +193,7 @@ public class Chart extends Widget {
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (fileName != null) s.add(fileName);
   }
 }

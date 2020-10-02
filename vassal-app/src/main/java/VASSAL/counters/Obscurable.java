@@ -792,9 +792,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void addImageNames(Collection<String> s) {
-    super.addImageNames(s);
-
+  public void addLocalImageNames(Collection<String> s) {
     if (obscuredToOthersImage != null) s.add(obscuredToOthersImage);
   }
 }

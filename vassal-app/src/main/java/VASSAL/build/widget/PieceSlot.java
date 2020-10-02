@@ -66,6 +66,7 @@ import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -222,10 +223,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   @Override
-  protected void addImageNamesRecursively(Collection<String> s) {
+  public void addImageNamesRecursively(Collection<String> s) {
     super.addImageNamesRecursively(s);
 
-    if (getPiece() != null) getPiece().addImageNames(s);
+    GamePiece p = getPiece();
+    if (p != null && (p instanceof ImageSearchTarget)) {
+      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    }
   }
 
   public void paint(Graphics g) {

@@ -31,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -1289,5 +1290,12 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       data.add(strip(commonName[i]), prefix + "Level " + (i + 1) + " name");
     }
     return data;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    for (String iname : imageName) {
+      s.add(iname);
+    }
   }
 }

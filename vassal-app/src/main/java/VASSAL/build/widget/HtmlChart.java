@@ -291,7 +291,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
   private Set<String> imageNames = new HashSet<String>();
 
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     getComponent();   // ugly, forces imageNames to be populated
     s.addAll(imageNames);
   }

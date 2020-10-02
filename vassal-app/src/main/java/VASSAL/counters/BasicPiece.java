@@ -59,6 +59,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.search.AbstractImageFinder;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -69,7 +70,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
  * Note like traits, BasicPiece implements GamePiece (via TranslatablePiece), but UNLIKE traits it is NOT a
  * Decorator, and thus must be treated specially.
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
+public class BasicPiece extends AbstractImageFinder implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
 
   public static final String ID = "piece;"; // NON-NLS
@@ -1118,7 +1119,13 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     return l;
   }
 
-  public void addImageNames(Collection<String> s) {
+  /**
+   * See {@link AbstractImageFinder}
+   * Adds our image (if any) to the list of images
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
     if (imageName != null) s.add(imageName);
   }
 }

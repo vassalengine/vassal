@@ -17,15 +17,14 @@
  */
 package VASSAL.build;
 
-import VASSAL.search.ImageTarget;
+import VASSAL.search.AbstractImageFinder;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -44,7 +43,7 @@ import VASSAL.i18n.Translatable;
  * You'll need to implement the methods and specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
-public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource, ImageTarget {
+public abstract class AbstractBuildable extends AbstractImageFinder implements Buildable, ValidityChecker, PropertyNameSource {
   protected List<Buildable> buildComponents = new ArrayList<>();
 
   // Sub-classes can set this reference to perform validity checking
@@ -243,46 +242,16 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   /**
-   * @return names of all images used by the component and any subcomponents
-   */
-  public SortedSet<String> getImageNames() {
-    final TreeSet<String> s =
-      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-
-    addImageNamesRecursively(s);
-    return s;
-  }
-
-  /**
    * Adds all images used by this component AND any subcomponents to the collection
    * @param s Collection to add image names to
    */
-  protected void addImageNamesRecursively(Collection<String> s) {
+  public void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s);
 
     for (Buildable child : buildComponents) {
-      if (child instanceof AbstractBuildable) {
-        ((AbstractBuildable) child).addImageNamesRecursively(s);
+      if (child instanceof ImageSearchTarget) {
+        ((ImageSearchTarget) child).addImageNamesRecursively(s);
       }
     }
-  }
-
-  /**
-   * @return names of all images used by this component
-   */
-  public SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s =
-      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    addLocalImageNames(s);
-    return s;
-  }
-
-  /**
-   * Classes extending Abstract buildable should override this method in order to add
-   * the names of any image files they use to the collection.
-   *
-   * @param s Collection to add image names to
-   */
-  public void addLocalImageNames(Collection<String> s) {
   }
 }

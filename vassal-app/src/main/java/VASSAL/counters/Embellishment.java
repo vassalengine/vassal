@@ -1484,9 +1484,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void addImageNames(Collection<String> s) {
-    super.addImageNames(s);
-
+  public void addLocalImageNames(Collection<String> s) {
     for (String iname : imageName) {
       s.add(iname);
     }

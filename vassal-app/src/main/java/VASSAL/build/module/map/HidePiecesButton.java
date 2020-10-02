@@ -25,10 +25,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.JPanel;
 
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.search.SearchTarget;
 import org.w3c.dom.Element;
 
@@ -55,8 +58,9 @@ import VASSAL.tools.NamedKeyStroke;
  * This removes all game pieces from the (@link Map)
  * therefore providing an un-cluttered view.
  */
+//FIXME - Why on earth does this extend JPanel instead of e.g. AbstractConfigurable
 public class HidePiecesButton extends JPanel implements MouseListener,
-    AutoConfigurable, GameComponent, Drawable, SearchTarget {
+    AutoConfigurable, GameComponent, Drawable, SearchTarget, ImageSearchTarget {
   private static final long serialVersionUID = 1L;
 
   protected boolean piecesVisible = false;
@@ -350,13 +354,43 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
 
   /**
+   * @return names of all images used by the component and any subcomponents
+   */
+  public SortedSet<String> getAllImageNames() {
+    final TreeSet<String> s =
+      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+    addImageNamesRecursively(s);
+    return s;
+  }
+
+  /**
+   * Adds all images used by this component AND any children (or inner decorators/pieces) to the collection.
+   * @param s Collection to add image names to
+   */
+  public void addImageNamesRecursively(Collection<String> s) {
+    addLocalImageNames(s); // Default implementation just adds ours
+  }
+
+  /**
+   * @return names of all images used by this component
+   */
+  public SortedSet<String> getLocalImageNames() {
+    final TreeSet<String> s =
+      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    addLocalImageNames(s);
+    return s;
+  }
+
+
+  /**
    * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
    * the names of any image files they use to the collection. For "find unused images" and "search".
    *
    * @param s Collection to add image names to
    */
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     s.add(launch.getIconAttribute());
     s.add(getAttributeValueString(SHOWING_ICON));
     s.add(getAttributeValueString(HIDDEN_ICON));

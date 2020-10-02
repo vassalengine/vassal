@@ -282,7 +282,7 @@ public class ToolbarMenu extends AbstractToolbarItem
    */
   @Override
   public List<String> getMenuTextList() {
-    List<String> l = super.getMenuTextList();
+    List<String> l = new ArrayList<>(super.getMenuTextList());
     l.addAll(menuItems);
     return l;
   }

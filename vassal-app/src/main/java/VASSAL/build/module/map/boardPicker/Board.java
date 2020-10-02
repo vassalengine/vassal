@@ -779,7 +779,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (imageFile != null) s.add(imageFile);
   }
 }

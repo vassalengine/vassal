@@ -880,7 +880,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (imageName != null) s.add(imageName);
   }
 

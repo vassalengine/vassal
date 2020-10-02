@@ -259,7 +259,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   };
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (getConfigureName() != null) s.add(getConfigureName());
   }
 

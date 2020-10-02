@@ -63,6 +63,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ComponentPathBuilder;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -322,11 +323,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     return piece;
   }
 
-  @Override
-  public void addImageNames(Collection<String> s) {
-    super.addImageNames(s);
 
-    if (isMarkerStandalone()) createBaseMarker().addImageNames(s);
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    super.addImageNamesRecursively(s);
+    if (isMarkerStandalone()) {
+      GamePiece p = createBaseMarker();
+      if (p instanceof ImageSearchTarget) {
+        ((ImageSearchTarget) p).addImageNamesRecursively(s);
+      }
+    }
   }
 
   /**

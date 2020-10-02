@@ -723,7 +723,7 @@ public class DoActionButton extends AbstractToolbarItem
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    final List<NamedKeyStroke> l = super.getNamedKeyStrokeList();
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
     Collections.addAll(l, preLoopKey, postLoopKey);
     return l;
   }

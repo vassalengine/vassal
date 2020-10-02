@@ -233,7 +233,7 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (fileName != null) s.add(fileName);
   }
 }

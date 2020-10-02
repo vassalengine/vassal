@@ -307,7 +307,7 @@ public class ImageItem extends Item {
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (imageName != null) s.add(imageName);
   }
 }

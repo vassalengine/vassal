@@ -150,7 +150,7 @@ public class PieceMover extends AbstractBuildable
   }
 
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     if (iconName != null) s.add(iconName);
     if (markUnmovedIcon != null) s.add(markUnmovedIcon);
   }

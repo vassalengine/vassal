@@ -315,9 +315,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public void addImageNames(Collection<String> s) {
-    super.addImageNames(s);
-
+  public void addLocalImageNames(Collection<String> s) {
     final String iconName = movedIcon.getValueString();
     if (iconName != null) s.add(iconName);
   }

@@ -254,7 +254,7 @@ public class ChartWindow extends Widget {
    * @param s Collection to add image names to
    */
   @Override
-  protected void addLocalImageNames(Collection<String> s) {
+  public void addLocalImageNames(Collection<String> s) {
     s.add(launch.getIconAttribute());
   }
 }
