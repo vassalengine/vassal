@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.KeyStroke;
@@ -37,6 +38,7 @@ import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.LaunchButton;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -984,5 +986,15 @@ public class LOS_Thread extends AbstractToolbarItem implements
   @Override
   public List<String> getFormattedStringList() {
     return List.of(reportFormat.getFormat());
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

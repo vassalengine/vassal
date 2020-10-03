@@ -21,6 +21,7 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ConfigureTree;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
@@ -853,14 +854,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     repaint();
   }
 
-  @Override
-  public void addLocalImageNames(Collection<String> s) {
-    String string = getLaunchButton().getAttributeValueString(getLaunchButton().getIconAttribute());
-    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
-      s.add(string);
-    }
-  }
-
   /**
    * Set the boards for this map. Each map may contain more than one
    * {@link Board}.
@@ -1386,7 +1379,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
    * @return scaled value in Component coordinates
    */
-  @SuppressWarnings("unused")
   public int drawingToComponent(int c, double os_scale) {
     return scale(c, 1.0 / os_scale);
   }
@@ -1401,7 +1393,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
    * @return scaled Point in Component coordinates
    */
-  @SuppressWarnings("unused")
   public Point drawingToComponent(Point p, double os_scale) {
     return scale(p, 1.0 / os_scale);
   }
@@ -1416,7 +1407,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
    * @return scaled Rectangle in Component coordinates
    */
-  @SuppressWarnings("unused")
   public Rectangle drawingToComponent(Rectangle r, double os_scale) {
     return scale(r, 1.0 / os_scale);
   }
@@ -2618,6 +2608,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param s String to append to title
    */
   @Deprecated(since = "2020-09-16", forRemoval = true)
+  @SuppressWarnings("unused")
   public void appendToTitle(String s) {
     // replaced by updateTitleBar()
   }
@@ -3586,4 +3577,37 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
   }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    h = new HTMLImageFinder(moveWithinFormat);
+    h.addImageNames(s);
+    h = new HTMLImageFinder(moveToFormat);
+    h.addImageNames(s);
+    h = new HTMLImageFinder(createFormat);
+    h.addImageNames(s);
+    h = new HTMLImageFinder(changeFormat);
+    h.addImageNames(s);
+
+    String string;
+    if (!GlobalOptions.NEVER.equals(markMovedOption)) {
+      string = getAttributeValueString(MARK_UNMOVED_ICON);
+      if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+        s.add(string);
+      }
+    }
+
+    if (useLaunchButtonEdit) {
+      string = getLaunchButton().getAttributeValueString(getLaunchButton().getIconAttribute());
+      if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+        s.add(string);
+      }
+    }
+  }
 }
+

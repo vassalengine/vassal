@@ -41,7 +41,12 @@ public class HTMLImageFinder {
    * @param string Prepares to parse an html string
    */
   public HTMLImageFinder(String string) {
-    fileString = "<fragment>" + string.trim() + "</fragment>"; //NON-NLS
+    if (string.toLowerCase().contains("<html>")) {
+      fileString = string;
+    }
+    else {
+      fileString = "<html>" + string.trim() + "</html>"; //NON-NLS
+    }
   }
 
   /**

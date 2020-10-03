@@ -18,11 +18,13 @@
 package VASSAL.build.module;
 
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import VASSAL.build.AutoConfigurable;
@@ -469,5 +471,15 @@ public class DiceButton extends AbstractToolbarItem {
     final ArrayList<String> l = new ArrayList<>();
     l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

@@ -33,6 +33,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.DoubleConsumer;
@@ -49,6 +50,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicHTML;
 
+import VASSAL.search.HTMLImageFinder;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -1022,5 +1024,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(label, nameFormat.getFormat(), labelFormat.getFormat());
+  }
+
+  /**
+   * In case our labels refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(label);
+    h.addImageNames(s);
   }
 }

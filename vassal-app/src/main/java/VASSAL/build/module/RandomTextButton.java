@@ -20,6 +20,7 @@ package VASSAL.build.module;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import VASSAL.build.BadDataReport;
@@ -32,6 +33,7 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
 
 /**
@@ -251,5 +253,18 @@ public class RandomTextButton extends DiceButton {
   @Override
   public List<String> getFormattedStringList() {
     return new ArrayList<>(Arrays.asList(m_faces));
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    for (String f : m_faces) {
+      h = new HTMLImageFinder(f);
+      h.addImageNames(s);
+    }
   }
 }

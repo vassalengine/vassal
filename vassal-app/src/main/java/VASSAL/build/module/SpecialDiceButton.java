@@ -20,6 +20,7 @@ package VASSAL.build.module;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,6 +31,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -669,5 +671,15 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   @Override
   public List<String> getFormattedStringList() {
     return List.of(windowTitleResultFormat, chatResultFormat);
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(chatResultFormat);
+    h.addImageNames(s);
   }
 }
