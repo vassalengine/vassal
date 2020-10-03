@@ -100,9 +100,9 @@ public final class Info {
 
   /**
    * A valid version format is "w.x.y[-z]", where 'w','x', and 'y' are
-   * integers and z is a string. In the version number, w.x are the major/minor release number,
-   * y is the bug-fix release number, and the 'z' identifies an intermediate build
-   * e.g. 3.3.3-alpha1 or 3.3.3-SNAPSHOT
+   * integers and z is a string. In the version number, w.x are the
+   * major/minor release number, y is the bug-fix release number, and the 'z'
+   * identifies an intermediate build: e.g., 3.3.3-alpha1 or 3.3.3-SNAPSHOT
    *
    * @return the full version of the VASSAL engine.
    */
@@ -121,7 +121,7 @@ public final class Info {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getMinorVersion() {
     ProblemDialog.showDeprecated("2020-08-06");
-    final VersionTokenizer tok = new VassalVersionTokenizer(gitProperties.getVersion());
+    final VersionTokenizer tok = new VassalVersionTokenizer(getVersion());
     try {
       return tok.next() + "." + tok.next();
     }
@@ -131,8 +131,9 @@ public final class Info {
   }
 
   /**
-   * Bugzilla (and other potential external reporting tools) require only the primary numeric portion of
-   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3
+   * Bugzilla (and other potential external reporting tools) require only the
+   * primary numeric portion of the version number: e.g., 3.3.3-SNAPSHOT
+   * return 3.3.3.
    *
    * @return The reportable version number
    */
@@ -238,6 +239,8 @@ public final class Info {
     return getDocDir();
   }
 
+  /** @deprecated Use {@link #getBaseDir()} instead. */
+  @Deprecated(since = "2020-10-03", forRemoval = true)
   public static File getBinDir() {
     return new File(System.getProperty("user.dir"));
   }
@@ -263,6 +266,7 @@ public final class Info {
   /** @deprecated Use {@link #getConfDir()} instead. */
   @Deprecated(since = "2020-10-02", forRemoval = true)
   public static File getHomeDir() {
+    ProblemDialog.showDeprecated("2020-10-02");
     return getConfDir();
   }
 
