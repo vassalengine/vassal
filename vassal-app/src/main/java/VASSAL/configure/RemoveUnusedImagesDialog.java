@@ -152,6 +152,10 @@ public class RemoveUnusedImagesDialog extends JDialog {
         aw.removeImage(u);
       }
 
+      if (!buggerOff.isEmpty()) {
+        GameModule.getGameModule().setDirty(true);
+      }
+
       RemoveUnusedImagesDialog.this.dispose();
     });
 
