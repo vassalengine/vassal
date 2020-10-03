@@ -43,21 +43,18 @@ public class ArchiveWriter extends DataArchive {
   private String archiveName;
   private boolean isTempArchive = false;
 
-  /**
-   * Create a new writeable archive.
-   *
-   * @param zipName the name of the archive. If null, the user will be
-   * prompted for a filename when saving. If not null, new entries will
-   * be added to the named archive. If the file exists and is not a zip
-   * archive, it will be overwritten.
-   */
-  public ArchiveWriter(String zipName) {
+  public ArchiveWriter(String zipName, String ext) {
     archiveName = zipName;
 
     if (archiveName == null) {
       isTempArchive = true;
+
+      if (ext == null) {
+        ext = ".zip";
+      }
+
       try {
-        archiveName = File.createTempFile("tmp", ".zip").getPath();
+        archiveName = File.createTempFile("tmp", ext).getPath();
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, archiveName);
@@ -83,6 +80,18 @@ public class ArchiveWriter extends DataArchive {
       archive = null;
       WriteErrorDialog.error(e, archiveName);
     }
+  }
+
+  /**
+   * Create a new writeable archive.
+   *
+   * @param zipName the name of the archive. If null, the user will be
+   * prompted for a filename when saving. If not null, new entries will
+   * be added to the named archive. If the file exists and is not a zip
+   * archive, it will be overwritten.
+   */
+  public ArchiveWriter(String zipName) {
+    this(zipName, null);
   }
 
   public ArchiveWriter(FileArchive archive) {
