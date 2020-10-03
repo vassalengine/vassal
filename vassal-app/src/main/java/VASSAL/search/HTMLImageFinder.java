@@ -7,15 +7,12 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.IOUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.List;
-
 
 /**
  * Parses image tags out of an HTML file or string. Used to add the image filenames to a list, e.g. of images used.
@@ -52,6 +49,6 @@ public class HTMLImageFinder {
    * @param s Collection to add image filenames to.
    */
   public void addImageNames(Collection<String> s) {
-    s.addAll(Jsoup.parse(fileString).getElementsByTag("img").eachAttr("src"));
+    s.addAll(Jsoup.parse(fileString).getElementsByTag("img").eachAttr("src")); //NON-NLS
   }
 }
