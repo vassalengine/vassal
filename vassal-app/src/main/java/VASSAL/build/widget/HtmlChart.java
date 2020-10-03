@@ -288,12 +288,11 @@ public class HtmlChart extends Widget implements MouseListener {
     }
   }
 
-  //private Set<String> imageNames = new HashSet<String>();
-
+  /**
+   * Find all of our image references and register them
+   * @param s Collection to add image names to
+   */
   public void addLocalImageNames(Collection<String> s) {
-    //getComponent();   // ugly, forces imageNames to be populated
-    //s.addAll(imageNames);
-
     HTMLImageFinder h = new HTMLImageFinder(new File(fileName));
     h.addImageNames(s);
   }

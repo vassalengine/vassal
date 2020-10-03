@@ -62,16 +62,6 @@ public class Chart extends Widget {
       if (srcOp != null) {
         label.setIcon(new OpIcon(srcOp));
       }
-/*
-      try {
-        Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
-        ImageIcon icon = image == null ? null : new ImageIcon(image);
-        label.setIcon(icon);
-      }
-      catch (IOException ex) {
-        label.setText("Image " + fileName + " not found");
-      }
-*/
       final Dimension d = label.getPreferredSize();
       if (d.width > 300 || d.height > 300) {
         final JScrollPane scroll = new AdjustableSpeedScrollPane(label);
@@ -114,16 +104,6 @@ public class Chart extends Widget {
       }
       fileName = (String) val;
       if (label != null) {
-/*
-        try {
-          Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
-          ImageIcon icon = image == null ? null : new ImageIcon(image);
-          label.setIcon(icon);
-          label.revalidate();
-        }
-        catch (IOException ex) {
-        }
-*/
         srcOp = fileName == null || fileName.trim().length() == 0
               ? null : Op.load(fileName);
         if (srcOp != null) {
@@ -134,15 +114,6 @@ public class Chart extends Widget {
     }
   }
 
-  /*
-   * public Configurer[] getAttributeConfigurers() { Configurer config[] = new Configurer[2]; config[0] = new
-   * StringConfigurer(NAME,"Name"); config[0].setValue(getConfigureName()); listenTo(config[0]);
-   *
-   * config[1] = new ImageConfigurer (FILE,"Image", GameModule.getGameModule().getArchiveWriter());
-   * config[1].setValue(fileName); listenTo(config[1]);
-   *
-   * return config; }
-   */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];

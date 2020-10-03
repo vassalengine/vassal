@@ -1340,4 +1340,19 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
                          NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_OUT)),
                          NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_PICK)));
   }
+
+  /**
+   * Add our icons to the list of referenced images
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final String [] iconAttr = { PICK_ICON_NAME, IN_ICON_NAME, OUT_ICON_NAME };
+    for (String i : iconAttr) {
+      String f = getAttributeValueString(i);
+      if (f != null) {
+        s.add(f);
+      }
+    }
+  }
 }
