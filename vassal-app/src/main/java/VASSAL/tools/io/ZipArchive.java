@@ -44,6 +44,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
@@ -261,7 +262,10 @@ public class ZipArchive implements FileArchive {
       ze.setMethod(compress ? ZipEntry.DEFLATED : ZipEntry.STORED);
 
       // create new temp file
-      final File tf = File.createTempFile("zip", ".tmp", Info.getTempDir());
+      final String name = archiveFile.getName();
+      final String base = FilenameUtils.getBaseName(name);
+      final String ext = FilenameUtils.getExtension(name);
+      final File tf = File.createTempFile(base, ext, Info.getTempDir());
 
       // set up new Entry
       final Entry e = new Entry(ze, tf);
@@ -396,8 +400,10 @@ public class ZipArchive implements FileArchive {
 
   private void writeToDisk() throws IOException {
     // write all files to a temporary zip archive
-    final File tmpFile =
-      File.createTempFile("tmp", ".zip", archiveFile.getParentFile());
+    final String name = archiveFile.getName();
+    final String base = FilenameUtils.getBaseName(name);
+    final String ext = FilenameUtils.getExtension(name);
+    final File tmpFile = File.createTempFile(base, ext, Info.getTempDir());
 
     try (OutputStream fout = new FileOutputStream(tmpFile);
          OutputStream bout = new BufferedOutputStream(fout);
