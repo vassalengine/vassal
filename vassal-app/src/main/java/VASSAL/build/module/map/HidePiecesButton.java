@@ -391,7 +391,6 @@ public class HidePiecesButton extends JPanel implements MouseListener,
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    s.add(launch.getIconAttribute());
     s.add(getAttributeValueString(SHOWING_ICON));
     s.add(getAttributeValueString(HIDDEN_ICON));
   }

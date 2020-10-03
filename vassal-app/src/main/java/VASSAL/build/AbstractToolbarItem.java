@@ -300,6 +300,9 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    s.add(launch.getIconAttribute());
+    String string = launch.getAttributeValueString(launch.getIconAttribute());
+    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+      s.add(string);
+    }
   }
 }
