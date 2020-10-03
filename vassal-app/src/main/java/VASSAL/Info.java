@@ -18,10 +18,7 @@
 package VASSAL;
 
 import java.awt.Component;
-import java.awt.GraphicsConfiguration;
-import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.io.File;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -32,6 +29,7 @@ import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Class for storing release-related information
@@ -161,17 +159,15 @@ public final class Info {
   }
 
   /**
-   * @return size of screen accounting for the screen insets (i.e. Windows taskbar)
+   * @return size of screen accounting for the screen insets (e.g., Windows
+   * taskbar)
+   * @Deprecated Use {@link VASSAL.tools.swing.SwingUtils.getScreenBounds}
+   * instead.
    */
+  @Deprecated(since = "2020-10-03", forRemoval = true)
   public static Rectangle getScreenBounds(Component c) {
-    final Rectangle bounds =
-      new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-    final GraphicsConfiguration config = c.getGraphicsConfiguration();
-    final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
-    bounds.translate(insets.left, insets.top);
-    bounds.setSize(bounds.width - insets.left - insets.right,
-                   bounds.height - insets.top - insets.bottom);
-    return bounds;
+    ProblemDialog.showDeprecated("2020-10-03");
+    return SwingUtils.getScreenBounds(c);
   }
 
   /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead */

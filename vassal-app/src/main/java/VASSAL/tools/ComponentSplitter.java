@@ -45,7 +45,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import VASSAL.Info;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Provides support for hidden panels. Use the split methods to create an
@@ -486,7 +486,7 @@ public class ComponentSplitter {
           return;
         }
 
-        final Rectangle screenBounds = Info.getScreenBounds(ancestor);
+        final Rectangle screenBounds = SwingUtils.getScreenBounds(ancestor);
         final Point ancestorPos = ancestor.getLocation();
         final Dimension ancestorSize = ancestor.getSize();
         final Dimension prefHSize = getHideableComponent().getPreferredSize();

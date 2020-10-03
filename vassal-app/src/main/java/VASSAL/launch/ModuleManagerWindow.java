@@ -436,7 +436,7 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusView.addPropertyChangeListener("dividerLocation",
       e -> setPreferredDividerLocation((Integer) e.getNewValue()));
 
-    final Rectangle r = Info.getScreenBounds(this);
+    final Rectangle r = SwingUtils.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
       new Dimension((int) (r.width / 3.5), 0));
 
