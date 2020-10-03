@@ -84,7 +84,7 @@ public class GlobalMap implements AutoConfigurable,
                                   GameComponent,
                                   Drawable,
                                   SearchTarget,
-                                  ImageSearchTarget, {
+                                  ImageSearchTarget {
   private static final long serialVersionUID = 2L;
 
   protected Map map;
