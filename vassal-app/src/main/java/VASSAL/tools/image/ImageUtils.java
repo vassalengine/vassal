@@ -34,6 +34,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -242,7 +243,7 @@ public class ImageUtils {
     return getImageSize("", in);
   }
 
-  private static final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, Info.getTempDir());
+  private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));

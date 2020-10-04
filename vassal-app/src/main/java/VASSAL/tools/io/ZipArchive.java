@@ -401,6 +401,17 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private String extensionOf(String path) {
+    final int dot = path.lastIndexOf('.');
+    return dot == -1 ? "" : path.substring(dot);
+  }
+
+  private File makeTempFileFor(String path) throws IOException {
+    final String base = FilenameUtils.getBaseName(path) + "_";
+    final String ext = extensionOf(path);
+    return Files.createTempFile(Info.getTempDir().toPath(), base, ext).toFile();
+  }
+
   private void moveFile(Path src, Path dst) throws IOException {
     // Replace dst with src
     try {

@@ -21,9 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.launch.Launcher;
@@ -54,7 +56,7 @@ public class ArchiveWriter extends DataArchive {
       }
 
       try {
-        archiveName = File.createTempFile("tmp", ext).getPath();
+        archiveName = Files.createTempFile(Info.getTempDir().toPath(), "tmp_", ext).toAbsolutePath().toString();
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, archiveName);
