@@ -265,10 +265,7 @@ public class ZipArchive implements FileArchive {
       ze.setMethod(compress ? ZipEntry.DEFLATED : ZipEntry.STORED);
 
       // create new temp file
-      final String name = archiveFile.getName();
-      final String base = FilenameUtils.getBaseName(name);
-      final String ext = FilenameUtils.getExtension(name);
-      final File tf = File.createTempFile(base, ext, Info.getTempDir());
+      final File tf = makeTempFileFor(path);
 
       // set up new Entry
       final Entry e = new Entry(ze, tf);
@@ -464,10 +461,7 @@ public class ZipArchive implements FileArchive {
 
   private void writeToDisk() throws IOException {
     // write all files to a temporary zip archive
-    final String name = archiveFile.getName();
-    final String base = FilenameUtils.getBaseName(name);
-    final String ext = FilenameUtils.getExtension(name);
-    final File tmpFile = File.createTempFile(base, ext, Info.getTempDir());
+    final File tmpFile = makeTempFileFor(archiveFile.getName());
 
     try (OutputStream fout = new FileOutputStream(tmpFile);
          OutputStream bout = new BufferedOutputStream(fout);
