@@ -193,7 +193,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    */
   @SuppressWarnings("unused")
   public boolean consoleHook(String s, String style, boolean html_allowed) {
-    return Console.exec(s, style, html_allowed);
+    return GameModule.getGameModule().getConsole().exec(s, style, html_allowed);
   }
   
 

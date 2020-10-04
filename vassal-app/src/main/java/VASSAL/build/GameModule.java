@@ -23,6 +23,7 @@ import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.ChessClockControl;
+import VASSAL.build.module.Console;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
@@ -276,6 +277,11 @@ public class GameModule extends AbstractConfigurable
   private Chatter chat;
 
   /**
+   * The Chat Log Console
+   */
+  private   Console console = new Console();
+
+  /**
    * Random number generator
    */
   private final Random RNG = new SecureRandom();
@@ -385,6 +391,13 @@ public class GameModule extends AbstractConfigurable
    */
   public ChatServerControls getServerControls() {
     return serverControls;
+  }
+
+  /**
+   * @return our Console
+   */
+  public Console getConsole() {
+    return console;
   }
 
   /*
@@ -1069,8 +1082,8 @@ public class GameModule extends AbstractConfigurable
   public void warn(String s) {
     String s2 = s;
     if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
-      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-        .replaceAll(">", "&gt;"); //$NON-NLS
+    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+           .replaceAll(">", "&gt;"); //$NON-NLS
     }
     if (chat == null) {
       deferredChat.add(s2);
