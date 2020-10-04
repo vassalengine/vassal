@@ -29,6 +29,9 @@ import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -398,6 +401,56 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private void moveFile(Path src, Path dst) throws IOException {
+    // Replace dst with src
+    try {
+      // attempt an atomic move
+      Files.move(src, dst, StandardCopyOption.ATOMIC_MOVE);
+    }
+    catch (IOException ignore) {
+      // Atomic move failed; this doesn't necessarily indicate a problem, as
+      // some filesystems don't support atomic moves and atomic moves are
+      // impossible when the source and destination aren't on the same
+      // filesystem.
+
+      try {
+        // attempt to copy to the destination
+        Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
+      }
+      catch (IOException e) {
+        // copy failed
+        final String fmt = "Unable to overwrite %s, so data written to %s instead: %s";
+        throw new IOException(
+          String.format(
+            fmt,
+            dst.toAbsolutePath(),
+            src.toAbsolutePath(),
+            e.getMessage()
+          ),
+          e
+        );
+      }
+
+      try {
+        // successful copy, so remove the source
+        Files.delete(src);
+      }
+      catch (IOException e) {
+        // successful copy, but removing the source failed
+        final String fmt = "File %s saved, but unable to remove temporary file %s: %s";
+        throw new IOException(
+          String.format(
+            fmt,
+            dst.toAbsolutePath(),
+            src.toAbsolutePath(),
+            e.getMessage()
+          ),
+          e
+         );
+      }
+    }
+  }
+
   private void writeToDisk() throws IOException {
     // write all files to a temporary zip archive
     final String name = archiveFile.getName();
@@ -455,19 +508,8 @@ public class ZipArchive implements FileArchive {
       }
     }
 
-    // Replace old archive with temp archive.
-    try {
-      if (archiveFile.exists()) {
-        FileUtils.forceDelete(archiveFile);
-      }
-      FileUtils.moveFile(tmpFile, archiveFile);
-    }
-    catch (IOException e) {
-      final String fmt = "Unable to overwrite %s: %s Data written to %s instead.";
-      throw new IOException(
-        String.format(fmt, archiveFile.getAbsolutePath(), e.getMessage(), tmpFile.getAbsolutePath()),
-        e);
-    }
+    // Replace old archive with temp archive
+    moveFile(tmpFile.toPath(), archiveFile.toPath());
 
     // Delete all temporary files
     for (Entry e : entries.values()) {
