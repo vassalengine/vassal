@@ -82,8 +82,18 @@ public class ModuleManager {
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
-  public static void main(String[] args) throws IOException {
-    Info.setConfig(new ConfigImpl());
+  public static void main(String[] args) {
+    // do this before the graphics subsystem fires up or it won't stick
+    System.setProperty("swing.boldMetal", "false");
+
+    try {
+      Info.setConfig(new ConfigImpl());
+    }
+    catch (IOException e) {
+// FIXME: should be a dialog...
+      System.err.println("VASSAL: " + e.getMessage());
+      System.exit(1);
+    }
 
 // FIXME: We need to catch more exceptions in main() and then exit in
 // order to avoid situations where the main thread ends due to an uncaught
@@ -101,9 +111,6 @@ public class ModuleManager {
       System.err.println("VASSAL: " + e.getMessage());
       System.exit(1);
     }
-
-    // do this before the graphics subsystem fires up or it won't stick
-    System.setProperty("swing.boldMetal", "false");
 
     if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
       // show the translation window in translation mode
@@ -136,7 +143,8 @@ public class ModuleManager {
     // (2) No port collisions, because we don't use a predetermined port.
     //
 
-    // Different versions of VASSAL can all co-exist, each with own Module Manager
+    // Different versions of VASSAL can all co-exist, each with own
+    // Module Manager
     String ver = Info.getReportableVersion();
 
     final File keyfile = new File(Info.getConfDir(), "key-" + ver);
