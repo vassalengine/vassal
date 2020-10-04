@@ -2,6 +2,8 @@ package VASSAL.build.module;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.command.Logger;
 import VASSAL.tools.BugUtils;
 import VASSAL.tools.SequenceEncoder;
 import org.slf4j.LoggerFactory;
@@ -28,14 +30,17 @@ public class Console {
   }
 
   private Boolean matches (String s1, String s2, int min) {
-    if (s2.isEmpty() || (s2.length() > s1.length()) || (s2.length() < min)) {
+    if (s2.isEmpty() || (s2.length() > s1.length()) || ((s2.length() < min) && (s1.length() > s2.length()))) {
       return false;
+    }
+    if (s2.length() < min) {
+      return s1.toLowerCase().equals(s2.toLowerCase());
     }
     return s1.toLowerCase().substring(0, s2.length()).equals(s2.toLowerCase());
   }
 
 
-  public Boolean doErrorLog () {
+  private Boolean doErrorLog () {
     String option = decode.nextToken("");
     if (matches("show", option)) {
       String errorLog = BugUtils.getErrorLog();
@@ -98,6 +103,8 @@ public class Console {
     }
     else if (matches("?", option) || matches("help", option)) {
       show("Usage:");
+      show("  /errorlog folder       - Opens folder containing errorlog");
+      show("  /errorlog open         - Opens errorlog in OS");
       show("  /errorlog show [n]     - Show last n lines of errorlog");
       show("  /errorlog wipe         - Wipe the errorlog file");
       show("  /errorlog write [text] - Write text into the errorlog file");
@@ -107,11 +114,41 @@ public class Console {
   }
 
 
+  private Boolean doProperty() {
+    String option   = decode.nextToken("");
+    String property = decode.nextToken("");
+
+    if (matches("?", option) || matches("help", option)) {
+      //
+    }
+    else if (matches("show", option)) {
+      MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
+      show ("[" + property + "]: " + propValue.getPropertyValue());
+    }
+    else if (matches("set", option)) {
+      MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
+      propValue.setPropertyValue(decode.nextToken(""));
+      show ("[" + property + "]: " + propValue.getPropertyValue());
+    }
+
+    return true;
+  }
+
   public Boolean exec(String s, String style, boolean html_allowed) {
     if (s.charAt(0) != '/') {
       return false;
     }
     commandLine = s.substring(1);
+
+    // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
+    // it will not accept console commands.
+    Logger log = GameModule.getGameModule().getLogger();
+    if (log instanceof BasicLogger) {
+      if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().getPlayerRoster().isMultiPlayer()) {
+        show ("<b>Console commands not allowed in multiplayer games.</b>");
+        return false;
+      }
+    }
 
     show(s);
 
@@ -137,6 +174,18 @@ public class Console {
 
     if (matches("errorlog", command)) {
       return doErrorLog();
+    }
+
+    if (matches("property", command)) {
+      return doProperty();
+    }
+
+    if (matches("mp", command)) {
+      if (log instanceof BasicLogger) {
+        ((BasicLogger)log).setMultiPlayer(true);
+        show ("<b>Set to Multiplayer</b>");
+        return true;
+      }
     }
 
     return false;

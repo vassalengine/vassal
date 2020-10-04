@@ -204,7 +204,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     this.multiPlayer = multiPlayer;
   }
 
-  public Boolean getMultiPlayer() {
+  public Boolean isMultiPlayer() {
     return multiPlayer;
   }
 
@@ -254,7 +254,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   @Override
   public Command getRestoreCommand() {
-    return new MultiplayerStateCommand(getMultiPlayer());
+    return new MultiplayerStateCommand(isMultiPlayer());
   }
 
   private static class MultiplayerStateCommand extends Command {
