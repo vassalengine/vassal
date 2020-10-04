@@ -85,6 +85,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected File outputFile;
   protected Action stepAction = new StepAction();
   protected SaveMetaData metadata;
+  private Boolean multiPlayer = false;
 
   public BasicLogger() {
     super();
@@ -199,6 +200,15 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void remove(Buildable b) {
   }
 
+  public void setMultiPlayer(Boolean multiPlayer) {
+    this.multiPlayer = multiPlayer;
+  }
+
+  public Boolean getMultiPlayer() {
+    return multiPlayer;
+  }
+
+
   @Override
   public void setup(boolean show) {
     newLogAction.setEnabled(show);
@@ -244,8 +254,30 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   @Override
   public Command getRestoreCommand() {
-    return null;
+    return new MultiplayerStateCommand(getMultiPlayer());
   }
+
+  private static class MultiplayerStateCommand extends Command {
+    Boolean state;
+
+    MultiplayerStateCommand(Boolean state) {
+      this.state = state;
+    }
+
+    @Override
+    protected void executeCommand() {
+      Logger log = GameModule.getGameModule().getLogger();
+      if (log instanceof BasicLogger) {
+        ((BasicLogger) log).setMultiPlayer(state);
+      }
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
 
   public void enableDrawing(boolean show) {
   }

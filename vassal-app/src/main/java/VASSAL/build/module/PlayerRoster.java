@@ -485,6 +485,21 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
 
+  public boolean isMultiPlayer() {
+    int allocatedSideCount = 0;
+    for (PlayerInfo p : players) {
+      if (!OBSERVER.equals(p.getSide())) {
+        ++allocatedSideCount;
+      }
+    }
+    if (allocatedSideCount > 1) return true;
+
+
+
+    return false;
+  }
+
+
   protected String promptForSide() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
     final ArrayList<String> alreadyTaken = new ArrayList<>();
