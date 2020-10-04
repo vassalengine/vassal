@@ -187,7 +187,7 @@ public class MapBoard extends Importer {
         return null;
       }
 
-      final File f = File.createTempFile("map", ".png", Info.getTempDir());
+      final File f = File.createTempFile("map_", ".png", Info.getTempDir());
       try {
         ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
         imageName = getUniqueImageFileName(getName(), ".png");

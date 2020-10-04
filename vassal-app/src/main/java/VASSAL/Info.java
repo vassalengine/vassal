@@ -23,8 +23,11 @@ import java.io.File;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import VASSAL.launch.Config;
+
+import VASSAL.launch.Config;
+import VASSAL.launch.DummyConfigImpl;
 import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.version.GitProperties;
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
@@ -35,65 +38,19 @@ import VASSAL.tools.swing.SwingUtils;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final GitProperties gitProperties;
+  private static Config CONFIG = new DummyConfigImpl();
 
-  private static final File homeDir;
-  private static final File tmpDir;
-
-  // Directory setup
-  static {
-    File f;
-
-    if (SystemUtils.IS_OS_MAC_OSX) {
-      f = new File(
-        System.getProperty("user.home"), "Library/Application Support/VASSAL"
-      );
-    }
-    else if (SystemUtils.IS_OS_WINDOWS) {
-      f = new File(System.getenv("APPDATA") + "/VASSAL");
-    }
-    else {
-      f = new File(System.getProperty("user.home"), ".VASSAL");
-    }
-
-    homeDir = f;
-    tmpDir = new File(homeDir, "tmp");
-
-    if (!homeDir.exists()) {
-      homeDir.mkdirs();
-    }
-
-    if (!tmpDir.exists()) {
-      tmpDir.mkdirs();
-    }
-
-    // Set the instance id from the system properties.
-    final String idstr = System.getProperty("VASSAL.id");
-    if (idstr == null) {
-      instanceID = 0;
-    }
-    else {
-      int id;
-      try {
-        id = Integer.parseInt(idstr);
-      }
-      catch (NumberFormatException e) {
-        id = -1;
-      }
-
-      instanceID = id;
-    }
-
-    gitProperties = new GitProperties();
+  public static void setConfig(Config c) {
+    CONFIG = c;
   }
 
-  /** The path to the JVM binary. */
-  public static final String javaBinPath =
-    System.getProperty("java.home") +
-      File.separator +
-      "bin" +
-      File.separator +
-      "java";
+  /**
+   * The path to the JVM binary.
+   *
+   * @deprecated Use {@link #getJavaBinPath()} instead.
+   */
+  @Deprecated(since = "2020-10-03", forRemoval = true)
+  public static final String javaBinPath = getJavaBinPath().getAbsolutePath();
 
   /** This class should not be instantiated */
   private Info() { }
@@ -107,7 +64,7 @@ public final class Info {
    * @return the full version of the VASSAL engine.
    */
   public static String getVersion() {
-    return gitProperties.getVersion();
+    return CONFIG.getVersion();
   }
 
   /**
@@ -138,25 +95,51 @@ public final class Info {
    * @return The reportable version number
    */
   public static String getReportableVersion() {
-    final String v = getVersion();
-    return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
+    return CONFIG.getReportableVersion();
   }
 
   /**
    * @return a version-specific errorLog path
    */
   public static File getErrorLogPath() {
-    return new File (getConfDir(), "errorLog-" + getVersion());
+    return CONFIG.getErrorLogPath().toFile();
   }
 
-  private static final int instanceID;
+  public static File getJavaBinPath() {
+    return CONFIG.getJavaBinPath().toFile();
+  }
 
   /**
    * Returns the instance id for this process. The instance id will be
    * be unique across the Module Manager and its children.
    */
   public static int getInstanceID() {
-    return instanceID;
+    return CONFIG.getInstanceID();
+  }
+
+  /**
+   * Returns the directory where VASSAL is installed.
+   *
+   * @return a {@link File} representing the directory
+   */
+  public static File getBaseDir() {
+    return CONFIG.getBaseDir().toFile();
+  }
+
+  public static File getDocDir() {
+    return CONFIG.getDocDir().toFile();
+  }
+
+  public static File getConfDir() {
+    return CONFIG.getConfDir().toFile();
+  }
+
+  public static File getTempDir() {
+    return CONFIG.getTempDir().toFile();
+  }
+
+  public static File getPrefsDir() {
+    return CONFIG.getPrefsDir().toFile();
   }
 
   /**
@@ -219,15 +202,6 @@ public final class Info {
   }
 
   /**
-   * Returns the directory where VASSAL is installed.
-   *
-   * @return a {@link File} representing the directory
-   */
-  public static File getBaseDir() {
-    return new File(System.getProperty("user.dir"));
-  }
-
-  /**
    * Returns the directory where the VASSAL documentation is installed.
    *
    * @return a {@link File} representing the directory
@@ -242,25 +216,8 @@ public final class Info {
   /** @deprecated Use {@link #getBaseDir()} instead. */
   @Deprecated(since = "2020-10-03", forRemoval = true)
   public static File getBinDir() {
-    return new File(System.getProperty("user.dir"));
-  }
-
-  public static File getDocDir() {
-    final String d = SystemUtils.IS_OS_MAC_OSX ?
-      "Contents/Resources/doc" : "doc";
-    return new File(getBaseDir(), d);
-  }
-
-  public static File getConfDir() {
-    return homeDir;
-  }
-
-  public static File getTempDir() {
-    return tmpDir;
-  }
-
-  public static File getPrefsDir() {
-    return new File(getConfDir(), "prefs");
+    ProblemDialog.showDeprecated("2020-10-03");
+    return getBaseDir();
   }
 
   /** @deprecated Use {@link #getConfDir()} instead. */
