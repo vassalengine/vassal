@@ -6,6 +6,7 @@ import VASSAL.tools.BugUtils;
 import VASSAL.tools.SequenceEncoder;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,6 +56,34 @@ public class Console {
       int where = commandLine.toLowerCase().indexOf("write");
       if ((where > 0) && commandLine.length() > where + 6) {
         log.info(commandLine.substring(where + 6));
+      }
+    }
+    else if (matches("folder", option)) {
+      Desktop desktop = Desktop.getDesktop();
+      File dirToOpen = null;
+      try {
+        dirToOpen = Info.getHomeDir();
+        desktop.open(dirToOpen);
+      }
+      catch (IOException e) {
+        System.out.println("File Not Found");
+      }
+      catch (IllegalArgumentException iae) {
+        System.out.println("File Not Found");
+      }
+    }
+    else if (matches("open", option)) {
+      Desktop desktop = Desktop.getDesktop();
+      File dirToOpen = null;
+      try {
+        dirToOpen = Info.getErrorLogPath();
+        desktop.open(dirToOpen);
+      }
+      catch (IOException e) {
+        System.out.println("File Not Found");
+      }
+      catch (IllegalArgumentException iae) {
+        System.out.println("File Not Found");
       }
     }
     else if (matches("wipe", option)) {
