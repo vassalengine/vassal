@@ -156,7 +156,6 @@ public class ModuleManager {
     FileLock klock = null;
     try (RandomAccessFile kraf = new RandomAccessFile(keyfile, "rw")) {
       // acquire an exclusive lock on the key file
-
       try {
         klock = kraf.getChannel().lock();
       }
