@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -71,7 +73,7 @@ public class ImageToTiles {
       new DaemonThreadFactory(ImageToTiles.class.getSimpleName())
     );
 
-    final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, new File(tpath));
+    final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile();
 
     final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
     final ImageLoader loader = new ImageIOImageLoader(itc);

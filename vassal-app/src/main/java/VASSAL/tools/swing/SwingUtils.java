@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2020 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
@@ -17,6 +16,10 @@
  */
 package VASSAL.tools.swing;
 
+import java.awt.Component;
+import java.awt.GraphicsConfiguration;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.event.InputEvent;
@@ -354,5 +357,20 @@ public class SwingUtils {
     // for them before, this won't change behavior by excluding them.
     final InputEvent te = e.getTriggerEvent();
     return !(te instanceof MouseEvent) || isMainMouseButtonDown((MouseEvent) te);
+  }
+
+  /**
+   * @return size of screen accounting for the screen insets (e.g., Windows
+   * taskbar)
+   */
+  public static Rectangle getScreenBounds(Component c) {
+    final Rectangle bounds =
+      new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+    final GraphicsConfiguration config = c.getGraphicsConfiguration();
+    final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
+    bounds.translate(insets.left, insets.top);
+    bounds.setSize(bounds.width - insets.left - insets.right,
+                   bounds.height - insets.top - insets.bottom);
+    return bounds;
   }
 }

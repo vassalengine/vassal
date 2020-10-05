@@ -591,7 +591,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       final int port = serverSocket.getLocalPort();
 
-      result.add(Info.javaBinPath);
+      result.add(Info.getJavaBinPath().getAbsolutePath());
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
 
