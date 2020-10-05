@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -36,11 +38,15 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import org.apache.commons.io.file.PathUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -135,18 +141,21 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   private void internalExtractContents(ZipInputStream in) throws IOException {
-    final File tmp; //$NON-NLS-1$ //$NON-NLS-2$
-    tmp = File.createTempFile("VASSAL", "help");
-    File output = tmp.getParentFile();
-    tmp.delete();
-    output = new File(output, "VASSAL"); //$NON-NLS-1$
-    output = new File(output, "help"); //$NON-NLS-1$
-    output = new File(output, getContentsResource());
-    if (output.exists()) recursiveDelete(output);
+    final Path p = Path.of(
+      Info.getTempDir().getAbsolutePath(),
+      "VASSAL", //$NON-NLS-1$ 
+      "help",   //$NON-NLS-1$ 
+      getContentsResource()
+    ); 
 
-    output.mkdirs();
+    if (Files.exists(p)) {
+      PathUtils.deleteDirectory(p);
+    }
+
+    Files.createDirectories(p);
+
+    final File output = p.toFile();
     ZipEntry entry;
-
     while ((entry = in.getNextEntry()) != null) {
       if (entry.isDirectory()) {
         new File(output, entry.getName()).mkdirs();
@@ -161,6 +170,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     url = new File(output, startingPage).toURI().toURL();
   }
 
+  /** @deprecated Use {@link org.apache.commons.io.FileUtils.deleteDirectory} instead. */
+  @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
       for (File f : output.listFiles()) {

@@ -71,6 +71,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 public class BasicModule extends GameModule {
   private static final Logger log =
@@ -283,7 +284,7 @@ public class BasicModule extends GameModule {
   }
 
   protected void initFrame() {
-    final Rectangle screen = VASSAL.Info.getScreenBounds(frame);
+    final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
 // FIXME: annoying!

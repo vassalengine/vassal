@@ -50,7 +50,8 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.version.VersionUtils;
 
 public class Editor extends Launcher {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    Info.setConfig(new StandardConfig());
     new Editor(args);
   }
 

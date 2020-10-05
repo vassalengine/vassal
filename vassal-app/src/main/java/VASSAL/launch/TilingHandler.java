@@ -170,7 +170,7 @@ public class TilingHandler {
     final int port = ssock.getLocalPort();
 
     final List<String> args = Arrays.asList(
-      Info.javaBinPath,
+      Info.getJavaBinPath().getAbsolutePath(),
       "-classpath",
       System.getProperty("java.class.path"),
       "-Xmx" + maxheap + "M",

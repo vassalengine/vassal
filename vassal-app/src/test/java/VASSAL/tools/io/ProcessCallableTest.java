@@ -41,7 +41,7 @@ public class ProcessCallableTest {
     final byte[] eerr = ("Veldt jynx grimps waqf zho buck." + EOL).getBytes();
 
     final ProcessBuilder pb = new ProcessBuilder(
-      Info.javaBinPath,
+      Info.getJavaBinPath().getAbsolutePath(),
       "-cp",
       System.getProperty("java.class.path"),
       "VASSAL.tools.io.ProcessCallableTestEchoer"

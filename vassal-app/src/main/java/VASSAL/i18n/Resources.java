@@ -357,7 +357,7 @@ public class Resources {
     public URL getAResource(String name) {
       URL url = null;
       final String propFileName = name.substring(name.lastIndexOf('/') + 1);
-      final File propFile = new File(Info.getHomeDir(), propFileName);
+      final File propFile = new File(Info.getConfDir(), propFileName);
       if (propFile.exists()) {
         try {
           url = propFile.toURI().toURL();

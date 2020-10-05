@@ -24,12 +24,12 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Loads an exiting module extension and opens it in an extension edit window
@@ -58,7 +58,7 @@ public class EditExtensionAction extends LoadModuleAction {
     final ExtensionEditorWindow w =
       new ExtensionEditorWindow(GameModule.getGameModule(), ext);
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
+    w.setSize(SwingUtils.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

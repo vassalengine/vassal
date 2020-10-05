@@ -168,7 +168,7 @@ public final class ImportAction extends EditModuleAction {
       throw new FileFormatException("Unrecognized file format");
     }
 
-    final GameModule module = new BasicModule(new ArchiveWriter((String) null));
+    final GameModule module = new BasicModule(new ArchiveWriter(null, ".vmod"));
     GameModule.init(module);
 
     final Importer imp;

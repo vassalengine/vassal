@@ -54,7 +54,8 @@ import VASSAL.tools.version.VersionUtils;
  * @since 3.1.0
  */
 public class Player extends Launcher {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    Info.setConfig(new StandardConfig());
     new Player(args);
   }
 
