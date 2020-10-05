@@ -111,6 +111,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
                 named = false;
                 setValue(NamedKeyStroke.NULL_KEYSTROKE);
                 updateVisibility();
+                updateFocus();
               }
               else {
                 setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), keyName.getText()));
@@ -129,6 +130,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
                 named = false;
                 setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
                 updateVisibility();
+                updateFocus();
               }
           }
         }
@@ -145,6 +147,15 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
       updateVisibility();
     }
     return p;
+  }
+
+  private void updateFocus() {
+    if (tf.isVisible()) {
+      tf.requestFocus();
+    }
+    else {
+      keyName.requestFocus();
+    }
   }
 
   protected void updateVisibility() {
