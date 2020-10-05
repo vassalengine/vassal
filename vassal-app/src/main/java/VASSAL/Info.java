@@ -26,7 +26,7 @@ import org.apache.commons.lang3.SystemUtils;
 import VASSAL.launch.Config;
 
 import VASSAL.launch.Config;
-import VASSAL.launch.DummyConfigImpl;
+import VASSAL.launch.DummyConfig;
 import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
@@ -38,7 +38,7 @@ import VASSAL.tools.swing.SwingUtils;
  * Class for storing release-related information
  */
 public final class Info {
-  private static Config CONFIG = new DummyConfigImpl();
+  private static Config CONFIG = new DummyConfig();
 
   public static void setConfig(Config c) {
     CONFIG = c;

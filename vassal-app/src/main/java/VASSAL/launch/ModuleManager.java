@@ -87,7 +87,7 @@ public class ModuleManager {
     System.setProperty("swing.boldMetal", "false");
 
     try {
-      Info.setConfig(new ConfigImpl());
+      Info.setConfig(new StandardConfig());
     }
     catch (IOException e) {
 // FIXME: should be a dialog...

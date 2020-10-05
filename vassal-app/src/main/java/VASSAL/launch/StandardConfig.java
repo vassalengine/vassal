@@ -24,7 +24,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.tools.version.GitProperties;
 
-public class ConfigImpl implements Config {
+public class StandardConfig implements Config {
   private final Path baseDir; 
   private final Path docDir;
   private final Path confDir;
@@ -39,7 +39,7 @@ public class ConfigImpl implements Config {
   private final String version;
   private final String reportableVersion;
 
-  public ConfigImpl() throws IOException {
+  public StandardConfig() throws IOException {
     baseDir = Path.of(System.getProperty("user.dir"));
 
     docDir = baseDir.resolve(

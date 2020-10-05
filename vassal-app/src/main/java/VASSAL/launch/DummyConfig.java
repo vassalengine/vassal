@@ -18,7 +18,7 @@ package VASSAL.launch;
 
 import java.nio.file.Path;
 
-public class DummyConfigImpl implements Config {
+public class DummyConfig implements Config {
   public String getVersion() {
     return "3.4.3";
   }

@@ -51,7 +51,7 @@ import VASSAL.tools.version.VersionUtils;
 
 public class Editor extends Launcher {
   public static void main(String[] args) throws IOException {
-    Info.setConfig(new ConfigImpl());
+    Info.setConfig(new StandardConfig());
     new Editor(args);
   }
 
