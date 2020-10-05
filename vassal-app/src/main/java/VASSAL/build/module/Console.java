@@ -123,12 +123,16 @@ public class Console {
     }
     else if (matches("show", option)) {
       MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
-      show ("[" + property + "]: " + propValue.getPropertyValue());
+      if (propValue != null) {
+        show("[" + property + "]: " + propValue.getPropertyValue());
+      }
     }
     else if (matches("set", option)) {
       MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
-      propValue.setPropertyValue(decode.nextToken(""));
-      show ("[" + property + "]: " + propValue.getPropertyValue());
+      if (propValue != null) {
+        propValue.setPropertyValue(decode.nextToken(""));
+        show("[" + property + "]: " + propValue.getPropertyValue());
+      }
     }
 
     return true;
