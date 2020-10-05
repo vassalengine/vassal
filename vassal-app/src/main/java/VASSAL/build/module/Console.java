@@ -1,3 +1,20 @@
+/*
+ *
+ * Copyright (c) 2020 by Brian Reynolds, VASSAL
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.build.module;
 
 import VASSAL.Info;
@@ -13,6 +30,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Expandable "Console" to allow entering commands into the Chatter.
+ */
 public class Console {
   SequenceEncoder.Decoder decode;
   String commandLine;
@@ -119,7 +139,9 @@ public class Console {
     String property = decode.nextToken("");
 
     if (matches("?", option) || matches("help", option)) {
-      //
+      show ("Usage:");
+      show ("  /property show [property]        - show global property value");
+      show ("  /property set [property] [value] - set global property new value");
     }
     else if (matches("show", option)) {
       MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
@@ -137,6 +159,13 @@ public class Console {
 
     return true;
   }
+
+
+  public Boolean consoleHook(String s, String commandLine, String cl, String command, SequenceEncoder.Decoder decode) {
+    // Hook for console subclasses, etc.
+    return false;
+  }
+
 
   public Boolean exec(String s, String style, boolean html_allowed) {
     if (s.charAt(0) != '/') {
@@ -184,14 +213,11 @@ public class Console {
       return doProperty();
     }
 
-    if (matches("mp", command)) {
-      if (log instanceof BasicLogger) {
-        ((BasicLogger)log).setMultiPlayer(true);
-        show ("<b>Set to Multiplayer</b>");
-        return true;
-      }
+    if (!consoleHook(s, commandLine, cl, command, decode)) {
+      show ("Unknown command.");
+      return false;
     }
 
-    return false;
+    return true;
   }
 }
