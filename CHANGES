@@ -22,8 +22,9 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
-3.4.4 - ???
+3.4.4 - 6 October 2020
 
+* 13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus
 * 13471: Using BeanShell string functions in Calculated Property crashes Editor
 * 13461: Always initialise Deck on New/Load game
 * 13458: Reinstate behavior of floating point expression evaluation
