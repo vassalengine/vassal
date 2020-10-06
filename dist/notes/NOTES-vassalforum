@@ -1,6 +1,6 @@
-[size=200][b]VASSAL 3.4.4 Released[/b][/size]
+[size=200][b]VASSAL 3.4.5 Released[/b][/size]
 
-The VASSAL Team is happy to announce the release of VASSAL 3.4.4.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.5.
 
 [size=150][b]IMPORTANT[/b][/size]
 
@@ -12,11 +12,17 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.4.
 
 [size=150][b]Download[/b][/size]
 
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.4/VASSAL-3.4.4-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.4/VASSAL-3.4.4-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.4/VASSAL-3.4.4-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.4/VASSAL-3.4.4-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.4/VASSAL-3.4.4-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-other.zip]Other[/url]
+
+[size=150][b]Changes since 3.4.3[/b][/size]
+
+Bug fixes
+
+* 13490: Module Manager "Show Error Log" doesn't
 
 [size=150][b]Changes since 3.4.3[/b][/size]
 

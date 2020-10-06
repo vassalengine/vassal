@@ -1,3 +1,7 @@
+3.4.5 - 6 October 2020
+
+* 13490: Module Manager "Show Error Log" doesn't
+
 3.4.4 - 6 October 2020
 
 * 13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus
