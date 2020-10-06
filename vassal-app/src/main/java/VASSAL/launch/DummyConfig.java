@@ -52,7 +52,7 @@ public class DummyConfig implements Config {
   }
 
   public Path getErrorLogPath() {
-    return getTempDir(); 
+    return getConfDir().resolve("errorLog-" + getVersion());
   }
 
   public Path getJavaBinPath() {
