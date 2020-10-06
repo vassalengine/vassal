@@ -40,6 +40,28 @@ public class StandardConfig implements Config {
   private final String reportableVersion;
 
   public StandardConfig() throws IOException {
+    // Set the instance id from the system properties.
+    final String idstr = System.getProperty("VASSAL.id");
+    if (idstr == null) {
+      instanceID = 0;
+    }
+    else {
+      int id;
+      try {
+        id = Integer.parseInt(idstr);
+      }
+      catch (NumberFormatException e) {
+        id = -1;
+      }
+
+      instanceID = id;
+    }
+
+    // Set the version, reportable version
+    final GitProperties gitProperties = new GitProperties();
+    version = gitProperties.getVersion();
+    reportableVersion = version.contains("-") ? version.substring(0, version.indexOf('-')) : version;
+
     baseDir = Path.of(System.getProperty("user.dir"));
 
     docDir = baseDir.resolve(
@@ -67,28 +89,6 @@ public class StandardConfig implements Config {
     // Set up the temp dir and ensure it exists
     tmpDir = Files.createTempDirectory("vassal_");
     tmpDir.toFile().deleteOnExit();
-
-    // Set the instance id from the system properties.
-    final String idstr = System.getProperty("VASSAL.id");
-    if (idstr == null) {
-      instanceID = 0;
-    }
-    else {
-      int id;
-      try {
-        id = Integer.parseInt(idstr);
-      }
-      catch (NumberFormatException e) {
-        id = -1;
-      }
-
-      instanceID = id;
-    }
-
-    // Set the version, reportable version
-    final GitProperties gitProperties = new GitProperties();
-    version = gitProperties.getVersion();
-    reportableVersion = version.contains("-") ? version.substring(0, version.indexOf('-')) : version;
   }
 
   @Override
