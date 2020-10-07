@@ -69,7 +69,7 @@ public class SequenceEncoder {
   //
   // These characters are all terrible choices for delimiters anyway, so
   // hopefully no one uses them, but we have to check just in case.
-  private static final String UGLY = "-.0123456789EINaefilnrstuy";
+  private static final String UGLY = "-.0123456789EINaefilnrstuy"; //NON-NLS
   private final boolean uglyDelim;
 
   public SequenceEncoder(char delimiter) {
@@ -362,7 +362,7 @@ public class SequenceEncoder {
     }
 
     public boolean nextBoolean(boolean defaultValue) {
-      return val != null ? "true".equals(nextToken()) : defaultValue;
+      return val != null ? "true".equals(nextToken()) : defaultValue; //NON-NLS
     }
 
     /**

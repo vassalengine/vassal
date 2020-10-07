@@ -18,8 +18,6 @@
 package VASSAL.tools;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.JScrollPane;
 
@@ -77,12 +75,9 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
       defaultSpeed
     );
 
-    config.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        if (SCROLL_SPEED.equals(e.getPropertyName()))
-          setSpeed((Integer) e.getNewValue());
-      }
+    config.addPropertyChangeListener(e -> {
+      if (SCROLL_SPEED.equals(e.getPropertyName()))
+        setSpeed((Integer) e.getNewValue());
     });
 
     final GameModule g = GameModule.getGameModule();

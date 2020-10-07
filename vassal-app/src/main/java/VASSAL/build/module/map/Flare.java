@@ -641,7 +641,6 @@ public class Flare extends AbstractConfigurable
    */
   public static class FlareKeyConfig extends TranslatableStringEnum {
     @Override
-
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {
         FLARE_ALT,
@@ -653,6 +652,7 @@ public class Flare extends AbstractConfigurable
       };
     }
 
+    @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
       return new String[] {
@@ -663,6 +663,11 @@ public class Flare extends AbstractConfigurable
         SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
         SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
       };
+    }
+
+    @Override
+    public boolean isDisplayNames() {
+      return true;
     }
   }
 

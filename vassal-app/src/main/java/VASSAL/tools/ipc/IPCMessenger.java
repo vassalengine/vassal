@@ -59,26 +59,20 @@ public class IPCMessenger {
     this.in = new ObjectInputStream(in);
     this.lsup = new DefaultMultiEventListenerSupport(this);
 
-    lsup.addEventListener(IPCMessage.class, new EventListener<>() {
-      @Override
-      public void receive(Object src, IPCMessage msg) {
-        if (msg.isReply()) {
-          final CompletableFuture<IPCMessage> f = waiting.remove(msg.getInReplyTo());
-          if (f == null) throw new IllegalStateException(msg.toString());
-          f.complete(msg);
-        }
+    lsup.addEventListener(IPCMessage.class, (src, msg) -> {
+      if (msg.isReply()) {
+        final CompletableFuture<IPCMessage> f = waiting.remove(msg.getInReplyTo());
+        if (f == null) throw new IllegalStateException(msg.toString());
+        f.complete(msg);
       }
     });
 
-    lsup.addEventListener(Halt.class, new EventListener<>() {
-      @Override
-      public void receive(Object src, Halt halt) {
-        try {
-          send(new Fin(halt));
-        }
-        catch (IOException e) {
-// FIXME: communcate this to a handler?
-        }
+    lsup.addEventListener(Halt.class, (src, halt) -> {
+      try {
+        send(new Fin(halt));
+      }
+      catch (IOException e) {
+// FIXME: communicate this to a handler?
       }
     });
   }
@@ -153,7 +147,7 @@ public class IPCMessenger {
   /**
    * Notify the listeners of an event.
    *
-   * @param event the event to send
+   * @param c the event to send
    */
   public <T> List<EventListener<? super T>> getEventListeners(Class<T> c) {
     return lsup.getEventListeners(c);

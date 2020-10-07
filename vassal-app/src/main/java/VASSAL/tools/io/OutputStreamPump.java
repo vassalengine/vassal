@@ -33,5 +33,5 @@ public interface OutputStreamPump extends Runnable {
    * @param in the output stream
    * @throws UnsupportedOperationException if called after the pump is started
    */
-  public void setOutputStream(OutputStream in);
+  void setOutputStream(OutputStream in);
 }

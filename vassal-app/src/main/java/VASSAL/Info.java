@@ -18,98 +18,53 @@
 package VASSAL;
 
 import java.awt.Component;
-import java.awt.GraphicsConfiguration;
-import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.io.File;
 
 import org.apache.commons.lang3.SystemUtils;
 
+import VASSAL.launch.Config;
+
+import VASSAL.launch.Config;
+import VASSAL.launch.DummyConfig;
 import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.version.GitProperties;
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Class for storing release-related information
  */
 public final class Info {
-  private static final GitProperties gitProperties;
+  private static Config CONFIG = new DummyConfig();
 
-  private static final File homeDir;
-  private static final File tmpDir;
-
-  // Directory setup
-  static {
-    File f;
-
-    if (SystemUtils.IS_OS_MAC_OSX) {
-      f = new File(
-        System.getProperty("user.home"), "Library/Application Support/VASSAL"
-      );
-    }
-    else if (SystemUtils.IS_OS_WINDOWS) {
-      f = new File(System.getenv("APPDATA") + "/VASSAL");
-    }
-    else {
-      f = new File(System.getProperty("user.home"), ".VASSAL");
-    }
-
-    homeDir = f;
-    tmpDir = new File(homeDir, "tmp");
-
-    if (!homeDir.exists()) {
-      homeDir.mkdirs();
-    }
-
-    if (!tmpDir.exists()) {
-      tmpDir.mkdirs();
-    }
-
-    // Set the instance id from the system properties.
-    final String idstr = System.getProperty("VASSAL.id");
-    if (idstr == null) {
-      instanceID = 0;
-    }
-    else {
-      int id;
-      try {
-        id = Integer.parseInt(idstr);
-      }
-      catch (NumberFormatException e) {
-        id = -1;
-      }
-
-      instanceID = id;
-    }
-
-    gitProperties = new GitProperties();
+  public static void setConfig(Config c) {
+    CONFIG = c;
   }
 
-  /** The path to the JVM binary. */
-  public static final String javaBinPath =
-    System.getProperty("java.home") +
-      File.separator +
-      "bin" +
-      File.separator +
-      "java";
+  /**
+   * The path to the JVM binary.
+   *
+   * @deprecated Use {@link #getJavaBinPath()} instead.
+   */
+  @Deprecated(since = "2020-10-03", forRemoval = true)
+  public static final String javaBinPath = getJavaBinPath().getAbsolutePath();
 
   /** This class should not be instantiated */
   private Info() { }
 
   /**
    * A valid version format is "w.x.y[-z]", where 'w','x', and 'y' are
-   * integers and z is a string. In the version number, w.x are the major/minor release number,
-   * y is the bug-fix release number, and the 'z' identifies an intermediate build
-   * e.g. 3.3.3-alpha1 or 3.3.3-SNAPSHOT
+   * integers and z is a string. In the version number, w.x are the
+   * major/minor release number, y is the bug-fix release number, and the 'z'
+   * identifies an intermediate build: e.g., 3.3.3-alpha1 or 3.3.3-SNAPSHOT
    *
    * @return the full version of the VASSAL engine.
    */
   public static String getVersion() {
-    return gitProperties.getVersion();
+    return CONFIG.getVersion();
   }
 
   /**
@@ -123,7 +78,7 @@ public final class Info {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getMinorVersion() {
     ProblemDialog.showDeprecated("2020-08-06");
-    final VersionTokenizer tok = new VassalVersionTokenizer(gitProperties.getVersion());
+    final VersionTokenizer tok = new VassalVersionTokenizer(getVersion());
     try {
       return tok.next() + "." + tok.next();
     }
@@ -133,48 +88,70 @@ public final class Info {
   }
 
   /**
-   * Bugzilla (and other potential external reporting tools) require only the primary numeric portion of
-   * the version number. e.g. 3.3.3-SNAPSHOT return 3.3.3
+   * Bugzilla (and other potential external reporting tools) require only the
+   * primary numeric portion of the version number: e.g., 3.3.3-SNAPSHOT
+   * return 3.3.3.
    *
    * @return The reportable version number
    */
   public static String getReportableVersion() {
-    final String v = getVersion();
-    return v.contains("-") ?  v.substring(0, v.indexOf('-')) : v;
+    return CONFIG.getReportableVersion();
   }
-
 
   /**
    * @return a version-specific errorLog path
    */
   public static File getErrorLogPath() {
-    return new File (getHomeDir(), "errorLog-" + getVersion());
+    return CONFIG.getErrorLogPath().toFile();
   }
 
-
-
-  private static final int instanceID;
+  public static File getJavaBinPath() {
+    return CONFIG.getJavaBinPath().toFile();
+  }
 
   /**
    * Returns the instance id for this process. The instance id will be
    * be unique across the Module Manager and its children.
    */
   public static int getInstanceID() {
-    return instanceID;
+    return CONFIG.getInstanceID();
   }
 
   /**
-   * @return size of screen accounting for the screen insets (i.e. Windows taskbar)
+   * Returns the directory where VASSAL is installed.
+   *
+   * @return a {@link File} representing the directory
    */
+  public static File getBaseDir() {
+    return CONFIG.getBaseDir().toFile();
+  }
+
+  public static File getDocDir() {
+    return CONFIG.getDocDir().toFile();
+  }
+
+  public static File getConfDir() {
+    return CONFIG.getConfDir().toFile();
+  }
+
+  public static File getTempDir() {
+    return CONFIG.getTempDir().toFile();
+  }
+
+  public static File getPrefsDir() {
+    return CONFIG.getPrefsDir().toFile();
+  }
+
+  /**
+   * @return size of screen accounting for the screen insets (e.g., Windows
+   * taskbar)
+   * @Deprecated Use {@link VASSAL.tools.swing.SwingUtils.getScreenBounds}
+   * instead.
+   */
+  @Deprecated(since = "2020-10-03", forRemoval = true)
   public static Rectangle getScreenBounds(Component c) {
-    final Rectangle bounds =
-      new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-    final GraphicsConfiguration config = c.getGraphicsConfiguration();
-    final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
-    bounds.translate(insets.left, insets.top);
-    bounds.setSize(bounds.width - insets.left - insets.right,
-                   bounds.height - insets.top - insets.bottom);
-    return bounds;
+    ProblemDialog.showDeprecated("2020-10-03");
+    return SwingUtils.getScreenBounds(c);
   }
 
   /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead */
@@ -225,15 +202,6 @@ public final class Info {
   }
 
   /**
-   * Returns the directory where VASSAL is installed.
-   *
-   * @return a {@link File} representing the directory
-   */
-  public static File getBaseDir() {
-    return new File(System.getProperty("user.dir"));
-  }
-
-  /**
    * Returns the directory where the VASSAL documentation is installed.
    *
    * @return a {@link File} representing the directory
@@ -245,31 +213,18 @@ public final class Info {
     return getDocDir();
   }
 
+  /** @deprecated Use {@link #getBaseDir()} instead. */
+  @Deprecated(since = "2020-10-03", forRemoval = true)
   public static File getBinDir() {
-    return new File(System.getProperty("user.dir"));
+    ProblemDialog.showDeprecated("2020-10-03");
+    return getBaseDir();
   }
 
-  public static File getDocDir() {
-    final String d = SystemUtils.IS_OS_MAC_OSX ?
-      "Contents/Resources/doc" : "doc";
-    return new File(getBaseDir(), d);
-  }
-
-  public static File getConfDir() {
-    return getHomeDir();
-  }
-
-  public static File getTempDir() {
-    return tmpDir;
-  }
-
-  public static File getPrefsDir() {
-    return new File(getConfDir(), "prefs");
-  }
-
-  // FIXME: this is a misleading name for this function
+  /** @deprecated Use {@link #getConfDir()} instead. */
+  @Deprecated(since = "2020-10-02", forRemoval = true)
   public static File getHomeDir() {
-    return homeDir;
+    ProblemDialog.showDeprecated("2020-10-02");
+    return getConfDir();
   }
 
   /**

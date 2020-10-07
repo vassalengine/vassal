@@ -489,7 +489,7 @@ public class GlobalMap implements AutoConfigurable,
     }
 
     /**
-     * This funcion is overridden to make sure that the parent layout
+     * This function is overridden to make sure that the parent layout
      * is redone when the GlobalMap is shown.
      */
     @Override

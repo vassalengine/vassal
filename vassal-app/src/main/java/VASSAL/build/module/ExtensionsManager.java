@@ -65,7 +65,7 @@ public class ExtensionsManager {
    * Manage global extensions
    */
   public ExtensionsManager(String dir) {
-    extensionsDir = ensureExists(new File(Info.getHomeDir(), dir));
+    extensionsDir = ensureExists(new File(Info.getConfDir(), dir));
   }
 
   public File getExtensionsDirectory(boolean mustExist) {

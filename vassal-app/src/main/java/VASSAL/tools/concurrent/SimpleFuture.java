@@ -41,7 +41,7 @@ public class SimpleFuture<V> implements SettableFuture<V> {
   /**
    * {@inheritDoc}
    *
-   * <p>This implementation is uninteruptable, so ignores the parameter.</p>
+   * <p>This implementation is uninterruptable, so ignores the parameter.</p>
    */
   @Override
   public boolean cancel(boolean mayInterruptIfRunning) {

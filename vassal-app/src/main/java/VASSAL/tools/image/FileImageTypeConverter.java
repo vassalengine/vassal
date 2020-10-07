@@ -49,7 +49,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
   /**
    * Create a converter.
    *
-   * @param tmp the temporary file to use as a cache
+   * @param tfactory the temporary file to use as a cache
    */
   public FileImageTypeConverter(TemporaryFileFactory tfactory) {
     if (tfactory == null) throw new IllegalArgumentException();
@@ -87,7 +87,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     // we can't create images of TYPE_CUSTOM
     if (type == BufferedImage.TYPE_CUSTOM) throw new IllegalArgumentException();
 
-    File tmp = null;
+    File tmp;
     try {
       tmp = tfactory.create();
     }

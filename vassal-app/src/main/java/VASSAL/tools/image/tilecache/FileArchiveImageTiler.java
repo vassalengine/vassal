@@ -64,7 +64,7 @@ public class FileArchiveImageTiler {
   ) throws IOException {
 
     for (String ipath : ipaths) {
-      logger.info("Tiling {}", ipath);
+      logger.info("Tiling {}", ipath); //NON-NLS
       imageListener.receive(ipath);
 
       BufferedImage src;

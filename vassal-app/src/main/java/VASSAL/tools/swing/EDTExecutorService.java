@@ -58,7 +58,7 @@ public class EDTExecutorService extends AbstractExecutorService {
       return false;
     }
     catch (CancellationException | ExecutionException e) {
-      // Should not happen, the poision pill is never cancelled / runs no code
+      // Should not happen, the poison pill is never cancelled / runs no code
       throw new IllegalStateException(e);
     }
     finally {
@@ -152,7 +152,7 @@ public class EDTExecutorService extends AbstractExecutorService {
     }
   }
 
-  // The poision pill task used for shutting down the ExecutorService
+  // The poison pill task used for shutting down the ExecutorService
   protected final EDTRunnableFuture<Void> poison_pill =
     new EDTRunnableFuture<>() {
       @Override

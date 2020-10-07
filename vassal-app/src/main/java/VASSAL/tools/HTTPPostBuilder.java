@@ -65,7 +65,7 @@ public class HTTPPostBuilder {
     bw.append("--")
       .append(boundary)
       .append(endl)
-      .append("Content-Disposition: form-data; name=\"")
+      .append("Content-Disposition: form-data; name=\"") //NON-NLS
       .append(name)
       .append('"')
       .append(endl)
@@ -101,7 +101,7 @@ public class HTTPPostBuilder {
     writeCommonFileHeaders(name, filename);
 
     final String type = HttpURLConnection.guessContentTypeFromName(filename);
-    bw.append(type == null ? "application/octet-stream" : type)
+    bw.append(type == null ? "application/octet-stream" : type) //NON-NLS
       .append(endl)
       .append(endl);
 
@@ -128,7 +128,7 @@ public class HTTPPostBuilder {
     writeCommonFileHeaders(name, filename);
 
     // write out the contents at UTF-8
-    bw.append("text/plain; charset=\"UTF-8\"")
+    bw.append("text/plain; charset=\"UTF-8\"") //NON-NLS
       .append(endl)
       .append(endl)
       .append(contents)
@@ -140,12 +140,12 @@ public class HTTPPostBuilder {
     bw.append("--")
       .append(boundary)
       .append(endl)
-      .append("Content-Disposition: form-data; name=\"")
+      .append("Content-Disposition: form-data; name=\"") //NON-NLS
       .append(name)
-      .append("\"; filename=\"")
+      .append("\"; filename=\"") //NON-NLS
       .append(filename)
       .append(endl)
-      .append("Content-Type: ");
+      .append("Content-Type: "); //NON-NLS
   }
 
   private void writeEnd() throws IOException {
@@ -178,7 +178,7 @@ public class HTTPPostBuilder {
 
     final HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
-    http.setRequestMethod("POST");
+    http.setRequestMethod("POST"); //NON-NLS
     http.setDoInput(true);
     http.setDoOutput(true);
     http.setUseCaches(false);

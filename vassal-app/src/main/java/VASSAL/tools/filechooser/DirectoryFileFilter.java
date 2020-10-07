@@ -17,6 +17,8 @@
  */
 package VASSAL.tools.filechooser;
 
+import VASSAL.i18n.Resources;
+
 import java.io.File;
 
 /**
@@ -32,6 +34,6 @@ public class DirectoryFileFilter extends FileFilter {
 
   @Override
   public String getDescription() {
-    return "Directories";
+    return Resources.getString("Editor.FileFilter.directories");
   }
 }

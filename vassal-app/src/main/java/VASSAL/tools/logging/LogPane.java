@@ -27,7 +27,6 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.io.Tailer;
 
 public class LogPane extends JTextArea {
@@ -40,16 +39,13 @@ public class LogPane extends JTextArea {
     setLineWrap(true);
     setWrapStyleWord(true);
     setTabSize(2);
-    setFont(new Font("Monospaced", Font.PLAIN, getFont().getSize()));
+    setFont(new Font(Font.MONOSPACED, Font.PLAIN, getFont().getSize()));
 
     tailer = new Tailer(file);
 
-    tailer.addEventListener(new EventListener<>() {
-      @Override
-      public void receive(Object src, String s) {
-        // NB: JTextArea.append() is thread-safe; it can be called off-EDT.
-        append(s);
-      }
+    tailer.addEventListener((src, s) -> {
+      // NB: JTextArea.append() is thread-safe; it can be called off-EDT.
+      append(s);
     });
 
     // tail the file only when the pane is visible

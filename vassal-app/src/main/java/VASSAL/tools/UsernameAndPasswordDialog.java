@@ -21,9 +21,6 @@ package VASSAL.tools;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
@@ -40,7 +37,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 
-// FXIME: Would be better if this didn't set the username and password
+// FIXME: Would be better if this didn't set the username and password
 // directly, but instead had a static method for returning them.
 // FIXME: Could be made prettier if it didn't use Configurers, or if
 // we made Configurers prettier.
@@ -54,7 +51,7 @@ public class UsernameAndPasswordDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   public UsernameAndPasswordDialog(Frame parent) {
-    super(parent, "Set Your Username and Password", true);
+    super(parent, Resources.getString("Editor.UsernameAndPasswordDialog.choose_your_weapons"), true);
     setLocationRelativeTo(parent);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -77,32 +74,24 @@ public class UsernameAndPasswordDialog extends JDialog {
 
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.setEnabled(false);
-    ok.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final Prefs p = GameModule.getGameModule().getPrefs();
+    ok.addActionListener(e -> {
+      final Prefs p = GameModule.getGameModule().getPrefs();
 
-        p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
-        p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
+      p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
+      p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
-        try {
-          p.write();
-        }
-        catch (IOException ex) {
-          WriteErrorDialog.error(ex, p.getFile());
-        }
-
-        UsernameAndPasswordDialog.this.dispose();
+      try {
+        p.write();
       }
+      catch (IOException ex) {
+        WriteErrorDialog.error(ex, p.getFile());
+      }
+
+      UsernameAndPasswordDialog.this.dispose();
     });
 
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        UsernameAndPasswordDialog.this.dispose();
-      }
-    });
+    cancel.addActionListener(e -> UsernameAndPasswordDialog.this.dispose());
 
     final JPanel panel = new JPanel();
 
@@ -150,47 +139,44 @@ public class UsernameAndPasswordDialog extends JDialog {
 
     // This listener handles validating the input, updating the error
     // message, and enabling the Ok button.
-    final PropertyChangeListener pl = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (nameConfig.getValue() == null ||
-            "".equals(nameConfig.getValue())) { //$NON-NLS-1$
-          if (pwd.getValue() == null || "".equals(pwd.getValue())) {
-            error.setText(Resources.getString(
-              "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
-          }
-          else {
-            error.setText(Resources.getString(
-              "WizardSupport.EnterYourName")); //$NON-NLS-1$
-          }
-          error.setForeground(Color.black);
-          ok.setEnabled(false);
-        }
-        else if (pwd.getValue() == null ||
-                 "".equals(pwd.getValue())) { //$NON-NLS-1$
+    final PropertyChangeListener pl = evt -> {
+      if (nameConfig.getValue() == null ||
+          "".equals(nameConfig.getValue())) { //$NON-NLS-1$
+        if (pwd.getValue() == null || "".equals(pwd.getValue())) {
           error.setText(Resources.getString(
-            "WizardSupport.EnterYourPassword")); //$NON-NLS-1$
-          error.setForeground(Color.black);
-          ok.setEnabled(false);
-        }
-        else if (pwd2.getValue() == null ||
-                 "".equals(pwd2.getValue())) { //$NON-NLS-1$
-          error.setText("Please confirm your password");
-          error.setForeground(Color.black);
-          ok.setEnabled(false);
-        }
-        else if (!pwd.getValue().equals(pwd2.getValue())) {
-          error.setText(Resources.getString(
-            "WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
-          error.setForeground(Color.red);
-          ok.setEnabled(false);
+            "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
         }
         else {
-          // everything is ok
-          error.setText("");  //$NON-NLS-1$
-          error.setForeground(Color.black);
-          ok.setEnabled(true);
+          error.setText(Resources.getString(
+            "WizardSupport.EnterYourName")); //$NON-NLS-1$
         }
+        error.setForeground(Color.black);
+        ok.setEnabled(false);
+      }
+      else if (pwd.getValue() == null ||
+               "".equals(pwd.getValue())) { //$NON-NLS-1$
+        error.setText(Resources.getString(
+          "WizardSupport.EnterYourPassword")); //$NON-NLS-1$
+        error.setForeground(Color.black);
+        ok.setEnabled(false);
+      }
+      else if (pwd2.getValue() == null ||
+               "".equals(pwd2.getValue())) { //$NON-NLS-1$
+        error.setText(Resources.getString("Editor.UsernameAndPasswordDialog.turn_your_key_sir"));
+        error.setForeground(Color.black);
+        ok.setEnabled(false);
+      }
+      else if (!pwd.getValue().equals(pwd2.getValue())) {
+        error.setText(Resources.getString(
+          "WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
+        error.setForeground(Color.red);
+        ok.setEnabled(false);
+      }
+      else {
+        // everything is ok
+        error.setText("");  //$NON-NLS-1$
+        error.setForeground(Color.black);
+        ok.setEnabled(true);
       }
     };
 

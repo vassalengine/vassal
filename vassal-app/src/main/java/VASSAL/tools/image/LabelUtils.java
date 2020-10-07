@@ -53,7 +53,7 @@ public class LabelUtils {
    * @param bgColor Background Color
    */
   public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
-    drawLabel(g, text, x, y, new Font("Dialog", Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null);
+    drawLabel(g, text, x, y, new Font(Font.DIALOG, Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null);
   }
 
   /**
@@ -202,31 +202,31 @@ public class LabelUtils {
     String baseString = text;
     String style = "";
     if (text.startsWith("|")) {
-      style = "msgcolor";
+      style = "msgcolor"; //NON-NLS
       baseString = baseString.replaceFirst("\\|", "");
     }
     else if (text.startsWith("!")) {
-      style = "msg2color";
+      style = "msg2color"; //NON-NLS
       baseString = baseString.replaceFirst("!", "");
     }
     else if (text.startsWith("?")) {
-      style = "msg3color";
+      style = "msg3color"; //NON-NLS
       baseString = baseString.replaceFirst("\\?", "");
     }
     else if (text.startsWith("~")) {
-      style = "msg4color";
+      style = "msg4color"; //NON-NLS
       baseString = baseString.replaceFirst("~", "");
     }
     else if (text.startsWith("`")) {
-      style = "msg5color";
+      style = "msg5color"; //NON-NLS
       baseString = baseString.replaceFirst("`", "");
     }
 
     // If user already put <html> tags in, don't re-wrap.
-    boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6)));
+    boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6))); //NON-NLS
 
     // HTML Niceties - Rather than make the user type a bunch of repetitive stuff, by default we wrap these up nicely.
-    String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : "");
+    String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
 
     // Chapter 3, in which Winnie the Pooh kidnaps a JLabel and makes it rob banks...
     JLabel j = new JLabel(htmlString);

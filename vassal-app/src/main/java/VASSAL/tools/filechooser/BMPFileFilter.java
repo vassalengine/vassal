@@ -17,6 +17,8 @@
  */
 package VASSAL.tools.filechooser;
 
+import VASSAL.i18n.Resources;
+
 /**
  * A FileFilter for BMP images. Used by file choosers
  * to filter out files which aren't Windows bitmaps.
@@ -25,9 +27,9 @@ package VASSAL.tools.filechooser;
  * @since 3.1.0
  */
 public class BMPFileFilter extends ExtensionFileFilter {
-  public static final String[] types = { ".bmp" };
+  public static final String[] types = { ".bmp" }; //NON-NLS
 
   public BMPFileFilter() {
-    super("Windows Bitmap files", types);
+    super(Resources.getString("Editor.FileFilter.bmp"), types);
   }
 }

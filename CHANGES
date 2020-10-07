@@ -1,7 +1,7 @@
 3.5.0-beta1 - ???
 
 * 13432: MouseOverStackViewer can show > 1 piece of a deck
-* 13417: Added search function to Editor
+* 13417: Editor's search function can now search piece traits and component attributes
 * 13415: MouseoverStackViewer has HTML support and additional formatting options
 * 13414: "Help" button (and help information) added to Preferences dialog
 * 13368: Added preference to control drag-at-edge-of-map width
@@ -22,8 +22,15 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
-3.4.4 - ???
+3.4.5 - 6 October 2020
 
+* 13490: Module Manager "Show Error Log" doesn't
+
+3.4.4 - 6 October 2020
+
+* 13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus
+* 13471: Using BeanShell string functions in Calculated Property crashes Editor
+* 13461: Always initialise Deck on New/Load game
 * 13458: Reinstate behavior of floating point expression evaluation
 * 13454: ClassCastException in SetPersistentPropertyCommand.execute()
 * 13426: NegativeArraySizeException when receiving first private message

@@ -34,5 +34,5 @@ public interface TemporaryFileFactory {
    * @return a temporary file
    * @throws IOException if the file cannot be created
    */
-  public File create() throws IOException;
+  File create() throws IOException;
 }

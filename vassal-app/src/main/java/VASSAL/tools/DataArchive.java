@@ -80,13 +80,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   protected SortedSet<String> localImages = null;
 
-  public static final String IMAGE_DIR = "images/";
+  public static final String IMAGE_DIR = "images/"; //NON-NLS
   protected String imageDir = IMAGE_DIR;
 
-  public static final String SOUND_DIR = "sounds/";
+  public static final String SOUND_DIR = "sounds/"; //NON-NLS
   protected String soundDir = SOUND_DIR;
 
-  public static final String ICON_DIR = "icons/";
+  public static final String ICON_DIR = "icons/"; //NON-NLS
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
@@ -104,7 +104,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   @Override
   public String getName() {
-    return archive == null ? "data archive" : archive.getName();
+    return archive == null ? "data archive" : archive.getName(); //NON-NLS
   }
 
   public FileArchive getArchive() {
@@ -119,7 +119,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String path = soundDir + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      if (name.toLowerCase().endsWith(".mp3")) {
+      if (name.toLowerCase().endsWith(".mp3")) { //NON-NLS
         clip = new Mp3AudioClip(path);
       }
       else {
@@ -149,7 +149,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (fileName.startsWith("/")) {
       final InputStream in = getClass().getResourceAsStream(fileName);
       if (in != null) return in;
-      throw new FileNotFoundException("Resource not found: " + fileName);
+      throw new FileNotFoundException("Resource not found: " + fileName); //NON-NLS
     }
 
     try {
@@ -158,13 +158,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     catch (FileNotFoundException ignored) {
     }
     try {
-      return getInputStream(imageDir + fileName + ".gif");
+      return getInputStream(imageDir + fileName + ".gif"); //NON-NLS
     }
     catch (FileNotFoundException ignored) {
     }
 
     final InputStream in =
-      getClass().getResourceAsStream("/" + imageDir + fileName + ".gif");
+      getClass().getResourceAsStream("/" + imageDir + fileName + ".gif"); //NON-NLS
     if (in != null) return in;
 
     throw new FileNotFoundException(
@@ -187,7 +187,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       if (in != null) {
         return in;
       }
-      throw new FileNotFoundException("Resource not found: " + fileName);
+      throw new FileNotFoundException("Resource not found: " + fileName); //NON-NLS
     }
 
     // Look in this archive and its extensions
@@ -207,13 +207,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     // Maybe it's an extensionless GIF? Aauugh!
-    in = getInputStreamImpl(fileName + ".gif");
+    in = getInputStreamImpl(fileName + ".gif"); //NON-NLS
     if (in != null) {
       return in;
     }
 
     // Maybe it's an extensionless GIF resource. Aauugh!
-    in = getClass().getResourceAsStream("/" + fileName + ".gif");
+    in = getClass().getResourceAsStream("/" + fileName + ".gif"); //NON-NLS
     if (in != null) {
       return in;
     }
@@ -351,7 +351,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (archive != null) {
       try {
 //        for (String filename : archive.getFiles(imageDir)) {
-        for (String filename : archive.getFiles("images")) {
+        for (String filename : archive.getFiles("images")) { //NON-NLS
           s.add(filename.substring(imageDir.length()));
         }
       }
@@ -432,7 +432,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String slashname = name.replace('.', '/');
     byte[] data;
 
-    try (InputStream stream = getInputStream(slashname + ".class")) {
+    try (InputStream stream = getInputStream(slashname + ".class")) { //NON-NLS
       data = IOUtils.toByteArray(stream);
     }
     catch (IOException e) {
@@ -507,7 +507,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Dimension getImageSize(String name) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    if (name.toLowerCase().endsWith(".svg")) {
+    if (name.toLowerCase().endsWith(".svg")) { //NON-NLS
       return SVGImageUtils.getImageSize(name, getImageInputStream(name));
     }
     else {
@@ -527,7 +527,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public BufferedImage getImage(String name) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    if (name.toLowerCase().endsWith(".svg")) {
+    if (name.toLowerCase().endsWith(".svg")) { //NON-NLS
       return new SVGRenderer(getURL(name),
                              getImageInputStream(name)).render();
     }
@@ -741,7 +741,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public String getArchiveURL() {
     ProblemDialog.showDeprecated("2020-08-06");
-    return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
+    return archive != null ? "jar:file://" + archive.getName() + "!/" : ""; //NON-NLS
   }
 
   /**
