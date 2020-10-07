@@ -1,46 +1,41 @@
-/*
- *
- * Copyright (c) 2008 by Rodney Kinney, Brent Easton
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
 package VASSAL.configure;
 
+import VASSAL.tools.NamedKeyManager;
+import VASSAL.tools.NamedKeyStroke;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Window;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import VASSAL.tools.NamedKeyManager;
-import VASSAL.tools.NamedKeyStroke;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import net.miginfocom.swing.MigLayout;
 
-/**
- * A Configurer for {@link NamedKeyStroke} values
- */
-public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
-  private final JTextField tf = new ConfigurerTextField(16);
-  private JPanel p;
-  private boolean named;
+public class NamedHotKeyConfigurer extends Configurer {
+  private final JTextField keyStroke = new ConfigurerTextField(16);
   private final JTextField keyName = new ConfigurerTextField(16);
-  private char lastChar;
+  private JPanel controls;
+
+  public static String getFancyString(NamedKeyStroke k) {
+    String s = getString(k);
+    if (s.length() > 0) {
+      s = "[" + s + "]";
+    }
+    return s;
+  }
+
+  public static String getString(NamedKeyStroke k) {
+    return (k == null || k.isNull()) ? "" : getString(k.getStroke());
+  }
+
+  public static String getString(KeyStroke k) {
+    return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
+  }
 
   public NamedHotKeyConfigurer(String key, String name) {
     this(key, name, new NamedKeyStroke());
@@ -48,29 +43,10 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
 
   public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
     super(key, name, val);
-    named = val != null && val.isNamed();
   }
 
   public NamedHotKeyConfigurer(NamedKeyStroke val) {
     this(null, null, val);
-  }
-
-  @Override
-  public void setValue(Object o) {
-    super.setValue(o);
-    named = value != null && ((NamedKeyStroke) value).isNamed();
-    if (!named && tf != null && !tf.getText().equals(keyToString())) {
-      tf.setText(keyToString());
-    }
-  }
-
-  public String keyToString() {
-    return getString((NamedKeyStroke) getValue());
-  }
-
-  @Override
-  public Object getValue() {
-    return super.getValue();
   }
 
   @Override
@@ -82,133 +58,75 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     return (NamedKeyStroke) value;
   }
 
+  public boolean isNamed() {
+    return value != null && ((NamedKeyStroke) value).isNamed();
+  }
+
+  @Override
+  public void setValue(Object o) {
+    super.setValue(o);
+    setFrozen(true); // Prevent changes to the input fields triggering further updates
+    if (controls != null) {
+      if (isNamed()) {
+        keyStroke.setText("");
+      }
+      else {
+        keyName.setText("");
+        keyStroke.setText(keyToString());
+      }
+    }
+    setFrozen(false);
+  }
+
   @Override
   public void setValue(String s) {
     setValue(s == null ? null : decode(s));
   }
 
-  public void setEnabled(boolean b) {
-    tf.setEnabled(b);
-    keyName.setEnabled(b);
-  }
-
-  @Override
-  public java.awt.Component getControls() {
-    if (p == null) {
-      if (getName() == null || getName().isEmpty()) {
-        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[fill,grow]")); // NON-NLS
+  private void updateValueFromKeyName() {
+    if (! isFrozen()) {
+      final String key = keyName.getText();
+      if (key.isEmpty()) {
+        setValue(NamedKeyStroke.NULL_KEYSTROKE);
       }
       else {
-        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[][fill,grow]")); // NON-NLS
-        p.add(new JLabel(getName()));
+        setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), key));
       }
-      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
-      tf.setText(keyToString());
-      tf.addKeyListener(this);
-      p.add(tf);
+    }
+  }
 
-      keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
+  @Override
+  public Component getControls() {
+    if (controls == null) {
+      if (getName() == null || getName().isEmpty()) {
+        controls = new JPanel(new MigLayout(",ins 0", "[fill,grow]")); // NON-NLS
+      }
+      else {
+        controls = new JPanel(new MigLayout("ins 0", "[][fill,grow]")); // NON-NLS
+        controls.add(new JLabel(getName()));
+      }
+
+      keyStroke.setMaximumSize(new Dimension(keyStroke.getMaximumSize().width, keyStroke.getPreferredSize().height));
+      keyStroke.setText(keyToString());
+      keyStroke.addKeyListener(new KeyStrokeAdapter());
+      ((AbstractDocument) keyStroke.getDocument()).setDocumentFilter(new KeyStrokeFilter());
+
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width, keyName.getPreferredSize().height));
-      keyName.addKeyListener(new KeyListener() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-          switch (e.getKeyCode()) {
-            case KeyEvent.VK_DELETE:
-            case KeyEvent.VK_BACK_SPACE:
-              if (keyName.getText().length() == 0) {
-                named = false;
-                setValue(NamedKeyStroke.NULL_KEYSTROKE);
-                updateVisibility();
-              }
-              else {
-                setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), keyName.getText()));
-              }
-              break;
-            case KeyEvent.VK_SHIFT:
-            case KeyEvent.VK_CONTROL:
-            case KeyEvent.VK_META:
-            case KeyEvent.VK_ALT:
-              break;
-            default:
-              if (isPrintableAscii(e.getKeyChar())) {
-                setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), keyName.getText()));
-              }
-              else {
-                named = false;
-                setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
-                updateVisibility();
-              }
-          }
-        }
+      keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
+      ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
 
-        @Override
-        public void keyPressed(KeyEvent e) {
-        }
+      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]")); // NON-NLS
+      panel.add(keyStroke, "grow"); // NON-NLS
+      panel.add(new JLabel("-"), "gapright 1"); // NON-NLS
+      panel.add(keyName, "grow"); // NON-NLS
 
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-      });
-      p.add(keyName);
-      updateVisibility();
+      controls.add(panel, "grow"); // NON-NLS
     }
-    return p;
+    return controls;
   }
 
-  protected void updateVisibility() {
-    tf.setVisible(!isNamed());
-    keyName.setVisible(isNamed());
-    lastChar = 0;
-    Window w = SwingUtilities.getWindowAncestor(p);
-    if (w != null) {
-      w.invalidate();
-    }
-  }
-
-  public boolean isNamed() {
-    return named;
-  }
-
-  @Override
-  public void keyTyped(KeyEvent e) {
-    lastChar = e.getKeyChar();
-  }
-
-  @Override
-  public void keyPressed(KeyEvent e) {
-    switch (e.getKeyCode()) {
-    case KeyEvent.VK_DELETE:
-    case KeyEvent.VK_BACK_SPACE:
-      setValue(NamedKeyStroke.NULL_KEYSTROKE);
-      break;
-    case KeyEvent.VK_SHIFT:
-    case KeyEvent.VK_CONTROL:
-    case KeyEvent.VK_META:
-    case KeyEvent.VK_ALT:
-      break;
-    default:
-      final NamedKeyStroke namedStroke = getValueNamedKeyStroke();
-      if (namedStroke != null) {
-        final int thisChar = e.getKeyChar();
-        if (isPrintableAscii(lastChar) && isPrintableAscii(thisChar)) {
-          final String name = "" + lastChar + e.getKeyChar();
-          named = true;
-          keyName.setText(name);
-          setValue(new NamedKeyStroke(name));
-          updateVisibility();
-          keyName.requestFocus();
-          break;
-        }
-      }
-      setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
-    }
-  }
-
-  @Override
-  public void keyReleased(KeyEvent e) {
-    if (!named) {
-      tf.setText(getString((NamedKeyStroke) getValue()));
-    }
+  public String keyToString() {
+    return getString((NamedKeyStroke) getValue());
   }
 
   protected boolean isPrintableAscii(char c) {
@@ -217,26 +135,6 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
 
   protected boolean isPrintableAscii(int i) {
     return i >= ' ' && i <= '~';
-  }
-
-  /**
-   * A plain text representation of a KeyStroke.  Doesn't differ much
-   * from {@link KeyEvent#getKeyText}
-   */
-  public static String getString(NamedKeyStroke k) {
-    return (k == null || k.isNull()) ? "" : getString(k.getStroke());
-  }
-
-  public static String getFancyString(NamedKeyStroke k) {
-    String s = getString(k);
-    if (s.length() > 0) {
-      s = "[" + s + "]";
-    }
-    return s;
-  }
-
-  public static String getString(KeyStroke k) {
-    return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }
 
   /**
@@ -285,4 +183,54 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     return s;
   }
 
+  class KeyStrokeAdapter extends KeyAdapter {
+    @Override
+    public void keyPressed(KeyEvent e) {
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_DELETE:
+      case KeyEvent.VK_BACK_SPACE:
+        setValue(NamedKeyStroke.NULL_KEYSTROKE);
+        break;
+      case KeyEvent.VK_SHIFT:
+      case KeyEvent.VK_CONTROL:
+      case KeyEvent.VK_META:
+      case KeyEvent.VK_ALT:
+        break;
+      default:
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
+      }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+      keyStroke.setText(getString((NamedKeyStroke) getValue()));
+    }
+  }
+
+  class KeyNameFilter extends DocumentFilter {
+    @Override
+    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      super.remove(fb, offset, length);
+      updateValueFromKeyName();
+    }
+
+    @Override
+    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+      super.insertString(fb, offset, string, attr);
+      updateValueFromKeyName();
+    }
+
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      super.replace(fb, offset, length, text, attrs);
+      updateValueFromKeyName();
+    }
+  }
+
+  class KeyStrokeFilter extends DocumentFilter {
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      super.replace(fb, 0, keyStroke.getText().length(), text, attrs);
+    }
+  }
 }
