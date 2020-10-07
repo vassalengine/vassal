@@ -814,7 +814,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       controls.add(new JLabel(Resources.getString("Editor.TextLabel.label_text")));
       controls.add(initialValue.getControls(), "wrap"); // NON-NLS
 
-      format = new FormattedStringConfigurer(null, null, new String[]{PIECE_NAME, LABEL});
+      format = new FormattedStringConfigurer(new String[]{PIECE_NAME, LABEL});
       format.setValue(l.nameFormat.getFormat()); // NON-NLS
       controls.add(new JLabel(Resources.getString("Editor.TextLabel.name_format")));
       controls.add(format.getControls(), "wrap"); //NON-NLS

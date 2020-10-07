@@ -328,7 +328,7 @@ public class CounterGlobalKeyCommand extends Decorator
       controls.add(new JLabel(Resources.getString("Editor.GlobalkeyCommand.global_key_command")));
       controls.add(globalKey.getControls());
 
-      propertyMatch = new PropertyExpressionConfigurer(null, null, p.propertiesFilter);
+      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.matching_properties")));
       controls.add(propertyMatch.getControls());
 
@@ -337,12 +337,12 @@ public class CounterGlobalKeyCommand extends Decorator
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy")));
       controls.add(deckPolicy.getControls());
 
-      restrictRange = new BooleanConfigurer(null, null, p.restrictRange);
+      restrictRange = new BooleanConfigurer(p.restrictRange);
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_range")));
       controls.add(restrictRange.getControls());
       restrictRange.addPropertyChangeListener(pl);
 
-      fixedRange = new BooleanConfigurer(null, null, p.fixedRange);
+      fixedRange = new BooleanConfigurer(p.fixedRange);
       fixedRangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.fixed_range"));
       controls.add(fixedRangeLabel);
       controls.add(fixedRange.getControls());
@@ -358,7 +358,7 @@ public class CounterGlobalKeyCommand extends Decorator
       controls.add(rangePropertyLabel);
       controls.add(rangeProperty.getControls());
 
-      suppress = new BooleanConfigurer(null, null, p.globalCommand.isReportSingle());
+      suppress = new BooleanConfigurer(p.globalCommand.isReportSingle());
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.Editor_MassKey_suppress")));
       controls.add(suppress.getControls());
 

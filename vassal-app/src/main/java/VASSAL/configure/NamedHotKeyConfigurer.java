@@ -117,7 +117,7 @@ public class NamedHotKeyConfigurer extends Configurer {
 
       final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]")); // NON-NLS
       panel.add(keyStroke, "grow"); // NON-NLS
-      panel.add(new JLabel("-"), "gapright 1"); // NON-NLS
+      panel.add(new JLabel("-")); // NON-NLS
       panel.add(keyName, "grow"); // NON-NLS
 
       controls.add(panel, "grow"); // NON-NLS

@@ -489,6 +489,51 @@
         <method>void main(java.lang.String[])</method>
         <justification>Test code moved to a unit test</justification>
     </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>4001</differenceType>
+        <method>java.awt.event.KeyListener</method>
+        <to>**</to>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>4001</differenceType>
+        <method>java.util.EventListener</method>
+        <to>**</to>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void keyPressed(java.awt.event.KeyEvent)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void keyReleased(java.awt.event.KeyEvent)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void keyTyped(java.awt.event.KeyEvent)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void setEnabled(boolean)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void updateVisibility()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
 
     <difference>
         <!-- It is okay to add classes to the set of superclasses -->

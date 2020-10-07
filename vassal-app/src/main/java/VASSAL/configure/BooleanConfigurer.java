@@ -41,11 +41,11 @@ public class BooleanConfigurer extends Configurer {
   }
 
   public BooleanConfigurer (Boolean val) {
-    this(null, null, val);
+    this(null, "", val);
   }
 
   public BooleanConfigurer (boolean val) {
-    this(null, null, val);
+    this(null, "", val);
   }
 
   @Override
