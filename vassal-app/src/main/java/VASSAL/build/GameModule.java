@@ -173,6 +173,14 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public static final String BUILDFILE = "buildFile.xml";
   public static final String BUILDFILE_OLD = "buildFile";
 
+  public static final String MODULE_NAME_PROPERTY = "ModuleName";
+  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion";
+  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription";
+  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1";
+  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2";
+  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated";
+  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning";
+
   private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   // Last type of game save/load for our current game
@@ -210,6 +218,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
 
   protected String moduleVersion = "0.0";  //$NON-NLS-1$
   protected String vassalVersionCreated = "0.0";  //$NON-NLS-1$
+  protected String moduleOther1 = "";
+  protected String moduleOther2 = "";
   protected String gameName = DEFAULT_NAME;
   protected String localizedGameName = null;
   protected String description = "";
@@ -632,6 +642,12 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     else if (DESCRIPTION.equals(name)) {
       description = (String) value;
     }
+    else if (MODULE_OTHER1_PROPERTY.equals(name)) {
+      moduleOther1 = (String) value;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(name)) {
+      moduleOther2 = (String) value;
+    }
   }
 
   /**
@@ -657,6 +673,12 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
     else if (DESCRIPTION.equals(name)) {
       return description;
+    }
+    else if (MODULE_OTHER1_PROPERTY.equals(name)) {
+      return moduleOther1;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(name)) {
+      return moduleOther2;
     }
     return null;
   }
@@ -723,8 +745,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       MODULE_NAME,
       MODULE_VERSION,
       DESCRIPTION,
+      MODULE_OTHER1_PROPERTY,
+      MODULE_OTHER2_PROPERTY,
       VASSAL_VERSION_CREATED,
-      NEXT_PIECESLOT_ID
+      NEXT_PIECESLOT_ID,
     };
   }
 
@@ -739,7 +763,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.description_label")    //NON-NLS
+      Resources.getString("Editor.description_label"),    //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_1_label"), //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_2_label") //NON-NLS
     };
   }
 
@@ -754,6 +780,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
+      String.class,
       String.class,
       String.class,
       String.class
@@ -1734,9 +1762,31 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
     }
+    else if (MODULE_NAME_PROPERTY.equals(key)) {
+      return gameName;
+    }
+    else if (MODULE_VERSION_PROPERTY.equals(key)) {
+      return moduleVersion;
+    }
+    else if (MODULE_DESCRIPTION_PROPERTY.equals(key)) {
+      return description;
+    }
+    else if (MODULE_VASSAL_VERSION_CREATED_PROPERTY.equals(key)) {
+      return vassalVersionCreated;
+    }
+    else if (MODULE_VASSAL_VERSION_RUNNING_PROPERTY.equals(key)) {
+      return Info.getVersion();
+    }
+    else if (MODULE_OTHER1_PROPERTY.equals(key)) {
+      return moduleOther1;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(key)) {
+      return moduleOther2;
+    }
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
+
 
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the
