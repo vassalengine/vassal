@@ -201,8 +201,7 @@ public class Delete extends Decorator implements TranslatablePiece {
     private final JPanel controls;
 
     public Ed(Delete p) {
-      controls = new JPanel();
-      controls.setLayout(new MigLayout("gapy 1,ins 0, wrap 2", "[]rel[fill,grow]")); //NON-NLS
+      controls = new JPanel(new TraitLayout());
 
       nameInput = new StringConfigurer(p.commandName);
       controls.add(new JLabel(Resources.getString("Editor.command_name")));

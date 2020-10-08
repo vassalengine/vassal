@@ -309,8 +309,7 @@ public class CounterGlobalKeyCommand extends Decorator
         }
       };
 
-      controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 3, gapy 1,ins 0, wrap 2", "[right]rel[fill,grow]")); // NON-NLS
+      controls = new JPanel(new TraitLayout());
 
       descInput = new StringConfigurer(p.description);
       controls.add(new JLabel(Resources.getString("Editor.description_label")));

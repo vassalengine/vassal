@@ -1061,7 +1061,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       pieceName = new JTextField(20);
       pieceName.setText(p.commonName);
       pieceName.setMaximumSize(pieceName.getPreferredSize());
-      JPanel col = new JPanel(new MigLayout("gapy 1,ins 0,wrap 2", "[]rel[fill,grow]")); // NON-NLS
+      JPanel col = new JPanel(new TraitLayout());
       col.add(new JLabel(Resources.getString("Editor.name_label")));
       col.add(pieceName);
       if (p.cloneKey != 0) {
