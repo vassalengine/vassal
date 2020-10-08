@@ -212,10 +212,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
       }
 
       if (getName() == null || getName().isEmpty()) {
-        panel = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
+        panel = new JPanel(new MigLayout("ins 0", "[]")); // NON-NLS
       }
       else {
-        panel = new JPanel(new MigLayout("ins 0", "[][fill,grow]")); // NON-NLS
+        panel = new JPanel(new MigLayout("ins 0", "[][]")); // NON-NLS
         panel.add(new JLabel(name));
       }
       box = new JComboBox<>(displayValues);

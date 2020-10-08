@@ -82,7 +82,7 @@ public class ColorConfigurer extends Configurer {
       cb = new ColorButton(colorValue());
       cb.addActionListener(e -> setValue(JColorChooser.showDialog(null, getName(), colorValue())));
 
-      p.add(cb);
+      p.add(cb, "grow 0");
     }
     return p;
   }
