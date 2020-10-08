@@ -42,7 +42,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * This trait adds a command that creates a duplicate of the selected Gamepiece

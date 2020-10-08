@@ -51,7 +51,6 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Adds a menu item that applies a {@link GlobalCommand} to other pieces
