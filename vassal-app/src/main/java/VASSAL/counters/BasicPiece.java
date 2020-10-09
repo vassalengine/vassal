@@ -1052,7 +1052,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
      */
     private void initComponents(BasicPiece p) {
       panel = new JPanel();
-      panel.setLayout(new MigLayout("gapy 1,ins 0", "[fill,grow]unrel[]")); //NON-NLS
+      panel.setLayout(new MigLayout(TraitLayout.DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, "[fill,grow]unrel[]")); //NON-NLS
       picker = new ImagePicker();
       picker.setImageName(p.imageName);
       panel.add(picker);

@@ -21,9 +21,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer that allows a user to select from an underlying list
@@ -211,13 +209,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
         displayValues[i] = isDisplayNames() ? i18nKeys[i] : Resources.getString(i18nKeys[i]);
       }
 
-      if (getName() == null || getName().isEmpty()) {
-        panel = new JPanel(new MigLayout("ins 0", "[]")); // NON-NLS
-      }
-      else {
-        panel = new JPanel(new MigLayout("ins 0", "[][]")); // NON-NLS
-        panel.add(new JLabel(name));
-      }
+      panel = new ConfigurerPanel(getName(), "[]", "[][]");
       box = new JComboBox<>(displayValues);
       box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));
       if (isValidValue(getValue())) {

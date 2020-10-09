@@ -22,14 +22,11 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import javax.swing.JColorChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.tools.ColorButton;
 import VASSAL.tools.ErrorDialog;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Configurer for {@link Color} values.
@@ -71,18 +68,12 @@ public class ColorConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      if (getName() == null || getName().isEmpty()) {
-        p = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
-      }
-      else {
-        p = new JPanel(new MigLayout("ins 0", "[][fill,grow]")); // NON-NLS
-        p.add(new JLabel(getName()));
-      }
+      p = new ConfigurerPanel(getName(), "[fill]", "[][fill]"); // NON-NLS
 
       cb = new ColorButton(colorValue());
       cb.addActionListener(e -> setValue(JColorChooser.showDialog(null, getName(), colorValue())));
 
-      p.add(cb, "grow 0");
+      p.add(cb, "grow 0"); // NON-NLS Make sure the Color button doesn't stretch.
     }
     return p;
   }

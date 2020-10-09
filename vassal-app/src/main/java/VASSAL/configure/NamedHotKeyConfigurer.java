@@ -115,13 +115,7 @@ public class NamedHotKeyConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      if (getName() == null || getName().isEmpty()) {
-        controls = new JPanel(new MigLayout(",ins 0", "[fill,grow]")); // NON-NLS
-      }
-      else {
-        controls = new JPanel(new MigLayout("ins 0", "[][fill,grow]")); // NON-NLS
-        controls.add(new JLabel(getName()));
-      }
+      controls = new ConfigurerPanel(getName(), "[fill,grow]", "[][fill,grow]"); // NON-NLS
 
       keyStroke.setMaximumSize(new Dimension(keyStroke.getMaximumSize().width, keyStroke.getPreferredSize().height));
       keyStroke.setText(keyToString());

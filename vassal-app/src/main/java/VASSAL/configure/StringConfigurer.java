@@ -19,12 +19,10 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for String values
@@ -69,13 +67,7 @@ public class StringConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (p == null) {
-      if (getName() == null || getName().isEmpty()) {
-        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[fill,grow]0[0]")); // NON-NLS
-      }
-      else {
-        p = new JPanel(new MigLayout("hidemode 3,ins 0", "[][fill,grow][]")); // NON-NLS
-        p.add(new JLabel(getName()));
-      }
+      p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
 
       nameField = buildTextField();
       nameField.setMaximumSize(new Dimension(

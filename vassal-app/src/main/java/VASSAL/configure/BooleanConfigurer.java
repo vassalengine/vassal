@@ -17,9 +17,7 @@
  */
 package VASSAL.configure;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Configurer for Boolean values
@@ -81,13 +79,8 @@ public class BooleanConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      if (getName() == null || getName().isEmpty()) {
-        p = new JPanel(new MigLayout("ins 0", "[fill,grow]0[0]")); // NON-NLS
-      }
-      else {
-        p = new JPanel(new MigLayout("ins 0", "[][fill,grow][]")); // NON-NLS
-        p.add(new JLabel(getName()));
-      }
+      p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
+
       box = new ConfigurerCheckBox();
       box.setSelected(booleanValue());
       box.addItemListener(e -> setValue(box.isSelected()));

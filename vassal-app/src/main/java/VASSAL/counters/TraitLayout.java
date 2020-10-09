@@ -18,14 +18,17 @@
 
 package VASSAL.counters;
 
-import net.miginfocom.swing.MigLayout;
+import VASSAL.configure.ConfigurerLayout;
 
 /**
  * A standardised MigLayout for use by Trait configurers
  */
-public class TraitLayout extends MigLayout {
+public class TraitLayout extends ConfigurerLayout {
+
+  public static final String DEFAULT_TRAIT_LAYOUT_CONSTRAINTS = "ins " + STANDARD_INSETS + ",gapy " + STANDARD_GAPY + ",hidemode 3,wrap 2"; // NON-NLS
+  public static final String DEFAULT_TRAIT_COLUMN_CONSTRAINTS = "[right]rel[fill,grow]"; // NON-NLS
 
   public TraitLayout() {
-    super("ins 0,gapy 2,hidemode 3,wrap 2", "[right]rel[fill,grow]"); //NON-NLS
+    super(DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, DEFAULT_TRAIT_COLUMN_CONSTRAINTS);
   }
 }
