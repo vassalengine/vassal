@@ -20,6 +20,7 @@ package VASSAL.counters;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangePiece;
+import VASSAL.configure.Configurer;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ProblemDialog;
@@ -764,14 +765,22 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
 
   /**
    * Utility method to allow Decorator Editors to repack themselves.
+   * Repack larger, but not smaller.
    * @param c must be one of the Swing components that make up the Decorator's controls.
    */
   public static void repack(Component c) {
     final Window w = SwingUtilities.getWindowAncestor(c);
     if (w != null) {
+      w.setMinimumSize(w.getSize());
       w.pack();
+      w.setMinimumSize(null);
     }
   }
+
+  public static void repack(Configurer c) {
+    repack(c.getControls());
+  }
+
 
   /**
    * Support caching Selection status locally
@@ -805,4 +814,5 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public boolean testEquals(Object o) {
     return this.equals(o);
   }
+
 }

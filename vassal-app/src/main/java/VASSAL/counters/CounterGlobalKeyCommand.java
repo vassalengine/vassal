@@ -22,7 +22,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -303,10 +301,7 @@ public class CounterGlobalKeyCommand extends Decorator
         rangeProperty.getControls().setVisible(isRange && !isFixed);
         rangePropertyLabel.setVisible(isRange && !isFixed);
 
-        Window w = SwingUtilities.getWindowAncestor(range.getControls());
-        if (w != null) {
-          w.pack();
-        }
+        repack(range);
       };
 
       traitPanel = new TraitConfigPanel();

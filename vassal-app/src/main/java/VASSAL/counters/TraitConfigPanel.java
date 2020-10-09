@@ -20,7 +20,9 @@ package VASSAL.counters;
 
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
+import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -56,40 +58,49 @@ public class TraitConfigPanel extends JPanel {
     add(c.getControls(), configurerConstraints);
   }
 
-  /**
-   * Generate and add a label for an i18nKey and add Configurer controls
-   * @param i18nKey i18n Key
-   * @param c Configurer
-   */
-  public void add(String i18nKey, Configurer c) {
-    addLabel(Resources.getString(i18nKey));
-    addControls(c);
+  public void add(JLabel label, Component c, String constraints) {
+    add(label);
+    add(c, constraints);
   }
 
-  public void add(String i18nKey, Configurer c, String configureConstraints) {
-    addLabel(Resources.getString(i18nKey));
-    addControls(c, configureConstraints);
+  public void add(JLabel label, Configurer c, String configureConstraints) {
+    add(label, c.getControls(), configureConstraints);
   }
 
-  /**
-   * Generate and add a label for an i18nKey and add a ColorConfigurer controls
-   * NOTE the addition of the grow 0 constraint to prevent the Color button stretching
-   * @param i18nKey i18n Key
-   * @param c ColorConfigurer
-   */
-  public void add(String i18nKey, ColorConfigurer c) {
-    add(i18nKey, c, "grow 0"); // NON-NLS
-  }
   /**
    * Add an existing JLabel and add Configurer Controls
    * @param label Jlabel
    * @param c Configurer
    */
   public void add(JLabel label, Configurer c) {
-    add(label);
-    addControls(c);
+    add(label, c, (c instanceof ColorConfigurer || c instanceof IntConfigurer) ? "grow 0" : "");
   }
 
+  /**
+   * Generate and add a label for an i18nKey and add Configurer controls
+   * @param i18nKey i18n Key
+   * @param c Configurer
+   */
+  public void add(String i18nKey, Configurer c) {
+    add(new JLabel(Resources.getString(i18nKey)), c);
+  }
+
+  public void add(String i18nKey, Configurer c, String configureConstraints) {
+    add(new JLabel(Resources.getString(i18nKey)), c, configureConstraints);
+  }
+
+
+
+  /**
+   * Add an existing JLabel and existing JPanel containing controls.
+   *
+   * @param label Jlabel
+   * @param panel JPanel
+   */
+  public void add(JLabel label, JPanel panel) {
+    add(label);
+    add(panel);
+  }
   /**
    * Add a label based on an i18Key and an existing JPanel containing controls
    * @param i18nKey i18n Key

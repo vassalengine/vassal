@@ -572,4 +572,22 @@
         <justification>Incorrect class was being used in first place</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/AreaOfEffect$TraitEditor</className>
+        <differenceType>6004</differenceType>
+        <field>selectShader</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/AreaOfEffect$TraitEditor</className>
+        <differenceType>6004</differenceType>
+        <field>panel</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
 </differences>

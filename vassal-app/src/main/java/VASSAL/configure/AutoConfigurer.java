@@ -80,19 +80,15 @@ public class AutoConfigurer extends Configurer
         continue;
       }
       Configurer config;
-      // config = createConfigurer(type[i], name[i], prompt[i], target);
       config = createConfigurer(type[i], name[i], "", target);
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
-        //Box box = Box.createHorizontalBox();
-        //box.add(config.getControls());
-        //box.add(Box.createHorizontalGlue());
-        //p.add(box);
         final JLabel label = new JLabel(prompt[i]);
         labels.put(name[i], label);
         p.add(label);
-        p.add(config.getControls(), "wrap, grow"); // NON-NLS
+        final String constraints = (config instanceof ColorConfigurer || config instanceof IntConfigurer) ? "wrap,grow 0" : "wrap,grow"; // NON-NLS
+        p.add(config.getControls(), constraints);
         configurers.add(config);
       }
       setVisibility(name[i], c.getAttributeVisibility(name[i]));
