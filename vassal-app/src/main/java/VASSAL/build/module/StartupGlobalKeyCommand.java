@@ -24,6 +24,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 
 import java.util.List;
 
@@ -45,10 +46,10 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     /* These four fields pertaining to the physical representation of the
      * GKC on the toolbar are not applicable in this implementation.
      */
-    launch.setAttribute(BUTTON_TEXT, "");
-    launch.setAttribute(TOOLTIP, "");
-    launch.setAttribute(ICON, "");
-    launch.setAttribute(HOTKEY, "");
+    launch.setAttribute(BUTTON_TEXT, "");  //NON-NLS
+    launch.setAttribute(TOOLTIP, "");  //NON-NLS
+    launch.setAttribute(ICON, "");  //NON-NLS
+    launch.setAttribute(HOTKEY, "");  //NON-NLS
   }
 
   //---------------------- GlobalKeyCommand extension ---------------------
@@ -59,12 +60,12 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   }
 
   public static String getConfigureTypeName() {
-    return "Startup Global Key Command";
+    return Resources.getString("Editor.StartupGlobalKeyCommand.component_type");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand");
+    return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand"); //NON-NLS
   }
 
   @Override

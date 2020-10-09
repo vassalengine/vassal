@@ -40,6 +40,6 @@ public interface ImageTypeConverter {
    *
    * @throws ImageIOException if something goes wrong
    */
-  public BufferedImage convert(Reference<BufferedImage> ref, int type)
-                                                       throws ImageIOException;
+  BufferedImage convert(Reference<BufferedImage> ref, int type)
+                                                      throws ImageIOException;
 }

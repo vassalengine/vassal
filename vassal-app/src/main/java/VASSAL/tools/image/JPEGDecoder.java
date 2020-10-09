@@ -88,7 +88,7 @@ class JPEGDecoder {
       in.readFully(data);
     }
 
-    // NB: This will blow up after reaching an SOS, due to it being follwed
+    // NB: This will blow up after reaching an SOS, due to it being followed
     // by raw data instead of another chunk. If we want to find the next
     // chunk after an SOS, we have to scan for FF xx, where xx != 00.
 
@@ -109,15 +109,13 @@ class JPEGDecoder {
     try (InputStream fin = new FileInputStream(args[0]);
          DataInputStream in = new DataInputStream(fin)) {
       if (!JPEGDecoder.decodeSignature(in)) {
-        System.out.println("Not a JPEG");
+        System.out.println("Not a JPEG"); //NON-NLS
       }
 
       Chunk ch;
       do {
         ch = JPEGDecoder.decodeChunk(in);
-        System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length);
-
-
+        System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length); //NON-NLS
       } while (ch.type != JPEGDecoder.EOI);
     }
   }

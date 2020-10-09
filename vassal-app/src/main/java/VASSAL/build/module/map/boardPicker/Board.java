@@ -76,12 +76,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * A Board is a piece of a Map.
    * A Map can cantain a set of boards layed out in a rectangular grid.
    */
-  public static final String NAME = "name";
-  public static final String IMAGE = "image";
-  public static final String WIDTH = "width";
-  public static final String HEIGHT = "height";
-  public static final String COLOR = "color";
-  public static final String REVERSIBLE = "reversible";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String IMAGE = "image"; //NON-NLS
+  public static final String WIDTH = "width"; //NON-NLS
+  public static final String HEIGHT = "height"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String REVERSIBLE = "reversible"; //NON-NLS
 
   protected Point pos = new Point(0, 0);
   protected Rectangle boundaries = new Rectangle(0, 0, 500, 500);
@@ -94,7 +94,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected Map map;
   protected double magnification = 1.0;
 
-  @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";  //NON-NLS
   @Deprecated(since = "2020-08-06", forRemoval = true) protected Image boardImage;
 
   protected SourceOp boardImageOp;
@@ -230,7 +230,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
         boolean tiled = false;
         try {
-          tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);
+          tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);  //NON-NLS
         }
         catch (ImageIOException e) {
           // ignore, not tiled
@@ -316,7 +316,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
     catch (InterruptedException e) {
       // This happens if taking a snapshot of the map is cancelled.
-
       // FIXME: Can we handle this in ImageSaver instead?
     }
     catch (ExecutionException e) {
@@ -695,7 +694,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Board.html");
+    return HelpFile.getReferenceManualPage("Board.html"); //NON-NLS
   }
 
   /**

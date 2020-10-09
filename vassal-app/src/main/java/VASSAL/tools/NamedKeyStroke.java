@@ -70,7 +70,7 @@ public class NamedKeyStroke {
   /**
    * Is there a name associated with this KeyStroke? No name means
    * it is a standard KeyStroke.
-   * @return
+   * @return True if a name associated with this Keystroke
    */
   public boolean isNamed() {
     return ! (name == null || name.length() == 0);

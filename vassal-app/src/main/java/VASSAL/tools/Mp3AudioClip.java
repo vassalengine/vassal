@@ -85,7 +85,7 @@ public class Mp3AudioClip implements AudioClip {
             stream.close();
           }
           catch (IOException e) {
-            log.error("Error while closing stream", e);
+            log.error("Error while closing stream", e); //NON-NLS
           }
         }
       }
@@ -109,18 +109,15 @@ public class Mp3AudioClip implements AudioClip {
     }
 
     // run in new thread to play in background
-    new Thread() {
-      @Override
-      public void run() {
-        try (stream) {
-          player.play();
-        }
-        catch (JavaLayerException | IOException e) {
-          ErrorDialog.dataWarning(new BadDataReport(
-            "Error reading sound file", name, e
-          ));
-        }
+    new Thread(() -> {
+      try (stream) {
+        player.play();
       }
-    }.start();
+      catch (JavaLayerException | IOException e) {
+        ErrorDialog.dataWarning(new BadDataReport(
+          "Error reading sound file", name, e //NON-NLS
+        ));
+      }
+    }).start();
   }
 }

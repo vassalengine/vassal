@@ -18,7 +18,6 @@
 package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -82,7 +81,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public static final String UNIVERSAL = "anyModule"; //$NON-NLS-1$
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId"; //$NON-NLS-1$
   public static final String EXTENSION_ID = "extensionId"; //$NON-NLS-1$
-  public static final String DESCRIPTION = "description";
+  public static final String DESCRIPTION = "description"; //NON-NLS
 
   private DataArchive archive;
   private String version = "0.0"; //$NON-NLS-1$
@@ -93,9 +92,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   private AbstractAction editAction;
 
   protected int nextGpId = 0;
-  protected String extensionId = "";
+  protected String extensionId = ""; //NON-NLS
   protected JTextField idDisplay;
-  protected String description = "";
+  protected String description = ""; //NON-NLS
 
   public ModuleExtension(DataArchive archive) {
     this.archive = archive;
@@ -120,11 +119,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void build() {
 
     final AbstractMetaData data = MetaDataFactory.buildMetaData(archive.getArchive().getFile());
-    final String fileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE;
+    final String fileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE; //NON-NLS
 
     if (!(data instanceof ExtensionMetaData)) {
-      logger.error("Not an extension file {}", fileName, null);
-      throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + fileName);
+      logger.error("Not an extension file {}", fileName, null); //NON-NLS
+      throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + fileName); //NON-NLS
     }
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
@@ -140,15 +139,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         }
       }
       catch (IOException e) {
-        logger.error("Error while loading XML data from file {}", fileName, e);
+        logger.error("Error while loading XML data from file {}", fileName, e); //NON-NLS
         throw new ExtensionsLoader.LoadExtensionException(e);
       }
     }
     catch (FileNotFoundException e) {
-      logger.error("File {} not found in archive", fileName, e);
+      logger.error("File {} not found in archive", fileName, e); //NON-NLS
     }
     catch (IOException e) {
-      logger.error("Error while reading file {} from archive", fileName, e);
+      logger.error("Error while reading file {} from archive", fileName, e); //NON-NLS
     }
 
     GameModule.getGameModule().add(this);
@@ -327,7 +326,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       String version = (String) value;
       if (!universal && VersionUtils.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
-            Resources.getString("ModuleExtension.wrong_module_version",
+            Resources.getString("ModuleExtension.wrong_module_version", //NON-NLS
                 getName(), version, GameModule.getGameModule().getGameVersion(),
                                GameModule.getGameModule().getGameName()));
       }
@@ -386,7 +385,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public String getName() {
-    String name = "Extension";
+    String name = "Extension"; //NON-NLS
     if (archive != null) {
       name = archive.getName();
       int index = name.lastIndexOf(File.separatorChar);
@@ -417,7 +416,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
       // FIXME: review error message
       catch (IOException e) {
-        logger.error("", e);
+        logger.error("", e); //NON-NLS
       }
 
       final String save = buildString();
@@ -432,7 +431,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
     }
     else {
-      throw new IOException("Read-only extension");
+      throw new IOException("Read-only extension"); //NON-NLS
     }
   }
 
@@ -451,11 +450,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public Action getEditAction(final JDialog d) {
     if (editAction == null) {
       d.setName(getName());
-      final StringConfigurer config = new StringConfigurer(VERSION, "Version:  ", version);
+      final StringConfigurer config = new StringConfigurer(VERSION, Resources.getString("Editor.ExtensionEditor.version"), version);
       d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.add(config.getControls());
 
-      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, "Description:  ", description);
+      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, Resources.getString("Editor.description_label"), description);
       d.add(dconfig.getControls());
 
       /*
@@ -463,55 +462,44 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
        * have been created. Display a dialog with warnings.
        */
       Box idBox = Box.createHorizontalBox();
-      idBox.add(new JLabel("Extension Id: "));
+      idBox.add(new JLabel(Resources.getString("Editor.ExtensionEditor.extension_id")));
       idDisplay = new JTextField(12);
       idDisplay.setText(extensionId);
       idDisplay.setEditable(false);
       idBox.add(idDisplay);
-      JButton change = new JButton("Change");
-      change.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String s = (String)JOptionPane.showInputDialog(
-              GameModule.getGameModule().getPlayerWindow(),
-              "Are you sure you wish to change the Extension Id?\n\nThe Extension Id links counters in existing save\ngames to the counter definitions in this Extension.\n\nIf you change the Id, then the Saved Game Updater\nmay not be able to update the counters from existing\nSaved Games.\n\nNew Extension Id:",
-              "",
-              JOptionPane.WARNING_MESSAGE,
-              null,
-              null,
-              getExtensionId());
-          if (s != null && ! s.equals(getExtensionId())) {
-            extensionId = s;
-            updateGpIds();
-            idDisplay.setText(getExtensionId());
-          }
+      JButton change = new JButton(Resources.getString("Editor.ExtensionEditor.change_button"));
+      change.addActionListener(e -> {
+        String s = (String)JOptionPane.showInputDialog(
+            GameModule.getGameModule().getPlayerWindow(),
+            Resources.getString("Editor.ExtensionEditor.change_warning"),
+            "", //NON-NLS
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            null,
+            getExtensionId());
+        if (s != null && ! s.equals(getExtensionId())) {
+          extensionId = s;
+          updateGpIds();
+          idDisplay.setText(getExtensionId());
         }
       });
       idBox.add(change);
       d.add(idBox);
 
-      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, "Allow loading with any module?", universal);
+      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, Resources.getString("Editor.ExtensionEditor.universal_checkbox"), universal);
       d.add(uconfig.getControls());
 
       Box b = Box.createHorizontalBox();
-      JButton ok = new JButton("Save");
-      ok.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setAttribute(VERSION, config.getValue());
-          setAttribute(DESCRIPTION, dconfig.getValue());
-          setAttribute(UNIVERSAL, uconfig.getValue());
-          d.dispose();
-        }
+      JButton ok = new JButton(Resources.getString("General.save"));
+      ok.addActionListener(e -> {
+        setAttribute(VERSION, config.getValue());
+        setAttribute(DESCRIPTION, dconfig.getValue());
+        setAttribute(UNIVERSAL, uconfig.getValue());
+        d.dispose();
       });
       b.add(ok);
-      JButton cancel = new JButton("Cancel");
-      cancel.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          d.dispose();
-        }
-      });
+      JButton cancel = new JButton(Resources.getString("General.cancel"));
+      cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);
       d.pack();
@@ -529,9 +517,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         editAction.putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
       }
       else {
-        editAction.putValue(Action.NAME, "Edit");
+        editAction.putValue(Action.NAME, Resources.getString("General.edit"));
       }
-      editAction.putValue(Action.SHORT_DESCRIPTION, "Extension Properties");
+      editAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ExtensionEditor.extension_properties"));
     }
     return editAction;
   }

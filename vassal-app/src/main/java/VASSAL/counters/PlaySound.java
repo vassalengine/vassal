@@ -22,12 +22,15 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.PlayAudioClipCommand;
@@ -108,11 +111,13 @@ public class PlaySound extends Decorator implements TranslatablePiece {
       final String clipName = format.getText(Decorator.getOutermost(this));
       c = new PlayAudioClipCommand(clipName);
       try {
-        final AudioClip clip = GameModule.getGameModule()
-                                         .getDataArchive()
-                                         .getCachedAudioClip(clipName);
-        if (clip != null) {
-          clip.play();
+        if (!GlobalOptions.getInstance().isSoundGlobalMute()) {
+          final AudioClip clip = GameModule.getGameModule()
+            .getDataArchive()
+            .getCachedAudioClip(clipName);
+          if (clip != null) {
+            clip.play();
+          }
         }
       }
       catch (IOException e) {
@@ -211,5 +216,21 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     public String getState() {
       return "";
     }
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(stroke);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(menuText);
   }
 }

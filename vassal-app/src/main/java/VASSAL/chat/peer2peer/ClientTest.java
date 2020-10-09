@@ -20,7 +20,6 @@ import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
-import VASSAL.chat.messageboard.MessageBoard;
 
 // TODO: throw this away or make it a JUnit test
 public class ClientTest extends P2PClient implements Runnable, PropertyChangeListener {
@@ -29,8 +28,8 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
   private int numRooms;
   private FileWriter log;
 
-  public ClientTest(PeerPool pool, MessageBoard msgSvr, WelcomeMessageServer welcomer, int changeRoom, int numRooms, FileWriter log) {
-    super(new TextClient.Encoder(), msgSvr, welcomer, pool);
+  public ClientTest(PeerPool pool, WelcomeMessageServer welcomer, int changeRoom, int numRooms, FileWriter log) {
+    super(new TextClient.Encoder(), welcomer, pool);
     this.changeRoom = changeRoom;
     this.numRooms = numRooms;
     this.log = log;
@@ -120,7 +119,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
         }
       };
       PeerPool pool = new DirectPeerPool();
-      new ClientTest(pool, msgSvr, welcomer, wait, nRooms, new FileWriter("Log" + i));
+      new ClientTest(pool, welcomer, wait, nRooms, new FileWriter("Log" + i));
     }
   }
 */

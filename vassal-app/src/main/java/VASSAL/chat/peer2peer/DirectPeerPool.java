@@ -100,11 +100,6 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
   }
 
-  @Deprecated(since = "2020-08-17", forRemoval = true)
-  protected boolean isServerMode() {
-    return true;
-  }
-
   @Override
   public void disconnect() {
     if (frame != null) {

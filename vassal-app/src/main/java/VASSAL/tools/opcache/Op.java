@@ -21,7 +21,7 @@ package VASSAL.tools.opcache;
 import java.util.List;
 
 /**
- * An operation with a cachecabe result.
+ * An operation with a cacheable result.
  *
  * @author Joel Uckelman
  * @since 3.1.0
@@ -33,24 +33,24 @@ public interface Op<V> {
    *
    * @return the result of running this <code>Op</code>
    */
-  public V eval() throws Exception;
+  V eval() throws Exception;
 
   /**
    * Returns a list of <code>Op</code>s on which this <code>Op</code> depends.
    *
    * @return the <code>Op</code>s on which this <code>Op</code> depends
    */
-  public List<Op<?>> getSources();
+  List<Op<?>> getSources();
 
   /**
    * Returns the current cache key for this <code>Op</code>.
    *
    * @return the current cache key for this <code>Op</code>
    */
-  public OpCache.Key<V> newKey();
+  OpCache.Key<V> newKey();
 
   /**
    * Invalidates the current cache key for this <code>Op</code>.
    */
-  public void update();
+  void update();
 }

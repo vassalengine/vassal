@@ -24,9 +24,9 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
 import java.awt.event.InputEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Box;
@@ -333,10 +333,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   protected Command executeKey(NamedKeyStroke key) {
-    Command comm = null;
     if (key.isNull() || getMap() == null) {
-      return comm;
+      return null;
     }
+
+    Command comm = null;
 
     try {
       RecursionLimiter.startExecution(this);
@@ -353,12 +354,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   protected boolean matchesFilter() {
     final GamePiece outer = Decorator.getOutermost(this);
-    if (!propertyMatch.isNull()) {
-      if (!propertyMatch.accept(outer)) {
-        return false;
-      }
+    if (propertyMatch.isNull()) {
+      return true;
     }
-    return true;
+    return propertyMatch.accept(outer);
   }
 
   @Override
@@ -490,12 +489,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     public Ed(TriggerAction piece) {
 
-      final PropertyChangeListener updateListener = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent arg0) {
-          updateVisibility();
-        }
-      };
+      final PropertyChangeListener updateListener = arg0 -> updateVisibility();
 
       box = new JPanel();
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
@@ -647,5 +641,63 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   @Override
   public String getComponentTypeName() {
     return getDescription();
+  }
+
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    List<String> l = new ArrayList<>();
+    l.add(propertyMatch.getExpression());
+    if (loop) {
+      if (LoopControl.LOOP_WHILE.equals(loopType)) {
+        l.add(whileExpression.getExpression());
+      }
+      else if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+        l.add(untilExpression.getExpression());
+      }
+      else if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+        l.add(indexStart.getFormat());
+        l.add(indexStep.getFormat());
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    if (loop && LoopControl.LOOP_COUNTED.equals(loopType)) {
+      return List.of(indexProperty);
+    }
+    return Collections.EMPTY_LIST;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    List<NamedKeyStroke> l = new ArrayList<>();
+    l.add(key);
+    Collections.addAll(l, watchKeys);
+    Collections.addAll(l, actionKeys);
+    if (loop) {
+      l.add(preLoopKey);
+      l.add(postLoopKey);
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(command);
   }
 }

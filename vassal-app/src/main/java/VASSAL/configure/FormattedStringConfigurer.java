@@ -22,6 +22,8 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -52,7 +54,7 @@ public class FormattedStringConfigurer
 
   public void setOptions(String[] options) {
     optionsModel.removeAllElements();
-    optionsModel.addElement("Insert");
+    optionsModel.addElement(Resources.getString("Editor.FormattedStringConfigurer.insert"));
     for (String option : options) {
       optionsModel.addElement(option);
     }
@@ -95,7 +97,7 @@ public class FormattedStringConfigurer
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    String item = "";
+    String item;
 
     int selectedIndex = dropList.getSelectedIndex();
 

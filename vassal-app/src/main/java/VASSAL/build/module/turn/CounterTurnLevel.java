@@ -19,9 +19,7 @@
 package VASSAL.build.module.turn;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -40,12 +38,7 @@ public class CounterTurnLevel extends TurnLevel {
   protected boolean loop = false;
   protected int loopLimit = -1;
 
-  private final VisibilityCondition loopCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return loop;
-    }
-  };
+  private final VisibilityCondition loopCond = () -> loop;
 
   public CounterTurnLevel() {
     super();
@@ -159,12 +152,9 @@ public class CounterTurnLevel extends TurnLevel {
   protected Component getSetControl() {
 
     final IntConfigurer config = new IntConfigurer("", " " + getConfigureName() + ":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    config.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        current = (Integer) ((IntConfigurer) e.getSource()).getValue();
-        myValue.setPropertyValue(getValueString());
-      }
+    config.addPropertyChangeListener(e -> {
+      current = (Integer) ((IntConfigurer) e.getSource()).getValue();
+      myValue.setPropertyValue(getValueString());
     });
 
     return config.getControls();
@@ -174,10 +164,10 @@ public class CounterTurnLevel extends TurnLevel {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
-      "Start Value:  ",
-      "Increment By:  ",
-      "Loop?",
-      "Maximum value:  "
+        Resources.getString("Editor.CounterTurnLevel.start_value"),
+        Resources.getString("Editor.CounterTurnLevel.increment_by"),
+        Resources.getString("Editor.CounterTurnLevel.loop"),
+        Resources.getString("Editor.CounterTurnLevel.maximum_value")
     );
   }
 
@@ -257,7 +247,7 @@ public class CounterTurnLevel extends TurnLevel {
   }
 
   public static String getConfigureTypeName() {
-    return "Counter";
+    return Resources.getString("Editor.CounterTurnLevel.component_type");
   }
 
   @Override
@@ -274,5 +264,4 @@ public class CounterTurnLevel extends TurnLevel {
       return null;
     }
   }
-
 }

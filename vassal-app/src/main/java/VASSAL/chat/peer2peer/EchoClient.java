@@ -39,11 +39,8 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     this.numRooms = numRooms;
     this.log = log;
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this);
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getNewValue()); //$NON-NLS-1$
-      }
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, evt -> {
+      System.err.println(evt.getNewValue()); //$NON-NLS-1$
     });
     client.setConnected(true);
     client.setRoom(new SimpleRoom("Room0")); //$NON-NLS-1$
@@ -155,10 +152,10 @@ public class EchoClient implements Runnable, PropertyChangeListener {
         Thread.sleep((int) (wait * 1000 * rng.nextFloat()));
         ChatServerConnection client = null;
         if (poolType.startsWith("hier")) {
-          client = new SocketNodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
+          client = new NodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
         }
         else {
-          client = new P2PClient(new TextClient.Encoder(), msgSvr, welcomer, pool);
+          client = new P2PClient(new TextClient.Encoder(), welcomer, pool);
         }
         client.setUserInfo(new SimplePlayer(userName));
         new EchoClient(client, wait, nRooms,

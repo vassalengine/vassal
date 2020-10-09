@@ -6,7 +6,7 @@
 DMGDIR=dist/dmg
 L4JDIR=dist/launch4j
 
-JDKVER=14
+JDKVER=15
 JDKDIR=dist/jdks
 
 #
@@ -72,3 +72,8 @@ make -C build/dmg VERBOSE=1
 popd
 
 popd
+
+#
+# Set up Maven Wrapper
+#
+mvn -N io.takari:maven:0.7.7:wrapper

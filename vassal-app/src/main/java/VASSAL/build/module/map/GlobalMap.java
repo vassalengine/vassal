@@ -17,6 +17,8 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,6 +34,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -74,7 +78,8 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class GlobalMap implements AutoConfigurable,
                                   GameComponent,
-                                  Drawable {
+                                  Drawable,
+                                  SearchTarget {
   private static final long serialVersionUID = 2L;
 
   protected Map map;
@@ -101,7 +106,7 @@ public class GlobalMap implements AutoConfigurable,
 
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);
-    launch.setAttribute(TOOLTIP, "Show/Hide overview window");
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.GlobalMap.show_hide_overview_window"));
     launch.setAttribute(HOTKEY,
       NamedKeyStroke.getNamedKeyStroke(
         KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK
@@ -157,13 +162,13 @@ public class GlobalMap implements AutoConfigurable,
     AutoConfigurable.Util.buildAttributes(e, this);
   }
 
-  protected static final String SCALE = "scale";
-  protected static final String COLOR = "color";
-  protected static final String HOTKEY = "hotkey";
-  protected static final String ICON_NAME = "icon";
-  protected static final String TOOLTIP = "tooltip";
-  protected static final String BUTTON_TEXT = "buttonText";
-  protected static final String DEFAULT_ICON = "/images/overview.gif";
+  protected static final String SCALE = "scale"; //NON-NLS
+  protected static final String COLOR = "color"; //NON-NLS
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String ICON_NAME = "icon"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  protected static final String DEFAULT_ICON = "/images/overview.gif"; //NON-NLS
 
   @Override
   public String[] getAttributeNames() {
@@ -371,7 +376,7 @@ public class GlobalMap implements AutoConfigurable,
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "OverviewWindow");
+    return HelpFile.getReferenceManualPage("Map.html", "OverviewWindow"); //NON-NLS
   }
 
   @Override
@@ -484,7 +489,7 @@ public class GlobalMap implements AutoConfigurable,
     }
 
     /**
-     * This funcion is overridden to make sure that the parent layout
+     * This function is overridden to make sure that the parent layout
      * is redone when the GlobalMap is shown.
      */
     @Override
@@ -580,8 +585,53 @@ public class GlobalMap implements AutoConfigurable,
   @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, "GlobalMap");
+      myI18nData = new ComponentI18nData(this, "GlobalMap");  //NON-NLS
     }
     return myI18nData;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
   }
 }

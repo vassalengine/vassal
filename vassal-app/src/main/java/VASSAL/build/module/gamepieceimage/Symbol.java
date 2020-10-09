@@ -28,24 +28,14 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 
 public class Symbol {
 
-  protected static final String NATO = "NATO Unit Symbols";
+  protected static final String NATO = "NATO Unit Symbols"; //NON-NLS (no, really!)
   protected static final String[] SYMBOL_SETS = new String[] { NATO };
-
-  //  public static void draw(Graphics g, Rectangle r, Color fg, Color bg, String
-  // symbolSet, String symbolName) {
-  //
-  //    if (symbolSet.equals(NATO_SIZE_SET)) {
-  //
-  //    }
-  //    else if (symbolSet.equals(NATO_UNIT_SET)) {
-  //      NatoUnitSymbolSet.draw(g, r, fg, bg, symbolName);
-  //    }
-  //
-  //  }
+  protected static final String[] SYMBOL_SETS_DESC = new String[] { "Editor.Symbol.NATO" };
 
   protected String symbolSetName;
   protected String symbolName1;
@@ -60,80 +50,46 @@ public class Symbol {
   }
 
   public void draw(Graphics g, Rectangle bounds, Color fg, Color bg, Color sz, float lineWidth) {
-
     if (symbolSetName.equals(NATO)) {
       NatoUnitSymbolSet.draw(symbolName1, symbolName2, g, bounds, fg, bg, sz, lineWidth, symbolSize);
     }
   }
 
   public static class NatoUnitSymbolSet {
-
-    protected static final String SZ_NONE = "None";
-    protected static final String SZ_INSTALLATION = "Installation";
-    protected static final String SZ_TEAM = "Team";
-    protected static final String SZ_SQUAD = "Squad";
-    protected static final String SZ_SECTION = "Section";
-    protected static final String SZ_PLATOON = "Platoon";
-    protected static final String SZ_ECHELON = "Echelon";
-    protected static final String SZ_COMPANY = "Company";
-    protected static final String SZ_BATTALION = "Battalion";
-    protected static final String SZ_REGIMENT = "Regiment";
-    protected static final String SZ_BRIGADE = "Brigade";
-    protected static final String SZ_DIVISION = "Division";
-    protected static final String SZ_CORPS = "Corps";
-    protected static final String SZ_ARMY = "Army";
-    protected static final String SZ_ARMY_GROUP = "Army Group";
+    protected static final String SZ_NONE = "None"; //NON-NLS
+    protected static final String SZ_INSTALLATION = "Installation"; //NON-NLS
+    protected static final String SZ_TEAM = "Team"; //NON-NLS
+    protected static final String SZ_SQUAD = "Squad"; //NON-NLS
+    protected static final String SZ_SECTION = "Section"; //NON-NLS
+    protected static final String SZ_PLATOON = "Platoon"; //NON-NLS
+    protected static final String SZ_ECHELON = "Echelon"; //NON-NLS
+    protected static final String SZ_COMPANY = "Company"; //NON-NLS
+    protected static final String SZ_BATTALION = "Battalion"; //NON-NLS
+    protected static final String SZ_REGIMENT = "Regiment"; //NON-NLS
+    protected static final String SZ_BRIGADE = "Brigade"; //NON-NLS
+    protected static final String SZ_DIVISION = "Division"; //NON-NLS
+    protected static final String SZ_CORPS = "Corps"; //NON-NLS
+    protected static final String SZ_ARMY = "Army"; //NON-NLS
+    protected static final String SZ_ARMY_GROUP = "Army Group"; //NON-NLS //NON-NLS
     protected static final String SZ_REGION = "Region";
 
-    protected static final String NONE = "None";
-    protected static final String AIRBORNE = "Airborne";
-    protected static final String AIR_DEFENCE = "Air Defence";
-    protected static final String AIR_FORCE = "Air Force";
-    //    protected static final String AIR_MOBILE = "Air Mobile";
-    //    protected static final String AMPHIBIOUS = "Amphibious";
-    protected static final String ANTI_TANK = "Anti Tank";
-    protected static final String ARMORED = "Armored";
-    protected static final String ARMY_AVIATION = "Army Aviation";
-    protected static final String ARTILLERY = "Artillery";
-    //    protected static final String BRIDGING = "Bridging";
-    //    protected static final String COMBAT_SERVICE_SUPPORT = "";
-    protected static final String COMMANDO = "Commando";
-    //    protected static final String ELECTRONIC_RANGING = "";
-    //    protected static final String ELECTRONIC_WARFARE = "";
-    protected static final String ENGINEERS = "Engineers";
-    protected static final String GLIDER = "Glider-Borne";
-    protected static final String GUERILLA = "Guerilla";
-    //    protected static final String HEADQUARTERS_SUPPORT = "";
-    protected static final String INFANTRY = "Infantry";
-    //    protected static final String LABOR_RESOURCES = "";
-    //    protected static final String MAINTENANCE = "";
-    protected static final String MARINES = "Marines";
-    //    protected static final String METEOROLOGICAL = "";
-    //    protected static final String MILITARY_CIVIL = "";
-    //    protected static final String MP = "";
-    //    protected static final String MISSILE = "";
-    protected static final String MOUNTAIN = "Mountain";
-    protected static final String NAVY = "";
-    //    protected static final String NBC = "";
-    //    protected static final String ORDNANCE = "";
-    //    protected static final String PARACHUTE = "";
-    //    protected static final String PAY_FINANCE = "";
-    //    protected static final String PERSONNEL = "";
-    //    protected static final String PIPELINE = "";
-    //    protected static final String POSTAL = "";
-    //    protected static final String PSYCH = "";
-    //    protected static final String QUARTERMASTER = "";
-    protected static final String RECON = "Cavalry/Recon";
-
-    //    protected static final String REPLACEMENT = "";
-    //    protected static final String SERVICE = "";
-    //    protected static final String SIGNAL = "";
-    //    protected static final String SOUND_RANGING = "";
-    //    protected static final String SUPPLY = "";
-    //    protected static final String TRANSPORT = "";
-    //    protected static final String TOPO = "";
-    //    protected static final String UNMANNED_AIR = "";
-    //    protected static final String VET = "";
+    protected static final String NONE = "None"; //NON-NLS
+    protected static final String AIRBORNE = "Airborne"; //NON-NLS
+    protected static final String AIR_DEFENCE = "Air Defence"; //NON-NLS
+    protected static final String AIR_FORCE = "Air Force"; //NON-NLS
+    protected static final String ANTI_TANK = "Anti Tank"; //NON-NLS
+    protected static final String ARMORED = "Armored"; //NON-NLS
+    protected static final String ARMY_AVIATION = "Army Aviation"; //NON-NLS
+    protected static final String ARTILLERY = "Artillery"; //NON-NLS
+    protected static final String COMMANDO = "Commando"; //NON-NLS
+    protected static final String ENGINEERS = "Engineers"; //NON-NLS
+    protected static final String GLIDER = "Glider-Borne"; //NON-NLS
+    protected static final String GUERILLA = "Guerrilla"; //NON-NLS
+    protected static final String INFANTRY = "Infantry"; //NON-NLS
+    protected static final String MARINES = "Marines"; //NON-NLS
+    protected static final String MOUNTAIN = "Mountain"; //NON-NLS
+    protected static final String NAVY = ""; //NON-NLS
+    protected static final String RECON = "Cavalry/Recon"; //NON-NLS
 
     protected static final String INSTALLATION_SYMBOL = "m"; //$NON-NLS-1$
     protected static final String TEAM_SYMBOL = "o"; //$NON-NLS-1$
@@ -157,13 +113,35 @@ public class Symbol {
         COMMANDO,
         GLIDER,
         GUERILLA,
-        //MARINES,
         MOUNTAIN,
         NAVY
       };
     }
 
+    protected static String[] getSymbolDisplayNames() {
+      return new String[] {
+        "Editor.Symbol.none",
+        "Editor.Symbol.infantry",
+        "Editor.Symbol.cavalry_recon",
+        "Editor.Symbol.armored",
+        "Editor.Symbol.artillery",
+        "Editor.Symbol.engineers",
+        "Editor.Symbol.airborne",
+        "Editor.Symbol.air_defense",
+        "Editor.Symbol.air_force",
+        "Editor.Symbol.anti_tank",
+        "Editor.Symbol.army_aviation",
+        "Editor.Symbol.commando",
+        "Editor.Symbol.glider_borne",
+        "Editor.Symbol.guerrilla",
+        "Editor.Symbol.mountain",
+        "Editor.Symbol.navy"
+      };
+    }
+
+
     protected static String[] sizeNames;
+    protected static String[] sizeDisplayNames;
 
     protected static String[] getSymbolSizes() {
       if (sizeNames == null) {
@@ -175,6 +153,17 @@ public class Symbol {
       return sizeNames;
     }
 
+    protected static String[] getSymbolSizeDisplayNames() {
+      if (sizeDisplayNames == null) {
+        sizeDisplayNames = new String[SIZES.length];
+        for (int i = 0; i < SIZES.length; i++) {
+          sizeDisplayNames[i] = SIZES[i].getDisplayName();
+        }
+      }
+      return sizeDisplayNames;
+    }
+
+
     protected static SizeOption findSize(String name) {
       for (SizeOption size : SIZES) {
         if (name.equals(size.getName())) {
@@ -184,23 +173,33 @@ public class Symbol {
       return SIZES[0];
     }
 
-    protected static final SizeOption[] SIZES = new SizeOption[] {
-      new SizeOption(SZ_NONE, 0, ""), //$NON-NLS-1$
-      new SizeOption(SZ_INSTALLATION, 1, INSTALLATION_SYMBOL),
-      new SizeOption(SZ_TEAM, 1, TEAM_SYMBOL),
-      new SizeOption(SZ_SQUAD, 1, SQUAD_SYMBOL),
-      new SizeOption(SZ_SECTION, 2, SQUAD_SYMBOL),
-      new SizeOption(SZ_PLATOON, 3, SQUAD_SYMBOL),
-      new SizeOption(SZ_ECHELON, 4, SQUAD_SYMBOL),
-      new SizeOption(SZ_COMPANY, 1, COMPANY_SYMBOL),
-      new SizeOption(SZ_BATTALION, 2, COMPANY_SYMBOL),
-      new SizeOption(SZ_REGIMENT, 3, COMPANY_SYMBOL),
-      new SizeOption(SZ_BRIGADE, 1, BRIGADE_SYMBOL),
-      new SizeOption(SZ_DIVISION, 2, BRIGADE_SYMBOL),
-      new SizeOption(SZ_CORPS, 3, BRIGADE_SYMBOL),
-      new SizeOption(SZ_ARMY, 4, BRIGADE_SYMBOL),
-      new SizeOption(SZ_ARMY_GROUP, 5, BRIGADE_SYMBOL),
-      new SizeOption(SZ_REGION, 6, BRIGADE_SYMBOL)
+
+    protected static SizeOption findSizeByDisplayName(String displayName) {
+      for (SizeOption size : SIZES) {
+        if (displayName.equals(size.getDisplayName())) {
+          return size;
+        }
+      }
+      return SIZES[0];
+    }
+
+
+    public static final SizeOption[] SIZES = new SizeOption[] {
+      new SizeOption(SZ_NONE, Resources.getString("Editor.Symbol.Size.none"), 0, ""), //$NON-NLS-1$
+      new SizeOption(SZ_INSTALLATION, Resources.getString("Editor.Symbol.Size.installation"), 1, INSTALLATION_SYMBOL),
+      new SizeOption(SZ_TEAM, Resources.getString("Editor.Symbol.Size.team"), 1, TEAM_SYMBOL),
+      new SizeOption(SZ_SQUAD, Resources.getString("Editor.Symbol.Size.squad"), 1, SQUAD_SYMBOL),
+      new SizeOption(SZ_SECTION, Resources.getString("Editor.Symbol.Size.platoon"), 3, SQUAD_SYMBOL),
+      new SizeOption(SZ_ECHELON, Resources.getString("Editor.Symbol.Size.echelon"), 4, SQUAD_SYMBOL),
+      new SizeOption(SZ_COMPANY, Resources.getString("Editor.Symbol.Size.company"), 1, COMPANY_SYMBOL),
+      new SizeOption(SZ_BATTALION, Resources.getString("Editor.Symbol.Size.battalion"), 2, COMPANY_SYMBOL),
+      new SizeOption(SZ_REGIMENT, Resources.getString("Editor.Symbol.Size.regiment"), 3, COMPANY_SYMBOL),
+      new SizeOption(SZ_BRIGADE, Resources.getString("Editor.Symbol.Size.brigade"), 1, BRIGADE_SYMBOL),
+      new SizeOption(SZ_DIVISION, Resources.getString("Editor.Symbol.Size.division"), 2, BRIGADE_SYMBOL),
+      new SizeOption(SZ_CORPS, Resources.getString("Editor.Symbol.Size.corps"), 3, BRIGADE_SYMBOL),
+      new SizeOption(SZ_ARMY, Resources.getString("Editor.Symbol.Size.army"), 4, BRIGADE_SYMBOL),
+      new SizeOption(SZ_ARMY_GROUP, Resources.getString("Editor.Symbol.Size.army_group"), 5, BRIGADE_SYMBOL),
+      new SizeOption(SZ_REGION, Resources.getString("Editor.Symbol.Size.region"), 6, BRIGADE_SYMBOL)
     };
 
     protected static void draw(String name1, String name2, Graphics g, Rectangle bounds, Color fg, Color bg,
@@ -405,12 +404,11 @@ public class Symbol {
       default:
         // do nothing
       }
-
     }
 
     /**
      *
-     * @param g       Grahics
+     * @param g       Graphics
      * @param size    Name of size symbol
      * @param bounds  Size of the unit symbol
      */
@@ -439,7 +437,6 @@ public class Symbol {
       int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
       int ypos = bounds.y - sym_h - 1;
       g.drawImage(bi, xpos, ypos, null);
-
     }
 
     public static BufferedImage buildSizeImage(String size, int sym_w, int sym_h, int gap) {
@@ -510,19 +507,25 @@ public class Symbol {
     }
   }
 
-  private static class SizeOption {
+  public static class SizeOption {
     String name;
+    String displayName;
     String type;
     int count;
 
-    public SizeOption (String n, int c, String t) {
+    public SizeOption (String n, String d, int c, String t) {
       name = n;
+      displayName = d;
       type = t;
       count = c;
     }
 
     public String getName() {
       return name;
+    }
+
+    public String getDisplayName() {
+      return displayName;
     }
 
     public String getType() {

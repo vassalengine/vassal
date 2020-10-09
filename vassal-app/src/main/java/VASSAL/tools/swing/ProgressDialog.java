@@ -24,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -89,29 +88,24 @@ public class ProgressDialog extends JDialog {
       @Override
       public void windowClosing(WindowEvent e) {
         fireCancelledEvent(new ActionEvent(
-          ProgressDialog.this, ActionEvent.ACTION_PERFORMED, "cancel"
+          ProgressDialog.this, ActionEvent.ACTION_PERFORMED, "cancel" //NON-NLS
         ));
       }
     });
 
     // forward clicks on the close button to the cancellation listeners
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        fireCancelledEvent(e);
-      }
-    });
+    cancel.addActionListener(this::fireCancelledEvent);
 
     // create the layout
     final JPanel panel = new JPanel(new MigLayout(
-      "insets dialog, fill", "", "unrelated:push[]related[]unrelated:push[]"));
+      "insets dialog, fill", "", "unrelated:push[]related[]unrelated:push[]")); //NON-NLS
 
     // NB: It's necessary to set the minimum width for the label,
     // otherwise if the label text is set to a string which is too long,
     // the label will overflow the container instead of showing ellipses.
-    panel.add(progbar, "growx, wrap");
-    panel.add(label,   "wmin 0, pad 0 0 2pt 0, wrap unrel:push");
-    panel.add(cancel,  "tag cancel");
+    panel.add(progbar, "growx, wrap"); //NON-NLS
+    panel.add(label,   "wmin 0, pad 0 0 2pt 0, wrap unrel:push"); //NON-NLS
+    panel.add(cancel,  "tag cancel"); //NON-NLS
 
     add(panel);
 
@@ -249,12 +243,7 @@ public class ProgressDialog extends JDialog {
   public static ProgressDialog createOnEDT(final Frame parent,
                                            final String title,
                                            final String text) {
-    final Future<ProgressDialog> f = EDT.submit(new Callable<>() {
-      @Override
-      public ProgressDialog call() {
-        return new ProgressDialog(parent, title, text);
-      }
-    });
+    final Future<ProgressDialog> f = EDT.submit(() -> new ProgressDialog(parent, title, text));
 
     try {
       return f.get();

@@ -73,21 +73,21 @@ public class StackMetrics extends AbstractConfigurable {
 
   protected Color blankColor;
 
-  public static final String EXSEP_X = "exSepX";
-  public static final String EXSEP_Y = "exSepY";
-  public static final String UNEXSEP_X = "unexSepX";
-  public static final String UNEXSEP_Y = "unexSepY";
-  public static final String DISABLED = "disabled";
-  public static final String TOP_KEY = "top";
-  public static final String BOTTOM_KEY = "bottom";
-  public static final String UP_KEY = "up";
-  public static final String DOWN_KEY = "down";
-  public static final String COLOR = "color";
+  public static final String EXSEP_X = "exSepX"; //NON-NLS
+  public static final String EXSEP_Y = "exSepY"; //NON-NLS
+  public static final String UNEXSEP_X = "unexSepX"; //NON-NLS
+  public static final String UNEXSEP_Y = "unexSepY"; //NON-NLS
+  public static final String DISABLED = "disabled"; //NON-NLS
+  public static final String TOP_KEY = "top"; //NON-NLS
+  public static final String BOTTOM_KEY = "bottom"; //NON-NLS
+  public static final String UP_KEY = "up"; //NON-NLS //NON-NLS
+  public static final String DOWN_KEY = "down"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
 
-  public static int DEFAULT_EXSEP_X = 6;
-  public static int DEFAULT_EXSEP_Y = 18;
-  public static int DEFAULT_UNEXSEP_X = 2;
-  public static int DEFAULT_UNEXSEP_Y = 4;
+  public static final int DEFAULT_EXSEP_X = 6;
+  public static final int DEFAULT_EXSEP_Y = 18;
+  public static final int DEFAULT_UNEXSEP_X = 2;
+  public static final int DEFAULT_UNEXSEP_Y = 4;
 
   protected Map map;
 
@@ -102,7 +102,7 @@ public class StackMetrics extends AbstractConfigurable {
           exSepX = DEFAULT_EXSEP_X;
           ErrorDialog.dataWarning(
               new BadDataReport(
-                  Resources.getString("Error.bad_preference", EXSEP_X, "StackMetrics"), (String) value, NaN));
+                  Resources.getString("Error.bad_preference", EXSEP_X, "StackMetrics"), (String) value, NaN)); //NON-NLS
         }
       }
       else if (value != null) {
@@ -118,7 +118,7 @@ public class StackMetrics extends AbstractConfigurable {
           exSepY = DEFAULT_EXSEP_Y;
           ErrorDialog.dataWarning(
               new BadDataReport(
-                  Resources.getString("Error.bad_preference", EXSEP_Y, "StackMetrics"), (String) value, NaN));
+                  Resources.getString("Error.bad_preference", EXSEP_Y, "StackMetrics"), (String) value, NaN)); //NON-NLS
         }
       }
       else if (value != null) {
@@ -134,7 +134,7 @@ public class StackMetrics extends AbstractConfigurable {
           unexSepX = DEFAULT_UNEXSEP_X;
           ErrorDialog.dataWarning(
               new BadDataReport(
-                  Resources.getString("Error.bad_preference", UNEXSEP_X, "StackMetrics"), (String) value, NaN));
+                  Resources.getString("Error.bad_preference", UNEXSEP_X, "StackMetrics"), (String) value, NaN)); //NON-NLS
         }
       }
       else if (value != null) {
@@ -150,7 +150,7 @@ public class StackMetrics extends AbstractConfigurable {
           unexSepY = DEFAULT_UNEXSEP_Y;
           ErrorDialog.dataWarning(
               new BadDataReport(
-                  Resources.getString("Error.bad_preference", UNEXSEP_Y, "StackMetrics"), (String) value, NaN));
+                  Resources.getString("Error.bad_preference", UNEXSEP_Y, "StackMetrics"), (String) value, NaN)); //NON-NLS
         }
       }
       else if (value != null) {
@@ -238,20 +238,10 @@ public class StackMetrics extends AbstractConfigurable {
     unexSepX = unexSx;
     unexSepY = unexSy;
 
-    unselectedVisible = new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-            && !Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
-      }
-    };
-    selectedVisible = new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-            && Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
-      }
-    };
+    unselectedVisible = piece -> !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+        && !Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
+    selectedVisible = piece -> !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+        && Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
   }
 
   /**
@@ -518,7 +508,7 @@ public class StackMetrics extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "StackingOptions");
+    return HelpFile.getReferenceManualPage("Map.html", "StackingOptions"); //NON-NLS
   }
 
   @Override
@@ -566,12 +556,7 @@ public class StackMetrics extends AbstractConfigurable {
     };
   }
 
-  private VisibilityCondition cond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !disabled;
-    }
-  };
+  private VisibilityCondition cond = () -> !disabled;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {

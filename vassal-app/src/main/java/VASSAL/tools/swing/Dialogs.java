@@ -38,7 +38,8 @@ import VASSAL.tools.DialogUtils;
  * @author Joel Uckelman
  */
 public class Dialogs {
-  private Dialogs() {}
+  private Dialogs() {
+  }
 
   public static void showMessageDialog(
     Component parent,
@@ -224,40 +225,40 @@ public class Dialogs {
   }
 
   public static void main(String[] args) {
-    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."; // NON-NLS
 
     showMessageDialog(
       null,
-      "Message Dialog",
-      "This Is the Header",
+      "Message Dialog", // NON-NLS
+      "This Is the Header", // NON-NLS
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE
     );
 
     showMessageDialog(
       null,
-      "Message Dialog",
-      "This Is the Header",
+      "Message Dialog", // NON-NLS
+      "This Is the Header", // NON-NLS
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE,
       Boolean.TRUE,
-      "Don't show this again"
+      "Don't show this again" // NON-NLS
     );
 
     showMessageDialog(
       null,
-      "Message Dialog",
-      "This Is the Header",
+      "Message Dialog", // NON-NLS
+      "This Is the Header", // NON-NLS
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE,
       Boolean.TRUE,
-      "Don't show this again"
+      "Don't show this again" // NON-NLS
     );
 
     showConfirmDialog(
       null,
-      "Confirmation Dialog",
-      "This Is the Header",
+      "Confirmation Dialog", // NON-NLS
+      "This Is the Header", // NON-NLS
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE,
       JOptionPane.YES_NO_OPTION

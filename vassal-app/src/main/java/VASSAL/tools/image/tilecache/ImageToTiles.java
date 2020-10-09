@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -50,7 +52,7 @@ public class ImageToTiles {
    * the second argument is the destination path for the tile files, the
    * third and fourth arguments are the tile width and height
    *
-   * @throws IOException if someting goes wrong
+   * @throws IOException if something goes wrong
    */
   public static void main(String[] args) throws IOException {
     // Oh we have no heads, we have no HEADS!
@@ -71,12 +73,7 @@ public class ImageToTiles {
       new DaemonThreadFactory(ImageToTiles.class.getSimpleName())
     );
 
-    final TemporaryFileFactory tfac = new TemporaryFileFactory() {
-      @Override
-      public File create() throws IOException {
-        return File.createTempFile("img", null, new File(tpath));
-      }
-    };
+    final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile();
 
     final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
     final ImageLoader loader = new ImageIOImageLoader(itc);
@@ -90,12 +87,7 @@ public class ImageToTiles {
     }
 
     final String iname = new File(ipath).getName();
-    final Callback<Void> dotter = new Callback<>() {
-      @Override
-      public void receive(Void obj) {
-        System.out.print('.');
-      }
-    };
+    final Callback<Void> dotter = obj -> System.out.print('.');
 
     final TileSlicer slicer = new TileSlicerImpl();
 

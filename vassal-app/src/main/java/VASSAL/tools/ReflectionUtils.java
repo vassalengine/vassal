@@ -69,8 +69,8 @@ public class ReflectionUtils {
     // find and rethrow causes which are not bugs
     ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
 
-    // always a bug if the class was from the VASSAL.* hiearchy
-    if (className.startsWith("VASSAL.")) {
+    // always a bug if the class was from the VASSAL.* hierarchy
+    if (className.startsWith("VASSAL.")) { //NON-NLS
       ErrorDialog.bug(t);
       return;
     }
@@ -82,7 +82,7 @@ public class ReflectionUtils {
           t,
           ThrowableUtils.getStackTrace(t),
           className,
-          "Error.custom_class_error",
+          "Error.custom_class_error", //NON-NLS
           className
         );
         return;

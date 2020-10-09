@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *
  * Valid version strings are dotted decimal digits, followed optionally
  * by a tag, followed optionally by a build number. Anything beyond the
- * build nubmer is ignored.
+ * build number is ignored.
  *
  * Old version numbers which are not valid by current standards (e.g., 3.0b6)
  * may be successfully parsed far enough to determine their ordering with
@@ -53,10 +53,10 @@ public class VassalVersionTokenizer implements VersionTokenizer {
 
   // This is the mapping for tags to versions. Only tags which cannot
   // be distinguished from the current version from the numeric portion
-  // alone need to be maintined here. (E.g., the 3.1.0 tags can be removed
+  // alone need to be maintained here. (E.g., the 3.1.0 tags can be removed
   // as soon as 3.1.1 is released.) We keep one tag for testing purposes.
-  protected static Map<String, Integer> tags = Map.of(
-    "test", -1
+  protected static final Map<String, Integer> tags = Map.of(
+    "test", -1 //NON-NLS
   );
 
   /**

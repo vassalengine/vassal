@@ -33,14 +33,18 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Defines PieceCollection in which pieces are assigned to an arbitrary number of layers
  * according to a property setting
  */
 public class LayeredPieceCollection extends AbstractConfigurable {
-  public static final String PROPERTY_NAME = "property";
-  public static final String LAYER_ORDER = "layerOrder";
-  protected Collection collection = new Collection("Layer", new String[0]);
+  public static final String PROPERTY_NAME = "property"; //NON-NLS
+  public static final String LAYER_ORDER = "layerOrder"; //NON-NLS
+  protected Collection collection = new Collection(Resources.getString("Editor.LayeredPieceCollection.layer"), new String[0]); //NON-NLS
   protected Map map;
   protected TemporaryToolBar tempToolBar;
 
@@ -126,7 +130,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayers.html");
+    return HelpFile.getReferenceManualPage("GamePieceLayers.html"); //NON-NLS
   }
 
   public static String getConfigureTypeName() {
@@ -232,5 +236,17 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       }
       return visitDefault(top);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    List<String> l = new ArrayList<>();
+    l.add(collection.propertyName);
+    l.addAll(Arrays.asList(collection.layerOrder));
+    return l;
   }
 }

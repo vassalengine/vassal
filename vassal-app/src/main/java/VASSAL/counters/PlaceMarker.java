@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.swing.Box;
@@ -547,5 +549,21 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         return super.isValidTarget(selected) || CardSlot.class.isInstance(selected);
       }
     }
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key, afterBurnerKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(command.getName());
   }
 }

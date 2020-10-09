@@ -41,7 +41,7 @@ public class ReadErrorDialog {
       WarningDialog.showDisableable(
         t,
         (Object) (e.getClass().getName() + "@" + filename),
-        "Error.file_not_found",
+        "Error.file_not_found", //NON-NLS
         filename
       );
     }
@@ -50,7 +50,7 @@ public class ReadErrorDialog {
       ErrorDialog.showDisableable(
         t,
         (Object) (e.getClass().getName() + "@" + filename),
-        "Error.file_read_error",
+        "Error.file_read_error", //NON-NLSf
         filename
       );
     }
@@ -86,9 +86,9 @@ public class ReadErrorDialog {
       null,
       e,
       e.getClass().getName() + "@" + filename,
-      "Unable to Read File",
-      "Unable to Read File",
-      "VASSAL was unable to read the file '" + filename + "'."
+      "Unable to Read File", //NON-NLS
+      "Unable to Read File", //NON-NLS
+      "VASSAL was unable to read the file '" + filename + "'." //NON-NLS
     );
   }
 

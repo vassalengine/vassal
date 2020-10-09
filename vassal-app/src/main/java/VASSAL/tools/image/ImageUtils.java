@@ -31,9 +31,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -242,7 +242,7 @@ public class ImageUtils {
     return getImageSize("", in);
   }
 
-  private static final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, Info.getTempDir());
+  private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));
@@ -435,11 +435,11 @@ public class ImageUtils {
    * What Image suffixes does Vassal know about?
    * Used by the MassPieceLoader to identify candidate images.
    */
-  public static final String GIF_SUFFIX = ".gif";
-  public static final String PNG_SUFFIX = ".png";
-  public static final String SVG_SUFFIX = ".svg";
-  public static final String JPG_SUFFIX = ".jpg";
-  public static final String JPEG_SUFFIX = ".jpeg";
+  public static final String GIF_SUFFIX = ".gif"; //NON-NLS
+  public static final String PNG_SUFFIX = ".png"; //NON-NLS
+  public static final String SVG_SUFFIX = ".svg"; //NON-NLS
+  public static final String JPG_SUFFIX = ".jpg"; //NON-NLS
+  public static final String JPEG_SUFFIX = ".jpeg"; //NON-NLS
   public static final String[] IMAGE_SUFFIXES = {
     GIF_SUFFIX, PNG_SUFFIX, SVG_SUFFIX, JPG_SUFFIX, JPEG_SUFFIX
   };

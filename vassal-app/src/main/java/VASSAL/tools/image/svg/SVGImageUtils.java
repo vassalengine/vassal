@@ -71,7 +71,7 @@ public class SVGImageUtils {
 
   public static SVGDocument getDocument(String file, InputStream in) throws IOException {
     try (in) {
-      // We synchronize on FACTORY becuase it does internal caching
+      // We synchronize on FACTORY because it does internal caching
       // of the Documents it produces. This ensures that a Document is
       // being modified on one thread only.
       synchronized (FACTORY) {
@@ -232,13 +232,13 @@ public class SVGImageUtils {
       throw new IOException(e);
     }
 
-    final NodeList usenodes = doc.getElementsByTagName("use");
+    final NodeList usenodes = doc.getElementsByTagName("use"); //NON-NLS
     for (int i = 0; i < usenodes.getLength(); ++i) {
       final Element e = (Element) usenodes.item(i);
       final URL url = new URL(new URL(e.getBaseURI()),
                               XLinkSupport.getXLinkHref(e));
       // balk (for now) unless file is available on our filesystem
-      if (url.getProtocol().equals("file")) {
+      if (url.getProtocol().equals("file")) { //NON-NLS
         final String refpath = url.getPath();
         if (!known.contains(refpath)) {
           follow.add(refpath);
@@ -298,7 +298,7 @@ public class SVGImageUtils {
     }
 
     // relativize the xlink:href attribute if there is one
-    if (e.hasAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, "href")) {
+    if (e.hasAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, "href")) { //NON-NLS
       try {
         final URL url = new URL(new URL(e.getBaseURI()),
                                 XLinkSupport.getXLinkHref(e));
@@ -313,6 +313,6 @@ public class SVGImageUtils {
     }
 
     // remove xml:base attribute if there is one
-    e.removeAttributeNS(XMLSupport.XML_NAMESPACE_URI, "base");
+    e.removeAttributeNS(XMLSupport.XML_NAMESPACE_URI, "base"); //NON-NLS
   }
 }

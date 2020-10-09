@@ -45,7 +45,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import VASSAL.Info;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Provides support for hidden panels. Use the split methods to create an
@@ -221,8 +221,8 @@ public class ComponentSplitter {
     /**
      * Initialize the SplitPane with the two component
      *
-     * @param hideableComponent
-     * @param baseComponent
+     * @param hideableComponent hideable component
+     * @param baseComponent base component
      * @param hideablePosition
      *          one of {@link #HIDE_TOP}, {@link #HIDE_BOTTOM}, {@link #HIDE_LEFT} or {@link #HIDE_RIGHT}
      * @param resizeOnVisibilityChange
@@ -388,7 +388,7 @@ public class ComponentSplitter {
      * Set the divider location and/or the top-level ancestor size to be large enough to display the argument
      * {@link SplitPane}'s hideable component
      *
-     * @param split
+     * @param split component
      */
     protected void showTransverseComponent(SplitPane split) {
       if (showingTransverseComponents.isEmpty()) {
@@ -399,7 +399,7 @@ public class ComponentSplitter {
     }
 
     /**
-     * Set the base component size to be large enough to accomodate all descendant SplitPane's showing components
+     * Set the base component size to be large enough to accommodate all descendant SplitPane's showing components
      */
     protected void resizeBaseComponent() {
       if (getHideableComponent().isVisible()) {
@@ -445,7 +445,7 @@ public class ComponentSplitter {
      * Set the divider location and/or the top-level ancestor size to
      * the preferred transverse size.
      *
-     * @param split
+     * @param split component
      */
     protected void hideTransverseComponent(SplitPane split) {
       showingTransverseComponents.remove(split);
@@ -486,7 +486,7 @@ public class ComponentSplitter {
           return;
         }
 
-        final Rectangle screenBounds = Info.getScreenBounds(ancestor);
+        final Rectangle screenBounds = SwingUtils.getScreenBounds(ancestor);
         final Point ancestorPos = ancestor.getLocation();
         final Dimension ancestorSize = ancestor.getSize();
         final Dimension prefHSize = getHideableComponent().getPreferredSize();
@@ -519,23 +519,13 @@ public class ComponentSplitter {
         ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
 
         final double divPos = div;
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            setDividerLocation(divPos);
-          }
-        });
+        SwingUtilities.invokeLater(() -> setDividerLocation(divPos));
       }
       else {
         getHideableComponent().setVisible(true);
         ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
 
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            setDividerLocation(getPreferredDividerLocation());
-          }
-        });
+        SwingUtilities.invokeLater(() -> setDividerLocation(getPreferredDividerLocation()));
 
         final SplitPane split = getTransverseSplit();
         if (split != null) {
@@ -566,9 +556,7 @@ public class ComponentSplitter {
     }
 
     /**
-     * Return the first SplitPane ancestor with a different orientation from this SplitPane
-     *
-     * @return
+     * @return the first SplitPane ancestor with a different orientation from this SplitPane
      */
     public SplitPane getTransverseSplit() {
       SplitPane split = null;
@@ -621,7 +609,7 @@ public class ComponentSplitter {
         System.exit(0);
       }
     });
-    JTextField status = new JTextField("status");
+    JTextField status = new JTextField("status"); //NON-NLS
     status.setEditable(false);
     f.setLayout(new BorderLayout());
     Box box = Box.createVerticalBox();
@@ -633,9 +621,9 @@ public class ComponentSplitter {
     toolbar.setAlignmentX(0.0F);
     box.add(toolbar);
     f.add(box, BorderLayout.NORTH);
-    final JLabel smallLeft = new JLabel(new ImageIcon("small.gif"));
-    final JLabel smallRight = new JLabel(new ImageIcon("smallRight.gif"));
-    final JLabel large = new JLabel(new ImageIcon("large.jpg"));
+    final JLabel smallLeft = new JLabel(new ImageIcon("small.gif")); //NON-NLS
+    final JLabel smallRight = new JLabel(new ImageIcon("smallRight.gif")); //NON-NLS
+    final JLabel large = new JLabel(new ImageIcon("large.jpg")); //NON-NLS
     JPanel text = new JPanel();
     text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
     text.add(new ScrollPane(new JTextArea(15, 60)));
@@ -647,7 +635,7 @@ public class ComponentSplitter {
     final SplitPane splitBottom = ComponentSplitter.split(ComponentSplitter.splitAncestorOf(main, -1), new ScrollPane(large), SplitPane.HIDE_BOTTOM, true);
     splitBottom.setResizeWeight(0.0);
     main.add(text, BorderLayout.CENTER);
-    toolbar.add(new AbstractAction("Left") {
+    toolbar.add(new AbstractAction("Left") {  //NON-NLS
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -655,7 +643,7 @@ public class ComponentSplitter {
         splitLeft.toggleVisibility();
       }
     });
-    toolbar.add(new AbstractAction("Right") {
+    toolbar.add(new AbstractAction("Right") {  //NON-NLS
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -663,7 +651,7 @@ public class ComponentSplitter {
         splitRight.toggleVisibility();
       }
     });
-    toolbar.add(new AbstractAction("Bottom") {
+    toolbar.add(new AbstractAction("Bottom") {  //NON-NLS
       private static final long serialVersionUID = 1L;
 
       @Override

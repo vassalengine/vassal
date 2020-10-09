@@ -130,7 +130,7 @@ public class EventLog extends AbstractBuildable
   /** @deprecated Use {@link #decodedEvents(String)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Enumeration<Event> decodeEvents(String s) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     ArrayList<Event> l = new ArrayList<>();
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
     while (se.hasMoreTokens()) {
@@ -163,7 +163,7 @@ public class EventLog extends AbstractBuildable
   /** @deprecated Use {@link #encodedEvents(Iterable)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String encodeEvents(Enumeration<?> e) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     final SequenceEncoder se = new SequenceEncoder('|');
     while (e.hasMoreElements()) {
       final Event evt = (Event) e.nextElement();

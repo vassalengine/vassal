@@ -106,5 +106,4 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
   public String getComponentTypeName() {
     return getConfigureTypeName();
   }
-
 }

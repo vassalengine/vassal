@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -277,9 +278,18 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   @Override
   public String toString() {
-    return "PredefinedSetup{" +
-      "name='" + name + '\'' +
-      ", menu='" + isMenu + '\'' +
+    return "PredefinedSetup{" + //NON-NLS
+      "name='" + name + '\'' + //NON-NLS
+      ", menu='" + isMenu + '\'' + //NON-NLS
       '}';
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurable's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(name);
   }
 }

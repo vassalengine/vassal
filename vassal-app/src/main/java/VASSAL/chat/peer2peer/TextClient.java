@@ -128,7 +128,7 @@ public class TextClient {
     };
     CommandEncoder encoder = new Encoder();
     if (poolType.startsWith("hier")) {
-      clientConnection = new SocketNodeClient(encoder, info, host, port, msgSvr, welcomer);
+      clientConnection = new NodeClient(encoder, info, host, port, msgSvr, welcomer);
     }
     else {
       PeerPool pool;
@@ -141,7 +141,7 @@ public class TextClient {
       else {
         pool = new BrokeredPeerPool(info, host, port);
       }
-      clientConnection = new P2PClient(encoder, msgSvr, welcomer, pool);
+      clientConnection = new P2PClient(encoder, welcomer, pool);
       if (pool instanceof BrokeredPeerPool) {
         final BrokeredPeerPool reportStatus = (BrokeredPeerPool) pool;
         final ChatServerConnection c = clientConnection;

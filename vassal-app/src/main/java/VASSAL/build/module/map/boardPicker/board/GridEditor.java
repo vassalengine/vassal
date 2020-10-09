@@ -26,8 +26,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -132,57 +130,36 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     JPanel buttonPanel = new JPanel();
 
     okButton = new JButton(OK);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-        setVisible(false);
+    okButton.addActionListener(e -> {
+      cancelSetMode();
+      setVisible(false);
 /*
-        GameModule.getGameModule()
-                  .getDataArchive().clearTransformedImageCache();
+      GameModule.getGameModule()
+                .getDataArchive().clearTransformedImageCache();
 */
-      }
     });
     buttonPanel.add(okButton);
 
     JButton canButton = new JButton(CANCEL);
-    canButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    canButton.addActionListener(e -> cancel());
     buttonPanel.add(canButton);
 
     setButton = new JButton(SET);
-    setButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        startSetMode();
-      }
-    });
+    setButton.addActionListener(e -> startSetMode());
     setButton.setRequestFocusEnabled(false);
     buttonPanel.add(setButton);
 
     canSetButton = new JButton(CANCEL_SET);
-    canSetButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-      }
-    });
+    canSetButton.addActionListener(e -> cancelSetMode());
     canSetButton.setVisible(false);
     canSetButton.setRequestFocusEnabled(false);
     buttonPanel.add(canSetButton);
 
 
     numberingButton = new JButton(NUMBERING);
-    numberingButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
-        repaint();
-      }
+    numberingButton.addActionListener(e -> {
+      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
+      repaint();
     });
     numberingButton.setEnabled(grid.getGridNumbering() != null);
     numberingButton.setVisible(true);
@@ -533,33 +510,29 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return true;
     }
   }
-
-
+  
   /*
    * Interface to be implemented by a class that wants to be edited
    * by RegularGridEditor
    */
   public interface EditableGrid {
-    public double getDx();
-    public double getDy();
-    public Point getOrigin();
+    double getDx();
+    double getDy();
+    Point getOrigin();
 
-    public void setDx(double dx);
-    public void setDy(double dy);
-    public void setOrigin(Point p);
+    void setDx(double dx);
+    void setDy(double dy);
+    void setOrigin(Point p);
 
-    public boolean isSideways();
-    public void setSideways(boolean sideways);
+    boolean isSideways();
+    void setSideways(boolean sideways);
 
-    public GridContainer getContainer();
-    public GridNumbering getGridNumbering();
+    GridContainer getContainer();
+    GridNumbering getGridNumbering();
 
-    public boolean isVisible();
-    public void setVisible(boolean b);
+    boolean isVisible();
+    void setVisible(boolean b);
 
-    public String getGridName();
+    String getGridName();
   }
-
-
-
 }

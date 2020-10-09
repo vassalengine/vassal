@@ -89,7 +89,7 @@ public class Localization extends Language {
   /**
    * Return a specified translation
    *
-   * @param description
+   * @param description description
    * @return Translation object
    */
   public Translation getTranslation(String description) {
@@ -132,7 +132,7 @@ public class Localization extends Language {
    * (Module.properties) using the VASSAL editor, but a default file can be
    * placed into a module or extension manually.
    *
-   * @throws IOException
+   * @throws IOException oops
    */
   public void translate() throws IOException {
     if (GameModule.getGameModule().isLocalizationEnabled()) {
@@ -161,7 +161,7 @@ public class Localization extends Language {
         }
         translationInProgress = false;
         translationComplete = true;
-        logger.info("Translated");
+        logger.info("Translated"); //NON-NLS
       }
       translatableItems.clear();
       GameModule.getGameModule().initFrameTitle();
@@ -187,13 +187,10 @@ public class Localization extends Language {
   }
 
   protected void addBundle(VassalResourceBundle child) {
-    if (masterBundle == null) {
-      masterBundle = child;
-    }
-    else {
+    if (masterBundle != null) {
       child.setParent(masterBundle);
-      masterBundle = child;
     }
+    masterBundle = child;
   }
   protected boolean translationInProgress = false;
   protected boolean translationComplete = false;
@@ -208,7 +205,7 @@ public class Localization extends Language {
 
   /**
    * Called whenever a Translation is added to a module or extension.
-   * Check if the translation macthes our locale. If so, add it to the list
+   * Check if the translation matches our locale. If so, add it to the list
    * of translations to use. There may multiple matching translations at
    * Country, Language and Module level from different extensions.
    *

@@ -82,6 +82,8 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
+  public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
+  public static final String SOUND_WAKEUP_MUTE = "soundWakeupMute"; //NON-NLS
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -93,7 +95,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public static final boolean FORCE_MAC_LEGACY = true; //BR// Keeps Mac key translation "waiting in the wings"
 
-  private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
+  private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
   private String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
@@ -103,6 +105,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private int dragThreshold = 10;
   
   private boolean macLegacy;
+  private boolean soundGlobalMute = false;
+  private boolean soundWakeupMute = false;
 
   private final Map<String, Object> properties = new HashMap<>();
   private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
@@ -224,6 +228,20 @@ public class GlobalOptions extends AbstractConfigurable {
     prefs.addOption(pctRecenterOn);
 
     validator = new SingleChildInstance(gm, getClass());
+
+    final BooleanConfigurer soundWakeupMuteConf = new BooleanConfigurer(
+      SOUND_WAKEUP_MUTE,
+      Resources.getString("GlobalOptions.sound_wakeup_mute"),
+      Boolean.FALSE);
+    soundWakeupMuteConf.addPropertyChangeListener(evt -> setSoundWakeupMute(soundWakeupMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundWakeupMuteConf);
+
+    final BooleanConfigurer soundGlobalMuteConf = new BooleanConfigurer(
+      SOUND_GLOBAL_MUTE,
+      Resources.getString("GlobalOptions.sound_global_mute"),
+      Boolean.FALSE);
+    soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
   }
 
   public static GlobalOptions getInstance() {
@@ -245,7 +263,7 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @deprecated No replacement */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public boolean isAveragedScaling() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return true;
   }
   
@@ -262,7 +280,25 @@ public class GlobalOptions extends AbstractConfigurable {
   public boolean getPrefMacLegacy() {
     return macLegacy;
   }
- 
+
+
+  public void setSoundGlobalMute(Boolean b) {
+    soundGlobalMute = b;
+  }
+
+  public Boolean isSoundGlobalMute () {
+    return soundGlobalMute;
+  }
+
+  public void setSoundWakeupMute(Boolean b) {
+    soundWakeupMute = b;
+  }
+
+  public Boolean isSoundWakeupMute () {
+    return soundWakeupMute;
+  }
+
+
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$
@@ -577,4 +613,12 @@ public class GlobalOptions extends AbstractConfigurable {
     return l;
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(playerIdFormat.getFormat());
+  }
 }

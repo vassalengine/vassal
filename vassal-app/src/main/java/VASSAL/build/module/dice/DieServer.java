@@ -44,7 +44,7 @@ public abstract class DieServer {
   protected int maxEmails;
   protected String serverURL;
   protected boolean passwdRequired = false;
-  protected String password = "";
+  protected String password = "";  //NON-NLS
   protected boolean useEmail;
   protected String primaryEmail;
   protected String secondaryEmail;
@@ -139,7 +139,7 @@ public abstract class DieServer {
    * The text reported before the results of the roll
    */
   protected String getReportPrefix(String d) {
-    return " *** " + d + " = ";
+    return " *** " + d + " = "; //NON-NLS
   }
 
   /**
@@ -148,8 +148,8 @@ public abstract class DieServer {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return " ***  <" + GlobalOptions.getInstance().getPlayerId() + ">";
+    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
+    return " ***  &lt;" + GlobalOptions.getInstance().getPlayerId() + "&gt;";  //NON-NLS
   }
 
   /*
@@ -158,7 +158,7 @@ public abstract class DieServer {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void doInbuiltRoll(RollSet mroll) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     DieRoll[] rolls = mroll.getDieRolls();
     for (DieRoll roll : rolls) {
       String desc = roll.getDescription();
@@ -183,7 +183,7 @@ public abstract class DieServer {
         if (reportTotal)
           val += total;
 
-        final String reportSuffix = " ***  <" + GlobalOptions.getInstance().getPlayerId() + ">";
+        final String reportSuffix = " ***  &lt;" + GlobalOptions.getInstance().getPlayerId() + "&gt;"; //NON-NLS
         val += reportSuffix;
         GameModule.getGameModule().getChatter().send(val);
       }
@@ -215,8 +215,8 @@ public abstract class DieServer {
         catch (ExecutionException e) {
           logger.error("", e);
 
-          final String s = "- Internet dice roll attempt " +
-                           mroll.getDescription() + " failed.";
+          final String s = "- Internet dice roll attempt " + //NON-NLS
+                           mroll.getDescription() + " failed."; //NON-NLS
           GameModule.getGameModule().getChatter().send(s);
         }
       }

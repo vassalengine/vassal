@@ -46,8 +46,7 @@ public class PrivateChatter extends Chatter {
 
   @Override
   public void send(String msg) {
-    if (msg != null
-      && msg.length() > 0) {
+    if (msg != null && !msg.isEmpty()) {
       show(msg);
       PrivMsgCommand c = new PrivMsgCommand(null, client.getUserInfo(), msg);
       client.sendTo(other, c);

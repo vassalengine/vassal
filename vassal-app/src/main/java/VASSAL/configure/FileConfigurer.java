@@ -17,9 +17,8 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.BoxLayout;
@@ -53,8 +52,8 @@ public class FileConfigurer extends Configurer {
 
   /**
    *
-   * @param key
-   * @param name
+   * @param key Configurer key
+   * @param name Configurer label
    * @param startingDirectory If non-null, points to a preferences setting that specifies the starting directory for the "Select" button
    */
   public FileConfigurer(String key, String name, DirectoryConfigurer startingDirectory) {
@@ -85,10 +84,10 @@ public class FileConfigurer extends Configurer {
   @Override
   public String getValueString() {
     if (archive == null) {
-      return getFileValue() == null ? "null" : getFileValue().getPath();
+      return getFileValue() == null ? "null" : getFileValue().getPath(); // NON-NLS
     }
     else {
-      return getFileValue() == null ? "null" : getFileValue().getName();
+      return getFileValue() == null ? "null" : getFileValue().getName(); // NON-NLS
     }
   }
 
@@ -126,7 +125,7 @@ public class FileConfigurer extends Configurer {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(getName()));
-      JButton b = new JButton("Select");
+      JButton b = new JButton(Resources.getString("Editor.select"));
       p.add(b);
 
       tf = new JTextField(getValueString());
@@ -151,19 +150,14 @@ public class FileConfigurer extends Configurer {
 
         public void update() {
           String text = tf.getText();
-          File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null;
+          File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null; // NON-NLS
           noUpdate = true;
           setValue(f);
           noUpdate = false;
         }
       });
       p.add(tf);
-      b.addActionListener(new java.awt.event.ActionListener() {
-        @Override
-        public void actionPerformed(java.awt.event.ActionEvent e) {
-          chooseNewValue();
-        }
-      });
+      b.addActionListener(e -> chooseNewValue());
     }
     return p;
   }
@@ -184,13 +178,8 @@ public class FileConfigurer extends Configurer {
   public static void main(String[] args) {
     final JFrame f = new JFrame();
     final FileConfigurer c =
-      new ImageConfigurer(null, "Test file", new ArchiveWriter("testArchive"));
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getNewValue());
-      }
-    });
+      new ImageConfigurer(null, "Test file", new ArchiveWriter("testArchive")); // NON-NLS
+    c.addPropertyChangeListener(evt -> System.err.println(evt.getNewValue()));
     f.getContentPane().add(c.getControls());
     f.pack();
     f.setVisible(true);

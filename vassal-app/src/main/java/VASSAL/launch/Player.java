@@ -54,7 +54,8 @@ import VASSAL.tools.version.VersionUtils;
  * @since 3.1.0
  */
 public class Player extends Launcher {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    Info.setConfig(new StandardConfig());
     new Player(args);
   }
 
@@ -109,7 +110,7 @@ public class Player extends Launcher {
         ErrorDialog.showDetails(
           e,
           ThrowableUtils.getStackTrace(e),
-          "Error.socket_error"
+          "Error.socket_error" //NON-NLS
         );
       }
     }
@@ -189,16 +190,16 @@ public class Player extends Launcher {
       if (data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
         if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
-          if ("VASL".equals(md.getName())) {
+          if ("VASL".equals(md.getName())) { //NON-NLS
             ErrorDialog.show(
-              "Error.VASL_too_old",
+              "Error.VASL_too_old", //NON-NLS
               Info.getVersion()
             );
             return;
           }
-          else if ("VSQL".equals(md.getName())) {
+          else if ("VSQL".equals(md.getName())) { //NON-NLS
             ErrorDialog.show(
-              "Error.VSQL_too_old",
+              "Error.VSQL_too_old", //NON-NLS
               Info.getVersion()
             );
             return;
@@ -246,7 +247,7 @@ public class Player extends Launcher {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data != null && Info.isModuleTooNew(data.getVassalVersion())) {
         ErrorDialog.show(
-          "Error.module_too_new",
+          "Error.module_too_new", //NON-NLS
           lr.module.getPath(),
           data.getVassalVersion(),
           Info.getVersion()

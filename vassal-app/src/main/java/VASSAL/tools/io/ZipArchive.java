@@ -29,6 +29,9 @@ import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +46,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
@@ -70,7 +73,7 @@ public class ZipArchive implements FileArchive {
 
     @Override
     public String toString() {
-      return getClass().getName() + "[file=\"" + file + "\", ze=\"" + ze + "\"]";
+      return getClass().getName() + "[file=\"" + file + "\", ze=\"" + ze + "\"]"; //NON-NLS
     }
   }
 
@@ -84,7 +87,7 @@ public class ZipArchive implements FileArchive {
    * Opens a ZIP archive.
    *
    * @param path the name of the archive
-   * @throws IOException
+   * @throws IOException oops
    */
   public ZipArchive(String path) throws IOException {
     this(path, false);
@@ -94,7 +97,7 @@ public class ZipArchive implements FileArchive {
    * Opens a ZIP archive.
    *
    * @param file the name of the archive
-   * @throws IOException
+   * @throws IOException oops
    */
   public ZipArchive(File file) throws IOException {
     this(file, false);
@@ -105,7 +108,7 @@ public class ZipArchive implements FileArchive {
    *
    * @param path the name of the archive
    * @param truncate if <code>true</code>, truncate the archive file on open
-   * @throws IOException
+   * @throws IOException oops
    */
   public ZipArchive(String path, boolean truncate) throws IOException {
     this(new File(path), truncate);
@@ -116,7 +119,7 @@ public class ZipArchive implements FileArchive {
    *
    * @param file the name of the archive
    * @param truncate if <code>true</code>, truncate the archive file on open
-   * @throws IOException
+   * @throws IOException oops
    */
   public ZipArchive(File file, boolean truncate) throws IOException {
     if (file == null) throw new IllegalArgumentException();
@@ -132,7 +135,7 @@ public class ZipArchive implements FileArchive {
    *
    * @param src the name of the source archive
    * @param dst the name of the destination archive
-   * @throws IOException
+   * @throws IOException oops
    */
   public ZipArchive(FileArchive src, String dst) throws IOException {
     this(src, new File(dst));
@@ -143,7 +146,7 @@ public class ZipArchive implements FileArchive {
    *
    * @param src the name of the source archive
    * @param dst the name of the destination archive
-   * @throws IOException
+   * @throws IOException oops
    */
   public ZipArchive(FileArchive src, File dst) throws IOException {
     this(dst, true);
@@ -246,7 +249,7 @@ public class ZipArchive implements FileArchive {
    * @param path the path to the file in the archive
    * @param compress whether to compress the file
    * @return an <code>OutputStream</code> for the requested file
-   * @throws IOException
+   * @throws IOException oops
    */
   public OutputStream getOutputStream(String path, boolean compress)
                                                            throws IOException {
@@ -261,7 +264,7 @@ public class ZipArchive implements FileArchive {
       ze.setMethod(compress ? ZipEntry.DEFLATED : ZipEntry.STORED);
 
       // create new temp file
-      final File tf = File.createTempFile("zip", ".tmp", Info.getTempDir());
+      final File tf = makeTempFileFor(path);
 
       // set up new Entry
       final Entry e = new Entry(ze, tf);
@@ -394,10 +397,70 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private String extensionOf(String path) {
+    final int dot = path.lastIndexOf('.');
+    return dot == -1 ? "" : path.substring(dot);
+  }
+
+  private File makeTempFileFor(String path) throws IOException {
+    final String base = FilenameUtils.getBaseName(path) + "_";
+    final String ext = extensionOf(path);
+    return Files.createTempFile(Info.getTempDir().toPath(), base, ext).toFile();
+  }
+
+  private void moveFile(Path src, Path dst) throws IOException {
+    // Replace dst with src
+    try {
+      // attempt an atomic move
+      Files.move(src, dst, StandardCopyOption.ATOMIC_MOVE);
+    }
+    catch (IOException ignore) {
+      // Atomic move failed; this doesn't necessarily indicate a problem, as
+      // some filesystems don't support atomic moves and atomic moves are
+      // impossible when the source and destination aren't on the same
+      // filesystem.
+
+      try {
+        // attempt to copy to the destination
+        Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
+      }
+      catch (IOException e) {
+        // copy failed
+        final String fmt = "Unable to overwrite %s, so data written to %s instead: %s";
+        throw new IOException(
+          String.format(
+            fmt,
+            dst.toAbsolutePath(),
+            src.toAbsolutePath(),
+            e.getMessage()
+          ),
+          e
+        );
+      }
+
+      try {
+        // successful copy, so remove the source
+        Files.delete(src);
+      }
+      catch (IOException e) {
+        // successful copy, but removing the source failed
+        final String fmt = "File %s saved, but unable to remove temporary file %s: %s";
+        throw new IOException(
+          String.format(
+            fmt,
+            dst.toAbsolutePath(),
+            src.toAbsolutePath(),
+            e.getMessage()
+          ),
+          e
+         );
+      }
+    }
+  }
+
   private void writeToDisk() throws IOException {
     // write all files to a temporary zip archive
-    final File tmpFile =
-      File.createTempFile("tmp", ".zip", archiveFile.getParentFile());
+    final File tmpFile = makeTempFileFor(archiveFile.getName());
 
     try (OutputStream fout = new FileOutputStream(tmpFile);
          OutputStream bout = new BufferedOutputStream(fout);
@@ -449,19 +512,8 @@ public class ZipArchive implements FileArchive {
       }
     }
 
-    // Replace old archive with temp archive.
-    try {
-      if (archiveFile.exists()) {
-        FileUtils.forceDelete(archiveFile);
-      }
-      FileUtils.moveFile(tmpFile, archiveFile);
-    }
-    catch (IOException e) {
-      final String fmt = "Unable to overwrite %s: %s Data written to %s instead.";
-      throw new IOException(
-        String.format(fmt, archiveFile.getAbsolutePath(), e.getMessage(), tmpFile.getAbsolutePath()),
-        e);
-    }
+    // Replace old archive with temp archive
+    moveFile(tmpFile.toPath(), archiveFile.toPath());
 
     // Delete all temporary files
     for (Entry e : entries.values()) {
@@ -682,17 +734,17 @@ public class ZipArchive implements FileArchive {
   }
 
   public static void main(String[] args) throws IOException {
-    final ZipArchive archive = new ZipArchive("test.zip");
+    final ZipArchive archive = new ZipArchive("test.zip"); //NON-NLS
 
     // write test
-    archive.add("NOTES", "NOTES");
-    archive.add("README.txt", "README.txt");
+    archive.add("NOTES", "NOTES"); //NON-NLS
+    archive.add("README.txt", "README.txt"); //NON-NLS
 
     archive.flush();
 
     // read test
 
-    try (InputStream in = archive.getInputStream("NOTES")) {
+    try (InputStream in = archive.getInputStream("NOTES")) { //NON-NLS
       IOUtils.copy(in, System.out);
     }
 

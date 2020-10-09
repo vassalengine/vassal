@@ -159,7 +159,7 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getClass().getName() + "[name=" + name +
-      ",tileX=" + tileX + ",tileY=" + tileY + ",scale=" + scale + "]";
+    return getClass().getName() + "[name=" + name + //NON-NLS
+      ",tileX=" + tileX + ",tileY=" + tileY + ",scale=" + scale + "]"; //NON-NLS
   }
 }

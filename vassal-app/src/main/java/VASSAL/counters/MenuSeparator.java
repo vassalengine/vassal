@@ -20,6 +20,8 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -52,7 +54,6 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
     mySetType(type);
     setInner(inner);
   }
-
 
   @Override
   public void mySetType(String type) {
@@ -170,5 +171,13 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
     public String getState() {
       return "";
     }
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key);
   }
 }

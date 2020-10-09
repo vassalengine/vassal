@@ -38,10 +38,10 @@ public class Scroller extends AbstractBuildable implements KeyListener {
    * The attribute name for whether to use arrow keys
    * instead of number keypad.  Should be one of ALWAYS, NEVER, or PROMPT
    */
-  public static final String USE_ARROWS = "useArrows";
-  public static final String ALWAYS = "always";
-  public static final String NEVER = "never";
-  public static final String PROMPT = "prompt";
+  public static final String USE_ARROWS = "useArrows"; //NON-NLS
+  public static final String ALWAYS = "always"; //NON-NLS
+  public static final String NEVER = "never"; //NON-NLS
+  public static final String PROMPT = "prompt"; //NON-NLS
 
   protected String usingArrows = PROMPT;
 

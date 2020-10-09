@@ -17,11 +17,11 @@ public class GitProperties {
 
   private static final Logger log = LoggerFactory.getLogger(GitProperties.class);
 
-  private static final String DEFAULT_FILENAME = "git.properties";
+  private static final String DEFAULT_FILENAME = "git.properties"; //NON-NLS
 
-  private static final String KEY_GIT_VERSION = "git.version";
+  private static final String KEY_GIT_VERSION = "git.version"; //NON-NLS
 
-  private static final String DEFAULT_GIT_VERSION = "3.x development version";
+  private static final String DEFAULT_GIT_VERSION = "3.x development version"; //NON-NLS
 
   private final String filename;
   private final Properties gitProperties;
@@ -49,7 +49,7 @@ public class GitProperties {
 
     }
     catch (IOException e) {
-      log.error("Error while trying to read properties from {}", filename, e);
+      log.error("Error while trying to read properties from {}", filename, e); //NON-NLS
     }
   }
 

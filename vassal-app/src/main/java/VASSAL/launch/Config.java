@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2020 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -14,25 +14,28 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.chat.jabber;
+package VASSAL.launch;
 
-import org.jivesoftware.smack.packet.Presence;
+import java.nio.file.Path;
 
-import VASSAL.chat.SimpleStatus;
+public interface Config {
+  String getVersion();
 
-public class JabberStatus extends SimpleStatus {
-  public JabberStatus(SimpleStatus copy) {
-    super(copy.isLooking(), copy.isAway(), null);
-  }
+  String getReportableVersion();
 
-  public Presence.Mode getAvailability() {
-    Presence.Mode mode = Presence.Mode.away;
-    if (isAway()) {
-      mode = Presence.Mode.xa;
-    }
-    else if (isLooking()) {
-      mode = Presence.Mode.chat;
-    }
-    return mode;
-  }
+  int getInstanceID();
+
+  Path getBaseDir();
+
+  Path getDocDir();
+
+  Path getConfDir();
+
+  Path getTempDir();
+
+  Path getPrefsDir();
+
+  Path getErrorLogPath();
+
+  Path getJavaBinPath();
 }

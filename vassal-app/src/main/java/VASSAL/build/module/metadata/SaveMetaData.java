@@ -51,8 +51,8 @@ import javax.swing.SwingUtilities;
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
- * about the module this savegame was created with are saved in a
- * seperate moduledata file in the saved game zip.
+ * about the module this saved game was created with are saved in a
+ * separate module data file in the saved game zip.
  *
  * @author Brent Easton
  * @since 3.1.0
@@ -62,9 +62,9 @@ public class SaveMetaData extends AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(SaveMetaData.class);
 
-  public static final String ZIP_ENTRY_NAME = "savedata";
+  public static final String ZIP_ENTRY_NAME = "savedata"; //NON-NLS
   public static final String DATA_VERSION = "1";
-  public static final String PROMPT_LOG_COMMENT = "promptLogComment";
+  public static final String PROMPT_LOG_COMMENT = "promptLogComment"; //NON-NLS
 
   protected ModuleMetaData moduleData;
 
@@ -75,15 +75,15 @@ public class SaveMetaData extends AbstractMetaData {
       final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, GameModule.getGameModule().getPlayerWindow()), true);
       d.setTitle(Resources.getString("BasicLogger.log_file_comments"));
 
-      JLabel desc = new JLabel("<html><body><p style='width: 400px;'>" + Resources.getString("BasicLogger.enter_comments") + "</p></body></html>");
+      JLabel desc = new JLabel("<html><body><p style='width: 400px;'>" + Resources.getString("BasicLogger.enter_comments") + "</p></body></html>");  //NON-NLS
 
       final JLabel commentLabel = new JLabel(Resources.getString("BasicLogger.log_file_comments"));
       final JTextField commentField = new JTextField("", 32);
       commentLabel.setLabelFor(commentField);
 
-      final JCheckBox stopBox = new JCheckBox(Resources.getString("Don't Ask Again"), false);
+      final JCheckBox stopBox = new JCheckBox(Resources.getString("Editor.SaveMetaData.dont_ask_again"), false);
 
-      final JButton okay = new JButton(Resources.getString("Okay"));
+      final JButton okay = new JButton(Resources.getString("General.ok"));
       okay.addActionListener(e -> {
         if (stopBox.isSelected()) {
           GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
@@ -183,12 +183,12 @@ public class SaveMetaData extends AbstractMetaData {
    */
   @Override
   protected void addElements(Document doc, Element root) {
-    return;
+
   }
 
   /**
    * Read and validate a Saved Game/Log file.
-   * Check that it has a Zip Entry named savedgame.
+   * Check that it has a Zip Entry named saved game.
    * If it has a metadata file, read and parse it.
    *
    * Closes the {@link ZipFile}

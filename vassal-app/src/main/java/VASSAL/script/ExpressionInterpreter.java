@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,18 +96,18 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
-  protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
+  protected static final HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
   
   
   public String getComponentTypeName() {
-    return "ExpressionInterpreter";
+    return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
   
   
   public String getComponentName() {
-    return "ExpressionInterpreter";
+    return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
-  
+
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -275,12 +276,21 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         else if (BeanShell.FALSE.equals(value)) {
           setVar(var, false);
         }
+        else if (! StringUtils.containsOnly(value, "+-.0123456789")) { // NON-NLS
+          setVar(var, value);
+        }
         else {
           try {
             setVar(var, Integer.parseInt(value));
           }
-          catch (NumberFormatException e) {
-            setVar(var, value);
+          catch (NumberFormatException ex1) {
+
+            try {
+              setVar(var, Float.parseFloat(value));
+            }
+            catch (NumberFormatException ex2) {
+              setVar(var, value);
+            }
           }
         }
       }
@@ -291,7 +301,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           argList.append(',');
         }
         final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
-        argList.append('"').append(value.toString()).append('"');
+        argList.append('"').append(value == null ? "" : value.toString()).append('"');
       }
   
       // Re-evaluate the pre-parsed expression now that the undefined variables have
@@ -511,8 +521,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : "");
-      final String data = "Data=[" + value.toString() + "].";
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String data = "Data=[" + value.toString() + "]."; //NON-NLS
       ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
     return result;

@@ -158,7 +158,7 @@ public class GlobalCommand {
         // Keep drawing until required select count met or all cards in Deck have been processed
         selectedCount = 0;
         for (PieceIterator it = d.drawCards(); it.hasMoreElements() && (getSelectFromDeck() < 0 || getSelectFromDeck() > selectedCount);) {
-          apply(it.nextPiece());
+          apply(it.nextPiece(), true);
         }
       }
       return target;
@@ -177,8 +177,14 @@ public class GlobalCommand {
     }
 
     private void apply(GamePiece p) {
+      apply(p, false);
+    }
+
+    private void apply(GamePiece p, boolean visitingDeck) {
       if (filter == null || filter.accept(p)) {
-        p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
+        if (visitingDeck) {
+          p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
+        }
         tracker.addPiece(p);
         p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
         command.append(p.keyEvent(stroke));
@@ -186,7 +192,9 @@ public class GlobalCommand {
         selectedCount++;
       }
       else {
-        p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY
+        if (visitingDeck) {
+          p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY
+        }
       }
     }
 

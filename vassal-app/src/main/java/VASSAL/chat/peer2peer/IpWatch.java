@@ -17,7 +17,6 @@
  */
 package VASSAL.chat.peer2peer;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.net.InetAddress;
@@ -80,11 +79,8 @@ public class IpWatch implements Runnable {
 
   public static void main(String[] args) {
     IpWatch w = new IpWatch();
-    w.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("Address = " + evt.getNewValue()); //$NON-NLS-1$
-      }
+    w.addPropertyChangeListener(evt -> {
+      System.out.println("Address = " + evt.getNewValue()); //$NON-NLS-1$
     });
     System.out.println("Address = " + w.getCurrentIp()); //$NON-NLS-1$
     new Thread(w).start();

@@ -37,7 +37,7 @@ public class LongConfigurer extends StringConfigurer {
 
   @Override
   public void setValue(String s) {
-    Long l = null;
+    Long l;
     try {
       l = Long.valueOf(s);
     }

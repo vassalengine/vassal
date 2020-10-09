@@ -37,7 +37,7 @@ public class NamedKeyManager {
   protected static final int NAMED_MARKER = '\uF8FF';
 
   protected static int nextNamedKey = NAMED_START;
-  protected static HashMap<String, KeyStroke> strokes = new HashMap<>();
+  protected static final HashMap<String, KeyStroke> strokes = new HashMap<>();
 
   public NamedKeyManager() {
   }
@@ -64,8 +64,7 @@ public class NamedKeyManager {
   }
 
   /**
-   * Return a generic marker KeyStroke
-   * @return
+   * @return Return a generic marker KeyStroke
    */
   public static KeyStroke getMarkerKeyStroke() {
     return KeyStroke.getKeyStroke(NAMED_MARKER, 0);
@@ -73,7 +72,7 @@ public class NamedKeyManager {
 
   /**
    * Return the generated KeyStroke associated with the NamedKeyStroke
-   * @param vkey
+   * @param vkey Named Keystroke
    * @return generated KeyStroke
    */
   public KeyStroke getKeyStroke(NamedKeyStroke vkey) {

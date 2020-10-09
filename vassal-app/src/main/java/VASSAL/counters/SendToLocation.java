@@ -27,6 +27,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -119,7 +121,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected FormattedString region = new FormattedString("");
   protected PropertyExpression propertyFilter = new PropertyExpression("");
   private Map map;
- // private Point dest;
 
   public SendToLocation() {
     this(ID + ";;;;0;0;;;", null);
@@ -314,8 +315,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           }
           break;
         case 'L':
-          final int xValue = x.getTextAsInt(outer, Resources.getString("Editor.SendToLocation.x_position"), this);
-          final int yValue = y.getTextAsInt(outer, Resources.getString("Editor.SendToLocation.y_position"), this);
+          final int xValue = x.getTextAsInt(outer, Resources.getString("Editor.x_position"), this);
+          final int yValue = y.getTextAsInt(outer, Resources.getString("Editor.y_position"), this);
 
           dest = new Point(xValue, yValue);
 
@@ -581,10 +582,10 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(boardControls);
 
 
-      xInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.x_position"), p.x.getFormat(), p);
+      xInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.x_position"), p.x.getFormat(), p);
       controls.add(xInput.getControls());
 
-      yInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.y_position"), p.y.getFormat(), p);
+      yInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.y_position"), p.y.getFormat(), p);
       controls.add(yInput.getControls());
 
       zoneInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.zone_name"), p.zone.getFormat(), p);
@@ -708,5 +709,55 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     public String getState() {
       return "";
     }
+  }
+
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    ArrayList<String> l = new ArrayList<>();
+
+    if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+      l.add(propertyFilter.getExpression());
+    }
+    else {
+      l.add(mapId.getFormat());
+      switch (destination.charAt(0)) {
+      case 'G':
+        l.add(boardName.getFormat());
+        l.add(gridLocation.getFormat());
+        break;
+      case 'L':
+        l.add(boardName.getFormat());
+        l.add(x.getFormat());
+        l.add(y.getFormat());
+        break;
+      case 'Z':
+        l.add(zone.getFormat());
+        break;
+      case 'R':
+        l.add(region.getFormat());
+        break;
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
   }
 }

@@ -17,8 +17,6 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +27,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.Resources;
 
 /**
  * Container for definitions of Generic Counter Definitions.
@@ -83,7 +82,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layouts";
+    return Resources.getString("Editor.GamePieceLayoutsContainer.component_type");
   }
 
   @Override
@@ -92,14 +91,11 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     if (b instanceof GamePieceLayout) {
       GamePieceLayout def = (GamePieceLayout) b;
       definitions.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            definitions.remove(evt.getOldValue());
-            definitions.put((String) evt.getNewValue(),
-                            (GamePieceLayout) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          definitions.remove(evt.getOldValue());
+          definitions.put((String) evt.getNewValue(),
+                          (GamePieceLayout) evt.getSource());
         }
       });
     }

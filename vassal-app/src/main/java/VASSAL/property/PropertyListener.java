@@ -33,6 +33,6 @@ public interface PropertyListener<T> {
    * @param oldVal the old value of the {@link Property}
    * @param newVal the new value of the {@link Property}
    */
-  public <U extends T> void propertyChanged(Object src, Property<U> prop,
-                                            U oldVal, U newVal);
+  <U extends T> void propertyChanged(Object src, Property<U> prop,
+                                     U oldVal, U newVal);
 }

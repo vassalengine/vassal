@@ -41,13 +41,13 @@ public interface MutableProperty {
 
   MutablePropertiesContainer getParent();
 
-  public class Util {
+  class Util {
     /**
      * Look for a {@link MutableProperty} in the list of {@link MutablePropertiesContainer}. Return the first one
      * found, searching the lists in order. The list may contain null references, which are skipped
      *
-     * @param propertyContainers
-     * @return
+     * @param propertyContainers list of containers
+     * @return first property found
      */
     public static MutableProperty findMutableProperty(String propertyName, List<MutablePropertiesContainer> propertyContainers) {
       MutableProperty p = null;
@@ -60,15 +60,15 @@ public interface MutableProperty {
       return p;
     }
   }
+
   /**
    * Simple implementation of {@link MutableProperty} Support dynamic changing of the property name, provided that
    * the {@link #addTo(MutablePropertiesContainer)} method is used to register this property with a properties
    * container.
    *
    * @author rkinney
-   *
    */
-  public class Impl implements MutableProperty {
+  class Impl implements MutableProperty {
     private PropertyChangeSupport propSupport;
     private String value = "";
     private String propertyName;
@@ -81,9 +81,7 @@ public interface MutableProperty {
     }
 
     /**
-     *
-     * @param source
-     *          will be the source of any {@link PropertyChangeEvent} fired by this object
+     * @param source will be the source of any {@link PropertyChangeEvent} fired by this object
      */
     public Impl(String propertyName, Object source) {
       this.propertyName = propertyName;

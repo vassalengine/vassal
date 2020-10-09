@@ -25,6 +25,7 @@ import VASSAL.build.Buildable;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.Resources;
 
 /**
  * A class for assigning unique identifiers to objects.  Identifiers will be
@@ -90,8 +91,8 @@ public class UniqueIdManager implements ValidityChecker {
 
   /**
    * Return the first instance whose name or id matches the argument
-   * @param id
-   * @return
+   * @param id name or id
+   * @return Return the first instance whose name or id matches the argument
    */
   public Identifyable findInstance(String id) {
     if (id != null) {
@@ -111,9 +112,7 @@ public class UniqueIdManager implements ValidityChecker {
       Identifyable iTarget = (Identifyable) target;
       if (iTarget.getConfigureName() == null ||
           iTarget.getConfigureName().length() == 0) {
-        report.addWarning("A " +
-                          ConfigureTree.getConfigureName(target.getClass()) +
-                          " has not been given a name");
+        report.addWarning(Resources.getString("Editor.UniqueIdManager.a_girl_has_no_name", ConfigureTree.getConfigureName(target.getClass())));
       }
       else if (instances.contains(iTarget)) {
         Identifyable compare = null;
@@ -122,9 +121,9 @@ public class UniqueIdManager implements ValidityChecker {
           compare = i.next();
           if (compare != iTarget &&
               iTarget.getConfigureName().equals(compare.getConfigureName())) {
-            report.addWarning("More than one " +
-                              ConfigureTree.getConfigureName(target.getClass())
-                              + " named " + iTarget.getConfigureName());
+            report.addWarning(Resources.getString("Editor.UniqueIdManager.more_than_one",
+                     ConfigureTree.getConfigureName(target.getClass()),
+                              iTarget.getConfigureName()));
             break;
           }
         }

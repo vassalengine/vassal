@@ -96,7 +96,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
   public static final String NO_USER = "nobody"; // Dummy user ID for turning
-  protected static StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
+  protected static final StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
   // cards face down
 
   protected boolean drawOutline = true;
@@ -506,8 +506,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     reverseListener.setKeyStroke(getReverseKey());
 
+
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
-    if (myPile != null && myPile.getDeck() == null) {
+
+    // If a New game/Load Game is starting, set this Deck into the matching DrawPile
+    // If a Load Continuation is starting, ignore this Deck and let the DrawPile continue with the existing Deck.
+    // Combined fix for bugs 4507, 10249 & 13461
+    if (myPile != null && ! GameModule.getGameModule().getGameState().isGameStarted()) {
       myPile.setDeck(this);
     }
   }

@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -36,11 +38,15 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import org.apache.commons.io.file.PathUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -52,6 +58,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
@@ -116,11 +123,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       internalExtractContents(in);
     }
     catch (FileNotFoundException e) {
-      logger.error("File not found in data archive: {}", "help/" + getContentsResource(), e);
+      logger.error("File not found in data archive: {}", "help/" + getContentsResource(), e); //NON-NLS
       setFallbackUrl();
     }
     catch (IOException e) {
-      logger.error("Error while reading file {} from data archive", "help/" + getContentsResource(), e);
+      logger.error("Error while reading file {} from data archive", "help/" + getContentsResource(), e); //NON-NLS
       setFallbackUrl();
     }
   }
@@ -130,23 +137,26 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       url = new URL(startingPage);
     }
     catch (MalformedURLException e) {
-      logger.error("Malformed URL: {}", startingPage, e);
+      logger.error("Malformed URL: {}", startingPage, e); //NON-NLS
     }
   }
 
   private void internalExtractContents(ZipInputStream in) throws IOException {
-    final File tmp; //$NON-NLS-1$ //$NON-NLS-2$
-    tmp = File.createTempFile("VASSAL", "help");
-    File output = tmp.getParentFile();
-    tmp.delete();
-    output = new File(output, "VASSAL"); //$NON-NLS-1$
-    output = new File(output, "help"); //$NON-NLS-1$
-    output = new File(output, getContentsResource());
-    if (output.exists()) recursiveDelete(output);
+    final Path p = Path.of(
+      Info.getTempDir().getAbsolutePath(),
+      "VASSAL", //$NON-NLS-1$ 
+      "help",   //$NON-NLS-1$ 
+      getContentsResource()
+    ); 
 
-    output.mkdirs();
+    if (Files.exists(p)) {
+      PathUtils.deleteDirectory(p);
+    }
+
+    Files.createDirectories(p);
+
+    final File output = p.toFile();
     ZipEntry entry;
-
     while ((entry = in.getNextEntry()) != null) {
       if (entry.isDirectory()) {
         new File(output, entry.getName()).mkdirs();
@@ -161,6 +171,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     url = new File(output, startingPage).toURI().toURL();
   }
 
+  /** @deprecated Use {@link org.apache.commons.io.FileUtils.deleteDirectory} instead. */
+  @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
       for (File f : output.listFiles()) {
@@ -257,7 +269,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public static String getConfigureTypeName() {
-    return "HTML Help File"; //$NON-NLS-1$
+    return Resources.getString("Editor.BrowserHelpFile.component_type"); //$NON-NLS-1$
   }
 
   /**
@@ -272,9 +284,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     @Override
     public String[] getAttributeDescriptions() {
       return new String[]{
-        "Menu Entry:  ",
-        "Contents:  ",
-        "Starting Page:  "
+        Resources.getString("Editor.menu_command"),
+        Resources.getString("Editor.BrowserHelpFile.contents"),
+        Resources.getString("Editor.BrowserHelpFile.starting_page")
       };
     }
 
@@ -456,10 +468,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Override
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null,
+      myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null, //NON-NLS
           new String[] {TITLE},
           new boolean[] {true},
-          new String[] {"Menu Entry:  "});
+          new String[] {Resources.getString("Editor.menu_command")});
     }
     return myI18nData;
   }

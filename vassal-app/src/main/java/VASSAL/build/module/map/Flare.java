@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Chatter;
@@ -329,7 +330,8 @@ public class Flare extends AbstractConfigurable
       map.addLocalMouseListener(this);
     }
     else {
-      ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", reportFormat.getFormat()));
+      ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", //NON-NLS
+                                                 reportFormat.getFormat()));
     }
   }
 
@@ -588,7 +590,7 @@ public class Flare extends AbstractConfigurable
   }
 
   /**
-   * @param gameStarting
+   * @param gameStarting true if starting a game, false if ending one
    */
   public void setup(final boolean gameStarting) {
   }
@@ -639,7 +641,6 @@ public class Flare extends AbstractConfigurable
    */
   public static class FlareKeyConfig extends TranslatableStringEnum {
     @Override
-
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {
         FLARE_ALT,
@@ -651,6 +652,7 @@ public class Flare extends AbstractConfigurable
       };
     }
 
+    @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
       return new String[] {
@@ -661,6 +663,11 @@ public class Flare extends AbstractConfigurable
         SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_ALT_COMMAND_LOCAL : FLARE_CTRL_ALT_LOCAL,
         SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_ALT_SHIFT_COMMAND_LOCAL : FLARE_CTRL_ALT_SHIFT_LOCAL,
       };
+    }
+
+    @Override
+    public boolean isDisplayNames() {
+      return true;
     }
   }
 
@@ -673,5 +680,14 @@ public class Flare extends AbstractConfigurable
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FlareFormattedStringConfigurer(key, name, new String[0]);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
   }
 }

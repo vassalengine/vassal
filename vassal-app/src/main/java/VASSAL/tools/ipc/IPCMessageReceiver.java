@@ -48,7 +48,7 @@ class IPCMessageReceiver implements Runnable {
     }
     catch (IOException e) {
 // FIXME: should communicate this outward somehow
-      logger.error("Error while reading IPC message", e);
+      logger.error("Error while reading IPC message", e); //NON-NLS
     }
   }
 }

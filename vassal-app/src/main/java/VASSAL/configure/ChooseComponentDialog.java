@@ -18,8 +18,6 @@
 package VASSAL.configure;
 
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
@@ -34,7 +32,7 @@ import javax.swing.tree.TreePath;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.configure.ConfigureTree;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -67,21 +65,13 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     tree.addTreeSelectionListener(this);
     add(new ScrollPane(tree));
     Box b = Box.createHorizontalBox();
-    okButton = new JButton("Ok");
+    okButton = new JButton(Resources.getString("General.ok"));
     okButton.setEnabled(false);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
-    JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        target = null;
-        dispose();
-      }
+    okButton.addActionListener(e -> dispose());
+    JButton cancelButton = new JButton(Resources.getString("General.cancel"));
+    cancelButton.addActionListener(e -> {
+      target = null;
+      dispose();
     });
     b.add(okButton);
     b.add(cancelButton);

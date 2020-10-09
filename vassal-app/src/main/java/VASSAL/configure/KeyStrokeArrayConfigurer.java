@@ -21,8 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -62,14 +61,9 @@ public class KeyStrokeArrayConfigurer extends Configurer {
       controls.add(b);
       JLabel l = new JLabel(getName());
       b.add(l);
-      JButton button = new JButton("Add");
+      JButton button = new JButton(Resources.getString("Editor.KeyStrokeArrayConfigurer.add"));
       b.add(button);
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          addKey(null);
-        }
-      });
+      button.addActionListener(e -> addKey(null));
 
       panel.add(scroll, BorderLayout.CENTER);
 

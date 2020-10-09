@@ -19,8 +19,9 @@ package VASSAL.build.module;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -42,6 +43,7 @@ import VASSAL.build.widget.TabWidget;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
@@ -69,7 +71,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String HIDDEN = "hidden"; //$NON-NLS-1$
   public static final String SCALE = "scale"; //$NON-NLS-1$
-  protected static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
   protected JComponent root;
   protected ComponentSplitter.SplitPane mainWindowDock;
   protected String tooltip = ""; //$NON-NLS-1$
@@ -77,12 +79,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launchButtonPressed();
-      }
-    };
+    ActionListener al = e -> launchButtonPressed();
     launch = new LaunchButton(Resources.getString("Editor.PieceWindow.pieces"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
     scale = 1.0;
@@ -104,12 +101,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.add(root);
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
-      addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-        @Override
-        public void propertyChange(java.beans.PropertyChangeEvent e) {
-          if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
-            d.setTitle((String) e.getNewValue());
-          }
+      addPropertyChangeListener(e -> {
+        if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
+          d.setTitle((String) e.getNewValue());
         }
       });
       return d;
@@ -121,12 +115,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.setTitle(getConfigureName());
       d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
 
-      addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-        @Override
-        public void propertyChange(java.beans.PropertyChangeEvent e) {
-          if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
-            d.setTitle((String) e.getNewValue());
-          }
+      addPropertyChangeListener(e -> {
+        if (Configurable.NAME_PROPERTY.equals(e.getPropertyName())) {
+          d.setTitle((String) e.getNewValue());
         }
       });
 
@@ -348,5 +339,24 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     else {
       return launch.getAttributeValueString(name);
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

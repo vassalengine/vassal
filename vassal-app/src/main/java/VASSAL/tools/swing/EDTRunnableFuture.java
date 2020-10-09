@@ -21,7 +21,7 @@ package VASSAL.tools.swing;
 import VASSAL.tools.concurrent.SimpleRunnableFuture;
 
 /**
- * A {@link RunnableFuture} for use on the Event Dispatch Thread.
+ * A {link RunnableFuture} for use on the Event Dispatch Thread.
  *
  * @param <V> the result type returned by the {@see #get} method
  * @author Joel Uckelman
@@ -29,13 +29,13 @@ import VASSAL.tools.concurrent.SimpleRunnableFuture;
  */
 public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
   /**
-   * Creates a {@link RunnableFuture} which will be run on the Event Dispatch
+   * Creates a {link RunnableFuture} which will be run on the Event Dispatch
    * Thread.
    */
   public EDTRunnableFuture() { }
 
   /**
-   * Creates a {@link RunnableFuture} which will be run on the Event Dispatch
+   * Creates a {link RunnableFuture} which will be run on the Event Dispatch
    * Thread.
    *
    * @param result the result to return

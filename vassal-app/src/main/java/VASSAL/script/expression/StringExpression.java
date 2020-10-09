@@ -40,5 +40,4 @@ public class StringExpression extends Expression {
   public String toBeanShellString() {
     return "\"" + getExpression() + "\"";
   }
-
 }

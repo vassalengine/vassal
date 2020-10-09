@@ -19,12 +19,11 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import VASSAL.i18n.Resources;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
@@ -124,7 +123,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Font Styles";
+    return Resources.getString("Editor.FontManager.component_type");
   }
 
   @Override
@@ -133,14 +132,11 @@ public class FontManager extends AbstractConfigurable {
     if (b instanceof FontStyle) {
       FontStyle def = (FontStyle) b;
       fontStyles.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            fontStyles.remove(evt.getOldValue());
-            fontStyles.put((String) evt.getNewValue(),
-                           (FontStyle) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          fontStyles.remove(evt.getOldValue());
+          fontStyles.put((String) evt.getNewValue(),
+                         (FontStyle) evt.getSource());
         }
       });
     }
@@ -170,5 +166,4 @@ public class FontManager extends AbstractConfigurable {
     }
     return names.toArray(new String[0]);
   }
-
 }

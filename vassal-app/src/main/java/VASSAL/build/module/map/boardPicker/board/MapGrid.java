@@ -29,45 +29,45 @@ public interface MapGrid {
   /**
    * @return the nearest grid location to the given point
    */
-  public Point snapTo(java.awt.Point p);
+  Point snapTo(java.awt.Point p);
 
   /**
    * @return true if the given point may not be a local location.
    * I.e., if this grid will attempt to snap it to the nearest grid location */
-  public boolean isLocationRestricted(Point p);
+  boolean isLocationRestricted(Point p);
 
   /**
    * @return a string describing the location containing the given point
    */
-  public String locationName(Point p);
-  public String localizedLocationName(Point p);
+  String locationName(Point p);
+  String localizedLocationName(Point p);
 
   /**
    * @return A point p such that locationName(p).equals(location).
    * @throws BadCoords if the location is not valid or formatted incorrectly.
    */
-  public Point getLocation(String location) throws BadCoords;
+  Point getLocation(String location) throws BadCoords;
 
   /**
    * @return the range between two points, in some unit appropriate
    * to the grid (e.g. hexes or squares)
    */
-  public int range(Point p1, Point p2);
+  int range(Point p1, Point p2);
 
 
   /** Whether this grid should be drawn on the map */
-  public boolean isVisible();
+  boolean isVisible();
 
   /**
    * Draw the grid
    * @param bounds the boundaries of the grid (in magnified coordinates)
    * @param scale the magnification factor
    */
-  public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
+  void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
 
-  public GridNumbering getGridNumbering();
+  GridNumbering getGridNumbering();
 
-  public final class BadCoords extends Exception {
+  final class BadCoords extends Exception {
     private static final long serialVersionUID = 1L;
 
     public BadCoords() {
@@ -78,5 +78,4 @@ public interface MapGrid {
       super(s);
     }
   }
-
 }

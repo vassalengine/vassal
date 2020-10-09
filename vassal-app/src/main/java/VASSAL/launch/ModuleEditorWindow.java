@@ -85,23 +85,17 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   protected void save() {
-    ModuleEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        GameModule.getGameModule().save();
-        setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
-      }
+    ModuleEditorWindow.this.saver(() -> {
+      GameModule.getGameModule().save();
+      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
   }
 
   @Override
   protected void saveAs() {
-    ModuleEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        GameModule.getGameModule().saveAs();
-        setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
-      }
+    ModuleEditorWindow.this.saver(() -> {
+      GameModule.getGameModule().saveAs();
+      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
   }
 }

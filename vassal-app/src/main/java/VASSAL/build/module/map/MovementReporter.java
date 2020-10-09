@@ -97,7 +97,6 @@ public class MovementReporter {
     return new MoveSummary(c);
   }
 
-
   /**
    * Mark all pieces with the {@link MovementMarkable} trait
    * @return the equivalent Command
@@ -132,7 +131,6 @@ public class MovementReporter {
     }
     return c;
   }
-
 
   protected boolean shouldMarkMoved(MoveSummary summary) {
     Map mappy = Map.getMapById(summary.getNewMapId());
@@ -277,7 +275,6 @@ public class MovementReporter {
     protected String getLocation(Map map, Point p) {
       return "?";
     }
-
   }
 
   public static class MoveSummary {
@@ -412,6 +409,5 @@ public class MovementReporter {
       return Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
         || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
     }
-
   }
 }

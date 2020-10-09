@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  * File cannot be interpreted.  Either the file is not what VASSAL thinks it is
- * or it is currupted in some way.
+ * or it is corrupted in some way.
  */
 public class FileFormatException extends IOException {
 

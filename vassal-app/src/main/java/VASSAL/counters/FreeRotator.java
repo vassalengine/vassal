@@ -36,6 +36,7 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -484,7 +485,7 @@ public class FreeRotator extends Decorator
       }
       else {
         // we are set rotate, set angleIndex to a number between 0 and
-        // validAngles.lenth
+        // validAngles.length
         angleIndex = rand.nextInt(validAngles.length);
       }
       c = tracker.getChangeCommand();
@@ -840,4 +841,22 @@ public class FreeRotator extends Decorator
       return "0";
     }
   }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(setAngleKey, rotateCWKey, rotateCCWKey, rotateRNDKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(setAngleText, rotateCWText, rotateCCWText, rotateRNDText);
+  }
 }
+
+

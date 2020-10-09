@@ -43,11 +43,11 @@ public interface PersistentPropertyContainer {
    * @return a {@link Command} object which, when passed to another player's client via logfile, server, or saved game, will allow the
    * result of the "set" operation to be replicated.
    */
-  public Command setPersistentProperty(Object key, Object val);
+  Command setPersistentProperty(Object key, Object val);
 
   /**
    * @param key String key naming the persistent property whose value is to be returned.
    * @return the current value of a persistent property, or null if it doesn't exist.
    */
-  public Object getPersistentProperty(Object key);
+  Object getPersistentProperty(Object key);
 }

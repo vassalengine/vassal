@@ -26,6 +26,7 @@ Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
 . *package*: creates build artifacts (.jar files) in `/target`
 * javadoc
 * source: creates source code jar
+* license: downloads licenses
 . *verify*: not used
 . *install*: copies build artifacts into local maven repository
 . *site*: not used
@@ -40,20 +41,8 @@ Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
 Runs goal link:https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mojo.html[checkstyle:check] in *validate* phase
 ====
 
-* Maven plugin version and checkstyle version in link:{rootdir}pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}pom.xml[lines=79..89]
-----
-
-* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}/vassal-app/pom.xml[lines=227..248]
-----
-
+* Maven plugin version and checkstyle version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
 * Checkstyle configuration in link:{rootdir}vassal-app/src/test/resources/checkstyle-checks.xml[]
 * Exceptions from checks in link:{rootdir}vassal-app/src/test/resources/checkstyle-suppressions.xml[]
 
@@ -64,7 +53,6 @@ include::{rootdir}/vassal-app/pom.xml[lines=227..248]
 Runs goal link:https://maven.apache.org/plugins/maven-source-plugin/jar-no-fork-mojo.html[source:jar-no-fork] in *package* phase
 ====
 
-
 ===== Javadoc
 
 [NOTE]
@@ -72,19 +60,8 @@ Runs goal link:https://maven.apache.org/plugins/maven-source-plugin/jar-no-fork-
 Runs goal link:https://maven.apache.org/plugins/maven-javadoc-plugin/jar-mojo.html[javadoc:jar] in *package* phase
 ====
 
-* Maven plugin version in link:{rootdir}pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}pom.xml[lines=102..105]
-----
-
-* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}vassal-app/pom.xml[lines=276..302]
-----
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
 
 ===== Spotbugs
 
@@ -93,20 +70,8 @@ include::{rootdir}vassal-app/pom.xml[lines=276..302]
 Runs goal link:https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html[spotbugs:check] in *test* phase
 ====
 
-* Maven plugin version in link:{rootdir}pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}pom.xml[lines=106..110]
-----
-
-* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}vassal-app/pom.xml[lines=303..321]
-----
-
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
 * Spotbugs include filter configuration in link:{rootdir}vassal-app/src/test/resources/spotbugs-include-filter.xml[]
 
 ===== Clirr
@@ -116,20 +81,8 @@ include::{rootdir}vassal-app/pom.xml[lines=303..321]
 Runs goal link:https://www.mojohaus.org/clirr-maven-plugin/check-no-fork-mojo.html[clirr:check-no-fork] in *test* phase
 ====
 
-* Maven plugin version in link:{rootdir}pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}pom.xml[lines=116..120]
-----
-
-* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]:
-
-[source,xml]
-----
-include::{rootdir}vassal-app/pom.xml[lines=322..336]
-----
-
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
 * Configuration of ignores in link:{rootdir}vassal-app/src/test/resources/clirr-ignored-differences.xml[]
 
 ===== Asciidoc
@@ -141,8 +94,8 @@ Runs goal link:https://asciidoctor.org/docs/asciidoctor-maven-plugin/[asciidocto
 
 Asciidoc documentation:
 
-- https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
-- https://asciidoctor.org/docs/user-manual/
+* https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+* https://asciidoctor.org/docs/user-manual/
 
 The asciidoctor plugin runs once for each of the following:
 
@@ -151,13 +104,18 @@ The asciidoctor plugin runs once for each of the following:
 . convert Designer's Guide to PDF
 
 []
-* Maven plugin version in link:{rootdir}pom.xml[]:
-[source,xml]
-----
-include::{rootdir}pom.xml[lines=111..115]
-----
-
+* Maven plugin version in link:{rootdir}pom.xml[]
 * Maven plugin configuration in link:{rootdir}vassal-doc/pom.xml[]
+
+===== License Maven Plugin
+
+[NOTE]
+====
+Runs goal link:https://www.mojohaus.org/license-maven-plugin/aggregate-download-licenses-mojo.html[license:aggregate-download-licenses] in *package* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}release-prepare/pom.xml[]
 
 ==== Build parameters
 
@@ -195,6 +153,9 @@ Each build step can be skipped by passing certain parameters.
 |Clirr
 |`-Dclirr.skip=true`
 
+|License Maven Plugin
+|`-Dlicense.skipAggregateDownloadLicenses=true`
+
 |===
 
 ====== Examples
@@ -209,6 +170,23 @@ mvn clean package -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -
 ----
 mvn clean compile -Dmaven.main.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dmaven.javadoc.skip=true -Dclirr.skip=true
 ----
+
+==== Regular TODOs
+
+===== Check for new dependency versions
+
+[source]
+----
+mvn versions:display-dependency-updates
+----
+
+===== Check for maven plugin updates
+
+[source]
+----
+mvn versions:display-plugin-updates
+----
+
 
 ==== Configuration of dependent projects
 
@@ -249,3 +227,19 @@ include::{rootdir}Makefile[lines=258]
 * [ ] do that
 * [ ] ???
 * [ ] profit
+
+== Running Vassal
+
+=== Player
+
+Main class: `VASSAL.launch.Player` +
+VM arguments: `--standalone /path/to/module/VassalModule.vmod`
+
+=== Editor
+
+Main class: `VASSAL.launch.Editor` +
+VM arguments: `--standalone --edit /path/to/module/VassalModule.vmod`
+
+=== Additional parameters
+
+* To simulate a HiDPI monitor: `-Dsun.java2d.uiScale=2`

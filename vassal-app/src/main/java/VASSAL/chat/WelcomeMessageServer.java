@@ -24,5 +24,5 @@ import VASSAL.command.Command;
  */
 @FunctionalInterface
 public interface WelcomeMessageServer {
-  public Command getWelcomeMessage();
+  Command getWelcomeMessage();
 }

@@ -40,12 +40,7 @@ public class GlobalKeyCommand extends MassKeyCommand {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (SINGLE_MAP.equals(name)) {
-      return  new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return false;
-        }
-      };
+      return () -> false;
     }
     else {
       return super.getAttributeVisibility(name);

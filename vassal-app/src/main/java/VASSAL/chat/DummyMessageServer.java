@@ -1,8 +1,5 @@
-package VASSAL.chat.node;
-
 /*
- *
- * Copyright (c) 2005 by Rodney Kinney
+ * Copyright (c) 2020 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,7 +15,22 @@ package VASSAL.chat.node;
  * at http://www.opensource.org.
  */
 
-public interface NodeServerInfo {
-  String getHostName();
-  int getPort();
+package VASSAL.chat;
+
+import VASSAL.chat.messageboard.Message;
+import VASSAL.chat.messageboard.MessageBoard;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+
+public class DummyMessageServer implements MessageBoard, WelcomeMessageServer {
+  public Message[] getMessages() {
+    return null;
+  }
+
+  public void postMessage(String msg) {
+  }
+
+  public Command getWelcomeMessage() {
+    return new NullCommand();
+  }
 }

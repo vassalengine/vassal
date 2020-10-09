@@ -55,6 +55,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -197,7 +198,7 @@ import VASSAL.tools.swing.SwingUtils;
  * "context menu" services, and {@link StackMetrics} which handles the "stacking" of game pieces.
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-  UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
@@ -255,8 +256,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
-        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +
-        ",gapx 0,hidemode 3";
+        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
+        ",gapx 0,hidemode 3";                                     //NON-NLS
       toolBar.setLayout(new MigLayout(constraints));
     }
     else {
@@ -296,7 +297,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip"; //$NON-NLS-1$
   public static final String EDGE_WIDTH = "edgeWidth"; //$NON-NLS-1$
   public static final String EDGE_HEIGHT = "edgeHeight"; //$NON-NLS-1$
-  public static final String BACKGROUND_COLOR = "backgroundcolor";
+  public static final String BACKGROUND_COLOR = "backgroundcolor"; //NON-NLS
   public static final String HIGHLIGHT_COLOR = "color"; //$NON-NLS-1$
   public static final String HIGHLIGHT_THICKNESS = "thickness"; //$NON-NLS-1$
   public static final String ALLOW_MULTIPLE = "allowMultiple"; //$NON-NLS-1$
@@ -730,8 +731,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
-        mouseListenerStack.isEmpty() &&
-        SwingUtils.isDragTrigger(dge)) {
+          mouseListenerStack.isEmpty() &&
+          SwingUtils.isDragTrigger(dge)) {
         dragGestureListener.dragGestureRecognized(dge);
       }
     };
@@ -871,7 +872,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public synchronized void setBoards(Enumeration<Board> boardList) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     setBoards(Collections.list(boardList));
   }
 
@@ -1065,14 +1066,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point mapCoordinates(Point p) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return componentToMap(p);
   }
 
   /** @deprecated Use {@link #componentToMap(Rectangle)} */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Rectangle mapRectangle(Rectangle r) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return componentToMap(r);
   }
 
@@ -1084,14 +1085,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point componentCoordinates(Point p) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return mapToComponent(p);
   }
 
   /** @deprecated  Use {@link #mapToComponent(Rectangle)} */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Rectangle componentRectangle(Rectangle r) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return mapToComponent(r);
   }
 
@@ -1937,10 +1938,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
         if ((sx == -1 && vrect.x == 0) ||
-          (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
 
         if ((sy == -1 && vrect.y == 0) ||
-          (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
 
         // Stop if the scroll vector is zero
         if (sx == 0 && sy == 0) scroller.stop();
@@ -2162,7 +2163,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Enumeration<Board> getAllBoards() {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return Collections.enumeration(boards);
   }
 
@@ -2577,7 +2578,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-            .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
@@ -2731,7 +2732,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       // If no piece at destination and this is a stacking piece, create
       // a new Stack containing the piece
       if (!(p instanceof Stack) &&
-        !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
+          !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))) {
         final Stack parent = getStackMetrics().createStack(p);
         if (parent != null) {
           c = c.append(placeAt(parent, pt));
@@ -2769,7 +2770,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @SuppressWarnings("unused")
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public void reposition(GamePiece s, int pos) {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
   }
 
   /**
@@ -3109,7 +3110,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return createFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$ created in $" + LOCATION + "$"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      String val = Resources.getString("Editor.Map.report_created_in_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() == null) {
@@ -3135,7 +3136,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return moveToFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+      String val = Resources.getString("Editor.Map.report_move_to_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() != null) {
@@ -3154,7 +3155,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return moveWithinFormat;
     }
     else {
-      String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+      String val = Resources.getString("Editor.Map.report_move_within_default");
       if (!boards.isEmpty()) {
         Board b = boards.get(0);
         if (b.getGrid() == null) {
@@ -3259,7 +3260,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public static Iterator<Map> getAllMaps() {
-    ProblemDialog.showDeprecated ("2020-08-05");
+    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
     return getMapList().iterator();
   }
 
@@ -3439,7 +3440,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-        && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
         return map.getStackMetrics().merge(s, p);
       }
       else {
@@ -3455,8 +3456,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     @Override
     public Object visitDefault(GamePiece piece) {
       if (piece.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-        && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
-        && map.getPieceCollection().canMerge(piece, p)) {
+          && !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)) && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
+          && map.getPieceCollection().canMerge(piece, p)) {
         return map.getStackMetrics().merge(piece, p);
       }
       else {
@@ -3537,5 +3538,42 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     public Map getMap() {
       return map;
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(moveWithinFormat, moveToFormat, createFormat, changeFormat);
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    List<String> l = new ArrayList<>();
+    if (!GlobalOptions.NEVER.equals(markMovedOption)) {
+      l.add(markUnmovedText);
+      l.add(markUnmovedTooltip);
+    }
+    if (useLaunchButtonEdit) {
+      l.add(getAttributeValueString(BUTTON_NAME));
+      l.add(getAttributeValueString(TOOLTIP));
+    }
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
   }
 }

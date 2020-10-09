@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -76,7 +77,7 @@ public class DiceButton extends AbstractConfigurable {
   public static final String REPORT_TOTAL = "reportTotal"; //$NON-NLS-1$
   public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
-  public static final String SORT_DICE_RESULTS = "sortDice";
+  public static final String SORT_DICE_RESULTS = "sortDice"; //NON-NLS
 
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
@@ -127,9 +128,9 @@ public class DiceButton extends AbstractConfigurable {
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, "2d6");
-    setAttribute(BUTTON_TEXT, "2d6");
-    launch.setAttribute(TOOLTIP, "2d6");
+    setAttribute(NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
+    setAttribute(BUTTON_TEXT, Resources.getString("Editor.DiceButton.dice_button_text")); //NON-NLS
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.DiceButton.dice_button_tooltip")); //NON-NLS
   }
 
   public static String getConfigureTypeName() {
@@ -142,7 +143,7 @@ public class DiceButton extends AbstractConfigurable {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportPrefix() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -152,7 +153,7 @@ public class DiceButton extends AbstractConfigurable {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return " ***  <" //$NON-NLS-1$
         + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
   }
@@ -470,7 +471,23 @@ public class DiceButton extends AbstractConfigurable {
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName() + "_result");
+    l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 }

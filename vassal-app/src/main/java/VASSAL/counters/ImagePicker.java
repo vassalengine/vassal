@@ -50,7 +50,7 @@ public class ImagePicker extends JPanel
   private static final long serialVersionUID = 1L;
   private static final String NO_IMAGE = "(No Image)";
   private String imageName = null;
-  protected static Font FONT = new Font("Dialog", 0, 11);
+  protected static final Font FONT = new Font("Dialog", Font.PLAIN, 11);
   private final JTextArea noImage;
   private final JComboBox<String> select;
   private final OpIcon icon;

@@ -89,9 +89,9 @@ public class Deselect extends Decorator implements TranslatablePiece {
   public KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       deselectCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
-      if (commandName.length() > 0 && key != null && ! key.isNull()) {
+      if (commandName.length() > 0 && key != null && !key.isNull()) {
         command =
-            new KeyCommand[]{deselectCommand};
+          new KeyCommand[]{deselectCommand};
       }
       else {
         command = new KeyCommand[0];
@@ -213,5 +213,21 @@ public class Deselect extends Decorator implements TranslatablePiece {
     ArrayList<String> l = new ArrayList<String>();
     l.add(Properties.SELECTED);
     return l;
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return List.of(key);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
   }
 }

@@ -104,7 +104,7 @@ public class FormattedStringExpression extends Expression {
       isProperty = !isProperty;
       if (token.length() > 0) {
         /*
-         * Only even numbered tokens with at least one token after them are valid $propertName$ strings.
+         * Only even numbered tokens with at least one token after them are valid $propertyName$ strings.
          */
         if (! first) {
           buffer.append("+");

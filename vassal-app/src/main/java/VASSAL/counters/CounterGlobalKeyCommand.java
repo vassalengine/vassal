@@ -23,8 +23,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -165,6 +167,42 @@ public class CounterGlobalKeyCommand extends Decorator
   public Shape getShape() {
     return piece.getShape();
   }
+  
+  
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key, globalKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(propertiesFilter.getExpression());
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    if (globalCommand != null) {
+      return List.of(globalCommand.getReportFormat());
+    }
+    return Collections.emptyList();
+  }
 
   @Override
   public PieceEditor getEditor() {
@@ -230,21 +268,18 @@ public class CounterGlobalKeyCommand extends Decorator
 
     public Ed(CounterGlobalKeyCommand p) {
 
-      PropertyChangeListener pl = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
+      PropertyChangeListener pl = evt -> {
 
-          boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-          boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
-          range.getControls().setVisible(isRange && isFixed);
-          fixedRange.getControls().setVisible(isRange);
-          rangeProperty.getControls().setVisible(isRange && !isFixed);
+        range.getControls().setVisible(isRange && isFixed);
+        fixedRange.getControls().setVisible(isRange);
+        rangeProperty.getControls().setVisible(isRange && !isFixed);
 
-          Window w = SwingUtilities.getWindowAncestor(range.getControls());
-          if (w != null) {
-            w.pack();
-          }
+        Window w = SwingUtilities.getWindowAncestor(range.getControls());
+        if (w != null) {
+          w.pack();
         }
       };
 

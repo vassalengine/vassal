@@ -35,7 +35,7 @@ public class VassalResourceBundle extends PropertyResourceBundle {
    * Standard constructor - read properties from a file
    *
    * @param in Input stream
-   * @throws IOException
+   * @throws IOException oops
    */
   public VassalResourceBundle(InputStream in) throws IOException {
     super(in);

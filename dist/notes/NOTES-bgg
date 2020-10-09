@@ -1,19 +1,55 @@
-[size=18][b]VASSAL 3.4.2 Released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.4.2.
+[size=18][b]VASSAL 3.4.5 Released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.4.5.
 
 [size=16][b]IMPORTANT[/b][/size]
 * Things may be broken which worked previously. If you find a new bug, please report it.
 
 * If you save a module in VASSAL 3.4, you will NOT be able to open it afterwards with VASSAL 3.3 or earlier. We recommend keeping a backup copy of any pre-3.4 modules you plan to modify in 3.4 until you've verified that everything works to your satisfaction.
 
-* Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code. (We are aware already that VASL has this problem and are working with its maintainers to update it.)
+* Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code.
 
 [size=16][b]Download[/b][/size]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.2/VASSAL-3.4.2-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.5/VASSAL-3.4.5-other.zip]Other[/url]
+
+[size=16][b]Changes since 3.4.4[/b][/size]
+
+Bug fixes
+
+* 13490: Module Manager "Show Error Log" doesn't
+
+[size=16][b]Changes since 3.4.3[/b][/size]
+
+Bug fixes
+
+* 13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus
+* 13471: Using BeanShell string functions in Calculated Property crashes Editor
+* 13461: Always initialise Deck on New/Load game
+* 13458: Reinstate behavior of floating point expression evaluation
+* 13454: ClassCastException in SetPersistentPropertyCommand.execute()
+* 13426: NegativeArraySizeException when receiving first private message
+
+[size=16][b]Changes since 3.4.2[/b][/size]
+
+Bug fixes
+
+* 13452: Bundle Java 15 with Windows and Mac packages
+* 13442: Add button for toggling password visibility
+* 13441: Multiple scaling or rotation of SVG images failed to compound
+* 13438: NPE in BoardPicker.getSelectedBoardNames() when changing owning Board of an At-Start Stack
+* 13436: Allow Module Managers from different versions to run simultaneously
+* 13435: "Bad Module Data" messages with less-than symbols misinterpreted as HTML when HTML turned on in module
+* 13434: Clarify deprecation messages
+* 13433: OBSCURED_BY_OTHERS property now returns null instead of a value in face down decks when tested using GKCs
+* 13430: Pieces move too fast while "Repositioning stack" in HDPI monitors
+* 13427: Cannot add or edit items when editing an Extension on Linux or Macs
+* 13404: Use better color picker on Linux
+* 13342: Player creates saveGame twice in a row when starting a log file
+* 13307: Background transparency in Text Labels not working
+*  2569: Improved error message for NoSuchElementException in Decorator.mergeState()
 
 [size=16][b]Changes since 3.4.1[/b][/size]
 
