@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -28,9 +29,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -54,7 +57,7 @@ import VASSAL.tools.swing.SwingUtils;
  * @author rkinney
  */
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
-  public static final String ID = "button;";
+  public static final String ID = "button;"; // NON-NLS
   protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
@@ -122,7 +125,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return description.length() == 0 ? "Action Button" : "Action Button - " + description;
+    return description != null && description.length() > 0 ?
+      Resources.getString("Editor.ActionButton.trait_description_named", description) :
+      Resources.getString("Editor.ActionButton.trait_description");
   }
   
   
@@ -149,7 +154,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ActionButton.html");
+    return HelpFile.getReferenceManualPage("ActionButton.html"); // NON-NLS
   }
 
   // Implement Loopable
@@ -165,32 +170,52 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof ActionButton)) return false;
+    ActionButton c = (ActionButton) o;
+    if (! Objects.equals(bounds, c.bounds)) return false;
+    return Objects.equals(description, c.description);
+  }
+
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
   public static class Ed implements PieceEditor {
-    private Box box;
-    private IntConfigurer xConfig;
-    private IntConfigurer yConfig;
-    private IntConfigurer widthConfig;
-    private IntConfigurer heightConfig;
-    private NamedHotKeyConfigurer strokeConfig;
+    private final JPanel box;
+    private final IntConfigurer xConfig;
+    private final IntConfigurer yConfig;
+    private final IntConfigurer widthConfig;
+    private final IntConfigurer heightConfig;
+    private final NamedHotKeyConfigurer strokeConfig;
     protected StringConfigurer descConfig;
 
     public Ed(ActionButton p) {
-      box = Box.createVerticalBox();
-      descConfig = new StringConfigurer(null, "Description:  ", p.description);
+      box = new JPanel(new TraitLayout());
+
+      descConfig = new StringConfigurer(p.description);
+      box.add(new JLabel(Resources.getString("Editor.description_label")));
       box.add(descConfig.getControls());
-      strokeConfig = new NamedHotKeyConfigurer(null, "Invoke Key Command:  ", p.stroke);
+
+      strokeConfig = new NamedHotKeyConfigurer(p.stroke);
+      box.add(new JLabel(Resources.getString("Editor.ActionButton.invoke_key_command")));
       box.add(strokeConfig.getControls());
-      xConfig = new IntConfigurer(null, "Button X-offset:  ", p.bounds.x);
+
+      xConfig = new IntConfigurer(p.bounds.x);
+      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_x_offset")));
       box.add(xConfig.getControls());
-      yConfig = new IntConfigurer(null, "Button Y-offset:  ", p.bounds.y);
+
+      yConfig = new IntConfigurer(p.bounds.y);
+      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_y_offset")));
       box.add(yConfig.getControls());
-      widthConfig = new IntConfigurer(null, "Button Width:  ", p.bounds.width);
+
+      widthConfig = new IntConfigurer(p.bounds.width);
+      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_width")));
       box.add(widthConfig.getControls());
-      heightConfig = new IntConfigurer(null, "Button Height:  ", p.bounds.height);
+
+      heightConfig = new IntConfigurer(p.bounds.height);
+      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_height")));
       box.add(heightConfig.getControls());
     }
 
@@ -219,9 +244,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
    * click falls within the button's boundaries
    */
   protected static class ButtonPusher {
-    private Set<Map> maps = new HashSet<>();
-    private java.util.Map<Component, ComponentMouseListener>
-      componentMouseListeners = new HashMap<>();
+    private final Set<Map> maps = new HashSet<>();
+    private final java.util.Map<Component, ComponentMouseListener> componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
       if (map != null) {
@@ -295,7 +319,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     }
 
     protected class MapMouseListener extends MouseAdapter {
-      private Map map;
+      private final Map map;
 
       public MapMouseListener(Map map) {
         this.map = map;
