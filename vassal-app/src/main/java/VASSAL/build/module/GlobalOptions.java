@@ -266,7 +266,7 @@ public class GlobalOptions extends AbstractConfigurable {
     ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return true;
   }
-  
+
   public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
     // Tell SwingUtils we've changed our mind about Macs
@@ -274,7 +274,7 @@ public class GlobalOptions extends AbstractConfigurable {
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
     GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
-  
+
   public boolean getPrefMacLegacy() {
     return macLegacy;
   }
