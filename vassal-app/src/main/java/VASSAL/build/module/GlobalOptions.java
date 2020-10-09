@@ -82,6 +82,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
+  public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -103,6 +104,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private int dragThreshold = 10;
   
   private boolean macLegacy;
+  private boolean soundGlobalMute = false;
 
   private final Map<String, Object> properties = new HashMap<>();
   private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
@@ -224,6 +226,13 @@ public class GlobalOptions extends AbstractConfigurable {
     prefs.addOption(pctRecenterOn);
 
     validator = new SingleChildInstance(gm, getClass());
+
+    final BooleanConfigurer soundGlobalMuteConf = new BooleanConfigurer(
+      SOUND_GLOBAL_MUTE,
+      Resources.getString("GlobalOptions.sound_global_mute"),
+      Boolean.FALSE);
+    soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
   }
 
   public static GlobalOptions getInstance() {
@@ -261,6 +270,15 @@ public class GlobalOptions extends AbstractConfigurable {
   
   public boolean getPrefMacLegacy() {
     return macLegacy;
+  }
+
+
+  public void setSoundGlobalMute(Boolean b) {
+    soundGlobalMute = b;
+  }
+
+  public Boolean getSoundGlobalMute () {
+    return soundGlobalMute;
   }
  
 

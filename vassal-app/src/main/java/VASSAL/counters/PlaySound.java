@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.PlayAudioClipCommand;
@@ -106,7 +107,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
-    if (command.matches(stroke)) {
+    if (command.matches(stroke) && !GlobalOptions.getInstance().getSoundGlobalMute()) {
       final String clipName = format.getText(Decorator.getOutermost(this));
       c = new PlayAudioClipCommand(clipName);
       try {
