@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import java.util.Objects;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -192,18 +190,16 @@ public class Clone extends Decorator implements TranslatablePiece {
   public static class Ed implements PieceEditor {
     private final StringConfigurer nameInput;
     private final NamedHotKeyConfigurer keyInput;
-    private final JPanel controls;
+    private final TraitConfigPanel controls;
 
     public Ed(Clone p) {
-      controls = new JPanel(new TraitLayout());
+      controls = new TraitConfigPanel();
 
       nameInput = new StringConfigurer(p.commandName);
-      controls.add(new JLabel(Resources.getString("Editor.command_name")));
-      controls.add(nameInput.getControls());
+      controls.add("Editor.command_name", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
-      controls.add(new JLabel(Resources.getString("Editor.keyboard_command")));
-      controls.add(keyInput.getControls());
+      controls.add("Editor.keyboard_command", keyInput);
 
     }
 

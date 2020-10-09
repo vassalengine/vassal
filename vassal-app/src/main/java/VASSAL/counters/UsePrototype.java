@@ -25,8 +25,6 @@ import java.awt.Shape;
 import java.util.List;
 
 import java.util.Objects;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.PrototypeDefinition;
@@ -239,15 +237,14 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   }
 
   public static class Editor implements PieceEditor {
-    private final JPanel controls;
+    private final TraitConfigPanel controls;
     private final StringConfigurer nameConfig;
 
     public Editor(UsePrototype up) {
-      controls = new JPanel(new TraitLayout());
+      controls = new TraitConfigPanel();
 
       nameConfig = new StringConfigurer(up.type.substring(ID.length()));
-      controls.add(new JLabel(Resources.getString("Editor.UsePrototype.prototype_name")));
-      controls.add(nameConfig.getControls());
+      controls.add("Editor.UsePrototype.prototype_name", nameConfig);
 
     }
 

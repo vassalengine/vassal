@@ -787,7 +787,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   private static class Ed implements PieceEditor {
     private final NamedHotKeyConfigurer labelKeyInput;
-    private final JPanel controls = new JPanel();
+    private final TraitConfigPanel controls;
     private final StringConfigurer command;
     private final StringConfigurer initialValue;
     private final ColorConfigurer fg, bg;
@@ -804,28 +804,23 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     private final StringConfigurer descConfig;
 
     public Ed(Labeler l) {
-      controls.setLayout(new TraitLayout());
+      controls = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(l.description);
-      controls.add(new JLabel(Resources.getString("Editor.description_label")));
-      controls.add(descConfig.getControls());
+      controls.add("Editor.description_label", descConfig);
 
       initialValue = new StringConfigurer(l.label);
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.label_text")));
-      controls.add(initialValue.getControls());
+      controls.add("Editor.TextLabel.label_text", initialValue);
 
       format = new FormattedStringConfigurer(new String[]{PIECE_NAME, LABEL});
       format.setValue(l.nameFormat.getFormat()); // NON-NLS
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.name_format")));
-      controls.add(format.getControls(), "wrap"); //NON-NLS
+      controls.add("Editor.TextLabel.name_format", format); //NON-NLS
 
       command = new StringConfigurer(l.menuCommand);
-      controls.add(new JLabel(Resources.getString("Editor.menu_command")));
-      controls.add(command.getControls());
+      controls.add("Editor.menu_command", command);
 
       labelKeyInput = new NamedHotKeyConfigurer(l.labelKey);
-      controls.add(new JLabel(Resources.getString("Editor.keyboard_command")));
-      controls.add(labelKeyInput.getControls());
+      controls.add("Editor.keyboard_command", labelKeyInput);
 
       fontFamily = new TranslatingStringEnumConfigurer(
         new String[]{Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT},
@@ -836,7 +831,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
           Resources.getString("Editor.Font.dialog"),
           Resources.getString("Editor.Font.dialog_input")},
           l.font.getFamily());
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.label_font")));
 
       JPanel p = new JPanel(new MigLayout("ins 0", "[]unrel[]rel[]unrel[]rel[]unrel[]rel[]")); // NON-NLS
       p.add(fontFamily.getControls());
@@ -845,23 +839,19 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       p.add(fontSize.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.bold")));
       final int fontStyle = l.font.getStyle();
-      bold = new BooleanConfigurer(null, "",
-        Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
+      bold = new BooleanConfigurer(Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
       p.add(bold.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.italic")));
-      italic = new BooleanConfigurer(null, "",
-        Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
+      italic = new BooleanConfigurer(Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
       p.add(italic.getControls());
 
-      controls.add(p);
+      controls.add("Editor.TextLabel.label_font", p);
 
       fg = new ColorConfigurer(l.textFg);
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.text_color")));
-      controls.add(fg.getControls(), "grow 0"); // NON-NLS
+      controls.add("Editor.TextLabel.text_color", fg);
 
       bg = new ColorConfigurer(l.textBg);
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.background_color")));
-      controls.add(bg.getControls(), "grow 0"); // NON-NLS
+      controls.add("Editor.TextLabel.background_color", bg);
 
       vPos = new TranslatingStringEnumConfigurer(
         new String[] {"c", "t", "b"}, // NON-NLS
@@ -872,13 +862,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         },
         l.verticalPos
       );
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.vertical_position")));
+
       p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[fill,grow]")); // NON-NLS
       p.add(vPos.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
       vOff = new IntConfigurer(l.verticalOffset);
       p.add(vOff.getControls());
-      controls.add(p);
+      controls.add("Editor.TextLabel.vertical_position", p);
 
       hPos = new TranslatingStringEnumConfigurer(
         new String[] {"c", "l", "r"}, // NON-NLS
@@ -889,13 +879,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         },
         l.horizontalPos
       );
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.horizontal_position")));
+
       p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[fill,grow]")); // NON-NLS
       p.add(hPos.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
       hOff = new IntConfigurer(l.horizontalOffset);
       p.add(hOff.getControls());
-      controls.add(p);
+      controls.add("Editor.TextLabel.horizontal_position", p);
 
       vJust = new TranslatingStringEnumConfigurer(
         new String[] {"c", "t", "b"}, // NON-NLS
@@ -906,8 +896,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         },
         l.verticalJust
       );
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.vertical_text_justification")));
-      controls.add(vJust.getControls(), "grow 0"); // NON-NLS
+      controls.add("Editor.TextLabel.vertical_text_justification", vJust, "grow 0"); // NON-NLS
 
       hJust = new TranslatingStringEnumConfigurer(
         new String[] {"c", "l", "r"}, // NON-NLS
@@ -918,16 +907,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         },
         l.horizontalJust
       );
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.horizontal_text_justification")));
-      controls.add(hJust.getControls(), "grow 0"); // NON-NLS
+      controls.add("Editor.TextLabel.horizontal_text_justification", hJust, "grow 0"); // NON-NLS
 
       rotate = new IntConfigurer(l.rotateDegrees);
-      controls.add(new JLabel(Resources.getString("Editor.TextLabel.rotate_text_degrees")));
-      controls.add(rotate.getControls());
+      controls.add("Editor.TextLabel.rotate_text_degrees", rotate);
 
       propertyNameConfig = new StringConfigurer(l.propertyName);
-      controls.add(new JLabel(Resources.getString("Editor.property_name")));
-      controls.add(propertyNameConfig.getControls());
+      controls.add("Editor.property_name", propertyNameConfig);
     }
 
     @Override
