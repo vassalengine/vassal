@@ -18,9 +18,7 @@
 
 package VASSAL.counters;
 
-import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
 import java.awt.Component;
 import javax.swing.JLabel;
@@ -73,7 +71,7 @@ public class TraitConfigPanel extends JPanel {
    * @param c Configurer
    */
   public void add(JLabel label, Configurer c) {
-    add(label, c, (c instanceof ColorConfigurer || c instanceof IntConfigurer) ? "grow 0" : "");
+    add(label, c, ""); // NON-NLS
   }
 
   /**
@@ -88,8 +86,6 @@ public class TraitConfigPanel extends JPanel {
   public void add(String i18nKey, Configurer c, String configureConstraints) {
     add(new JLabel(Resources.getString(i18nKey)), c, configureConstraints);
   }
-
-
 
   /**
    * Add an existing JLabel and existing JPanel containing controls.

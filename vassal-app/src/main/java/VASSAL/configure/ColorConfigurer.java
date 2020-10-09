@@ -68,7 +68,7 @@ public class ColorConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new ConfigurerPanel(getName(), "[fill]", "[][fill]"); // NON-NLS
+      p = new ConfigurerPanel(getName(), "[]", "[][]"); // NON-NLS
 
       cb = new ColorButton(colorValue());
       cb.addActionListener(e -> setValue(JColorChooser.showDialog(null, getName(), colorValue())));

@@ -87,8 +87,7 @@ public class AutoConfigurer extends Configurer
         final JLabel label = new JLabel(prompt[i]);
         labels.put(name[i], label);
         p.add(label);
-        final String constraints = (config instanceof ColorConfigurer || config instanceof IntConfigurer) ? "wrap,grow 0" : "wrap,grow"; // NON-NLS
-        p.add(config.getControls(), constraints);
+        p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
       }
       setVisibility(name[i], c.getAttributeVisibility(name[i]));

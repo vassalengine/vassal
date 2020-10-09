@@ -64,6 +64,10 @@ public class StringConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  protected String getGrowthConstraint() {
+    return "growx"; // NON-NLS
+  }
+
   @Override
   public Component getControls() {
     if (p == null) {
@@ -75,7 +79,7 @@ public class StringConfigurer extends Configurer {
         nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
-      p.add(nameField, "growx"); // NON-NLS
+      p.add(nameField, getGrowthConstraint()); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {

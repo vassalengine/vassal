@@ -71,4 +71,10 @@ public class IntConfigurer extends StringConfigurer {
   public String getValueString() {
     return value == null ? null : value.toString();
   }
+
+  @Override
+  // Suppress stretching
+  protected String getGrowthConstraint() {
+    return "grow 0"; // NON-NLS
+  }
 }

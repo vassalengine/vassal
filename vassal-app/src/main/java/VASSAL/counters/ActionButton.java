@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -183,7 +181,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   public static class Ed implements PieceEditor {
-    private final JPanel box;
+    private final TraitConfigPanel box;
     private final IntConfigurer xConfig;
     private final IntConfigurer yConfig;
     private final IntConfigurer widthConfig;
@@ -192,31 +190,25 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     protected StringConfigurer descConfig;
 
     public Ed(ActionButton p) {
-      box = new JPanel(new TraitLayout());
+      box = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(p.description);
-      box.add(new JLabel(Resources.getString("Editor.description_label")));
-      box.add(descConfig.getControls());
+      box.add("Editor.description_label", descConfig);
 
       strokeConfig = new NamedHotKeyConfigurer(p.stroke);
-      box.add(new JLabel(Resources.getString("Editor.ActionButton.invoke_key_command")));
-      box.add(strokeConfig.getControls());
+      box.add("Editor.ActionButton.invoke_key_command", strokeConfig);
 
       xConfig = new IntConfigurer(p.bounds.x);
-      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_x_offset")));
-      box.add(xConfig.getControls());
+      box.add("Editor.ActionButton.button_x_offset", xConfig);
 
       yConfig = new IntConfigurer(p.bounds.y);
-      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_y_offset")));
-      box.add(yConfig.getControls());
+      box.add("Editor.ActionButton.button_y_offset", yConfig);
 
       widthConfig = new IntConfigurer(p.bounds.width);
-      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_width")));
-      box.add(widthConfig.getControls());
+      box.add("Editor.ActionButton.button_width", widthConfig);
 
       heightConfig = new IntConfigurer(p.bounds.height);
-      box.add(new JLabel(Resources.getString("Editor.ActionButton.button_height")));
-      box.add(heightConfig.getControls());
+      box.add("Editor.ActionButton.button_height", heightConfig);
     }
 
     @Override
