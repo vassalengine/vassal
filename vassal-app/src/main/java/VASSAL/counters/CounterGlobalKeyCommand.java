@@ -30,6 +30,7 @@ import java.util.List;
 
 import java.util.Objects;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
@@ -285,7 +286,8 @@ public class CounterGlobalKeyCommand extends Decorator
     protected StringConfigurer rangeProperty;
     protected JLabel rangePropertyLabel;
     protected StringConfigurer descInput;
-    protected TraitConfigPanel controls;
+    protected JPanel controls;
+    protected TraitConfigPanel traitPanel;
 
     public Ed(CounterGlobalKeyCommand p) {
 
@@ -307,46 +309,47 @@ public class CounterGlobalKeyCommand extends Decorator
         }
       };
 
-      controls = new TraitConfigPanel();
+      traitPanel = new TraitConfigPanel();
+      controls = traitPanel;
 
       descInput = new StringConfigurer(p.description);
-      controls.add("Editor.description_label", descInput);
+      traitPanel.add("Editor.description_label", descInput);
 
       nameInput = new StringConfigurer(p.commandName);
-      controls.add("Editor.command_name", nameInput);
+      traitPanel.add("Editor.command_name", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
-      controls.add("Editor.keyboard_command", keyInput);
+      traitPanel.add("Editor.keyboard_command", keyInput);
 
       globalKey = new NamedHotKeyConfigurer(p.globalKey);
-      controls.add("Editor.GlobalkeyCommand.global_key_command", globalKey);
+      traitPanel.add("Editor.GlobalkeyCommand.global_key_command", globalKey);
 
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
-      controls.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
+      traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
       deckPolicy.setValue(p.globalCommand.getSelectFromDeck());
-      controls.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
+      traitPanel.add("Editor.GlobalKeyCommand.deck_policy", deckPolicy);
 
       restrictRange = new BooleanConfigurer(p.restrictRange);
-      controls.add("Editor.GlobalKeyCommand.restrict_range", restrictRange);
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_range", restrictRange);
       restrictRange.addPropertyChangeListener(pl);
 
       fixedRange = new BooleanConfigurer(p.fixedRange);
       fixedRangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.fixed_range"));
-      controls.add(fixedRangeLabel, fixedRange);
+      traitPanel.add(fixedRangeLabel, fixedRange);
       fixedRange.addPropertyChangeListener(pl);
 
       range = new IntConfigurer(p.range);
       rangeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range"));
-      controls.add(rangeLabel, range);
+      traitPanel.add(rangeLabel, range);
 
       rangeProperty = new StringConfigurer(p.rangeProperty);
       rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
-      controls.add(rangePropertyLabel, rangeProperty);
+      traitPanel.add(rangePropertyLabel, rangeProperty);
 
       suppress = new BooleanConfigurer(p.globalCommand.isReportSingle());
-      controls.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress", suppress);
+      traitPanel.add("Editor.GlobalKeyCommand.Editor_MassKey_suppress", suppress);
 
       pl.propertyChange(null);
     }
