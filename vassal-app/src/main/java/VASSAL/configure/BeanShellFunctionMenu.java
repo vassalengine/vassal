@@ -148,7 +148,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
     functionMenu.add(countMenu);
-    addFunction(functionMenu, "?", Resources.getString("Editor.BeanShell.ternary"), new String[] { Resources.getString("Editor.BeanShell.logical"), Resources.getString("Editor.BeanShell.if_true"), Resources.getString("Editor.BeanShell.if_false") }, "(expr ? r1 : r2)"); //NON-NLS
+    addFunction(functionMenu, "?", Resources.getString("Editor.BeanShell.ternary"), new String[] { Resources.getString("Editor.BeanShell.logical_expression"), Resources.getString("Editor.BeanShell.if_true"), Resources.getString("Editor.BeanShell.if_false") }, "(expr ? r1 : r2)"); //NON-NLS
     addFunction(functionMenu, "Alert", Resources.getString("Editor.BeanShell.alert"), new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
 
     add(functionMenu);

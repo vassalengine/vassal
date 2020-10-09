@@ -17,12 +17,16 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.List;
 
+import java.util.Objects;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.PrototypeDefinition;
@@ -47,7 +51,7 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class UsePrototype extends Decorator implements EditablePiece, Loopable {
-  public static final String ID = "prototype;";
+  public static final String ID = "prototype;"; // NON-NLS
   private String prototypeName;
   private String lastCachedPrototype;
   private GamePiece prototype;
@@ -65,12 +69,14 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return prototypeName != null && prototypeName.length() > 0 ? "Prototype - " + prototypeName : "Prototype";
+    return prototypeName != null && prototypeName.length() > 0 ?
+      Resources.getString("Editor.UsePrototype.trait_description_named", prototypeName) :
+      Resources.getString("Editor.UsePrototype.trait_description");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("UsePrototype.html");
+    return HelpFile.getReferenceManualPage("UsePrototype.html"); // NON-NLS
   }
 
   @Override
@@ -221,19 +227,33 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof UsePrototype)) return false;
+    UsePrototype c = (UsePrototype) o;
+    return Objects.equals(prototypeName, c.prototypeName);
+  }
+
+  @Override
   public PieceEditor getEditor() {
     return new Editor(this);
   }
+
   public static class Editor implements PieceEditor {
-    private StringConfigurer nameConfig;
+    private final JPanel controls;
+    private final StringConfigurer nameConfig;
 
     public Editor(UsePrototype up) {
-      nameConfig = new StringConfigurer(null, "Prototype name:  ", up.type.substring(ID.length()));
+      controls = new JPanel(new TraitLayout());
+
+      nameConfig = new StringConfigurer(up.type.substring(ID.length()));
+      controls.add(new JLabel(Resources.getString("Editor.UsePrototype.prototype_name")));
+      controls.add(nameConfig.getControls());
+
     }
 
     @Override
     public Component getControls() {
-      return nameConfig.getControls();
+      return controls;
     }
 
     @Override
