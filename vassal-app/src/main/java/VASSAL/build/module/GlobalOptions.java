@@ -83,6 +83,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
   public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
+  public static final String SOUND_WAKEUP_MUTE = "soundWakeupMute"; //NON-NLS
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -105,6 +106,7 @@ public class GlobalOptions extends AbstractConfigurable {
   
   private boolean macLegacy;
   private boolean soundGlobalMute = false;
+  private boolean soundWakeupMute = false;
 
   private final Map<String, Object> properties = new HashMap<>();
   private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
@@ -227,6 +229,13 @@ public class GlobalOptions extends AbstractConfigurable {
 
     validator = new SingleChildInstance(gm, getClass());
 
+    final BooleanConfigurer soundWakeupMuteConf = new BooleanConfigurer(
+      SOUND_WAKEUP_MUTE,
+      Resources.getString("GlobalOptions.sound_wakeup_mute"),
+      Boolean.FALSE);
+    soundWakeupMuteConf.addPropertyChangeListener(evt -> setSoundWakeupMute(soundWakeupMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundWakeupMuteConf);
+
     final BooleanConfigurer soundGlobalMuteConf = new BooleanConfigurer(
       SOUND_GLOBAL_MUTE,
       Resources.getString("GlobalOptions.sound_global_mute"),
@@ -280,7 +289,16 @@ public class GlobalOptions extends AbstractConfigurable {
   public Boolean isSoundGlobalMute () {
     return soundGlobalMute;
   }
- 
+
+  public void setSoundWakeupMute(Boolean b) {
+    soundWakeupMute = b;
+  }
+
+  public Boolean isSoundWakeupMute () {
+    return soundWakeupMute;
+  }
+
+
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$
