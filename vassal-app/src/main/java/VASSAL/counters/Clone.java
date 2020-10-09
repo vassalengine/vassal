@@ -196,7 +196,7 @@ public class Clone extends Decorator implements TranslatablePiece {
       controls = new TraitConfigPanel();
 
       nameInput = new StringConfigurer(p.commandName);
-      controls.add("Editor.command_name", nameInput);
+      controls.add("Editor.menu_command", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
       controls.add("Editor.keyboard_command", keyInput);

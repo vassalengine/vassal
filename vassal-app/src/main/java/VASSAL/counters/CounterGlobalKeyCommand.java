@@ -248,7 +248,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, getCommandDescription(description, Resources.getString("Editor.command_name")));
+    return getI18nData(commandName, getCommandDescription(description, Resources.getString("Editor.menu_command")));
   }
 
   @Override
@@ -311,7 +311,7 @@ public class CounterGlobalKeyCommand extends Decorator
       traitPanel.add("Editor.description_label", descInput);
 
       nameInput = new StringConfigurer(p.commandName);
-      traitPanel.add("Editor.command_name", nameInput);
+      traitPanel.add("Editor.menu_command", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
       traitPanel.add("Editor.keyboard_command", keyInput);

@@ -863,7 +863,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         l.verticalPos
       );
 
-      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[fill,grow]")); // NON-NLS
+      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[]")); // NON-NLS
       p.add(vPos.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
       vOff = new IntConfigurer(l.verticalOffset);
@@ -880,7 +880,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         l.horizontalPos
       );
 
-      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[fill,grow]")); // NON-NLS
+      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[]")); // NON-NLS
       p.add(hPos.getControls());
       p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
       hOff = new IntConfigurer(l.horizontalOffset);
