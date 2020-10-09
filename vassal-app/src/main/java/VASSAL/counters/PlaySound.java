@@ -107,15 +107,17 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command c = null;
-    if (command.matches(stroke) && !GlobalOptions.getInstance().getSoundGlobalMute()) {
+    if (command.matches(stroke)) {
       final String clipName = format.getText(Decorator.getOutermost(this));
       c = new PlayAudioClipCommand(clipName);
       try {
-        final AudioClip clip = GameModule.getGameModule()
-                                         .getDataArchive()
-                                         .getCachedAudioClip(clipName);
-        if (clip != null) {
-          clip.play();
+        if (!GlobalOptions.getInstance().isSoundGlobalMute()) {
+          final AudioClip clip = GameModule.getGameModule()
+            .getDataArchive()
+            .getCachedAudioClip(clipName);
+          if (clip != null) {
+            clip.play();
+          }
         }
       }
       catch (IOException e) {

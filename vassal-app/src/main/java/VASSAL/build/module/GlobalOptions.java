@@ -277,7 +277,7 @@ public class GlobalOptions extends AbstractConfigurable {
     soundGlobalMute = b;
   }
 
-  public Boolean getSoundGlobalMute () {
+  public Boolean isSoundGlobalMute () {
     return soundGlobalMute;
   }
  
