@@ -20,7 +20,6 @@
 
     <modules>
         <module>vassal-deprecation</module>
-	<module>vassal-perl</module>
         <module>vassal-app</module>
         <module>vassal-doc</module>
         <module>release-prepare</module>
