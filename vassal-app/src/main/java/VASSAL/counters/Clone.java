@@ -75,7 +75,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       cloneCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       if (commandName.length() > 0 && key != null && ! key.isNull()) {

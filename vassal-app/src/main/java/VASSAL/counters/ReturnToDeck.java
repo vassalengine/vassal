@@ -79,7 +79,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       myCommand = new KeyCommand(returnCommand, returnKey, Decorator.getOutermost(this), this);
       if (returnCommand.length() > 0 && returnKey != null && !returnKey.isNull()) {

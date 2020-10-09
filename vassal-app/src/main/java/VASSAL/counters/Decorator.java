@@ -428,7 +428,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @return the key commands for this trait alone
    * @see #getKeyCommands which returns the key commands for this trait AND all inner piece members
    */
-  protected abstract KeyCommand[] myGetKeyCommands();
+  public abstract KeyCommand[] myGetKeyCommands();
 
   /**
    * @return The set of key commands that will populate the piece's right-click menu.

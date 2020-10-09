@@ -44,7 +44,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       command = new KeyCommand(commandName, commandKey, Decorator.getOutermost(this), this);
       command.setEnabled(getMap() != null);

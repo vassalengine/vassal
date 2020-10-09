@@ -182,7 +182,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
@@ -296,11 +296,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           b = map.getBoardByName(boardName.getText(outer));
           if (b != null) {
             try {
-              MapGrid g = b.getGrid(); 
+              MapGrid g = b.getGrid();
               if (g != null) { // Board may not have a grid assigned.
                 dest = g.getLocation(gridLocation.getText(outer));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
-              } 
+              }
               else {
                 reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName());
               }

@@ -99,7 +99,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 

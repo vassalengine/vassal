@@ -154,7 +154,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (launch == null) {
       launch = new KeyCommand(command, launchKey, Decorator.getOutermost(this), this);
     }

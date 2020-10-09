@@ -114,7 +114,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     command.setEnabled(getMap() != null && markerSpec != null);
     return commands;
   }

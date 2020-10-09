@@ -86,7 +86,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return keyCommands;
   }
 

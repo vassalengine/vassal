@@ -86,7 +86,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
