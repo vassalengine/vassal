@@ -226,6 +226,13 @@ public class GlobalOptions extends AbstractConfigurable {
     prefs.addOption(pctRecenterOn);
 
     validator = new SingleChildInstance(gm, getClass());
+
+    final BooleanConfigurer soundGlobalMuteConf = new BooleanConfigurer(
+      SOUND_GLOBAL_MUTE,
+      Resources.getString("GlobalOptions.sound_global_mute"),
+      Boolean.FALSE);
+    soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
   }
 
   public static GlobalOptions getInstance() {
@@ -263,6 +270,15 @@ public class GlobalOptions extends AbstractConfigurable {
   
   public boolean getPrefMacLegacy() {
     return macLegacy;
+  }
+
+
+  public void setSoundGlobalMute(Boolean b) {
+    soundGlobalMute = b;
+  }
+
+  public Boolean getSoundGlobalMute () {
+    return soundGlobalMute;
   }
  
 
