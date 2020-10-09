@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AudioClip;
 import VASSAL.tools.AudioSystemClip;
