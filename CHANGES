@@ -1,5 +1,7 @@
 3.5.0-beta1 - ???
 
+* 13495: Wizard should set the initial value for next save/load dialog
+* 13494: Expose version numbers and module strings to module as properties
 * 13432: MouseOverStackViewer can show > 1 piece of a deck
 * 13417: Editor's search function can now search piece traits and component attributes
 * 13415: MouseoverStackViewer has HTML support and additional formatting options
@@ -21,6 +23,7 @@
 * 13098: Move Compatibility related preferences on the General tab to a new
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
+*  1804: Added Preference for turning off sounds
 
 3.4.6 - ???
 
