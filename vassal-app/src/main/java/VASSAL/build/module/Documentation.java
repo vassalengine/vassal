@@ -109,11 +109,11 @@ public class Documentation extends AbstractConfigurable {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
+      BrowserPDFFile.class,
       BrowserHelpFile.class,
+      HelpFile.class,
       AboutScreen.class,
       Tutorial.class,
-      HelpFile.class,
-      BrowserPDFFile.class
     };
   }
 

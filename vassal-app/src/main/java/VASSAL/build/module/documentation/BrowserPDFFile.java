@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2020 by Vassalengine.org, Brian Reynolds
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -44,15 +44,18 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Easier-to-use support for opening a single PDF file in the browser (it can be done with BrowserHelpFile, but
+ * requires a substantial workaround and weird confusing procedures)
+ */
 public class BrowserPDFFile extends AbstractConfigurable {
   private static final Logger logger =
     LoggerFactory.getLogger(BrowserPDFFile.class);
 
   public static final String TITLE = "title"; //$NON-NLS-1$
-  //public static final String CONTENTS = "contents"; //$NON-NLS-1$
   public static final String PDF_FILE = "pdfFile"; //$NON-NLS-1$
-  protected String name;
-  protected String pdfFile = "MyRulebook.pdf";
+  protected String menuText = Resources.getString("Editor.BrowserPDFFile.default_menu_text");
+  protected String pdfFile = Resources.getString("Editor.BrowserPDFFile.default_filename");
   protected Action launch;
   protected URL url;
 
@@ -78,6 +81,9 @@ public class BrowserPDFFile extends AbstractConfigurable {
     }
   }
 
+  /**
+   * Extracts our PDF to a temporary file in the temp directory
+   */
   protected void extractPDF() {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
 
@@ -87,7 +93,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
         Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
       }
       catch (IOException e) {
-        logger.error("Error while copying file {} from data archive", pdfFile,e); //NON-NLS
+        logger.error("Error while copying file {} from data archive", pdfFile, e); //NON-NLS
       }
       url = out.toUri().toURL();
     }
@@ -103,7 +109,6 @@ public class BrowserPDFFile extends AbstractConfigurable {
     }
   }
 
-
   @Override
   public String[] getAttributeNames() {
     return new String[]{
@@ -113,14 +118,11 @@ public class BrowserPDFFile extends AbstractConfigurable {
   }
 
   @Override
-  public String getAttributeValueString(String key) {
-    if (TITLE.equals(key)) {
-      return name;
-    }
-    else if (PDF_FILE.equals(key)) {
-      return pdfFile;
-    }
-    return null;
+  public String[] getAttributeDescriptions() {
+    return new String[] {
+      Resources.getString("Editor.menu_command"),
+      Resources.getString("Editor.BrowserPDFFile.pdf_file")
+    };
   }
 
   @Override
@@ -132,18 +134,21 @@ public class BrowserPDFFile extends AbstractConfigurable {
   }
 
   @Override
-  public String[] getAttributeDescriptions() {
-    return new String[] {
-      "Title",
-      "File"
-    };
+  public String getAttributeValueString(String key) {
+    if (TITLE.equals(key)) {
+      return menuText;
+    }
+    else if (PDF_FILE.equals(key)) {
+      return pdfFile;
+    }
+    return null;
   }
 
   @Override
   public void setAttribute(String key, Object value) {
     if (TITLE.equals(key)) {
-      name = (String) value;
-      launch.putValue(Action.NAME, name);
+      menuText = (String) value;
+      launch.putValue(Action.NAME, menuText);
       url = null;
     }
     else if (PDF_FILE.equals(key)) {
@@ -178,12 +183,12 @@ public class BrowserPDFFile extends AbstractConfigurable {
 
   @Override
   public String getConfigureName() {
-    return name;
+    return menuText;
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.html", "PDFHelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("HelpMenu.html", "PDF"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
