@@ -23,7 +23,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.io.file.PathUtils;
@@ -36,12 +35,10 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class BrowserPDFFile extends AbstractConfigurable {
@@ -52,7 +49,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
   //public static final String CONTENTS = "contents"; //$NON-NLS-1$
   public static final String PDF_FILE = "pdfFile"; //$NON-NLS-1$
   protected String name;
-  protected String pdf = "MyRulebook.pdf";
+  protected String pdfFile = "MyRulebook.pdf";
   protected Action launch;
   protected URL url;
 
@@ -81,45 +78,28 @@ public class BrowserPDFFile extends AbstractConfigurable {
   protected void extractPDF() {
     try (ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
-             GameModule.getGameModule().getDataArchive().getInputStream(pdf)))) { //$NON-NLS-1$
-      internalExtractContents(in);
+             GameModule.getGameModule().getDataArchive().getInputStream(pdfFile)))) { //$NON-NLS-1$
+      final Path p = Path.of(Info.getTempDir().getAbsolutePath(), "VASSAL", "pdf_files");
+
+      if (Files.exists(p)) {
+        PathUtils.deleteDirectory(p);
+      }
+
+      Files.createDirectories(p);
+
+      final Path p2 = Path.of(p.toString(), pdfFile);
+      Files.copy (in, p2);
+
+      url = p2.toUri().toURL();
     }
     catch (FileNotFoundException e) {
-      logger.error("File not found in data archive: {}", pdf, e); //NON-NLS
+      logger.error("File not found in data archive: {}", pdfFile, e); //NON-NLS
       url = null;
     }
     catch (IOException e) {
-      logger.error("Error while reading file {} from data archive", pdf, e); //NON-NLS
+      logger.error("Error while reading file {} from data archive", pdfFile, e); //NON-NLS
       url = null;
     }
-  }
-
-  private void internalExtractContents(ZipInputStream in) throws IOException {
-    final Path p = Path.of(Info.getTempDir().getAbsolutePath(), "VASSAL", "pdf");
-
-    if (Files.exists(p)) {
-      PathUtils.deleteDirectory(p);
-    }
-
-    Files.createDirectories(p);
-
-    final File output = p.toFile();
-    final byte[] buf = new byte[4096];
-
-    try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
-      IOUtils.copy(in, fos, buf);
-    }
-
-    //ZipEntry entry;
-    //while ((entry = in.getNextEntry()) != null) {
-    //  if (!pdf.equals(entry.getName())) continue;
-    //  try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
-    //    IOUtils.copy(in, fos);
-    //    break;
-    //  }
-    // }
-
-    url = new File(output, pdf).toURI().toURL();
   }
 
 
@@ -137,7 +117,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
       return name;
     }
     else if (PDF_FILE.equals(key)) {
-      return pdf;
+      return pdfFile;
     }
     return null;
   }
@@ -169,7 +149,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
       if (value instanceof File) {
         value = ((File) value).getName();
       }
-      pdf = (String) value;
+      pdfFile = (String) value;
       url = null;
     }
   }
