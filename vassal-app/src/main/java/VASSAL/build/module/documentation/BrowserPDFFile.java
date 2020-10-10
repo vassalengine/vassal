@@ -21,7 +21,6 @@ import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.io.IOUtils;
@@ -34,27 +33,17 @@ import org.slf4j.LoggerFactory;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-/**
- * Unpacks a zipped directory stored in the module and displays it in an
- * external browser window.
- *
- * @author rkinney
- */
 public class BrowserPDFFile extends AbstractConfigurable {
   private static final Logger logger =
     LoggerFactory.getLogger(BrowserPDFFile.class);
@@ -63,11 +52,9 @@ public class BrowserPDFFile extends AbstractConfigurable {
   //public static final String CONTENTS = "contents"; //$NON-NLS-1$
   public static final String PDF_FILE = "pdfFile"; //$NON-NLS-1$
   protected String name;
-  protected String pdf = "";
+  protected String pdf = "MyRulebook.pdf";
   protected Action launch;
   protected URL url;
-  protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
-  protected ComponentI18nData myI18nData;
 
   public BrowserPDFFile() {
     super();
@@ -91,15 +78,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
     }
   }
 
-  /**
-   * @return The entry in the module Zip file containing the HTML directory
-   */
-  protected String getContentsResource() {
-    return name == null ? null : name.replace(' ', '_');
-  }
-
   protected void extractPDF() {
-
     try (ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
              GameModule.getGameModule().getDataArchive().getInputStream(pdf)))) { //$NON-NLS-1$
@@ -107,20 +86,11 @@ public class BrowserPDFFile extends AbstractConfigurable {
     }
     catch (FileNotFoundException e) {
       logger.error("File not found in data archive: {}", pdf, e); //NON-NLS
-      setFallbackUrl();
+      url = null;
     }
     catch (IOException e) {
       logger.error("Error while reading file {} from data archive", pdf, e); //NON-NLS
-      setFallbackUrl();
-    }
-  }
-
-  private void setFallbackUrl() {
-    try {
-      url = new URL(pdf);
-    }
-    catch (MalformedURLException e) {
-      logger.error("Malformed URL: {}", pdf, e); //NON-NLS
+      url = null;
     }
   }
 
@@ -134,14 +104,19 @@ public class BrowserPDFFile extends AbstractConfigurable {
     Files.createDirectories(p);
 
     final File output = p.toFile();
-    ZipEntry entry;
-    while ((entry = in.getNextEntry()) != null) {
-      if (!pdf.equals(entry.getName())) continue;
-      try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
-        IOUtils.copy(in, fos);
-        break;
-      }
+
+    try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
+      IOUtils.copy(in, fos);
     }
+    
+    //ZipEntry entry;
+    //while ((entry = in.getNextEntry()) != null) {
+    //  if (!pdf.equals(entry.getName())) continue;
+    //  try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
+    //    IOUtils.copy(in, fos);
+    //    break;
+    //  }
+    // }
 
     url = new File(output, pdf).toURI().toURL();
   }
@@ -161,7 +136,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
       return name;
     }
     else if (PDF_FILE.equals(key)) {
-      return PDF_FILE;
+      return pdf;
     }
     return null;
   }
@@ -188,7 +163,6 @@ public class BrowserPDFFile extends AbstractConfigurable {
       name = (String) value;
       launch.putValue(Action.NAME, name);
       url = null;
-      getI18nData().setUntranslatedValue(key, name);
     }
     else if (PDF_FILE.equals(key)) {
       if (value instanceof File) {
@@ -216,11 +190,6 @@ public class BrowserPDFFile extends AbstractConfigurable {
   }
 
   @Override
-  public void addPropertyChangeListener(PropertyChangeListener l) {
-    propSupport.addPropertyChangeListener(l);
-  }
-
-  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
   }
@@ -241,16 +210,5 @@ public class BrowserPDFFile extends AbstractConfigurable {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.BrowserPDFFile.component_type"); //$NON-NLS-1$
-  }
-
-  @Override
-  public ComponentI18nData getI18nData() {
-    if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, "BrowserPDFFile." + getConfigureName(), null, //NON-NLS
-          new String[] {TITLE},
-          new boolean[] {true},
-          new String[] {Resources.getString("Editor.menu_command")});
-    }
-    return myI18nData;
   }
 }
