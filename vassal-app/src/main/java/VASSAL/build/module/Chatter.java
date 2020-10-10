@@ -102,7 +102,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
     conversationPane = new JTextPane();
     conversationPane.setContentType("text/html"); //NON-NLS
-//    kit = (HTMLEditorKit) conversationPane.getEditorKit();
     kit = new DataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive());
     conversationPane.setEditorKit(kit);
 
