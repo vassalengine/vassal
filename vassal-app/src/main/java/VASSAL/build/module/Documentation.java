@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import VASSAL.build.module.documentation.BrowserPDFFile;
 import org.w3c.dom.Element;
 
 import VASSAL.Info;
@@ -111,7 +112,8 @@ public class Documentation extends AbstractConfigurable {
       BrowserHelpFile.class,
       AboutScreen.class,
       Tutorial.class,
-      HelpFile.class
+      HelpFile.class,
+      BrowserPDFFile.class
     };
   }
 
