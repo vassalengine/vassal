@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipInputStream;
 
 public class BrowserPDFFile extends AbstractConfigurable {
@@ -79,26 +80,24 @@ public class BrowserPDFFile extends AbstractConfigurable {
     try (ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
              GameModule.getGameModule().getDataArchive().getInputStream(pdfFile)))) { //$NON-NLS-1$
-      final Path p = Path.of(Info.getTempDir().getAbsolutePath(), "VASSAL", "pdf_files");
-
-      if (Files.exists(p)) {
-        PathUtils.deleteDirectory(p);
+      Path out = Files.createTempFile(Info.getTempDir().toPath(), "pdfhelp_", ".pdf");
+      try {
+        Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
       }
-
-      Files.createDirectories(p);
-
-      final Path p2 = Path.of(p.toString(), pdfFile);
-      Files.copy (in, p2);
-
-      url = p2.toUri().toURL();
+      catch (IOException e) {
+        logger.error("Error while copying file {} from data archive", pdfFile,e); //NON-NLS
+      }
+      url = out.toUri().toURL();
     }
     catch (FileNotFoundException e) {
       logger.error("File not found in data archive: {}", pdfFile, e); //NON-NLS
       url = null;
+      return;
     }
     catch (IOException e) {
       logger.error("Error while reading file {} from data archive", pdfFile, e); //NON-NLS
       url = null;
+      return;
     }
   }
 
