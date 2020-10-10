@@ -210,7 +210,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       Stack s = initializeContents();
       updatePosition();
       Point p = new Point(pos);
-      if (owningBoardName != null) {
+      // If the Stack belongs to a specific Board, offset the position by the origin of the Board
+      // Otherwise, offset the position by the amount of Edge padding specified by the map (i.e. the origin of the top left board)
+      if (owningBoardName == null) {
+        p.translate(map.getEdgeBuffer().width, map.getEdgeBuffer().height);
+      }
+      else {
         Rectangle r = map.getBoardByName(owningBoardName).bounds();
         p.translate(r.x, r.y);
       }

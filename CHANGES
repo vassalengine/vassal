@@ -22,6 +22,11 @@
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
 
+3.4.6 - ???
+
+* 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map
+  padding specified
+
 3.4.5 - 6 October 2020
 
 * 13490: Module Manager "Show Error Log" doesn't
