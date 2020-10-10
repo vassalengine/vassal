@@ -23,6 +23,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import org.apache.commons.io.file.PathUtils;
@@ -36,6 +37,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -77,9 +79,9 @@ public class BrowserPDFFile extends AbstractConfigurable {
   }
 
   protected void extractPDF() {
-    try (ZipInputStream in =
-           new ZipInputStream(new BufferedInputStream(
-             GameModule.getGameModule().getDataArchive().getInputStream(pdfFile)))) { //$NON-NLS-1$
+    final DataArchive archive = GameModule.getGameModule().getDataArchive();
+
+    try (InputStream in = archive.getInputStream(pdfFile)) {
       Path out = Files.createTempFile(Info.getTempDir().toPath(), "pdfhelp_", ".pdf");
       try {
         Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
