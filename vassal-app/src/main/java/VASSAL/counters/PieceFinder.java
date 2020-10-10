@@ -72,7 +72,10 @@ public interface PieceFinder {
   public class DeckOrPieceInStack extends PieceInStack {
     @Override
     public Object visitDeck(Deck d) {
-      return d;
+      Shape s = d.getShape();
+      Point pos = d.getPosition();
+      Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      return (s.contains(p) ? d : null);
     }
   }
 
