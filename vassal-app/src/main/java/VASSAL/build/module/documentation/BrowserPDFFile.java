@@ -26,14 +26,12 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
-import org.apache.commons.io.file.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -42,7 +40,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.zip.ZipInputStream;
 
 /**
  * Easier-to-use support for opening a single PDF file in the browser (it can be done with BrowserHelpFile, but
@@ -88,7 +85,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
 
     try (InputStream in = archive.getInputStream(pdfFile)) {
-      Path out = Files.createTempFile(Info.getTempDir().toPath(), "pdfhelp_", ".pdf");
+      Path out = Files.createTempFile(Info.getTempDir().toPath(), "pdfhelp_", ".pdf"); //NON-NLS
       try {
         Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
       }
@@ -100,12 +97,10 @@ public class BrowserPDFFile extends AbstractConfigurable {
     catch (FileNotFoundException e) {
       logger.error("File not found in data archive: {}", pdfFile, e); //NON-NLS
       url = null;
-      return;
     }
     catch (IOException e) {
       logger.error("Error while reading file {} from data archive", pdfFile, e); //NON-NLS
       url = null;
-      return;
     }
   }
 
