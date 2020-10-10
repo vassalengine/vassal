@@ -26,7 +26,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -53,6 +52,7 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
@@ -101,9 +101,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
     conversationPane = new JTextPane();
-    conversationPane.setContentType("text/html");
+    conversationPane.setContentType("text/html"); //NON-NLS
+//    kit = (HTMLEditorKit) conversationPane.getEditorKit();
+    kit = new DataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive());
+    conversationPane.setEditorKit(kit);
+
     doc = (HTMLDocument) conversationPane.getDocument();
-    kit = (HTMLEditorKit) conversationPane.getEditorKit();
 
     style = kit.getStyleSheet();
     myFont = new Font("SansSerif", Font.PLAIN, 12); // Will be overridden by the font from Chat preferences
@@ -278,39 +281,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
            .replaceAll(">", "&gt;"); // This makes sure > doesn't break any of our legit <div> tags
     }
 
-    // Systematically search through for html image tags. When we find one, try
-    // to match it with an image from our DataArchive, and substitute the correct
-    // fully qualified URL into the tag.
-    URL url;
-    String keystring = "<img src=\"";
-    String file, tag, replace;
-    int base;
-    while (s.toLowerCase().contains(keystring)) { // Find next key (to-lower so we're not case sensitive)
-      base = s.toLowerCase().indexOf(keystring);
-      file = s.substring(base + keystring.length()).split("\"")[0]; // Pull the filename out from between the quotes
-      tag  = s.substring(base, base + keystring.length()) + file + "\""; // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring
-
-      try {
-        url = GameModule.getGameModule().getDataArchive().getURL("images/" + file);
-        replace = "<img  src=\"" + url.toString() + "\""; // Fully qualified URL if we are successful. The extra
-                                                          // space between IMG and SRC in the processed
-                                                          // version ensures we don't re-find THIS tag as we iterate
-      } 
-      catch (IOException ex) {
-        replace = "<img  src=\"" + file + "\""; // Or just leave in except alter just enough that we won't find this tag again
-      }
-
-      if (s.contains(tag)) {
-        s = s.replaceFirst(tag, replace); // Swap in our new URL-laden tag for the old one.
-      } 
-      else {
-        break; // If something went wrong in matching up the tag, don't loop forever
-      }
-    }
-
     // Now we have to fix up any legacy angle brackets around the word <observer>
-    keystring = Resources.getString("PlayerRoster.observer");
-    replace = keystring.replace("<", "&lt;").replace(">", "&gt;");
+    String keystring = Resources.getString("PlayerRoster.observer");
+    String replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
     if (!replace.equals(keystring)) {
       s = s.replace(keystring, replace);
     }
