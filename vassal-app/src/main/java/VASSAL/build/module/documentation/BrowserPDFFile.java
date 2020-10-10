@@ -26,8 +26,6 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -40,6 +38,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Easier-to-use support for opening a single PDF file in the browser (it can be done with BrowserHelpFile, but
@@ -93,6 +94,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
         logger.error("Error while copying file {} from data archive", pdfFile, e); //NON-NLS
       }
       url = out.toUri().toURL();
+      out.toFile().deleteOnExit();
     }
     catch (FileNotFoundException e) {
       logger.error("File not found in data archive: {}", pdfFile, e); //NON-NLS
