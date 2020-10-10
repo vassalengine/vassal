@@ -104,11 +104,12 @@ public class BrowserPDFFile extends AbstractConfigurable {
     Files.createDirectories(p);
 
     final File output = p.toFile();
+    final byte[] buf = new byte[4096];
 
     try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
-      IOUtils.copy(in, fos);
+      IOUtils.copy(in, fos, buf);
     }
-    
+
     //ZipEntry entry;
     //while ((entry = in.getNextEntry()) != null) {
     //  if (!pdf.equals(entry.getName())) continue;
