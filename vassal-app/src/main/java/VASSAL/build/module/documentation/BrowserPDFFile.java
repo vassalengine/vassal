@@ -46,6 +46,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -98,6 +99,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
   }
 
   protected void extractPDF() {
+
     try (ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
              GameModule.getGameModule().getDataArchive().getInputStream(pdf)))) { //$NON-NLS-1$
@@ -132,8 +134,13 @@ public class BrowserPDFFile extends AbstractConfigurable {
     Files.createDirectories(p);
 
     final File output = p.toFile();
-    try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
-      IOUtils.copy(in, fos);
+    ZipEntry entry;
+    while ((entry = in.getNextEntry()) != null) {
+      if (!pdf.equals(entry.getName())) continue;
+      try (FileOutputStream fos = new FileOutputStream(new File(output, pdf))) {
+        IOUtils.copy(in, fos);
+        break;
+      }
     }
 
     url = new File(output, pdf).toURI().toURL();
@@ -184,12 +191,10 @@ public class BrowserPDFFile extends AbstractConfigurable {
       getI18nData().setUntranslatedValue(key, name);
     }
     else if (PDF_FILE.equals(key)) {
-      if (value instanceof String) {
-        pdf = (String) value;
+      if (value instanceof File) {
+        value = ((File) value).getName();
       }
-      else if (value instanceof File) {
-        pdf = ((File)value).getName();
-      }
+      pdf = (String) value;
       url = null;
     }
   }
