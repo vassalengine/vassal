@@ -499,7 +499,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     ChatServerFactory.register("jabber", oncf);
 
     server = new DynamicClient();
-    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server); //NON-NLS
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
