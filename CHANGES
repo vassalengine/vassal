@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13504: Simpler way to display PDF files from Help menu
 * 13495: Wizard should set the initial value for next save/load dialog
 * 13494: Expose version numbers and module strings to module as properties
 * 13432: MouseOverStackViewer can show > 1 piece of a deck
