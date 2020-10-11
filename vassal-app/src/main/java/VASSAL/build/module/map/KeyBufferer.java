@@ -109,7 +109,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Because selecting a piece affects its visibility
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE;
-    Boolean isDeck = (p != null) && (p instanceof Deck);
+    boolean isDeck = (p != null) && (p instanceof Deck);
     if (p != null) {
       if (isDeck) {
         p = null;
