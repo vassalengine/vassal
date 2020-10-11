@@ -24,10 +24,10 @@ import java.awt.event.WindowEvent;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-
-import VASSAL.i18n.Resources;
 import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -36,6 +36,7 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**

@@ -194,7 +194,7 @@ public class NamedHotKeyConfigurer extends Configurer {
     return s;
   }
 
-  class KeyStrokeAdapter extends KeyAdapter {
+  private class KeyStrokeAdapter extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
       switch (e.getKeyCode()) {
@@ -218,7 +218,7 @@ public class NamedHotKeyConfigurer extends Configurer {
     }
   }
 
-  class KeyNameFilter extends DocumentFilter {
+  private class KeyNameFilter extends DocumentFilter {
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
       super.remove(fb, offset, length);
@@ -238,7 +238,7 @@ public class NamedHotKeyConfigurer extends Configurer {
     }
   }
 
-  class KeyStrokeFilter extends DocumentFilter {
+  private class KeyStrokeFilter extends DocumentFilter {
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       super.replace(fb, 0, keyStroke.getText().length(), text, attrs);
