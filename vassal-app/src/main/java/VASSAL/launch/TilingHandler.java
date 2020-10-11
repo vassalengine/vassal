@@ -233,7 +233,7 @@ public class TilingHandler {
             final String ipath = in.readUTF();
 
             EDT.execute(() -> {
-              pd.setLabel(Resources.getString("TilingHandler.tiling") + ipath);
+              pd.setLabel(Resources.getString("TilingHandler.tiling", ipath));
               if (!pd.isVisible()) pd.setVisible(true);
             });
             break;
