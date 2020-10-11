@@ -1,10 +1,11 @@
 3.4.6 - ???
 
-* 13456: At-Start Stack using Grid Location uses Location on first board, not
-  chosen board (additional fix for 12576)
+* 13505: Dragging a card/piece off the top of a deck should not also band-select
 * 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map
   padding specified
 * 13467: Edited modules containing HTML img elements can't be saved on Windows
+* 13456: At-Start Stack using Grid Location uses Location on first board, not
+  chosen board (additional fix for 12576)
 
 3.4.5 - 6 October 2020
 
