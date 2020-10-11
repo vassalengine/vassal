@@ -29,6 +29,7 @@
 
 * 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map
   padding specified
+* 13467: Edited modules containing HTML img elements can't be saved on Windows
 
 3.4.5 - 6 October 2020
 

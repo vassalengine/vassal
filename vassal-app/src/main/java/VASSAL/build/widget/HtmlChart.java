@@ -52,10 +52,11 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
-import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 /**
  * An HtmlChart is used for displaying html information for the module. The
@@ -111,15 +112,14 @@ public class HtmlChart extends Widget implements MouseListener {
   // playing a module, but is unacceptable for editors; they can only save
   // their work to a new file. Therefore, we read the entire file instead
   // of simply using:
-  //    GameModule.getGameModule().getDataArchive().getURL( fileName );
+  //    GameModule.getGameModule().getDataArchive().getURL(fileName);
   @Override
   public Component getComponent() {
     if (htmlWin == null) {
       htmlWin = new JEditorPane();
       htmlWin.setEditable(false);
       htmlWin.setContentType("text/html");
-      XTMLEditorKit myHTMLEditorKit = new XTMLEditorKit();
-      htmlWin.setEditorKit(myHTMLEditorKit);
+      htmlWin.setEditorKit(new DataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive()));
 
       htmlWin.addHyperlinkListener(new HtmlChartHyperlinkListener());
       htmlWin.addMouseListener(this);
@@ -292,7 +292,10 @@ public class HtmlChart extends Widget implements MouseListener {
    * The image is placed on a label and returned as a ComponentView. An
    * ImageView cannot be used as the standard Java HTML Renderer can only
    * display Images from an external URL.
+   *
+   * @deprecated Use {@link VASSAL.tools.swing.DataArchiveHTMLEditorKit} instead.
    */
+  @Deprecated(since = "2020-10-10", forRemoval = true)
   public static class XTMLEditorKit extends HTMLEditorKit {
     private static final long serialVersionUID = 1L;
 

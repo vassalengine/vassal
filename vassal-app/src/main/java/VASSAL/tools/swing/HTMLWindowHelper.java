@@ -31,9 +31,10 @@ import javax.swing.JLabel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import VASSAL.build.widget.HtmlChart;
+import VASSAL.build.GameModule;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 public class HTMLWindowHelper implements HyperlinkListener {
   private JEditorPane pane = new JEditorPane();
@@ -46,7 +47,7 @@ public class HTMLWindowHelper implements HyperlinkListener {
      * Allow <src> tag to display images from the module DataArchive
      * where no pathname included in the image name.
      */
-    pane.setEditorKit(new HtmlChart.XTMLEditorKit());
+    pane.setEditorKit(new DataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive()));
     pane.addHyperlinkListener(this);
   }
 
