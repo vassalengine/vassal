@@ -104,16 +104,22 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
     final KeyBuffer kbuf = KeyBuffer.getBuffer();
 
-    GamePiece p = map.findPiece(e.getPoint(), PieceFinder.PIECE_IN_STACK);
+    GamePiece p = map.findPiece(e.getPoint(), PieceFinder.DECK_OR_PIECE_IN_STACK);
     // Don't clear the buffer until we find the clicked-on piece
     // Because selecting a piece affects its visibility
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE;
+    boolean isDeck = (p != null) && (p instanceof Deck);
     if (p != null) {
-      filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
-      if (SwingUtils.isMainMouseButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
-        // Don't "eat" band-selects if unit found is non-movable
-        bandSelect = BandSelectType.SPECIAL;
+      if (isDeck) {
+        p = null;
+      }
+      else {
+        filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
+        if (SwingUtils.isMainMouseButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
+          // Don't "eat" band-selects if unit found is non-movable
+          bandSelect = BandSelectType.SPECIAL;
+        }
       }
     }
 
@@ -175,12 +181,14 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           bandSelectPiece = p;
         }
       }
-      anchor = map.mapToComponent(e.getPoint());
-      selection = new Rectangle(anchor.x, anchor.y, 0, 0);
-      if (map.getHighlighter() instanceof ColoredBorder) {
-        ColoredBorder b = (ColoredBorder) map.getHighlighter();
-        color = b.getColor();
-        thickness = b.getThickness();
+      if (!isDeck) { //BR// If started on a deck, don't do a band select
+        anchor = map.mapToComponent(e.getPoint());
+        selection = new Rectangle(anchor.x, anchor.y, 0, 0);
+        if (map.getHighlighter() instanceof ColoredBorder) {
+          ColoredBorder b = (ColoredBorder) map.getHighlighter();
+          color = b.getColor();
+          thickness = b.getThickness();
+        }
       }
     }
   }
