@@ -111,7 +111,6 @@ import VASSAL.tools.swing.SwingUtils;
  * This is the "At-Start Stack" component, which initializes a Map or Board with a specified stack.
  * Because it uses a regular stack, this component is better suited for limited-force-pool collections
  * of counters than a {@link DrawPile}
- *
  */
 public class SetupStack extends AbstractConfigurable implements GameComponent, UniqueIdManager.Identifyable {
   private static UniqueIdManager idMgr = new UniqueIdManager("SetupStack"); //NON-NLS
@@ -164,7 +163,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected void updatePosition() {
     if (isUseGridLocation() && location != null && !location.equals("")) {
       try {
-        pos = getConfigureBoard().getGrid().getLocation(location);
+        pos = getConfigureBoard(true).getGrid().getLocation(location);
       }
       catch (BadCoords e) {
         ErrorDialog.dataWarning(new BadDataReport(this, "Error.setup_stack_position_error", location, e));
@@ -210,7 +209,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       Stack s = initializeContents();
       updatePosition();
       Point p = new Point(pos);
-      if (owningBoardName != null) {
+      // If the Stack belongs to a specific Board, offset the position by the origin of the Board
+      // Otherwise, offset the position by the amount of Edge padding specified by the map (i.e. the origin of the top left board)
+      if (owningBoardName == null) {
+        p.translate(map.getEdgeBuffer().width, map.getEdgeBuffer().height);
+      }
+      else {
         Rectangle r = map.getBoardByName(owningBoardName).bounds();
         p.translate(r.x, r.y);
       }
@@ -531,11 +535,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return i.hasNext() ? i.next() : null;
   }
 
+
   /*
    * Return a board to configure the stack on.
+   * @param checkSelectedBoards If true, prefer a board the player has actually selected from the menu over simply the top one in the list.
    */
-  protected Board getConfigureBoard() {
-
+  protected Board getConfigureBoard(boolean checkSelectedBoards) {
     Board board = null;
 
     if (map != null && !OwningBoardPrompt.ANY.equals(owningBoardName)) {
@@ -543,14 +548,35 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
     if (board == null && map != null) {
-      String[] allBoards = map.getBoardPicker().getAllowableBoardNames();
-      if (allBoards.length > 0) {
-        board = map.getBoardPicker().getBoard(allBoards[0]);
+      //BR// If we're doing the start-of-game setup (as opposed to just configuring it), prefer a "selected" board to the first one in the list.
+      if (checkSelectedBoards) {
+        List<String> selectedBoards = map.getBoardPicker().getSelectedBoardNames();
+        for (String s : selectedBoards) {
+          board = map.getBoardByName(s);
+          if (board != null) {
+            break;
+          }
+        }
+      }
+      if (board == null) {
+        String[] allBoards = map.getBoardPicker().getAllowableBoardNames();
+        if (allBoards.length > 0) {
+          board = map.getBoardPicker().getBoard(allBoards[0]);
+        }
       }
     }
 
     return board;
   }
+
+
+  /*
+   * Return a board to configure the stack on.
+   */
+  protected Board getConfigureBoard() {
+    return getConfigureBoard(false);
+  }
+
 
   protected static final Dimension DEFAULT_SIZE = new Dimension(800, 600);
   protected static final int DELTA = 1;
