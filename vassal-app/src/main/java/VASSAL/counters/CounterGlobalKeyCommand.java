@@ -22,16 +22,20 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import java.util.Objects;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
@@ -44,6 +48,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
@@ -390,14 +395,14 @@ public class CounterGlobalKeyCommand extends Decorator
 
       PropertyChangeListener pl = evt -> {
 
-          boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-          boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
-          range.getControls().setVisible(isRange && isFixed);
+        range.getControls().setVisible(isRange && isFixed);
         rangeLabel.setVisible(isRange && isFixed);
-          fixedRange.getControls().setVisible(isRange);
+        fixedRange.getControls().setVisible(isRange);
         fixedRangeLabel.setVisible(isRange);
-          rangeProperty.getControls().setVisible(isRange && !isFixed);
+        rangeProperty.getControls().setVisible(isRange && !isFixed);
         rangePropertyLabel.setVisible(isRange && !isFixed);
 
         repack(range);
@@ -444,9 +449,9 @@ public class CounterGlobalKeyCommand extends Decorator
       targetExactMatchConfig.addPropertyChangeListener(e -> updateVisibility());
       controls.add(targetExactMatchConfig.getControls());
 
-      targetPropertyConfig = new FormattedExpressionConfigurer (null, Resources.getString("Editor.GlobalKeyCommand.exact_property"), p.targetProperty.getExpression());
+      targetPropertyConfig = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.exact_property"), p.targetProperty.getExpression());
       controls.add(targetPropertyConfig.getControls());
-      targetValueConfig    = new FormattedExpressionConfigurer (null, Resources.getString("Editor.GlobalKeyCommand.exact_value"), p.targetValue.getExpression());
+      targetValueConfig    = new FormattedExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.exact_value"), p.targetValue.getExpression());
       controls.add(targetValueConfig.getControls());
 
       propertyMatch = new PropertyExpressionConfigurer(null, Resources.getString("Editor.GlobalKeyCommand.matching_properties"), p.propertiesFilter);
@@ -478,7 +483,7 @@ public class CounterGlobalKeyCommand extends Decorator
       pl.propertyChange(null);
     }
 
-    public void updateVisibility () {
+    public void updateVisibility() {
       String value = targetConfig.getValueString();
       targetMapConfig.getControls().setVisible(!GlobalCommand.GlobalCommandTarget.GAME.name().equals(value));
       targetBoardConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
