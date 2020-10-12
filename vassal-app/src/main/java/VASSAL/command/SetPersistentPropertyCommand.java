@@ -21,7 +21,7 @@ public class SetPersistentPropertyCommand extends Command {
     setKey(key);
     setOldValue(oldValue);
     setNewValue(newValue);
-    setId (id);
+    setId(id);
   }
 
   protected void executeCommand() {

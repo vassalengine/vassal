@@ -102,7 +102,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
         super.setPixels(0, yy, savedWidth, 1, defaultCM,
             pixels, 0, savedWidth);
       }
-      consumer.imageComplete (status);
+      consumer.imageComplete(status);
     }
   }
 }

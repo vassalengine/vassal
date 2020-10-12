@@ -2163,7 +2163,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Enumeration<Board> getAllBoards() {
-    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
+    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
     return Collections.enumeration(boards);
   }
 
@@ -2770,7 +2770,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @SuppressWarnings("unused")
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public void reposition(GamePiece s, int pos) {
-    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
+    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
   }
 
   /**
@@ -3260,7 +3260,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public static Iterator<Map> getAllMaps() {
-    ProblemDialog.showDeprecated ("2020-08-05"); //NON-NLS
+    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
     return getMapList().iterator();
   }
 
