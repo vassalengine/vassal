@@ -561,9 +561,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     initializing = false;
     if (visible && !persisting && !mirroring) {
       Point p = e.getPoint();
-      if (Boolean.TRUE.equals
-          (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
-          || snapStart) {
+      if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(SNAP_LOS)) || snapStart) {
         p = map.snapTo(p);
       }
       anchor = p;
@@ -693,9 +691,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
       map.scrollAtEdge(p, 15);
 
-      if (Boolean.TRUE.equals
-          (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
-          || snapEnd) {
+      if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(SNAP_LOS)) || snapEnd) {
         p = map.mapToComponent(map.snapTo(map.componentToMap(p)));
       }
       arrow = map.componentToMap(p);

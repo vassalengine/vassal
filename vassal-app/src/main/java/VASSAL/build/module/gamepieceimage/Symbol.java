@@ -513,7 +513,7 @@ public class Symbol {
     String type;
     int count;
 
-    public SizeOption (String n, String d, int c, String t) {
+    public SizeOption(String n, String d, int c, String t) {
       name = n;
       displayName = d;
       type = t;

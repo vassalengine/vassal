@@ -99,7 +99,7 @@ public class GpIdChecker {
 
     if (gp instanceof PlaceMarker) {
       final PlaceMarker pm = (PlaceMarker) gp;
-      testGpId (pm.getGpId(), new SlotElement(pm));
+      testGpId(pm.getGpId(), new SlotElement(pm));
     }
 
     checkTrait(((Decorator) gp).getInner());
@@ -113,7 +113,7 @@ public class GpIdChecker {
 
     if (gp instanceof PlaceMarker) {
       final PlaceMarker pm = (PlaceMarker) gp;
-      testGpId (pm.getGpId(), new SlotElement(pm, prototype, definition));
+      testGpId(pm.getGpId(), new SlotElement(pm, prototype, definition));
     }
 
     checkTrait(((Decorator) gp).getInner(), prototype, definition);
@@ -179,7 +179,7 @@ public class GpIdChecker {
     return errorSlots.size() > 0;
   }
 
-  private void chat (String text) {
+  private void chat(String text) {
     if (chatter == null) {
       chatter = GameModule.getGameModule().getChatter();
     }

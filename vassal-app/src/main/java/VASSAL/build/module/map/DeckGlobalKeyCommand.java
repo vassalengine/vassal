@@ -218,7 +218,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   @Override
   public List<String> getExpressionList() {
     List<String> l = new ArrayList<>(super.getExpressionList());
-    l.add (propertiesFilter.getExpression());
+    l.add(propertiesFilter.getExpression());
     return l;
   }
 

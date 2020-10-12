@@ -536,9 +536,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);    
 
-
-    final ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR,
-                                                                Resources.getString("Chatter.other_text_preference"), new Color (0, 153, 255));
+    final ColorConfigurer otherChatColor = new ColorConfigurer(
+      OTHER_CHAT_COLOR,
+      Resources.getString("Chatter.other_text_preference"),
+      new Color (0, 153, 255)
+    );
 
     otherChatColor.addPropertyChangeListener(e -> {
       otherChat = (Color) e.getNewValue();
