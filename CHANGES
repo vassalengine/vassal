@@ -1,4 +1,4 @@
-3.4.6 - ???
+3.4.6 - 12 October 2020
 
 * 13508: NPE in GamePieceOpImpl.getTileIndices()
 * 13505: Dragging a card/piece off the top of a deck should not also band-select
