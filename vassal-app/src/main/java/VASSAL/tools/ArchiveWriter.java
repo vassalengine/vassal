@@ -332,8 +332,8 @@ public class ArchiveWriter extends DataArchive {
       // Copy the current state to the new archive.
       final FileArchive tmp = archive;
 
+      archiveName = filename; // Set archive name before we open the new one, so if we get an exception we can complain using specified new filename
       archive = new ZipArchive(tmp, filename);
-      archiveName = filename;
       archive.flush();
 
       tmp.revert();
