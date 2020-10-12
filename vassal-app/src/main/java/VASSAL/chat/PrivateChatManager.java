@@ -77,11 +77,11 @@ public class PrivateChatManager {
 
   private void promptToBan(Player p) {
     if (JOptionPane.YES_OPTION ==
-      JOptionPane.showConfirmDialog
-      (null,
-       Resources.getString("Chat.ignore_messages", p.getName()), //$NON-NLS-1$
-       null,
-       JOptionPane.YES_NO_OPTION)) {
+      JOptionPane.showConfirmDialog(
+        null,
+        Resources.getString("Chat.ignore_messages", p.getName()), //$NON-NLS-1$
+        null,
+        JOptionPane.YES_NO_OPTION)) {
       banned.add(p);
     }
   }

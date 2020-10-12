@@ -107,11 +107,11 @@ public class SoundEncoder implements CommandEncoder {
         if (sender.equals(lastSender)) {
           if (sendCount++ >= TOO_MANY) {
             if (JOptionPane.YES_OPTION ==
-              JOptionPane.showConfirmDialog
-                (null,
-                  Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
-                  null,
-                  JOptionPane.YES_NO_OPTION)) {
+              JOptionPane.showConfirmDialog(
+                null,
+                Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
+                null,
+                JOptionPane.YES_NO_OPTION)) {
               banned.add(sender);
             }
             else {

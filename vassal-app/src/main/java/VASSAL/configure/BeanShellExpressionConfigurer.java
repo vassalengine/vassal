@@ -235,7 +235,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
    * @param name property name
    */
   protected void insertPropertyName(String name) {
-    insertName (cleanName(name));
+    insertName(cleanName(name));
   }
 
   protected void insertName(String name) {
@@ -295,7 +295,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   }
 
   protected void setDetails() {
-    setDetails ("", null, null);
+    setDetails("", null, null);
   }
 
   public String getSelectedText() {

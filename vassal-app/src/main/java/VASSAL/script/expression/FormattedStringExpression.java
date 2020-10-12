@@ -29,7 +29,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class FormattedStringExpression extends Expression {
 
-  public FormattedStringExpression (String s) {
+  public FormattedStringExpression(String s) {
     setExpression(s);
   }
 

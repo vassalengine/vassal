@@ -673,8 +673,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return getImage(getFileStream(dir, zip, file));
     }
     else if ((new File(dir, file)).exists()) {
-      return Toolkit.getDefaultToolkit().getImage
-          (dir.getPath() + File.separatorChar + file);
+      return Toolkit.getDefaultToolkit().getImage(
+        dir.getPath() + File.separatorChar + file
+      );
     }
     else {
       throw new IOException("Image " + file + " not found in " + dir

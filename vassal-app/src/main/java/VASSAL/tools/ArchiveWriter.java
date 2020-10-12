@@ -212,7 +212,7 @@ public class ArchiveWriter extends DataArchive {
    */
   public void removeFile(String name) {
     try {
-      archive.remove (name);
+      archive.remove(name);
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());

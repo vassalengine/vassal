@@ -267,7 +267,6 @@ public class GlobalOptions extends AbstractConfigurable {
     return true;
   }
   
-  
   public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
     // Tell SwingUtils we've changed our mind about Macs
@@ -276,17 +275,15 @@ public class GlobalOptions extends AbstractConfigurable {
     GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
   
-  
   public boolean getPrefMacLegacy() {
     return macLegacy;
   }
-
 
   public void setSoundGlobalMute(Boolean b) {
     soundGlobalMute = b;
   }
 
-  public Boolean isSoundGlobalMute () {
+  public Boolean isSoundGlobalMute() {
     return soundGlobalMute;
   }
 
@@ -294,11 +291,9 @@ public class GlobalOptions extends AbstractConfigurable {
     soundWakeupMute = b;
   }
 
-  public Boolean isSoundWakeupMute () {
+  public Boolean isSoundWakeupMute() {
     return soundWakeupMute;
   }
-
-
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$

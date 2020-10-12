@@ -19,9 +19,9 @@ public class SetPersistentPropertyCommand extends Command {
 
   public SetPersistentPropertyCommand(String id, Object key, Object oldValue, Object newValue) {
     setKey(key);
-    setOldValue (oldValue);
-    setNewValue (newValue);
-    setId (id);
+    setOldValue(oldValue);
+    setNewValue(newValue);
+    setId(id);
   }
 
   protected void executeCommand() {
@@ -35,7 +35,7 @@ public class SetPersistentPropertyCommand extends Command {
   }
 
   protected Command myUndoCommand() {
-    return new SetPersistentPropertyCommand (id, key, newValue, oldValue);
+    return new SetPersistentPropertyCommand(id, key, newValue, oldValue);
   }
 
   @Override

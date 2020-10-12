@@ -323,7 +323,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     catch (RecursionLimitException e) {
       result = "";
-      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
     }
     finally {
       RecursionLimiter.endExecution();
@@ -538,7 +538,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
    */
   public Object sum(Object source, Object propertyName, Object propertyMatch) {
-    return sum (source, propertyName, propertyMatch, null);
+    return sum(source, propertyName, propertyMatch, null);
   }
 
   public Object sum(Object source, Object propertyName, Object propertyMatch, Object mapName) {
@@ -570,7 +570,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
-  private int getIntPropertyValue (GamePiece piece, PieceFilter filter, String propertyName) {
+  private int getIntPropertyValue(GamePiece piece, PieceFilter filter, String propertyName) {
     if (filter == null || filter.accept(piece)) {
       try {
         return Integer.parseInt((String) piece.getProperty(propertyName));

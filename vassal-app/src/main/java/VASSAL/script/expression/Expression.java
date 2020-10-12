@@ -162,7 +162,7 @@ public abstract class Expression {
    * Used to convert values such as the Follow property field in Embellishment
    *
    */
-  public static Expression createSimplePropertyExpression (String s) {
+  public static Expression createSimplePropertyExpression(String s) {
 
     // A null expression?
     if (s == null || s.trim().length() == 0) {

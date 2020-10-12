@@ -1070,7 +1070,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       actionLabel =  new JLabel("Action");
       final Font defaultFont = actionLabel.getFont();
-      final Font boldFont = new Font (defaultFont.getFamily(), Font.BOLD, defaultFont.getSize());
+      final Font boldFont = new Font(defaultFont.getFamily(), Font.BOLD, defaultFont.getSize());
       actionLabel.setFont(boldFont);
       controls.add(actionLabel);
 
@@ -1223,7 +1223,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       isPrefix.set(index1, isPrefix.get(index2));
       isPrefix.set(index2, prefix);
 
-      images.swap (index1, index2);
+      images.swap(index1, index2);
     }
 
     protected void  setUpDownEnabled() {
