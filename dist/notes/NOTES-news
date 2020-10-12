@@ -23,7 +23,7 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.6.
 <ul>
 <li>13508: NPE in GamePieceOpImpl.getTileIndices()</li>
 <li>13505: Dragging a card/piece off the top of a deck should not also band-select</li>
-<li>13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map padding specified</li>
+<li>13503: At-Start Stacks and Decks in &lt;Any&gt; board appear in wrong place if map padding specified</li>
 <li>13467: Edited modules containing HTML img elements can't be saved on Windows</li>
 <li>13456: At-Start Stack using Grid Location uses Location on first board, not chosen board (additional fix for 12576)</li>
 </ul>
