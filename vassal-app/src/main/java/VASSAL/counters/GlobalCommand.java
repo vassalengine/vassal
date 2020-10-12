@@ -89,8 +89,8 @@ public class GlobalCommand {
   /**
    * Apply the key command to all pieces that pass the given filter on all the given maps
    *
-   * @param m
-   * @param filter
+   * @param m Array of Maps
+   * @param filter Filter to apply
    * @return a the corresponding {@link Command}
    */
   public Command apply(Map[] m, PieceFilter filter) {
@@ -131,10 +131,10 @@ public class GlobalCommand {
   }
 
   protected class Visitor implements DeckVisitor {
-    private Command command;
-    private BoundsTracker tracker;
-    private PieceFilter filter;
-    private KeyStroke stroke;
+    private final Command command;
+    private final BoundsTracker tracker;
+    private final PieceFilter filter;
+    private final KeyStroke stroke;
     private int selectedCount;
 
     public Visitor(Command command, PieceFilter filter, KeyStroke stroke) {
@@ -214,7 +214,7 @@ public class GlobalCommand {
 
   /**
    * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
-   * @param selectFromDeck
+   * @param selectFromDeck Number of pieces to select
    */
   public void setSelectFromDeck(int selectFromDeck) {
     this.selectFromDeck = selectFromDeck;
@@ -255,9 +255,7 @@ public class GlobalCommand {
       return false;
     if (reportSingle != other.reportSingle)
       return false;
-    if (selectFromDeck != other.selectFromDeck)
-      return false;
-    return true;
+    return selectFromDeck == other.selectFromDeck;
   }
 
 }

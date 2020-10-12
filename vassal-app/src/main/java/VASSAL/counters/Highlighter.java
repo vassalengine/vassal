@@ -27,7 +27,7 @@ import java.awt.Rectangle;
  * @see BasicPiece#getHighlighter
  */
 public interface Highlighter {
-  public void draw(GamePiece p, Graphics g, int x, int y, Component obs, double zoom);
+  void draw(GamePiece p, Graphics g, int x, int y, Component obs, double zoom);
 
-  public Rectangle boundingBox(GamePiece p);
+  Rectangle boundingBox(GamePiece p);
 }

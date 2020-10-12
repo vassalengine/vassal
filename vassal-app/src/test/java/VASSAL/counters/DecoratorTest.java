@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.tools.icon.IconFactory;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.ImageIcon;
@@ -43,9 +44,12 @@ public class DecoratorTest {
    */
   public void serializeTest(String test, Decorator referenceTrait) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
+    BufferedImage dummyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
     // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
     try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
-      staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon());
+      staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon(dummyImage));
+      staticIf.when(() -> IconFactory.getIcon("no", 0)).thenReturn(new ImageIcon(dummyImage));
+      staticIf.when(() -> IconFactory.getIcon("yes", 0)).thenReturn(new ImageIcon(dummyImage));
 
       // Can't test without a properly constructed BasicPiece as the inner
       if (referenceTrait.getInner() == null) {

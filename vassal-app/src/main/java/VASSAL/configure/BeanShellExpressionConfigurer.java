@@ -17,8 +17,8 @@
  */
 package VASSAL.configure;
 
-import VASSAL.i18n.Resources;
-import VASSAL.script.expression.FunctionBuilder;
+import bsh.BeanShellExpressionValidator;
+
 import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.KeyAdapter;
@@ -36,12 +36,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import net.miginfocom.swing.MigLayout;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
-import bsh.BeanShellExpressionValidator;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for Java Expressions
@@ -64,15 +65,33 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected JButton extraDetails;
   protected Icon up;
   protected Icon down;
-  protected StringConfigurer errorMessage;
-  protected JLabel variables;
-  protected JLabel methods;
+  protected StringConfigurer errorMessage = new StringConfigurer("");
+  protected JLabel variables = new JLabel();
+  protected JLabel methods = new JLabel();
   protected EditablePiece target;
   protected Option option;
   protected String selectedText;
   protected boolean displayOnly;
   protected FunctionBuilder builder;
 
+  /**
+   * Create an unlabeled BeanShellConfigurer with an initial value and target piece
+   *
+   * @param val Initial expression
+   * @param piece Target Piece
+   */
+  public BeanShellExpressionConfigurer(String val, GamePiece piece) {
+    this(null, "", val, piece);
+  }
+
+  /**
+   * Create a labeled BeanShellConfigurer with an initial value and target piece
+   *
+   * @param key Configurer Key
+   * @param name Label
+   * @param val Initial expression
+   * @param piece Target Piece
+   */
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     this(key, name, val, piece, Option.NONE);
   }
@@ -137,12 +156,15 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
-      expressionPanel.add(new JLabel(getName()));
+      // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
+      expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]"); // NON-NLS
+
+      final JPanel panel = new JPanel(new MigLayout("ins 0,hidemode 3", "[fill,grow]2[]2[]")); // NON-NLS
+
       validator = new Validator();
       nameField = new JTextField(30);
       nameField.setText(getValueString());
-      expressionPanel.add(nameField, "growx"); //NON-NLS
+      panel.add(nameField, "growx"); //NON-NLS
       nameField.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent evt) {
@@ -153,8 +175,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           updateParentBuilder();
         }
       });
-      expressionPanel.add(validator);
-      expressionPanel.add(extraDetails, "wrap"); //NON-NLS
+      panel.add(validator);
+      panel.add(extraDetails);
+      expressionPanel.add(panel, "grow"); // NON-NLS
 
       nameField.setEditable(! isDisplayOnly());
       extraDetails.setVisible(! isDisplayOnly());
@@ -166,8 +189,8 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
 
       errorMessage = new StringConfigurer(null, "Error Message:  ", "");  //NON-NLS
       errorMessage.getControls().setEnabled(false);
-      variables = new JLabel("Vassal Properties:  ");  //NON-NLS
-      methods = new JLabel("Methods:  ");  //NON-NLS
+      variables.setText("Vassal Properties:  ");  //NON-NLS
+      methods.setText("Methods:  ");  //NON-NLS
 
       detailPanel.add(errorMessage.getControls());
       detailPanel.add(variables);
