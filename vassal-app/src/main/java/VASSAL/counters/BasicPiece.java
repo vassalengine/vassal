@@ -480,7 +480,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
 
     final Object oldValue = newValue == null ? persistentProps.remove(key) : persistentProps.put(key, newValue);
-    return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
+    return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand(getId(), key, oldValue, newValue);
   }
 
   /**
@@ -993,7 +993,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * @param o Object to compare this Decorator to
    * @return true if the Class, type and state all match
    */
-  public boolean testEquals (Object o) {
+  public boolean testEquals(Object o) {
 
     // Check Class type
     if (! (o instanceof BasicPiece)) return false;

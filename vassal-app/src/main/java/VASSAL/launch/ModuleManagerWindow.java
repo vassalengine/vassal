@@ -1593,7 +1593,7 @@ public class ModuleManagerWindow extends JFrame {
     private class ActivateExtensionAction extends AbstractAction {
       private static final long serialVersionUID = 1L;
 
-      public ActivateExtensionAction (String s) {
+      public ActivateExtensionAction(String s) {
         super(s);
         setEnabled(!isInUse() && ! moduleInfo.isInUse());
       }

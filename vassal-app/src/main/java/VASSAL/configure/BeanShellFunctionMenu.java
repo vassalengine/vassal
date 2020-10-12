@@ -37,7 +37,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
 
-  public BeanShellFunctionMenu (EditablePiece target, BeanShellExpressionConfigurer configurer) {
+  public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
 
     this.target = target;
@@ -161,7 +161,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints) {
     final Option[] options = new Option[parms.length];
     Arrays.fill(options, Option.NONE);
-    addFunction (menu, op, desc, parms, parmInfo, hints, options);
+    addFunction(menu, op, desc, parms, parmInfo, hints, options);
   }
 
   protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints, final Option[] options) {

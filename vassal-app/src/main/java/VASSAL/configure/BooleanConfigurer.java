@@ -39,11 +39,11 @@ public class BooleanConfigurer extends Configurer {
     this(key, name, Boolean.FALSE);
   }
 
-  public BooleanConfigurer (Boolean val) {
+  public BooleanConfigurer(Boolean val) {
     this(null, "", val);
   }
 
-  public BooleanConfigurer (boolean val) {
+  public BooleanConfigurer(boolean val) {
     this(null, "", val);
   }
 

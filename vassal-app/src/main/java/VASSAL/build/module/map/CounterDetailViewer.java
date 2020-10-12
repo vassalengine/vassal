@@ -482,7 +482,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         if (centerAll) {
           x -= g.getFontMetrics().stringWidth(report) / 2;
         }
-        drawLabel (g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
+        drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
       }
     }
     else {

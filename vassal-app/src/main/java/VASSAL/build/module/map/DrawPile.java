@@ -384,7 +384,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   }
 
-  public boolean isReshufflable () {
+  public boolean isReshufflable() {
     return "true".equals(getAttributeValueString(RESHUFFLABLE));
   }
 

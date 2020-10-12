@@ -712,14 +712,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     Command c = null;
     if (menuKeyCommand.matches(stroke)) {
       ChangeTracker tracker = new ChangeTracker(this);
-      final String s = (String) JOptionPane.showInputDialog
-          (getMap() == null ? null : getMap().getView().getTopLevelAncestor(),
-           menuKeyCommand.getName(),
-           null,
-           JOptionPane.QUESTION_MESSAGE,
-           null,
-           null,
-           label);
+      final String s = (String) JOptionPane.showInputDialog(
+        getMap() == null ? null : getMap().getView().getTopLevelAncestor(),
+        menuKeyCommand.getName(),
+        null,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        null,
+        label
+      );
       if (s == null) {
         tracker = null;
       }
@@ -747,7 +748,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   @Override
-  public boolean testEquals (Object o) {
+  public boolean testEquals(Object o) {
 
     // Check Class
     if (! (o instanceof Labeler)) return false;

@@ -104,7 +104,7 @@ public class SaveMetaData extends AbstractMetaData {
       d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
 
       // top row
-      d.add (desc, "align left, wrap"); //$NON-NLS-1$//
+      d.add(desc, "align left, wrap"); //$NON-NLS-1$//
 
       // comment row
       d.add(commentLabel, "align right, gapx rel"); //$NON-NLS-1$//

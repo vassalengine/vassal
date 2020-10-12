@@ -35,7 +35,7 @@ public class BeanShellExpression extends Expression {
 
   protected ExpressionInterpreter interpreter;
 
-  public BeanShellExpression (String s) {
+  public BeanShellExpression(String s) {
     setExpression("{" + s + "}");
   }
 
@@ -107,7 +107,7 @@ public class BeanShellExpression extends Expression {
    * @param prop Property name
    * @return beanshell equivalent
    */
-  public static String convertProperty (String prop) {
+  public static String convertProperty(String prop) {
     // Null Expression
     if (prop == null || prop.length() == 0) {
       return "";

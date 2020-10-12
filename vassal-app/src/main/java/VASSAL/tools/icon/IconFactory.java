@@ -86,7 +86,7 @@ public final class IconFactory {
   /**
    * Create a new IconFactory.
    */
-  public IconFactory () {
+  public IconFactory() {
 
 // FIXME: Maybe send this off to an executor?
 // FIXME: preloadThread is never set to null, cannot be gc'd
@@ -274,7 +274,7 @@ public final class IconFactory {
       // so look for an Icon we know must exist there.
       // imageUrl = jar.getURL(DataArchive.IMAGE_DIR
       imageUrl = jar.getURL(DataArchive.IMAGE_DIR + ApplicationIcons.VASSAL_ICON_LARGE);
-      imageUrl = new URL (imageUrl.toString().substring(0, imageUrl.toString().length() - ApplicationIcons.VASSAL_ICON_LARGE.length()));
+      imageUrl = new URL(imageUrl.toString().substring(0, imageUrl.toString().length() - ApplicationIcons.VASSAL_ICON_LARGE.length()));
 
       logger.debug("VASSAL images folder found at " + imageUrl); //NON-NLS
 
@@ -291,7 +291,7 @@ public final class IconFactory {
         findJarIcons();
       }
       else {
-        throw new IllegalBuildException ("Unknown Vassal Image source type: " + imageUrl); //$NON-NLS-1$
+        throw new IllegalBuildException("Unknown Vassal Image source type: " + imageUrl); //$NON-NLS-1$
       }
     }
     catch (IOException e) {

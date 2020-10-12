@@ -1229,7 +1229,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param key Localization key to be used to generate string
    * @param name Name of the object whose title bar is to be generated
    */
-  public String getWindowTitleString (String key, String name) {
+  public String getWindowTitleString(String key, String name) {
     if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
@@ -1250,7 +1250,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   /**
    * Updates the title bar of the main module window, and all map windows
    */
-  public void updateTitleBar () {
+  public void updateTitleBar() {
     frame.setTitle(getTitleString());  //$NON-NLS-1$
 
     for (Map m : getComponentsOf(Map.class)) {
@@ -1274,7 +1274,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param gameFile Most recent VSAV/VLOG if any
    * @param mode mode of access
    */
-  public void setGameFile (String gameFile, GameFileMode mode) {
+  public void setGameFile(String gameFile, GameFileMode mode) {
     this.gameFile = gameFile;
     setGameFileMode(mode);
     updateTitleBar();
@@ -1283,7 +1283,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   /**
    * @return Most recent .VSAV/.VLOG that we've read or written.
    */
-  public String getGameFile () {
+  public String getGameFile() {
     return gameFile;
   }
 
@@ -1292,7 +1292,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * of windows.
    * @param mode mode of access
    */
-  public void setGameFileMode (GameFileMode mode) {
+  public void setGameFileMode(GameFileMode mode) {
     if (mode == null) {
       throw new NullPointerException();
     }
@@ -1304,7 +1304,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @return Returns the most recent type of interaction we've had for saving/loading/replaying/logging the game, for managing
    * title bars of windows.
    */
-  public GameFileMode getGameFileMode () {
+  public GameFileMode getGameFileMode() {
     return gameFileMode;
   }
 
