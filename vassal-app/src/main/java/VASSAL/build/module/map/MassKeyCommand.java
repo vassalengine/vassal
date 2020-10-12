@@ -25,6 +25,8 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -34,6 +36,7 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
@@ -42,7 +45,6 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -52,7 +54,6 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.counters.BooleanAndPieceFilter;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Embellishment;
@@ -65,6 +66,7 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
@@ -72,25 +74,25 @@ import VASSAL.tools.ToolBarComponent;
  */
 public class MassKeyCommand extends AbstractConfigurable
                             implements RecursionLimiter.Loopable {
-  public static final String DEPRECATED_NAME = "text";
-  public static final String NAME = "name";
-  public static final String ICON = "icon";
-  public static final String TOOLTIP = "tooltip";
-  public static final String BUTTON_TEXT = "buttonText";
-  public static final String HOTKEY = "buttonHotkey";
-  public static final String KEY_COMMAND = "hotkey";
-  public static final String AFFECTED_PIECE_NAMES = "names";
-  public static final String PROPERTIES_FILTER = "filter";
-  public static final String REPORT_SINGLE = "reportSingle";
-  public static final String REPORT_FORMAT = "reportFormat";
-  public static final String CONDITION = "condition";
-  public static final String DECK_COUNT = "deckCount";
-  private static final String IF_ACTIVE = "If layer is active";
-  private static final String IF_INACTIVE = "If layer is inactive";
-  private static final String ALWAYS = "Always";
-  public static final String CHECK_PROPERTY = "property";
-  public static final String CHECK_VALUE = "propValue";
-  public static final String SINGLE_MAP = "singleMap";
+  public static final String DEPRECATED_NAME = "text"; // NON-NLS
+  public static final String NAME = "name"; // NON-NLS
+  public static final String ICON = "icon"; // NON-NLS
+  public static final String TOOLTIP = "tooltip"; // NON-NLS
+  public static final String BUTTON_TEXT = "buttonText"; // NON-NLS
+  public static final String HOTKEY = "buttonHotkey"; // NON-NLS
+  public static final String KEY_COMMAND = "hotkey"; // NON-NLS
+  public static final String AFFECTED_PIECE_NAMES = "names"; // NON-NLS
+  public static final String PROPERTIES_FILTER = "filter"; // NON-NLS
+  public static final String REPORT_SINGLE = "reportSingle"; // NON-NLS
+  public static final String REPORT_FORMAT = "reportFormat"; // NON-NLS
+  public static final String CONDITION = "condition"; // NON-NLS
+  public static final String DECK_COUNT = "deckCount"; // NON-NLS
+  private static final String IF_ACTIVE = "If layer is active"; // NON-NLS
+  private static final String IF_INACTIVE = "If layer is inactive"; // NON-NLS
+  private static final String ALWAYS = "Always"; // NON-NLS
+  public static final String CHECK_PROPERTY = "property"; // NON-NLS
+  public static final String CHECK_VALUE = "propValue"; // NON-NLS
+  public static final String SINGLE_MAP = "singleMap"; // NON-NLS
   protected LaunchButton launch;
   protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
@@ -107,7 +109,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public MassKeyCommand() {
     ActionListener al = e -> apply();
-    launch = new LaunchButton("CTRL", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
+    launch = new LaunchButton("CTRL", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al); // NON-NLS
   }
 
   @Override
@@ -204,10 +206,19 @@ public class MassKeyCommand extends AbstractConfigurable
     };
   }
 
-  public static class Prompt extends StringEnum {
+  public static class Prompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, IF_ACTIVE, IF_INACTIVE};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.GlobalKeyCommand.if_layer_is_active",
+        "Editor.GlobalKeyCommand.if_layer_is_inactive",
+        "Editor.GlobalKeyCommand.always"
+      };
     }
   }
 
@@ -250,7 +261,7 @@ public class MassKeyCommand extends AbstractConfigurable
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/keyCommand.gif");
+      return new IconConfigurer(key, name, "/images/keyCommand.gif"); // NON-NLS
     }
   }
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
@@ -260,23 +271,43 @@ public class MassKeyCommand extends AbstractConfigurable
     }
   }
   public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
-    protected static final String FIXED = "Fixed number of pieces";
-    protected static final String NONE = "No pieces";
-    protected static final String ALL = "All pieces";
+    protected static final String FIXED = "Fixed number of pieces"; // NON-NLS
+    protected static final String NONE = "No pieces"; // NON-NLS
+    protected static final String ALL = "All pieces"; // NON-NLS
     protected IntConfigurer intConfig;
-    protected StringEnumConfigurer typeConfig;
+    protected TranslatingStringEnumConfigurer typeConfig;
     protected JLabel prompt;
     protected Box controls;
+    protected JPanel controls2;
+
 
     public DeckPolicyConfig() {
+      this(true);
+    }
+
+    public DeckPolicyConfig(boolean showPrompt) {
       super(null, "");
-      typeConfig = new StringEnumConfigurer(null, "", new String[]{ALL, NONE, FIXED});
+
+      typeConfig = new TranslatingStringEnumConfigurer(
+        new String[]{ALL, NONE, FIXED},
+        new String[]{
+          "Editor.GlobalKeyCommand.all_pieces",
+          "Editor.GlobalKeyCommand.no_pieces",
+          "Editor.GlobalKeyCommand.fixed_number_of_pieces"
+        }
+      );
       intConfig = new IntConfigurer(null, "");
-      controls = Box.createHorizontalBox();
-      prompt = new JLabel("Within a Deck, apply to:  ");
-      controls.add(prompt);
-      controls.add(typeConfig.getControls());
-      controls.add(intConfig.getControls());
+      if (showPrompt) {
+        controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS
+        prompt = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_policy"));
+        controls2.add(prompt);
+      }
+      else {
+        controls2 = new JPanel(new MigLayout("ins 0", "[]rel[]")); // NON-NLS
+      }
+      controls2.add(typeConfig.getControls());
+      controls2.add(intConfig.getControls());
+
       PropertyChangeListener l = evt -> {
         intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
         Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
@@ -292,7 +323,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
     @Override
     public Component getControls() {
-      return controls;
+      return controls2;
     }
 
     @Override
@@ -399,7 +430,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public static String getConfigureTypeName() {
-    return "Global Key Command";
+    return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
   }
 
   protected LaunchButton getLaunchButton() {
@@ -412,7 +443,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.html", "GlobalKeyCommand");
+    return HelpFile.getReferenceManualPage("Map.html", "GlobalKeyCommand"); // NON-NLS
   }
 
   @Override

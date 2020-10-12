@@ -537,7 +537,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       descInput = new StringConfigurer(null, Resources.getString("Editor.description_label"), p.description);
       controls.add(descInput.getControls());
 
-      nameInput = new StringConfigurer(null, Resources.getString("Editor.command_name"), p.commandName);
+      nameInput = new StringConfigurer(null, Resources.getString("Editor.menu_command"), p.commandName);
       controls.add(nameInput.getControls());
 
       keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);

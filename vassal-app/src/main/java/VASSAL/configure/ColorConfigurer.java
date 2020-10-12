@@ -21,9 +21,7 @@ import java.awt.Color;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-import javax.swing.BoxLayout;
 import javax.swing.JColorChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.BadDataReport;
@@ -43,6 +41,10 @@ public class ColorConfigurer extends Configurer {
 
   public ColorConfigurer(String key, String name, Color val) {
     super(key, name, val);
+  }
+
+  public ColorConfigurer(Color val) {
+    super(null, null, val);
   }
 
   @Override
@@ -66,14 +68,12 @@ public class ColorConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
+      p = new ConfigurerPanel(getName(), "[]", "[][]"); // NON-NLS
 
       cb = new ColorButton(colorValue());
       cb.addActionListener(e -> setValue(JColorChooser.showDialog(null, getName(), colorValue())));
 
-      p.add(cb);
+      p.add(cb, "grow 0"); // NON-NLS Make sure the Color button doesn't stretch.
     }
     return p;
   }

@@ -53,7 +53,7 @@ public abstract class Configurer {
 
   public Configurer(String key, String name, Object val) {
     this.key = key;
-    this.name = name;
+    this.name = name == null ? "" : name;
     changeSupport = new PropertyChangeSupport(this);
     setValue(val);
   }

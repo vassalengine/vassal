@@ -17,10 +17,14 @@
  */
 package VASSAL.configure;
 
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
 /**
  * Configurer for Boolean values
  */
 public class BooleanConfigurer extends Configurer {
+  protected JPanel p;
   private javax.swing.JCheckBox box;
 
   public BooleanConfigurer(String key, String name, Boolean val) {
@@ -33,6 +37,14 @@ public class BooleanConfigurer extends Configurer {
 
   public BooleanConfigurer(String key, String name) {
     this(key, name, Boolean.FALSE);
+  }
+
+  public BooleanConfigurer (Boolean val) {
+    this(null, "", val);
+  }
+
+  public BooleanConfigurer (boolean val) {
+    this(null, "", val);
   }
 
   @Override
@@ -67,12 +79,16 @@ public class BooleanConfigurer extends Configurer {
 
   @Override
   public java.awt.Component getControls() {
-    if (box == null) {
-      box = new javax.swing.JCheckBox(getName());
+    if (p == null) {
+      p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
+
+      box = new JCheckBox();
       box.setSelected(booleanValue());
       box.addItemListener(e -> setValue(box.isSelected()));
+      p.add(box);
     }
-    return box;
+
+    return p;
   }
 
   public Boolean booleanValue() {

@@ -81,7 +81,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString("Editor.GlobalProperty.component_type"),
       Resources.getString("Editor.name_label"),
       Resources.getString("Editor.GlobalProperty.initial_value"),
       Resources.getString("Editor.description_label"),

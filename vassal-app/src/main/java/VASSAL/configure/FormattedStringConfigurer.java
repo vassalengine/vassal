@@ -43,6 +43,10 @@ public class FormattedStringConfigurer
     this(key, name, new String[0]);
   }
 
+  public FormattedStringConfigurer(String[] options) {
+    this(null, "", options);
+  }
+
   public FormattedStringConfigurer(
       String key,
       String name,
@@ -81,7 +85,8 @@ public class FormattedStringConfigurer
       dropList.addActionListener(this);
 
       setListVisibility();
-      p.add(dropList);
+      p.add(dropList, "grow 0,right"); // NON-NLS
+
     }
     return p;
   }
