@@ -123,7 +123,7 @@ public class BeanShell {
    * @param value Value to Wrap
    * @return wrapped value
    */
-  public static Object wrap (String value) {
+  public static Object wrap(String value) {
     if (value == null) {
       return "";
     }

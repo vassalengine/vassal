@@ -186,7 +186,7 @@ public class GeneralScript extends AbstractScript
 
     @Override
     public void setValue(String s) {
-      throw new RuntimeException ("Can't set ScriptConfigurable from String");
+      throw new RuntimeException("Can't set ScriptConfigurable from String");
     }
 
     /**

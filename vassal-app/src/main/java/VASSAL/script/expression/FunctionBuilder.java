@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2008-2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -158,11 +157,11 @@ public class FunctionBuilder extends JDialog {
     return result.toString();
   }
 
-  private String escape (String expr) {
+  private String escape(String expr) {
     return "\"{" + expr.replace("\"", "\\\"") + "}\"";
   }
 
-  private String getExpr (Configurer c) {
+  private String getExpr(Configurer c) {
     final Expression e = Expression.createExpression("{" + c.getValueString() + "}");
     final boolean isAtomic = (e instanceof IntExpression) || (e instanceof StringExpression);
     return (isAtomic ? "" : "(") + c.getValueString() + (isAtomic ? "" : ")");

@@ -539,7 +539,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final ColorConfigurer otherChatColor = new ColorConfigurer(
       OTHER_CHAT_COLOR,
       Resources.getString("Chatter.other_text_preference"),
-      new Color (0, 153, 255)
+      new Color(0, 153, 255)
     );
 
     otherChatColor.addPropertyChangeListener(e -> {
