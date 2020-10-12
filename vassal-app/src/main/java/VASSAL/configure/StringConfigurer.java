@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -105,6 +106,6 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
-    return new ConfigurerTextField(length);
+    return new JTextField(length);
   }
 }

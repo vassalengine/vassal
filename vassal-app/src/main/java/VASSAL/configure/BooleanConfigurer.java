@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 /**
@@ -81,7 +82,7 @@ public class BooleanConfigurer extends Configurer {
     if (p == null) {
       p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
 
-      box = new ConfigurerCheckBox();
+      box = new JCheckBox();
       box.setSelected(booleanValue());
       box.addItemListener(e -> setValue(box.isSelected()));
       p.add(box);

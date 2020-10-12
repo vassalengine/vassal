@@ -32,8 +32,8 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.Objects;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -52,7 +52,6 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentDialog;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.ConfigurerTextField;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -61,6 +60,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -403,7 +403,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       selectShader = new JPanel(new MigLayout("ins 0", "[fill, grow]0[]")); // NON-NLS
 
 
-      final JTextField tf = new ConfigurerTextField();
+      final JTextField tf = new JTextField();
       tf.setEditable(false);
       selectShader.add(tf, "growx"); // NON-NLS
       tf.setText(trait.mapShaderName);

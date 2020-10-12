@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
@@ -31,11 +32,12 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
+
 import net.miginfocom.swing.MigLayout;
 
 public class NamedHotKeyConfigurer extends Configurer {
-  private final JTextField keyStroke = new ConfigurerTextField(16);
-  private final JTextField keyName = new ConfigurerTextField(16);
+  private final JTextField keyStroke = new JTextField(16);
+  private final JTextField keyName = new JTextField(16);
   private JPanel controls;
 
   public static String getFancyString(NamedKeyStroke k) {
