@@ -1,5 +1,6 @@
 3.4.6 - ???
 
+* 13508: NPE in GamePieceOpImpl.getTileIndices()
 * 13505: Dragging a card/piece off the top of a deck should not also band-select
 * 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map
   padding specified
