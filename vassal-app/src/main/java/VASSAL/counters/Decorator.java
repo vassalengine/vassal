@@ -17,13 +17,7 @@
  */
 package VASSAL.counters;
 
-import VASSAL.build.module.GameState;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.command.ChangePiece;
-import VASSAL.configure.Configurer;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.search.SearchTarget;
-import VASSAL.tools.ProblemDialog;
+
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
@@ -42,15 +36,21 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
+import VASSAL.build.module.GameState;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.command.ChangePiece;
+import VASSAL.configure.Configurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
@@ -440,7 +440,6 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * The commands for a Trait/{@link Decorator} are a composite of {@link #myGetKeyCommands} and the
    * commands of its inner piece member(s), so requesting this information of the "outermost" Trait/Decorator of
    * a piece will produce the complete set of Key Commands for the entire logical game piece.
-   * @return the key commands for this piece and its inner piece(s).
    *
    * See also: {@link #myGetKeyCommands}, which returns the commands for this Trait/Decorator only.
    */

@@ -23,5 +23,5 @@ package VASSAL.counters;
  */
 public interface DeckVisitor extends PieceVisitor {
   /** Perform the operation on a Deck */
-  public Object visitDeck(Deck d);
+  Object visitDeck(Deck d);
 }

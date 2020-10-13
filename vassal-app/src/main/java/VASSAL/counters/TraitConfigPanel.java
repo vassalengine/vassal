@@ -33,7 +33,11 @@ public class TraitConfigPanel extends JPanel {
    * Create a new default Trait Config Panel
    */
   public TraitConfigPanel() {
-    super(new TraitLayout());
+    this(false);
+  }
+
+  public TraitConfigPanel(boolean debug) {
+    super(new TraitLayout(debug));
   }
 
   /**

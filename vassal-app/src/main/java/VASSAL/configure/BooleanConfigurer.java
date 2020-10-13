@@ -25,24 +25,54 @@ import javax.swing.JPanel;
  */
 public class BooleanConfigurer extends Configurer {
   protected JPanel p;
-  private javax.swing.JCheckBox box;
+  private JCheckBox box;
 
+  /**
+   * Create an old-style configurer with inbuilt label
+   *
+   * @param key Configurer key
+   * @param name Label text
+   * @param val Initial value
+   */
   public BooleanConfigurer(String key, String name, Boolean val) {
     super(key, name, val);
   }
 
+  /**
+   * Create an old-style configurer with inbuilt label
+   *
+   * @param key Configurer key
+   * @param name Label text
+   * @param val Initial value
+   */
   public BooleanConfigurer(String key, String name, boolean val) {
     super(key, name, val ? Boolean.TRUE : Boolean.FALSE);
   }
 
+  /**
+   * Create an old-style configurer with inbuilt label
+   *
+   * @param key Configurer key
+   * @param name Label text
+   */
   public BooleanConfigurer(String key, String name) {
     this(key, name, Boolean.FALSE);
   }
 
+  /**
+   * Create a new-style labeless configurer
+   *
+   * @param val Initial value
+   */
   public BooleanConfigurer(Boolean val) {
     this(null, "", val);
   }
 
+  /**
+   * Create a new-style labeless configurer
+   *
+   * @param val Initial value
+   */
   public BooleanConfigurer(boolean val) {
     this(null, "", val);
   }

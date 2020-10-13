@@ -590,4 +590,13 @@
         <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/CalculatedProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>box</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
 </differences>

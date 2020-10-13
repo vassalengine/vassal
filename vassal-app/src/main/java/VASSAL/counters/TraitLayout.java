@@ -29,6 +29,14 @@ public class TraitLayout extends ConfigurerLayout {
   public static final String DEFAULT_TRAIT_COLUMN_CONSTRAINTS = "[right]rel[fill,grow]"; // NON-NLS
 
   public TraitLayout() {
-    super(DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, DEFAULT_TRAIT_COLUMN_CONSTRAINTS);
+    this(false);
+
+  }
+  public TraitLayout(boolean debug) {
+    this(debug, DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, DEFAULT_TRAIT_COLUMN_CONSTRAINTS);
+  }
+
+  public TraitLayout(boolean debug, String layourConstraints, String columnConstraimts) {
+    super((debug ? "debug," : "") + DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, DEFAULT_TRAIT_COLUMN_CONSTRAINTS);
   }
 }
