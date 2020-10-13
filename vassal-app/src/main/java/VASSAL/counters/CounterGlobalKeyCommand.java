@@ -422,7 +422,7 @@ public class CounterGlobalKeyCommand extends Decorator
       targetConfig = new TranslatingStringEnumConfigurer(null, "", GlobalCommand.GlobalCommandTarget.getKeys(), GlobalCommand.GlobalCommandTarget.geti18nKeys());
       targetConfig.setValue(p.targetType.name());
       targetConfig.addPropertyChangeListener(e -> updateVisibility());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"), targetConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_matches_to", targetConfig);
 
       targetMapConfig = new FormattedExpressionConfigurer(null, "", p.targetMap.getExpression());
       traitPanel.add("Editor.GlobalKeyCommand.restrict_to_map", targetMapConfig);
