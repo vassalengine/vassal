@@ -80,7 +80,7 @@ public abstract class Expression {
    * @param ps Property Source providing property values
    * @return evaluated String
    */
-  public String tryEvaluate (PropertySource ps) {
+  public String tryEvaluate(PropertySource ps) {
     String result = null;
     try {
       result = evaluate(ps);
@@ -96,7 +96,7 @@ public abstract class Expression {
    * Evaluate an expression with data warning support built in
    * @return evaluated String
    */
-  public String tryEvaluate () {
+  public String tryEvaluate() {
     String result = null;
     try {
       result = evaluate();
@@ -115,7 +115,7 @@ public abstract class Expression {
    * @param localized Localize property calls?
    * @return evaluated String
    */
-  public String tryEvaluate (PropertySource ps, boolean localized) {
+  public String tryEvaluate(PropertySource ps, boolean localized) {
     String result = null;
     try {
       result = evaluate(ps, localized);
@@ -135,7 +135,7 @@ public abstract class Expression {
    * @param localized Localize property calls?
    * @return evaluated String
    */
-  public String tryEvaluate (PropertySource ps, Map<String, String> properties, boolean localized) {
+  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
     String result = null;
     try {
       result = evaluate(ps, properties, localized);

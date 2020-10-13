@@ -140,75 +140,75 @@ public class GlobalCommand {
     this.reportSingle = reportSingle;
   }
 
-  public void setTargetType (GlobalCommandTarget targetType) {
+  public void setTargetType(GlobalCommandTarget targetType) {
     this.targetType = targetType;
   }
 
-  public GlobalCommandTarget getTargetType () {
+  public GlobalCommandTarget getTargetType() {
     return targetType;
   }
 
-  public void setTargetX (int targetX) {
+  public void setTargetX(int targetX) {
     this.targetX = targetX;
   }
 
-  public void setTargetY (int targetY) {
+  public void setTargetY(int targetY) {
     this.targetY = targetY;
   }
 
-  public int getTargetX () {
+  public int getTargetX() {
     return targetX;
   }
 
-  public int getTargetY () {
+  public int getTargetY() {
     return targetY;
   }
 
-  public void setTargetMap (String targetMap) {
+  public void setTargetMap(String targetMap) {
     this.targetMap = targetMap;
   }
 
-  public String getTargetMap () {
+  public String getTargetMap() {
     return targetMap;
   }
 
-  public void setTargetBoard (String targetBoard) {
+  public void setTargetBoard(String targetBoard) {
     this.targetBoard = targetBoard;
   }
 
-  public String getTargetBoard () {
+  public String getTargetBoard() {
     return targetBoard;
   }
 
-  public void setTargetZone (String targetZone) {
+  public void setTargetZone(String targetZone) {
     this.targetZone = targetZone;
   }
 
-  public String getTargetZone () {
+  public String getTargetZone() {
     return targetZone;
   }
 
-  public void setTargetRegion (String targetRegion) {
+  public void setTargetRegion(String targetRegion) {
     this.targetRegion = targetRegion;
   }
 
-  public String getTargetRegion () {
+  public String getTargetRegion() {
     return targetRegion;
   }
 
-  public void setTargetProperty (String targetProperty) {
+  public void setTargetProperty(String targetProperty) {
     this.targetProperty = targetProperty;
   }
 
-  public String getTargetProperty () {
+  public String getTargetProperty() {
     return targetProperty;
   }
 
-  public void setTargetValue (String targetValue) {
+  public void setTargetValue(String targetValue) {
     this.targetValue = targetValue;
   }
 
-  public String getTargetValue () {
+  public String getTargetValue() {
     return targetValue;
   }
 
@@ -216,7 +216,7 @@ public class GlobalCommand {
     return targetExactMatch;
   }
 
-  public void setTargetExactMatch (Boolean targetExactMatch) {
+  public void setTargetExactMatch(Boolean targetExactMatch) {
     this.targetExactMatch = targetExactMatch;
   }
 
@@ -297,7 +297,7 @@ public class GlobalCommand {
             if (!targetBoard.equals((String)gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
               continue;
             }
-            Point pt = new Point (gamePiece.getPosition());
+            Point pt = new Point(gamePiece.getPosition());
             if ((targetX != pt.getX()) || (targetY != pt.getY())) {
               continue;
             }

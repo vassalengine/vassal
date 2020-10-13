@@ -231,7 +231,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
 
   @Override
-  public VisibilityCondition getAttributeVisibility (String key) {
+  public VisibilityCondition getAttributeVisibility(String key) {
     if (TARGET_MAP.equals(key)) {
       return () -> (targetType != GlobalCommand.GlobalCommandTarget.GAME) && (condition == null);
     }
