@@ -99,7 +99,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public PieceSlot(CardSlot card) {
     this((PieceSlot) card);
   }
-  
+
+  /**
+   * Return the name of GamePiece contained within the PieceSlot.
+   *
+   * @return name of the piece
+   */
   public String getName() {
     return name;
   }

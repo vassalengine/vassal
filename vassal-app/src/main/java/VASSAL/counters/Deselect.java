@@ -45,7 +45,7 @@ import VASSAL.configure.StringConfigurer;
 
 
 /**
- * Implements a trait to allow a piece to be deselected from the KeyBuffer in response to a Key Command. 
+ * Implements a trait to allow a piece to be deselected from the KeyBuffer in response to a Key Command.
  * @author Brian Reynolds
  */
 public class Deselect extends Decorator implements TranslatablePiece {
@@ -86,7 +86,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       deselectCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       if (commandName.length() > 0 && key != null && !key.isNull()) {
@@ -116,7 +116,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
       final Map m = getMap();
 
       if (unstack) {
-        Stack stack = outer.getParent();      //BR// If we're now being dragged around as part of a stack                                            
+        Stack stack = outer.getParent();      //BR// If we're now being dragged around as part of a stack
         if (stack != null) {
           Point pos = outer.getPosition();    //BR// Figure out where stack was/is
           stack.setExpanded(true);            //BR// Expand the stack
@@ -126,7 +126,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
       }
       outer.setProperty(Properties.SELECTED, false); //BR// Mark as not selected
       DragBuffer.getBuffer().remove(outer); //BR// Remove from the drag buffer
-      KeyBuffer.getBuffer().remove(outer);  //BR// Remove from the key buffer                                            
+      KeyBuffer.getBuffer().remove(outer);  //BR// Remove from the key buffer
     }
     return c;
   }

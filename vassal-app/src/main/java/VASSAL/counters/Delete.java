@@ -42,7 +42,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This trait adds a command that creates a duplicate of the selected Gamepiece
+ * This trait adds a command that deletes the selected Gamepiece
  */
 public class Delete extends Decorator implements TranslatablePiece {
   public static final String ID = "delete;"; // NON-NLS
@@ -77,7 +77,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (keyCommands == null) {
       deleteCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       if (commandName.length() > 0 && key != null && ! key.isNull()) {
