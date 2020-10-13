@@ -428,27 +428,27 @@ public class CounterGlobalKeyCommand extends Decorator
       traitPanel.add("Editor.GlobalKeyCommand.restrict_to_map", targetMapConfig);
 
       targetBoardConfig = new FormattedExpressionConfigurer(null, "", p.targetBoard.getExpression());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"), targetBoardConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_board", targetBoardConfig);
 
       targetZoneConfig = new FormattedExpressionConfigurer(null, "", p.targetZone.getExpression());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"), targetZoneConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_zone", targetZoneConfig);
 
       targetRegionConfig = new FormattedExpressionConfigurer(null, "", p.targetRegion.getExpression());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"), targetRegionConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_region", targetRegionConfig);
 
       targetXConfig = new IntConfigurer(p.targetX);
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"), targetXConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_x_position", targetXConfig);
       targetYConfig = new IntConfigurer(p.targetY);
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"), targetYConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_y_position", targetYConfig);
 
       targetExactMatchConfig = new BooleanConfigurer(p.targetExactMatch);
       targetExactMatchConfig.addPropertyChangeListener(e -> updateVisibility());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.exact_match"), targetExactMatchConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.exact_match", targetExactMatchConfig);
 
       targetPropertyConfig = new FormattedExpressionConfigurer(null, "", p.targetProperty.getExpression());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.exact_property"), targetPropertyConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.exact_property", targetPropertyConfig);
       targetValueConfig    = new FormattedExpressionConfigurer(null, "", p.targetValue.getExpression());
-      traitPanel.add(Resources.getString("Editor.GlobalKeyCommand.exact_value"), targetValueConfig.getControls());
+      traitPanel.add("Editor.GlobalKeyCommand.exact_value", targetValueConfig);
 
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
