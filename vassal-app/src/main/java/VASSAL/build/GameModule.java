@@ -1022,8 +1022,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   public void warn(String s) {
     String s2 = s;
-    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-           .replaceAll(">", "&gt;"); //$NON-NLS
+    if (s2.isEmpty() || ("|!?~`".indexOf(s2.charAt(0)) == -1)) { // Quick Colors "opt in" HTML
+      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+        .replaceAll(">", "&gt;"); //$NON-NLS
+    }
     if (chat == null) {
       deferredChat.add(s2);
     }
@@ -1729,6 +1731,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       else writer.save(true);
 
       lastSavedConfiguration = save;
+
+      GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
