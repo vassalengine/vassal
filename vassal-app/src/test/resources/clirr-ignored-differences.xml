@@ -599,4 +599,40 @@
         <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/configure/ListConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>configControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/ListConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/DynamicProperty$DynamicKeyCommandConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/DynamicProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
 </differences>

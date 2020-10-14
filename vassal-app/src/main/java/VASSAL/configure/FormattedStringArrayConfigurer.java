@@ -19,11 +19,11 @@
 
 package VASSAL.configure;
 
-import java.awt.Component;
-import java.awt.event.ActionListener;
-
 import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.GamePiece;
+
+import java.awt.Component;
+import java.awt.event.ActionListener;
 
 public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
 
@@ -38,6 +38,16 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
     super(key, name);
   }
 
+  public FormattedStringArrayConfigurer(Constraints c) {
+    this(null, "", c);
+  }
+
+  public FormattedStringArrayConfigurer(String key, String name, Constraints c, int minRows, int maxRows) {
+    super(key, name, minRows, maxRows);
+    if (c instanceof GamePiece) {
+      target = (GamePiece) c;
+    }
+  }
   public FormattedStringArrayConfigurer(String key, String name, Constraints c) {
     super(key, name);
     if (c instanceof GamePiece) {
@@ -53,7 +63,7 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
   @Override
   protected Component getTextComponent() {
     if (config == null) {
-      config = new FormattedExpressionConfigurer(null, "", "", target);
+      config = new FormattedExpressionConfigurer("", target);
     }
     return config.getControls();
   }
