@@ -36,6 +36,10 @@ public class PropertyNameExpressionConfigurer extends FormattedExpressionConfigu
     this(key, name, "");
   }
 
+  public PropertyNameExpressionConfigurer(String val) {
+    this(null, "", val);
+  }
+
   public PropertyNameExpressionConfigurer(String key, String name, String val) {
     this(key, name, val, null);
   }

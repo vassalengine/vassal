@@ -29,6 +29,10 @@ public class DoubleConfigurer extends StringConfigurer {
     super(key, name, val == null ? null : val.toString());
   }
 
+  public DoubleConfigurer(Double val) {
+    this(null, "", val);
+  }
+
   @Override
   public void setValue(String s) {
     Double d = null;
