@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.QuickColors;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -1023,7 +1024,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   public void warn(String s) {
     String s2 = s;
-    if (s2.isEmpty() || ("|!?~`".indexOf(s2.charAt(0)) == -1)) { // Quick Colors "opt in" HTML
+    if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
       s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
         .replaceAll(">", "&gt;"); //$NON-NLS
     }
