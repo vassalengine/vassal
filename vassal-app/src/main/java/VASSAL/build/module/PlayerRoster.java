@@ -317,7 +317,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public List<String> getSides() {
-    return sides;
+    return new ArrayList(sides);
   }
 
   public void add(String playerId, String playerName, String side) {
