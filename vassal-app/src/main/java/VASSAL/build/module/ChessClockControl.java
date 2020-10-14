@@ -143,6 +143,10 @@ public class ChessClockControl extends AbstractConfigurable
     GameModule.getGameModule().addKeyStrokeListener(pauseListener);
   }
 
+  public boolean isInstanceIsActive() {
+    return instanceIsActive;
+  }
+
   /**
    * @return Our list of chessclocks
    */
@@ -196,6 +200,8 @@ public class ChessClockControl extends AbstractConfigurable
     gameModule.getGameState().addGameComponent(this);
     ID_MGR.add(this);
 
+    //BR// We handle adding our chessclocks to the toolbar during initial build, because otherwise their buttons
+    //BR// would annoyingly appear before ours, because of the awkward post-order behavior of build.
     for (ChessClock c : chessclocks) {
       c.addToToolbar();
     }

@@ -540,9 +540,18 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       gameModule.addCommandEncoder(this);
       gameModule.getGameState().addGameComponent(this);
 
-      // BR// Add ourselves to the chess clock controller
-      ((ChessClockControl) parent).addChessClock(this);
-      instanceIsActive = true;
+      //BR// Add ourselves to the chess clock controller
+      ChessClockControl ccc = ((ChessClockControl) parent);
+      ccc.addChessClock(this);
+
+      //BR// Chess Clock Control handles adding our button to the toolbar when it is built (because otherwise
+      //BR// its own button would annoyingly appear after ours), but if it has already been built (we're adding this
+      //BR// new Clock "live", in the Editor), then we need to add ourselves to the toolbar.
+      if (ccc.isInstanceIsActive()) {
+        gameModule.getToolBar().add(timerButton);
+      }
+
+      instanceIsActive = true; //BR// We're now open for business.
     }
     else {
       ErrorDialog.dataWarning(new BadDataReport("Chess Clock can only be added to Chess Clock Control", ""));  //NON-NLS
@@ -567,7 +576,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     if (parent instanceof ChessClockControl) {
       timerButton.setVisible(false);
       final GameModule gameModule = GameModule.getGameModule();
-      gameModule.getToolBar().remove(timerButton);
+      gameModule.getToolBar().remove(timerButton); // We are always responsible for removing ourselves from toolbar, even though Clock Control sometimes adds us.
       gameModule.removeCommandEncoder(this);
       gameModule.getGameState().removeGameComponent(this);
       if (timer != null) {
