@@ -18,7 +18,9 @@
 package VASSAL.build.module.chessclockcontrol;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -447,16 +449,20 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     boolean oldTocking = tocking;
     tocking = (tenths >= 5);
+    String baseline;
 
     if (doDays) {
       if (doTenths) {
         timerButton.setText(String.format("%s%d:%02d:%02d:%02d.%d", getFormattedButtonText(), days, hours, minutes, seconds, tenths)); //NON-NLS
+        baseline = "0:00:00:00.0";
       }
       else if (doSeconds) {
         timerButton.setText(String.format("%s%d:%02d:%02d:%02d", getFormattedButtonText(), days, hours, minutes, seconds)); //NON-NLS
+        baseline = "0:00:00:00.0";
       }
       else {
         timerButton.setText(String.format("%s%dd:%02d:%02d", getFormattedButtonText(), days, hours, minutes)); //NON-NLS
+        baseline = "0d:00:00";
       }
     }
     else {
@@ -464,12 +470,30 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       if (doHours) {
         if (doTenths) {
           timerButton.setText(String.format("%s%d:%02d:%02d.%d", getFormattedButtonText(), hours, minutes, seconds, tenths)); //NON-NLS
+          if (hours >= 10) {
+            baseline = String.format("%d0:00:00.0", hours/10);
+          }
+          else {
+            baseline = "0:00:00.0";
+          }
         }
         else if (doSeconds) {
           timerButton.setText(String.format("%s%d:%02d:%02d", getFormattedButtonText(), hours, minutes, seconds)); //NON-NLS
+          if (hours >= 10) {
+            baseline = String.format("%d0:00:00", hours/10);
+          }
+          else {
+            baseline = "0:00:00";
+          }
         }
         else {
           timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), hours, minutes)); //NON-NLS
+          if (hours >= 10) {
+            baseline = String.format("%d0:00", hours/10);
+          }
+          else {
+            baseline = "0:00";
+          }
         }
       }
       else {
@@ -477,12 +501,30 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
         if (doTenths) {
           timerButton.setText(String.format("%s%d:%02d.%d", getFormattedButtonText(), minutes, seconds, tenths)); //NON-NLS
+          if (minutes >= 10) {
+            baseline = String.format("%d0:00.0", minutes/10);
+          }
+          else {
+            baseline = String.format("0:00.0");
+          }
         }
         else {
           timerButton.setText(String.format("%s%d:%02d", getFormattedButtonText(), minutes, seconds)); //NON-NLS
+          if (minutes >= 10) {
+            baseline = String.format("%d0:00", minutes/10);
+          }
+          else {
+            baseline = String.format("0:00");
+          }
         }
       }
     }
+
+    //Graphics g = timerButton.getGraphics();
+    //int width = g.getFontMetrics().stringWidth(getFormattedButtonText() + baseline);
+
+    int width = timerButton.getFontMetrics(timerButton.getFont()).stringWidth(getFormattedButtonText() + baseline);
+    timerButton.setMinimumSize(new Dimension(width, timerButton.getMinimumSize().height));
 
     return tocking != oldTocking;
   }
