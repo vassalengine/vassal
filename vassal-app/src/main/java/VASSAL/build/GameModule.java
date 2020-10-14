@@ -140,6 +140,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -548,7 +549,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * to the chat log, to be displayed there once a Chatter is registered.
    */
   protected void initFrame() {
-    final Rectangle screen = VASSAL.Info.getScreenBounds(frame);
+    final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
 // FIXME: annoying!
