@@ -113,8 +113,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
 
   public ChessClock() {
-    defaultColor = UIManager.getColor ("Panel.background");      // Store our original default background color
-    defaultFontColor = UIManager.getColor ("Button.foreground"); // Store our original default font color
+    defaultColor = UIManager.getColor("Panel.background");      // Store our original default background color
+    defaultFontColor = UIManager.getColor("Button.foreground"); // Store our original default font color
 
     side       = GENERIC;
     buttonText = side;

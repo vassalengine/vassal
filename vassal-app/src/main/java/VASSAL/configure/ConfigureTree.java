@@ -420,14 +420,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           box.add(select);
           JButton ok = new JButton(Resources.getString(Resources.OK));
           ok.addActionListener(e1 -> {
-              int index = select.getSelectedIndex();
-              if (currentIndex != index) {
-                Configurable parent = getParent(targetNode);
-                if (remove(parent, target)) {
-                  insert(parent, target, index);
-                }
+            int index = select.getSelectedIndex();
+            if (currentIndex != index) {
+              Configurable parent = getParent(targetNode);
+              if (remove(parent, target)) {
+                insert(parent, target, index);
               }
-              d.dispose();
+            }
+            d.dispose();
           });
           d.add(box);
           d.add(ok);
@@ -1539,19 +1539,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), false);
         configureTree.setSearchDialog(d);
 
-      d.setTitle(configureTree.getSearchCmd());
+        d.setTitle(configureTree.getSearchCmd());
 
-      final JLabel searchLabel = new JLabel("String to find: ");
+        final JLabel searchLabel = new JLabel("String to find: ");
         search = new JTextField(searchParameters.getSearchString(), 32);
         configureTree.setSearchField(search);
-      search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
-      searchLabel.setLabelFor(search);
+        search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
+        searchLabel.setLabelFor(search);
 
-      final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
+        final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
         final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
 
-      final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
-      final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
+        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
+        final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
 
         final JCheckBox traits = new JCheckBox(Resources.getString("Editor.search_traits"), searchParameters.isMatchTraits());
         final JCheckBox expressions = new JCheckBox(Resources.getString("Editor.search_expressions"), searchParameters.isMatchExpressions());
@@ -1581,7 +1581,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         configureTree.setSearchAdvanced(advanced);
 
-      final JButton find = new JButton(Resources.getString("Editor.search_next"));
+        final JButton find = new JButton(Resources.getString("Editor.search_next"));
         find.addActionListener(e12 -> {
           final SearchParameters parametersSetInDialog =
             new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
@@ -1620,26 +1620,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
             else {
               chat(Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
+            }
           }
-        }
-      });
+        });
 
-      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+        final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
-      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
+        d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
 
-      // top row
-      d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
-      d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
+        // top row
+        d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
+        d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
 
-      // options row
-      d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
+        // options row
+        d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
         d.add(advanced, "wrap");
 
         // Advanced 1
         d.add(names, "align center, gapx unrel, span"); //$NON-NLS-1$//
-      d.add(types, "wrap"); //$NON-NLS-1$//
+        d.add(types, "wrap"); //$NON-NLS-1$//
 
         // Advanced 2
         d.add(traits, "align center, gapx unrel, span"); //$NON-NLS-1$//
@@ -1651,24 +1651,24 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         d.add(menus, "gapx unrel"); //$NON-NLS-1$//
         d.add(messages, "wrap"); //$NON-NLS-1$//
 
-      // buttons row
-      d.add(find, "tag ok, split"); //$NON-NLS-1$//
-      d.add(cancel, "tag cancel"); //$NON-NLS-1$//
+        // buttons row
+        d.add(find, "tag ok, split"); //$NON-NLS-1$//
+        d.add(cancel, "tag cancel"); //$NON-NLS-1$//
 
-      d.getRootPane().setDefaultButton(find); // Enter key activates search
+        d.getRootPane().setDefaultButton(find); // Enter key activates search
 
-      // Esc Key cancels
-      KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        // Esc Key cancels
+        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
       }
 
       search.requestFocus(); // Start w/ focus in search string field
 
       if (!d.isVisible()) {
-      d.pack();
-      d.setLocationRelativeTo(d.getParent());
-      d.setVisible(true);
-    }
+        d.pack();
+        d.setLocationRelativeTo(d.getParent());
+        d.setVisible(true);
+      }
     }
 
     /**
@@ -1845,7 +1845,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 return true;
               }
             }
-      }
+          }
 
           if (p instanceof SearchTarget) {
             if (checkSearchTarget((SearchTarget)p, searchString)) {
