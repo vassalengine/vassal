@@ -101,7 +101,7 @@ public class PropertyChangerConfigurer extends Configurer {
         updateControls();
       };
       controls = new JPanel();
-      controls.setLayout(new MigLayout("ins 0,hidemode 3", "[]rel[][]rel[]")); // NON-NLS
+      controls.setLayout(new MigLayout("ins 0,hidemode 3", "[]rel[][]rel[fill,grow][fill,grow]")); // NON-NLS
 
       typeLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.type"));
       typeConfig = new TranslatingStringEnumConfigurer(
@@ -134,7 +134,7 @@ public class PropertyChangerConfigurer extends Configurer {
       validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints, 2, 4);
       validValuesConfig.addPropertyChangeListener(l);
 
-      controls.add(typeLabel);
+      controls.add(typeLabel, "aligny center"); // NON-NLS
       controls.add(typeConfig.getControls());
 
       changerLabelControls = new JPanel(new MigLayout("ins 0,hidemode 3")); // NON-NLS
@@ -148,7 +148,7 @@ public class PropertyChangerConfigurer extends Configurer {
       changerControls.add(promptConfig.getControls(), "grow"); // NON-NLS
       changerControls.add(incrConfig.getControls(), "grow"); // NON-NLS
       controls.add(changerControls);
-      controls.add(validValuesConfig.getControls());
+      controls.add(validValuesConfig.getControls(), "grow"); // NON-NLS
 
       updateControls();
     }
