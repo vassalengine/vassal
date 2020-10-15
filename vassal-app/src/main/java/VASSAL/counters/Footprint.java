@@ -794,7 +794,7 @@ public class Footprint extends MovementMarkable {
       controls = new TraitConfigPanel();
 
       desc = new StringConfigurer(p.description);
-      controls.add("Editor.description_label", desc.getControls());
+      controls.add("Editor.description_label", desc);
 
       mc = new StringConfigurer(p.menuCommand);
       controls.add("Editor.menu_command", mc);
