@@ -53,6 +53,6 @@ public class TraitLayout extends ConfigurerLayout {
    * @param columnConstraints Custom column constraints
    */
   public TraitLayout(boolean debug, String layoutConstraints, String columnConstraints) {
-    super((debug ? "debug," : "") + layoutConstraints, columnConstraints);
+    super((debug ? "debug," : "") + layoutConstraints, columnConstraints); // NON-NLS
   }
 }
