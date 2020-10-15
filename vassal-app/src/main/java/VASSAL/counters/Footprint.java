@@ -90,6 +90,7 @@ public class Footprint extends MovementMarkable {
   protected Color fillColor;                   // Color of Trail circle fill
   protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
   protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
+  protected String description;                // Description for this movement trail
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
@@ -192,6 +193,7 @@ public class Footprint extends MovementMarkable {
     trailKeyOn = st.nextNamedKeyStroke(null);
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
+    description = st.nextToken("");
 
     commands = null;
     showTrailCommand = null;
@@ -222,7 +224,8 @@ public class Footprint extends MovementMarkable {
       .append(lineWidth)
       .append(trailKeyOn)
       .append(trailKeyOff)
-      .append(trailKeyClear);
+      .append(trailKeyClear)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -335,7 +338,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Footprint.trait_description");
+    return buildDescription("Editor.Footprint.trait_description", description);
   }
 
 // FIXME: This method is inefficient.
@@ -755,9 +758,11 @@ public class Footprint extends MovementMarkable {
     if (! Objects.equals(trailKeyOn, c.trailKeyOn)) return false;
     if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
     if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
+    if (! Objects.equals(description, c.description)) return false;
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
+    if (! Objects.equals(description, c.description)) return false;
     return Objects.equals(pointList, c.pointList);
   }
 
@@ -767,6 +772,7 @@ public class Footprint extends MovementMarkable {
    * Point Limit
    */
   protected static class Ed implements PieceEditor {
+    private final StringConfigurer desc;
     private final NamedHotKeyConfigurer trailKeyInput;
     private final NamedHotKeyConfigurer trailKeyOn;
     private final NamedHotKeyConfigurer trailKeyOff;
@@ -786,6 +792,9 @@ public class Footprint extends MovementMarkable {
 
     public Ed(Footprint p) {
       controls = new TraitConfigPanel();
+
+      desc = new StringConfigurer(p.description);
+      controls.add("Editor.description_label", desc);
 
       mc = new StringConfigurer(p.menuCommand);
       controls.add("Editor.menu_command", mc);
@@ -854,7 +863,8 @@ public class Footprint extends MovementMarkable {
         .append(lw.getValueString())
         .append(trailKeyOn.getValueString())
         .append(trailKeyOff.getValueString())
-        .append(trailKeyClear.getValueString());
+        .append(trailKeyClear.getValueString())
+        .append(desc.getValueString());
       return ID + se.getValue();
     }
 

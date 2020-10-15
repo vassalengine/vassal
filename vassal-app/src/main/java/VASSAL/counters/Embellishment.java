@@ -1068,7 +1068,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       version = e.version;
 
       controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 2,fillx, gapy " + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[]")); // NON-NLS
+      controls.setLayout(new MigLayout("hidemode 2,fillx," + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[]")); // NON-NLS
 
       nameConfig = new StringConfigurer(e.getName());
       controls.add(new JLabel(Resources.getString("Editor.name_label")));

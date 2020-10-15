@@ -114,11 +114,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public String getDescription() {
-    String desc = Resources.getString("Editor.CalculatedProperty.trait_description");
-    if (name != null && name.length() > 0) {
-      desc += " - " + name;
-    }
-    return desc;
+    return buildDescription("Editor.CalculatedProperty.trait_description", name);
   }
 
   @Override

@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -123,9 +122,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return description != null && description.length() > 0 ?
-      Resources.getString("Editor.ActionButton.trait_description_named", description) :
-      Resources.getString("Editor.ActionButton.trait_description");
+    return buildDescription("Editor.ActionButton.trait_description", description);
   }
   
   

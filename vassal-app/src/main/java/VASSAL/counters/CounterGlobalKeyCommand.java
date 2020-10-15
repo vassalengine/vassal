@@ -210,11 +210,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public String getDescription() {
-    String d = Resources.getString("Editor.GlobalkeyCommand.global_key_command");
-    if (description.length() > 0) {
-      d += " - " + description;
-    }
-    return d;
+    return buildDescription("Editor.GlobalkeyCommand.global_key_command", description);
   }
 
   @Override

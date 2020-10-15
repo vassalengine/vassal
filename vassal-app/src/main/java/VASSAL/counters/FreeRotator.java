@@ -21,6 +21,7 @@ import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -39,14 +40,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -91,12 +89,12 @@ public class FreeRotator extends Decorator
   protected KeyCommand rotateCCWCommand;
   protected KeyCommand[] commands;
   protected NamedKeyStroke setAngleKey;
-  protected String setAngleText = "Rotate";
+  protected String setAngleText = Resources.getString("Editor.FreeRotator.default_rotate_command");
   protected NamedKeyStroke rotateCWKey;
-  protected String rotateCWText = "Rotate CW";
+  protected String rotateCWText = Resources.getString("Editor.FreeRotator.default_rotate_cw_command");
   protected NamedKeyStroke rotateCCWKey;
-  protected String rotateCCWText = "Rotate CCW";
-  protected String name = "Rotate";
+  protected String rotateCCWText = Resources.getString("Editor.FreeRotator.default_rotate_ccw_command");
+  protected String name = Resources.getString("Editor.FreeRotator.default_trait_name");
 
   // for Random Rotate
   protected KeyCommand rotateRNDCommand;
@@ -127,7 +125,7 @@ public class FreeRotator extends Decorator
 
   public FreeRotator() {
     // modified for random rotation (added two ; )
-    this(ID + "6;];[;Rotate CW;Rotate CCW;;;;", null); //$NON-NLS-1$//
+    this(ID + "6;];[;" + Resources.getString("Editor.FreeRotator.default_rotate_cw_command") + ";" + Resources.getString("Editor.FreeRotator.default_rotate_ccw_command") + ";;;;", null); //$NON-NLS-1$//
   }
 
   public FreeRotator(String type, GamePiece inner) {
@@ -272,6 +270,7 @@ public class FreeRotator extends Decorator
     rotateRNDText = st.nextToken("");
     // end for random rotation
     name = st.nextToken("");
+
     commands = null;
   }
 
@@ -393,7 +392,7 @@ public class FreeRotator extends Decorator
         validAngles[0] = Double.parseDouble(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle=" + state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle=" + state, e); // NON-NLS
       }
     }
     else {
@@ -401,7 +400,7 @@ public class FreeRotator extends Decorator
         angleIndex = Integer.parseInt(state);
       }
       catch (NumberFormatException e) {
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index=" + state, e); // NON-NLS
       }
     }
   }
@@ -678,11 +677,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public String getDescription() {
-    String d = "Can Rotate";
-    if (name.length() > 0) {
-      d += " - " + name;
-    }
-    return d;
+    return buildDescription("Editor.FreeRotator.trait_description", name);
   }
 
   @Override
@@ -698,7 +693,11 @@ public class FreeRotator extends Decorator
   @Override
   public PieceI18nData getI18nData() {
     return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText},
-                       new String[] {getCommandDescription(name, "Set Angle command"), getCommandDescription(name, "Rotate CW command"), getCommandDescription(name, "Rotate CCW command"), getCommandDescription(name, "Rotate Random command")});
+                       new String[] {
+                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
+                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
+                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
+                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))});
   }
 
   /**
@@ -712,83 +711,108 @@ public class FreeRotator extends Decorator
     return l;
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof FreeRotator)) return false;
+    FreeRotator c = (FreeRotator) o;
+    if (! Objects.equals(validAngles.length, c.validAngles.length)) return false;
+
+    if (validAngles.length == 1) {
+      if (! Objects.equals(setAngleKey, c.setAngleKey)) return false;
+      if (! Objects.equals(setAngleText, c.setAngleText)) return false;
+    }
+    else {
+      if (! Objects.equals(rotateCWKey, c.rotateCWKey)) return false;
+      if (! Objects.equals(rotateCCWKey, c.rotateCCWKey)) return false;
+      if (! Objects.equals(rotateCWText, c.rotateCWText)) return false;
+      if (! Objects.equals(rotateCCWText, c.rotateCCWText)) return false;
+    }
+
+    if (! Objects.equals(rotateRNDKey, c.rotateRNDKey)) return false;
+
+    if (! Objects.equals(name, c.name)) return false;
+
+    if (validAngles.length == 1) {
+      return Objects.equals(validAngles[0], c.validAngles[0]);
+    }
+    else {
+      return Objects.equals(angleIndex, c.angleIndex);
+    }
+  }
+
   private static class Ed implements PieceEditor, PropertyChangeListener {
     private final BooleanConfigurer anyConfig;
-    private final  NamedHotKeyConfigurer anyKeyConfig;
-    private final  IntConfigurer facingsConfig;
-    private final  NamedHotKeyConfigurer cwKeyConfig;
-    private final  NamedHotKeyConfigurer ccwKeyConfig;
-    // random rotate
-    private final  NamedHotKeyConfigurer rndKeyConfig;
-    // end random rotate
-    private final  StringConfigurer nameConfig;
+    private final NamedHotKeyConfigurer anyKeyConfig;
+    private final JLabel facingsLabel;
+    private final IntConfigurer facingsConfig;
+    private final NamedHotKeyConfigurer cwKeyConfig;
+    private final JLabel cwLabel;
+    private final NamedHotKeyConfigurer ccwKeyConfig;
+    private final JLabel ccwLabel;
+    private final NamedHotKeyConfigurer rndKeyConfig;
+    private final StringConfigurer nameConfig;
+    private final JLabel anyLabel;
 
-    private final  JTextField anyCommand;
-    private final  JTextField cwCommand;
-    private final  JTextField ccwCommand;
-    private final  JTextField rndCommand;
-    private final  Box anyControls;
-    private final  Box cwControls;
-    private final  Box ccwControls;
-    private final  Box rndControls;
+    private final StringConfigurer anyCommand;
+    private final StringConfigurer cwCommand;
+    private final StringConfigurer ccwCommand;
+    private final StringConfigurer rndCommand;
 
-    private final  JPanel panel;
+    private final  TraitConfigPanel panel;
 
     public Ed(FreeRotator p) {
-      nameConfig = new StringConfigurer(null, "Description:  ", p.name);
-      cwKeyConfig = new NamedHotKeyConfigurer(null, "Command to rotate clockwise:  ", p.rotateCWKey);
-      ccwKeyConfig = new NamedHotKeyConfigurer(null, "Command to rotate counterclockwise:  ", p.rotateCCWKey);
-      // random rotate
-      rndKeyConfig = new NamedHotKeyConfigurer(null, "Command to rotate randomly:  ", p.rotateRNDKey);
-      // end random rotate
-      anyConfig = new BooleanConfigurer(null, "Allow arbitrary rotations",
-        Boolean.valueOf(p.validAngles.length == 1));
-      anyKeyConfig = new NamedHotKeyConfigurer(null, "Command to rotate:  ", p.setAngleKey);
-      facingsConfig = new IntConfigurer(null, "Number of allowed facings:  ", p.validAngles.length == 1 ? 6 : p.validAngles.length);
 
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+      panel = new TraitConfigPanel(
+        new TraitLayout(
+          false,
+          TraitLayout.STANDARD_INSETS + "," + TraitLayout.STANDARD_GAPY + ",hidemode 3,wrap 3", // NON-NLS
+          "[right]rel[fill,grow]rel[align center]")); // NON-NLS
 
-      panel.add(nameConfig.getControls());
-      panel.add(facingsConfig.getControls());
-      cwControls = Box.createHorizontalBox();
-      cwControls.add(cwKeyConfig.getControls());
-      cwControls.add(new JLabel(" Menu text:  "));
-      cwCommand = new JTextField(12);
-      cwCommand.setMaximumSize(cwCommand.getPreferredSize());
-      cwCommand.setText(p.rotateCWText);
-      cwControls.add(cwCommand);
-      panel.add(cwControls);
+      nameConfig = new StringConfigurer(p.name);
+      panel.add("Editor.description_label", nameConfig, "span 2,wrap"); // NON-NLS
 
-      ccwControls = Box.createHorizontalBox();
-      ccwControls.add(ccwKeyConfig.getControls());
-      ccwControls.add(new JLabel(" Menu text:  "));
-      ccwCommand = new JTextField(12);
-      ccwCommand.setMaximumSize(ccwCommand.getPreferredSize());
-      ccwCommand.setText(p.rotateCCWText);
-      ccwControls.add(ccwCommand);
-      panel.add(ccwControls);
+      anyConfig = new BooleanConfigurer(p.validAngles.length == 1);
+      panel.add("Editor.FreeRotator.allow_arbitrary_rotations", anyConfig, "wrap"); // NON-NLS
 
-      panel.add(anyConfig.getControls());
-      anyControls = Box.createHorizontalBox();
-      anyControls.add(anyKeyConfig.getControls());
-      anyControls.add(new JLabel(" Menu text:  "));
-      anyCommand = new JTextField(12);
-      anyCommand.setMaximumSize(anyCommand.getPreferredSize());
-      anyCommand.setText(p.setAngleText);
-      anyControls.add(anyCommand);
-      panel.add(anyControls);
+      facingsLabel = new JLabel(Resources.getString("Editor.FreeRotator.number_of_allowed_facings"));
+      facingsConfig = new IntConfigurer(p.validAngles.length == 1 ? 6 : p.validAngles.length);
+      panel.add(facingsLabel, facingsConfig, "wrap"); // NON-NLS
 
-      // random rotate
-      rndControls = Box.createHorizontalBox();
-      rndControls.add(rndKeyConfig.getControls());
-      rndControls.add(new JLabel(" Menu text:  "));
-      rndCommand = new JTextField(12);
-      rndCommand.setMaximumSize(rndCommand.getPreferredSize());
-      rndCommand.setText(p.rotateRNDText);
-      rndControls.add(rndCommand);
-      panel.add(rndControls);
-      // end random rotate
+      final JLabel menuLabel = new JLabel(Resources.getString("Editor.menu_command"));
+      final Font boldFont = new Font(menuLabel.getFont().getFamily(), Font.BOLD, menuLabel.getFont().getSize());
+      menuLabel.setFont(boldFont);
+      panel.add(menuLabel, "skip 1,align center"); // NON-NLS
+      final JLabel keyLabel = new JLabel(Resources.getString("Editor.keyboard_command"));
+      keyLabel.setFont(boldFont);
+      panel.add(keyLabel, "align center,wrap"); // NON-NLS
+
+      cwLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_clockwise"));
+      panel.add(cwLabel);
+      cwCommand = new StringConfigurer(p.rotateCWText);
+      panel.add(cwCommand.getControls());
+      cwKeyConfig = new NamedHotKeyConfigurer(p.rotateCWKey);
+      panel.add(cwKeyConfig.getControls(), "wrap"); // NON-NLS
+
+      ccwLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_counter_clockwise"));
+      panel.add(ccwLabel);
+      ccwCommand = new StringConfigurer(p.rotateCCWText);
+      panel.add(ccwCommand.getControls());
+      ccwKeyConfig = new NamedHotKeyConfigurer(p.rotateCCWKey);
+      panel.add(ccwKeyConfig.getControls(), "wrap"); // NON-NLS
+
+      anyLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate"));
+      panel.add(anyLabel);
+      anyCommand = new StringConfigurer(p.setAngleText);
+      panel.add(anyCommand.getControls());
+      anyKeyConfig = new NamedHotKeyConfigurer(p.setAngleKey);
+      panel.add(anyKeyConfig.getControls(), "wrap"); // NON-NLS
+
+      JLabel rndLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_randomly"));
+      panel.add(rndLabel);
+      rndCommand = new StringConfigurer(p.rotateRNDText);
+      panel.add(rndCommand.getControls());
+      rndKeyConfig = new NamedHotKeyConfigurer(p.rotateRNDKey);
+      panel.add(rndKeyConfig.getControls(), "wrap"); // NON-NLS
 
       anyConfig.addPropertyChangeListener(this);
       propertyChange(null);
@@ -797,10 +821,22 @@ public class FreeRotator extends Decorator
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
       final boolean any = Boolean.TRUE.equals(anyConfig.getValue());
-      anyControls.setVisible(any);
+
+      anyCommand.getControls().setVisible(any);
+      anyKeyConfig.getControls().setVisible(any);
+      anyLabel.setVisible(any);
+
+      facingsLabel.setVisible(!any);
       facingsConfig.getControls().setVisible(!any);
-      cwControls.setVisible(!any);
-      ccwControls.setVisible(!any);
+
+      cwCommand.getControls().setVisible(!any);
+      cwKeyConfig.getControls().setVisible(!any);
+      cwLabel.setVisible(!any);
+
+      ccwCommand.getControls().setVisible(!any);
+      ccwKeyConfig.getControls().setVisible(!any);
+      ccwLabel.setVisible(!any);
+
       panel.revalidate();
     }
 
@@ -815,23 +851,17 @@ public class FreeRotator extends Decorator
       if (Boolean.TRUE.equals(anyConfig.getValue())) {
         se.append("1")
           .append(anyKeyConfig.getValueString())
-          .append(anyCommand.getText() == null
-                  ? "" : anyCommand.getText().trim());
+          .append(anyCommand.getValueString() == null ? "" : anyCommand.getValueString().trim());
       }
       else {
         se.append(facingsConfig.getValueString())
           .append(cwKeyConfig.getValueString())
           .append(ccwKeyConfig.getValueString())
-          .append(cwCommand.getText() == null
-                  ? "" : cwCommand.getText().trim())
-          .append(ccwCommand.getText() == null
-                  ? "" : ccwCommand.getText().trim());
+          .append(cwCommand.getValueString() == null ? "" : cwCommand.getValueString().trim())
+          .append(ccwCommand.getValueString() == null ? "" : ccwCommand.getValueString().trim());
       }
-      // random rotate
       se.append(rndKeyConfig.getValueString())
-        .append(rndCommand.getText() == null
-                ? "" : rndCommand.getText().trim());
-      // end random rotate
+        .append(rndCommand.getValueString() == null ? "" : rndCommand.getValueString().trim());
       se.append(nameConfig.getValueString());
       return ID + se.getValue();
     }

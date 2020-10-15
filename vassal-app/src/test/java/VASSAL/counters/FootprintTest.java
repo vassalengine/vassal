@@ -17,17 +17,13 @@
 
 package VASSAL.counters;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-
-import VASSAL.configure.ColorConfigurer;
 import VASSAL.tools.NamedKeyStroke;
+
 import java.awt.Color;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import javax.swing.KeyStroke;
+
 import org.junit.Test;
 
 public class FootprintTest extends DecoratorTest {
@@ -57,6 +53,7 @@ public class FootprintTest extends DecoratorTest {
     trait.trailKeyOn = new NamedKeyStroke("keyOn"); // NON-NLS
     trait.trailKeyOff = new NamedKeyStroke("keyOff"); // NON-NLS
     trait.trailKeyClear = new NamedKeyStroke("keyClear"); // NON-NLS
+    trait.description = "plover"; // NON-NLS
 
     trait.globalVisibility = true;
     trait.startMapId = "map1"; // NON-NLS
