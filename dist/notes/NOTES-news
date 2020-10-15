@@ -1,21 +1,48 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.4.3.
+The VASSAL Team is happy to announce the release of VASSAL 3.4.6.
 </p>
 
 <h2>IMPORTANT</h2>
 <ul>
   <li>Things may be broken which worked previously. If you find a new bug, please report it.</li>
   <li>If you save a module in VASSAL 3.4, you will NOT be able to open it afterwards with VASSAL 3.3 or earlier. We recommend keeping a backup copy of any pre-3.4 modules you plan to modify in 3.4 until you've verified that everything works to your satisfaction.</li>
-  <li>Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code. (We are aware that VASL has this problem and are working with its maintainers to update it.)</li>
+  <li>Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code.</li>
 </ul>
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-macosx.dmg' target='_new'>Mac OS X</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.3/VASSAL-3.4.3-other.zip'  target='_new'>Other</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-linux.tar.bz2' target='_new'>Linux</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-macosx.dmg' target='_new'>Mac OS X</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-other.zip'  target='_new'>Other</a></li>
+</ul>
+
+<h2>Changes since 3.4.5</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13508: NPE in GamePieceOpImpl.getTileIndices()</li>
+<li>13505: Dragging a card/piece off the top of a deck should not also band-select</li>
+<li>13503: At-Start Stacks and Decks in &lt;Any&gt; board appear in wrong place if map padding specified</li>
+<li>13467: Edited modules containing HTML img elements can't be saved on Windows</li>
+<li>13456: At-Start Stack using Grid Location uses Location on first board, not chosen board (additional fix for 12576)</li>
+</ul>
+
+<h2>Changes since 3.4.4</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13490: Module Manager "Show Error Log" doesn't</li>
+</ul>
+
+<h2>Changes since 3.4.3</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus</li>
+<li>13471: Using BeanShell string functions in Calculated Property crashes Editor</li>
+<li>13461: Always initialise Deck on New/Load game</li>
+<li>13458: Reinstate behavior of floating point expression evaluation</li>
+<li>13454: ClassCastException in SetPersistentPropertyCommand.execute()</li>
+<li>13426: NegativeArraySizeException when receiving first private message</li>
 </ul>
 
 <h2>Changes since 3.4.2</h2>

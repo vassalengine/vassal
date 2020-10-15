@@ -213,7 +213,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     // Set up Index Property
     indexValue = parse("Index Property Start Value", indexStart, outer);
-    final int step = parse ("Index Property increment value", indexStep, outer);
+    final int step = parse("Index Property increment value", indexStep, outer);
 
     // Issue the Pre-loop key
     c = c.append(executeKey(preLoopKey));

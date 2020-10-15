@@ -22,12 +22,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 
-import VASSAL.i18n.Resources;
+import net.miginfocom.swing.MigLayout;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -36,6 +36,7 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**
@@ -77,7 +78,8 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    //setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new MigLayout("ins panel, wrap 1", "[grow, fill]")); // NON-NLS
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(evt -> {
       if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
@@ -88,7 +90,7 @@ public class PropertiesWindow extends JDialog {
 
     setTitle(ConfigureTree.getConfigureName(target));
 
-    final Box buttonBox = Box.createHorizontalBox();
+    final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     final JButton okButton = new JButton(Resources.getString("General.ok"));
     okButton.addActionListener(e -> save());
     buttonBox.add(okButton);

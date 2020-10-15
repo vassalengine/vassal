@@ -433,7 +433,7 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusView.addPropertyChangeListener("dividerLocation",
       e -> setPreferredDividerLocation((Integer) e.getNewValue()));
 
-    final Rectangle r = Info.getScreenBounds(this);
+    final Rectangle r = SwingUtils.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
       new Dimension((int) (r.width / 3.5), 0));
 
@@ -1593,7 +1593,7 @@ public class ModuleManagerWindow extends JFrame {
     private class ActivateExtensionAction extends AbstractAction {
       private static final long serialVersionUID = 1L;
 
-      public ActivateExtensionAction (String s) {
+      public ActivateExtensionAction(String s) {
         super(s);
         setEnabled(!isInUse() && ! moduleInfo.isInUse());
       }

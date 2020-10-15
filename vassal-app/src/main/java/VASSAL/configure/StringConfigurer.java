@@ -19,8 +19,7 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
+
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -33,7 +32,7 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
-  protected static final int DEFAULT_LENGHTH = 12;
+  protected static final int DEFAULT_LENGHTH = 20;
 
   public StringConfigurer(String key, String name) {
     this(key, name, "");
@@ -42,6 +41,10 @@ public class StringConfigurer extends Configurer {
   public StringConfigurer(String key, String name, String val) {
     super(key, name, val);
     length = DEFAULT_LENGHTH;
+  }
+
+  public StringConfigurer(String val) {
+    this (null, "", val);
   }
 
   public StringConfigurer(String key, String name, int length) {
@@ -62,19 +65,22 @@ public class StringConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  protected String getGrowthConstraint() {
+    return "growx"; // NON-NLS
+  }
+
   @Override
   public Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
+      p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
+
       nameField = buildTextField();
       nameField.setMaximumSize(new Dimension(
         nameField.getMaximumSize().width,
         nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
-      p.add(nameField);
+      p.add(nameField, getGrowthConstraint()); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -100,7 +106,6 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
-
     return new JTextField(length);
   }
 }

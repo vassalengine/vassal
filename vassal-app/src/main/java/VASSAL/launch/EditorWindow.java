@@ -363,7 +363,7 @@ public abstract class EditorWindow extends JFrame {
   }
 
 
-  void setModuleName (String name) {
+  void setModuleName(String name) {
     if (isTempFile(name)) {
       moduleName = Resources.getString("Resources.ModuleEditor.creating_new_module");
     }
@@ -373,7 +373,7 @@ public abstract class EditorWindow extends JFrame {
     updateWindowTitle();
   }
 
-  void setExtensionName (String name) {
+  void setExtensionName(String name) {
     if (isTempFile(name)) {
       extensionName = Resources.getString("Resources.ExtensionEditor.creating_new_extension");
     }
@@ -385,11 +385,8 @@ public abstract class EditorWindow extends JFrame {
     updateWindowTitle();
   }
 
-
-  void updateWindowTitle () {
-
+  void updateWindowTitle() {
   }
-
 
   protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
     for (ChildProxy<?> c : mb.getChildren()) {

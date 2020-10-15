@@ -21,7 +21,7 @@ package VASSAL.counters;
  * For handling Visitors that are aware of {@link Deck} types
  */
 public class DeckVisitorDispatcher extends PieceVisitorDispatcher {
-  private DeckVisitor visitor;
+  private final DeckVisitor visitor;
 
   public DeckVisitorDispatcher(DeckVisitor visitor) {
     super(visitor);

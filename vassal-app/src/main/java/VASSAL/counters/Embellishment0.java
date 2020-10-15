@@ -130,7 +130,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
   protected Area lastShape = null;
 
   public Embellishment0() {
-    this(ID + "Activate", null);
+    this(ID + Resources.getString("Editor.Embellishment.activate"), null);
   }
 
   public Embellishment0(String type, GamePiece d) {

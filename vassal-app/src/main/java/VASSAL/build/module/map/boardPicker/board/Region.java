@@ -205,7 +205,7 @@ public class Region extends AbstractConfigurable {
    */
   public void move(int dx, int dy, JComponent c) {
 
-    final Point newP = new Point (getOrigin());
+    final Point newP = new Point(getOrigin());
     newP.translate(dx, dy);
 
     if (myGrid.container.contains(newP)) {

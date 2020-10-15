@@ -18,15 +18,107 @@
 
 package VASSAL.counters;
 
+import static org.junit.Assert.assertEquals;
+
+import VASSAL.build.module.properties.PropertyChanger;
+import VASSAL.build.module.properties.PropertyChangerConfigurer;
+import VASSAL.build.module.properties.PropertySetter;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ListConfigurer;
+import VASSAL.tools.NamedKeyStroke;
+import java.awt.Component;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
-
-public class DynamicPropertyTest {
+public class DynamicPropertyTest extends DecoratorTest {
 
   @Test
-  public void testFormatInitialValueRFE3472(){
+  public void serializeTests() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    DynamicProperty trait = new DynamicProperty();
+
+    // Default trait
+    serializeTest("Default trait", trait); // NON-NLS
+
+    trait = new DynamicProperty ();
+    trait.key = "xyzzy";
+    trait.value = "plugh";
+    serializeTest("Simple Property", trait); // NON-NLS
+
+    trait = new DynamicProperty ();
+    trait.key = "xyzzy";
+    trait.value = "2";
+    trait.numeric = true;
+    trait.minValue = 5;
+    trait.maxValue = 100;
+    trait.wrap = true;
+    serializeTest("Constraints", trait); // NON-NLS
+
+    final DynamicProperty trait2 = new DynamicProperty ();
+    trait2.key = "xyzzy";
+    trait2.value = "plugh";
+    trait2.keyCommandListConfig = new ListConfigurer (null, "Commands") {
+      @Override
+      protected Configurer buildChildConfigurer() {
+        return new DynamicProperty.DynamicKeyCommandConfigurer (trait2);
+      }
+    };
+    BasicPiece piece = createBasicPiece ();
+    trait2.setInner (piece);
+    PropertyChanger changer = new PropertySetter ("3", new PropertyChangerConfigurer.Constraints () {
+      @Override
+      public boolean isWrap () {
+        return false;
+      }
+
+      @Override
+      public boolean isNumeric () {
+        return false;
+      }
+
+      @Override
+      public int getMaximumValue () {
+        return 0;
+      }
+
+      @Override
+      public int getMinimumValue () {
+        return 0;
+      }
+
+      @Override
+      public PropertySource getPropertySource () {
+        return null;
+      }
+
+      @Override
+      public Component getComponent () {
+        return null;
+      }
+
+      @Override
+      public Object getProperty (Object key) {
+        return null;
+      }
+
+      @Override
+      public Object getLocalizedProperty (Object key) {
+        return null;
+      }
+    });
+    DynamicProperty.DynamicKeyCommand command = new DynamicProperty.DynamicKeyCommand("test", new NamedKeyStroke ("plover"), piece, piece, changer);
+    List<DynamicProperty.DynamicKeyCommand> commands = new ArrayList<> ();
+    commands.add(command);
+    trait2.keyCommandListConfig.setValue (commands);
+    trait2.keyCommands = commands.toArray(new DynamicProperty.DynamicKeyCommand[0]);
+    serializeTest("Key Command", trait2); // NON-NLS
+  }
+
+  @Test
+  public void testFormatInitialValueRFE3472() {
     // Initial value of DynamicProperty was not getting evaluated
     final String pieceName = "Test Piece";
     final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;" + pieceName + ";");

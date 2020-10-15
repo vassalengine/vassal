@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.QuickColors;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -140,6 +141,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -171,6 +173,14 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
   public static final String BUILDFILE = "buildFile.xml";
   public static final String BUILDFILE_OLD = "buildFile";
+
+  public static final String MODULE_NAME_PROPERTY = "ModuleName";
+  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion";
+  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription";
+  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1";
+  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2";
+  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated";
+  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning";
 
   private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -209,6 +219,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
 
   protected String moduleVersion = "0.0";  //$NON-NLS-1$
   protected String vassalVersionCreated = "0.0";  //$NON-NLS-1$
+  protected String moduleOther1 = "";
+  protected String moduleOther2 = "";
   protected String gameName = DEFAULT_NAME;
   protected String localizedGameName = null;
   protected String description = "";
@@ -495,7 +507,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     ChatServerFactory.register("jabber", oncf);
 
     server = new DynamicClient();
-    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server); //NON-NLS
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
@@ -544,7 +556,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * to the chat log, to be displayed there once a Chatter is registered.
    */
   protected void initFrame() {
-    final Rectangle screen = VASSAL.Info.getScreenBounds(frame);
+    final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
 // FIXME: annoying!
@@ -638,6 +650,12 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     else if (DESCRIPTION.equals(name)) {
       description = (String) value;
     }
+    else if (MODULE_OTHER1_PROPERTY.equals(name)) {
+      moduleOther1 = (String) value;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(name)) {
+      moduleOther2 = (String) value;
+    }
   }
 
   /**
@@ -663,6 +681,12 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     }
     else if (DESCRIPTION.equals(name)) {
       return description;
+    }
+    else if (MODULE_OTHER1_PROPERTY.equals(name)) {
+      return moduleOther1;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(name)) {
+      return moduleOther2;
     }
     return null;
   }
@@ -729,8 +753,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       MODULE_NAME,
       MODULE_VERSION,
       DESCRIPTION,
+      MODULE_OTHER1_PROPERTY,
+      MODULE_OTHER2_PROPERTY,
       VASSAL_VERSION_CREATED,
-      NEXT_PIECESLOT_ID
+      NEXT_PIECESLOT_ID,
     };
   }
 
@@ -745,7 +771,9 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.description_label")    //NON-NLS
+      Resources.getString("Editor.description_label"),    //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_1_label"), //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_2_label") //NON-NLS
     };
   }
 
@@ -760,6 +788,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
+      String.class,
       String.class,
       String.class,
       String.class
@@ -1000,8 +1030,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   public void warn(String s) {
     String s2 = s;
-    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-           .replaceAll(">", "&gt;"); //$NON-NLS
+    if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
+      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+        .replaceAll(">", "&gt;"); //$NON-NLS
+    }
     if (chat == null) {
       deferredChat.add(s2);
     }
@@ -1207,7 +1239,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param key Localization key to be used to generate string
    * @param name Name of the object whose title bar is to be generated
    */
-  public String getWindowTitleString (String key, String name) {
+  public String getWindowTitleString(String key, String name) {
     if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
@@ -1228,7 +1260,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   /**
    * Updates the title bar of the main module window, and all map windows
    */
-  public void updateTitleBar () {
+  public void updateTitleBar() {
     frame.setTitle(getTitleString());  //$NON-NLS-1$
 
     for (Map m : getComponentsOf(Map.class)) {
@@ -1252,7 +1284,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @param gameFile Most recent VSAV/VLOG if any
    * @param mode mode of access
    */
-  public void setGameFile (String gameFile, GameFileMode mode) {
+  public void setGameFile(String gameFile, GameFileMode mode) {
     this.gameFile = gameFile;
     setGameFileMode(mode);
     updateTitleBar();
@@ -1261,7 +1293,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   /**
    * @return Most recent .VSAV/.VLOG that we've read or written.
    */
-  public String getGameFile () {
+  public String getGameFile() {
     return gameFile;
   }
 
@@ -1270,7 +1302,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * of windows.
    * @param mode mode of access
    */
-  public void setGameFileMode (GameFileMode mode) {
+  public void setGameFileMode(GameFileMode mode) {
     if (mode == null) {
       throw new NullPointerException();
     }
@@ -1282,7 +1314,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * @return Returns the most recent type of interaction we've had for saving/loading/replaying/logging the game, for managing
    * title bars of windows.
    */
-  public GameFileMode getGameFileMode () {
+  public GameFileMode getGameFileMode() {
     return gameFileMode;
   }
 
@@ -1709,6 +1741,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       else writer.save(true);
 
       lastSavedConfiguration = save;
+
+      GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
@@ -1742,9 +1776,31 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
     }
+    else if (MODULE_NAME_PROPERTY.equals(key)) {
+      return gameName;
+    }
+    else if (MODULE_VERSION_PROPERTY.equals(key)) {
+      return moduleVersion;
+    }
+    else if (MODULE_DESCRIPTION_PROPERTY.equals(key)) {
+      return description;
+    }
+    else if (MODULE_VASSAL_VERSION_CREATED_PROPERTY.equals(key)) {
+      return vassalVersionCreated;
+    }
+    else if (MODULE_VASSAL_VERSION_RUNNING_PROPERTY.equals(key)) {
+      return Info.getVersion();
+    }
+    else if (MODULE_OTHER1_PROPERTY.equals(key)) {
+      return moduleOther1;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(key)) {
+      return moduleOther2;
+    }
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
+
 
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the

@@ -306,12 +306,13 @@
             <property name="specialImportsRegExp" value="^org\."/>
             <property name="thirdPartyPackageRegExp" value="^com\."/>
         </module>
+        -->
         <module name="MethodParamPad">
+            <property name="severity" value="error"/>
             <property name="tokens"
              value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
                     SUPER_CTOR_CALL, ENUM_CONSTANT_DEF"/>
         </module>
-        -->
         <module name="NoWhitespaceBefore">
             <property name="severity" value="error"/>
             <property name="tokens"

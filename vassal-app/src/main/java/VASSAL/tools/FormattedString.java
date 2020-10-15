@@ -162,7 +162,7 @@ public class FormattedString implements Loopable {
       }
     }
     catch (RecursionLimitException e) {
-      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
       return "";
     }
     finally {

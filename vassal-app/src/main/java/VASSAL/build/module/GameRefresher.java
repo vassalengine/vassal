@@ -303,7 +303,7 @@ public final class GameRefresher implements GameComponent {
     private JTextArea results;
     private JCheckBox nameCheck;
 
-    RefreshDialog (GameRefresher refresher) {
+    RefreshDialog(GameRefresher refresher) {
       this.refresher = refresher;
       setTitle(Resources.getString("GameRefresher.refresh_counters"));
       setModal(true);
@@ -353,12 +353,12 @@ public final class GameRefresher implements GameComponent {
 
     protected void test() {
       results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
-      refresher.execute (true, nameCheck.isSelected());
+      refresher.execute(true, nameCheck.isSelected());
     }
 
     protected void run() {
       results.setText("");
-      refresher.execute (false, nameCheck.isSelected());
+      refresher.execute(false, nameCheck.isSelected());
       exit();
     }
 

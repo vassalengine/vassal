@@ -83,6 +83,18 @@ public class ModuleManager {
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
   public static void main(String[] args) {
+    // do this before the graphics subsystem fires up or it won't stick
+    System.setProperty("swing.boldMetal", "false");
+
+    try {
+      Info.setConfig(new StandardConfig());
+    }
+    catch (IOException e) {
+// FIXME: should be a dialog...
+      System.err.println("VASSAL: " + e.getMessage());
+      System.exit(1);
+    }
+
 // FIXME: We need to catch more exceptions in main() and then exit in
 // order to avoid situations where the main thread ends due to an uncaught
 // exception, but there are other threads still running, and so VASSAL
@@ -99,9 +111,6 @@ public class ModuleManager {
       System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
       System.exit(1);
     }
-
-    // do this before the graphics subsystem fires up or it won't stick
-    System.setProperty("swing.boldMetal", "false");
 
     if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
       // show the translation window in translation mode
@@ -131,7 +140,8 @@ public class ModuleManager {
     // (2) No port collisions, because we don't use a predetermined port.
     //
 
-    // Different versions of VASSAL can all co-exist, each with own Module Manager
+    // Different versions of VASSAL can all co-exist, each with own
+    // Module Manager
     String ver = Info.getReportableVersion();
 
     final File keyfile = new File(Info.getConfDir(), "key-" + ver);
@@ -143,7 +153,6 @@ public class ModuleManager {
     FileLock klock = null;
     try (RandomAccessFile kraf = new RandomAccessFile(keyfile, "rw")) {
       // acquire an exclusive lock on the key file
-
       try {
         klock = kraf.getChannel().lock();
       }
@@ -273,7 +282,7 @@ public class ModuleManager {
     final File pdir = Info.getPrefsDir();
     if (!pdir.exists()) {
       // Check the 3.2.0 through 3.2.7 location
-      File pzip = new File(Info.getHomeDir(), "Preferences");
+      File pzip = new File(Info.getConfDir(), "Preferences");
       if (!pzip.exists()) {
         // Check the pre-3.2 location.
         pzip = new File(System.getProperty("user.home"), "VASSAL/Preferences");

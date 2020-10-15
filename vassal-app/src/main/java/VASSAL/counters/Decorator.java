@@ -25,6 +25,8 @@ import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ProblemDialog;
+
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
@@ -44,14 +46,21 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
+import VASSAL.build.module.GameState;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.command.ChangePiece;
+import VASSAL.configure.Configurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
@@ -441,7 +450,6 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    * The commands for a Trait/{@link Decorator} are a composite of {@link #myGetKeyCommands} and the
    * commands of its inner piece member(s), so requesting this information of the "outermost" Trait/Decorator of
    * a piece will produce the complete set of Key Commands for the entire logical game piece.
-   * @return the key commands for this piece and its inner piece(s).
    *
    * See also: {@link #myGetKeyCommands}, which returns the commands for this Trait/Decorator only.
    */
@@ -766,14 +774,22 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
 
   /**
    * Utility method to allow Decorator Editors to repack themselves.
+   * Repack larger, but not smaller.
    * @param c must be one of the Swing components that make up the Decorator's controls.
    */
   public static void repack(Component c) {
     final Window w = SwingUtilities.getWindowAncestor(c);
     if (w != null) {
+      w.setMinimumSize(w.getSize());
       w.pack();
+      w.setMinimumSize(null);
     }
   }
+
+  public static void repack(Configurer c) {
+    repack(c.getControls());
+  }
+
 
   /**
    * Support caching Selection status locally
@@ -801,5 +817,39 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
     if (piece instanceof ImageSearchTarget) {
       ((ImageSearchTarget)piece).addImageNamesRecursively(s);
     }
+    
+  /**  
+   * Test if this Decorator's Class, Type and State are equal to another trait.
+   *
+   * Implementations of this method should compare the individual values of the fields that
+   * make up the Decorators Type and State. Implementations should NOT compare the values
+   * returned by myGetType() or myGetState().
+   *
+   * This method is intended to be used by Unit Tests to verify that a trait
+   * is unchanged after going through a process such as serialization/deserialization.
+   *
+   * @param o Object to compare this Decorator to
+   * @return true if the Class, type and state all match
+   */
+  public boolean testEquals(Object o) {
+    return this.equals(o);
+  }
+
+  /**
+   * Build a description of a trait of the form
+   * Type - Description
+   * Where Type is the translated trait type description and Description
+   * is a supplied additional description
+   *
+   * @param i18nKey Translation key for trait type description
+   * @param description Optional additional description
+   * @return Combined description
+   */
+  protected String buildDescription(String i18nKey, String description) {
+    return buildDescription(i18nKey) + ((description == null || description.isEmpty()) ? "" : (" - " + description));
+  }
+
+  protected String buildDescription(String i18nKey) {
+    return Resources.getString(i18nKey);
   }
 }

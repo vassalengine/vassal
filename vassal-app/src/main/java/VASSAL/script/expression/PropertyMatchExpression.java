@@ -31,7 +31,7 @@ public class PropertyMatchExpression extends Expression {
 
   protected PieceFilter filter;
 
-  public PropertyMatchExpression (String s) {
+  public PropertyMatchExpression(String s) {
     setExpression(s);
   }
 

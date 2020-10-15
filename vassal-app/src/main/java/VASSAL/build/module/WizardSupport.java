@@ -653,6 +653,7 @@ public class WizardSupport {
                 new SavedGameLoader(controller, settings, new BufferedInputStream(new FileInputStream(f)), POST_LOAD_GAME_WIZARD) {
                   @Override
                   public void run() {
+                    GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
                     super.run();
                     processing.remove(f);
                   }

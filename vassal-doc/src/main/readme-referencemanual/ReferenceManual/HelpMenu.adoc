@@ -21,9 +21,9 @@ of a rulebook, in your module (see <<#PDF,Using PDF Files>> , below).
 ==== HTML Help File
 
 Adds an entry to the help menu.
-Selecting the menu opens an external browser on the user's machine with HTML content that you specify.
+Selecting the menu item opens an external browser on the user's machine with HTML content that you specify.
 
-*Menu Entry*:  The menu item to be added to the Help menu.
+*Menu Text*:  The menu item to be added to the Help menu.
 
 *Contents*:  A folder on your local file system.
 The contents of the folder will be copied into the module and expanded onto the user's machine when the user selects the menu item.
@@ -39,21 +39,14 @@ image:images/HtmlHelpFile.png[]
 [width="100%",cols="50%,50%",]
 |===
 |image:images/HelpFilePDF.png[]
-
 a|
 [#PDF]
-==== Using PDF Files:
+==== PDF Help File
+Adds an entry to the help menu. Selecting the menu item opens an external browser to view a specified PDF file.
 
-To include a PDF file on your help menu, follow these steps:
+*Menu Text*:  The menu item to be added to the Help menu.
 
-* Put your PDF in a directory on its own on your hard drive (e.g.
-in a "help" subdirectory of where you keep your original art files, etc)
-* Right click the _[Help Menu]_ component in the Editor and select _Add HTML Help File_.
-* For the menu entry, type "Rulebook" or whatever you want displayed as the actual Help Menu entry.
-* Set the _Contents_ to the directory (on your hard drive, not in the Vassal vmod/zip file)
-* Set the _Starting Page_ as the PDF file name.
-* Save the module and you should be good to go.
-
+*PDF File*:  A PDF file you select from your local file system. It will automatically be copied into the module and will be destributed with it.
 |===
 
 [width="100%",cols="50%,50%",]

@@ -377,7 +377,7 @@ public class ServerAddressBook {
     private static final long serialVersionUID = 1L;
     private AddressBookEntry entry;
 
-    public MenuAction (AddressBookEntry e) {
+    public MenuAction(AddressBookEntry e) {
       super(e.toString());
       entry = e;
     }

@@ -123,11 +123,8 @@ public abstract class Launcher {
         final Socket cs = new Socket(lo, port);
 
         ipc = new IPCMessenger(cs);
-
         ipc.addEventListener(CloseRequest.class, new CloseRequestListener());
-
         ipc.start();
-
         ipc.send(new StartedNotice(Info.getInstanceID()));
       }
       catch (IOException e) {

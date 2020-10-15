@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import javax.swing.Box;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -54,7 +54,7 @@ import VASSAL.tools.swing.SwingUtils;
  * @author rkinney
  */
 public class ActionButton extends Decorator implements EditablePiece, Loopable {
-  public static final String ID = "button;";
+  public static final String ID = "button;"; // NON-NLS
   protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
@@ -122,7 +122,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return description.length() == 0 ? "Action Button" : "Action Button - " + description;
+    return buildDescription("Editor.ActionButton.trait_description", description);
   }
   
   
@@ -149,7 +149,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ActionButton.html");
+    return HelpFile.getReferenceManualPage("ActionButton.html"); // NON-NLS
   }
 
   // Implement Loopable
@@ -165,33 +165,47 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof ActionButton)) return false;
+    ActionButton c = (ActionButton) o;
+    if (! Objects.equals(bounds, c.bounds)) return false;
+    return Objects.equals(description, c.description);
+  }
+
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
   public static class Ed implements PieceEditor {
-    private Box box;
-    private IntConfigurer xConfig;
-    private IntConfigurer yConfig;
-    private IntConfigurer widthConfig;
-    private IntConfigurer heightConfig;
-    private NamedHotKeyConfigurer strokeConfig;
+    private final TraitConfigPanel box;
+    private final IntConfigurer xConfig;
+    private final IntConfigurer yConfig;
+    private final IntConfigurer widthConfig;
+    private final IntConfigurer heightConfig;
+    private final NamedHotKeyConfigurer strokeConfig;
     protected StringConfigurer descConfig;
 
     public Ed(ActionButton p) {
-      box = Box.createVerticalBox();
-      descConfig = new StringConfigurer(null, "Description:  ", p.description);
-      box.add(descConfig.getControls());
-      strokeConfig = new NamedHotKeyConfigurer(null, "Invoke Key Command:  ", p.stroke);
-      box.add(strokeConfig.getControls());
-      xConfig = new IntConfigurer(null, "Button X-offset:  ", p.bounds.x);
-      box.add(xConfig.getControls());
-      yConfig = new IntConfigurer(null, "Button Y-offset:  ", p.bounds.y);
-      box.add(yConfig.getControls());
-      widthConfig = new IntConfigurer(null, "Button Width:  ", p.bounds.width);
-      box.add(widthConfig.getControls());
-      heightConfig = new IntConfigurer(null, "Button Height:  ", p.bounds.height);
-      box.add(heightConfig.getControls());
+      box = new TraitConfigPanel();
+
+      descConfig = new StringConfigurer(p.description);
+      box.add("Editor.description_label", descConfig);
+
+      strokeConfig = new NamedHotKeyConfigurer(p.stroke);
+      box.add("Editor.ActionButton.invoke_key_command", strokeConfig);
+
+      xConfig = new IntConfigurer(p.bounds.x);
+      box.add("Editor.ActionButton.button_x_offset", xConfig);
+
+      yConfig = new IntConfigurer(p.bounds.y);
+      box.add("Editor.ActionButton.button_y_offset", yConfig);
+
+      widthConfig = new IntConfigurer(p.bounds.width);
+      box.add("Editor.ActionButton.button_width", widthConfig);
+
+      heightConfig = new IntConfigurer(p.bounds.height);
+      box.add("Editor.ActionButton.button_height", heightConfig);
     }
 
     @Override
@@ -219,9 +233,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
    * click falls within the button's boundaries
    */
   protected static class ButtonPusher {
-    private Set<Map> maps = new HashSet<>();
-    private java.util.Map<Component, ComponentMouseListener>
-      componentMouseListeners = new HashMap<>();
+    private final Set<Map> maps = new HashSet<>();
+    private final java.util.Map<Component, ComponentMouseListener> componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
       if (map != null) {
@@ -295,7 +308,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     }
 
     protected class MapMouseListener extends MouseAdapter {
-      private Map map;
+      private final Map map;
 
       public MapMouseListener(Map map) {
         this.map = map;

@@ -40,6 +40,13 @@ public interface PieceFinder {
    * */
   PieceFinder PIECE_IN_STACK = new PieceInStack();
 
+  /**
+   * If a Stack overlaps the given point, return the piece containing that point if expanded,
+   * or the top piece if not expanded.
+   * If a Deck is found instead, return the deck.
+   */
+  PieceFinder DECK_OR_PIECE_IN_STACK = new DeckOrPieceInStack();
+
   /** Returns a Stack if unexpanded and overlapping the given point,
    * or a piece within that stack if expanded and overlapping the given point
    */
@@ -60,8 +67,19 @@ public interface PieceFinder {
       }
       return selected;
     }
-
   }
+
+
+  public class DeckOrPieceInStack extends PieceInStack {
+    @Override
+    public Object visitDeck(Deck d) {
+      Shape s = d.getShape();
+      Point pos = d.getPosition();
+      Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      return (s.contains(p) ? d : null);
+    }
+  }
+
 
   public class PieceInStack extends Movable {
     @Override

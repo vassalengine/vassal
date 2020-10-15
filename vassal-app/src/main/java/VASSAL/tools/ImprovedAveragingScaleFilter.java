@@ -23,7 +23,9 @@ import java.awt.image.ColorModel;
 /**
  * Extension of java.awt.image.AreaAveragingScaleFilter.  Uses the
  * same algorithm but makes sure all images are scaled using area
- * averaging.  Ensures there is no fallback to ReplicateScaleFilter. */
+ * averaging.  Ensures there is no fallback to ReplicateScaleFilter.
+ */
+@Deprecated(since = "2020-10-12", forRemoval = true)
 public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
   private int savedWidth;
   private int savedHeight;
@@ -42,25 +44,25 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
   @Override
   public void setColorModel(ColorModel model) {
     // Change color model to model you are generating
-    consumer.setColorModel (defaultCM);
+    consumer.setColorModel(defaultCM);
   }
 
   @Override
   public void setHints(int hintflags) {
-    consumer.setHints (TOPDOWNLEFTRIGHT | COMPLETESCANLINES |
+    consumer.setHints(TOPDOWNLEFTRIGHT | COMPLETESCANLINES |
         SINGLEPASS | (hintflags & SINGLEFRAME));
   }
 
   @Override
   public void setPixels(int x, int y, int width, int height,
                          ColorModel cm, byte[] pixels, int offset, int scansize) {
-    setThePixels (x, y, width, height, cm, pixels, offset, scansize);
+    setThePixels(x, y, width, height, cm, pixels, offset, scansize);
   }
 
   @Override
   public void setPixels(int x, int y, int width, int height,
                          ColorModel cm, int[] pixels, int offset, int scansize) {
-    setThePixels (x, y, width, height, cm, pixels, offset, scansize);
+    setThePixels(x, y, width, height, cm, pixels, offset, scansize);
   }
 
   private void setThePixels(int x, int y, int width, int height,
@@ -85,7 +87,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
   @Override
   public void imageComplete(int status) {
     if ((status == IMAGEABORTED) || (status == IMAGEERROR)) {
-      consumer.imageComplete (status);
+      consumer.imageComplete(status);
     }
     else {
       // get orig image width and height
@@ -97,10 +99,10 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
         for (int xx = 0; xx < savedWidth; xx++) {
           pixels[position++] = savedPixels[start + xx];
         }
-        super.setPixels (0, yy, savedWidth, 1, defaultCM,
+        super.setPixels(0, yy, savedWidth, 1, defaultCM,
             pixels, 0, savedWidth);
       }
-      consumer.imageComplete (status);
+      consumer.imageComplete(status);
     }
   }
 }

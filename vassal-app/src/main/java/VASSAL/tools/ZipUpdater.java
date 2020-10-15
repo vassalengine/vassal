@@ -55,7 +55,7 @@ import VASSAL.tools.io.IOUtils;
  *
  * @deprecated removed without replacement
  */
-@Deprecated
+@Deprecated(since = "2020-08-05", forRemoval = true)
 public class ZipUpdater implements Runnable {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipUpdater.class);

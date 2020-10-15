@@ -247,7 +247,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of (report.getFormat());
+    return List.of(report.getFormat());
   }
 
 

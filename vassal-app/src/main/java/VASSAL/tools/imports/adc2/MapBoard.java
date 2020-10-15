@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -187,7 +188,7 @@ public class MapBoard extends Importer {
         return null;
       }
 
-      final File f = File.createTempFile("map", ".png", Info.getTempDir());
+      final File f = Files.createTempFile(Info.getTempDir().toPath(), "map_", ".png").toFile();
       try {
         ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
         imageName = getUniqueImageFileName(getName(), ".png");

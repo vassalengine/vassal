@@ -24,7 +24,6 @@ import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHE
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,6 +31,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -103,7 +104,7 @@ public class ZipFileImageTiler {
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
-      final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, new File(tpath));
+      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile();
 
       final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
       final ImageLoader loader = new ImageIOImageLoader(itc);

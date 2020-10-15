@@ -98,7 +98,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   
   
   // For those who wish to override text behavior of both menus and submenus 
-  protected static String getMenuText (KeyCommand keyCommand) {
+  protected static String getMenuText(KeyCommand keyCommand) {
     return keyCommand.getLocalizedMenuText();  
   }  
   
