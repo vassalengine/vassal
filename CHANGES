@@ -27,6 +27,7 @@
 * 13098: Move Compatibility related preferences on the General tab to a new
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
+*  1907: Suggest default filename extensions
 *  1804: Added Preference for turning off sounds
 
 3.4.6 - 12 October 2020
