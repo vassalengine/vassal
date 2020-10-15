@@ -40,16 +40,16 @@ public class Console {
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(Console.class);
 
-  private void show (String s) {
+  private void show(String s) {
     GameModule.getGameModule().warn(s);
   }
 
 
-  private Boolean matches (String s1, String s2) {
+  private Boolean matches(String s1, String s2) {
     return matches(s1, s2, 2);
   }
 
-  private Boolean matches (String s1, String s2, int min) {
+  private Boolean matches(String s1, String s2, int min) {
     if (s2.isEmpty() || (s2.length() > s1.length()) || ((s2.length() < min) && (s1.length() > s2.length()))) {
       return false;
     }
@@ -60,9 +60,9 @@ public class Console {
   }
 
 
-  private Boolean doErrorLog () {
+  private Boolean doErrorLog() {
     String option = decode.nextToken("");
-    if (matches("show", option)) {
+    if (matches("show", option)) { //NON-NLS
       String errorLog = BugUtils.getErrorLog();
       String delims2 = "[\n]+";
       String[] lines = errorLog.split(delims2);
@@ -77,57 +77,55 @@ public class Console {
         }
       }
     }
-    else if (matches("write", option)) {
-      int where = commandLine.toLowerCase().indexOf("write");
+    else if (matches("write", option)) { //NON-NLS
+      int where = commandLine.toLowerCase().indexOf("write"); //NON-NLS
       if ((where > 0) && commandLine.length() > where + 6) {
         log.info(commandLine.substring(where + 6));
       }
     }
-    else if (matches("folder", option)) {
+    else if (matches("folder", option)) { //NON-NLS
       Desktop desktop = Desktop.getDesktop();
-      File dirToOpen = null;
       try {
-        dirToOpen = Info.getHomeDir();
+        File dirToOpen = Info.getConfDir();
         desktop.open(dirToOpen);
       }
       catch (IOException e) {
-        System.out.println("File Not Found");
+        System.out.println("File Not Found"); //NON-NLS
       }
       catch (IllegalArgumentException iae) {
-        System.out.println("File Not Found");
+        System.out.println("Illegal argument"); //NON-NLS
       }
     }
-    else if (matches("open", option)) {
+    else if (matches("open", option)) { //NON-NLS
       Desktop desktop = Desktop.getDesktop();
-      File dirToOpen = null;
       try {
-        dirToOpen = Info.getErrorLogPath();
+        File dirToOpen = Info.getErrorLogPath();
         desktop.open(dirToOpen);
       }
       catch (IOException e) {
-        System.out.println("File Not Found");
+        System.out.println("File Not Found"); //NON-NLS
       }
       catch (IllegalArgumentException iae) {
-        System.out.println("File Not Found");
+        System.out.println("Illegal argument"); //NON-NLS
       }
     }
-    else if (matches("wipe", option)) {
+    else if (matches("wipe", option)) { //NON-NLS
       final File errorLog = Info.getErrorLogPath();
       try {
         new FileOutputStream(errorLog).close();
-        show("Wiped errorlog");
+        show("Wiped errorlog"); //NON-NLS
       }
       catch (IOException e) {
-        show("Failed to wipe errorlog");
+        show("Failed to wipe errorlog"); //NON-NLS
       }
     }
-    else if (matches("?", option) || matches("help", option)) {
-      show("Usage:");
-      show("  /errorlog folder       - Opens folder containing errorlog");
-      show("  /errorlog open         - Opens errorlog in OS");
-      show("  /errorlog show [n]     - Show last n lines of errorlog");
-      show("  /errorlog wipe         - Wipe the errorlog file");
-      show("  /errorlog write [text] - Write text into the errorlog file");
+    else if (matches("?", option) || matches("help", option)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /errorlog folder       - Opens folder containing errorlog"); //NON-NLS
+      show("  /errorlog open         - Opens errorlog in OS"); //NON-NLS
+      show("  /errorlog show [n]     - Show last n lines of errorlog"); //NON-NLS
+      show("  /errorlog wipe         - Wipe the errorlog file"); //NON-NLS
+      show("  /errorlog write [text] - Write text into the errorlog file"); //NON-NLS
     }
 
     return true;
@@ -138,18 +136,18 @@ public class Console {
     String option   = decode.nextToken("");
     String property = decode.nextToken("");
 
-    if (matches("?", option) || matches("help", option)) {
-      show ("Usage:");
-      show ("  /property show [property]        - show global property value");
-      show ("  /property set [property] [value] - set global property new value");
+    if (matches("?", option) || matches("help", option)) { //NON-NLS
+      show("Usage:"); //NON-NLS
+      show("  /property show [property]        - show global property value"); //NON-NLS
+      show("  /property set [property] [value] - set global property new value"); //NON-NLS
     }
-    else if (matches("show", option)) {
+    else if (matches("show", option)) { //NON-NLS
       MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
       if (propValue != null) {
         show("[" + property + "]: " + propValue.getPropertyValue());
       }
     }
-    else if (matches("set", option)) {
+    else if (matches("set", option)) { //NON-NLS
       MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
       if (propValue != null) {
         propValue.setPropertyValue(decode.nextToken(""));
@@ -178,7 +176,7 @@ public class Console {
     Logger log = GameModule.getGameModule().getLogger();
     if (log instanceof BasicLogger) {
       if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().getPlayerRoster().isMultiPlayer()) {
-        show ("<b>Console commands not allowed in multiplayer games.</b>");
+        show("<b>Console commands not allowed in multiplayer games.</b>"); //NON-NLS
         return false;
       }
     }
@@ -188,8 +186,8 @@ public class Console {
     // First get rid of any extra spaces between things
     String delims = "[ ]+";
     String[] tokens = commandLine.split(delims);
-    StringBuilder sb = new StringBuilder("");
-    Boolean first = true;
+    StringBuilder sb = new StringBuilder();
+    boolean first = true;
     for (String t : tokens) {
       if (first) {
         first = false;
@@ -205,16 +203,16 @@ public class Console {
 
     String command = decode.nextToken("");
 
-    if (matches("errorlog", command)) {
+    if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
     }
 
-    if (matches("property", command)) {
+    if (matches("property", command)) { //NON-NLS
       return doProperty();
     }
 
     if (!consoleHook(s, commandLine, cl, command, decode)) {
-      show ("Unknown command.");
+      show("Unknown command."); //NON-NLS
       return false;
     }
 
