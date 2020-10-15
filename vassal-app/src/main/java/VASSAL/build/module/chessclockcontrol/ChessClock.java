@@ -457,7 +457,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       }
       else if (doSeconds) {
         timerButton.setText(String.format("%s%d:%02d:%02d:%02d", getFormattedButtonText(), days, hours, minutes, seconds)); //NON-NLS
-        baseline = "0:00:00:00.0"; //NON-NLS
+        baseline = "0:00:00:00"; //NON-NLS
       }
       else {
         timerButton.setText(String.format("%s%dd:%02d:%02d", getFormattedButtonText(), days, hours, minutes)); //NON-NLS
