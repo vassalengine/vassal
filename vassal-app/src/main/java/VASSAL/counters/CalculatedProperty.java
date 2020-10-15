@@ -25,8 +25,7 @@ import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import java.util.Objects;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.BadDataReport;
@@ -50,7 +49,7 @@ import VASSAL.tools.SequenceEncoder;
  * */
 public class CalculatedProperty extends Decorator implements EditablePiece, Loopable {
 
-  public static final String ID = "calcProp;";
+  public static final String ID = "calcProp;"; // NON-NLS
 
   protected static int counter = 0;
 
@@ -115,16 +114,12 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public String getDescription() {
-    String desc = "Calculated Property";
-    if (name != null && name.length() > 0) {
-      desc += " - " + name;
-    }
-    return desc;
+    return buildDescription("Editor.CalculatedProperty.trait_description", name);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("CalculatedProperty.html");
+    return HelpFile.getReferenceManualPage("CalculatedProperty.html"); // NON-NLS
   }
 
   @Override
@@ -209,9 +204,17 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     }
     catch (ExpressionException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        piece.getProperty(BasicPiece.BASIC_NAME) + "-Calculated Property[" + name + "]=" + getExpression() + ", Error=" + e.getError(), e));
+        piece.getProperty(BasicPiece.BASIC_NAME) + "-Calculated Property[" + name + "]=" + getExpression() + ", Error=" + e.getError(), e)); // NON-NLS
       return "";
     }
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof CalculatedProperty)) return false;
+    CalculatedProperty c = (CalculatedProperty) o;
+    if (! Objects.equals(name, c.name)) return false;
+    return Objects.equals(expression, c.expression);
   }
 
   @Override
@@ -228,18 +231,17 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     protected StringConfigurer nameConfig;
     protected BeanShellExpressionConfigurer expressionConfig;
     protected StringConfigurer defaultValueConfig;
-    protected JPanel box;
+    protected TraitConfigPanel box;
 
     public Ed(CalculatedProperty piece) {
 
-      box = new JPanel();
-      box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+      box = new TraitConfigPanel();
 
-      nameConfig = new StringConfigurer(null, "Property Name:  ", piece.name);
-      box.add(nameConfig.getControls());
+      nameConfig = new StringConfigurer(piece.name);
+      box.add("Editor.CalculatedProperty.property_name", nameConfig);
 
-      expressionConfig = new BeanShellExpressionConfigurer(null, "Expression:  ", piece.getExpression(), Decorator.getOutermost(piece));
-      box.add(expressionConfig.getControls());
+      expressionConfig = new BeanShellExpressionConfigurer(piece.getExpression(), Decorator.getOutermost(piece));
+      box.add("Editor.CalculatedProperty.expression", expressionConfig);
 
     }
 

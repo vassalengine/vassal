@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright 2020 Vassal Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -15,26 +14,26 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+
 package VASSAL.counters;
 
-/**
- * For handling Visitors that are aware of {@link Deck} types
- */
-public class DeckVisitorDispatcher extends PieceVisitorDispatcher {
-  private final DeckVisitor visitor;
+import java.lang.reflect.InvocationTargetException;
 
-  public DeckVisitorDispatcher(DeckVisitor visitor) {
-    super(visitor);
-    this.visitor = visitor;
-  }
+import org.junit.Test;
 
-  @Override
-  public Object accept(GamePiece piece) {
-    if (piece instanceof Deck) {
-      return visitor.visitDeck((Deck)piece);
-    }
-    else {
-      return super.accept(piece);
-    }
+public class EmbellishmentTest extends DecoratorTest {
+
+  @Test
+  public void serializeTests() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
+    Embellishment trait = new Embellishment();
+
+    // Default trait
+    serializeTest("Default trait", trait); // NON-NLS
+
+    // TODO Need some more complex Embellishment tests here
+    trait = new Embellishment();
+
+
   }
 }

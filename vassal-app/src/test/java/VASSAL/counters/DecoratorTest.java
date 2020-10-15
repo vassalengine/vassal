@@ -19,9 +19,14 @@ package VASSAL.counters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicCommandEncoder;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.icon.IconFactory;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.ImageIcon;
@@ -43,23 +48,38 @@ public class DecoratorTest {
    */
   public void serializeTest(String test, Decorator referenceTrait) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
-    // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
-    try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
-      staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon());
+    BufferedImage dummyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
+      try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
+        staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon(dummyImage));
+        staticIf.when(() -> IconFactory.getIcon("no", 0)).thenReturn(new ImageIcon(dummyImage));
+        staticIf.when(() -> IconFactory.getIcon("yes", 0)).thenReturn(new ImageIcon(dummyImage));
 
-      // Can't test without a properly constructed BasicPiece as the inner
-      if (referenceTrait.getInner() == null) {
-        referenceTrait.setInner(createBasicPiece());
+        // Mock DataArchive to return a list of image names
+        final DataArchive da = mock(DataArchive.class);
+        when(da.getImageNames()).thenReturn(new String[0]);
+
+        // Mock GameModule to return a DataArchive
+        final GameModule gm = mock(GameModule.class);
+        when(gm.getDataArchive()).thenReturn(da);
+
+        staticGm.when(GameModule::getGameModule).thenReturn(gm);
+
+        // Can't test without a properly constructed BasicPiece as the inner
+        if (referenceTrait.getInner() == null) {
+          referenceTrait.setInner(createBasicPiece());
+        }
+
+        // Test we can reconstruct a Piece by passing its type through its Constructor
+        constructorTest(test, referenceTrait);
+
+        // Test we can reconstruct a Piece using the BasicCommandEncoder
+        commandEncoderTest(test, referenceTrait);
+
+        // Test the serialization used in the internal editor matches the standard serialization
+        editorTest(test, referenceTrait);
       }
-
-      // Test we can reconstruct a Piece by passing its type through its Constructor
-      constructorTest(test, referenceTrait);
-
-      // Test we can reconstruct a Piece using the BasicCommandEncoder
-      commandEncoderTest(test, referenceTrait);
-
-      // Test the serialization used in the internal editor matches the standard serialization
-      editorTest(test, referenceTrait);
     }
   }
 
@@ -79,20 +99,20 @@ public class DecoratorTest {
    * Test that a trait's internal editor encodes the type and state in the same way
    * that the trait started with. Checks for serialization issues in the trait editors.
    *
+   * NOTE: Don't test State after across the Editor, Trait Editors don't need to maintain state
+   *
    * @param test A descriptive name for this test or test sequence
    * @param referenceTrait The trait to be tested
    */
   public void editorTest(String test, Decorator referenceTrait) {
 
-    // Save the original Type and State in case the Editor changes them
+    // Save the original Type in case the Editor changes them
     final String originalType = referenceTrait.myGetType();
-    final String originalState = referenceTrait.myGetState();
 
     // Create an instance of the Editor
     final PieceEditor editor = referenceTrait.getEditor();
 
-    // Confirm that the Type and State encoded by the editor is the same as the original trait
-    assertThat("Trait Edit Test (State): " + test, editor.getState(), is(equalTo(originalState))); // NON-NLS
+    // Confirm that the Type  encoded by the editor is the same as the original trait
     assertThat("Trait Edit Test (Type): " + test, editor.getType(), is(equalTo(originalType))); // NON-NLS
   }
 

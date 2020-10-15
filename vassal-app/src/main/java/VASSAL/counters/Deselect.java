@@ -24,8 +24,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Point;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import java.util.Objects;
 import javax.swing.KeyStroke;
 
 import java.util.ArrayList;
@@ -49,8 +48,8 @@ import VASSAL.configure.StringConfigurer;
  * @author Brian Reynolds
  */
 public class Deselect extends Decorator implements TranslatablePiece {
-  private static final char DELIMITER = '\t'; //$NON-NLS-1$
-  public static final String ID = "deselect" + DELIMITER;
+  private static final char DELIMITER = ';'; //$NON-NLS-1$
+  public static final String ID = "deselect" + DELIMITER; // NON-NLS
   protected KeyCommand[] command;
   protected String commandName;
   protected NamedKeyStroke key;
@@ -59,7 +58,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   protected Boolean unstack;
 
   public Deselect() {
-    commandName = "Deselect";
+    commandName = Resources.getString("Editor.Deselect.deselect");
     key = new NamedKeyStroke(KeyStroke.getKeyStroke("K"));
     description = "";
     unstack = false;
@@ -155,39 +154,48 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   public String getDescription() {
-    return (description == null || description.length() == 0) ? Resources.getString("Deselect.Deselect") : Resources.getString("Deselect.Deselect") + " - " + description;
+    return buildDescription("Editor.Deselect.deselect", description);
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Deselect.htm", "");
+    return HelpFile.getReferenceManualPage("Deselect.htm", ""); // NON-NLS
   }
 
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, "Deselect command");
+    return getI18nData(commandName, Resources.getString("Editor.Deselect.deselect_command"));
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Deselect)) return false;
+    Deselect c = (Deselect) o;
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    if (! Objects.equals(description, c.description)) return false;
+    if (! Objects.equals(unstack, c.unstack)) return false;
+    return Objects.equals(key, c.key);
   }
 
   public static class Ed implements PieceEditor {
-    private StringConfigurer nameInput;
-    private StringConfigurer descInput;
-    private NamedHotKeyConfigurer keyInput;
-    private BooleanConfigurer unstackInput;
-    private JPanel controls;
+    private final StringConfigurer nameInput;
+    private final StringConfigurer descInput;
+    private final NamedHotKeyConfigurer keyInput;
+    private final BooleanConfigurer unstackInput;
+    private final TraitConfigPanel controls;
 
     public Ed(Deselect p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      descInput = new StringConfigurer(null, Resources.getString("Editor.description_label"), p.description);
-      controls.add(descInput.getControls());
+      descInput = new StringConfigurer(p.description);
+      controls.add("Editor.description_label", descInput);
 
-      nameInput = new StringConfigurer(null, Resources.getString("Editor.menu_command"), p.commandName);
-      controls.add(nameInput.getControls());
+      nameInput = new StringConfigurer(p.commandName);
+      controls.add("Editor.menu_command", nameInput);
 
-      keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);
-      controls.add(keyInput.getControls());
+      keyInput = new NamedHotKeyConfigurer(p.key);
+      controls.add("Editor.keyboard_command", keyInput);
 
-      unstackInput = new BooleanConfigurer(null, Resources.getString("Editor.Deselect.remove_piece_from_stack"), p.unstack);
-      controls.add(unstackInput.getControls());
+      unstackInput = new BooleanConfigurer(p.unstack);
+      controls.add("Editor.Deselect.remove_piece_from_stack", unstackInput);
     }
 
     public Component getControls() {
@@ -210,7 +218,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    ArrayList<String> l = new ArrayList<>();
     l.add(Properties.SELECTED);
     return l;
   }

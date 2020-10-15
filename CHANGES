@@ -1,10 +1,13 @@
 3.5.0-beta1 - ???
 
+* 13509: Save As in Editor, if it fails, complains about old filename instead
+    of new filename
 * 13504: Simpler way to display PDF files from Help menu
 * 13495: Wizard should set the initial value for next save/load dialog
 * 13494: Expose version numbers and module strings to module as properties
 * 13432: MouseOverStackViewer can show > 1 piece of a deck
-* 13417: Editor's search function can now search piece traits and component attributes
+* 13417: Editor's search function can now search piece traits and component
+    attributes
 * 13415: MouseoverStackViewer has HTML support and additional formatting options
 * 13414: "Help" button (and help information) added to Preferences dialog
 * 13368: Added preference to control drag-at-edge-of-map width

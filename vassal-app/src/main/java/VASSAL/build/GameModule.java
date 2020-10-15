@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.QuickColors;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -140,6 +141,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -548,7 +550,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    * to the chat log, to be displayed there once a Chatter is registered.
    */
   protected void initFrame() {
-    final Rectangle screen = VASSAL.Info.getScreenBounds(frame);
+    final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
 // FIXME: annoying!
@@ -1022,8 +1024,10 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
    */
   public void warn(String s) {
     String s2 = s;
-    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-           .replaceAll(">", "&gt;"); //$NON-NLS
+    if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
+      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+        .replaceAll(">", "&gt;"); //$NON-NLS
+    }
     if (chat == null) {
       deferredChat.add(s2);
     }
@@ -1729,6 +1733,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       else writer.save(true);
 
       lastSavedConfiguration = save;
+
+      GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());

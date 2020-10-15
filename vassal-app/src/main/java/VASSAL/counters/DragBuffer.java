@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -33,6 +32,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import VASSAL.build.module.Map;
+import VASSAL.tools.ProblemDialog;
 
 public class DragBuffer {
   private static final DragBuffer THE_BUFFER = new DragBuffer();
@@ -43,7 +43,9 @@ public class DragBuffer {
   private MouseListener dropHandler;
   private Map dragFromMap;
 
-  private DragBuffer() { }
+  private DragBuffer() {
+
+  }
 
   public static DragBuffer getBuffer() {
     return THE_BUFFER;

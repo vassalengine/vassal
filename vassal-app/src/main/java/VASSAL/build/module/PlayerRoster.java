@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.counters.TraitConfigPanel;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -27,9 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -509,7 +508,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static class PlayerInfo {
     public String playerId;
     public String playerName;
-    private String side;
+    private final String side;
 
     public PlayerInfo(String id, String name, String side) {
       if (id == null) {
@@ -545,8 +544,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public static class Add extends Command {
-    private PlayerRoster roster;
-    private String id, name, side;
+    private final PlayerRoster roster;
+    private final String id;
+    private final String name;
+    private final String side;
 
     public Add(PlayerRoster r, String playerId,
                String playerName, String side) {
@@ -568,41 +569,43 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   private class Con extends Configurer {
-    private StringArrayConfigurer sidesConfig;
-    private IconConfigurer iconConfig;
-    private StringConfigurer textConfig;
-    private StringConfigurer tooltipConfig;
-    private NamedHotKeyConfigurer keyConfig;
-    private JPanel controls;
+    private final StringArrayConfigurer sidesConfig;
+    private final IconConfigurer iconConfig;
+    private final StringConfigurer textConfig;
+    private final StringConfigurer tooltipConfig;
+    private final NamedHotKeyConfigurer keyConfig;
+    private final TraitConfigPanel controls;
 
     private Con() {
       super(null, null);
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[0])); //$NON-NLS-1$
+      controls = new TraitConfigPanel();
+
+      sidesConfig = new StringArrayConfigurer(sides.toArray(new String[0]), 4, 8); //$NON-NLS-1$
       sidesConfig.addPropertyChangeListener(evt -> {
         sides.clear();
         sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
+        //sidesConfig.updateViewable();
+        repack();
       });
-      controls.add(sidesConfig.getControls());
+      controls.add("Editor.PlayerRoster.sides_available", sidesConfig);
 
-      textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
+      textConfig = new StringConfigurer(BUTTON_TEXT, "", retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
       textConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString()));
-      controls.add(textConfig.getControls());
+      controls.add("Editor.PlayerRoster.retire_button_text", textConfig);
 
-      tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
+      tooltipConfig = new StringConfigurer(TOOL_TIP, "", retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
       tooltipConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString()));
-      controls.add(tooltipConfig.getControls());
+      controls.add("Editor.PlayerRoster.retire_button_tooltip", tooltipConfig);
 
-      iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
+      iconConfig = new IconConfigurer(BUTTON_ICON, "", null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString()));
-      controls.add(iconConfig.getControls());
+      controls.add("Editor.PlayerRoster.retire_button_icon", iconConfig);
 
-      keyConfig = (NamedHotKeyConfigurer)retireButton.getHotkeyConfigurer();
-      keyConfig.setName(Resources.getString("Editor.PlayerRoster.retire_button_keystroke"));
+      keyConfig = (NamedHotKeyConfigurer) retireButton.getHotkeyConfigurer();
+      keyConfig.setName("");
       keyConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_KEYSTROKE, keyConfig.getValueString()));
-      controls.add(keyConfig.getControls());
+      controls.add("Editor.PlayerRoster.retire_button_keystroke", keyConfig);
     }
 
     @Override

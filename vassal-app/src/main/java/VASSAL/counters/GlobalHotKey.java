@@ -1,5 +1,16 @@
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -7,18 +18,8 @@ import java.awt.Shape;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.Box;
+import java.util.Objects;
 import javax.swing.KeyStroke;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * Adds a menu entry that fires a specified key event to the module window.
@@ -27,11 +28,11 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class GlobalHotKey extends Decorator implements TranslatablePiece {
-  public static final String ID = "globalhotkey;";
+  public static final String ID = "globalhotkey;"; // NON-NLS
 
   protected NamedKeyStroke commandKey;
   protected NamedKeyStroke globalHotKey;
-  protected String commandName = "Hotkey";
+  protected String commandName;
   protected KeyCommand[] commands;
   protected KeyCommand command;
   protected String description = "";
@@ -112,12 +113,12 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  " + description;
+    return buildDescription("Editor.GlobalHotKey.trait_description", description);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalHotKey.html");
+    return HelpFile.getReferenceManualPage("GlobalHotKey.html"); // NON-NLS
   }
 
   @Override
@@ -137,32 +138,42 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, getDescription() + " command");
+    return getI18nData(commandName, Resources.getString("Editor.GlobalHoyKey.global_hotkey_command")); // NON-NLS
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof GlobalHotKey)) return false;
+    final GlobalHotKey c = (GlobalHotKey) o;
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    if (! Objects.equals(commandKey, c.commandKey)) return false;
+    if (! Objects.equals(globalHotKey, c.globalHotKey)) return false;
+    return Objects.equals(description, c.description);
   }
 
   public static class Ed implements PieceEditor {
 
-    private StringConfigurer commandConfig;
-    private NamedHotKeyConfigurer commandKeyConfig;
-    private NamedHotKeyConfigurer hotKeyConfig;
+    private final StringConfigurer commandConfig;
+    private final NamedHotKeyConfigurer commandKeyConfig;
+    private final NamedHotKeyConfigurer hotKeyConfig;
     protected StringConfigurer descConfig;
 
-    private Box controls;
+    private final TraitConfigPanel controls;
 
     public Ed(GlobalHotKey k) {
-      controls = Box.createVerticalBox();
+      controls = new TraitConfigPanel();
 
-      descConfig = new StringConfigurer(null, "Description:  ", k.description);
-      controls.add(descConfig.getControls());
+      descConfig = new StringConfigurer(k.description);
+      controls.add("Editor.description_label", descConfig);
 
-      commandConfig = new StringConfigurer(null, "Menu text:  ", k.commandName);
-      controls.add(commandConfig.getControls());
+      commandConfig = new StringConfigurer(k.commandName);
+      controls.add("Editor.menu_command", commandConfig);
 
-      commandKeyConfig = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", k.commandKey);
-      controls.add(commandKeyConfig.getControls());
+      commandKeyConfig = new NamedHotKeyConfigurer(k.commandKey);
+      controls.add("Editor.keyboard_command", commandKeyConfig);
 
-      hotKeyConfig = new NamedHotKeyConfigurer(null, "Global Hotkey:  ", k.globalHotKey);
-      controls.add(hotKeyConfig.getControls());
+      hotKeyConfig = new NamedHotKeyConfigurer(k.globalHotKey);
+      controls.add("Editor.GlobalHotKey.global_hotkey", hotKeyConfig);
     }
 
     @Override

@@ -290,8 +290,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return new String[]{
         Resources.getString(Resources.NAME_LABEL),
         Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
-        Resources.getString("Editor.xposition"), //$NON-NLS-1$
-        Resources.getString("Editor.yposition"), //$NON-NLS-1$
+        Resources.getString("Editor.x_position"), //$NON-NLS-1$
+        Resources.getString("Editor.y_position"), //$NON-NLS-1$
         Resources.getString("Editor.width"), //$NON-NLS-1$
         Resources.getString("Editor.height"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$

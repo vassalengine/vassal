@@ -17,14 +17,6 @@
  */
 package VASSAL.configure;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
@@ -34,6 +26,15 @@ import VASSAL.script.expression.ExpressionBuilder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 /**
  * A standard Formatted String configurer that has an additional
@@ -63,11 +64,19 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     this(key, name, s, (GamePiece) p);
   }
 
+  public FormattedExpressionConfigurer(String s, Constraints p) {
+    this(null, "", s, p);
+  }
+
   public FormattedExpressionConfigurer(String key, String name, String s, Constraints p) {
     this(key, name, s);
     if (p instanceof GamePiece) {
       storePiece((GamePiece) p);
     }
+  }
+
+  public FormattedExpressionConfigurer(String s, GamePiece p) {
+    this(null, "", s, p);
   }
 
   public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {
@@ -89,7 +98,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     final JPanel p = (JPanel) super.getControls();
     if (button == null) {
       button = buildButton();
