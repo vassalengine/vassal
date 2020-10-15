@@ -825,11 +825,11 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    * @param description Optional additional description
    * @return Combined description
    */
-  protected String buildDescription (String i18nKey, String description) {
+  protected String buildDescription(String i18nKey, String description) {
     return buildDescription(i18nKey) + ((description == null || description.isEmpty()) ? "" : (" - " + description));
   }
 
-  protected String buildDescription (String i18nKey) {
+  protected String buildDescription(String i18nKey) {
     return Resources.getString(i18nKey);
   }
 }

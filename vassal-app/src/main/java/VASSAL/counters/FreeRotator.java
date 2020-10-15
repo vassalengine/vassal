@@ -122,7 +122,6 @@ public class FreeRotator extends Decorator
 
   protected Map startMap;
   protected Point startPosition;
-  protected String description;
 
   public FreeRotator() {
     // modified for random rotation (added two ; )
@@ -730,7 +729,6 @@ public class FreeRotator extends Decorator
     }
 
     if (! Objects.equals(rotateRNDKey, c.rotateRNDKey)) return false;
-    if (! Objects.equals(rotateRNDText, c.rotateRNDText)) return false;
 
     if (! Objects.equals(name, c.name)) return false;
 

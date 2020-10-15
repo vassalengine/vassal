@@ -251,6 +251,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     if (! Objects.equals(pivotX, c.pivotX)) return false;
     if (! Objects.equals(pivotY, c.pivotY)) return false;
     if (! Objects.equals(fixedAngle, c.fixedAngle)) return false;
+    if (! Objects.equals(description, c.description)) return false;
     return Objects.equals(angle, c.angle);
   }
 

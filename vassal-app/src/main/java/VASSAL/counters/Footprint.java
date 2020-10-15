@@ -758,6 +758,7 @@ public class Footprint extends MovementMarkable {
     if (! Objects.equals(trailKeyOn, c.trailKeyOn)) return false;
     if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
     if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
+    if (! Objects.equals(description, c.description)) return false;
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
