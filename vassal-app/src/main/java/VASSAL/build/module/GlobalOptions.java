@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.JLabel;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -97,7 +98,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
-  private String centerOnMoves = PROMPT;
+  private final String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
   private String chatterHTMLSupport = NEVER;
@@ -266,7 +267,7 @@ public class GlobalOptions extends AbstractConfigurable {
     ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return true;
   }
-  
+
   public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
     // Tell SwingUtils we've changed our mind about Macs
@@ -274,7 +275,7 @@ public class GlobalOptions extends AbstractConfigurable {
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
     GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
-  
+
   public boolean getPrefMacLegacy() {
     return macLegacy;
   }
@@ -443,7 +444,12 @@ public class GlobalOptions extends AbstractConfigurable {
     if (config == null) {
       final Configurer defaultConfig = super.getConfigurer();
       for (Configurer c : OPTION_CONFIGURERS.values()) {
-        ((Container) defaultConfig.getControls()).add(c.getControls());
+        final Container container = (Container) defaultConfig.getControls();
+        final String name = c.getName();
+        container.add(new JLabel(name));
+        c.setName("");
+        container.add(c.getControls(), "wrap"); // NON-NLS
+        c.setName(name);
       }
     }
     return config;

@@ -32,6 +32,7 @@ import javax.swing.JPopupMenu;
 public class BeanShellFunctionMenu extends JPopupMenu {
 
   protected static final String[] SUM_COUNT_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
+  protected static final String[] SUM_COUNT_MAP_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.map_warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
 
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
@@ -138,9 +139,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu countMenu = new JMenu(Resources.getString("Editor.BeanShell.sumcount"));
     addFunction(countMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
     addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
-    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
+    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
     addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS
-    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
+    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
 
     final JMenu functionMenu = new JMenu(Resources.getString("Editor.BeanShell.function"));
     functionMenu.add(mathMenu);

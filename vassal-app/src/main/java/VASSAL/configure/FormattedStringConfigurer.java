@@ -24,6 +24,7 @@ package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -74,7 +75,7 @@ public class FormattedStringConfigurer
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
       super.getControls();
 

@@ -100,11 +100,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   @Override
   public String getDescription() {
-    String d = Resources.getString("Editor.AreaOfEffect.trait_description");
-    if (description.length() > 0) {
-      d += " - " + description;
-    }
-    return d;
+    return buildDescription("Editor.AreaOfEffect.trait_description", description);
   }
 
   @Override

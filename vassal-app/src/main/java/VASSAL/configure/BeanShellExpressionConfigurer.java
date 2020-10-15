@@ -20,7 +20,6 @@ package VASSAL.configure;
 import bsh.BeanShellExpressionValidator;
 
 import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -221,13 +220,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void doPopup() {
     final JPopupMenu popup = new BeanShellFunctionMenu(target, this);
     popup.show(extraDetails, 0, 0);
-  }
-
-  protected void repack() {
-    final Window w = SwingUtilities.getWindowAncestor(p);
-    if (w != null) {
-      w.pack();
-    }
   }
 
   /**
