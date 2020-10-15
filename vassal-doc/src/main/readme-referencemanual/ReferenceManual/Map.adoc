@@ -5,6 +5,7 @@
 
 '''''
 
+[#MarkUnmoved]
 === Map Window
 
 A Map Window contains the main interface for playing games with VASSAL.
@@ -21,11 +22,13 @@ See <<#SubComponents,Sub-Components>>, below.
 *SEE ALSO:*  <<PlayerHand.adoc#top,Player Hands>> and <<PrivateWindow.adoc#top,Private Windows>> are specialized forms of Map Window and share most of its properties and subcomponents.
 They are designed for holding pieces and cards that are private to one player or side.
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |*Map Name:*  The name of this map window.
 
-[#MarkUnmoved]
+
 *Mark pieces that move:* If checked, then any pieces with the <<MarkMoved.adoc#top,Mark When Moved>> trait will be marked whenever being moved in this map window.
 The module designer can also allow players to control this option in their preferences.
 
@@ -67,9 +70,10 @@ It could optionally be modified to include e.g.
 the name of this Map.
 
 *Key Command to apply to all units ending movement on this map:*  The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be automatically applied to each piece that ends movement on this map, whether it is moved by drag-and-drop or by a <<SendToLocation.adoc#top,Send To Location>> trait.
-This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png
+This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png[]]
 
-image:images/Map2.png[]|===
+image:images/Map2.png[]
+|===
 
 '''''
 
@@ -80,7 +84,9 @@ Map are created with several default sub-components, but new ones can be added.
 To add sub-components to a map, navigate to the _[Map Window]_ component entry in the Editor, right click on the _[Map Window]_ component, and select the appropriate _Add_ option for the sub-component you would like to add.
 Once you configure it, your new sub-component will appear at the bottom of the Map's list of sub-components.
 
-[cols=",,,",]
+
+[grid=none]
+[frame=none]
 |===
 |<<#SelectionHighlighter,Additional Selection Highlighters>> |<<SetupStack.adoc#top,At-Start Stack>> |<<Deck.adoc#top,Deck>> |<<#HidePieces,Hide Pieces Button>>
 |<<GamePieceLayers.adoc#top,Game Piece Layers>> |<<#GlobalKeyCommand,Global Key Command>> |<<GlobalProperties.adoc#top,Global Properties>> |<<#ImageCapture,Image Capture Tool>>
@@ -94,7 +100,9 @@ Once you configure it, your new sub-component will appear at the bottom of the M
 [#MapBoards]
 ==== Map Boards
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |This component contains all the boards that may appear in this map window.
 It contains <<Board.adoc#top,Board>> components and defines the dialog that is used to select boards when a new game is started.
@@ -112,8 +120,8 @@ It contains <<Board.adoc#top,Board>> components and defines the dialog that is u
 *Default Board Setup:* Click this button to choose a default set of boards.
 When a default has been set, the dialog will not be shown to players when a new game is begun.
 Instead, the game will always be started with the boards you select.
-If you click this button and then clear the boards, then dialog will again be shown at the start of each game.
-|image:images/BoardPicker.png[]|===
+If you click this button and then clear the boards, then dialog will again be shown at the start of each game.|image:images/BoardPicker.png[]
+|===
 
 [#StackingOptions]
 ==== Stacking Options
@@ -121,7 +129,9 @@ If you click this button and then clear the boards, then dialog will again be sh
 This component controls how stacking is handled in this Map Window.
 It may not be removed.
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |image:images/StackingOptions.png[]+ |*Disable stacking:*  If checked, then pieces will never form stacks in this window
 
@@ -153,13 +163,16 @@ The scale of the overview window relative to the map window can be specified in 
 You may also specify the color of the rectangle indicating the area visible in the main Map Window.
 
 image:images/OverviewWindow.png[]
+
+
 [#LOS]
 ==== Line of Sight Thread
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/LOS_Thread.png +
-|Adds a button to the Toolbar of the Map Window.
+|image:images/LOS_Thread.png[] +|Adds a button to the Toolbar of the Map Window.
 Clicking the button will allow the player to drag the mouse between any two points in the window, drawing a line between those two points.
 
 **Hotkey:  **Specifies a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
@@ -184,12 +197,14 @@ If set to null (by clicking the "Select" button and then the "Cancel" button in 
 
 ==== <<ToolbarMenu.adoc#top,Toolbar Menu>>
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |Groups buttons in the toolbar into a single drop-down menu.
 See <<ToolbarMenu.adoc#top,full article>> for details.
 
-image:images/ToolbarMenuExample.png |image:images/ToolbarMenu.png +
+image:images/ToolbarMenuExample.png[]] |image:images/ToolbarMenu.png[] +
   +
 |===
 
@@ -199,10 +214,11 @@ image:images/ToolbarMenuExample.png |image:images/ToolbarMenu.png +
 Adds a button to the Toolbar of the Map Window.
 Clicking the button will temporarily hide all pieces on the map, until the button is clicked again.
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/HidePieces.png +
-|**Button text:  **Specifies the button text for the Toolbar button
+|image:images/HidePieces.png[]|**Button text:  **Specifies the button text for the Toolbar button
 
 *Tooltip text:* Specifies optional tooltip text for the Toolbar button
 
@@ -220,7 +236,9 @@ Clicking the button will temporarily hide all pieces on the map, until the butto
 Adds the ability to zoom in and out of the Map.
 Toolbar buttons for "Zoom in", "Zoom out", and "Select Zoom Level" are added to the Map Window's toolbar.
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |*Preset Zoom Levels:*  Configures a series of fractional scale factors for display of the Map Window.
 In the list on the right hand side, all of the currently configured scale factors are listed.
@@ -263,9 +281,7 @@ An asterisk (*) will appear next to the new at-start scale factor.
 
   *Button Icon:*  Configures an icon for the Toolbar button.
 
-  *Hotkey:*  Designates a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for zooming out.
-
-|image:images/Zoomer.png +
+  *Hotkey:*  Designates a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for zooming out. |image:images/Zoomer.png[] +
 |===
 
 [#StackViewer]
@@ -273,9 +289,11 @@ An asterisk (*) will appear next to the new at-start scale factor.
 
 Adds a tool that displays the contents of a stack when the player leaves the mouse resting over it, after a specified delay.
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/CounterDetailViewer.png + |*Recommended Delay before display:*  When the mouse has been stationary for this many milliseconds, the viewer will appear.
+|image:images/CounterDetailViewer.png[]] |*Recommended Delay before display:*  When the mouse has been stationary for this many milliseconds, the viewer will appear.
 This can be overridden in the preferences.
 
 *Keyboard shortcut to display:*  Players may display the viewer without waiting by pressing this shortcut key.
@@ -325,20 +343,23 @@ Otherwise they are excluded regardless of any other filters.
 [#LastMoveHighlighter]
 ==== Last Move Highlighter
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |Draws a colored border around the last piece to have been moved, added, or deleted in a logfile or by an opponent during live play.
 *Color* is the color of the border and *Thickness* is the border thickness.
-The highlight is cleared by clicking on the map.
-|image:images/LastMoveHighlighter.png +
+The highlight is cleared by clicking on the map.|image:images/LastMoveHighlighter.png[]
 |===
 
 [#GamePieceLayers]
 ==== <<GamePieceLayers.adoc#top,Game Piece Layers>>
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/GamePieceLayers.png + |Allows you designate certain "layers" of Game Pieces to be drawn before others.
+|image:images/GamePieceLayers.png[]] |Allows you designate certain "layers" of Game Pieces to be drawn before others.
 Pieces in higher layers are always drawn on top of lower layers, and pieces never combine into stacks with pieces from other layers.
 
 See full <<GamePieceLayers.adoc#top,Game Piece Layers>> article for details.
@@ -347,41 +368,47 @@ See full <<GamePieceLayers.adoc#top,Game Piece Layers>> article for details.
 [#ImageCapture]
 ==== Image Capture Tool
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |Adds a "Camera" button to the Toolbar of the Map Window.
 Clicking the button will dump the contents of the Map Window to an image file.
-This allows you to take a screen shot even if the Map Window is too large to fit entirely on the screen.
-|image:images/ImageCapture.png +
+This allows you to take a screen shot even if the Map Window is too large to fit entirely on the screen.|image:images/ImageCapture.png[]
 |===
 
 [#TextCapture]
 ==== Text Capture Tool
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/TextCaptureTool.png + |Adds a "Save Text" Button to the Map Window's Toolbar.
+|image:images/TextCaptureTool.png[] |Adds a "Save Text" Button to the Map Window's Toolbar.
 Clicking the button will write a plain text summary of the contents of the map to a text file, using the names assigned to the pieces and the appropriate numbering and/or naming of the board's grid.
 
 |===
 
 ==== <<Deck.adoc#top,Deck>>
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
 |A deck of cards, a bag of chits, or a fixed supply of counters.
 
 Decks are versatile containers for collections of pieces -- especially the kind that need to be shuffled, randomized, hidden, and drawn from.
 
-See <<Deck.adoc#top,full article>> for details.
-|image:images/DeckShort.png +
+See <<Deck.adoc#top,full article>> for details.|image:images/DeckShort.png[]]
 |===
 
 ==== <<SetupStack.adoc#top,At-Start Stack>>
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/AtStartStack.png + |A group of one or more pieces which begin the game on the map.
+|image:images/AtStartStack.png[]] + |A group of one or more pieces which begin the game on the map.
 
 See <<SetupStack.adoc#top,full article>> for more details.
 
@@ -389,21 +416,23 @@ See <<SetupStack.adoc#top,full article>> for more details.
 
 [#PieceRecenterer]
 ==== Recenter Pieces Button
-
+[grid=none]
+[frame=none]
+|===
 Adds a button to the map window's Toolbar.
 Clicking the button will shift the position of all pieces on the map such that they are centered around the middle of the map as much as possible.
-This is useful for games where there are no absolute terrain features, such as some air and naval games.
-
-image:images/PieceRecenterer.png
+This is useful for games where there are no absolute terrain features, such as some air and naval games.|image:images/PieceRecenterer.png[]
+|===
 
 [#StartupGlobalKeyCommand]
 ==== Startup Global Key Command
 
 Can print a welcome message, or perform some other task that needs to be done whenever the module is started up.
 
-[width="100%",cols="50%,50%",]
+[grid=none]
+[frame=none]
 |===
-|image:images/StartupGlobalKeyCommand.png  + a|
+|image:images/StartupGlobalKeyCommand.png[]|
 An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
 All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
 
@@ -416,7 +445,10 @@ Thus if you need the Startup GKC to initiate an activity that should only be don
 
 [#GlobalKeyCommand]
 ==== Global Key Command
+[grid=none]
+[frame=none]
 
+|===
 Adds a button to the map window's Toolbar.
 Clicking the button will pick certain pieces from the map window and apply the same key command to all of them.
 
@@ -431,6 +463,7 @@ An empty expression field matches every piece it finds.
 Otherwise all pieces in the game will be eligible provide they match the expression above.
 
 *Within a Deck, apply to:*  Select how this command applies to pieces that are currently stacked in a <<Deck.adoc#top,Deck>>. +
+
   _No pieces_ means that pieces in a Deck ignore the command.
 
   _All pieces_ means that the command can apply to any piece in the entire Deck that matches the expression.
@@ -454,10 +487,8 @@ This is the key command that will _initiate_ the Global Key Command, not the one
 Give each piece the <<PropertyMarker.adoc#top,Marker>> trait with property name _canFire_ and value _true_.
 Configure the Global Key Command to apply to pieces whose properties match _\{ canFire == "true" && Fired_Active == "true" }_.
 Specify CTRL-F as the key command.
-Now clicking the Global Key Command's button will set all marked pieces on the map to not having fired.
-
-image:images/GlobalKeyCommand.png
-
+Now clicking the Global Key Command's button will set all marked pieces on the map to not having fired.|image:images/GlobalKeyCommand.png[]]
+|===
 [#MapShading]
 ==== Map Shading
 
@@ -465,9 +496,11 @@ Applies a semi-transparent solid color or image tiling to the Map.
 In background mode, can be used to overlay a repeating image over solid-color boards.
 In foreground mode, the area is determined by the pieces on the map that name this Map Shading in an <<AreaOfEffect.adoc#top,Area of Effect>> trait.
 
-[cols=",",]
+
+[grid=none]
+[frame=none]
 |===
-|image:images/MapShading.png  + |*Name:*  A short name of this shading for reference by pieces with the <<AreaOfEffect.adoc#top,Area of Effect>> trait.
+|image:images/MapShading.png[]] |*Name:*  A short name of this shading for reference by pieces with the <<AreaOfEffect.adoc#top,Area of Effect>> trait.
 
 *Shading Always On:*  If selected then the shading is always drawn.
 Otherwise, visibility is controlled by a button on the Toolbar.
@@ -506,9 +539,10 @@ You can specify the thickness, color, and opacity of the border.
 
 Maps can have their own Global Properties, which apply to and are accessible by pieces on that map.
 
-[cols=",",]
+[grid=none]
+[frame=none]
 |===
-|image:images/ChangeGlobalProperty.png |image:images/MapGlobalProperties.png
+|image:images/ChangeGlobalProperty.png[]] |image:images/MapGlobalProperties.png[]
 
 To add a Global Property to your map, find the _[Global Properties]_ subcomponent in the Editor, right-click it, and select _Add Global Property_.
 This will let you define the initial value and any numeric constraints.
@@ -521,6 +555,9 @@ See the article on the <<GlobalProperties.adoc#top,Global Property trait>> of pi
 [#SelectionHighlighter]
 ==== Additional Selection Highlighters
 
+[grid=none]
+[frame=none]
+|===
 Allows you to define additional ways to highlight the selected piece on a map.
 The additional highlighters are drawn only if the selected piece matches the specified properties.
 If a piece matches the properties of more than one highlighter, all will be drawn, in addition to the highlighting color/border specified in the Map's properties.
@@ -538,8 +575,7 @@ The center of the image will be offset from the center of the piece by the given
 
 *Border Color:*  The color of the border to be drawn around selected pieces.
 
-*Border thickness:*  The thickness of the border
+*Border thickness:*  The thickness of the border|image:images/SelectionHighlighterFind.png[]
 
-image:images/SelectionHighlighterFind.png
-
-image:images/SelectionHighlighter.png
+image:images/SelectionHighlighter.png[]
+|===
