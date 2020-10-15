@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
@@ -180,6 +181,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     // Create our actual timer button
     timerButton = new LaunchButton(buttonText + " " + "0:00:00", TOOLTIP, null, null, ICON, al); //$NON-NLS-1$
     timerButton.setFont(new Font("SansSerif", Font.BOLD, 12)); //$NON-NLS-1$
+    timerButton.setHorizontalAlignment(SwingConstants.LEFT);
     initTimerButton();
   }
 
