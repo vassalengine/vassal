@@ -75,6 +75,10 @@ public class StringArrayConfigurer extends Configurer {
     this.maxRows = maxRows;
   }
 
+  public StringArrayConfigurer(int minRows, int maxRows) {
+    this(null, "", minRows, maxRows);
+  }
+
   public StringArrayConfigurer(String key, String name) {
     super(key, name);
   }
