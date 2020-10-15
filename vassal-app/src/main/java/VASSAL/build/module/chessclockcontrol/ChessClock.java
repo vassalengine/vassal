@@ -20,6 +20,7 @@ package VASSAL.build.module.chessclockcontrol;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -506,7 +507,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
             baseline = String.format("%d0:00.0", minutes/10); //NON-NLS
           }
           else {
-            baseline = String.format("0:00.0"); //NON-NLS
+            baseline = "0:00.0"; //NON-NLS
           }
         }
         else {
@@ -515,7 +516,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
             baseline = String.format("%d0:00", minutes/10); //NON-NLS
           }
           else {
-            baseline = String.format("0:00"); //NON-NLS
+            baseline = "0:00"; //NON-NLS
           }
         }
       }
@@ -523,7 +524,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     // adjust size to prevent button wobbling
     final Insets ins = timerButton.getInsets();
-    final int width = ins.left + timerButton.getFontMetrics(timerButton.getFont()).stringWidth(getFormattedButtonText() + baseline + ins.right;
+    final int width = ins.left + timerButton.getFontMetrics(timerButton.getFont()).stringWidth(getFormattedButtonText() + baseline + ins.right);
     timerButton.setPreferredSize(new Dimension(width, timerButton.getPreferredSize().height));
 
     return tocking != oldTocking;
