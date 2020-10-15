@@ -1,4 +1,4 @@
-== VASSAL Reference Manual
+    == VASSAL Reference Manual
 [#top]
 
 [.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > <<Board.adoc#top,Board>> > *Hex Grid*#
@@ -9,15 +9,16 @@
 
 [cols=",",]
 |===
-|A standard hexagonal grid for regulating movement on a <<Board.adoc#top,Board>>.
+|A standard hexagonal grid for regulating movement on a <<Board.adoc#top,Board>>. The default hexagonal grid layout is "Flat Topped".
 
-*Sideways:*  Check this box to make the hexrows of the grid run right-to-left instead of top-to-bottom.
+*Sideways:*   Check this box to make the hexrows of the grid run right-to-left instead of top-to-bottom.
+This changes the hexagonal grid layout from "Flat Topped" to "Pointy Topped".
 (Setting the grid to be sideways switches the meanings of horizontal/vertical and x/y below).
 
 *X,Y offset:*  The horizontal and vertical position of the center of the first hex of the grid.
 
 *Hex Height/Width:*  Pixels from hex center to hex center.
-If you specify only the height, the width will automatically adjust to maintain aspect ration; or you can create oblong hexes by also specifying a width.
+If you specify only the height, the width will automatically adjust to maintain aspect ratio; or you can create oblong hexes by also specifying a width.
 
 *Snap to defined point:* If checked, pieces placed anywhere within the grid will automatically snap to the nearest legal location.
 If unchecked, pieces may be placed anywhere.
@@ -33,6 +34,8 @@ If it is useful for most pieces to snap to legal locations, but for certain type
 
 |image:images/HexGrid.png[]
 
+
+|image:images/HexGridWidthHeight.png[]|image:images/HexGridWidthHeightSideways.png[]  
 |===
 
 '''''
