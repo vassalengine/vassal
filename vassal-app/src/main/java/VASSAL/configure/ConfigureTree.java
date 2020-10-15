@@ -688,15 +688,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
-
-          //BR// "Opens" any new structure we've just created (if it came with children, we immediately see them)
-          //BR// ... hmmm, why don't these seem to do anything?
-          //DefaultMutableTreeNode node = getTreeNode(child);
-          //if (node.getChildCount() > 0) {
-          //  expandPath(new TreePath(getTreeNode(c)));
-          //  expandPath(new TreePath((DefaultMutableTreeNode)node));
-          //  expandPath(new TreePath((DefaultMutableTreeNode)node.getChildAt(0)));
-          //}
+              // expand the new node
+              final TreePath path = new TreePath(getTreeNode(child).getPath());
+              expandPath(path);
 
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;

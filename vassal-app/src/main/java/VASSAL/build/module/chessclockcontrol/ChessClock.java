@@ -521,8 +521,10 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       }
     }
 
-    int width = timerButton.getFontMetrics(timerButton.getFont()).stringWidth(getFormattedButtonText() + baseline);
-    timerButton.setMinimumSize(new Dimension(width, timerButton.getMinimumSize().height));
+    // adjust size to prevent button wobbling
+    final Insets ins = timerButton.getInsets();
+    final int width = ins.left + timerButton.getFontMetrics(timerButton.getFont()).stringWidth(getFormattedButtonText() + baseline + ins.right;
+    timerButton.setPreferredSize(new Dimension(width, timerButton.getPreferredSize().height));
 
     return tocking != oldTocking;
   }
