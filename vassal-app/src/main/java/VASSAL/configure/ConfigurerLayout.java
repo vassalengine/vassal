@@ -23,10 +23,10 @@ import net.miginfocom.swing.MigLayout;
  * A Standardised MigLayout for use by individual Configurers
  */
 public class ConfigurerLayout extends MigLayout {
-  public static final String STANDARD_INSETS = "0";
-  public static final String STANDARD_GAPY = "2";
+  public static final String STANDARD_INSETS = "ins 0"; // NON-NLS
+  public static final String STANDARD_GAPY = "gapy 2"; // NON-NLS
 
-  public static final String DEFAULT_CFG_LAYOUT_CONSTRAINTS = "ins " + STANDARD_INSETS + ",hidemode 3"; // NON-NLS
+  public static final String DEFAULT_CFG_LAYOUT_CONSTRAINTS = STANDARD_INSETS + ",hidemode 3"; // NON-NLS
 
   /**
    * Create a Layout with alternate Column constraints depending on whether or not a label is supplied for this configurer

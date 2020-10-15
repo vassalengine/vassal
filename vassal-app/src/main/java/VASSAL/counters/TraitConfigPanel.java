@@ -36,8 +36,22 @@ public class TraitConfigPanel extends JPanel {
     this(false);
   }
 
+  /**
+   * Create a new default Trait Config Panel and sepcify debug option
+   *
+   * @param debug Turn debug on?
+   */
   public TraitConfigPanel(boolean debug) {
     super(new TraitLayout(debug));
+  }
+
+  /**
+   * Create a new Trait Congig Panel with a non-standard layout
+   *
+   * @param layout Non-standard layout
+   */
+  public TraitConfigPanel(TraitLayout layout) {
+    super(layout);
   }
 
   /**

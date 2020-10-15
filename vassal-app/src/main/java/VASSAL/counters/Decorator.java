@@ -18,6 +18,7 @@
 package VASSAL.counters;
 
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
@@ -814,4 +815,21 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     return this.equals(o);
   }
 
+  /**
+   * Build a description of a trait of the form
+   * Type - Description
+   * Where Type is the translated trait type description and Description
+   * is a supplied additional description
+   *
+   * @param i18nKey Translation key for trait type description
+   * @param description Optional additional description
+   * @return Combined description
+   */
+  protected String buildDescription (String i18nKey, String description) {
+    return buildDescription(i18nKey) + ((description == null || description.isEmpty()) ? "" : (" - " + description));
+  }
+
+  protected String buildDescription (String i18nKey) {
+    return Resources.getString(i18nKey);
+  }
 }

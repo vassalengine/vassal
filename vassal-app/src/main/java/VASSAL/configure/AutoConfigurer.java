@@ -68,7 +68,7 @@ public class AutoConfigurer extends Configurer
 
     p = new JPanel();
     //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-    p.setLayout(new MigLayout("ins panel, gapy " + ConfigurerLayout.STANDARD_GAPY + ", hidemode 3", "[align right]rel[fill,grow]")); // NON-NLS
+    p.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ", hidemode 3", "[align right]rel[fill,grow]")); // NON-NLS
 
     String[] name = c.getAttributeNames();
     String[] prompt = c.getAttributeDescriptions();

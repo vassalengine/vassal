@@ -275,11 +275,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public String getDescription() {
-    String s = Resources.getString("Editor.DynamicProperty.trait_description");
-    if (getKey() != null && getKey().length() > 0) {
-      s += " - " + getKey();
-    }
-    return s;
+    return buildDescription("Editor.DynamicProperty.trait_description", getKey());
   }
 
 
