@@ -17,8 +17,10 @@
  */
 package VASSAL.configure;
 
+import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import javax.swing.SwingUtilities;
 
 /**
  * A property editor class.  Wraps an Object value and provides
@@ -141,5 +143,17 @@ public abstract class Configurer {
 
   public void removePropertyChangeListener(PropertyChangeListener l) {
     changeSupport.removePropertyChangeListener(l);
+  }
+
+  /**
+   * Repack the current configurer larger, but not smaller
+   */
+  protected void repack() {
+    final Window w = SwingUtilities.getWindowAncestor(getControls());
+    if (w != null) {
+      w.setMinimumSize(w.getSize());
+      w.pack();
+      w.setMinimumSize(null);
+    }
   }
 }

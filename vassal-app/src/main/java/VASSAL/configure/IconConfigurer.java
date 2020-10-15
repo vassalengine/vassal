@@ -23,11 +23,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.File;
 
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
@@ -41,7 +39,7 @@ import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
 public class IconConfigurer extends Configurer {
   private JPanel controls;
   private String imageName;
-  private String defaultImage;
+  private final String defaultImage;
   private Icon icon;
 
   public IconConfigurer(String key, String name, String defaultImage) {
@@ -76,9 +74,8 @@ public class IconConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
-      controls.add(new JLabel(getName()));
+      controls = new ConfigurerPanel(getName(), "[][]rel[]", "[]rel[]rel[]"); // NON-NLS
+
       final JPanel p = new JPanel() {
         private static final long serialVersionUID = 1L;
 

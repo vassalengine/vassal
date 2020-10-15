@@ -17,6 +17,9 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,14 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import VASSAL.i18n.Resources;
-import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Configures a variable-length list of objects
@@ -44,8 +45,8 @@ import VASSAL.tools.SequenceEncoder;
  */
 public abstract class ListConfigurer extends Configurer implements
     PropertyChangeListener {
-  protected Box controls;
-  protected Box configControls;
+  protected JPanel controls;
+  protected JPanel configControls;
   protected JPanel panel;
   protected Dimension fixedSize;
   protected List<Configurer> configurers = new ArrayList<>();
@@ -111,10 +112,10 @@ public abstract class ListConfigurer extends Configurer implements
   public Component getControls() {
     if (panel == null) {
       panel = new JPanel(new BorderLayout());
-      controls = Box.createVerticalBox();
+      controls = new JPanel(new MigLayout("ins 2", "[]")); // NON-NLS
       final JScrollPane scroll = new JScrollPane(controls);
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
-      configControls = Box.createVerticalBox();
+      configControls = new JPanel(new MigLayout("ins 0,gapy 2", "[]")); // NON-NLS
 
       JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
       addButton.addActionListener(e -> {
@@ -122,7 +123,7 @@ public abstract class ListConfigurer extends Configurer implements
         getListValue().add(c.getValue());
         updateControls();
       });
-      controls.add(addButton);
+      controls.add(addButton, "center,wrap"); // NON-NLS
       controls.add(configControls);
       panel.add(scroll, BorderLayout.CENTER);
       updateControls();
@@ -160,16 +161,16 @@ public abstract class ListConfigurer extends Configurer implements
         c.setValue(value);
         c.addPropertyChangeListener(this);
         configurers.add(c);
-        final Box b = Box.createHorizontalBox();
+        final JPanel b = new JPanel(new MigLayout("ins 0,gapy 2", "[][fill,grow]")); // NON-NLS
         JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
         delButton.addActionListener(e -> {
           getListValue().remove(c.getValue());
           updateControls();
           repack();
         });
-        b.add(delButton);
-        b.add(c.getControls());
-        configControls.add(b);
+        b.add(delButton, "aligny center"); // NON-NLS
+        b.add(c.getControls(), "grow"); // NON-NLS
+        configControls.add(b, "grow,wrap"); // NON-NLS
         if (configurers.size() > 5) {
           if (fixedSize == null) {
             fixedSize = new Dimension(
@@ -188,7 +189,9 @@ public abstract class ListConfigurer extends Configurer implements
   public void repack() {
     Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
+      w.setMinimumSize(w.getSize());
       w.pack();
+      w.setMinimumSize(null);
     }
   }
 

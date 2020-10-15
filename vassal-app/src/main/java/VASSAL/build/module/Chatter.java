@@ -51,6 +51,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeSource;
+import VASSAL.tools.QuickColors;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
@@ -220,75 +221,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     s = s.trim();
     if (!s.isEmpty()) {
       if (s.startsWith("*")) {
-        // Here we just extend the convention of looking at first characters, this time to the second character.
-        // | = msg1 (w/ HTML parsing explicitly opted in)
-        // ! = msg2
-        // ? = msg3
-        // ~ = msg4
-        // ` = msg5
-        // These characters can be pre-pended to Report messages to produce the color changes. The characters themselves are removed before display.
-        // Reports can also include <b></b> tags for bold and <i></i> for italic.
-        if (s.startsWith("* |") || s.startsWith("*|")) {   //NON-NLS
-          style = "msg";                                   //NON-NLS
-          s = s.replaceFirst("\\|", "");  //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* !") || s.startsWith("*!")) { //NON-NLS
-          style = "msg2";                                     //NON-NLS
-          s = s.replaceFirst("!", "");       //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* ?") || s.startsWith("*?")) { //NON-NLS
-          style = "msg3";                                     //NON-NLS
-          s = s.replaceFirst("\\?", "");     //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* ~") || s.startsWith("*~")) { //NON-NLS
-          style = "msg4";                                     //NON-NLS
-          s = s.replaceFirst("~", "");       //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* `") || s.startsWith("*`")) {  //NON-NLS
-          style = "msg5";                                      //NON-NLS
-          s = s.replaceFirst("`", "");       //NON-NLS
-          html_allowed = true;
-        } 
-        else {
-          style = "msg";                                        //NON-NLS
-          html_allowed = GlobalOptions.getInstance().chatterHTMLSupport(); // Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
-        }
-      } 
-      else if (s.startsWith("-")) {                            //NON-NLS
-        if (s.startsWith("- |") || s.startsWith("-|")) {       //NON-NLS
-          style = "msg";                                       //NON-NLS
-          s = s.replaceFirst("\\|", "");      //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- !") || s.startsWith("-!")) {  //NON-NLS
-          style = "msg2";                                      //NON-NLS
-          s = s.replaceFirst("!", "");        //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- ?") || s.startsWith("-?")) {  //NON-NLS
-          style = "msg3";                                      //NON-NLS
-          s = s.replaceFirst("\\?", "");      //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- ~") || s.startsWith("-~")) {  //NON-NLS
-          style = "msg4";                                      //NON-NLS
-          s = s.replaceFirst("~", "");        //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- `") || s.startsWith("-`")) {   //NON-NLS
-          style = "msg5";                                       //NON-NLS
-          s = s.replaceFirst("`", "");         //NON-NLS
-          html_allowed = true;
-        }
-        else {
-          style = "sys";                                       //NON-NLS
-          html_allowed = true;
-        }
-      } 
+        html_allowed = (QuickColors.getQuickColor(s, "*") >= 0) || GlobalOptions.getInstance().chatterHTMLSupport();
+        style = QuickColors.getQuickColorHTMLStyle(s, "*");
+        s = QuickColors.stripQuickColorTag(s, "*");
+      }
+      else if (s.startsWith("-")) {
+        html_allowed = true;
+        style = (QuickColors.getQuickColor(s, "-") >= 0) ? QuickColors.getQuickColorHTMLStyle(s, "-") : "sys"; //NON-NLS
+        s = QuickColors.stripQuickColorTag(s, "-");
+      }
       else {
         style = getChatStyle(s);
         html_allowed = false;

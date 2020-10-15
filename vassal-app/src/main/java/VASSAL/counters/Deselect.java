@@ -154,7 +154,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   }
 
   public String getDescription() {
-    return (description == null || description.length() == 0) ? Resources.getString("Editor.Deselect.deselect") : Resources.getString("Editor.Deselect.deselect") + " - " + description;
+    return buildDescription("Editor.Deselect.deselect", description);
   }
 
   public HelpFile getHelpFile() {
