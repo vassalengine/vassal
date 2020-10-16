@@ -531,7 +531,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * @param msg message to display if not a console command
    * @param console potential console command (without any chat livery added to it)
    */
-  public void send (String msg, String console) {
+  public void send(String msg, String console) {
     if (!consoleHook(console, "", false)) {
       send(msg);
     }
