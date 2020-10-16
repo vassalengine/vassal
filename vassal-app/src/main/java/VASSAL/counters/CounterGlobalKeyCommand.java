@@ -383,6 +383,15 @@ public class CounterGlobalKeyCommand extends Decorator
     protected FormattedExpressionConfigurer targetPropertyConfig;
     protected FormattedExpressionConfigurer targetValueConfig;
 
+    protected JLabel targetMapLabel;
+    protected JLabel targetBoardLabel;
+    protected JLabel targetZoneLabel;
+    protected JLabel targetRegionLabel;
+    protected JLabel targetXLabel;
+    protected JLabel targetYLabel;
+    protected JLabel targetPropertyLabel;
+    protected JLabel targetValueLabel;
+
     public Ed(CounterGlobalKeyCommand p) {
 
       PropertyChangeListener pl = evt -> {
@@ -421,30 +430,39 @@ public class CounterGlobalKeyCommand extends Decorator
       traitPanel.add("Editor.GlobalKeyCommand.restrict_matches_to", targetConfig);
 
       targetMapConfig = new FormattedExpressionConfigurer(null, "", p.targetMap.getExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_map", targetMapConfig);
+      targetMapLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"));
+      traitPanel.add(targetMapLabel, targetMapConfig);
 
       targetBoardConfig = new FormattedExpressionConfigurer(null, "", p.targetBoard.getExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_board", targetBoardConfig);
+      targetBoardLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"));
+      traitPanel.add(targetBoardLabel, targetBoardConfig);
 
       targetZoneConfig = new FormattedExpressionConfigurer(null, "", p.targetZone.getExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_zone", targetZoneConfig);
+      targetZoneLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"));
+      traitPanel.add(targetZoneLabel, targetZoneConfig);
 
       targetRegionConfig = new FormattedExpressionConfigurer(null, "", p.targetRegion.getExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_region", targetRegionConfig);
+      targetRegionLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"));
+      traitPanel.add(targetRegionLabel, targetRegionConfig);
 
       targetXConfig = new IntConfigurer(p.targetX);
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_x_position", targetXConfig);
+      targetXLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"));
+      traitPanel.add(targetXLabel, targetXConfig);
       targetYConfig = new IntConfigurer(p.targetY);
-      traitPanel.add("Editor.GlobalKeyCommand.restrict_to_y_position", targetYConfig);
+      targetYLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"));
+      traitPanel.add(targetYLabel, targetYConfig);
 
       targetExactMatchConfig = new BooleanConfigurer(p.targetExactMatch);
       targetExactMatchConfig.addPropertyChangeListener(e -> updateVisibility());
       traitPanel.add("Editor.GlobalKeyCommand.exact_match", targetExactMatchConfig);
 
       targetPropertyConfig = new FormattedExpressionConfigurer(null, "", p.targetProperty.getExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.exact_property", targetPropertyConfig);
+      targetPropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.exact_property"));
+      traitPanel.add(targetPropertyLabel, targetPropertyConfig);
+
       targetValueConfig    = new FormattedExpressionConfigurer(null, "", p.targetValue.getExpression());
-      traitPanel.add("Editor.GlobalKeyCommand.exact_value", targetValueConfig);
+      targetValueLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.exact_value"));
+      traitPanel.add(targetValueLabel, targetValueConfig);
 
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
@@ -481,14 +499,26 @@ public class CounterGlobalKeyCommand extends Decorator
     public void updateVisibility() {
       String value = targetConfig.getValueString();
       targetMapConfig.getControls().setVisible(!GlobalCommand.GlobalCommandTarget.GAME.name().equals(value));
+      targetMapLabel.setVisible(!GlobalCommand.GlobalCommandTarget.GAME.name().equals(value));
+
       targetBoardConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
+      targetBoardLabel.setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
+
       targetZoneConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.ZONE.name().equals(value));
+      targetZoneLabel.setVisible(GlobalCommand.GlobalCommandTarget.ZONE.name().equals(value));
+
       targetRegionConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.REGION.name().equals(value));
+      targetRegionLabel.setVisible(GlobalCommand.GlobalCommandTarget.REGION.name().equals(value));
+
       targetXConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
+      targetXLabel.setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
       targetYConfig.getControls().setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
+      targetYLabel.setVisible(GlobalCommand.GlobalCommandTarget.XY.name().equals(value));
 
       targetPropertyConfig.getControls().setVisible(targetExactMatchConfig.getValueBoolean());
+      targetPropertyLabel.setVisible(targetExactMatchConfig.getValueBoolean());
       targetValueConfig.getControls().setVisible(targetExactMatchConfig.getValueBoolean());
+      targetValueLabel.setVisible(targetExactMatchConfig.getValueBoolean());
 
       Window w = SwingUtilities.getWindowAncestor(traitPanel);
       if (w != null) {
