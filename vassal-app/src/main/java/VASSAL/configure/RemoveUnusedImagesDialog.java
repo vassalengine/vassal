@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +35,13 @@ public class RemoveUnusedImagesDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RemoveUnusedImagesDialog.class);
 
   public RemoveUnusedImagesDialog(Frame owner) {
-    super(owner, "Remove Unused Images", true);
+    super(owner, Resources.getString("Editor.UnusedImages.remove_unused_images"), true);
   
     final JLabel text =
-      new JLabel("The following image files appear to be unreferenced from the module. They may however be" +
-        "referenced in custom code, or be the masks for Non-Rectangular traits.");
+      new JLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 
-    final JLabel keepy   = new JLabel("Files to keep");
-    final JLabel excrete = new JLabel("Files to remove");
+    final JLabel keepy   = new JLabel(Resources.getString("Editor.UnusedImages.files_to_keep"));
+    final JLabel excrete = new JLabel(Resources.getString("Editor.UnusedImages.files_to_remove"));
 
     final GameModule module = GameModule.getGameModule();
     SortedSet<String> unused = new TreeSet<>();
@@ -62,7 +62,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final JList excretable = new JList(lm2);
     final JScrollPane scroll2 = new JScrollPane(excretable);
 
-    final JButton bugger = new JButton ("-->");
+    final JButton bugger = new JButton("-->");
     bugger.addActionListener(e -> {
       int[] indices = keepyMcKeepface.getSelectedIndices();
       int lastSelect = -1;
@@ -92,7 +92,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
       }
     });
 
-    final JButton unBugger = new JButton ("<--");
+    final JButton unBugger = new JButton("<--");
     unBugger.addActionListener(e -> {
       int[] indices = excretable.getSelectedIndices();
       int lastSelect = -1;
@@ -122,7 +122,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
       }
     });
 
-    final JButton ok = new JButton("Remove Files");
+    final JButton ok = new JButton(Resources.getString("Editor.UnusedImages.remove_files"));
     ok.addActionListener(e -> {
       final ArchiveWriter aw = module.getDataArchive().getWriter();
 
@@ -131,8 +131,8 @@ public class RemoveUnusedImagesDialog extends JDialog {
       dir.mkdir();
 
       for (String u : buggerOff) {
-        GameModule.getGameModule().warn("- Removing: " + u);
-        System.out.println("Removing: " + u);
+        GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", u));
+        System.out.println(Resources.getString("Editor.UnusedImages.removing", u));
 
         InputStream in = null;
         FileOutputStream out = null;
@@ -142,7 +142,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
           IOUtils.copy(in, out);
         }
         catch (IOException ex) {
-          logger.error("Augh!", ex);
+          logger.error("Augh!", ex); //NON-NLS, obviously
         }
         finally {
           IOUtils.closeQuietly(in);
@@ -159,7 +159,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
       RemoveUnusedImagesDialog.this.dispose();
     });
 
-    final JButton cancel = new JButton("Cancel");
+    final JButton cancel = new JButton(Resources.getString("General.cancel"));
     cancel.addActionListener(e -> RemoveUnusedImagesDialog.this.dispose());
 
     final JPanel panel = new JPanel();

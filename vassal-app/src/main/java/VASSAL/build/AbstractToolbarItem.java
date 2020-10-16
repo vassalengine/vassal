@@ -53,19 +53,19 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   private String hotKeyKey     = HOTKEY;      // Some legacy objects will want to use a non-standard key
   private String iconKey       = ICON;        // Some legacy objects will want to use a non-standard key
 
-  protected void setNameKey (String nameKey) {
+  protected void setNameKey(String nameKey) {
     this.nameKey = nameKey;
   }
-  protected void setTooltipKey (String tooltipKey) {
+  protected void setTooltipKey(String tooltipKey) {
     this.tooltipKey = tooltipKey;
   }
-  protected void setButtonTextKey (String buttonTextKey) {
+  protected void setButtonTextKey(String buttonTextKey) {
     this.buttonTextKey = buttonTextKey;
   }
-  protected void setHotKeyKey (String hotKeyKey) {
+  protected void setHotKeyKey(String hotKeyKey) {
     this.hotKeyKey = hotKeyKey;
   }
-  protected void setIconKey (String iconKey) {
+  protected void setIconKey(String iconKey) {
     this.iconKey = iconKey;
   }
 
@@ -98,7 +98,7 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   /**
    * @return Launch button for this Toolbar item.
    */
-  public LaunchButton getLaunchButton () {
+  public LaunchButton getLaunchButton() {
     return launch;
   }
 

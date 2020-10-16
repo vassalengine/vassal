@@ -46,21 +46,15 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
-import VASSAL.build.module.GameState;
-import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.command.ChangePiece;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
-import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
@@ -300,7 +294,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   /** @return next piece "outward" (away from BasicPiece) in the trait list. This method is required
-   * by {@link Obscurable} to handle pasking of getProperty calls. */
+   * by {@link Obscurable} to handle masking of getProperty calls. */
   public Decorator getOuter() {
     return dec;
   }
@@ -815,8 +809,9 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   public void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s);
     if (piece instanceof ImageSearchTarget) {
-      ((ImageSearchTarget)piece).addImageNamesRecursively(s);
+      ((ImageSearchTarget) piece).addImageNamesRecursively(s);
     }
+  }
     
   /**  
    * Test if this Decorator's Class, Type and State are equal to another trait.
