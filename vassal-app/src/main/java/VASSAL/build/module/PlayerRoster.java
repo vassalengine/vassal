@@ -69,7 +69,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
-  public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
 
   public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks)
   public static final String REFEREE   = "Referee";
