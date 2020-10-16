@@ -57,6 +57,7 @@ import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.ChessClockControl;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
@@ -827,7 +828,8 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
       PrivateMap.class,
       PlayerHand.class,
       NotesWindow.class,
-      TurnTracker.class
+      TurnTracker.class,
+      ChessClockControl.class
     };
   }
 
@@ -1276,7 +1278,6 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   public void appendToTitle(String s) {
     // replaced by updateTitleBar()
   }
-  
 
   /**
    * Sets the most recent .VSAV / .VLOG file saved, loaded, or logged to, along with
