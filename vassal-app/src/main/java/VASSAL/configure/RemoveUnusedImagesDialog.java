@@ -1,33 +1,34 @@
 package VASSAL.configure;
 
-import java.awt.Component;
 import java.awt.Frame;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.nio.file.Files;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.LayoutStyle;
 
-import VASSAL.i18n.Resources;
-import VASSAL.tools.DataArchive;
+import net.miginfocom.swing.MigLayout;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.FlowLabel;
 
 public class RemoveUnusedImagesDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -37,11 +38,8 @@ public class RemoveUnusedImagesDialog extends JDialog {
   public RemoveUnusedImagesDialog(Frame owner) {
     super(owner, Resources.getString("Editor.UnusedImages.remove_unused_images"), true);
   
-    final JLabel text =
-      new JLabel(Resources.getString("Editor.UnusedImages.unused_1"));
-
-    final JLabel keepy   = new JLabel(Resources.getString("Editor.UnusedImages.files_to_keep"));
-    final JLabel excrete = new JLabel(Resources.getString("Editor.UnusedImages.files_to_remove"));
+    final FlowLabel text =
+      new FlowLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 
     final GameModule module = GameModule.getGameModule();
     SortedSet<String> unused = new TreeSet<>();
@@ -49,80 +47,24 @@ public class RemoveUnusedImagesDialog extends JDialog {
     Collections.addAll(unused, module.getDataArchive().getImageNames());
     unused.removeAll(module.getAllImageNames());
 
-    DefaultListModel lm = new DefaultListModel();
-    for (String iname : unused) {
-      lm.addElement(iname);
-    }
+    DefaultListModel<String> lm = new DefaultListModel<>();
+    lm.addAll(unused);
 
-    DefaultListModel lm2 = new DefaultListModel();
+    DefaultListModel<String> lm2 = new DefaultListModel<>();
 
-    final JList keepyMcKeepface = new JList(lm);
+    final JList<String> keepyMcKeepface = new JList<>(lm);
     final JScrollPane scroll = new JScrollPane(keepyMcKeepface);
+    scroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_keep")));
 
-    final JList excretable = new JList(lm2);
+    final JList<String> excretable = new JList<>(lm2);
     final JScrollPane scroll2 = new JScrollPane(excretable);
+    scroll2.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_remove")));
 
-    final JButton bugger = new JButton("-->");
-    bugger.addActionListener(e -> {
-      int[] indices = keepyMcKeepface.getSelectedIndices();
-      int lastSelect = -1;
-      for (int idx : indices) {
-        String thing = (String)lm.getElementAt(idx);
-        unused.remove(thing);
-        buggerOff.add(thing);
-        if (lastSelect < 0) {
-          lastSelect = idx;
-        }
-      }
-      lm.removeAllElements();
-      lm2.removeAllElements();
-      for (String iname : unused) {
-        lm.addElement(iname);
-      }
-      for (String iname : buggerOff) {
-        lm2.addElement(iname);
-      }
-      if (lastSelect >= 0) {
-        if (lastSelect < keepyMcKeepface.getModel().getSize()) {
-          keepyMcKeepface.setSelectedIndex(lastSelect);
-        }
-        else if (lastSelect > 0) {
-          keepyMcKeepface.setSelectedIndex(lastSelect - 1);
-        }
-      }
-    });
-
-    final JButton unBugger = new JButton("<--");
-    unBugger.addActionListener(e -> {
-      int[] indices = excretable.getSelectedIndices();
-      int lastSelect = -1;
-      for (int idx : indices) {
-        String thing = (String)lm2.getElementAt(idx);
-        buggerOff.remove(thing);
-        unused.add(thing);
-        if (lastSelect < 0) {
-          lastSelect = idx;
-        }
-      }
-      lm.removeAllElements();
-      lm2.removeAllElements();
-      for (String iname : unused) {
-        lm.addElement(iname);
-      }
-      for (String iname : buggerOff) {
-        lm2.addElement(iname);
-      }
-      if (lastSelect >= 0) {
-        if (lastSelect < excretable.getModel().getSize()) {
-          excretable.setSelectedIndex(lastSelect);
-        }
-        else if (lastSelect > 0) {
-          excretable.setSelectedIndex(lastSelect - 1);
-        }
-      }
-    });
-
+    final JButton bugger = new JButton(IconFactory.getIcon("go-next", IconFamily.XSMALL));
+    final JButton unBugger = new JButton(IconFactory.getIcon("go-previous", IconFamily.XSMALL));
     final JButton ok = new JButton(Resources.getString("Editor.UnusedImages.remove_files"));
+    final JButton cancel = new JButton(Resources.getString("General.cancel"));
+
     ok.addActionListener(e -> {
       final ArchiveWriter aw = module.getDataArchive().getWriter();
 
@@ -134,19 +76,11 @@ public class RemoveUnusedImagesDialog extends JDialog {
         GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", u));
         System.out.println(Resources.getString("Editor.UnusedImages.removing", u));
 
-        InputStream in = null;
-        FileOutputStream out = null;
-        try {
-          in = aw.getInputStream(DataArchive.IMAGE_DIR + u);
-          out = new FileOutputStream(new File(dir, u));
-          IOUtils.copy(in, out);
+        try (InputStream in = aw.getInputStream(DataArchive.IMAGE_DIR + u)) {
+          Files.copy(in, dir.toPath().resolve(u));
         }
         catch (IOException ex) {
           logger.error("Augh!", ex); //NON-NLS, obviously
-        }
-        finally {
-          IOUtils.closeQuietly(in);
-          IOUtils.closeQuietly(out);
         }
 
         aw.removeImage(u);
@@ -159,56 +93,94 @@ public class RemoveUnusedImagesDialog extends JDialog {
       RemoveUnusedImagesDialog.this.dispose();
     });
 
-    final JButton cancel = new JButton(Resources.getString("General.cancel"));
+    unBugger.addActionListener(e -> {
+      int[] indices = excretable.getSelectedIndices();
+      int lastSelect = -1;
+      for (int idx : indices) {
+        String thing = lm2.getElementAt(idx);
+        buggerOff.remove(thing);
+        unused.add(thing);
+        if (lastSelect < 0) {
+          lastSelect = idx;
+        }
+      }
+
+      lm.removeAllElements();
+      lm2.removeAllElements();
+
+      lm.addAll(unused);
+      lm2.addAll(buggerOff);
+
+      if (lastSelect >= 0) {
+        if (lastSelect < excretable.getModel().getSize()) {
+          excretable.setSelectedIndex(lastSelect);
+        }
+        else if (lastSelect > 0) {
+          excretable.setSelectedIndex(lastSelect - 1);
+        }
+      }
+
+      ok.setEnabled(!lm2.isEmpty());
+    });
+
+    bugger.addActionListener(e -> {
+      int[] indices = keepyMcKeepface.getSelectedIndices();
+      int lastSelect = -1;
+      for (int idx : indices) {
+        String thing = lm.getElementAt(idx);
+        unused.remove(thing);
+        buggerOff.add(thing);
+        if (lastSelect < 0) {
+          lastSelect = idx;
+        }
+      }
+
+      lm.removeAllElements();
+      lm2.removeAllElements();
+
+      lm.addAll(unused);
+      lm2.addAll(buggerOff);
+
+      if (lastSelect >= 0) {
+        if (lastSelect < keepyMcKeepface.getModel().getSize()) {
+          keepyMcKeepface.setSelectedIndex(lastSelect);
+        }
+        else if (lastSelect > 0) {
+          keepyMcKeepface.setSelectedIndex(lastSelect - 1);
+        }
+      }
+
+      ok.setEnabled(!lm2.isEmpty());
+    });
+
+    keepyMcKeepface.addListSelectionListener(e -> {
+      bugger.setEnabled(!keepyMcKeepface.isSelectionEmpty());
+    });
+
+    bugger.setEnabled(!keepyMcKeepface.isSelectionEmpty());
+
+    excretable.addListSelectionListener(e -> {
+      unBugger.setEnabled(!excretable.isSelectionEmpty());
+    });
+
+    unBugger.setEnabled(!excretable.isSelectionEmpty());
+    ok.setEnabled(!lm2.isEmpty());
+
     cancel.addActionListener(e -> RemoveUnusedImagesDialog.this.dispose());
 
-    final JPanel panel = new JPanel();
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
+    final JPanel panel = new JPanel(new MigLayout("insets dialog", "[]rel[]rel[]", "[]unrel[]unrel[]"));
 
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
+    panel.add(text, "span, wrap");
 
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
-        .addComponent(text)
-        .addComponent(keepy)
-        .addComponent(excrete)
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(scroll)
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addGroup(layout.createSequentialGroup()
-            .addComponent(bugger)
-            .addComponent(unBugger))
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(scroll2)
-          .addGap(0, 0, Integer.MAX_VALUE))
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(ok)
-          .addComponent(cancel)
-          .addGap(0, 0, Integer.MAX_VALUE)));
-        
-    layout.setVerticalGroup(
-      layout.createSequentialGroup()
-        .addComponent(text)
-        .addComponent(keepy)
-        .addComponent(excrete)
-        .addComponent(scroll)
-        .addGroup(layout.createSequentialGroup()
-          .addComponent(bugger)
-          .addComponent(unBugger))
-        .addComponent(scroll2)
-        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
-          .addComponent(ok)
-          .addComponent(cancel)));
+    panel.add(scroll, "grow, push, sizegroup list");
+    panel.add(bugger, "align center, flowy, split 2");
+    panel.add(unBugger, "align center");
+    panel.add(scroll2, "grow, push, sizegroup list, wrap");
 
-    layout.linkSize(new Component[]{ ok, cancel });
+    panel.add(ok, "tag ok, span, split");
+    panel.add(cancel, "tag cancel");
 
     add(panel);
-
     pack();
   }
 }
