@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,136 +36,55 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
   private static final Logger logger = LoggerFactory.getLogger(RemoveUnusedImagesDialog.class);
 
+  private final DefaultListModel<String> keepModel = new DefaultListModel<>();
+  private final DefaultListModel<String> dumpModel = new DefaultListModel<>();
+
+  private final SortedSet<String> keep = new TreeSet<>();
+  private final SortedSet<String> dump = new TreeSet<>();
+
+  private final JButton ok;
+
+  private final GameModule module;
+
   public RemoveUnusedImagesDialog(Frame owner) {
     super(owner, Resources.getString("Editor.UnusedImages.remove_unused_images"), true);
   
     final FlowLabel text =
       new FlowLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 
-    final GameModule module = GameModule.getGameModule();
-    SortedSet<String> unused = new TreeSet<>();
-    SortedSet<String> buggerOff = new TreeSet<>();
-    Collections.addAll(unused, module.getDataArchive().getImageNames());
-    unused.removeAll(module.getAllImageNames());
+    module = GameModule.getGameModule();
+    Collections.addAll(keep, module.getDataArchive().getImageNames());
+    keep.removeAll(module.getAllImageNames());
 
-    DefaultListModel<String> lm = new DefaultListModel<>();
-    lm.addAll(unused);
+    keepModel.addAll(keep);
 
-    DefaultListModel<String> lm2 = new DefaultListModel<>();
+    final JList<String> keepList = new JList<>(keepModel);
+    final JScrollPane keepScroll = new JScrollPane(keepList);
+    keepScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_keep")));
 
-    final JList<String> keepyMcKeepface = new JList<>(lm);
-    final JScrollPane scroll = new JScrollPane(keepyMcKeepface);
-    scroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_keep")));
+    final JList<String> dropList = new JList<>(dumpModel);
+    final JScrollPane dropScroll = new JScrollPane(dropList);
+    dropScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_remove")));
 
-    final JList<String> excretable = new JList<>(lm2);
-    final JScrollPane scroll2 = new JScrollPane(excretable);
-    scroll2.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_remove")));
+    final JButton dropButton = new JButton(IconFactory.getIcon("go-next", IconFamily.XSMALL));
+    final JButton keepButton = new JButton(IconFactory.getIcon("go-previous", IconFamily.XSMALL));
 
-    final JButton bugger = new JButton(IconFactory.getIcon("go-next", IconFamily.XSMALL));
-    final JButton unBugger = new JButton(IconFactory.getIcon("go-previous", IconFamily.XSMALL));
-    final JButton ok = new JButton(Resources.getString("Editor.UnusedImages.remove_files"));
+    ok = new JButton(Resources.getString("Editor.UnusedImages.remove_files"));
     final JButton cancel = new JButton(Resources.getString("General.cancel"));
 
-    ok.addActionListener(e -> {
-      final ArchiveWriter aw = module.getDataArchive().getWriter();
+    ok.addActionListener(e -> removeImages());
 
-      final File dir =
-        new File(new File(aw.getName()).getParent(), "removed");
-      dir.mkdir();
+    keepButton.addActionListener(e -> updateSelection(dropList, dumpModel, dump, keep));
+    dropButton.addActionListener(e -> updateSelection(keepList, keepModel, keep, dump));
 
-      for (String u : buggerOff) {
-        GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", u));
-        System.out.println(Resources.getString("Editor.UnusedImages.removing", u));
+    keepList.addListSelectionListener(e -> dropButton.setEnabled(!keepList.isSelectionEmpty()));
 
-        try (InputStream in = aw.getInputStream(DataArchive.IMAGE_DIR + u)) {
-          Files.copy(in, dir.toPath().resolve(u));
-        }
-        catch (IOException ex) {
-          logger.error("Augh!", ex); //NON-NLS, obviously
-        }
+    dropButton.setEnabled(!keepList.isSelectionEmpty());
 
-        aw.removeImage(u);
-      }
+    dropList.addListSelectionListener(e -> keepButton.setEnabled(!dropList.isSelectionEmpty()));
 
-      if (!buggerOff.isEmpty()) {
-        GameModule.getGameModule().setDirty(true);
-      }
-
-      RemoveUnusedImagesDialog.this.dispose();
-    });
-
-    unBugger.addActionListener(e -> {
-      int[] indices = excretable.getSelectedIndices();
-      int lastSelect = -1;
-      for (int idx : indices) {
-        String thing = lm2.getElementAt(idx);
-        buggerOff.remove(thing);
-        unused.add(thing);
-        if (lastSelect < 0) {
-          lastSelect = idx;
-        }
-      }
-
-      lm.removeAllElements();
-      lm2.removeAllElements();
-
-      lm.addAll(unused);
-      lm2.addAll(buggerOff);
-
-      if (lastSelect >= 0) {
-        if (lastSelect < excretable.getModel().getSize()) {
-          excretable.setSelectedIndex(lastSelect);
-        }
-        else if (lastSelect > 0) {
-          excretable.setSelectedIndex(lastSelect - 1);
-        }
-      }
-
-      ok.setEnabled(!lm2.isEmpty());
-    });
-
-    bugger.addActionListener(e -> {
-      int[] indices = keepyMcKeepface.getSelectedIndices();
-      int lastSelect = -1;
-      for (int idx : indices) {
-        String thing = lm.getElementAt(idx);
-        unused.remove(thing);
-        buggerOff.add(thing);
-        if (lastSelect < 0) {
-          lastSelect = idx;
-        }
-      }
-
-      lm.removeAllElements();
-      lm2.removeAllElements();
-
-      lm.addAll(unused);
-      lm2.addAll(buggerOff);
-
-      if (lastSelect >= 0) {
-        if (lastSelect < keepyMcKeepface.getModel().getSize()) {
-          keepyMcKeepface.setSelectedIndex(lastSelect);
-        }
-        else if (lastSelect > 0) {
-          keepyMcKeepface.setSelectedIndex(lastSelect - 1);
-        }
-      }
-
-      ok.setEnabled(!lm2.isEmpty());
-    });
-
-    keepyMcKeepface.addListSelectionListener(e -> {
-      bugger.setEnabled(!keepyMcKeepface.isSelectionEmpty());
-    });
-
-    bugger.setEnabled(!keepyMcKeepface.isSelectionEmpty());
-
-    excretable.addListSelectionListener(e -> {
-      unBugger.setEnabled(!excretable.isSelectionEmpty());
-    });
-
-    unBugger.setEnabled(!excretable.isSelectionEmpty());
-    ok.setEnabled(!lm2.isEmpty());
+    keepButton.setEnabled(!dropList.isSelectionEmpty());
+    ok.setEnabled(!dumpModel.isEmpty());
 
     cancel.addActionListener(e -> RemoveUnusedImagesDialog.this.dispose());
 
@@ -172,15 +92,63 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     panel.add(text, "span, wrap");
 
-    panel.add(scroll, "grow, push, sizegroup list");
-    panel.add(bugger, "align center, flowy, split 2");
-    panel.add(unBugger, "align center");
-    panel.add(scroll2, "grow, push, sizegroup list, wrap");
+    panel.add(keepScroll, "grow, push, sizegroup list");
+    panel.add(dropButton, "align center, flowy, split 2");
+    panel.add(keepButton, "align center");
+    panel.add(dropScroll, "grow, push, sizegroup list, wrap");
 
     panel.add(ok, "tag ok, span, split");
     panel.add(cancel, "tag cancel");
 
     add(panel);
     pack();
+  }
+
+  private void updateSelection(JList srclist, DefaultListModel<String> srcmodel, SortedSet<String> src, SortedSet<String> dst) {
+    final int[] indices = srclist.getSelectedIndices();
+    final int lastSelect = indices[indices.length - 1];
+
+    Arrays.stream(indices).forEach(i -> {
+      final String item = srcmodel.getElementAt(i);
+      src.remove(item);
+      dst.add(item);
+    });
+
+    keepModel.removeAllElements();
+    dumpModel.removeAllElements();
+
+    keepModel.addAll(keep);
+    dumpModel.addAll(dump);
+
+    srclist.setSelectedIndex(Math.max(0, Math.min(lastSelect, srcmodel.getSize()) - 1));
+
+    ok.setEnabled(!dumpModel.isEmpty());
+  }
+
+  private void removeImages() {
+    final ArchiveWriter aw = module.getDataArchive().getWriter();
+
+    final File dir = new File(new File(aw.getName()).getParent(), "removed");
+    dir.mkdir();
+
+    for (String u : dump) {
+      GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", u));
+      System.out.println(Resources.getString("Editor.UnusedImages.removing", u));
+
+      try (InputStream in = aw.getInputStream(DataArchive.IMAGE_DIR + u)) {
+        Files.copy(in, dir.toPath().resolve(u));
+      }
+      catch (IOException ex) {
+        logger.error("Augh!", ex); //NON-NLS, obviously
+      }
+
+      aw.removeImage(u);
+    }
+
+    if (!dump.isEmpty()) {
+      GameModule.getGameModule().setDirty(true);
+    }
+
+    dispose();
   }
 }
