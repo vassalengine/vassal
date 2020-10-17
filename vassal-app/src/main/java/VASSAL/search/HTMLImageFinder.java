@@ -41,7 +41,7 @@ public class HTMLImageFinder {
    * @param string Prepares to parse an html string
    */
   public HTMLImageFinder(String string) {
-    if (string.toLowerCase().contains("<html>")) {
+    if (string.toLowerCase().contains("<html>")) { //NON-NLS
       fileString = string;
     }
     else {
