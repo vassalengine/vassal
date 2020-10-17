@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -39,7 +40,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -251,7 +251,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
 
     availableScroll.setViewportView(availableList);
-    availableScroll.setBorder(new TitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
+    availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
 
     availablePanel.add(availableScroll);
 
@@ -367,7 +367,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     inUseScroll.setViewportView(inUseList);
 
-    inUseScroll.setBorder(new TitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
+    inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
 
     inUsePanel.add(inUseScroll);
 
