@@ -1,3 +1,8 @@
+3.4.7 - ???
+
+* 13520: Made Command+Click the select/deselect combo for Macs (and
+  Command+Wheel to zoom)
+
 3.4.6 - 12 October 2020
 
 * 13508: NPE in GamePieceOpImpl.getTileIndices()
