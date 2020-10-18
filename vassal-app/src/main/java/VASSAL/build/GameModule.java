@@ -193,18 +193,11 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated";
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning";
 
-  private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
+  private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
-  // Last type of game save/load for our current game
-  //public static final String SAVED_GAME = "saved";
-  //public static final String LOADED_GAME = "loaded";
-  //public static final String REPLAYED_GAME = "replayed";
-  //public static final String REPLAYING_GAME = "replaying";
-  //public static final String LOGGING_GAME = "logging";
-  //public static final String LOGGED_GAME = "logged";
-  //public static final String NEW_GAME = "new";
-
-  // Last type of game save/load for our current game
+  /**
+   * Last type of game save/load for our current game
+   */
   public enum GameFileMode {
     SAVED_GAME("saved"),
     LOADED_GAME("loaded"),
@@ -214,9 +207,17 @@ public class GameModule extends AbstractConfigurable
     LOGGED_GAME("logged"),
     NEW_GAME("new");
 
-  private final String prettyName;
+    private final String prettyName;
 
-  private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
+    GameFileMode(String prettyName) {
+      this.prettyName = prettyName;
+    }
+
+    @Override
+    public String toString() {
+      return prettyName;
+    }
+  }
 
   private static String userId = null;
 
@@ -1918,29 +1919,4 @@ public class GameModule extends AbstractConfigurable
   public List<String> getExpressionList() {
     return List.of(gameName, moduleVersion, description);
   }
-
-  /**
-   * Last type of game save/load for our current game
-   */
-  public enum GameFileMode {
-    SAVED_GAME("saved"),
-    LOADED_GAME("loaded"),
-    REPLAYED_GAME("replayed"),
-    REPLAYING_GAME("replaying"),
-    LOGGING_GAME("logging"),
-    LOGGED_GAME("logged"),
-    NEW_GAME("new");
-
-    private final String prettyName;
-
-    GameFileMode(String prettyName) {
-      this.prettyName = prettyName;
-    }
-
-    @Override
-    public String toString() {
-      return prettyName;
-    }
-  }
-
 }
