@@ -27,6 +27,7 @@
 * 13098: Move Compatibility related preferences on the General tab to a new
     Compatibility tab
 * 12946: Prevent top level required components from being deleted in Editor
+*  4779: Comparison operator >= incorrectly documented as =>
 *  1907: Suggest default filename extensions
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
