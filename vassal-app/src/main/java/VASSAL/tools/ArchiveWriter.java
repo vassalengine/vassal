@@ -21,9 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
@@ -56,8 +58,9 @@ public class ArchiveWriter extends DataArchive {
    * prompted for a filename when saving. If not null, new entries will
    * be added to the named archive. If the file exists and is not a zip
    * archive, it will be overwritten.
-   * @param defaultExtension the default file extension for the archive. If non-null, and the user needs
-   *                         to be prompted for a filename, this will be the default file extension added automatically.
+   * @param defaultExtension the default file extension for the archive.
+   * If non-null, and the user needs to be prompted for a filename, this will
+   * be the default file extension added automatically.
    */
   public ArchiveWriter(String zipName, String defaultExtension) {
     archiveName = zipName;
@@ -65,8 +68,13 @@ public class ArchiveWriter extends DataArchive {
 
     if (archiveName == null) {
       isTempArchive = true;
+
+      if (this.defaultExtension == null) {
+        this.defaultExtension = ".zip";
+      }
+
       try {
-        archiveName = File.createTempFile("tmp", ".zip").getPath();
+        archiveName = Files.createTempFile(Info.getTempDir().toPath(), "tmp_", this.defaultExtension).toAbsolutePath().toString();
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, archiveName);
@@ -94,21 +102,27 @@ public class ArchiveWriter extends DataArchive {
     }
   }
 
-
-  public ArchiveWriter(String zipName) {
-    this(zipName, null);
-  }
-
   public ArchiveWriter(FileArchive archive, String defaultExtension) {
     archiveName = archive.getName();
     this.defaultExtension = defaultExtension;
     this.archive = archive;
   }
 
+  /**
+   * Create a new writeable archive.
+   *
+   * @param zipName the name of the archive. If null, the user will be
+   * prompted for a filename when saving. If not null, new entries will
+   * be added to the named archive. If the file exists and is not a zip
+   * archive, it will be overwritten.
+   */
+  public ArchiveWriter(String zipName) {
+    this(zipName, null);
+  }
+
   public ArchiveWriter(FileArchive archive) {
     this(archive, null);
   }
-
 
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public ArchiveWriter(ZipFile archive) {
@@ -198,7 +212,7 @@ public class ArchiveWriter extends DataArchive {
    */
   public void removeFile(String name) {
     try {
-      archive.remove (name);
+      archive.remove(name);
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());
@@ -318,8 +332,8 @@ public class ArchiveWriter extends DataArchive {
       // Copy the current state to the new archive.
       final FileArchive tmp = archive;
 
+      archiveName = filename; // Set archive name before we open the new one, so if we get an exception we can complain using specified new filename
       archive = new ZipArchive(tmp, filename);
-      archiveName = filename;
       archive.flush();
 
       tmp.revert();

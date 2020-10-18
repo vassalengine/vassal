@@ -592,6 +592,51 @@
         <method>void save(boolean)</method>
         <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
     </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>4001</differenceType>
+        <method>java.awt.event.KeyListener</method>
+        <to>**</to>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>4001</differenceType>
+        <method>java.util.EventListener</method>
+        <to>**</to>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void keyPressed(java.awt.event.KeyEvent)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void keyReleased(java.awt.event.KeyEvent)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void keyTyped(java.awt.event.KeyEvent)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void setEnabled(boolean)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedHotKeyConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void updateVisibility()</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
 
     <difference>
         <!-- It is okay to add classes to the set of superclasses -->
@@ -611,4 +656,112 @@
         <differenceType>7013</differenceType>
         <method>*</method>
     </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/PropertyChangerConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>typeConfig</field>
+        <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Incorrect class was being used in first place</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/map/MassKeyCommand$DeckPolicyConfig</className>
+        <differenceType>6004</differenceType>
+        <field>typeConfig</field>
+        <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Incorrect class was being used in first place</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/AreaOfEffect$TraitEditor</className>
+        <differenceType>6004</differenceType>
+        <field>selectShader</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/AreaOfEffect$TraitEditor</className>
+        <differenceType>6004</differenceType>
+        <field>panel</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/CalculatedProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>box</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/ListConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>configControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/ListConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/DynamicProperty$DynamicKeyCommandConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/DynamicProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/PieceAccessConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>selectType</field>
+        <from>javax.swing.JComboBox</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/Hideable$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/Hideable$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>hideCommandInput</field>
+        <from>javax.swing.JTextField</from>
+        <to>VASSAL.configure.StringConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
 </differences>

@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.tools.QuickColors;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,7 @@ import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.ChessClockControl;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
@@ -140,6 +142,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
+import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
 /**
@@ -182,6 +185,37 @@ public class GameModule extends AbstractConfigurable
   /** The {@link Prefs} key for the user's personal info */
   public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
+  public static final String MODULE_NAME_PROPERTY = "ModuleName";
+  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion";
+  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription";
+  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1";
+  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2";
+  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated";
+  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning";
+
+  private static char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
+
+  // Last type of game save/load for our current game
+  //public static final String SAVED_GAME = "saved";
+  //public static final String LOADED_GAME = "loaded";
+  //public static final String REPLAYED_GAME = "replayed";
+  //public static final String REPLAYING_GAME = "replaying";
+  //public static final String LOGGING_GAME = "logging";
+  //public static final String LOGGED_GAME = "logged";
+  //public static final String NEW_GAME = "new";
+
+  // Last type of game save/load for our current game
+  public enum GameFileMode {
+    SAVED_GAME("saved"),
+    LOADED_GAME("loaded"),
+    REPLAYED_GAME("replayed"),
+    REPLAYING_GAME("replaying"),
+    LOGGING_GAME("logging"),
+    LOGGED_GAME("logged"),
+    NEW_GAME("new");
+
+  private final String prettyName;
+
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   private static String userId = null;
@@ -190,6 +224,8 @@ public class GameModule extends AbstractConfigurable
 
   private String moduleVersion = "0.0";  //$NON-NLS-1$
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
+  private String moduleOther1 = "";
+  private String moduleOther2 = "";
   private String gameName = DEFAULT_NAME;
   private String localizedGameName = null;
   private String description = "";
@@ -197,7 +233,7 @@ public class GameModule extends AbstractConfigurable
   private FileChooser fileChooser;
   private FileDialog fileDialog;
   private final MutablePropertiesContainer propsContainer = new Impl();
-  private final PropertyChangeListener repaintOnPropertyChange =
+  private final PropertyChangeListener repaintOnPropertyChange = 
     evt -> {
       for (Map map : Map.getMapList()) {
         map.repaint();
@@ -500,15 +536,19 @@ public class GameModule extends AbstractConfigurable
    * Initialize and register our multiplayer server controls
    */
   private void initServer() {
-    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
+    final OfficialNodeClientFactory oncf = new OfficialNodeClientFactory();
+
+    ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, oncf);
     ChatServerFactory.register(PrivateNodeClientFactory.PRIVATE_TYPE, new PrivateNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
 
     // legacy server used to be stored as node type
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new OfficialNodeClientFactory());
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, oncf);
+    // redirect removed jabber type to official server
+    ChatServerFactory.register("jabber", oncf);
 
     server = new DynamicClient();
-    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server); //NON-NLS
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
@@ -556,7 +596,7 @@ public class GameModule extends AbstractConfigurable
    * to the chat log, to be displayed there once a Chatter is registered.
    */
   private void initFrame() {
-    final Rectangle screen = VASSAL.Info.getScreenBounds(frame);
+    final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
 // FIXME: annoying!
@@ -648,6 +688,12 @@ public class GameModule extends AbstractConfigurable
     else if (DESCRIPTION.equals(name)) {
       description = (String) value;
     }
+    else if (MODULE_OTHER1_PROPERTY.equals(name)) {
+      moduleOther1 = (String) value;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(name)) {
+      moduleOther2 = (String) value;
+    }
   }
 
   /**
@@ -673,6 +719,12 @@ public class GameModule extends AbstractConfigurable
     }
     else if (DESCRIPTION.equals(name)) {
       return description;
+    }
+    else if (MODULE_OTHER1_PROPERTY.equals(name)) {
+      return moduleOther1;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(name)) {
+      return moduleOther2;
     }
     return null;
   }
@@ -738,8 +790,10 @@ public class GameModule extends AbstractConfigurable
       MODULE_NAME,
       MODULE_VERSION,
       DESCRIPTION,
+      MODULE_OTHER1_PROPERTY,
+      MODULE_OTHER2_PROPERTY,
       VASSAL_VERSION_CREATED,
-      NEXT_PIECESLOT_ID
+      NEXT_PIECESLOT_ID,
     };
   }
 
@@ -754,7 +808,9 @@ public class GameModule extends AbstractConfigurable
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.description_label")    //NON-NLS
+      Resources.getString("Editor.description_label"),    //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_1_label"), //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_2_label") //NON-NLS
     };
   }
 
@@ -769,6 +825,8 @@ public class GameModule extends AbstractConfigurable
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
+      String.class,
       String.class,
       String.class,
       String.class
@@ -806,7 +864,8 @@ public class GameModule extends AbstractConfigurable
       PrivateMap.class,
       PlayerHand.class,
       NotesWindow.class,
-      TurnTracker.class
+      TurnTracker.class,
+      ChessClockControl.class
     };
   }
 
@@ -1001,8 +1060,10 @@ public class GameModule extends AbstractConfigurable
    */
   public void warn(String s) {
     String s2 = s;
-    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-           .replaceAll(">", "&gt;"); //$NON-NLS
+    if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
+      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+        .replaceAll(">", "&gt;"); //$NON-NLS
+    }
     if (chat == null) {
       deferredChat.add(s2);
     }
@@ -1206,7 +1267,7 @@ public class GameModule extends AbstractConfigurable
    * @param key Localization key to be used to generate string
    * @param name Name of the object whose title bar is to be generated
    */
-  public String getWindowTitleString (String key, String name) {
+  public String getWindowTitleString(String key, String name) {
     if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
       return Resources.getString(key + "_title", name);  //NON-NLS-1$
     }
@@ -1227,7 +1288,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * Updates the title bar of the main module window, and all map windows
    */
-  public void updateTitleBar () {
+  public void updateTitleBar() {
     frame.setTitle(getTitleString());  //$NON-NLS-1$
 
     for (Map m : getComponentsOf(Map.class)) {
@@ -1243,7 +1304,7 @@ public class GameModule extends AbstractConfigurable
   public void appendToTitle(String s) {
     // replaced by updateTitleBar()
   }
-  
+
   /**
    * Sets the most recent .VSAV / .VLOG file saved, loaded, or logged to, along with
    * the type of action taken with that file.
@@ -1664,6 +1725,8 @@ public class GameModule extends AbstractConfigurable
       else writer.save(true);
 
       lastSavedConfiguration = save;
+
+      GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
@@ -1697,9 +1760,31 @@ public class GameModule extends AbstractConfigurable
     else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
     }
+    else if (MODULE_NAME_PROPERTY.equals(key)) {
+      return gameName;
+    }
+    else if (MODULE_VERSION_PROPERTY.equals(key)) {
+      return moduleVersion;
+    }
+    else if (MODULE_DESCRIPTION_PROPERTY.equals(key)) {
+      return description;
+    }
+    else if (MODULE_VASSAL_VERSION_CREATED_PROPERTY.equals(key)) {
+      return vassalVersionCreated;
+    }
+    else if (MODULE_VASSAL_VERSION_RUNNING_PROPERTY.equals(key)) {
+      return Info.getVersion();
+    }
+    else if (MODULE_OTHER1_PROPERTY.equals(key)) {
+      return moduleOther1;
+    }
+    else if (MODULE_OTHER2_PROPERTY.equals(key)) {
+      return moduleOther2;
+    }
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
+
 
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the

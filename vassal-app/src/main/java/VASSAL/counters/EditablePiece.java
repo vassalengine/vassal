@@ -28,7 +28,7 @@ import VASSAL.build.module.documentation.HelpFile;
 public interface EditablePiece extends GamePiece {
 
   /** A plain-English description of this type of piece */
-  public String getDescription();
+  String getDescription();
 
   /** Sets the information for this piece.  See {@link Decorator#myGetType}
    *  @param type a serialized configuration string to
@@ -37,11 +37,11 @@ public interface EditablePiece extends GamePiece {
    *              a single game (e.g. Image Files, Context Menu strings,
    *              etc). Typically ready to be processed e.g. by
    *              SequenceEncoder.decode() */
-  public void mySetType(String type);
+  void mySetType(String type);
 
   /** @return the configurer for this trait - the dialog which allows the editing the piece's type information */
-  public PieceEditor getEditor();
+  PieceEditor getEditor();
 
   /** @return the help file for this trait  */
-  public HelpFile getHelpFile();
+  HelpFile getHelpFile();
 }

@@ -23,10 +23,10 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.swing.SwingUtils;
 
 public class CreateModuleAction extends GameModuleAction {
   private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class CreateModuleAction extends GameModuleAction {
     frame.setVisible(true);
     ModuleEditorWindow w = new ModuleEditorWindow(GameModule.getGameModule());
     w.setLocation(0, frame.getY() + frame.getHeight());
-    w.setSize(Info.getScreenBounds(frame).width / 2, w.getHeight());
+    w.setSize(SwingUtils.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);
   }
 }

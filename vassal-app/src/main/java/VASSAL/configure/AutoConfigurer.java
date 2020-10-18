@@ -29,9 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -40,6 +39,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for configuring Configurable components
@@ -53,6 +53,7 @@ public class AutoConfigurer extends Configurer
   protected AutoConfigurable target;
   protected List<Configurer> configurers = new ArrayList<>();
   protected Map<String, VisibilityCondition> conditions;
+  protected Map<String, JLabel> labels = new HashMap<>();
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());
@@ -66,7 +67,8 @@ public class AutoConfigurer extends Configurer
     });
 
     p = new JPanel();
-    p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    p.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ", hidemode 3", "[align right]rel[fill,grow]")); // NON-NLS
 
     String[] name = c.getAttributeNames();
     String[] prompt = c.getAttributeDescriptions();
@@ -78,14 +80,14 @@ public class AutoConfigurer extends Configurer
         continue;
       }
       Configurer config;
-      config = createConfigurer(type[i], name[i], prompt[i], target);
+      config = createConfigurer(type[i], name[i], "", target);
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
-        Box box = Box.createHorizontalBox();
-        box.add(config.getControls());
-        box.add(Box.createHorizontalGlue());
-        p.add(box);
+        final JLabel label = new JLabel(prompt[i]);
+        labels.put(name[i], label);
+        p.add(label);
+        p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
       }
       setVisibility(name[i], c.getAttributeVisibility(name[i]));
@@ -237,6 +239,10 @@ public class AutoConfigurer extends Configurer
           if (c.getControls().isVisible() != cond.shouldBeVisible()) {
             visChanged = true;
             c.getControls().setVisible(cond.shouldBeVisible());
+            JLabel label = labels.get(c.getKey());
+            if (label != null) {
+              label.setVisible(cond.shouldBeVisible());
+            }
           }
         }
       }

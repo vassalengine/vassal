@@ -430,8 +430,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
     else if (c instanceof MovePiece) {
       MovePiece mp = (MovePiece) c;
-      se
-        .append(mp.getId())
+      se.append(mp.getId())
         .append(wrapNull(mp.getNewMapId()))
         .append(mp.getNewPosition().x)
         .append(mp.getNewPosition().y)

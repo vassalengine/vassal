@@ -17,23 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
@@ -46,16 +29,33 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Provides commands to pivot a Game Piece around a given point
  */
 public class Pivot extends Decorator implements TranslatablePiece {
-  public static final String ID = "pivot;";
-  public static final String DEGREES = "_Degrees";
+  public static final String ID = "pivot;"; // NON-NLS
+  public static final String DEGREES = "_Degrees"; // NON-NLS
   protected int pivotX;
   protected int pivotY;
   protected double angle;
@@ -65,6 +65,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commands;
   protected KeyCommand pivotCommand;
   protected FreeRotator rotator;
+  protected String description;
 
   public Pivot() {
     this(ID, null);
@@ -77,24 +78,25 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return "Can Pivot";
+    return buildDescription("Editor.Pivot.trait_description", description);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Pivot.html");
+    return HelpFile.getReferenceManualPage("Pivot.html"); // NON-NLS
   }
 
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    command = st.nextToken("Pivot");
+    command = st.nextToken(Resources.getString("Editor.Pivot.default_pivot_command"));
     key = st.nextNamedKeyStroke(null);
     pivotX = st.nextInt(0);
     pivotY = st.nextInt(0);
     fixedAngle = st.nextBoolean(true);
     angle = st.nextDouble(90.0);
+    description = st.nextToken("");
     commands = null;
   }
 
@@ -127,7 +129,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
         .append(pivotX)
         .append(pivotY)
         .append(fixedAngle)
-        .append(angle);
+        .append(angle)
+        .append(description);
     return ID + se.getValue();
   }
 
@@ -189,8 +192,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
   /**
    * Pivot the given point around the pivot point from oldAngle to newAngle
-   * @param oldAngle
-   * @param newAngle
+   * @param oldAngle Old Angle
+   * @param newAngle New Angle
    */
   private void pivotPoint(Point p, double oldAngle, double newAngle) {
     Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
@@ -234,47 +237,69 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(command, "Pivot command");
+    return getI18nData(command, Resources.getString("Editor.Pivot.pivot_command"));
   }
 
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Pivot)) return false;
+    Pivot c = (Pivot) o;
+
+    if (! Objects.equals(command, c.command)) return false;
+    if (! Objects.equals(key, c.key)) return false;
+    if (! Objects.equals(pivotX, c.pivotX)) return false;
+    if (! Objects.equals(pivotY, c.pivotY)) return false;
+    if (! Objects.equals(fixedAngle, c.fixedAngle)) return false;
+    if (! Objects.equals(description, c.description)) return false;
+    return Objects.equals(angle, c.angle);
+  }
+
   public static class Ed implements PieceEditor {
-    private StringConfigurer command;
-    private NamedHotKeyConfigurer key;
-    private IntConfigurer xOff, yOff;
-    private DoubleConfigurer angle;
-    private BooleanConfigurer fixedAngle;
-    private JPanel controls;
+    private final StringConfigurer command;
+    private final NamedHotKeyConfigurer key;
+    private final IntConfigurer xOff;
+    private final IntConfigurer yOff;
+    private final DoubleConfigurer angle;
+    private final JLabel angleLabel;
+    private final BooleanConfigurer fixedAngle;
+    private final TraitConfigPanel controls;
+    private final StringConfigurer desc;
+
     public Ed(Pivot p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      command = new StringConfigurer(null, "Command:  ", p.command);
-      controls.add(command.getControls());
+      desc = new StringConfigurer(p.description);
+      controls.add("Editor.description_label", desc);
 
-      key = new NamedHotKeyConfigurer(null, "Keyboard command:  ", p.key);
-      controls.add(key.getControls());
+      command = new StringConfigurer(p.command);
+      controls.add("Editor.menu_command", command);
 
-      Box b = Box.createHorizontalBox();
-      xOff = new IntConfigurer(null, "Pivot point:  ", p.pivotX);
+      key = new NamedHotKeyConfigurer(p.key);
+      controls.add("Editor.keyboard_command", key);
+
+      controls.add(new JLabel(Resources.getString("Editor.Pivot.pivot_point")));
+      final JPanel b = new JPanel(new MigLayout("ins 0", "[]2[]2[]")); // NON-NLS
+      xOff = new IntConfigurer(p.pivotX);
       b.add(xOff.getControls());
-      yOff = new IntConfigurer(null, ", ", p.pivotY);
+      b.add(new JLabel(","));
+      yOff = new IntConfigurer(p.pivotY);
       b.add(yOff.getControls());
       controls.add(b);
 
-      fixedAngle = new BooleanConfigurer(null, "Pivot through fixed angle?",
-                                         Boolean.valueOf(p.fixedAngle));
-      controls.add(fixedAngle.getControls());
+      fixedAngle = new BooleanConfigurer(p.fixedAngle);
+      controls.add("Editor.Pivot.pivot_through_fixed_angle", fixedAngle);
 
-      angle = new DoubleConfigurer(null, "Angle:  ", p.angle);
+      angleLabel = new JLabel(Resources.getString("Editor.Pivot.angle"));
+      angle = new DoubleConfigurer(p.angle);
+
+      controls.add(angleLabel);
       controls.add(angle.getControls());
 
       angle.getControls().setVisible(p.fixedAngle);
-      fixedAngle.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
-        }
+      fixedAngle.addPropertyChangeListener(evt -> {
+        angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
+        angleLabel.setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
       });
     }
 
@@ -296,7 +321,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
           .append(xOff.getValueString())
           .append(yOff.getValueString())
           .append(Boolean.TRUE.equals(fixedAngle.getValue()))
-          .append(angle.getValueString());
+          .append(angle.getValueString())
+          .append(desc.getValueString());
       return ID + se.getValue();
     }
   }

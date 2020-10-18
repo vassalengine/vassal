@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -39,7 +40,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -251,7 +251,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
 
     availableScroll.setViewportView(availableList);
-    availableScroll.setBorder(new TitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
+    availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
 
     availablePanel.add(availableScroll);
 
@@ -367,7 +367,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     inUseScroll.setViewportView(inUseList);
 
-    inUseScroll.setBorder(new TitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
+    inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
 
     inUsePanel.add(inUseScroll);
 
@@ -570,23 +570,27 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", "")); //NON-NLS
       add(ed.getControls(), "spanx 3,grow,push,wrap"); //NON-NLS
 
+      JPanel buttonBox = new JPanel(new MigLayout());
+
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
 
-      add(b, "tag ok"); //NON-NLS
+      buttonBox.add(b, "tag ok"); //NON-NLS
 
       b = new JButton(Resources.getString("General.cancel"));
       b.addActionListener(evt -> {
         ed = null;
         dispose();
       });
-      add(b, "tag cancel"); //NON-NLS
+      buttonBox.add(b, "tag cancel"); //NON-NLS
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        add(b, "tag help"); //NON-NLS
+        buttonBox.add(b, "tag help"); //NON-NLS
       }
+
+      add(buttonBox, "spanx 3,center");
 
       pack();
       setLocationRelativeTo(getOwner());

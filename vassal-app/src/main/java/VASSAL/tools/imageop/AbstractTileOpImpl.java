@@ -139,7 +139,7 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
   @Override
   public Point[] getTileIndices(Rectangle rect) {
     if (rect == null) throw new IllegalArgumentException();
-    return rect.intersects(new Rectangle(size)) ?
+    return rect.intersects(new Rectangle(getSize())) ?
       new Point[]{new Point(0, 0)} : new Point[0];
   }
 }

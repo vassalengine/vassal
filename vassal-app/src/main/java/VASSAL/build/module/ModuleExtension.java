@@ -427,8 +427,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       if (saveAs) w.saveAs(true);
       else w.save(true);
 
-      lastSave = save;
+      GameModule.getGameModule().warn(Resources.getString("Editor.ExtensionEditor.saved", w.getArchive().getFile().getName()));
 
+      lastSave = save;
     }
     else {
       throw new IOException("Read-only extension"); //NON-NLS

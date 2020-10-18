@@ -32,12 +32,13 @@ import javax.swing.JPopupMenu;
 public class BeanShellFunctionMenu extends JPopupMenu {
 
   protected static final String[] SUM_COUNT_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
+  protected static final String[] SUM_COUNT_MAP_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.map_warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
 
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
 
-  public BeanShellFunctionMenu (EditablePiece target, BeanShellExpressionConfigurer configurer) {
+  public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
 
     this.target = target;
@@ -138,9 +139,9 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu countMenu = new JMenu(Resources.getString("Editor.BeanShell.sumcount"));
     addFunction(countMenu, "SumStack", Resources.getString("Editor.BeanShell.sum1"), new String[] { Resources.getString("Editor.BeanShell.property_name") }, "(name)"); //NON-NLS
     addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum2"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression") }, "(name, expr)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME}); //NON-NLS
-    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
+    addFunction(countMenu, "Sum", Resources.getString("Editor.BeanShell.sum3"), new String[] { Resources.getString("Editor.BeanShell.property_name"), Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(name, expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.NONE, Option.PME, Option.NONE}); //NON-NLS
     addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum4"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression") }, "(expr)", SUM_COUNT_HINTS, new Option[] {Option.PME}); //NON-NLS
-    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
+    addFunction(countMenu, "Count", Resources.getString("Editor.BeanShell.sum5"), new String[] { Resources.getString("Editor.BeanShell.property_match_expression"), Resources.getString("Editor.BeanShell.map_name") }, "(expr, map)", SUM_COUNT_MAP_HINTS, new Option[] {Option.PME, Option.NONE}); //NON-NLS
 
     final JMenu functionMenu = new JMenu(Resources.getString("Editor.BeanShell.function"));
     functionMenu.add(mathMenu);
@@ -148,7 +149,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     functionMenu.add(randomMenu);
     functionMenu.add(stringMenu);
     functionMenu.add(countMenu);
-    addFunction(functionMenu, "?", Resources.getString("Editor.BeanShell.ternary"), new String[] { Resources.getString("Editor.BeanShell.logical"), Resources.getString("Editor.BeanShell.if_true"), Resources.getString("Editor.BeanShell.if_false") }, "(expr ? r1 : r2)"); //NON-NLS
+    addFunction(functionMenu, "?", Resources.getString("Editor.BeanShell.ternary"), new String[] { Resources.getString("Editor.BeanShell.logical_expression"), Resources.getString("Editor.BeanShell.if_true"), Resources.getString("Editor.BeanShell.if_false") }, "(expr ? r1 : r2)"); //NON-NLS
     addFunction(functionMenu, "Alert", Resources.getString("Editor.BeanShell.alert"), new String[] { Resources.getString("Editor.BeanShell.text_to_display") }, "(text)"); //NON-NLS
 
     add(functionMenu);
@@ -161,7 +162,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints) {
     final Option[] options = new Option[parms.length];
     Arrays.fill(options, Option.NONE);
-    addFunction (menu, op, desc, parms, parmInfo, hints, options);
+    addFunction(menu, op, desc, parms, parmInfo, hints, options);
   }
 
   protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms, final String parmInfo, final String[] hints, final Option[] options) {

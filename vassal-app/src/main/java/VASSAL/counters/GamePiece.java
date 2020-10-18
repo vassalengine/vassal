@@ -70,10 +70,10 @@ import VASSAL.command.Command;
 public interface GamePiece extends PropertySource {
 
   /** @param map Each GamePiece belongs to a single {@link Map} */
-  public void setMap(Map map);
+  void setMap(Map map);
 
   /** @return Each GamePiece belongs to a single {@link Map} */
-  public Map getMap();
+  Map getMap();
 
   /**
    * Draw this GamePiece
@@ -83,20 +83,20 @@ public interface GamePiece extends PropertySource {
    * @param obs the Component on which this piece is being drawn
    * @param zoom the scaling factor.
    */
-  public void draw(Graphics g, int x, int y, Component obs, double zoom);
+  void draw(Graphics g, int x, int y, Component obs, double zoom);
 
   /**
    * @return the location of this piece on its owning {@link Map}
    */
-  public Point getPosition();
+  Point getPosition();
 
   /** @param p Sets the location of this piece on its {@link Map} */
-  public void setPosition(Point p);
+  void setPosition(Point p);
 
   /**
    * @return The area which this GamePiece occupies when drawn at the point (0,0)
    */
-  public Rectangle boundingBox();
+  Rectangle boundingBox();
 
   /**
    * @return The shape of the piece from the user's viewpoint. This defines the area
@@ -106,15 +106,15 @@ public interface GamePiece extends PropertySource {
    * actual location where the piece is being drawn. For most ordinary pieces, the shape
    * returned here will simply be equivalent to the bounding box, but see {@link NonRectangular}.
    */
-  public Shape getShape();
+  Shape getShape();
 
   /**
    * @return the {@link Stack} to which this piece belongs, or null if it doesn't belong to a stack.
    */
-  public Stack getParent();
+  Stack getParent();
 
   /** @param s sets the {@link Stack} to which this piece belongs. */
-  public void setParent(Stack s);
+  void setParent(Stack s);
 
   /**
    * The primary way for the piece or trait to receive events. {@link KeyStroke} events are forward
@@ -132,27 +132,27 @@ public interface GamePiece extends PropertySource {
    *
    * @see VASSAL.build.module.map.ForwardToKeyBuffer
    */
-  public Command keyEvent(KeyStroke stroke);
+  Command keyEvent(KeyStroke stroke);
 
   /** The plain English name for this piece */
-  public String getName();
+  String getName();
 
   /** And the translated name for this piece */
-  public String getLocalizedName();
+  String getLocalizedName();
 
   /**
    * Each GamePiece must have a unique String identifier
    * @return unique ID for this piece
    * @see GameState#getNewPieceId
    */
-  public String getId();
+  String getId();
 
   /**
    * Each GamePiece must have a unique String identifier
    * @param id sets unique ID for this piece
    * @see GameState#getNewPieceId
    */
-  public void setId(String id);
+  void setId(String id);
 
   /** @return The "type information" of a piece or trait is information
    * that does not change during the course of a game. Image file
@@ -160,7 +160,7 @@ public interface GamePiece extends PropertySource {
    * in the type. The type information is returned serialized string
    * form, ready to be decoded by a SequenceEncoder#decode.
    * @see BasicCommandEncoder */
-  public String getType();
+  String getType();
 
   /**
    * @return The "state information" is game state information that can change during
@@ -168,7 +168,7 @@ public interface GamePiece extends PropertySource {
    * is saved and is transferred between players on the server.  For
    * example, the relative order of pieces in a stack is state
    * information, but whether the stack is expanded is not. */
-  public String getState();
+  String getState();
 
   /**
    * @param newState New state information serialized in string form, ready
@@ -177,7 +177,7 @@ public interface GamePiece extends PropertySource {
    * is saved when the game is saved and is transferred between players on the
    * server. For example, the relative order of pieces in a stack is state
    * information, but whether the stack is expanded is not. */
-  public void setState(String newState);
+  void setState(String newState);
 
   /**
    * Properties can be associated with a piece -- many may be game-specific, but others
@@ -193,7 +193,7 @@ public interface GamePiece extends PropertySource {
    * @param key String key of property to be changed
    * @param val Object containing new value of the property
    */
-  public void setProperty(Object key, Object val);
+  void setProperty(Object key, Object val);
 
   /**
    * Properties can be associated with a piece -- many may be game-specific, but others
@@ -216,5 +216,5 @@ public interface GamePiece extends PropertySource {
    * @return Object containing new value of the specified property
    */
   @Override
-  public Object getProperty(Object key);
+  Object getProperty(Object key);
 }

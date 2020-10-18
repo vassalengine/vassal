@@ -26,6 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import VASSAL.tools.QuickColors;
 import VASSAL.tools.swing.SwingUtils;
 
 import javax.swing.JLabel;
@@ -199,28 +200,8 @@ public class LabelUtils {
       RenderingHints.VALUE_ANTIALIAS_ON);
 
     // "Quick Colors"
-    String baseString = text;
-    String style = "";
-    if (text.startsWith("|")) {
-      style = "msgcolor"; //NON-NLS
-      baseString = baseString.replaceFirst("\\|", "");
-    }
-    else if (text.startsWith("!")) {
-      style = "msg2color"; //NON-NLS
-      baseString = baseString.replaceFirst("!", "");
-    }
-    else if (text.startsWith("?")) {
-      style = "msg3color"; //NON-NLS
-      baseString = baseString.replaceFirst("\\?", "");
-    }
-    else if (text.startsWith("~")) {
-      style = "msg4color"; //NON-NLS
-      baseString = baseString.replaceFirst("~", "");
-    }
-    else if (text.startsWith("`")) {
-      style = "msg5color"; //NON-NLS
-      baseString = baseString.replaceFirst("`", "");
-    }
+    String style = (QuickColors.getQuickColor(text) >= 0) ? QuickColors.getQuickColorHTMLStyle(text) + "color" : ""; //NON-NLS
+    String baseString = QuickColors.stripQuickColorTag(text);
 
     // If user already put <html> tags in, don't re-wrap.
     boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6))); //NON-NLS

@@ -8,8 +8,7 @@ import java.awt.Shape;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import java.util.Objects;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -180,20 +179,27 @@ public class Clone extends Decorator implements TranslatablePiece {
     return getI18nData(commandName, Resources.getString("Editor.Clone.clone_command_description"));
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Clone)) return false;
+    Clone c = (Clone) o;
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    return Objects.equals(key, c.key);
+  }
+
   public static class Ed implements PieceEditor {
     private final StringConfigurer nameInput;
     private final NamedHotKeyConfigurer keyInput;
-    private final JPanel controls;
+    private final TraitConfigPanel controls;
 
     public Ed(Clone p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      nameInput = new StringConfigurer(null, Resources.getString("Editor.command_name"), p.commandName);
-      controls.add(nameInput.getControls());
+      nameInput = new StringConfigurer(p.commandName);
+      controls.add("Editor.menu_command", nameInput);
 
-      keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);
-      controls.add(keyInput.getControls());
+      keyInput = new NamedHotKeyConfigurer(p.key);
+      controls.add("Editor.keyboard_command", keyInput);
 
     }
 

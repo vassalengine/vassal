@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -85,6 +84,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.ProblemDialog;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
@@ -92,10 +92,10 @@ import VASSAL.tools.io.IOUtils;
  */
 public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String ID = "deck;"; //$NON-NLS-1$
-  public static final String ALWAYS = "Always";
-  public static final String NEVER = "Never";
-  public static final String USE_MENU = "Via right-click Menu";
-  public static final String NO_USER = "nobody"; // Dummy user ID for turning
+  public static final String ALWAYS = "Always"; // NON-NLS
+  public static final String NEVER = "Never"; // NON-NLS
+  public static final String USE_MENU = "Via right-click Menu"; // NON-NLS
+  public static final String NO_USER = "nobody"; // Dummy user ID for turning // NON-NLS
   protected static final StackMetrics deckStackMetrics = new StackMetrics(false, 2, 2, 2, 2);
   // cards face down
 
@@ -457,7 +457,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reshuffleCommand = st.nextToken(""); //$NON-NLS-1$
     reshuffleTarget = st.nextToken(""); //$NON-NLS-1$
     reshuffleMsgFormat = st.nextToken(""); //$NON-NLS-1$
-    setDeckName(st.nextToken("Deck"));
+    setDeckName(st.nextToken(Resources.getString("Deck.deck")));
     shuffleMsgFormat = st.nextToken(""); //$NON-NLS-1$
     reverseMsgFormat = st.nextToken(""); //$NON-NLS-1$
     faceDownMsgFormat = st.nextToken(""); //$NON-NLS-1$
@@ -506,8 +506,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     reverseListener.setKeyStroke(getReverseKey());
 
+
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
-    if (myPile != null && myPile.getDeck() == null) {
+
+    // If a New game/Load Game is starting, set this Deck into the matching DrawPile
+    // If a Load Continuation is starting, ignore this Deck and let the DrawPile continue with the existing Deck.
+    // Combined fix for bugs 4507, 10249 & 13461
+    if (myPile != null && ! GameModule.getGameModule().getGameState().isGameStarted()) {
       myPile.setDeck(this);
     }
   }
@@ -693,7 +698,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     else {
       deckName = n;
     }
-    countProperty.setPropertyName(deckName + "_numPieces");
+    countProperty.setPropertyName(deckName + "_numPieces"); // NON-NLS
     for (int i = 0; i < countExpressions.length; ++i) {
       expressionProperties.get(i).setPropertyName(
         deckName + "_" + countExpressions[i].getName());
@@ -972,7 +977,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataWarning(new BadDataReport("No such map", mapId, null));
+        ErrorDialog.dataWarning(new BadDataReport("No such map", mapId, null)); // NON-NLS
       }
     }
 

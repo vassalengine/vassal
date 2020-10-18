@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.JLabel;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -82,6 +83,8 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
+  public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
+  public static final String SOUND_WAKEUP_MUTE = "soundWakeupMute"; //NON-NLS
 
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
@@ -95,7 +98,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
-  private String centerOnMoves = PROMPT;
+  private final String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
   private String chatterHTMLSupport = NEVER;
@@ -103,6 +106,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private int dragThreshold = 10;
   
   private boolean macLegacy;
+  private boolean soundGlobalMute = false;
+  private boolean soundWakeupMute = false;
 
   private final Map<String, Object> properties = new HashMap<>();
   private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
@@ -224,6 +229,20 @@ public class GlobalOptions extends AbstractConfigurable {
     prefs.addOption(pctRecenterOn);
 
     validator = new SingleChildInstance(gm, getClass());
+
+    final BooleanConfigurer soundWakeupMuteConf = new BooleanConfigurer(
+      SOUND_WAKEUP_MUTE,
+      Resources.getString("GlobalOptions.sound_wakeup_mute"),
+      Boolean.FALSE);
+    soundWakeupMuteConf.addPropertyChangeListener(evt -> setSoundWakeupMute(soundWakeupMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundWakeupMuteConf);
+
+    final BooleanConfigurer soundGlobalMuteConf = new BooleanConfigurer(
+      SOUND_GLOBAL_MUTE,
+      Resources.getString("GlobalOptions.sound_global_mute"),
+      Boolean.FALSE);
+    soundGlobalMuteConf.addPropertyChangeListener(evt -> setSoundGlobalMute(soundGlobalMuteConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
   }
 
   public static GlobalOptions getInstance() {
@@ -248,8 +267,7 @@ public class GlobalOptions extends AbstractConfigurable {
     ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return true;
   }
-  
-  
+
   public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
     // Tell SwingUtils we've changed our mind about Macs
@@ -257,12 +275,26 @@ public class GlobalOptions extends AbstractConfigurable {
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
     GameModule.getGameModule().refreshKeyStrokeListeners(); 
   }
-  
-  
+
   public boolean getPrefMacLegacy() {
     return macLegacy;
   }
- 
+
+  public void setSoundGlobalMute(Boolean b) {
+    soundGlobalMute = b;
+  }
+
+  public Boolean isSoundGlobalMute() {
+    return soundGlobalMute;
+  }
+
+  public void setSoundWakeupMute(Boolean b) {
+    soundWakeupMute = b;
+  }
+
+  public Boolean isSoundWakeupMute() {
+    return soundWakeupMute;
+  }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$
@@ -412,7 +444,12 @@ public class GlobalOptions extends AbstractConfigurable {
     if (config == null) {
       final Configurer defaultConfig = super.getConfigurer();
       for (Configurer c : OPTION_CONFIGURERS.values()) {
-        ((Container) defaultConfig.getControls()).add(c.getControls());
+        final Container container = (Container) defaultConfig.getControls();
+        final String name = c.getName();
+        container.add(new JLabel(name));
+        c.setName("");
+        container.add(c.getControls(), "wrap"); // NON-NLS
+        c.setName(name);
       }
     }
     return config;

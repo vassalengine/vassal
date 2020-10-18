@@ -94,7 +94,7 @@ public class FirstTimeDialog extends JDialog {
 
     try {
       final File readme =
-        new File (Documentation.getDocumentationBaseDir(), "README.html");
+        new File(Documentation.getDocumentationBaseDir(), "README.html");
       help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
     }
     catch (MalformedURLException e) {

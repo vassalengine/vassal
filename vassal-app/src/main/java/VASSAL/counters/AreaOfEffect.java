@@ -27,23 +27,16 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -68,13 +61,15 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * @author Scott Giese sgiese@sprintmail.com
  *
  * Displays a transparency surrounding the GamePiece which represents the Area of Effect of the GamePiece
  */
 public class AreaOfEffect extends Decorator implements TranslatablePiece, MapShader.ShadedPiece {
-  public static final String ID = "AreaOfEffect;";
+  public static final String ID = "AreaOfEffect;"; // NON-NLS
   protected static final Color defaultTransparencyColor = Color.GRAY;
   protected static final float defaultTransparencyLevel = 0.3F;
   protected static final int defaultRadius = 1;
@@ -105,11 +100,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   @Override
   public String getDescription() {
-    String d = "Area Of Effect";
-    if (description.length() > 0) {
-      d += " - " + description;
-    }
-    return d;
+    return buildDescription("Editor.AreaOfEffect.trait_description", description);
   }
 
   @Override
@@ -137,7 +128,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     transparencyLevel = st.nextInt((int) (defaultTransparencyLevel * 100)) / 100.0F;
     radius = st.nextInt(defaultRadius);
     alwaysActive = st.nextBoolean(true);
-    activateCommand = st.nextToken("Show Area");
+    activateCommand = st.nextToken(Resources.getString("Editor.AreaOfEffect.show_area"));
     activateKey = st.nextNamedKeyStroke(null);
     keyCommand = new KeyCommand(activateCommand, activateKey, Decorator.getOutermost(this), this);
     mapShaderName = st.nextToken("");
@@ -154,14 +145,14 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   // State does not change during the game
   @Override
   public String myGetState() {
-    return alwaysActive ? "" : String.valueOf(active);
+    return alwaysActive ? "false" : String.valueOf(active); // NON-NLS
   }
 
   // State does not change during the game
   @Override
   public void mySetState(String newState) {
     if (!alwaysActive) {
-      active = "true".equals(newState);
+      active = "true".equals(newState); // NON-NLS
     }
   }
 
@@ -288,7 +279,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       }
       catch (NumberFormatException e) {
         reportDataError(this, Resources.getString("Error.non_number_error"),
-          "radius[" + radiusMarker + "]=" + r, e);
+          "radius[" + radiusMarker + "]=" + r, e); // NON-NLS
         return 0;
       }
     }
@@ -324,7 +315,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("AreaOfEffect.html");
+    return HelpFile.getReferenceManualPage("AreaOfEffect.html"); // NON-NLS
   }
 
   @Override
@@ -353,108 +344,117 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     return a;
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof AreaOfEffect)) return false;
+    AreaOfEffect c = (AreaOfEffect) o;
+    if (! Objects.equals(transparencyColor, c.transparencyColor)) return false;
+    if (! Objects.equals(transparencyLevel, c.transparencyLevel)) return false;
+    if (! Objects.equals(radius, c.radius)) return false;
+    if (! Objects.equals(alwaysActive, c.alwaysActive)) return false;
+    if (! Objects.equals(activateCommand, c.activateCommand)) return false;
+    if (! Objects.equals(activateKey, c.activateKey)) return false;
+    if (! Objects.equals(mapShaderName, c.mapShaderName)) return false;
+    if (! Objects.equals(fixedRadius, c.fixedRadius)) return false;
+    if (! Objects.equals(radiusMarker, c.radiusMarker)) return false;
+
+    if (alwaysActive) {
+      if (!Objects.equals(active, c.active)) return false;
+    }
+
+    return Objects.equals(description, c.description);
+
+  }
+
   protected static class TraitEditor implements PieceEditor {
-    protected JPanel panel;
+    protected TraitConfigPanel panel;
     protected ColorConfigurer transparencyColorValue;
     protected IntConfigurer transparencyValue;
     protected IntConfigurer radiusValue;
+    protected JLabel radiusValueLabel;
     protected BooleanConfigurer alwaysActive;
     protected StringConfigurer activateCommand;
+    protected JLabel activateCommandLabel;
     protected NamedHotKeyConfigurer activateKey;
+    protected JLabel activateKeyLabel;
     protected BooleanConfigurer useMapShader;
     protected BooleanConfigurer fixedRadius;
     protected StringConfigurer radiusMarker;
+    protected JLabel radiusMarkerLabel;
     protected StringConfigurer descConfig;
-    protected Box selectShader;
+    protected JLabel selectShaderLabel;
+    protected JPanel selectShader;
     protected String mapShaderId;
 
     protected TraitEditor(AreaOfEffect trait) {
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+      panel = new TraitConfigPanel();
 
-      panel.add(new JLabel("Contributed by Scott Giese (sgiese@sprintmail.com)", JLabel.CENTER));
-      panel.add(new JSeparator());
-      panel.add(new JLabel(" "));
+      descConfig = new StringConfigurer(trait.description);
+      panel.add("Editor.description_label", descConfig);
 
-      descConfig = new StringConfigurer(null, "Description:  ", trait.description);
-      panel.add(descConfig.getControls());
+      useMapShader = new BooleanConfigurer(trait.mapShaderName != null);
+      panel.add("Editor.AreaOfEffect.use_map_shading", useMapShader);
 
-      useMapShader = new BooleanConfigurer(null, "Use Map Shading?", trait.mapShaderName != null);
       mapShaderId = trait.mapShaderName;
-      panel.add(useMapShader.getControls());
-      selectShader = Box.createHorizontalBox();
+      selectShader = new JPanel(new MigLayout("ins 0", "[fill, grow]0[]")); // NON-NLS
 
-      panel.add(selectShader);
-      final JLabel l = new JLabel("Map Shading:  ");
-      selectShader.add(l);
-      final JTextField tf = new JTextField(12);
+
+      final JTextField tf = new JTextField();
       tf.setEditable(false);
-      selectShader.add(tf);
+      selectShader.add(tf, "growx"); // NON-NLS
       tf.setText(trait.mapShaderName);
-      final JButton b = new JButton("Select");
+      final JButton b = new JButton(Resources.getString("Editor.AreaOfEffect..select"));
       selectShader.add(b);
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
-          d.setVisible(true);
-          if (d.getTarget() != null) {
-            mapShaderId = d.getTarget().getConfigureName();
-            tf.setText(mapShaderId);
-          }
-          else {
-            mapShaderId = null;
-            tf.setText("");
-          }
+      b.addActionListener(e -> {
+        ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
+        d.setVisible(true);
+        if (d.getTarget() != null) {
+          mapShaderId = d.getTarget().getConfigureName();
+          tf.setText(mapShaderId);
+        }
+        else {
+          mapShaderId = null;
+          tf.setText("");
         }
       });
+      selectShaderLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.map_shading"));
+      panel.add(selectShaderLabel, selectShader);
 
-      transparencyColorValue = new ColorConfigurer(null, "Fill Color:  ", trait.transparencyColor);
-      panel.add(transparencyColorValue.getControls());
-      transparencyValue = new IntConfigurer(null, "Opacity (%):  ", (int) (trait.transparencyLevel * 100));
-      panel.add(transparencyValue.getControls());
+      transparencyColorValue = new ColorConfigurer(trait.transparencyColor);
+      panel.add("Editor.AreaOfEffect.fill_color", transparencyColorValue);
 
-      fixedRadius = new BooleanConfigurer(null, "Fixed Radius?",
-                                          Boolean.valueOf(trait.fixedRadius));
-      fixedRadius.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateRangeVisibility();
-        }
-      });
-      panel.add(fixedRadius.getControls());
+      transparencyValue = new IntConfigurer((int) (trait.transparencyLevel * 100));
+      panel.add("Editor.AreaOfEffect.opacity", transparencyValue);
 
-      radiusValue = new IntConfigurer(null, "Radius: ", trait.radius);
-      panel.add(radiusValue.getControls());
+      fixedRadius = new BooleanConfigurer(Boolean.valueOf(trait.fixedRadius));
+      fixedRadius.addPropertyChangeListener(evt -> updateRangeVisibility());
+      panel.add("Editor.AreaOfEffect.fixed_radius", fixedRadius);
 
-      radiusMarker = new StringConfigurer(null, "Radius Marker: ", trait.radiusMarker);
-      panel.add(radiusMarker.getControls());
+      radiusValueLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.radius"));
+      radiusValue = new IntConfigurer(trait.radius);
+      panel.add(radiusValueLabel, radiusValue);
 
-      alwaysActive = new BooleanConfigurer(null, "Always visible?", trait.alwaysActive ? Boolean.TRUE : Boolean.FALSE);
-      activateCommand = new StringConfigurer(null, "Toggle visible command:  ", trait.activateCommand);
-      activateKey = new NamedHotKeyConfigurer(null, "Toggle visible keyboard shortcut:  ", trait.activateKey);
+      radiusMarkerLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.radius_marker"));
+      radiusMarker = new StringConfigurer(trait.radiusMarker);
+      panel.add(radiusMarkerLabel, radiusMarker);
+
+      alwaysActive = new BooleanConfigurer(trait.alwaysActive ? Boolean.TRUE : Boolean.FALSE);
+      activateCommand = new StringConfigurer(trait.activateCommand);
+      activateCommandLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.toggle_visible_command"));
+      activateKey = new NamedHotKeyConfigurer(trait.activateKey);
+      activateKeyLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.toggle_visible_keyboard_shortcut"));
 
       updateRangeVisibility();
 
-      alwaysActive.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateCommandVisibility();
-        }
-      });
+      alwaysActive.addPropertyChangeListener(evt -> updateCommandVisibility());
       updateCommandVisibility();
 
-      useMapShader.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateFillVisibility();
-        }
-      });
+      useMapShader.addPropertyChangeListener(evt -> updateFillVisibility());
       updateFillVisibility();
 
-      panel.add(alwaysActive.getControls());
-      panel.add(activateCommand.getControls());
-      panel.add(activateKey.getControls());
+      panel.add("Editor.AreaOfEffect.always_visible", alwaysActive);
+      panel.add(activateCommandLabel, activateCommand);
+      panel.add(activateKeyLabel, activateKey);
     }
 
     protected void updateFillVisibility() {
@@ -462,6 +462,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       transparencyColorValue.getControls().setVisible(!useShader);
       transparencyValue.getControls().setVisible(!useShader);
       selectShader.setVisible(useShader);
+      selectShaderLabel.setVisible(useShader);
       repack();
     }
 
@@ -469,6 +470,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       final boolean fixedRange = fixedRadius.booleanValue();
       radiusValue.getControls().setVisible(fixedRange);
       radiusMarker.getControls().setVisible(!fixedRange);
+      radiusValueLabel.setVisible(fixedRange);
+      radiusMarkerLabel.setVisible(!fixedRange);
       repack();
     }
 
@@ -476,14 +479,14 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       final boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
       activateCommand.getControls().setVisible(!alwaysActiveSelected);
       activateKey.getControls().setVisible(!alwaysActiveSelected);
+      activateCommandLabel.setVisible(!alwaysActiveSelected);
+      activateKeyLabel.setVisible(!alwaysActiveSelected);
+
       repack();
     }
 
     protected void repack() {
-      final Window w = SwingUtilities.getWindowAncestor(alwaysActive.getControls());
-      if (w != null) {
-        w.pack();
-      }
+      Decorator.repack(panel);
     }
 
     @Override
@@ -493,7 +496,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
     @Override
     public String getState() {
-      return "false";
+      return "false"; // NON-NLS
     }
 
     @Override
@@ -522,6 +525,6 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(activateCommand, getCommandDescription(description, "Toggle Visible command"));
+    return getI18nData(activateCommand, getCommandDescription(description, Resources.getString("Editor.AreaOfEffect.toggle_visible_command_name")));
   }
 }

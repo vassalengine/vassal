@@ -181,7 +181,7 @@ public class Translate extends Decorator implements TranslatablePiece {
    * then the moving pieces will 'pick up' any pieces they land on along the way. The Stack Move option is not
    * recommended for this reason and now defaults to 'N' and is marked in the Editor as 'Not Recommended'.
    */
-  protected Command newTranslate (KeyStroke stroke) {
+  protected Command newTranslate(KeyStroke stroke) {
 
     GamePiece target = findTarget(stroke);
     if (target == null) {

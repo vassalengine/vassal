@@ -185,7 +185,7 @@ public class ModuleMetaData extends AbstractMetaData {
       // handle element attributes we care about
       if (BUILDFILE_MODULE_ELEMENT1.equals(qName) ||
           BUILDFILE_MODULE_ELEMENT2.equals(qName)) {
-        nameAttr = new Attribute (NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
+        nameAttr = new Attribute(NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
         setVersion(getAttr(attrs, VERSION_ATTR));
         setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
         setDescription(getAttr(attrs, DESCRIPTION_ATTR));

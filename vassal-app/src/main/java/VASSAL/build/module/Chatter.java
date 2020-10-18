@@ -26,7 +26,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -52,7 +51,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeSource;
+import VASSAL.tools.QuickColors;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
@@ -102,8 +103,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
     conversationPane = new JTextPane();
     conversationPane.setContentType("text/html"); //NON-NLS
+    kit = new DataArchiveHTMLEditorKit(GameModule.getGameModule().getDataArchive());
+    conversationPane.setEditorKit(kit);
+
     doc = (HTMLDocument) conversationPane.getDocument();
-    kit = (HTMLEditorKit) conversationPane.getEditorKit();
 
     style = kit.getStyleSheet();
     myFont = new Font("SansSerif", Font.PLAIN, 12); //NON-NLS // Will be overridden by the font from Chat preferences
@@ -218,75 +221,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     s = s.trim();
     if (!s.isEmpty()) {
       if (s.startsWith("*")) {
-        // Here we just extend the convention of looking at first characters, this time to the second character.
-        // | = msg1 (w/ HTML parsing explicitly opted in)
-        // ! = msg2
-        // ? = msg3
-        // ~ = msg4
-        // ` = msg5
-        // These characters can be pre-pended to Report messages to produce the color changes. The characters themselves are removed before display.
-        // Reports can also include <b></b> tags for bold and <i></i> for italic.
-        if (s.startsWith("* |") || s.startsWith("*|")) {   //NON-NLS
-          style = "msg";                                   //NON-NLS
-          s = s.replaceFirst("\\|", "");  //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* !") || s.startsWith("*!")) { //NON-NLS
-          style = "msg2";                                     //NON-NLS
-          s = s.replaceFirst("!", "");       //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* ?") || s.startsWith("*?")) { //NON-NLS
-          style = "msg3";                                     //NON-NLS
-          s = s.replaceFirst("\\?", "");     //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* ~") || s.startsWith("*~")) { //NON-NLS
-          style = "msg4";                                     //NON-NLS
-          s = s.replaceFirst("~", "");       //NON-NLS
-          html_allowed = true;
-        } 
-        else if (s.startsWith("* `") || s.startsWith("*`")) {  //NON-NLS
-          style = "msg5";                                      //NON-NLS
-          s = s.replaceFirst("`", "");       //NON-NLS
-          html_allowed = true;
-        } 
-        else {
-          style = "msg";                                        //NON-NLS
-          html_allowed = GlobalOptions.getInstance().chatterHTMLSupport(); // Generic report lines check compatibility flag (so old modules will not break on e.g. "<" in messages)
-        }
-      } 
-      else if (s.startsWith("-")) {                            //NON-NLS
-        if (s.startsWith("- |") || s.startsWith("-|")) {       //NON-NLS
-          style = "msg";                                       //NON-NLS
-          s = s.replaceFirst("\\|", "");      //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- !") || s.startsWith("-!")) {  //NON-NLS
-          style = "msg2";                                      //NON-NLS
-          s = s.replaceFirst("!", "");        //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- ?") || s.startsWith("-?")) {  //NON-NLS
-          style = "msg3";                                      //NON-NLS
-          s = s.replaceFirst("\\?", "");      //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- ~") || s.startsWith("-~")) {  //NON-NLS
-          style = "msg4";                                      //NON-NLS
-          s = s.replaceFirst("~", "");        //NON-NLS
-          html_allowed = true;
-        }
-        else if (s.startsWith("- `") || s.startsWith("-`")) {   //NON-NLS
-          style = "msg5";                                       //NON-NLS
-          s = s.replaceFirst("`", "");         //NON-NLS
-          html_allowed = true;
-        }
-        else {
-          style = "sys";                                       //NON-NLS
-          html_allowed = true;
-        }
-      } 
+        html_allowed = (QuickColors.getQuickColor(s, "*") >= 0) || GlobalOptions.getInstance().chatterHTMLSupport();
+        style = QuickColors.getQuickColorHTMLStyle(s, "*");
+        s = QuickColors.stripQuickColorTag(s, "*");
+      }
+      else if (s.startsWith("-")) {
+        html_allowed = true;
+        style = (QuickColors.getQuickColor(s, "-") >= 0) ? QuickColors.getQuickColorHTMLStyle(s, "-") : "sys"; //NON-NLS
+        s = QuickColors.stripQuickColorTag(s, "-");
+      }
       else {
         style = getChatStyle(s);
         html_allowed = false;
@@ -305,39 +248,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
            .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
     }
 
-    // Systematically search through for html image tags. When we find one, try
-    // to match it with an image from our DataArchive, and substitute the correct
-    // fully qualified URL into the tag.
-    URL url;
-    String keystring = "<img src=\""; //NON-NLS
-    String file, tag, replace;
-    int base;
-    while (s.toLowerCase().contains(keystring)) { // Find next key (to-lower so we're not case sensitive)
-      base = s.toLowerCase().indexOf(keystring);
-      file = s.substring(base + keystring.length()).split("\"")[0]; //NON-NLS // Pull the filename out from between the quotes
-      tag  = s.substring(base, base + keystring.length()) + file + "\""; //NON-NLS // Reconstruct the part of the tag we want to remove, leaving all attributes after the filename alone, and properly matching the upper/lowercase of the keystring
-
-      try {
-        url = GameModule.getGameModule().getDataArchive().getURL("images/" + file); //NON-NLS
-        replace = "<img  src=\"" + url.toString() + "\""; // Fully qualified URL if we are successful. The extra  //NON-NLS
-                                                          // space between IMG and SRC in the processed
-                                                          // version ensures we don't re-find THIS tag as we iterate
-      } 
-      catch (IOException ex) {
-        replace = "<img  src=\"" + file + "\""; //NON-NLS // Or just leave in except alter just enough that we won't find this tag again
-      }
-
-      if (s.contains(tag)) {
-        s = s.replaceFirst(tag, replace); // Swap in our new URL-laden tag for the old one.
-      } 
-      else {
-        break; // If something went wrong in matching up the tag, don't loop forever
-      }
-    }
-
     // Now we have to fix up any legacy angle brackets around the word <observer>
-    keystring = Resources.getString("PlayerRoster.observer");
-    replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
+    String keystring = Resources.getString("PlayerRoster.observer");
+    String replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
     if (!replace.equals(keystring)) {
       s = s.replace(keystring, replace);
     }
@@ -564,9 +477,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);    
 
-
-    final ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR,
-                                                                Resources.getString("Chatter.other_text_preference"), new Color (0, 153, 255));
+    final ColorConfigurer otherChatColor = new ColorConfigurer(
+      OTHER_CHAT_COLOR,
+      Resources.getString("Chatter.other_text_preference"),
+      new Color(0, 153, 255)
+    );
 
     otherChatColor.addPropertyChangeListener(e -> {
       otherChat = (Color) e.getNewValue();

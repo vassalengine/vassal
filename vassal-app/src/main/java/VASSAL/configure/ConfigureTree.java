@@ -483,7 +483,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (cutData != null) {
           final DefaultMutableTreeNode targetNode = getTreeNode(target);
           if (targetNode.isNodeAncestor(cutData)) {
-            chat (Resources.getString("Editor.cant_cut_ancestor_to_child"));
+            chat(Resources.getString("Editor.cant_cut_ancestor_to_child"));
             return;
           }
           final Configurable cutObj = (Configurable) cutData.getUserObject();
@@ -688,6 +688,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
+              // expand the new node
+              final TreePath path = new TreePath(getTreeNode(child).getPath());
+              expandPath(path);
+
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
@@ -1290,7 +1294,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     /**
      * Constructs a new search parameters object, using the preferences.
      */
-    public SearchParameters () {
+    public SearchParameters() {
       // Attach to our module preferences if constructed this way. This also marks that we will write them when modified 
       prefs = GameModule.getGameModule().getPrefs(); 
       
@@ -1306,9 +1310,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MENUS, null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MESSAGES, null, false));
 
-      searchString     = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
-      matchCase        = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
-      matchNames       = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
+      searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
+      matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
+      matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
       matchAdvanced    = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
       matchTraits      = (Boolean)prefs.getValue(SearchParameters.MATCH_TRAITS);                   
@@ -1323,10 +1327,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * Constructs a new search parameters object
      */
     public SearchParameters(String searchString, boolean matchCase, boolean matchNames, boolean matchTypes, boolean matchAdvanced, boolean matchTraits, boolean matchExpressions, boolean matchProperties, boolean matchKeys, boolean matchMenus, boolean matchMessages) {
-      this.searchString     = searchString;
-      this.matchCase        = matchCase;
-      this.matchNames       = matchNames;
-      this.matchTypes       = matchTypes;
+      this.searchString = searchString;
+      this.matchCase    = matchCase;
+      this.matchNames   = matchNames;
+      this.matchTypes   = matchTypes;
       this.matchAdvanced    = matchAdvanced;
       this.matchTraits      = matchTraits;
       this.matchExpressions = matchExpressions;
@@ -1376,7 +1380,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return matchAdvanced;
     }
 
-    public void setMatchAdvanced (boolean matchAdvanced) {
+    public void setMatchAdvanced(boolean matchAdvanced) {
       this.matchAdvanced = matchAdvanced;
       writePrefs();
     }
@@ -1438,10 +1442,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
 
     public void setFrom(final SearchParameters searchParameters) {
-      searchString     = searchParameters.getSearchString();
-      matchCase        = searchParameters.isMatchCase();
-      matchNames       = searchParameters.isMatchNames();
-      matchTypes       = searchParameters.isMatchTypes();
+      searchString = searchParameters.getSearchString();
+      matchCase = searchParameters.isMatchCase();
+      matchNames = searchParameters.isMatchNames();
+      matchTypes = searchParameters.isMatchTypes();
       matchAdvanced    = searchParameters.isMatchAdvanced();
       matchTraits      = searchParameters.isMatchTraits();
       matchExpressions = searchParameters.isMatchExpressions();
@@ -1454,10 +1458,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     
     public void writePrefs() {
       if (prefs != null) {
-        prefs.setValue(SEARCH_STRING,     searchString);
-        prefs.setValue(MATCH_CASE,        matchCase);
+        prefs.setValue(SEARCH_STRING, searchString);
+        prefs.setValue(MATCH_CASE, matchCase);
         prefs.setValue(MATCH_NAMES,       matchNames);
-        prefs.setValue(MATCH_TYPES,       matchTypes);
+        prefs.setValue(MATCH_TYPES, matchTypes);
         prefs.setValue(MATCH_ADVANCED,    matchAdvanced);
         prefs.setValue(MATCH_TRAITS,      matchTraits);
         prefs.setValue(MATCH_EXPRESSIONS, matchExpressions);
@@ -1869,7 +1873,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
        * Checks and displays the piece header if needed
        * @param matchString our match string
        */
-      void checkShowPiece (String matchString) {
+      void checkShowPiece(String matchString) {
         if (!targetShown) {
           targetShown = true;
           chat(matchString);
@@ -1881,7 +1885,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
        * @param matchString our match string
        * @param desc trait description
        */
-      void checkShowTrait (String matchString, String idString, String desc) {
+      void checkShowTrait(String matchString, String idString, String desc) {
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
@@ -1890,14 +1894,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
-    private void hitCheck (String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
+    private void hitCheck(String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
         progress.checkShowTrait(matchString, item, desc);
         chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + s);
       }
     }
 
-    private void stringListHits (Boolean flag, List<String> strings, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
+    private void stringListHits(Boolean flag, List<String> strings, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!flag || (strings == null)) {
         return;
       }
@@ -1906,7 +1910,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
-    private void keyListHits (Boolean flag, List<NamedKeyStroke> keys, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
+    private void keyListHits(Boolean flag, List<NamedKeyStroke> keys, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!flag || (keys == null)) {
         return;
       }

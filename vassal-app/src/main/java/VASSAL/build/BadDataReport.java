@@ -37,6 +37,7 @@ public class BadDataReport {
   private String message;
   private String data;
   private Throwable cause;
+  private boolean reportable = true;
 
   public BadDataReport() {
   }
@@ -71,14 +72,15 @@ public class BadDataReport {
    */
   public BadDataReport(EditablePiece piece, String message, String data, Throwable cause) {
     this(getPieceName(piece), piece.getDescription(), message, data, cause);
+    setReportable(piece.getMap() != null);
   }
 
   public BadDataReport(EditablePiece piece, String message, String data) {
-    this(getPieceName(piece), piece.getDescription(), message, data, null);
+    this(piece, message, data, null);
   }
 
   public BadDataReport(EditablePiece piece, String message) {
-    this(getPieceName(piece), piece.getDescription(), message, "", null);
+    this(piece, message, "");
   }
 
   public BadDataReport(String pieceName, String traitDesc, String message, String data, Throwable cause) {
@@ -142,8 +144,19 @@ public class BadDataReport {
     this.cause = null;
     this.data  = data;
   }
-  
-  
+
+  /**
+   * Should this report be reported?
+   *
+   * @return false if this report should be ignored
+   */
+  public boolean isReportable() {
+    return reportable;
+  }
+
+  public void setReportable(boolean reportable) {
+    this.reportable = reportable;
+  }
 
   public String getMessage() {
     return message;

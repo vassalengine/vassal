@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.SoundConfigurer;
@@ -99,27 +100,29 @@ public class SoundEncoder implements CommandEncoder {
       updating = true;
       lastTime = now;
       final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption(soundKey);
-      if (c != null) {
-        c.play();
-      }
-      if (sender.equals(lastSender)) {
-        if (sendCount++ >= TOO_MANY) {
-          if (JOptionPane.YES_OPTION ==
-            JOptionPane.showConfirmDialog
-            (null,
-             Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
-             null,
-             JOptionPane.YES_NO_OPTION)) {
-            banned.add(sender);
-          }
-          else {
-            sendCount = 1;
+      if (!GlobalOptions.getInstance().isSoundWakeupMute()) {
+        if (c != null) {
+          c.play();
+        }
+        if (sender.equals(lastSender)) {
+          if (sendCount++ >= TOO_MANY) {
+            if (JOptionPane.YES_OPTION ==
+              JOptionPane.showConfirmDialog(
+                null,
+                Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
+                null,
+                JOptionPane.YES_NO_OPTION)) {
+              banned.add(sender);
+            }
+            else {
+              sendCount = 1;
+            }
           }
         }
-      }
-      else {
-        lastSender = sender;
-        sendCount = 1;
+        else {
+          lastSender = sender;
+          sendCount = 1;
+        }
       }
       updating = false;
     }

@@ -27,7 +27,7 @@ import VASSAL.build.module.properties.PropertySource;
  */
 public class StringExpression extends Expression {
 
-  public StringExpression (String s) {
+  public StringExpression(String s) {
     setExpression(s);
   }
 

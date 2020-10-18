@@ -255,7 +255,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of (report.getFormat());
+    return List.of(report.getFormat());
   }
 
 

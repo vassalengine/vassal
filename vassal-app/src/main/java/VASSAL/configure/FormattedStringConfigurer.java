@@ -24,6 +24,7 @@ package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -41,6 +42,10 @@ public class FormattedStringConfigurer
 
   public FormattedStringConfigurer(String key, String name) {
     this(key, name, new String[0]);
+  }
+
+  public FormattedStringConfigurer(String[] options) {
+    this(null, "", options);
   }
 
   public FormattedStringConfigurer(
@@ -70,7 +75,7 @@ public class FormattedStringConfigurer
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
       super.getControls();
 
@@ -81,7 +86,8 @@ public class FormattedStringConfigurer
       dropList.addActionListener(this);
 
       setListVisibility();
-      p.add(dropList);
+      p.add(dropList, "grow 0,right"); // NON-NLS
+
     }
     return p;
   }

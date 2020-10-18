@@ -18,13 +18,17 @@
 
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,10 +43,6 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.SequenceEncoder;
-
 /**
  * A Configurer that returns an array of Strings
  */
@@ -52,9 +52,31 @@ public class StringArrayConfigurer extends Configurer {
   protected DefaultListModel<String> model;
   private static final String[] EMPTY = new String[0];
   protected JTextField textField;
+  protected int minRows = 3;
+  protected int maxRows = 3;
 
   public StringArrayConfigurer(String key, String name, Object val) {
     super(key, name, val);
+  }
+
+  public StringArrayConfigurer(Object val) {
+    this(null, "", val);
+  }
+
+  public StringArrayConfigurer(Object val, int minRows, int maxRows) {
+    this(null, "", val);
+    this.minRows = minRows;
+    this.maxRows = maxRows;
+  }
+
+  public StringArrayConfigurer(String key, String name, int minRows, int maxRows) {
+    this(key, name);
+    this.minRows = minRows;
+    this.maxRows = maxRows;
+  }
+
+  public StringArrayConfigurer(int minRows, int maxRows) {
+    this(null, "", minRows, maxRows);
   }
 
   public StringArrayConfigurer(String key, String name) {
@@ -83,15 +105,15 @@ public class StringArrayConfigurer extends Configurer {
       panel.setBorder(new TitledBorder(name));
       panel.setLayout(new MigLayout("fill")); //NON-NLS
 
-      Box buttonBox = Box.createHorizontalBox();
-      Box leftBox = Box.createVerticalBox();
+      JPanel buttonBox =  new JPanel(new MigLayout("ins 0", "push[][][]push")); // NON-NLS
+      JPanel leftBox = new JPanel(new MigLayout("ins 0,gapy 2", "[fill,grow]")); // NON-NLS
 
       model = new DefaultListModel<>();
       updateModel();
 
       list = new JList<>(model);
+      list.setBackground(Color.white);
       list.setPrototypeCellValue("MMMMMMMM"); //NON-NLS
-      list.setVisibleRowCount(2);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       JButton addButton = new JButton(Resources.getString(Resources.ADD));
@@ -99,11 +121,15 @@ public class StringArrayConfigurer extends Configurer {
         String s = getTextValue();
         addValue(s);
         setTextValue("");
+        updateViewable(list.getModel().getSize());
       });
       buttonBox.add(addButton);
 
       JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
-      removeButton.addActionListener(e -> list.getSelectedValuesList().forEach(this::removeValue));
+      removeButton.addActionListener(e -> {
+        list.getSelectedValuesList().forEach(this::removeValue);
+        updateViewable(list.getModel().getSize());
+      });
       buttonBox.add(removeButton);
 
       JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
@@ -118,6 +144,7 @@ public class StringArrayConfigurer extends Configurer {
           setTextValue("");
           list.setSelectedIndex(pos + 1);
         }
+        updateViewable(list.getModel().getSize() + 1);
       };
       insertButton.addActionListener(insertAction);
       buttonBox.add(insertButton);
@@ -125,16 +152,23 @@ public class StringArrayConfigurer extends Configurer {
       final Component textComponent = getTextComponent();
       addTextActionListener(insertAction);
 
-      leftBox.add(textComponent);
-      leftBox.add(buttonBox);
+      leftBox.add(textComponent, "growx,wrap"); // NON-NLS
+      leftBox.add(buttonBox, "growx"); // NON-NLS
 
       JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      pane.setBackground(Color.white);
       pane.setLeftComponent(leftBox);
       pane.setRightComponent(new ScrollPane(list));
 
       panel.add(pane, "grow"); //NON-NLS
+      updateViewable(list.getModel().getSize());
     }
     return panel;
+  }
+
+  public void updateViewable(int rows) {
+    list.setVisibleRowCount(Math.max(minRows, Math.min(rows, maxRows)));
+    panel.invalidate();
   }
 
   protected Component getTextComponent() {

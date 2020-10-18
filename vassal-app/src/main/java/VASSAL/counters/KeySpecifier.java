@@ -30,14 +30,14 @@ import javax.swing.JTextField;
 public class KeySpecifier extends JPanel implements KeyListener {
   private static final long serialVersionUID = 1L;
 
-  private JTextField tf = new JTextField(3);
-  private String key = " ";
+  private final JTextField tf = new JTextField(3);
+  private String key;
 
   public KeySpecifier(char c) {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     key = String.valueOf(c);
 
-    add(new JLabel("CTRL-"));
+    add(new JLabel("CTRL-")); // NON-NLS
     tf.setMaximumSize(tf.getPreferredSize());
     tf.setMinimumSize(tf.getPreferredSize());
     tf.setText(c == 0 ? "" : key);

@@ -294,7 +294,7 @@ public abstract class AbstractMetaData {
       }
     }
 
-    public Attribute (String attributeName, String value) {
+    public Attribute(String attributeName, String value) {
       this.attributeName = attributeName;
       this.value = value;
     }

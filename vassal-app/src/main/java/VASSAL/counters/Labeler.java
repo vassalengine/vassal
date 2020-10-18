@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,20 +37,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.DoubleConsumer;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicHTML;
 
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -82,7 +80,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
  * Displays a text label, with content specified by the user at runtime.
  */
 public class Labeler extends Decorator implements TranslatablePiece, Loopable {
-  public static final String ID = "label;";
+  public static final String ID = "label;"; // NON-NLS
   protected Color textBg = Color.black;
   protected Color textFg = Color.white;
 
@@ -105,14 +103,14 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   private String label = "";
   private String lastCachedLabel;
   private NamedKeyStroke labelKey;
-  private String menuCommand = "Change Label";
-  private Font font = new Font("Dialog", 0, 10);
+  private String menuCommand = Resources.getString("Editor.TextLabel.change_label");
+  private Font font = new Font(Font.DIALOG, Font.PLAIN, 10);
   private KeyCommand[] commands;
-  private FormattedString nameFormat = new FormattedString("$" + PIECE_NAME + "$ ($" + LABEL + "$)");
-  private FormattedString labelFormat = new FormattedString("");
-  private static final String PIECE_NAME = "pieceName";
-  private static final String BAD_PIECE_NAME = "PieceName";
-  private static final String LABEL = "label";
+  private final FormattedString nameFormat = new FormattedString("$" + PIECE_NAME + "$ ($" + LABEL + "$)");
+  private final FormattedString labelFormat = new FormattedString("");
+  private static final String PIECE_NAME = "pieceName"; // NON-NLS
+  private static final String BAD_PIECE_NAME = "PieceName"; // NON-NLS
+  private static final String LABEL = "label"; // NON-NLS
 
   private double lastZoom = -1.0;
   private ImageOp lastCachedOp;
@@ -149,7 +147,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     labelKey = st.nextNamedKeyStroke(null);
-    menuCommand = st.nextToken("Change Label");
+    menuCommand = st.nextToken(Resources.getString("Editor.TextLabel.change_label"));
     final int fontSize = st.nextInt(10);
     textBg = st.nextColor(null);
     textFg = st.nextColor(Color.black);
@@ -160,11 +158,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     verticalJust = st.nextChar('b');
     horizontalJust = st.nextChar('c');
     nameFormat.setFormat(clean(st.nextToken("$" + PIECE_NAME + "$ ($" + LABEL + "$)")));
-    final String fontFamily = st.nextToken("Dialog");
+    final String fontFamily = st.nextToken(Font.DIALOG);
     final int fontStyle = st.nextInt(Font.PLAIN);
     font = new Font(fontFamily, fontStyle, fontSize);
     rotateDegrees = st.nextInt(0);
-    propertyName = st.nextToken("TextLabel");
+    propertyName = st.nextToken("TextLabel"); // NON-NLS
     description = st.nextToken("");
   }
 
@@ -568,10 +566,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       if (!(o instanceof LabelOp)) return false;
 
       final LabelOp lop = (LabelOp) o;
-      return (txt == null ? lop.txt == null : txt.equals(lop.txt)) &&
-             (font == null ? lop.font == null : font.equals(lop.font)) &&
-             (fg == null ? lop.fg == null : fg.equals(lop.fg)) &&
-             (bg == null ? lop.bg == null : bg.equals(lop.bg));
+      return (Objects.equals(txt, lop.txt)) &&
+             (Objects.equals(font, lop.font)) &&
+             (Objects.equals(fg, lop.fg)) &&
+             (Objects.equals(bg, lop.bg));
     }
 
     @Override
@@ -714,14 +712,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     Command c = null;
     if (menuKeyCommand.matches(stroke)) {
       ChangeTracker tracker = new ChangeTracker(this);
-      final String s = (String) JOptionPane.showInputDialog
-          (getMap() == null ? null : getMap().getView().getTopLevelAncestor(),
-           menuKeyCommand.getName(),
-           null,
-           JOptionPane.QUESTION_MESSAGE,
-           null,
-           null,
-           label);
+      final String s = (String) JOptionPane.showInputDialog(
+        getMap() == null ? null : getMap().getView().getTopLevelAncestor(),
+        menuKeyCommand.getName(),
+        null,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        null,
+        label
+      );
       if (s == null) {
         tracker = null;
       }
@@ -735,12 +734,12 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return "Text Label" + (description.length() > 0 ? (" - " + description) : "");
+    return Resources.getString("Editor.TextLabel.component_type") + (description.length() > 0 ? (" - " + description) : "");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Label.html");
+    return HelpFile.getReferenceManualPage("Label.html"); // NON-NLS
   }
 
   @Override
@@ -748,6 +747,33 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return new Ed(this);
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+
+    // Check Class
+    if (! (o instanceof Labeler)) return false;
+    final Labeler l = (Labeler) o;
+
+    // Check Type
+    if (! Objects.equals(labelKey, l.labelKey)) return false;
+    if (! Objects.equals(menuCommand, l.menuCommand)) return false;
+    if (! Objects.equals(font, l.font)) return false;
+    if (! Objects.equals(textBg, l.textBg)) return false;
+    if (! Objects.equals(textFg, l.textFg)) return false;
+    if (! Objects.equals(verticalPos, l.verticalPos)) return false;
+    if (! Objects.equals(verticalOffset, l.verticalOffset)) return false;
+    if (! Objects.equals(horizontalPos, l.horizontalPos)) return false;
+    if (! Objects.equals(horizontalOffset, l.horizontalOffset)) return false;
+    if (! Objects.equals(verticalJust, l.verticalJust)) return false;
+    if (! Objects.equals(horizontalJust, l.horizontalJust)) return false;
+    if (! Objects.equals(nameFormat, l.nameFormat)) return false;
+    if (! Objects.equals(rotateDegrees, l.rotateDegrees)) return false;
+    if (! Objects.equals(propertyName, l.propertyName)) return false;
+    if (! Objects.equals(description, l.description)) return false;
+
+    // Check State
+    return Objects.equals(label, l.label);
+  }
   /**
    * Return Property names exposed by this trait
    */
@@ -761,121 +787,134 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   private static class Ed implements PieceEditor {
-    private NamedHotKeyConfigurer labelKeyInput;
-    private JPanel controls = new JPanel();
-    private StringConfigurer command;
-    private StringConfigurer initialValue;
-    private ColorConfigurer fg, bg;
-    private JComboBox<Character> hPos, vPos, hJust, vJust;
-    private IntConfigurer hOff, vOff, fontSize;
-    private ListCellRenderer renderer;
-    private FormattedStringConfigurer format;
-    private JComboBox<String> fontFamily;
-    private IntConfigurer rotate;
-    private BooleanConfigurer bold, italic;
-    private StringConfigurer propertyNameConfig;
-    private StringConfigurer descConfig;
+    private final NamedHotKeyConfigurer labelKeyInput;
+    private final TraitConfigPanel controls;
+    private final StringConfigurer command;
+    private final StringConfigurer initialValue;
+    private final ColorConfigurer fg, bg;
+    private final TranslatingStringEnumConfigurer vPos;
+    private final TranslatingStringEnumConfigurer hPos;
+    private final TranslatingStringEnumConfigurer vJust;
+    private final TranslatingStringEnumConfigurer hJust;
+    private final IntConfigurer hOff, vOff, fontSize;
+    private final FormattedStringConfigurer format;
+    private final TranslatingStringEnumConfigurer fontFamily;
+    private final IntConfigurer rotate;
+    private final BooleanConfigurer bold, italic;
+    private final StringConfigurer propertyNameConfig;
+    private final StringConfigurer descConfig;
 
     public Ed(Labeler l) {
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      descConfig = new StringConfigurer(null, "Description:  ", l.description);
-      controls.add(descConfig.getControls());
+      descConfig = new StringConfigurer(l.description);
+      controls.add("Editor.description_label", descConfig);
 
-      initialValue = new StringConfigurer(null, "Text:  ", l.label);
-      controls.add(initialValue.getControls());
+      initialValue = new StringConfigurer(l.label);
+      controls.add("Editor.TextLabel.label_text", initialValue);
 
-      format = new FormattedStringConfigurer(null, "Name format:  ", new String[]{PIECE_NAME, LABEL});
-      format.setValue(l.nameFormat.getFormat());
-      controls.add(format.getControls());
+      format = new FormattedStringConfigurer(new String[]{PIECE_NAME, LABEL});
+      format.setValue(l.nameFormat.getFormat()); // NON-NLS
+      controls.add("Editor.TextLabel.name_format", format); //NON-NLS
 
-      command = new StringConfigurer(null, "Menu Command:  ", l.menuCommand);
-      controls.add(command.getControls());
+      command = new StringConfigurer(l.menuCommand);
+      controls.add("Editor.menu_command", command);
 
-      labelKeyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", l.labelKey);
-      controls.add(labelKeyInput.getControls());
+      labelKeyInput = new NamedHotKeyConfigurer(l.labelKey);
+      controls.add("Editor.keyboard_command", labelKeyInput);
 
-      Box b = Box.createHorizontalBox();
-      b.add(new JLabel("Font:  "));
-      fontFamily = new JComboBox<>();
-      final String[] s = new String[]{
-        "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"
-      };
-      for (String value : s) {
-        fontFamily.addItem(value);
-      }
-      fontFamily.setSelectedItem(l.font.getFamily());
-      b.add(fontFamily);
-      controls.add(b);
+      fontFamily = new TranslatingStringEnumConfigurer(
+        new String[]{Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT},
+        new String[] {
+          Resources.getString("Editor.Font.serif"),
+          Resources.getString("Editor.Font.sans_serif"),
+          Resources.getString("Editor.Font.monospaced"),
+          Resources.getString("Editor.Font.dialog"),
+          Resources.getString("Editor.Font.dialog_input")},
+          l.font.getFamily());
 
-      b = Box.createHorizontalBox();
-      fontSize = new IntConfigurer(null, "Font size:  ", l.font.getSize());
-      b.add(fontSize.getControls());
-      b.add(new JLabel("  Bold?"));
+      JPanel p = new JPanel(new MigLayout("ins 0", "[]unrel[]rel[]unrel[]rel[]unrel[]rel[]")); // NON-NLS
+      p.add(fontFamily.getControls());
+      p.add(new JLabel(Resources.getString("Editor.size_label")));
+      fontSize = new IntConfigurer(l.font.getSize());
+      p.add(fontSize.getControls());
+      p.add(new JLabel(Resources.getString("Editor.TextLabel.bold")));
       final int fontStyle = l.font.getStyle();
-      bold = new BooleanConfigurer(null, "",
-        Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
-      b.add(bold.getControls());
-      b.add(new JLabel("  Italic?"));
-      italic = new BooleanConfigurer(null, "",
-        Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
-      b.add(italic.getControls());
-      controls.add(b);
+      bold = new BooleanConfigurer(Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
+      p.add(bold.getControls());
+      p.add(new JLabel(Resources.getString("Editor.TextLabel.italic")));
+      italic = new BooleanConfigurer(Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
+      p.add(italic.getControls());
 
-      b = Box.createHorizontalBox();
-      fg = new ColorConfigurer(null, "Text Color:  ", l.textFg);
-      b.add(fg.getControls());
+      controls.add("Editor.TextLabel.label_font", p);
 
-      bg = new ColorConfigurer(null, "  Background Color:  ", l.textBg);
-      b.add(bg.getControls());
-      controls.add(b);
+      fg = new ColorConfigurer(l.textFg);
+      controls.add("Editor.TextLabel.text_color", fg);
 
-      renderer = new MyRenderer();
+      bg = new ColorConfigurer(l.textBg);
+      controls.add("Editor.TextLabel.background_color", bg);
 
-      final Character[] rightLeft = new Character[]{'c', 'r', 'l'};
-      final Character[] topBottom = new Character[]{'c', 't', 'b'};
+      vPos = new TranslatingStringEnumConfigurer(
+        new String[] {"c", "t", "b"}, // NON-NLS
+        new String[] {
+          Resources.getString("Editor.center"),
+          Resources.getString("Editor.top"),
+          Resources.getString("Editor.bottom")
+        },
+        l.verticalPos
+      );
 
-      b = Box.createHorizontalBox();
-      b.add(new JLabel("Vertical position:  "));
-      vPos = new JComboBox<>(topBottom);
-      vPos.setRenderer(renderer);
-      vPos.setSelectedItem(l.verticalPos);
-      b.add(vPos);
-      vOff = new IntConfigurer(null, "  Offset:  ", l.verticalOffset);
-      b.add(vOff.getControls());
-      controls.add(b);
+      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[]")); // NON-NLS
+      p.add(vPos.getControls());
+      p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
+      vOff = new IntConfigurer(l.verticalOffset);
+      p.add(vOff.getControls());
+      controls.add("Editor.TextLabel.vertical_position", p);
 
-      b = Box.createHorizontalBox();
-      b.add(new JLabel("Horizontal position:  "));
-      hPos = new JComboBox<>(rightLeft);
-      hPos.setRenderer(renderer);
-      hPos.setSelectedItem(l.horizontalPos);
-      b.add(hPos);
-      hOff = new IntConfigurer(null, "  Offset:  ", l.horizontalOffset);
-      b.add(hOff.getControls());
-      controls.add(b);
+      hPos = new TranslatingStringEnumConfigurer(
+        new String[] {"c", "l", "r"}, // NON-NLS
+        new String[] {
+          Resources.getString("Editor.center"),
+          Resources.getString("Editor.left"),
+          Resources.getString("Editor.right")
+        },
+        l.horizontalPos
+      );
 
-      b = Box.createHorizontalBox();
-      b.add(new JLabel("Vertical text justification:  "));
-      vJust = new JComboBox<>(topBottom);
-      vJust.setRenderer(renderer);
-      vJust.setSelectedItem(l.verticalJust);
-      b.add(vJust);
-      controls.add(b);
+      p = new JPanel(new MigLayout("ins 0", "[100]unrel[]rel[]")); // NON-NLS
+      p.add(hPos.getControls());
+      p.add(new JLabel(Resources.getString("Editor.TextLabel.offset")));
+      hOff = new IntConfigurer(l.horizontalOffset);
+      p.add(hOff.getControls());
+      controls.add("Editor.TextLabel.horizontal_position", p);
 
-      b = Box.createHorizontalBox();
-      b.add(new JLabel("Horizontal text justification:  "));
-      hJust = new JComboBox<>(rightLeft);
-      hJust.setRenderer(renderer);
-      hJust.setSelectedItem(l.horizontalJust);
-      b.add(hJust);
-      controls.add(b);
+      vJust = new TranslatingStringEnumConfigurer(
+        new String[] {"c", "t", "b"}, // NON-NLS
+        new String[] {
+          Resources.getString("Editor.center"),
+          Resources.getString("Editor.top"),
+          Resources.getString("Editor.bottom")
+        },
+        l.verticalJust
+      );
+      controls.add("Editor.TextLabel.vertical_text_justification", vJust, "grow 0"); // NON-NLS
 
-      rotate = new IntConfigurer(null, "Rotate Text (Degrees):  ", l.rotateDegrees);
-      controls.add(rotate.getControls());
+      hJust = new TranslatingStringEnumConfigurer(
+        new String[] {"c", "l", "r"}, // NON-NLS
+        new String[] {
+          Resources.getString("Editor.center"),
+          Resources.getString("Editor.left"),
+          Resources.getString("Editor.right")
+        },
+        l.horizontalJust
+      );
+      controls.add("Editor.TextLabel.horizontal_text_justification", hJust, "grow 0"); // NON-NLS
 
-      propertyNameConfig = new StringConfigurer(null, "Property Name:  ", l.propertyName);
-      controls.add(propertyNameConfig.getControls());
+      rotate = new IntConfigurer(l.rotateDegrees);
+      controls.add("Editor.TextLabel.rotate_text_degrees", rotate);
+
+      propertyNameConfig = new StringConfigurer(l.propertyName);
+      controls.add("Editor.property_name", propertyNameConfig);
     }
 
     @Override
@@ -896,20 +935,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       se.append(i.toString())
         .append(bg.getValueString())
         .append(fg.getValueString())
-        .append(vPos.getSelectedItem().toString());
+        .append(vPos.getValueString());
       i = (Integer) vOff.getValue();
       if (i == null) i = 0;
 
       se.append(i.toString())
-        .append(hPos.getSelectedItem().toString());
+        .append(hPos.getValueString());
       i = (Integer) hOff.getValue();
       if (i == null) i = 0;
 
       se.append(i.toString())
-        .append(vJust.getSelectedItem().toString())
-        .append(hJust.getSelectedItem().toString())
+        .append(vJust.getValueString())
+        .append(hJust.getValueString())
         .append(format.getValueString())
-        .append(fontFamily.getSelectedItem().toString());
+        .append(fontFamily.getValueString());
       final int style = Font.PLAIN +
         (bold.booleanValue() ? Font.BOLD : 0) +
         (italic.booleanValue() ? Font.ITALIC : 0);
@@ -928,43 +967,17 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     public Component getControls() {
       return controls;
     }
-
-    private static class MyRenderer extends DefaultListCellRenderer {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public Component getListCellRendererComponent(JList list,
-                                                    Object value,
-                                                    int index,
-                                                    boolean sel,
-                                                    boolean focus) {
-        super.getListCellRendererComponent(list, value, index, sel, focus);
-        switch ((Character) value) {
-        case 't':
-          setText("Top");
-          break;
-        case 'b':
-          setText("Bottom");
-          break;
-        case 'c':
-          setText("Center");
-          break;
-        case 'l':
-          setText("Left");
-          break;
-        case 'r':
-          setText("Right");
-        }
-        return this;
-      }
-    }
   }
 
   @Override
   public PieceI18nData getI18nData() {
     return getI18nData(
         new String[] {labelFormat.getFormat(), nameFormat.getFormat(), menuCommand},
-        new String[] {"Label Text", "Label Format", "Change Label Command"});
+        new String[] {
+          Resources.getString("Editor.TextLabel.label_text"),
+          Resources.getString("Editor.TextLabel.name_format"),
+          Resources.getString("Editor.TextLabel.change_label_command")
+        });
   }
 
   @Override

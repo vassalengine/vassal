@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -61,6 +59,7 @@ import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
@@ -481,7 +480,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     }
 
     final Object oldValue = newValue == null ? persistentProps.remove(key) : persistentProps.put(key, newValue);
-    return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand (getId(), key, oldValue, newValue);
+    return Objects.equals(oldValue, newValue) ? null : new SetPersistentPropertyCommand(getId(), key, oldValue, newValue);
   }
 
   /**
@@ -987,6 +986,48 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   }
 
   /**
+   * Test if this BasicPiece's Type and State are equal to another
+   * This method is intended to be used by Unit Tests to verify that a trait
+   * is unchanged after going through a process such as serialization/deserialization.
+   *
+   * @param o Object to compare this Decorator to
+   * @return true if the Class, type and state all match
+   */
+  public boolean testEquals(Object o) {
+
+    // Check Class type
+    if (! (o instanceof BasicPiece)) return false;
+    final BasicPiece bp = (BasicPiece) o;
+
+    // Check Type
+    if (! Objects.equals(cloneKey, bp.cloneKey)) return false;
+    if (! Objects.equals(deleteKey, bp.deleteKey)) return false;
+    if (! Objects.equals(imageName, bp.imageName)) return false;
+    if (! Objects.equals(commonName, bp.commonName)) return false;
+
+    // Check State
+    final String mapName1 = this.map == null ? "null" : this.map.getIdentifier(); // NON-NLS
+    final String mapName2 = bp.map == null ? "null" : bp.map.getIdentifier(); // NON-NLS
+    if (! Objects.equals(mapName1, mapName2)) return false;
+
+    if (! Objects.equals(getPosition(), bp.getPosition())) return false;
+    if (! Objects.equals(getGpId(), bp.getGpId())) return false;
+
+    final int pp1 = persistentProps == null ? 0 : persistentProps.size();
+    final int pp2 = bp.persistentProps == null ? 0 : bp.persistentProps.size();
+    if (! Objects.equals(pp1, pp2)) return false;
+
+    if (persistentProps != null && bp.persistentProps != null) {
+      for (Object key : persistentProps.keySet()) {
+        if (!Objects.equals(persistentProps.get(key), bp.persistentProps.get(key)))
+          return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * The configurer ({@link PieceEditor} for the BasicPiece, which generates the dialog for editing the
    * BasicPiece's type information in the Editor window.
    */
@@ -1011,31 +1052,25 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
      */
     private void initComponents(BasicPiece p) {
       panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+      panel.setLayout(new MigLayout(TraitLayout.DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, "[fill,grow]unrel[]")); //NON-NLS
       picker = new ImagePicker();
       picker.setImageName(p.imageName);
       panel.add(picker);
       cloneKeyInput = new KeySpecifier(p.cloneKey);
       deleteKeyInput = new KeySpecifier(p.deleteKey);
-      pieceName = new JTextField(12);
+      pieceName = new JTextField(20);
       pieceName.setText(p.commonName);
       pieceName.setMaximumSize(pieceName.getPreferredSize());
-      Box col = Box.createVerticalBox();
-      Box row = Box.createHorizontalBox();
-      row.add(new JLabel(Resources.getString("Editor.name_label")));
-      row.add(pieceName);
-      col.add(row);
+      JPanel col = new JPanel(new TraitLayout());
+      col.add(new JLabel(Resources.getString("Editor.name_label")));
+      col.add(pieceName);
       if (p.cloneKey != 0) {
-        row = Box.createHorizontalBox();
-        row.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
-        row.add(cloneKeyInput);
-        col.add(row);
+        col.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
+        col.add(cloneKeyInput);
       }
       if (p.deleteKey != 0) {
-        row = Box.createHorizontalBox();
-        row.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
-        row.add(deleteKeyInput);
-        col.add(row);
+        col.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
+        col.add(deleteKeyInput);
       }
       panel.add(col);
     }
