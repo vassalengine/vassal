@@ -848,7 +848,6 @@ public class PieceMover extends AbstractBuildable
     static final int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
     static final int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
 
-
     protected JLabel dragCursor; // An image label. Lives on current DropTarget's
     // LayeredPane.
     //      private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
@@ -875,6 +874,8 @@ public class PieceMover extends AbstractBuildable
       new HashMap<>();
 
     protected abstract int getOffsetMult();
+
+    protected abstract double getDeviceScale(DragGestureEvent dge);
 
     /**
      * Creates a new DropTarget and hooks us into the beginning of a
@@ -1228,7 +1229,8 @@ public class PieceMover extends AbstractBuildable
       // Account for offset of piece within stack
       // We do this even for un-expanded stacks, since the offset can
       // still be significant if the stack is large
-      dragPieceOffCenterZoom = map == null ? 1.0 : map.getZoom();
+      dragPieceOffCenterZoom = (map == null ? 1.0 : map.getZoom()) * getDeviceScale(dge);
+
       if (piece.getParent() != null && map != null) {
         final Point offset = piece.getParent()
                                   .getStackMetrics()
@@ -1384,6 +1386,11 @@ public class PieceMover extends AbstractBuildable
     }
 
     @Override
+    protected double getDeviceScale(DragGestureEvent dge) {
+      return 1.0;
+    }
+
+    @Override
     public void dragDropEnd(DragSourceDropEvent e) {
       removeDragCursor();
       super.dragDropEnd(e);
@@ -1437,6 +1444,15 @@ public class PieceMover extends AbstractBuildable
     @Override
     protected int getOffsetMult() {
       return -1;
+    }
+
+    @Override
+    protected double getDeviceScale(DragGestureEvent dge) {
+      // get the OS scaling
+      final Graphics2D g2d = (Graphics2D) dge.getComponent().getGraphics();
+      final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
+      g2d.dispose();
+      return os_scale;
     }
 
     @Override
