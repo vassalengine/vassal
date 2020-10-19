@@ -31,13 +31,20 @@ import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class DynamicPropertyTest extends DecoratorTest {
 
+  @Before
+  public void setUp() {
+    System.setProperty("java.awt.headless", "false");
+  }
+
   @Test
   public void serializeTests() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
     DynamicProperty trait = new DynamicProperty();
 
     // Default trait
