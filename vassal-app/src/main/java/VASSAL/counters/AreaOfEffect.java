@@ -287,7 +287,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   // No hot-keys
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       if (alwaysActive || activateCommand.length() == 0) {
         commands = new KeyCommand[0];

@@ -115,7 +115,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return command.isEmpty() || key == null || key.isNull() ?
       new KeyCommand[0] :
       new KeyCommand[] {

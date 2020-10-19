@@ -257,7 +257,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return menuCommands;
   }
 

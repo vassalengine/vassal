@@ -44,7 +44,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   protected KeyCommand[] command;
   protected String desc;
   protected NamedKeyStroke key;
-  protected KeyCommand separatorCommand;    
+  protected KeyCommand separatorCommand;
 
   public MenuSeparator() {
     this(ID + ";", null);
@@ -72,7 +72,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       separatorCommand = new KeyCommand(SEPARATOR_NAME, key, Decorator.getOutermost(this), this);
       command = new KeyCommand[]{separatorCommand};
@@ -90,7 +90,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator 
+    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator
   }
 
   @Override
@@ -125,11 +125,11 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   @Override
   public String getDescription() {
     if ((desc != null) && !desc.isEmpty()) {
-      return "Menu Separator" + " - " + desc;  
-    } 
+      return "Menu Separator" + " - " + desc;
+    }
     else {
-      return "Menu Separator";  
-    }    
+      return "Menu Separator";
+    }
   }
 
   @Override
@@ -154,7 +154,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
       controls.add(keyInput.getControls());
     }
 
-    
+
     @Override
     public Component getControls() {
       return controls;

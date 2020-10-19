@@ -81,7 +81,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 

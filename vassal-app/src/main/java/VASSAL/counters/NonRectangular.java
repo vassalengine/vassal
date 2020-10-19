@@ -82,7 +82,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   @Override
-  protected KeyCommand[] myGetKeyCommands() {
+  public KeyCommand[] myGetKeyCommands() {
     return new KeyCommand[0];
   }
 
