@@ -69,7 +69,7 @@ public class CounterGlobalKeyCommand extends Decorator
   protected String rangeProperty = "";
   private KeyCommand myCommand;
   protected String description;
-  protected GlobalCommandTarget target = new GlobalCommandTarget (true);
+  protected GlobalCommandTarget target = new GlobalCommandTarget(true);
   public CounterGlobalKeyCommand() {
     this(ID, null);
   }
@@ -95,8 +95,8 @@ public class CounterGlobalKeyCommand extends Decorator
     rangeProperty = st.nextToken("");
     description = st.nextToken("");
     globalCommand.setSelectFromDeck(st.nextInt(-1));
-    target.decode (st.nextToken (""));
-    target.setCounterGkc (true);
+    target.decode(st.nextToken(""));
+    target.setCounterGkc(true);
 
     command = null;
   }
@@ -377,7 +377,7 @@ public class CounterGlobalKeyCommand extends Decorator
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
 
-      targetConfig = new GlobalCommandTargetConfigurer (p.target);
+      targetConfig = new GlobalCommandTargetConfigurer(p.target);
       traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
@@ -426,7 +426,7 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
         .append(deckPolicy.getIntValue())
-        .append(targetConfig.getValueString ());
+        .append(targetConfig.getValueString());
       return ID + se.getValue();
     }
 

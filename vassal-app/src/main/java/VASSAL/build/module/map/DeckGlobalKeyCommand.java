@@ -168,7 +168,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString("Editor.GlobalKeyCommand.command"), //$NON-NLS-1$
 
-      Resources.getString ("Editor.GlobalKeyCommand.pre_select"),
+      Resources.getString("Editor.GlobalKeyCommand.pre_select"),
 //      Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
 //      Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
 //      Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board

@@ -132,7 +132,7 @@ public class MassKeyCommand extends AbstractConfigurable
 //  protected Expression targetProperty = Expression.createExpression("");
 //  protected Expression targetValue = Expression.createExpression("");
 
-  protected GlobalCommandTarget target = new GlobalCommandTarget (false);
+  protected GlobalCommandTarget target = new GlobalCommandTarget(false);
 
   public MassKeyCommand() {
     ActionListener al = e -> apply();
@@ -215,7 +215,7 @@ public class MassKeyCommand extends AbstractConfigurable
         Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$             // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
 
-        Resources.getString ("Editor.GlobalKeyCommand.pre_select"),
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),
 //        Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
 //        Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
 //        Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board
@@ -244,7 +244,7 @@ public class MassKeyCommand extends AbstractConfigurable
         Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$             // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
 
-        Resources.getString ("Editor.GlobalKeyCommand.pre_select"),
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),
 //        Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
 //        Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
 //        Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board
@@ -550,7 +550,7 @@ public class MassKeyCommand extends AbstractConfigurable
       return String.valueOf(singleMap);
     }
     else if (TARGET.equals(key)) {
-      return target.encode ();
+      return target.encode();
     }
 //    else if (TARGET_TYPE.equals(key)) {
 //      return targetType.name();
@@ -588,7 +588,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString ("Editor.GlobalkeyCommand.global_key_command");
+    return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
   }
 
   protected LaunchButton getLaunchButton() {
@@ -739,10 +739,10 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     else if (TARGET.equals(key)) {
       if (value instanceof String) {
-        value = new GlobalCommandTarget ((String) value);
+        value = new GlobalCommandTarget((String) value);
       }
       target = (GlobalCommandTarget) value;
-      target.setCounterGkc (false);
+      target.setCounterGkc(false);
     }
 //    else if (TARGET_TYPE.equals(key)) {
 //      if (value instanceof String) {
