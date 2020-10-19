@@ -761,6 +761,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
   }
 
+  public String[] getImageNames() {
+    return imageName;
+  }
+
   @Override
   public String getDescription() {
     String displayName = name;
@@ -1079,7 +1083,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.always_active")));
       controls.add(alwaysActiveConfig.getControls(), "wrap"); // NON-NLS
-      
+
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.underneath_when_highlighted")));
       controls.add(drawUnderneath, "wrap"); // NON-NLS
 

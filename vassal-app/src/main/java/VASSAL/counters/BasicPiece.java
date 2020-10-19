@@ -179,6 +179,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
                   .append(commonName).getValue();
   }
 
+  /** @return The name of the piece's image */
+  public String getImageName() {
+    return imageName;
+  }
+
   /** @param map Each GamePiece belongs to a single {@link Map} */
   @Override
   public void setMap(Map map) {

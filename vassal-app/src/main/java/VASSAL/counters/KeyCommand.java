@@ -92,6 +92,10 @@ public class KeyCommand extends AbstractAction {
     return stroke;
   }
 
+  public void setKeyStroke(KeyStroke key) {
+    stroke = key;
+  }
+
   public NamedKeyStroke getNamedKeyStroke() {
     return namedKeyStroke;
   }

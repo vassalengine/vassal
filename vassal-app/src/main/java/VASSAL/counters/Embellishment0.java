@@ -660,6 +660,11 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     }
   }
 
+  public String[] getImageNames() {
+    return imageName;
+  }
+
+
   @Override
   public String getDescription() {
     String displayName = name;
