@@ -127,16 +127,17 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       .append(getAttributeValueString(DECK_COUNT))
       .append(getAttributeValueString(REPORT_FORMAT))
       .append(getLocalizedConfigureName())
-      .append(getAttributeValueString(TARGET_TYPE))
-      .append(getAttributeValueString(TARGET_MAP))
-      .append(getAttributeValueString(TARGET_BOARD))
-      .append(getAttributeValueString(TARGET_ZONE))
-      .append(getAttributeValueString(TARGET_REGION))
-      .append(getAttributeValueString(TARGET_X))
-      .append(getAttributeValueString(TARGET_Y))
-      .append(getAttributeValueString(TARGET_EXACT_MATCH))
-      .append(getAttributeValueString(TARGET_PROPERTY))
-      .append(getAttributeValueString(TARGET_VALUE));
+      .append(getAttributeValueString(TARGET));
+//      .append(getAttributeValueString(TARGET_TYPE))
+//      .append(getAttributeValueString(TARGET_MAP))
+//      .append(getAttributeValueString(TARGET_BOARD))
+//      .append(getAttributeValueString(TARGET_ZONE))
+//      .append(getAttributeValueString(TARGET_REGION))
+//      .append(getAttributeValueString(TARGET_X))
+//      .append(getAttributeValueString(TARGET_Y))
+//      .append(getAttributeValueString(TARGET_EXACT_MATCH))
+//      .append(getAttributeValueString(TARGET_PROPERTY))
+//      .append(getAttributeValueString(TARGET_VALUE));
     return se.getValue();
   }
 
@@ -148,16 +149,17 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(DECK_COUNT, sd.nextInt(0));
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
-    setAttribute(TARGET_TYPE, sd.nextToken(""));
-    setAttribute(TARGET_MAP, sd.nextToken(""));
-    setAttribute(TARGET_BOARD, sd.nextToken(""));
-    setAttribute(TARGET_ZONE, sd.nextToken(""));
-    setAttribute(TARGET_REGION, sd.nextToken(""));
-    setAttribute(TARGET_X, sd.nextInt(0));
-    setAttribute(TARGET_Y, sd.nextInt(0));
-    setAttribute(TARGET_EXACT_MATCH, sd.nextToken(""));
-    setAttribute(TARGET_PROPERTY, sd.nextToken(""));
-    setAttribute(TARGET_VALUE, sd.nextToken(""));
+    setAttribute(TARGET, sd.nextToken(""));
+//    setAttribute(TARGET_TYPE, sd.nextToken(""));
+//    setAttribute(TARGET_MAP, sd.nextToken(""));
+//    setAttribute(TARGET_BOARD, sd.nextToken(""));
+//    setAttribute(TARGET_ZONE, sd.nextToken(""));
+//    setAttribute(TARGET_REGION, sd.nextToken(""));
+//    setAttribute(TARGET_X, sd.nextInt(0));
+//    setAttribute(TARGET_Y, sd.nextInt(0));
+//    setAttribute(TARGET_EXACT_MATCH, sd.nextToken(""));
+//    setAttribute(TARGET_PROPERTY, sd.nextToken(""));
+//    setAttribute(TARGET_VALUE, sd.nextToken(""));
   }
 
   @Override
@@ -166,16 +168,17 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString("Editor.GlobalKeyCommand.command"), //$NON-NLS-1$
 
-      Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
-      Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
-      Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board
-      Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"),        // Restrict to zone
-      Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"),      // Restrict to region
-      Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"),  // Restrict to X position
-      Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"),  // Restrict to Y position
-      Resources.getString("Editor.GlobalKeyCommand.exact_match"),             // Exact property match (fast match)
-      Resources.getString("Editor.GlobalKeyCommand.exact_property"),          // Property name for fast match
-      Resources.getString("Editor.GlobalKeyCommand.exact_value"),             // Property value for fast match
+      Resources.getString ("Editor.GlobalKeyCommand.pre_select"),
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"),        // Restrict to zone
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"),      // Restrict to region
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"),  // Restrict to X position
+//      Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"),  // Restrict to Y position
+//      Resources.getString("Editor.GlobalKeyCommand.exact_match"),             // Exact property match (fast match)
+//      Resources.getString("Editor.GlobalKeyCommand.exact_property"),          // Property name for fast match
+//      Resources.getString("Editor.GlobalKeyCommand.exact_value"),             // Property value for fast match
 
       Resources.getString("Editor.GlobalKeyCommand.matching_properties"), //$NON-NLS-1$
       Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
@@ -189,16 +192,17 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       NAME,
       KEY_COMMAND,
 
-      TARGET_TYPE,        // Restrict by location? (fast match)
-      TARGET_MAP,         // Restrict to map
-      TARGET_BOARD,       // Restrict to board
-      TARGET_ZONE,        // Restrict to zone
-      TARGET_REGION,      // Restrict to region
-      TARGET_X,           // Restrict to X position
-      TARGET_Y,           // Restrict to Y position
-      TARGET_EXACT_MATCH, // Exact property match (fast match)
-      TARGET_PROPERTY,    // Property name for fast match
-      TARGET_VALUE,       // Property value for fast match
+      TARGET,
+//      TARGET_TYPE,        // Restrict by location? (fast match)
+//      TARGET_MAP,         // Restrict to map
+//      TARGET_BOARD,       // Restrict to board
+//      TARGET_ZONE,        // Restrict to zone
+//      TARGET_REGION,      // Restrict to region
+//      TARGET_X,           // Restrict to X position
+//      TARGET_Y,           // Restrict to Y position
+//      TARGET_EXACT_MATCH, // Exact property match (fast match)
+//      TARGET_PROPERTY,    // Property name for fast match
+//      TARGET_VALUE,       // Property value for fast match
 
       PROPERTIES_FILTER,
       DECK_COUNT,
@@ -232,24 +236,24 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    if (TARGET_MAP.equals(key)) {
-      return () -> (targetType != GlobalCommand.GlobalCommandTarget.GAME) && (condition == null);
-    }
-    else if (TARGET_ZONE.equals(key)) {
-      return () -> (targetType == GlobalCommand.GlobalCommandTarget.ZONE) && (condition == null);
-    }
-    else if (TARGET_REGION.equals(key)) {
-      return () -> (targetType == GlobalCommand.GlobalCommandTarget.REGION) && (condition == null);
-    }
-    else if (TARGET_X.equals(key) || TARGET_Y.equals(key) || TARGET_BOARD.equals(key)) {
-      return () -> (targetType == GlobalCommand.GlobalCommandTarget.XY) && (condition == null);
-    }
-    else if (TARGET_PROPERTY.equals(key) || TARGET_VALUE.equals(key)) {
-      return () -> targetExactMatch && (condition == null);
-    }
-    else if (TARGET_TYPE.equals(key) || TARGET_EXACT_MATCH.equals(key)) {
-      return () -> (condition == null);
-    }
+//    if (TARGET_MAP.equals(key)) {
+//      return () -> (targetType != GlobalCommand.GlobalCommandTarget.GAME) && (condition == null);
+//    }
+//    else if (TARGET_ZONE.equals(key)) {
+//      return () -> (targetType == GlobalCommand.GlobalCommandTarget.ZONE) && (condition == null);
+//    }
+//    else if (TARGET_REGION.equals(key)) {
+//      return () -> (targetType == GlobalCommand.GlobalCommandTarget.REGION) && (condition == null);
+//    }
+//    else if (TARGET_X.equals(key) || TARGET_Y.equals(key) || TARGET_BOARD.equals(key)) {
+//      return () -> (targetType == GlobalCommand.GlobalCommandTarget.XY) && (condition == null);
+//    }
+//    else if (TARGET_PROPERTY.equals(key) || TARGET_VALUE.equals(key)) {
+//      return () -> targetExactMatch && (condition == null);
+//    }
+//    else if (TARGET_TYPE.equals(key) || TARGET_EXACT_MATCH.equals(key)) {
+//      return () -> (condition == null);
+//    }
 
     return () -> true;
   }
