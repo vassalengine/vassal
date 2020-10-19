@@ -64,7 +64,7 @@ public abstract class ListConfigurer extends Configurer implements
     Configurer c = buildChildConfigurer();
     SequenceEncoder se = new SequenceEncoder(',');
     for (Object value : getListValue()) {
-      c.setFrozen(true);
+      c.setFrozen(true); // Prevent subsidiary Configurers from firing PropertyChange Events
       c.setValue(value);
       c.setFrozen(false);
       se.append(c.getValueString());
@@ -183,9 +183,7 @@ public abstract class ListConfigurer extends Configurer implements
 
   @Override
   public void repack() {
-    if (panel != null) {
-      repack(panel);
-    }
+    repack(panel);
   }
 
   @Override

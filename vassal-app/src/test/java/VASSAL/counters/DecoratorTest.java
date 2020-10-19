@@ -67,7 +67,7 @@ public class DecoratorTest {
 
         staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-         // Can't test without a properly constructed BasicPiece as the inner
+        // Can't test without a properly constructed BasicPiece as the inner
         if (referenceTrait.getInner() == null) {
           referenceTrait.setInner(createBasicPiece());
         }
@@ -98,10 +98,10 @@ public class DecoratorTest {
   }
 
   /**
-   * Test that a trait's internal editor encodes the type and state in the same way
+   * Test that a trait's internal editor encodes the type in the same way
    * that the trait started with. Checks for serialization issues in the trait editors.
    *
-   * NOTE: Don't test State after across the Editor, Trait Editors don't need to maintain state
+   * NOTE: Don't test State across the Editor, Trait Editors don't need to maintain state
    *
    * @param test A descriptive name for this test or test sequence
    * @param referenceTrait The trait to be tested
