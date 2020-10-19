@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -149,7 +150,11 @@ public abstract class Configurer {
    * Repack the current configurer larger, but not smaller
    */
   protected void repack() {
-    final Window w = SwingUtilities.getWindowAncestor(getControls());
+    repack(getControls());
+  }
+
+  protected void repack(Component controls) {
+    final Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
       w.setMinimumSize(w.getSize());
       w.pack();
