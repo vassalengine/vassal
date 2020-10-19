@@ -20,10 +20,9 @@ package VASSAL.configure;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Window;
+import java.awt.Toolkit;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -67,7 +65,9 @@ public abstract class ListConfigurer extends Configurer implements
     Configurer c = buildChildConfigurer();
     SequenceEncoder se = new SequenceEncoder(',');
     for (Object value : getListValue()) {
+      c.setFrozen(true);
       c.setValue(value);
+      c.setFrozen(false);
       se.append(c.getValueString());
     }
     return se.getValue();
@@ -111,11 +111,11 @@ public abstract class ListConfigurer extends Configurer implements
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new BorderLayout());
+      panel = new JPanel(new MigLayout("ins 0", "[grow]", "[]")); // NON-NLS
       controls = new JPanel(new MigLayout("ins 2", "[]")); // NON-NLS
       final JScrollPane scroll = new JScrollPane(controls);
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
-      configControls = new JPanel(new MigLayout("ins 0,gapy 2", "[]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("ins 0,gapy 2", "[grow]")); // NON-NLS
 
       JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
       addButton.addActionListener(e -> {
@@ -124,8 +124,8 @@ public abstract class ListConfigurer extends Configurer implements
         updateControls();
       });
       controls.add(addButton, "center,wrap"); // NON-NLS
-      controls.add(configControls);
-      panel.add(scroll, BorderLayout.CENTER);
+      controls.add(configControls, "grow"); // NON-NLS
+      panel.add(scroll, "grow"); // NON-NLS
       updateControls();
     }
     return panel;
@@ -171,27 +171,20 @@ public abstract class ListConfigurer extends Configurer implements
         b.add(delButton, "aligny center"); // NON-NLS
         b.add(c.getControls(), "grow"); // NON-NLS
         configControls.add(b, "grow,wrap"); // NON-NLS
-        if (configurers.size() > 5) {
-          if (fixedSize == null) {
-            fixedSize = new Dimension(
-                panel.getPreferredSize().width + 20, 210);
-          }
-          panel.setPreferredSize(fixedSize);
-        }
-        else {
-          panel.setPreferredSize(null);
-        }
+        panel.setMaximumSize(new Dimension(
+          (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 400,
+          (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 400
+        ));
+        panel.setPreferredSize(null);
       }
       repack();
     }
   }
 
+  @Override
   public void repack() {
-    Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      w.setMinimumSize(w.getSize());
-      w.pack();
-      w.setMinimumSize(null);
+    if (panel != null) {
+      repack(panel);
     }
   }
 

@@ -545,10 +545,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
       propChangeConfig.setValue(new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey())));
 
-      PropertyChangeListener pl = e -> updateValue();
-      commandConfig.addPropertyChangeListener(pl);
-      keyConfig.addPropertyChangeListener(pl);
-      propChangeConfig.addPropertyChangeListener(pl);
+      commandConfig.addPropertyChangeListener(e -> updateValue());
+      keyConfig.addPropertyChangeListener(e -> updateValue());
+      propChangeConfig.addPropertyChangeListener(e -> {
+        updateValue();
+        repack(commandConfig.getControls());
+      });
       this.target = target;
     }
 
@@ -557,6 +559,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       SequenceEncoder se = new SequenceEncoder(':');
       se.append(commandConfig.getValueString()).append(keyConfig.getValueString()).append(propChangeConfig.getValueString());
       return se.getValue();
+    }
+
+    @Override
+    public void setFrozen(boolean val) {
+      super.setFrozen(val);
+      commandConfig.setFrozen(val);
+      keyConfig.setFrozen(val);
+      propChangeConfig.setFrozen(val);
     }
 
     @Override
@@ -595,7 +605,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       noUpdate = true;
       setValue(new DynamicKeyCommand(commandConfig.getValueString(), keyConfig.getValueNamedKeyStroke(), target, target, propChangeConfig.getPropertyChanger()));
       noUpdate = false;
-      repack();
     }
 
     protected void buildControls() {
