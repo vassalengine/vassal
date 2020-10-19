@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.ImageIcon;
-import org.junit.Before;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -38,12 +37,6 @@ import org.mockito.Mockito;
  * Base class for all Decorator Tests. Provides
  */
 public class DecoratorTest {
-
-
-  @Before
-  public void setUp() throws Exception {
-    System.setProperty("java.awt.headless", "false");
-  }
 
   /**
    * Run the serialization tests on the supplied Decorator.
