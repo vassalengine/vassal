@@ -561,6 +561,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       return se.getValue();
     }
 
+    /**
+     * Freeze the Configurer from issuing PropertyChange Events.
+     * Ensure the subsidiary Configurers are quiet also.
+     *
+     * @param val true to freeze
+     */
     @Override
     public void setFrozen(boolean val) {
       super.setFrozen(val);

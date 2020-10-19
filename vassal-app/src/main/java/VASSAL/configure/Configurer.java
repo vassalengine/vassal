@@ -156,12 +156,17 @@ public abstract class Configurer {
     repack(getControls());
   }
 
+  /**
+   * Repack a dialog or window larger, but not smaller
+   */
   protected void repack(Component controls) {
-    final Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      w.setMinimumSize(w.getSize());
-      w.pack();
-      w.setMinimumSize(null);
+    if (controls != null) {
+      final Window w = SwingUtilities.getWindowAncestor(controls);
+      if (w != null) {
+        w.setMinimumSize(w.getSize());
+        w.pack();
+        w.setMinimumSize(null);
+      }
     }
   }
 
