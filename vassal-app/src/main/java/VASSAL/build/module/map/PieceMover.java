@@ -161,12 +161,7 @@ public class PieceMover extends AbstractBuildable
       public Object visitDeck(Deck d) {
         final Point pos = d.getPosition();
         final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
-        if (d.getShape().contains(p)) {
-          return d;
-        }
-        else {
-          return null;
-        }
+        return d.getShape().contains(p) ? d : null;
       }
 
       @Override
@@ -312,12 +307,7 @@ public class PieceMover extends AbstractBuildable
       public Object visitDeck(Deck d) {
         final Point pos = d.getPosition();
         final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
-        if (d.boundingBox().contains(p) && d.getPieceCount() > 0) {
-          return d;
-        }
-        else {
-          return null;
-        }
+        return d.boundingBox().contains(p) && d.getPieceCount() > 0 ? d : null;
       }
     };
   }
