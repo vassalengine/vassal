@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.ImageIcon;
+import org.junit.Before;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -37,6 +38,12 @@ import org.mockito.Mockito;
  * Base class for all Decorator Tests. Provides
  */
 public class DecoratorTest {
+
+
+  @Before
+  public void setUp() throws Exception {
+    System.setProperty("java.awt.headless", "false");
+  }
 
   /**
    * Run the serialization tests on the supplied Decorator.
@@ -52,6 +59,7 @@ public class DecoratorTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
       try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
+
         staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon(dummyImage));
         staticIf.when(() -> IconFactory.getIcon("no", 0)).thenReturn(new ImageIcon(dummyImage));
         staticIf.when(() -> IconFactory.getIcon("yes", 0)).thenReturn(new ImageIcon(dummyImage));
@@ -66,7 +74,7 @@ public class DecoratorTest {
 
         staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-        // Can't test without a properly constructed BasicPiece as the inner
+         // Can't test without a properly constructed BasicPiece as the inner
         if (referenceTrait.getInner() == null) {
           referenceTrait.setInner(createBasicPiece());
         }
@@ -79,6 +87,7 @@ public class DecoratorTest {
 
         // Test the serialization used in the internal editor matches the standard serialization
         editorTest(test, referenceTrait);
+
       }
     }
   }
