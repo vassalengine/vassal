@@ -22,7 +22,6 @@ import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -171,12 +170,13 @@ public abstract class ListConfigurer extends Configurer implements
         b.add(delButton, "aligny center"); // NON-NLS
         b.add(c.getControls(), "grow"); // NON-NLS
         configControls.add(b, "grow,wrap"); // NON-NLS
-        panel.setMaximumSize(new Dimension(
-          (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 400,
-          (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 400
-        ));
-        panel.setPreferredSize(null);
       }
+      panel.setMaximumSize(
+        new Dimension(
+          panel.getPreferredSize().width + 20,
+          Math.min(panel.getPreferredSize().height, (int) getScreenSize().getHeight() - 300)
+        )
+      );
       repack();
     }
   }
