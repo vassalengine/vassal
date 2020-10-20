@@ -33,10 +33,10 @@ import VASSAL.property.PersistentPropertyContainer;
 
 public class KeyBuffer {
   private static KeyBuffer theBuffer;
-  private List<GamePiece> pieces;
-  private BoundsTracker bounds;
-  private Comparator<GamePiece> pieceSorter = new PieceSorter();
-  private Point clickPoint;
+  private final List<GamePiece> pieces;
+  private final BoundsTracker bounds;
+  private final Comparator<GamePiece> pieceSorter = new PieceSorter();
+  private final Point clickPoint;
 
   private KeyBuffer() {
     pieces = new ArrayList<>();
@@ -158,7 +158,7 @@ public class KeyBuffer {
 
   /**
    *
-   * @param stack
+   * @param stack Stack to check
    * @return true if a child of the specified Stack is selected
    */
   public boolean containsChild(Stack stack) {
