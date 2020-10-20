@@ -38,6 +38,7 @@ public class DynamicPropertyTest extends DecoratorTest {
 
   @Test
   public void serializeTests() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
     DynamicProperty trait = new DynamicProperty();
 
     // Default trait

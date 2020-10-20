@@ -17,6 +17,10 @@
  */
 package VASSAL.configure;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -149,11 +153,37 @@ public abstract class Configurer {
    * Repack the current configurer larger, but not smaller
    */
   protected void repack() {
-    final Window w = SwingUtilities.getWindowAncestor(getControls());
-    if (w != null) {
-      w.setMinimumSize(w.getSize());
-      w.pack();
-      w.setMinimumSize(null);
+    repack(getControls());
+  }
+
+  /**
+   * Repack a dialog or window larger, but not smaller
+   */
+  protected void repack(Component controls) {
+    if (controls != null) {
+      final Window w = SwingUtilities.getWindowAncestor(controls);
+      if (w != null) {
+        w.setMinimumSize(w.getSize());
+        w.pack();
+        w.setMinimumSize(null);
+      }
+    }
+  }
+
+  /**
+   * Return the current screen size for use by List type configurers to allow them to take up
+   * maximum screen real estate if needed.
+   *
+   * The headless check is required in case any Configurers try to initialize during tests.
+   *
+   * @return Screen Size.
+   */
+  protected Dimension getScreenSize() {
+    if (GraphicsEnvironment.isHeadless()) {
+      return new Dimension(1920, 1280);
+    }
+    else {
+      return Toolkit.getDefaultToolkit().getScreenSize();
     }
   }
 }
