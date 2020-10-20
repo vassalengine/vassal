@@ -98,6 +98,8 @@ public class CounterGlobalKeyCommand extends Decorator
     target.decode(st.nextToken(""));
     target.setCounterGkc(true);
 
+    globalCommand.target.setCurPiece(this);
+
     command = null;
   }
 
@@ -271,9 +273,11 @@ public class CounterGlobalKeyCommand extends Decorator
 //      break;
 //    }
 
-    for (Map m : Map.getMapList()) {
-      c = c.append(globalCommand.apply(m, filter));
-    }
+    //for (Map m : Map.getMapList()) {
+    //  c = c.append(globalCommand.apply(m, filter));
+    //}
+
+    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter));
 
     return c;
   }
@@ -447,5 +451,4 @@ public class CounterGlobalKeyCommand extends Decorator
   public String getComponentTypeName() {
     return getDescription();
   }
-
 }

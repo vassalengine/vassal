@@ -43,6 +43,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   protected String targetProperty = "";
   protected String targetValue = "";
 
+  private GamePiece curPiece; // Reference piece for "current <place>". NOT encoded into the module, only set and used at time of command execution.
+
   @Override
   public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
     return new GlobalCommandTargetConfigurer(key, name);
@@ -57,6 +59,10 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     ZONE,
     LOCATION,
     XY;
+
+    public boolean isCurrent() {
+      return (this == CURSTACK) || (this == CURMAP) || (this == CURZONE) || (this == CURLOC);
+    }
 
     public String toTranslatedString() {
       return "Editor.GlobalKeyCommand.target_" + name().toLowerCase();  //NON-NLS
@@ -91,7 +97,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     SequenceEncoder se = new SequenceEncoder(ENCODE_DELIMITER);
     se.append(isCounterGkc)
       .append(useLocation)
-      .append(targetType.toString())
+      .append(targetType.name())
       .append(targetMap)
       .append(targetBoard)
       .append(targetZone)
@@ -229,4 +235,11 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     this.targetY = targetY;
   }
 
+  public void setCurPiece(GamePiece curPiece) {
+    this.curPiece = curPiece;
+  }
+
+  public GamePiece getCurPiece() {
+    return curPiece;
+  }
 }

@@ -19,14 +19,12 @@ package VASSAL.counters;
 
 import javax.swing.KeyStroke;
 
-import VASSAL.build.AutoConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -34,7 +32,6 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
-import java.util.Arrays;
 
 /**
  * Applies a given keyboard command to all counters on a map
@@ -46,58 +43,7 @@ public class GlobalCommand {
   protected FormattedString reportFormat = new FormattedString();
   protected Loopable owner;
   protected PropertySource source;
-  protected GlobalCommandTarget targetType = GlobalCommandTarget.GAME;
-  protected String targetMap = "";
-  protected String targetBoard = "";
-  protected String targetZone = "";
-  protected String targetRegion = "";
-  protected String targetGrid = "";
-  protected boolean targetExactMatch = false;
-  protected String targetProperty = "";
-  protected String targetValue = "";
-  protected int targetX = 0;
-  protected int targetY = 0;
-
-  /**
-   * Levels of pre-filtering of piece location for Global Key Commands.
-   */
-  public enum GlobalCommandTarget {
-    GAME,
-    MAP,
-    ZONE,
-    REGION,
-    XY;
-
-    public String toTranslatedString() {
-      return "Editor.GlobalKeyCommand.target_" + name().toLowerCase();  //NON-NLS
-    }
-
-    public static String[] getKeys() {
-      return Arrays.stream(values())
-        .map(GlobalCommandTarget::name)
-        .toArray(String[]::new);
-    }
-
-    public static String[] geti18nKeys() {
-      return Arrays.stream(values())
-        .map(GlobalCommandTarget::toTranslatedString)
-        .toArray(String[]::new);
-    }
-  }
-
-
-  public static class GlobalCommandTargetConfigurer extends TranslatableStringEnum {
-    @Override
-    public String[] getValidValues(AutoConfigurable target) {
-      return GlobalCommandTarget.getKeys();
-    }
-
-    @Override
-    public String[] getI18nKeys(AutoConfigurable target) {
-      return GlobalCommandTarget.geti18nKeys();
-    }
-  }
-
+  protected GlobalCommandTarget target;
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -140,86 +86,13 @@ public class GlobalCommand {
     this.reportSingle = reportSingle;
   }
 
-  public void setTargetType(GlobalCommandTarget targetType) {
-    this.targetType = targetType;
+  public void setTarget(GlobalCommandTarget target) {
+    this.target = target;
   }
 
-  public GlobalCommandTarget getTargetType() {
-    return targetType;
+  public GlobalCommandTarget getTarget() {
+    return target;
   }
-
-  public void setTargetX(int targetX) {
-    this.targetX = targetX;
-  }
-
-  public void setTargetY(int targetY) {
-    this.targetY = targetY;
-  }
-
-  public int getTargetX() {
-    return targetX;
-  }
-
-  public int getTargetY() {
-    return targetY;
-  }
-
-  public void setTargetMap(String targetMap) {
-    this.targetMap = targetMap;
-  }
-
-  public String getTargetMap() {
-    return targetMap;
-  }
-
-  public void setTargetBoard(String targetBoard) {
-    this.targetBoard = targetBoard;
-  }
-
-  public String getTargetBoard() {
-    return targetBoard;
-  }
-
-  public void setTargetZone(String targetZone) {
-    this.targetZone = targetZone;
-  }
-
-  public String getTargetZone() {
-    return targetZone;
-  }
-
-  public void setTargetRegion(String targetRegion) {
-    this.targetRegion = targetRegion;
-  }
-
-  public String getTargetRegion() {
-    return targetRegion;
-  }
-
-  public void setTargetProperty(String targetProperty) {
-    this.targetProperty = targetProperty;
-  }
-
-  public String getTargetProperty() {
-    return targetProperty;
-  }
-
-  public void setTargetValue(String targetValue) {
-    this.targetValue = targetValue;
-  }
-
-  public String getTargetValue() {
-    return targetValue;
-  }
-
-  public boolean isTargetExactMatch() {
-    return targetExactMatch;
-  }
-
-  public void setTargetExactMatch(Boolean targetExactMatch) {
-    this.targetExactMatch = targetExactMatch;
-  }
-
 
 
   public Command apply(Map m, PieceFilter filter) {
@@ -247,9 +120,16 @@ public class GlobalCommand {
         c.execute();
       }
 
+      GamePiece curPiece = target.getCurPiece();
+
       for (Map map : m) {
-        if ((targetType != GlobalCommandTarget.GAME) && !targetMap.isEmpty() && !targetMap.equals(map.getConfigureName())) {
-          continue;
+        if (target.useLocation) {
+          if (target.targetType == GlobalCommandTarget.Target.CURMAP) {
+            
+          }
+          else if (!target.targetType.isCurrent() && !target.targetMap.isEmpty() && !target.targetMap.equals(map.getConfigureName())) {
+            continue;
+          }
         }
 
         Visitor visitor = new Visitor(c, filter, keyStroke);
@@ -257,16 +137,16 @@ public class GlobalCommand {
         GamePiece[] p = map.getPieces();
         for (GamePiece gamePiece : p) {
 
-          if (targetExactMatch && !targetProperty.isEmpty()) {
-            String value = (String) gamePiece.getProperty(targetProperty);
-            if (!value.equals(targetValue)) {
+          if (target.useProperty && !target.targetProperty.isEmpty()) {
+            String value = (String) gamePiece.getProperty(target.targetProperty);
+            if (!value.equals(target.targetValue)) {
               continue;
             }
           }
 
-          // These basic location filters are hopefully(?) faster than equivalent filters in the Beanshell expression
+          // These basic location filters are faster than equivalent filters in the Beanshell expression
           // If this is a stack, the top piece in the stack's current properties will be the same as any other piece in the stack.
-          if ((targetType == GlobalCommandTarget.ZONE) || (targetType == GlobalCommandTarget.REGION)) {
+          if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION)) {
             GamePiece pp;
             if (gamePiece instanceof Stack) {
               Stack s;
@@ -279,26 +159,27 @@ public class GlobalCommand {
             else {
               pp = gamePiece;
             }
-            switch (targetType) {
+
+            switch (target.targetType) {
             case ZONE:
-              if (!targetZone.equals((String) pp.getProperty(BasicPiece.CURRENT_ZONE))) {
+              if (!target.targetZone.equals((String) pp.getProperty(BasicPiece.CURRENT_ZONE))) {
                 continue;
               }
               break;
-            case REGION:
-              if (!targetRegion.equals((String) pp.getProperty(BasicPiece.LOCATION_NAME))) {
+            case LOCATION:
+              if (!target.targetLocation.equals((String) pp.getProperty(BasicPiece.LOCATION_NAME))) {
                 continue;
               }
               break;
             }
           }
 
-          if (targetType == GlobalCommandTarget.XY) {
-            if (!targetBoard.equals((String)gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+          if (target.targetType == GlobalCommandTarget.Target.XY) {
+            if (!target.targetBoard.equals((String)gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
               continue;
             }
             Point pt = new Point(gamePiece.getPosition());
-            if ((targetX != pt.getX()) || (targetY != pt.getY())) {
+            if ((target.targetX != pt.getX()) || (target.targetY != pt.getY())) {
               continue;
             }
           }
@@ -450,31 +331,34 @@ public class GlobalCommand {
       return false;
 
     // Match any specific targeting information, depending on the targeting type. targetType must always match.
-    if (targetType != other.targetType) {
+    if (target.useLocation != other.target.useLocation) {
       return false;
     }
-    if ((targetType != GlobalCommandTarget.GAME) && !targetMap.equals(other.targetMap)) {
+    if (target.targetType != other.target.targetType) {
       return false;
     }
-    if ((targetType == GlobalCommandTarget.ZONE) && !targetZone.equals(other.targetZone)) {
+    if (!target.targetType.isCurrent() && !target.targetMap.equals(other.target.targetMap)) {
       return false;
     }
-    if ((targetType == GlobalCommandTarget.REGION) && !targetRegion.equals(other.targetRegion)) {
+    if ((target.targetType == GlobalCommandTarget.Target.ZONE) && !target.targetZone.equals(other.target.targetZone)) {
       return false;
     }
-    if ((targetType == GlobalCommandTarget.XY) && (!targetBoard.equals(other.targetBoard) || ((targetX != other.targetX) || (targetY != other.targetY)))) {
+    if ((target.targetType == GlobalCommandTarget.Target.LOCATION) && !target.targetLocation.equals(other.target.targetLocation)) {
+      return false;
+    }
+    if ((target.targetType == GlobalCommandTarget.Target.XY) && (!target.targetBoard.equals(other.target.targetBoard) || ((target.targetX != other.target.targetX) || (target.targetY != other.target.targetY)))) {
       return false;
     }
 
-    if (targetExactMatch != other.targetExactMatch) {
+    if (target.useProperty != other.target.useProperty) {
       return false;
     }
 
-    if (targetExactMatch) {
-      if (!targetProperty.equals(other.targetProperty)) {
+    if (target.useProperty) {
+      if (!target.targetProperty.equals(other.target.targetProperty)) {
         return false;
       }
-      if (!targetValue.equals(other.targetValue)) {
+      if (!target.targetValue.equals(other.target.targetValue)) {
         return false;
       }
     }
