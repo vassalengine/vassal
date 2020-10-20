@@ -94,14 +94,14 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls = new JPanel(new MigLayout("hidemode 3, ins 1, gapy 1", "[]rel[]rel[fill,grow]")); // NON-NLS
       final GlobalCommandTarget target = getTarget();
 
-      useLocationConfig = new BooleanConfigurer (target.isUseLocation());
+      useLocationConfig = new BooleanConfigurer(target.isUseLocation());
       useLocationConfig.addPropertyChangeListener(evt -> targetChanged());
       controls.add(useLocationConfig.getControls());
       controls.add(new JLabel("by Location?"), "wrap");
 
       final List<String> options = new ArrayList<>();
       final List<String> i18nKeys = new ArrayList<>();
-      if (getTarget().isCounterGkc()) {
+      if (getTarget().getGKCtype() == GlobalCommandTarget.GKCtype.COUNTER) {
         options.add(GlobalCommandTarget.Target.CURSTACK.toString());
         options.add(GlobalCommandTarget.Target.CURMAP.toString());
         options.add(GlobalCommandTarget.Target.CURZONE.toString());
@@ -110,6 +110,9 @@ public class GlobalCommandTargetConfigurer extends Configurer {
         i18nKeys.add(GlobalCommandTarget.Target.CURMAP.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURZONE.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURLOC.toTranslatedString());
+      }
+      else if (getTarget().getGKCtype() == GlobalCommandTarget.GKCtype.COUNTER) {
+        
       }
       options.add(GlobalCommandTarget.Target.MAP.toString());
       options.add(GlobalCommandTarget.Target.ZONE.toString());

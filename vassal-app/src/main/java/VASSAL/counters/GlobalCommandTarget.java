@@ -25,23 +25,28 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
+/**
+ * GlobalCommandTarget configures and stores the "Fast Match" parameters of Global Key Commands, allowing certain
+ * simple filters to be "pre-matched" without having to initiate the (relatively slower) BeanShell filters.
+ */
 public class GlobalCommandTarget implements ConfigurerFactory {
 
   protected static final char ENCODE_DELIMITER = '|';
 
-  protected boolean isCounterGkc;
-  protected boolean useLocation = false;
-  protected Target targetType = Target.MAP;
-  protected String targetMap = "";
-  protected String targetBoard = "";
-  protected String targetZone = "";
-  protected String targetLocation = "";
-  protected int targetX = 0;
-  protected int targetY = 0;
+  protected GKCtype gkcType = GKCtype.MAP;  // What flavor of GKC (Module, Map, Deck, Piece)
 
-  protected boolean useProperty = false;
-  protected String targetProperty = "";
-  protected String targetValue = "";
+  protected boolean useLocation = false;    // True if we are doing Fast Match by location (else other values in this block unused)
+  protected Target targetType = Target.MAP; // Type of location Fast Match we are doing
+  protected String targetMap = "";          // Specified Map (for MAP, ZONE, LOCATION, XY types)
+  protected String targetBoard = "";        // Specified Board (for XY type)
+  protected String targetZone = "";         // Specified Zone (for ZONE type)
+  protected String targetLocation = "";     // Specified Location (for LOCATION type)
+  protected int targetX = 0;                // Specified X (for XY type)
+  protected int targetY = 0;                // Specified Y (for XY type)
+
+  protected boolean useProperty = false;    // True if we're doing a Fast Match by property value (else next two values ignored)
+  protected String targetProperty = "";     // Name/Key of Fast Match property
+  protected String targetValue = "";        // Value to match for that property
 
   private GamePiece curPiece; // Reference piece for "current <place>". NOT encoded into the module, only set and used at time of command execution.
 
@@ -50,30 +55,55 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     return new GlobalCommandTargetConfigurer(key, name);
   }
 
-  public enum Target {
-    CURSTACK,
-    CURMAP,
-    CURZONE,
-    CURLOC,
+  /**
+   * Specifies the type of GKC being configured (affects which Target options are allowed)
+   */
+  public enum GKCtype {
+    COUNTER,
     MAP,
-    ZONE,
-    LOCATION,
-    XY;
+    MODULE,
+    DECK
+  }
 
+  /**
+   * Specifies the kind of target matching
+   */
+  public enum Target {
+    CURSTACK,  // Current stack or deck (of issuing piece or deck)
+    CURMAP,    // Current map           (of issuing piece)
+    CURZONE,   // Current zone          (of issuing piece)
+    CURLOC,    // Current location      (of issuing piece)
+    MAP,       // Specified map
+    ZONE,      // Specified zone
+    LOCATION,  // Specified location name
+    XY;        // Specified X/Y position
+
+    /**
+     * @return true if our match is relative to an issuing piece or deck
+     */
     public boolean isCurrent() {
       return (this == CURSTACK) || (this == CURMAP) || (this == CURZONE) || (this == CURLOC);
     }
 
+    /**
+     * @return Localizable key corresponding to target value
+     */
     public String toTranslatedString() {
       return "Editor.GlobalKeyCommand.target_" + name().toLowerCase();  //NON-NLS
     }
 
+    /**
+     * @return Internal keys for all target types
+     */
     public static String[] getKeys() {
       return Arrays.stream(values())
         .map(GlobalCommandTarget.Target::name)
         .toArray(String[]::new);
     }
 
+    /**
+     * @return Localization keys for all target types
+     */
     public static String[] geti18nKeys() {
       return Arrays.stream(values())
         .map(GlobalCommandTarget.Target::toTranslatedString)
@@ -82,11 +112,11 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   }
 
   public GlobalCommandTarget() {
-    this(false);
+    this(GKCtype.MAP);
   }
 
-  public GlobalCommandTarget(boolean isCounterGkc) {
-    setCounterGkc(isCounterGkc);
+  public GlobalCommandTarget(GKCtype gkc) {
+    setGKCtype(gkc);
   }
 
   public GlobalCommandTarget(String s) {
@@ -95,7 +125,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(ENCODE_DELIMITER);
-    se.append(isCounterGkc)
+    se.append(gkcType.name())
       .append(useLocation)
       .append(targetType.name())
       .append(targetMap)
@@ -113,7 +143,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public void decode(String code) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ENCODE_DELIMITER);
-    isCounterGkc = sd.nextBoolean(false);
+    final String source = sd.nextToken("");
+    gkcType = source.isEmpty() ? GKCtype.MAP : GKCtype.valueOf(source);
     useLocation = sd.nextBoolean(false);
     final String type = sd.nextToken(Target.MAP.toString());
     targetType = type.isEmpty() ? Target.MAP : Target.valueOf(type);
@@ -135,12 +166,12 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     return encode().equals(t.encode());
   }
 
-  public boolean isCounterGkc() {
-    return isCounterGkc;
+  public GKCtype getGKCtype() {
+    return gkcType;
   }
 
-  public void setCounterGkc(boolean counterGkc) {
-    isCounterGkc = counterGkc;
+  public void setGKCtype(GKCtype gkcType) {
+    this.gkcType = gkcType;
   }
 
   public boolean isUseLocation() {

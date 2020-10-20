@@ -22,12 +22,21 @@ import java.util.List;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.GlobalCommandTarget;
 
 /**
  * This version of {@link MassKeyCommand} is added directly to a
  * {@link VASSAL.build.GameModule} and applies to all maps
  */
 public class GlobalKeyCommand extends MassKeyCommand {
+
+  /**
+   * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown.
+   */
+  @Override
+  public GlobalCommandTarget.GKCtype getGKCtype() {
+    return GlobalCommandTarget.GKCtype.MODULE;
+  }
 
   @Override
   public void apply() {

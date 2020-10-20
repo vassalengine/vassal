@@ -110,29 +110,16 @@ public class MassKeyCommand extends AbstractConfigurable
   protected boolean singleMap = true;
 
   public static final String TARGET   = "target"; //NON-NLS
-//  public static final String TARGET_TYPE   = "targetType"; //NON-NLS
-//  public static final String TARGET_MAP    = "targetMap"; //NON-NLS
-//  public static final String TARGET_BOARD  = "targetBoard"; //NON-NLS
-//  public static final String TARGET_ZONE   = "targetZone"; //NON-NLS
-//  public static final String TARGET_REGION = "targetRegion"; //NON-NLS
-//  public static final String TARGET_X      = "targetX"; //NON-NLS
-//  public static final String TARGET_Y      = "targetY"; //NON-NLS
-//  public static final String TARGET_EXACT_MATCH = "targetExactMatch"; //NON-NLS
-//  public static final String TARGET_PROPERTY    = "targetProperty"; //NON-NLS
-//  public static final String TARGET_VALUE       = "targetValue"; //NON-NLS
 
-//  protected GlobalCommand.GlobalCommandTarget targetType = GlobalCommand.GlobalCommandTarget.GAME;
-//  protected Expression targetMap = Expression.createExpression("");
-//  protected Expression targetBoard = Expression.createExpression("");
-//  protected Expression targetZone = Expression.createExpression("");
-//  protected Expression targetRegion = Expression.createExpression("");
-//  protected int targetX = 0;
-//  protected int targetY = 0;
-//  protected boolean targetExactMatch = false;
-//  protected Expression targetProperty = Expression.createExpression("");
-//  protected Expression targetValue = Expression.createExpression("");
+  protected GlobalCommandTarget target = new GlobalCommandTarget(getGKCtype());
 
-  protected GlobalCommandTarget target = new GlobalCommandTarget(false);
+  /**
+   * @return Our GKC type -- this method is overridden by {@link VASSAL.build.module.GlobalKeyCommand} for module-level GKC's
+   * and by {@link DeckGlobalKeyCommand} for Deck GKC's. This value affects what configurer options are shown.
+   */
+  public GlobalCommandTarget.GKCtype getGKCtype() {
+    return GlobalCommandTarget.GKCtype.MAP;
+  }
 
   public MassKeyCommand() {
     ActionListener al = e -> apply();
@@ -156,37 +143,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public void apply() {
     buildFilter();
-
-    // FIXME Pass the GlobalCommandTarget to GlobalCommand and let it do all the work.
-    //
-//    globalCommand.setTargetExactMatch(targetExactMatch);
-//    if (targetExactMatch) {
-//      globalCommand.setTargetProperty(targetProperty.tryEvaluate(propertySource));
-//      globalCommand.setTargetValue(targetValue.tryEvaluate(propertySource));
-//    }
-//
-//    globalCommand.setTargetType(targetType);
-//
-//    if (targetType != GlobalCommand.GlobalCommandTarget.GAME) {
-//      globalCommand.setTargetMap(targetMap.tryEvaluate(propertySource));
-//    }
-//
-//    switch (targetType) {
-//    case ZONE:
-//      globalCommand.setTargetZone(targetZone.tryEvaluate(propertySource));
-//      break;
-//
-//    case REGION:
-//      globalCommand.setTargetRegion(targetRegion.tryEvaluate(propertySource));
-//      break;
-//
-//    case XY:
-//      globalCommand.setTargetBoard(targetBoard.tryEvaluate(propertySource));
-//      globalCommand.setTargetX(targetX);
-//      globalCommand.setTargetY(targetY);
-//      break;
-//    }
-
+    globalCommand.setTarget(target);
     if (singleMap) {
       GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter()));
     }
@@ -215,17 +172,7 @@ public class MassKeyCommand extends AbstractConfigurable
         Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$             // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
 
-        Resources.getString("Editor.GlobalKeyCommand.pre_select"),
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"),        // Restrict to zone
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"),      // Restrict to region
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"),  // Restrict to X position
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"),  // Restrict to Y position
-//        Resources.getString("Editor.GlobalKeyCommand.exact_match"),             // Exact property match (fast match)
-//        Resources.getString("Editor.GlobalKeyCommand.exact_property"),          // Property name for fast match
-//        Resources.getString("Editor.GlobalKeyCommand.exact_value"),             // Property value for fast match
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),           // Fast match target info
 
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$           // Match properties
         Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$    // Apply to pieces in deck
@@ -244,17 +191,7 @@ public class MassKeyCommand extends AbstractConfigurable
         Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$             // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
 
-        Resources.getString("Editor.GlobalKeyCommand.pre_select"),
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_matches_to"),     // Restrict by location? (fast match)
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_map"),         // Restrict to map
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_board"),       // Restrict to board
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_zone"),        // Restrict to zone
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_region"),      // Restrict to region
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_x_position"),  // Restrict to X position
-//        Resources.getString("Editor.GlobalKeyCommand.restrict_to_y_position"),  // Restrict to Y position
-//        Resources.getString("Editor.GlobalKeyCommand.exact_match"),             // Exact property match (fast match)
-//        Resources.getString("Editor.GlobalKeyCommand.exact_property"),          // Property name for fast match
-//        Resources.getString("Editor.GlobalKeyCommand.exact_value"),             // Property value for fast match
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),           // Fast match target info
 
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$           // Match properties
         Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$    // Apply to pieces in deck
@@ -276,17 +213,7 @@ public class MassKeyCommand extends AbstractConfigurable
       KEY_COMMAND,                          // Key Command
       SINGLE_MAP,                           // Apply to counters on this map only
 
-      TARGET,
-//      TARGET_TYPE,        // Restrict by location? (fast match)
-//      TARGET_MAP,         // Restrict to map
-//      TARGET_BOARD,       // Restrict to board
-//      TARGET_ZONE,        // Restrict to zone
-//      TARGET_REGION,      // Restrict to region
-//      TARGET_X,           // Restrict to X position
-//      TARGET_Y,           // Restrict to Y position
-//      TARGET_EXACT_MATCH, // Exact property match (fast match)
-//      TARGET_PROPERTY,    // Property name for fast match
-//      TARGET_VALUE,       // Property value for fast match
+      TARGET,                               // Fast match target info
 
       PROPERTIES_FILTER,                    // Match properties
       DECK_COUNT,                           // Apply to pieces in deck
@@ -327,17 +254,7 @@ public class MassKeyCommand extends AbstractConfigurable
         NamedKeyStroke.class,               // Key Command
         Boolean.class,                      // Apply to counters on this map only
 
-        GlobalCommandTarget.class,
-//        GlobalCommand.GlobalCommandTargetConfigurer.class,  // Restrict by location? (fast match)
-//        PropertyExpression.class,                 // Restrict to map
-//        PropertyExpression.class,                 // Restrict to board
-//        PropertyExpression.class,                 // Restrict to zone
-//        PropertyExpression.class,                 // Restrict to region
-//        Integer.class,                            // Restrict to X position
-//        Integer.class,                            // Restrict to Y position
-//        Boolean.class,                            // Exact property match (fast match)
-//        PropertyExpression.class,                 // Property name for fast match
-//        PropertyExpression.class,                 // Property value for fast match
+        GlobalCommandTarget.class,          // Fast Match target info
 
         PropertyExpression.class,           // Match properties
         DeckPolicyConfig.class,             // Apply to pieces in deck
@@ -357,16 +274,6 @@ public class MassKeyCommand extends AbstractConfigurable
         Boolean.class,
 
         GlobalCommandTarget.class,
-//        GlobalCommand.GlobalCommandTargetConfigurer.class,  // Restrict by location? (fast match)
-//        PropertyExpression.class,                 // Restrict to map
-//        PropertyExpression.class,                 // Restrict to board
-//        PropertyExpression.class,                 // Restrict to zone
-//        PropertyExpression.class,                 // Restrict to region
-//        Integer.class,                            // Restrict to X position
-//        Integer.class,                            // Restrict to Y position
-//        Boolean.class,                            // Exact property match (fast match)
-//        PropertyExpression.class,                 // Property name for fast match
-//        PropertyExpression.class,                 // Property value for fast match
 
         String.class,
         DeckPolicyConfig.class,
@@ -552,36 +459,6 @@ public class MassKeyCommand extends AbstractConfigurable
     else if (TARGET.equals(key)) {
       return target.encode();
     }
-//    else if (TARGET_TYPE.equals(key)) {
-//      return targetType.name();
-//    }
-//    else if (TARGET_MAP.equals(key)) {
-//      return targetMap.getExpression();
-//    }
-//    else if (TARGET_BOARD.equals(key)) {
-//      return targetBoard.getExpression();
-//    }
-//    else if (TARGET_ZONE.equals(key)) {
-//      return targetZone.getExpression();
-//    }
-//    else if (TARGET_REGION.equals(key)) {
-//      return targetRegion.getExpression();
-//    }
-//    else if (TARGET_PROPERTY.equals(key)) {
-//      return targetProperty.getExpression();
-//    }
-//    else if (TARGET_VALUE.equals(key)) {
-//      return targetValue.getExpression();
-//    }
-//    else if (TARGET_EXACT_MATCH.equals(key)) {
-//      return String.valueOf(targetExactMatch);
-//    }
-//    else if (TARGET_X.equals(key)) {
-//      return String.valueOf(targetX);
-//    }
-//    else if (TARGET_Y.equals(key)) {
-//      return String.valueOf(targetY);
-//    }
     else {
       return launch.getAttributeValueString(key);
     }
@@ -642,25 +519,6 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-//    if (TARGET_MAP.equals(key)) {
-//      return () -> (targetType != GlobalCommand.GlobalCommandTarget.GAME) && (condition == null);
-//    }
-//    else if (TARGET_ZONE.equals(key)) {
-//      return () -> (targetType == GlobalCommand.GlobalCommandTarget.ZONE) && (condition == null);
-//    }
-//    else if (TARGET_REGION.equals(key)) {
-//      return () -> (targetType == GlobalCommand.GlobalCommandTarget.REGION) && (condition == null);
-//    }
-//    else if (TARGET_X.equals(key) || TARGET_Y.equals(key) || TARGET_BOARD.equals(key)) {
-//      return () -> (targetType == GlobalCommand.GlobalCommandTarget.XY) && (condition == null);
-//    }
-//    else if (TARGET_PROPERTY.equals(key) || TARGET_VALUE.equals(key)) {
-//      return () -> targetExactMatch && (condition == null);
-//    }
-//    else if (TARGET_TYPE.equals(key) || TARGET_EXACT_MATCH.equals(key)) {
-//      return () -> (condition == null);
-//    }
-
     return () -> true;
   }
 
@@ -742,62 +600,8 @@ public class MassKeyCommand extends AbstractConfigurable
         value = new GlobalCommandTarget((String) value);
       }
       target = (GlobalCommandTarget) value;
-      target.setCounterGkc(false);
+      target.setGKCtype(getGKCtype());
     }
-//    else if (TARGET_TYPE.equals(key)) {
-//      if (value instanceof String) {
-//        value = GlobalCommand.GlobalCommandTarget.valueOf((String)value);
-//      }
-//      targetType = (GlobalCommand.GlobalCommandTarget)value;
-//    }
-//    else if (TARGET_MAP.equals(key)) {
-//      if (value instanceof String) {
-//        targetMap.setExpression((String) value);
-//      }
-//    }
-//    else if (TARGET_BOARD.equals(key)) {
-//      if (value instanceof String) {
-//        targetBoard.setExpression((String) value);
-//      }
-//    }
-//    else if (TARGET_ZONE.equals(key)) {
-//      if (value instanceof String) {
-//        targetZone.setExpression((String) value);
-//      }
-//    }
-//    else if (TARGET_REGION.equals(key)) {
-//      if (value instanceof String) {
-//        targetRegion.setExpression((String) value);
-//      }
-//    }
-//    else if (TARGET_PROPERTY.equals(key)) {
-//      if (value instanceof String) {
-//        targetMap.setExpression((String) value);
-//      }
-//    }
-//    else if (TARGET_VALUE.equals(key)) {
-//      if (value instanceof String) {
-//        targetValue.setExpression((String) value);
-//      }
-//    }
-//    else if (TARGET_X.equals(key)) {
-//      if (value instanceof String) {
-//        value = Integer.valueOf((String)value);
-//      }
-//      targetX = (Integer)value;
-//    }
-//    else if (TARGET_Y.equals(key)) {
-//      if (value instanceof String) {
-//        value = Integer.valueOf((String)value);
-//      }
-//      targetY = (Integer)value;
-//    }
-//    else if (TARGET_EXACT_MATCH.equals(key)) {
-//      if (value instanceof String) {
-//        value = Boolean.valueOf((String)value);
-//      }
-//      targetExactMatch = (Boolean)value;
-//    }
     else {
       launch.setAttribute(key, value);
     }

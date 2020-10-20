@@ -32,18 +32,26 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
+import java.util.List;
 
 /**
- * Applies a given keyboard command to all counters on a map
+ * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
+ * multiple pieces, potentially on multiple maps, as long as they match its filtering condition.
+ *
+ * The various forms of Global Key Command that use GlobalCommand are:
+ * {@link VASSAL.build.module.GlobalKeyCommand} - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.map.MassKeyCommand} - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand} - Global Key Command from a Game Piece
  */
 public class GlobalCommand {
-  protected KeyStroke keyStroke;
-  protected boolean reportSingle;
-  protected int selectFromDeck = -1;
-  protected FormattedString reportFormat = new FormattedString();
-  protected Loopable owner;
-  protected PropertySource source;
-  protected GlobalCommandTarget target;
+  protected KeyStroke keyStroke;        // Key Command we will issue
+  protected boolean reportSingle;       // If true, we temporarily disable Report traits in any receiving pieces
+  protected int selectFromDeck = -1;    // selectFromDeck = -1 means process all cards in Deck; > 0 means select that many cards from the Deck
+  protected FormattedString reportFormat = new FormattedString(); // Report to display before sending the command
+  protected Loopable owner;             // For preventing infinite loops
+  protected PropertySource source;      // For resolving properties (i.e. for our report message)
+  protected GlobalCommandTarget target; // This holds all of the "Fast Match" information
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -94,12 +102,12 @@ public class GlobalCommand {
     return target;
   }
 
-
   public Command apply(Map m, PieceFilter filter) {
     return apply(new Map[]{m}, filter);
   }
+
   /**
-   * Apply the key command to all pieces that pass the given filter on all the given maps
+   * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
    *
    * @param m Array of Maps
    * @param filter Filter to apply
@@ -110,9 +118,12 @@ public class GlobalCommand {
 
     try {
       if (reportSingle) {
-        Map.setChangeReportingEnabled(false);
+        Map.setChangeReportingEnabled(false); // Disable individual reports, if specified
       }
-      RecursionLimiter.startExecution(owner);
+
+      RecursionLimiter.startExecution(owner); // Trap infinite loops of Global Key Commands
+
+      // Send our report, if one is specified
       String reportText = reportFormat.getLocalizedText(source);
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(
@@ -120,74 +131,125 @@ public class GlobalCommand {
         c.execute();
       }
 
+      // If we're basic comparison on an existing piece, preload our comparison property for better performance.
       GamePiece curPiece = target.getCurPiece();
-
-      for (Map map : m) {
-        if (target.useLocation) {
-          if (target.targetType == GlobalCommandTarget.Target.CURMAP) {
-            
-          }
-          else if (!target.targetType.isCurrent() && !target.targetMap.isEmpty() && !target.targetMap.equals(map.getConfigureName())) {
-            continue;
-          }
+      String compareString = "";
+      if (target.useLocation && target.targetType.isCurrent() && (curPiece != null)) {
+        switch (target.targetType) {
+        case CURZONE:
+          compareString = (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE);
+          break;
+        case CURLOC:
+          compareString = (String) curPiece.getProperty(BasicPiece.LOCATION_NAME);
+          break;
         }
+      }
 
+      // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
+      if (target.useLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         Visitor visitor = new Visitor(c, filter, keyStroke);
         DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
-        GamePiece[] p = map.getPieces();
-        for (GamePiece gamePiece : p) {
-
-          if (target.useProperty && !target.targetProperty.isEmpty()) {
-            String value = (String) gamePiece.getProperty(target.targetProperty);
-            if (!value.equals(target.targetValue)) {
-              continue;
-            }
+        if (curPiece != null) {
+          Stack stack = curPiece.getParent();
+          List<GamePiece> pieces = stack.asList();
+          for (GamePiece gamePiece : pieces) {
+            dispatcher.accept(gamePiece);
           }
-
-          // These basic location filters are faster than equivalent filters in the Beanshell expression
-          // If this is a stack, the top piece in the stack's current properties will be the same as any other piece in the stack.
-          if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION)) {
-            GamePiece pp;
-            if (gamePiece instanceof Stack) {
-              Stack s;
-              s = (Stack) gamePiece;
-              pp = s.topPiece();
-              if (pp == null) {
-                continue;
-              }
-            }
-            else {
-              pp = gamePiece;
-            }
-
-            switch (target.targetType) {
-            case ZONE:
-              if (!target.targetZone.equals((String) pp.getProperty(BasicPiece.CURRENT_ZONE))) {
-                continue;
-              }
-              break;
-            case LOCATION:
-              if (!target.targetLocation.equals((String) pp.getProperty(BasicPiece.LOCATION_NAME))) {
-                continue;
-              }
-              break;
-            }
-          }
-
-          if (target.targetType == GlobalCommandTarget.Target.XY) {
-            if (!target.targetBoard.equals((String)gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
-              continue;
-            }
-            Point pt = new Point(gamePiece.getPosition());
-            if ((target.targetX != pt.getX()) || (target.targetY != pt.getY())) {
-              continue;
-            }
-          }
-
-          dispatcher.accept(gamePiece);
         }
         visitor.getTracker().repaint();
         c = visitor.getCommand();
+      }
+      else {
+        // For most Global Key Commands we need to run through the lists of maps & pieces
+        for (Map map : m) {
+          // First check that this is a map we're even interested in
+          if (target.useLocation) {
+            // "Current Map" only cares about the map the issuing piece is on
+            if (target.targetType == GlobalCommandTarget.Target.CURMAP) {
+              if ((curPiece != null) && !map.equals(curPiece.getMap())) {
+                continue;
+              }
+            }
+            // If a Fast Match Map is specified, only check that one.
+            else if (!target.targetType.isCurrent() && !target.targetMap.isEmpty() && !target.targetMap.equals(map.getConfigureName())) {
+              continue;
+            }
+          }
+
+          // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
+          Visitor visitor = new Visitor(c, filter, keyStroke);
+          DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+
+          // Now we go through all the pieces on this map
+          GamePiece[] p = map.getPieces();
+          for (GamePiece gamePiece : p) {
+            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+            if (target.useProperty && !target.targetProperty.isEmpty()) {
+              String value = (String) gamePiece.getProperty(target.targetProperty);
+              if (!value.equals(target.targetValue)) {
+                continue;
+              }
+            }
+
+            // These basic location filters are faster than equivalent filters in the Beanshell expression
+            // If this is a stack, the top piece in the stack's current properties will be the same as any other piece in the stack.
+            if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION) ||
+              (target.targetType == GlobalCommandTarget.Target.CURZONE) || (target.targetType == GlobalCommandTarget.Target.CURLOC)) {
+              GamePiece pp;
+              if (gamePiece instanceof Stack) {
+                Stack s;
+                s = (Stack) gamePiece;
+                pp = s.topPiece();
+                if (pp == null) {
+                  continue;
+                }
+              }
+              else {
+                pp = gamePiece;
+              }
+
+              // Fast matches for Zone / Location
+              switch (target.targetType) {
+              case ZONE:
+                if (!target.targetZone.equals(pp.getProperty(BasicPiece.CURRENT_ZONE))) {
+                  continue;
+                }
+                break;
+              case LOCATION:
+                if (!target.targetLocation.equals(pp.getProperty(BasicPiece.LOCATION_NAME))) {
+                  continue;
+                }
+                break;
+              case CURZONE:
+                if (!compareString.equals(pp.getProperty(BasicPiece.CURRENT_ZONE))) {
+                  continue;
+                }
+                break;
+              case CURLOC:
+                if (!compareString.equals(pp.getProperty(BasicPiece.LOCATION_NAME))) {
+                  continue;
+                }
+                break;
+              }
+            }
+
+            // Fast Match of "exact XY position"
+            if (target.targetType == GlobalCommandTarget.Target.XY) {
+              if (!target.targetBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+                continue;
+              }
+              Point pt = new Point(gamePiece.getPosition());
+              if ((target.targetX != pt.getX()) || (target.targetY != pt.getY())) {
+                continue;
+              }
+            }
+
+            // Passed all the "Fast Match" tests -- the dispatcher will apply the BeanShell filter and if that passes will issue the command to the piece
+            dispatcher.accept(gamePiece);
+          }
+          visitor.getTracker().repaint();
+          c = visitor.getCommand();
+        }
       }
     }
     catch (RecursionLimitException e) {

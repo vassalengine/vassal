@@ -69,7 +69,7 @@ public class CounterGlobalKeyCommand extends Decorator
   protected String rangeProperty = "";
   private KeyCommand myCommand;
   protected String description;
-  protected GlobalCommandTarget target = new GlobalCommandTarget(true);
+  protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
   public CounterGlobalKeyCommand() {
     this(ID, null);
   }
@@ -96,7 +96,7 @@ public class CounterGlobalKeyCommand extends Decorator
     description = st.nextToken("");
     globalCommand.setSelectFromDeck(st.nextInt(-1));
     target.decode(st.nextToken(""));
-    target.setCounterGkc(true);
+    target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
 
     globalCommand.target.setCurPiece(this);
 
