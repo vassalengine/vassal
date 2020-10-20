@@ -17,12 +17,15 @@
  */
 package VASSAL.build.module.map;
 
+
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -217,16 +220,17 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       String.class,
       NamedKeyStroke.class,
 
-      GlobalCommand.GlobalCommandTargetConfigurer.class,  // Restrict by location? (fast match)
-      PropertyExpression.class,                 // Restrict to map
-      PropertyExpression.class,                 // Restrict to board
-      PropertyExpression.class,                 // Restrict to zone
-      PropertyExpression.class,                 // Restrict to region
-      Integer.class,                            // Restrict to X position
-      Integer.class,                            // Restrict to Y position
-      Boolean.class,                            // Exact property match (fast match)
-      PropertyExpression.class,                 // Property name for fast match
-      PropertyExpression.class,                 // Property value for fast match
+      GlobalCommandTarget.class,
+//      GlobalCommand.GlobalCommandTargetConfigurer.class,  // Restrict by location? (fast match)
+//      PropertyExpression.class,                 // Restrict to map
+//      PropertyExpression.class,                 // Restrict to board
+//      PropertyExpression.class,                 // Restrict to zone
+//      PropertyExpression.class,                 // Restrict to region
+//      Integer.class,                            // Restrict to X position
+//      Integer.class,                            // Restrict to Y position
+//      Boolean.class,                            // Exact property match (fast match)
+//      PropertyExpression.class,                 // Property name for fast match
+//      PropertyExpression.class,                 // Property value for fast match
 
       PropertyExpression.class,
       DeckPolicyConfig2.class,

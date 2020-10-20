@@ -52,6 +52,7 @@ public class DecoratorTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
       try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
+
         staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon(dummyImage));
         staticIf.when(() -> IconFactory.getIcon("no", 0)).thenReturn(new ImageIcon(dummyImage));
         staticIf.when(() -> IconFactory.getIcon("yes", 0)).thenReturn(new ImageIcon(dummyImage));
@@ -79,6 +80,7 @@ public class DecoratorTest {
 
         // Test the serialization used in the internal editor matches the standard serialization
         editorTest(test, referenceTrait);
+
       }
     }
   }
@@ -96,10 +98,10 @@ public class DecoratorTest {
   }
 
   /**
-   * Test that a trait's internal editor encodes the type and state in the same way
+   * Test that a trait's internal editor encodes the type in the same way
    * that the trait started with. Checks for serialization issues in the trait editors.
    *
-   * NOTE: Don't test State after across the Editor, Trait Editors don't need to maintain state
+   * NOTE: Don't test State across the Editor, Trait Editors don't need to maintain state
    *
    * @param test A descriptive name for this test or test sequence
    * @param referenceTrait The trait to be tested
