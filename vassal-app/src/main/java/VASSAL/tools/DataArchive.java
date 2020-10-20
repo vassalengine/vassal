@@ -36,6 +36,7 @@ import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -196,6 +197,17 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     //
     // Ridiculous crap we have to check for backwards compatibility
     //
+
+    // Maybe someone unzipped and rezipped this module on a Mac with an
+    // HFS+ filesystem and the filename contains decomposable characters,
+    // so it got munged into NFD. Aauugh! Seriously, DIAF Apple!
+    final String nfd = Normalizer.normalize(fileName, Normalizer.Form.NFD);
+    if (fileName != nfd) {
+      in = getInputStreamImpl(nfd);
+      if (in != null) {
+        return in;
+      }
+    }
 
     // Maybe it's a resource missing its initial slash. Aauugh!
     in = getClass().getResourceAsStream("/" + fileName);
