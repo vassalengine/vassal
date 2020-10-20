@@ -33,11 +33,11 @@ import VASSAL.tools.NamedKeyStroke;
 public class KeyCommand extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private String name;
+  private final String name;
   protected String untranslatedName;
   protected String localizedMenuText;
-  private KeyStroke stroke;
-  private GamePiece target;
+  private final KeyStroke stroke;
+  private final GamePiece target;
   private boolean global;
   private boolean enabled = true;
 
@@ -112,7 +112,7 @@ public class KeyCommand extends AbstractAction {
 
   /**
    * If true, then this action will apply to all selected pieces
-   * @return
+   * @return global
    */
   public boolean isGlobal() {
     return global;
@@ -120,7 +120,7 @@ public class KeyCommand extends AbstractAction {
 
   /**
    * If true, then this action will apply to all selected pieces
-   * @param global
+   * @param global value to set
    */
   public void setGlobal(boolean global) {
     this.global = global;
@@ -150,13 +150,13 @@ public class KeyCommand extends AbstractAction {
   
   // Returns true if this command exists simply to produce a menu separator
   public boolean isMenuSeparator() {
-    return (name != null) && MenuSeparator.SEPARATOR_NAME.equals(name);
+    return MenuSeparator.SEPARATOR_NAME.equals(name);
   }  
 
   
   /**
    * The human-readable text that will appear in the right-click menu, translated to the user's Locale
-   * @return
+   * @return Localized text
    */
   public String getLocalizedMenuText() {
     if (localizedMenuText == null && name != null) {
