@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import java.util.Objects;
-import javax.swing.BoxLayout;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.documentation.HelpFile;
