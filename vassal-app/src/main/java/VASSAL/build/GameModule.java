@@ -272,7 +272,7 @@ public class GameModule extends AbstractConfigurable implements CommandEncoder, 
   protected String gameFile = ""; //NON-NLS
   protected GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
-  private Boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
+  private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
 
   /*
    * Store the currently building GpId source. Only meaningful while
