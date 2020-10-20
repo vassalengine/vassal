@@ -51,7 +51,8 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 /**
- * Adds a menu item that applies a {@link GlobalCommand} to other pieces
+ * Trait that sends a Key Command to other pieces, selected with various filters.
+ * Shares {@link GlobalCommand} with the other types of Global Key Command.
  */
 public class CounterGlobalKeyCommand extends Decorator
   implements TranslatablePiece,
@@ -97,8 +98,7 @@ public class CounterGlobalKeyCommand extends Decorator
     globalCommand.setSelectFromDeck(st.nextInt(-1));
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
-
-    globalCommand.target.setCurPiece(this);
+    target.setCurPiece(this);
 
     command = null;
   }
@@ -245,38 +245,7 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
-//    globalCommand.setTargetExactMatch(targetExactMatch);
-//    if (targetExactMatch) {
-//      globalCommand.setTargetProperty(targetProperty.tryEvaluate(Decorator.getOutermost(this)));
-//      globalCommand.setTargetValue(targetValue.tryEvaluate(Decorator.getOutermost(this)));
-//    }
-//
-//    globalCommand.setTargetType(targetType);
-//
-//    if (targetType != GlobalCommand.GlobalCommandTarget.GAME) {
-//      globalCommand.setTargetMap(targetMap.tryEvaluate(Decorator.getOutermost(this)));
-//    }
-//
-//    switch (targetType) {
-//    case ZONE:
-//      globalCommand.setTargetZone(targetZone.tryEvaluate(Decorator.getOutermost(this)));
-//      break;
-//
-//    case REGION:
-//      globalCommand.setTargetRegion(targetRegion.tryEvaluate(Decorator.getOutermost(this)));
-//      break;
-//
-//    case XY:
-//      globalCommand.setTargetBoard(targetBoard.tryEvaluate(Decorator.getOutermost(this)));
-//      globalCommand.setTargetX(targetX);
-//      globalCommand.setTargetY(targetY);
-//      break;
-//    }
-
-    //for (Map m : Map.getMapList()) {
-    //  c = c.append(globalCommand.apply(m, filter));
-    //}
-
+    globalCommand.setTarget(target); // Set our fast match parameters
     c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter));
 
     return c;
@@ -286,26 +255,6 @@ public class CounterGlobalKeyCommand extends Decorator
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, getCommandDescription(description, Resources.getString("Editor.menu_command")));
   }
-
-//  public static final String[] TARGET_OPTIONS = Arrays.stream(GlobalCommand.GlobalCommandTarget.values())
-//    .map(Enum::toString)
-//    .toArray(String[]::new);
-//
-//  public static final String[] TARGET_OPTIONS_KEYS = Arrays.stream(GlobalCommand.GlobalCommandTarget.values())
-//    .map(GlobalCommand.GlobalCommandTarget::toTranslatedString)
-//    .toArray(String[]::new);
-//
-//  public static class TargetOption extends TranslatableStringEnum {
-//    @Override
-//    public String[] getValidValues(AutoConfigurable target) {
-//      return TARGET_OPTIONS;
-//    }
-//
-//    @Override
-//    public String[] getI18nKeys(AutoConfigurable target) {
-//      return TARGET_OPTIONS_KEYS;
-//    }
-//  }
 
   @Override
   public boolean testEquals(Object o) {

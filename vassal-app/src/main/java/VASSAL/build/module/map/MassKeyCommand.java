@@ -143,7 +143,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public void apply() {
     buildFilter();
-    globalCommand.setTarget(target);
+    globalCommand.setTarget(target); // Set our fast match parameters
     if (singleMap) {
       GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter()));
     }
