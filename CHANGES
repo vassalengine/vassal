@@ -32,6 +32,12 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
+3.4.7 - ???
+
+* 13520: Made Command+Click the select/deselect combo for Macs (and
+  Command+Wheel to zoom)
+* 13489: Pieces scaled incorrectly during drags on HiDPI screens (Windows, Mac)
+
 3.4.6 - 12 October 2020
 
 * 13508: NPE in GamePieceOpImpl.getTileIndices()
