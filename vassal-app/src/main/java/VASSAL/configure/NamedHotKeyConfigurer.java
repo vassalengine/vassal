@@ -40,6 +40,19 @@ import javax.swing.text.DocumentFilter;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * A configurer for Configuring Key Strokes. It allows the entry of either
+ * a standard keystroke, or a Named command.
+ *
+ * It contains two seperate Text fields, one for the Name and one for the keystroke.
+ * A user can fill in one or the other. Filling in one, clears the other.
+ *
+ * This Configurer has a limited undo function. Whenever one of the two fields gains focus,
+ * the current state of the Configurer is saved and the Undo button enabled.
+ * The undo button will return to the state when that field gained focus.
+ * This provides a one-step undo if a user accidentally types in one of the fields and
+ * wipes out data in the other field.
+ */
 public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private static final String STROKE_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.keystroke");
   private static final String NAME_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.command");
@@ -58,10 +71,20 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     return s;
   }
 
+  /**
+   * Return a String representation of a NamedKeyStroke
+   * @param k NamedKeyStroke
+   * @return String representation
+   */
   public static String getString(NamedKeyStroke k) {
     return (k == null || k.isNull()) ? "" : getString(k.getStroke());
   }
 
+  /**
+   * Return a string representation of a KeyStroke
+   * @param k KeyStroke
+   * @return String representation
+   */
   public static String getString(KeyStroke k) {
     return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }

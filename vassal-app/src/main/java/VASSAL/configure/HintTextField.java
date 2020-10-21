@@ -30,7 +30,9 @@ import javax.swing.JTextField;
 
 /**
  * A class extending a JTexfield that can display a 'ghost' text prompt
- * in the field when it is empty and has focus
+ * in the field when it is empty.
+ * Hint display by default is whenever the field has no text, but
+ * hint display can be limited to only when the field has focus.
  */
 public class HintTextField extends JTextField implements FocusListener {
 
@@ -100,19 +102,39 @@ public class HintTextField extends JTextField implements FocusListener {
     repaint();
   }
 
+  /**
+   * Does this field only display a hint when it has the focus?
+   *
+   * @return Display hint only with focus
+   */
   public boolean isFocusOnly() {
     return focusOnly;
   }
 
+  /**
+   * Set whether or not the hint should be displayed if the field does not have focus
+   *
+   * @param focusOnly If true, hint will only be displayed if field has focus
+   */
   public void setFocusOnly(boolean focusOnly) {
     this.focusOnly = focusOnly;
     repaint();
   }
 
+  /**
+   * Return the current hint text
+   *
+   * @return Hint text
+   */
   public String getHint() {
     return hint;
   }
 
+  /**
+   * Set the Hint text
+   *
+   * @param hint Hint text
+   */
   public void setHint(String hint) {
     this.hint = hint;
     repaint();
