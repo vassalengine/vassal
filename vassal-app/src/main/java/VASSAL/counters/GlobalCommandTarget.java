@@ -339,4 +339,6 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   public GamePiece getCurPiece() {
     return curPiece;
   }
+
+
 }
