@@ -43,8 +43,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   protected Expression targetZone;             // Specified Zone (for ZONE type)
   protected Expression targetLocation;         // Specified Location (for LOCATION type)
   protected Expression targetDeck;             // Specified Deck (for DECK type)
-  protected int targetX = 0;                   // Specified X (for XY type)
-  protected int targetY = 0;                   // Specified Y (for XY type)
+  protected Expression targetX;                // Specified X (for XY type)
+  protected Expression targetY;                // Specified Y (for XY type)
 
   protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
   protected Expression targetProperty;         // Name/Key of Fast Match property
@@ -129,6 +129,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     targetDeck     = Expression.createExpression("");
     targetProperty = Expression.createExpression("");
     targetValue    = Expression.createExpression("");
+    targetX        = Expression.createExpression("0");
+    targetY        = Expression.createExpression("0");
   }
 
   public GlobalCommandTarget(String s) {
@@ -148,8 +150,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
       .append(targetBoard.getExpression())
       .append(targetZone.getExpression())
       .append(targetLocation.getExpression())
-      .append(targetX)
-      .append(targetY)
+      .append(targetX.getExpression())
+      .append(targetY.getExpression())
       .append(targetDeck.getExpression())
       .append(fastMatchProperty)
       .append(targetProperty.getExpression())
@@ -173,8 +175,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     targetBoard = Expression.createExpression(sd.nextToken(""));
     targetZone = Expression.createExpression(sd.nextToken(""));
     targetLocation = Expression.createExpression(sd.nextToken(""));
-    targetX = sd.nextInt(0);
-    targetY = sd.nextInt(0);
+    targetX = Expression.createExpression(sd.nextToken("0"));
+    targetY = Expression.createExpression(sd.nextToken("0"));
     targetDeck = Expression.createExpression(sd.nextToken(""));
     fastMatchProperty = sd.nextBoolean(false);
     targetProperty = Expression.createExpression(sd.nextToken(""));
@@ -316,20 +318,32 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     this.targetValue = Expression.createExpression(targetValue);
   }
 
-  public int getTargetX() {
+  public Expression getTargetX() {
     return targetX;
   }
 
-  public void setTargetX(int targetX) {
+  public void setTargetX(Expression targetX) {
     this.targetX = targetX;
   }
+  public void setTargetX(String targetX) {
+    this.targetX = Expression.createExpression(targetX);
+  }
+  public void setTargetX(int targetX) {
+    this.targetX = Expression.createExpression(Integer.toString(targetX));
+  }
 
-  public int getTargetY() {
+  public Expression getTargetY() {
     return targetY;
   }
 
-  public void setTargetY(int targetY) {
+  public void setTargetY(Expression targetY) {
     this.targetY = targetY;
+  }
+  public void setTargetY(String targetY) {
+    this.targetY = Expression.createExpression(targetY);
+  }
+  public void setTargetY(int targetY) {
+    this.targetY = Expression.createExpression(Integer.toString(targetY));
   }
 
   public void setCurPiece(GamePiece curPiece) {
@@ -339,6 +353,4 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   public GamePiece getCurPiece() {
     return curPiece;
   }
-
-
 }

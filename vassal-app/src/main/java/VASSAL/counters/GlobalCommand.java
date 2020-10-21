@@ -123,7 +123,7 @@ public class GlobalCommand {
   /**
    * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
    *
-   * @param m Array of Maps
+   * @param maps Array of Maps
    * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
    * @param fastMatch Fast matching parameters, or null. {@link GlobalCommandTarget} and {@link VASSAL.configure.GlobalCommandTargetConfigurer}
    * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
@@ -153,6 +153,8 @@ public class GlobalCommand {
       String fastZone = "";
       String fastLocation = "";
       String fastDeck = "";
+      String fastX = "";
+      String fastY = "";
 
       GamePiece curPiece = target.getCurPiece();
 
@@ -176,6 +178,8 @@ public class GlobalCommand {
           break;
         case XY:
           fastBoard = target.targetLocation.tryEvaluate(source);
+          fastX = target.targetX.tryEvaluate(source);
+          fastY = target.targetY.tryEvaluate(source);
           break;
         }
 
@@ -287,11 +291,11 @@ public class GlobalCommand {
 
               // Fast Match of "exact XY position"
               if (target.targetType == GlobalCommandTarget.Target.XY) {
-                if (!fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+                if (!fastBoard.isEmpty() && !fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
                   continue;
                 }
                 Point pt = new Point(gamePiece.getPosition());
-                if ((target.targetX != pt.getX()) || (target.targetY != pt.getY())) {
+                if (!fastX.equals(Double.toString(pt.getX())) || !fastY.equals(Double.toString(pt.getY()))) {
                   continue;
                 }
               }
@@ -498,7 +502,7 @@ public class GlobalCommand {
     if ((target.targetType == GlobalCommandTarget.Target.LOCATION) && !target.targetLocation.equals(other.target.targetLocation)) {
       return false;
     }
-    if ((target.targetType == GlobalCommandTarget.Target.XY) && (!target.targetBoard.equals(other.target.targetBoard) || ((target.targetX != other.target.targetX) || (target.targetY != other.target.targetY)))) {
+    if ((target.targetType == GlobalCommandTarget.Target.XY) && (!target.targetBoard.equals(other.target.targetBoard) || ((!target.targetX.equals(other.target.targetX)) || (!target.targetY.equals(other.target.targetY))))) {
       return false;
     }
 

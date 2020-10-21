@@ -47,9 +47,9 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   private JLabel targetZoneLabel;
   private FormattedExpressionConfigurer targetLocationConfig;
   private JLabel targetLocationLabel;
-  private IntConfigurer targetXConfig;
+  private FormattedExpressionConfigurer targetXConfig;
   private JLabel targetXLabel;
-  private IntConfigurer targetYConfig;
+  private FormattedExpressionConfigurer targetYConfig;
   private JLabel targetYLabel;
   private FormattedExpressionConfigurer targetDeckConfig;
   private JLabel targetDeckLabel;
@@ -154,14 +154,14 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetLocationLabel, "span 2"); // NON-NLS
       controls.add(targetLocationConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetXConfig = new IntConfigurer(target.getTargetX());
-      targetXConfig.addPropertyChangeListener(evt -> getTarget().setTargetX(targetXConfig.getIntValue(0)));
+      targetXConfig = new FormattedExpressionConfigurer(target.getTargetX().getExpression());
+      targetXConfig.addPropertyChangeListener(evt -> getTarget().setTargetX(targetXConfig.getValueString()));
       targetXLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.x_position"));
       controls.add(targetXLabel, "span 2"); // NON-NLS
       controls.add(targetXConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetYConfig = new IntConfigurer(target.getTargetY());
-      targetYConfig.addPropertyChangeListener(evt -> getTarget().setTargetY(targetYConfig.getIntValue(0)));
+      targetYConfig = new FormattedExpressionConfigurer(target.getTargetY().getExpression());
+      targetYConfig.addPropertyChangeListener(evt -> getTarget().setTargetY(targetYConfig.getValueString()));
       targetYLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.y_position"));
       controls.add(targetYLabel, "span 2"); // NON-NLS
       controls.add(targetYConfig.getControls(), "growY, wrap"); // NON-NLS
