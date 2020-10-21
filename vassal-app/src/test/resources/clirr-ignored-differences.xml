@@ -490,6 +490,109 @@
         <justification>Test code moved to a unit test</justification>
     </difference>
     <difference>
+        <className>VASSAL/build/module/properties/PropertyChangerConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>typeConfig</field>
+        <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>Field accessibility changes are irrelevant as no one should subclass GameModule or use its fields directly</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>RNG</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>archive</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>controlPanel</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>deferredChat</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>frame</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>keyStrokeListeners</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>keyStrokeSources</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>propsContainer</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>6006</differenceType>
+        <field>repaintOnPropertyChange</field>
+        <justification>Field is only assigned once</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>void unload()</method>
+        <justification>Method not called anywhere and makes no sense as a Player/Editor always has a loaded module</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7009</differenceType>
+        <method>void build()</method>
+        <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7009</differenceType>
+        <method>java.lang.Long buildCrc()</method>
+        <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7009</differenceType>
+        <method>java.lang.String buildString()</method>
+        <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7009</differenceType>
+        <method>void checkGpIds()</method>
+        <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7009</differenceType>
+        <method>void save(boolean)</method>
+        <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
+    </difference>
+    <difference>
         <className>VASSAL/configure/NamedHotKeyConfigurer</className>
         <differenceType>4001</differenceType>
         <method>java.awt.event.KeyListener</method>
@@ -553,7 +656,6 @@
         <differenceType>7013</differenceType>
         <method>*</method>
     </difference>
-
     <difference>
         <className>VASSAL/build/module/properties/PropertyChangerConfigurer</className>
         <differenceType>6004</differenceType>

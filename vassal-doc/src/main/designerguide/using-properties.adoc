@@ -135,7 +135,7 @@ Properties only.
 | | | |
 | | | |
 a|
-=>
+>=
 
 a|
 Greater Than Or Equal To

@@ -68,6 +68,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
   public static final String BUTTON_KEYSTROKE = "buttonKeyStroke"; //$NON-NLS-1$
+
+  public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks)
+  public static final String REFEREE   = "Referee";
+  public static final String SOLO      = "Solo";
+  public static final String MODERATOR = "Moderator";
+
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
@@ -309,6 +315,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return players.toArray(new PlayerInfo[0]);
   }
 
+  public List<String> getSides() {
+    return new ArrayList(sides);
+  }
+
   public void add(String playerId, String playerName, String side) {
     PlayerInfo e = new PlayerInfo(playerId, playerName, side);
     if (players.contains(e)) {
@@ -454,6 +464,18 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return sides.size() == allocatedSideCount;
   }
 
+  /**
+   * @param side Name of a side to see if it's a "solo side"
+   * @return True if the side is "Solitaire", "Solo", "Moderator", or "Referee"
+   */
+  public static boolean isSoloSide(String side) {
+    return Resources.getString("PlayerRoster.solitaire").equals(side) ||
+           Resources.getString("PlayerRoster.solo").equals(side) ||
+           Resources.getString("PlayerRoster.moderator").equals(side) ||
+           Resources.getString("PlayerRoster.referee").equals(side);
+  }
+
+
   protected String promptForSide() {
     ArrayList<String> availableSides = new ArrayList<>(sides);
     ArrayList<String> alreadyTaken = new ArrayList<>();
@@ -474,10 +496,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
     for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
       String s = sides.get(i);
-      if (!alreadyTaken.contains(s) &&
-          !Resources.getString("PlayerRoster.solitaire").equals(s) &&
-          !Resources.getString("PlayerRoster.solo").equals(s) &&
-          !Resources.getString("PlayerRoster.referee").equals(s)) {
+      if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
         found = true; // Found an available slot that's not our current one and not a "solo" slot.
         break;
       }
@@ -685,7 +704,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return StringArrayConfigurer.arrayToString(s);
   }
 
-  protected String untranslateSide(String side) {
+  public String untranslateSide(String side) {
     if (translatedObserver.equals(side)) {
       return OBSERVER;
     }
@@ -699,7 +718,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return side;
   }
 
-  protected String translateSide(String side) {
+  public String translateSide(String side) {
     if (OBSERVER.equals(side)) {
       return translatedObserver;
     }

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -26,8 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -42,7 +41,7 @@ import VASSAL.tools.SequenceEncoder;
  * property will be reflected in the #myGetState() method.
  */
 public class Marker extends Decorator implements EditablePiece {
-  public static final String ID = "mark;";
+  public static final String ID = "mark;"; // NON-NLS
 
   protected String[] keys;
   protected String[] values;
@@ -166,15 +165,15 @@ public class Marker extends Decorator implements EditablePiece {
     if (keys != null
       && keys.length > 0 && keys[0].length() > 0
       && values.length > 0 && values[0].length() > 0) {
-      return "Marker - " + keys[0] + " = " + values[0];
+      return Resources.getString("Editor.Marker.trait_description") + " - " + keys[0] + " = " + values[0];
     }
     else
-      return "Marker";
+      return Resources.getString("Editor.Marker.trait_description");
   }
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PropertyMarker.html");
+    return HelpFile.getReferenceManualPage("PropertyMarker.html"); // NON-NLS
   }
 
   @Override
@@ -192,14 +191,22 @@ public class Marker extends Decorator implements EditablePiece {
     return l;
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Marker)) return false;
+    Marker c = (Marker) o;
+    if (!Arrays.equals(keys, c.keys)) return false;
+    return Arrays.equals(values, c.values);
+  }
+
   private static class Ed implements PieceEditor {
-    private StringConfigurer propName;
-    private StringConfigurer propValue;
-    private JPanel panel;
+    private final StringConfigurer propName;
+    private final StringConfigurer propValue;
+    private final TraitConfigPanel panel;
 
     private Ed(Marker m) {
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+      panel = new TraitConfigPanel();
+
       SequenceEncoder seKeys = new SequenceEncoder(',');
       for (int i = 0; i < m.keys.length; ++i) {
         seKeys.append(m.keys[i]);
@@ -210,10 +217,11 @@ public class Marker extends Decorator implements EditablePiece {
         seValues.append(m.values[i]);
       }
 
-      propName = new StringConfigurer(null, "Property name:  ", m.keys.length == 0 ? "" : seKeys.getValue());
-      propValue = new StringConfigurer(null, "Property value:  ", m.values.length == 0 ? "" : seValues.getValue());
-      panel.add(propName.getControls());
-      panel.add(propValue.getControls());
+      propName = new StringConfigurer(m.keys.length == 0 ? "" : seKeys.getValue());
+      panel.add("Editor.Marker.property_name", propName);
+
+      propValue = new StringConfigurer(m.values.length == 0 ? "" : seValues.getValue());
+      panel.add("Editor.Marker.property_value", propValue);
     }
 
     @Override

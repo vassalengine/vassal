@@ -186,12 +186,11 @@ public class SwingUtils {
 
     /**
      * @return whether this event includes the mouse/key combo to toggle items in and out of a selection.
-     * This is "Ctrl+LeftClick" on most platforms. But on Mac it is Command+Click in preferred interface,
-     * and Control+Click in legacy Vassal interface.
+     * This is "Ctrl+LeftClick" on most platforms. But on Mac it is Command+Click.
      */
     @Override
     public boolean isSelectionToggle(MouseEvent e) {
-      return macLegacy ? e.isControlDown() : e.isMetaDown();
+      return e.isMetaDown();       
     }
 
     /**
