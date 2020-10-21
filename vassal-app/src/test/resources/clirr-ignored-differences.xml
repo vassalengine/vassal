@@ -454,6 +454,18 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6011</differenceType>
+        <field>DEFAULT_INITIAL_HEAP</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6011</differenceType>
+        <field>FAILSAFE_INITIAL_HEAP</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
         <className>VASSAL/preferences/PositionOption</className>
         <differenceType>6006</differenceType>
         <field>key</field>

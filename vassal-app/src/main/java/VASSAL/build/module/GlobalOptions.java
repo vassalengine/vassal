@@ -78,7 +78,6 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String PROMPT = "Use Preferences Setting"; //$NON-NLS-1$
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
-  public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
@@ -95,6 +94,9 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String PLAYER_ID_FORMAT = "playerIdFormat"; //$NON-NLS-1$
 
   public static final boolean FORCE_MAC_LEGACY = true; //BR// Keeps Mac key translation "waiting in the wings"
+
+  @Deprecated(since = "2020-10-21", forRemoval = true)
+  public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
@@ -140,14 +142,6 @@ public class GlobalOptions extends AbstractConfigurable {
     );
     prefs.addOption(combConf);
     useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
-
-    // the initial heap size for this module
-    final IntConfigurer initHeapConf = new IntConfigurer(
-      INITIAL_HEAP,
-      Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      256
-    );
-    prefs.addOption(initHeapConf);
 
     // the maximum heap size for this module
     final IntConfigurer maxHeapConf = new IntConfigurer(
