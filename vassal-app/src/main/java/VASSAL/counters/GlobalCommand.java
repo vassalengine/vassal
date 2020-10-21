@@ -257,7 +257,7 @@ public class GlobalCommand {
           GamePiece[] everythingOnMap = map.getPieces();
 
           if (!target.fastMatchLocation) {
-            // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKC's)
+            // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKCs)
             if (!target.fastMatchProperty) {
               // This is the no-fast-matching-at-all version, with "minimum extra overhead" since it's already going to be slow.
               for (GamePiece pieceOrStack : everythingOnMap) {
@@ -265,7 +265,7 @@ public class GlobalCommand {
               }
             }
             else {
-              // This loop is WITH property Fast Match but WITHOUT
+              // This loop is WITH property Fast Match but WITHOUT location Fast Match
               for (GamePiece pieceOrStack : everythingOnMap) {
                 List<GamePiece> pieceList;
 
