@@ -862,6 +862,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return setContents(l).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
+  /** Shuffle the contents of the Deck, IF it is an always-shuffle, and we're about to ask for a random list from it */
+  public Command maybeShuffle() {
+    if (!ALWAYS.equals(shuffleOption)) {
+      return new NullCommand();
+    }
+    final GamePiece[] a = new GamePiece[pieceCount];
+    System.arraycopy(contents, 0, a, 0, pieceCount);
+    final List<GamePiece> l = Arrays.asList(a);
+    DragBuffer.getBuffer().clear();
+    Collections.shuffle(l, gameModule.getRNG());
+    return setContents(l);
+  }
+
   /**
    * Return an iterator of pieces to be drawn from the Deck. Normally, a random
    * piece will be drawn, but if the Deck supports it, the user may have

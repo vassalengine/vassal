@@ -129,7 +129,7 @@ public class GlobalCommand {
    * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
    */
   public Command apply(Map[] maps, PieceFilter filter, GlobalCommandTarget fastMatch) {
-    Command c = new NullCommand();
+    Command command = new NullCommand();
     setTarget((fastMatch != null) ? fastMatch : new GlobalCommandTarget());
 
     try {
@@ -142,9 +142,9 @@ public class GlobalCommand {
       // Send our report, if one is specified
       String reportText = reportFormat.getLocalizedText(source);
       if (reportText.length() > 0) {
-        c = new Chatter.DisplayText(
+        command = new Chatter.DisplayText(
           GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
-        c.execute();
+        command.execute();
       }
 
       // These will hold the *evaluated results* of our various Fast Match expressions
@@ -195,7 +195,7 @@ public class GlobalCommand {
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-      Visitor visitor = new Visitor(c, filter, keyStroke);
+      Visitor visitor = new Visitor(command, filter, keyStroke);
       DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
@@ -218,6 +218,7 @@ public class GlobalCommand {
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.DECK) {
         DrawPile d = DrawPile.findDrawPile(fastDeck);
         if (d != null) {
+          command = command.append(d.getDeck().maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
           List<GamePiece> pieces = d.getDeck().asList();
           for (GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -348,7 +349,7 @@ public class GlobalCommand {
       // Now we grab our (possibly massive) command, encompassing every single thing that has happened to every
       // single piece affected by this command. This command can be sent to other clients involved in the same
       // game to replicate all the stuff we just did.
-      c = visitor.getCommand();
+      command = visitor.getCommand();
     }
     catch (RecursionLimitException e) {
       // It is very easy to construct a set of GKC commands that fire each other off infinitely. This catches those.
@@ -361,7 +362,7 @@ public class GlobalCommand {
       }
     }
 
-    return c; // Here, eat this tasty command!
+    return command; // Here, eat this tasty command!
   }
 
   /**
