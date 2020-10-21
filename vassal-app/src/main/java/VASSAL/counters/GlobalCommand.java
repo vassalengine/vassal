@@ -202,6 +202,9 @@ public class GlobalCommand {
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
           Stack stack = curPiece.getParent();
+          if (stack instanceof Deck) {
+            command = command.append(((Deck)stack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
+          }
           List<GamePiece> pieces = stack.asList();
           for (GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -222,7 +225,6 @@ public class GlobalCommand {
           List<GamePiece> pieces = d.getDeck().asList();
           for (GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(gamePiece)) {
               continue;
             }
@@ -233,8 +235,9 @@ public class GlobalCommand {
         }
       }
       else {
-        // For most Global Key Commands we need to run through the larger lists of maps & pieces. Hopefully the Fast Matches
-        // here will filter some of that out.
+        // For most Global Key Commands we need to run through the larger lists of maps & pieces. Ideally the Fast Matches
+        // here will filter some of that out to improve performance, but we also want to do the best job possible for old
+        // modules that don't take advantage of Fast Match yet.
         for (Map map : maps) {
           // First check that this is a map we're even interested in
           if (target.fastMatchLocation) {
@@ -256,6 +259,7 @@ public class GlobalCommand {
           if (!target.fastMatchLocation) {
             // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKC's)
             if (!target.fastMatchProperty) {
+              // This is the no-fast-matching-at-all version, with "minimum extra overhead" since it's already going to be slow.
               for (GamePiece pieceOrStack : everythingOnMap) {
                 dispatcher.accept(pieceOrStack);
               }
