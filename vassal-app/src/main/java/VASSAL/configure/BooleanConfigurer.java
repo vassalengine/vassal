@@ -115,7 +115,7 @@ public class BooleanConfigurer extends Configurer {
       box = new JCheckBox();
       box.setSelected(booleanValue());
       box.addItemListener(e -> setValue(box.isSelected()));
-      p.add(box);
+      p.add(box, "growx 0");
     }
 
     return p;
