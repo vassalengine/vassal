@@ -519,9 +519,11 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
+    if (key.equals(TARGET)) {
+      return () -> false; // No fast match for Deck Global Key Commands
+    }
     return () -> true;
   }
-
 
   @Override
   public void setAttribute(String key, Object value) {
@@ -601,6 +603,12 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       target = (GlobalCommandTarget) value;
       target.setGKCtype(getGKCtype());
+
+      // Fast match currently disabled for DGKC's - they already search only their own deck
+      if (getGKCtype() == GlobalCommandTarget.GKCtype.DECK) {
+        target.setFastMatchLocation(false);
+        target.setFastMatchProperty(false);
+      }
     }
     else {
       launch.setAttribute(key, value);

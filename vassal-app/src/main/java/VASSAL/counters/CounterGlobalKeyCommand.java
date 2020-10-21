@@ -327,11 +327,11 @@ public class CounterGlobalKeyCommand extends Decorator
       globalKey = new NamedHotKeyConfigurer(p.globalKey);
       traitPanel.add("Editor.GlobalkeyCommand.global_key_command", globalKey);
 
-      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
-      traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
-
       targetConfig = new GlobalCommandTargetConfigurer(p.target);
       traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
+
+      propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
+      traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
 
       deckPolicy = new MassKeyCommand.DeckPolicyConfig(false);
       deckPolicy.setValue(p.globalCommand.getSelectFromDeck());

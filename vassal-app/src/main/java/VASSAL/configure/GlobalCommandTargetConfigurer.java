@@ -29,13 +29,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import VASSAL.i18n.Resources;
 import net.miginfocom.swing.MigLayout;
 
 public class GlobalCommandTargetConfigurer extends Configurer {
 
   private JPanel controls;
-  private BooleanConfigurer useLocationConfig;
-  private BooleanConfigurer usePropertyConfig;
+  private BooleanConfigurer fastMatchLocationConfig;
+  private BooleanConfigurer fastMatchPropertyConfig;
   private TranslatingStringEnumConfigurer targetTypeConfig;
   private JLabel targetTypeLabel;
 
@@ -51,6 +52,8 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   private JLabel targetXLabel;
   private IntConfigurer targetYConfig;
   private JLabel targetYLabel;
+  private FormattedStringConfigurer targetDeckConfig;
+  private JLabel targetDeckLabel;
 
   private FormattedStringConfigurer targetPropertyConfig;
   private JLabel targetPropertyLabel;
@@ -94,10 +97,10 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls = new JPanel(new MigLayout("hidemode 3, ins 1, gapy 1", "[]rel[]rel[fill,grow]")); // NON-NLS
       final GlobalCommandTarget target = getTarget();
 
-      useLocationConfig = new BooleanConfigurer(target.isUseLocation());
-      useLocationConfig.addPropertyChangeListener(evt -> targetChanged());
-      controls.add(useLocationConfig.getControls());
-      controls.add(new JLabel("by Location?"), "wrap");
+      fastMatchLocationConfig = new BooleanConfigurer(target.isFastMatchLocation());
+      fastMatchLocationConfig.addPropertyChangeListener(evt -> targetChanged());
+      controls.add(fastMatchLocationConfig.getControls());
+      controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.by_location")), "wrap"); //NON-NLS
 
       final List<String> options = new ArrayList<>();
       final List<String> i18nKeys = new ArrayList<>();
@@ -111,21 +114,20 @@ public class GlobalCommandTargetConfigurer extends Configurer {
         i18nKeys.add(GlobalCommandTarget.Target.CURZONE.toTranslatedString());
         i18nKeys.add(GlobalCommandTarget.Target.CURLOC.toTranslatedString());
       }
-      else if (getTarget().getGKCtype() == GlobalCommandTarget.GKCtype.COUNTER) {
-        
-      }
       options.add(GlobalCommandTarget.Target.MAP.toString());
       options.add(GlobalCommandTarget.Target.ZONE.toString());
       options.add(GlobalCommandTarget.Target.LOCATION.toString());
       options.add(GlobalCommandTarget.Target.XY.toString());
+      options.add(GlobalCommandTarget.Target.DECK.toString());
       i18nKeys.add(GlobalCommandTarget.Target.MAP.toTranslatedString());
       i18nKeys.add(GlobalCommandTarget.Target.ZONE.toTranslatedString());
       i18nKeys.add(GlobalCommandTarget.Target.LOCATION.toTranslatedString());
       i18nKeys.add(GlobalCommandTarget.Target.XY.toTranslatedString());
+      i18nKeys.add(GlobalCommandTarget.Target.DECK.toTranslatedString());
 
       targetTypeConfig = new TranslatingStringEnumConfigurer(options, i18nKeys, target.getTargetType().toString());
       targetTypeConfig.addPropertyChangeListener(evt -> targetChanged());
-      targetTypeLabel = new JLabel("Select by");
+      targetTypeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.select_by"));
       controls.add(targetTypeLabel, "span 2"); // NON-NLS
       controls.add(targetTypeConfig.getControls(), "growx, wrap"); // NON-NLS
 
@@ -133,66 +135,73 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       for (Map map : Map.getMapList()) {
         mapNames.add(map.getMapName());
       }
+
       targetMapConfig = new FormattedStringConfigurer(mapNames.toArray(new String[0]));
-      //targetMapConfig.setNon$Options(mapNames.toArray(new String[0]));
       targetMapConfig.setValue(target.getTargetMap());
       targetMapConfig.addPropertyChangeListener(evt -> getTarget().setTargetMap(targetMapConfig.getValueString()));
-      targetMapLabel = new JLabel("Map Name");
+      targetMapLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.map_name"));
       controls.add(targetMapLabel, "span 2"); // NON-NLS
       controls.add(targetMapConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetBoardConfig = new FormattedStringConfigurer(null, null);
       targetBoardConfig.setValue(target.getTargetBoard());
       targetBoardConfig.addPropertyChangeListener(evt -> getTarget().setTargetBoard(targetBoardConfig.getValueString()));
-      targetBoardLabel = new JLabel("Board Name");
+      targetBoardLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.board_name"));
       controls.add(targetBoardLabel, "span 2"); // NON-NLS
       controls.add(targetBoardConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetZoneConfig = new FormattedStringConfigurer(null, null);
       targetZoneConfig.setValue(target.getTargetZone());
       targetZoneConfig.addPropertyChangeListener(evt -> getTarget().setTargetZone(targetZoneConfig.getValueString()));
-      targetZoneLabel = new JLabel("Zone Name");
+      targetZoneLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.zone_name"));
       controls.add(targetZoneLabel, "span 2"); // NON-NLS
       controls.add(targetZoneConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetLocationConfig = new FormattedStringConfigurer(null, null);
       targetLocationConfig.setValue(target.getTargetLocation());
       targetLocationConfig.addPropertyChangeListener(evt -> getTarget().setTargetLocation(targetLocationConfig.getValueString()));
-      targetLocationLabel = new JLabel("Location Name");
+      targetLocationLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.location_name"));
       controls.add(targetLocationLabel, "span 2"); // NON-NLS
       controls.add(targetLocationConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetXConfig = new IntConfigurer(target.getTargetX());
       targetXConfig.addPropertyChangeListener(evt -> getTarget().setTargetX(targetXConfig.getIntValue(0)));
-      targetXLabel = new JLabel("X Position");
+      targetXLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.x_position"));
       controls.add(targetXLabel, "span 2"); // NON-NLS
       controls.add(targetXConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetYConfig = new IntConfigurer(target.getTargetY());
       targetYConfig.addPropertyChangeListener(evt -> getTarget().setTargetY(targetYConfig.getIntValue(0)));
-      targetYLabel = new JLabel("Y Position");
+      targetYLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.y_position"));
       controls.add(targetYLabel, "span 2"); // NON-NLS
       controls.add(targetYConfig.getControls(), "growY, wrap"); // NON-NLS
 
-      usePropertyConfig = new BooleanConfigurer (target.isUseProperty());
-      usePropertyConfig.addPropertyChangeListener(evt -> usePropertyChanged());
-      controls.add(usePropertyConfig.getControls());
-      controls.add(new JLabel("by Property?"), "wrap");
+      targetDeckConfig = new FormattedStringConfigurer(null, null);
+      targetDeckConfig.setValue(target.getTargetDeck());
+      targetDeckConfig.addPropertyChangeListener(evt -> getTarget().setTargetLocation(targetDeckConfig.getValueString()));
+      targetDeckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_name"));
+      controls.add(targetDeckLabel, "span 2"); //NON-NLS
+      controls.add(targetDeckConfig.getControls(), "growx, wrap"); //NON-NLS
 
-      targetPropertyConfig = new FormattedExpressionConfigurer (null, null, target.getTargetProperty());
+      fastMatchPropertyConfig = new BooleanConfigurer(target.isFastMatchProperty());
+      fastMatchPropertyConfig.addPropertyChangeListener(evt -> fastMatchPropertyChanged());
+      controls.add(fastMatchPropertyConfig.getControls());
+      controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.by_property")), "wrap"); //NON-NLS
+
+      targetPropertyConfig = new FormattedExpressionConfigurer(null, null, target.getTargetProperty());
       targetPropertyConfig.addPropertyChangeListener(evt -> getTarget().setTargetProperty(targetPropertyConfig.getValueString()));
-      targetPropertyLabel = new JLabel("Property Name");
+      targetPropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_name"));
       controls.add(targetPropertyLabel, "span 2"); // NON-NLS
       controls.add(targetPropertyConfig.getControls(), "wrap"); // NON-NLS
 
-      targetValueConfig = new FormattedExpressionConfigurer (null, null, target.getTargetValue());
+      targetValueConfig = new FormattedExpressionConfigurer(null, null, target.getTargetValue());
       targetValueConfig.addPropertyChangeListener(evt -> getTarget().setTargetValue(targetValueConfig.getValueString()));
-      targetValueLabel = new JLabel("Property Value");
+      targetValueLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_value"));
       controls.add(targetValueLabel, "span 2"); // NON-NLS
       controls.add(targetValueConfig.getControls(), "wrap"); // NON-NLS
 
       targetChanged();
-      usePropertyChanged();
+      fastMatchPropertyChanged();
 
       controls.setBorder(BorderFactory.createEtchedBorder());
 
@@ -210,43 +219,45 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   private void targetChanged() {
     final GlobalCommandTarget target = getTarget();
 
-    final boolean useLocation = useLocationConfig.getValueBoolean();
-    target.setUseLocation(useLocation);
+    final boolean fastMatchLocation = fastMatchLocationConfig.getValueBoolean();
+    target.setFastMatchLocation(fastMatchLocation);
 
     target.setTargetType(targetTypeConfig.getValueString());
     final GlobalCommandTarget.Target targetType = target.getTargetType();
 
-    targetTypeConfig.getControls().setVisible(useLocation);
-    targetTypeLabel.setVisible(useLocation);
+    targetTypeConfig.getControls().setVisible(fastMatchLocation);
+    targetTypeLabel.setVisible(fastMatchLocation);
 
-    final boolean mapVisible = useLocation && (
+    final boolean mapVisible = fastMatchLocation && (
       targetType.equals(GlobalCommandTarget.Target.MAP) ||
         targetType.equals(GlobalCommandTarget.Target.ZONE) ||
         targetType.equals(GlobalCommandTarget.Target.LOCATION) ||
         targetType.equals(GlobalCommandTarget.Target.XY));
 
-    targetMapConfig.getControls().setVisible(useLocation && mapVisible);
-    targetMapLabel.setVisible(useLocation && mapVisible);
-    targetBoardConfig.getControls().setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.XY));
-    targetBoardLabel.setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.XY));
-    targetZoneConfig.getControls().setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.ZONE));
-    targetZoneLabel.setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.ZONE));
-    targetLocationConfig.getControls().setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.LOCATION));
-    targetLocationLabel.setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.LOCATION));
-    targetXConfig.getControls().setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.XY));
-    targetXLabel.setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.XY));
-    targetYConfig.getControls().setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.XY));
-    targetYLabel.setVisible(useLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetMapConfig.getControls().setVisible(fastMatchLocation && mapVisible);
+    targetMapLabel.setVisible(fastMatchLocation && mapVisible);
+    targetBoardConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetBoardLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetZoneConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.ZONE));
+    targetZoneLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.ZONE));
+    targetLocationConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.LOCATION));
+    targetLocationLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.LOCATION));
+    targetXConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetXLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetYConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetYLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.XY));
+    targetDeckLabel.setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.DECK));
+    targetDeckConfig.getControls().setVisible(fastMatchLocation && targetType.equals(GlobalCommandTarget.Target.DECK));
     repack();
   }
 
-  private void usePropertyChanged() {
+  private void fastMatchPropertyChanged() {
     final GlobalCommandTarget target = getTarget();
-    target.setUseProperty(usePropertyConfig.getValueBoolean());
-    targetPropertyConfig.getControls().setVisible(target.isUseProperty());
-    targetPropertyLabel.setVisible(target.isUseProperty());
-    targetValueConfig.getControls().setVisible(target.isUseProperty());
-    targetValueLabel.setVisible(target.isUseProperty());
+    target.setFastMatchProperty(fastMatchPropertyConfig.getValueBoolean());
+    targetPropertyConfig.getControls().setVisible(target.isFastMatchProperty());
+    targetPropertyLabel.setVisible(target.isFastMatchProperty());
+    targetValueConfig.getControls().setVisible(target.isFastMatchProperty());
+    targetValueLabel.setVisible(target.isFastMatchProperty());
     repack();
   }
 

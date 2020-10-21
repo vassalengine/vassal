@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2005 by Rodney Kinney
+ * Copyright (c) 2005-2020 by Rodney Kinney, Brian Reynolds
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,6 +22,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -40,6 +41,7 @@ import java.util.List;
  *
  * The various forms of Global Key Command that use GlobalCommand are:
  * {@link VASSAL.build.module.GlobalKeyCommand} - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand} - Startup Global Key Commands from a Module
  * {@link VASSAL.build.module.map.MassKeyCommand} - Global Key Commands from a specific Map window
  * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
  * {@link CounterGlobalKeyCommand} - Global Key Command from a Game Piece
@@ -107,6 +109,17 @@ public class GlobalCommand {
   }
 
   /**
+   * Check the Property Fast Match for a given gamePiece
+   * @param gamePiece the game piece
+   * @return true if piece matches
+   */
+  private boolean passesPropertyFastMatch(GamePiece gamePiece) {
+    if (!target.fastMatchProperty || target.targetProperty.isEmpty()) return true;
+    String value = (String) gamePiece.getProperty(target.targetProperty);
+    return value.equals(target.targetValue);
+  }
+
+  /**
    * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
    *
    * @param m Array of Maps
@@ -134,7 +147,7 @@ public class GlobalCommand {
       // If we're basic comparison on an existing piece, preload our comparison property for better performance.
       GamePiece curPiece = target.getCurPiece();
       String compareString = "";
-      if (target.useLocation && target.targetType.isCurrent() && (curPiece != null)) {
+      if (target.fastMatchLocation && target.targetType.isCurrent() && (curPiece != null)) {
         switch (target.targetType) {
         case CURZONE:
           compareString = (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE);
@@ -145,25 +158,49 @@ public class GlobalCommand {
         }
       }
 
+      // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
+      Visitor visitor = new Visitor(c, filter, keyStroke);
+      DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
-      if (target.useLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
-        Visitor visitor = new Visitor(c, filter, keyStroke);
-        DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+      if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
           Stack stack = curPiece.getParent();
           List<GamePiece> pieces = stack.asList();
           for (GamePiece gamePiece : pieces) {
+            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+            if (!passesPropertyFastMatch(gamePiece)) {
+              continue;
+            }
+
+            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
             dispatcher.accept(gamePiece);
           }
         }
-        visitor.getTracker().repaint();
-        c = visitor.getCommand();
+      }
+      // If we're using "specific deck", then we find that deck and iterate through it, checking fast property matches only
+      else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.DECK) {
+        DrawPile d = DrawPile.findDrawPile(target.targetDeck);
+        if (d != null) {
+          List<GamePiece> pieces = d.getDeck().asList();
+          for (GamePiece gamePiece : pieces) {
+            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+            if (!passesPropertyFastMatch(gamePiece)) {
+              continue;
+            }
+
+            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+            dispatcher.accept(gamePiece);
+          }
+        }
       }
       else {
-        // For most Global Key Commands we need to run through the lists of maps & pieces
+        // For most Global Key Commands we need to run through the larger lists of maps & pieces. Hopefully the Fast Matches
+        // here will filter some of that out.
         for (Map map : m) {
           // First check that this is a map we're even interested in
-          if (target.useLocation) {
+          if (target.fastMatchLocation) {
             // "Current Map" only cares about the map the issuing piece is on
             if (target.targetType == GlobalCommandTarget.Target.CURMAP) {
               if ((curPiece != null) && !map.equals(curPiece.getMap())) {
@@ -176,19 +213,12 @@ public class GlobalCommand {
             }
           }
 
-          // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-          Visitor visitor = new Visitor(c, filter, keyStroke);
-          DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
-
           // Now we go through all the pieces on this map
           GamePiece[] p = map.getPieces();
           for (GamePiece gamePiece : p) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-            if (target.useProperty && !target.targetProperty.isEmpty()) {
-              String value = (String) gamePiece.getProperty(target.targetProperty);
-              if (!value.equals(target.targetValue)) {
-                continue;
-              }
+            if (!passesPropertyFastMatch(gamePiece)) {
+              continue;
             }
 
             // These basic location filters are faster than equivalent filters in the Beanshell expression
@@ -247,10 +277,10 @@ public class GlobalCommand {
             // Passed all the "Fast Match" tests -- the dispatcher will apply the BeanShell filter and if that passes will issue the command to the piece
             dispatcher.accept(gamePiece);
           }
-          visitor.getTracker().repaint();
-          c = visitor.getCommand();
         }
       }
+      visitor.getTracker().repaint();
+      c = visitor.getCommand();
     }
     catch (RecursionLimitException e) {
       RecursionLimiter.infiniteLoop(e);
@@ -339,7 +369,6 @@ public class GlobalCommand {
     public BoundsTracker getTracker() {
       return tracker;
     }
-
   }
 
   public int getSelectFromDeck() {
@@ -393,7 +422,7 @@ public class GlobalCommand {
       return false;
 
     // Match any specific targeting information, depending on the targeting type. targetType must always match.
-    if (target.useLocation != other.target.useLocation) {
+    if (target.fastMatchLocation != other.target.fastMatchLocation) {
       return false;
     }
     if (target.targetType != other.target.targetType) {
@@ -412,11 +441,11 @@ public class GlobalCommand {
       return false;
     }
 
-    if (target.useProperty != other.target.useProperty) {
+    if (target.fastMatchProperty != other.target.fastMatchProperty) {
       return false;
     }
 
-    if (target.useProperty) {
+    if (target.fastMatchProperty) {
       if (!target.targetProperty.equals(other.target.targetProperty)) {
         return false;
       }

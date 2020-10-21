@@ -35,18 +35,19 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   protected GKCtype gkcType = GKCtype.MAP;  // What flavor of GKC (Module, Map, Deck, Piece)
 
-  protected boolean useLocation = false;    // True if we are doing Fast Match by location (else other values in this block unused)
-  protected Target targetType = Target.MAP; // Type of location Fast Match we are doing
-  protected String targetMap = "";          // Specified Map (for MAP, ZONE, LOCATION, XY types)
-  protected String targetBoard = "";        // Specified Board (for XY type)
-  protected String targetZone = "";         // Specified Zone (for ZONE type)
-  protected String targetLocation = "";     // Specified Location (for LOCATION type)
-  protected int targetX = 0;                // Specified X (for XY type)
-  protected int targetY = 0;                // Specified Y (for XY type)
+  protected boolean fastMatchLocation = false; // True if we are doing Fast Match by location (else other values in this block unused)
+  protected Target targetType = Target.MAP;    // Type of location Fast Match we are doing
+  protected String targetMap = "";             // Specified Map (for MAP, ZONE, LOCATION, XY types)
+  protected String targetBoard = "";           // Specified Board (for XY type)
+  protected String targetZone = "";            // Specified Zone (for ZONE type)
+  protected String targetLocation = "";        // Specified Location (for LOCATION type)
+  protected String targetDeck = "";            // Specified Deck (for DECK type)
+  protected int targetX = 0;                   // Specified X (for XY type)
+  protected int targetY = 0;                   // Specified Y (for XY type)
 
-  protected boolean useProperty = false;    // True if we're doing a Fast Match by property value (else next two values ignored)
-  protected String targetProperty = "";     // Name/Key of Fast Match property
-  protected String targetValue = "";        // Value to match for that property
+  protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
+  protected String targetProperty = "";        // Name/Key of Fast Match property
+  protected String targetValue = "";           // Value to match for that property
 
   private GamePiece curPiece; // Reference piece for "current <place>". NOT encoded into the module, only set and used at time of command execution.
 
@@ -59,10 +60,10 @@ public class GlobalCommandTarget implements ConfigurerFactory {
    * Specifies the type of GKC being configured (affects which Target options are allowed)
    */
   public enum GKCtype {
-    COUNTER,
-    MAP,
-    MODULE,
-    DECK
+    COUNTER, /** {@link CounterGlobalKeyCommand */
+    MAP,     /** {@link VASSAL.build.module.map.MassKeyCommand} */
+    MODULE,  /** {@link VASSAL.build.module.GlobalKeyCommand} */
+    DECK     // {@link VASSAL.build.module.map.DeckGlobalKeyCommand}
   }
 
   /**
@@ -76,7 +77,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     MAP,       // Specified map
     ZONE,      // Specified zone
     LOCATION,  // Specified location name
-    XY;        // Specified X/Y position
+    XY,        // Specified X/Y position
+    DECK;      // Specified Deck
 
     /**
      * @return true if our match is relative to an issuing piece or deck
@@ -126,7 +128,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(ENCODE_DELIMITER);
     se.append(gkcType.name())
-      .append(useLocation)
+      .append(fastMatchLocation)
       .append(targetType.name())
       .append(targetMap)
       .append(targetBoard)
@@ -134,7 +136,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
       .append(targetLocation)
       .append(targetX)
       .append(targetY)
-      .append(useProperty)
+      .append(targetDeck)
+      .append(fastMatchProperty)
       .append(targetProperty)
       .append(targetValue);
 
@@ -145,7 +148,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ENCODE_DELIMITER);
     final String source = sd.nextToken("");
     gkcType = source.isEmpty() ? GKCtype.MAP : GKCtype.valueOf(source);
-    useLocation = sd.nextBoolean(false);
+    fastMatchLocation = sd.nextBoolean(false);
     final String type = sd.nextToken(Target.MAP.toString());
     targetType = type.isEmpty() ? Target.MAP : Target.valueOf(type);
     targetMap = sd.nextToken("");
@@ -154,7 +157,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     targetLocation = sd.nextToken("");
     targetX = sd.nextInt(0);
     targetY = sd.nextInt(0);
-    useProperty = sd.nextBoolean(false);
+    targetDeck = sd.nextToken("");
+    fastMatchProperty = sd.nextBoolean(false);
     targetProperty = sd.nextToken("");
     targetValue = sd.nextToken("");
   }
@@ -174,20 +178,20 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     this.gkcType = gkcType;
   }
 
-  public boolean isUseLocation() {
-    return useLocation;
+  public boolean isFastMatchLocation() {
+    return fastMatchLocation;
   }
 
-  public void setUseLocation(boolean useLocation) {
-    this.useLocation = useLocation;
+  public void setFastMatchLocation(boolean fastMatchLocation) {
+    this.fastMatchLocation = fastMatchLocation;
   }
 
-  public boolean isUseProperty() {
-    return useProperty;
+  public boolean isFastMatchProperty() {
+    return fastMatchProperty;
   }
 
-  public void setUseProperty(boolean useProperty) {
-    this.useProperty = useProperty;
+  public void setFastMatchProperty(boolean fastMatchProperty) {
+    this.fastMatchProperty = fastMatchProperty;
   }
 
   public Target getTargetType() {
@@ -232,6 +236,14 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public void setTargetLocation(String targetLocation) {
     this.targetLocation = targetLocation;
+  }
+
+  public String getTargetDeck() {
+    return targetDeck;
+  }
+
+  public void setTargetDeck(String targetDeck) {
+    this.targetDeck = targetDeck;
   }
 
   public String getTargetProperty() {

@@ -151,6 +151,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
     setAttribute(TARGET, sd.nextToken(""));
+
   }
 
   @Override
@@ -228,6 +229,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       else {
         c = new NullCommand();
       }
+
       Visitor visitor = new Visitor(c, filter, keyStroke);
       DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
