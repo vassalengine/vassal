@@ -167,7 +167,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetYConfig.getControls(), "growY, wrap"); // NON-NLS
 
       targetDeckConfig = new FormattedExpressionConfigurer(target.getTargetDeck().getExpression());
-      targetDeckConfig.addPropertyChangeListener(evt -> getTarget().setTargetLocation(targetDeckConfig.getValueString()));
+      targetDeckConfig.addPropertyChangeListener(evt -> getTarget().setTargetDeck(targetDeckConfig.getValueString()));
       targetDeckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_name"));
       controls.add(targetDeckLabel, "span 2"); //NON-NLS
       controls.add(targetDeckConfig.getControls(), "growx, wrap"); //NON-NLS

@@ -251,57 +251,92 @@ public class GlobalCommand {
 
           // Now we go through all the pieces/stacks/decks on this map
           GamePiece[] everythingOnMap = map.getPieces();
-          for (GamePiece pieceOrStack : everythingOnMap) {
-            List<GamePiece> pieceList;
 
-            // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
-            if (pieceOrStack instanceof Stack) {
-              pieceList = ((Stack)pieceOrStack).asList();
+          if (!target.fastMatchLocation) {
+            // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKC's)
+            if (!target.fastMatchProperty) {
+              for (GamePiece pieceOrStack : everythingOnMap) {
+                dispatcher.accept(pieceOrStack);
+              }
             }
             else {
-              pieceList = Collections.singletonList(pieceOrStack); // Or if really just a single piece.
+              // This loop is WITH property Fast Match but WITHOUT
+              for (GamePiece pieceOrStack : everythingOnMap) {
+                List<GamePiece> pieceList;
+
+                // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
+                if (pieceOrStack instanceof Stack) {
+                  pieceList = ((Stack) pieceOrStack).asList();
+                }
+                else {
+                  pieceList = Collections.singletonList(pieceOrStack); // Or if really just a single piece.
+                }
+
+                // This will iterate through actual game pieces
+                for (GamePiece gamePiece : pieceList) {
+                  // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+                  if (!passesPropertyFastMatch(gamePiece)) {
+                    continue;
+                  }
+                  dispatcher.accept(gamePiece);
+                }
+              }
             }
+          }
+          else {
+            // WITH Location Fast Matching we have some extra steps
+            for (GamePiece pieceOrStack : everythingOnMap) {
+              List<GamePiece> pieceList;
 
-            // This will iterate through actual game pieces
-            for (GamePiece gamePiece : pieceList) {
-              // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-              if (!passesPropertyFastMatch(gamePiece)) {
-                continue;
+              // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
+              if (pieceOrStack instanceof Stack) {
+                pieceList = ((Stack) pieceOrStack).asList();
+              }
+              else {
+                pieceList = Collections.singletonList(pieceOrStack); // Or if really just a single piece.
               }
 
-              // These basic location filters are faster than equivalent filters in the Beanshell expression
-              if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION) ||
-                (target.targetType == GlobalCommandTarget.Target.CURZONE) || (target.targetType == GlobalCommandTarget.Target.CURLOC)) {
-                // Fast matches for Zone / Location
-                switch (target.targetType) {
-                case ZONE:
-                case CURZONE:
-                  if (!fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
-                    continue;
-                  }
-                  break;
-                case LOCATION:
-                case CURLOC:
-                  if (!fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
-                    continue;
-                  }
-                  break;
-                }
-              }
-
-              // Fast Match of "exact XY position"
-              if (target.targetType == GlobalCommandTarget.Target.XY) {
-                if (!fastBoard.isEmpty() && !fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+              // This will iterate through actual game pieces
+              for (GamePiece gamePiece : pieceList) {
+                // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+                if (!passesPropertyFastMatch(gamePiece)) {
                   continue;
                 }
-                Point pt = new Point(gamePiece.getPosition());
-                if (!fastX.equals(Double.toString(pt.getX())) || !fastY.equals(Double.toString(pt.getY()))) {
-                  continue;
-                }
-              }
 
-              // Passed all the "Fast Match" tests -- the dispatcher will apply the BeanShell filter and if that passes will issue the command to the piece
-              dispatcher.accept(gamePiece);
+                // These basic location filters are faster than equivalent filters in the Beanshell expression
+                if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION) ||
+                  (target.targetType == GlobalCommandTarget.Target.CURZONE) || (target.targetType == GlobalCommandTarget.Target.CURLOC)) {
+                  // Fast matches for Zone / Location
+                  switch (target.targetType) {
+                  case ZONE:
+                  case CURZONE:
+                    if (!fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
+                      continue;
+                    }
+                    break;
+                  case LOCATION:
+                  case CURLOC:
+                    if (!fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
+                      continue;
+                    }
+                    break;
+                  }
+                }
+
+                // Fast Match of "exact XY position"
+                if (target.targetType == GlobalCommandTarget.Target.XY) {
+                  if (!fastBoard.isEmpty() && !fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+                    continue;
+                  }
+                  Point pt = new Point(gamePiece.getPosition());
+                  if (!fastX.equals(Integer.toString((int) pt.getX())) || !fastY.equals(Integer.toString((int) pt.getY()))) {
+                    continue;
+                  }
+                }
+
+                // Passed all the "Fast Match" tests -- the dispatcher will apply the BeanShell filter and if that passes will issue the command to the piece
+                dispatcher.accept(gamePiece);
+              }
             }
           }
         }
