@@ -80,11 +80,11 @@ public class DoActionButton extends AbstractToolbarItem
   public static final String INDEX_STEP = "indexStep"; //$NON-NLS-1$
 
   // These 5 items are identical to those in AbstractToolItem and exist only for "clirr purposes"
-  @Deprecated public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  @Deprecated public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  @Deprecated public static final String NAME = "name"; //$NON-NLS-1$
-  @Deprecated public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  @Deprecated public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
 
   protected LaunchButton launch;
   protected boolean doReport = false;
