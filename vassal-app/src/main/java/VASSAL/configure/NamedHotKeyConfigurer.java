@@ -20,9 +20,9 @@ package VASSAL.configure;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
-
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
@@ -32,7 +32,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -42,11 +41,14 @@ import javax.swing.text.DocumentFilter;
 import net.miginfocom.swing.MigLayout;
 
 public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
-  private final JTextField keyStroke = new HintTextField(16, Resources.getString("Editor.NamedHotKeyConfigurer.command"));
-  private final JTextField keyName = new HintTextField(16, Resources.getString("Editor.NamedHotKeyConfigurer.keystroke"));
+  private static final String STROKE_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.keystroke");
+  private static final String NAME_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.command");
+  private final HintTextField keyStroke = new HintTextField(16, STROKE_HINT);
+  private final HintTextField keyName = new HintTextField(16, NAME_HINT);
   private JPanel controls;
   private String lastValue;
   private JButton undoButton;
+
 
   public static String getFancyString(NamedKeyStroke k) {
     String s = getString(k);
@@ -64,12 +66,12 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }
 
-  public NamedHotKeyConfigurer(String key, String name) {
-    this(key, name, new NamedKeyStroke());
-  }
-
   public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
     super(key, name, val);
+  }
+
+  public NamedHotKeyConfigurer(String key, String name) {
+    this(key, name, new NamedKeyStroke());
   }
 
   public NamedHotKeyConfigurer(NamedKeyStroke val) {
@@ -104,8 +106,18 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
         keyName.setText("");
         keyStroke.setText(keyToString());
       }
+      updateVisibility();
     }
     setFrozen(false);
+  }
+
+  protected void updateVisibility() {
+    keyName.setFocusOnly(iSnonNullValue());
+    keyStroke.setFocusOnly(iSnonNullValue());
+  }
+
+  private boolean iSnonNullValue() {
+    return value != null && !((NamedKeyStroke) value).isNull();
   }
 
   @Override
@@ -155,6 +167,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       panel.add(undoButton);
 
       controls.add(panel, "grow"); // NON-NLS
+      updateVisibility();
     }
     return controls;
   }

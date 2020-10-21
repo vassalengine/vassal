@@ -34,9 +34,10 @@ import javax.swing.JTextField;
  */
 public class HintTextField extends JTextField implements FocusListener {
 
-  private final String hint;
+  private String hint;
   private Color hintColor;
   private Font hintFont;
+  private boolean focusOnly;
 
   /**
    * Create a new HintTextField with a length and specified hint
@@ -46,7 +47,8 @@ public class HintTextField extends JTextField implements FocusListener {
    */
   public HintTextField(int length, String hint) {
     super(length);
-    this.hint = hint;
+    setHint(hint);
+    setFocusOnly(false);
     addFocusListener(this);
   }
 
@@ -57,14 +59,15 @@ public class HintTextField extends JTextField implements FocusListener {
    */
   public HintTextField(String hint) {
     super();
-    this.hint = hint;
+    setHint(hint);
+    setFocusOnly(false);
     addFocusListener(this);
   }
 
   @Override
   public void paint(Graphics g) {
     super.paint(g);
-    if (getText().isEmpty() && hasFocus() && hint != null && ! hint.isEmpty()) {
+    if (getText().isEmpty() && focusCheck() && hint != null && ! hint.isEmpty()) {
       final int h = getHeight();
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
       final Insets ins = getInsets();
@@ -83,6 +86,10 @@ public class HintTextField extends JTextField implements FocusListener {
     }
   }
 
+  protected boolean focusCheck() {
+    return !isFocusOnly() || hasFocus();
+  }
+
   @Override
   public void focusGained(FocusEvent e) {
     repaint();
@@ -93,4 +100,21 @@ public class HintTextField extends JTextField implements FocusListener {
     repaint();
   }
 
+  public boolean isFocusOnly() {
+    return focusOnly;
+  }
+
+  public void setFocusOnly(boolean focusOnly) {
+    this.focusOnly = focusOnly;
+    repaint();
+  }
+
+  public String getHint() {
+    return hint;
+  }
+
+  public void setHint(String hint) {
+    this.hint = hint;
+    repaint();
+  }
 }
