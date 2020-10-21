@@ -17,13 +17,19 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
 
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OpIcon;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -35,10 +41,12 @@ import javax.swing.text.DocumentFilter;
 
 import net.miginfocom.swing.MigLayout;
 
-public class NamedHotKeyConfigurer extends Configurer {
-  private final JTextField keyStroke = new JTextField(16);
-  private final JTextField keyName = new JTextField(16);
+public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
+  private final JTextField keyStroke = new HintTextField(16, Resources.getString("Editor.NamedHotKeyConfigurer.command"));
+  private final JTextField keyName = new HintTextField(16, Resources.getString("Editor.NamedHotKeyConfigurer.keystroke"));
   private JPanel controls;
+  private String lastValue;
+  private JButton undoButton;
 
   public static String getFancyString(NamedKeyStroke k) {
     String s = getString(k);
@@ -87,6 +95,9 @@ public class NamedHotKeyConfigurer extends Configurer {
     setFrozen(true); // Prevent changes to the input fields triggering further updates
     if (controls != null) {
       if (isNamed()) {
+        if (keyName.getText().isEmpty()) {
+          keyName.setText(((NamedKeyStroke) value).getName());
+        }
         keyStroke.setText("");
       }
       else {
@@ -123,19 +134,48 @@ public class NamedHotKeyConfigurer extends Configurer {
       keyStroke.setText(keyToString());
       keyStroke.addKeyListener(new KeyStrokeAdapter());
       ((AbstractDocument) keyStroke.getDocument()).setDocumentFilter(new KeyStrokeFilter());
+      keyStroke.addFocusListener(this);
 
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width, keyName.getPreferredSize().height));
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
+      keyName.addFocusListener(this);
 
-      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]")); // NON-NLS
-      panel.add(keyStroke, "grow"); // NON-NLS
-      panel.add(new JLabel("-")); // NON-NLS
+      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]2[]")); // NON-NLS
       panel.add(keyName, "grow"); // NON-NLS
+      panel.add(new JLabel("-")); // NON-NLS
+      panel.add(keyStroke, "grow"); // NON-NLS
+
+      undoButton = new JButton(new OpIcon(Op.load("Undo16.gif"))); // NON-NLS
+      final int size = (int) keyName.getPreferredSize().getHeight();
+      undoButton.setPreferredSize(new Dimension(size, size));
+      undoButton.setMaximumSize(new Dimension(size, size));
+      undoButton.addActionListener(e -> undo());
+      undoButton.setEnabled(false);
+      panel.add(undoButton);
 
       controls.add(panel, "grow"); // NON-NLS
     }
     return controls;
+  }
+
+  private void undo() {
+    if (lastValue != null) {
+      setValue(lastValue);
+      lastValue = null;
+      undoButton.setEnabled(false);
+    }
+  }
+
+  @Override
+  public void focusGained(FocusEvent e) {
+    lastValue = getValueString();
+    undoButton.setEnabled(true);
+  }
+
+  @Override
+  public void focusLost(FocusEvent e) {
+
   }
 
   public String keyToString() {
