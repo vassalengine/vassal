@@ -246,8 +246,7 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
-    globalCommand.setTarget(target); // Set our fast match parameters
-    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter));
+    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target));
 
     return c;
   }

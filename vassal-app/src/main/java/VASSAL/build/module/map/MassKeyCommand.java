@@ -143,14 +143,13 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public void apply() {
     buildFilter();
-    globalCommand.setTarget(target); // Set our fast match parameters
     if (singleMap) {
-      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter()));
+      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter(), target));
     }
     else {
       final List<Map> l = Map.getMapList();
       GameModule.getGameModule().sendAndLog(
-          globalCommand.apply(l.toArray(new Map[0]), getFilter()));
+          globalCommand.apply(l.toArray(new Map[0]), getFilter(), target));
     }
   }
 

@@ -26,6 +26,7 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -107,10 +108,6 @@ public class GlobalCommand {
     return target;
   }
 
-  public Command apply(Map m, PieceFilter filter) {
-    return apply(new Map[]{m}, filter);
-  }
-
   /**
    * Check the Property Fast Match for a given gamePiece
    * @param gamePiece the game piece
@@ -122,15 +119,33 @@ public class GlobalCommand {
     return value.equals(fastValue);
   }
 
+
+
+  public Command apply(Map m, PieceFilter filter) {
+    return apply(new Map[]{m}, filter);
+  }
+
+  public Command apply(Map m, PieceFilter filter, GlobalCommandTarget fastMatch) {
+    return apply(new Map[]{m}, filter, fastMatch);
+  }
+
+  public Command apply(Map[] m, PieceFilter filter) {
+    return apply(m, filter, null);
+  }
+
   /**
    * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
    *
    * @param m Array of Maps
-   * @param filter Filter to apply
+   * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
+   * @param fastMatch Fast matching parameters, or null. {@link GlobalCommandTarget} and {@link VASSAL.configure.GlobalCommandTargetConfigurer}
    * @return a the corresponding {@link Command}
    */
-  public Command apply(Map[] m, PieceFilter filter) {
+  public Command apply(Map[] m, PieceFilter filter, GlobalCommandTarget fastMatch) {
     Command c = new NullCommand();
+    if (fastMatch != null) {
+      setTarget(fastMatch);
+    }
 
     try {
       if (reportSingle) {
