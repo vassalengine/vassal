@@ -23,6 +23,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.script.expression.Expression;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -37,17 +38,17 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   protected boolean fastMatchLocation = false; // True if we are doing Fast Match by location (else other values in this block unused)
   protected Target targetType = Target.MAP;    // Type of location Fast Match we are doing
-  protected String targetMap = "";             // Specified Map (for MAP, ZONE, LOCATION, XY types)
-  protected String targetBoard = "";           // Specified Board (for XY type)
-  protected String targetZone = "";            // Specified Zone (for ZONE type)
-  protected String targetLocation = "";        // Specified Location (for LOCATION type)
-  protected String targetDeck = "";            // Specified Deck (for DECK type)
+  protected Expression targetMap;              // Specified Map (for MAP, ZONE, LOCATION, XY types)
+  protected Expression targetBoard;            // Specified Board (for XY type)
+  protected Expression targetZone;             // Specified Zone (for ZONE type)
+  protected Expression targetLocation;         // Specified Location (for LOCATION type)
+  protected Expression targetDeck;             // Specified Deck (for DECK type)
   protected int targetX = 0;                   // Specified X (for XY type)
   protected int targetY = 0;                   // Specified Y (for XY type)
 
   protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
-  protected String targetProperty = "";        // Name/Key of Fast Match property
-  protected String targetValue = "";           // Value to match for that property
+  protected Expression targetProperty;         // Name/Key of Fast Match property
+  protected Expression targetValue;            // Value to match for that property
 
   private GamePiece curPiece; // Reference piece for "current <place>". NOT encoded into the module, only set and used at time of command execution.
 
@@ -119,31 +120,48 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public GlobalCommandTarget(GKCtype gkc) {
     setGKCtype(gkc);
+
+    // Can't just let this shit be null => ANGRY ENCODER IS ANGRY!!!
+    targetMap      = Expression.createExpression("");
+    targetBoard    = Expression.createExpression("");
+    targetZone     = Expression.createExpression("");
+    targetLocation = Expression.createExpression("");
+    targetDeck     = Expression.createExpression("");
+    targetProperty = Expression.createExpression("");
+    targetValue    = Expression.createExpression("");
   }
 
   public GlobalCommandTarget(String s) {
     decode(s);
   }
 
+  /**
+   * Encoder for the part of GlobalCommandTarget that gets stored in the module
+   * @return Fast Match parameters encoded in string form
+   */
   public String encode() {
     SequenceEncoder se = new SequenceEncoder(ENCODE_DELIMITER);
     se.append(gkcType.name())
       .append(fastMatchLocation)
       .append(targetType.name())
-      .append(targetMap)
-      .append(targetBoard)
-      .append(targetZone)
-      .append(targetLocation)
+      .append(targetMap.getExpression())
+      .append(targetBoard.getExpression())
+      .append(targetZone.getExpression())
+      .append(targetLocation.getExpression())
       .append(targetX)
       .append(targetY)
-      .append(targetDeck)
+      .append(targetDeck.getExpression())
       .append(fastMatchProperty)
-      .append(targetProperty)
-      .append(targetValue);
+      .append(targetProperty.getExpression())
+      .append(targetValue.getExpression());
 
     return se.getValue();
   }
 
+  /**
+   * Decoder for loading GlobalCommandTarget from the module XML
+   * @param code String to decode into our fields.
+   */
   public void decode(String code) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ENCODE_DELIMITER);
     final String source = sd.nextToken("");
@@ -151,24 +169,31 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     fastMatchLocation = sd.nextBoolean(false);
     final String type = sd.nextToken(Target.MAP.toString());
     targetType = type.isEmpty() ? Target.MAP : Target.valueOf(type);
-    targetMap = sd.nextToken("");
-    targetBoard = sd.nextToken("");
-    targetZone = sd.nextToken("");
-    targetLocation = sd.nextToken("");
+    targetMap = Expression.createExpression(sd.nextToken(""));
+    targetBoard = Expression.createExpression(sd.nextToken(""));
+    targetZone = Expression.createExpression(sd.nextToken(""));
+    targetLocation = Expression.createExpression(sd.nextToken(""));
     targetX = sd.nextInt(0);
     targetY = sd.nextInt(0);
-    targetDeck = sd.nextToken("");
+    targetDeck = Expression.createExpression(sd.nextToken(""));
     fastMatchProperty = sd.nextBoolean(false);
-    targetProperty = sd.nextToken("");
-    targetValue = sd.nextToken("");
+    targetProperty = Expression.createExpression(sd.nextToken(""));
+    targetValue = Expression.createExpression(sd.nextToken(""));
   }
 
+  /**
+   * Compares two GlobalCommandTargets
+   * @param o GlobalCommandTarget to compare to this one
+   * @return true if their meaningful parts are equal
+   */
   @Override
   public boolean equals(Object o) {
     if (! (o instanceof GlobalCommandTarget)) return false;
     final GlobalCommandTarget t = (GlobalCommandTarget) o;
     return encode().equals(t.encode());
   }
+
+  // Welcome to Getters-and-Setters HELL!
 
   public GKCtype getGKCtype() {
     return gkcType;
@@ -206,60 +231,89 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     this.targetType = Target.valueOf(targetType);
   }
 
-  public String getTargetMap() {
+  public Expression getTargetMap() {
     return targetMap;
   }
 
-  public void setTargetMap(String targetMap) {
+  public void setTargetMap(Expression targetMap) {
     this.targetMap = targetMap;
   }
 
-  public String getTargetBoard() {
+  public void setTargetMap(String targetMap) {
+    this.targetMap = Expression.createExpression(targetMap);
+  }
+
+  public Expression getTargetBoard() {
     return targetBoard;
   }
 
-  public void setTargetBoard(String targetBoard) {
+  public void setTargetBoard(Expression targetBoard) {
     this.targetBoard = targetBoard;
   }
 
-  public String getTargetZone() {
+  public void setTargetBoard(String targetBoard) {
+    this.targetBoard = Expression.createExpression(targetBoard);
+  }
+
+  public Expression getTargetZone() {
     return targetZone;
   }
 
-  public void setTargetZone(String targetZone) {
+  public void setTargetZone(Expression targetZone) {
     this.targetZone = targetZone;
   }
 
-  public String getTargetLocation() {
+  public void setTargetZone(String targetZone) {
+    this.targetZone = Expression.createExpression(targetZone);
+  }
+
+  public Expression getTargetLocation() {
     return targetLocation;
   }
 
-  public void setTargetLocation(String targetLocation) {
+  public void setTargetLocation(Expression targetLocation) {
     this.targetLocation = targetLocation;
   }
 
-  public String getTargetDeck() {
+  public void setTargetLocation(String targetLocation) {
+    this.targetLocation = Expression.createExpression(targetLocation);
+  }
+
+
+  public Expression getTargetDeck() {
     return targetDeck;
   }
 
-  public void setTargetDeck(String targetDeck) {
+  public void setTargetDeck(Expression targetDeck) {
     this.targetDeck = targetDeck;
   }
 
-  public String getTargetProperty() {
+  public void setTargetDeck(String targetDeck) {
+    this.targetDeck = Expression.createExpression(targetDeck);
+  }
+
+  public Expression getTargetProperty() {
     return targetProperty;
   }
 
-  public void setTargetProperty(String targetProperty) {
+  public void setTargetProperty(Expression targetProperty) {
     this.targetProperty = targetProperty;
   }
 
-  public String getTargetValue() {
+  public void setTargetProperty(String targetProperty) {
+    this.targetProperty = Expression.createExpression(targetProperty);
+  }
+
+  public Expression getTargetValue() {
     return targetValue;
   }
 
-  public void setTargetValue(String targetValue) {
+  public void setTargetValue(Expression targetValue) {
     this.targetValue = targetValue;
+  }
+
+  public void setTargetValue(String targetValue) {
+    this.targetValue = Expression.createExpression(targetValue);
   }
 
   public int getTargetX() {

@@ -17,7 +17,6 @@
  */
 package VASSAL.configure;
 
-import VASSAL.build.module.Map;
 import VASSAL.counters.GlobalCommandTarget;
 
 import java.awt.Component;
@@ -40,24 +39,24 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   private TranslatingStringEnumConfigurer targetTypeConfig;
   private JLabel targetTypeLabel;
 
-  private FormattedStringConfigurer targetMapConfig;
+  private FormattedExpressionConfigurer targetMapConfig;
   private JLabel targetMapLabel;
-  private FormattedStringConfigurer targetBoardConfig;
+  private FormattedExpressionConfigurer targetBoardConfig;
   private JLabel targetBoardLabel;
-  private FormattedStringConfigurer targetZoneConfig;
+  private FormattedExpressionConfigurer targetZoneConfig;
   private JLabel targetZoneLabel;
-  private FormattedStringConfigurer targetLocationConfig;
+  private FormattedExpressionConfigurer targetLocationConfig;
   private JLabel targetLocationLabel;
   private IntConfigurer targetXConfig;
   private JLabel targetXLabel;
   private IntConfigurer targetYConfig;
   private JLabel targetYLabel;
-  private FormattedStringConfigurer targetDeckConfig;
+  private FormattedExpressionConfigurer targetDeckConfig;
   private JLabel targetDeckLabel;
 
-  private FormattedStringConfigurer targetPropertyConfig;
+  private FormattedExpressionConfigurer targetPropertyConfig;
   private JLabel targetPropertyLabel;
-  private FormattedStringConfigurer targetValueConfig;
+  private FormattedExpressionConfigurer targetValueConfig;
   private JLabel targetValueLabel;
 
   public GlobalCommandTargetConfigurer(String key, String name, GlobalCommandTarget target) {
@@ -131,34 +130,25 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetTypeLabel, "span 2"); // NON-NLS
       controls.add(targetTypeConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      final List<String> mapNames = new ArrayList<>();
-      for (Map map : Map.getMapList()) {
-        mapNames.add(map.getMapName());
-      }
-
-      targetMapConfig = new FormattedStringConfigurer(mapNames.toArray(new String[0]));
-      targetMapConfig.setValue(target.getTargetMap());
+      targetMapConfig = new FormattedExpressionConfigurer(null, null, target.getTargetMap().getExpression());
       targetMapConfig.addPropertyChangeListener(evt -> getTarget().setTargetMap(targetMapConfig.getValueString()));
       targetMapLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.map_name"));
       controls.add(targetMapLabel, "span 2"); // NON-NLS
       controls.add(targetMapConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetBoardConfig = new FormattedStringConfigurer(null, null);
-      targetBoardConfig.setValue(target.getTargetBoard());
+      targetBoardConfig = new FormattedExpressionConfigurer(null, null, target.getTargetBoard().getExpression());
       targetBoardConfig.addPropertyChangeListener(evt -> getTarget().setTargetBoard(targetBoardConfig.getValueString()));
       targetBoardLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.board_name"));
       controls.add(targetBoardLabel, "span 2"); // NON-NLS
       controls.add(targetBoardConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetZoneConfig = new FormattedStringConfigurer(null, null);
-      targetZoneConfig.setValue(target.getTargetZone());
+      targetZoneConfig = new FormattedExpressionConfigurer(null, null, target.getTargetZone().getExpression());
       targetZoneConfig.addPropertyChangeListener(evt -> getTarget().setTargetZone(targetZoneConfig.getValueString()));
       targetZoneLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.zone_name"));
       controls.add(targetZoneLabel, "span 2"); // NON-NLS
       controls.add(targetZoneConfig.getControls(), "growx, wrap"); // NON-NLS
 
-      targetLocationConfig = new FormattedStringConfigurer(null, null);
-      targetLocationConfig.setValue(target.getTargetLocation());
+      targetLocationConfig = new FormattedExpressionConfigurer(null, null, target.getTargetLocation().getExpression());
       targetLocationConfig.addPropertyChangeListener(evt -> getTarget().setTargetLocation(targetLocationConfig.getValueString()));
       targetLocationLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.location_name"));
       controls.add(targetLocationLabel, "span 2"); // NON-NLS
@@ -176,8 +166,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetYLabel, "span 2"); // NON-NLS
       controls.add(targetYConfig.getControls(), "growY, wrap"); // NON-NLS
 
-      targetDeckConfig = new FormattedStringConfigurer(null, null);
-      targetDeckConfig.setValue(target.getTargetDeck());
+      targetDeckConfig = new FormattedExpressionConfigurer(null, null, target.getTargetDeck().getExpression());
       targetDeckConfig.addPropertyChangeListener(evt -> getTarget().setTargetLocation(targetDeckConfig.getValueString()));
       targetDeckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_name"));
       controls.add(targetDeckLabel, "span 2"); //NON-NLS
@@ -188,13 +177,13 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(fastMatchPropertyConfig.getControls());
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.by_property")), "wrap"); //NON-NLS
 
-      targetPropertyConfig = new FormattedExpressionConfigurer(null, null, target.getTargetProperty());
+      targetPropertyConfig = new FormattedExpressionConfigurer(null, null, target.getTargetProperty().getExpression());
       targetPropertyConfig.addPropertyChangeListener(evt -> getTarget().setTargetProperty(targetPropertyConfig.getValueString()));
       targetPropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_name"));
       controls.add(targetPropertyLabel, "span 2"); // NON-NLS
       controls.add(targetPropertyConfig.getControls(), "wrap"); // NON-NLS
 
-      targetValueConfig = new FormattedExpressionConfigurer(null, null, target.getTargetValue());
+      targetValueConfig = new FormattedExpressionConfigurer(null, null, target.getTargetValue().getExpression());
       targetValueConfig.addPropertyChangeListener(evt -> getTarget().setTargetValue(targetValueConfig.getValueString()));
       targetValueLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_value"));
       controls.add(targetValueLabel, "span 2"); // NON-NLS

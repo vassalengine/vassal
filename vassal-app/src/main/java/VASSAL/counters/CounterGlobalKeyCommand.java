@@ -99,6 +99,7 @@ public class CounterGlobalKeyCommand extends Decorator
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
+    globalCommand.setPropertySource(Decorator.getOutermost(this));
 
     command = null;
   }

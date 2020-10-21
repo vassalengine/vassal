@@ -55,6 +55,9 @@ public class GlobalCommand {
   protected PropertySource source;      // For resolving properties (i.e. for our report message)
   protected GlobalCommandTarget target; // This holds all of the "Fast Match" information
 
+  private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
+  private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
+
   public GlobalCommand(Loopable l) {
     this (l, null);
   }
@@ -114,9 +117,9 @@ public class GlobalCommand {
    * @return true if piece matches
    */
   private boolean passesPropertyFastMatch(GamePiece gamePiece) {
-    if (!target.fastMatchProperty || target.targetProperty.isEmpty()) return true;
-    String value = (String) gamePiece.getProperty(target.targetProperty);
-    return value.equals(target.targetValue);
+    if (!target.fastMatchProperty || fastProperty.isEmpty()) return true;
+    String value = (String) gamePiece.getProperty(fastProperty);
+    return value.equals(fastValue);
   }
 
   /**
@@ -144,18 +147,47 @@ public class GlobalCommand {
         c.execute();
       }
 
-      // If we're basic comparison on an existing piece, preload our comparison property for better performance.
+      // These will hold the *evaluated results* of our various Fast Match expressions
+      String fastMap = "";
+      String fastBoard = "";
+      String fastZone = "";
+      String fastLocation = "";
+      String fastDeck = "";
+
       GamePiece curPiece = target.getCurPiece();
-      String compareString = "";
-      if (target.fastMatchLocation && target.targetType.isCurrent() && (curPiece != null)) {
+
+      // Evaluate all location-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
+      if (target.fastMatchLocation) {
         switch (target.targetType) {
         case CURZONE:
-          compareString = (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE);
+          fastZone = (curPiece != null) ? (String) curPiece.getProperty(BasicPiece.CURRENT_ZONE) : "";
           break;
         case CURLOC:
-          compareString = (String) curPiece.getProperty(BasicPiece.LOCATION_NAME);
+          fastLocation = (curPiece != null) ? (String) curPiece.getProperty(BasicPiece.LOCATION_NAME) : "";
+          break;
+        case ZONE:
+          fastZone = target.targetZone.tryEvaluate(source);
+          break;
+        case DECK:
+          fastDeck = target.targetDeck.tryEvaluate(source);
+          break;
+        case LOCATION:
+          fastLocation = target.targetLocation.tryEvaluate(source);
+          break;
+        case XY:
+          fastBoard = target.targetLocation.tryEvaluate(source);
           break;
         }
+
+        if (!target.targetType.isCurrent()) {
+          fastMap = target.targetMap.tryEvaluate(source);
+        }
+      }
+
+      // Evaluate any property-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
+      if (target.fastMatchProperty) {
+        fastProperty = target.targetProperty.tryEvaluate(source);
+        fastValue    = target.targetValue.tryEvaluate(source);
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
@@ -180,7 +212,7 @@ public class GlobalCommand {
       }
       // If we're using "specific deck", then we find that deck and iterate through it, checking fast property matches only
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.DECK) {
-        DrawPile d = DrawPile.findDrawPile(target.targetDeck);
+        DrawPile d = DrawPile.findDrawPile(fastDeck);
         if (d != null) {
           List<GamePiece> pieces = d.getDeck().asList();
           for (GamePiece gamePiece : pieces) {
@@ -208,7 +240,7 @@ public class GlobalCommand {
               }
             }
             // If a Fast Match Map is specified, only check that one.
-            else if (!target.targetType.isCurrent() && !target.targetMap.isEmpty() && !target.targetMap.equals(map.getConfigureName())) {
+            else if (!target.targetType.isCurrent() && !fastMap.isEmpty() && !fastMap.equals(map.getConfigureName())) {
               continue;
             }
           }
@@ -241,22 +273,14 @@ public class GlobalCommand {
               // Fast matches for Zone / Location
               switch (target.targetType) {
               case ZONE:
-                if (!target.targetZone.equals(pp.getProperty(BasicPiece.CURRENT_ZONE))) {
+              case CURZONE:
+                if (!fastZone.equals(pp.getProperty(BasicPiece.CURRENT_ZONE))) {
                   continue;
                 }
                 break;
               case LOCATION:
-                if (!target.targetLocation.equals(pp.getProperty(BasicPiece.LOCATION_NAME))) {
-                  continue;
-                }
-                break;
-              case CURZONE:
-                if (!compareString.equals(pp.getProperty(BasicPiece.CURRENT_ZONE))) {
-                  continue;
-                }
-                break;
               case CURLOC:
-                if (!compareString.equals(pp.getProperty(BasicPiece.LOCATION_NAME))) {
+                if (!fastLocation.equals(pp.getProperty(BasicPiece.LOCATION_NAME))) {
                   continue;
                 }
                 break;
@@ -265,7 +289,7 @@ public class GlobalCommand {
 
             // Fast Match of "exact XY position"
             if (target.targetType == GlobalCommandTarget.Target.XY) {
-              if (!target.targetBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+              if (!fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
                 continue;
               }
               Point pt = new Point(gamePiece.getPosition());
