@@ -75,7 +75,7 @@ public class HintTextField extends JTextField implements FocusListener {
         final int m = 0xfefefefe;
         final int c2 = ((c0 & m) >>> 1) + ((c1 & m) >>> 1);
         hintColor = new Color(c2, true);
-        hintFont = new Font (getFont().getFontName(), Font.ITALIC, getFont().getSize());
+        hintFont = new Font(getFont().getFontName(), Font.ITALIC, getFont().getSize());
       }
       g.setColor(hintColor);
       g.setFont(hintFont);
