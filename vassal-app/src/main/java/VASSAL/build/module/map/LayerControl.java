@@ -34,11 +34,11 @@ public class LayerControl extends AbstractToolbarItem {
   public static final String CMD_RESET = "Reset All Layers"; //NON-NLS - yes, really
 
   // These 5 identical to AbstractToolbarItem and here for clirr purposes only
-  public static final String NAME = "name"; //NON-NLS
-  public static final String TOOLTIP = "tooltip"; //NON-NLS
-  public static final String BUTTON_TEXT = "text"; //NON-NLS
-  public static final String BUTTON_ICON = "icon"; //NON-NLS
-  public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
+  @Deprecated public static final String NAME = "name"; //NON-NLS
+  @Deprecated public static final String TOOLTIP = "tooltip"; //NON-NLS
+  @Deprecated public static final String BUTTON_TEXT = "text"; //NON-NLS
+  @Deprecated public static final String BUTTON_ICON = "icon"; //NON-NLS
+  @Deprecated public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
 
   protected LaunchButton launch;
   protected static final String[] COMMANDS = new String[] {CMD_ROTATE_UP, CMD_ROTATE_DN, CMD_RESET, CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE};

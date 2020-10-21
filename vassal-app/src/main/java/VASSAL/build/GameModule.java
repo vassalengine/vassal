@@ -396,7 +396,7 @@ public class GameModule extends AbstractConfigurable
   }
 
 
-  public void setDirty(Boolean touchThis) {
+  public void setDirty(boolean touchThis) {
     iFeelDirty = touchThis;
   }
 

@@ -49,8 +49,8 @@ public class TextSaver extends AbstractToolbarItem {
   protected static final String ICON_NAME = "icon"; //NON-NLS
 
   // These two identical to AbstractToolbarItem and exist only for clirr purposes
-  protected static final String HOTKEY = "hotkey"; //NON-NLS
-  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  @Deprecated protected static final String HOTKEY = "hotkey"; //NON-NLS
+  @Deprecated protected static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected Map map;
   protected LaunchButton launch;

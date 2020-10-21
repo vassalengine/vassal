@@ -111,11 +111,11 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   private static final int[] EMPTY = new int[0];
 
   // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated public static final String NAME = "name"; //$NON-NLS-1$
+  @Deprecated public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
     dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());

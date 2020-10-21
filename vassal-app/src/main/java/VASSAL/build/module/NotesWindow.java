@@ -56,12 +56,12 @@ import VASSAL.tools.LaunchButton;
 public class NotesWindow extends AbstractToolbarItem
     implements GameComponent, CommandEncoder {
 
-  public static final String BUTTON_TEXT = "buttonText"; // non-standard legacy difference from AbstractToolbarItem
+  public static final String BUTTON_TEXT = "buttonText"; //NON-NLS // non-standard legacy difference from AbstractToolbarItem
 
   // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
-  public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
 
   protected JDialog frame;
   protected LaunchButton launch;

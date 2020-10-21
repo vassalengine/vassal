@@ -45,10 +45,10 @@ import VASSAL.tools.LaunchButton;
  */
 public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor {
   // These 4 identical to AbstractToolbarItem and exist for "clirr purposes"
-  public static final String BUTTON_TEXT = "text"; //NON-NLS
-  public static final String ICON = "icon"; //NON-NLS
-  public static final String HOTKEY = "hotkey"; //NON-NLS
-  public static final String TOOLTIP = "tooltip"; //NON-NLS
+  @Deprecated public static final String BUTTON_TEXT = "text"; //NON-NLS
+  @Deprecated public static final String ICON = "icon"; //NON-NLS
+  @Deprecated public static final String HOTKEY = "hotkey"; //NON-NLS
+  @Deprecated public static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected LaunchButton launch;
   protected Map map;
