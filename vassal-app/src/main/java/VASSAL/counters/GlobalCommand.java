@@ -34,6 +34,7 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -116,21 +117,7 @@ public class GlobalCommand {
   private boolean passesPropertyFastMatch(GamePiece gamePiece) {
     if (!target.fastMatchProperty || fastProperty.isEmpty()) return true;
     String value = (String) gamePiece.getProperty(fastProperty);
-    return value.equals(fastValue);
-  }
-
-
-
-  public Command apply(Map m, PieceFilter filter) {
-    return apply(new Map[]{m}, filter);
-  }
-
-  public Command apply(Map m, PieceFilter filter, GlobalCommandTarget fastMatch) {
-    return apply(new Map[]{m}, filter, fastMatch);
-  }
-
-  public Command apply(Map[] m, PieceFilter filter) {
-    return apply(m, filter, null);
+    return fastValue.equals(value);
   }
 
   /**
@@ -139,13 +126,11 @@ public class GlobalCommand {
    * @param m Array of Maps
    * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
    * @param fastMatch Fast matching parameters, or null. {@link GlobalCommandTarget} and {@link VASSAL.configure.GlobalCommandTargetConfigurer}
-   * @return a the corresponding {@link Command}
+   * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
    */
-  public Command apply(Map[] m, PieceFilter filter, GlobalCommandTarget fastMatch) {
+  public Command apply(Map[] maps, PieceFilter filter, GlobalCommandTarget fastMatch) {
     Command c = new NullCommand();
-    if (fastMatch != null) {
-      setTarget(fastMatch);
-    }
+    setTarget((fastMatch != null) ? fastMatch : new GlobalCommandTarget());
 
     try {
       if (reportSingle) {
@@ -245,7 +230,7 @@ public class GlobalCommand {
       else {
         // For most Global Key Commands we need to run through the larger lists of maps & pieces. Hopefully the Fast Matches
         // here will filter some of that out.
-        for (Map map : m) {
+        for (Map map : maps) {
           // First check that this is a map we're even interested in
           if (target.fastMatchLocation) {
             // "Current Map" only cares about the map the issuing piece is on
@@ -260,78 +245,115 @@ public class GlobalCommand {
             }
           }
 
-          // Now we go through all the pieces on this map
-          GamePiece[] p = map.getPieces();
-          for (GamePiece gamePiece : p) {
-            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-            if (!passesPropertyFastMatch(gamePiece)) {
-              continue;
+          // Now we go through all the pieces/stacks/decks on this map
+          GamePiece[] everythingOnMap = map.getPieces();
+          for (GamePiece pieceOrStack : everythingOnMap) {
+            List<GamePiece> pieceList;
+
+            // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
+            if (pieceOrStack instanceof Stack) {
+              pieceList = ((Stack)pieceOrStack).asList();
+            }
+            else {
+              pieceList = Collections.singletonList(pieceOrStack); // Or if really just a single piece.
             }
 
-            // These basic location filters are faster than equivalent filters in the Beanshell expression
-            // If this is a stack, the top piece in the stack's current properties will be the same as any other piece in the stack.
-            if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION) ||
-              (target.targetType == GlobalCommandTarget.Target.CURZONE) || (target.targetType == GlobalCommandTarget.Target.CURLOC)) {
-              GamePiece pp;
-              if (gamePiece instanceof Stack) {
-                Stack s;
-                s = (Stack) gamePiece;
-                pp = s.topPiece();
-                if (pp == null) {
-                  continue;
-                }
-              }
-              else {
-                pp = gamePiece;
-              }
-
-              // Fast matches for Zone / Location
-              switch (target.targetType) {
-              case ZONE:
-              case CURZONE:
-                if (!fastZone.equals(pp.getProperty(BasicPiece.CURRENT_ZONE))) {
-                  continue;
-                }
-                break;
-              case LOCATION:
-              case CURLOC:
-                if (!fastLocation.equals(pp.getProperty(BasicPiece.LOCATION_NAME))) {
-                  continue;
-                }
-                break;
-              }
-            }
-
-            // Fast Match of "exact XY position"
-            if (target.targetType == GlobalCommandTarget.Target.XY) {
-              if (!fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+            // This will iterate through actual game pieces
+            for (GamePiece gamePiece : pieceList) {
+              // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+              if (!passesPropertyFastMatch(gamePiece)) {
                 continue;
               }
-              Point pt = new Point(gamePiece.getPosition());
-              if ((target.targetX != pt.getX()) || (target.targetY != pt.getY())) {
-                continue;
-              }
-            }
 
-            // Passed all the "Fast Match" tests -- the dispatcher will apply the BeanShell filter and if that passes will issue the command to the piece
-            dispatcher.accept(gamePiece);
+              // These basic location filters are faster than equivalent filters in the Beanshell expression
+              if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION) ||
+                (target.targetType == GlobalCommandTarget.Target.CURZONE) || (target.targetType == GlobalCommandTarget.Target.CURLOC)) {
+                // Fast matches for Zone / Location
+                switch (target.targetType) {
+                case ZONE:
+                case CURZONE:
+                  if (!fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
+                    continue;
+                  }
+                  break;
+                case LOCATION:
+                case CURLOC:
+                  if (!fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
+                    continue;
+                  }
+                  break;
+                }
+              }
+
+              // Fast Match of "exact XY position"
+              if (target.targetType == GlobalCommandTarget.Target.XY) {
+                if (!fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+                  continue;
+                }
+                Point pt = new Point(gamePiece.getPosition());
+                if ((target.targetX != pt.getX()) || (target.targetY != pt.getY())) {
+                  continue;
+                }
+              }
+
+              // Passed all the "Fast Match" tests -- the dispatcher will apply the BeanShell filter and if that passes will issue the command to the piece
+              dispatcher.accept(gamePiece);
+            }
           }
         }
       }
+
+      // Repaint for anything that has been moved by this
       visitor.getTracker().repaint();
+
+      // Now we grab our (possibly massive) command, encompassing every single thing that has happened to every
+      // single piece affected by this command. This command can be sent to other clients involved in the same
+      // game to replicate all the stuff we just did.
       c = visitor.getCommand();
     }
     catch (RecursionLimitException e) {
+      // It is very easy to construct a set of GKC commands that fire each other off infinitely. This catches those.
       RecursionLimiter.infiniteLoop(e);
     }
     finally {
       RecursionLimiter.endExecution();
       if (reportSingle) {
-        Map.setChangeReportingEnabled(true);
+        Map.setChangeReportingEnabled(true); // Restore normal reporting behavior (if we'd disabled all individual reports)
       }
     }
 
-    return c;
+    return c; // Here, eat this tasty command!
+  }
+
+  /**
+   * (Legacy - applies GKC without Fast Match)
+   * @param map a single map
+   * @param filter filter
+   * @return command
+   */
+  public Command apply(Map map, PieceFilter filter) {
+    return apply(new Map[]{map}, filter);
+  }
+
+  /**
+   * (Legacy - applies GKC without Fast Match)
+   * @param maps list of maps
+   * @param filter filter
+   * @return command
+   */
+  public Command apply(Map[] maps, PieceFilter filter) {
+    return apply(maps, filter, null);
+  }
+
+  /**
+   * Apply the key command on ONE SPECIFIC MAP to all pieces that pass the given filter and our Fast Match parameters.
+   * @param map a single map
+   * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
+   * @param fastMatch Fast matching parameters, or null. {@link GlobalCommandTarget} and {@link VASSAL.configure.GlobalCommandTargetConfigurer}
+   * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
+   */
+  public Command apply(Map map, PieceFilter filter, GlobalCommandTarget fastMatch) {
+    return apply(new Map[]{map}, filter, fastMatch);
   }
 
   protected class Visitor implements DeckVisitor {
