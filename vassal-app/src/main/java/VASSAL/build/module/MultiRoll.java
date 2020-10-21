@@ -53,7 +53,7 @@ import VASSAL.preferences.Prefs;
 /**
  * @author Brent Easton
  *
- * Dialog for defining a {@link DieManager.RollSet}
+ * Dialog for defining a {@link DieManager RollSet}
  * For use with internet dice rollers
  */
 public class MultiRoll extends JDialog implements ActionListener {

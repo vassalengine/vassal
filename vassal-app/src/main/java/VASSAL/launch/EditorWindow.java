@@ -45,6 +45,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ModuleUpdaterDialog;
+import VASSAL.configure.RemoveUnusedImagesDialog;
 import VASSAL.configure.SaveAction;
 import VASSAL.configure.SaveAsAction;
 import VASSAL.configure.ShowHelpAction;
@@ -146,6 +147,7 @@ public abstract class EditorWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("create_module_updater"));
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
+    toolsMenu.add(mm.addKey("RemoveUnusedImagesDialog.remove_unused"));
 
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.MenuBar", editMenu);
@@ -230,7 +232,15 @@ public abstract class EditorWindow extends JFrame {
     };
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
-    
+
+    mm.addAction("RemoveUnusedImagesDialog.remove_unused", new AbstractAction("Remove Unused Images") {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
+        new RemoveUnusedImagesDialog(EditorWindow.this).setVisible(true);
+      }
+    });
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction("Editor.ModuleEditor.table_of_contents", url, null));

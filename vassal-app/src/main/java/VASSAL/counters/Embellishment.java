@@ -17,6 +17,29 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.awt.geom.Area;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.KeyStroke;
+
+import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -35,7 +58,6 @@ import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
@@ -43,29 +65,9 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.InputEvent;
-import java.awt.geom.Area;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import java.util.Objects;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -1514,5 +1516,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       data.add(strip(commonName[i]), prefix + Resources.getString("Editor.Embellishment.level_name_description",  (i + 1)));
     }
     return data;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    for (String iname : imageName) {
+      s.add(iname);
+    }
   }
 }

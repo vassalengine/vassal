@@ -17,15 +17,16 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -53,7 +54,7 @@ import VASSAL.tools.NamedKeyStroke;
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers and displays the
  * result in the Chatter */
-public class DiceButton extends AbstractConfigurable {
+public class DiceButton extends AbstractToolbarItem {
   protected java.util.Random ran;
   protected int nSides = 6, nDice = 2, plus = 0, addToTotal = 0;
   protected boolean reportTotal = false;
@@ -64,16 +65,18 @@ public class DiceButton extends AbstractConfigurable {
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this);
 
+  // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+
   public static final String DEPRECATED_NAME = "label"; //$NON-NLS-1$
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String N_DICE = "nDice"; //$NON-NLS-1$
   public static final String N_SIDES = "nSides"; //$NON-NLS-1$
   public static final String PLUS = "plus"; //$NON-NLS-1$
   public static final String ADD_TO_TOTAL = "addToTotal"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String REPORT_TOTAL = "reportTotal"; //$NON-NLS-1$
   public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
@@ -93,7 +96,7 @@ public class DiceButton extends AbstractConfigurable {
         final DiceButton delegate = new DiceButton() {
           @Override
           protected void initLaunchButton() {
-            launch = new LaunchButton(null, BUTTON_TEXT, HOTKEY, null);
+            launch = new LaunchButton(null, AbstractToolbarItem.BUTTON_TEXT, AbstractToolbarItem.HOTKEY, null);
           }
         };
 
@@ -113,7 +116,7 @@ public class DiceButton extends AbstractConfigurable {
           }
         }
         w.pack();
-        w.setLocationRelativeTo(launch.getTopLevelAncestor());
+        w.setLocationRelativeTo(getLaunchButton().getTopLevelAncestor());
         w.setVisible(true);
 
         for (String key : keepAttributes) {
@@ -127,10 +130,11 @@ public class DiceButton extends AbstractConfigurable {
         DR();
       }
     };
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
-    setAttribute(BUTTON_TEXT, Resources.getString("Editor.DiceButton.dice_button_text")); //NON-NLS
-    launch.setAttribute(TOOLTIP, Resources.getString("Editor.DiceButton.dice_button_tooltip")); //NON-NLS
+    launch = makeLaunchButton(Resources.getString("Editor.DiceButton.dice_button_text"),
+                              Resources.getString("Editor.DiceButton.dice_button_tooltip"),
+                             "/images/die.gif", //NON-NLS
+                              rollAction);
+    setAttribute(AbstractToolbarItem.NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
   }
 
   public static String getConfigureTypeName() {
@@ -264,6 +268,7 @@ public class DiceButton extends AbstractConfigurable {
     };
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -320,18 +325,12 @@ public class DiceButton extends AbstractConfigurable {
    * KeyStrokeListener} */
   @Override
   public void addTo(Buildable parent) {
+    super.addTo(parent);
     ran = GameModule.getGameModule().getRNG();
-    GameModule.getGameModule().getToolBar().add(getComponent());
     property.setPropertyValue("1"); // Initialize with a numeric value //$NON-NLS-1$
     property.addTo((MutablePropertiesContainer)parent);
   }
 
-  /**
-   * The component to be added to the control window toolbar
-   */
-  protected java.awt.Component getComponent() {
-    return launch;
-  }
 
   @Override
   public void setAttribute(String key, Object o) {
@@ -342,7 +341,7 @@ public class DiceButton extends AbstractConfigurable {
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
       property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
-      launch.setToolTipText((String) o);
+      getLaunchButton().setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {
       if (o instanceof Integer) {
@@ -397,7 +396,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (TOOLTIP.equals(key)) {
       tooltip = (String) o;
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
     else if (SORT_DICE_RESULTS.equals(key)) {
       if (o instanceof Boolean) {
@@ -408,7 +407,7 @@ public class DiceButton extends AbstractConfigurable {
       }
     }
     else {
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
   }
 
@@ -439,13 +438,13 @@ public class DiceButton extends AbstractConfigurable {
       return reportFormat.getFormat();
     }
     else if (TOOLTIP.equals(key)) {
-      return tooltip.length() == 0 ? launch.getAttributeValueString(BUTTON_TEXT) : tooltip;
+      return tooltip.length() == 0 ? super.getAttributeValueString(BUTTON_TEXT) : tooltip;
     }
     else if (SORT_DICE_RESULTS.equals(key)) {
       return String.valueOf(sortDice);
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -456,8 +455,7 @@ public class DiceButton extends AbstractConfigurable {
 
   @Override
   public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getToolBar().remove(getComponent());
-    GameModule.getGameModule().getToolBar().revalidate();
+    super.removeFrom(b);
   }
 
   @Override
@@ -476,18 +474,12 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   /**
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
    */
   @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
-  }
-
-  /**
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

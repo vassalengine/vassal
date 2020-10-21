@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.search.AbstractImageFinder;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -26,6 +28,7 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -44,7 +47,7 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * A collection of GamePieces which can be moved as a single unit
  */
-public class Stack implements GamePiece, StateMergeable {
+public class Stack extends AbstractImageFinder implements GamePiece, StateMergeable {
   public static final String TYPE = "stack"; //$NON-NLS-1$//
   protected static final int INCR = 5;
   protected GamePiece[] contents = new GamePiece[INCR];
@@ -644,6 +647,20 @@ public class Stack implements GamePiece, StateMergeable {
       setDefaultMetrics(new StackMetrics());
     }
     return defaultMetrics;
+  }
+
+  /**
+   * See {@link AbstractImageFinder}
+   * Tells each of the pieces in the stack to add its images to the collection
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext(); ) {
+      GamePiece p = i.next();
+      if (p instanceof ImageSearchTarget)
+      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    }
   }
 
   private class VisibleOrderIterator implements Iterator<GamePiece> {

@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.List;
 
 import VASSAL.build.BadDataReport;
@@ -36,6 +37,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
@@ -689,5 +691,15 @@ public class Flare extends AbstractConfigurable
   @Override
   public List<String> getFormattedStringList() {
     return List.of(reportFormat.getFormat());
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

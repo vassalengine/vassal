@@ -34,6 +34,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1207,5 +1208,13 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
                          NamedHotKeyConfigurer.decode(getAttributeValueString(NEXT_HOT_KEY)),
                          NamedHotKeyConfigurer.decode(getAttributeValueString(PREV_HOT_KEY))
       );
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    String fileName = launch.getAttributeValueString(ICON);
+    if (fileName != null) {
+      s.add(fileName);
+    }
   }
 }

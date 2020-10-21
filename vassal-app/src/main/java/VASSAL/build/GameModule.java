@@ -155,9 +155,6 @@ import VASSAL.tools.version.VersionUtils;
  * Components which are intended to be added directly to the GameModule are contained
  * in the <code>VASSAL.build.module</code> package.
  *
- * For legacy reasons, {@link VASSAL.launch.BasicModule} extends {@link GameModule}, but
- * everything of note has been moved inside of GameModule.
- *
  * <p>GameModule is a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a>, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger}, {@link Chatter}, and {@link Prefs}.</p>
  */
@@ -172,7 +169,9 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
   public static final String DESCRIPTION = "description";
   public static final String VASSAL_VERSION_CREATED = "VassalVersion";  //$NON-NLS-1$
-  /** The System property of this name will return a version identifier for the version of VASSAL being run */
+  /**
+   * The System property of this name will return a version identifier for the version of VASSAL being run
+   */
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
   public static final String BUILDFILE = "buildFile.xml";
@@ -317,7 +316,9 @@ public class GameModule extends AbstractConfigurable
 
   private String gameFile     = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
-
+  
+  private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
+  
   /**
    * Store the currently building GpId source. Only meaningful while
    * the GameModule or an Extension is actually in the process of being built
@@ -333,7 +334,6 @@ public class GameModule extends AbstractConfigurable
 
   /**
    * @return the top-level frame of the controls window
-   *
    * @deprecated use {@link #getPlayerWindow()}
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
@@ -356,6 +356,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * "Player" in this context meaning the VASSAL Player, i.e. the main module window, as opposed to any
    * individual player meaning participant-in-a-boardgame.
+   *
    * @return The main window for the module
    */
   public PlayerWindow getPlayerWindow() {
@@ -392,6 +393,11 @@ public class GameModule extends AbstractConfigurable
   @Override
   public String getI18nPrefix() {
     return ""; //NON-NLS
+  }
+
+
+  public void setDirty(boolean touchThis) {
+    iFeelDirty = touchThis;
   }
 
   /**
@@ -1366,7 +1372,7 @@ public class GameModule extends AbstractConfigurable
 
     if (!cancelled) {
       if (getDataArchive() instanceof ArchiveWriter
-          && !buildString().equals(lastSavedConfiguration)) {
+          && (!buildString().equals(lastSavedConfiguration) || iFeelDirty)) {
         switch (JOptionPane.showConfirmDialog(frame,
           Resources.getString("GameModule.save_module"),  //$NON-NLS-1$
              "", JOptionPane.YES_NO_CANCEL_OPTION)) {  //$NON-NLS-1$
@@ -1705,6 +1711,8 @@ public class GameModule extends AbstractConfigurable
    */
   private void save(boolean saveAs) {
     vassalVersionCreated = Info.getVersion();
+
+    iFeelDirty = false; // Ahhhhhhhhhhh.
 
     final ArchiveWriter writer = getArchiveWriter();
 

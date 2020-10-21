@@ -23,6 +23,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.List;
+import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -229,5 +230,10 @@ public class AboutScreen extends AbstractConfigurable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(title);
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (fileName != null) s.add(fileName);
   }
 }

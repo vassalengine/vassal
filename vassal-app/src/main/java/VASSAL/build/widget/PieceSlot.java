@@ -34,6 +34,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
+import java.util.Collection;
+
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
@@ -64,6 +66,7 @@ import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -217,6 +220,16 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
 
     return c;
+  }
+
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    super.addImageNamesRecursively(s);
+
+    GamePiece p = getPiece();
+    if (p != null && (p instanceof ImageSearchTarget)) {
+      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    }
   }
 
   public void paint(Graphics g) {

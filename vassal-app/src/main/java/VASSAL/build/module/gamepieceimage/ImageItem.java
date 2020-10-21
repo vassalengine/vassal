@@ -30,6 +30,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -303,5 +304,10 @@ public class ImageItem extends Item {
     se2.append(super.encode());
 
     return se2.getValue();
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 }

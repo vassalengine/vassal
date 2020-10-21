@@ -21,7 +21,7 @@ import java.awt.Component;
 
 /**
  * Represents a step during the initialization of a game in which the player must specify some information See
- * {@link GameState#addGameSetupStep(SetupStep)}
+ * {@link GameState #addGameSetupStep(SetupStep)}
  *
  * @author rkinney
  */

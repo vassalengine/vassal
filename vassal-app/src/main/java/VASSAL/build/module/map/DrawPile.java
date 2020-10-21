@@ -840,8 +840,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
-    l.addAll(super.getExpressionList());
+    List<String> l = new ArrayList<>(super.getExpressionList());
     if (dummy != null) {
       if (dummy.isRestrictOption()) {
         l.add(dummy.getRestrictExpression().getExpression());

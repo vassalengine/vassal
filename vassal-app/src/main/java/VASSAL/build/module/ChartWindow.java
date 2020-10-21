@@ -21,6 +21,7 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -244,5 +245,19 @@ public class ChartWindow extends Widget {
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    String string = launch.getAttributeValueString(launch.getIconAttribute());
+    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+      s.add(string);
+    }
   }
 }

@@ -18,8 +18,10 @@
 package VASSAL.build.module;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import VASSAL.search.HTMLImageFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,5 +183,15 @@ public class SpecialDie extends AbstractConfigurable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(format.getFormat());
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(format.getFormat());
+    h.addImageNames(s);
   }
 }

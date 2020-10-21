@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -358,5 +359,13 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    String fileName = launch.getAttributeValueString(ICON);
+    if (fileName != null) {
+      s.add(fileName);
+    }
   }
 }

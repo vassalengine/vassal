@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -48,6 +49,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
@@ -284,6 +286,15 @@ public class HtmlChart extends Widget implements MouseListener {
         htmlWin.revalidate();
       }
     }
+  }
+
+  /**
+   * Find all of our image references and register them
+   * @param s Collection to add image names to
+   */
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(new File(fileName));
+    h.addImageNames(s);
   }
 
   /**

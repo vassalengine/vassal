@@ -17,7 +17,12 @@
  */
 package VASSAL.build.module.map;
 
-import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -48,20 +52,13 @@ import javax.swing.SwingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.PNGFileFilter;
@@ -73,8 +70,7 @@ import VASSAL.tools.swing.ProgressDialog;
  * This allows the user to capture a snapshot of the entire map into
  * a PNG file.
  */
-public class ImageSaver extends AbstractConfigurable {
-
+public class ImageSaver extends AbstractToolbarItem {
   private static final Logger logger =
     LoggerFactory.getLogger(ImageSaver.class);
 
@@ -83,18 +79,25 @@ public class ImageSaver extends AbstractConfigurable {
   protected boolean promptToSplit = false;
   protected static final String DEFAULT_ICON = "/images/camera.gif"; //NON-NLS
 
+  protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+
   protected static ProgressDialog dialog;
+
+  // Clirr purposes
+  protected static final String HOTKEY = "hotkey"; //NON-NLS
+  protected static final String TOOLTIP = "tooltip"; //NON-NLS
+  protected static final String ICON_NAME = "icon"; //NON-NLS
+
 
   public ImageSaver() {
     final ActionListener al = e -> writeMapAsImage();
 
-    launch =
-      new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
-
-    // Set defaults for backward compatibility
-    launch.setAttribute(TOOLTIP, Resources.getString("Editor.ImageSaver.save_map_as_png_image"));
-    launch.setAttribute(BUTTON_TEXT, "");
-    launch.setAttribute(ICON_NAME, DEFAULT_ICON);
+    setNameKey("");
+    setButtonTextKey(BUTTON_TEXT); //NON-NLS
+    launch = makeLaunchButton(Resources.getString("Editor.ImageSaver.save_map_as_png_image"),
+                             "",
+                              DEFAULT_ICON,
+                              al);
   }
 
   public ImageSaver(Map m) {
@@ -119,56 +122,12 @@ public class ImageSaver extends AbstractConfigurable {
     map.getToolBar().revalidate();
   }
 
-  protected static final String HOTKEY = "hotkey"; //NON-NLS
-  protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
-  protected static final String TOOLTIP = "tooltip"; //NON-NLS
-  protected static final String ICON_NAME = "icon"; //NON-NLS
-
-  @Override
-  public String[] getAttributeNames() {
-    return new String[] {
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON_NAME,
-      HOTKEY
-    };
-  }
-
-  @Override
-  public String[] getAttributeDescriptions() {
-    return new String[] {
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
-    };
-  }
-
-  @Override
-  public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class
-    };
-  }
-
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, DEFAULT_ICON);
     }
-  }
-
-  @Override
-  public void setAttribute(String key, Object value) {
-    launch.setAttribute(key, value);
-  }
-
-  @Override
-  public String getAttributeValueString(String key) {
-    return launch.getAttributeValueString(key);
   }
 
   /**
@@ -549,23 +508,5 @@ public class ImageSaver extends AbstractConfigurable {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

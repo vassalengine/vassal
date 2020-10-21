@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -62,6 +63,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ComponentPathBuilder;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -321,9 +323,21 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     return piece;
   }
 
+
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    super.addImageNamesRecursively(s);
+    if (isMarkerStandalone()) {
+      GamePiece p = createBaseMarker();
+      if (p instanceof ImageSearchTarget) {
+        ((ImageSearchTarget) p).addImageNamesRecursively(s);
+      }
+    }
+  }
+
   /**
-   * @return true if the marker is defined from scratch. Return false if the marker is defined as a component in the
-   *         Game Piece Palette
+   * @return true if the marker is defined from scratch, false if the marker
+   * is defined as a component in the Game Piece Palette
    */
   public boolean isMarkerStandalone() {
     return markerSpec != null && markerSpec.startsWith(BasicCommandEncoder.ADD);

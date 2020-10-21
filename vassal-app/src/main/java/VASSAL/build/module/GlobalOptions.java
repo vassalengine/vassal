@@ -17,11 +17,13 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Container;
 import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -621,5 +623,19 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(playerIdFormat.getFormat());
+  }
+
+  /**
+   * Our Option Configurers (undo button, server button, step-forward button) potentially have icons to add the references for
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    for (Configurer c : OPTION_CONFIGURERS.values()) {
+      if (!(c instanceof IconConfigurer)) {
+        continue;
+      }
+      s.add(c.getValueString());
+    }
   }
 }
