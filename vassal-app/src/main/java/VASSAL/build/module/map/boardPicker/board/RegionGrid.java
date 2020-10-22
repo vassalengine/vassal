@@ -94,6 +94,7 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid, ConfigureTree.Mutable {
   private static final long serialVersionUID = 1L;
@@ -492,7 +493,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       canButton.addActionListener(e -> doCancel());
       buttonPanel.add(canButton);
 
-      final JLabel mess = new JLabel(Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
+      final JLabel mess = new JLabel(SystemUtils.IS_OS_MAC_OSX ? Resources.getString("Editor.IrregularGrid.drag_and_drop_mac") : Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
       mess.setAlignmentY(CENTER_ALIGNMENT);
       bottomPanel.add(mess);
       bottomPanel.add(buttonPanel);
@@ -1133,7 +1134,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
        * Pass key onto window scroller if no region selected
        * or control key not used.
        */
-      if (selectedRegions.isEmpty() || !e.isControlDown())
+      if (selectedRegions.isEmpty() || !SwingUtils.isModifierKeyDown(e))
         return;
 
       int dx = 0, dy = 0, delta = 1;

@@ -78,7 +78,13 @@ public class SwingUtils {
      * @return whether this is key/mouse combo that toggles items in and out of selections on our platform (e.g. Ctrl+LeftClick on non-Mac, and usually Command+LeftClick on Mac)
      */
     boolean isSelectionToggle(MouseEvent e);
-    
+
+    /**
+     * @param e Key event
+     * @return Returns true if CTRL key down on non-Mac, or Command key down on Mac. Intended primarily for use with Arrow keys.
+     */
+    boolean isModifierKeyDown(KeyEvent e);
+
     /**
      * @return translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
@@ -107,6 +113,11 @@ public class SwingUtils {
     
     @Override
     public boolean isSelectionToggle(MouseEvent e) {
+      return e.isControlDown();
+    }
+
+    @Override
+    public boolean isModifierKeyDown(KeyEvent e) {
       return e.isControlDown();
     }
     
@@ -192,7 +203,15 @@ public class SwingUtils {
     public boolean isSelectionToggle(MouseEvent e) {
       return e.isMetaDown();       
     }
-        
+
+    /**
+     * @return true if Command+Click on Mac or CTRL+Click on non-Mac.
+     */
+    @Override
+    public boolean isModifierKeyDown(KeyEvent e) {
+      return e.isMetaDown();
+    }
+
     /**
      * Translates a keystroke we've received from the system (our local platform) into a generic "platform-independent" one
      * suitable for storing in a module. On Mac this means we translate "Command" into "Control", unless the legacy preference
@@ -307,7 +326,15 @@ public class SwingUtils {
    */  
   public static boolean isSelectionToggle(MouseEvent e) {
     return INPUT_CLASSIFIER.isSelectionToggle(e);
-  } 
+  }
+
+  /**
+   * @param e Key event
+   * @return true if CTRL+keystroke on non-Mac or Command+keystroke on Mac
+   */
+  public static boolean isModifierKeyDown(KeyEvent e) {
+    return INPUT_CLASSIFIER.isModifierKeyDown(e);
+  }
   
   /**
    * @return translation of keystroke from local system to platform-independent Vassal keystroke (to handle Mac platform support)

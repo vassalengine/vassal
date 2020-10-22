@@ -105,6 +105,7 @@ import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * This is the "At-Start Stack" component, which initializes a Map or Board with a specified stack.
@@ -673,7 +674,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       Box textPanel = Box.createVerticalBox();
       textPanel.add(new JLabel("Arrow Keys - Move Stack"));
-      textPanel.add(new JLabel("Ctrl/Shift Keys - Move Stack Faster  "));
+      textPanel.add(new JLabel(SystemUtils.IS_OS_MAC_OSX ? "Shift/Command Keys - Move Stack Faster  " : "Ctrl/Shift Keys - Move Stack Faster  "));
 
       Box displayPanel = Box.createHorizontalBox();
 
@@ -854,14 +855,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (e.isShiftDown()) {
         delta *= FAST;
       }
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         delta *= FASTER;
       }
       int newX = myStack.pos.x + delta;
       if (newX < 0) newX = 0;
       if (newX >= board.getSize().getWidth()) newX = (int) board.getSize().getWidth() - 1;
       myStack.pos.x = newX;
-
     }
 
     protected void adjustY(int direction, KeyEvent e) {
@@ -869,7 +869,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (e.isShiftDown()) {
         delta *= FAST;
       }
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         delta *= FASTER;
       }
       int newY = myStack.pos.y + delta;
