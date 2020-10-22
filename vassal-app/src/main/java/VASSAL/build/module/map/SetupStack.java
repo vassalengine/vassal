@@ -652,7 +652,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       Box textPanel = Box.createVerticalBox();
       textPanel.add(new JLabel(Resources.getString("Editor.SetupStack.arrow_keys_move_stack")));
-      textPanel.add(new JLabel(Rsources.getString(SystemUtils.IS_OS_MAC_OSX ? "Editor.SetupStack.shift_command_keys_move_stack_faster" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
+      textPanel.add(new JLabel(Resources.getString(SystemUtils.IS_OS_MAC_OSX ? "Editor.SetupStack.shift_command_keys_move_stack_faster" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
 
       Box displayPanel = Box.createHorizontalBox();
 
