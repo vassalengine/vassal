@@ -26,6 +26,7 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -47,6 +48,10 @@ import java.util.List;
  * {@link VASSAL.build.module.map.MassKeyCommand} - Global Key Commands from a specific Map window
  * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
  * {@link CounterGlobalKeyCommand} - Global Key Command from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class GlobalCommand {
   protected KeyStroke keyStroke;        // Key Command we will issue
@@ -54,7 +59,7 @@ public class GlobalCommand {
   protected int selectFromDeck = -1;    // selectFromDeck = -1 means process all cards in Deck; > 0 means select that many cards from the Deck
   protected FormattedString reportFormat = new FormattedString(); // Report to display before sending the command
   protected Loopable owner;             // For preventing infinite loops
-  protected PropertySource source;      // For resolving properties (i.e. for our report message)
+  protected PropertySource source;      // Context for resolving properties (i.e. for our report message)
   protected GlobalCommandTarget target; // This holds all of the "Fast Match" information
 
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
@@ -129,8 +134,8 @@ public class GlobalCommand {
    * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
    */
   public Command apply(Map[] maps, PieceFilter filter, GlobalCommandTarget fastMatch) {
-    Command command = new NullCommand();
-    setTarget((fastMatch != null) ? fastMatch : new GlobalCommandTarget());
+    Command command = new NullCommand(); // We will chronicle our exploits in this command, so that others may repeat them later.
+    setTarget((fastMatch != null) ? fastMatch : new GlobalCommandTarget()); // Set our Fast Match parameters
 
     try {
       if (reportSingle) {
@@ -156,6 +161,7 @@ public class GlobalCommand {
       String fastX = "";
       String fastY = "";
 
+      // Context piece, if we are doing current-piece-relative fast-matching (may be null otherwise)
       GamePiece curPiece = target.getCurPiece();
 
       // Evaluate all location-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
@@ -308,7 +314,9 @@ public class GlobalCommand {
                   continue;
                 }
 
-                // These basic location filters are faster than equivalent filters in the Beanshell expression
+                // These basic location filters are faster than equivalent filters in the Beanshell expression,
+                // and avoid re-evaluating/re-loading the source property for every target piece.
+
                 // Fast matches for Zone / Location
                 switch (target.targetType) {
                 case ZONE:
@@ -344,7 +352,7 @@ public class GlobalCommand {
         }
       }
 
-      // Repaint for anything that has been moved by this
+      // Repaint for anything that has been moved by our shenanigans
       visitor.getTracker().repaint();
 
       // Now we grab our (possibly massive) command, encompassing every single thing that has happened to every

@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -47,8 +49,20 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This version of {@link MassKeyCommand} is added directly to a
- * {@link VASSAL.build.GameModule} and applies to all maps
+ * This version of {@link MassKeyCommand} is added to a {@link DrawPile} (which holds a {@link Deck})
+ * and applies to pieces/cards currently in the deck.
+ *
+ * The "Global Key Command" functionality, as the term is used in Vassal Modules, is spread out over several classes internally:
+ * {@link GlobalCommand} - primary functionality for sending commands to multiple pieces based on matching parameters
+ * {@link VASSAL.build.module.GlobalKeyCommand}         - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand}  - Global Key Commands from a Module "At Startup"
+ * {@link VASSAL.build.module.map.MassKeyCommand}       - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand}                      - Global Key Commands from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class DeckGlobalKeyCommand extends MassKeyCommand {
 
@@ -73,7 +87,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
 
   /**
-   * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown.
+   * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown. In particular no "Fast Match" parameters are shown for Deck GKCs.
    */
   @Override
   public GlobalCommandTarget.GKCtype getGKCtype() {
