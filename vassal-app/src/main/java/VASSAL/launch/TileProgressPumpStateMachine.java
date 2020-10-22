@@ -201,10 +201,18 @@ class TileProgressPumpStateMachine {
       int[] result;
 
       switch (state) {
-      case NAME:    result = runName(buf, beg, end, sb); break;
-      case NAME_LF: result = runNameLF(buf, beg, end, sb); break;
-      case DOTS:    result = runDots(buf, beg, end, sb); break;
-      case DOTS_LF: result = runDotsLF(buf, beg, end, sb); break;
+      case NAME:
+        result = runName(buf, beg, end, sb);
+        break;
+      case NAME_LF:
+        result = runNameLF(buf, beg, end, sb);
+        break;
+      case DOTS:
+        result = runDots(buf, beg, end, sb);
+        break;
+      case DOTS_LF:
+        result = runDotsLF(buf, beg, end, sb);
+        break;
 
       default:
         // should never happen

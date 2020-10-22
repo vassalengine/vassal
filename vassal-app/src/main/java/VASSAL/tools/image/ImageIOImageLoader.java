@@ -207,8 +207,12 @@ public class ImageIOImageLoader implements ImageLoader {
               ch = PNGDecoder.decodeChunk(din);
 
               switch (ch.type) {
-              case PNGDecoder.tRNS: fix_tRNS = true;  break DONE_PNG;
-              case PNGDecoder.IDAT: fix_tRNS = false; break DONE_PNG;
+              case PNGDecoder.tRNS:
+                fix_tRNS = true;
+                break DONE_PNG;
+              case PNGDecoder.IDAT:
+                fix_tRNS = false;
+                break DONE_PNG;
               default:
               }
             }

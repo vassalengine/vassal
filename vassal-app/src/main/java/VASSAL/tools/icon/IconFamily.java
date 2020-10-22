@@ -106,7 +106,7 @@ public class IconFamily extends AbstractConfigurable {
   };
 
   // Names of sizes in local language
-  static final String[] SIZE_NAMES = new String[SIZE_COUNT];;
+  static final String[] SIZE_NAMES = new String[SIZE_COUNT];
 
   // Directory within the icons directory holding the Scalable versions of the
   // icons
