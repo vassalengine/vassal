@@ -80,6 +80,12 @@ public class SwingUtils {
     boolean isSelectionToggle(MouseEvent e);
 
     /**
+     * @param e Key event
+     * @return Returns true if CTRL key down on non-Mac, or Command key down on Mac. Intended primarily for use with Arrow keys.
+     */
+    boolean isModifierKeyDown(KeyEvent e);
+
+    /**
      * @return translation of keystroke from local system to Vassal (to handle Mac platform support)
      */
     KeyStroke systemToGeneric(KeyStroke k);
@@ -110,6 +116,11 @@ public class SwingUtils {
       return e.isControlDown();
     }
 
+    @Override
+    public boolean isModifierKeyDown(KeyEvent e) {
+      return e.isControlDown();
+    }
+    
     @Override
     public KeyStroke systemToGeneric(KeyStroke k) {
       return k;
@@ -191,6 +202,14 @@ public class SwingUtils {
     @Override
     public boolean isSelectionToggle(MouseEvent e) {
       return e.isMetaDown();       
+    }
+
+    /**
+     * @return true if Command+Click on Mac or CTRL+Click on non-Mac.
+     */
+    @Override
+    public boolean isModifierKeyDown(KeyEvent e) {
+      return e.isMetaDown();
     }
 
     /**
@@ -309,6 +328,14 @@ public class SwingUtils {
     return INPUT_CLASSIFIER.isSelectionToggle(e);
   }
 
+  /**
+   * @param e Key event
+   * @return true if CTRL+keystroke on non-Mac or Command+keystroke on Mac
+   */
+  public static boolean isModifierKeyDown(KeyEvent e) {
+    return INPUT_CLASSIFIER.isModifierKeyDown(e);
+  }
+  
   /**
    * @return translation of keystroke from local system to platform-independent Vassal keystroke (to handle Mac platform support)
    *

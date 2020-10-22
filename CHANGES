@@ -35,6 +35,8 @@
 
 3.4.7 - ???
 
+* 13540: Macs now use Command as modifier key for grid-resizing,
+  setup-stack-moving in Editor
 * 13525: HFS+ stores filenames in NFD, so must check for that variant when
   loading
 * 13520: Made Command+Click the select/deselect combo for Macs (and

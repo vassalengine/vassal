@@ -74,6 +74,8 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.BadDataReport;
@@ -650,7 +652,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       Box textPanel = Box.createVerticalBox();
       textPanel.add(new JLabel(Resources.getString("Editor.SetupStack.arrow_keys_move_stack")));
-      textPanel.add(new JLabel(Resources.getString("Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
+      textPanel.add(new JLabel(Rsources.getString(SystemUtils.IS_OS_MAC_OSX ? "Editor.SetupStack.shift_command_keys_move_stack_faster" : "Editor.SetupStack.ctrl_shift_keys_move_stack_faster")));
 
       Box displayPanel = Box.createHorizontalBox();
 
@@ -822,14 +824,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (e.isShiftDown()) {
         delta *= FAST;
       }
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         delta *= FASTER;
       }
       int newX = myStack.pos.x + delta;
       if (newX < 0) newX = 0;
       if (newX >= board.getSize().getWidth()) newX = (int) board.getSize().getWidth() - 1;
       myStack.pos.x = newX;
-
     }
 
     protected void adjustY(int direction, KeyEvent e) {
@@ -837,7 +838,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (e.isShiftDown()) {
         delta *= FAST;
       }
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         delta *= FASTER;
       }
       int newY = myStack.pos.y + delta;
