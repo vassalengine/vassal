@@ -52,6 +52,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 public abstract class GridEditor extends JDialog implements MouseListener, KeyListener {
   private static final long serialVersionUID = 1L;
@@ -126,7 +127,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     Box textPanel = Box.createVerticalBox();
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.arrow_keys"))); //$NON-NLS-1$
-    textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
+    textPanel.add(new JLabel(SystemUtils.IS_OS_MAC_OSX ? Resources.getString("Editor.GridEditor.command_arrow_keys") : Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.shift_key"))); //$NON-NLS-1$
 
     JPanel buttonPanel = new JPanel();
@@ -244,7 +245,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     switch (e.getKeyCode()) {
     case KeyEvent.VK_UP:
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         if (sideways) {
           adjustDx(-1, e);
         }
@@ -262,7 +263,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
       break;
     case KeyEvent.VK_DOWN:
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         if (sideways) {
           adjustDx(1, e);
         }
@@ -280,7 +281,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
       break;
     case KeyEvent.VK_LEFT:
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         if (sideways) {
           adjustDy(-1, e);
         }
@@ -298,7 +299,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
       break;
     case KeyEvent.VK_RIGHT:
-      if (e.isControlDown()) {
+      if (SwingUtils.isModifierKeyDown(e)) {
         if (sideways) {
           adjustDy(1, e);
         }
