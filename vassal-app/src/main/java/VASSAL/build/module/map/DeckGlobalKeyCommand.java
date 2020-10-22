@@ -160,9 +160,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString("Editor.GlobalKeyCommand.command"), //$NON-NLS-1$
 
-      Resources.getString("Editor.GlobalKeyCommand.pre_select"), // Fast Match parameters
+      Resources.getString("Editor.GlobalKeyCommand.pre_select"), // Fast Match parameters (not displayed)
 
-      Resources.getString("Editor.GlobalKeyCommand.matching_properties"), //$NON-NLS-1$
+      Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
       Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
     };
@@ -174,7 +174,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       NAME,
       KEY_COMMAND,
 
-      TARGET,             // Fast Match parameters
+      TARGET,             // Fast Match parameters (disabled for this variant)
 
       PROPERTIES_FILTER,
       DECK_COUNT,
@@ -189,7 +189,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       String.class,
       NamedKeyStroke.class,
 
-      GlobalCommandTarget.class,  // Fast Match parameters
+      GlobalCommandTarget.class,  // Fast Match parameters (disabled for this variant)
 
       PropertyExpression.class,
       DeckPolicyConfig2.class,

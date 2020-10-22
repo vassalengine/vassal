@@ -309,23 +309,20 @@ public class GlobalCommand {
                 }
 
                 // These basic location filters are faster than equivalent filters in the Beanshell expression
-                if ((target.targetType == GlobalCommandTarget.Target.ZONE) || (target.targetType == GlobalCommandTarget.Target.LOCATION) ||
-                  (target.targetType == GlobalCommandTarget.Target.CURZONE) || (target.targetType == GlobalCommandTarget.Target.CURLOC)) {
-                  // Fast matches for Zone / Location
-                  switch (target.targetType) {
-                  case ZONE:
-                  case CURZONE:
-                    if (!fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
-                      continue;
-                    }
-                    break;
-                  case LOCATION:
-                  case CURLOC:
-                    if (!fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
-                      continue;
-                    }
-                    break;
+                // Fast matches for Zone / Location
+                switch (target.targetType) {
+                case ZONE:
+                case CURZONE:
+                  if (!fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
+                    continue;
                   }
+                  break;
+                case LOCATION:
+                case CURLOC:
+                  if (!fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
+                    continue;
+                  }
+                  break;
                 }
 
                 // Fast Match of "exact XY position"
