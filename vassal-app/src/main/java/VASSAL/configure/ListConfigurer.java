@@ -110,8 +110,8 @@ public abstract class ListConfigurer extends Configurer implements
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new MigLayout("ins 0", "[grow]", "[]")); // NON-NLS
-      controls = new JPanel(new MigLayout("ins 2", "[]")); // NON-NLS
+      panel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[]")); // NON-NLS
+      controls = new JPanel(new MigLayout("ins 2", "[grow,fill]")); // NON-NLS
       final JScrollPane scroll = new JScrollPane(controls);
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
       configControls = new JPanel(new MigLayout("ins 0,gapy 2", "[grow]")); // NON-NLS
@@ -122,7 +122,9 @@ public abstract class ListConfigurer extends Configurer implements
         getListValue().add(c.getValue());
         updateControls();
       });
-      controls.add(addButton, "center,wrap"); // NON-NLS
+      final JPanel addPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
+      addPanel.add(addButton);
+      controls.add(addPanel, "grow,wrap"); // NON-NLS
       controls.add(configControls, "grow"); // NON-NLS
       panel.add(scroll, "grow"); // NON-NLS
       updateControls();

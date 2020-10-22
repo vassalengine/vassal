@@ -52,6 +52,8 @@ public abstract class Configurer {
   /** When frozen is true, setting the value programmatically will not
    * result in a PropertyChangeEvent being fired */
   protected boolean frozen = false;
+  /** A Hint to be displayed in an empty field */
+  protected String hint = "";
 
   public Configurer(String key, String name) {
     this(key, name, null);
@@ -185,5 +187,23 @@ public abstract class Configurer {
     else {
       return Toolkit.getDefaultToolkit().getScreenSize();
     }
+  }
+
+  /**
+   * Return the current hint String
+   *
+   * @return Current Hint String
+   */
+  public String getHint() {
+    return hint;
+  }
+
+  /**
+   * Set the Hint String
+   *
+   * @param hint New Hint string
+   */
+  public void setHint(String hint) {
+    this.hint = hint;
   }
 }

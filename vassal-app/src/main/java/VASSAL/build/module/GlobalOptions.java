@@ -136,7 +136,7 @@ public class GlobalOptions extends AbstractConfigurable {
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
 
-    // should this moudule use a combined main window?
+    // should this module use a combined main window?
     final BooleanConfigurer combConf = new BooleanConfigurer(
       SINGLE_WINDOW,
       Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
@@ -442,8 +442,10 @@ public class GlobalOptions extends AbstractConfigurable {
       for (Configurer c : OPTION_CONFIGURERS.values()) {
         final Container container = (Container) defaultConfig.getControls();
         final String name = c.getName();
-        container.add(new JLabel(name));
+        final JLabel label = new JLabel(name);
         c.setName("");
+        label.setLabelFor(c.getControls());
+        container.add(label);
         container.add(c.getControls(), "wrap"); // NON-NLS
         c.setName(name);
       }
