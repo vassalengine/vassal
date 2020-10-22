@@ -80,6 +80,8 @@ public class ModuleManager {
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
 
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
+
+  @Deprecated(since = "2020-10-21", forRemoval = true)
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
   public static void main(String[] args) {
@@ -352,15 +354,7 @@ public class ModuleManager {
 
     nextVersionCheckConfig.setValue(nextVersionCheck);
 
-// FIXME: the importer heap size configurers don't belong here
-    // the initial heap size for the module importer
-    final IntConfigurer initHeapConf = new IntConfigurer(
-      INITIAL_HEAP,
-      Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      256
-    );
-    globalPrefs.addOption("Importer", initHeapConf); //NON-NLS
-
+// FIXME: the importer heap size configurer doesn't belong here
     // the maximum heap size for the module importer
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
