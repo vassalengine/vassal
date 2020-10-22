@@ -19,7 +19,6 @@ package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
-import VASSAL.counters.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,6 +26,8 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Labeler;
+import VASSAL.counters.Marker;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
@@ -401,6 +402,10 @@ public class GpIdChecker {
             if (d.myGetType().equals(typeToFind)) {
               return d.myGetState();
             }
+            else if (d instanceof Labeler) {
+              return d.myGetState();
+            }
+
           }
           p = d.getInner();
         }
