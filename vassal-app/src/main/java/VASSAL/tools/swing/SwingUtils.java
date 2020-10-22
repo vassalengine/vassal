@@ -117,7 +117,9 @@ public class SwingUtils {
     }
 
     @Override
-    public boolean isModifierKeyDown(KeyEvent e) { return e.isControlDown(); }
+    public boolean isModifierKeyDown(KeyEvent e) {
+      return e.isControlDown();
+    }
     
     @Override
     public KeyStroke systemToGeneric (KeyStroke k) {
@@ -206,7 +208,9 @@ public class SwingUtils {
      * @return true if Command+Click on Mac or CTRL+Click on non-Mac.
      */
     @Override
-    public boolean isModifierKeyDown(KeyEvent e) { return e.isMetaDown(); }
+    public boolean isModifierKeyDown(KeyEvent e) {
+      return e.isMetaDown();
+    }
 
     /**
      * Translates a keystroke we've received from the system (our local platform) into a generic "platform-independent" one
