@@ -90,7 +90,7 @@ public class IconConfigurer extends Configurer {
           }
         }
       };
-      p.setPreferredSize(new Dimension(32, 32));
+      p.setPreferredSize(new Dimension(Math.min(icon.getIconWidth(), 128), Math.min(icon.getIconHeight(), 128)));
       controls.add(p);
       final JButton reset = new JButton(Resources.getString("Editor.select"));
       reset.addActionListener(e -> {

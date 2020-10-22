@@ -78,7 +78,6 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    //setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     setLayout(new MigLayout("ins panel, wrap 1", "[grow, fill]")); // NON-NLS
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(evt -> {

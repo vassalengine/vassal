@@ -67,7 +67,6 @@ public class AutoConfigurer extends Configurer
     });
 
     p = new JPanel();
-    //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     p.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ", hidemode 3", "[align right]rel[fill,grow]")); // NON-NLS
 
     String[] name = c.getAttributeNames();
@@ -85,6 +84,7 @@ public class AutoConfigurer extends Configurer
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
         final JLabel label = new JLabel(prompt[i]);
+        label.setLabelFor(config.getControls());
         labels.put(name[i], label);
         p.add(label);
         p.add(config.getControls(), "wrap,grow"); // NON-NLS

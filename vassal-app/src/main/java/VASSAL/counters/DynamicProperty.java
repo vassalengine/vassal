@@ -471,7 +471,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig, "wrap"); // NON-NLS
 
-      controls.add(keyCommandListConfig.getControls(), "span 2,growx"); // NON-NLS
+      controls.add(keyCommandListConfig.getControls(), "left,grow,span 2"); // NON-NLS
 
       numericConfig.addPropertyChangeListener(l);
       numericConfig.fireUpdate();
@@ -616,10 +616,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected void buildControls() {
       controls = new JPanel(new MigLayout("ins panel,gapy 2,hidemode 3", "[]rel[][]rel[]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
-      controls.add(new JLabel(Resources.getString("Editor.menu_command")));
+      JLabel label = new JLabel(Resources.getString("Editor.menu_command"));
+      label.setLabelFor(commandConfig.getControls());
+      controls.add(label);
       controls.add(commandConfig.getControls(), "grow"); // NON-NLS
 
-      controls.add(new JLabel(Resources.getString("Editor.keyboard_command")));
+      label = new JLabel(Resources.getString("Editor.keyboard_command"));
+      label.setLabelFor(keyConfig.getControls());
+      controls.add(label);
       controls.add(keyConfig.getControls(), "grow,wrap"); // NON-NLS
 
       controls.add(propChangeConfig.getTypeLabel());
