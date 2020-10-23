@@ -34,24 +34,16 @@ import VASSAL.counters.PieceDefiner;
  *
  * Plugin should be subclassed and added to the Module Plugin.
  *
+ * As the module has not been built yet, only minimal initialisation should
+ * be performed in the constructor.
  */
 public class Plugin extends AbstractConfigurable implements PluginsLoader.PluginElement {
-
-  /*
-   * The module has not been built yet, so only minimal
-   * initialisation should be performed in the constructor
-   */
-  public Plugin() {
-
-  }
-
   /**
    * init() is called by the GameModule when the build of the module and
    * all extensions is complete. Any initialisation that depends
    * on other parts of the module should be implemented here
    */
   public void init() {
-
   }
 
   /**
