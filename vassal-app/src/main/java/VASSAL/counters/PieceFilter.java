@@ -17,9 +17,7 @@
  */
 package VASSAL.counters;
 
-import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.configure.PropertyExpression;
-import VASSAL.build.module.Inventory;
 
 /**
  * A filter for GamePieces

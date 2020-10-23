@@ -250,6 +250,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     repack();
   }
 
+  @Override
   public void repack() {
     Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
