@@ -616,6 +616,12 @@
         <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
     </difference>
     <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>Changing protected fields to private is irrelevant in a class which is already final</justification>
+    </difference>
+    <difference>
         <className>VASSAL/configure/NamedHotKeyConfigurer</className>
         <differenceType>4001</differenceType>
         <method>java.awt.event.KeyListener</method>
