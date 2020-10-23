@@ -828,11 +828,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       fontFamily = new TranslatingStringEnumConfigurer(
         new String[]{Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT},
         new String[] {
-          Resources.getString("Editor.Font.serif"),
-          Resources.getString("Editor.Font.sans_serif"),
-          Resources.getString("Editor.Font.monospaced"),
-          Resources.getString("Editor.Font.dialog"),
-          Resources.getString("Editor.Font.dialog_input")},
+          "Editor.Font.serif",
+          "Editor.Font.sans_serif",
+          "Editor.Font.monospaced",
+          "Editor.Font.dialog",
+          "Editor.Font.dialog_input"},
           l.font.getFamily());
 
       JPanel p = new JPanel(new MigLayout("ins 0", "[]unrel[]rel[]unrel[]rel[]unrel[]rel[]")); // NON-NLS
@@ -859,9 +859,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       vPos = new TranslatingStringEnumConfigurer(
         new String[] {"c", "t", "b"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.top"),
-          Resources.getString("Editor.bottom")
+          "Editor.center",
+          "Editor.top",
+          "Editor.bottom"
         },
         l.verticalPos
       );
@@ -876,9 +876,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       hPos = new TranslatingStringEnumConfigurer(
         new String[] {"c", "l", "r"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.left"),
-          Resources.getString("Editor.right")
+          "Editor.center",
+          "Editor.left",
+          "Editor.right"
         },
         l.horizontalPos
       );
@@ -893,9 +893,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       vJust = new TranslatingStringEnumConfigurer(
         new String[] {"c", "t", "b"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.top"),
-          Resources.getString("Editor.bottom")
+          "Editor.center",
+          "Editor.top",
+          "Editor.bottom"
         },
         l.verticalJust
       );
@@ -904,9 +904,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       hJust = new TranslatingStringEnumConfigurer(
         new String[] {"c", "l", "r"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.left"),
-          Resources.getString("Editor.right")
+          "Editor.center",
+          "Editor.left",
+          "Editor.right"
         },
         l.horizontalJust
       );

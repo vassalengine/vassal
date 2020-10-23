@@ -33,11 +33,11 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Box;
+import java.util.Objects;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -52,6 +52,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -61,17 +62,17 @@ import VASSAL.tools.SequenceEncoder;
  * indicated by drawing a specified image at a specified location
  */
 public class MovementMarkable extends Decorator implements TranslatablePiece {
-  public static final String ID = "markmoved;";
+  public static final String ID = "markmoved;"; // NON-NLS
 
   private int xOffset = 0;
   private int yOffset = 0;
   private String command;
   private NamedKeyStroke key;
-  private IconConfigurer movedIcon = new IconConfigurer(null, "Marker Image:  ", "/images/moved.gif");
+  private final IconConfigurer movedIcon = new IconConfigurer("/images/moved.gif"); // NON-NLS
   private boolean hasMoved = false;
 
   public MovementMarkable() {
-    this(ID + "moved.gif;0;0", null);
+    this(ID + "moved.gif;0;0", null); // NON-NLS
   }
 
   public MovementMarkable(String type, GamePiece p) {
@@ -94,13 +95,13 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     movedIcon.setValue(st.nextToken());
     xOffset = st.nextInt(0);
     yOffset = st.nextInt(0);
-    command = st.nextToken("Mark Moved");
+    command = st.nextToken(Resources.getString("Editor.MovementMarkable.default_command"));
     key = st.nextNamedKeyStroke('M');
   }
 
   @Override
   public void mySetState(String newState) {
-    hasMoved = "true".equals(newState);
+    hasMoved = "true".equals(newState); // NON-NLS
   }
 
   @Override
@@ -178,12 +179,12 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return "Mark When Moved";
+    return Resources.getString("Editor.MovementMarkable.trait_description");
   }
 
   @Override
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MarkMoved.html");
+    return HelpFile.getReferenceManualPage("MarkMoved.html"); // NON-NLS
   }
 
   @Override
@@ -224,30 +225,47 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(command, "Mark Moved command");
+    return getI18nData(command, Resources.getString("Editor.MovementMarkable.mark_moved_command"));
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof MovementMarkable)) return false;
+    final MovementMarkable c = (MovementMarkable) o;
+    if (! Objects.equals(movedIcon.getValueString(), c.movedIcon.getValueString())) return false;
+    if (! Objects.equals(xOffset, c.xOffset)) return false;
+    if (! Objects.equals(yOffset, c.yOffset)) return false;
+    if (! Objects.equals(command, c.command)) return false;
+    if (! Objects.equals(key, c.key)) return false;
+    return Objects.equals(hasMoved, c.hasMoved);
+  }
 
   private static class Ed implements PieceEditor {
-    private IconConfigurer iconConfig;
-    private IntConfigurer xOff;
-    private IntConfigurer yOff;
-    private StringConfigurer command;
-    private NamedHotKeyConfigurer key;
-    private Box box;
+    private final IconConfigurer iconConfig;
+    private final IntConfigurer xOff;
+    private final IntConfigurer yOff;
+    private final StringConfigurer command;
+    private final NamedHotKeyConfigurer key;
+    private final TraitConfigPanel box;
 
     private Ed(MovementMarkable p) {
+
+      box = new TraitConfigPanel();
+
+      command = new StringConfigurer(p.command);
+      box.add("Editor.menu_command", command);
+
+      key = new NamedHotKeyConfigurer(p.key);
+      box.add("Editor.keyboard_command", key);
+
       iconConfig = p.movedIcon;
-      box = Box.createVerticalBox();
-      command = new StringConfigurer(null, "Command:  ", p.command);
-      box.add(command.getControls());
-      key = new NamedHotKeyConfigurer(null, "Keyboard command:  ", p.key);
-      box.add(key.getControls());
-      box.add(iconConfig.getControls());
-      xOff = new IntConfigurer(null, "Horizontal Offset:  ", p.xOffset);
-      yOff = new IntConfigurer(null, "Vertical Offset:  ", p.yOffset);
-      box.add(xOff.getControls());
-      box.add(yOff.getControls());
+      box.add("Editor.MovementMarkable.marker_image", iconConfig);
+
+      xOff = new IntConfigurer(p.xOffset);
+      box.add("Editor.MovementMarkable.horizontal_offset", xOff);
+
+      yOff = new IntConfigurer(p.yOffset);
+      box.add("Editor.MovementMarkable.horizontal_offset", yOff);
     }
 
     @Override
@@ -260,12 +278,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
             || GlobalOptions.PROMPT.equals(value);
       }
       if (!enabled) {
-        Runnable runnable = new Runnable() {
-          @Override
-          public void run() {
-            JOptionPane.showMessageDialog(box, "You must enable the \"Mark Pieces that Move\" option in one or more Map Windows", "Option not enabled", JOptionPane.WARNING_MESSAGE);
-          }
-        };
+        Runnable runnable = () -> JOptionPane.showMessageDialog(box, Resources.getString("Editor.MovementMarkable.enable_text"), Resources.getString("Editor.MovementMarkable.option_not_enabled"), JOptionPane.WARNING_MESSAGE);
         SwingUtilities.invokeLater(runnable);
       }
       return box;
@@ -284,7 +297,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
     @Override
     public String getState() {
-      return "false";
+      return "false"; // NON-NLS
     }
   }
 
@@ -303,7 +316,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(key);
+    return Collections.singletonList(key);
   }
 
   /**

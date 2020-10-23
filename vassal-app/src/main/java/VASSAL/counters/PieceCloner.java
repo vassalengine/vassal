@@ -27,10 +27,12 @@ import VASSAL.tools.ReflectionUtils;
  * Utility class for cloning {@link GamePiece}s
  */
 public class PieceCloner {
-  private static PieceCloner instance = new PieceCloner();
+  private static final PieceCloner instance = new PieceCloner();
 
   // For use by subclasses
-  protected PieceCloner() {}
+  protected PieceCloner() {
+
+  }
 
   public static PieceCloner getInstance() {
     return instance;

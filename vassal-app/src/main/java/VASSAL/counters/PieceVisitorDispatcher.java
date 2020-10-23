@@ -31,7 +31,7 @@ package VASSAL.counters;
  * @see DeckVisitorDispatcher
  */
 public class PieceVisitorDispatcher {
-  private PieceVisitor visitor;
+  private final PieceVisitor visitor;
 
   public PieceVisitorDispatcher(PieceVisitor visitor) {
     this.visitor = visitor;

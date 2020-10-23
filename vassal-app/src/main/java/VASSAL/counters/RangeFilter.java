@@ -27,10 +27,10 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
  * Accepts all pieces within a specified range of a given point on a map
  */
 public class RangeFilter implements PieceFilter {
-  private Map map;
-  private Point position;
+  private final Map map;
+  private final Point position;
   private MapGrid grid;
-  private int range;
+  private final int range;
 
   public RangeFilter(Map map, Point location, int range) {
     this.position = location;

@@ -176,7 +176,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
       keyName.addFocusListener(this);
 
-      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]2[]")); // NON-NLS
+      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]0[]")); // NON-NLS
       panel.add(keyName, "grow"); // NON-NLS
       panel.add(new JLabel("-")); // NON-NLS
       panel.add(keyStroke, "grow"); // NON-NLS

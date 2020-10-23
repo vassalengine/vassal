@@ -46,6 +46,10 @@ public class IconConfigurer extends Configurer {
   private JPanel holdingPanel;
   private final JLabel iconLabel = new JLabel();
 
+  public IconConfigurer(String defaultImage) {
+    this(null, "", defaultImage);
+  }
+
   public IconConfigurer(String key, String name, String defaultImage) {
     super(key, name);
     this.defaultImage = defaultImage;

@@ -34,7 +34,9 @@ import javax.swing.JScrollPane;
 
 import javax.swing.event.ListSelectionListener;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
+
 import net.miginfocom.swing.MigLayout;
 
 public class MultiImagePicker extends JPanel {
@@ -83,7 +85,7 @@ public class MultiImagePicker extends JPanel {
   }
 
   public void addEntry() {
-    String entry = "Image " + (imageListElements.size() + 1);
+    final String entry = Resources.getString("Editor.MultiImagePicker.image", (imageListElements.size() + 1));
     imageListElements.addElement(entry);
     ImagePicker pick = new ImagePicker();
     multiPanel.add(entry, pick);
@@ -161,7 +163,7 @@ public class MultiImagePicker extends JPanel {
       else {
         c = components[i];
       }
-      multiPanel.add(c, "Image " + (i + 1));
+      multiPanel.add(c, Resources.getString("Editor.MultiImagePicker.image", (i + 1)));
     }
 
     imageList.setSelectedIndex(index2);

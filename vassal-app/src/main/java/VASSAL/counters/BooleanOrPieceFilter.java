@@ -21,8 +21,8 @@ package VASSAL.counters;
  * Boolean Or of two PieceFilters
  */
 public class BooleanOrPieceFilter implements PieceFilter {
-  private PieceFilter filter1;
-  private PieceFilter filter2;
+  private final PieceFilter filter1;
+  private final PieceFilter filter2;
 
   public BooleanOrPieceFilter(PieceFilter filter1, PieceFilter filter2) {
     this.filter1 = filter1;

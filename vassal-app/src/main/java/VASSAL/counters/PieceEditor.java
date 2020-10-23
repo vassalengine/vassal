@@ -18,9 +18,9 @@
 package VASSAL.counters;
 
 public interface PieceEditor {
-  public java.awt.Component getControls();
+  java.awt.Component getControls();
 
-  public String getType();
+  String getType();
 
-  public String getState();
+  String getState();
 }
