@@ -1195,9 +1195,8 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         .append(xOffInput.getText())
         .append(yOffInput.getText());
 
-      String type = ID + se.getValue() + ';'
+      return ID + se.getValue() + ';'
         + (imageList.getValue() == null ? "" : imageList.getValue());
-      return type;
     }
 
     @Override

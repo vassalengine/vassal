@@ -109,8 +109,7 @@ public class ZipUpdater implements Runnable {
       }
 
       try (BufferedInputStream in = new BufferedInputStream(newContents)) {
-        long cs = writeEntry(in, output, newEntry);
-        return cs;
+        return writeEntry(in, output, newEntry);
       }
     }
   }

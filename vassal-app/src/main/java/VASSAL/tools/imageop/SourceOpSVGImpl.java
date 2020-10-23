@@ -114,8 +114,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   protected Dimension getImageSize() {
     try {
       try (InputStream in = archive.getInputStream(name)) {
-        final Dimension d = SVGImageUtils.getImageSize(name, in);
-        return d;
+        return SVGImageUtils.getImageSize(name, in);
       }
       catch (ImageIOException e) {
         // Don't wrap, just rethrow.

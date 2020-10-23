@@ -2864,9 +2864,8 @@ public class ADC2Module extends Importer {
   public boolean isValidImportFile(File f) throws IOException {
     try (InputStream fin = new FileInputStream(f);
          DataInputStream in = new DataInputStream(fin)) {
-      int header = in.readByte();
-      boolean valid = header == -3 || header == -2;
-      return valid;
+      final int header = in.readByte();
+      return header == -3 || header == -2;
     }
   }
 }
