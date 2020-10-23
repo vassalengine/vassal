@@ -342,9 +342,11 @@ public class LayoutConfigurer extends Configurer {
     class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private final String[] columnNames = new String[] { Resources.getString("Editor.LayoutConfigurer.name"),
-                                                          Resources.getString("Editor.LayoutConfigurer.type"),
-                                                          Resources.getString("Editor.LayoutConfigurer.position") };
+      private final String[] columnNames = {
+        Resources.getString("Editor.LayoutConfigurer.name"),
+        Resources.getString("Editor.LayoutConfigurer.type"),
+        Resources.getString("Editor.LayoutConfigurer.position") 
+      };
 
       @Override
       public int getColumnCount() {

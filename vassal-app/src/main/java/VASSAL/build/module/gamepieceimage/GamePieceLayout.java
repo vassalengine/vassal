@@ -70,8 +70,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected static final String BORDER_3D = "3D"; //NON-NLS
   protected static final String BORDER_NONE = "None"; //NON-NLS
 
-  public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
-  public static final String[] LOCATION_I18N_KEYS = new String[] {
+  public static final String[] LOCATIONS = {CENTER, N, S, E, W, NE, NW, SE, SW};
+  public static final String[] LOCATION_I18N_KEYS = {
     "Editor.center",
     "Editor.top",
     "Editor.bottom",
@@ -92,8 +92,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     return location;
   }
 
-  public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
-  public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
+  public static final int[] X_POS = {POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
+  public static final int[] Y_POS = {POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
   protected static final Map<String, String> compass = new HashMap<>();
   static {
     compass.put(N, "N"); //NON-NLS

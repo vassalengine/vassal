@@ -73,7 +73,10 @@
 <!--
   <rule ref="category/java/codestyle.xml/UselessParentheses" />
   <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
+-->
   <rule ref="category/java/codestyle.xml/UseShortArrayInitializer" />
+
+<!--
   <rule ref="category/java/design.xml/AvoidRethrowingException" />
 -->
   <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" />

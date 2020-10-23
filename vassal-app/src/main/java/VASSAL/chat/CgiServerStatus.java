@@ -48,7 +48,7 @@ public class CgiServerStatus implements ServerStatus {
 
   private static final Map<String, Long> timeRanges = new HashMap<>();
 
-  private static final String[] times = new String[]{
+  private static final String[] times = {
     Resources.getString(LAST_DAY),
     Resources.getString(LAST_WEEK),
     Resources.getString(LAST_MONTH)

@@ -31,8 +31,18 @@ import javax.swing.JPopupMenu;
 
 public class BeanShellFunctionMenu extends JPopupMenu {
 
-  protected static final String[] SUM_COUNT_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
-  protected static final String[] SUM_COUNT_MAP_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.map_warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
+  protected static final String[] SUM_COUNT_HINTS = {
+    Resources.getString("Editor.BeanShell.warning"),
+    Resources.getString("Editor.BeanShell.warning2"),
+    Resources.getString("Editor.BeanShell.warning3")
+  };
+
+  protected static final String[] SUM_COUNT_MAP_HINTS = {
+    Resources.getString("Editor.BeanShell.warning"),
+    Resources.getString("Editor.BeanShell.map_warning"),
+    Resources.getString("Editor.BeanShell.warning2"),
+    Resources.getString("Editor.BeanShell.warning3")
+  };
 
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;

@@ -34,8 +34,8 @@ import VASSAL.tools.image.ImageUtils;
 public class Symbol {
 
   protected static final String NATO = "NATO Unit Symbols"; //NON-NLS (no, really!)
-  protected static final String[] SYMBOL_SETS = new String[] { NATO };
-  protected static final String[] SYMBOL_SETS_DESC = new String[] { "Editor.Symbol.NATO" };
+  protected static final String[] SYMBOL_SETS = { NATO };
+  protected static final String[] SYMBOL_SETS_DESC = { "Editor.Symbol.NATO" };
 
   protected String symbolSetName;
   protected String symbolName1;
@@ -184,7 +184,7 @@ public class Symbol {
     }
 
 
-    public static final SizeOption[] SIZES = new SizeOption[] {
+    public static final SizeOption[] SIZES = {
       new SizeOption(SZ_NONE, Resources.getString("Editor.Symbol.Size.none"), 0, ""), //$NON-NLS-1$
       new SizeOption(SZ_INSTALLATION, Resources.getString("Editor.Symbol.Size.installation"), 1, INSTALLATION_SYMBOL),
       new SizeOption(SZ_TEAM, Resources.getString("Editor.Symbol.Size.team"), 1, TEAM_SYMBOL),

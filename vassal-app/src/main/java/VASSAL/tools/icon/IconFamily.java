@@ -95,10 +95,10 @@ public class IconFamily extends AbstractConfigurable {
   static final int SIZE_COUNT = MAX_SIZE + 1;
 
   // Pixel size of each Tango Size
-  static final int[] SIZES = new int[] { 16, 22, 32, 48 };
+  static final int[] SIZES = { 16, 22, 32, 48 };
 
   // Directories within the icons directory to locate each Tango Size
-  static final String[] SIZE_DIRS = new String[] {
+  static final String[] SIZE_DIRS = {
     "16x16/", //$NON-NLS-1$
     "22x22/", //$NON-NLS-1$
     "32x32/", //$NON-NLS-1$

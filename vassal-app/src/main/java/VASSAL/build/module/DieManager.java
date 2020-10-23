@@ -254,7 +254,7 @@ public class DieManager extends AbstractConfigurable {
 
     // Multi Roll preference not selected, so build a dummy MultiRoll object
     else {
-      DieRoll[] rolls = new DieRoll[]{new DieRoll(description, nDice, nSides, plus, reportTotal)};
+      DieRoll[] rolls = {new DieRoll(description, nDice, nSides, plus, reportTotal)};
       rollSet = new RollSet(description, rolls);
       desc = "";
     }
