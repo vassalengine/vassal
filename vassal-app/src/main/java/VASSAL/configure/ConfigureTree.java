@@ -696,11 +696,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 private static final long serialVersionUID = 1L;
 
                 @Override
-                public void save() {
-                  super.save();
-                }
-
-                @Override
                 public void cancel() {
                   ConfigureTree.this.remove(target, child);
                   dispose();

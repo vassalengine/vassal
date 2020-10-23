@@ -453,11 +453,6 @@ public class DiceButton extends AbstractToolbarItem {
   }
 
   @Override
-  public void removeFrom(Buildable b) {
-    super.removeFrom(b);
-  }
-
-  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.html", "DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }

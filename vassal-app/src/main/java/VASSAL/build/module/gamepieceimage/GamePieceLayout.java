@@ -346,16 +346,6 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   @Override
-  public void add(Buildable b) {
-    super.add(b);
-  }
-
-  @Override
-  public void remove(Buildable b) {
-    super.remove(b);
-  }
-
-  @Override
   public Image getVisualizerImage() {
     if (visImage == null) {
       rebuildVisualizerImage();
