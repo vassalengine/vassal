@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13522: Performance improvements for Global Key Commands
 * 13509: Save As in Editor, if it fails, complains about old filename instead
     of new filename
 * 13504: Simpler way to display PDF files from Help menu
