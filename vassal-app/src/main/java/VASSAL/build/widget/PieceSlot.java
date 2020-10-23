@@ -112,6 +112,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
   
   // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0
+  @Override
   public double getScale() {
     Widget w = this;
     while ((w = w.getParent()) != null) {
@@ -121,7 +122,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
     return 1.0;
   }
-
 
   protected void copyFrom(PieceSlot piece) {
     c = piece.c;

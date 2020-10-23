@@ -44,6 +44,7 @@ public class DialogHelpWindow extends JDialog implements HyperlinkListener {
   }
 
   @Deprecated
+  @Override
   public void hyperlinkUpdate(HyperlinkEvent e) {
     helper.hyperlinkUpdate(e);
   }

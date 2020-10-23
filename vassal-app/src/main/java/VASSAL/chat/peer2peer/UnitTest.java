@@ -198,6 +198,7 @@ public class UnitTest implements UserDialog {
     System.err.println(this + "Hello " + pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public String toString() {
     return id + ": "; //$NON-NLS-1$
   }

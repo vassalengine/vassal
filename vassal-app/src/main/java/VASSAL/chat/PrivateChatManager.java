@@ -98,6 +98,7 @@ public class PrivateChatManager {
       chatter = chat;
     }
 
+    @Override
     public boolean equals(Object o) {
       return o instanceof Entry && player.equals(((Entry) o).player);
     }

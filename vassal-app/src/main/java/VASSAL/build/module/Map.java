@@ -272,6 +272,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   /**
    * @return Map's main visual interface swing component (its JPanel)
    */
+  @Override
   public Component getComponent() {
     return theMap;
   }

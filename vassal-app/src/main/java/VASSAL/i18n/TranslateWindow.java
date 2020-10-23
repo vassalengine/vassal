@@ -793,6 +793,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return component;
     }
 
+    @Override
     public String toString() {
       return getDisplayName(component);
     }

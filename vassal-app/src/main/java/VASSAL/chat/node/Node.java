@@ -98,6 +98,7 @@ public class Node implements MsgSender {
     child.setParent(this);
   }
 
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Node)) return false;
@@ -109,10 +110,12 @@ public class Node implements MsgSender {
     return true;
   }
 
+  @Override
   public int hashCode() {
     return (id != null ? id.hashCode() : 0);
   }
 
+  @Override
   public String toString() {
     return super.toString() + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }

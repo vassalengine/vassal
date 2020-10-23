@@ -88,6 +88,7 @@ public class PropertiesEncoder {
     return stringValue;
   }
 
+  @Override
   public String toString() {
     return stringValue;
   }

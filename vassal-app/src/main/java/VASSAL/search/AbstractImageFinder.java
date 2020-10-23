@@ -29,6 +29,7 @@ public abstract class AbstractImageFinder implements ImageSearchTarget {
   /**
    * @return names of all images used by the component and any subcomponents
    */
+  @Override
   public SortedSet<String> getAllImageNames() {
     final TreeSet<String> s =
       new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
@@ -41,6 +42,7 @@ public abstract class AbstractImageFinder implements ImageSearchTarget {
    * Adds all images used by this component AND any children (or inner decorators/pieces) to the collection.
    * @param s Collection to add image names to
    */
+  @Override
   public void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s); // Default implementation just adds ours
   }
@@ -48,6 +50,7 @@ public abstract class AbstractImageFinder implements ImageSearchTarget {
   /**
    * @return names of all images used by this component
    */
+  @Override
   public SortedSet<String> getLocalImageNames() {
     final TreeSet<String> s =
       new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
@@ -61,6 +64,7 @@ public abstract class AbstractImageFinder implements ImageSearchTarget {
    *
    * @param s Collection to add image names to
    */
+  @Override
   public void addLocalImageNames(Collection<String> s) {
     // Default implementation is that we don't HAVE any images to add.
   }

@@ -60,6 +60,7 @@ public class PropertyExpression implements PieceFilter {
     return getFilter(source).accept(piece);
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof PropertyExpression) {
       return getExpression().equals(((PropertyExpression) o).getExpression());

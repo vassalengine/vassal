@@ -1253,6 +1253,7 @@ public class MassPieceLoader {
           !typeConfig.getValueString().equals(BASE_IMAGE));
     }
 
+    @Override
     public String toString() {
       return typeConfig.getValueString().charAt(0)
           + nameConfig.getValueString();

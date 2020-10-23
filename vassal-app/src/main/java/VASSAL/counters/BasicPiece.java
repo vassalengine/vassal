@@ -1113,6 +1113,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   /**
    * @return String enumeration of type and state information.
    */
+  @Override
   public String toString() {
     return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]"; // NON-NLS
   }

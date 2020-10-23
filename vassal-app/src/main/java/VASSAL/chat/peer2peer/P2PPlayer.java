@@ -110,6 +110,7 @@ public class P2PPlayer extends SimplePlayer {
     setProps();
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof P2PPlayer) {
       P2PPlayer p = (P2PPlayer) o;

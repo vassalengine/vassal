@@ -602,6 +602,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   /** @return string information on trait, for debugging purposes */
+  @Override
   public String toString() {
     if (piece == null) {
       return super.toString();
@@ -803,6 +804,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    * Adds all images used by this component AND any children to the collection
    * @param s Collection to add image names to
    */
+  @Override
   public void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s);
     if (piece instanceof ImageSearchTarget) {

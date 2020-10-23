@@ -317,6 +317,7 @@ public class MovementReporter {
       return oldPosition;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof MoveSummary)) return false;
@@ -334,6 +335,7 @@ public class MovementReporter {
       return true;
     }
 
+    @Override
     public int hashCode() {
       int result;
       result = (oldMapId != null ? oldMapId.hashCode() : 0);

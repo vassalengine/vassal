@@ -245,6 +245,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
    * Adds all images used by this component AND any subcomponents to the collection
    * @param s Collection to add image names to
    */
+  @Override
   public void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s);
 

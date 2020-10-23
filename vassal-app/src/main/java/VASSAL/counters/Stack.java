@@ -564,6 +564,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public void setProperty(Object key, Object val) {
   }
 
+  @Override
   public String toString() {
     return super.toString() + "[" + getName() + "]";
   }

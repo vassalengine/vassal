@@ -236,6 +236,7 @@ public abstract class EditorWindow extends JFrame {
     mm.addAction("RemoveUnusedImagesDialog.remove_unused", new AbstractAction("Remove Unused Images") {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public void actionPerformed(ActionEvent e) {
         new RemoveUnusedImagesDialog(EditorWindow.this).setVisible(true);
       }
