@@ -72,8 +72,8 @@
   <rule ref="category/java/design.xml/AvoidRethrowingException" />
 -->
   <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" />
-<!--
   <rule ref="category/java/design.xml/AvoidThrowingNullPointerException" />
+<!--
   <rule ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" />
   <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures" />
   <rule ref="category/java/design.xml/CollapsibleIfStatements" />

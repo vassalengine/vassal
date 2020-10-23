@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.swing.JComponent;
@@ -1337,10 +1338,7 @@ public class GameModule extends AbstractConfigurable
    * @param mode mode of access
    */
   public void setGameFileMode(GameFileMode mode) {
-    if (mode == null) {
-      throw new NullPointerException();
-    }
-    gameFileMode = mode;
+    gameFileMode = Objects.requireNonNull(mode);
     updateTitleBar();
   }
 

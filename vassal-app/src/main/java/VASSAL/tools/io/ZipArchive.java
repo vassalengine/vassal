@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.zip.CRC32;
@@ -644,11 +645,7 @@ public class ZipArchive implements FileArchive {
   /** An {@link InputStream} which releases the read lock on close. */
   private class ZipArchiveInputStream extends FilterInputStream {
     public ZipArchiveInputStream(InputStream in) {
-      super(in);
-
-      if (in == null) {
-        throw new NullPointerException("in == null");
-      }
+      super(Objects.requireNonNull(in));
     }
 
     private boolean closed = false;
@@ -679,21 +676,8 @@ public class ZipArchive implements FileArchive {
 
     public ZipArchiveOutputStream(OutputStream out,
                                   Checksum cksum, ZipEntry e) {
-      super(out, cksum);
-
-      if (out == null) {
-        throw new NullPointerException("out == null");
-      }
-
-      if (cksum == null) {
-        throw new NullPointerException("cksum == null");
-      }
-
-      if (e == null) {
-        throw new NullPointerException("e == null");
-      }
-
-      entry = e;
+      super(Objects.requireNonNull(out), Objects.requireNonNull(cksum));
+      entry = Objects.requireNonNull(e);
     }
 
     @Override
