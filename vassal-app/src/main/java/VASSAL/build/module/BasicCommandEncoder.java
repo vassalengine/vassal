@@ -21,10 +21,6 @@ import java.awt.Point;
 import java.util.Map;
 
 import VASSAL.build.BadDataReport;
-import VASSAL.tools.ErrorDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -79,6 +75,7 @@ import VASSAL.counters.TableInfo;
 import VASSAL.counters.Translate;
 import VASSAL.counters.TriggerAction;
 import VASSAL.counters.UsePrototype;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -113,9 +110,6 @@ import VASSAL.tools.SequenceEncoder;
  * custom {@link GamePiece} classes.
  */
 public class BasicCommandEncoder implements CommandEncoder, Buildable {
-  private static final Logger logger =
-    LoggerFactory.getLogger(BasicCommandEncoder.class);
-
   /**
    * Factory interface for Decorators
    *
