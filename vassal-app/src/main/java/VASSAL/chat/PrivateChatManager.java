@@ -22,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -91,13 +92,11 @@ public class PrivateChatManager {
     private final PrivateChatter chatter;
 
     private Entry(Player p, PrivateChatter chat) {
-      if (p == null) {
-        throw new NullPointerException();
-      }
-      player = p;
+      player = Objects.requireNonNull(p);
       chatter = chat;
     }
 
+    @Override
     public boolean equals(Object o) {
       return o instanceof Entry && player.equals(((Entry) o).player);
     }

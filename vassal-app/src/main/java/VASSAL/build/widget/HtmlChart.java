@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -48,6 +49,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
@@ -71,9 +73,6 @@ public class HtmlChart extends Widget implements MouseListener {
   private String fileName;
   private JScrollPane scroller;
   private JEditorPane htmlWin;
-
-  public HtmlChart() {
-  }
 
   private boolean isURL() {
     return htmlWin.getDocument().getProperty("stream") != null; //NON-NLS
@@ -259,7 +258,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
       final String desc = event.getDescription();
       if ((!isURL() && desc.indexOf('/') < 0) || event.getURL() == null) {
-        final int hash = desc.lastIndexOf("#");
+        final int hash = desc.lastIndexOf('#');
         if (hash < 0) {
           // no anchor
           setFile(desc);
@@ -287,6 +286,16 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   /**
+   * Find all of our image references and register them
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h = new HTMLImageFinder(new File(fileName));
+    h.addImageNames(s);
+  }
+
+  /**
    * Extended HTML Editor kit to extend the <src> tag to display images
    * from the module DataArchive where no pathname included in the image name.
    * The image is placed on a label and returned as a ComponentView. An
@@ -305,12 +314,8 @@ public class HtmlChart extends Widget implements MouseListener {
     }
 
     public static class XTMLFactory extends HTMLFactory implements ViewFactory {
-      public XTMLFactory() {
-        super();
-      }
-
       @Override
-      public View create(javax.swing.text.Element element) {
+      public View create(Element element) {
         final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
 
         if (kind != null && element.getName().equals("img")) {  //NON-NLS

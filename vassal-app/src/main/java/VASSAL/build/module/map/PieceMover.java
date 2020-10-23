@@ -49,6 +49,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +147,12 @@ public class PieceMover extends AbstractBuildable
 
   protected MovementReporter createMovementReporter(Command c) {
     return new MovementReporter(c);
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (iconName != null) s.add(iconName);
+    if (markUnmovedIcon != null) s.add(markUnmovedIcon);
   }
 
   /**
@@ -1500,7 +1507,8 @@ public class PieceMover extends AbstractBuildable
 
     @Override
     protected double getDeviceScale(DragGestureEvent dge) {
-      // get the OS scaling
+      // Get the OS scaling; note that this is _probably_ running only on
+      // Windows.
       final Graphics2D g2d = (Graphics2D) dge.getComponent().getGraphics();
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
       g2d.dispose();
@@ -1515,6 +1523,13 @@ public class PieceMover extends AbstractBuildable
     @Override
     protected int getOffsetMult() {
       return 1;
+    }
+
+    @Override
+    protected double getDeviceScale(DragGestureEvent dge) {
+      // Retina Macs account for the device scaling for the drag icon, so
+      // we don't have to.
+      return 1.0;
     }
   }
 }

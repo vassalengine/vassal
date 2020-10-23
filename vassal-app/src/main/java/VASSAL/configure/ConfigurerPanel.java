@@ -37,8 +37,12 @@ public class ConfigurerPanel extends JPanel {
    * @param nameColConstraints Column constraints to apply if a label is supplied
    */
   public ConfigurerPanel(String name, String noNameColConstraints, String nameColConstraints) {
+    this(name, noNameColConstraints, nameColConstraints, "");
+  }
+
+  public ConfigurerPanel(String name, String noNameColConstraints, String nameColConstraints, String rowConstraints) {
     super();
-    setLayout(new ConfigurerLayout(name, noNameColConstraints, nameColConstraints));
+    setLayout(new ConfigurerLayout(name, noNameColConstraints, nameColConstraints, rowConstraints));
     if (name != null && ! name.isEmpty()) {
       add(new JLabel(name));
     }

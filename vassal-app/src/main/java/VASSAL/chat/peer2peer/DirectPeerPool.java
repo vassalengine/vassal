@@ -313,6 +313,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 //      return passwd;
 //    }
 
+    @Override
     public String toString() {
       return description + " [" + address + ":" + port; // + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }

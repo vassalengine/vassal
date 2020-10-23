@@ -49,7 +49,7 @@ public class SwatchComboBox extends JComboBox<String> {
     SwatchRenderer renderer = new SwatchRenderer();
     setRenderer(renderer);
 
-    if (colorMap.size() == 0) {
+    if (colorMap.isEmpty()) {
       final String[] displayNames =  ColorManager.getColorManager().getColorDisplayNames();
       for (int i = 0; i < s.length; i++) {
         colorMap.put(s[i], displayNames[i]);

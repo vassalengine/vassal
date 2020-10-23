@@ -223,14 +223,14 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Override
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(true);
   }
 
   @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem);
+               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 
@@ -392,7 +392,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
 
     @Override
-    public VASSAL.configure.Configurer getConfigurer() {
+    public Configurer getConfigurer() {
       return null;
     }
 

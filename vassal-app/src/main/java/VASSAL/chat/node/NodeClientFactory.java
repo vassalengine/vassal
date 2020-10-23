@@ -39,6 +39,7 @@ public abstract class NodeClientFactory extends ChatServerFactory {
 
   protected abstract ChatServerConnection buildServerImpl(Properties param);
 
+  @Override
   public ChatServerConnection buildServer(Properties param) {
     final ChatServerConnection server = buildServerImpl(param);
 

@@ -75,6 +75,12 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/mapgrid/HexGridNumbering</className>
+        <differenceType>7002</differenceType>
+        <method>void main(java.lang.String[])</method>
+        <justification>static test function, nothing should call it</justification>
+   </difference>
+   <difference>
         <className>VASSAL/build/module/metadata/AbstractMetaData</className>
         <differenceType>6006</differenceType>
         <field>parser</field>
@@ -454,6 +460,18 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6011</differenceType>
+        <field>DEFAULT_INITIAL_HEAP</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6011</differenceType>
+        <field>FAILSAFE_INITIAL_HEAP</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
         <className>VASSAL/preferences/PositionOption</className>
         <differenceType>6006</differenceType>
         <field>key</field>
@@ -470,6 +488,11 @@
         <differenceType>6006</differenceType>
         <field>strokes</field>
         <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ResourceErrorDialog</className>
+        <differenceType>8001</differenceType>
+        <justification>not used; private ctor, impossible to extend</justification>
     </difference>
     <difference>
         <className>VASSAL/tools/image/ImageIOImageLoader</className>

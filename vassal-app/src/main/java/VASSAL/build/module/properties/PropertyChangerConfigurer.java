@@ -118,17 +118,21 @@ public class PropertyChangerConfigurer extends Configurer {
           "Editor.PropertyChangeConfigurer.select_type",
           });
       typeConfig.addPropertyChangeListener(l);
+      typeLabel.setLabelFor(typeConfig.getControls());
 
       valueLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.new_value"));
       valueConfig = new FormattedExpressionConfigurer("", constraints);
+      valueLabel.setLabelFor(valueConfig.getControls());
       valueConfig.addPropertyChangeListener(l);
 
       promptLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.prompt"));
       promptConfig = new StringConfigurer("");
+      promptLabel.setLabelFor(promptConfig.getControls());
       promptConfig.addPropertyChangeListener(l);
 
       incrLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.increment_by"));
       incrConfig = new FormattedExpressionConfigurer("", constraints);
+      incrLabel.setLabelFor(incrConfig.getControls());
       incrConfig.addPropertyChangeListener(l);
 
       validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints, 2, 4);

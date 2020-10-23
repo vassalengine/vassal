@@ -29,14 +29,16 @@ import VASSAL.script.expression.FormattedStringExpression;
  */
 public class PropertiesPieceFilter {
 
-  private static final Pattern[] CONDITIONS = new Pattern[]{Pattern.compile("!="),
-                                                            Pattern.compile("<="),
-                                                            Pattern.compile(">="),
-                                                            Pattern.compile(">"),
-                                                            Pattern.compile("<"),
-                                                            Pattern.compile("=~"),
-                                                            Pattern.compile("="),
-                                                            Pattern.compile("!~")};
+  private static final Pattern[] CONDITIONS = { 
+    Pattern.compile("!="),
+    Pattern.compile("<="),
+    Pattern.compile(">="),
+    Pattern.compile(">"),
+    Pattern.compile("<"),
+    Pattern.compile("=~"),
+    Pattern.compile("="),
+    Pattern.compile("!~")
+  };
 
   private static final Pattern AND = Pattern.compile("&&");
   private static final Pattern OR = Pattern.compile("\\|\\|");
@@ -46,8 +48,8 @@ public class PropertiesPieceFilter {
   /**
    * Return a PieceFilter parsed from a boolean expression such as
    * prop1 = value1 && prop2 = value2 || prop3 = value3
-   * @param expression
-   * @return
+   * @param expression Expression
+   * @return Piece Filter
    */
   public static PieceFilter parse(String expression) {
     if (expression == null
@@ -74,7 +76,7 @@ public class PropertiesPieceFilter {
         for (int i = 0; i < CONDITIONS.length && f == null; i++) {
           if (expression.contains(CONDITIONS[i].pattern())) {
             s = CONDITIONS[i].split(expression);
-            String name = "";
+            String name;
             String value = "";
             if (s.length > 0) {
               name = s[0].trim();
@@ -167,7 +169,7 @@ public class PropertiesPieceFilter {
 
     protected String toBeanShellName() {
       if (name.indexOf('$') >= 0) {
-        return "GetProperty(" + new FormattedStringExpression(name).toBeanShellString() + ")";
+        return "GetProperty(" + new FormattedStringExpression(name).toBeanShellString() + ")"; // NON-NLS
       }
       else {
         return BeanShellExpression.convertProperty(name);
@@ -179,7 +181,7 @@ public class PropertiesPieceFilter {
     }
 
     protected static boolean isBooleanString(final String possibleBoolean) {
-      return List.of("true", "false").contains(possibleBoolean);
+      return List.of("true", "false").contains(possibleBoolean); // NON-NLS
     }
   }
 
@@ -198,8 +200,9 @@ public class PropertiesPieceFilter {
       return retVal;
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + "==" + value + "]";
+      return "PropertiesPieceFilter[" + name + "==" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -223,8 +226,10 @@ public class PropertiesPieceFilter {
       }
       return retVal;
     }
+
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + "!=" + value + "]";
+      return "PropertiesPieceFilter[" + name + "!=" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -243,8 +248,9 @@ public class PropertiesPieceFilter {
       return compareTo(piece) < 0;
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + "<" + value + "]";
+      return "PropertiesPieceFilter[" + name + "<" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -263,8 +269,9 @@ public class PropertiesPieceFilter {
       return compareTo(piece) <= 0;
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + "<=" + value + "]";
+      return "PropertiesPieceFilter[" + name + "<=" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -283,8 +290,9 @@ public class PropertiesPieceFilter {
       return compareTo(piece) > 0;
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + ">" + value + "]";
+      return "PropertiesPieceFilter[" + name + ">" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -303,8 +311,9 @@ public class PropertiesPieceFilter {
       return compareTo(piece) >= 0;
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + ">=" + value + "]";
+      return "PropertiesPieceFilter[" + name + ">=" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -324,8 +333,9 @@ public class PropertiesPieceFilter {
       return Pattern.matches(value, property);
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + "~" + value + "]";
+      return "PropertiesPieceFilter[" + name + "~" + value + "]"; // NON-NLS
     }
 
     @Override
@@ -344,8 +354,9 @@ public class PropertiesPieceFilter {
       return !super.accept(piece);
     }
 
+    @Override
     public String toString() {
-      return "PropertiesPieceFilter[" + name + "!~" + value + "]";
+      return "PropertiesPieceFilter[" + name + "!~" + value + "]"; // NON-NLS
     }
 
     @Override

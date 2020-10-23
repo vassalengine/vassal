@@ -191,10 +191,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     public static final String NONE = "<none>"; //NON-NLS
     public static final String NONE_NAME = Resources.getString("Editor.DrawPile.none");
 
-    public AssignedDeckPrompt() {
-      // do nothing
-    }
-
     /**
      * For this one we need to use pre-translated display names.
      * @return true
@@ -787,7 +783,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Deck.html"); //NON-NLS
   }
 
@@ -840,8 +836,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
-    l.addAll(super.getExpressionList());
+    List<String> l = new ArrayList<>(super.getExpressionList());
     if (dummy != null) {
       if (dummy.isRestrictOption()) {
         l.add(dummy.getRestrictExpression().getExpression());

@@ -574,9 +574,9 @@ public class BugDialog extends JDialog {
 // FIXME: add a page thanking the user for his bug report and providing
 // a link to it at SF.
 
+/*
   private void emergencySave() {
 // FIXME: GameModule and GameState need save methods which take a filename
-/*
     final GameModule mod = GameModule.getGameModule();
     if (mod != null) mod.save(false);
 
@@ -584,8 +584,8 @@ public class BugDialog extends JDialog {
     if (state != null && state.isModified()) {
       state.saveGame();
     }
-*/
   }
+*/
 
   public static void main(String[] args) {
     SwingUtilities.invokeLater(new Runnable() {

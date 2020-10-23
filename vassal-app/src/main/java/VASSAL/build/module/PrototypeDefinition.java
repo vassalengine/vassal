@@ -20,10 +20,12 @@ package VASSAL.build.module;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.swing.Box;
 
+import VASSAL.search.ImageSearchTarget;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -129,6 +131,16 @@ public class PrototypeDefinition extends AbstractConfigurable
   @Override
   public void addTo(Buildable parent) {
     idMgr.add(this);
+  }
+
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    super.addImageNamesRecursively(s);
+
+    GamePiece p = getPiece();
+    if (p instanceof ImageSearchTarget) {
+      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    }
   }
 
   public GamePiece getPiece() {

@@ -25,6 +25,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -35,6 +36,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -475,5 +477,24 @@ public class ReportState extends Decorator implements TranslatablePiece {
       l.add(reportFormat);
     }
     return l;
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    if (cycleIndex >= 0 && cycleReportFormat.length > 0) {
+      for (String r : cycleReportFormat) {
+        h = new HTMLImageFinder(r);
+        h.addImageNames(s);
+      }
+    }
+    else {
+      h = new HTMLImageFinder(reportFormat);
+      h.addImageNames(s);
+    }
   }
 }

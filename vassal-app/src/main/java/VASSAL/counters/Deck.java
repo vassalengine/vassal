@@ -901,7 +901,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
         final Random rng = gameModule.getRNG();
 
-        while (count-- > 0 && indices.size() > 0) {
+        while (count-- > 0 && !indices.isEmpty()) {
           final int i = rng.nextInt(indices.size());
           final int index = indices.get(i);
           indices.remove(i);
@@ -1076,7 +1076,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     int count = Math.min(getPieceCount(), maxStack);
-    GamePiece top = (nextDraw != null && nextDraw.size() > 0) ?
+    GamePiece top = (nextDraw != null && !nextDraw.isEmpty()) ?
       nextDraw.get(0) : topPiece();
 
     if (top != null) {
@@ -1345,10 +1345,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         return -otherProperty.compareTo(myProperty);
       }
 
+      @Override
       public String toString() {
         return selectDisplayProperty.getText(piece);
       }
 
+      @Override
       public boolean equals(Object o) {
         if (! (o instanceof AvailablePiece)) return false;
         return ((AvailablePiece)o).piece.equals(piece);

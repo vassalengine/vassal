@@ -182,6 +182,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         this.pile = pile;
       }
 
+      @Override
       public String toString() {
         return pile.getConfigureName();
       }
@@ -190,7 +191,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     final List<DrawPile> piles =
       GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
 
-    if (piles.size() == 0) {
+    if (piles.isEmpty()) {
       reportDataError(this, "No decks in module.");
       return null;
     }

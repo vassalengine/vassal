@@ -29,14 +29,21 @@
 * 12946: Prevent top level required components from being deleted in Editor
 *  4779: Comparison operator >= incorrectly documented as =>
 *  1907: Suggest default filename extensions
+*  1868: Method for removing unused images from modules
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
 3.4.7 - ???
 
+* 13542: Interaction between Move Fixed Distance and Rotate traits has changed
+  between 3.2.17 and 3.4.6
+* 13540: Macs now use Command as modifier key for grid-resizing,
+  setup-stack-moving in Editor
+* 13525: HFS+ stores filenames in NFD, so must check for that variant when
+  loading
 * 13520: Made Command+Click the select/deselect combo for Macs (and
   Command+Wheel to zoom)
-* 13489: Pieces scaled incorrectly during drags on HiDPI screens (Windows, Mac)
+* 13489: Pieces scaled incorrectly during drags on HiDPI screens on Windows
 
 3.4.6 - 12 October 2020
 

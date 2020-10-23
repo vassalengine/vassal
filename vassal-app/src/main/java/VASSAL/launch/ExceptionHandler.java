@@ -38,8 +38,6 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
                                ExceptionHandler.class.getName());
   }
 
-  public ExceptionHandler() {}
-
   /**
    * Handles uncaught exceptions.
    *

@@ -403,7 +403,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       tf.setEditable(false);
       selectShader.add(tf, "growx"); // NON-NLS
       tf.setText(trait.mapShaderName);
-      final JButton b = new JButton(Resources.getString("Editor.AreaOfEffect..select"));
+      final JButton b = new JButton(Resources.getString("Editor.AreaOfEffect.select"));
       selectShader.add(b);
       b.addActionListener(e -> {
         ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
@@ -424,6 +424,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       panel.add("Editor.AreaOfEffect.fill_color", transparencyColorValue);
 
       transparencyValue = new IntConfigurer((int) (trait.transparencyLevel * 100));
+      transparencyValue.setHint("0-100");
       panel.add("Editor.AreaOfEffect.opacity", transparencyValue);
 
       fixedRadius = new BooleanConfigurer(Boolean.valueOf(trait.fixedRadius));

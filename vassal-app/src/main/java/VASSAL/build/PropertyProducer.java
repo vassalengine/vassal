@@ -24,6 +24,6 @@ package VASSAL.build;
 @FunctionalInterface
 public interface PropertyProducer {
 
-  public Object getProperty(Object key);
+  Object getProperty(Object key);
 
 }

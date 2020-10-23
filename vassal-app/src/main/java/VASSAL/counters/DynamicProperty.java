@@ -17,6 +17,27 @@
  */
 package VASSAL.counters;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -42,26 +63,6 @@ import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
-
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.event.InputEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Trait that contains a property accessible via getProperty() and updateable
@@ -130,7 +131,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   @Override
-  public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
@@ -349,7 +350,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("DynamicProperty.html"); // NON-NLS
   }
 
@@ -471,7 +472,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig, "wrap"); // NON-NLS
 
-      controls.add(keyCommandListConfig.getControls(), "span 2,growx"); // NON-NLS
+      controls.add(keyCommandListConfig.getControls(), "left,grow,span 2"); // NON-NLS
 
       numericConfig.addPropertyChangeListener(l);
       numericConfig.fireUpdate();
@@ -616,10 +617,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected void buildControls() {
       controls = new JPanel(new MigLayout("ins panel,gapy 2,hidemode 3", "[]rel[][]rel[]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
-      controls.add(new JLabel(Resources.getString("Editor.menu_command")));
+      JLabel label = new JLabel(Resources.getString("Editor.menu_command"));
+      label.setLabelFor(commandConfig.getControls());
+      controls.add(label);
       controls.add(commandConfig.getControls(), "grow"); // NON-NLS
 
-      controls.add(new JLabel(Resources.getString("Editor.keyboard_command")));
+      label = new JLabel(Resources.getString("Editor.keyboard_command"));
+      label.setLabelFor(keyConfig.getControls());
+      controls.add(label);
       controls.add(keyConfig.getControls(), "grow,wrap"); // NON-NLS
 
       controls.add(propChangeConfig.getTypeLabel());

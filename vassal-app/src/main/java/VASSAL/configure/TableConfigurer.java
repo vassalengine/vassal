@@ -117,6 +117,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     repack();
   }
 
+  @Override
   protected void repack() {
     Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {

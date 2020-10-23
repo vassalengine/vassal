@@ -22,7 +22,7 @@ import VASSAL.build.module.Chatter;
 /**
  * Simple Player bean
  */
-public class SimplePlayer implements VASSAL.chat.Player {
+public class SimplePlayer implements Player {
   protected String id;
   protected String name;
   protected PlayerStatus status;
@@ -42,6 +42,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
     this(null);
   }
 
+  @Override
   public String toString() {
     return name;
   }
@@ -58,6 +59,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
     this.name = name;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof Player) {
       return id != null && id.equals(((Player) o).getId());

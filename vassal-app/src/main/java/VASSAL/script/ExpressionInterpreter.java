@@ -97,17 +97,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static final HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
-  
-  
+
+  @Override
   public String getComponentTypeName() {
     return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
-  
-  
+
+  @Override
   public String getComponentName() {
     return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
-
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -255,9 +254,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       // Default to the GameModule to satisfy properties if no
       // GamePiece supplied.
       source = ps == null ? GameModule.getGameModule() : ps;
-  
+
       setNameSpace(expressionNameSpace);
-    
+
       // Bind each undeclared variable with the value of the
       // corresponding Vassal property. Allow for old-style $variable$ references
       for (String var : variables) {
@@ -294,7 +293,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           }
         }
       }
-    
+
       final StringBuilder argList = new StringBuilder();
       for (String var : stringVariables) {
         if (argList.length() > 0) {
@@ -303,13 +302,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
         argList.append('"').append(value == null ? "" : value.toString()).append('"');
       }
-  
+
       // Re-evaluate the pre-parsed expression now that the undefined variables have
       // been bound to their Vassal property values.
-    
+
       setVar(THIS, this);
-      setVar(SOURCE, source);  
-        
+      setVar(SOURCE, source);
+
       try {
         eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
         result = get(MAGIC1).toString();

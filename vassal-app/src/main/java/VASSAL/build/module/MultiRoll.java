@@ -53,7 +53,7 @@ import VASSAL.preferences.Prefs;
 /**
  * @author Brent Easton
  *
- * Dialog for defining a {@link DieManager.RollSet}
+ * Dialog for defining a {@link DieManager RollSet}
  * For use with internet dice rollers
  */
 public class MultiRoll extends JDialog implements ActionListener {
@@ -224,35 +224,25 @@ public class MultiRoll extends JDialog implements ActionListener {
 
     // Add Some buttons
     buttonPanel = new JPanel();
-    rollButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        rollCancelled = false;
-        int dieCount = 0;
-        for (int i = 0; i < MAX_ROLLS; i++) {
-          dieCount += useDie[i] ? 1 : 0;
-        }
-        if (dieCount == 0) {
-          JOptionPane.showMessageDialog(me, "No dice selected for Roll.", "Roll Cancelled", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        setVisible(false);
+    rollButton.addActionListener(e -> {
+      rollCancelled = false;
+      int dieCount = 0;
+      for (int i = 0; i < MAX_ROLLS; i++) {
+        dieCount += useDie[i] ? 1 : 0;
       }
-    });
-    canButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        rollCancelled = true;
-        setVisible(false);
+      if (dieCount == 0) {
+        JOptionPane.showMessageDialog(me, "No dice selected for Roll.", "Roll Cancelled", JOptionPane.ERROR_MESSAGE);
+        return;
       }
+      setVisible(false);
     });
 
-    emailButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        updateEmailAddress();
-      }
+    canButton.addActionListener(e -> {
+      rollCancelled = true;
+      setVisible(false);
     });
+
+    emailButton.addActionListener(e -> updateEmailAddress());
 
     buttonPanel.add(rollButton);
     buttonPanel.add(canButton);

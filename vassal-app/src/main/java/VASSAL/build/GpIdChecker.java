@@ -136,7 +136,7 @@ public class GpIdChecker {
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
      *  the Extension Id. Remove the Extension Id and just process the numeric part.
      *
-     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be
+     *  NOTE: If GpIdChecker is being used by the GameRefresher, then there may be
      *  extensions loaded, so retain the extension prefix to ensure a correct
      *  unique slot id check.
      */
@@ -176,7 +176,7 @@ public class GpIdChecker {
    * @return Error count
    */
   public boolean hasErrors() {
-    return errorSlots.size() > 0;
+    return !errorSlots.isEmpty();
   }
 
   private void chat(String text) {

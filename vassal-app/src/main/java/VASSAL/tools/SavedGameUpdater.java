@@ -110,7 +110,7 @@ public class SavedGameUpdater {
   }
 
   protected void findPieceSlots(List<Configurable> l, Properties p) {
-    final Configurable last = l.size() == 0 ?
+    final Configurable last = l.isEmpty() ?
       GameModule.getGameModule() : l.get(l.size() - 1);
 
     if (last instanceof PieceSlot) {

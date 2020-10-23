@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +57,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.search.AbstractImageFinder;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -67,7 +69,7 @@ import net.miginfocom.swing.MigLayout;
  * Note like traits, BasicPiece implements GamePiece (via TranslatablePiece), but UNLIKE traits it is NOT a
  * Decorator, and thus must be treated specially.
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
+public class BasicPiece extends AbstractImageFinder implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
 
   public static final String ID = "piece;"; // NON-NLS
@@ -1111,6 +1113,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   /**
    * @return String enumeration of type and state information.
    */
+  @Override
   public String toString() {
     return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]"; // NON-NLS
   }
@@ -1150,5 +1153,15 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     l.add(CLICKED_X);
     l.add(CLICKED_Y);
     return l;
+  }
+
+  /**
+   * See {@link AbstractImageFinder}
+   * Adds our image (if any) to the list of images
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 }

@@ -34,7 +34,6 @@ import javax.swing.event.HyperlinkListener;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 public class HTMLWindowHelper implements HyperlinkListener {
   private JEditorPane pane = new JEditorPane();

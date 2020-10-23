@@ -21,7 +21,6 @@ import VASSAL.counters.PieceAccess;
 import VASSAL.counters.PlayerAccess;
 import VASSAL.counters.SideAccess;
 import VASSAL.counters.SpecifiedSideAccess;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
@@ -36,11 +35,11 @@ public class PieceAccessConfigurer extends Configurer {
   protected static final String SIDE = "side:"; // NON-NLS
   protected static final String SIDES = "sides:"; // NON-NLS
   protected JPanel controls;
-  protected String[] prompts = new String[] {"Any Player", "Any side", "Any of the specified sides"}; // NON-NLS
-  protected String[] promptKeys = new String[] {
-    Resources.getString("Editor.PieceAccessConfigurer.any_player"),
-    Resources.getString("Editor.PieceAccessConfigurer.any_side"),
-    Resources.getString("Editor.PieceAccessConfigurer.any_specified")
+  protected String[] prompts = {"Any Player", "Any side", "Any of the specified sides"}; // NON-NLS
+  protected String[] promptKeys = {
+    "Editor.PieceAccessConfigurer.any_player",
+    "Editor.PieceAccessConfigurer.any_side",
+    "Editor.PieceAccessConfigurer.any_specified"
   };
   protected TranslatingStringEnumConfigurer selectType;
   protected StringArrayConfigurer sideConfig;

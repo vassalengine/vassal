@@ -172,7 +172,7 @@ public class Marker extends Decorator implements EditablePiece {
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PropertyMarker.html"); // NON-NLS
   }
 

@@ -105,7 +105,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
-    setTitle(Resources.getString("Editor.TranslateWindow.translate", VASSAL.configure.ConfigureTree.getConfigureName((Configurable) target)));
+    setTitle(Resources.getString("Editor.TranslateWindow.translate", ConfigureTree.getConfigureName((Configurable) target)));
     JPanel mainPanel = new JPanel(new BorderLayout());
     /*
      * Place Language selector above Tree and Keys
@@ -793,6 +793,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return component;
     }
 
+    @Override
     public String toString() {
       return getDisplayName(component);
     }

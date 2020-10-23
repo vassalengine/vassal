@@ -43,7 +43,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
 
   public SymbolConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolNames());
-    if (symbolMap.size() == 0) {
+    if (symbolMap.isEmpty()) {
       String[] symbolNames = Symbol.NatoUnitSymbolSet.getSymbolNames();
       String[] symbolKeys = Symbol.NatoUnitSymbolSet.getSymbolDisplayNames();
       for (int i = 0; i < symbolNames.length; i++) {

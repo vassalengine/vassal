@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -17,10 +16,6 @@
  */
 package VASSAL.tools;
 
-////////////////////////////////////////////////////////
-// These imports are used in deprecated methods only. //
-////////////////////////////////////////////////////////
-import VASSAL.i18n.Resources;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -41,6 +36,7 @@ import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +49,9 @@ import java.util.zip.ZipFile;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import org.apache.xmlgraphics.image.loader.ImageSource;
+
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
@@ -63,7 +62,6 @@ import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
-import org.apache.xmlgraphics.image.loader.ImageSource;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
@@ -199,6 +197,17 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     //
     // Ridiculous crap we have to check for backwards compatibility
     //
+
+    // Maybe someone unzipped and rezipped this module on a Mac with an
+    // HFS+ filesystem and the filename contains decomposable characters,
+    // so it got munged into NFD. Aauugh! Seriously, DIAF Apple!
+    final String nfd = Normalizer.normalize(fileName, Normalizer.Form.NFD);
+    if (fileName != nfd) {
+      in = getInputStreamImpl(nfd);
+      if (in != null) {
+        return in;
+      }
+    }
 
     // Maybe it's a resource missing its initial slash. Aauugh!
     in = getClass().getResourceAsStream("/" + fileName);

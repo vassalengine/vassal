@@ -38,6 +38,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -79,6 +80,7 @@ import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
@@ -557,7 +559,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     double zoom = getZoom();
     if (displayablePieces.size() < minimumDisplayablePieces) {
-      if (displayablePieces.size() > 0) {
+      if (!displayablePieces.isEmpty()) {
         graphicsVisible = zoom < zoomLevel;
         textVisible = zoom < zoomLevel && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
       }
@@ -1541,5 +1543,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+
+  /**
+   * In case our labels refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    h = new HTMLImageFinder(summaryReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(counterReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(emptyHexReportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

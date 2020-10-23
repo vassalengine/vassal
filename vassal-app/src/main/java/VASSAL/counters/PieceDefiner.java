@@ -590,7 +590,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         buttonBox.add(b, "tag help"); //NON-NLS
       }
 
-      add(buttonBox, "spanx 3,center");
+      add(buttonBox, "spanx 3,center"); // NON-NLS
 
       pack();
       setLocationRelativeTo(getOwner());
@@ -647,7 +647,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public java.awt.Component getListCellRendererComponent(
+    public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       super.getListCellRendererComponent(list, value, index, selected, hasFocus);

@@ -35,6 +35,7 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -673,5 +674,13 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    String string = launch.getAttributeValueString(launch.getIconAttribute());
+    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+      s.add(string);
+    }
   }
 }

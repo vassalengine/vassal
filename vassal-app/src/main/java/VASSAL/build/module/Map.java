@@ -18,8 +18,10 @@
 package VASSAL.build.module;
 
 import VASSAL.build.AbstractBuildable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ConfigureTree;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
@@ -197,7 +199,7 @@ import VASSAL.tools.swing.SwingUtils;
  * are currently "selected" and forwards key commands to them, {@link MenuDisplayer} which listens for "right clicks" and provides
  * "context menu" services, and {@link StackMetrics} which handles the "stacking" of game pieces.
  */
-public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
+public class Map extends AbstractToolbarItem implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
     UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
@@ -215,7 +217,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected StackMetrics metrics;
   protected Dimension edgeBuffer = new Dimension(0, 0);
   protected Color bgColor = Color.white;
-  protected LaunchButton launchButton;
+  protected LaunchButton launchButton; // Legacy for binary signature
   protected boolean useLaunchButton = false;
   protected boolean useLaunchButtonEdit = false;
   protected String markMovedOption = GlobalOptions.ALWAYS;
@@ -270,6 +272,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * @return Map's main visual interface swing component (its JPanel)
    */
+  @Override
   public Component getComponent() {
     return theMap;
   }
@@ -409,7 +412,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         value = Boolean.valueOf((String) value);
       }
       useLaunchButtonEdit = (Boolean) value;
-      launchButton.setVisible(useLaunchButton);
+      getLaunchButton().setVisible(useLaunchButton);
     }
     else if (SUPPRESS_AUTO.equals(key)) {
       if (value instanceof String) {
@@ -439,10 +442,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (TOOLTIP.equals(key)) {
       tooltip = (String) value;
-      launchButton.setAttribute(key, value);
+      getLaunchButton().setAttribute(key, value);
     }
     else {
-      launchButton.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
@@ -520,10 +523,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (TOOLTIP.equals(key)) {
       return (tooltip == null || tooltip.length() == 0)
-        ? launchButton.getAttributeValueString(name) : tooltip;
+        ? getLaunchButton().getAttributeValueString(name) : tooltip;
     }
     else {
-      return launchButton.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -535,13 +538,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public void build(Element e) {
     ActionListener al = e1 -> {
-      if (mainWindowDock == null && launchButton.isEnabled() && theMap.getTopLevelAncestor() != null) {
+      if (mainWindowDock == null && getLaunchButton().isEnabled() && theMap.getTopLevelAncestor() != null) {
         theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
       }
     };
-    launchButton = new LaunchButton(Resources.getString("Editor.Map.map"), TOOLTIP, BUTTON_NAME, HOTKEY, ICON, al);
-    launchButton.setEnabled(false);
-    launchButton.setVisible(false);
+    setButtonTextKey(BUTTON_NAME); // Uses non-standard "button text" key
+    launchButton = makeLaunchButton("", Resources.getString("Editor.Map.map"), "/images/map.gif", al); //NON-NLS
+    getLaunchButton().setEnabled(false);
+    getLaunchButton().setVisible(false);
     if (e != null) {
       super.build(e);
       getBoardPicker();
@@ -742,7 +746,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     theMap.setDropTarget(PieceMover.DragHandler.makeDropTarget(
       theMap, DnDConstants.ACTION_MOVE, this));
     g.getGameState().addGameComponent(this);
-    g.getToolBar().add(launchButton);
+    g.getToolBar().add(getLaunchButton());
 
     if (shouldDockIntoMainWindow()) {
       final IntConfigurer config =
@@ -831,7 +835,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     if (w != null) {
       w.dispose();
     }
-    GameModule.getGameModule().getToolBar().remove(launchButton);
+    GameModule.getGameModule().getToolBar().remove(getLaunchButton());
     idMgr.remove(this);
     if (picker != null) {
       GameModule.getGameModule().removeCommandEncoder(picker);
@@ -1376,7 +1380,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
    * @return scaled value in Component coordinates
    */
-  @SuppressWarnings("unused")
   public int drawingToComponent(int c, double os_scale) {
     return scale(c, 1.0 / os_scale);
   }
@@ -1391,7 +1394,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
    * @return scaled Point in Component coordinates
    */
-  @SuppressWarnings("unused")
   public Point drawingToComponent(Point p, double os_scale) {
     return scale(p, 1.0 / os_scale);
   }
@@ -1406,7 +1408,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @param os_scale Operating system's scale factor, (obtained from {@link Graphics2D#getDeviceConfiguration().getDefaultTransform().getScaleX()})
    * @return scaled Rectangle in Component coordinates
    */
-  @SuppressWarnings("unused")
   public Rectangle drawingToComponent(Rectangle r, double os_scale) {
     return scale(r, 1.0 / os_scale);
   }
@@ -2587,8 +2588,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         theMap.getTopLevelAncestor().setVisible(false);
       }
     }
-    launchButton.setEnabled(show);
-    launchButton.setVisible(useLaunchButton);
+    getLaunchButton().setEnabled(show);
+    getLaunchButton().setVisible(useLaunchButton);
   }
 
   /**
@@ -2608,6 +2609,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @param s String to append to title
    */
   @Deprecated(since = "2020-09-16", forRemoval = true)
+  @SuppressWarnings("unused")
   public void appendToTitle(String s) {
     // replaced by updateTitleBar()
   }
@@ -2914,7 +2916,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     mapName = s;
     setConfigureName(mapName);
     if (tooltip == null || tooltip.length() == 0) {
-      launchButton.setToolTipText(s != null ? Resources.getString("Map.show_hide", s) : Resources.getString("Map.show_hide", Resources.getString("Map.map"))); //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
+      getLaunchButton().setToolTipText(s != null ? Resources.getString("Map.show_hide", s) : Resources.getString("Map.show_hide", Resources.getString("Map.map"))); //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
     }
   }
 
@@ -3576,4 +3578,37 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), moveKey);
   }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    h = new HTMLImageFinder(moveWithinFormat);
+    h.addImageNames(s);
+    h = new HTMLImageFinder(moveToFormat);
+    h.addImageNames(s);
+    h = new HTMLImageFinder(createFormat);
+    h.addImageNames(s);
+    h = new HTMLImageFinder(changeFormat);
+    h.addImageNames(s);
+
+    String string;
+    if (!GlobalOptions.NEVER.equals(markMovedOption)) {
+      string = getAttributeValueString(MARK_UNMOVED_ICON);
+      if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+        s.add(string);
+      }
+    }
+
+    if (useLaunchButtonEdit) {
+      string = getLaunchButton().getAttributeValueString(getLaunchButton().getIconAttribute());
+      if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+        s.add(string);
+      }
+    }
+  }
 }
+

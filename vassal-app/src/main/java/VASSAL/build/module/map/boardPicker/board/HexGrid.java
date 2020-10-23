@@ -174,7 +174,7 @@ public class HexGrid extends AbstractConfigurable
     c.getConfigurer(DY).addPropertyChangeListener(evt -> {
       if (evt.getNewValue() != null) {
         double hgt = (Double) evt.getNewValue();
-        dxConfig.setValue(Double.valueOf(sqrt3_2 * hgt).toString());
+        dxConfig.setValue(Double.toString(sqrt3_2 * hgt));
       }
     });
 
@@ -206,7 +206,7 @@ public class HexGrid extends AbstractConfigurable
 
   @Override
   public boolean isVisible() {
-    return visible == true || (numbering != null && numbering.isVisible());
+    return visible || (numbering != null && numbering.isVisible());
   }
 
   public boolean isEdgesLegal() {
@@ -309,7 +309,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HexGrid.html"); //$NON-NLS-1$
   }
 

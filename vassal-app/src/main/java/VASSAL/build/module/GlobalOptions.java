@@ -17,11 +17,13 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Container;
 import java.awt.dnd.DragSource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -78,7 +80,6 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String PROMPT = "Use Preferences Setting"; //$NON-NLS-1$
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
-  public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
@@ -96,9 +97,11 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public static final boolean FORCE_MAC_LEGACY = true; //BR// Keeps Mac key translation "waiting in the wings"
 
+  @Deprecated(since = "2020-10-21", forRemoval = true)
+  public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
+
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
   private String nonOwnerUnmaskable = NEVER;
-  private final String centerOnMoves = PROMPT;
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
   private String chatterHTMLSupport = NEVER;
@@ -132,7 +135,7 @@ public class GlobalOptions extends AbstractConfigurable {
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
 
-    // should this moudule use a combined main window?
+    // should this module use a combined main window?
     final BooleanConfigurer combConf = new BooleanConfigurer(
       SINGLE_WINDOW,
       Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
@@ -140,14 +143,6 @@ public class GlobalOptions extends AbstractConfigurable {
     );
     prefs.addOption(combConf);
     useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
-
-    // the initial heap size for this module
-    final IntConfigurer initHeapConf = new IntConfigurer(
-      INITIAL_HEAP,
-      Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      256
-    );
-    prefs.addOption(initHeapConf);
 
     // the maximum heap size for this module
     final IntConfigurer maxHeapConf = new IntConfigurer(
@@ -446,8 +441,10 @@ public class GlobalOptions extends AbstractConfigurable {
       for (Configurer c : OPTION_CONFIGURERS.values()) {
         final Container container = (Container) defaultConfig.getControls();
         final String name = c.getName();
-        container.add(new JLabel(name));
+        final JLabel label = new JLabel(name);
         c.setName("");
+        label.setLabelFor(c.getControls());
+        container.add(label);
         container.add(c.getControls(), "wrap"); // NON-NLS
         c.setName(name);
       }
@@ -621,5 +618,19 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(playerIdFormat.getFormat());
+  }
+
+  /**
+   * Our Option Configurers (undo button, server button, step-forward button) potentially have icons to add the references for
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    for (Configurer c : OPTION_CONFIGURERS.values()) {
+      if (!(c instanceof IconConfigurer)) {
+        continue;
+      }
+      s.add(c.getValueString());
+    }
   }
 }

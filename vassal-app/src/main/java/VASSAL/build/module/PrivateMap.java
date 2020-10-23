@@ -215,7 +215,7 @@ public class PrivateMap extends Map {
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
     }
-    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+    getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   @Override
@@ -248,7 +248,7 @@ public class PrivateMap extends Map {
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
     }
-    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+    getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   @Override
@@ -262,6 +262,7 @@ public class PrivateMap extends Map {
 
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
+  @Override
   public void setBoards(Enumeration<Board> boardList) {
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (surrogate != null) {

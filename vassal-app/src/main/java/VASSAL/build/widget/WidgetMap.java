@@ -1,6 +1,5 @@
 package VASSAL.build.widget;
 
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import VASSAL.build.module.Map;
@@ -9,10 +8,6 @@ import VASSAL.configure.VisibilityCondition;
 import java.util.List;
 
 public class WidgetMap extends Map {
-  public WidgetMap() {
-    super();
-  }
-
   /*
    * Minimal setup - remove all docking and toolbar setup
    */
@@ -48,11 +43,6 @@ public class WidgetMap extends Map {
     else {
       return super.getAttributeVisibility(name);
     }
-  }
-
-  @Override
-  public JComponent getView() {
-    return super.getView();
   }
 
   /*

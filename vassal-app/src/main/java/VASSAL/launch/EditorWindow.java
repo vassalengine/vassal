@@ -45,6 +45,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ModuleUpdaterDialog;
+import VASSAL.configure.RemoveUnusedImagesDialog;
 import VASSAL.configure.SaveAction;
 import VASSAL.configure.SaveAsAction;
 import VASSAL.configure.ShowHelpAction;
@@ -146,6 +147,7 @@ public abstract class EditorWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("create_module_updater"));
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
+    toolsMenu.add(mm.addKey("RemoveUnusedImagesDialog.remove_unused"));
 
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.MenuBar", editMenu);
@@ -230,7 +232,16 @@ public abstract class EditorWindow extends JFrame {
     };
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
-    
+
+    mm.addAction("RemoveUnusedImagesDialog.remove_unused", new AbstractAction("Remove Unused Images") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        new RemoveUnusedImagesDialog(EditorWindow.this).setVisible(true);
+      }
+    });
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction("Editor.ModuleEditor.table_of_contents", url, null));
@@ -256,7 +267,6 @@ public abstract class EditorWindow extends JFrame {
       ErrorDialog.bug(e);
     }
 
-
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction("Editor.ModuleEditor.module_components", url, null));
@@ -280,9 +290,7 @@ public abstract class EditorWindow extends JFrame {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-
-
-    
+  
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.html").toURI()
           .toURL();
@@ -292,7 +300,6 @@ public abstract class EditorWindow extends JFrame {
       ErrorDialog.bug(e);
     }
     
-    
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.html").toURI()
           .toURL();
@@ -301,7 +308,6 @@ public abstract class EditorWindow extends JFrame {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
     
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.html").toURI()
@@ -335,23 +341,15 @@ public abstract class EditorWindow extends JFrame {
     pack();
   }
 
-
   /**
    * @param name Filename to check
    * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
    */
   boolean isTempFile(String name) {
-    if ((name == null) || name.isEmpty()) {
-      return true;
-    }
-
-    if ("tmp".equals(name.substring(0, 3)) && name.contains(".zip")) {
-      return true;
-    }
-
-    return false;
+    return name == null || 
+           name.isEmpty() ||
+           ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));
   }
-
 
   void setModuleName(String name) {
     if (isTempFile(name)) {

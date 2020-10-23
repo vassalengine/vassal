@@ -24,7 +24,5 @@ import VASSAL.build.AutoConfigurable;
  * The AutoConfigurable object should return a sub-class of StringEnum with a no-arg constructor
  */
 public abstract class StringEnum {
-  public StringEnum() {
-  }
   public abstract String[] getValidValues(AutoConfigurable target);
 }

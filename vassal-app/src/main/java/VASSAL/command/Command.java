@@ -48,9 +48,6 @@ public abstract class Command {
   private LinkedList<Command> seq = new LinkedList<>();
   private Command undo;
 
-  public Command() {
-  }
-
   public Command[] getSubCommands() {
     return seq.toArray(new Command[0]);
   }
@@ -153,6 +150,7 @@ public abstract class Command {
     return true;
   }
 
+  @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
     final String details = getDetails();

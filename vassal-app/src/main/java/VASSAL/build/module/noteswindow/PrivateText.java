@@ -43,17 +43,16 @@ public class PrivateText {
    * @param o
    * @return
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof PrivateText)) return false;
 
     final PrivateText privateText = (PrivateText) o;
-
-    if (!owner.equals(privateText.owner)) return false;
-
-    return true;
+    return owner.equals(privateText.owner);
   }
 
+  @Override
   public int hashCode() {
     return owner.hashCode();
   }

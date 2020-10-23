@@ -263,11 +263,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         if (e.getValueIsAdjusting())
           return;
 
-        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-        if (lsm.isSelectionEmpty()) {
-          //...//no rows are selected
-        }
-        else {
+        final ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        if (!lsm.isSelectionEmpty()) {
           displaySelected();
         }
       });

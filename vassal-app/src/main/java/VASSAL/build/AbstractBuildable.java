@@ -17,8 +17,11 @@
  */
 package VASSAL.build;
 
+import VASSAL.search.AbstractImageFinder;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -40,7 +43,7 @@ import VASSAL.i18n.Translatable;
  * You'll need to implement the methods and specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
-public abstract class AbstractBuildable implements Buildable, ValidityChecker, PropertyNameSource {
+public abstract class AbstractBuildable extends AbstractImageFinder implements Buildable, ValidityChecker, PropertyNameSource {
   protected List<Buildable> buildComponents = new ArrayList<>();
 
   // Sub-classes can set this reference to perform validity checking
@@ -169,7 +172,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   }
 
   @Override
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
+  public Element getBuildElement(org.w3c.dom.Document doc) {
     Element el = doc.createElement(getClass().getName());
     String[] names = getAttributeNames();
     for (String name : names) {
@@ -236,5 +239,20 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
   @Override
   public List<String> getPropertyNames() {
     return new ArrayList<>();
+  }
+
+  /**
+   * Adds all images used by this component AND any subcomponents to the collection
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    addLocalImageNames(s);
+
+    for (Buildable child : buildComponents) {
+      if (child instanceof ImageSearchTarget) {
+        ((ImageSearchTarget) child).addImageNamesRecursively(s);
+      }
+    }
   }
 }

@@ -32,7 +32,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.i18n.Resources;

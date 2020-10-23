@@ -696,11 +696,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                 private static final long serialVersionUID = 1L;
 
                 @Override
-                public void save() {
-                  super.save();
-                }
-
-                @Override
                 public void cancel() {
                   ConfigureTree.this.remove(target, child);
                   dispose();
@@ -811,7 +806,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public boolean canContainGamePiece(final Configurable target) {
     boolean canContainPiece = false;
     for (Class<?> c : target.getAllowableConfigureComponents()) {
-      if (VASSAL.build.widget.PieceSlot.class.isAssignableFrom(c)) {
+      if (PieceSlot.class.isAssignableFrom(c)) {
         canContainPiece = true;
         break;
       }

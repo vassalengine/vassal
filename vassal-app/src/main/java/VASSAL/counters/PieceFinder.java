@@ -29,7 +29,7 @@ import VASSAL.build.module.Map;
 @FunctionalInterface
 public interface PieceFinder {
   /** Return the argument GamePiece (or one of its children if a Stack) found at the given point on the given Map */
-  public GamePiece select(Map map, GamePiece piece, Point pt);
+  GamePiece select(Map map, GamePiece piece, Point pt);
 
   /** Return a Stack overlapping the given point */
   PieceFinder STACK_ONLY = new StackOnly();
@@ -52,7 +52,7 @@ public interface PieceFinder {
    */
   PieceFinder MOVABLE = new Movable();
 
-  public class StackOnly extends Movable {
+  class StackOnly extends Movable {
     @Override
     public Object visitDefault(GamePiece piece) {
       return null;
@@ -70,7 +70,7 @@ public interface PieceFinder {
   }
 
 
-  public class DeckOrPieceInStack extends PieceInStack {
+  class DeckOrPieceInStack extends PieceInStack {
     @Override
     public Object visitDeck(Deck d) {
       Shape s = d.getShape();
@@ -81,7 +81,7 @@ public interface PieceFinder {
   }
 
 
-  public class PieceInStack extends Movable {
+  class PieceInStack extends Movable {
     @Override
     public Object visitStack(Stack s) {
       GamePiece selected = (GamePiece) super.visitStack(s);
@@ -93,7 +93,7 @@ public interface PieceFinder {
     }
   }
 
-  public class Movable implements PieceFinder, DeckVisitor {
+  class Movable implements PieceFinder, DeckVisitor {
     protected Shape[] shapes = new Shape[0];
     protected Map map;
     protected Point pt;
