@@ -19,6 +19,6 @@ package VASSAL.chat.node;
 
 /** Generic interface for listening to a socket */
 public interface SocketWatcher {
-  public void handleMessage(String msg);
-  public void socketClosed(SocketHandler handler);
+  void handleMessage(String msg);
+  void socketClosed(SocketHandler handler);
 }

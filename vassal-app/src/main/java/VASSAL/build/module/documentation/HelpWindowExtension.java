@@ -25,5 +25,5 @@ package VASSAL.build.module.documentation;
 @Deprecated(since = "2020-08-06")
 public interface HelpWindowExtension {
   @Deprecated(since = "2020-08-06")
-  public void setBaseWindow(HelpWindow w);
+  void setBaseWindow(HelpWindow w);
 }

@@ -166,7 +166,7 @@ public class ZipFileImageTiler {
   private static void writeToOutputStream(OutputStream os, String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th, String[] ipaths, ExecutorService exec,
                                           ImageLoader loader, TileSlicer slicer) {
 
-    try (final DataOutputStream out = new DataOutputStream(os)) {
+    try (DataOutputStream out = new DataOutputStream(os)) {
       final Callback<String> imageL = ipath -> {
         out.writeByte(STARTING_IMAGE);
         out.writeUTF(ipath);

@@ -740,9 +740,9 @@ public class GameState implements CommandEncoder {
     
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
-      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           final BufferedOutputStream bout = new BufferedOutputStream(zout);
-           final OutputStream out = new ObfuscatingOutputStream(bout)) {
+      try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           BufferedOutputStream bout = new BufferedOutputStream(zout);
+           OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
 
