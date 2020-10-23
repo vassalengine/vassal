@@ -267,7 +267,6 @@ public abstract class EditorWindow extends JFrame {
       ErrorDialog.bug(e);
     }
 
-
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction("Editor.ModuleEditor.module_components", url, null));
@@ -291,9 +290,7 @@ public abstract class EditorWindow extends JFrame {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-
-
-    
+  
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.html").toURI()
           .toURL();
@@ -303,7 +300,6 @@ public abstract class EditorWindow extends JFrame {
       ErrorDialog.bug(e);
     }
     
-    
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.html").toURI()
           .toURL();
@@ -312,7 +308,6 @@ public abstract class EditorWindow extends JFrame {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
     
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.html").toURI()
@@ -346,23 +341,15 @@ public abstract class EditorWindow extends JFrame {
     pack();
   }
 
-
   /**
    * @param name Filename to check
    * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
    */
   boolean isTempFile(String name) {
-    if ((name == null) || name.isEmpty()) {
-      return true;
-    }
-
-    if ("tmp".equals(name.substring(0, 3)) && name.contains(".zip")) {
-      return true;
-    }
-
-    return false;
+    return name == null || 
+           name.isEmpty() ||
+           ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));
   }
-
 
   void setModuleName(String name) {
     if (isTempFile(name)) {

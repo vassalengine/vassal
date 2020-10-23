@@ -19,6 +19,7 @@ package VASSAL.chat.node;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Properties;
 
 import VASSAL.tools.SequenceEncoder;
@@ -71,10 +72,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     if (!(o instanceof PlayerNode)) return false;
 
     final PlayerNode player = (PlayerNode) o;
-
-    if (!id.equals(player.id)) return false;
-
-    return true;
+    return Objects.equals(id, player.id);
   }
 
   @Override
