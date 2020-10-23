@@ -33,9 +33,9 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -43,8 +43,11 @@ import javax.swing.border.TitledBorder;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A trait for assigning an arbitrary shape to a {@link GamePiece}
@@ -52,8 +55,8 @@ import VASSAL.tools.imageop.Op;
  * @see GamePiece#getShape
  */
 public class NonRectangular extends Decorator implements EditablePiece {
-  public static final String ID = "nonRect;";
-  private static HashMap<String, Shape> shapeCache = new HashMap<>();
+  public static final String ID = "nonRect;"; // NON-NLS
+  private static final HashMap<String, Shape> shapeCache = new HashMap<>();
 
   private String type;
   private Shape shape;
@@ -113,7 +116,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return "Non-Rectangular";
+    return Resources.getString("Editor.NonRectangular.trait_description");
   }
 
   @Override
@@ -156,7 +159,15 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("NonRectangular.html");
+    return HelpFile.getReferenceManualPage("NonRectangular.html"); // NON-NLS
+  }
+
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof NonRectangular)) return false;
+    final NonRectangular c = (NonRectangular) o;
+    return Objects.equals(type, c.type);
   }
 
   @Override
@@ -166,12 +177,11 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   private class Ed implements PieceEditor {
     private Shape shape;
-    private JPanel controls;
+    private final JPanel controls;
 
     private Ed(NonRectangular p) {
       shape = p.shape;
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
+      controls = new JPanel(new MigLayout("ins 0", "[grow][]", "[grow]")); // NON-NLS
 
       final JPanel shapePanel = new JPanel() {
         private static final long serialVersionUID = 1L;
@@ -197,7 +207,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           return d;
         }
       };
-      controls.add(shapePanel);
+      controls.add(shapePanel, "grow"); // NON-NLS
 
       final ImagePicker picker = new ImagePicker() {
         private static final long serialVersionUID = 1L;
@@ -210,7 +220,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           if (img != null) setShapeFromImage(img);
         }
       };
-      picker.setBorder(new TitledBorder("Use image shape"));
+      picker.setBorder(new TitledBorder(Resources.getString("Editor.NonRectangular.use_image_shape")));
       controls.add(picker);
     }
 

@@ -379,26 +379,26 @@ public class Immobilized extends Decorator implements EditablePiece {
     private static final String[] SELECT_OPTIONS = new String[] { NORMAL, SHIFT, ALT, NEVER}; // NON-NLS
 
     private static final String[] SELECT_KEYS = new String[] {
-      Resources.getString("Editor.Immobilized.normally"),
-      Resources.getString("Editor.Immobilized.when_shift_key_down"),
-      Resources.getString("Editor.Immobilized.when_alt_key_down"),
-      Resources.getString("Editor.Immobilized.never")
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.when_shift_key_down",
+      "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.never"
     };
 
     private static final String[] BAND_SELECT_OPTIONS = new String[] { NORMAL, ALT, NEVER}; // NON-NLS
 
     private static final String[] BAND_SELECT_KEYS = new String[] {
-      Resources.getString("Editor.Immobilized.normally"),
-      Resources.getString("Editor.Immobilized.when_alt_key_down"),
-      Resources.getString("Editor.Immobilized.never")
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.never"
     };
 
     private static final String[] MOVE_OPTIONS = new String[] { NORMAL, SELECTED, NEVER }; // NON-NLS
 
     private static final String[] MOVE_KEYS = new String[] {
-      Resources.getString("Editor.Immobilized.normally"),
-      Resources.getString("Editor.Immobilized.only_if_selected"),
-      Resources.getString("Editor.Immobilized.never")
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.only_if_selected",
+      "Editor.Immobilized.never"
     };
 
     public Ed(Immobilized p) {

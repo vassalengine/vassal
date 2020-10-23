@@ -19,6 +19,8 @@ package VASSAL.counters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +28,8 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -48,39 +52,48 @@ public class DecoratorTest {
    */
   public void serializeTest(String test, Decorator referenceTrait) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
+    // Create a dummy image to return from mocks
     BufferedImage dummyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
+
+    // Create a dummy ImageOp before mocking Op
+    ImageOp dummyOp = Op.load(dummyImage);
+
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       // Create a static mock for IconFactory and return the Calculator icon when asked. Allows Editors with Beanshell configurers to initialise.
       try (MockedStatic<IconFactory> staticIf = Mockito.mockStatic(IconFactory.class)) {
+        // Mock Op.load to return a dummy image when requested
+        try (MockedStatic<Op> staticOp = Mockito.mockStatic(Op.class)) {
 
-        staticIf.when(() -> IconFactory.getIcon("calculator", 12)).thenReturn(new ImageIcon(dummyImage));
-        staticIf.when(() -> IconFactory.getIcon("no", 0)).thenReturn(new ImageIcon(dummyImage));
-        staticIf.when(() -> IconFactory.getIcon("yes", 0)).thenReturn(new ImageIcon(dummyImage));
+          // Now return the dummy image when asked instead of looking in the archive
+          staticOp.when(() -> Op.load(any(String.class))).thenReturn(dummyOp);
 
-        // Mock DataArchive to return a list of image names
-        final DataArchive da = mock(DataArchive.class);
-        when(da.getImageNames()).thenReturn(new String[0]);
+          // Return Dummy icons from IconFactory
+          staticIf.when(() -> IconFactory.getIcon(any(String.class), anyInt())).thenReturn(new ImageIcon(dummyImage));
 
-        // Mock GameModule to return a DataArchive
-        final GameModule gm = mock(GameModule.class);
-        when(gm.getDataArchive()).thenReturn(da);
+          // Mock DataArchive to return a list of image names
+          final DataArchive da = mock(DataArchive.class);
+          when(da.getImageNames()).thenReturn(new String[0]);
 
-        staticGm.when(GameModule::getGameModule).thenReturn(gm);
+          // Mock GameModule to return a DataArchive
+          final GameModule gm = mock(GameModule.class);
+          when(gm.getDataArchive()).thenReturn(da);
 
-        // Can't test without a properly constructed BasicPiece as the inner
-        if (referenceTrait.getInner() == null) {
-          referenceTrait.setInner(createBasicPiece());
+          staticGm.when(GameModule::getGameModule).thenReturn(gm);
+
+          // Can't test without a properly constructed BasicPiece as the inner
+          if (referenceTrait.getInner() == null) {
+            referenceTrait.setInner(createBasicPiece());
+          }
+
+          // Test we can reconstruct a Piece by passing its type through its Constructor
+          constructorTest(test, referenceTrait);
+
+          // Test we can reconstruct a Piece using the BasicCommandEncoder
+          commandEncoderTest(test, referenceTrait);
+
+          // Test the serialization used in the internal editor matches the standard serialization
+          editorTest(test, referenceTrait);
         }
-
-        // Test we can reconstruct a Piece by passing its type through its Constructor
-        constructorTest(test, referenceTrait);
-
-        // Test we can reconstruct a Piece using the BasicCommandEncoder
-        commandEncoderTest(test, referenceTrait);
-
-        // Test the serialization used in the internal editor matches the standard serialization
-        editorTest(test, referenceTrait);
-
       }
     }
   }

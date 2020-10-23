@@ -497,7 +497,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     if (!"null".equals(mapId)) { //$NON-NLS-1$//
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null));
+        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null)); // NON-NLS
       }
     }
 
@@ -616,7 +616,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   @Override
   public void setParent(Stack s) {
     if (s != null) {
-      ErrorDialog.dataWarning(new BadDataReport("Cannot add stack to another stack", toString(), null));
+      ErrorDialog.dataWarning(new BadDataReport("Cannot add stack to another stack", toString(), null)); // NON-NLS
     }
   }
 

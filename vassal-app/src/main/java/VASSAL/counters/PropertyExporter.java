@@ -9,7 +9,7 @@ import VASSAL.build.module.properties.PropertySource;
 
 public interface PropertyExporter extends PropertyNameSource, PropertySource {
 
-  String LOCALIZED_NAME = "localizedName";
+  String LOCALIZED_NAME = "localizedName"; // NON-NLS
 
   default Map<String, Object> getProperties() {
     final List<String> propertyNames = getPropertyNames();

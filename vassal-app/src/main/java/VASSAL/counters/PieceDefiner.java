@@ -590,7 +590,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         buttonBox.add(b, "tag help"); //NON-NLS
       }
 
-      add(buttonBox, "spanx 3,center");
+      add(buttonBox, "spanx 3,center"); // NON-NLS
 
       pack();
       setLocationRelativeTo(getOwner());

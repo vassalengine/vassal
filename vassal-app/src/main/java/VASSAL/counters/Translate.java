@@ -17,23 +17,21 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Window;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -55,6 +53,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Give a piece a command that moves it a fixed amount in a particular
@@ -62,7 +61,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class Translate extends Decorator implements TranslatablePiece {
   private static final String _0 = "0";
-  public static final String ID = "translate;";
+  public static final String ID = "translate;"; // NON-NLS
   protected KeyCommand[] commands;
   protected String commandName;
   protected NamedKeyStroke keyCommand;
@@ -78,7 +77,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   protected static MoveExecuter mover;
 
   public Translate() {
-    this(ID + "Move Forward", null);
+    this(ID + Resources.getString("Editor.MoveFixedDistance.default_command"), null);
   }
 
   public Translate(String type, GamePiece inner) {
@@ -88,18 +87,14 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    String d = "Move fixed distance";
-    if (description.length() > 0) {
-      d += " - " + description;
-    }
-    return d;
+    return buildDescription("Editor.MoveFixedDistance.trait_description", description);
   }
 
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    commandName = st.nextToken("Move Forward");
+    commandName = st.nextToken(Resources.getString("Editor.MoveFixedDistance.default_command"));
     keyCommand = st.nextNamedKeyStroke('M');
     xDist.setFormat(st.nextToken(_0));
     yDist.setFormat(st.nextToken("60"));
@@ -324,23 +319,23 @@ public class Translate extends Decorator implements TranslatablePiece {
   }
 
   protected void translate(Point p) {
-    int x = 0;
-    int y = 0;
+    int x;
+    int y;
     final GamePiece outer = Decorator.getOutermost(this);
     final Board b = outer.getMap().findBoard(p);
 
-    final int Xdist = xDist.getTextAsInt(outer, "Xdistance", this);
-    final int Xindex = xIndex.getTextAsInt(outer, "Xindex", this);
-    final int Xoffset = xOffset.getTextAsInt(outer, "Xoffset", this);
+    final int Xdist = xDist.getTextAsInt(outer, "Xdistance", this); // NON-NLS
+    final int Xindex = xIndex.getTextAsInt(outer, "Xindex", this); // NON-NLS
+    final int Xoffset = xOffset.getTextAsInt(outer, "Xoffset", this); // NON-NLS
 
     x = Xdist + Xindex * Xoffset;
     if (b != null) {
       x = (int)Math.round(b.getMagnification() * x);
     }
 
-    final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this);
-    final int Yindex = yIndex.getTextAsInt(outer, "Yindex", this);
-    final int Yoffset = yOffset.getTextAsInt(outer, "Yoffset", this);
+    final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this); // NON-NLS
+    final int Yindex = yIndex.getTextAsInt(outer, "Yindex", this); // NON-NLS
+    final int Yoffset = yOffset.getTextAsInt(outer, "Yoffset", this); // NON-NLS
 
     y = Ydist + Yindex * Yoffset;
     if (b != null) {
@@ -399,83 +394,113 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Translate.html");
+    return HelpFile.getReferenceManualPage("Translate.html"); // NON-NLS
   }
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, getCommandDescription(description, "Move Fixed Distance command"));
+    return getI18nData(commandName, getCommandDescription(description, Resources.getString("Editor.MoveFixedDistance.move_fixed_distance_command")));
   }
 
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Translate)) return false;
+    final Translate c = (Translate) o;
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    if (! Objects.equals(keyCommand, c.keyCommand)) return false;
+    if (! Objects.equals(xDist, c.xDist)) return false;
+    if (! Objects.equals(yDist, c.yDist)) return false;
+    if (! Objects.equals(moveStack, c.moveStack)) return false;
+    if (! Objects.equals(xIndex, c.xIndex)) return false;
+    if (! Objects.equals(yIndex, c.yIndex)) return false;
+    if (! Objects.equals(xOffset, c.xOffset)) return false;
+    if (! Objects.equals(yOffset, c.yOffset)) return false;
+    return Objects.equals(description, c.description);
+  }
+
   public static class Editor implements PieceEditor {
-    private FormattedExpressionConfigurer xDist;
-    private FormattedExpressionConfigurer yDist;
-    private StringConfigurer name;
-    private NamedHotKeyConfigurer key;
-    private JPanel controls;
-    private BooleanConfigurer moveStack;
+    private final FormattedExpressionConfigurer xDist;
+    private final FormattedExpressionConfigurer yDist;
+    private final StringConfigurer name;
+    private final NamedHotKeyConfigurer key;
+    private final TraitConfigPanel controls;
+    private final BooleanConfigurer moveStack;
     protected BooleanConfigurer advancedInput;
     protected FormattedExpressionConfigurer xIndexInput;
     protected FormattedExpressionConfigurer xOffsetInput;
     protected FormattedExpressionConfigurer yIndexInput;
     protected FormattedExpressionConfigurer yOffsetInput;
     protected StringConfigurer descInput;
+    private JLabel xLabel;
+    private JPanel xControls;
+    private JLabel yLabel;
+    private JPanel yControls;
 
     public Editor(Translate t) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      descInput = new StringConfigurer(null, "Description:  ", t.description);
-      controls.add(descInput.getControls());
-      name = new StringConfigurer(null, "Command Name:  ", t.commandName);
-      controls.add(name.getControls());
-      key = new NamedHotKeyConfigurer(null, "Keyboard shortcut:  ", t.keyCommand);
-      controls.add(key.getControls());
-      xDist = new FormattedExpressionConfigurer(null, "Distance to the right:  ", t.xDist.getFormat(), t);
-      controls.add(xDist.getControls());
-      yDist = new FormattedExpressionConfigurer(null, "Distance upwards:  ", t.yDist.getFormat(), t);
-      controls.add(yDist.getControls());
+      controls = new TraitConfigPanel();
+
+      descInput = new StringConfigurer(t.description);
+      controls.add("Editor.description_label", descInput);
+
+      name = new StringConfigurer(t.commandName);
+      controls.add("Editor.menu_command", name);
+
+      key = new NamedHotKeyConfigurer(t.keyCommand);
+      controls.add("Editor.keyboard_command", key);
+
+      xDist = new FormattedExpressionConfigurer(t.xDist.getFormat(), t);
+      controls.add("Editor.MoveFixedDistance.distance_to_the_right", xDist);
+
+      yDist = new FormattedExpressionConfigurer(t.yDist.getFormat(), t);
+      controls.add("Editor.MoveFixedDistance.distance_upwards", yDist);
+
       // Hint that Move Entire Stack, even in fixed code, has problems.
-      moveStack = new BooleanConfigurer(null, "Move entire stack? (Not Recommended)",
-                                        Boolean.valueOf(t.moveStack));
-      controls.add(moveStack.getControls());
+      moveStack = new BooleanConfigurer(Boolean.valueOf(t.moveStack));
+      controls.add("Editor.MoveFixedDistance.move_entire_stack", moveStack);
 
-      advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
-      advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateAdvancedVisibility();
-        }
-      });
-      controls.add(advancedInput.getControls());
+      advancedInput = new BooleanConfigurer(false);
+      advancedInput.addPropertyChangeListener(e -> updateAdvancedVisibility());
+      controls.add("Editor.MoveFixedDistance.advanced_options", advancedInput);
 
-      Box b = Box.createHorizontalBox();
-      xIndexInput = new FormattedExpressionConfigurer(null, "Additional offset to the right:  ", t.xIndex.getFormat(), t);
-      b.add(xIndexInput.getControls());
-      xOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.xOffset.getFormat(), t);
-      b.add(xOffsetInput.getControls());
-      controls.add(b);
+      xLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"));
+      xControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
+      xLabel.setLabelFor(xControls);
+      xIndexInput = new FormattedExpressionConfigurer(t.xIndex.getFormat(), t);
+      xControls.add(xIndexInput.getControls(), "grow"); // NON-NLS
+      JLabel times = new JLabel(Resources.getString("Editor.MoveFixedDistance.times"));
+      xOffsetInput = new FormattedExpressionConfigurer(t.xOffset.getFormat(), t);
+      times.setLabelFor(xOffsetInput.getControls());
+      xControls.add(times);
+      xControls.add(xOffsetInput.getControls(), "grow"); // NON-NLS
 
-      b = Box.createHorizontalBox();
-      yIndexInput = new FormattedExpressionConfigurer(null, "Additional offset upwards:  ", t.yIndex.getFormat(), t);
-      b.add(yIndexInput.getControls());
-      yOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.yOffset.getFormat(), t);
-      b.add(yOffsetInput.getControls());
-      controls.add(b);
+      controls.add(xLabel);
+      controls.add(xControls, "grow,wrap"); // NON-NLS
+
+      yLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"));
+      yControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
+      yLabel.setLabelFor(yControls);
+      yIndexInput = new FormattedExpressionConfigurer(t.yIndex.getFormat(), t);
+      yControls.add(yIndexInput.getControls());
+      times = new JLabel(Resources.getString("Editor.MoveFixedDistance.times"));
+      yOffsetInput = new FormattedExpressionConfigurer(t.yOffset.getFormat(), t);
+      times.setLabelFor(yOffsetInput.getControls());
+      yControls.add(times);
+      yControls.add(yOffsetInput.getControls(), "grow"); // NON-NLS
+
+      controls.add(yLabel);
+      controls.add(yControls, "grow,wrap"); // NON-NLS
 
       updateAdvancedVisibility();
     }
 
     private void updateAdvancedVisibility() {
       boolean visible = advancedInput.booleanValue();
-      xIndexInput.getControls().setVisible(visible);
-      xOffsetInput.getControls().setVisible(visible);
-      yIndexInput.getControls().setVisible(visible);
-      yOffsetInput.getControls().setVisible(visible);
-      Window w = SwingUtilities.getWindowAncestor(controls);
-      if (w != null) {
-        w.pack();
-      }
+      xLabel.setVisible(visible);
+      xControls.setVisible(visible);
+      yLabel.setVisible(visible);
+      yControls.setVisible(visible);
+      repack(controls);
     }
 
     @Override
@@ -511,10 +536,10 @@ public class Translate extends Decorator implements TranslatablePiece {
    * be merged with other moving pieces until they've been moved.
    */
   public static class MoveExecuter implements Runnable {
-    private List<Move> moves = new ArrayList<>();
-    private Set<GamePiece> pieces = new HashSet<>();
+    private final List<Move> moves = new ArrayList<>();
+    private final Set<GamePiece> pieces = new HashSet<>();
     private KeyStroke stroke;
-    private List<GamePiece> innerPieces = new ArrayList<>();
+    private final List<GamePiece> innerPieces = new ArrayList<>();
     private Command additionalCommand;
 
     @Override
@@ -627,9 +652,9 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     private static class Move {
-      private Map map;
-      private GamePiece piece;
-      private Point pos;
+      private final Map map;
+      private final GamePiece piece;
+      private final Point pos;
 
       public Move(Map map, GamePiece piece, Point pos) {
         this.map = map;
