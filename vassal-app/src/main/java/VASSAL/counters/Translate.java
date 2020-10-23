@@ -195,16 +195,13 @@ public class Translate extends Decorator implements TranslatablePiece {
     translate(p);
 
     // Handle rotation of the piece, movement is relative to the current facing of the unit.
-    // Use the first Rotator trait below us, if none, use the highest in the stack.
+    // Use the first Rotator trait below us, as no rotators above us can affect us
     FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
-    if (myRotation == null) {
-      myRotation = (FreeRotator) Decorator.getDecorator(Decorator.getOutermost(this), FreeRotator.class);
-    }
     if (myRotation != null) {
       Point2D myPosition = getPosition().getLocation();
       Point2D p2d = p.getLocation();
       p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
-      p = new Point((int) p2d.getX(), (int) p2d.getY());
+      p = new Point((int) Math.round(p2d.getX()), (int) Math.round(p2d.getY())); // Use Round not Truncate to prevent drift
     }
 
     // And snap to the grid if required.
