@@ -24,8 +24,6 @@ import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.launch.Config;
-
-import VASSAL.launch.Config;
 import VASSAL.launch.DummyConfig;
 import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.version.VassalVersionTokenizer;
