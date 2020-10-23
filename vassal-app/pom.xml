@@ -260,6 +260,7 @@
                 </rulesets>
                 <excludes>
                   <exclude>bsh/**</exclude>
+                  <exclude>org/**</exclude>
                 </excludes>
               </configuration>
               <executions>
