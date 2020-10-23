@@ -16,6 +16,8 @@
  */
 package VASSAL.chat;
 
+import java.util.Objects;
+
 import VASSAL.build.module.Chatter;
 
 
@@ -57,6 +59,11 @@ public class SimplePlayer implements Player {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 
   @Override

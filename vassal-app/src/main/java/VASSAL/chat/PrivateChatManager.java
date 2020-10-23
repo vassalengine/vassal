@@ -97,6 +97,11 @@ public class PrivateChatManager {
     }
 
     @Override
+    public int hashCode() {
+      return player.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
       return o instanceof Entry && player.equals(((Entry) o).player);
     }

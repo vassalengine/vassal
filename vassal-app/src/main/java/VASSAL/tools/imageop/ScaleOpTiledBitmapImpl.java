@@ -277,16 +277,4 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
         ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]"; //NON-NLS
     }
   }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || o.getClass() != this.getClass()) return false;
-
-    final ScaleOpTiledBitmapImpl op = (ScaleOpTiledBitmapImpl) o;
-    return scale == op.scale &&
-           sop.equals(op.sop) &&
-           hints.equals(op.hints);
-  }
 }
