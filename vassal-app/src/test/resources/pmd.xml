@@ -4,6 +4,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>Custom rules</description>
+
+  <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField" />
+  <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
+  <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" />
+  <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" />
+  <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" />
+  <rule ref="category/java/bestpractices.xml/JUnitUseExpected" />
+  <rule ref="category/java/bestpractices.xml/UnusedImports" />
+  <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod" />
+  <rule ref="category/java/bestpractices.xml/UseAssertEqualsInsteadOfAssertTrue" />
+
   <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
 
   <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
