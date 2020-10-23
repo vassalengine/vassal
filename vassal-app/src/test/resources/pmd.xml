@@ -39,9 +39,7 @@
 
   <rule ref="category/java/codestyle.xml/AvoidDollarSigns" />
   <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass" />
-<!--
   <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending" />
--->
   <rule ref="category/java/codestyle.xml/DontImportJavaLang" />
   <rule ref="category/java/codestyle.xml/DuplicateImports" />
   <rule ref="category/java/codestyle.xml/ExtendsObject" />

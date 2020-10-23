@@ -793,4 +793,10 @@
         <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/tools/icon/IconFactory</className>
+        <differenceType>7009</differenceType>
+        <method>void findLocalSizedIcons(int)</method>
+        <justification>Protected method can be less visible as it's in a final class</justification>
+    </difference>
 </differences>
