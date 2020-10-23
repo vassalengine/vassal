@@ -23,9 +23,6 @@ import VASSAL.build.AutoConfigurable;
  * The AutoConfigurable object should return a sub-class of StringEnum with a no-arg constructor
  */
 public abstract class TranslatableStringEnum extends StringEnum {
-  public TranslatableStringEnum() {
-    super();
-  }
   public abstract String[] getI18nKeys(AutoConfigurable target);
 
   /**

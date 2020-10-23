@@ -191,10 +191,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     public static final String NONE = "<none>"; //NON-NLS
     public static final String NONE_NAME = Resources.getString("Editor.DrawPile.none");
 
-    public AssignedDeckPrompt() {
-      // do nothing
-    }
-
     /**
      * For this one we need to use pre-translated display names.
      * @return true

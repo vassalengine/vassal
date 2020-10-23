@@ -39,10 +39,6 @@ public abstract class AbstractInterpreter extends Interpreter {
 
   protected NameSpace myNameSpace;
 
-  public AbstractInterpreter() {
-    super();
-  }
-
   /**
    * Set a variable and handle exceptions
    *

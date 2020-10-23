@@ -111,8 +111,6 @@ public class GameState implements CommandEncoder {
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
 
-  public GameState() {}
-
   /**
    * Expects to be added to a GameModule.  Adds <code>New</code>,
    * <code>Load</code>, <code>Close</code>, and <code>Save</code>

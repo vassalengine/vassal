@@ -48,9 +48,6 @@ public abstract class Command {
   private LinkedList<Command> seq = new LinkedList<>();
   private Command undo;
 
-  public Command() {
-  }
-
   public Command[] getSubCommands() {
     return seq.toArray(new Command[0]);
   }

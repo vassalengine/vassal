@@ -63,8 +63,6 @@ public class PrefsEditor {
   private File pfile;
   private Action editAction;
 
-  public PrefsEditor() {}
-
   public void initDialog(Frame parent) {
     if (dialog == null) {
       dialog = new JDialog(parent, true);

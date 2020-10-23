@@ -38,10 +38,6 @@ public class ScriptContainer extends AbstractConfigurable {
     return instance;
   }
 
-  public ScriptContainer() {
-
-  }
-
   @Override
   public String[] getAttributeDescriptions() {
     return new String[0];

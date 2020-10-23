@@ -115,9 +115,6 @@ public class WizardSupport {
   protected List<PredefinedSetup> setups = new ArrayList<>();
   protected Tutorial tutorial;
 
-  public WizardSupport() {
-  }
-
   /**
    * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline.
    *

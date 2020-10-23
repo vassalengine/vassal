@@ -44,9 +44,6 @@ import VASSAL.tools.menu.MenuManager;
  * Represents the <code>Help</code> menu of the controls window
  */
 public class Documentation extends AbstractConfigurable {
-  public Documentation() {
-  }
-
   public JMenu getHelpMenu() {
     final JMenuBar mb = MenuManager.getInstance().getMenuBarFor(
       GameModule.getGameModule().getPlayerWindow());

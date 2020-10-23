@@ -58,9 +58,6 @@ public class BoxWidget extends Widget
   private Map<Object, String> keys = new HashMap<>();
   private int count = 0;
 
-  public BoxWidget() {
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.BoxWidget.component_type");
   }

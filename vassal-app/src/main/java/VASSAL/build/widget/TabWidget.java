@@ -44,8 +44,6 @@ public class TabWidget extends Widget
   private JTabbedPane tab = null;
   private List<Widget> widgets = new ArrayList<>();
 
-  public TabWidget() { }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.TabWidget.component_type");
   }

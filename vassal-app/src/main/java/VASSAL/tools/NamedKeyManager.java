@@ -39,9 +39,6 @@ public class NamedKeyManager {
   protected static int nextNamedKey = NAMED_START;
   protected static final HashMap<String, KeyStroke> strokes = new HashMap<>();
 
-  public NamedKeyManager() {
-  }
-
   public static NamedKeyManager getInstance() {
     if (instance == null) {
       instance = new NamedKeyManager();

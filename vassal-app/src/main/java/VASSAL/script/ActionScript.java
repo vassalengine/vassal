@@ -53,10 +53,6 @@ public class ActionScript extends AbstractScript
     return "Action Script";
   }
 
-  public ActionScript() {
-    super();
-  }
-
   public String evaluate(PropertySource target) {
     return "";
   }

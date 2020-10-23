@@ -74,9 +74,6 @@ public class HtmlChart extends Widget implements MouseListener {
   private JScrollPane scroller;
   private JEditorPane htmlWin;
 
-  public HtmlChart() {
-  }
-
   private boolean isURL() {
     return htmlWin.getDocument().getProperty("stream") != null; //NON-NLS
   }
@@ -316,10 +313,6 @@ public class HtmlChart extends Widget implements MouseListener {
     }
 
     public static class XTMLFactory extends HTMLFactory implements ViewFactory {
-      public XTMLFactory() {
-        super();
-      }
-
       @Override
       public View create(Element element) {
         final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));

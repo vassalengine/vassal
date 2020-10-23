@@ -19,9 +19,6 @@ package VASSAL.command;
 
 
 public class NullCommand extends Command {
-  public NullCommand() {
-  }
-
   @Override
   protected void executeCommand() {
   }

@@ -438,9 +438,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public static final String ANY = "<any>";
     public static final String ANY_NAME = Resources.getString("Editor.SetupStack.any_name");
 
-    public OwningBoardPrompt() {
-    }
-
     /**
      * For this one we need to use pre-translated display names.
      * @return true
