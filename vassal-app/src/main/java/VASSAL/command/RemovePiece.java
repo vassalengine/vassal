@@ -20,7 +20,6 @@ package VASSAL.command;
 import java.awt.Rectangle;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.HighlightLastMoved;
 import VASSAL.counters.GamePiece;
