@@ -35,6 +35,7 @@ public class CounterGlobalKeyCommandTest extends DecoratorTest {
     CounterGlobalKeyCommand trait = new CounterGlobalKeyCommand();
     serializeTest("Default trait", trait); // NON-NLS
 
+    trait = new CounterGlobalKeyCommand();
     trait.description = "abc";
     trait.key = new NamedKeyStroke("xyzzy");
     trait.globalKey = new NamedKeyStroke("plugh");
@@ -45,5 +46,21 @@ public class CounterGlobalKeyCommandTest extends DecoratorTest {
     trait.globalCommand.setReportSingle(true);
     trait.globalCommand.selectFromDeck = 3;
     serializeTest("Complex trait", trait);
+
+    trait = new CounterGlobalKeyCommand();
+    trait.description = "abc";
+    trait.key = new NamedKeyStroke("xyzzy");
+    trait.globalKey = new NamedKeyStroke("plugh");
+    trait.propertiesFilter = new PropertyExpression("{x==2}");
+    trait.restrictRange = true;
+    trait.range = 3;
+    trait.rangeProperty = "test";
+    trait.globalCommand.setReportSingle(true);
+    trait.globalCommand.selectFromDeck = 3;
+    GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
+    target.setTargetType(GlobalCommandTarget.Target.MAP);
+    target.setTargetMap("xyzzy");
+    trait.target = target;
+    serializeTest("Target", trait);
   }
 }

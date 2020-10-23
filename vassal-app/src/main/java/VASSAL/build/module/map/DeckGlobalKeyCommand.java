@@ -17,12 +17,17 @@
  */
 package VASSAL.build.module.map;
 
+
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.counters.CounterGlobalKeyCommand;
+import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -32,6 +37,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GlobalCommand;
@@ -43,8 +49,20 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This version of {@link MassKeyCommand} is added directly to a
- * {@link VASSAL.build.GameModule} and applies to all maps
+ * This version of {@link MassKeyCommand} is added to a {@link DrawPile} (which holds a {@link Deck})
+ * and applies to pieces/cards currently in the deck.
+ *
+ * The "Global Key Command" functionality, as the term is used in Vassal Modules, is spread out over several classes internally:
+ * {@link GlobalCommand} - primary functionality for sending commands to multiple pieces based on matching parameters
+ * {@link VASSAL.build.module.GlobalKeyCommand}         - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand}  - Global Key Commands from a Module "At Startup"
+ * {@link VASSAL.build.module.map.MassKeyCommand}       - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand}                      - Global Key Commands from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class DeckGlobalKeyCommand extends MassKeyCommand {
 
@@ -66,6 +84,14 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
+  }
+
+  /**
+   * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown. In particular no "Fast Match" parameters are shown for Deck GKCs.
+   */
+  @Override
+  public GlobalCommandTarget.GKCtype getGKCtype() {
+    return GlobalCommandTarget.GKCtype.DECK;
   }
 
   @Override
@@ -125,7 +151,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       .append(getAttributeValueString(PROPERTIES_FILTER))
       .append(getAttributeValueString(DECK_COUNT))
       .append(getAttributeValueString(REPORT_FORMAT))
-      .append(getLocalizedConfigureName());
+      .append(getLocalizedConfigureName())
+      .append(getAttributeValueString(TARGET));
     return se.getValue();
   }
 
@@ -137,6 +164,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(DECK_COUNT, sd.nextInt(0));
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
+    setAttribute(TARGET, sd.nextToken(""));
+
   }
 
   @Override
@@ -144,7 +173,10 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     return new String[]{
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString("Editor.GlobalKeyCommand.command"), //$NON-NLS-1$
-      Resources.getString("Editor.GlobalKeyCommand.matching_properties"), //$NON-NLS-1$
+
+      Resources.getString("Editor.GlobalKeyCommand.pre_select"), // Fast Match parameters (not displayed)
+
+      Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
       Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
     };
@@ -155,6 +187,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     return new String[]{
       NAME,
       KEY_COMMAND,
+
+      TARGET,             // Fast Match parameters (disabled for this variant)
+
       PROPERTIES_FILTER,
       DECK_COUNT,
       REPORT_FORMAT
@@ -167,10 +202,18 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     return new Class<?>[]{
       String.class,
       NamedKeyStroke.class,
+
+      GlobalCommandTarget.class,  // Fast Match parameters (disabled for this variant)
+
       PropertyExpression.class,
       DeckPolicyConfig2.class,
       ReportFormatConfig.class
     };
+  }
+
+  @Override
+  public VisibilityCondition getAttributeVisibility(String key) {
+    return () -> true;
   }
 
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {
@@ -200,6 +243,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       else {
         c = new NullCommand();
       }
+
       Visitor visitor = new Visitor(c, filter, keyStroke);
       DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 

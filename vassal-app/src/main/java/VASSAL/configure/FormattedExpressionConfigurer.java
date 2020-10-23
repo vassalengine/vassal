@@ -56,6 +56,10 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     setValue(s);
   }
 
+  public FormattedExpressionConfigurer(String s) {
+    this(null, "", s);
+  }
+
   public FormattedExpressionConfigurer(String key, String name, FormattedString s) {
     this(key, name, s.getFormat());
   }
