@@ -162,7 +162,7 @@ public class LaunchRequest implements Serializable {
   /**
    * @return Usage string
    */
-  private static final String helpMeSpock() {
+  private static String helpMeSpock() {
     /*
       NB: Resources has a configurer, which means that calling its methods
       initializes the Swing graphics subsystem. The init method of StartUp

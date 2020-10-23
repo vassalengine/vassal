@@ -111,6 +111,11 @@ public class P2PPlayer extends SimplePlayer {
   }
 
   @Override
+  public int hashCode() {
+    return getId() == null ? info.hashCode() : getId().hashCode();
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o instanceof P2PPlayer) {
       P2PPlayer p = (P2PPlayer) o;

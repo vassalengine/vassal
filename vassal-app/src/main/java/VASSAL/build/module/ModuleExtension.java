@@ -122,7 +122,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     final String fileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE; //NON-NLS
 
     if (!(data instanceof ExtensionMetaData)) {
-      logger.error("Not an extension file {}", fileName, null); //NON-NLS
+      logger.error("Not an extension file {}", fileName); //NON-NLS
       throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + fileName); //NON-NLS
     }
 

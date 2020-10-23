@@ -740,9 +740,9 @@ public class GameState implements CommandEncoder {
     
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
-      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           final BufferedOutputStream bout = new BufferedOutputStream(zout);
-           final OutputStream out = new ObfuscatingOutputStream(bout)) {
+      try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           BufferedOutputStream bout = new BufferedOutputStream(zout);
+           OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
 
@@ -916,9 +916,9 @@ public class GameState implements CommandEncoder {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
-            final Command c = GameModule.getGameModule().decode(
-              IOUtils.toString(din, StandardCharsets.UTF_8));
-            return c;
+            return GameModule.getGameModule().decode(
+              IOUtils.toString(din, StandardCharsets.UTF_8)
+            );
           }
         }
       }

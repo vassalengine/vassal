@@ -207,8 +207,7 @@ public class TileUtils {
   public static Dimension size(File src) throws ImageIOException {
     try (InputStream in = new FileInputStream(src)) {
       // NB: We don't buffer here because we're reading only 18 bytes.
-      final Dimension d = size(in);
-      return d;
+      return size(in);
     }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(src, e);

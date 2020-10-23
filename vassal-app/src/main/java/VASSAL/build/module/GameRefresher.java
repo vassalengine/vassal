@@ -67,13 +67,13 @@ public final class GameRefresher implements GameComponent {
   private static final Logger logger = LoggerFactory.getLogger(GameRefresher.class);
 
   private Action refreshAction;
-  protected GpIdSupport gpIdSupport;
-  protected GpIdChecker gpIdChecker;
-  protected int updatedCount;
-  protected int notFoundCount;
-  protected int notOwnedCount;
-  protected RefreshDialog dialog;
-  protected boolean testMode;
+  private GpIdSupport gpIdSupport;
+  private GpIdChecker gpIdChecker;
+  private int updatedCount;
+  private int notFoundCount;
+  private int notOwnedCount;
+  private RefreshDialog dialog;
+  private boolean testMode;
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;

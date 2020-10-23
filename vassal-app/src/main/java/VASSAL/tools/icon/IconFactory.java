@@ -52,7 +52,6 @@ import VASSAL.tools.ReadErrorDialog;
  *
  */
 public final class IconFactory {
-
   private static final Logger logger = LoggerFactory.getLogger(IconFactory.class);
 
   static final String FILE = "file:"; //$NON-NLS-1$
@@ -306,7 +305,7 @@ public final class IconFactory {
    * @param size size to look for
    * @throws IOException oops
    */
-  protected void findLocalSizedIcons(int size) throws IOException {
+  private void findLocalSizedIcons(int size) throws IOException {
     final String path = DataArchive.ICON_DIR + IconFamily.SIZE_DIRS[size];
     final URL sizeURL = jar.getURL(path);
 

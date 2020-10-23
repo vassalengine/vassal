@@ -169,7 +169,7 @@ public class MovePiece extends Command {
    * @return
    */
   protected PieceVisitorDispatcher createMergeFinder(final Map map, final GamePiece p, final Point pt) {
-    PieceVisitorDispatcher dispatch = new DeckVisitorDispatcher(new DeckVisitor() {
+    return new DeckVisitorDispatcher(new DeckVisitor() {
       @Override
       public Object visitDeck(Deck d) {
         if (d.getPosition().equals(pt)) {
@@ -215,7 +215,6 @@ public class MovePiece extends Command {
         }
       }
     });
-    return dispatch;
   }
   @Override
   public String getDetails() {

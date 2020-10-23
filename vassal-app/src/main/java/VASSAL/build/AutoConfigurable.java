@@ -35,7 +35,7 @@ public interface AutoConfigurable extends Configurable {
    * @return an array of Strings giving all attributes of this Buildable
    * component that will be written to/read from an XML element
    */
-  public String[] getAttributeNames();
+  String[] getAttributeNames();
 
   /**
    * Called by the {@link #build} method, where <code>value</code> is the
@@ -43,28 +43,28 @@ public interface AutoConfigurable extends Configurable {
    * Can also be called with Object value to set the attribute.
    */
   @Override
-  public void setAttribute(String key, Object value);
+  void setAttribute(String key, Object value);
 
   /**
    * Called by the {@link #getBuildElement} method to write the
    * attributes into an XML element
    */
   @Override
-  public String getAttributeValueString(String key);
+  String getAttributeValueString(String key);
 
   /**
    * Return an array of Strings describing the attributes
    * of this object.  These strings are used as prompts in
    * the Properties window for this object.
    */
-  public String[] getAttributeDescriptions();
+  String[] getAttributeDescriptions();
 
   /**
    * Return the Class for the attributes of this object.
    * Valid classes are:  String, Integer, Double, Boolean, Image,
    * File, Color, and KeyStroke
    */
-  public Class<?>[] getAttributeTypes();
+  Class<?>[] getAttributeTypes();
 
   /**
    * Because attributes are not always applicable in all cases, this method returns an interface
@@ -72,9 +72,9 @@ public interface AutoConfigurable extends Configurable {
    * @param name
    * @return null if the attribute controls should always be visible;
    */
-  public VisibilityCondition getAttributeVisibility(String name);
+  VisibilityCondition getAttributeVisibility(String name);
 
-  public class Util {
+  class Util {
     public static void buildAttributes(Element e, AutoConfigurable parent) {
       if (e != null) {
         NamedNodeMap n = e.getAttributes();
