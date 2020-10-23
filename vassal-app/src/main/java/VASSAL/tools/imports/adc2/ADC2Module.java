@@ -2534,7 +2534,7 @@ public class ADC2Module extends Importer {
       board.setConfigureName(pool.name);
 
       List<Piece> s = pool.getPieces();
-      if (pieces.size() > 0) {
+      if (!pieces.isEmpty()) {
         SetupStack stack = new SetupStack();
         insertComponent(stack, hand);
 
@@ -2549,7 +2549,6 @@ public class ADC2Module extends Importer {
         }
       }
     }
-
   }
 
   protected void writeDecksToArchive(GameModule gameModule) throws IOException {

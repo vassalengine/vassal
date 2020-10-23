@@ -41,7 +41,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
 
   public SizeConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolSizes());
-    if (symbolMap.size() == 0) {
+    if (symbolMap.isEmpty()) {
       for (Symbol.SizeOption size : Symbol.NatoUnitSymbolSet.SIZES) {
         symbolMap.put(size.getName(), size.getDisplayName());
       }

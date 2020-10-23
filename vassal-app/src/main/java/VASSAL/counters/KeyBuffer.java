@@ -110,7 +110,7 @@ public class KeyBuffer {
     // as a result of key commands
     ArrayList<GamePiece> targets = new ArrayList<>(pieces);
     // Reverse the order if this is a "Move Up" or "Move to Bottom" keystroke
-    if (targets.size() > 0) {
+    if (!targets.isEmpty()) {
       GamePiece top = targets.get(0);
       if (top.getMap() != null) {
         if (stroke.equals(top.getMap().getStackMetrics().getMoveBottomKey())

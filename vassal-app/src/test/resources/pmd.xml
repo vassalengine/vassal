@@ -47,7 +47,6 @@
 -->
   <rule ref="category/java/bestpractices.xml/UseTryWithResources" />
 
-  <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
   <rule ref="category/java/codestyle.xml/AvoidDollarSigns" />
 <!--
   <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass" />
@@ -65,6 +64,9 @@
 <!--
   <rule ref="category/java/codestyle.xml/PrematureDeclaration" />
   <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" />
+-->
+  <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
+<!--
   <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
   <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
 -->

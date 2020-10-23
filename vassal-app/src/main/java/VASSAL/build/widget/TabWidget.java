@@ -111,7 +111,7 @@ public class TabWidget extends Widget
         tab.addTab(w.getConfigureName(), new JPanel());
       }
       tab.addChangeListener(this);
-      if (widgets.size() > 0) {
+      if (!widgets.isEmpty()) {
         tab.setSelectedIndex(0);
       }
       stateChanged(null);

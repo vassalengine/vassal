@@ -1101,7 +1101,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void setChatter(Chatter c) {
     chat = c;
-    if (deferredChat.size() > 0) {
+    if (!deferredChat.isEmpty()) {
       for (String msg : deferredChat) {
         warn(msg);
       }
