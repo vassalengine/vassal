@@ -327,6 +327,7 @@ public class InstanceConfigurer extends Configurer {
     }
   }
 
+  @Override
   public void repack() {
     if (panel != null) {
       Window w = SwingUtilities.getWindowAncestor(panel);

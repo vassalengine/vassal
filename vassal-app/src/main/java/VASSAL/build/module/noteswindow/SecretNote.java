@@ -81,6 +81,7 @@ public class SecretNote {
    * @param o
    * @return
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof SecretNote)) return false;
@@ -93,6 +94,7 @@ public class SecretNote {
     return true;
   }
 
+  @Override
   public int hashCode() {
     int result;
     result = (owner != null ? owner.hashCode() : 0);

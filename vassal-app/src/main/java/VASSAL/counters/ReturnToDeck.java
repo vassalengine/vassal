@@ -182,6 +182,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         this.pile = pile;
       }
 
+      @Override
       public String toString() {
         return pile.getConfigureName();
       }

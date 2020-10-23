@@ -42,6 +42,7 @@ public class NodePlayer extends SimplePlayer {
     return id;
   }
 
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof NodePlayer)) return false;
@@ -53,6 +54,7 @@ public class NodePlayer extends SimplePlayer {
     return true;
   }
 
+  @Override
   public int hashCode() {
     return (id != null ? id.hashCode() : 0);
   }

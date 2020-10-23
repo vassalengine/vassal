@@ -39,6 +39,7 @@ public class FlareCommand extends Command {
   /**
    * Executes the command (starts a Flare at the specified location)
    */
+  @Override
   protected void executeCommand() {
     flare.setClickPoint(clickPoint);
     flare.startAnimation(false);
@@ -47,6 +48,7 @@ public class FlareCommand extends Command {
   /**
    * @return null - no undo needed for Flare commands
    */
+  @Override
   protected Command myUndoCommand() {
     return null;
   }

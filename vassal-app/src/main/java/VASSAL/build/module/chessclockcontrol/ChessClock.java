@@ -538,6 +538,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Registers us with game module, command encoder, and the Chess Clock Control.
    * @param parent Should be ChessClockControl
    */
+  @Override
   public void addTo(Buildable parent) {
     if (parent instanceof ChessClockControl) {
       initTimerButton();
@@ -575,6 +576,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Unregisters us when we are shutting down
    * @param parent Should be ChessClockControl
    */
+  @Override
   public void removeFrom(Buildable parent) {
     instanceIsActive = false;
 
@@ -695,6 +697,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   /**
    * @return The help file for this component. Used when user clicks "Help" button while configuring the component in the Editor.
    */
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ChessClock.htm");  //$NON-NLS-1$
   }
@@ -710,6 +713,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @return Array of subcomponent types that can be added to this component
    */
   @SuppressWarnings("rawtypes")
+  @Override
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -719,6 +723,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @param command Serialized string command
    * @return An {@link UpdateTimerCommand}
    */
+  @Override
   public Command decode(final String command) {
     if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
@@ -741,6 +746,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * @param c Command to serialize. Only serialized if it's an UpdateTimerCommand.
    * @return Serialized command, or null if command passed wasn't an UpdateTimerCommand.
    */
+  @Override
   public String encode(final Command c) {
     if (!(c instanceof UpdateTimerCommand)) {
       return null;
@@ -760,6 +766,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Detect when game is starting.
    * @param gameStarting if true, a game is starting. If false, then a game is ending
    */
+  @Override
   public void setup(final boolean gameStarting) {
     clockTicking = false;
     if (!gameStarting) {
@@ -773,6 +780,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   /**
    * @return Our command for restoring from a saved game (or adding an online player)
    */
+  @Override
   public Command getRestoreCommand() {
     long verified = isReferee(PlayerRoster.getMySide()) ? elapsedTime : verifiedTime;
     return new UpdateTimerCommand(PlayerRoster.getMySide(), getName(), elapsedTime, verified, false, true);
@@ -782,6 +790,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * This processes our timer updates every 100ms
    * @param evt Timer event
    */
+  @Override
   public void actionPerformed(ActionEvent evt) {
     if (evt.getSource() == timer) {
       updateDisplay();
@@ -822,6 +831,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       return sides.toArray(new String[0]);
     }
 
+    @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       ArrayList<String> sides = new ArrayList<>();
       PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
@@ -839,6 +849,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Autoconfigurer for the icon for this timer. Lets user pick an icon.
    */
   public static class IconConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "");
     }
@@ -848,6 +859,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Color auto-configurer. Lets user pick a color from the table and/or values.
    */
   public static class ColorConfig implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TICKING_BACKGROUND_COLOR)));
     }
@@ -857,6 +869,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Color auto-configurer. Lets user pick a color from the table and/or values.
    */
   public static class ColorConfig2 implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TICKING_FONT_COLOR)));
     }
@@ -866,6 +879,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    * Color auto-configurer. Lets user pick a color from the table and/or values.
    */
   public static class ColorConfig3 implements ConfigurerFactory {
+    @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TOCKING_FONT_COLOR)));
     }

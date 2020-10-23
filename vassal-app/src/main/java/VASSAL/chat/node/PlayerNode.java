@@ -65,6 +65,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     return info + (ip.length() > 0 ? "|ip=" + ip : ""); //NON-NLS
   }
 
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof PlayerNode)) return false;
@@ -76,6 +77,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     return true;
   }
 
+  @Override
   public int hashCode() {
     return id.hashCode();
   }

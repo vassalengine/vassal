@@ -135,6 +135,7 @@ public class LayoutConfigurer extends Configurer {
     return null;
   }
 
+  @Override
   protected void repack() {
     Window w = SwingUtilities.getWindowAncestor(panel);
     if (w != null) {

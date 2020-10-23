@@ -22,8 +22,6 @@ public class VersionUtils {
 
   private static final String currentRelease = "current-release"; //NON-NLS
   private static final String currentBeta = "current-beta"; //NON-NLS
-  private static final String bugCheck = "check-version-bug.php?version="; //NON-NLS
-
 
   private static String release = null;
   private static String beta = null;

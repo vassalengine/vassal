@@ -25,7 +25,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +59,6 @@ public class PrefsEditor {
   private List<Prefs> prefs = new ArrayList<>();
   private JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
-  private File pfile;
   private Action editAction;
 
   public void initDialog(Frame parent) {

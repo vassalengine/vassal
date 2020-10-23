@@ -646,6 +646,7 @@ public class IconFamily extends AbstractConfigurable {
       repack();
     }
 
+    @Override
     protected void repack() {
       Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {

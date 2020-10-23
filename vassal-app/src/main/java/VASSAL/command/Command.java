@@ -150,6 +150,7 @@ public abstract class Command {
     return true;
   }
 
+  @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
     final String details = getDetails();

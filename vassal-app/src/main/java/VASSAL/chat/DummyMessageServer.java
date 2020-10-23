@@ -23,13 +23,16 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 
 public class DummyMessageServer implements MessageBoard, WelcomeMessageServer {
+  @Override
   public Message[] getMessages() {
     return null;
   }
 
+  @Override
   public void postMessage(String msg) {
   }
 
+  @Override
   public Command getWelcomeMessage() {
     return new NullCommand();
   }

@@ -131,6 +131,7 @@ public class ColorSwatchConfigurer extends Configurer {
     repack();
   }
 
+  @Override
   protected void repack() {
     colorBox.setVisible(((ColorSwatch) getValue()).getConfigureName().equals(ColorManager.SELECT_COLOR));
     Window w = SwingUtilities.getWindowAncestor(colorBox);

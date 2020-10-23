@@ -971,10 +971,12 @@ public class Inventory extends AbstractToolbarItem
       return localName;
     }
 
+    @Override
     public int hashCode() {
       return getName().hashCode();
     }
 
+    @Override
     public String toString() {
       return format.getLocalizedText(this);
     }
@@ -1002,6 +1004,7 @@ public class Inventory extends AbstractToolbarItem
       this.piece = piece;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (!(o instanceof Counter))
         return false;
@@ -1126,6 +1129,7 @@ public class Inventory extends AbstractToolbarItem
       children = new ArrayList<>();
     }
 
+    @Override
     public String toString() {
       if (counter != null)
         return counter.toString();

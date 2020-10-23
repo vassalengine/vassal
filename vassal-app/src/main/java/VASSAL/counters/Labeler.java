@@ -620,6 +620,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return im;
     }
 
+    @Override
     protected JLabel buildDimensions() {
       // Build a JLabel to render HTML
       final JLabel l = new JLabel(txt);

@@ -1332,10 +1332,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         return -otherProperty.compareTo(myProperty);
       }
 
+      @Override
       public String toString() {
         return selectDisplayProperty.getText(piece);
       }
 
+      @Override
       public boolean equals(Object o) {
         if (! (o instanceof AvailablePiece)) return false;
         return ((AvailablePiece)o).piece.equals(piece);

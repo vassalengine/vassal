@@ -868,6 +868,7 @@ public class ServerAddressBook {
       props.setProperty(NodeClientFactory.NODE_PORT, serverPort.getText());
     }
 
+    @Override
     protected void setAdditionalProperties(Properties props) {
       serverIp.setText(props.getProperty(NodeClientFactory.NODE_HOST));
       serverPort.setText(props.getProperty(NodeClientFactory.NODE_PORT));
@@ -894,6 +895,7 @@ public class ServerAddressBook {
       super(props);
     }
 
+    @Override
     public String toString() {
       return Resources.getString("ServerAddressBook.peer_server") + " [" + getProperty(DESCRIPTION_KEY) + "]";
     }

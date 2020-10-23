@@ -92,6 +92,7 @@ public class SimpleRoom implements Room {
     return players.contains(p);
   }
 
+  @Override
   public String toString() {
     return name;
   }
@@ -100,10 +101,12 @@ public class SimpleRoom implements Room {
     return players.size();
   }
 
+  @Override
   public int hashCode() {
     return name.hashCode();
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof SimpleRoom) {
       return name != null && name.equals(((SimpleRoom) o).name);
