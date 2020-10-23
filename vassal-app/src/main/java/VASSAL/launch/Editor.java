@@ -174,7 +174,7 @@ public class Editor extends Launcher {
           if (lr.importFile.exists()) {
             final AbstractMetaData metadata =
               MetaDataFactory.buildMetaData(lr.importFile);
-            if (metadata == null || ! (metadata instanceof ImportMetaData)) {
+            if (!(metadata instanceof ImportMetaData)) {
               ErrorDialog.show(
                 "Error.invalid_import_file", lr.importFile.getAbsolutePath());
               logger.error("Import of " + lr.importFile.getAbsolutePath() +

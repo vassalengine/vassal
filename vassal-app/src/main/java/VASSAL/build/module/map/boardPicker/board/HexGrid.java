@@ -206,7 +206,7 @@ public class HexGrid extends AbstractConfigurable
 
   @Override
   public boolean isVisible() {
-    return visible == true || (numbering != null && numbering.isVisible());
+    return visible || (numbering != null && numbering.isVisible());
   }
 
   public boolean isEdgesLegal() {
