@@ -236,7 +236,7 @@ public class ComponentI18nData {
    * @return component translatable status
    */
   public boolean isTranslatable() {
-    if (translatableProperties.size() > 0) {
+    if (!translatableProperties.isEmpty()) {
       return true;
     }
     for (Translatable child : children) {

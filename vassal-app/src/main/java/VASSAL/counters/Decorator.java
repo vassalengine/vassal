@@ -75,9 +75,6 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   private Decorator dec;
   private boolean selected = false;
 
-  public Decorator() {
-  }
-
   /** @param p Set the inner GamePiece -- usually the next Trait (Decorator) inward, or the BasicPiece itself. */
   public void setInner(GamePiece p) {
     piece = p;

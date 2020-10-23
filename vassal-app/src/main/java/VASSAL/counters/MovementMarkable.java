@@ -183,7 +183,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("MarkMoved.html"); // NON-NLS
   }
 

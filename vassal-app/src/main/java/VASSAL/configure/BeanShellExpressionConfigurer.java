@@ -153,7 +153,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
       // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
       expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]"); // NON-NLS

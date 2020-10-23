@@ -18,10 +18,6 @@ public class SelectionHighlighters extends AbstractConfigurable {
   protected Map map;
   protected List<SelectionHighlighter> highlighters = new ArrayList<>();
 
-  public SelectionHighlighters() {
-    super();
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.AddedSelectionHighlights.component_type"); //$NON-NLS-1$
   }

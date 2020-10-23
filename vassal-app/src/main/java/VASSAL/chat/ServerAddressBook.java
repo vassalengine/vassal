@@ -229,7 +229,7 @@ public class ServerAddressBook {
       controls = new JPanel(new MigLayout());
       addressConfig = new StringConfigurer(ADDRESS_PREF, null, ""); //$NON-NLS-1$
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
-      addressBook = new DefaultListModel<AddressBookEntry>();
+      addressBook = new DefaultListModel<>();
       loadAddressBook();
       myList = new JList<>(addressBook);
       myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

@@ -60,9 +60,6 @@ public class FontManager extends AbstractConfigurable {
 //  public static final String[] ALLOWABLE_FONTS = new String[] { DIALOG, DIALOG_INPUT, MONOSPACED, SANS_SERIF, SERIF };
   public static final String[] ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
-  public FontManager() {
-  }
-
   @Override
   public void build(Element e) {
     super.build(e);

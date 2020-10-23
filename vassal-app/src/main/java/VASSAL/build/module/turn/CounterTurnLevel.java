@@ -40,10 +40,6 @@ public class CounterTurnLevel extends TurnLevel {
 
   private final VisibilityCondition loopCond = () -> loop;
 
-  public CounterTurnLevel() {
-    super();
-  }
-
   /*
    *  Reset counter to initial state
    */

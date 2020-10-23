@@ -206,7 +206,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public java.awt.Rectangle boundingBox() {
+  public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
@@ -602,7 +602,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("PropertySheet.html");
   }
 

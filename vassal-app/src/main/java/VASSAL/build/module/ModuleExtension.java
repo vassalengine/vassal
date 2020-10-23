@@ -401,7 +401,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public String buildString() {
-    org.w3c.dom.Document doc = Builder.createNewDocument();
+    Document doc = Builder.createNewDocument();
     doc.appendChild(getBuildElement(doc));
     return Builder.toString(doc);
   }

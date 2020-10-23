@@ -25,9 +25,6 @@ import VASSAL.command.CommandFilter;
  * Only passes commands that are allowed in the Main Room
  */
 public class MainRoomFilter extends CommandFilter {
-  public MainRoomFilter() {
-  }
-
   @Override
   protected boolean accept(Command c) {
     return c instanceof Chatter.DisplayText

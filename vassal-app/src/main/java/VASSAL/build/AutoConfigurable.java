@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -85,8 +86,7 @@ public interface AutoConfigurable extends Configurable {
       }
     }
 
-    public static org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc,
-                                                      AutoConfigurable parent) {
+    public static Element getBuildElement(Document doc, AutoConfigurable parent) {
       Element el = doc.createElement(parent.getClass().getName());
       String[] names = parent.getAttributeNames();
       for (String name : names) {

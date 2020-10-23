@@ -208,7 +208,7 @@ public class RandomTextButton extends DiceButton {
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
     l.add(Boolean.class);
-    return l.toArray(new Class<?>[names.size()]);
+    return l.toArray(new Class<?>[0]);
   }
 
   @Override

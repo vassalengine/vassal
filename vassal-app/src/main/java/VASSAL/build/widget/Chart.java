@@ -50,9 +50,6 @@ public class Chart extends Widget {
   private SourceOp srcOp;
   private JLabel label;
 
-  public Chart() {
-  }
-
   @Override
   public Component getComponent() {
     if (chart == null) {

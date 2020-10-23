@@ -1020,7 +1020,7 @@ public class MapBoard extends Importer {
         new ArrayList<>(Arrays.asList(lineDefinitions));
 
       // find the next line in priority
-      while (lds.size() > 0) {
+      while (!lds.isEmpty()) {
         LineDefinition lowest = null;
         for (LineDefinition ld : lds) {
           if (ld == null)
@@ -2915,7 +2915,7 @@ public class MapBoard extends Importer {
 
     // setup grids defined by ADC module
     Board board = getBoard();
-    if (mapSheets.size() > 0) {
+    if (!mapSheets.isEmpty()) {
       ZonedGrid zg = new ZonedGrid();
       for (MapSheet ms : mapSheets) {
         if (ms == null) // the last one is always null
@@ -2954,7 +2954,7 @@ public class MapBoard extends Importer {
     }
 
     // add place name capability
-    if (placeNames.size() > 0) {
+    if (!placeNames.isEmpty()) {
       writePlaceNames(module);
     }
 
@@ -3073,7 +3073,7 @@ public class MapBoard extends Importer {
   private ToolbarMenu getToolbarMenu() {
     List<ToolbarMenu> list = getMainMap().getComponentsOf(ToolbarMenu.class);
     ToolbarMenu menu = null;
-    if (list.size() == 0) {
+    if (list.isEmpty()) {
       menu = new ToolbarMenu();
       insertComponent(menu, getMainMap());
       menu.setAttribute(ToolbarMenu.BUTTON_TEXT, "View");

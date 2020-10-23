@@ -249,6 +249,29 @@
                 </executions>
             </plugin>
             <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <configuration>
+                <failOnViolation>true</failOnViolation>
+                <printFailingErrors>true</printFailingErrors>
+                <analysisCache>true</analysisCache>
+                <rulesets>
+                    <ruleset>src/test/resources/pmd.xml</ruleset>
+                </rulesets>
+                <excludes>
+                  <exclude>bsh/**</exclude>
+                  <exclude>org/**</exclude>
+                </excludes>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>check</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -337,5 +360,14 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-pmd-plugin</artifactId>
+              <version>3.13.0</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
     </build>
 </project>

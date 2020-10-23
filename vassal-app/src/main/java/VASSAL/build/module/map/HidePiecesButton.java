@@ -30,9 +30,7 @@ import java.util.TreeSet;
 
 import javax.swing.JPanel;
 
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.search.ImageSearchTarget;
-import VASSAL.search.SearchTarget;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AutoConfigurable;
@@ -47,10 +45,13 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
+import VASSAL.search.ImageSearchTarget;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 
@@ -293,7 +294,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   @Override
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
+  public Element getBuildElement(Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
   }
 

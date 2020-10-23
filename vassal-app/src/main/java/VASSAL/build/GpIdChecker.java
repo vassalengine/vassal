@@ -176,7 +176,7 @@ public class GpIdChecker {
    * @return Error count
    */
   public boolean hasErrors() {
-    return errorSlots.size() > 0;
+    return !errorSlots.isEmpty();
   }
 
   private void chat(String text) {

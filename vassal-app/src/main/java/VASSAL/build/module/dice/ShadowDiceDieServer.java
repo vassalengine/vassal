@@ -90,7 +90,7 @@ public class ShadowDiceDieServer extends DieServer {
         b.append('.');
       }
       else if (hexyChars.indexOf(c) >= 0) {
-        b.append("%" + Integer.toHexString(c).toUpperCase());
+        b.append('%').append(Integer.toHexString(c).toUpperCase());
       }
       else {
         b.append(c);

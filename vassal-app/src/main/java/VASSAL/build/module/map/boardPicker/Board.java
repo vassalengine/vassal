@@ -101,9 +101,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
 
-  public Board() {
-  }
-
   /**
    * @return this <code>Board</code>'s {@link Map}.
    * Until a game is started that is using this board, the map will be null.

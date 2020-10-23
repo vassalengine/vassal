@@ -138,7 +138,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     super.addImageNamesRecursively(s);
 
     GamePiece p = getPiece();
-    if (p != null && p instanceof ImageSearchTarget) {
+    if (p instanceof ImageSearchTarget) {
       ((ImageSearchTarget)p).addImageNamesRecursively(s);
     }
   }

@@ -1101,7 +1101,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void setChatter(Chatter c) {
     chat = c;
-    if (deferredChat.size() > 0) {
+    if (!deferredChat.isEmpty()) {
       for (String msg : deferredChat) {
         warn(msg);
       }
@@ -1746,7 +1746,7 @@ public class GameModule extends AbstractConfigurable
    * @return an XML element that can be used to {@link Buildable#build} the module object.
    */
   private String buildString() {
-    org.w3c.dom.Document doc = Builder.createNewDocument();
+    Document doc = Builder.createNewDocument();
     doc.appendChild(getBuildElement(doc));
     return Builder.toString(doc);
   }

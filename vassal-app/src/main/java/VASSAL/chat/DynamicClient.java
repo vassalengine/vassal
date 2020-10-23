@@ -41,9 +41,6 @@ public class DynamicClient extends HybridClient {
 
   private boolean connecting;
 
-  public DynamicClient() {
-  }
-
   protected ChatServerConnection buildDelegate() throws IOException {
     final Properties p = ServerAddressBook.getInstance().getCurrentServerProperties();
     return ChatServerFactory.build(p);

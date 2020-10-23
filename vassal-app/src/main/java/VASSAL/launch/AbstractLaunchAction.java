@@ -209,7 +209,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if (lr.module.exists()) {
           final AbstractMetaData metadata =
             MetaDataFactory.buildMetaData(lr.module);
-          if (metadata == null || ! (metadata instanceof ModuleMetaData)) {
+          if (!(metadata instanceof ModuleMetaData)) {
             ErrorDialog.show(
               "Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
             logger.error(

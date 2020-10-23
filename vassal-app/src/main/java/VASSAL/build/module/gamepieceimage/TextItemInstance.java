@@ -74,7 +74,7 @@ public class TextItemInstance extends ItemInstance {
 
   public boolean isOutline() {
     TextItem item = (TextItem) getItem();
-    return (item == null) ? false : item.isOutline();
+    return item != null && item.isOutline();
   }
 
   public ColorSwatch getOutlineColor() {

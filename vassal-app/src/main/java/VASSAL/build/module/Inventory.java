@@ -494,7 +494,7 @@ public class Inventory extends AbstractToolbarItem
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Inventory.html"); //$NON-NLS-1$
   }
 

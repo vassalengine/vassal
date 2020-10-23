@@ -53,10 +53,6 @@ public class GeneralScript extends AbstractScript
     return "General Script";
   }
 
-  public GeneralScript() {
-    super();
-  }
-
   public String evaluate(PropertySource target) {
     return "";
   }

@@ -647,7 +647,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public java.awt.Component getListCellRendererComponent(
+    public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       super.getListCellRendererComponent(list, value, index, selected, hasFocus);

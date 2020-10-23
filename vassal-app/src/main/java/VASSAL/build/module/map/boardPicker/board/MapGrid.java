@@ -29,7 +29,7 @@ public interface MapGrid {
   /**
    * @return the nearest grid location to the given point
    */
-  Point snapTo(java.awt.Point p);
+  Point snapTo(Point p);
 
   /**
    * @return true if the given point may not be a local location.

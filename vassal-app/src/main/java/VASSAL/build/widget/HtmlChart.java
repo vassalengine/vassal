@@ -74,9 +74,6 @@ public class HtmlChart extends Widget implements MouseListener {
   private JScrollPane scroller;
   private JEditorPane htmlWin;
 
-  public HtmlChart() {
-  }
-
   private boolean isURL() {
     return htmlWin.getDocument().getProperty("stream") != null; //NON-NLS
   }
@@ -261,7 +258,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
       final String desc = event.getDescription();
       if ((!isURL() && desc.indexOf('/') < 0) || event.getURL() == null) {
-        final int hash = desc.lastIndexOf("#");
+        final int hash = desc.lastIndexOf('#');
         if (hash < 0) {
           // no anchor
           setFile(desc);
@@ -316,12 +313,8 @@ public class HtmlChart extends Widget implements MouseListener {
     }
 
     public static class XTMLFactory extends HTMLFactory implements ViewFactory {
-      public XTMLFactory() {
-        super();
-      }
-
       @Override
-      public View create(javax.swing.text.Element element) {
+      public View create(Element element) {
         final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
 
         if (kind != null && element.getName().equals("img")) {  //NON-NLS

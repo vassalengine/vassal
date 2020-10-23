@@ -9,10 +9,6 @@ import VASSAL.configure.VisibilityCondition;
 import java.util.List;
 
 public class WidgetMap extends Map {
-  public WidgetMap() {
-    super();
-  }
-
   /*
    * Minimal setup - remove all docking and toolbar setup
    */

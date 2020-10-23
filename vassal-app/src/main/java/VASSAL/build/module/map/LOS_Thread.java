@@ -743,7 +743,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.html", "LOS"); //NON-NLS
   }
 
