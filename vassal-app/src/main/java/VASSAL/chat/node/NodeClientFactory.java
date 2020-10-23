@@ -51,7 +51,7 @@ public abstract class NodeClientFactory extends ChatServerFactory {
     server.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
       final String mess = (String) e.getNewValue();
       GameModule.getGameModule().warn(mess);
-      logger.error("", mess);
+      logger.error(mess);
     });
 
     server.addPropertyChangeListener(
