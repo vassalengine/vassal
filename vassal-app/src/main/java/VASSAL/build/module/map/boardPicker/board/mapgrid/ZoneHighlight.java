@@ -272,7 +272,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ZonedGrid.html", "ZoneHighlighter"); //NON-NLS
   }
 

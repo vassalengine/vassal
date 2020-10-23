@@ -392,7 +392,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
 
     @Override
-    public VASSAL.configure.Configurer getConfigurer() {
+    public Configurer getConfigurer() {
       return null;
     }
 

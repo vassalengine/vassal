@@ -811,7 +811,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public boolean canContainGamePiece(final Configurable target) {
     boolean canContainPiece = false;
     for (Class<?> c : target.getAllowableConfigureComponents()) {
-      if (VASSAL.build.widget.PieceSlot.class.isAssignableFrom(c)) {
+      if (PieceSlot.class.isAssignableFrom(c)) {
         canContainPiece = true;
         break;
       }

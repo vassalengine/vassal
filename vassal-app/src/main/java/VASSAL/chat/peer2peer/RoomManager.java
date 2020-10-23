@@ -112,7 +112,7 @@ public class RoomManager {
     defaultRoom.setName(name);
   }
 
-  public VASSAL.chat.Room getDefaultRoom() {
+  public Room getDefaultRoom() {
     return defaultRoom;
   }
 

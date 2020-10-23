@@ -48,6 +48,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AutoConfigurable;
@@ -385,7 +386,7 @@ public class GlobalMap implements AutoConfigurable,
   }
 
   @Override
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
+  public Element getBuildElement(Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
   }
 

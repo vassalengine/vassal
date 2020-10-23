@@ -321,7 +321,7 @@ public class HtmlChart extends Widget implements MouseListener {
       }
 
       @Override
-      public View create(javax.swing.text.Element element) {
+      public View create(Element element) {
         final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
 
         if (kind != null && element.getName().equals("img")) {  //NON-NLS

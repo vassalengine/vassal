@@ -173,7 +173,7 @@ public class HelpFile extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    File dir = Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return new HelpFile(null, new File(dir, "HelpMenu.html"), "#HelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -282,7 +282,7 @@ public class HelpFile extends AbstractConfigurable {
     if (anchor != null && !anchor.startsWith("#")) { //$NON-NLS-1$
       anchor = "#" + anchor; //$NON-NLS-1$
     }
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    File dir = Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return anchor == null ? new HelpFile(null, new File(dir, page)) :

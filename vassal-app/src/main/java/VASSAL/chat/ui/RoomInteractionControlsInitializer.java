@@ -119,7 +119,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
               else {
                 tree.collapseRow(row);
               }
-              doubleClickRoom((VASSAL.chat.Room) target, tree);
+              doubleClickRoom((Room) target, tree);
             }
           }
         }
@@ -136,7 +136,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
             popup = buildPopupForPlayer((SimplePlayer) target, tree);
           }
           else if (target instanceof SimpleRoom) {
-            popup = buildPopupForRoom((VASSAL.chat.Room) target, tree);
+            popup = buildPopupForRoom((Room) target, tree);
           }
 
           if (popup != null) {

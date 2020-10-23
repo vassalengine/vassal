@@ -309,7 +309,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HexGrid.html"); //$NON-NLS-1$
   }
 

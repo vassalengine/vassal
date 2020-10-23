@@ -138,7 +138,7 @@ public abstract class Configurer {
   /**
    * GUI interface for setting the option in an editing window
    */
-  public abstract java.awt.Component getControls();
+  public abstract Component getControls();
 
   /**
    * Add a listener to be notified when the Object state changes

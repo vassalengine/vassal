@@ -44,7 +44,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
   private Configurable target;
   private Class<? extends Buildable> targetClass;
   private JButton okButton;
-  private VASSAL.configure.ConfigureTree tree;
+  private ConfigureTree tree;
 
   public ChooseComponentDialog(Frame owner, Class<? extends Buildable> targetClass) {
     super(owner, true);

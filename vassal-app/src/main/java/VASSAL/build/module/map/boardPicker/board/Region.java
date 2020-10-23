@@ -29,6 +29,7 @@ import javax.swing.JComponent;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.image.LabelUtils;
@@ -134,7 +135,7 @@ public class Region extends AbstractConfigurable {
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return null;
   }
 

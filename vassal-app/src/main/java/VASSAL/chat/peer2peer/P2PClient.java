@@ -263,7 +263,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   @Override
-  public void addPropertyChangeListener(String propertyName, java.beans.PropertyChangeListener l) {
+  public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
   }
 

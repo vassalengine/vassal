@@ -22,7 +22,7 @@ import VASSAL.build.module.Chatter;
 /**
  * Simple Player bean
  */
-public class SimplePlayer implements VASSAL.chat.Player {
+public class SimplePlayer implements Player {
   protected String id;
   protected String name;
   protected PlayerStatus status;
