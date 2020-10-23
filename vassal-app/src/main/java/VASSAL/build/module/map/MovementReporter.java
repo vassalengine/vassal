@@ -150,16 +150,11 @@ public class MovementReporter {
   }
 
   protected boolean shouldReport(AddPiece addPiece) {
-    GamePiece target = addPiece.getTarget();
-    if (target != null
-        && !(target instanceof Stack)
-        && !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
-        && !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    final GamePiece target = addPiece.getTarget();
+    return target != null &&
+      !(target instanceof Stack) &&
+      !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME)) &&
+      !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS));
   }
 
   protected boolean shouldReport(MovePiece movePiece) {
@@ -242,15 +237,10 @@ public class MovementReporter {
     @Override
     protected boolean shouldReport(AddPiece addPiece) {
       GamePiece target = addPiece.getTarget();
-      if (target != null
-          && !(target instanceof Stack)
-          && (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
-              || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)))) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return target != null &&
+        !(target instanceof Stack) &&
+        (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME)) ||
+         Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)));
     }
 
     @Override

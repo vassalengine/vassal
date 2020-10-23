@@ -104,7 +104,7 @@ public class FreeRotator extends Decorator
 
   protected boolean useUnrotatedShape;
 
-  protected double[] validAngles = new double[] {0.0};
+  protected double[] validAngles = {0.0};
   protected int angleIndex = 0;
 
   @Deprecated(since = "2020-08-06", forRemoval = true)

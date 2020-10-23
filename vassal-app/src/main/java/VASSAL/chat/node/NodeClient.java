@@ -234,7 +234,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public boolean isDefaultRoom(Room r) {
-    return r == null ? false : r.getName().equals(getDefaultRoomName());
+    return r != null && r.getName().equals(getDefaultRoomName());
   }
 
   protected void sendStats() {

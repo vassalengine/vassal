@@ -50,7 +50,7 @@ public class ColorManager extends AbstractConfigurable {
   public static final Color DEFAULT_COLOR = Color.WHITE;
   public static final String SELECT_COLOR = "Select...";
 
-  protected static Color[] standardColors = new Color[] {
+  protected static Color[] standardColors = {
     Color.WHITE,
     Color.GRAY,
     Color.BLACK,
@@ -67,7 +67,7 @@ public class ColorManager extends AbstractConfigurable {
     Color.DARK_GRAY,
   };
 
-  protected static String[] standardColorNames = new String[] {
+  protected static String[] standardColorNames = {
     "WHITE",      // NON-NLS
     "GRAY",       // NON-NLS
     "BLACK",      // NON-NLS
@@ -84,7 +84,7 @@ public class ColorManager extends AbstractConfigurable {
     "DARK GRAY"   // NON-NLS
   };
 
-  protected static String[] standardColorKeys = new String[] {
+  protected static String[] standardColorKeys = {
     "Editor.ColorManager.white",
     "Editor.ColorManager.gray",
     "Editor.ColorManager.black",

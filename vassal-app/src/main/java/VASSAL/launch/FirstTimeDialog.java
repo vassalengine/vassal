@@ -192,21 +192,20 @@ public class FirstTimeDialog extends JDialog {
         Math.max(screen.height - dsize.height, 0)
       );
 
-      if (remainder.width == 0 || remainder.height == 0) {
-        // no room for the image, do nothing
-      }
-      else if (remainder.width >= img.getWidth() &&
-               remainder.height >= img.getHeight()) {
-        // the whole image fits, use it as-is
-        about.setIcon(new ImageIcon(img));
-      }
-      else {
-        // downscale the image to fit
-        final double scale = Math.min(
-          remainder.width  / (double) img.getWidth(),
-          remainder.height / (double) img.getHeight()
-        );
-        about.setIcon(new ImageIcon(ImageUtils.transform(img, scale, 0.0)));
+      if (remainder.width > 0 && remainder.height > 0) {
+        if (remainder.width >= img.getWidth() &&
+            remainder.height >= img.getHeight()) {
+          // the whole image fits, use it as-is
+          about.setIcon(new ImageIcon(img));
+        }
+        else {
+          // downscale the image to fit
+          final double scale = Math.min(
+            remainder.width  / (double) img.getWidth(),
+            remainder.height / (double) img.getHeight()
+          );
+          about.setIcon(new ImageIcon(ImageUtils.transform(img, scale, 0.0)));
+        }
       }
 
       pack();

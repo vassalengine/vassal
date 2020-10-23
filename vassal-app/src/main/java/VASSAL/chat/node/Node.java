@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import VASSAL.tools.PropertiesEncoder;
@@ -86,9 +87,7 @@ public class Node implements MsgSender {
 
   public void add(Node child) {
     // FIXME: added this to find out what is calling add(null)
-    if (child == null) {
-      throw new NullPointerException("child == null");
-    }
+    Objects.requireNonNull(child);
 
     if (child.parent != null) {
       child.parent.remove(child);
@@ -104,10 +103,7 @@ public class Node implements MsgSender {
     if (!(o instanceof Node)) return false;
 
     final Node node = (Node) o;
-
-    if (id != null ? !id.equals(node.id) : node.id != null) return false;
-
-    return true;
+    return Objects.equals(id, node.id);
   }
 
   @Override

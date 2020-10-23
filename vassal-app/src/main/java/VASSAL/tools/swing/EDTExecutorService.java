@@ -20,6 +20,7 @@ package VASSAL.tools.swing;
 import java.awt.EventQueue;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -139,8 +140,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   /** {@inheritDoc} */
   @Override
   public void execute(Runnable r) {
-    if (r == null) throw new NullPointerException();
-
+    Objects.requireNonNull(r);
     lock.lock();
     try {
       if (shutdown.get()) throw new RejectedExecutionException();

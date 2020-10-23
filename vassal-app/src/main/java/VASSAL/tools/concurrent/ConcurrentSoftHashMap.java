@@ -104,8 +104,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public boolean containsKey(Object key) {
-    if (key == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
 
     processQueue();
     return map.containsKey(key);
@@ -114,8 +113,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V get(Object key) {
-    if (key == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
 
     final SoftValue<K, V> sv = map.get(key);
     if (sv != null) {
@@ -133,10 +131,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V put(K key, V value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     final SoftValue<K, V> oldSV =
@@ -147,8 +143,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V remove(Object key) {
-    if (key == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
 
     processQueue();
     final SoftValue<K, V> oldSV = map.remove(key);
@@ -273,10 +268,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V putIfAbsent(K key, V value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     final SoftValue<K, V> oldSV =
@@ -287,10 +280,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public boolean remove(Object key, Object value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     return map.remove(key, new SoftValue<>(key, value, null));
@@ -299,12 +290,9 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public boolean replace(K key, V oldValue, V newValue) {
-    if (key == null)
-      throw new NullPointerException();
-    if (oldValue == null)
-      throw new NullPointerException();
-    if (newValue == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(oldValue);
+    Objects.requireNonNull(newValue);
 
     processQueue();
     return map.replace(key,
@@ -315,10 +303,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V replace(K key, V value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     final SoftValue<K, V> oldSV =

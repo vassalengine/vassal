@@ -32,10 +32,10 @@ public class LoopControl {
   public static final String LOOP_COUNTED = "counted"; //$NON-NLS-1$
   public static final String LOOP_WHILE = "while"; //$NON-NLS-1$
   public static final String LOOP_UNTIL = "until"; //$NON-NLS-1$
-  public static final String[] LOOP_TYPES = new String[] { LOOP_COUNTED, LOOP_UNTIL, LOOP_WHILE };
+  public static final String[] LOOP_TYPES = { LOOP_COUNTED, LOOP_UNTIL, LOOP_WHILE };
 
   // Localized description of loop types
-  public static final String[] LOOP_TYPE_DESCS = new String[] {
+  public static final String[] LOOP_TYPE_DESCS = {
       Resources.getString("Editor.LoopControl.repeat_fixed"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.repeat_until"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.repeat_while") }; //$NON-NLS-1$

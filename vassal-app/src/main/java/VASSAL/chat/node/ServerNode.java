@@ -46,7 +46,7 @@ public class ServerNode extends Node {
   }
 
   public synchronized MsgSender getMsgSender(String path) {
-    Node[] target = new Node[]{this};
+    Node[] target = {this};
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();

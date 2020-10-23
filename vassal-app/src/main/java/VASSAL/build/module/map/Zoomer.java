@@ -109,7 +109,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected State state;
 
   // the default zoom levels are powers of 1.6
-  protected static final double[] defaultZoomLevels = new double[] {
+  protected static final double[] defaultZoomLevels = {
     1.0 / 1.6 / 1.6,
     1.0 / 1.6,
     1.0,

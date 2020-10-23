@@ -220,7 +220,7 @@ public class LaunchRequest implements Serializable {
     final int VERSION = 6;
     final int TRANSLATE = 7;
 
-    final LongOpt[] longOpts = new LongOpt[]{
+    final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
       new LongOpt("edit",       LongOpt.NO_ARGUMENT, null, 'e'), //NON-NLS
       new LongOpt("help",       LongOpt.NO_ARGUMENT, null, 'h'), //NON-NLS

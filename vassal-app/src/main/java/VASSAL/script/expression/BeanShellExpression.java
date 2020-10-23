@@ -204,9 +204,4 @@ public class BeanShellExpression extends Expression {
     return new BeanShellExpression(expr);
 
   }
-
-  @Override
-  public boolean equals(Object bse) {
-    return super.equals(bse);
-  }
 }

@@ -539,10 +539,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     private final String side;
 
     public PlayerInfo(String id, String name, String side) {
-      if (id == null) {
-        throw new NullPointerException("Player id cannot be null"); //$NON-NLS-1$
-      }
-      playerId = id;
+      playerId = Objects.requireNonNull(id);
       playerName = name;
       this.side = side;
     }

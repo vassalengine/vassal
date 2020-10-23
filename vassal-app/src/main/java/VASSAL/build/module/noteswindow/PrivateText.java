@@ -49,10 +49,7 @@ public class PrivateText {
     if (!(o instanceof PrivateText)) return false;
 
     final PrivateText privateText = (PrivateText) o;
-
-    if (!owner.equals(privateText.owner)) return false;
-
-    return true;
+    return owner.equals(privateText.owner);
   }
 
   @Override
