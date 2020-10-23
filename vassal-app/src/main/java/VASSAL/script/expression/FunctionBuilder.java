@@ -143,7 +143,7 @@ public class FunctionBuilder extends JDialog {
 
   private String getFunctionBody(boolean skipFirstArgument) {
     StringBuilder result;
-    result = new StringBuilder(function + "(");
+    result = new StringBuilder(function).append('(');
     boolean first = true;
     for (int i = skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
       BeanShellExpressionConfigurer fec = configs.get(i);
