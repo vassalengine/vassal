@@ -41,6 +41,11 @@ public class ConfigurerLayout extends MigLayout {
     this(DEFAULT_CFG_LAYOUT_CONSTRAINTS, (name == null || name.isEmpty()) ? noNameColConstraints : nameColConstraints);
   }
 
+  public ConfigurerLayout(String name, String noNameColConstraints, String nameColConstraints, String rowConstraints) {
+    this(name, noNameColConstraints, nameColConstraints);
+    setRowConstraints(rowConstraints);
+  }
+
   public ConfigurerLayout(String defaultLayoutConstraints, String defaultColumnConstraints) {
     super(defaultLayoutConstraints, defaultColumnConstraints);
   }
