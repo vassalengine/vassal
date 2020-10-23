@@ -261,7 +261,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
       final String desc = event.getDescription();
       if ((!isURL() && desc.indexOf('/') < 0) || event.getURL() == null) {
-        final int hash = desc.lastIndexOf("#");
+        final int hash = desc.lastIndexOf('#');
         if (hash < 0) {
           // no anchor
           setFile(desc);
