@@ -72,8 +72,12 @@ public class ModuleUpdaterDialog extends JDialog {
         if (msg == null) {
           msg = Resources.getString("Editor.ModuleUpdaterDialog.unable");
         }
-        JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg,
-          Resources.getString("Editor.ModuleUpdaterDialog.error_writing"), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(
+          this,
+          msg,
+          Resources.getString("Editor.ModuleUpdaterDialog.error_writing"),
+          JOptionPane.ERROR_MESSAGE
+        );
       }
     });
 

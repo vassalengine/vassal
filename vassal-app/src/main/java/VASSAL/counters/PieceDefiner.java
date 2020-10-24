@@ -263,7 +263,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     importButton.setText(Resources.getString("General.import"));
     importButton.addActionListener(evt -> {
-      String className = JOptionPane.showInputDialog(PieceDefiner.this, Resources.getString("Editor.PieceDefiner.enter_class"));
+      final String className = JOptionPane.showInputDialog(
+        this, Resources.getString("Editor.PieceDefiner.enter_class")
+      );
       importPiece(className);
     });
 

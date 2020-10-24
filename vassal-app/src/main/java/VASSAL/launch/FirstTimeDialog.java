@@ -87,7 +87,7 @@ public class FirstTimeDialog extends JDialog {
       new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
     final JButton help = new JButton(Resources.getString(Resources.HELP));
 
-    final ActionListener closer = evt -> FirstTimeDialog.this.dispose();
+    final ActionListener closer = evt -> dispose();
 
     tour.addActionListener(closer);
     jump.addActionListener(closer);
@@ -125,7 +125,7 @@ public class FirstTimeDialog extends JDialog {
       jump.setText(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
       help.setText(Resources.getString(Resources.HELP));
       lang.setText(Resources.getString("Prefs.language") + ":");
-      FirstTimeDialog.this.pack();
+      pack();
       // langbox picks up the new locale automatically from getDisplayName()
     });
 

@@ -555,7 +555,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
       // FIXME: This probably causes a race condition. Can we do this directly?
-      Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
+      Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(this));
       SwingUtilities.invokeLater(runnable);
     }
     return retVal;

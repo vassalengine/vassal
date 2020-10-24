@@ -85,7 +85,7 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   protected void save() {
-    ModuleEditorWindow.this.saver(() -> {
+    saver(() -> {
       GameModule.getGameModule().save();
       setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
@@ -93,7 +93,7 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   protected void saveAs() {
-    ModuleEditorWindow.this.saver(() -> {
+    saver(() -> {
       GameModule.getGameModule().saveAs();
       setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
