@@ -353,11 +353,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   protected boolean matchesFilter() {
-    final GamePiece outer = Decorator.getOutermost(this);
-    if (propertyMatch.isNull()) {
-      return true;
-    }
-    return propertyMatch.accept(outer);
+    return propertyMatch.isNull() ||
+           propertyMatch.accept(Decorator.getOutermost(this));
   }
 
   @Override

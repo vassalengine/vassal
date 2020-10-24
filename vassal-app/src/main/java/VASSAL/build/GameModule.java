@@ -444,13 +444,14 @@ public class GameModule extends AbstractConfigurable
     }
     else {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(f);
-      final String properBuildFileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? BUILDFILE_OLD : BUILDFILE;
 
       if (!(data instanceof ModuleMetaData)) {
         throw new IOException(
           Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
           null);
       }
+
+      final String properBuildFileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? BUILDFILE_OLD : BUILDFILE;
 
       // existing module
       try (InputStream inner = darch.getInputStream(properBuildFileName);

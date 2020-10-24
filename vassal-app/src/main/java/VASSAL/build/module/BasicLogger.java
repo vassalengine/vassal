@@ -269,11 +269,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Check if user would like to create a new logfile
    */
   public void queryNewLogFile(boolean atStart) {
-    String prefName;
-    String prompt;
     if (isLogging()) {
       return;
     }
+
+    String prefName;
+    String prompt;
 
     if (atStart) {
       prefName = PROMPT_NEW_LOG_START;

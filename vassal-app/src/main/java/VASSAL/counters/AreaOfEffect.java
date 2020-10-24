@@ -226,7 +226,6 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   protected Area getArea() {
-    Area a;
     final Map map = getMap();
     if (map == null) {
       return null;
@@ -239,6 +238,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     final Board board = map.findBoard(mapPosition);
     final MapGrid grid = board == null ? null : board.getGrid();
 
+    Area a;
     if (grid instanceof GeometricGrid) {
       final GeometricGrid gGrid = (GeometricGrid) grid;
 

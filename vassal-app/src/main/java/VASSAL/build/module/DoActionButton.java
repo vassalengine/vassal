@@ -510,7 +510,6 @@ public class DoActionButton extends AbstractToolbarItem
   protected void doActions() throws RecursionLimitException {
     final Command c = new NullCommand();
     final GameModule mod = GameModule.getGameModule();
-    RecursionLimitException loopException = null;
 
     // Non looping case
     if (! doLoop) {
@@ -532,6 +531,8 @@ public class DoActionButton extends AbstractToolbarItem
     if (LoopControl.LOOP_COUNTED.equals(loopType)) {
       loopCountLimit = loopCount.getTextAsInt(mod, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
+
+    RecursionLimitException loopException = null;
 
     for (;;) {
 

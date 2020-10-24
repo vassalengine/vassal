@@ -141,14 +141,13 @@ public class IconFamily extends AbstractConfigurable {
    * Return an Icon Size based on the local language name
    */
   public static int getIconSize(String name) {
-    int size = SMALL;
     final String[] options = getIconSizeNames();
     for (int i = 0; i < options.length; i++) {
       if (options[i].equals(name)) {
         return i;
       }
     }
-    return size;
+    return SMALL;
   }
 
   public static int getIconHeight(int size) {

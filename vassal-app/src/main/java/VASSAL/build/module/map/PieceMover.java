@@ -567,17 +567,16 @@ public class PieceMover extends AbstractBuildable
    *          Point mouse released
    */
   public Command movePieces(Map map, Point p) {
-    final List<GamePiece> allDraggedPieces = new ArrayList<>();
     final PieceIterator it = DragBuffer.getBuffer().getIterator();
     if (!it.hasMoreElements()) return null;
 
+    final List<GamePiece> allDraggedPieces = new ArrayList<>();
     Point offset = null;
     Command comm = new NullCommand();
     final BoundsTracker tracker = new BoundsTracker();
     // Map of Point->List<GamePiece> of pieces to merge with at a given
     // location. There is potentially one piece for each Game Piece Layer.
-    final HashMap<Point, List<GamePiece>> mergeTargets =
-      new HashMap<>();
+    final HashMap<Point, List<GamePiece>> mergeTargets = new HashMap<>();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
       tracker.addPiece(dragging);
