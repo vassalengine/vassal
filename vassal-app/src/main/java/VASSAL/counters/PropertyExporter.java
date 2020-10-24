@@ -19,7 +19,9 @@ public interface PropertyExporter extends PropertyNameSource, PropertySource {
     }
 
     if (this instanceof GamePiece) {
+      PieceAccess.GlobalAccess.hideAll(); // Force masked pieces to be hidden from me to generate correct masked name
       result.put(LOCALIZED_NAME, ((GamePiece) this).getLocalizedName());
+      PieceAccess.GlobalAccess.revertAll();
     }
     return result;
   }
