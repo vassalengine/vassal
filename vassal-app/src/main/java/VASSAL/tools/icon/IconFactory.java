@@ -60,7 +60,7 @@ public final class IconFactory {
   private static final JarArchive jar = new JarArchive();
 
   private static IconFactory instance = new IconFactory();
-  private Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<>();
+  private final Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<>();
   private static final Object preloadLock = new Object();
   private Thread preloadThread;
 

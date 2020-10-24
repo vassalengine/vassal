@@ -151,9 +151,9 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   }
 
   public static class Editor implements PieceEditor {
-    private StringConfigurer nameConfig;
-    private StringArrayConfigurer commandsConfig;
-    private JPanel panel = new JPanel();
+    private final StringConfigurer nameConfig;
+    private final StringArrayConfigurer commandsConfig;
+    private final JPanel panel = new JPanel();
 
     public Editor(SubMenu p) {
       nameConfig = new StringConfigurer(null, "Menu name:  ", p.getMenuName());

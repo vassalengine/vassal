@@ -432,10 +432,10 @@ public class Translate extends Decorator implements TranslatablePiece {
     protected FormattedExpressionConfigurer yIndexInput;
     protected FormattedExpressionConfigurer yOffsetInput;
     protected StringConfigurer descInput;
-    private JLabel xLabel;
-    private JPanel xControls;
-    private JLabel yLabel;
-    private JPanel yControls;
+    private final JLabel xLabel;
+    private final JPanel xControls;
+    private final JLabel yLabel;
+    private final JPanel yControls;
 
     public Editor(Translate t) {
       controls = new TraitConfigPanel();

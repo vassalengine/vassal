@@ -225,10 +225,10 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public static class Ed implements PieceEditor {
-    private BooleanConfigurer byPlayer;
-    private StringArrayConfigurer config;
-    private BooleanConfigurer movementConfig;
-    private Box box;
+    private final BooleanConfigurer byPlayer;
+    private final StringArrayConfigurer config;
+    private final BooleanConfigurer movementConfig;
+    private final Box box;
 
     public Ed(Restricted r) {
       byPlayer = new BooleanConfigurer(null, "Also belongs to initially-placing player?", r.restrictByPlayer);

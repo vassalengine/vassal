@@ -702,7 +702,7 @@ public class IconFamily extends AbstractConfigurable {
    *
    */
   static class FamilyImageFilter extends ImageFileFilter {
-    private String familyName;
+    private final String familyName;
 
     public FamilyImageFilter(String family) {
       super();

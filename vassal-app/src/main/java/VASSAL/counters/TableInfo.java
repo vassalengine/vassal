@@ -226,11 +226,11 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
-    private IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");
-    private StringConfigurer commandConfig = new StringConfigurer(null, "Menu Command:  ");
-    private NamedHotKeyConfigurer keyConfig;
-    private JPanel panel;
+    private final IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
+    private final IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");
+    private final StringConfigurer commandConfig = new StringConfigurer(null, "Menu Command:  ");
+    private final NamedHotKeyConfigurer keyConfig;
+    private final JPanel panel;
 
     public Ed(TableInfo p) {
       rowConfig.setValue(p.nRows);

@@ -27,8 +27,8 @@ import java.awt.image.ColorModel;
  */
 @Deprecated(since = "2020-10-12", forRemoval = true)
 public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
-  private int savedWidth;
-  private int savedHeight;
+  private final int savedWidth;
+  private final int savedHeight;
   private int[] savedPixels;
   private static ColorModel defaultCM = ColorModel.getRGBdefault();
 

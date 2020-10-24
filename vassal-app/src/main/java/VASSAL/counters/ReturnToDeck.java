@@ -176,7 +176,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
     class AvailableDeck {
-      private DrawPile pile;
+      private final DrawPile pile;
 
       public AvailableDeck(DrawPile pile) {
         this.pile = pile;
@@ -270,13 +270,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private StringConfigurer menuName;
-    private NamedHotKeyConfigurer menuKey;
-    private JPanel controls;
+    private final StringConfigurer menuName;
+    private final NamedHotKeyConfigurer menuKey;
+    private final JPanel controls;
     private String deckId;
     private final JTextField tf = new JTextField(12);
-    private StringConfigurer promptText;
-    private JCheckBox prompt;
+    private final StringConfigurer promptText;
+    private final JCheckBox prompt;
 
     public Ed(ReturnToDeck p) {
       controls = new JPanel();

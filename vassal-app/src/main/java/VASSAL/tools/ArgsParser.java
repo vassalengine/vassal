@@ -3,7 +3,8 @@ package VASSAL.tools;
 import java.util.Properties;
 
 public class ArgsParser {
-  private Properties props;
+  private final Properties props;
+
   public ArgsParser(String[] args) {
     props = new Properties();
     for (int i = 0; i < args.length; ++i) {

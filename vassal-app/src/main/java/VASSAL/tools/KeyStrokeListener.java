@@ -36,7 +36,7 @@ import VASSAL.tools.swing.SwingUtils;
 public class KeyStrokeListener {
   private ActionListener l;
   private KeyStroke key;
-  private List<KeyStrokeSource> sources = new ArrayList<>();
+  private final List<KeyStrokeSource> sources = new ArrayList<>();
 
   public KeyStrokeListener(ActionListener l, KeyStroke key) {
     this.l = l;

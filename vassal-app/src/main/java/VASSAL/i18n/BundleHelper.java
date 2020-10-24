@@ -32,7 +32,7 @@ public class BundleHelper {
   private static final Logger logger =
     LoggerFactory.getLogger(BundleHelper.class);
 
-  private ResourceBundle bundle;
+  private final ResourceBundle bundle;
 
   public BundleHelper(ResourceBundle bundle) {
     this.bundle = bundle;
