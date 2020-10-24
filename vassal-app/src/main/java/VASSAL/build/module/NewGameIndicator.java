@@ -26,7 +26,7 @@ import VASSAL.command.CommandEncoder;
  * or loaded from a saved game
  */
 public class NewGameIndicator implements GameComponent, CommandEncoder {
-  private String command;
+  private final String command;
   private boolean isNewGame;
 
   public NewGameIndicator(String command) {
