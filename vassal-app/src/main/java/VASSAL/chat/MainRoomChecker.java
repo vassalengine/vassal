@@ -25,7 +25,7 @@ import VASSAL.i18n.Resources;
 
 public class MainRoomChecker {
   private boolean warnedMain = false;
-  private MainRoomFilter filter = new MainRoomFilter();
+  private final MainRoomFilter filter = new MainRoomFilter();
 
   public String filter(String input, String mainRoom, String currentRoom) {
     if (GameModule.getGameModule() == null

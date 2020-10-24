@@ -141,8 +141,8 @@ public class MassPieceDefiner extends PieceDefiner {
   }
 
   private static class Entry {
-    private PieceSlot slot;
-    private PieceDefiner definer;
+    private final PieceSlot slot;
+    private final PieceDefiner definer;
 
     private Entry(PieceSlot slot, PieceDefiner definer) {
       this.slot = slot;

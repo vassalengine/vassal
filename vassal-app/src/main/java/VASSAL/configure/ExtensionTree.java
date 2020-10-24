@@ -46,7 +46,7 @@ import VASSAL.tools.ReflectionUtils;
 public class ExtensionTree extends ConfigureTree {
   private static final long serialVersionUID = 1L;
 
-  private ModuleExtension extension;
+  private final ModuleExtension extension;
 
   public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extension, EditorWindow editorWindow) {
     super(root, helpWindow, editorWindow);

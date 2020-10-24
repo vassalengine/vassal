@@ -23,7 +23,7 @@ import VASSAL.build.GameModule;
 
 /** This command, when executed, displays a Dialog box with a message */
 public class AlertCommand extends Command {
-  private String msg;
+  private final String msg;
 
   public AlertCommand(String msg) {
     this.msg = msg;

@@ -30,8 +30,8 @@ import VASSAL.tools.ArgsParser;
  * The server-side Main class
  */
 public class Server extends Thread {
-  private AsynchronousServerNode rootNode;
-  private ServerSocket socket;
+  private final AsynchronousServerNode rootNode;
+  private final ServerSocket socket;
 
   public Server(AsynchronousServerNode rootNode, int port) throws IOException {
     this.rootNode = rootNode;

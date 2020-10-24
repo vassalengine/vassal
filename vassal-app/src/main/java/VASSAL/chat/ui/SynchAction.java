@@ -44,8 +44,8 @@ public class SynchAction extends AbstractAction {
   private static Room lastRoom;
   private static long lastSync = System.currentTimeMillis();
 
-  private Player p;
-  private ChatServerConnection client;
+  private final Player p;
+  private final ChatServerConnection client;
   private Room targetRoom;
 
   public SynchAction(Player p, ChatServerConnection client) {

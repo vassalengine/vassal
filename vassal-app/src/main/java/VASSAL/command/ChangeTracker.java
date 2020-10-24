@@ -1,8 +1,3 @@
-package VASSAL.command;
-
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-
 /*
  *
  * Copyright (c) 2003-2011 by Rodney Kinney, Brent Easton
@@ -20,6 +15,10 @@ import VASSAL.counters.GamePiece;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL.command;
+
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
 
 /**
  * Utility class for generating {@link ChangePiece} commands.
@@ -27,8 +26,8 @@ import VASSAL.counters.GamePiece;
  * to the target {@link VASSAL.counters.GamePiece}, then invoke {@link #getChangeCommand}
  */
 public class ChangeTracker {
-  private GamePiece piece;
-  private String oldState;
+  private final GamePiece piece;
+  private final String oldState;
 
   public ChangeTracker(GamePiece p) {
     oldState = Decorator.getOutermost(p).getState();

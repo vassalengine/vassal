@@ -42,7 +42,7 @@ public class AddressBookServerConfigurer extends Configurer {
   private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
   protected JComponent controls;
   protected ServerAddressBook addressBook;
-  private HybridClient client;
+  private final HybridClient client;
   private JLabel header;
 
   public AddressBookServerConfigurer(String key, String name, HybridClient client) {

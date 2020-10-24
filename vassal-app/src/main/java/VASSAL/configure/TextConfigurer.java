@@ -155,7 +155,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
   private long lastUpdate = System.currentTimeMillis();
   private String updatedValue;
   private boolean updateQueued = false;
-  private long updateFrequencey = 1000L;
+  private final long updateFrequencey = 1000L;
 
   private void queueForUpdate(String s) {
     updatedValue = s;

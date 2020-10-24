@@ -37,8 +37,8 @@ import VASSAL.build.Configurable;
 public class SimpleConfigurer extends Configurer
                               implements PropertyChangeListener {
   private JPanel p;
-  private Configurer[] attConfig;
-  private Configurable target;
+  private final Configurer[] attConfig;
+  private final Configurable target;
 
   public SimpleConfigurer(Configurable c, Configurer[] attConfigurers) {
     super(null, c.getConfigureName());

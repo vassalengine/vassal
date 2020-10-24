@@ -31,7 +31,7 @@ public class P2PPlayer extends SimplePlayer {
   private static final String ID = "id"; //$NON-NLS-1$
   private static final String ROOM = "room"; //$NON-NLS-1$
 
-  private PeerInfo info;
+  private final PeerInfo info;
   private Properties props;
 
   public P2PPlayer(PeerInfo info) {

@@ -28,10 +28,10 @@ import VASSAL.command.Command;
 public class EchoClient implements Runnable, PropertyChangeListener {
   public static final String NAME = "EchoBot"; //$NON-NLS-1$
   private static Random rng = new Random();
-  private int changeRoom;
-  private int numRooms;
-  private FileWriter log;
-  private ChatServerConnection client;
+  private final int changeRoom;
+  private final int numRooms;
+  private final FileWriter log;
+  private final ChatServerConnection client;
 
   public EchoClient(ChatServerConnection client, int changeRoom, int numRooms, FileWriter log) {
     this.client = client;

@@ -31,7 +31,7 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ServerNode extends Node {
   private static final Logger logger = Logger.getLogger(ServerNode.class.getName());
-  private SendContentsTask sendContents;
+  private final SendContentsTask sendContents;
 
   public ServerNode() {
     super(null, null, null);
@@ -183,7 +183,7 @@ public class ServerNode extends Node {
 
   private static class SendContentsTask extends TimerTask {
     // FIXME: should modules be wrapped by Collections.synchronizedMap()?
-    private Set<Node> modules = new HashSet<>();
+    private final Set<Node> modules = new HashSet<>();
 
     public void markChanged(Node module) {
       synchronized (modules) {

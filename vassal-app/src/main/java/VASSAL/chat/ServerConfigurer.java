@@ -53,7 +53,7 @@ public class ServerConfigurer extends Configurer {
   private static final String OFFICIAL_BUTTON = Resources.getString("Server.official"); //$NON-NLS-1$
   private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
   protected JComponent controls;
-  private HybridClient client;
+  private final HybridClient client;
   private JRadioButton officialButton;
   private JRadioButton p2pButton;
   private JLabel header;

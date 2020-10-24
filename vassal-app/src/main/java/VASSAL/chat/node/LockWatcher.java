@@ -25,9 +25,9 @@ import java.net.Socket;
  * Kills the runtime if unable to establish new connection
  */
 public class LockWatcher extends Thread {
-  private long delay;
-  private long timeout;
-  private int port;
+  private final long delay;
+  private final long timeout;
+  private final int port;
 
   /**
    *

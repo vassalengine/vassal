@@ -54,7 +54,7 @@ public class CgiServerStatus implements ServerStatus {
     Resources.getString(LAST_MONTH)
   };
 
-  private HttpRequestWrapper request;
+  private final HttpRequestWrapper request;
 
   public CgiServerStatus() {
     request = new HttpRequestWrapper("http://www.vassalengine.org/util/"); //$NON-NLS-1$
@@ -107,8 +107,8 @@ public class CgiServerStatus implements ServerStatus {
     return times;
   }
 
-  private SortedMap<Long, List<String[]>> records = new TreeMap<>();
-  private List<Range<Long>> requests = new ArrayList<>();
+  private final SortedMap<Long, List<String[]>> records = new TreeMap<>();
+  private final List<Range<Long>> requests = new ArrayList<>();
 
   private ServerStatus.ModuleSummary[] getHistory(long time) {
     if (time <= 0) return getStatus();

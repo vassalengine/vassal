@@ -880,13 +880,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   private static class Ed implements PieceEditor {
-
-    private PropertyPanel m_panel;
-    private JTextField menuNameCtrl;
-    private NamedHotKeyConfigurer keyStrokeConfig;
-    private JButton colorCtrl;
-    private JTable propertyTable;
-    private JComboBox commitCtrl;
+    private final PropertyPanel m_panel;
+    private final JTextField menuNameCtrl;
+    private final NamedHotKeyConfigurer keyStrokeConfig;
+    private final JButton colorCtrl;
+    private final JTable propertyTable;
+    private final JComboBox commitCtrl;
 
     static final String[] COLUMN_NAMES = {"Name", "Type"};
     static final String[] DEFAULT_ROW = {"*new property*", "Text"};
@@ -1002,14 +1001,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     private int numTicks;
     private int maxTicks;
-    private int panelType;
+    private final int panelType;
     private JTextField valField;
     private JTextField maxField;
-    private TickLabel ticks;
-    private List<ActionListener> actionListeners =
-      new ArrayList<>();
-    private List<DocumentListener> documentListeners =
-      new ArrayList<>();
+    private final TickLabel ticks;
+    private final List<ActionListener> actionListeners = new ArrayList<>();
+    private final List<DocumentListener> documentListeners = new ArrayList<>();
 
     public TickPanel(String value, int type) {
       super(new GridBagLayout());
@@ -1199,7 +1196,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private int numTicks = 0;
     private int maxTicks = 0;
     protected int panelType;
-    private List<ActionListener> actionListeners = new ArrayList<>();
+    private final List<ActionListener> actionListeners = new ArrayList<>();
 
     public int getNumTicks() {
       return numTicks;

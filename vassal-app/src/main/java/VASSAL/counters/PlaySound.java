@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2006 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -179,11 +178,11 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   }
 
   public static class Ed implements PieceEditor {
-    private StringConfigurer menuConfig;
-    private NamedHotKeyConfigurer keyConfig;
-    private AudioClipConfigurer soundConfig;
-    private BooleanConfigurer sendConfig;
-    private JPanel panel;
+    private final StringConfigurer menuConfig;
+    private final NamedHotKeyConfigurer keyConfig;
+    private final AudioClipConfigurer soundConfig;
+    private final BooleanConfigurer sendConfig;
+    private final JPanel panel;
 
     public Ed(PlaySound p) {
       menuConfig = new StringConfigurer(null, "Menu Text:  ", p.menuText);

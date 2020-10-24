@@ -42,9 +42,9 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
   private static final long serialVersionUID = 1L;
 
   private Configurable target;
-  private Class<? extends Buildable> targetClass;
-  private JButton okButton;
-  private ConfigureTree tree;
+  private final Class<? extends Buildable> targetClass;
+  private final JButton okButton;
+  private final ConfigureTree tree;
 
   public ChooseComponentDialog(Frame owner, Class<? extends Buildable> targetClass) {
     super(owner, true);

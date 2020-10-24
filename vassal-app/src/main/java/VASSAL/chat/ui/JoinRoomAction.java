@@ -31,8 +31,8 @@ import VASSAL.i18n.Resources;
 public class JoinRoomAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Room r;
-  private ChatServerConnection client;
+  private final Room r;
+  private final ChatServerConnection client;
 
   public JoinRoomAction(Room r, ChatServerConnection client) {
     super(Resources.getString("Chat.join_room")); //$NON-NLS-1$

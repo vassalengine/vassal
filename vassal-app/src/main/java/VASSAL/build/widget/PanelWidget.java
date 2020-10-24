@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -44,7 +43,7 @@ import VASSAL.tools.ErrorDialog;
  */
 public class PanelWidget extends Widget {
   private JPanel panel;
-  private List<Widget> widgets = new ArrayList<>();
+  private final List<Widget> widgets = new ArrayList<>();
   private int nColumns = 3;
   private boolean vertical = false;
   private boolean fixed = false;

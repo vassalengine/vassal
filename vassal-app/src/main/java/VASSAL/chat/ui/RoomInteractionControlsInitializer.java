@@ -46,10 +46,8 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
-  private List<PlayerActionFactory> playerActionFactories =
-    new ArrayList<>();
-  private List<RoomActionFactory> roomActionFactories =
-    new ArrayList<>();
+  private final List<PlayerActionFactory> playerActionFactories = new ArrayList<>();
+  private final List<RoomActionFactory> roomActionFactories = new ArrayList<>();
   protected ChatServerConnection client;
   private MouseAdapter currentRoomPopupBuilder;
   private MouseAdapter roomPopupBuilder;

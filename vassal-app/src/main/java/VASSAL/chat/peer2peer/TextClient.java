@@ -20,8 +20,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 
 public class TextClient {
-  private boolean reportRooms = true;
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   public TextClient(ChatServerConnection client) {
     this.client = client;
@@ -62,10 +61,8 @@ public class TextClient {
   }
 
   private void availableRoomsChanged(PropertyChangeEvent evt) {
-    if (reportRooms) {
-      System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
-      System.out.print(report((Room[]) evt.getNewValue()));
-    }
+    System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
+    System.out.print(report((Room[]) evt.getNewValue()));
   }
 
   public static String report(Room[] r) {
@@ -215,8 +212,10 @@ public class TextClient {
     };
     new Thread(r).start();
   }
-*/  public static class ShowText extends Command {
-    private String msg;
+*/
+
+  public static class ShowText extends Command {
+    private final String msg;
 
     public ShowText(String msg) {
       this.msg = msg;

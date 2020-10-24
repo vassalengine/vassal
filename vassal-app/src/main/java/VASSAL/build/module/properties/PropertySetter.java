@@ -27,7 +27,7 @@ import VASSAL.tools.FormattedString;
  */
 public class PropertySetter implements PropertyChanger {
   private String newValue;
-  private Constraints propSource;
+  private final Constraints propSource;
   private FormattedString format;
 
   public PropertySetter(String newValue, Constraints propSource) {

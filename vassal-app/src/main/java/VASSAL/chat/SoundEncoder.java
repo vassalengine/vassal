@@ -38,7 +38,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class SoundEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "PLAY\t"; //$NON-NLS-1$
-  private PlayerEncoder playerEncoder;
+  private final PlayerEncoder playerEncoder;
 
   public SoundEncoder(PlayerEncoder p) {
     playerEncoder = p;
@@ -77,8 +77,8 @@ public class SoundEncoder implements CommandEncoder {
     private static ArrayList<Player> banned = new ArrayList<>();
     private static boolean updating = false;
 
-    private String soundKey;
-    private Player sender;
+    private final String soundKey;
+    private final Player sender;
 
     public Cmd(String soundKey, Player player) {
       this.soundKey = soundKey;

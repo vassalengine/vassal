@@ -34,7 +34,7 @@ import VASSAL.tools.menu.MenuManager;
  * Manages {@link PrivateChatter} instances
  */
 public class PrivateChatManager {
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   private final List<Entry> chatters;
   private final List<Player> banned;

@@ -35,8 +35,8 @@ import VASSAL.i18n.Resources;
 public class KickAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private SimplePlayer kickee;
-  private LockableChatServerConnection client;
+  private final SimplePlayer kickee;
+  private final LockableChatServerConnection client;
 
   public KickAction(LockableChatServerConnection client, SimplePlayer target) {
     super(Resources.getString("Chat.kick")); //$NON-NLS-1$

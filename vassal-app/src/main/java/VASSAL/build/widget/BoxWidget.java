@@ -49,13 +49,13 @@ public class BoxWidget extends Widget
     implements ItemListener, PropertyChangeListener {
   private JPanel panel;
   private JComboBox<Widget> box;
-  private DefaultComboBoxModel<Widget> widgets = new DefaultComboBoxModel<>();
-  private CardLayout layout = new CardLayout();
-  private JPanel multiPanel = new JPanel();
-  private List<Widget> built = new ArrayList<>();
-  private Dimension size = new Dimension();
+  private final DefaultComboBoxModel<Widget> widgets = new DefaultComboBoxModel<>();
+  private final CardLayout layout = new CardLayout();
+  private final JPanel multiPanel = new JPanel();
+  private final List<Widget> built = new ArrayList<>();
+  private final Dimension size = new Dimension();
 
-  private Map<Object, String> keys = new HashMap<>();
+  private final Map<Object, String> keys = new HashMap<>();
   private int count = 0;
 
   public static String getConfigureTypeName() {

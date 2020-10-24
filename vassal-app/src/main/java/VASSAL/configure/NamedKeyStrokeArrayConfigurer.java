@@ -39,7 +39,7 @@ import VASSAL.tools.SequenceEncoder;
  * Configures an array of {link NamedKeyStrokes}
  */
 public class NamedKeyStrokeArrayConfigurer extends Configurer {
-  private List<NamedHotKeyConfigurer> configs = new ArrayList<>();
+  private final List<NamedHotKeyConfigurer> configs = new ArrayList<>();
   private Box controls;
   private JPanel panel;
 

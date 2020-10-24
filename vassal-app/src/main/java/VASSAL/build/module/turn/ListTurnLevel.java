@@ -368,7 +368,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     }
   }
 
-  private VisibilityCondition promptCond = () -> configFirst;
+  private final VisibilityCondition promptCond = () -> configFirst;
 
   @Override
   public boolean isConfigurable() {
