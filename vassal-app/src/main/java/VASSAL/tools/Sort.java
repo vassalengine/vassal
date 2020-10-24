@@ -50,14 +50,12 @@ public class Sort {
   private static void quicksort(
     Vector<Object> v, int left, int right, Comparator comp) {
 
-    int i, last;
-
     if (left >= right) { // do nothing if array size < 2
       return;
     }
     swap(v, left, (left + right) / 2);
-    last = left;
-    for (i = left + 1; i <= right; i++) {
+    int last = left;
+    for (int i = left + 1; i <= right; i++) {
       Object o1 = v.elementAt(i);
       Object o2 = v.elementAt(left);
       if (comp.compare(o1, o2) < 0) {

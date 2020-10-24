@@ -2816,7 +2816,6 @@ public class ADC2Module extends Importer {
       Point p = getMap().indexToPosition(hex);
       if (p == null) continue;
 
-      final ArrayList<Piece> s = en.getValue();
       SetupStack stack = new SetupStack();
       insertComponent(stack, mainMap);
 
@@ -2828,8 +2827,9 @@ public class ADC2Module extends Importer {
 
       MapGrid mg = board.getGrid();
       Zone z = null;
-      if (mg instanceof ZonedGrid)
+      if (mg instanceof ZonedGrid) {
         z = ((ZonedGrid) mg).findZone(p);
+      }
       stack.setAttribute(SetupStack.X_POSITION, Integer.toString(p.x));
       stack.setAttribute(SetupStack.Y_POSITION, Integer.toString(p.y));
       if (z != null) {
@@ -2846,7 +2846,7 @@ public class ADC2Module extends Importer {
           log.error("Error while writing setup stacks", e);
         }
       }
-      for (Piece pc : s) {
+      for (Piece pc : en.getValue()) {
         pc.writeToArchive(stack);
       }
     }

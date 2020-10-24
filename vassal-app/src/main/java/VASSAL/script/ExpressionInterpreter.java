@@ -586,8 +586,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object count(Object source, Object propertyMatch, Object mapName) {
-    int result = 0;
-
     if (! (source instanceof GamePiece)) return 0;
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
@@ -595,6 +593,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
 
+    int result = 0;
     final List<Map> maps = getMapList(mapName, sourcePiece);
 
     PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);

@@ -842,7 +842,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     DefaultMutableTreeNode childNode = buildTreeNode(theChild);
     DefaultMutableTreeNode parentNode = getTreeNode(parent);
     Configurable[] oldContents = parent.getConfigureComponents();
-    boolean succeeded = true;
     ArrayList<Configurable> moveToBack = new ArrayList<>();
     for (int i = index; i < oldContents.length; ++i) {
       try {
@@ -861,6 +860,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       moveToBack.add(oldContents[i]);
     }
+
+    boolean succeeded = true;
     try {
       theChild.addTo(parent);
       parent.add(theChild);
@@ -1919,19 +1920,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     private void showConfigurableHitList(DefaultMutableTreeNode node, String searchString) {
       final Configurable c = (Configurable) node.getUserObject();
-      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
-        " [" + getConfigureName(c.getClass()) + "]";
-
-      TargetProgress progress = new TargetProgress();
-      String matchString = "<b><u>Matches for " + name + ": </u></b>";
-
       if (!(c instanceof SearchTarget)) {
         return;
       }
 
+      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
+        " [" + getConfigureName(c.getClass()) + "]";
+      String matchString = "<b><u>Matches for " + name + ": </u></b>";
+
       SearchTarget st = (SearchTarget) c;
       String item = getConfigureName(c.getClass());
 
+      TargetProgress progress = new TargetProgress();
       stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress);
       stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress);
       stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress);
@@ -1939,7 +1939,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       keyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress);
     }
-
         
     /**
      * If this node contains a Game Piece of some kind, displays a list of Trait information from the piece that

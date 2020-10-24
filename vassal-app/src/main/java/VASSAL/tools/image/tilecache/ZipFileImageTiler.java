@@ -142,7 +142,6 @@ public class ZipFileImageTiler {
                                     String[] ipaths, ExecutorService exec, ImageLoader loader,
                                     TileSlicer slicer) {
 
-    final int port = Integer.parseInt(portProp);
     final InetAddress lo;
     try {
       lo = InetAddress.getByName(null);
@@ -152,6 +151,7 @@ public class ZipFileImageTiler {
       return;
     }
 
+    final int port = Integer.parseInt(portProp);
     try (Socket sock = new Socket(lo, port)) {
       sock.shutdownInput();
 

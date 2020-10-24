@@ -375,10 +375,10 @@ public class Inventory extends AbstractToolbarItem
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-    final StringBuilder output = new StringBuilder(); //$NON-NLS-1$
     FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) return;
 
+    final StringBuilder output = new StringBuilder();
     final File file = fc.getSelectedFile();
 
     // TODO replace this hack

@@ -82,7 +82,7 @@ public class MassPieceDefiner extends PieceDefiner {
       }
       p = ((Decorator) p).piece;
     }
-    return i.hasNext() ? p.getClass() == i.next() && !i.hasNext() : false;
+    return i.hasNext() && p.getClass() == i.next() && !i.hasNext();
   }
 
   @Override

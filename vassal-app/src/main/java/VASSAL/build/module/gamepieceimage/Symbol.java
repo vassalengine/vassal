@@ -227,6 +227,9 @@ public class Symbol {
     }
 
     protected static void draw(Graphics g, float lineWidth, String name, Rectangle bounds, boolean drawLow) {
+      if (name.equals(NONE) || name.equals(MARINES)) {
+        return;
+      }
 
       Graphics2D g2 = (Graphics2D) g;
       BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
@@ -239,10 +242,6 @@ public class Symbol {
       int y_top = bounds.y;
       int y_center = bounds.y + bounds.height / 2;
       int y_bottom = bounds.y + bounds.height;
-
-      if (name.equals(NONE) || name.equals(MARINES)) {
-        return;
-      }
 
       switch (name) {
       case AIRBORNE: {

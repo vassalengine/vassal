@@ -180,9 +180,6 @@ public class TextItem extends Item {
 
     TextItemInstance ti = null;
 
-    FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
-    Font f = fs.getFont();
-
     if (defn != null) {
       ti = defn.getTextInstance(name);
     }
@@ -249,6 +246,9 @@ public class TextItem extends Item {
           getLayout().getVisualizerHeight() / 2);
       g2d.transform(newXForm);
     }
+
+    FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
+    Font f = fs.getFont();
 
     drawLabel(g, s, origin.x, origin.y, f, hAlign, vAlign, fg, bg, null, outline, ol);
     if (saveXForm != null) {
