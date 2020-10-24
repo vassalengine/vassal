@@ -385,8 +385,8 @@ public class ComponentI18nData {
   }
   /** An attribute of a Configurable component that can be translated into another language */
   public static class Property {
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     private String untranslatedValue;
 
     public Property(String name, String description) {

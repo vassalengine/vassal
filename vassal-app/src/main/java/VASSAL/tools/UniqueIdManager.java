@@ -48,8 +48,8 @@ import VASSAL.i18n.Resources;
  * and can use {@link #findInstance} to look up a component by id.
  */
 public class UniqueIdManager implements ValidityChecker {
-  private List<Identifyable> instances = new ArrayList<>();
-  private String prefix;
+  private final List<Identifyable> instances = new ArrayList<>();
+  private final String prefix;
 
   public UniqueIdManager(String prefix) {
     this.prefix = prefix;

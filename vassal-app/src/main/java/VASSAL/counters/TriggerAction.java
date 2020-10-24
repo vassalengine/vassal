@@ -464,25 +464,24 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   public static class Ed implements PieceEditor {
-
-    private StringConfigurer name;
-    private StringConfigurer command;
-    private NamedHotKeyConfigurer key;
-    private PropertyExpressionConfigurer propertyMatch;
-    private NamedKeyStrokeArrayConfigurer watchKeys;
-    private NamedKeyStrokeArrayConfigurer actionKeys;
-    private JPanel box;
-    private BooleanConfigurer loopConfig;
-    private NamedHotKeyConfigurer preLoopKeyConfig;
-    private NamedHotKeyConfigurer postLoopKeyConfig;
-    private StringEnumConfigurer loopTypeConfig;
-    private PropertyExpressionConfigurer whileExpressionConfig;
-    private PropertyExpressionConfigurer untilExpressionConfig;
-    private FormattedStringConfigurer loopCountConfig;
-    private BooleanConfigurer indexConfig;
-    private StringConfigurer indexPropertyConfig;
-    private FormattedStringConfigurer indexStartConfig;
-    private FormattedStringConfigurer indexStepConfig;
+    private final StringConfigurer name;
+    private final StringConfigurer command;
+    private final NamedHotKeyConfigurer key;
+    private final PropertyExpressionConfigurer propertyMatch;
+    private final NamedKeyStrokeArrayConfigurer watchKeys;
+    private final NamedKeyStrokeArrayConfigurer actionKeys;
+    private final JPanel box;
+    private final BooleanConfigurer loopConfig;
+    private final NamedHotKeyConfigurer preLoopKeyConfig;
+    private final NamedHotKeyConfigurer postLoopKeyConfig;
+    private final StringEnumConfigurer loopTypeConfig;
+    private final PropertyExpressionConfigurer whileExpressionConfig;
+    private final PropertyExpressionConfigurer untilExpressionConfig;
+    private final FormattedStringConfigurer loopCountConfig;
+    private final BooleanConfigurer indexConfig;
+    private final StringConfigurer indexPropertyConfig;
+    private final FormattedStringConfigurer indexStartConfig;
+    private final FormattedStringConfigurer indexStepConfig;
 
     public Ed(TriggerAction piece) {
 

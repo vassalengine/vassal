@@ -245,8 +245,8 @@ public class ModuleManager {
 
   private final long key;
 
-  private FileOutputStream lout;
-  private FileLock lock;
+  private final FileOutputStream lout;
+  private final FileLock lock;
 
   private final ServerSocket serverSocket;
 

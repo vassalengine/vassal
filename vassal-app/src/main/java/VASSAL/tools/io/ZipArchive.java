@@ -671,7 +671,7 @@ public class ZipArchive implements FileArchive {
    * written, and releases the write lock on close.
    */
   private class ZipArchiveOutputStream extends CheckedOutputStream {
-    private ZipEntry entry;
+    private final ZipEntry entry;
     private long count = 0;
 
     public ZipArchiveOutputStream(OutputStream out,

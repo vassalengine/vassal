@@ -135,7 +135,7 @@ public class SavedGameUpdater {
   }
 
   private static class ReplaceTrait extends Replace {
-    private GamePiece replacement;
+    private final GamePiece replacement;
 
     public ReplaceTrait(GamePiece original, GamePiece replacement) {
       super(Replace.ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS

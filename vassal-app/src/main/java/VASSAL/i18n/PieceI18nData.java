@@ -47,8 +47,8 @@ public class PieceI18nData {
     }
   }
   public static class Property {
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 
     public Property(String value, String description) {
       super();

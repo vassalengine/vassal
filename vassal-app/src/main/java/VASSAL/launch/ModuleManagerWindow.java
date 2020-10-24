@@ -146,7 +146,7 @@ public class ModuleManagerWindow extends JFrame {
 
   private final CardLayout modulePanelLayout;
   private final JPanel moduleView;
-  private ComponentSplitter.SplitPane serverStatusView;
+  private final ComponentSplitter.SplitPane serverStatusView;
 
   private MyTreeNode rootNode;
   private MyTree tree;
@@ -1180,14 +1180,14 @@ public class ModuleManagerWindow extends JFrame {
    */
   public class ModuleInfo extends AbstractInfo {
 
-    private ExtensionsManager extMgr;
-    private SortedSet<File> gameFolders = new TreeSet<>();
+    private final ExtensionsManager extMgr;
+    private final SortedSet<File> gameFolders = new TreeSet<>();
     private ModuleMetaData metadata;
 
-    private Action newExtensionAction =
+    private final Action newExtensionAction =
       new NewExtensionLaunchAction(ModuleManagerWindow.this);
 
-    private AbstractAction addExtensionAction =
+    private final AbstractAction addExtensionAction =
       new AbstractAction(Resources.getString("ModuleManager.add_extension")) {
 
       private static final long serialVersionUID = 1L;
@@ -1918,7 +1918,7 @@ public class ModuleManagerWindow extends JFrame {
   private static class ShowErrorLogAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
-    private Frame frame;
+    private final Frame frame;
 
     public ShowErrorLogAction(Frame frame) {
       super(Resources.getString("Help.error_log"));

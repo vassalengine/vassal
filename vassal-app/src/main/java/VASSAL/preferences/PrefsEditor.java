@@ -52,12 +52,12 @@ import VASSAL.tools.WriteErrorDialog;
 
 public class PrefsEditor {
   private JDialog dialog;
-  private List<Configurer> options = new ArrayList<>();
-  private List<Configurer> extras = new ArrayList<>();
+  private final List<Configurer> options = new ArrayList<>();
+  private final List<Configurer> extras = new ArrayList<>();
   private boolean iterating = false;
-  private Map<Configurer, Object> savedValues = new HashMap<>();
-  private List<Prefs> prefs = new ArrayList<>();
-  private JTabbedPane optionsTab = new JTabbedPane();
+  private final Map<Configurer, Object> savedValues = new HashMap<>();
+  private final List<Prefs> prefs = new ArrayList<>();
+  private final JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
   private Action editAction;
 

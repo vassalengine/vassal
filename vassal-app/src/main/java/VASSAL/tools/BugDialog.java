@@ -65,8 +65,8 @@ import VASSAL.tools.version.VersionUtils;
 public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private Throwable thrown;
-  private String errorLog;
+  private final Throwable thrown;
+  private final String errorLog;
 
   private JPanel contents;
   private CardLayout deck;

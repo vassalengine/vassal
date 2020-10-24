@@ -208,14 +208,13 @@ public class ComponentSplitter {
   public static class SplitPane extends JSplitPane {
     private static final long serialVersionUID = 1L;
 
-    private boolean resizeOnVisibilityChange;
-    private int hideablePosition;
+    private final boolean resizeOnVisibilityChange;
+    private final int hideablePosition;
     public static final int HIDE_TOP = 0;
     public static final int HIDE_BOTTOM = 1;
     public static final int HIDE_LEFT = 2;
     public static final int HIDE_RIGHT = 3;
-    private List<SplitPane> showingTransverseComponents =
-      new ArrayList<>();
+    private final List<SplitPane> showingTransverseComponents = new ArrayList<>();
     private int transverseHiddenSize;
 
     /**

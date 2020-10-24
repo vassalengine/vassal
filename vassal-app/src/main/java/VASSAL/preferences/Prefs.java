@@ -55,8 +55,8 @@ public class Prefs implements Closeable {
 
   private static Prefs globalPrefs;
 
-  private Map<String, Configurer> options = new HashMap<>();
-  private Properties storedValues = new Properties();
+  private final Map<String, Configurer> options = new HashMap<>();
+  private final Properties storedValues = new Properties();
   private PrefsEditor editor;
   private File file;
 

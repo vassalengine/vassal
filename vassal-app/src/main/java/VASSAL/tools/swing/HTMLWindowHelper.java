@@ -36,7 +36,7 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 
 public class HTMLWindowHelper implements HyperlinkListener {
-  private JEditorPane pane = new JEditorPane();
+  private final JEditorPane pane = new JEditorPane();
 
   public HTMLWindowHelper() {
     pane.setEditable(false);

@@ -35,7 +35,7 @@ import VASSAL.script.BeanShell;
  */
 public class Map {
 
-  private VASSAL.build.module.Map vassalMap;
+  private final VASSAL.build.module.Map vassalMap;
 
   public Map(VASSAL.build.module.Map m) {
     vassalMap = m;

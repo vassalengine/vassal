@@ -25,8 +25,8 @@ import javax.swing.JComponent;
  * @see VASSAL.build.GameModule#addKeyStrokeListener
  */
 public class KeyStrokeSource {
-  private JComponent c;
-  private int mode;
+  private final JComponent c;
+  private final int mode;
 
   public KeyStrokeSource(JComponent c, int mode) {
     this.c = c;
