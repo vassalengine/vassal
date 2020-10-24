@@ -55,7 +55,7 @@ public class Tutorial extends AbstractConfigurable {
   public static final String PROMPT_MESSAGE = "promptMessage"; //$NON-NLS-1$
   public static final String WELCOME_MESSAGE = "welcomeMessage"; //$NON-NLS-1$
   private String fileName;
-  private Action launch;
+  private final Action launch;
   private boolean launchOnFirstStartup;
   private String welcomeMessage = Resources.getString("Tutorial.instructions"); //$NON-NLS-1$
   private String promptMessage = Resources.getString("Tutorial.load_tutorial"); //$NON-NLS-1$

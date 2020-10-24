@@ -680,7 +680,7 @@ public class Inventory extends AbstractToolbarItem
     }
   }
 
-  private VisibilityCondition piecesVisible = () -> !foldersOnly;
+  private final VisibilityCondition piecesVisible = () -> !foldersOnly;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {

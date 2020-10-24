@@ -64,28 +64,23 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   protected Deck myDeck;
   protected PropertySource source;
 
-  private VisibilityCondition colorVisibleCondition = () -> dummy.isDrawOutline();
+  private final VisibilityCondition colorVisibleCondition = () -> dummy.isDrawOutline();
 
-  private VisibilityCondition reshuffleVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return reshufflable;
-    }
-  };
+  private final VisibilityCondition reshuffleVisibleCondition = () -> reshufflable;
 
-  private VisibilityCondition faceDownFormatVisibleCondition = () -> dummy.getFaceDownOption().equals(USE_MENU);
+  private final VisibilityCondition faceDownFormatVisibleCondition = () -> dummy.getFaceDownOption().equals(USE_MENU);
 
-  private VisibilityCondition reverseFormatVisibleCondition = () -> dummy.isReversible();
+  private final VisibilityCondition reverseFormatVisibleCondition = () -> dummy.isReversible();
 
-  private VisibilityCondition shuffleFormatVisibleCondition = () -> dummy.getShuffleOption().equals(USE_MENU);
+  private final VisibilityCondition shuffleFormatVisibleCondition = () -> dummy.getShuffleOption().equals(USE_MENU);
 
-  private VisibilityCondition expressionCountingVisibleCondition = () -> dummy.doesExpressionCounting();
+  private final VisibilityCondition expressionCountingVisibleCondition = () -> dummy.doesExpressionCounting();
 
-  private VisibilityCondition hotkeyOnEmptyVisibleCondition = () -> dummy.isHotkeyOnEmpty();
+  private final VisibilityCondition hotkeyOnEmptyVisibleCondition = () -> dummy.isHotkeyOnEmpty();
 
-  private VisibilityCondition selectionAllowedVisibleCondition = () -> dummy.isAllowSelectDraw();
+  private final VisibilityCondition selectionAllowedVisibleCondition = () -> dummy.isAllowSelectDraw();
 
-  private VisibilityCondition restrictExpressionVisibleCondition = () -> dummy.isRestrictOption();
+  private final VisibilityCondition restrictExpressionVisibleCondition = () -> dummy.isRestrictOption();
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 

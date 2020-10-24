@@ -59,9 +59,9 @@ import VASSAL.preferences.Prefs;
 public class MultiRoll extends JDialog implements ActionListener {
   private static final long serialVersionUID = 1L;
 
-  private JButton rollButton = new JButton("Roll");
-  private JButton canButton = new JButton("Cancel");
-  private JButton emailButton = new JButton("Change Email Address");
+  private final JButton rollButton = new JButton("Roll");
+  private final JButton canButton = new JButton("Cancel");
+  private final JButton emailButton = new JButton("Change Email Address");
 
   private JDialog me;
   private JPanel serverPanel;

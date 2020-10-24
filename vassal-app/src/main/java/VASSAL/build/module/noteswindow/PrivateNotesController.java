@@ -38,7 +38,7 @@ import VASSAL.tools.SequenceEncoder;
 public class PrivateNotesController implements GameComponent, CommandEncoder, SetPrivateTextCommand.Interface {
   public static final String COMMAND_PREFIX = "PNOTE\t"; //$NON-NLS-1$
 
-  private Set<PrivateText> notes;
+  private final Set<PrivateText> notes;
   private String myLastSavedNotes;
   private Component controls;
   private TextConfigurer text;

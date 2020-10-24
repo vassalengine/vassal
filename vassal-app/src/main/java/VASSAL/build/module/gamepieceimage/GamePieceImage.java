@@ -249,7 +249,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
   }
 
-  private VisibilityCondition borderCond = () -> {
+  private final VisibilityCondition borderCond = () -> {
     if (getLayout() == null) {
       return false;
     }

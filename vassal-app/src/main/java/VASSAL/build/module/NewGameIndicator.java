@@ -75,7 +75,7 @@ public class NewGameIndicator implements GameComponent, CommandEncoder {
   }
 
   public static class MarkGameNotNew extends Command {
-    private NewGameIndicator indicator;
+    private final NewGameIndicator indicator;
 
     public MarkGameNotNew(NewGameIndicator indicator) {
       this.indicator = indicator;

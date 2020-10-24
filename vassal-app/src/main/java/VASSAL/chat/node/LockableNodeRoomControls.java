@@ -87,7 +87,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
     private static final long serialVersionUID = 1L;
 
     private final NodeClient client;
-    private NodeRoom target;
+    private final NodeRoom target;
 
     public LockRoomAction(NodeRoom target, NodeClient client) {
       super(target.isLocked() ? Resources.getString("Chat.unlock_room")

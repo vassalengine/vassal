@@ -65,9 +65,9 @@ import VASSAL.tools.WarningDialog;
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
 
-  private Controls controls;
+  private final Controls controls;
   private JPanel panel;
-  private List<SecretNote> notes;
+  private final List<SecretNote> notes;
   private List<SecretNote> lastSavedNotes;
 
   // Secret Note display table columns
@@ -239,11 +239,11 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   private class Controls extends JPanel implements ItemListener {
     private static final long serialVersionUID = 1L;
 
-    private JTextArea text;
-    private JTable table;
-    private JButton revealButton;
+    private final JTextArea text;
+    private final JTable table;
+    private final JButton revealButton;
 
-    private String[] columnNames = {
+    private final String[] columnNames = {
       Resources.getString("Notes.player"),    //$NON-NLS-1$
       Resources.getString("Notes.date_time"), //$NON-NLS-1$
       Resources.getString("Notes.note_name"), //$NON-NLS-1$

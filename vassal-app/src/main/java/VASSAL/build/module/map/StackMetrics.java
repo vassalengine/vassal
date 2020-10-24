@@ -556,7 +556,7 @@ public class StackMetrics extends AbstractConfigurable {
     };
   }
 
-  private VisibilityCondition cond = () -> !disabled;
+  private final VisibilityCondition cond = () -> !disabled;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {

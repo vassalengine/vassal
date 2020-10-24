@@ -22,8 +22,8 @@ package VASSAL.build.module.noteswindow;
  * A text message with an owner
  */
 public class PrivateText {
-  private String owner;
-  private String text;
+  private final String owner;
+  private final String text;
 
   public PrivateText(String owner, String text) {
     this.owner = owner;

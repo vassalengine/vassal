@@ -83,7 +83,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public static final String EXTENSION_ID = "extensionId"; //$NON-NLS-1$
   public static final String DESCRIPTION = "description"; //NON-NLS
 
-  private DataArchive archive;
+  private final DataArchive archive;
   private String version = "0.0"; //$NON-NLS-1$
   protected boolean universal = false;
 
@@ -529,8 +529,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
    * A command that verifies that a certain extension has been loaded
    */
   public static class RegCmd extends Command {
-    private String name;
-    private String version;
+    private final String name;
+    private final String version;
 
     public RegCmd(String name, String version) {
       this.name = name;
