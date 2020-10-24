@@ -149,4 +149,8 @@ public class TraitConfigPanel extends JPanel {
   public void add(String i18nKey, JPanel p) {
     add(new JLabel(Resources.getString(i18nKey)), p);
   }
+
+  public void add(String i18nKey, JPanel p, String constraints) {
+    add(new JLabel(Resources.getString(i18nKey)), p, constraints);
+  }
 }

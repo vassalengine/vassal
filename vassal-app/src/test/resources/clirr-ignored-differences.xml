@@ -799,4 +799,13 @@
         <method>void findLocalSizedIcons(int)</method>
         <justification>Protected method can be less visible as it's in a final class</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/counters/PlaceMarker$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>placementConfig</field>
+        <from>javax.swing.JComboBox</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
 </differences>

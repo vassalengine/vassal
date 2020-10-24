@@ -163,6 +163,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     imageName = st.nextToken();
     commonName = st.nextToken();
     imagePainter.setImageName(imageName);
+    imageBounds = null;  // New image, clear the old imageBounds
     commands = null;
   }
 
