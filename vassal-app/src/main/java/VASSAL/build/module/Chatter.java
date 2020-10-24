@@ -545,7 +545,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
       && !Character.isISOControl(e.getKeyChar())) {
-      if (!((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) == 0))  {
+      if ((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0)  {
         return;  // This catches occasional Alt+Key events that should not be forwarded to Chatter
       }
       input.setText(input.getText() + e.getKeyChar());

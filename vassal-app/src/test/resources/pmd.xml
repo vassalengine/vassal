@@ -79,7 +79,9 @@
   <rule ref="category/java/design.xml/ExceptionAsFlowControl" />
   <rule ref="category/java/design.xml/FinalFieldCouldBeStatic" />
   <rule ref="category/java/design.xml/ImmutableField" />
+-->
   <rule ref="category/java/design.xml/LogicInversion" />
+<!--
   <rule ref="category/java/design.xml/SignatureDeclareThrowsException" />
 -->
   <rule ref="category/java/design.xml/SimplifiedTernary" />
