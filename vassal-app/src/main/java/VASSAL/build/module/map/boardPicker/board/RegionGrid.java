@@ -526,7 +526,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     protected void close() {
       inConfig = false;
-      Config.this.setVisible(false);
+      setVisible(false);
     }
 
     public void init() {

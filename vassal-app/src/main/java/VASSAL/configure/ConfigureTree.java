@@ -61,6 +61,8 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -978,20 +980,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     setSelectionRow(getClosestRowForLocation(e.getX(), e.getY()));
     JPopupMenu popup = buildPopupMenu(target);
-    popup.show(ConfigureTree.this, e.getX(), e.getY());
-    popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+    popup.show(this, e.getX(), e.getY());
+    popup.addPopupMenuListener(new PopupMenuListener() {
       @Override
-      public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+      public void popupMenuCanceled(PopupMenuEvent evt) {
         repaint();
       }
 
       @Override
-      public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+      public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
         repaint();
       }
 
       @Override
-      public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+      public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
       }
     });
   }

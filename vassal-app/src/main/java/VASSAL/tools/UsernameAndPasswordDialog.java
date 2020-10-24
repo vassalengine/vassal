@@ -87,11 +87,11 @@ public class UsernameAndPasswordDialog extends JDialog {
         WriteErrorDialog.error(ex, p.getFile());
       }
 
-      UsernameAndPasswordDialog.this.dispose();
+      dispose();
     });
 
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(e -> UsernameAndPasswordDialog.this.dispose());
+    cancel.addActionListener(e -> dispose());
 
     final JPanel panel = new JPanel();
 

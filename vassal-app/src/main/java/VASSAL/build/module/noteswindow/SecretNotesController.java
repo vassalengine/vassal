@@ -432,7 +432,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         );
 
         if (notes.contains(note)) {
-          WarningDialog.show(Controls.this, "Notes.note_exists");  //NON-NLS
+          WarningDialog.show(this, "Notes.note_exists");  //NON-NLS
         }
         else {
           notes.add(0, note);

@@ -86,7 +86,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     keepButton.setEnabled(!dropList.isSelectionEmpty());
     ok.setEnabled(!dumpModel.isEmpty());
 
-    cancel.addActionListener(e -> RemoveUnusedImagesDialog.this.dispose());
+    cancel.addActionListener(e -> dispose());
 
     final JPanel panel = new JPanel(new MigLayout("insets dialog", "[]rel[]rel[]", "[]unrel[]unrel[]"));
 

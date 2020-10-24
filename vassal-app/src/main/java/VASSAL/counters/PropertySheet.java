@@ -298,7 +298,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     if (encoder.getValue() != null && !encoder.getValue().equals(state)) {
       mySetState(encoder.getValue());
 
-      GamePiece outer = Decorator.getOutermost(PropertySheet.this);
+      GamePiece outer = Decorator.getOutermost(this);
       if (outer.getId() != null) {
         GameModule.getGameModule().sendAndLog(
           new ChangePiece(outer.getId(), oldState, outer.getState()));
@@ -673,13 +673,13 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       button.addActionListener(event -> {
         JButton button1 = (JButton) event.getSource();
         Color value1 = button1.getBackground();
-        Color newColor = JColorChooser.showDialog(PropertyPanel.this, "Choose background color or CANCEL to use default color scheme", value1);
+        Color newColor = JColorChooser.showDialog(this, "Choose background color or CANCEL to use default color scheme", value1);
         if (newColor != null) {
           button1.setBackground(newColor);
           button1.setText("sample");
         }
         else {
-          button1.setBackground(PropertyPanel.this.getBackground());
+          button1.setBackground(getBackground());
           button1.setText("Default");
         }
       });

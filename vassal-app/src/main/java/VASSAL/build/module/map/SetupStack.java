@@ -663,7 +663,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       JButton okButton = new JButton(Resources.getString("General.ok"));
       okButton.addActionListener(e -> {
-        StackConfigurer.this.setVisible(false);
+        setVisible(false);
         // Update the Component configurer to reflect the change
         xConfig.setValue(String.valueOf(myStack.pos.x));
         yConfig.setValue(String.valueOf(myStack.pos.y));
@@ -678,7 +678,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       JButton canButton = new JButton(Resources.getString("General.cancel"));
       canButton.addActionListener(e -> {
         cancel();
-        StackConfigurer.this.setVisible(false);
+        setVisible(false);
       });
       okPanel.add(canButton);
 

@@ -376,7 +376,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.addActionListener(e -> {
       final List<Board> l = getBoardsFromControls();
-      defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
+      defaultSetup = l.isEmpty() ? null : encode(new SetBoards(this, l));
       d.dispose();
     });
     buttons.add(ok);
