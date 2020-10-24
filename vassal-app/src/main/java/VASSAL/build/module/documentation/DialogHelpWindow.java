@@ -33,7 +33,7 @@ import VASSAL.tools.swing.HTMLWindowHelper;
 public class DialogHelpWindow extends JDialog implements HyperlinkListener {
   private static final long serialVersionUID = 1L;
 
-  private HTMLWindowHelper helper = new HTMLWindowHelper();
+  private final HTMLWindowHelper helper = new HTMLWindowHelper();
 
   public DialogHelpWindow(String title, URL contents, Dialog parent) {
     super(parent);

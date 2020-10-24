@@ -157,7 +157,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   public static class Collection extends CompoundPieceCollection implements DeckVisitor {
     private String propertyName;
     private String[] layerOrder;
-    private DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(this);
+    private final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(this);
 
     public Collection(String propertyName, String[] layerOrder) {
       super(0);

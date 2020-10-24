@@ -41,7 +41,7 @@ public class Region extends AbstractConfigurable {
   private RegionGrid myGrid;
 
   // Variables for the GUI configurer
-  private Rectangle selectionRect = new Rectangle();
+  private final Rectangle selectionRect = new Rectangle();
   private boolean selected = false;
 
   public Region() {

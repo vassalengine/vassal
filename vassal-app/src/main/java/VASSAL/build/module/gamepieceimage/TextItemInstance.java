@@ -200,7 +200,7 @@ public class TextItemInstance extends ItemInstance {
     }
   }
 
-  private VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
+  private final VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
     @Override

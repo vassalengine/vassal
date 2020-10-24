@@ -29,30 +29,28 @@ import VASSAL.build.module.PlayerRoster;
  * This is an immutable object
  */
 public class SecretNote {
-  private String owner;        // Owner's Password
-  private String name;        // Name of Note
-  private String text;          // Text of Note
-  private boolean hidden = true;  // Is note still hidden?
-  private Date date;        // Date/Time stamp
-  private String handle = "";    // Owner's handle //$NON-NLS-1$
+  private final String owner;    // Owner's Password
+  private final String name;     // Name of Note
+  private final String text;     // Text of Note
+  private final boolean hidden;  // Is note still hidden?
+  private final Date date;       // Date/Time stamp
+  private final String handle;   // Owner's handle
 
   public SecretNote(String name, String owner, String text, boolean hidden) {
+    this(name, owner, text, hidden, new Date(), findHandle());
+  }
+
+  private static String findHandle() {
+    return PlayerRoster.isActive() && PlayerRoster.getMySide() != null ?
+      PlayerRoster.getMySide() :
+      (String) GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).getValue();
+  }
+
+  public SecretNote(String name, String owner, String text, boolean hidden, Date created, String id) {
     this.name = name;
     this.owner = owner;
     this.text = text;
     this.hidden = hidden;
-
-    if (PlayerRoster.isActive() && PlayerRoster.getMySide() != null) {
-      this.handle = PlayerRoster.getMySide();
-    }
-    else {
-      this.handle = (String) GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).getValue();
-    }
-    this.date = new Date();
-  }
-
-  public SecretNote(String name, String owner, String text, boolean hidden, Date created, String id) {
-    this(name, owner, text, hidden);
     this.date = created;
     this.handle = id;
   }
@@ -94,14 +92,10 @@ public class SecretNote {
 
   @Override
   public int hashCode() {
-    int result;
-    result = (owner != null ? owner.hashCode() : 0);
-    result = 29 * result + (name != null ? name.hashCode() : 0);
-    return result;
+    return Objects.hash(owner, name);
   }
 
   public String getText() {
     return text;
   }
-
 }

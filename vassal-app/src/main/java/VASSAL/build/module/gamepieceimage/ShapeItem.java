@@ -179,9 +179,9 @@ public class ShapeItem extends Item {
     }
   }
 
-  private VisibilityCondition falseCond = () -> false;
+  private final VisibilityCondition falseCond = () -> false;
 
-  private VisibilityCondition bevelCond = () -> shape.equals(RRECT);
+  private final VisibilityCondition bevelCond = () -> shape.equals(RRECT);
 
   public int getWidth() {
     return width;

@@ -134,7 +134,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   private static class SetSecondaryEmail extends Command {
-    private String msg;
+    private final String msg;
 
     private SetSecondaryEmail(String s) {
       msg = s;

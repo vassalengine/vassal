@@ -513,7 +513,7 @@ public class WizardSupport {
    * Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key
    */
   public static class BranchingWizard extends WizardBranchController {
-    private String wizardKey;
+    private final String wizardKey;
 
     public BranchingWizard(WizardPanelProvider base, String key) {
       super(base);
@@ -547,11 +547,11 @@ public class WizardSupport {
    *
    */
   public static class SavedGameLoader extends Thread {
-    private WizardController controller;
-    private Map<String, Object> settings;
+    private final WizardController controller;
+    private final Map<String, Object> settings;
     // FIXME: this is a bad design---when can we safely close this stream?!
-    private InputStream in;
-    private String wizardKey;
+    private final InputStream in;
+    private final String wizardKey;
 
     public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey) {
       super();
@@ -710,8 +710,8 @@ public class WizardSupport {
    * @author rkinney
    */
   public static class GameSetupPanels extends WizardPanelProvider implements WizardResultProducer {
-    private WizardPage[] pages;
-    private List<GameSetupStep> setupSteps;
+    private final WizardPage[] pages;
+    private final List<GameSetupStep> setupSteps;
 
     private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List<GameSetupStep> setupSteps) {
       super(steps, descriptions);

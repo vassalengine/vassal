@@ -36,7 +36,7 @@ public class PluginsLoader extends ExtensionsLoader {
 
   public static final String COMMAND_PREFIX = "PLUGIN\t"; //$NON-NLS-1$
 
-  private ExtensionsManager extMgr = new ExtensionsManager("plugins"); //NON-NLS
+  private final ExtensionsManager extMgr = new ExtensionsManager("plugins"); //NON-NLS
 
   @Override
   public void addTo(GameModule mod) {
