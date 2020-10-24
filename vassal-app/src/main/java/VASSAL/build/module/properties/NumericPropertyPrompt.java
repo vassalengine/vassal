@@ -27,9 +27,9 @@ import javax.swing.JOptionPane;
  *
  */
 public class NumericPropertyPrompt extends PropertyPrompt {
-  private int min;
-  private int max;
-  private Component dialogParent;
+  private final int min;
+  private final int max;
+  private final Component dialogParent;
 
   public NumericPropertyPrompt(Component dialogParent, String prompt, int minValue, int maxValue) {
     super(null, prompt);

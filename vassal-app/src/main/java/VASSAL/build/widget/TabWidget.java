@@ -42,7 +42,7 @@ import VASSAL.i18n.Resources;
 public class TabWidget extends Widget
     implements ChangeListener, PropertyChangeListener {
   private JTabbedPane tab = null;
-  private List<Widget> widgets = new ArrayList<>();
+  private final List<Widget> widgets = new ArrayList<>();
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.TabWidget.component_type");

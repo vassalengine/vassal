@@ -85,7 +85,7 @@ public class ServerAddressBook {
   private DefaultListModel<AddressBookEntry> addressBook;
   private AddressBookEntry currentEntry;
   private boolean enabled = true;
-  private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+  private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
   private static ServerAddressBook instance;
   private static String localIPAddress;
   private static String externalIPAddress;
@@ -375,7 +375,7 @@ public class ServerAddressBook {
 
   private class MenuAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private AddressBookEntry entry;
+    private final AddressBookEntry entry;
 
     public MenuAction(AddressBookEntry e) {
       super(e.toString());
@@ -880,8 +880,8 @@ public class ServerAddressBook {
    *
    */
   private class PeerServerEntry extends AddressBookEntry {
-    private JTextField listenPort = new JTextField();
-    private JTextField serverPw = new JTextField();
+    private final JTextField listenPort = new JTextField();
+    private final JTextField serverPw = new JTextField();
 
     public PeerServerEntry() {
       super();

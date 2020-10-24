@@ -86,7 +86,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
   class LockRoomAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
-    private NodeClient client;
+    private final NodeClient client;
     private NodeRoom target;
 
     public LockRoomAction(NodeRoom target, NodeClient client) {

@@ -25,7 +25,7 @@ import VASSAL.command.CommandEncoder;
  */
 public class InviteEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "INVITE\t"; //$NON-NLS-1$
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   public InviteEncoder(ChatServerConnection client) {
     this.client = client;

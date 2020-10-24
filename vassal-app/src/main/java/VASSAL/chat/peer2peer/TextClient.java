@@ -20,7 +20,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 
 public class TextClient {
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   public TextClient(ChatServerConnection client) {
     this.client = client;
@@ -212,8 +212,10 @@ public class TextClient {
     };
     new Thread(r).start();
   }
-*/  public static class ShowText extends Command {
-    private String msg;
+*/
+
+  public static class ShowText extends Command {
+    private final String msg;
 
     public ShowText(String msg) {
       this.msg = msg;

@@ -36,7 +36,7 @@ import java.util.Properties;
  * Performs Get and Post operations to a given URL
  */
 public class HttpRequestWrapper {
-  private String baseURL;
+  private final String baseURL;
 
   public HttpRequestWrapper(String baseURL) {
     this.baseURL = baseURL;

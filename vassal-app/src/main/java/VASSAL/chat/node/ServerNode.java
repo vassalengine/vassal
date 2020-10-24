@@ -31,7 +31,7 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ServerNode extends Node {
   private static final Logger logger = Logger.getLogger(ServerNode.class.getName());
-  private SendContentsTask sendContents;
+  private final SendContentsTask sendContents;
 
   public ServerNode() {
     super(null, null, null);

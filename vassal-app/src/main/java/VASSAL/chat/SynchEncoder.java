@@ -25,8 +25,8 @@ import VASSAL.command.CommandEncoder;
  */
 public class SynchEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "SYNC"; //$NON-NLS-1$
-  private PlayerEncoder playerEncoder;
-  private ChatServerConnection client;
+  private final PlayerEncoder playerEncoder;
+  private final ChatServerConnection client;
 
   public SynchEncoder(PlayerEncoder playerEncoder, ChatServerConnection client) {
     this.playerEncoder = playerEncoder;

@@ -27,8 +27,8 @@ import VASSAL.i18n.Resources;
  *
  */
 public class SynchCommand extends Command {
-  private Player recipient;
-  private ChatServerConnection client;
+  private final Player recipient;
+  private final ChatServerConnection client;
 
   public SynchCommand(Player p, ChatServerConnection client) {
     recipient = p;

@@ -63,8 +63,8 @@ public class AsynchronousServerNode extends ServerNode {
   }
 
   public static class ReportContentsThread extends Thread {
-    private AsynchronousServerNode server;
-    private Set<Node> changed;
+    private final AsynchronousServerNode server;
+    private final Set<Node> changed;
     private long lastGlobalUpdate;
     private static final long GLOBAL_UPDATE_INTERVAL = 1000L * 120L;
 

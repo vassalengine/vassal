@@ -50,7 +50,7 @@ public class ListWidget extends Widget
   private JPanel panel;
   private JSplitPane split;
   private JList<Widget> list;
-  private DefaultListModel<Widget> widgets = new DefaultListModel<>();
+  private final DefaultListModel<Widget> widgets = new DefaultListModel<>();
   private CardLayout layout;
   private JPanel multiPanel;
   private int width, height, divider;
@@ -58,7 +58,7 @@ public class ListWidget extends Widget
   public static final String SCALE = "scale"; //$NON-NLS-1$
   protected double scale;
 
-  private Map<Object, String> keys = new HashMap<>();
+  private final Map<Object, String> keys = new HashMap<>();
   private int count = 0;
 
   public ListWidget() {
