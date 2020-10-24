@@ -392,7 +392,9 @@ public class Resources {
     public URL getAResource(String name) {
       URL url = null;
       final String propFileName = name.substring(name.lastIndexOf('/') + 1);
-      final File propFile = new File(Info.getConfDir(), propFileName);
+
+      // Check the Base (home, working) folder for the resource in case we are running under a Debugger
+      final File propFile = new File(Info.getBaseDir(), propFileName);
       if (propFile.exists()) {
         try {
           url = propFile.toURI().toURL();
