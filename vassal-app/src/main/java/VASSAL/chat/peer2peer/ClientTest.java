@@ -24,9 +24,9 @@ import VASSAL.chat.WelcomeMessageServer;
 // TODO: throw this away or make it a JUnit test
 public class ClientTest extends P2PClient implements Runnable, PropertyChangeListener {
   private static Random rng = new Random();
-  private int changeRoom;
-  private int numRooms;
-  private FileWriter log;
+  private final int changeRoom;
+  private final int numRooms;
+  private final FileWriter log;
 
   public ClientTest(PeerPool pool, WelcomeMessageServer welcomer, int changeRoom, int numRooms, FileWriter log) {
     super(new TextClient.Encoder(), welcomer, pool);

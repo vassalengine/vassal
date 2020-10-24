@@ -62,7 +62,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private WelcomeMessageServer welcomeMessageServer;
   private RoomManager roomMgr;
   private RoomTracker tracker;
-  private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  private final PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   private CommandEncoder encoder;
   private boolean connected = false;
   private ServerStatus svrStatus;

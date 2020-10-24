@@ -31,10 +31,10 @@ import VASSAL.tools.SequenceEncoder;
  * {@link #getInfo} returns an encoded {@link java.util.Properties} object with real name, profile, etc.
  */
 public class PlayerNode extends Node implements SocketWatcher {
-  private SocketHandler input;
+  private final SocketHandler input;
   protected String id;
   protected String info;
-  private AsynchronousServerNode server;
+  private final AsynchronousServerNode server;
   private static ConnectionLimiter connLimiter = new ConnectionLimiter();
 
   public PlayerNode(Socket socket, AsynchronousServerNode server) throws IOException {

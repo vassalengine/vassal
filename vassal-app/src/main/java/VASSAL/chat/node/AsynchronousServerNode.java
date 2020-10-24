@@ -41,7 +41,7 @@ import VASSAL.tools.PropertiesEncoder;
  * Children of rooms represent players.
  */
 public class AsynchronousServerNode extends ServerNode {
-  private static Logger logger =
+  private static final Logger logger =
     Logger.getLogger(AsynchronousServerNode.class.getName());
   private StatusReporter statusReporter;
   private ReportContentsThread contentsReporter;

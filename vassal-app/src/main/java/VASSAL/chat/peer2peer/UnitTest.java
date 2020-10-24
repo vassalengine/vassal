@@ -14,7 +14,7 @@ import org.litesoft.p2pchat.PendingPeerManager;
 import org.litesoft.p2pchat.UserDialog;
 
 public class UnitTest implements UserDialog {
-  private String id;
+  private final String id;
 
   public UnitTest(String id) {
     this.id = id;

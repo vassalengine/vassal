@@ -29,13 +29,13 @@ import VASSAL.tools.PropertiesEncoder;
  * Date: Jun 7, 2003
  */
 public class StatusReporter implements Runnable {
-  private HttpRequestWrapper reportStatus;
+  private final HttpRequestWrapper reportStatus;
   private String lastReportedContents;
   private String currentContents;
   private long sleepInterval = MIN_SLEEP;
   private static final long MIN_SLEEP = 2000;
   private static final long MAX_SLEEP = 1000 * 60 * 60 * 2;
-  private AsynchronousServerNode server;
+  private final AsynchronousServerNode server;
 
   public StatusReporter(HttpRequestWrapper reportStatus, AsynchronousServerNode server) {
     this.reportStatus = reportStatus;

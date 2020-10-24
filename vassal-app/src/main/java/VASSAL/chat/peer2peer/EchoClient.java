@@ -30,8 +30,8 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   private static Random rng = new Random();
   private int changeRoom;
   private int numRooms;
-  private FileWriter log;
-  private ChatServerConnection client;
+  private final FileWriter log;
+  private final ChatServerConnection client;
 
   public EchoClient(ChatServerConnection client, int changeRoom, int numRooms, FileWriter log) {
     this.client = client;

@@ -36,7 +36,7 @@ import VASSAL.i18n.Resources;
 public class BasicChatControlsInitializer implements ChatControlsInitializer {
   private Action connectAction;
   private Action disconnectAction;
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
   private JButton connectButton;
   private JButton disconnectButton;
   private PropertyChangeListener connectionListener;

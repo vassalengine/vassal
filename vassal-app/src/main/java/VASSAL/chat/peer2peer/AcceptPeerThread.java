@@ -11,7 +11,7 @@ import org.litesoft.p2pchat.PendingPeerManager;
 public class AcceptPeerThread extends Thread {
   private boolean running = true;
   private ServerSocket socket;
-  private PendingPeerManager ppm;
+  private final PendingPeerManager ppm;
   private int port;
   private static final int MAX_ATTEMPTS = 10;
 

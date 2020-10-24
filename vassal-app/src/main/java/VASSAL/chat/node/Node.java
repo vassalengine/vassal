@@ -39,11 +39,11 @@ import VASSAL.tools.SequenceEncoder;
  * all descendents of the node.
  */
 public class Node implements MsgSender {
-  private static Logger logger = Logger.getLogger(MsgSender.class.getName());
-  private String id;
+  private static final Logger logger = Logger.getLogger(MsgSender.class.getName());
+  private final String id;
   private String info;
   private Node parent;
-  private List<Node> children = new ArrayList<>();
+  private final List<Node> children = new ArrayList<>();
 
   public Node(Node parent, String id, String info) {
     this.parent = parent;
