@@ -41,6 +41,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -423,7 +426,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * PieceSlot
    */
   @Override
-  public void build(org.w3c.dom.Element e) {
+  public void build(Element e) {
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
     if (e != null) {
       name = e.getAttribute(NAME);
@@ -467,15 +470,15 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   @Override
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
-    final org.w3c.dom.Element el = doc.createElement(getClass().getName());
+  public Element getBuildElement(Document doc) {
+    final Element el = doc.createElement(getClass().getName());
     final String s = getConfigureName();
     if (s != null) {
       el.setAttribute(NAME, s);
     }
     el.setAttribute(GP_ID, gpId + "");
-    el.setAttribute(WIDTH, getPreferredSize().width + "");
-    el.setAttribute(HEIGHT, getPreferredSize().height + "");
+    el.setAttribute(WIDTH, Integer.toString(getPreferredSize().width));
+    el.setAttribute(HEIGHT, Integer.toString(getPreferredSize().height));
 
     if (c != null || pieceDefinition != null) {
       el.appendChild(doc.createTextNode(

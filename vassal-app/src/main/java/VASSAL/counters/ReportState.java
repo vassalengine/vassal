@@ -111,7 +111,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetState() {
-    return cycleIndex + "";
+    return Integer.toString(cycleIndex);
   }
 
   @Override

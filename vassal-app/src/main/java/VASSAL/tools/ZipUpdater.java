@@ -244,7 +244,7 @@ public class ZipUpdater implements Runnable {
                 writeEntry(gis, out, outputEntry);
               }
             }
-            checkSums.put(entry.getName(), goalCrc + "");
+            checkSums.put(entry.getName(), Long.toString(goalCrc));
           }
 
           final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //NON-NLS
