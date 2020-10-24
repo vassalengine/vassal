@@ -28,10 +28,10 @@ import VASSAL.counters.GamePiece;
  * @see ChangeTracker
  */
 public class MoveTracker {
-  private String oldMapId;
-  private Point oldPosition;
-  private String oldUnderneathId;
-  private GamePiece piece;
+  private final String oldMapId;
+  private final Point oldPosition;
+  private final String oldUnderneathId;
+  private final GamePiece piece;
 
   public MoveTracker(GamePiece piece) {
     this.piece = piece;

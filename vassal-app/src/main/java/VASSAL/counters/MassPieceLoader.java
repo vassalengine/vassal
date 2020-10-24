@@ -1030,8 +1030,7 @@ public class MassPieceLoader {
    * Subclass of Embellishment to allow us to directly manipulate its members
    */
   static class Emb extends Embellishment {
-
-    private ArrayList<String> builtImages = new ArrayList<>();
+    private final ArrayList<String> builtImages = new ArrayList<>();
 
     public Emb() {
       super();
@@ -1210,9 +1209,9 @@ public class MassPieceLoader {
 
   static class Entry extends JPanel {
     private static final long serialVersionUID = 1L;
-    private StringEnumConfigurer typeConfig;
-    private StringConfigurer nameConfig;
-    private JLabel warning = new JLabel("Warning - Image suffix included");
+    private final StringEnumConfigurer typeConfig;
+    private final StringConfigurer nameConfig;
+    private final JLabel warning = new JLabel("Warning - Image suffix included");
 
     public Entry() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

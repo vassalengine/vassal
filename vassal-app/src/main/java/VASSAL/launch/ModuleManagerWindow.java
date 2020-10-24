@@ -1216,7 +1216,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     };
 
-    private AbstractAction addFolderAction = new AbstractAction(
+    private final AbstractAction addFolderAction = new AbstractAction(
         Resources.getString("ModuleManager.add_save_game_folder")) {
       private static final long serialVersionUID = 1L;
 
@@ -1478,7 +1478,7 @@ public class ModuleManagerWindow extends JFrame {
   private class ExtensionInfo extends AbstractInfo {
 
     private boolean active;
-    private ModuleInfo moduleInfo;
+    private final ModuleInfo moduleInfo;
     private ExtensionMetaData metadata;
 
     public ExtensionInfo(File file, boolean active, ModuleInfo module) {

@@ -31,7 +31,7 @@ import VASSAL.i18n.Resources;
 public class EditContainedPiecesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Configurable target;
+  private final Configurable target;
 
   public EditContainedPiecesAction(Configurable target) {
     super(Resources.getString("Editor.EditContainedPiecesAction.what_it_does"));

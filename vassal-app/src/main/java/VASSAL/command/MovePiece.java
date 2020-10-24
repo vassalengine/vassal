@@ -42,14 +42,14 @@ import VASSAL.counters.Stack;
  * stack has been deleted.  This Command will recover more gracefully.
  */
 public class MovePiece extends Command {
-  private String id;
-  private String newMapId;
-  private String oldMapId;
-  private Point newPosition;
-  private Point oldPosition;
-  private String newUnderneathId;
-  private String oldUnderneathId;
-  private String playerId;
+  private final String id;
+  private final String newMapId;
+  private final String oldMapId;
+  private final Point newPosition;
+  private final Point oldPosition;
+  private final String newUnderneathId;
+  private final String oldUnderneathId;
+  private final String playerId;
 
   /**
    *

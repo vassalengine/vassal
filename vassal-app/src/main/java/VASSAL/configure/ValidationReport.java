@@ -25,7 +25,7 @@ import java.util.List;
  * Summarizes error/warning messages about invalid module configuration
  */
 public class ValidationReport {
-  private List<String> messages = new ArrayList<>();
+  private final List<String> messages = new ArrayList<>();
 
   public void addWarning(String msg) {
     messages.add(msg);

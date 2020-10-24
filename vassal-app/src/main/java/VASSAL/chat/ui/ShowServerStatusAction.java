@@ -73,7 +73,7 @@ public class ShowServerStatusAction extends AbstractAction {
   private static class Window extends JFrame implements PropertyChangeListener {
     private static final long serialVersionUID = 1L;
 
-    private ServerStatusView view;
+    private final ServerStatusView view;
     private MessageBoardControls messageMgr;
 
     public Window(ServerStatus status, boolean includeMessageControls) {

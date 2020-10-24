@@ -25,7 +25,8 @@ import VASSAL.tools.ReadErrorDialog;
 
 public class PlayAudioClipCommand extends Command {
   public static final String COMMAND_PREFIX = "AUDIO\t"; //NON-NLS
-  private String clipName;
+
+  private final String clipName;
 
   public PlayAudioClipCommand(String clipName) {
     this.clipName = clipName;

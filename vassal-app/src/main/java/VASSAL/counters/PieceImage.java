@@ -32,7 +32,7 @@ import VASSAL.tools.imageop.GamePieceOp;
  */
 @Deprecated
 public class PieceImage {
-  private GamePiece piece;
+  private final GamePiece piece;
   private String lastState = null;
   private Image im;
 

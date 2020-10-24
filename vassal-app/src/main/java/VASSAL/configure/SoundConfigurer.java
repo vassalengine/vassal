@@ -48,11 +48,11 @@ import VASSAL.tools.filechooser.FileChooser;
  */
 public class SoundConfigurer extends Configurer {
   public static final String DEFAULT = "default"; //NON-NLS
-  private String defaultResource;
+  private final String defaultResource;
   private String clipName;
   private JPanel controls;
   private JTextField textField;
-  private AudioClipFactory clipFactory;
+  private final AudioClipFactory clipFactory;
 
   //FIXME this needs some i18n scheme and preferably the display version should be [disabled] while leaving file version alone.
   private static final String NO_VALUE = "<disabled>";
