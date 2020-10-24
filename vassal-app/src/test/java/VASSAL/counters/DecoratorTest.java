@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.icon.IconFactory;
@@ -74,9 +75,13 @@ public class DecoratorTest {
           final DataArchive da = mock(DataArchive.class);
           when(da.getImageNames()).thenReturn(new String[0]);
 
-          // Mock GameModule to return a DataArchive
+          // Mock some GpID Support
+          final GpIdSupport gpid = mock(GpIdSupport.class);
+
+          // Mock GameModule to return various resources
           final GameModule gm = mock(GameModule.class);
           when(gm.getDataArchive()).thenReturn(da);
+          when(gm.getGpIdSupport()).thenReturn(gpid);
 
           staticGm.when(GameModule::getGameModule).thenReturn(gm);
 

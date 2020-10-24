@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -67,9 +66,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return prototypeName != null && prototypeName.length() > 0 ?
-      Resources.getString("Editor.UsePrototype.trait_description_named", prototypeName) :
-      Resources.getString("Editor.UsePrototype.trait_description");
+    return buildDescription("Editor.UsePrototype.trait_description", prototypeName);
   }
 
   @Override
