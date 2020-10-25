@@ -25,15 +25,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
@@ -43,13 +34,23 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.Arrays;
+import java.util.Objects;
+
+import javax.swing.KeyStroke;
 
 /**
  * A GamePiece with the Restricted trait can only be manipulated by the player playing a specific side
  */
 public class Restricted extends Decorator implements EditablePiece {
-  public static final String ID = "restrict;";
+  public static final String ID = "restrict;"; // NON-NLS
   private String[] side;
   private boolean restrictByPlayer;
   private String owningPlayer = "";
@@ -71,12 +72,12 @@ public class Restricted extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return "Restricted Access";
+    return Resources.getString("Editor.Restricted.trait_description");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("RestrictedAccess.html");
+    return HelpFile.getReferenceManualPage("RestrictedAccess.html"); // NON-NLS
   }
 
   @Override
@@ -145,9 +146,6 @@ public class Restricted extends Decorator implements EditablePiece {
     if (Properties.SELECTED.equals(key) && Boolean.TRUE.equals(val) && restrictByPlayer && owningPlayer.length() == 0) {
       if (getMap() != null) {
         owningPlayer = GameModule.getUserId();
-      }
-      else {
-        System.err.println("Selected, but map == null");
       }
     }
     super.setProperty(key, val);
@@ -220,26 +218,39 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Restricted)) return false;
+    Restricted c = (Restricted) o;
+    if (!Arrays.equals(side, c.side)) return false;
+    if (! Objects.equals(restrictByPlayer, c.restrictByPlayer)) return false;
+    if (! Objects.equals(restrictMovement, c.restrictMovement)) return false;
+    return Objects.equals(owningPlayer, c.owningPlayer);
+  }
+
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+
 
   public static class Ed implements PieceEditor {
     private final BooleanConfigurer byPlayer;
     private final StringArrayConfigurer config;
     private final BooleanConfigurer movementConfig;
-    private final Box box;
+    private final TraitConfigPanel box;
 
     public Ed(Restricted r) {
-      byPlayer = new BooleanConfigurer(null, "Also belongs to initially-placing player?", r.restrictByPlayer);
-      config = new StringArrayConfigurer(null, "Belongs to side", r.side);
-      movementConfig = new BooleanConfigurer(null, "Prevent non-owning players from moving piece?", r.restrictMovement);
-      box = Box.createVerticalBox();
-      ((JComponent)byPlayer.getControls()).setAlignmentX(Box.LEFT_ALIGNMENT);
-      ((JComponent)movementConfig.getControls()).setAlignmentX(Box.LEFT_ALIGNMENT);
-      box.add(config.getControls());
-      box.add(byPlayer.getControls());
-      box.add(movementConfig.getControls());
+
+      box = new TraitConfigPanel();
+
+      config = new StringArrayConfigurer(r.side, 3, 6);
+      box.add("Editor.Restricted.belongs_to_side", config);
+
+      byPlayer = new BooleanConfigurer(r.restrictByPlayer);
+      box.add("Editor.Restricted.also_belongs", byPlayer);
+
+      movementConfig = new BooleanConfigurer(r.restrictMovement);
+      box.add("Editor.Restricted.prevent_non_owning", movementConfig);
     }
 
     @Override

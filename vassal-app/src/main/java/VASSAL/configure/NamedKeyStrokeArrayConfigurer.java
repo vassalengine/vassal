@@ -17,31 +17,30 @@
  */
 package VASSAL.configure;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Configures an array of {link NamedKeyStrokes}
  */
 public class NamedKeyStrokeArrayConfigurer extends Configurer {
   private final List<NamedHotKeyConfigurer> configs = new ArrayList<>();
-  private Box controls;
+  private JPanel controls;
   private JPanel panel;
+  private JPanel scrollPanel;
 
   public NamedKeyStrokeArrayConfigurer(String key, String name) {
     super(key, name);
@@ -51,29 +50,38 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     super(key, name, val);
   }
 
+  public NamedKeyStrokeArrayConfigurer(NamedKeyStroke[] val) {
+    this(null, "", val);
+  }
+
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new BorderLayout());
-      controls = Box.createVerticalBox();
-      final JScrollPane scroll = new JScrollPane(controls);
-      Box b = Box.createHorizontalBox();
-      controls.add(b);
-      JLabel l = new JLabel(getName());
-      b.add(l);
-      JButton button = new JButton(Resources.getString("Editor.add"));
-      b.add(button);
-      button.addActionListener(e -> addKey(null));
+      panel = new ConfigurerPanel(getName(), "[grow,fill]rel[]", "[]rel[grow,fill]rel[]"); // NON-NLS
 
-      panel.add(scroll, BorderLayout.CENTER);
+      controls = new JPanel(new MigLayout("ins 0," + ConfigurerLayout.STANDARD_GAPY, "[grow,fill]")); // NON-NLS
+
+      final JScrollPane scroll = new JScrollPane(controls);
+      scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+      scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+      scrollPanel = new JPanel(new MigLayout("ins 0", "[grow]", "[grow]")); // NON-NLS
+      scrollPanel.add(scroll, "grow"); // NON-NLS
+      panel.add(scrollPanel);
 
       NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
-      if (keyStrokes != null) {
+      if (keyStrokes == null || keyStrokes.length == 0) {
+        addKey(null);
+      }
+      else {
         for (NamedKeyStroke keyStroke : keyStrokes) {
           addKey(keyStroke);
         }
       }
-      addKey(null);
+
+      final JButton button = new JButton(Resources.getString("Editor.add"));
+      button.addActionListener(e -> addKey(null));
+      panel.add(button, "aligny top"); // NON-NLS
     }
     return panel;
   }
@@ -81,17 +89,13 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   private void addKey(NamedKeyStroke keyStroke) {
     NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
     configs.add(config);
-    controls.add(config.getControls());
-    if (configs.size() > 5) {
-      panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, 150));
+    controls.add(config.getControls(), "grow,wrap"); // NON-NLS
+    if (configs.size() == 6) {
+      final Dimension s = controls.getPreferredSize();
+      final int t = (Integer) UIManager.get("ScrollBar.width");
+      scrollPanel.setPreferredSize(new Dimension(s.width + t + 2, s.height));
     }
-    else {
-      panel.setPreferredSize(null);
-    }
-    Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      w.pack();
-    }
+    repack(controls);
   }
 
   @Override

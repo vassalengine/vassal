@@ -766,7 +766,7 @@ public class FreeRotator extends Decorator
         new TraitLayout(
           false,
           TraitLayout.STANDARD_INSETS + "," + TraitLayout.STANDARD_GAPY + ",hidemode 3,wrap 3", // NON-NLS
-          "[right]rel[fill,grow]rel[align center]")); // NON-NLS
+          "[right]rel[fill,grow 1]rel[fill,grow 2]")); // NON-NLS
 
       nameConfig = new StringConfigurer(p.name);
       panel.add("Editor.description_label", nameConfig, "span 2,wrap"); // NON-NLS
@@ -781,10 +781,11 @@ public class FreeRotator extends Decorator
       final JLabel menuLabel = new JLabel(Resources.getString("Editor.menu_command"));
       final Font boldFont = new Font(menuLabel.getFont().getFamily(), Font.BOLD, menuLabel.getFont().getSize());
       menuLabel.setFont(boldFont);
-      panel.add(menuLabel, "skip 1,align center"); // NON-NLS
+      panel.add(new JLabel(""));
+      panel.add(menuLabel, "grow 0,align center"); // NON-NLS
       final JLabel keyLabel = new JLabel(Resources.getString("Editor.keyboard_command"));
       keyLabel.setFont(boldFont);
-      panel.add(keyLabel, "align center,wrap"); // NON-NLS
+      panel.add(keyLabel, "grow 0,align center,wrap"); // NON-NLS
 
       cwLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_clockwise"));
       panel.add(cwLabel);

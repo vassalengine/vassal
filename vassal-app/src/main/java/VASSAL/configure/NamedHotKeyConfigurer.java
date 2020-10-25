@@ -29,6 +29,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -200,6 +201,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       setValue(lastValue);
       lastValue = null;
       undoButton.setEnabled(false);
+      keyName.requestFocus();
     }
   }
 

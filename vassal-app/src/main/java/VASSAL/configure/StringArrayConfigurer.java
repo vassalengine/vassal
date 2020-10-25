@@ -168,7 +168,9 @@ public class StringArrayConfigurer extends Configurer {
 
   public void updateViewable(int rows) {
     list.setVisibleRowCount(Math.max(minRows, Math.min(rows, maxRows)));
-    panel.invalidate();
+    if (rows <= maxRows) {
+      repack(panel);
+    }
   }
 
   protected Component getTextComponent() {
