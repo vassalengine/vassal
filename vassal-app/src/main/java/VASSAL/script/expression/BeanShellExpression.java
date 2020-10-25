@@ -181,7 +181,7 @@ public class BeanShellExpression extends Expression {
       expr = t;
     }
 
-    if (expr.trim().length() == 0) {
+    if (expr.isBlank()) {
       return new NullExpression();
     }
 

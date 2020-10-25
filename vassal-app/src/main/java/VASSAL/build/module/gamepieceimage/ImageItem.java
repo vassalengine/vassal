@@ -222,7 +222,7 @@ public class ImageItem extends Item {
     }
 
     if (iName != null) {
-      if (iName.trim().length() == 0) {
+      if (iName.isBlank()) {
         srcOp = BaseOp.op;
       }
       else {

@@ -57,7 +57,7 @@ public class QuickColors {
    * @return Index of Quick Color code, or -1 if none
    */
   public static int getQuickColor(String s, String prefix) {
-    if (StringUtils.isEmpty(s) || s.trim().isEmpty()) return QUICK_COLOR_NONE;
+    if (StringUtils.isEmpty(s) || s.isBlank()) return QUICK_COLOR_NONE;
     if (StringUtils.isEmpty(prefix)) {
       return getQuickColor(s);
     }

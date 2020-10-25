@@ -54,8 +54,7 @@ public class Chart extends Widget {
   public Component getComponent() {
     if (chart == null) {
       label = new JLabel();
-      srcOp = fileName == null || fileName.trim().length() == 0
-            ? null : Op.load(fileName);
+      srcOp = (fileName == null || fileName.isBlank()) ? null : Op.load(fileName);
       if (srcOp != null) {
         label.setIcon(new OpIcon(srcOp));
       }
@@ -101,8 +100,7 @@ public class Chart extends Widget {
       }
       fileName = (String) val;
       if (label != null) {
-        srcOp = fileName == null || fileName.trim().length() == 0
-              ? null : Op.load(fileName);
+        srcOp = (fileName == null || fileName.isBlank()) ? null : Op.load(fileName);
         if (srcOp != null) {
           label.setIcon(new OpIcon(srcOp));
           label.revalidate();

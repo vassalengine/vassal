@@ -575,7 +575,7 @@ public class Flare extends AbstractConfigurable
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
     reportFormat.setProperty(FLARE_MAP, map.getMapName());
     String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
-    if (reportText.trim().length() > 0) {
+    if (!reportText.isBlank()) {
       c = new Chatter.DisplayText(mod.getChatter(), "* " + reportText);
       c.execute();
     }
