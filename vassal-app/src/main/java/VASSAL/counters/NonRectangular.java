@@ -278,8 +278,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
         while (!it.isDone()) {
           switch (it.currentSegment(pts)) {
           case PathIterator.SEG_MOVETO:
-            buffer.append('m')
-                  .append(',')
+            buffer.append("m,")
                   .append(Math.round(pts[0]))
                   .append(',')
                   .append(Math.round(pts[1]));
@@ -287,8 +286,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           case PathIterator.SEG_LINETO:
           case PathIterator.SEG_CUBICTO:
           case PathIterator.SEG_QUADTO:
-            buffer.append('l')
-                  .append(',')
+            buffer.append("l,")
                   .append(Math.round(pts[0]))
                   .append(',')
                   .append(Math.round(pts[1]));
