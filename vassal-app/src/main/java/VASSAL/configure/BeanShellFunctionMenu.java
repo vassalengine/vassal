@@ -30,6 +30,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 public class BeanShellFunctionMenu extends JPopupMenu {
+  private static final long serialVersionUID = 1L;
 
   protected static final String[] SUM_COUNT_HINTS = {
     Resources.getString("Editor.BeanShell.warning"),

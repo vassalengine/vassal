@@ -24,6 +24,7 @@ import VASSAL.configure.ConfigurerLayout;
  * A standardised MigLayout for use by Trait configurers
  */
 public class TraitLayout extends ConfigurerLayout {
+  private static final long serialVersionUID = 1L;
 
   public static final String DEFAULT_TRAIT_LAYOUT_CONSTRAINTS = STANDARD_INSETS + "," +  STANDARD_GAPY + ",hidemode 3,wrap 2"; // NON-NLS
   public static final String DEFAULT_TRAIT_COLUMN_CONSTRAINTS = "[right]rel[fill,grow]"; // NON-NLS

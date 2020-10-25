@@ -28,6 +28,7 @@ import javax.swing.JPanel;
  * A standardised Panel for use by Trait configurers
  */
 public class TraitConfigPanel extends JPanel {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Create a new default Trait Config Panel

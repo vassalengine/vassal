@@ -89,17 +89,12 @@
   <rule ref="category/java/design.xml/SimplifyBooleanExpressions" />
   <rule ref="category/java/design.xml/SimplifyBooleanReturns" />
   <rule ref="category/java/design.xml/SimplifyConditional" />
-<!--
-  <rule ref="category/java/design.xml/UselessOverridingMethod" />
--->
 
 <!--
   <rule ref="category/java/errorprone.xml/AvoidCatchingNPE" />
 -->
   <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" />
-<!--
   <rule ref="category/java/errorprone.xml/AvoidCallingFinalize" />
--->
   <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
 <!--
   <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals" />
@@ -144,9 +139,7 @@
   <rule ref="category/java/errorprone.xml/EqualsNull" />
   <rule ref="category/java/errorprone.xml/FinalizeDoesNotCallSuperFinalize" />
   <rule ref="category/java/errorprone.xml/FinalizeOnlyCallsSuperFinalize" />
-<!--
   <rule ref="category/java/errorprone.xml/FinalizeOverloaded" />
--->
   <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected" />
   <rule ref="category/java/errorprone.xml/IdempotentOperations" />
   <rule ref="category/java/errorprone.xml/ImportFromSamePackage" />
@@ -154,6 +147,7 @@
   <rule ref="category/java/errorprone.xml/InvalidLogMessageFormat" />
   <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
   <rule ref="category/java/errorprone.xml/MisplacedNullCheck" />
+  <rule ref="category/java/errorprone.xml/MissingSerialVersionUID" />
   <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" />
   <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
   <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" />
@@ -174,6 +168,7 @@
   <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion" />
   <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" />
   <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
+  <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
   <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" />
   <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
 

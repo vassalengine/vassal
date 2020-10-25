@@ -23,6 +23,8 @@ import net.miginfocom.swing.MigLayout;
  * A Standardised MigLayout for use by individual Configurers
  */
 public class ConfigurerLayout extends MigLayout {
+  private static final long serialVersionUID = 1L;
+
   public static final String STANDARD_INSETS = "ins 0"; // NON-NLS
   public static final String STANDARD_GAPY = "gapy 2"; // NON-NLS
 
