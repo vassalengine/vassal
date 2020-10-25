@@ -250,8 +250,7 @@ public class ZipUpdater implements Runnable {
           final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //NON-NLS
           manifestEntry.setMethod(ZipEntry.DEFLATED);
           final StringBuilder buffer = new StringBuilder();
-          buffer.append("Manifest-Version: 1.0\n") //NON-NLS
-                .append("Main-Class: VASSAL.tools.ZipUpdater\n"); //NON-NLS
+          buffer.append("Manifest-Version: 1.0\nMain-Class: VASSAL.tools.ZipUpdater\n"); //NON-NLS
           writeEntry(
             new ByteArrayInputStream(buffer.toString().getBytes(StandardCharsets.UTF_8)),
             out,

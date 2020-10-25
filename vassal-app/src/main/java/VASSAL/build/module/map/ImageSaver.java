@@ -156,9 +156,7 @@ public class ImageSaver extends AbstractToolbarItem {
     // FIXME: this is not really a good way to do this---should do
     // something with the minimum size or font metrics
     final int l = Resources.getString("Editor.ImageSaver.saving_map_image_as").length() + file.getName().length() + 7;
-    final StringBuilder b = new StringBuilder();
-    b.append("N".repeat(Math.max(0, l))); //NON-NLS
-    dialog.setLabel(b.toString());
+    dialog.setLabel("N".repeat(Math.max(0, l)));
 
     dialog.pack();
     dialog.setLabel(Resources.getString("Editor.ImageSaver.saving_map_image_as") + " ");

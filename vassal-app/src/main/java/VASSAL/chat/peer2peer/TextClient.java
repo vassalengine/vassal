@@ -78,7 +78,7 @@ public class TextClient {
             .map(Objects::toString)
             .collect(Collectors.joining(", ")) //$NON-NLS-1$
         )
-        .append("\n"); //$NON-NLS-1$
+        .append('\n'); //$NON-NLS-1$
     }
     return buffer.toString();
   }

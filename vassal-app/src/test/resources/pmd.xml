@@ -146,9 +146,11 @@
   <rule ref="category/java/multithreading.xml/DontCallThreadRun" />
 
   <rule ref="category/java/performance.xml/AddEmptyString" />
+  <rule ref="category/java/performance.xml/AppendCharacterWithChar" />
   <rule ref="category/java/performance.xml/BigIntegerInstantiation" />
   <rule ref="category/java/performance.xml/BooleanInstantiation" />
-  <rule ref="category/java/performance.xml/ByteInstantiation" />
+  <rule ref="category/java/performance.xml/ByteInstantiation" />  
+  <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" />
   <rule ref="category/java/performance.xml/InefficientEmptyStringCheck" />
   <rule ref="category/java/performance.xml/InefficientStringBuffering" />
   <rule ref="category/java/performance.xml/IntegerInstantiation" />
