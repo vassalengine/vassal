@@ -97,11 +97,14 @@ public class AboutScreen extends AbstractConfigurable {
           ext.getName(), ext.getVersion()));
     }
 
-    sb.append("<br/>").append(//NON-NLS
-      Resources.getString("AboutScreen.vassal_version",  //$NON-NLS-1$
-        Info.getVersion()));
-
-    sb.append("</center></html>"); //NON-NLS
+    sb.append("<br/>") //NON-NLS
+      .append(
+        Resources.getString(
+          "AboutScreen.vassal_version",  //$NON-NLS-1$
+          Info.getVersion()
+        )
+      )
+      .append("</center></html>"); //NON-NLS
 
     final AboutWindow w =
       new AboutWindow(g.getPlayerWindow(), op.getImage(), sb.toString());
