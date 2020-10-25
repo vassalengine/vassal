@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -49,21 +49,20 @@ public class Mp3AudioClip implements AudioClip {
 
   protected InputStream getStream() {
     try {
-      if (name != null) {
-        try {
-          return GameModule.getGameModule().getDataArchive().getInputStream(name);
-        }
-        catch (FileNotFoundException e) {
-          ErrorDialog.dataWarning(new BadDataReport(
-            Resources.getString("Error.not_found", name), "", e));
-        }
-      }
-      else {
-        return url.openStream();
-      }
+      return name != null ?
+        GameModule.getGameModule().getDataArchive().getInputStream(name) :
+        url.openStream();
+    }
+    catch (FileNotFoundException e) {
+      ErrorDialog.dataWarning(new BadDataReport(
+        Resources.getString(
+          "Error.not_found", name != null ? name : url.toString()
+        ),
+        "", e
+      ));
     }
     catch (IOException e) {
-      ErrorDialog.bug(e);
+      ReadErrorDialog.error(e, name != null ? name : url.toString());
     }
     return null;
   }
