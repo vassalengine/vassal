@@ -57,11 +57,11 @@ public class BonesDiceServer extends DieServer {
     for (DieRoll roll : rolls) {
       query.append("{{")
            .append(roll.getNumDice())
-           .append("D")
+           .append('D')
            .append(roll.getNumSides());
 
       if (roll.getPlus() != 0) {
-        query.append("+").append(roll.getPlus());
+        query.append('+').append(roll.getPlus());
       }
 
       query.append("}}\n");

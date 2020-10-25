@@ -185,7 +185,7 @@ public class DiceButton extends AbstractToolbarItem {
       else { // do not sort
         val.append(roll);
         if (i < nDice - 1)
-          val.append(","); //$NON-NLS-1$
+          val.append(',');
       }
     }
 
@@ -197,7 +197,7 @@ public class DiceButton extends AbstractToolbarItem {
       for (int i = 0; i < nDice; ++i) {
         val.append(dice[i]);
         if (i < nDice - 1) {
-          val.append(","); //$NON-NLS-1$
+          val.append(',');
         }
       }
     }

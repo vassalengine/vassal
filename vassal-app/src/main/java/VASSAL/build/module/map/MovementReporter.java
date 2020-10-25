@@ -379,7 +379,7 @@ public class MovementReporter {
               if (!first) {
                 names.append(", ");
               }
-              names.append("?");
+              names.append('?');
               first = false;
             }
           }
@@ -389,7 +389,7 @@ public class MovementReporter {
             if (!first) {
               names.append(", ");
             }
-            names.append("?");
+            names.append('?');
             first = false;
           }
         }

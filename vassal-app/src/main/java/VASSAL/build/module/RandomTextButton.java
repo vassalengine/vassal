@@ -137,12 +137,12 @@ public class RandomTextButton extends DiceButton {
           }
           else {
             ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
-            result.append("0");  //NON-NLS
+            result.append('0');
           }
         else
           result.append(roll);
         if (i < nDice - 1)
-          result.append(","); //$NON-NLS-1$
+          result.append(',');
       }
     }
 

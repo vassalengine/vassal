@@ -255,7 +255,7 @@ public abstract class DieServer {
         else {
           val.append(result);
           if (j < nDice - 1)
-            val.append(",");
+            val.append(',');
         }
       }
 

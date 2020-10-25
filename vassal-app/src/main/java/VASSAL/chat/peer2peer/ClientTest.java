@@ -76,7 +76,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
           buffer.append(", "); //$NON-NLS-1$
         }
       }
-      buffer.append("\n"); //$NON-NLS-1$
+      buffer.append('\n');
     }
     return buffer.toString();
   }

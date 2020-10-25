@@ -148,12 +148,12 @@ public class FunctionBuilder extends JDialog {
     for (int i = skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
       BeanShellExpressionConfigurer fec = configs.get(i);
       if (!first) {
-        result.append(",");
+        result.append(',');
       }
       result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()) : fec.getValueString());
       first = false;
     }
-    result.append(")");
+    result.append(')');
     return result.toString();
   }
 
