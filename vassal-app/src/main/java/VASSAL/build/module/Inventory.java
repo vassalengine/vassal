@@ -744,13 +744,13 @@ public class Inventory extends AbstractToolbarItem
       return HotKeyConfigurer.encode(keyStroke);
     }
     else if (CUTBELOWROOT.equals(key)) {
-      return cutBelowRoot + ""; //$NON-NLS-1$
+      return Integer.toString(cutBelowRoot);
     }
     else if (CUTABOVELEAVES.equals(key)) {
-      return cutAboveLeaves + ""; //$NON-NLS-1$
+      return Integer.toString(cutAboveLeaves);
     }
     else if (SORT_PIECES.equals(key)) {
-      return sortPieces + ""; //$NON-NLS-1$
+      return Boolean.toString(sortPieces);
     }
     else if (SORT_FORMAT.equals(key)) {
       return sortFormat;

@@ -227,16 +227,16 @@ public class CounterTurnLevel extends TurnLevel {
   @Override
   public String getAttributeValueString(String key) {
     if (START.equals(key)) {
-      return start + ""; //$NON-NLS-1$
+      return Integer.toString(start);
     }
     else if (INCR.equals(key)) {
-      return incr + ""; //$NON-NLS-1$
+      return Integer.toString(incr);
     }
     else if (LOOP.equals(key)) {
-      return loop + ""; //$NON-NLS-1$
+      return Boolean.toString(loop);
     }
     else if (LOOP_LIMIT.equals(key)) {
-      return loopLimit + ""; //$NON-NLS-1$
+      return Integer.toString(loopLimit);
     }
     else
       return super.getAttributeValueString(key);

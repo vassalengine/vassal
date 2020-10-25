@@ -168,22 +168,22 @@ public abstract class Item extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (LOCATION.equals(key)) {
-      return location + ""; //$NON-NLS-1$
+      return location;
     }
     else if (X_OFFSET.equals(key)) {
-      return xoffset + ""; //$NON-NLS-1$
+      return Integer.toString(xoffset);
     }
     else if (Y_OFFSET.equals(key)) {
-      return yoffset + ""; //$NON-NLS-1$
+      return Integer.toString(yoffset);
     }
     else if (ADVANCED.equals(key)) {
-      return advanced + ""; //$NON-NLS-1$
+      return Boolean.toString(advanced);
     }
     else if (ROTATION.equals(key)) {
-      return rotation + ""; //$NON-NLS-1$
+      return Integer.toString(rotation);
     }
     else if (ANTIALIAS.equals(key)) {
-      return antialias + ""; //$NON-NLS-1$
+      return Boolean.toString(antialias);
     }
     else
       return null;

@@ -153,7 +153,7 @@ public class TextItem extends Item {
       return fontStyleName;
     }
     else if (SOURCE.equals(key)) {
-      return textSource + ""; //$NON-NLS-1$
+      return textSource;
     }
     else if (TEXT.equals(key)) {
       return text;

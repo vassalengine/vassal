@@ -802,7 +802,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return getConfigureName() + "";
+      return getConfigureName();
     }
     else if (ALWAYS_ON.equals(key)) {
       return String.valueOf(isAlwaysOn());
@@ -811,19 +811,19 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       return String.valueOf(isStartsOn());
     }
     else if (BOARDS.equals(key)) {
-      return boardSelection + "";
+      return boardSelection;
     }
     else if (BOARD_LIST.equals(key)) {
       return StringArrayConfigurer.arrayToString(boardList);
     }
     else if (TYPE.equals(key)) {
-      return type + "";
+      return type;
     }
     else if (DRAW_OVER.equals(key)) {
       return String.valueOf(drawOver);
     }
     else if (PATTERN.equals(key)) {
-      return pattern + "";
+      return pattern;
     }
     else if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(color);
@@ -841,13 +841,13 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
       return ColorConfigurer.colorToString(borderColor);
     }
     else if (BORDER_WIDTH.equals(key)) {
-      return borderWidth + "";
+      return Integer.toString(borderWidth);
     }
     else if (OPACITY.equals(key)) {
-      return opacity + "";
+      return Integer.toString(opacity);
     }
     else if (BORDER_OPACITY.equals(key)) {
-      return borderOpacity + "";
+      return Integer.toString(borderOpacity);
     }
     else {
       return super.getAttributeValueString(key);

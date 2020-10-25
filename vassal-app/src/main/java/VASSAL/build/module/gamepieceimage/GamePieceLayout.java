@@ -251,13 +251,13 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       return getConfigureName();
     }
     else if (WIDTH.equals(key)) {
-      return getLayoutWidth() + ""; //$NON-NLS-1$
+      return Integer.toString(getLayoutWidth());
     }
     else if (HEIGHT.equals(key)) {
-      return getLayoutHeight() + ""; //$NON-NLS-1$
+      return Integer.toString(getLayoutHeight());
     }
     else if (BORDER.equals(key)) {
-      return border + ""; //$NON-NLS-1$
+      return border;
     }
     else if (ITEMS.equals(key)) {
       return encodeItemList();

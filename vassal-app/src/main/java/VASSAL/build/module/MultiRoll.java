@@ -398,7 +398,7 @@ public class MultiRoll extends JDialog implements ActionListener {
 
       //setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-      col1 = new StateButton((row + 1) + "");
+      col1 = new StateButton(Integer.toString(row + 1));
       col1.setPreferredSize(new Dimension(COL1_WIDTH, ROW_HEIGHT));
       col1.setState(useDie[myRow]);
       col1.addActionListener(new ActionListener() {
@@ -414,7 +414,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col3 = new JTextField(12);
       col3.setBorder(myBorder);
       col3.setPreferredSize(new Dimension(COL3_WIDTH, ROW_HEIGHT));
-      col3.setText(rolls[myRow].getDescription() + "");
+      col3.setText(rolls[myRow].getDescription());
       col3.addKeyListener(new java.awt.event.KeyAdapter() {
         @Override
         public void keyReleased(java.awt.event.KeyEvent e) {
@@ -436,7 +436,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       String[] diceData = new String[allowableDice.length];
       int defaultNDIdx = 0;
       for (int i = 0; i < diceData.length; i++) {
-        diceData[i] = allowableDice[i] + "";
+        diceData[i] = Integer.toString(allowableDice[i]);
         if (nd == allowableDice[i])
           defaultNDIdx = i;
       }
@@ -457,7 +457,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       String[] sideData = new String[allowableSides.length];
       int defaultNSIdx = 0;
       for (int i = 0; i < sideData.length; i++) {
-        sideData[i] = allowableSides[i] + "";
+        sideData[i] = Integer.toString(allowableSides[i]);
         if (ns == allowableSides[i])
           defaultNSIdx = i;
       }
@@ -477,7 +477,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col6 = new JTextField(2);
       col6.setBorder(myBorder);
       col6.setPreferredSize(new Dimension(COL6_WIDTH, ROW_HEIGHT));
-      col6.setText(rolls[myRow].getPlus() + "");
+      col6.setText(Integer.toString(rolls[myRow].getPlus()));
       col6.addKeyListener(new java.awt.event.KeyAdapter() {
         @Override
         public void keyReleased(java.awt.event.KeyEvent e) {
