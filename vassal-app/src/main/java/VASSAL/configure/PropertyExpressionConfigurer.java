@@ -51,6 +51,10 @@ public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer 
     this(key, name, val.getExpression(), piece);
   }
 
+  public PropertyExpressionConfigurer(PropertyExpression val, GamePiece piece) {
+    this(null, "", val.getExpression(), piece);
+  }
+
   public PropertyExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     super(key, name, val, piece);
   }

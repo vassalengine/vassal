@@ -1026,7 +1026,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final JRadioButton prefix = new JRadioButton(Resources.getString("Editor.Embellishment.is_prefix"));
     private final JRadioButton suffix = new JRadioButton(Resources.getString("Editor.Embellishment.is_suffix"));
     private final JCheckBox drawUnderneath = new JCheckBox();
-    private final FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, Resources.getString("Editor.Embellishment.level_number"));
+    private final JLabel resetLevelLabel = new JLabel(Resources.getString("Editor.Embellishment.level_number"));
+    private final FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer("");
     private final StringConfigurer resetCommand;
     private final JCheckBox loop = new JCheckBox();
 
@@ -1070,7 +1071,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       version = e.version;
 
       controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 2,fillx," + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[]")); // NON-NLS
+      controls.setLayout(new MigLayout("hidemode 2,fillx," + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[grow 0]")); // NON-NLS
 
       nameConfig = new StringConfigurer(e.getName());
       controls.add(new JLabel(Resources.getString("Editor.name_label")));
@@ -1140,32 +1141,33 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(activateLabel);
       activateCommand = new StringConfigurer(e.activateCommand);
       controls.add(activateCommand.getControls(), "grow"); // NON-NLS
-      controls.add(activateConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(activateConfig.getControls(), "grow,wrap"); // NON-NLS
 
       increaseLabel = new JLabel(Resources.getString("Editor.Embellishment.increase_level"));
       controls.add(increaseLabel);
       upCommand = new StringConfigurer(e.upCommand);
       controls.add(upCommand.getControls(), "grow"); // NON-NLS
-      controls.add(increaseConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(increaseConfig.getControls(), "grow,wrap"); // NON-NLS
 
       decreaseLabel = new JLabel(Resources.getString("Editor.Embellishment.decrease_level"));
       controls.add(decreaseLabel);
       downCommand = new StringConfigurer(e.downCommand);
       controls.add(downCommand.getControls(), "grow"); // NON-NLS
-      controls.add(decreaseConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(decreaseConfig.getControls(), "grow,wrap"); // NON-NLS
 
       resetLabel = new JLabel(Resources.getString("Editor.Embellishment.reset_to_level"));
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(e.resetCommand);
       controls.add(resetCommand.getControls(), "grow"); // NON-NLS
-      controls.add(resetConfig.getControls(), "align center"); // NON-NLS
-      controls.add(resetLevel.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(resetConfig.getControls(), "grow"); // NON-NLS
+      controls.add(resetLevelLabel, "split 2"); // NON-NLS
+      controls.add(resetLevel.getControls(), "wrap"); // NON-NLS
 
       rndLabel = new JLabel(Resources.getString("Editor.Embellishment.randomize"));
       controls.add(rndLabel);
       rndCommand = new StringConfigurer(e.rndText);
       controls.add(rndCommand.getControls(), "grow"); // NON-NLS
-      controls.add(rndKeyConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(rndKeyConfig.getControls(), "grow,wrap"); // NON-NLS
 
       images = getImagePicker();
       images.addListSelectionListener(e12 -> setUpDownEnabled());
@@ -1304,6 +1306,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       resetCommand.getControls().setVisible(controlled);
       resetConfig.getControls().setVisible(controlled);
       resetLevel.getControls().setVisible(controlled);
+      resetLevelLabel.setVisible(controlled);
 
       rndLabel.setVisible(controlled);
       rndCommand.getControls().setVisible(controlled);
@@ -1520,8 +1523,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    for (String iname : imageName) {
-      s.add(iname);
-    }
+    Collections.addAll(s, imageName);
   }
 }

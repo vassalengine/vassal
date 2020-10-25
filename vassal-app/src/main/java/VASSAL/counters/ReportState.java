@@ -25,29 +25,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.ProblemDialog;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Window;
-import java.awt.event.InputEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -55,6 +32,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
@@ -62,16 +40,35 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * A GamePiece with this trait will echo the piece's current name when any of a given key commands are pressed
  * (and after they take effect)
  */
 public class ReportState extends Decorator implements TranslatablePiece {
-  public static final String ID = "report;";
+  public static final String ID = "report;"; // NON-NLS
   protected NamedKeyStroke[] keys;
   protected FormattedString format = new FormattedString();
   protected String reportFormat;
@@ -117,8 +114,11 @@ public class ReportState extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(NamedKeyStrokeArrayConfigurer.encode(keys)).append(reportFormat).append(NamedKeyStrokeArrayConfigurer.encode(cycleDownKeys)).append(StringArrayConfigurer.arrayToString(cycleReportFormat))
-    .append(description);
+    se.append(NamedKeyStrokeArrayConfigurer.encode(keys))
+      .append(reportFormat)
+      .append(NamedKeyStrokeArrayConfigurer.encode(cycleDownKeys))
+      .append(StringArrayConfigurer.arrayToString(cycleReportFormat))
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -149,9 +149,10 @@ public class ReportState extends Decorator implements TranslatablePiece {
     // that is still calling using PieceCloner.clonePiece. Extract the Property Map from the supplied GamePiece and annoy the user.
     if (o instanceof PropertyExporter) {
       oldPiece = ((PropertyExporter) o).getProperties();
-      ProblemDialog.showOutdatedUsage("Custom trait calling setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p))");
+      ProblemDialog.showOutdatedUsage(Resources.getString("Editor.ReportState.custom_trait_warning"));
     }
     else {
+      // If this cast fails, then custom code developer has done something terribly wrong, so just let it crash and burn
       oldPiece = (java.util.Map<String, Object>) o;
     }
 
@@ -256,7 +257,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
       catch (NumberFormatException e) {
         cycleIndex = -1;
-        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to " + newState);
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to " + newState); // NON-NLS
       }
     }
     else {
@@ -271,16 +272,12 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    String d =  "Report Action";
-    if (description.length() > 0) {
-      d += " - " + description;
-    }
-    return d;
+    return buildDescription("Editor.ReportState.trait_description", description);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ReportChanges.html");
+    return HelpFile.getReferenceManualPage("ReportChanges.html"); // NON-NLS
   }
 
   @Override
@@ -323,47 +320,65 @@ public class ReportState extends Decorator implements TranslatablePiece {
     String[] formats = new String[c + 1];
     String[] descriptions = new String[c + 1];
     formats[0] = reportFormat;
-    descriptions[0] = getCommandDescription(description, "Report Format");
+    descriptions[0] = getCommandDescription(description, Resources.getString("Editor.ReportState.report_format"));
     int j = 1;
     for (int i = 0; i < c; i++) {
       formats[j] = cycleReportFormat[i];
-      descriptions[j] = getCommandDescription(description, "Report Format " + j);
+      descriptions[j] = getCommandDescription(description, Resources.getString("Editor.ReportState.report_format_2"));
       j++;
     }
     return getI18nData(formats, descriptions);
   }
 
-  public static final String OLD_UNIT_NAME = "oldPieceName";
-  public static final String NEW_UNIT_NAME = "newPieceName";
-  public static final String MAP_NAME = "mapName";
-  public static final String OLD_MAP_NAME = "oldMapName";
-  public static final String LOCATION_NAME = "location";
-  public static final String OLD_LOCATION_NAME = "oldLocation";
-  public static final String COMMAND_NAME = "menuCommand";
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof ReportState)) return false;
+    ReportState c = (ReportState) o;
+    if (!Arrays.equals(keys, c.keys)) return false;
+    if (! Objects.equals(reportFormat, c.reportFormat)) return false;
+    if (!Arrays.equals(cycleDownKeys, c.cycleDownKeys)) return false;
+    if (!Arrays.equals(cycleReportFormat, c.cycleReportFormat)) return false;
+    return Objects.equals(description, c.description);
+
+  }
+
+  public static final String OLD_UNIT_NAME = "oldPieceName"; // NON-NLS
+  public static final String NEW_UNIT_NAME = "newPieceName"; // NON-NLS
+  public static final String MAP_NAME = "mapName"; // NON-NLS
+  public static final String OLD_MAP_NAME = "oldMapName"; // NON-NLS
+  public static final String LOCATION_NAME = "location"; // NON-NLS
+  public static final String OLD_LOCATION_NAME = "oldLocation"; // NON-NLS
+  public static final String COMMAND_NAME = "menuCommand"; // NON-NLS
 
   public static class Ed implements PieceEditor {
 
     private final NamedKeyStrokeArrayConfigurer keys;
     private final StringConfigurer format;
-    private final JCheckBox cycle;
+    private final JLabel formatLabel;
+    private final BooleanConfigurer cycle;
+    private final JLabel cycleLabel;
     private final StringArrayConfigurer cycleFormat;
+    private final JLabel cycleDownLabel;
     private final NamedKeyStrokeArrayConfigurer cycleDownKeys;
     protected StringConfigurer descInput;
-    private final JPanel box;
+    private final TraitConfigPanel box;
 
     public Ed(ReportState piece) {
 
-      box = new JPanel();
-      box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-      descInput = new StringConfigurer(null, "Description:  ", piece.description);
-      box.add(descInput.getControls());
-      keys = new NamedKeyStrokeArrayConfigurer(null, "Report on these keystrokes:  ", piece.keys);
-      box.add(keys.getControls());
-      cycle = new JCheckBox("Cycle through different messages?");
-      box.add(cycle);
+      box = new TraitConfigPanel();
+
+      descInput = new StringConfigurer(piece.description);
+      box.add("Editor.description_label", descInput);
+
+      keys = new NamedKeyStrokeArrayConfigurer(piece.keys);
+      box.add("Editor.ReportState.report_on_these_keystrokes", keys);
+
+      cycle = new BooleanConfigurer(piece.cycleReportFormat.length > 0);
+      cycle.addPropertyChangeListener(e -> adjustVisibilty());
+      box.add("Editor.ReportState.cycle_through_different_messages", cycle);
+
+      formatLabel = new JLabel(Resources.getString("Editor.ReportState.report_format_3"));
       format = new PlayerIdFormattedStringConfigurer(
-        null,
-        "Report format:  ",
         new String[]{
           COMMAND_NAME,
           OLD_UNIT_NAME,
@@ -371,26 +386,29 @@ public class ReportState extends Decorator implements TranslatablePiece {
           MAP_NAME,
           OLD_MAP_NAME,
           LOCATION_NAME,
-          OLD_LOCATION_NAME});
+          OLD_LOCATION_NAME},
+        piece.reportFormat);
+      box.add(formatLabel, format);
 
-      format.setValue(piece.reportFormat);
-      box.add(format.getControls());
-      cycleFormat = new StringArrayConfigurer(null, "Message formats", piece.cycleReportFormat);
-      box.add(cycleFormat.getControls());
-      cycleDownKeys = new NamedKeyStrokeArrayConfigurer(null, "Report previous message on these keystrokes:  ", piece.cycleDownKeys);
-      box.add(cycleDownKeys.getControls());
-      ItemListener l = e -> {
-        format.getControls().setVisible(!cycle.isSelected());
-        cycleFormat.getControls().setVisible(cycle.isSelected());
-        cycleDownKeys.getControls().setVisible(cycle.isSelected());
-        Window w = SwingUtilities.getWindowAncestor(box);
-        if (w != null) {
-          w.pack();
-        }
-      };
-      l.itemStateChanged(null);
-      cycle.addItemListener(l);
-      cycle.setSelected(piece.cycleReportFormat.length > 0);
+      cycleLabel = new JLabel(Resources.getString("Editor.ReportState.message_formats"));
+      cycleFormat = new StringArrayConfigurer(piece.cycleReportFormat, 3, 6);
+      box.add(cycleLabel, cycleFormat);
+
+      cycleDownLabel = new JLabel(Resources.getString("Editor.ReportState.report_previous"));
+      cycleDownKeys = new NamedKeyStrokeArrayConfigurer(piece.cycleDownKeys);
+      box.add(cycleDownLabel, cycleDownKeys);
+
+      adjustVisibilty();
+    }
+
+    private void adjustVisibilty() {
+      format.getControls().setVisible(!cycle.getValueBoolean());
+      formatLabel.setVisible(!cycle.getValueBoolean());
+      cycleFormat.getControls().setVisible(cycle.getValueBoolean());
+      cycleLabel.setVisible(cycle.getValueBoolean());
+      cycleDownKeys.getControls().setVisible(cycle.getValueBoolean());
+      cycleDownLabel.setVisible(cycle.getValueBoolean());
+      repack(box);
     }
 
     @Override
@@ -400,19 +418,17 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     @Override
     public String getState() {
-      return cycle.isSelected() ? "0" : "-1";
+      return cycle.getValueBoolean() ? "0" : "-1";
     }
 
     @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      if (cycle.isSelected() && cycleFormat.getStringArray().length > 0) {
-        se.append(keys.getValueString()).append("").append(cycleDownKeys.getValueString()).append(cycleFormat.getValueString());
-      }
-      else {
-        se.append(keys.getValueString()).append(format.getValueString()).append("").append("");
-      }
-      se.append(descInput.getValueString());
+      se.append(keys.getValueString())
+        .append(format.getValueString())
+        .append(cycleDownKeys.getValueString())
+        .append(cycleFormat.getValueString())
+        .append(descInput.getValueString());
       return ID + se.getValue();
     }
   }
@@ -437,7 +453,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       Object value = null;
       if (key != null) {
         String name = key.toString();
-        if (name.startsWith("old") && name.length() >= 4) {
+        if (name.startsWith("old") && name.length() >= 4) { // NON-NLS
           name = name.substring(3);
           value = oldPiece.get(name);
         }

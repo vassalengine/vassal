@@ -18,6 +18,17 @@
 
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -26,22 +37,9 @@ import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
-import VASSAL.configure.PropertyExpression;
-import VASSAL.configure.PropertyExpressionConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * RestrictCommands
@@ -52,9 +50,10 @@ import VASSAL.tools.SequenceEncoder;
  * */
 public class RestrictCommands extends Decorator implements EditablePiece {
 
-  public static final String ID = "hideCmd;";
-  protected static final String HIDE = "Hide";
-  protected static final String DISABLE = "Disable";
+  public static final String ID = "hideCmd;"; // NON-NLS
+  protected static final String HIDE = "Hide"; // NON-NLS
+  protected static final String DISABLE = "Disable"; // NON-NLS
+  protected static final String[] restrictionKeys = { "Editor.RestrictCommands.hide", "Editor.RestrictCommands.disable" };
 
   protected String name = "";
   protected PropertyExpression propertyMatch = new PropertyExpression();
@@ -175,16 +174,12 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    String s = "Restrict Commands";
-    if (name.length() > 0) {
-      s += " - " + name;
-    }
-    return s;
+    return buildDescription(Resources.getString("Editor.RestrictCommands.trait_description", name));
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("RestrictCommands.html");
+    return HelpFile.getReferenceManualPage("RestrictCommands.html"); // NON-NLS
   }
 
   @Override
@@ -212,39 +207,42 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof RestrictCommands)) return false;
+    RestrictCommands c = (RestrictCommands) o;
+    if (! Objects.equals(name, c.name)) return false;
+    if (! Objects.equals(action, c.action)) return false;
+    if (! Objects.equals(propertyMatch, c.propertyMatch)) return false;
+    return Objects.equals(NamedKeyStrokeArrayConfigurer.encode(watchKeys), NamedKeyStrokeArrayConfigurer.encode(c.watchKeys));
+  }
+
   public static class Ed implements PieceEditor {
 
     protected StringConfigurer name;
     protected PropertyExpressionConfigurer propertyMatch;
     protected NamedKeyStrokeArrayConfigurer watchKeys;
-    protected JComboBox actionOption;
-    protected JPanel box;
+    protected TranslatingStringEnumConfigurer actionOption;
+    protected TraitConfigPanel box;
 
     public Ed(RestrictCommands piece) {
 
-      box = new JPanel();
-      box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+      box = new TraitConfigPanel();
 
-      name = new StringConfigurer(null, "Description:  ", piece.name);
-      box.add(name.getControls());
+      name = new StringConfigurer(piece.name);
+      box.add("Editor.description_label", name);
 
-      actionOption = new JComboBox();
-      actionOption.addItem(HIDE);
-      actionOption.addItem(DISABLE);
-      actionOption.setSelectedIndex((piece.action.equals(HIDE)) ? 0 : 1);
-      Box b = Box.createHorizontalBox();
-      b.add(new JLabel("Restriction:  "));
-      b.add(actionOption);
-      box.add(b);
+      actionOption = new TranslatingStringEnumConfigurer(new String[] { HIDE, DISABLE }, restrictionKeys, piece.action);
+      box.add("Editor.RestrictCommands.restriction", actionOption);
 
-      propertyMatch = new PropertyExpressionConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch, Decorator.getOutermost(piece));
-      box.add(propertyMatch.getControls());
+      propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, Decorator.getOutermost(piece));
+      box.add("Editor.RestrictCommands.restrict_when_properties_match", propertyMatch);
 
-      watchKeys = new NamedKeyStrokeArrayConfigurer(null, "Restrict these Key Commands  ", piece.watchKeys);
-      box.add(watchKeys.getControls());
+      watchKeys = new NamedKeyStrokeArrayConfigurer(piece.watchKeys);
+      box.add("Editor.RestrictCommands.restrict_these_key_commands", watchKeys);
 
     }
-
 
     @Override
     public Component getControls() {
@@ -260,7 +258,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
-        .append((actionOption.getSelectedIndex() == 0) ? HIDE : DISABLE)
+        .append(actionOption.getValueString())
         .append(propertyMatch.getValueString())
         .append(watchKeys.getValueString());
       return ID + se.getValue();

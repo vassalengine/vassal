@@ -200,6 +200,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       setValue(lastValue);
       lastValue = null;
       undoButton.setEnabled(false);
+      keyName.requestFocus();
     }
   }
 

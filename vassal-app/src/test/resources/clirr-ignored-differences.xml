@@ -808,4 +808,22 @@
         <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
         <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/counters/RestrictCommands$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>actionOption</field>
+        <from>javax.swing.JComboBox</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/RestrictCommands$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>box</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
 </differences>
