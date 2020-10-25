@@ -107,15 +107,15 @@ public class FormattedStringExpression extends Expression {
          * Only even numbered tokens with at least one token after them are valid $propertyName$ strings.
          */
         if (! first) {
-          buffer.append("+");
+          buffer.append('+');
         }
         if (isProperty && st.hasMoreTokens()) {
           buffer.append(BeanShellExpression.convertProperty(token));
         }
         else {
-          buffer.append("\"");
+          buffer.append('\"');
           buffer.append(token);
-          buffer.append("\"");
+          buffer.append('\"');
         }
         first = false;
       }

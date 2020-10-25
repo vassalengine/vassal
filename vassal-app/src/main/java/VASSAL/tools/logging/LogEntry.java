@@ -82,7 +82,7 @@ public class LogEntry implements Serializable {
     if (message != null) {
       sb.append(' ').append(message);
       if (trace != null) {
-        sb.append("\n").append(trace);
+        sb.append('\n').append(trace);
       }
     }
     else {

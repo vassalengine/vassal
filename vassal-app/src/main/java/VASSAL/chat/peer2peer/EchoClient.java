@@ -101,7 +101,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
             .stream()
             .map(Object::toString)
             .collect(Collectors.joining(", "))) //$NON-NLS-1$
-        .append("\n"); //$NON-NLS-1$
+        .append('\n');
     }
     return buffer.toString();
   }

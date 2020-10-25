@@ -66,7 +66,7 @@ public class IpWatch implements Runnable {
       for (int i = 0; i < a.length; ++i) {
         buff.append(a[i].getHostAddress());
         if (i < a.length - 1) {
-          buff.append(","); //$NON-NLS-1$
+          buff.append(',');
         }
       }
       return buff.toString();

@@ -154,9 +154,9 @@ public abstract class Command {
   public String toString() {
     final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
     final String details = getDetails();
-    if (details != null) sb.append("[").append(details).append("]");
+    if (details != null) sb.append('[').append(details).append(']');
 
-    for (Command c : seq) sb.append("+").append(c);
+    for (Command c : seq) sb.append('+').append(c);
 
     return sb.toString();
   }

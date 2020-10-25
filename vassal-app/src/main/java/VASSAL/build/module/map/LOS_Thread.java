@@ -705,10 +705,10 @@ public class LOS_Thread extends AbstractToolbarItem implements
     int dummy = range;
     while (dummy >= 1) {
       dummy = dummy / 10;
-      buffer.append("8");
+      buffer.append('8');
     }
     if (buffer.length() == 0) {
-      buffer.append("8");
+      buffer.append('8');
     }
     final String rangeMsg = Resources.getString("LOS_Thread.range");
 

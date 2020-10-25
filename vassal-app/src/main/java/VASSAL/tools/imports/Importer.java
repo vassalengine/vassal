@@ -160,7 +160,7 @@ public abstract class Importer {
       if (ch >= 0x20 && ch <= 0x7e)
         sb.append(ch);
       else if (ch != 0)
-        sb.append(" ");
+        sb.append(' ');
       else
         break;
     }
