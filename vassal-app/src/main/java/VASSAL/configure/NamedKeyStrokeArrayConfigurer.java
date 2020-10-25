@@ -17,6 +17,10 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -25,12 +29,8 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import VASSAL.i18n.Resources;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-
 import javax.swing.UIManager;
+
 import net.miginfocom.swing.MigLayout;
 
 /**

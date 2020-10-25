@@ -1140,34 +1140,34 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateLabel = new JLabel(Resources.getString("Editor.Embellishment.activate_layer"));
       controls.add(activateLabel);
       activateCommand = new StringConfigurer(e.activateCommand);
-      controls.add(activateCommand.getControls(), "grow"); // NON-NLS
-      controls.add(activateConfig.getControls(), "grow,wrap"); // NON-NLS
+      controls.add(activateCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(activateConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       increaseLabel = new JLabel(Resources.getString("Editor.Embellishment.increase_level"));
       controls.add(increaseLabel);
       upCommand = new StringConfigurer(e.upCommand);
-      controls.add(upCommand.getControls(), "grow"); // NON-NLS
-      controls.add(increaseConfig.getControls(), "grow,wrap"); // NON-NLS
+      controls.add(upCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(increaseConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       decreaseLabel = new JLabel(Resources.getString("Editor.Embellishment.decrease_level"));
       controls.add(decreaseLabel);
       downCommand = new StringConfigurer(e.downCommand);
-      controls.add(downCommand.getControls(), "grow"); // NON-NLS
-      controls.add(decreaseConfig.getControls(), "grow,wrap"); // NON-NLS
+      controls.add(downCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(decreaseConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       resetLabel = new JLabel(Resources.getString("Editor.Embellishment.reset_to_level"));
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(e.resetCommand);
-      controls.add(resetCommand.getControls(), "grow"); // NON-NLS
-      controls.add(resetConfig.getControls(), "grow"); // NON-NLS
+      controls.add(resetCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(resetConfig.getControls(), "grow 2"); // NON-NLS
       controls.add(resetLevelLabel, "split 2"); // NON-NLS
       controls.add(resetLevel.getControls(), "wrap"); // NON-NLS
 
       rndLabel = new JLabel(Resources.getString("Editor.Embellishment.randomize"));
       controls.add(rndLabel);
       rndCommand = new StringConfigurer(e.rndText);
-      controls.add(rndCommand.getControls(), "grow"); // NON-NLS
-      controls.add(rndKeyConfig.getControls(), "grow,wrap"); // NON-NLS
+      controls.add(rndCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(rndKeyConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       images = getImagePicker();
       images.addListSelectionListener(e12 -> setUpDownEnabled());
