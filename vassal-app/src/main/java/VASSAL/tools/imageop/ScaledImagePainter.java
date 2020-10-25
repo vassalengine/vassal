@@ -33,8 +33,7 @@ public class ScaledImagePainter {
   protected ScaleOp scaleOp;
 
   public void setImageName(String imageName) {
-    setSource(imageName == null || imageName.trim().length() == 0
-      ? null : Op.load(imageName));
+    setSource((imageName == null || imageName.isBlank()) ? null : Op.load(imageName));
   }
 
   public Dimension getImageSize() {

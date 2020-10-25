@@ -178,7 +178,7 @@ public abstract class Expression {
   public static Expression createExpression(String s) {
 
     // A null expression?
-    if (s == null || s.trim().length() == 0) {
+    if (s == null || s.isBlank()) {
       return new NullExpression();
     }
 
@@ -216,7 +216,7 @@ public abstract class Expression {
   public static Expression createPropertyExpression(String s) {
 
     // A null expression?
-    if (s == null || s.trim().length() == 0) {
+    if (s == null || s.isBlank()) {
       return new NullExpression();
     }
 
@@ -241,7 +241,7 @@ public abstract class Expression {
   public static Expression createSimplePropertyExpression(String s) {
 
     // A null expression?
-    if (s == null || s.trim().length() == 0) {
+    if (s == null || s.isBlank()) {
       return new NullExpression();
     }
 

@@ -339,8 +339,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     else if (IMAGE.equals(key)) {
       imageName = (String) val;
-      srcOp = imageName.trim().length() == 0
-            ? null : Op.load(imageName);
+      srcOp = imageName.isBlank() ? null : Op.load(imageName);
     }
   }
 
