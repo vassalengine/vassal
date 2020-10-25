@@ -156,14 +156,20 @@
   <rule ref="category/java/errorprone.xml/MisplacedNullCheck" />
   <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" />
   <rule ref="category/java/errorprone.xml/MoreThanOneLogger" />
+  <rule ref="category/java/errorprone.xml/NonCaseLabelInSwitchStatement" />
+  <rule ref="category/java/errorprone.xml/NonStaticInitializer" />
 <!--
   <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
 -->
   <rule ref="category/java/errorprone.xml/ProperLogger" />
+  <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
 <!--
   <rule ref="category/java/errorprone.xml/SingletonClassReturningNewInstance" />
 -->
   <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar" />
+<!--
+  <rule ref="category/java/errorprone.xml/NullAssignment" />
+-->
   <rule ref="category/java/errorprone.xml/UnconditionalIfStatement" />
   <rule ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion" />
   <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" />
