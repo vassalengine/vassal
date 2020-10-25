@@ -187,6 +187,7 @@
   <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" />
   <rule ref="category/java/performance.xml/UseArraysAsList" />
   <rule ref="category/java/performance.xml/UseIndexOfChar" />
+  <rule ref="category/java/performance.xml/UselessStringValueOf" />
   <rule ref="category/java/performance.xml/UseStringBufferLength" />
 
   <rule ref="category/java/security.xml" />

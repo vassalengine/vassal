@@ -89,8 +89,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return String.valueOf(invisibleToOthers()) +
-             invisibleToMe() + piece.getProperty(key);
+      return Boolean.toString(invisibleToOthers()) + invisibleToMe() + piece.getProperty(key);
     }
     else {
       return super.getLocalizedProperty(key);
@@ -109,8 +108,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return String.valueOf(invisibleToOthers()) +
-        invisibleToMe() + piece.getProperty(key);
+      return Boolean.toString(invisibleToOthers()) + invisibleToMe() + piece.getProperty(key);
     }
     else {
       return super.getProperty(key);
