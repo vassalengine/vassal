@@ -1,4 +1,4 @@
-3.4.7 - ???
+3.4.7 - 25 October 2020
 
 * 13547: Don't raise a bug dialog on failure to read an MP3
 * 13546: Change backup Resource directory from temp folder to base folder

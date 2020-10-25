@@ -1,5 +1,5 @@
-[size=18][b]VASSAL 3.4.6 Released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.4.6.
+[size=18][b]VASSAL 3.4.7 Released[/b][/size]
+The VASSAL Team is happy to announce the release of VASSAL 3.4.7.
 
 [size=16][b]IMPORTANT[/b][/size]
 * Things may be broken which worked previously. If you find a new bug, please report it.
@@ -9,11 +9,24 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.6.
 * Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code.
 
 [size=16][b]Download[/b][/size]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-other.zip]Other[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-linux.tar.bz2]Linux[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-macosx.dmg]Mac OS X[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-windows-64.exe]Windows (64-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-windows-32.exe]Windows (32-bit)[/url]
+[url=https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-other.zip]Other[/url]
+
+[size=16][b]Changes since 3.4.6[/b][/size]
+
+Bug fixes
+
+* 13547: Don't raise a bug dialog on failure to read an MP3
+* 13546: Change backup Resource directory from temp folder to base folder
+* 13542: Interaction between Move Fixed Distance and Rotate traits has changed between 3.2.17 and 3.4.6
+* 13540: Macs now use Command as modifier key for grid-resizing, setup-stack-moving in Editor
+* 13525: HFS+ stores filenames in NFD, so must check for that variant when loading
+* 13524: Masked card dragged from Player Hand reports differently between 3.2.17 and 3.4.6
+* 13520: Made Command+Click the select/deselect combo for Macs (and Command+Wheel to zoom)
+* 13489: Pieces scaled incorrectly during drags on HiDPI screens on Windows
 
 [size=16][b]Changes since 3.4.5[/b][/size]
 
