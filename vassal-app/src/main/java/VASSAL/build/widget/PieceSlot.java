@@ -430,7 +430,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
     if (e != null) {
       name = e.getAttribute(NAME);
-      gpId = e.getAttribute(GP_ID) + "";
+      gpId = e.getAttribute(GP_ID);
       if (name.length() == 0) {
         name = null;
       }
@@ -476,7 +476,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (s != null) {
       el.setAttribute(NAME, s);
     }
-    el.setAttribute(GP_ID, gpId + "");
+    el.setAttribute(GP_ID, gpId);
     el.setAttribute(WIDTH, Integer.toString(getPreferredSize().width));
     el.setAttribute(HEIGHT, Integer.toString(getPreferredSize().height));
 

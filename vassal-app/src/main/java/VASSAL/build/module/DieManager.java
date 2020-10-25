@@ -377,10 +377,10 @@ public class DieManager extends AbstractConfigurable {
       return desc;
     }
     else if (DFLT_NDICE.equals(key)) {
-      return defaultNDice + ""; //NON-NLS
+      return Integer.toString(defaultNDice);
     }
     else if (DFLT_NSIDES.equals(key)) {
-      return defaultNSides + ""; //NON-NLS
+      return Integer.toString(defaultNSides);
     }
     else
       return null;

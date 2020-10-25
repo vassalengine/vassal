@@ -104,7 +104,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     se.append(first);
     String[] s = new String[active.length];
     for (int i = 0; i < s.length; i++) {
-      s[i] = active[i] + ""; //$NON-NLS-1$
+      s[i] = Boolean.toString(active[i]);
     }
     se.append(s);
     for (int i = 0; i < getTurnLevelCount(); i++) {
@@ -337,10 +337,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       return StringArrayConfigurer.arrayToString(list);
     }
     else if (CONFIG_LIST.equals(key)) {
-      return configList + ""; //$NON-NLS-1$
+      return Boolean.toString(configList);
     }
     else if (CONFIG_FIRST.equals(key)) {
-      return configFirst + ""; //$NON-NLS-1$
+      return Boolean.toString(configFirst);
     }
     else if (PROMPT.equals(key)) {
       return prompt;

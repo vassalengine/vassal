@@ -375,7 +375,7 @@ public class ChessClockControl extends AbstractConfigurable
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return getConfigureName() + ""; //$NON-NLS-1$
+      return getConfigureName();
     }
     else if (BUTTON_TOOLTIP.equals(key)) {
       return chessClockButton.getToolTipText();

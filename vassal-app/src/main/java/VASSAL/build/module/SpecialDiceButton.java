@@ -549,7 +549,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     final ShowResults c2 = (ShowResults) c;
     final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
     for (int i = 0; i < c2.rolls.length; ++i) {
-      se.append(c2.rolls[i] + ""); //$NON-NLS-1$
+      se.append(Integer.toString(c2.rolls[i])); //$NON-NLS-1$
     }
     return SHOW_RESULTS_COMMAND + se.getValue();
   }
