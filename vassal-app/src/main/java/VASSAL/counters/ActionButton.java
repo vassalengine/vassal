@@ -104,13 +104,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
-    if (getMap() != null) {
-      pusher.register(getMap());
-    }
-    else {
-      // Do not allow button pushes if piece is not on a map
-      // pusher.register(obs, Decorator.getOutermost(this), x, y);
-    }
   }
 
   @Override
@@ -126,6 +119,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public String getName() {
     return piece.getName();
+  }
+
+  @Override
+  public void setMap(Map m) {
+    // Register the map for button pushes
+    pusher.register(m);
+    piece.setMap(m);
   }
 
   @Override
