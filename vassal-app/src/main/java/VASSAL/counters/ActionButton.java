@@ -82,7 +82,12 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(stroke).append(bounds.x).append(bounds.y).append(bounds.width).append(bounds.height).append(description);
+    se.append(stroke)
+      .append(bounds.x)
+      .append(bounds.y)
+      .append(bounds.width)
+      .append(bounds.height)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -195,8 +200,12 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     @Override
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      se.append(strokeConfig.getValueString()).append(xConfig.getValueString()).append(yConfig.getValueString()).append(widthConfig.getValueString()).append(
-          heightConfig.getValueString()).append(descConfig.getValueString());
+      se.append(strokeConfig.getValueString())
+        .append(xConfig.getValueString())
+        .append(yConfig.getValueString())
+        .append(widthConfig.getValueString())
+        .append(heightConfig.getValueString())
+        .append(descConfig.getValueString());
       return ID + se.getValue();
     }
 
@@ -217,11 +226,9 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
-      if (map != null) {
-        if (!maps.contains(map)) {
-          map.addLocalMouseListener(new MapMouseListener(map));
-          maps.add(map);
-        }
+      if (map != null && !maps.contains(map)) {
+        map.addLocalMouseListener(new MapMouseListener(map));
+        maps.add(map);
       }
     }
 
