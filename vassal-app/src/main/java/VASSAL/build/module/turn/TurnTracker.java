@@ -364,7 +364,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return getConfigureName() + ""; //$NON-NLS-1$
+      return getConfigureName();
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
