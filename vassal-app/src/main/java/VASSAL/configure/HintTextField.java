@@ -29,12 +29,13 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextField;
 
 /**
- * A class extending a JTexfield that can display a 'ghost' text prompt
+ * A class extending a JTextField that can display a 'ghost' text prompt
  * in the field when it is empty.
  * Hint display by default is whenever the field has no text, but
  * hint display can be limited to only when the field has focus.
  */
 public class HintTextField extends JTextField implements FocusListener {
+  private static final long serialVersionUID = 1L;
 
   private String hint;
   private Color hintColor;

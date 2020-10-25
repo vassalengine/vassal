@@ -24,6 +24,7 @@ import javax.swing.JPanel;
  * A standardised Panel to hold an individual Configurer
  */
 public class ConfigurerPanel extends JPanel {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Create an alternate layout depending on whether or not a label is supplied for this configurer

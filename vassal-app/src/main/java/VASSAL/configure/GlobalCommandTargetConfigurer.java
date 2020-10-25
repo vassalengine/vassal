@@ -80,10 +80,10 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     return getTarget().encode();
   }
 
-  @Override
-  public void setValue(Object o) {
-    super.setValue(o);
-  }
+  //@Override
+  //public void setValue(Object o) {
+  //  super.setValue(o);
+  //}
 
   @Override
   public void setValue(String s) {

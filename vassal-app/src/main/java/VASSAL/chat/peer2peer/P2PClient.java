@@ -322,7 +322,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
     Room myRoom = getRoom();
     propSupport.firePropertyChange(ROOM, null, myRoom);
-    tracker.finalize(myRoom);
+    tracker.finalizeRoom(myRoom);
   }
 
   @Override

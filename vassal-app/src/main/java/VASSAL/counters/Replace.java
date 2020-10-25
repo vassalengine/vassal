@@ -144,10 +144,10 @@ public class Replace extends PlaceMarker {
     return getI18nData(command.getName(), getCommandDescription(description, Resources.getString("Editor.Replace.replace_command")));
   }
 
-  @Override
-  public boolean testEquals(Object o) {
-    return super.testEquals(o);
-  }
+  //@Override
+  //public boolean testEquals(Object o) {
+  //  return super.testEquals(o);
+  //}
 
   protected static class Ed extends PlaceMarker.Ed {
 
