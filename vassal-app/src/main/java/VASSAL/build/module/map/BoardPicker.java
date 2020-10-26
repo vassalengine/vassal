@@ -567,7 +567,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @deprecated Use {@link #getBoardsFromControls()}.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Vector<Board> pickBoards() {
+  public Vector<Board> pickBoards() { //NOPMD
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return new Vector<>(getBoardsFromControls());
   }
@@ -771,7 +771,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
     /** @deprecated Use {@link #SetBoards(BoardPicker,List)}. */
     @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetBoards(BoardPicker target, Vector<Board> boards) {
+    public SetBoards(BoardPicker target, Vector<Board> boards) { //NOPMD
       ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.target = target;
       this.boards = boards;

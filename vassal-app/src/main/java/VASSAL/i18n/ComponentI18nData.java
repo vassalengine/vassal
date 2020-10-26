@@ -68,7 +68,7 @@ public class ComponentI18nData {
   }
 
   @Deprecated(since = "2020-10-26", forRemoval = true)
-  public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) {
+  public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) { //NOPMD
     init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
   }
 
