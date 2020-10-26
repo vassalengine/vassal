@@ -57,11 +57,11 @@ public class TranslateVassalWindow extends TranslateWindow {
                                Translatable target,
                                HelpWindow helpWindow,
                                ConfigureTree tree) {
-    super(owner, modal, target, helpWindow, tree);
+    super(owner, modal, target, tree);
   }
 
   public TranslateVassalWindow(Frame owner) {
-    super(owner, false, new VassalTranslation(), null, null);
+    super(owner, false, new VassalTranslation(), null);
     currentTranslation = (Translation) target;
     keyTable.setEnabled(true);
     newTranslation();
