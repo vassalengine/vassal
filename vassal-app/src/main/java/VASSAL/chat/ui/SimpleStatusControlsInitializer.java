@@ -30,8 +30,8 @@ import VASSAL.chat.SimpleStatus;
 import VASSAL.i18n.Resources;
 
 public class SimpleStatusControlsInitializer implements ChatControlsInitializer {
-  private ChatServerConnection client;
-  private boolean includeLooking;
+  private final ChatServerConnection client;
+  private final boolean includeLooking;
   private JButton lookingBox;
   private JButton awayButton;
 

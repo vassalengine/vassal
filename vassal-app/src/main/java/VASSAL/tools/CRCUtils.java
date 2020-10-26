@@ -47,7 +47,7 @@ public class CRCUtils {
   public static long getCRC(List<File> files) throws IOException {
     final CRC32 crc = new CRC32();
     final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-    for (File file : files) {
+    for (final File file : files) {
       buildCRC(file, crc, buffer);
     }
     return crc.getValue();

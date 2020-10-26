@@ -42,7 +42,7 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
   private Font nonOwnerFont = null;
   private Font ownerFont = null;
   public LockableRoomTreeRenderer() {
-    URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
+    final URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
     if (image != null) {
       lockedIcon = new ImageIcon(image);
     }
@@ -54,8 +54,8 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
                                                 boolean expanded,
                                                 boolean leaf, int row,
                                                 boolean hasFocus) {
-    JLabel l =  (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-    Object item = ((DefaultMutableTreeNode) value).getUserObject();
+    final JLabel l =  (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+    final Object item = ((DefaultMutableTreeNode) value).getUserObject();
 
     if (item instanceof LockableRoom) {
       if (lockedIcon != null && ((LockableRoom)item).isLocked()) {

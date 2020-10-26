@@ -72,7 +72,7 @@ public class ErrorDialog {
 
     // use a bug handler if one matches
     synchronized (BUG_HANDLERS) {
-      for (BugHandler bh : BUG_HANDLERS) {
+      for (final BugHandler bh : BUG_HANDLERS) {
         if (bh.accept(thrown)) {
           bh.handle(thrown);
           return;

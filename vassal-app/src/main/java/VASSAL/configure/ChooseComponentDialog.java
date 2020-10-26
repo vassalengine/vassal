@@ -64,11 +64,11 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     };
     tree.addTreeSelectionListener(this);
     add(new ScrollPane(tree));
-    Box b = Box.createHorizontalBox();
+    final Box b = Box.createHorizontalBox();
     okButton = new JButton(Resources.getString("General.ok"));
     okButton.setEnabled(false);
     okButton.addActionListener(e -> dispose());
-    JButton cancelButton = new JButton(Resources.getString("General.cancel"));
+    final JButton cancelButton = new JButton(Resources.getString("General.cancel"));
     cancelButton.addActionListener(e -> {
       target = null;
       dispose();
@@ -83,9 +83,9 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
   public void valueChanged(TreeSelectionEvent e) {
     boolean enabled = false;
     target = null;
-    TreePath path = tree.getSelectionPath();
+    final TreePath path = tree.getSelectionPath();
     if (path != null) {
-      Object selected = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+      final Object selected = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
       enabled = isValidTarget(selected);
       if (enabled) {
         target = (Configurable) selected;

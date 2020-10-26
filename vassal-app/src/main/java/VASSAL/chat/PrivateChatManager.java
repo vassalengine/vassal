@@ -50,7 +50,7 @@ public class PrivateChatManager {
       return null;
     }
     PrivateChatter chat = null;
-    int index = chatters.indexOf(new Entry(sender, null));
+    final int index = chatters.indexOf(new Entry(sender, null));
     if (index >= 0) {
       chat = chatters.get(index).chatter;
     }

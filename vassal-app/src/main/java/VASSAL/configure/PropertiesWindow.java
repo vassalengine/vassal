@@ -59,7 +59,7 @@ public class PropertiesWindow extends JDialog {
     originalState = target.getBuildElement(Builder.createNewDocument());
     Node child = originalState.getFirstChild();
     while (child != null) {
-      Node nextChild = child.getNextSibling();
+      final Node nextChild = child.getNextSibling();
       if (Node.ELEMENT_NODE == child.getNodeType()) {
         // Cull Buildables from the state.
         try {

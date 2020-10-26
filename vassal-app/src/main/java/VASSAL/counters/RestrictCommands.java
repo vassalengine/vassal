@@ -96,7 +96,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
       .append(action)
       .append(propertyMatch.getExpression())
@@ -119,7 +119,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       return super.keyEvent(stroke);
     }
     else {
-      for (NamedKeyStroke watchKey : watchKeys) {
+      for (final NamedKeyStroke watchKey : watchKeys) {
         if (watchKey.equals(stroke)) {
           return null;
         }
@@ -131,17 +131,17 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   @Override
   protected KeyCommand[] getKeyCommands() {
     KeyCommand[] commands = super.getKeyCommands();
-    ArrayList<KeyCommand> newCommands =
+    final ArrayList<KeyCommand> newCommands =
       new ArrayList<>(commands.length);
     if (matchesFilter()) {
-      for (KeyCommand command : commands) {
+      for (final KeyCommand command : commands) {
         boolean matches = false;
         for (int j = 0; j < watchKeys.length && !matches; j++) {
           matches = (watchKeys[j].equals(command.getKeyStroke()));
         }
         if (matches) {
           if (action.equals(DISABLE)) {
-            KeyCommand newCommand = new KeyCommand(command);
+            final KeyCommand newCommand = new KeyCommand(command);
             newCommand.setEnabled(false);
             newCommands.add(newCommand);
           }
@@ -156,7 +156,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   }
 
   protected boolean matchesFilter() {
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     if (!propertyMatch.isNull()) {
       return propertyMatch.accept(outer);
     }
@@ -184,13 +184,13 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     name = st.nextToken("");
     action = st.nextToken(HIDE);
     propertyMatch.setExpression(st.nextToken(""));
 
-    String keys = st.nextToken("");
+    final String keys = st.nextToken("");
     if (keys.indexOf(',') > 0) {
       watchKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
     }
@@ -211,7 +211,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof RestrictCommands)) return false;
-    RestrictCommands c = (RestrictCommands) o;
+    final RestrictCommands c = (RestrictCommands) o;
     if (! Objects.equals(name, c.name)) return false;
     if (! Objects.equals(action, c.action)) return false;
     if (! Objects.equals(propertyMatch, c.propertyMatch)) return false;
@@ -256,7 +256,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
         .append(actionOption.getValueString())
         .append(propertyMatch.getValueString())
@@ -278,7 +278,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     Collections.addAll(l, watchKeys);
     return l;
   }

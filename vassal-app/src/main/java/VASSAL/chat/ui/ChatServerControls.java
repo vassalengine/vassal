@@ -116,7 +116,7 @@ public class ChatServerControls extends AbstractBuildable {
       public void treeWillExpand(javax.swing.event.TreeExpansionEvent evt) throws javax.swing.tree.ExpandVetoException {
       }
     });
-    JScrollPane scroll = new JScrollPane(currentRoom);
+    final JScrollPane scroll = new JScrollPane(currentRoom);
     scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.current_game")));  //$NON-NLS-1$
     split.setRightComponent(scroll);
     split.setDividerLocation(160);
@@ -179,11 +179,11 @@ public class ChatServerControls extends AbstractBuildable {
     setClient((ChatServerConnection) gm.getServer());
     launch = new JButton(Resources.getString("Chat.server"));  //$NON-NLS-1$
     launch.setAlignmentY(0.0F);
-    ActionListener al = evt -> toggleVisible();
+    final ActionListener al = evt -> toggleVisible();
     launch.addActionListener(al);
     final NamedKeyStrokeListener l = new NamedKeyStrokeListener(al);
     l.setKeyStroke(NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
-    URL iconURL = getClass().getResource("/images/connect.gif");  //$NON-NLS-1$
+    final URL iconURL = getClass().getResource("/images/connect.gif");  //$NON-NLS-1$
     if (iconURL != null) {
       launch.setIcon(new ImageIcon(iconURL));
       launch.setText(null);
@@ -258,12 +258,12 @@ public class ChatServerControls extends AbstractBuildable {
       ((ChatControlsInitializer)c).initializeControls(this);
       oldClient = (ChatControlsInitializer) c;
     }
-    PropertyChangeListener roomUpdater = evt -> {
+    final PropertyChangeListener roomUpdater = evt -> {
       final Runnable runnable = () -> roomTree.setRooms((VASSAL.chat.Room[]) evt.getNewValue());
       SwingUtilities.invokeLater(runnable);
     };
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, roomUpdater);
-    PropertyChangeListener currentRoomUpdater = evt -> {
+    final PropertyChangeListener currentRoomUpdater = evt -> {
       final Runnable runnable = () -> {
         if (evt.getNewValue() == null) {
           currentRoom.setRooms(new VASSAL.chat.Room[0]);

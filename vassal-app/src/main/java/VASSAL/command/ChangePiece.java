@@ -63,9 +63,9 @@ public class ChangePiece extends Command {
    */
   @Override
   protected void executeCommand() {
-    GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
+    final GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (target != null) {
-      BoundsTracker bounds = new BoundsTracker();
+      final BoundsTracker bounds = new BoundsTracker();
       bounds.addPiece(target);
       if (oldState != null) {
         if (target instanceof StateMergeable) {
@@ -108,7 +108,7 @@ public class ChangePiece extends Command {
       && ((ChangePiece) c).newState != null) {
       ((ChangePiece) last).newState = ((ChangePiece) c).newState;
       sub = c.getSubCommands();
-      for (Command command : sub) {
+      for (final Command command : sub) {
         append(command);
       }
       return this;

@@ -32,9 +32,9 @@ public class MainRoomChecker {
       || input == null) {
       return input;
     }
-    String output;
+    final String output;
     if (mainRoom.equals(currentRoom)) {
-      Command c = filter.apply(GameModule.getGameModule().decode(input));
+      final Command c = filter.apply(GameModule.getGameModule().decode(input));
       output = GameModule.getGameModule().encode(c);
       if (!warnedMain && !input.equals(output)) {
         JOptionPane.showMessageDialog(

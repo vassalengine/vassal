@@ -30,7 +30,7 @@ public class TraitLayout extends ConfigurerLayout {
   public static final String DEFAULT_TRAIT_COLUMN_CONSTRAINTS = "[right]rel[fill,grow]"; // NON-NLS
 
   /**
-   * Create a standardised 2 column Trait loyout that will suit most traits.
+   * Create a standardised 2 column Trait layout that will suit most traits.
    */
   public TraitLayout() {
     this(false);
@@ -38,7 +38,7 @@ public class TraitLayout extends ConfigurerLayout {
   }
 
   /**
-   * Create a standardised 2 column Trait loyout that will suit most traits.
+   * Create a standardised 2 column Trait layout that will suit most traits.
    *
    * @param debug Turn layout debug option on?
    */

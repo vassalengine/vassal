@@ -90,7 +90,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     movedIcon.setValue(st.nextToken());
     xOffset = st.nextInt(0);
@@ -111,7 +111,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key);
     return ID + se.getValue();
   }
@@ -130,7 +130,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     if (stroke == null) return null;
 
     if (key.equals(stroke)) {
-      ChangeTracker c = new ChangeTracker(this);
+      final ChangeTracker c = new ChangeTracker(this);
       // Set the property on the entire piece so all traits can respond
       Decorator.getOutermost(this).setProperty(Properties.MOVED, !hasMoved);
       return c.getChangeCommand();
@@ -164,8 +164,8 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     piece.draw(g, x, y, obs, zoom);
     if (hasMoved
         && movedIcon.getIconValue() != null) {
-      Graphics2D g2d = (Graphics2D) g;
-      AffineTransform transform = g2d.getTransform();
+      final Graphics2D g2d = (Graphics2D) g;
+      final AffineTransform transform = g2d.getTransform();
       g2d.scale(zoom, zoom);
       movedIcon.getIconValue().paintIcon(obs, g,
                                          (int) Math.round(x / zoom) + xOffset,
@@ -175,7 +175,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   private Dimension getImageSize() {
-    Icon icon = movedIcon.getIconValue();
+    final Icon icon = movedIcon.getIconValue();
     return icon != null ? new Dimension(icon.getIconWidth(), icon.getIconHeight()) : new Dimension();
   }
 
@@ -273,14 +273,14 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     @Override
     public Component getControls() {
       boolean enabled = false;
-      for (Map m : Map.getMapList()) {
-        String value = m.getAttributeValueString(Map.MARK_MOVED);
+      for (final Map m : Map.getMapList()) {
+        final String value = m.getAttributeValueString(Map.MARK_MOVED);
         enabled = enabled
             || GlobalOptions.ALWAYS.equals(value)
             || GlobalOptions.PROMPT.equals(value);
       }
       if (!enabled) {
-        Runnable runnable = () -> JOptionPane.showMessageDialog(box, Resources.getString("Editor.MovementMarkable.enable_text"), Resources.getString("Editor.MovementMarkable.option_not_enabled"), JOptionPane.WARNING_MESSAGE);
+        final Runnable runnable = () -> JOptionPane.showMessageDialog(box, Resources.getString("Editor.MovementMarkable.enable_text"), Resources.getString("Editor.MovementMarkable.option_not_enabled"), JOptionPane.WARNING_MESSAGE);
         SwingUtilities.invokeLater(runnable);
       }
       return box;
@@ -288,7 +288,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(iconConfig.getValueString())
           .append(xOff.getValueString())
           .append(yOff.getValueString())
@@ -308,7 +308,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.MOVED);
     return l;
   }

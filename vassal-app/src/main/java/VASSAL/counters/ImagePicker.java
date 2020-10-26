@@ -68,7 +68,7 @@ public class ImagePicker extends JPanel
     noImage.setWrapStyleWord(true);
     noImage.setMinimumSize(new Dimension(15, 32));
     icon = new OpIcon();
-    JLabel imageView = new JLabel(icon);
+    final JLabel imageView = new JLabel(icon);
     imageView.addMouseListener(this);
 
     imageViewer = new JPanel(new BorderLayout());
@@ -101,7 +101,7 @@ public class ImagePicker extends JPanel
     }
     else {
       icon.setOp(Op.load(imageName));
-      Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+      final Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
 
       if (d.width > 200) d.width = 200;
 
@@ -167,7 +167,7 @@ public class ImagePicker extends JPanel
 
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
          && fc.getSelectedFile().exists()) {
-      String name = fc.getSelectedFile().getName();
+      final String name = fc.getSelectedFile().getName();
       gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
       select.setModel(new DefaultComboBoxModel<>(
         ArrayUtils.addFirst(gm.getDataArchive().getImageNames(), NO_IMAGE)

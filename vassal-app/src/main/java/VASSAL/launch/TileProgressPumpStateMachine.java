@@ -198,7 +198,7 @@ class TileProgressPumpStateMachine {
     }
 
     while (beg < end) {
-      int[] result;
+      final int[] result;
 
       switch (state) {
       case NAME:

@@ -171,7 +171,7 @@ public class BeanShellExpression extends Expression {
    * @return Expression
    */
   public static Expression createExpression(String s, boolean dontCreateStringExpressions) {
-    String expr;
+    final String expr;
     final String t = s.trim();
 
     if (t.startsWith("{") && t.endsWith("}")) {

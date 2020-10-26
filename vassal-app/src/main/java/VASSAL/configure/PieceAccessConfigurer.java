@@ -132,9 +132,9 @@ public class PieceAccessConfigurer extends Configurer {
       return SideAccess.getInstance();
     }
     else if (s != null && s.startsWith(SIDES)) {
-      SequenceEncoder.Decoder sd =
+      final SequenceEncoder.Decoder sd =
         new SequenceEncoder.Decoder(s.substring(SIDES.length()), ':');
-      ArrayList<String> l = new ArrayList<>();
+      final ArrayList<String> l = new ArrayList<>();
       while (sd.hasMoreTokens()) {
         l.add(sd.nextToken());
       }
@@ -151,8 +151,8 @@ public class PieceAccessConfigurer extends Configurer {
       s = SIDE;
     }
     else if (p instanceof SpecifiedSideAccess) {
-      SequenceEncoder se = new SequenceEncoder(':');
-      for (String side : ((SpecifiedSideAccess)p).getSides()) se.append(side);
+      final SequenceEncoder se = new SequenceEncoder(':');
+      for (final String side : ((SpecifiedSideAccess)p).getSides()) se.append(side);
       s = se.getValue() == null ? SIDES : SIDES + se.getValue();
     }
     else if (p instanceof PlayerAccess) {

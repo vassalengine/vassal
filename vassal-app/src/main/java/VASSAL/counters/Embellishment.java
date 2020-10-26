@@ -189,7 +189,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     else {
       s = s.substring(ID.length());
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("");
       activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       activateKey = st.nextToken("A"); // NON-NLS
@@ -285,7 +285,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * @param s Original type
    */
   private void originalSetType(String s) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
 
     st.nextToken();
     final SequenceEncoder.Decoder st2 =
@@ -386,7 +386,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String getName(boolean localized) {
     checkPropertyLevel(); // Name Change?
-    String ret;
+    final String ret;
 
     final String cname = 0 < value && value - 1 < commonName.length ?
                          getCommonName(localized, value - 1) : null;
@@ -488,7 +488,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     for (int i = 0; i < nValues; ++i) {
       if (commonName[i] != null) {
-        SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
+        final SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
         se.append(sub.append(commonName[i]).getValue());
       }
       else {
@@ -577,7 +577,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (activateCommand != null && activateCommand.length() > 0 &&
           !alwaysActive) {
 
-        KeyCommand k;
+        final KeyCommand k;
         k = new KeyCommand(activateCommand, activateKeyStroke, outer, this);
         k.setEnabled(nValues > 0);
         l.add(k);
@@ -656,7 +656,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       // random layers
       if (rndKey != null && rndKey.equals(stroke)) {
-        int val;
+        final int val;
         val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
       }
@@ -882,7 +882,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     if (!alwaysActive) {
       l.add(activateKeyStroke);
     }
@@ -900,7 +900,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (!alwaysActive) {
       l.add(activateCommand);
     }
@@ -966,7 +966,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(name + IMAGE);
     l.add(name + LEVEL);
     l.add(name + ACTIVE);
@@ -977,7 +977,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Embellishment)) return false;
-    Embellishment c = (Embellishment) o;
+    final Embellishment c = (Embellishment) o;
     if (! Objects.equals(value, c.value)) return false;
     if (! Objects.equals(activateCommand, c.activateCommand)) return false;
     if (! Objects.equals(activateModifiers, c.activateModifiers)) return false;
@@ -1067,7 +1067,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final JLabel optionLabel;
 
     public Ed(Embellishment e) {
-      Box box;
+      final Box box;
       version = e.version;
 
       controls = new JPanel();
@@ -1323,7 +1323,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
 
     private void updateLevelName() {
-      int index = images.getList().getSelectedIndex();
+      final int index = images.getList().getSelectedIndex();
       if (index < 0) {
         levelNameInput.setValue(null);
       }
@@ -1335,9 +1335,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
 
     private void changeLevelName() {
-      int index = images.getList().getSelectedIndex();
+      final int index = images.getList().getSelectedIndex();
       if (index >= 0) {
-        String s = levelNameInput.getValueString();
+        final String s = levelNameInput.getValueString();
         names.set(index, s);
         if (prefix.isSelected()) {
           isPrefix.set(index, PREFIX);
@@ -1366,7 +1366,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final ArrayList<String> imageNames = new ArrayList<>();
       final ArrayList<String> commonNames = new ArrayList<>();
       int i = 0;
-      for (String n : images.getImageNameList()) {
+      for (final String n : images.getImageNameList()) {
         imageNames.add(n);
         String commonName = names.get(i);
         if (commonName != null && commonName.length() > 0) {
@@ -1448,10 +1448,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         String s = e.commonName[i];
         Integer is = NEITHER;
         if (s != null && s.length() > 0) {
-          SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '+');
-          String first = st.nextToken();
+          final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '+');
+          final String first = st.nextToken();
           if (st.hasMoreTokens()) {
-            String second = st.nextToken();
+            final String second = st.nextToken();
             if (first.length() == 0) {
               s = second;
               is = SUFFIX;

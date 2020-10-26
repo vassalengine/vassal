@@ -53,9 +53,9 @@ public class ExpressionBuilder extends JDialog {
     target = c;
     pieceTarget = piece;
     save = target.getValueString();
-    JPanel p = new JPanel(new MigLayout("wrap 1,fill")); //NON-NLS
+    final JPanel p = new JPanel(new MigLayout("wrap 1,fill")); //NON-NLS
 
-    String value = target.getValueString();
+    final String value = target.getValueString();
 
     if (value.startsWith("{") && value.endsWith("}")) {
       setExpression(value.substring(1, value.length() - 1));
@@ -66,16 +66,16 @@ public class ExpressionBuilder extends JDialog {
 
     p.add(expression.getControls(), "growx"); //NON-NLS
 
-    JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]")); //NON-NLS
-    JButton okButton = ButtonFactory.getOkButton();
+    final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]")); //NON-NLS
+    final JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
-    JButton cancelButton = ButtonFactory.getCancelButton();
+    final JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
-    JButton helpButton = ButtonFactory.getHelpButton();
+    final JButton helpButton = ButtonFactory.getHelpButton();
     helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.html").getContents().toString())); //NON-NLS
     buttonBox.add(helpButton);
 
@@ -123,7 +123,7 @@ public class ExpressionBuilder extends JDialog {
 
   public void setExpression(String value) {
     if (expression == null) {
-      String prompt = target.getName().length() == 0 ? Resources.getString("Editor.ExpressionBuilder.expression") : target.getName();
+      final String prompt = target.getName().length() == 0 ? Resources.getString("Editor.ExpressionBuilder.expression") : target.getName();
       expression = new BeanShellExpressionConfigurer(null, prompt, value, pieceTarget);
     }
     expression.setValue(value);

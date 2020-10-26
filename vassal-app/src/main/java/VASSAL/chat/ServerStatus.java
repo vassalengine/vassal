@@ -48,7 +48,7 @@ public interface ServerStatus {
 
     public ModuleSummary(String moduleName, Room[] rooms) {
       this (moduleName);
-      for (Room r : rooms) {
+      for (final Room r : rooms) {
         this.rooms.put(r.getName(), r);
       }
     }
@@ -74,9 +74,9 @@ public interface ServerStatus {
     }
 
     public int numPlayers() {
-      Room[] roomsArray = getRooms();
+      final Room[] roomsArray = getRooms();
       int n = 0;
-      for (Room room : roomsArray) {
+      for (final Room room : roomsArray) {
         n += ((SimpleRoom) room).numPlayers();
       }
       return n;

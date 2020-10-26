@@ -126,7 +126,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     hideKey = st.nextNamedKeyStroke('I');
     command = st.nextToken(Resources.getString("Editor.Hideable.default_command"));
@@ -244,7 +244,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (hideCommand.matches(stroke)) {
-      ChangeTracker tracker = new ChangeTracker(this);
+      final ChangeTracker tracker = new ChangeTracker(this);
       if (invisibleToOthers()) {
         hiddenBy = null;
       }
@@ -298,7 +298,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.INVISIBLE_TO_OTHERS);
     return l;
   }
@@ -351,7 +351,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(hideKeyInput.getValueString())
         .append(hideCommandInput.getValueString())
         .append(colorConfig.getValue() == null ? "" : colorConfig.getValueString())

@@ -93,7 +93,7 @@ public class ModuleManager {
     }
     catch (IOException e) {
 // FIXME: should be a dialog...
-      System.err.println("VASSAL: " + e.getMessage());
+      System.err.println("VASSAL: " + e.getMessage());  //NON-NLS
       System.exit(1);
     }
 
@@ -144,7 +144,7 @@ public class ModuleManager {
 
     // Different versions of VASSAL can all co-exist, each with own
     // Module Manager
-    String ver = Info.getReportableVersion();
+    final String ver = Info.getReportableVersion();
 
     final File keyfile = new File(Info.getConfDir(), "key-" + ver);
     final File lockfile = new File(Info.getConfDir(), "lock-" + ver);
@@ -297,7 +297,7 @@ public class ModuleManager {
 
         try {
           try (ZipArchive za = new ZipArchive(pzip)) {
-            for (String f : za.getFiles()) {
+            for (final String f : za.getFiles()) {
               final File ofile = new File(
                 pdir, "VASSAL".equals(f) ? "V_Global" : Prefs.sanitize(f) //NON-NLS
               );

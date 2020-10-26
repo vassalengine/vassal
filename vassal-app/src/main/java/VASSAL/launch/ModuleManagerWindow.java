@@ -470,7 +470,7 @@ public class ModuleManagerWindow extends JFrame {
     Prefs.getGlobalPrefs().addOption(null, recentModuleConfig);
     final List<String> missingModules = new ArrayList<>();
     final List<ModuleInfo> moduleList = new ArrayList<>();
-    for (String s : recentModuleConfig.getStringArray()) {
+    for (final String s : recentModuleConfig.getStringArray()) {
       final ModuleInfo module = new ModuleInfo(s);
       if (module.getFile().exists() && module.isValid()) {
         moduleList.add(module);
@@ -480,7 +480,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
 
-    for (String s : missingModules) {
+    for (final String s : missingModules) {
       logger.info(Resources.getString("ModuleManager.removing_module", s));
       final ModuleInfo toRemove = moduleList
         .stream()
@@ -495,16 +495,16 @@ public class ModuleManagerWindow extends JFrame {
 
     rootNode = new MyTreeNode(new RootInfo());
 
-    for (ModuleInfo moduleInfo : moduleList) {
+    for (final ModuleInfo moduleInfo : moduleList) {
       final MyTreeNode moduleNode = new MyTreeNode(moduleInfo);
-      for (ExtensionInfo ext : moduleInfo.getExtensions()) {
+      for (final ExtensionInfo ext : moduleInfo.getExtensions()) {
         final MyTreeNode extensionNode = new MyTreeNode(ext);
         moduleNode.add(extensionNode);
       }
 
       final ArrayList<File> missingFolders = new ArrayList<>();
 
-      for (File f : moduleInfo.getFolders()) {
+      for (final File f : moduleInfo.getFolders()) {
         if (f.exists() && f.isDirectory()) {
           final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
           final MyTreeNode folderNode = new MyTreeNode(folderInfo);
@@ -514,14 +514,14 @@ public class ModuleManagerWindow extends JFrame {
           final File[] files = f.listFiles();
           if (files == null) continue;
 
-          for (File f1 : files) {
+          for (final File f1 : files) {
             if (f1.isFile()) {
               l.add(f1);
             }
           }
           Collections.sort(l);
 
-          for (File f2 : l) {
+          for (final File f2 : l) {
             final SaveFileInfo fileInfo = new SaveFileInfo(f2, folderInfo);
             if (fileInfo.isValid() && fileInfo.belongsToModule()) {
               final MyTreeNode fileNode = new MyTreeNode(fileInfo);
@@ -534,7 +534,7 @@ public class ModuleManagerWindow extends JFrame {
         }
       }
 
-      for (File mf : missingFolders) {
+      for (final File mf : missingFolders) {
         logger.info(
           Resources.getString("ModuleManager.removing_folder", mf.getPath()));
         moduleInfo.removeFolder(mf);
@@ -710,7 +710,7 @@ public class ModuleManagerWindow extends JFrame {
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final ModuleInfo moduleInfo = (ModuleInfo) moduleNode.getNodeInfo();
-        for (ExtensionInfo ext : moduleInfo.getExtensions()) {
+        for (final ExtensionInfo ext : moduleInfo.getExtensions()) {
           if (ext.getFile().equals(f)) {
             moduleNode.refresh();
             return;
@@ -761,7 +761,7 @@ public class ModuleManagerWindow extends JFrame {
         final MyTreeNode moduleNode = new MyTreeNode(moduleInfo);
         treeModel.insertNodeInto(moduleNode, rootNode,
                                  rootNode.findInsertIndex(moduleInfo));
-        for (ExtensionInfo ext : moduleInfo.getExtensions()) {
+        for (final ExtensionInfo ext : moduleInfo.getExtensions()) {
           final MyTreeNode extensionNode = new MyTreeNode(ext);
           treeModel.insertNodeInto(extensionNode, moduleNode,
               moduleNode.findInsertIndex(ext));
@@ -860,7 +860,7 @@ public class ModuleManagerWindow extends JFrame {
    * Custom Tree cell renderer:-
    *   - Add file name as tooltip
    *   - Handle expanded display (some nodes use the same icon for expanded/unexpanded)
-   *   - Gray out inactve extensions
+   *   - Gray out inactive extensions
    *   - Gray out Save Games that belong to other modules
    */
   private static class MyTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -1239,7 +1239,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     protected void loadMetaData() {
-      AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
       if (data instanceof ModuleMetaData) {
         setValid(true);
         metadata = (ModuleMetaData) data;
@@ -1265,7 +1265,7 @@ public class ModuleManagerWindow extends JFrame {
      * @param s Preference String
      */
     public ModuleInfo(String s) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
       setFile(new File(sd.nextToken()));
       setIcon(moduleIcon);
       loadMetaData();
@@ -1287,14 +1287,14 @@ public class ModuleManagerWindow extends JFrame {
       for (int i = 0; i < getTreeNode().getChildCount(); i++) {
         nodes[i] = getTreeNode().getChild(i);
       }
-      for (MyTreeNode myTreeNode : nodes) {
+      for (final MyTreeNode myTreeNode : nodes) {
         if (!myTreeNode.getFile().exists()) {
           treeModel.removeNodeFromParent(myTreeNode);
         }
       }
 
       // Refresh or add any existing children
-      for (ExtensionInfo ext : getExtensions()) {
+      for (final ExtensionInfo ext : getExtensions()) {
         MyTreeNode extNode = getTreeNode().findNode(ext.getFile());
         if (extNode == null) {
           if (ext.isValid()) {
@@ -1317,7 +1317,7 @@ public class ModuleManagerWindow extends JFrame {
      */
     public String encode() {
       final SequenceEncoder se = new SequenceEncoder(file.getPath(), ';');
-      for (File f : gameFolders) {
+      for (final File f : gameFolders) {
         se.append(f.getPath());
       }
       return se.getValue();
@@ -1348,7 +1348,7 @@ public class ModuleManagerWindow extends JFrame {
       final int idx = moduleNode.findInsertIndex(folderInfo);
       treeModel.insertNodeInto(folderNode, moduleNode, idx);
 
-      for (File file : f.listFiles()) {
+      for (final File file : f.listFiles()) {
         if (file.isFile()) {
           final SaveFileInfo fileInfo = new SaveFileInfo(file, folderInfo);
           if (fileInfo.isValid() && fileInfo.belongsToModule()) {
@@ -1371,10 +1371,10 @@ public class ModuleManagerWindow extends JFrame {
 
     public List<ExtensionInfo> getExtensions() {
       final List<ExtensionInfo> l = new ArrayList<>();
-      for (File f : extMgr.getActiveExtensions()) {
+      for (final File f : extMgr.getActiveExtensions()) {
         l.add(new ExtensionInfo(f, true, this));
       }
-      for (File f : extMgr.getInactiveExtensions()) {
+      for (final File f : extMgr.getInactiveExtensions()) {
         l.add(new ExtensionInfo(f, false, this));
       }
       Collections.sort(l);
@@ -1489,7 +1489,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     protected void loadMetaData() {
-      AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
       if (data instanceof ExtensionMetaData) {
         setValid(true);
         metadata = (ExtensionMetaData) data;
@@ -1680,7 +1680,7 @@ public class ModuleManagerWindow extends JFrame {
       final File[] files = getFile().listFiles();
       if (files == null) return;
 
-      for (File f : files) {
+      for (final File f : files) {
         final AbstractMetaData fdata = MetaDataFactory.buildMetaData(f);
         if (fdata != null) {
           if (fdata instanceof SaveMetaData) {
@@ -1738,7 +1738,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     protected void loadMetaData() {
-      AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
       if (data instanceof SaveMetaData) {
         metadata = (SaveMetaData) data;
         setValid(true);

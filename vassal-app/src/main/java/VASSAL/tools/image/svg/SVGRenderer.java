@@ -222,8 +222,8 @@ public class SVGRenderer {
       super.transcode(document, uri, output);
 
        // prepare the image to be painted
-      int w = (int)(width + 0.5);
-      int h = (int)(height + 0.5);
+      final int w = (int)(width + 0.5);
+      final int h = (int)(height + 0.5);
 
       // paint the SVG document using the bridge package
       // create the appropriate renderer

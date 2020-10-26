@@ -43,7 +43,7 @@ public class MoveTracker {
   private String getUnderneathId() {
     String id = null;
     if (piece.getParent() != null) {
-      int index = piece.getParent().indexOf(piece);
+      final int index = piece.getParent().indexOf(piece);
       if (index > 0) {
         id = piece.getParent().getPieceAt(index - 1).getId();
       }

@@ -128,12 +128,12 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
     if (delegate != null && delegate.isConnected()) {
       throw new IllegalStateException(Resources.getString("Server.error1")); //$NON-NLS-1$
     }
-    ChatServerConnection oldDelegate = delegate;
+    final ChatServerConnection oldDelegate = delegate;
     if (oldDelegate != null) {
       newDelegate.setUserInfo(oldDelegate.getUserInfo());
     }
-    PropertyChangeListener[] listeners = propSupport.getPropertyChangeListeners();
-    for (PropertyChangeListener listener : listeners) {
+    final PropertyChangeListener[] listeners = propSupport.getPropertyChangeListeners();
+    for (final PropertyChangeListener listener : listeners) {
       newDelegate.addPropertyChangeListener(((PropertyChangeListenerProxy) listener).getPropertyName(), listener);
     }
     if (controls != null) {

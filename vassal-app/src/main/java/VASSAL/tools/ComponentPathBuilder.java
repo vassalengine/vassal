@@ -46,10 +46,10 @@ public class ComponentPathBuilder {
    * @return string path
    */
   public String getId(Configurable[] targetPath) {
-    SequenceEncoder se = new SequenceEncoder('/');
-    for (Configurable configurable : targetPath) {
-      String name = configurable.getConfigureName();
-      SequenceEncoder se2 = new SequenceEncoder(configurable.getClass().getName(), ':');
+    final SequenceEncoder se = new SequenceEncoder('/');
+    for (final Configurable configurable : targetPath) {
+      final String name = configurable.getConfigureName();
+      final SequenceEncoder se2 = new SequenceEncoder(configurable.getClass().getName(), ':');
       if (name != null) {
         se2.append(name);
       }
@@ -69,7 +69,7 @@ public class ComponentPathBuilder {
   public Configurable[] getPath(String id) throws PathFormatException {
     final ArrayList<Configurable> list = new ArrayList<>();
     if (id.length() > 0) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
       addToPath(GameModule.getGameModule(), st, list);
     }
     return list.toArray(new Configurable[0]);
@@ -80,16 +80,16 @@ public class ComponentPathBuilder {
                          List<Configurable> path)
                          throws PathFormatException {
     if (st.hasMoreTokens()) {
-      String id = st.nextToken();
+      final String id = st.nextToken();
       String name = null;
-      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(id, ':');
-      String className = st2.nextToken();
+      final SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(id, ':');
+      final String className = st2.nextToken();
       if (st2.hasMoreTokens()) {
         name = st2.nextToken();
       }
-      Configurable[] children = parent.getConfigureComponents();
+      final Configurable[] children = parent.getConfigureComponents();
       Configurable match = null;
-      ArrayList<Configurable> partialMatches = new ArrayList<>();
+      final ArrayList<Configurable> partialMatches = new ArrayList<>();
       int i = -1;
       while (++i < children.length) {
         if (className.equals(children[i].getClass().getName())) {
@@ -111,8 +111,8 @@ public class ComponentPathBuilder {
         }
         else {
           ArrayList<Configurable> subPath = null;
-          for (Configurable candidate : partialMatches) {
-            ArrayList<Configurable> l = new ArrayList<>();
+          for (final Configurable candidate : partialMatches) {
+            final ArrayList<Configurable> l = new ArrayList<>();
             try {
               addToPath(candidate, st.copy(), l);
               subPath = l;

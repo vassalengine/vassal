@@ -137,7 +137,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
 
-    GamePieceOp op = (GamePieceOp) o;
+    final GamePieceOp op = (GamePieceOp) o;
     return piece.equals(op.getPiece()) &&
            state.equals(op.getState());
   }

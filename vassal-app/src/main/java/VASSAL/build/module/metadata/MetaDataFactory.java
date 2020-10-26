@@ -57,7 +57,7 @@ public class MetaDataFactory {
     if (file == null || !file.exists() || !file.isFile())
       return null;
 
-    try (final ZipFile zip = new ZipFile(file)) {
+    try (ZipFile zip = new ZipFile(file)) {
       // Check it is a Zip file
 
       // Check if it is a Save Game file
@@ -87,9 +87,9 @@ public class MetaDataFactory {
       }
 
       // read the first few lines of the buildFile
-      try (final InputStream zin = zip.getInputStream(buildFileEntry);
-           final InputStreamReader isr = new InputStreamReader(zin, StandardCharsets.UTF_8);
-           final BufferedReader br = new BufferedReader(isr)) {
+      try (InputStream zin = zip.getInputStream(buildFileEntry);
+           InputStreamReader isr = new InputStreamReader(zin, StandardCharsets.UTF_8);
+           BufferedReader br = new BufferedReader(isr)) {
         for (int i = 0; i < 10; i++) {
           final String s = br.readLine();
           if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0

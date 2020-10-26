@@ -206,8 +206,8 @@ public class SaveMetaData extends AbstractMetaData {
       final XMLHandler handler = new XMLHandler();
 
       // parse! parse!
-      try (final InputStream zin = zip.getInputStream(data);
-           final BufferedInputStream in = new BufferedInputStream(zin)) {
+      try (InputStream zin = zip.getInputStream(data);
+           BufferedInputStream in = new BufferedInputStream(zin)) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);

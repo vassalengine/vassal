@@ -169,15 +169,15 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   public void mySetType(String s) {
 
     s = s.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, TYPE_DELIMITOR);
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, TYPE_DELIMITOR);
 
     m_definition = st.nextToken();
     menuName = st.nextToken();
     final String launchKeyToken = st.nextToken("");
     commitStyle = st.nextInt(COMMIT_DEFAULT);
-    String red = st.hasMoreTokens() ? st.nextToken() : "";
-    String green = st.hasMoreTokens() ? st.nextToken() : "";
-    String blue = st.hasMoreTokens() ? st.nextToken() : "";
+    final String red = st.hasMoreTokens() ? st.nextToken() : "";
+    final String green = st.hasMoreTokens() ? st.nextToken() : "";
+    final String blue = st.hasMoreTokens() ? st.nextToken() : "";
     final String launchKeyStrokeToken = st.nextToken("");
 
     backgroundColor = red.equals("") ? null : new Color(atoi(red), atoi(green), atoi(blue));
@@ -229,12 +229,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   /** returns string defining the field types */
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(TYPE_DELIMITOR);
+    final SequenceEncoder se = new SequenceEncoder(TYPE_DELIMITOR);
 
-    String red = backgroundColor == null ? "" : Integer.toString(backgroundColor.getRed());
-    String green = backgroundColor == null ? "" : Integer.toString(backgroundColor.getGreen());
-    String blue = backgroundColor == null ? "" : Integer.toString(backgroundColor.getBlue());
-    String commit = Integer.toString(commitStyle);
+    final String red = backgroundColor == null ? "" : Integer.toString(backgroundColor.getRed());
+    final String green = backgroundColor == null ? "" : Integer.toString(backgroundColor.getGreen());
+    final String blue = backgroundColor == null ? "" : Integer.toString(backgroundColor.getBlue());
+    final String commit = Integer.toString(commitStyle);
 
     se
       .append(m_definition)
@@ -280,9 +280,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   // stores field values
   private void updateStateFromFields() {
-    SequenceEncoder encoder = new SequenceEncoder(STATE_DELIMITOR);
+    final SequenceEncoder encoder = new SequenceEncoder(STATE_DELIMITOR);
 
-    for (Object field : m_fields) {
+    for (final Object field : m_fields) {
       if (field instanceof JTextComponent) {
         encoder.append(((JTextComponent) field).getText()
                .replace('\n', LINE_DELIMINATOR));
@@ -298,7 +298,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     if (encoder.getValue() != null && !encoder.getValue().equals(state)) {
       mySetState(encoder.getValue());
 
-      GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = Decorator.getOutermost(this);
       if (outer.getId() != null) {
         GameModule.getGameModule().sendAndLog(
           new ChangePiece(outer.getId(), oldState, outer.getState()));
@@ -369,10 +369,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     if (frame == null) {
       m_fields = new ArrayList<>();
-      VASSAL.build.module.Map map = piece.getMap();
+      final VASSAL.build.module.Map map = piece.getMap();
       Frame parent = null;
       if (map != null && map.getView() != null) {
-        Container topWin = map.getView().getTopLevelAncestor();
+        final Container topWin = map.getView().getTopLevelAncestor();
         if (topWin instanceof JFrame) {
           parent = (Frame) topWin;
         }
@@ -383,8 +383,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       frame = new PropertySheetDialog(parent);
 
-      JPanel pane = new JPanel();
-      JScrollPane scroll =
+      final JPanel pane = new JPanel();
+      final JScrollPane scroll =
         new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                               JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
       frame.add(scroll);
@@ -405,7 +405,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
 
       // ... enable APPLY button when field changes
-      DocumentListener changeListener = new DocumentListener() {
+      final DocumentListener changeListener = new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
           update();
@@ -444,23 +444,23 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       };
 
       pane.setLayout(new GridBagLayout());
-      GridBagConstraints c = new GridBagConstraints();
+      final GridBagConstraints c = new GridBagConstraints();
       c.fill = GridBagConstraints.BOTH;
       c.insets = new Insets(1, 3, 1, 3);
       c.gridx = 0;
       c.gridy = 0;
-      SequenceEncoder.Decoder defDecoder =
+      final SequenceEncoder.Decoder defDecoder =
         new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
-      SequenceEncoder.Decoder stateDecoder =
+      final SequenceEncoder.Decoder stateDecoder =
         new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
 
       while (defDecoder.hasMoreTokens()) {
-        String code = defDecoder.nextToken();
+        final String code = defDecoder.nextToken();
         if (code.length() == 0) {
           break;
         }
-        int type = code.charAt(0) - '0';
-        String name = code.substring(1);
+        final int type = code.charAt(0) - '0';
+        final String name = code.substring(1);
         JComponent field;
         switch (type) {
         case TEXT_FIELD:
@@ -490,8 +490,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           m_fields.add(field);
           break;
         case SPINNER:
-          JSpinner spinner = new JSpinner();
-          JTextField textField =
+          final JSpinner spinner = new JSpinner();
+          final JTextField textField =
             ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
           textField.setText(stateDecoder.nextToken(""));
           textField.getDocument().addDocumentListener(changeListener);
@@ -532,7 +532,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       if (commitStyle == COMMIT_ON_APPLY) {
         // setup Close button
-        JButton closeButton = new JButton("Close");
+        final JButton closeButton = new JButton("Close");
         closeButton.setMnemonic(java.awt.event.KeyEvent.VK_C); // respond to Alt+C // key event cannot be resolved
 
         closeButton.addActionListener(e -> {
@@ -547,7 +547,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         c.gridx = 0;
         c.weightx = 0.0;
 
-        JPanel buttonRow = new JPanel();
+        final JPanel buttonRow = new JPanel();
         buttonRow.add(applyButton);
         buttonRow.add(closeButton);
         if (backgroundColor != null) {
@@ -562,7 +562,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
       if (getMap() != null) {
         p = getMap().getView().getLocationOnScreen();
-        Point p2 = getMap().mapToComponent(getPosition());
+        final Point p2 = getMap().mapToComponent(getPosition());
         p.translate(p2.x, p2.y);
       }
       frame.setLocation(p.x, p.y);
@@ -650,7 +650,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       add(new JLabel(name), c);
 
       c.weightx = 1.0;
-      JTextField field = new JTextField(value);
+      final JTextField field = new JTextField(value);
       ++c.gridx;
       add(field, c);
       return field;
@@ -664,16 +664,16 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       add(new JLabel(name), c);
 
       c.weightx = 0.0;
-      JButton button = new JButton("Default");
+      final JButton button = new JButton("Default");
 
       if (value != null) {
         button.setBackground(value);
         button.setText("sample");
       }
       button.addActionListener(event -> {
-        JButton button1 = (JButton) event.getSource();
-        Color value1 = button1.getBackground();
-        Color newColor = JColorChooser.showDialog(this, "Choose background color or CANCEL to use default color scheme", value1);
+        final JButton button1 = (JButton) event.getSource();
+        final Color value1 = button1.getBackground();
+        final Color newColor = JColorChooser.showDialog(this, "Choose background color or CANCEL to use default color scheme", value1);
         if (newColor != null) {
           button1.setBackground(newColor);
           button1.setText("sample");
@@ -689,7 +689,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public JComboBox<String> addComboBox(String name, String[] values, int initialRow) {
-      JComboBox<String> comboBox = new JComboBox<>(values);
+      final JComboBox<String> comboBox = new JComboBox<>(values);
       comboBox.setEditable(false);
       comboBox.setSelectedIndex(initialRow);
 
@@ -729,7 +729,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         if (row == getRowCount() - 1) {
           ((DefaultTableModel) getModel()).addRow(Ed.DEFAULT_ROW);
         }
-        Component component = super.prepareEditor(editor, row, column);
+        final Component component = super.prepareEditor(editor, row, column);
 
         if (component instanceof JTextComponent) {
           ((JTextComponent) component).grabFocus();
@@ -766,10 +766,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       c.weighty = 0.0;
       c.weightx = 1.0;
 
-      JPanel buttonPanel = new JPanel();
+      final JPanel buttonPanel = new JPanel();
 
       // add button
-      JButton addButton = new JButton("Insert Row");
+      final JButton addButton = new JButton("Insert Row");
       buttonPanel.add(addButton);
       addButton.addActionListener(e -> {
 
@@ -777,8 +777,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           table.getCellEditor().stopCellEditing();
         }
 
-        ListSelectionModel selection = table.getSelectionModel();
-        int iSelection;
+        final ListSelectionModel selection = table.getSelectionModel();
+        final int iSelection;
         if (selection.isSelectionEmpty()) {
           tableModel.addRow(defaultValues);
           iSelection = tableModel.getRowCount() - 1;
@@ -791,7 +791,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         selection.setSelectionInterval(iSelection, iSelection);
         table.grabFocus();
         table.editCellAt(iSelection, 0);
-        Component comp = table.getCellEditor().getTableCellEditorComponent(table, null, true, iSelection, 0);
+        final Component comp = table.getCellEditor().getTableCellEditorComponent(table, null, true, iSelection, 0);
         if (comp instanceof JComponent) {
           ((JComponent) comp).grabFocus();
         }
@@ -807,7 +807,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           table.getCellEditor().stopCellEditing();
         }
 
-        ListSelectionModel selection = table.getSelectionModel();
+        final ListSelectionModel selection = table.getSelectionModel();
         for (int i = selection.getMaxSelectionIndex(); i >= selection.getMinSelectionIndex(); --i) {
           if (selection.isSelectedIndex(i)) {
             tableModel.removeRow(i);
@@ -820,7 +820,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       table.getSelectionModel().addListSelectionListener(event -> {
         //Ignore extra messages.
         if (!event.getValueIsAdjusting()) {
-          ListSelectionModel lsm = (ListSelectionModel) event.getSource();
+          final ListSelectionModel lsm = (ListSelectionModel) event.getSource();
           deleteButton.setEnabled(!lsm.isSelectionEmpty());
         }
       });
@@ -840,7 +840,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     @Override
     public void focusLost(FocusEvent event) {
       if (event.getComponent() instanceof JTable) {
-        JTable table = (JTable) event.getComponent();
+        final JTable table = (JTable) event.getComponent();
         if (table.isEditing()) {
           table.getCellEditor().stopCellEditing();
         }
@@ -863,7 +863,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     menuNames[0]  = menuName;
     descriptions[0] = "Property Sheet command";
     int j = 1;
-    for (String s : items) {
+    for (final String s : items) {
       menuNames[j] = s;
       descriptions[j] = "Property Sheet item " + j;
       j++;
@@ -896,11 +896,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       keyStrokeConfig = m_panel.addKeyStrokeConfig(propertySheet.launchKeyStroke);
       commitCtrl = m_panel.addComboBox("Commit changes on:", COMMIT_VALUES, propertySheet.commitStyle);
       colorCtrl = m_panel.addColorCtrl("Background Color:", propertySheet.backgroundColor);
-      DefaultTableModel dataModel = new DefaultTableModel(getTableData(propertySheet.m_definition), COLUMN_NAMES);
+      final DefaultTableModel dataModel = new DefaultTableModel(getTableData(propertySheet.m_definition), COLUMN_NAMES);
       AddCreateRow(dataModel);
       propertyTable = m_panel.addTableCtrl("Properties:", dataModel, DEFAULT_ROW);
 
-      DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox(TYPE_VALUES));
+      final DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox(TYPE_VALUES));
       propertyTable.getColumnModel().getColumn(1).setCellEditor(typePicklist);
     }
 
@@ -909,17 +909,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     protected String[][] getTableData(String definition) {
-      SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(definition, DEF_DELIMITOR);
+      final SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(definition, DEF_DELIMITOR);
 
       int numRows = !definition.equals("") && decoder.hasMoreTokens() ? 1 : 0;
       for (int iDef = -1; (iDef = definition.indexOf(DEF_DELIMITOR, iDef + 1)) >= 0;) {
         ++numRows;
       }
 
-      String[][] rows = new String[numRows][2];
+      final String[][] rows = new String[numRows][2];
 
       for (int iRow = 0; decoder.hasMoreTokens() && iRow < numRows; ++iRow) {
-        String token = decoder.nextToken();
+        final String token = decoder.nextToken();
         rows[iRow][0] = token.substring(1);
         rows[iRow][1] = TYPE_VALUES[token.charAt(0) - '0'];
       }
@@ -942,11 +942,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         propertyTable.getCellEditor().stopCellEditing();
       }
 
-      SequenceEncoder defEncoder = new SequenceEncoder(DEF_DELIMITOR);
+      final SequenceEncoder defEncoder = new SequenceEncoder(DEF_DELIMITOR);
 //      StringBuilder definition = new StringBuilder();
 //      int numRows = propertyTable.getRowCount();
       for (int iRow = 0; iRow < propertyTable.getRowCount(); ++iRow) {
-        String typeString = (String) propertyTable.getValueAt(iRow, 1);
+        final String typeString = (String) propertyTable.getValueAt(iRow, 1);
         for (int iType = 0; iType < TYPE_VALUES.length; ++iType) {
           if (typeString.matches(TYPE_VALUES[iType]) &&
               !DEFAULT_ROW[0].equals(propertyTable.getValueAt(iRow, 0))) {
@@ -956,10 +956,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
       }
 
-      SequenceEncoder typeEncoder = new SequenceEncoder(TYPE_DELIMITOR);
+      final SequenceEncoder typeEncoder = new SequenceEncoder(TYPE_DELIMITOR);
 
       // calc color strings
-      String red, green, blue;
+      final String red;
+      final String green;
+      final String blue;
       if (colorCtrl.getText().equals("Default")) {
         red = "";
         green = "";
@@ -971,7 +973,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         blue = Integer.toString(colorCtrl.getBackground().getBlue());
       }
 
-      String definitionString = defEncoder.getValue();
+      final String definitionString = defEncoder.getValue();
       typeEncoder
         .append(definitionString == null ? "" : definitionString)
         .append(menuNameCtrl.getText())
@@ -1014,7 +1016,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       panelType = type;
 
-      GridBagConstraints c = new GridBagConstraints();
+      final GridBagConstraints c = new GridBagConstraints();
       c.fill = GridBagConstraints.BOTH;
       c.ipadx = 1;
       c.weightx = 0.0;
@@ -1109,8 +1111,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     private boolean areFieldValuesValid() {
-      int max = maxField == null ? maxTicks : atoi(maxField.getText());
-      int val = valField == null ? numTicks : atoi(valField.getText());
+      final int max = maxField == null ? maxTicks : atoi(maxField.getText());
+      final int val = valField == null ? numTicks : atoi(valField.getText());
       return val < max && val >= 0;
     }
 
@@ -1139,7 +1141,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public void fireActionEvent() {
-      for (ActionListener l : actionListeners) {
+      for (final ActionListener l : actionListeners) {
         l.actionPerformed(new ActionEvent(this, 0, null));
       }
     }
@@ -1153,7 +1155,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public void fireDocumentEvent() {
-      for (DocumentListener l : documentListeners) {
+      for (final DocumentListener l : documentListeners) {
         l.changedUpdate(null);
       }
     }
@@ -1232,9 +1234,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         return;
       }
 
-      // prefered width is 10
+      // preferred width is 10
       // min width before resize is 6
-      int displayWidth = getWidth() - 2;
+      final int displayWidth = getWidth() - 2;
 
       dx = Math.min(displayWidth / maxTicks, 10);
       // if dx < 2, we have a problem
@@ -1246,7 +1248,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       numCols = (maxTicks + numRows - 1) / numRows;
 
-      int dy = dx;
+      final int dy = dx;
 
       topMargin = (getHeight() - dy * numRows + 2) / 2;
 
@@ -1282,9 +1284,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         new EditTickLabelValueDialog(this);
       }
       else if (SwingUtils.isMainMouseButtonDown(e)) {
-        int col = Math.min((e.getX() - leftMargin + 1) / dx, numCols - 1);
-        int row = Math.min((e.getY() - topMargin + 1) / dx, numRows - 1);
-        int num = row * numCols + col + 1;
+        final int col = Math.min((e.getX() - leftMargin + 1) / dx, numCols - 1);
+        final int row = Math.min((e.getY() - topMargin + 1) / dx, numRows - 1);
+        final int num = row * numCols + col + 1;
 
         // Checkbox behavior; toggle the box clicked on
         // numTicks = num > numTicks ? num : num - 1;
@@ -1301,7 +1303,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public void fireActionEvent() {
-      for (ActionListener l : actionListeners) {
+      for (final ActionListener l : actionListeners) {
         l.actionPerformed(new ActionEvent(this, 0, null));
       }
     }
@@ -1358,10 +1360,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
         if (theDialog != null) {
           editorParent = ((JDialog) theDialog).getLayeredPane();
-          Rectangle newBounds = SwingUtilities.convertRectangle(theTickLabel.getParent(), theTickLabel.getBounds(), editorParent);
+          final Rectangle newBounds = SwingUtilities.convertRectangle(theTickLabel.getParent(), theTickLabel.getBounds(), editorParent);
           setBounds(newBounds);
 
-          JButton okButton = new JButton("Ok");
+          final JButton okButton = new JButton("Ok");
 
           switch (panelType) {
           case TICKS_VAL:
@@ -1395,7 +1397,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
 
       public void storeValues() {
-        String value = valueField.getText();
+        final String value = valueField.getText();
         switch (panelType) {
         case TICKS_VAL:
           theTickLabel.set(theTickLabel.getNumTicks(), atoi(value));

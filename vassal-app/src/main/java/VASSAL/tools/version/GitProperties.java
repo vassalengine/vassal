@@ -37,7 +37,7 @@ public class GitProperties {
   }
 
   private void readGitProperties() {
-    ClassLoader classLoader = getClass().getClassLoader();
+    final ClassLoader classLoader = getClass().getClassLoader();
     try (InputStream is = classLoader.getResourceAsStream(filename)) {
       if (is == null) {
         return;

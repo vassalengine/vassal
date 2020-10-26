@@ -66,6 +66,6 @@ public class DummyConfig implements Config {
 
   @Override
   public Path getJavaBinPath() {
-    return Path.of(System.getProperty("java.home"), "bin", "java");
+    return Path.of(System.getProperty("java.home"), "bin", "java"); //NON-NLS
   }
 }

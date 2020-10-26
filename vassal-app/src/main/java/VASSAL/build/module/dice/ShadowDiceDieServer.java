@@ -87,7 +87,7 @@ public class ShadowDiceDieServer extends DieServer {
     final StringBuilder b = new StringBuilder();
 
     for (int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
+      final char c = s.charAt(i);
 
       if (c == '#') {
         b.append('.');

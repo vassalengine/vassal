@@ -136,7 +136,7 @@ public abstract class AbstractMetaData {
   }
 
   public void save(FileArchive archive) throws IOException {
-    try (final OutputStream out = archive.getOutputStream(getZipEntryName())) {
+    try (OutputStream out = archive.getOutputStream(getZipEntryName())) {
       save(out);
     }
   }
@@ -226,8 +226,8 @@ public abstract class AbstractMetaData {
 
   public void copyModuleMetadata(FileArchive archive) throws IOException {
     final DataArchive mda = GameModule.getGameModule().getDataArchive();
-    try (final InputStream inner = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME);
-         final BufferedInputStream in = new BufferedInputStream(inner)) {
+    try (InputStream inner = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME);
+         BufferedInputStream in = new BufferedInputStream(inner)) {
       archive.add(ModuleMetaData.ZIP_ENTRY_NAME, in);
     }
     catch (final FileNotFoundException e) {

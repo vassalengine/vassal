@@ -78,9 +78,9 @@ public class PrefsEditor {
       // Help button looks up help in Preferences.html, by tab-name
       final JButton help = new JButton(Resources.getString(Resources.HELP));
       help.addActionListener(e -> {
-        int index = optionsTab.getSelectedIndex();
-        String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top"; //NON-NLS
-        HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName); //NON-NLS
+        final int index = optionsTab.getSelectedIndex();
+        final String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top"; //NON-NLS
+        final HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName); //NON-NLS
         BrowserSupport.openURL(helpFile.getContents().toString());
       });
 
@@ -125,13 +125,13 @@ public class PrefsEditor {
       p.add(new JLabel(prompt));
       setupDialog.add(p);
       setupDialog.add(c.getControls());
-      JButton b = new JButton(Resources.getString(Resources.OK));
+      final JButton b = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
       p.add(b);
       setupDialog.add(p);
       setupDialog.pack();
-      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       setupDialog.setLocation(
         d.width / 2 - setupDialog.getSize().width / 2,
         d.height / 2 - setupDialog.getSize().height / 2
@@ -149,7 +149,7 @@ public class PrefsEditor {
 
     JPanel pan = null;
 
-    int i = optionsTab.indexOfTab(category);
+    final int i = optionsTab.indexOfTab(category);
     if (i == -1) { // No match
       pan = new JPanel();
       pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
@@ -174,7 +174,7 @@ public class PrefsEditor {
 
   private synchronized void storeValues() {
     savedValues.clear();
-    for (Configurer c : options) {
+    for (final Configurer c : options) {
       c.setFrozen(true);
       if (c.getValue() != null) {
         savedValues.put(c, c.getValue());
@@ -183,8 +183,8 @@ public class PrefsEditor {
   }
 
   protected synchronized void cancel() {
-    for (Configurer c : options) {
-      Object o = savedValues.get(c);
+    for (final Configurer c : options) {
+      final Object o = savedValues.get(c);
       if (o != null) {
         c.setValue(o);
       }
@@ -195,7 +195,7 @@ public class PrefsEditor {
 
   protected synchronized void save() {
     iterating = true;
-    for (Configurer c : options) {
+    for (final Configurer c : options) {
       if ((savedValues.get(c) == null && c.getValue() != null) || (savedValues.get(c) != null && !savedValues.get(c).equals(c.getValue()))) {
         c.fireUpdate();
       }
@@ -226,15 +226,14 @@ public class PrefsEditor {
           dialog.setVisible(true);
         }
       };
-      // FIMXE: setting nmemonic from first letter could cause collisions in
-      // some languages
+      // FIXME: setting mnemonic from first letter could cause collisions in some languages
       editAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("Prefs.edit_preferences").charAt(0));
     }
     return editAction;
   }
 
   public void write() {
-    for (Prefs p : prefs) {
+    for (final Prefs p : prefs) {
       try {
         p.save();
       }

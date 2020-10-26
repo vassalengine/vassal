@@ -95,17 +95,17 @@ public class LabelUtils {
                                       RenderingHints.VALUE_ANTIALIAS_ON);
 
     g.setFont(f);
-    int width = g.getFontMetrics().stringWidth(text + "  ") + textPad*2 + extraBorder;
+    final int width = g.getFontMetrics().stringWidth(text + "  ") + textPad*2 + extraBorder;
     final int height = g.getFontMetrics().getHeight() + textPad*2 + extraBorder*2;
 
-    int width2 = Math.max(width, minWidth + extraBorder);
+    final int width2 = Math.max(width, minWidth + extraBorder);
 
     x -= extraBorder;
     y -= extraBorder;
 
     int x0 = x;
     int y0 = y;
-    int xBox;
+    final int xBox;
 
     // If objectWidth is 0 (default), then x is the position for the text box (subject to alignment choice)
     // If objectWidth is > 0, then x is the left side of a master object with a precise width we are to draw within.
@@ -157,7 +157,7 @@ public class LabelUtils {
       g.drawRect(xBox, y0, width2, height);
 
       if (extraBorder > 0) {
-        Dimension size4 = new Dimension(width2, height);
+        final Dimension size4 = new Dimension(width2, height);
         int x1 = xBox;
         int y1 = y0;
         for (int extra = 0; extra < extraBorder; extra++) {
@@ -200,39 +200,39 @@ public class LabelUtils {
       RenderingHints.VALUE_ANTIALIAS_ON);
 
     // "Quick Colors"
-    String style = (QuickColors.getQuickColor(text) >= 0) ? QuickColors.getQuickColorHTMLStyle(text) + "color" : ""; //NON-NLS
-    String baseString = QuickColors.stripQuickColorTag(text);
+    final String style = (QuickColors.getQuickColor(text) >= 0) ? QuickColors.getQuickColorHTMLStyle(text) + "color" : ""; //NON-NLS
+    final String baseString = QuickColors.stripQuickColorTag(text);
 
     // If user already put <html> tags in, don't re-wrap.
-    boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6))); //NON-NLS
+    final boolean addTags = (text.length() <= 6) || !("<html>".equalsIgnoreCase(text.substring(0, 6))); //NON-NLS
 
     // HTML Niceties - Rather than make the user type a bunch of repetitive stuff, by default we wrap these up nicely.
-    String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
+    final String htmlString = (addTags ? "<html>" + (!style.isEmpty() ? "<div class=" + style + ">" : "<div>") + "&nbsp;" : "") + baseString + (addTags ? "&nbsp;</div></html>" : ""); //NON-NLS
 
     // Chapter 3, in which Winnie the Pooh kidnaps a JLabel and makes it rob banks...
-    JLabel j = new JLabel(htmlString);
+    final JLabel j = new JLabel(htmlString);
     j.setForeground(fgColor);
     j.setFont(f);
-    Dimension size = j.getPreferredSize();
+    final Dimension size = j.getPreferredSize();
     j.setSize(size);
 
     x -= extraBorder;
     y -= extraBorder;
 
     // Dimensions including extra text padding and extra border.
-    Dimension size2 = new Dimension();
+    final Dimension size2 = new Dimension();
     size2.width  = size.width + textPad*2 + extraBorder;
     size2.height = size.height + textPad*2 + extraBorder*2;
 
     // Dimensions also including any forced-stretch of width. This will be the outer bounds of the box we draw.
-    Dimension size3 = new Dimension();
+    final Dimension size3 = new Dimension();
     size3.width   = Math.max(size2.width, minWidth + extraBorder);
     size3.height  = size2.height;
 
     g.setFont(f);
     int x0 = x;
     int y0 = y;
-    int xBox;
+    final int xBox;
 
     // If objectWidth is 0 (default), then x is the position for the text box (subject to alignment choice)
     // If objectWidth is > 0, then x is the left side of a master object with a precise width we are to draw within.
@@ -286,7 +286,7 @@ public class LabelUtils {
       g.drawRect(xBox, y0, size3.width, size3.height);
 
       if (extraBorder > 0) {
-        Dimension size4 = new Dimension(size3);
+        final Dimension size4 = new Dimension(size3);
         int x1 = xBox;
         int y1 = y0;
         for (int extra = 0; extra < extraBorder; extra++) {

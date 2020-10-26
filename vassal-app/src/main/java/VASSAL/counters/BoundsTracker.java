@@ -46,7 +46,7 @@ public class BoundsTracker {
   }
 
   public void repaint() {
-    for (Map m : maps) {
+    for (final Map m : maps) {
       m.repaint();
     }
   }

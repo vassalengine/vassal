@@ -73,9 +73,9 @@ public interface PieceFinder {
   class DeckOrPieceInStack extends PieceInStack {
     @Override
     public Object visitDeck(Deck d) {
-      Shape s = d.getShape();
-      Point pos = d.getPosition();
-      Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      final Shape s = d.getShape();
+      final Point pos = d.getPosition();
+      final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
       return (s.contains(p) ? d : null);
     }
   }
@@ -117,9 +117,9 @@ public interface PieceFinder {
     @Override
     public Object visitDefault(GamePiece piece) {
       GamePiece selected = null;
-      Shape s = piece.getShape();
-      Point pos = piece.getPosition();
-      Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      final Shape s = piece.getShape();
+      final Point pos = piece.getPosition();
+      final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
       if (s.contains(p)) {
         selected = piece;
       }
@@ -133,9 +133,9 @@ public interface PieceFinder {
         shapes = new Shape[s.getPieceCount()];
       }
       map.getStackMetrics().getContents(s, null, shapes, null, s.getPosition().x, s.getPosition().y);
-      for (Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
+      for (final Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
            i.hasNext();) {
-        GamePiece child = i.next();
+        final GamePiece child = i.next();
 
         // Pieces can be moved by background threads causing the size of
         // the Stack to change after the Iterator is generated.

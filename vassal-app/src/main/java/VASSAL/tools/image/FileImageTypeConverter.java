@@ -87,7 +87,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     // we can't create images of TYPE_CUSTOM
     if (type == BufferedImage.TYPE_CUSTOM) throw new IllegalArgumentException();
 
-    File tmp;
+    final File tmp;
     try {
       tmp = tfactory.create();
     }

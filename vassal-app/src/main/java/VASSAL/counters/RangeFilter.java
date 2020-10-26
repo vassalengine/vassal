@@ -36,7 +36,7 @@ public class RangeFilter implements PieceFilter {
     this.position = location;
     this.map = map;
     this.range = range;
-    Board b = map.findBoard(location);
+    final Board b = map.findBoard(location);
     if (b != null) {
       grid = b.getGrid();
     }
@@ -46,8 +46,8 @@ public class RangeFilter implements PieceFilter {
   public boolean accept(GamePiece piece) {
     boolean accept = false;
     if (piece.getMap() == map) {
-      Point pos = piece.getPosition();
-      int theRange = grid != null ? grid.range(position, pos) : (int) Math.round(position.distance(pos));
+      final Point pos = piece.getPosition();
+      final int theRange = grid != null ? grid.range(position, pos) : (int) Math.round(position.distance(pos));
       accept = theRange <= range;
     }
     return accept;

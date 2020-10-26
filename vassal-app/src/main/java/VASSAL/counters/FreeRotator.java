@@ -195,7 +195,7 @@ public class FreeRotator extends Decorator
   public double getCumulativeAngle() {
     double angle = getAngle();
     // Add cumulative angle of any other FreeRotator trait in this piece
-    FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
+    final FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
     if (nextRotation != null) {
       angle += nextRotation.getCumulativeAngle();
     }
@@ -705,7 +705,7 @@ public class FreeRotator extends Decorator
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(name + FACING);
     l.add(name + DEGREES);
     return l;
@@ -714,7 +714,7 @@ public class FreeRotator extends Decorator
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof FreeRotator)) return false;
-    FreeRotator c = (FreeRotator) o;
+    final FreeRotator c = (FreeRotator) o;
     if (! Objects.equals(validAngles.length, c.validAngles.length)) return false;
 
     if (validAngles.length == 1) {
@@ -808,7 +808,7 @@ public class FreeRotator extends Decorator
       anyKeyConfig = new NamedHotKeyConfigurer(p.setAngleKey);
       panel.add(anyKeyConfig.getControls(), "wrap"); // NON-NLS
 
-      JLabel rndLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_randomly"));
+      final JLabel rndLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_randomly"));
       panel.add(rndLabel);
       rndCommand = new StringConfigurer(p.rotateRNDText);
       panel.add(rndCommand.getControls());

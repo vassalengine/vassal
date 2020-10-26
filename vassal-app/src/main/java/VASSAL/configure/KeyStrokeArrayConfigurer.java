@@ -57,19 +57,19 @@ public class KeyStrokeArrayConfigurer extends Configurer {
       panel = new JPanel(new BorderLayout());
       controls = Box.createVerticalBox();
       final JScrollPane scroll = new JScrollPane(controls);
-      Box b = Box.createHorizontalBox();
+      final Box b = Box.createHorizontalBox();
       controls.add(b);
-      JLabel l = new JLabel(getName());
+      final JLabel l = new JLabel(getName());
       b.add(l);
-      JButton button = new JButton(Resources.getString("Editor.KeyStrokeArrayConfigurer.add"));
+      final JButton button = new JButton(Resources.getString("Editor.KeyStrokeArrayConfigurer.add"));
       b.add(button);
       button.addActionListener(e -> addKey(null));
 
       panel.add(scroll, BorderLayout.CENTER);
 
-      KeyStroke[] keyStrokes = (KeyStroke[]) value;
+      final KeyStroke[] keyStrokes = (KeyStroke[]) value;
       if (keyStrokes != null) {
-        for (KeyStroke keyStroke : keyStrokes) {
+        for (final KeyStroke keyStroke : keyStrokes) {
           addKey(keyStroke);
         }
       }
@@ -79,7 +79,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
   }
 
   private void addKey(KeyStroke keyStroke) {
-    HotKeyConfigurer config = new HotKeyConfigurer(null, null, keyStroke);
+    final HotKeyConfigurer config = new HotKeyConfigurer(null, null, keyStroke);
     configs.add(config);
     controls.add(config.getControls());
     if (configs.size() > 5) {
@@ -88,7 +88,7 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     else {
       panel.setPreferredSize(null);
     }
-    Window w = SwingUtilities.getWindowAncestor(controls);
+    final Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
       w.pack();
     }
@@ -129,9 +129,9 @@ public class KeyStrokeArrayConfigurer extends Configurer {
   }
 
   public KeyStroke[] getKeyStrokes() {
-    ArrayList<KeyStroke> l = new ArrayList<>();
-    for (HotKeyConfigurer hotKeyConfigurer : configs) {
-      KeyStroke value = (KeyStroke) hotKeyConfigurer.getValue();
+    final ArrayList<KeyStroke> l = new ArrayList<>();
+    for (final HotKeyConfigurer hotKeyConfigurer : configs) {
+      final KeyStroke value = (KeyStroke) hotKeyConfigurer.getValue();
       if (value != null) {
         l.add(value);
       }
@@ -143,8 +143,8 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     if (s == null) {
       return null;
     }
-    ArrayList<KeyStroke> l = new ArrayList<>();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final ArrayList<KeyStroke> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       l.add(HotKeyConfigurer.decode(st.nextToken()));
     }
@@ -155,8 +155,8 @@ public class KeyStrokeArrayConfigurer extends Configurer {
     if (keys == null) {
       return null;
     }
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (KeyStroke key : keys) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final KeyStroke key : keys) {
       se.append(HotKeyConfigurer.encode(key));
     }
     return se.getValue() != null ? se.getValue() : "";

@@ -110,10 +110,10 @@ public class BonesDiceServer extends DieServer {
     final URL url = new URL(rollString[0]);
     final HttpURLConnection connection =
       (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod("GET");
+    connection.setRequestMethod("GET"); //NON-NLS
     connection.connect();
 
-    try (final BufferedReader in = new BufferedReader(
+    try (BufferedReader in = new BufferedReader(
       new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
 
       String line;

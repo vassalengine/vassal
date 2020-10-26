@@ -68,7 +68,7 @@ public class ConcurrentPropertySupport implements PropertySupport {
   @Override
   public List<PropertyListener<Object>> getPropertyListeners() {
     return listeners.isEmpty() ?
-      Collections.<PropertyListener<Object>>emptyList() :
+      Collections.emptyList() :
       new ArrayList<>(listeners);
   }
 
@@ -103,7 +103,7 @@ public class ConcurrentPropertySupport implements PropertySupport {
                                        getPropertyListeners(Property<T> prop) {
     final List<PropertyListener<?>> list = plisteners.get(prop);
     return list == null || list.isEmpty() ?
-      Collections.<PropertyListener<? super T>>emptyList() :
+      Collections.emptyList() :
       new ArrayList<PropertyListener<? super T>>((List) list);
   }
 
@@ -123,14 +123,14 @@ public class ConcurrentPropertySupport implements PropertySupport {
     if (oldVal == newVal || (oldVal != null && oldVal.equals(newVal))) return;
 
     // notify all general listeners
-    for (PropertyListener<Object> l : listeners) {
+    for (final PropertyListener<Object> l : listeners) {
       l.propertyChanged(src, prop, oldVal, newVal);
     }
 
     // notify all listeners on this property
     final List<PropertyListener<?>> list = plisteners.get(prop);
     if (list != null) {
-      for (PropertyListener<?> l : list) {
+      for (final PropertyListener<?> l : list) {
         ((PropertyListener<? super T>) l).propertyChanged(
           src, prop, oldVal, newVal
         );

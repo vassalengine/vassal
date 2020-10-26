@@ -61,9 +61,9 @@ public abstract class ListConfigurer extends Configurer implements
     if (getListValue().isEmpty()) {
       return "";
     }
-    Configurer c = buildChildConfigurer();
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (Object value : getListValue()) {
+    final Configurer c = buildChildConfigurer();
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final Object value : getListValue()) {
       c.setFrozen(true); // Prevent subsidiary Configurers from firing PropertyChange Events
       c.setValue(value);
       c.setFrozen(false);
@@ -76,8 +76,8 @@ public abstract class ListConfigurer extends Configurer implements
   public void setValue(String s) {
     getListValue().clear();
     if (s.length() > 0) {
-      Configurer c = buildChildConfigurer();
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+      final Configurer c = buildChildConfigurer();
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
       while (sd.hasMoreTokens()) {
         c.setValue(sd.nextToken());
         getListValue().add(c.getValue());
@@ -88,8 +88,8 @@ public abstract class ListConfigurer extends Configurer implements
 
   protected void updateValue() {
     noUpdate = true;
-    ArrayList<Object> newArray = new ArrayList<>();
-    for (Configurer c : configurers) {
+    final ArrayList<Object> newArray = new ArrayList<>();
+    for (final Configurer c : configurers) {
       newArray.add(c.getValue());
     }
     setValue(newArray);
@@ -116,9 +116,9 @@ public abstract class ListConfigurer extends Configurer implements
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
       configControls = new JPanel(new MigLayout("ins 0,gapy 2", "[grow]")); // NON-NLS
 
-      JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
+      final JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
       addButton.addActionListener(e -> {
-        Configurer c = buildChildConfigurer();
+        final Configurer c = buildChildConfigurer();
         getListValue().add(c.getValue());
         updateControls();
       });
@@ -151,19 +151,19 @@ public abstract class ListConfigurer extends Configurer implements
 
   protected void updateControls() {
     if (controls != null) {
-      for (Configurer c : configurers) {
+      for (final Configurer c : configurers) {
         c.removePropertyChangeListener(this);
       }
       configurers.clear();
       configControls.removeAll();
 
-      for (Object value : getListValue()) {
+      for (final Object value : getListValue()) {
         final Configurer c = buildChildConfigurer();
         c.setValue(value);
         c.addPropertyChangeListener(this);
         configurers.add(c);
         final JPanel b = new JPanel(new MigLayout("ins 0,gapy 2", "[][fill,grow]")); // NON-NLS
-        JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
+        final JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
         delButton.addActionListener(e -> {
           getListValue().remove(c.getValue());
           updateControls();
@@ -190,7 +190,7 @@ public abstract class ListConfigurer extends Configurer implements
 
   @Override
   public int hashCode() {
-    String valueString = getValueString();
+    final String valueString = getValueString();
     final int prime = 31;
     int result = 1;
     result = prime * result
@@ -206,9 +206,9 @@ public abstract class ListConfigurer extends Configurer implements
       return false;
     if (getClass() != obj.getClass())
       return false;
-    ListConfigurer other = (ListConfigurer) obj;
-    String valueString = getValueString();
-    String otherValueString = other.getValueString();
+    final ListConfigurer other = (ListConfigurer) obj;
+    final String valueString = getValueString();
+    final String otherValueString = other.getValueString();
     if (valueString == null) {
       return otherValueString == null;
     }

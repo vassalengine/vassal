@@ -65,7 +65,7 @@ public class FileConfigurer extends Configurer {
   }
 
   protected FileChooser initFileChooser() {
-    FileChooser fc = FileChooser.createFileChooser(null, startingDirectory);
+    final FileChooser fc = FileChooser.createFileChooser(null, startingDirectory);
     if (startingDirectory == null && GameModule.getGameModule() != null) {
       fc.setCurrentDirectory((File) Prefs.getGlobalPrefs().getValue(Prefs.MODULES_DIR_KEY));
     }
@@ -94,7 +94,7 @@ public class FileConfigurer extends Configurer {
   @Override
   public void setValue(Object o) {
 // FIXME: this creates a problem when the referenced file is in the JAR
-    File f = (File) o;
+    final File f = (File) o;
     if (f != null && f.exists()) {
       if (archive != null) {
         addToArchive(f);
@@ -125,7 +125,7 @@ public class FileConfigurer extends Configurer {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(getName()));
-      JButton b = new JButton(Resources.getString("Editor.select"));
+      final JButton b = new JButton(Resources.getString("Editor.select"));
       p.add(b);
 
       tf = new JTextField(getValueString());
@@ -149,8 +149,8 @@ public class FileConfigurer extends Configurer {
         }
 
         public void update() {
-          String text = tf.getText();
-          File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null; // NON-NLS
+          final String text = tf.getText();
+          final File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null; // NON-NLS
           noUpdate = true;
           setValue(f);
           noUpdate = false;

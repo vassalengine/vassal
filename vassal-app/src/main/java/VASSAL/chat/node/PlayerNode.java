@@ -120,8 +120,8 @@ public class PlayerNode extends Node implements SocketWatcher {
       server.kick(this, info[0]);
     }
     else if ((p = Protocol.decodeRoomsInfo(line)) != null) {
-      for (String roomName : p.stringPropertyNames()) {
-        Node target = server.getModule(this).getDescendant(roomName);
+      for (final String roomName : p.stringPropertyNames()) {
+        final Node target = server.getModule(this).getDescendant(roomName);
         if (target != null) {
           target.setInfo(p.getProperty(roomName));
           server.updateInfo(target);

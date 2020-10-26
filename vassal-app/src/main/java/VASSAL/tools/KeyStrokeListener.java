@@ -52,13 +52,13 @@ public class KeyStrokeListener {
       newKey = null;
     }
     if (key != null) {
-      for (KeyStrokeSource s : sources) {
+      for (final KeyStrokeSource s : sources) {
         //BR// We are registering/unregistering events directly with components, so we perform our special Mac keyboard translations.
         s.getComponent().unregisterKeyboardAction(SwingUtils.genericToSystem(key));
       }
     }
     key = newKey;
-    for (KeyStrokeSource s : sources) {
+    for (final KeyStrokeSource s : sources) {
       addKeyStrokeSource(s);
     }
   }

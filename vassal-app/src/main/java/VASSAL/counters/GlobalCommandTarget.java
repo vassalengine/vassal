@@ -142,7 +142,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
    * @return Fast Match parameters encoded in string form
    */
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(ENCODE_DELIMITER);
+    final SequenceEncoder se = new SequenceEncoder(ENCODE_DELIMITER);
     se.append(gkcType.name())
       .append(fastMatchLocation)
       .append(targetType.name())

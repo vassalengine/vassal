@@ -558,7 +558,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    * @param enable true to enable, false to disable.
    */
   private void enableCommand(String name, boolean enable) {
-    for (KeyCommand command : commands) {
+    for (final KeyCommand command : commands) {
       if (name.equals(command.getName())) {
         command.setEnabled(enable);
       }
@@ -573,7 +573,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     if (stroke == null) {
       return false;
     }
-    for (KeyCommand command : commands) {
+    for (final KeyCommand command : commands) {
       if (stroke.equals(command.getKeyStroke())) {
         return command.isEnabled();
       }
@@ -712,7 +712,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
         if (GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
           final String name = outer.getLocalizedName();
           final String loc = getMap().locationName(outer.getPosition());
-          String s;
+          final String s;
           if (loc != null) {
             s = Resources.getString("BasicPiece.clone_report_1", name, loc);
           }
@@ -730,7 +730,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
         final String name = outer.getLocalizedName();
         final String loc = getMap().locationName(outer.getPosition());
-        String s;
+        final String s;
         if (loc != null) {
           s = Resources.getString("BasicPiece.delete_report_1", name, loc);
         }
@@ -960,7 +960,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    * @return the unique gamepiece ID for this piece, as stored in the Property "scratchpad"
    */
   public String getGpId() {
-    String id = (String) getProperty(Properties.PIECE_ID);
+    final String id = (String) getProperty(Properties.PIECE_ID);
     return id == null ? "" : id;
   }
 
@@ -1021,7 +1021,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     if (! Objects.equals(pp1, pp2)) return false;
 
     if (persistentProps != null && bp.persistentProps != null) {
-      for (Object key : persistentProps.keySet()) {
+      for (final Object key : persistentProps.keySet()) {
         if (!Objects.equals(persistentProps.get(key), bp.persistentProps.get(key)))
           return false;
       }
@@ -1064,7 +1064,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       pieceName = new JTextField(20);
       pieceName.setText(p.commonName);
       pieceName.setMaximumSize(pieceName.getPreferredSize());
-      JPanel col = new JPanel(new TraitLayout());
+      final JPanel col = new JPanel(new TraitLayout());
       col.add(new JLabel(Resources.getString("Editor.name_label")));
       col.add(pieceName);
       if (p.cloneKey != 0) {
@@ -1135,7 +1135,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(LOCATION_NAME);
     l.add(CURRENT_MAP);
     l.add(CURRENT_BOARD);

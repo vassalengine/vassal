@@ -134,7 +134,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken("");
     key = st.nextNamedKeyStroke(null);
     mapId.setFormat(st.nextToken(""));
@@ -187,7 +187,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
-      ArrayList<KeyCommand> l = new ArrayList<>();
+      final ArrayList<KeyCommand> l = new ArrayList<>();
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         l.add(sendCommand);
       }
@@ -197,14 +197,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       command = l.toArray(new KeyCommand[0]);
     }
 
-    for (KeyCommand c : command) {
+    for (final KeyCommand c : command) {
       if (c.getName().equals(backCommandName)) {
         c.setEnabled(getMap() != null &&
                      getProperty(BACK_MAP) != null &&
                      getProperty(BACK_POINT) != null);
       }
       else {
-        Point p = getSendLocation();
+        final Point p = getSendLocation();
         c.setEnabled(getMap() != null && p != null &&
             (map != getMap() || !p.equals(getPosition())));
       }
@@ -232,15 +232,15 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetState() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    Map backMap = (Map)getProperty(BACK_MAP);
+    final SequenceEncoder se = new SequenceEncoder(';');
+    final Map backMap = (Map)getProperty(BACK_MAP);
     if (backMap != null) {
       se.append(backMap.getIdentifier());
     }
     else {
       se.append("");
     }
-    Point backPoint = (Point)getProperty(BACK_POINT);
+    final Point backPoint = (Point)getProperty(BACK_POINT);
     if (backPoint != null) {
       se.append(backPoint.x).append(backPoint.y);
     }
@@ -251,18 +251,18 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   }
 
   private Point getSendLocation() {
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     map = null;
     Point dest = null;
     // Home in on a counter
     if (destination.equals(DEST_COUNTER.substring(0, 1))) {
       GamePiece target = null;
       // Find first counter matching the properties
-      for (GamePiece piece :
+      for (final GamePiece piece :
            GameModule.getGameModule().getGameState().getAllPieces()) {
         if (piece instanceof Stack) {
-          Stack s = (Stack) piece;
-          for (GamePiece gamePiece : s.asList()) {
+          final Stack s = (Stack) piece;
+          for (final GamePiece gamePiece : s.asList()) {
             if (propertyFilter.accept(this, gamePiece)) {
               target = gamePiece;
               if (target != null) break;
@@ -291,13 +291,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         map = getMap();
       }
       if (map != null) {
-        Board b;
+        final Board b;
         switch (destination.charAt(0)) {
         case 'G':
           b = map.getBoardByName(boardName.getText(outer));
           if (b != null) {
             try {
-              MapGrid g = b.getGrid(); 
+              final MapGrid g = b.getGrid();
               if (g != null) { // Board may not have a grid assigned.
                 dest = g.getLocation(gridLocation.getText(outer));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
@@ -328,25 +328,25 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
         case 'Z':
           final String zoneName = zone.getText(outer);
-          Zone z = map.findZone(zoneName);
+          final Zone z = map.findZone(zoneName);
           if (z == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone")); // NON-NLS
           }
           else {
-            Rectangle r = z.getBounds();
-            Rectangle r2 = z.getBoard().bounds();
+            final Rectangle r = z.getBounds();
+            final Rectangle r2 = z.getBoard().bounds();
             dest = new Point(r2.x + r.x + r.width / 2, r2.y + r.y + r.height / 2);
           }
           break;
 
         case 'R':
           final String regionName = region.getText(outer);
-          Region r = map.findRegion(regionName);
+          final Region r = map.findRegion(regionName);
           if (r == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region")); // NON-NLS
           }
           else {
-            Rectangle r2 = r.getBoard().bounds();
+            final Rectangle r2 = r.getBoard().bounds();
             dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
           }
           break;
@@ -367,8 +367,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     Command c = null;
     myGetKeyCommands();
     if (sendCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
-      Stack parent = outer.getParent();
+      final GamePiece outer = Decorator.getOutermost(this);
+      final Stack parent = outer.getParent();
       Point dest = getSendLocation();
       if (map != null && dest != null) {
         if (map == getMap() && dest.equals(getPosition())) {
@@ -395,9 +395,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       }
     }
     else if (backCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
-      Map backMap = (Map) getProperty(BACK_MAP);
-      Point backPoint = (Point) getProperty(BACK_POINT);
+      final GamePiece outer = Decorator.getOutermost(this);
+      final Map backMap = (Map) getProperty(BACK_MAP);
+      final Point backPoint = (Point) getProperty(BACK_POINT);
       final ChangeTracker tracker = new ChangeTracker(this);
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
@@ -420,14 +420,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    * Offset the destination by the Advanced Options offset
    */
   protected Point offsetDestination(int x, int y, GamePiece outer) {
-    int xPos = x + parse("xIndex", xIndex, outer) * parse("xOffset", xOffset, outer); // NON-NLS
-    int yPos = y + parse("yIndex", yIndex, outer) * parse("yOffset", yOffset, outer); // NON-NLS
+    final int xPos = x + parse("xIndex", xIndex, outer) * parse("xOffset", xOffset, outer); // NON-NLS
+    final int yPos = y + parse("yIndex", yIndex, outer) * parse("yOffset", yOffset, outer); // NON-NLS
     return new Point(xPos, yPos);
   }
 
   private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
-    String val = s.getText(outer, _0);
+    final String val = s.getText(outer, _0);
     try {
       i = Integer.parseInt(val);
     }
@@ -439,13 +439,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetState(String newState) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
-    String mapId = st.nextToken("");
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
+    final String mapId = st.nextToken("");
     if (mapId.length() > 0) {
       setProperty(BACK_MAP, Map.getMapById(mapId));
     }
-    String x = st.nextToken("");
-    String y = st.nextToken("");
+    final String x = st.nextToken("");
+    final String y = st.nextToken("");
     if (x.length() > 0 && y.length() > 0) {
       try {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
@@ -551,7 +551,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       newDestInput = new TranslatingStringEnumConfigurer(null, Resources.getString("Editor.SendToLocation.destination"), DEST_OPTIONS, DEST_KEYS);
       newDestInput.setValue(DEST_LOCATION);
-      for (String destOption : DEST_OPTIONS) {
+      for (final String destOption : DEST_OPTIONS) {
         if (destOption.substring(0, 1).equals(p.destination)) {
           newDestInput.setValue(destOption);
         }
@@ -624,14 +624,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     private void updateVisibility() {
 //      boolean advancedVisible = advancedInput.booleanValue();
       advancedInput.getControls().setVisible(!newDestInput.getValue().equals(DEST_GRIDLOCATION));
-      boolean advancedVisible = advancedInput.booleanValue()
+      final boolean advancedVisible = advancedInput.booleanValue()
         && advancedInput.getControls().isVisible();
       xIndexInput.getControls().setVisible(advancedVisible);
       xOffsetInput.getControls().setVisible(advancedVisible);
       yIndexInput.getControls().setVisible(advancedVisible);
       yOffsetInput.getControls().setVisible(advancedVisible);
 
-      String destOption = newDestInput.getValueString();
+      final String destOption = newDestInput.getValueString();
       xInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
       mapControls.setVisible(!destOption.equals(DEST_COUNTER));
@@ -642,7 +642,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
       gridLocationInput.getControls().setVisible(destOption.equals(DEST_GRIDLOCATION));
 
-      Window w = SwingUtilities.getWindowAncestor(controls);
+      final Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
         w.pack();
       }
@@ -658,19 +658,19 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     private void selectBoard() {
-      ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Board.class);
+      final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Board.class);
       d.setVisible(true);
       if (d.getTarget() != null) {
-        Board b = (Board) d.getTarget();
+        final Board b = (Board) d.getTarget();
         boardNameInput.setValue(b.getName());
       }
     }
 
     private void selectMap() {
-      ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Map.class);
+      final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Map.class);
       d.setVisible(true);
       if (d.getTarget() != null) {
-        Map map = (Map) d.getTarget();
+        final Map map = (Map) d.getTarget();
         mapIdInput.setValue(map.getMapName());
       }
     }
@@ -682,7 +682,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
         .append(keyInput.getValueString())
         //.append(map == null ? "" : map.getIdentifier())
@@ -717,7 +717,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
 
     if (destination.equals(DEST_COUNTER.substring(0, 1))) {
       l.add(propertyFilter.getExpression());

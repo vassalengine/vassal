@@ -34,7 +34,7 @@ import java.util.Vector;
 @Deprecated
 public class Sort {
   private static void swap(Vector<Object> v, int i, int j) {
-    Object tmp = v.elementAt(i);
+    final Object tmp = v.elementAt(i);
     v.setElementAt(v.elementAt(j), i);
     v.setElementAt(tmp, j);
   }
@@ -56,8 +56,8 @@ public class Sort {
     swap(v, left, (left + right) / 2);
     int last = left;
     for (int i = left + 1; i <= right; i++) {
-      Object o1 = v.elementAt(i);
-      Object o2 = v.elementAt(left);
+      final Object o1 = v.elementAt(i);
+      final Object o2 = v.elementAt(left);
       if (comp.compare(o1, o2) < 0) {
         swap(v, ++last, i);
       }
@@ -139,9 +139,9 @@ public class Sort {
   public static class Alpha implements Comparator {
     @Override
     public int compare(Object o1, Object o2) {
-      String s1 = (String) o1;
-      String s2 = (String) o2;
-      int len = Math.min(s1.length(), s2.length());
+      final String s1 = (String) o1;
+      final String s2 = (String) o2;
+      final int len = Math.min(s1.length(), s2.length());
       int result;
       for (int i = 0; i < len; ++i) {
         result = s1.charAt(i) - s2.charAt(i);

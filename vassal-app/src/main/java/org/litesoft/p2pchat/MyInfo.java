@@ -35,7 +35,7 @@ import java.net.InetAddress;
 // other programs), even if such holder or other party has been advised
 // of the possibility of such damages.
 //
-// NOTE: Should you discover a bug, have a recogmendation for a change, wish
+// NOTE: Should you discover a bug, have a recommendation for a change, wish
 // to submit modifications, or wish to add new classes/functionality,
 // please email them to:
 //

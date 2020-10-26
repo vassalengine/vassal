@@ -28,7 +28,7 @@ public class SimplePieceEditor implements PieceEditor {
   JPanel panel;
 
   public SimplePieceEditor(GamePiece p) {
-    String type = null;
+    final String type;
     if (p instanceof Decorator) {
       type = ((Decorator) p).myGetType();
     }
@@ -38,7 +38,7 @@ public class SimplePieceEditor implements PieceEditor {
     typeField = new JTextField(type);
     typeField.setMaximumSize(new java.awt.Dimension(typeField.getMaximumSize().width, typeField.getPreferredSize().height));
 
-    String state = null;
+    final String state;
     if (p instanceof Decorator) {
       state = ((Decorator) p).myGetState();
     }

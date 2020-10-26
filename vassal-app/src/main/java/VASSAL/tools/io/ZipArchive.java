@@ -155,7 +155,7 @@ public class ZipArchive implements FileArchive {
     final byte[] buf = new byte[8192];
 
     // copy each entry to the new archive
-    for (String name : src.getFiles()) {
+    for (final String name : src.getFiles()) {
       try (InputStream in = src.getInputStream(name);
            OutputStream out = getOutputStream(name)) {
         IOUtils.copy(in, out, buf);
@@ -347,7 +347,7 @@ public class ZipArchive implements FileArchive {
       }
 
       // delete all temporary files
-      for (Entry e : entries.values()) {
+      for (final Entry e : entries.values()) {
         if (e != null && e.file != null) {
           e.file.delete();
         }
@@ -500,7 +500,7 @@ public class ZipArchive implements FileArchive {
         }
       }
 
-      for (Entry e : entries.values()) {
+      for (final Entry e : entries.values()) {
         // skip removed or unmodified files
         if (e == null || e.file == null) continue;
 
@@ -517,7 +517,7 @@ public class ZipArchive implements FileArchive {
     moveFile(tmpFile.toPath(), archiveFile.toPath());
 
     // Delete all temporary files
-    for (Entry e : entries.values()) {
+    for (final Entry e : entries.values()) {
       if (e != null && e.file != null) {
         e.file.delete();
       }
@@ -610,7 +610,7 @@ public class ZipArchive implements FileArchive {
       root += '/';
       final ArrayList<String> names = new ArrayList<>();
 
-      for (String n : entries.keySet()) {
+      for (final String n : entries.keySet()) {
         if (n.startsWith(root)) {
           names.add(n);
         }

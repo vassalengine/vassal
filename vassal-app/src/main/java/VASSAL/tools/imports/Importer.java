@@ -64,7 +64,7 @@ public abstract class Importer {
     final List<LayeredPieceCollection> l =
       map.getComponentsOf(LayeredPieceCollection.class);
 
-    LayeredPieceCollection collection;
+    final LayeredPieceCollection collection;
     if (l.isEmpty()) {
       collection = new LayeredPieceCollection();
       insertComponent(collection, map);

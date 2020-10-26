@@ -76,7 +76,7 @@ public class ReflectionUtils {
     }
 
     // these errors are expected from custom classes
-    for (Class<?> cl : args) {
+    for (final Class<?> cl : args) {
       if (cl.isInstance(t)) {
         ErrorDialog.showDetailsDisableable(
           t,

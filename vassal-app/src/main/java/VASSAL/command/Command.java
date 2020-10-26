@@ -68,7 +68,7 @@ public abstract class Command {
       seq = oldSeq;
     }
 
-    for (Command cmd : seq) {
+    for (final Command cmd : seq) {
       try {
         cmd.execute();
       }
@@ -142,7 +142,7 @@ public abstract class Command {
    * @return True if this command has no sub-commands
    */
   protected boolean isAtomic() {
-    for (Command c : seq) {
+    for (final Command c : seq) {
       if (!c.isNull()) {
         return false;
       }
@@ -156,7 +156,7 @@ public abstract class Command {
     final String details = getDetails();
     if (details != null) sb.append('[').append(details).append(']');
 
-    for (Command c : seq) sb.append('+').append(c);
+    for (final Command c : seq) sb.append('+').append(c);
 
     return sb.toString();
   }
@@ -187,7 +187,7 @@ public abstract class Command {
   public Command getUndoCommand() {
     if (undo == null) {
       undo = new NullCommand();
-      for (ListIterator<Command> i = seq.listIterator(seq.size());
+      for (final ListIterator<Command> i = seq.listIterator(seq.size());
            i.hasPrevious(); ) {
         undo = undo.append(i.previous().getUndoCommand());
       }

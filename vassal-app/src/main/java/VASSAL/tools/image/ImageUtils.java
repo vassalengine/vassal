@@ -242,7 +242,7 @@ public class ImageUtils {
     return getImageSize("", in);
   }
 
-  private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();
+  private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();  //NON-NLS
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));
@@ -348,8 +348,8 @@ public class ImageUtils {
   protected static final int compatTranslImageType;
 
   static {
-    BufferedImage oimg;
-    BufferedImage timg;
+    final BufferedImage oimg;
+    final BufferedImage timg;
 
     if (isHeadless()) {
       oimg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
@@ -446,7 +446,7 @@ public class ImageUtils {
 
   public static boolean hasImageSuffix(String name) {
     final String s = name.toLowerCase();
-    for (String suffix : IMAGE_SUFFIXES) {
+    for (final String suffix : IMAGE_SUFFIXES) {
       if (s.endsWith(suffix)) {
         return true;
       }
@@ -456,7 +456,7 @@ public class ImageUtils {
 
   public static String stripImageSuffix(String name) {
     final String s = name.toLowerCase();
-    for (String suffix : IMAGE_SUFFIXES) {
+    for (final String suffix : IMAGE_SUFFIXES) {
       if (s.endsWith(suffix)) {
         return name.substring(0, name.length() - suffix.length());
       }

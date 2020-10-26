@@ -57,8 +57,8 @@ public class Prefs implements Closeable {
 
   private final Map<String, Configurer> options = new HashMap<>();
   private final Properties storedValues = new Properties();
-  private PrefsEditor editor;
-  private File file;
+  private final PrefsEditor editor;
+  private final File file;
 
   public Prefs(PrefsEditor editor, String name) {
     this(editor, new File(Info.getPrefsDir(), sanitize(name)));
@@ -70,7 +70,7 @@ public class Prefs implements Closeable {
 
     read();
 
-    for (String key : storedValues.stringPropertyNames()) {
+    for (final String key : storedValues.stringPropertyNames()) {
       final String value = storedValues.getProperty(key);
       final Configurer c = options.get(key);
       if (c != null) {
@@ -214,7 +214,7 @@ public class Prefs implements Closeable {
       storedValues.load(in);
 
       // merge in the current key-value pairs
-      for (Configurer c : options.values()) {
+      for (final Configurer c : options.values()) {
         final String val = c.getValueString();
         if (val != null) {
           storedValues.put(c.getKey(), val);

@@ -169,7 +169,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (expression.length() > 0) {
       try {
         final StringBuilder argList = new StringBuilder();
-        for (String variable : stringVariables) {
+        for (final String variable : stringVariables) {
           if (argList.length() > 0) {
             argList.append(',');
           }
@@ -201,7 +201,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");
 
     // Read the Expression initialisation script into the top level namespace
-    URL ini = getClass().getResource(INIT_SCRIPT);
+    final URL ini = getClass().getResource(INIT_SCRIPT);
     logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // NON-NLS
 
     try (InputStream is = ini.openStream();
@@ -259,13 +259,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
       // Bind each undeclared variable with the value of the
       // corresponding Vassal property. Allow for old-style $variable$ references
-      for (String var : variables) {
+      for (final String var : variables) {
         String name = var;
         if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
           name = name.substring(1, name.length() - 1);
         }
-        Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
-        String value = prop == null ? "" : prop.toString();
+        final Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        final String value = prop == null ? "" : prop.toString();
         if (value == null) {
           setVar(var, "");
         }
@@ -295,7 +295,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
 
       final StringBuilder argList = new StringBuilder();
-      for (String var : stringVariables) {
+      for (final String var : stringVariables) {
         if (argList.length() > 0) {
           argList.append(',');
         }
@@ -418,9 +418,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
-      Stack s = ((GamePiece) ps).getParent();
+      final Stack s = ((GamePiece) ps).getParent();
       if (s != null) {
-        for (GamePiece gamePiece : s.asList()) {
+        for (final GamePiece gamePiece : s.asList()) {
           try {
             result +=
               Integer.parseInt(gamePiece.getProperty(property).toString());
@@ -449,16 +449,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
-      GamePiece p = (GamePiece) ps;
-      Map m = p.getMap();
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
       if (m != null) {
-        String here = m.locationName(p.getPosition());
-        GamePiece[] pieces = m.getPieces();
-        for (GamePiece piece : pieces) {
+        final String here = m.locationName(p.getPosition());
+        final GamePiece[] pieces = m.getPieces();
+        for (final GamePiece piece : pieces) {
           if (here.equals(m.locationName(piece.getPosition()))) {
             if (piece instanceof Stack) {
-              Stack s = (Stack) piece;
-              for (GamePiece gamePiece : s.asList()) {
+              final Stack s = (Stack) piece;
+              for (final GamePiece gamePiece : s.asList()) {
                 try {
                   result += Integer.parseInt(gamePiece.getProperty(property).toString());
                 }
@@ -553,10 +553,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final List<Map> maps = getMapList(mapName, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    for (Map map : maps) {
-      for (GamePiece piece : map.getAllPieces()) {
+    for (final Map map : maps) {
+      for (final GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
-          for (GamePiece p : ((Stack) piece).asList()) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
             result += getIntPropertyValue(p, filter, (String) propertyName);
           }
         }
@@ -596,11 +596,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     int result = 0;
     final List<Map> maps = getMapList(mapName, sourcePiece);
 
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
-    for (Map map : maps) {
-      for (GamePiece piece : map.getAllPieces()) {
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
+    for (final Map map : maps) {
+      for (final GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
-          for (GamePiece p : ((Stack) piece).asList()) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
             if (filter == null || filter.accept(p)) {
               result++;
             }
@@ -634,7 +634,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
       // Otherwise, search all maps for the one we want
       else {
-        for (Map map : Map.getMapList()) {
+        for (final Map map : Map.getMapList()) {
           if (map.getMapName().equals(mapName)) {
             maps.add(map);
             break;
@@ -646,7 +646,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Map findVassalMap(String mapName) {
-    for (Map map : Map.getMapList()) {
+    for (final Map map : Map.getMapList()) {
       if (map.getMapName().equals(mapName)) {
         return map;
       }

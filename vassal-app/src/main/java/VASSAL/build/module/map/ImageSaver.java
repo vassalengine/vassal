@@ -319,7 +319,7 @@ public class ImageSaver extends AbstractToolbarItem {
         public void writeAborted(ImageWriter source) { }
       });
 
-      try (final ImageOutputStream os = ImageIO.createImageOutputStream(f)) {
+      try (ImageOutputStream os = ImageIO.createImageOutputStream(f)) {
         if (os == null) {
           throw new IOException("Failed to write file " + f.getAbsolutePath());
         }

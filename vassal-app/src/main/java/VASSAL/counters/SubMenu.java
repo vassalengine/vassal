@@ -106,7 +106,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
   public String[] getSubcommands() {
     final ArrayList<String> l = new ArrayList<>();
-    for (Iterator<String> i = keyCommandSubMenu.getCommands(); i.hasNext(); ) {
+    for (final Iterator<String> i = keyCommandSubMenu.getCommands(); i.hasNext(); ) {
       l.add(i.next());
     }
     return l.toArray(new String[0]);
@@ -178,7 +178,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString()).append(commandsConfig.getValueString());
       return ID + se.getValue();
     }

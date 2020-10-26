@@ -104,7 +104,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     returnCommand = st.nextToken();
     returnKey = st.nextNamedKeyStroke(null);
     deckId = st.nextToken("");
@@ -113,7 +113,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     return ID + se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).getValue();
   }
 
@@ -132,7 +132,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       comm = putOldProperties(this);
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
       // Apply Auto-move key if the piece has moved
-      Map m = pile.getMap();
+      final Map m = pile.getMap();
       if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {
         comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
       }
@@ -202,20 +202,20 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
     final AvailableDeck[] decks = new AvailableDeck[piles.size()];
     int i = 0;
-    for (DrawPile p : piles)
+    for (final DrawPile p : piles)
       decks[i++] = new AvailableDeck(p);
 
     final JList<AvailableDeck> list = new JList<>(decks);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    JLabel prompt = new JLabel(selectDeckPrompt);
+    final JLabel prompt = new JLabel(selectDeckPrompt);
     prompt.setAlignmentX(0.5f);
     d.add(prompt); //$NON-NLS-1$
     d.add(new ScrollPane(list));
-    Box box = Box.createHorizontalBox();
+    final Box box = Box.createHorizontalBox();
     box.setAlignmentX(0.5F);
     JButton b = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(e -> {
-      AvailableDeck selection = list.getSelectedValue();
+      final AvailableDeck selection = list.getSelectedValue();
       if (selection != null)
         deck = selection.pile;
       d.dispose();
@@ -229,7 +229,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);
     // don't cache -- ask again next time
-    DrawPile pile = deck;
+    final DrawPile pile = deck;
     deck = null;
     return pile;
   }
@@ -268,7 +268,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof ReturnToDeck)) return false;
-    ReturnToDeck c = (ReturnToDeck) o;
+    final ReturnToDeck c = (ReturnToDeck) o;
     if (! Objects.equals(returnCommand, c.returnCommand)) return false;
     if (! Objects.equals(returnKey, c.returnKey)) return false;
     if (! Objects.equals(deckId, c.deckId)) return false;
@@ -303,11 +303,11 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       controls.add("Editor.ReturnToDeck.choose_destination_deck_at_game_time", prompt);
 
       selectPanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
-      JButton select = new JButton(Resources.getString("Editor.ReturnToDeck.select_deck"));
+      final JButton select = new JButton(Resources.getString("Editor.ReturnToDeck.select_deck"));
       tf.setEditable(false);
       updateDeckName();
       select.addActionListener(e -> {
-        ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
+        final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
         d.setTitle(Resources.getString("Editor.ReturnToDeck.select_deck"));
         d.setVisible(true);
         if (d.getTarget() != null) {
@@ -335,7 +335,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     }
 
     private void updateDeckName() {
-      DrawPile p = DrawPile.findDrawPile(deckId);
+      final DrawPile p = DrawPile.findDrawPile(deckId);
       tf.setText(p != null ? p.getConfigureName() : ("[" + Resources.getString("Editor.ReturnToDeck.none") + "]"));
     }
 

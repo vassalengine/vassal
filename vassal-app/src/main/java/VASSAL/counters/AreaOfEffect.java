@@ -332,7 +332,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
     if (alwaysActive || active) {
       if (shader.getConfigureName().equals(mapShaderName)) {
-        Area myArea = getArea();
+        final Area myArea = getArea();
         if (a == null) {
           a = myArea;
         }
@@ -347,7 +347,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof AreaOfEffect)) return false;
-    AreaOfEffect c = (AreaOfEffect) o;
+    final AreaOfEffect c = (AreaOfEffect) o;
     if (! Objects.equals(transparencyColor, c.transparencyColor)) return false;
     if (! Objects.equals(transparencyLevel, c.transparencyLevel)) return false;
     if (! Objects.equals(radius, c.radius)) return false;
@@ -406,7 +406,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       final JButton b = new JButton(Resources.getString("Editor.AreaOfEffect.select"));
       selectShader.add(b);
       b.addActionListener(e -> {
-        ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
+        final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
         d.setVisible(true);
         if (d.getTarget() != null) {
           mapShaderId = d.getTarget().getConfigureName();

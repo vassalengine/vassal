@@ -733,7 +733,8 @@ public class WizardSupport {
         final WizardPage[] wizardPages = pages.toArray(new WizardPage[0]);
         final String[] steps = new String[setupSteps.size()];
         final String[] desc = new String[setupSteps.size()];
-        for (int i = 0, n = setupSteps.size(); i < n; i++) {
+        final int n = setupSteps.size();
+        for (int i = 0; i < n; i++) {
           steps[i] = String.valueOf(i);
           desc[i] = setupSteps.get(i).getStepTitle();
         }

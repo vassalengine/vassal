@@ -70,13 +70,13 @@ public class StandardConfig implements Config {
 
     // Set up the config dir and ensure it exists
     if (SystemUtils.IS_OS_MAC_OSX) {
-      confDir = Path.of(System.getProperty("user.home"), "Library/Application Support/VASSAL");
+      confDir = Path.of(System.getProperty("user.home"), "Library/Application Support/VASSAL"); //NON-NLS
     }
     else if (SystemUtils.IS_OS_WINDOWS) {
-      confDir = Path.of(System.getenv("APPDATA"), "VASSAL");
+      confDir = Path.of(System.getenv("APPDATA"), "VASSAL"); //NON-NLS
     }
     else {
-      confDir = Path.of(System.getProperty("user.home"), ".VASSAL");
+      confDir = Path.of(System.getProperty("user.home"), ".VASSAL"); //NON-NLS
     }
 
     Files.createDirectories(confDir);    
@@ -84,10 +84,10 @@ public class StandardConfig implements Config {
     prefsDir = confDir.resolve("prefs");
     errorLogPath = confDir.resolve("errorLog-" + getVersion());
 
-    javaBinPath = Path.of(System.getProperty("java.home"), "bin", "java");
+    javaBinPath = Path.of(System.getProperty("java.home"), "bin", "java"); //NON-NLS
 
     // Set up the temp dir and ensure it exists
-    tmpDir = Files.createTempDirectory("vassal_");
+    tmpDir = Files.createTempDirectory("vassal_"); //NON-NLS
     tmpDir.toFile().deleteOnExit();
   }
 

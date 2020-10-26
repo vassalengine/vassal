@@ -244,7 +244,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     // we don't have it, try our extensions
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getInputStream(fileName);
       }
@@ -292,7 +292,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return new URL(getURL(), fileName);
     }
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getURL(fileName);
       }
@@ -349,7 +349,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (localImages == null) localImages = getLocalImageNames();
     s.addAll(localImages);
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       ext.getImageNamesRecursively(s);
     }
   }
@@ -360,7 +360,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (archive != null) {
       try {
 //        for (String filename : archive.getFiles(imageDir)) {
-        for (String filename : archive.getFiles("images")) { //NON-NLS
+        for (final String filename : archive.getFiles("images")) { //NON-NLS
           s.add(filename.substring(imageDir.length()));
         }
       }
@@ -392,7 +392,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public ArchiveWriter getWriter() {
     if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       final ArchiveWriter writer = ext.getWriter();
       if (writer != null) return writer;
     }
@@ -439,7 +439,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
     final String slashname = name.replace('.', '/');
-    byte[] data;
+    final byte[] data;
 
     try (InputStream stream = getInputStream(slashname + ".class")) { //NON-NLS
       data = IOUtils.toByteArray(stream);
@@ -787,7 +787,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Rectangle getImageBounds(Image im) {
     ProblemDialog.showDeprecated("2020-08-06");
-    ImageIcon icon = new ImageIcon(im);
+    final ImageIcon icon = new ImageIcon(im);
     return new Rectangle(-icon.getIconWidth() / 2, -icon.getIconHeight() / 2,
                           icon.getIconWidth(), icon.getIconHeight());
   }
@@ -798,13 +798,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image improvedScaling(Image img, int width, int height) {
     ProblemDialog.showDeprecated("2020-08-06");
-    ImageFilter filter;
+    final ImageFilter filter;
 
     filter = new ImprovedAveragingScaleFilter(img.getWidth(null),
                                               img.getHeight(null),
                                               width, height);
 
-    ImageProducer prod;
+    final ImageProducer prod;
     prod = new FilteredImageSource(img.getSource(), filter);
     return Toolkit.getDefaultToolkit().createImage(prod);
   }

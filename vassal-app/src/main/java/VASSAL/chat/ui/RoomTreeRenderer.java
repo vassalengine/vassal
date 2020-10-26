@@ -68,7 +68,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
 
     putClientProperty("html.disable", Boolean.TRUE); //$NON-NLS-1$
 
-    Object item = ((DefaultMutableTreeNode) value).getUserObject();
+    final Object item = ((DefaultMutableTreeNode) value).getUserObject();
     if (item instanceof Player) {
       if (((SimpleStatus)((Player) item).getStatus()).isAway()) {
         setIcon(away);
@@ -82,7 +82,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
 
     }
     else if (item instanceof SimpleRoom) {
-      List<Player> players = ((Room) item).getPlayerList();
+      final List<Player> players = ((Room) item).getPlayerList();
       setText(getText() + " (" + players.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     return this;

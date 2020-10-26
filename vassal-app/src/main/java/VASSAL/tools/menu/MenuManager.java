@@ -53,7 +53,7 @@ public abstract class MenuManager {
   private final Map<String, MenuMarker> markers = new HashMap<>();
 
   public MenuItemProxy addKey(String key) {
-    List<MenuItemProxy> items = actionLocations.computeIfAbsent(key, k -> new ArrayList<>());
+    final List<MenuItemProxy> items = actionLocations.computeIfAbsent(key, k -> new ArrayList<>());
 
     final MenuItemProxy item = new MenuItemProxy();
     items.add(item);
@@ -67,7 +67,7 @@ public abstract class MenuManager {
   public void addAction(String key, Action a) {
     final List<MenuItemProxy> items = actionLocations.get(key);
     if (items != null) {
-      for (MenuItemProxy i : items) {
+      for (final MenuItemProxy i : items) {
         i.setAction(a);
       }
     }

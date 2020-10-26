@@ -177,7 +177,7 @@ public class SoundConfigurer extends Configurer {
       setValue(NO_VALUE);
     }
     else {
-      File f = fc.getSelectedFile();
+      final File f = fc.getSelectedFile();
       setValue(f.getName());
     }
   }

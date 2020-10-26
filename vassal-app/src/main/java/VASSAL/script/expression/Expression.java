@@ -87,7 +87,7 @@ public abstract class Expression {
     }
     catch (ExpressionException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
     }
     return result;
   }
@@ -103,7 +103,7 @@ public abstract class Expression {
     }
     catch (ExpressionException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
     }
     return result;
   }
@@ -122,7 +122,7 @@ public abstract class Expression {
     }
     catch (ExpressionException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e));  //NON-NLS
     }
     return result;
   }
@@ -142,7 +142,7 @@ public abstract class Expression {
     }
     catch (ExpressionException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e));  //NON-NLS
     }
     return result;
   }

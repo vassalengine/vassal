@@ -120,7 +120,7 @@ public final class ImportAction extends EditModuleAction {
       }
     }
 
-    for (int index : indices) {
+    for (final int index : indices) {
       try {
         if (((Importer) (IMPORTERS[index].getDeclaredConstructor().newInstance())).isValidImportFile(f)) {
           return IMPORTERS[index];
@@ -148,7 +148,7 @@ public final class ImportAction extends EditModuleAction {
     }
 
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-      File f = fc.getSelectedFile();
+      final File f = fc.getSelectedFile();
       if (f != null && f.exists()) {
         loadModule(f);
         actionCancelled = false;
@@ -163,7 +163,7 @@ public final class ImportAction extends EditModuleAction {
       throw new FileFormatException("Unrecognized file format");
     }
 
-    final GameModule module = new GameModule(new ArchiveWriter((String) null, ".vmod"));
+    final GameModule module = new GameModule(new ArchiveWriter((String) null, ".vmod")); //NON-NLS
     GameModule.init(module);
 
     final Importer imp;
@@ -274,7 +274,7 @@ public final class ImportAction extends EditModuleAction {
     if (parent != null) {
       final File[] peers = parent.listFiles();
       if (peers != null) {
-        for (File p : peers) {
+        for (final File p : peers) {
           if (p.getName().equalsIgnoreCase(name))
             return p;
         }
@@ -285,7 +285,7 @@ public final class ImportAction extends EditModuleAction {
     if (base != null) {
       final File[] peers = base.getParentFile().listFiles();
       if (peers != null) {
-        for (File p : peers) {
+        for (final File p : peers) {
           if (p.getName().equalsIgnoreCase(name))
             return p;
         }

@@ -47,7 +47,7 @@ public class ModuleUpdaterDialog extends JDialog {
       new FileConfigurer(null, Resources.getString("Editor.ModuleUpdaterDialog.file_older"));
     add(fileConfig.getControls());
 
-    Box b = Box.createHorizontalBox();
+    final Box b = Box.createHorizontalBox();
 
     final JButton saveButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.create_updater"));
     saveButton.setEnabled(false);
@@ -81,9 +81,9 @@ public class ModuleUpdaterDialog extends JDialog {
       }
     });
 
-    JButton cancelButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.close"));
+    final JButton cancelButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.close"));
     cancelButton.addActionListener(e -> dispose());
-    JButton helpButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.help"));
+    final JButton helpButton = new JButton(Resources.getString("Editor.ModuleUpdaterDialog.help"));
     add(b);
     HelpFile hf = null;
     try {

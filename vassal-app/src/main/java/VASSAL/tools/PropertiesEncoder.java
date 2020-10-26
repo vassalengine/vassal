@@ -42,7 +42,7 @@ public class PropertiesEncoder {
   }
 
   private String encode(Properties p) {
-    String s = null;
+    String s;
     try {
       final ByteArrayOutputStream out = new ByteArrayOutputStream();
       p.store(out, null);

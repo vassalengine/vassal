@@ -58,7 +58,7 @@ public class SendSoundAction extends AbstractAction {
 
     // Find which room our target player is in
     Room targetRoom = null;
-    for (Room room : client.getAvailableRooms()) {
+    for (final Room room : client.getAvailableRooms()) {
       if (room.getPlayerList().contains(target)) {
         targetRoom = room;
       }

@@ -107,9 +107,9 @@ public class TextSaver extends AbstractToolbarItem {
     final File file =  fc.getSelectedFile();
 
     // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (final Writer fw = new FileWriter(file, Charset.defaultCharset());
-         final BufferedWriter bw = new BufferedWriter(fw);
-         final PrintWriter p = new PrintWriter(bw)) {
+    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
+         BufferedWriter bw = new BufferedWriter(fw);
+         PrintWriter p = new PrintWriter(bw)) {
       for (final GamePiece gp : map.getPieces()) {
         final String s = gp.getName();
         if (s.length() > 0) {

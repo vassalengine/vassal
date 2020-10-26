@@ -74,7 +74,7 @@ public class KeyBuffer {
   }
 
   public void clear() {
-    for (GamePiece p : pieces) {
+    for (final GamePiece p : pieces) {
       p.setProperty(Properties.SELECTED, null);
     }
     pieces.clear();
@@ -108,10 +108,10 @@ public class KeyBuffer {
 
     // Copy contents into new list, because contents may change
     // as a result of key commands
-    ArrayList<GamePiece> targets = new ArrayList<>(pieces);
+    final ArrayList<GamePiece> targets = new ArrayList<>(pieces);
     // Reverse the order if this is a "Move Up" or "Move to Bottom" keystroke
     if (!targets.isEmpty()) {
-      GamePiece top = targets.get(0);
+      final GamePiece top = targets.get(0);
       if (top.getMap() != null) {
         if (stroke.equals(top.getMap().getStackMetrics().getMoveBottomKey())
             || stroke.equals(top.getMap().getStackMetrics().getMoveUpKey())) {
@@ -119,7 +119,7 @@ public class KeyBuffer {
         }
       }
     }
-    for (GamePiece p : targets) {
+    for (final GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
       

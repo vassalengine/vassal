@@ -169,7 +169,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     }
     else {
       s = s.substring(ID.length());
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("Activate");
       activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       activateKey = st.nextToken("A");
@@ -221,7 +221,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
    * @param s Old Type
    */
   private void originalSetType(String s) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
 
     st.nextToken();
     final SequenceEncoder.Decoder st2 =
@@ -295,7 +295,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
   public String getName(boolean localized) {
     checkPropertyLevel(); // Name Change?
-    String name;
+    final String name;
 
     final String cname = 0 < value && value - 1 < commonName.length ?
       getCommonName(localized, value - 1) : null;
@@ -385,7 +385,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     for (int i = 0; i < nValues; ++i) {
       if (commonName[i] != null) {
-        SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
+        final SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
         se.append(sub.append(commonName[i]).getValue());
       }
       else {
@@ -494,17 +494,17 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    char strokeChar = getMatchingActivationChar(stroke);
+    final char strokeChar = getMatchingActivationChar(stroke);
     ChangeTracker tracker = null;
     if (strokeChar != 0 && nValues > 0) {  // Do not Activate if no levels defined
       tracker = new ChangeTracker(this);
-      int index = activationStatus.indexOf(strokeChar);
+      final int index = activationStatus.indexOf(strokeChar);
       if (index < 0) {
         activationStatus += strokeChar;
       }
       else {
-        String before = activationStatus.substring(0, index);
-        String after = activationStatus.substring(index + 1);
+        final String before = activationStatus.substring(0, index);
+        final String after = activationStatus.substring(index + 1);
         activationStatus = before + after;
       }
       if (activationStatus.length() == activateKey.length()) {
@@ -561,7 +561,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
         }
-        int val;
+        final int val;
         val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
       }
@@ -1006,7 +1006,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
      * Change visibility of fields depending on the Follow Property setting
      */
     protected void showHideFields() {
-      boolean show = !followConfig.booleanValue();
+      final boolean show = !followConfig.booleanValue();
       loop.setEnabled(show);
       propertyConfig.getControls().setVisible(!show);
       firstLevelConfig.getControls().setVisible(!show);
@@ -1025,7 +1025,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     }
 
     private void updateLevelName() {
-      int index = images.getList().getSelectedIndex();
+      final int index = images.getList().getSelectedIndex();
       if (index < 0) {
         levelNameInput.setText(null);
       }
@@ -1037,9 +1037,9 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     }
 
     private void changeLevelName() {
-      int index = images.getList().getSelectedIndex();
+      final int index = images.getList().getSelectedIndex();
       if (index >= 0) {
-        String s = levelNameInput.getText();
+        final String s = levelNameInput.getText();
         names.set(index, s);
         if (prefix.isSelected()) {
           isPrefix.set(index, PREFIX);
@@ -1068,7 +1068,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       final ArrayList<String> imageNames = new ArrayList<>();
       final ArrayList<String> commonNames = new ArrayList<>();
       int i = 0;
-      for (String n : images.getImageNameList()) {
+      for (final String n : images.getImageNameList()) {
         imageNames.add(n);
         String commonName = names.get(i);
         if (commonName != null && commonName.length() > 0) {
@@ -1140,10 +1140,10 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       ProblemDialog.showDeprecated("2020-08-06");
       final SequenceEncoder imageList = new SequenceEncoder(';');
       int i = 0;
-      for (String imageName : images.getImageNameList()) {
+      for (final String imageName : images.getImageNameList()) {
         String commonName = names.get(i);
         if (names.get(i) != null && commonName != null && commonName.length() > 0) {
-          SequenceEncoder sub = new SequenceEncoder(imageName, ',');
+          final SequenceEncoder sub = new SequenceEncoder(imageName, ',');
           if (PREFIX.equals(isPrefix.get(i))) {
             commonName = new SequenceEncoder(commonName, '+').append("").getValue();
           }
@@ -1212,10 +1212,10 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         String s = e.commonName[i];
         Integer is = NEITHER;
         if (s != null && s.length() > 0) {
-          SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '+');
-          String first = st.nextToken();
+          final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '+');
+          final String first = st.nextToken();
           if (st.hasMoreTokens()) {
-            String second = st.nextToken();
+            final String second = st.nextToken();
             if (first.length() == 0) {
               s = second;
               is = SUFFIX;
@@ -1293,7 +1293,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    for (String iname : imageName) {
+    for (final String iname : imageName) {
       s.add(iname);
     }
   }

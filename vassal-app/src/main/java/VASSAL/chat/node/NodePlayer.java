@@ -101,8 +101,7 @@ public class NodePlayer extends SimplePlayer {
     if (ip != null) {
       p1.put(SimpleStatus.CRC, crc);
     }
-    Properties p = p1;
-    p.put(ID, id == null ? "" : id);
-    return p;
+    p1.put(ID, id == null ? "" : id);
+    return p1;
   }
 }

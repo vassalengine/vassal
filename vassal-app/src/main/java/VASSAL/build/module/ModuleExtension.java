@@ -131,7 +131,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     // Record that we are currently building this Extension
     GameModule.getGameModule().setGpIdSupport(this);
 
-    try (final BufferedInputStream in = new BufferedInputStream(archive.getInputStream(fileName))) {
+    try (BufferedInputStream in = new BufferedInputStream(archive.getInputStream(fileName))) {
       try {
         final Document doc = Builder.createDocument(in);
         if (doc != null) {

@@ -14,7 +14,7 @@ public interface PropertyExporter extends PropertyNameSource, PropertySource {
   default Map<String, Object> getProperties() {
     final List<String> propertyNames = getPropertyNames();
     final Map<String, Object> result = new HashMap<>();
-    for (String propertyName : propertyNames) {
+    for (final String propertyName : propertyNames) {
       result.put(propertyName, getLocalizedProperty(propertyName));
     }
 

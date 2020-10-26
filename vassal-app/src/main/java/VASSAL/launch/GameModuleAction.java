@@ -92,7 +92,7 @@ public abstract class GameModuleAction extends AbstractAction {
   }
 
   protected void runActions() {
-    for (Runnable r : actions) {
+    for (final Runnable r : actions) {
       r.run();
     }
   }

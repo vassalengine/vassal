@@ -285,7 +285,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return;
     }
 
-    float fsize = (float)(font.getSize() * zoom);
+    final float fsize = (float)(font.getSize() * zoom);
 
     // Windows renders some characters (e.g. "4") very poorly at 8pt. To
     // mitigate that, we upscale, render, then downscale when the font
@@ -323,7 +323,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       lastCachedOp = Op.scale(baseOp, zoom);
     }
     else {
-      float fsize = (float)(font.getSize() * zoom);
+      final float fsize = (float)(font.getSize() * zoom);
       final Font zfont = font.deriveFont(fsize);
       lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
     }
@@ -661,7 +661,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public Shape getShape() {
-    Shape innerShape = piece.getShape();
+    final Shape innerShape = piece.getShape();
 
     // If the label has a Control key, then the image of the label is NOT
     // included in the selectable area of the counter
@@ -782,7 +782,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     if (propertyName.length() > 0) {
       l.add(propertyName);
     }
@@ -1046,7 +1046,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(label);
+    final HTMLImageFinder h = new HTMLImageFinder(label);
     h.addImageNames(s);
   }
 }

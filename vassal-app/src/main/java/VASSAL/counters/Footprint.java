@@ -163,7 +163,7 @@ public class Footprint extends MovementMarkable {
       .append(startMapId)
       .append(pointList.size());
 
-    for (Point p : pointList) {
+    for (final Point p : pointList) {
       se.append(p.x + "," + p.y);
     }
 
@@ -171,7 +171,7 @@ public class Footprint extends MovementMarkable {
   }
 
   /**
-   * Type is the character command that toggles footprint visiblity
+   * Type is the character command that toggles footprint visibility
    */
   @Override
   public void mySetType(String type) {
@@ -209,7 +209,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(trailKey)
       .append(menuCommand)
       .append(initiallyVisible)
@@ -488,7 +488,7 @@ public class Footprint extends MovementMarkable {
         drawPoint(g, p, zoom, elementCount);
 
         // Is there an Icon to draw in the circle?
-        Image image = getTrailImage(elementCount);
+        final Image image = getTrailImage(elementCount);
         x1 = (int)((p.x - circleRadius) * zoom);
         y1 = (int)((p.y - circleRadius) * zoom);
         if (selected && image != null) {
@@ -496,7 +496,7 @@ public class Footprint extends MovementMarkable {
             g.drawImage(image, x1, y1, obs);
           }
           else {
-            Image scaled =
+            final Image scaled =
               ImageUtils.transform((BufferedImage) image, zoom, 0.0);
             g.drawImage(scaled, x1, y1, obs);
           }
@@ -551,7 +551,7 @@ public class Footprint extends MovementMarkable {
     double lastSqrt = -1;
     int lastDistSq = -1;
 
-    int distSq = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    final int distSq = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
     if (distSq != lastDistSq) {
       lastDistSq = distSq;
       lastSqrt = Math.sqrt(distSq);
@@ -741,7 +741,7 @@ public class Footprint extends MovementMarkable {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Footprint)) return false;
-    Footprint c = (Footprint) o;
+    final Footprint c = (Footprint) o;
 
     if (! Objects.equals(trailKey, c.trailKey)) return false;
     if (! Objects.equals(menuCommand, c.menuCommand)) return false;
@@ -762,7 +762,6 @@ public class Footprint extends MovementMarkable {
 
     if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
     if (! Objects.equals(startMapId, c.startMapId)) return false;
-    if (! Objects.equals(description, c.description)) return false;
     return Objects.equals(pointList, c.pointList);
   }
 

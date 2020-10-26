@@ -602,7 +602,8 @@ public class PieceMover extends AbstractBuildable
       // Find an already-moved piece that we can merge with at the destination
       // point
       if (mergeCandidates != null) {
-        for (int i = 0, n = mergeCandidates.size(); i < n; ++i) {
+        final int n = mergeCandidates.size();
+        for (int i = 0; i < n; ++i) {
           final GamePiece candidate = mergeCandidates.get(i);
           if (map.getPieceCollection().canMerge(candidate, dragging)) {
             mergeWith = candidate;

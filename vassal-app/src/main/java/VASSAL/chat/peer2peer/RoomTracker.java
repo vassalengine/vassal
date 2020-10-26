@@ -39,7 +39,7 @@ public class RoomTracker {
   }
 
   public void finalizeRoom(Room r) {
-    for (Player p : r.getPlayerList()) {
+    for (final Player p : r.getPlayerList()) {
       if (!leftPlayers.contains(p)) {
         joinedPlayers.add(p);
       }

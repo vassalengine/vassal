@@ -39,7 +39,7 @@ public class JarArchive extends DataArchive {
     final URL url = getClass().getResource(getAbsolutePath(fileName));
     if (url != null) return url;
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getURL(fileName);
       }
@@ -58,7 +58,7 @@ public class JarArchive extends DataArchive {
       getClass().getResourceAsStream(getAbsolutePath(fileName));
     if (in != null) return in;
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getInputStream(fileName);
       }

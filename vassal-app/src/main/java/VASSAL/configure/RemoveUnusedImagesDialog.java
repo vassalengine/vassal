@@ -66,8 +66,8 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final JScrollPane dropScroll = new JScrollPane(dropList);
     dropScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.UnusedImages.files_to_remove")));
 
-    final JButton dropButton = new JButton(IconFactory.getIcon("go-next", IconFamily.XSMALL));
-    final JButton keepButton = new JButton(IconFactory.getIcon("go-previous", IconFamily.XSMALL));
+    final JButton dropButton = new JButton(IconFactory.getIcon("go-next", IconFamily.XSMALL)); //NON-NLS
+    final JButton keepButton = new JButton(IconFactory.getIcon("go-previous", IconFamily.XSMALL)); //NON-NLS
 
     ok = new JButton(Resources.getString("Editor.UnusedImages.remove_files"));
     final JButton cancel = new JButton(Resources.getString("General.cancel"));
@@ -88,17 +88,17 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     cancel.addActionListener(e -> dispose());
 
-    final JPanel panel = new JPanel(new MigLayout("insets dialog", "[]rel[]rel[]", "[]unrel[]unrel[]"));
+    final JPanel panel = new JPanel(new MigLayout("insets dialog", "[]rel[]rel[]", "[]unrel[]unrel[]"));  //NON-NLS
 
-    panel.add(text, "span, wrap");
+    panel.add(text, "span, wrap"); //NON-NLS
 
-    panel.add(keepScroll, "grow, push, sizegroup list");
-    panel.add(dropButton, "align center, flowy, split 2");
-    panel.add(keepButton, "align center");
-    panel.add(dropScroll, "grow, push, sizegroup list, wrap");
+    panel.add(keepScroll, "grow, push, sizegroup list"); //NON-NLS
+    panel.add(dropButton, "align center, flowy, split 2"); //NON-NLS
+    panel.add(keepButton, "align center"); //NON-NLS
+    panel.add(dropScroll, "grow, push, sizegroup list, wrap"); //NON-NLS
 
-    panel.add(ok, "tag ok, span, split");
-    panel.add(cancel, "tag cancel");
+    panel.add(ok, "tag ok, span, split"); //NON-NLS
+    panel.add(cancel, "tag cancel"); //NON-NLS
 
     add(panel);
     pack();
@@ -131,7 +131,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final File dir = new File(new File(aw.getName()).getParent(), "removed");
     dir.mkdir();
 
-    for (String u : dump) {
+    for (final String u : dump) {
       GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", u));
       System.out.println(Resources.getString("Editor.UnusedImages.removing", u));
 

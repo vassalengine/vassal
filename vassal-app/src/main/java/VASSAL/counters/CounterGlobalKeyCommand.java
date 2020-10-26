@@ -95,7 +95,7 @@ public class CounterGlobalKeyCommand extends Decorator
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken(Resources.getString("Editor.GlobalkeyCommand.command"));
     key = st.nextNamedKeyStroke('G');
     globalKey = st.nextNamedKeyStroke('K');
@@ -118,7 +118,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
       .append(key)
       .append(globalKey)
@@ -247,7 +247,7 @@ public class CounterGlobalKeyCommand extends Decorator
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
-        String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+        final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
         try {
           r = Integer.parseInt(rangeValue);
         }
@@ -271,7 +271,7 @@ public class CounterGlobalKeyCommand extends Decorator
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof CounterGlobalKeyCommand)) return false;
-    CounterGlobalKeyCommand trait = (CounterGlobalKeyCommand) o;
+    final CounterGlobalKeyCommand trait = (CounterGlobalKeyCommand) o;
 
     if (! Objects.equals(commandName, trait.commandName)) return false;
     if (! Objects.equals(key, trait.key)) return false;
@@ -309,10 +309,10 @@ public class CounterGlobalKeyCommand extends Decorator
 
     public Ed(CounterGlobalKeyCommand p) {
 
-      PropertyChangeListener pl = evt -> {
+      final PropertyChangeListener pl = evt -> {
 
-        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+        final boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        final boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
         range.getControls().setVisible(isRange && isFixed);
         rangeLabel.setVisible(isRange && isFixed);
@@ -379,7 +379,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
         .append(keyInput.getValueString())
         .append(globalKey.getValueString())

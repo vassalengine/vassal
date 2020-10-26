@@ -118,7 +118,7 @@ public class P2PPlayer extends SimplePlayer {
   @Override
   public boolean equals(Object o) {
     if (o instanceof P2PPlayer) {
-      P2PPlayer p = (P2PPlayer) o;
+      final P2PPlayer p = (P2PPlayer) o;
       return getId() == null ? info.equals(p.info) : getId().equals(p.getId());
     }
     else {

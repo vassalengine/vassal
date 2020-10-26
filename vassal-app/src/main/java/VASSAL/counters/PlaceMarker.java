@@ -246,7 +246,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
                 .noneMatch(s -> Boolean.TRUE.equals(outer.getProperty(s)))) {
         final String location = m.locationName(getPosition());
         if (location != null) {
-          Command display = new Chatter.DisplayText(
+          final Command display = new Chatter.DisplayText(
             GameModule.getGameModule().getChatter(),
             " * " + location + ":  " + outer.getName() +
               " " + markerText + " * ");
@@ -326,7 +326,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   public void addImageNamesRecursively(Collection<String> s) {
     super.addImageNamesRecursively(s);
     if (isMarkerStandalone()) {
-      GamePiece p = createBaseMarker();
+      final GamePiece p = createBaseMarker();
       if (p instanceof ImageSearchTarget) {
         ((ImageSearchTarget) p).addImageNamesRecursively(s);
       }
@@ -362,9 +362,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    String name = st.nextToken();
+    final String name = st.nextToken();
     key = st.nextNamedKeyStroke(null);
     command = new KeyCommand(name, key, this, this);
     if (name.length() > 0 && key != null) {
@@ -422,7 +422,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof PlaceMarker)) return false;
-    PlaceMarker c = (PlaceMarker) o;
+    final PlaceMarker c = (PlaceMarker) o;
 
     if (! Objects.equals(key, c.key)) return false;
     if (! Objects.equals(markerSpec, c.markerSpec)) return false;
@@ -459,7 +459,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
     protected Ed(PlaceMarker piece) {
 
-      GamePiece marker = piece.createBaseMarker();
+      final GamePiece marker = piece.createBaseMarker();
       markerSlotPath = piece.markerSpec;
       p = new TraitConfigPanel();
 
@@ -489,7 +489,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       adjustVisualiserSize();
 
       selectButton.addActionListener(e -> {
-        ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
+        final ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
         d.setVisible(true);
         if (d.getTarget() instanceof PieceSlot) {
           pieceInput.setPiece(((PieceSlot) d.getTarget()).getPiece());
@@ -575,7 +575,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandInput.getValueString());
       se.append(keyInput.getValueString());
       if (pieceInput.getPiece() == null) {
@@ -585,7 +585,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         se.append(markerSlotPath);
       }
       else {
-        String spec = GameModule.getGameModule().encode(new AddPiece(pieceInput.getPiece()));
+        final String spec = GameModule.getGameModule().encode(new AddPiece(pieceInput.getPiece()));
         se.append(spec);
       }
       se.append("null"); // Older versions specified a text message to echo. Now performed by the ReportState trait, // NON-NLS

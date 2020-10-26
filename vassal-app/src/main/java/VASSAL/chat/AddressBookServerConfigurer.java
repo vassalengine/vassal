@@ -106,14 +106,14 @@ public class AddressBookServerConfigurer extends Configurer {
   public String getValueString() {
     String s = ""; //$NON-NLS-1$
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-      Properties p = (Properties) getValue();
+      final Properties p = (Properties) getValue();
       if (p != null) {
         p.store(out, null);
       }
       s = new String(out.toByteArray(), ENCODING);
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
     return s;
@@ -121,12 +121,12 @@ public class AddressBookServerConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     try {
       p.load(new ByteArrayInputStream(s.getBytes(ENCODING)));
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
     setValue(p);

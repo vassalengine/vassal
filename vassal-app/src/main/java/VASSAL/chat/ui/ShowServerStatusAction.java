@@ -93,7 +93,7 @@ public class ShowServerStatusAction extends AbstractAction {
       }
       pack();
       setSize(Math.max(getSize().width, 400), Math.max(getSize().height, 300));
-      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       setLocation(d.width / 2 - getSize().width / 2,
                   d.height / 2 - getSize().height / 2);
     }
@@ -111,7 +111,6 @@ public class ShowServerStatusAction extends AbstractAction {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
       MessageBoard server = null;
-      String name = null;
       if (evt.getNewValue() instanceof ServerStatus.ModuleSummary) {
         final String moduleName = ((ServerStatus.ModuleSummary) evt.getNewValue()).getModuleName();
         server = new HttpMessageServer(new PeerPoolInfo() {
@@ -127,7 +126,7 @@ public class ShowServerStatusAction extends AbstractAction {
         });
       }
       if (messageMgr != null) {
-        messageMgr.setServer(server, name);
+        messageMgr.setServer(server, null);
       }
     }
   }

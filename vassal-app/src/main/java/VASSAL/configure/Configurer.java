@@ -81,7 +81,7 @@ public abstract class Configurer {
   }
 
   public void setName(String s) {
-    String oldName = name;
+    final String oldName = name;
     name = s;
     if (!frozen) {
       changeSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
@@ -105,7 +105,7 @@ public abstract class Configurer {
    * Set the Object value
    */
   public void setValue(Object o) {
-    Object oldValue = getValue();
+    final Object oldValue = getValue();
     value = o;
     if (!frozen) {
       changeSupport.firePropertyChange(key, oldValue, value);

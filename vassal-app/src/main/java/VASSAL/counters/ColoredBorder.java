@@ -85,13 +85,13 @@ public class ColoredBorder implements Highlighter {
     }
 
     // Draw any additional highlighters
-    for (Highlighter h : highlighters) {
+    for (final Highlighter h : highlighters) {
       h.draw(p, g, x, y, obs, zoom);
     }
   }
 
   protected void highlightSelectionBounds(GamePiece p, Graphics g, int x, int y, Component obs, double zoom) {
-    Rectangle r = p.getShape().getBounds();
+    final Rectangle r = p.getShape().getBounds();
     g.setColor(c);
     for (int i = 1; i < thickness; ++i)
       g.drawRect(x + (int) (zoom * r.x) - i,
@@ -106,7 +106,7 @@ public class ColoredBorder implements Highlighter {
     r.translate(-thickness, -thickness);
     r.setSize(r.width + 2 * thickness, r.height + 2 * thickness);
 
-    for (Highlighter h : highlighters) r.add(h.boundingBox(p));
+    for (final Highlighter h : highlighters) r.add(h.boundingBox(p));
     return r;
   }
 

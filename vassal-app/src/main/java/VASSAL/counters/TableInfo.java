@@ -80,7 +80,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     nRows = st.nextInt(2);
     nCols = st.nextInt(2);
     command = st.nextToken();
@@ -115,10 +115,10 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       return values;
     }
     else {
-      SequenceEncoder se = new SequenceEncoder(',');
+      final SequenceEncoder se = new SequenceEncoder(',');
       for (int row = 0; row < nRows; ++row) {
         for (int col = 0; col < nCols; ++col) {
-          String s = (String) table.getValueAt(row, col);
+          final String s = (String) table.getValueAt(row, col);
           se.append(s == null ? "" : s);
         }
       }
@@ -140,7 +140,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
    * @param val a comma-separated list of table values
    */
   private void setValues(String val) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(val, ',');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(val, ',');
 
     for (int row = 0; row < nRows; ++row) {
       for (int col = 0; col < nCols; ++col) {
@@ -151,7 +151,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(nRows).append(nCols).append(command).append(launchKey);
     return ID + se.getValue();
   }
@@ -173,13 +173,13 @@ public class TableInfo extends Decorator implements TranslatablePiece {
         table = new JTable(nRows, nCols);
         setValues(values);
         table.setTableHeader(null);
-        JScrollPane scroll = new ScrollPane(table);
+        final JScrollPane scroll = new ScrollPane(table);
         scroll.getViewport().setPreferredSize(table.getPreferredSize());
         frame.add(scroll);
         Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();
-          Point p2 = getMap().mapToComponent(getPosition());
+          final Point p2 = getMap().mapToComponent(getPosition());
           p.translate(p2.x, p2.y);
         }
         frame.setLocation(p.x, p.y);
@@ -187,7 +187,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
           @Override
           public void windowClosing(WindowEvent evt) {
             table.editingStopped(null);
-            GamePiece outer = Decorator.getOutermost(TableInfo.this);
+            final GamePiece outer = Decorator.getOutermost(TableInfo.this);
             if (outer.getId() != null) {
               GameModule.getGameModule().sendAndLog(new ChangePiece(outer.getId(), oldState, outer.getState()));
             }
@@ -198,11 +198,8 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       frame.setTitle(getName());
       oldState = Decorator.getOutermost(this).getState();
       frame.setVisible(true);
-      return null;
     }
-    else {
-      return null;
-    }
+    return null;
   }
 
   @Override
@@ -253,7 +250,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(rowConfig.getValueString())
         .append(colConfig.getValueString())
         .append(commandConfig.getValueString())
@@ -279,7 +276,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     for (int row = 0; row < nRows; ++row) {
       for (int col = 0; col < nCols; ++col) {
         l.add((String) table.getValueAt(row, col));

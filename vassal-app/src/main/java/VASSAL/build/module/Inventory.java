@@ -390,9 +390,9 @@ public class Inventory extends AbstractToolbarItem
   //      mapSeparator, System.getProperty("line.separator"));
 
     // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (final Writer fw = new FileWriter(file, Charset.defaultCharset());
-         final BufferedWriter bw = new BufferedWriter(fw);
-         final PrintWriter p = new PrintWriter(bw)) {
+    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
+         BufferedWriter bw = new BufferedWriter(fw);
+         PrintWriter p = new PrintWriter(bw)) {
       p.print(output);
 
       final Command c = new Chatter.DisplayText(
@@ -842,7 +842,8 @@ public class Inventory extends AbstractToolbarItem
   private void refresh() {
     // Make an attempt to keep the same nodes expanded
     final HashSet<String> expanded = new HashSet<>();
-    for (int i = 0, n = tree.getRowCount(); i < n; ++i) {
+    final int n = tree.getRowCount();
+    for (int i = 0; i < n; ++i) {
       if (tree.isExpanded(i)) {
         expanded.add(tree.getPathForRow(i).getLastPathComponent().toString());
       }
@@ -890,7 +891,8 @@ public class Inventory extends AbstractToolbarItem
       }
       else {
         comm = new NullCommand();
-        for (int i = 0, n = node.getChildCount(); i < n; ++i) {
+        final int n = node.getChildCount();
+        for (int i = 0; i < n; ++i) {
           comm = comm.append(getCommand((CounterNode) node.getChild(i), stroke));
         }
       }

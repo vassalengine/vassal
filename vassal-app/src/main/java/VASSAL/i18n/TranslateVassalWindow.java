@@ -80,7 +80,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   @Override
   protected Component buildMainPanel() {
-    JSplitPane pane = (JSplitPane) super.buildMainPanel();
+    final JSplitPane pane = (JSplitPane) super.buildMainPanel();
     return pane.getBottomComponent();
   }
 
@@ -155,7 +155,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   protected void newTranslation() {
     ((VassalTranslation) target).clearProperties();
-    ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
+    final ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
     Collections.sort(keyList);
     keys = keyList.toArray(new String[0]);
     copyButtons = new CopyButton[keys.length];

@@ -92,17 +92,17 @@ public class ScrollPane extends JScrollPane {
     MouseWheelListener[] listeners;
 
     listeners = getMouseWheelListeners();
-    for (MouseWheelListener value : listeners) removeMouseWheelListener(value);
+    for (final MouseWheelListener value : listeners) removeMouseWheelListener(value);
 
     listeners = viewport.getMouseWheelListeners();
-    for (MouseWheelListener wheelListener : listeners) viewport.removeMouseWheelListener(wheelListener);
+    for (final MouseWheelListener wheelListener : listeners) viewport.removeMouseWheelListener(wheelListener);
 
     listeners = verticalScrollBar.getMouseWheelListeners();
-    for (MouseWheelListener mouseWheelListener : listeners)
+    for (final MouseWheelListener mouseWheelListener : listeners)
       verticalScrollBar.removeMouseWheelListener(mouseWheelListener);
 
     listeners = horizontalScrollBar.getMouseWheelListeners();
-    for (MouseWheelListener listener : listeners) horizontalScrollBar.removeMouseWheelListener(listener);
+    for (final MouseWheelListener listener : listeners) horizontalScrollBar.removeMouseWheelListener(listener);
 
     // add our own MouseWheelListeners
     // NB: block scrolling isn't used with the mouse wheel

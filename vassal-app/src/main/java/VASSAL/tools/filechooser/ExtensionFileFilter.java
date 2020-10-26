@@ -49,7 +49,7 @@ public class ExtensionFileFilter extends FileFilter {
   public boolean accept(File f) {
     if (f.isDirectory()) return true;
     final String name = f.getName().toLowerCase();
-    for (String type : types) {
+    for (final String type : types) {
       if (name.endsWith(type)) return true;
     }
     return false;

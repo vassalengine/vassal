@@ -58,7 +58,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   /** {@inheritDoc} */
   @Override
   public Set<Property<?>> getProperties() {
-    return Collections.<Property<?>>singleton(prop);
+    return Collections.singleton(prop);
   }
 
   /** {@inheritDoc} */
@@ -73,11 +73,11 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
     final V oldVal = this.value;
     this.value = (V) value;
 
-    for (PropertyListener<Object> l : listeners) {
+    for (final PropertyListener<Object> l : listeners) {
       l.propertyChanged(this, this.prop, oldVal, this.value);
     }
 
-    for (PropertyListener<? super V> l : plisteners) {
+    for (final PropertyListener<? super V> l : plisteners) {
       l.propertyChanged(this, this.prop, oldVal, this.value);
     }
   }
@@ -130,7 +130,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
   @Override
   public List<PropertyListener<Object>> getPropertyListeners() {
     return listeners.isEmpty() ?
-      Collections.<PropertyListener<Object>>emptyList() :
+      Collections.emptyList() :
       new ArrayList<>(listeners);
   }
 
@@ -141,7 +141,7 @@ public class SinglePropertyContainer<V> implements PropertyContainer {
                                        getPropertyListeners(Property<T> prop) {
     if (!this.prop.equals(prop)) throw new IllegalArgumentException();
     return plisteners.isEmpty() ?
-      Collections.<PropertyListener<? super T>>emptyList() :
+      Collections.emptyList() :
       new ArrayList<PropertyListener<? super T>>((List) plisteners);
   }
 

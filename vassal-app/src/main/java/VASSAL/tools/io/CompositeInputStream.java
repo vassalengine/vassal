@@ -75,7 +75,7 @@ public class CompositeInputStream extends InputStream {
   @Override
   public int available() throws IOException {
     int bytes = in != null ? in.available() : 0;
-    for (InputStream ch : queue) {
+    for (final InputStream ch : queue) {
       bytes += Math.max(ch.available(), 0);
     }
     return bytes;

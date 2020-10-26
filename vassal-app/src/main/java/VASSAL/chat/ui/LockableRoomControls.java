@@ -46,7 +46,7 @@ public abstract class LockableRoomControls extends RoomInteractionControlsInitia
 
   @Override
   public JPopupMenu buildPopupForRoom(Room target, JTree tree) {
-    JPopupMenu popup = new JPopupMenu();
+    final JPopupMenu popup = new JPopupMenu();
     addJoinRoomAction(popup, target);
     addLockRoomAction(popup, target);
     return popup;
@@ -56,7 +56,7 @@ public abstract class LockableRoomControls extends RoomInteractionControlsInitia
     joinAction = new JoinRoomAction(target, client);
     popup.add(joinAction);
     if (target instanceof LockableRoom) {
-      LockableRoom nr = (LockableRoom) target;
+      final LockableRoom nr = (LockableRoom) target;
       if (nr.isLocked()) {
         joinAction.setEnabled(false);
       }

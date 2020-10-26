@@ -279,16 +279,16 @@ public abstract class DieServer {
     final URLConnection connection = url.openConnection();
     connection.setDoOutput(true);
 
-    try (final OutputStream os = connection.getOutputStream();
-         final PrintWriter out = new PrintWriter(os, true, StandardCharsets.UTF_8)) {
+    try (OutputStream os = connection.getOutputStream();
+         PrintWriter out = new PrintWriter(os, true, StandardCharsets.UTF_8)) {
       for (final String s : rollString) {
         out.println(s);
       }
     }
 
-    try (final InputStream is = connection.getInputStream();
-         final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-         final BufferedReader in = new BufferedReader(isr)) {
+    try (InputStream is = connection.getInputStream();
+         InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+         BufferedReader in = new BufferedReader(isr)) {
       String inputLine;
       while ((inputLine = in.readLine()) != null) {
         returnString.add(inputLine);

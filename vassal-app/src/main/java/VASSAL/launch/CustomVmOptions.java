@@ -30,7 +30,7 @@ public class CustomVmOptions {
   }
 
   private void createInitialVmOptionsFile(File confDir) {
-    ClassLoader classLoader = getClass().getClassLoader();
+    final ClassLoader classLoader = getClass().getClassLoader();
     try (InputStream is = classLoader.getResourceAsStream(VM_OPTIONS_FILE_NAME)) {
       if (is == null) {
         log.error("Template for custom VM options " + VM_OPTIONS_FILE_NAME + " not found in the Vassal distribution"); //NON-NLS

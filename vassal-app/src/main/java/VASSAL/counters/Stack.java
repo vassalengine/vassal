@@ -95,7 +95,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    * this {@link Stack}
    */
   public List<GamePiece> asList() {
-    List<GamePiece> result = new ArrayList<>();
+    final List<GamePiece> result = new ArrayList<>();
     for (int i = 0; i < pieceCount; i++) {
       result.add(contents[i]);
     }
@@ -172,7 +172,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
 
     if (pieceCount >= contents.length) {
-      GamePiece[] newContents = new GamePiece[contents.length + INCR];
+      final GamePiece[] newContents = new GamePiece[contents.length + INCR];
       System.arraycopy(contents, 0, newContents, 0, pieceCount);
       contents = newContents;
     }
@@ -259,7 +259,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
     pos = Math.max(pos, 0);
     pos = Math.min(pos, pieceCount);
-    int index = indexOf(p);
+    final int index = indexOf(p);
     if (index >= 0) {
       final boolean origExpanded = isExpanded(); // Bug #2766794
       if (pos > index) {
@@ -346,9 +346,9 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   @Override
   public Shape getShape() {
-    Area a = new Area();
-    Shape[] childBounds = new Shape[getPieceCount()];
-    StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
+    final Area a = new Area();
+    final Shape[] childBounds = new Shape[getPieceCount()];
+    final StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
     metrics.getContents(this, null, childBounds, null, 0, 0);
     asList().stream()
             .filter(PieceIterator.VISIBLE)
@@ -360,7 +360,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public void selectNext(GamePiece c) {
     KeyBuffer.getBuffer().remove(c);
     if (pieceCount > 1 && indexOf(c) >= 0) {
-      int newSelectedIndex = indexOf(c) == pieceCount - 1 ? pieceCount - 2 : indexOf(c) + 1;
+      final int newSelectedIndex = indexOf(c) == pieceCount - 1 ? pieceCount - 2 : indexOf(c) + 1;
       for (int i = 0; i < pieceCount; ++i) {
         if (indexOf(contents[i]) == newSelectedIndex) {
           KeyBuffer.getBuffer().add(contents[i]);
@@ -408,7 +408,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    */
   public GamePiece topPiece(String playerId) {
     for (int i = pieceCount - 1; i >= 0; --i) {
-      String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
+      final String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
       if (hiddenBy == null || hiddenBy.equals(playerId)) {
         return contents[i];
       }
@@ -424,7 +424,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    */
   public GamePiece bottomPiece(String playerId) {
     for (int i = 0; i < pieceCount; ++i) {
-      String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
+      final String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
       if (hiddenBy == null || hiddenBy.equals(playerId)) {
         return contents[i];
       }
@@ -453,7 +453,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   @Override
   public Command keyEvent(javax.swing.KeyStroke stroke) {
-    GamePiece p = topPiece();
+    final GamePiece p = topPiece();
     if (p != null) {
       return p.keyEvent(stroke);
     }
@@ -472,7 +472,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   @Override
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$//
     for (int i = 0; i < pieceCount; ++i) {
       se.append(contents[i].getId());
@@ -513,7 +513,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   /**
    * Compute the difference between <code>newState</code> and
-   * <code>oldState</code> and appy that difference to the current state
+   * <code>oldState</code> and apply that difference to the current state
    *
    * @param newState New State
    * @param oldState Old State
@@ -522,32 +522,33 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public void mergeState(String newState, String oldState) {
     String mergedState = newState;
     if (!oldState.equals(getState())) {
-      SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, ';');
-      SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, ';');
-      SequenceEncoder merge = new SequenceEncoder(';');
+      final SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, ';');
+      final SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, ';');
+      final SequenceEncoder merge = new SequenceEncoder(';');
       merge.append(stNew.nextToken());
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
-      ArrayList<String> newContents = new ArrayList<>();
+      final ArrayList<String> newContents = new ArrayList<>();
       while (stNew.hasMoreTokens()) {
         newContents.add(stNew.nextToken());
       }
-      ArrayList<String> oldContents = new ArrayList<>();
+      final ArrayList<String> oldContents = new ArrayList<>();
       while (stOld.hasMoreTokens()) {
         oldContents.add(stOld.nextToken());
       }
-      for (int i = 0, j = getPieceCount(); i < j; ++i) {
-        String id = getPieceAt(i).getId();
+      final int j = getPieceCount();
+      for (int i = 0; i < j; ++i) {
+        final String id = getPieceAt(i).getId();
         if (!newContents.contains(id) && !oldContents.contains(id)) {
-          int index = i == 0 ? -1 :
+          final int index = i == 0 ? -1 :
             newContents.indexOf(getPieceAt(i - 1).getId());
           newContents.add(index + 1, id);
         }
       }
-      for (String s : newContents) {
+      for (final String s : newContents) {
         merge.append(s);
       }
       mergedState = merge.getValue();
@@ -657,8 +658,8 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    */
   @Override
   public void addImageNamesRecursively(Collection<String> s) {
-    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext(); ) {
-      GamePiece p = i.next();
+    for (final Iterator<GamePiece> i = getPiecesIterator(); i.hasNext(); ) {
+      final GamePiece p = i.next();
       if (p instanceof ImageSearchTarget)
       ((ImageSearchTarget)p).addImageNamesRecursively(s);
     }

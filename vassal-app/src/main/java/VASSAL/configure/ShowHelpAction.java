@@ -37,8 +37,8 @@ import VASSAL.tools.BrowserSupport;
 public class ShowHelpAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private HelpWindow helpWindow;
-  private URL contents;
+  private final HelpWindow helpWindow;
+  private final URL contents;
 
   public ShowHelpAction(URL contents, URL iconURL) {
     this((HelpWindow) null, contents, iconURL);

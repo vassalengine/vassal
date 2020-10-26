@@ -178,7 +178,8 @@ public class ToolbarMenu extends AbstractToolbarItem
     menu.removeAll();
     final HashMap<String, JButton> nameToButton = new HashMap<>();
     if (toolbar != null) {
-      for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
+      final int n = toolbar.getComponentCount();
+      for (int i = 0; i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {
           final JButton b = ((JButton) toolbar.getComponentAtIndex(i));
           String text =

@@ -68,7 +68,7 @@ public class CgiServerStatus implements ServerStatus {
     final HashMap<String, ServerStatus.ModuleSummary> entries =
       new HashMap<>();
     try {
-      for (String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
+      for (final String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
         final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
           final String moduleName = st.nextToken();
@@ -84,12 +84,12 @@ public class CgiServerStatus implements ServerStatus {
           }
         }
         // FIXME: review error message
-        catch (NoSuchElementException e1) {
+        catch (final NoSuchElementException e1) {
         }
       }
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
 
@@ -121,8 +121,8 @@ public class CgiServerStatus implements ServerStatus {
     toRequest.add(req);
 
     // subtract each old interval from new interval
-    for (Range<Long> y : requests) {
-      for (ListIterator<Range<Long>> i = toRequest.listIterator(); i.hasNext();) {
+    for (final Range<Long> y : requests) {
+      for (final ListIterator<Range<Long>> i = toRequest.listIterator(); i.hasNext();) {
         final Range<Long> x = i.next();
 
         if (!x.isOverlappedBy(y)) continue; // no overlap, nothing to subtract
@@ -141,8 +141,8 @@ public class CgiServerStatus implements ServerStatus {
     }
 
     // now toRequest contains the intervals we are missing; request those
-    for (Range<Long> i : toRequest) {
-      for (String s : getInterval(i)) {
+    for (final Range<Long> i : toRequest) {
+      for (final String s : getInterval(i)) {
         final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
           final String moduleName = st.nextToken();
@@ -150,12 +150,12 @@ public class CgiServerStatus implements ServerStatus {
           final String playerName = st.nextToken();
           final Long when = Long.valueOf(st.nextToken());
 
-          List<String[]> l = records.computeIfAbsent(when, k -> new ArrayList<>());
+          final List<String[]> l = records.computeIfAbsent(when, k -> new ArrayList<>());
 
           l.add(new String[]{ moduleName, roomName, playerName });
         }
         // FIXME: review error message
-        catch (NoSuchElementException | NumberFormatException e) {
+        catch (final NoSuchElementException | NumberFormatException e) {
           e.printStackTrace();
         }
       }
@@ -187,9 +187,9 @@ public class CgiServerStatus implements ServerStatus {
     final HashMap<String, ServerStatus.ModuleSummary> entries =
       new HashMap<>();
 
-    for (List<String[]> l : records.subMap(req.getMinimum(),
+    for (final List<String[]> l : records.subMap(req.getMinimum(),
                                            req.getMaximum()).values()) {
-      for (String[] r : l) {
+      for (final String[] r : l) {
         final String moduleName = r[0];
         final String roomName = r[1];
         final String playerName = r[2];
@@ -226,7 +226,7 @@ public class CgiServerStatus implements ServerStatus {
       return request.doGet("getConnectionHistory", p); //$NON-NLS-1$
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
 
