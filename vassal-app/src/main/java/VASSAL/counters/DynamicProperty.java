@@ -25,6 +25,7 @@ import java.awt.event.InputEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -98,7 +99,9 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
       @Override
       protected Configurer buildChildConfigurer() {
-        return new DynamicKeyCommandConfigurer(DynamicProperty.this);
+        DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(DynamicProperty.this);
+        c.addPropertyChangeListener(e -> resize());
+        return c;
       }
     };
     mySetType(type);
@@ -345,7 +348,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<String> getPropertyList() {
-    return Arrays.asList(key);
+    return Collections.singletonList(key);
   }
 
 
@@ -434,7 +437,9 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands")) {
         @Override
         protected Configurer buildChildConfigurer() {
-          return new DynamicKeyCommandConfigurer(m);
+          DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
+          c.addPropertyChangeListener(e -> resize());
+          return c;
         }
       };
       keyCommandListConfig.setValue(
@@ -537,9 +542,13 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected DynamicProperty target;
 
     public DynamicKeyCommandConfigurer(DynamicProperty target) {
-      super(target.getKey(), target.getKey(), new DynamicKeyCommand(Resources.getString("Editor.DynamicProperty.change_value"), NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK), Decorator.getOutermost(target), target,
+      super(target.getKey(), target.getKey(),
+        new DynamicKeyCommand(
+          Resources.getString("Editor.DynamicProperty.change_value"),
+          NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK),
+          Decorator.getOutermost(target),
+          target,
           new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
-
 
       commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
       keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));

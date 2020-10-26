@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -173,10 +174,21 @@ public abstract class ListConfigurer extends Configurer implements
         b.add(c.getControls(), "grow"); // NON-NLS
         configControls.add(b, "grow,wrap"); // NON-NLS
       }
-      panel.setMaximumSize(
+      resize();
+    }
+  }
+
+  /**
+   * Resize the overall Configurer to only show Scroll bars if getting close to full screen height
+   */
+  public void resize() {
+    if (controls != null) {
+      final Dimension s = controls.getPreferredSize();
+      final int t = (Integer) UIManager.get("ScrollBar.width");
+      panel.setPreferredSize(
         new Dimension(
-          panel.getPreferredSize().width + 20,
-          Math.min(panel.getPreferredSize().height, (int) getScreenSize().getHeight() - 300)
+          s.width + t + 2,
+          Math.min(controls.getPreferredSize().height + 5, (int) getScreenSize().getHeight() - 300)
         )
       );
       repack();
