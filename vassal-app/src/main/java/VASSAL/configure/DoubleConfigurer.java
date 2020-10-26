@@ -35,7 +35,7 @@ public class DoubleConfigurer extends StringConfigurer {
 
   @Override
   public void setValue(String s) {
-    Double d = null;
+    Double d;
     try {
       d = Double.valueOf(s);
     }

@@ -36,7 +36,7 @@ import VASSAL.tools.SequenceEncoder;
  * Each node has a name, a list of children, and arbitrary extra information
  * encoded in the {@link #getInfo} string. Each node can be identified
  * globally by a path name. Messages sent to a node generally broadcast to
- * all descendents of the node.
+ * all descendants of the node.
  */
 public class Node implements MsgSender {
   private static final Logger logger = Logger.getLogger(MsgSender.class.getName());
@@ -63,7 +63,7 @@ public class Node implements MsgSender {
     try {
       return new PropertiesEncoder(info).getProperties().getProperty(propName);
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       return null;
     }
   }
@@ -122,7 +122,7 @@ public class Node implements MsgSender {
    * @return node with that id
    */
   public Node getChild(String id) {
-    for (Node n : getChildren()) {
+    for (final Node n : getChildren()) {
       if (id.equals(n.getId())) {
         return n;
       }
@@ -137,9 +137,9 @@ public class Node implements MsgSender {
    */
   public Node getDescendant(String path) {
     Node n = this;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens() && n != null) {
-      String id = st.nextToken();
+      final String id = st.nextToken();
       n = n.getChild(id);
     }
     return n;
@@ -147,13 +147,13 @@ public class Node implements MsgSender {
 
   @Override
   public void send(String msg) {
-    for (Node n : getChildren()) {
+    for (final Node n : getChildren()) {
       n.send(msg);
     }
   }
 
   public Node[] getLeafDescendants() {
-    ArrayList<Node> l = new ArrayList<>();
+    final ArrayList<Node> l = new ArrayList<>();
     addLeaves(this, l);
     return l.toArray(new Node[0]);
   }
@@ -163,7 +163,7 @@ public class Node implements MsgSender {
       l.add(base);
     }
     else {
-      for (Node n : base.getChildren()) {
+      for (final Node n : base.getChildren()) {
         addLeaves(n, l);
       }
     }
@@ -189,9 +189,9 @@ public class Node implements MsgSender {
    */
   public static Node build(Node base, String path) {
     Node node = null;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens()) {
-      String childId = st.nextToken();
+      final String childId = st.nextToken();
       node = base.getChild(childId);
       if (node == null) {
         node = new Node(base, childId, null);
@@ -211,11 +211,11 @@ public class Node implements MsgSender {
    */
   public Node buildWithInfo(Node base, String pathAndInfo) {
     Node node = null;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(pathAndInfo, '/');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(pathAndInfo, '/');
     while (st.hasMoreTokens()) {
-      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '=');
-      String childId = st2.nextToken();
-      String childInfo = st2.nextToken();
+      final SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '=');
+      final String childId = st2.nextToken();
+      final String childInfo = st2.nextToken();
       node = base.getChild(childId);
       if (node == null) {
         node = new Node(base, childId, null);
@@ -228,7 +228,7 @@ public class Node implements MsgSender {
   }
 
   private List<Node> getPathList() {
-    ArrayList<Node> path = new ArrayList<>();
+    final ArrayList<Node> path = new ArrayList<>();
     for (Node n = this; n != null && n.getId() != null; n = n.getParent()) {
       path.add(n);
     }
@@ -237,9 +237,9 @@ public class Node implements MsgSender {
 
   public String getPath() {
     synchronized (children) {
-      SequenceEncoder se = new SequenceEncoder('/');
-      List<Node> path = getPathList();
-      for (ListIterator<Node> i = path.listIterator(path.size());
+      final SequenceEncoder se = new SequenceEncoder('/');
+      final List<Node> path = getPathList();
+      for (final ListIterator<Node> i = path.listIterator(path.size());
            i.hasPrevious(); ) {
         se.append(i.previous().getId());
       }
@@ -253,12 +253,12 @@ public class Node implements MsgSender {
    */
   public String getPathAndInfo() {
     synchronized (children) {
-      SequenceEncoder se = new SequenceEncoder('/');
-      List<Node> path = getPathList();
-      for (ListIterator<Node> i = path.listIterator(path.size() - 1);
+      final SequenceEncoder se = new SequenceEncoder('/');
+      final List<Node> path = getPathList();
+      for (final ListIterator<Node> i = path.listIterator(path.size() - 1);
            i.hasPrevious(); ) {
-        Node n = i.previous();
-        SequenceEncoder se2 =
+        final Node n = i.previous();
+        final SequenceEncoder se2 =
           new SequenceEncoder(n.getId(), '=').append(n.getInfo());
         se.append(se2.getValue());
       }

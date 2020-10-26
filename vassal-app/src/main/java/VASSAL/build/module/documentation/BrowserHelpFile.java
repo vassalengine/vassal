@@ -175,7 +175,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
-      for (File f : output.listFiles()) {
+      for (final File f : output.listFiles()) {
         recursiveDelete(f);
       }
     }
@@ -340,7 +340,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
         try (FileOutputStream fout = new FileOutputStream(packed);
              ZipOutputStream out = new ZipOutputStream(fout)) {
-          for (File f : dir.listFiles()) {
+          for (final File f : dir.listFiles()) {
             packFile(f, "", out); //$NON-NLS-1$
           }
         }
@@ -357,7 +357,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     protected void packFile(File packed, String prefix, ZipOutputStream out)
                                                           throws IOException {
       if (packed.isDirectory()) {
-        for (File f : packed.listFiles()) {
+        for (final File f : packed.listFiles()) {
           packFile(f, prefix + packed.getName() + "/", out); //$NON-NLS-1$
         }
       }
@@ -437,7 +437,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return new DirectoryConfigurer(key, name) {
         @Override
         public Component getControls() {
-          Component controls = super.getControls();
+          final Component controls = super.getControls();
           tf.setEditable(false);
           return controls;
         }

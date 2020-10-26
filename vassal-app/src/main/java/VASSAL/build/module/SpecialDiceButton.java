@@ -160,7 +160,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
   protected void DR() {
     final int[] results = new int[dice.size()];
     int i = 0;
-    for (SpecialDie sd : dice) {
+    for (final SpecialDie sd : dice) {
       final int faceCount = sd.getFaceCount();
       results[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
@@ -502,7 +502,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       return ""; //$NON-NLS-1$
     }
     final SequenceEncoder se = new SequenceEncoder(',');
-    for (int value : ia) {
+    for (final int value : ia) {
       se.append(String.valueOf(value));
     }
     return se.getValue();
@@ -575,7 +575,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     }
     final int[] results = new int[l.size()];
     int i = 0;
-    for (String n : l) {
+    for (final String n : l) {
       results[i++] = Integer.parseInt(n);
     }
     return new ShowResults(this, results);
@@ -644,7 +644,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
         g.fillRect(x, y, width, height);
       }
       int offset = 0;
-      for (Icon icon : icons) {
+      for (final Icon icon : icons) {
         if (icon != null) {
           icon.paintIcon(c, g, x + offset, y);
           offset += icon.getIconWidth();
@@ -679,7 +679,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(chatResultFormat);
+    final HTMLImageFinder h = new HTMLImageFinder(chatResultFormat);
     h.addImageNames(s);
   }
 }

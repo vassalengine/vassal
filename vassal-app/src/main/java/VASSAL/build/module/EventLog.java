@@ -41,14 +41,14 @@ public class EventLog extends AbstractBuildable
 
   @Override
   public void addTo(Buildable b) {
-    GameModule mod = GameModule.getGameModule();
+    final GameModule mod = GameModule.getGameModule();
     mod.addCommandEncoder(this);
     mod.getGameState().addGameComponent(this);
     mod.getPrefs().addOption(new StringConfigurer(EVENT_LIST, null));
     myEvents = new ArrayList<>();
     savedEvents = new ArrayList<>();
 
-    for (Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
+    for (final Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
       myEvents.add(e);
   }
 
@@ -131,10 +131,10 @@ public class EventLog extends AbstractBuildable
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Enumeration<Event> decodeEvents(String s) {
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    ArrayList<Event> l = new ArrayList<>();
-    SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
+    final ArrayList<Event> l = new ArrayList<>();
+    final SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
     while (se.hasMoreTokens()) {
-      SequenceEncoder.Decoder sub =
+      final SequenceEncoder.Decoder sub =
         new SequenceEncoder.Decoder(se.nextToken(), ',');
       l.add(new Event(Long.parseLong(sub.nextToken()),
                       sub.nextToken(), sub.nextToken()));
@@ -150,7 +150,7 @@ public class EventLog extends AbstractBuildable
    */
   public static String encodedEvents(Iterable<Event> events) {
     final SequenceEncoder se = new SequenceEncoder('|');
-    for (Event e : events) {
+    for (final Event e : events) {
       final SequenceEncoder sub = new SequenceEncoder(',');
       sub.append(e.getTime())
          .append(e.getUser())
@@ -216,7 +216,7 @@ public class EventLog extends AbstractBuildable
     @Override
     public void executeCommand() {
       log.clearSaved();
-      for (Event e : decodedEvents(events)) log.store(e);
+      for (final Event e : decodedEvents(events)) log.store(e);
     }
 
     @Override

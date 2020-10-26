@@ -245,7 +245,7 @@ public class LaunchRequest implements Serializable {
       switch (c) {
       case AUTO_EXT:
         if (lr.autoext == null) lr.autoext = new ArrayList<>();
-        for (String ext : g.getOptarg().split(",")) {
+        for (final String ext : g.getOptarg().split(",")) {
           lr.autoext.add(ext.replace("_", " "));
         }
         break;

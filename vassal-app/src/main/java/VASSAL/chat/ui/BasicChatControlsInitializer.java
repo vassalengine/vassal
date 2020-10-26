@@ -48,7 +48,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
 
   @Override
   public void initializeControls(final ChatServerControls controls) {
-    JToolBar toolbar = controls.getToolbar();
+    final JToolBar toolbar = controls.getToolbar();
 
     connectAction = new AbstractAction(
                           Resources.getString("Chat.connect")) {  //$NON-NLS-1$
@@ -90,7 +90,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     disconnectButton = toolbar.add(disconnectAction);
 
     connectionListener = evt -> SwingUtilities.invokeLater(() -> {
-      boolean connected = Boolean.TRUE.equals(evt.getNewValue());
+      final boolean connected = Boolean.TRUE.equals(evt.getNewValue());
       connectAction.setEnabled(!connected);
       disconnectAction.setEnabled(connected);
       if (!connected) {

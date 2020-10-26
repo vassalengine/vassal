@@ -65,7 +65,7 @@ public class CounterTurnLevel extends TurnLevel {
    */
   @Override
   protected String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(current);
     se.append(currentSubLevel);
     se.append(loop);
@@ -81,7 +81,7 @@ public class CounterTurnLevel extends TurnLevel {
    */
   @Override
   protected void setState(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
     currentSubLevel = sd.nextInt(0);  // Change to 0 as default due to issue 3500
     loop = sd.nextBoolean(false);
@@ -133,7 +133,7 @@ public class CounterTurnLevel extends TurnLevel {
     super.retreat();
 
     // If no sub-levels, or they rolled over, retreat this level
-    int oldCurrent = current;
+    final int oldCurrent = current;
     if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
       current -= incr;
       if (loop && oldCurrent <= start) {

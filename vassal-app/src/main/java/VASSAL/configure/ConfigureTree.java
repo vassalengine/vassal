@@ -187,7 +187,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     propertiesCmd = Resources.getString("Editor.properties"); //$NON-NLS-1$
     translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
     helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
-    int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
     cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
     copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
     pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);
@@ -222,7 +222,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     searchParameters = new SearchParameters();
 
-    TreePath path = new TreePath(((DefaultMutableTreeNode) (getModel().getRoot())).getPath());
+    final TreePath path = new TreePath(((DefaultMutableTreeNode) (getModel().getRoot())).getPath());
     setSelectionPath(path);
     scrollPathToVisible(path);
 
@@ -299,7 +299,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Configurable getTarget(int x, int y) {
-    TreePath path = getPathForLocation(x, y);
+    final TreePath path = getPathForLocation(x, y);
     Configurable target = null;
     if (path != null) {
       target = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
@@ -311,7 +311,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     c.addPropertyChangeListener(this);
     final DefaultMutableTreeNode node = new DefaultMutableTreeNode(c);
     final Configurable[] children = c.getConfigureComponents();
-    for (Configurable child : children) {
+    for (final Configurable child : children) {
       if (! (child instanceof Plugin)) { // Hide Plug-ins
         node.add(buildTreeNode(child));
       }
@@ -328,7 +328,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   private void addActionGroup(JPopupMenu menu, ArrayList<Action> l) {
     boolean empty = true;
-    for (Action a : l) {
+    for (final Action a : l) {
       if (a != null) {
         menu.add(a).setFont(POPUP_MENU_FONT);
         empty = false;
@@ -358,7 +358,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     l.add(buildPasteAction(target));
     l.add(buildMoveAction(target));
     addActionGroup(popup, l);
-    for (Action a : buildAddActionsFor(target)) {
+    for (final Action a : buildAddActionsFor(target)) {
       addAction(popup, a);
     }
     if (hasChild(target, PieceSlot.class) || hasChild(target, CardSlot.class)) {
@@ -375,9 +375,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @return a list of search nodes
    */
   private List<DefaultMutableTreeNode> getSearchNodes(DefaultMutableTreeNode root) {
-    List<DefaultMutableTreeNode> searchNodes = new ArrayList<>();
+    final List<DefaultMutableTreeNode> searchNodes = new ArrayList<>();
 
-    Enumeration<?> e = root.preorderEnumeration();
+    final Enumeration<?> e = root.preorderEnumeration();
     while (e.hasMoreElements()) {
       searchNodes.add((DefaultMutableTreeNode)e.nextElement());
     }
@@ -406,25 +406,25 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), true);
           d.setTitle(target.getConfigureName() == null ? moveCmd : moveCmd + " " + target.getConfigureName());
           d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-          Box box = Box.createHorizontalBox();
+          final Box box = Box.createHorizontalBox();
           box.add(new JLabel(Resources.getString("Editor.ConfigureTree.move_to_position")));
           box.add(Box.createHorizontalStrut(10));
           final JComboBox<String> select = new JComboBox<>();
-          TreeNode parentNode = getTreeNode(target).getParent();
+          final TreeNode parentNode = getTreeNode(target).getParent();
           for (int i = 0; i < parentNode.getChildCount(); ++i) {
-            Configurable c = (Configurable) ((DefaultMutableTreeNode) parentNode.getChildAt(i)).getUserObject();
-            String name = (c.getConfigureName() != null ? c.getConfigureName() : "") + " [" + getConfigureName(c.getClass()) + "]";
+            final Configurable c = (Configurable) ((DefaultMutableTreeNode) parentNode.getChildAt(i)).getUserObject();
+            final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") + " [" + getConfigureName(c.getClass()) + "]";
             select.addItem((i + 1) + ":  " + name);
           }
           final DefaultMutableTreeNode targetNode = getTreeNode(target);
           final int currentIndex = targetNode.getParent().getIndex(targetNode);
           select.setSelectedIndex(currentIndex);
           box.add(select);
-          JButton ok = new JButton(Resources.getString(Resources.OK));
+          final JButton ok = new JButton(Resources.getString(Resources.OK));
           ok.addActionListener(e1 -> {
-            int index = select.getSelectedIndex();
+            final int index = select.getSelectedIndex();
             if (currentIndex != index) {
-              Configurable parent = getParent(targetNode);
+              final Configurable parent = getParent(targetNode);
               if (remove(parent, target)) {
                 insert(parent, target, index);
               }
@@ -550,7 +550,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isAllowedChildClass(Configurable parent, Class<?> childClass) {
     final Class<?>[] allowableClasses = parent.getAllowableConfigureComponents();
-    for (Class<?> allowableClass : allowableClasses) {
+    for (final Class<?> allowableClass : allowableClasses) {
       if (allowableClass == childClass) {
         return true;
       }
@@ -568,7 +568,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       ((PieceSlot) c).updateGpId(GameModule.getGameModule());
     }
     else {
-      for (Configurable comp : c.getConfigureComponents()) updateGpIds(comp);
+      for (final Configurable comp : c.getConfigureComponents()) updateGpIds(comp);
     }
   }
 
@@ -583,7 +583,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           try {
             child.build(null);
             if (child.getConfigurer() != null) {
-              PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
+              final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -619,7 +619,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final ConfigureTree tree = this;
     if (getTreeNode(target).getParent() != null) {
       Resources.getString("Editor.ConfigureTree.add_cards");
-      String desc = hasChild(target, CardSlot.class) ? Resources.getString("Editor.ConfigureTree.add_cards") : Resources.getString("Editor.ConfigureTree.add_pieces");
+      final String desc = hasChild(target, CardSlot.class) ? Resources.getString("Editor.ConfigureTree.add_cards") : Resources.getString("Editor.ConfigureTree.add_pieces");
       a = new AbstractAction(desc) {
         private static final long serialVersionUID = 1L;
 
@@ -633,7 +633,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean hasChild(Configurable parent, Class<?> childClass) {
-    for (Class<?> c : parent.getAllowableConfigureComponents()) {
+    for (final Class<?> c : parent.getAllowableConfigureComponents()) {
       if (c.equals(childClass)) {
         return true;
       }
@@ -643,12 +643,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<>();
-    for (Class<? extends Buildable> newConfig :
+    for (final Class<? extends Buildable> newConfig :
             target.getAllowableConfigureComponents()) {
       l.add(buildAddAction(target, newConfig));
     }
 
-    for (AdditionalComponent add : additionalComponents) {
+    for (final AdditionalComponent add : additionalComponents) {
       if (target.getClass().equals(add.getParent())) {
         final Class<? extends Buildable> newConfig = add.getChild();
         l.add(buildAddAction(target, newConfig));
@@ -694,7 +694,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               final TreePath path = new TreePath(getTreeNode(child).getPath());
               expandPath(path);
 
-              PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
+              final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -715,8 +715,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildHelpAction(final Configurable target) {
-    Action showHelp;
-    HelpFile helpFile = target.getHelpFile();
+    final Action showHelp;
+    final HelpFile helpFile = target.getHelpFile();
     if (helpFile == null) {
       showHelp = new ShowHelpAction(null, null);
       showHelp.setEnabled(false);
@@ -757,7 +757,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Configurable getParent(final DefaultMutableTreeNode targetNode) {
-    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode.getParent();
+    final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode.getParent();
     return parentNode == null ? null : (Configurable) parentNode.getUserObject();
   }
 
@@ -770,7 +770,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         @Override
         public void actionPerformed(ActionEvent evt) {
-          int row = selectedRow;
+          final int row = selectedRow;
           remove(parent, target);
           if (row < getRowCount()) {
             setSelectionRow(row);
@@ -800,14 +800,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildTranslateAction(final Configurable target) {
-    Action a = new TranslateAction(target, helpWindow, this);
+    final Action a = new TranslateAction(target, helpWindow, this);
     a.setEnabled(target.getI18nData().isTranslatable());
     return a;
   }
 
   public boolean canContainGamePiece(final Configurable target) {
     boolean canContainPiece = false;
-    for (Class<?> c : target.getAllowableConfigureComponents()) {
+    for (final Class<?> c : target.getAllowableConfigureComponents()) {
       if (PieceSlot.class.isAssignableFrom(c)) {
         canContainPiece = true;
         break;
@@ -841,10 +841,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (parent.getClass() == Zone.class && child.getClass() == GlobalProperty.class) {
       theChild = new ZoneProperty((GlobalProperty) child);
     }
-    DefaultMutableTreeNode childNode = buildTreeNode(theChild);
-    DefaultMutableTreeNode parentNode = getTreeNode(parent);
-    Configurable[] oldContents = parent.getConfigureComponents();
-    ArrayList<Configurable> moveToBack = new ArrayList<>();
+    final DefaultMutableTreeNode childNode = buildTreeNode(theChild);
+    final DefaultMutableTreeNode parentNode = getTreeNode(parent);
+    final Configurable[] oldContents = parent.getConfigureComponents();
+    final ArrayList<Configurable> moveToBack = new ArrayList<>();
     for (int i = index; i < oldContents.length; ++i) {
       try {
         oldContents[i].removeFrom(parent);
@@ -868,7 +868,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       theChild.addTo(parent);
       parent.add(theChild);
       parentNode.insert(childNode, index);
-      int[] childI = new int[1];
+      final int[] childI = new int[1];
       childI[0] = index;
       ((DefaultTreeModel) getModel()).nodesWereInserted(parentNode, childI);
     }
@@ -879,7 +879,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       succeeded = false;
     }
 
-    for (Configurable c : moveToBack) {
+    for (final Configurable c : moveToBack) {
       parent.add(c);
       c.addTo(parent);
     }
@@ -890,7 +890,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    DefaultMutableTreeNode newValue = getTreeNode((Configurable) evt.getSource());
+    final DefaultMutableTreeNode newValue = getTreeNode((Configurable) evt.getSource());
     ((DefaultTreeModel) getModel()).nodeChanged(newValue);
   }
 
@@ -973,13 +973,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected void maybePopup(MouseEvent e) {
-    Configurable target = getTarget(e.getX(), e.getY());
+    final Configurable target = getTarget(e.getX(), e.getY());
     if (target == null) {
       return;
     }
 
     setSelectionRow(getClosestRowForLocation(e.getX(), e.getY()));
-    JPopupMenu popup = buildPopupMenu(target);
+    final JPopupMenu popup = buildPopupMenu(target);
     popup.show(this, e.getX(), e.getY());
     popup.addPopupMenuListener(new PopupMenuListener() {
       @Override
@@ -1012,13 +1012,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       maybePopup(e);
     }
     else if (e.getClickCount() == 2 && SwingUtils.isMainMouseButtonDown(e)) {
-      Configurable target = getTarget(e.getX(), e.getY());
+      final Configurable target = getTarget(e.getX(), e.getY());
       if (target == null) {
         return;
       }
 
       if (target.getConfigurer() != null) {
-        Action a = buildEditAction(target);
+        final Action a = buildEditAction(target);
         if (a != null) {
           a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
         }
@@ -1047,7 +1047,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
       final Class<?>[] c = parent.getAllowableConfigureComponents();
-      for (Class<?> aClass : c) {
+      for (final Class<?> aClass : c) {
         if (aClass.isAssignableFrom(child.getClass()) ||
                 ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
                 ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
@@ -1079,8 +1079,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * Refresh the display of a node
    */
   public void nodeUpdated(Configurable target) {
-    DefaultMutableTreeNode node = getTreeNode(target);
-    Configurable parent = getParent(node);
+    final DefaultMutableTreeNode node = getTreeNode(target);
+    final Configurable parent = getParent(node);
     if (remove(parent, target)) {
       insert(parent, target, 0);
     }
@@ -1131,9 +1131,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    *          Edit command name
    */
   protected void doKeyAction(String action) {
-    DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode) this.getLastSelectedPathComponent();
+    final DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode) this.getLastSelectedPathComponent();
     if (targetNode != null) {
-      Configurable target = (Configurable) targetNode.getUserObject();
+      final Configurable target = (Configurable) targetNode.getUserObject();
       Action a = null;
       if (cutCmd.equals(action)) {
         a = buildCutAction(target);
@@ -1174,7 +1174,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   @Override
   public void valueChanged(TreeSelectionEvent e) {
     selected = null;
-    TreePath path = e.getPath();
+    final TreePath path = e.getPath();
     if (path != null) {
       selected = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
       selectedRow = getRowForPath(path);
@@ -1201,7 +1201,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @return parent
    */
   protected Configurable getParent(Configurable target) {
-    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getTreeNode(target).getParent();
+    final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getTreeNode(target).getParent();
     return (Configurable) parentNode.getUserObject();
   }
 
@@ -1478,7 +1478,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (o == null || getClass() != o.getClass()) {
         return false;
       }
-      SearchParameters that = (SearchParameters) o;
+      final SearchParameters that = (SearchParameters) o;
       return isMatchCase() == that.isMatchCase() &&
         isMatchNames() == that.isMatchNames() &&
         isMatchTypes() == that.isMatchTypes() &&
@@ -1523,7 +1523,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public void actionPerformed(ActionEvent e) {
 
       JDialog d = configureTree.getSearchDialog();
-      JTextField search;
+      final JTextField search;
       if (d != null) {
         search = configureTree.getSearchField();
       }
@@ -1578,7 +1578,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final SearchParameters parametersSetInDialog =
             new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
-          boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
+          final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
           if (anyChanges) {
             searchParameters.setFrom(parametersSetInDialog);
@@ -1594,16 +1594,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (!searchParameters.getSearchString().isEmpty()) {
             if (anyChanges) {
               // Unless we're just continuing to the next match in an existing search, compute & display hit count
-              int matches = getNumMatches(searchParameters.getSearchString());
+              final int matches = getNumMatches(searchParameters.getSearchString());
               chat(matches + " " + Resources.getString("Editor.search_count") + searchParameters.getSearchString());
             }
 
             // Find first match
-            DefaultMutableTreeNode node = findNode(searchParameters.getSearchString());
+            final DefaultMutableTreeNode node = findNode(searchParameters.getSearchString());
 
             // Assuming *something* matched, scroll to it and show any "trait hits"
             if (node != null) {
-              TreePath path = new TreePath(node.getPath());
+              final TreePath path = new TreePath(node.getPath());
               configureTree.setSelectionPath(path);
               configureTree.scrollPathToVisible(path);
               if (searchParameters.isMatchAdvanced()) {
@@ -1627,7 +1627,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         // options row
         d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(advanced, "wrap");
+        d.add(advanced, "wrap"); //NON-NLS
 
         // Advanced 1
         d.add(names, "align center, gapx unrel, span"); //$NON-NLS-1$//
@@ -1650,7 +1650,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         d.getRootPane().setDefaultButton(find); // Enter key activates search
 
         // Esc Key cancels
-        KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
       }
 
@@ -1711,7 +1711,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @return how many total nodes match the search string
      */
     private int getNumMatches(String searchString) {
-      List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
+      final List<DefaultMutableTreeNode> searchNodes = configureTree.getSearchNodes((DefaultMutableTreeNode)configureTree.getModel().getRoot());
       return (int) searchNodes.stream().filter(node -> checkNode(node, searchString)).count();
     }
 
@@ -1723,9 +1723,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     private boolean checkSearchTarget(SearchTarget st, String searchString) {
       if (searchParameters.isMatchExpressions()) {
-        List<String> exps = st.getExpressionList();
+        final List<String> exps = st.getExpressionList();
         if (exps != null) {
-          for (String s : exps) {
+          for (final String s : exps) {
             if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
               return true;
             }
@@ -1734,9 +1734,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       if (searchParameters.isMatchProperties()) {
-        List<String> props = st.getPropertyList();
+        final List<String> props = st.getPropertyList();
         if (props != null) {
-          for (String s : props) {
+          for (final String s : props) {
             if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
               return true;
             }
@@ -1745,11 +1745,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       if (searchParameters.isMatchKeys()) {
-        List<NamedKeyStroke> keys = st.getNamedKeyStrokeList();
+        final List<NamedKeyStroke> keys = st.getNamedKeyStrokeList();
         if (keys != null) {
-          for (NamedKeyStroke k : keys) {
+          for (final NamedKeyStroke k : keys) {
             if (k != null) {
-              String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
+              final String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
               if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
                 return true;
               }
@@ -1759,9 +1759,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       if (searchParameters.isMatchMenus()) {
-        List<String> menus = st.getMenuTextList();
+        final List<String> menus = st.getMenuTextList();
         if (menus != null) {
-          for (String s : menus) {
+          for (final String s : menus) {
             if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
               return true;
             }
@@ -1770,9 +1770,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       if (searchParameters.isMatchMessages()) {
-        List<String> msgs = st.getFormattedStringList();
+        final List<String> msgs = st.getFormattedStringList();
         if (msgs != null) {
-          for (String s : msgs) {
+          for (final String s : msgs) {
             if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
               return true;
             }
@@ -1792,14 +1792,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Configurable c = (Configurable) node.getUserObject();
 
       if (searchParameters.isMatchNames() || !searchParameters.isMatchAdvanced()) {
-        String objectName = c.getConfigureName();
+        final String objectName = c.getConfigureName();
         if (objectName != null && checkString(objectName, searchString)) {
           return true;
         }
       }
 
       if (searchParameters.isMatchTypes() || !searchParameters.isMatchAdvanced()) {
-        String className = getConfigureName(c.getClass());
+        final String className = getConfigureName(c.getClass());
         if ((className != null) && checkString(className, searchString)) {
           return true;
         }
@@ -1832,7 +1832,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (!protoskip) { // Skip the fake "Basic Piece" on a Prototype definition
           if (searchParameters.isMatchTraits()) {
             if (p instanceof EditablePiece) {
-              String desc = ((EditablePiece) p).getDescription();
+              final String desc = ((EditablePiece) p).getDescription();
               if ((desc != null) && checkString(desc, searchString)) {
                 return true;
               }
@@ -1887,7 +1887,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         checkShowPiece(matchString);
         if (!traitShown) {
           traitShown = true;
-          chat("&nbsp;&nbsp;{" + idString + "} " + ((desc != null) ? desc : ""));
+          chat("&nbsp;&nbsp;{" + idString + "} " + ((desc != null) ? desc : "")); //NON-NLS
         }
       }
     }
@@ -1895,7 +1895,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private void hitCheck(String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
         progress.checkShowTrait(matchString, item, desc);
-        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + s);
+        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + s); //NON-NLS
       }
     }
 
@@ -1903,7 +1903,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (!flag || (strings == null)) {
         return;
       }
-      for (String s : strings) {
+      for (final String s : strings) {
         hitCheck(s, searchString, matchString, item, desc, show, progress);
       }
     }
@@ -1912,9 +1912,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (!flag || (keys == null)) {
         return;
       }
-      for (NamedKeyStroke k : keys) {
+      for (final NamedKeyStroke k : keys) {
         if (k != null) {
-          String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
+          final String s = k.isNamed() ? k.getName() : KeyNamer.getKeyString(k.getStroke());
           hitCheck(s, searchString, matchString, item, desc, show, progress);
         }
       }
@@ -1926,14 +1926,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return;
       }
 
-      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
+      final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
-      String matchString = "<b><u>Matches for " + name + ": </u></b>";
+      final String matchString = "<b><u>Matches for " + name + ": </u></b>";
 
-      SearchTarget st = (SearchTarget) c;
-      String item = getConfigureName(c.getClass());
+      final SearchTarget st = (SearchTarget) c;
+      final String item = getConfigureName(c.getClass());
 
-      TargetProgress progress = new TargetProgress();
+      final TargetProgress progress = new TargetProgress();
       stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress);
       stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress);
       stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress);
@@ -1966,11 +1966,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return;
       }
 
-      String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
+      final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
 
-      TargetProgress progress = new TargetProgress();
-      String matchString = "<b><u>Matches for " + name + ": </u></b>";
+      final TargetProgress progress = new TargetProgress();
+      final String matchString = "<b><u>Matches for " + name + ": </u></b>";
 
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
       // the same order they're listed in the PieceDefiner window.
@@ -1978,8 +1978,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.      
       do {
         if (!protoskip && (p instanceof EditablePiece) && (p instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
-          String desc = ((EditablePiece) p).getDescription();
-          Decorator d = (Decorator)p;
+          final String desc = ((EditablePiece) p).getDescription();
+          final Decorator d = (Decorator)p;
           progress.startNewTrait();    // A new trait, so reset our "trait progress".
 
           if (searchParameters.isMatchTraits()) {

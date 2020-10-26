@@ -87,7 +87,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   private boolean pickedSide = false;
 
   public PlayerRoster() {
-    ActionListener al = e -> launch();
+    final ActionListener al = e -> launch();
 
     setButtonTextKey(BUTTON_TEXT);
     setTooltipKey(TOOL_TIP);
@@ -177,7 +177,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Element getBuildElement(Document doc) {
-    Element el = doc.createElement(getClass().getName());
+    final Element el = doc.createElement(getClass().getName());
     String att = super.getAttributeValueString(BUTTON_TEXT);
     if (att != null)
       el.setAttribute(BUTTON_TEXT, att);
@@ -191,8 +191,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     if (att != null) {
       el.setAttribute(BUTTON_KEYSTROKE, att);
     }
-    for (String s : sides) {
-      Element sub = doc.createElement("entry"); //$NON-NLS-1$
+    for (final String s : sides) {
+      final Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode(s));
       el.appendChild(sub);
     }
@@ -221,7 +221,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   public static void removeSideChangeListener(SideChangeListener l) {
-    PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       r.sideChangeListeners.remove(l);
     }
@@ -272,7 +272,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     remove(GameModule.getUserId());
 
-    Add a = new Add(this, me.playerId, me.playerName, me.side);
+    final Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
 
     c = c.append(a);
@@ -283,7 +283,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected void fireSideChange(String oldSide, String newSide) {
-    for (SideChangeListener l : sideChangeListeners) {
+    for (final SideChangeListener l : sideChangeListeners) {
       l.sideChanged(oldSide, newSide);
     }
   }
@@ -311,7 +311,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected static String getMySide(boolean localized) {
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
-      for (PlayerInfo pi : r.getPlayers()) {
+      for (final PlayerInfo pi : r.getPlayers()) {
         if (pi.playerId.equals(GameModule.getUserId())) {
           return localized ? pi.getLocalizedSide() : pi.getSide();
         }
@@ -329,7 +329,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   public void add(String playerId, String playerName, String side) {
-    PlayerInfo e = new PlayerInfo(playerId, playerName, side);
+    final PlayerInfo e = new PlayerInfo(playerId, playerName, side);
     if (players.contains(e)) {
       players.set(players.indexOf(e), e);
     }
@@ -339,7 +339,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   public void remove(String playerId) {
-    PlayerInfo e = new PlayerInfo(playerId, null, null);
+    final PlayerInfo e = new PlayerInfo(playerId, null, null);
     players.remove(e);
   }
 
@@ -349,7 +349,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return null;
     }
 
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
     st.nextToken();
     return new Add(this, st.nextToken(), st.nextToken(), st.nextToken());
   }
@@ -372,8 +372,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public Command getRestoreCommand() {
     Command c = null;
-    for (PlayerInfo entry : players) {
-      Command sub = new Add(this, entry.playerId, entry.playerName, entry.side);
+    for (final PlayerInfo entry : players) {
+      final Command sub = new Add(this, entry.playerId, entry.playerName, entry.side);
       c = c == null ? sub : c.append(sub);
     }
     return c;
@@ -382,10 +382,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
-      PlayerInfo me = new PlayerInfo(GameModule.getUserId(),
+      final PlayerInfo me = new PlayerInfo(GameModule.getUserId(),
         GlobalOptions.getInstance().getPlayerId(), null);
       if (players.contains(me)) {
-        PlayerInfo saved = players.get(players.indexOf(me));
+        final PlayerInfo saved = players.get(players.indexOf(me));
         saved.playerName = me.playerName;
       }
     }
@@ -400,7 +400,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public void finish() {
     final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
-      Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+      final Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
@@ -410,10 +410,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Component getControls() {
-    ArrayList<String> availableSides = new ArrayList<>(sides);
-    ArrayList<String> alreadyTaken = new ArrayList<>();
+    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    final ArrayList<String> alreadyTaken = new ArrayList<>();
 
-    for (PlayerInfo p : players) {
+    for (final PlayerInfo p : players) {
       alreadyTaken.add(p.side);
     }
 
@@ -465,7 +465,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    */
   protected boolean allSidesAllocated() {
     int allocatedSideCount = 0;
-    for (PlayerInfo p : players) {
+    for (final PlayerInfo p : players) {
       if (!OBSERVER.equals(p.getSide())) {
         ++allocatedSideCount;
       }
@@ -486,10 +486,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
 
   protected String promptForSide() {
-    ArrayList<String> availableSides = new ArrayList<>(sides);
-    ArrayList<String> alreadyTaken = new ArrayList<>();
+    final ArrayList<String> availableSides = new ArrayList<>(sides);
+    final ArrayList<String> alreadyTaken = new ArrayList<>();
 
-    for (PlayerInfo p : players) {
+    for (final PlayerInfo p : players) {
       alreadyTaken.add(p.side);
     }
 
@@ -500,18 +500,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
     // If we have no "next" side available to offer, we stay with the observer side as our default offering.
     boolean found = false;       // If we find a usable side
-    String mySide = getMySide(); // Get our own side, so we can find the "next" one
-    int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
+    final String mySide = getMySide(); // Get our own side, so we can find the "next" one
+    final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
     int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
     for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
-      String s = sides.get(i);
+      final String s = sides.get(i);
       if (!alreadyTaken.contains(s) && !isSoloSide(s)) {
         found = true; // Found an available slot that's not our current one and not a "solo" slot.
         break;
       }
     }
 
-    String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
+    final String nextChoice = found ? sides.get(i) : translatedObserver; // This will be our defaulted choice for the dropdown.
 
     availableSides.add(0, translatedObserver);
 
@@ -696,7 +696,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public void setAttribute(String key, Object value) {
     if (SIDES.equals(key)) {
       untranslatedSides = sides.toArray(new String[0]);
-      String[] s = StringArrayConfigurer.stringToArray((String) value);
+      final String[] s = StringArrayConfigurer.stringToArray((String) value);
       sides = new ArrayList<>(s.length);
       Collections.addAll(sides, s);
     }
@@ -706,7 +706,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   protected String getSidesAsString() {
-    String[] s = sides.toArray(new String[0]);
+    final String[] s = sides.toArray(new String[0]);
     return StringArrayConfigurer.arrayToString(s);
   }
 

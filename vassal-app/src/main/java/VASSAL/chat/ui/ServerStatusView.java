@@ -17,13 +17,11 @@
  */
 package VASSAL.chat.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import VASSAL.chat.Player;
+import VASSAL.chat.ServerStatus;
+import VASSAL.chat.SimpleRoom;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -46,12 +44,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import VASSAL.chat.Player;
-import VASSAL.chat.ServerStatus;
-import VASSAL.chat.SimpleRoom;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Shows the current status of connections to the server
@@ -73,17 +70,12 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   }
 
   private void initComponents() {
-    JPanel current = new JPanel(new BorderLayout());
-    JToolBar toolbar = new JToolBar();
+    final JPanel current = new JPanel(new BorderLayout());
+    final JToolBar toolbar = new JToolBar();
 
     toolbar.setFloatable(false);
-    JButton b = new JButton(Resources.getString("Chat.refresh")); //$NON-NLS-1$
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        refresh();
-      }
-    });
+    final JButton b = new JButton(Resources.getString("Chat.refresh")); //$NON-NLS-1$
+    b.addActionListener(e -> refresh());
     toolbar.add(b);
     current.add(toolbar, BorderLayout.NORTH);
     treeCurrent = createTree();
@@ -100,7 +92,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       removeTabAt(getTabCount() - 1);
     }
     if (status != null) {
-      String[] supported = status.getSupportedTimeRanges();
+      final String[] supported = status.getSupportedTimeRanges();
       historicalTrees = new JTree[supported.length];
       historicalModels = new DefaultTreeModel[supported.length];
       for (int i = 0; i < supported.length; i++) {
@@ -112,9 +104,9 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   }
 
   private JTree createTree() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode(Resources.getString(Resources.VASSAL));
-    DefaultTreeModel m = new DefaultTreeModel(root, true);
-    JTree tree = new JTree(m);
+    final DefaultMutableTreeNode root = new DefaultMutableTreeNode(Resources.getString(Resources.VASSAL));
+    final DefaultTreeModel m = new DefaultTreeModel(root, true);
+    final JTree tree = new JTree(m);
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     tree.setCellRenderer(new Render());
     tree.expandRow(0);
@@ -124,7 +116,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     tree.addTreeExpansionListener(new TreeExpansionListener() {
       @Override
       public void treeExpanded(TreeExpansionEvent event) {
-        JComponent c = (JComponent) event.getSource();
+        final JComponent c = (JComponent) event.getSource();
         c.setSize(c.getPreferredSize());
         c.revalidate();
       }
@@ -150,8 +142,8 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
 
   private void fireSelectionChanged() {
     Object selection = null;
-    TreePath path = null;
-    int sel = getSelectedIndex();
+    final TreePath path;
+    final int sel = getSelectedIndex();
     switch (sel) {
     case 0:
       path = treeCurrent.getSelectionPath();
@@ -269,7 +261,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       n.setAllowsChildren(false);
     }
     else {
-      for (ServerStatus.ModuleSummary s : modules) {
+      for (final ServerStatus.ModuleSummary s : modules) {
         m.insertNodeInto(createNode(s), root, root.getChildCount());
       }
     }
@@ -303,7 +295,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     final DefaultMutableTreeNode node = new DefaultMutableTreeNode(o);
 
     if (children != null) {
-      for (Object c : children) {
+      for (final Object c : children) {
         node.add(createNode(c));
       }
     }

@@ -33,11 +33,11 @@ public class PlayerHand extends PrivateMap {
   public void build(org.w3c.dom.Element el) {
     super.build(el);
     if (el == null) {
-      for (StackExpander se : getComponentsOf(StackExpander.class)) {
+      for (final StackExpander se : getComponentsOf(StackExpander.class)) {
         remove(se);
         removeLocalMouseListener(se);
       }
-      for (CounterDetailViewer cdv :
+      for (final CounterDetailViewer cdv :
               getComponentsOf(CounterDetailViewer.class)) {
         remove(cdv);
         cdv.removeFrom(this);
@@ -70,7 +70,7 @@ public class PlayerHand extends PrivateMap {
     final Rectangle r = new Rectangle(0, 0, 200, 200);
     r.add(new Rectangle(super.mapSize()));
 
-    for (GamePiece p : pieces.getPieces()) {
+    for (final GamePiece p : pieces.getPieces()) {
       final Rectangle bb = boundingBoxOf(p);
       if (bb != null) {
         r.add(bb);

@@ -50,7 +50,7 @@ public class TabWidget extends Widget
 
   @Override
   public void stateChanged(ChangeEvent e) {
-    int index = tab.getSelectedIndex();
+    final int index = tab.getSelectedIndex();
     if (index >= 0) {
       tab.setComponentAt(index, widgets.get(index).getComponent());
     }

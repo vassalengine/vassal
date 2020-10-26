@@ -83,7 +83,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public void mySetType(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
@@ -101,7 +101,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
     se.append(encodeConstraints());
     se.append(keyCommandListConfig.getValueString());
@@ -188,17 +188,17 @@ public class SetGlobalProperty extends DynamicProperty {
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command comm = new NullCommand();
-    for (DynamicKeyCommand keyCommand : keyCommands) {
+    for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
-        MutableProperty prop;
-        String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
+        MutableProperty prop = null;
+        final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
 
-        ArrayList<MutablePropertiesContainer> propertyContainers =
+        final ArrayList<MutablePropertiesContainer> propertyContainers =
           new ArrayList<>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
-          String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
+          final String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
           map = Map.getMapById(mapName);
         }
         if (map != null) {
@@ -209,7 +209,7 @@ public class SetGlobalProperty extends DynamicProperty {
           z = getMap().findZone(getPosition());
         }
         else if (NAMED_ZONE.equals(propertyLevel) && getMap() != null) {
-          String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
+          final String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
           z = getMap().findZone(zoneName);
         }
         if (z != null) {
@@ -226,7 +226,7 @@ public class SetGlobalProperty extends DynamicProperty {
           ErrorDialog.dataWarning(new BadDataReport(this, message, data));
         }
         else {
-          String oldValue = prop.getPropertyValue();
+          final String oldValue = prop.getPropertyValue();
           String newValue = keyCommand.propChanger.getNewValue(oldValue);
           format.setFormat(newValue);
           newValue = format.getText(Decorator.getOutermost(this));
@@ -373,7 +373,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString());
       se.append(encodeConstraints());
       se.append(keyCommandListConfig.getValueString());

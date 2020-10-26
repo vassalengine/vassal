@@ -34,7 +34,7 @@ public class DirectoryConfigurer extends FileConfigurer {
 
   @Override
   protected FileChooser initFileChooser() {
-    FileChooser fc = FileChooser.createFileChooser(null, startingDirectory, FileChooser.DIRECTORIES_ONLY);
+    final FileChooser fc = FileChooser.createFileChooser(null, startingDirectory, FileChooser.DIRECTORIES_ONLY);
     if (startingDirectory == null && GameModule.getGameModule() != null) {
       fc.setCurrentDirectory((File) Prefs.getGlobalPrefs().getValue(Prefs.MODULES_DIR_KEY));
     }

@@ -62,8 +62,8 @@ public class Marker extends Decorator implements EditablePiece {
   @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList<String> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final ArrayList<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -125,8 +125,8 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public String myGetState() {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String value : values) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String value : values) {
       se.append(value);
     }
     return se.getValue();
@@ -134,7 +134,7 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public void mySetState(String state) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ',');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ',');
     int i = 0;
     while (st.hasMoreTokens() && i < values.length) {
       values[i++] = st.nextToken();
@@ -143,8 +143,8 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String key : keys) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String key : keys) {
       se.append(key);
     }
     return ID + se.getValue();
@@ -186,7 +186,7 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     Collections.addAll(l, keys);
     return l;
   }
@@ -194,7 +194,7 @@ public class Marker extends Decorator implements EditablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Marker)) return false;
-    Marker c = (Marker) o;
+    final Marker c = (Marker) o;
     if (!Arrays.equals(keys, c.keys)) return false;
     return Arrays.equals(values, c.values);
   }
@@ -207,12 +207,12 @@ public class Marker extends Decorator implements EditablePiece {
     private Ed(Marker m) {
       panel = new TraitConfigPanel();
 
-      SequenceEncoder seKeys = new SequenceEncoder(',');
+      final SequenceEncoder seKeys = new SequenceEncoder(',');
       for (int i = 0; i < m.keys.length; ++i) {
         seKeys.append(m.keys[i]);
       }
 
-      SequenceEncoder seValues = new SequenceEncoder(',');
+      final SequenceEncoder seValues = new SequenceEncoder(',');
       for (int i = 0; i < m.values.length; ++i) {
         seValues.append(m.values[i]);
       }

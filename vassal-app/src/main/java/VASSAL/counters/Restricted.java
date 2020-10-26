@@ -83,7 +83,7 @@ public class Restricted extends Decorator implements EditablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     side = st.nextStringArray(0);
     restrictByPlayer = st.nextBoolean(false);
     restrictMovement = st.nextBoolean(true);
@@ -123,7 +123,7 @@ public class Restricted extends Decorator implements EditablePiece {
         && PlayerRoster.isActive()
         && GameModule.getGameModule().getGameState().isGameStarted()) {
       restricted = true;
-      for (String s : side) {
+      for (final String s : side) {
         if (s.equals(PlayerRoster.getMySide())) {
           restricted = false;
           break;
@@ -220,7 +220,7 @@ public class Restricted extends Decorator implements EditablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Restricted)) return false;
-    Restricted c = (Restricted) o;
+    final Restricted c = (Restricted) o;
     if (!Arrays.equals(side, c.side)) return false;
     if (! Objects.equals(restrictByPlayer, c.restrictByPlayer)) return false;
     if (! Objects.equals(restrictMovement, c.restrictMovement)) return false;
@@ -278,10 +278,10 @@ public class Restricted extends Decorator implements EditablePiece {
     @Override
     public void sideChanged(String oldSide, String newSide) {
       if (newSide == null) {
-        PieceVisitorDispatcher d = new PieceVisitorDispatcher(this);
+        final PieceVisitorDispatcher d = new PieceVisitorDispatcher(this);
         Command c = new NullCommand();
-        for (Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
-          for (GamePiece piece : m.getPieces()) {
+        for (final Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
+          for (final GamePiece piece : m.getPieces()) {
             c = c.append((Command)d.accept(piece));
           }
         }
@@ -291,12 +291,12 @@ public class Restricted extends Decorator implements EditablePiece {
 
     @Override
     public Object visitDefault(GamePiece p) {
-      Restricted r = (Restricted)Decorator.getDecorator(p, Restricted.class);
+      final Restricted r = (Restricted)Decorator.getDecorator(p, Restricted.class);
       if (r != null
           && r.restrictByPlayer
           && GameModule.getUserId().equals(r.owningPlayer)) {
 
-        ChangeTracker t = new ChangeTracker(p);
+        final ChangeTracker t = new ChangeTracker(p);
         r.owningPlayer = "";
         return t.getChangeCommand();
       }
@@ -306,7 +306,7 @@ public class Restricted extends Decorator implements EditablePiece {
     @Override
     public Object visitStack(Stack s) {
       Command c = new NullCommand();
-      for (GamePiece gamePiece : s.asList()) {
+      for (final GamePiece gamePiece : s.asList()) {
         c = c.append((Command)visitDefault(gamePiece));
       }
       return c;

@@ -125,15 +125,15 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   /** Draw the numbering, even if not visible */
   public void forceDraw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    int size = (int) (scale * fontSize + 0.5);
+    final int size = (int) (scale * fontSize + 0.5);
     if (size < 5) {
       return;
     }
 
-    Graphics2D g2d = (Graphics2D) g;
-    AffineTransform oldT = g2d.getTransform();
+    final Graphics2D g2d = (Graphics2D) g;
+    final AffineTransform oldT = g2d.getTransform();
     if (reversed) {
-      AffineTransform t = AffineTransform.getRotateInstance(Math.PI, bounds.x + .5 * bounds.width, bounds.y + .5 * bounds.height);
+      final AffineTransform t = AffineTransform.getRotateInstance(Math.PI, bounds.x + .5 * bounds.width, bounds.y + .5 * bounds.height);
       g2d.transform(t);
       visibleRect = t.createTransformedShape(visibleRect).getBounds();
     }
@@ -144,30 +144,30 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g.getClip();
+    final Shape oldClip = g.getClip();
     if (oldClip != null) {
-      Area clipArea = new Area(oldClip);
+      final Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
       g.setClip(clipArea);
     }
 
-    double deltaX = scale * grid.getHexWidth();
-    double deltaY = scale * grid.getHexSize();
+    final double deltaX = scale * grid.getHexWidth();
+    final double deltaY = scale * grid.getHexSize();
 
     if (grid.isSideways()) {
       bounds = new Rectangle(bounds.y, bounds.x, bounds.height, bounds.width);
       region = new Rectangle(region.y, region.x, region.height, region.width);
     }
 
-    int minCol = 2 * (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / (2 * deltaX));
-    double xmin = bounds.x + scale * grid.getOrigin().x + deltaX * minCol;
-    double xmax = region.x + region.width + deltaX;
-    int minRow = (int) Math.floor((region.y - bounds.y - scale * grid.getOrigin().y) / deltaY);
-    double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
-    double ymax = region.y + region.height + deltaY;
+    final int minCol = 2 * (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / (2 * deltaX));
+    final double xmin = bounds.x + scale * grid.getOrigin().x + deltaX * minCol;
+    final double xmax = region.x + region.width + deltaX;
+    final int minRow = (int) Math.floor((region.y - bounds.y - scale * grid.getOrigin().y) / deltaY);
+    final double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
+    final double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font(Font.DIALOG, Font.PLAIN, size);
-    Point p = new Point();
+    final Font f = new Font(Font.DIALOG, Font.PLAIN, size);
+    final Point p = new Point();
     int alignment = LabelUtils.TOP;
     int offset = -(int) Math.round(deltaY / 2);
     if (grid.isSideways() || rotateTextDegrees != 0) {
@@ -263,7 +263,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         row = getMaxRows() - row;
     }
 
-    Point p = new Point();
+    final Point p = new Point();
 
     p.x = (int) (col * grid.getHexWidth());
     p.x += grid.getOrigin().x;
@@ -377,11 +377,11 @@ public class HexGridNumbering extends RegularGridNumbering {
   protected int getRawRow(Point p) {
     p = new Point(p);
     grid.rotateIfSideways(p);
-    Point origin = grid.getOrigin();
-    double dx = grid.getHexWidth();
-    double dy = grid.getHexSize();
-    int nx = (int) Math.round((p.x - origin.x) / dx);
-    int ny;
+    final Point origin = grid.getOrigin();
+    final double dx = grid.getHexWidth();
+    final double dy = grid.getHexSize();
+    final int nx = (int) Math.round((p.x - origin.x) / dx);
+    final int ny;
     if (nx % 2 == 0) {
       ny = (int) Math.round((p.y - origin.y) / dy);
     }

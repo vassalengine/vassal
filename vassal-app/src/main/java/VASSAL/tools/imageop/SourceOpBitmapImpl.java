@@ -192,6 +192,6 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getClass().getName() + "[name=" + name + "]";
+    return getClass().getName() + "[name=" + name + "]";  //NON-NLS
   }
 }

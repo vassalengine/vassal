@@ -145,7 +145,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
 
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder('|');
+    final SequenceEncoder se = new SequenceEncoder('|');
     se.append(getConfigureName())
       .append(getAttributeValueString(KEY_COMMAND))
       .append(getAttributeValueString(PROPERTIES_FILTER))
@@ -157,7 +157,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
 
   public void decode(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     setConfigureName(sd.nextToken(""));
     setAttribute(KEY_COMMAND, sd.nextNamedKeyStroke('A'));
     setAttribute(PROPERTIES_FILTER, sd.nextToken(null));
@@ -234,7 +234,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
 
     public Command apply(Deck d, PieceFilter filter) {
-      String reportText = reportFormat.getText(source);
+      final String reportText = reportFormat.getText(source);
       Command c;
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);
@@ -244,8 +244,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
         c = new NullCommand();
       }
 
-      Visitor visitor = new Visitor(c, filter, keyStroke);
-      DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+      final Visitor visitor = new Visitor(c, filter, keyStroke);
+      final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       dispatcher.accept(d);
       visitor.getTracker().repaint();
@@ -257,11 +257,11 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>(super.getExpressionList());
+    final List<String> l = new ArrayList<>(super.getExpressionList());
     l.add(propertiesFilter.getExpression());
     return l;
   }
@@ -272,7 +272,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
    */
   @Override
   public List<String> getFormattedStringList() {
-    List<String> l = new ArrayList<>(super.getFormattedStringList());
+    final List<String> l = new ArrayList<>(super.getFormattedStringList());
     l.add(reportFormat.getFormat());
     return l;
   }
@@ -283,7 +283,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
     l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
     return l;
   }

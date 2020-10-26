@@ -229,25 +229,25 @@ public class Region extends AbstractConfigurable {
 
     final int labelOffset = 7;
 
-    int size = (int) (scale * myGrid.getFontSize() + 0.5);
-    Font f = new Font("Dialog", Font.PLAIN, size); //$NON-NLS-1$
+    final int size = (int) (scale * myGrid.getFontSize() + 0.5);
+    final Font f = new Font("Dialog", Font.PLAIN, size); //$NON-NLS-1$
 
-    Color fg = selected ? Color.white : Color.black;
-    Color bg = selected ? Color.black : Color.white;
+    final Color fg = selected ? Color.white : Color.black;
+    final Color bg = selected ? Color.black : Color.white;
 
-    Rectangle region = bounds.intersection(visibleRect);
+    final Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g.getClip();
+    final Shape oldClip = g.getClip();
     if (oldClip != null) {
-      Area clipArea = new Area(oldClip);
+      final Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
       g.setClip(clipArea);
     }
 
-    int posX = (int) (scale * origin.x + 0.5) + bounds.x - 1 + xOffset;
-    int posY = (int) (scale * origin.y + 0.5) + bounds.y - 1 + yOffset;
+    final int posX = (int) (scale * origin.x + 0.5) + bounds.x - 1 + xOffset;
+    final int posY = (int) (scale * origin.y + 0.5) + bounds.y - 1 + yOffset;
 
-    Color saveColor = g.getColor();
+    final Color saveColor = g.getColor();
 
     g.setColor(bg);
     g.fillRect(posX, posY, 3, 3);
@@ -264,8 +264,8 @@ public class Region extends AbstractConfigurable {
     g.setClip(oldClip);
 
     // Calculate and store the selection rectangle
-    int width = g.getFontMetrics().stringWidth(getConfigureName() + "  ") + 1; //$NON-NLS-1$
-    int height = g.getFontMetrics().getHeight() + 1;
+    final int width = g.getFontMetrics().stringWidth(getConfigureName() + "  ") + 1; //$NON-NLS-1$
+    final int height = g.getFontMetrics().getHeight() + 1;
 
     selectionRect.setLocation(posX - (width / 2), posY - 1);
     selectionRect.setSize(width, height + labelOffset + 1);

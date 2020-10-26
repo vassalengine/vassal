@@ -230,18 +230,18 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public Command decode(String command) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, ';');
-    String prefix = sd.nextToken("");
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, ';');
+    final String prefix = sd.nextToken("");
     if (!prefix.equals(COMMAND_PREFIX)) {
       return null;
     }
-    String propertyId = sd.nextToken("");
+    final String propertyId = sd.nextToken("");
     if (!propertyId.equals(getPropertyId())) {
       return null;
     }
 
-    String newValue = sd.nextToken("");
-    String containerId = sd.nextToken("");
+    final String newValue = sd.nextToken("");
+    final String containerId = sd.nextToken("");
     if (containerId.length() != 0 && !containerId.equals(parentContainer.getMutablePropertiesContainerId())) {
       return null;
     }
@@ -276,7 +276,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       return null;
     }
 
-    SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
+    final SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
     se
       .append(getPropertyId())
       .append(sgp.newValue)
@@ -330,7 +330,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       try {
         max = Integer.parseInt(format.getText(this));
       }
-      catch (NumberFormatException e) {
+      catch (final NumberFormatException e) {
         // Use default value if formatted string is not a number
       }
     }
@@ -344,7 +344,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       try {
         min = Integer.parseInt(format.getText(this));
       }
-      catch (NumberFormatException e) {
+      catch (final NumberFormatException e) {
         // Use default value if not a number
       }
     }
@@ -408,7 +408,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {

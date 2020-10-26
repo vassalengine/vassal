@@ -40,7 +40,7 @@ public class ForwardToChatter implements Buildable, KeyListener {
 
   @Override
   public void addTo(Buildable parent) {
-    Map map = (Map) parent;
+    final Map map = (Map) parent;
     map.getView().addKeyListener(this);
   }
 

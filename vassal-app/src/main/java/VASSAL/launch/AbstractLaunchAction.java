@@ -158,7 +158,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     // must synchronize when iterating over a Collections.synchronizedList()
     synchronized (children) {
-      for (IPCMessenger ipc : children) {
+      for (final IPCMessenger ipc : children) {
         try {
           futures.add(ipc.send(new Launcher.CloseRequest()));
         }
@@ -170,7 +170,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     // FIXME: not working!
-    for (Future<IPCMessage> f : futures) {
+    for (final Future<IPCMessage> f : futures) {
       try {
         if (f.get() instanceof Launcher.CloseReject) {
           System.out.println("rejected!"); //NON-NLS
@@ -280,7 +280,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         // slice tiles for extensions
         final ExtensionsManager mgr = new ExtensionsManager(lr.module);
-        for (File ext : mgr.getActiveExtensions()) {
+        for (final File ext : mgr.getActiveExtensions()) {
           final TilingHandler eth = new TilingHandler(
             ext.getAbsolutePath(),
             cdir,

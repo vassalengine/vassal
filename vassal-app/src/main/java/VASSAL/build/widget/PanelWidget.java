@@ -74,7 +74,7 @@ public class PanelWidget extends Widget {
       rebuild();
       panel = new JPanel();
       panel.setLayout(getLayout(panel));
-      for (Widget w : widgets) {
+      for (final Widget w : widgets) {
         final Component c = w.getComponent();
         if (c instanceof JComponent) {
           ((JComponent) c).setAlignmentX(0.0F);

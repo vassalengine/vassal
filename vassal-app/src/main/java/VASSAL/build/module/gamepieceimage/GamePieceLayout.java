@@ -114,7 +114,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public Point getPosition(Item item) {
     final String s = getCompassPoint(item.getLocation());
 
-    int x, y;
+    final int x;
+    final int y;
     final Dimension d = item.getSize();
     switch (s.charAt(s.length() - 1)) {
     case 'E':
@@ -323,7 +324,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected Item getItem(String name) {
-    for (Item item : items) {
+    for (final Item item : items) {
       if (item.getConfigureName().equals(name)) {
         return item;
       }
@@ -340,7 +341,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public void moveItem(int from, int to) {
-    Item temp = items.get(to);
+    final Item temp = items.get(to);
     items.set(to, items.get(from));
     items.set(from, temp);
   }
@@ -362,7 +363,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     final Graphics2D g = image.createGraphics();
 
     // Fill in the sample Background color
-    Color bgColor = defn.getBgColor().getColor();
+    final Color bgColor = defn.getBgColor().getColor();
     g.setColor(bgColor);
 
     if (getBorder().equals(BORDER_3D)) {
@@ -373,15 +374,15 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
       // Add Border
       if (getBorder().equals(BORDER_PLAIN) || getBorder().equals(BORDER_FANCY)) {
-        Color bg = bgColor == null ? Color.WHITE : bgColor;
+        final Color bg = bgColor == null ? Color.WHITE : bgColor;
         g.setColor(defn.getBorderColor().getColor());
         g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.drawRect(0, 0, width - 1, height - 1);
         if (getBorder().equals(BORDER_FANCY)) {
-          Color lt = new Color(bg.getRed()   / 2,
+          final Color lt = new Color(bg.getRed()   / 2,
                                bg.getGreen() / 2,
                                bg.getBlue()  / 2);
-          Color dk = new Color(bg.getRed()   + (255 - bg.getRed())   / 2,
+          final Color dk = new Color(bg.getRed()   + (255 - bg.getRed())   / 2,
                                bg.getGreen() + (255 - bg.getGreen()) / 2,
                                bg.getBlue()  + (255 - bg.getBlue())  / 2);
           g.setColor(dk);
@@ -395,7 +396,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     }
 
     // layer each item over the top
-    for (Item item : items) {
+    for (final Item item : items) {
       if (item != null) {
         item.draw(g, defn);
       }
@@ -412,7 +413,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected void invalidate() {
-    for (GamePieceImage i : getComponentsOf(GamePieceImage.class)) {
+    for (final GamePieceImage i : getComponentsOf(GamePieceImage.class)) {
       i.rebuildVisualizerImage();
     }
   }
@@ -420,9 +421,9 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected void decodeItemList(String string) {
     items.clear();
     if (string.length() > 0) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(string, ',');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(string, ',');
       while (sd.hasMoreTokens()) {
-        Item item = Item.decode(this, sd.nextToken());
+        final Item item = Item.decode(this, sd.nextToken());
         addItem(item);
       }
     }
@@ -430,12 +431,12 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected String encodeItemList() {
-    String[] list = new String[getItemCount()];
+    final String[] list = new String[getItemCount()];
     int i = 0;
-    for (Item item : items) {
+    for (final Item item : items) {
       list[i++] = item.encode();
     }
-    SequenceEncoder se = new SequenceEncoder('#');
+    final SequenceEncoder se = new SequenceEncoder('#');
     se.append(list);
     return se.getValue();
   }
@@ -461,9 +462,9 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       if (b instanceof GamePieceImage) {
-        GamePieceImage gpi = (GamePieceImage) b;
+        final GamePieceImage gpi = (GamePieceImage) b;
         if (gpi.getConfigureName().equals(defnName)) {
           return gpi;
         }

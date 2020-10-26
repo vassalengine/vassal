@@ -226,7 +226,7 @@ public class TileUtils {
    * @throws IOException if the read fails
    */
   public static Dimension size(InputStream in) throws IOException {
-    ByteBuffer bb;
+    final ByteBuffer bb;
 
     // read the header
     final byte[] header = readHeader(in);

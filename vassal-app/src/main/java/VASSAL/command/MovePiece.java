@@ -107,15 +107,15 @@ public class MovePiece extends Command {
 
   @Override
   protected void executeCommand() {
-    GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
+    final GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (piece != null) {
-      BoundsTracker bounds = new BoundsTracker();
+      final BoundsTracker bounds = new BoundsTracker();
       bounds.addPiece(piece);
-      Map newMap = Map.getMapById(newMapId);
+      final Map newMap = Map.getMapById(newMapId);
       if (newMap != null) {
-        PieceVisitorDispatcher mergeFinder = createMergeFinder(newMap, piece, newPosition);
+        final PieceVisitorDispatcher mergeFinder = createMergeFinder(newMap, piece, newPosition);
         if (newUnderneathId != null) {
-          GamePiece under = GameModule.getGameModule().getGameState().getPieceForId(newUnderneathId);
+          final GamePiece under = GameModule.getGameModule().getGameState().getPieceForId(newUnderneathId);
           if (under != null
               && under.getPosition().equals(newPosition)) {
             newMap.getStackMetrics().merge(under, piece);
@@ -136,7 +136,7 @@ public class MovePiece extends Command {
         }
       }
       else {
-        Map oldMap = Map.getMapById(oldMapId);
+        final Map oldMap = Map.getMapById(oldMapId);
         if (oldMap != null) {
           oldMap.removePiece(piece);
         }
@@ -201,7 +201,7 @@ public class MovePiece extends Command {
             && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
             && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
             && map.getPieceCollection().canMerge(p, piece)) {
-          String hiddenBy = (String) piece.getProperty(Properties.HIDDEN_BY);
+          final String hiddenBy = (String) piece.getProperty(Properties.HIDDEN_BY);
           if (hiddenBy == null
               || hiddenBy.equals(playerId)) {
             return map.getStackMetrics().merge(piece, p);

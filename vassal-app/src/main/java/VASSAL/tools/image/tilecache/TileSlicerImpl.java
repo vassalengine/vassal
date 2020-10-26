@@ -95,7 +95,7 @@ public class TileSlicerImpl implements TileSlicer {
 
     // wait for all tiles to complete
     try {
-      for (Future<Void> f : futures) {
+      for (final Future<Void> f : futures) {
         f.get();
         progress.receive(null);
       }
@@ -109,7 +109,7 @@ public class TileSlicerImpl implements TileSlicer {
     }
     finally {
       // cancel everything if anything fails
-      for (Future<Void> f : futures) {
+      for (final Future<Void> f : futures) {
         if (!f.isDone()) f.cancel(true);
       }
     }

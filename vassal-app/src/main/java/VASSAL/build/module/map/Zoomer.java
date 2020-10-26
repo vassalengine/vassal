@@ -151,7 +151,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levels = new double[l.size()];
 
       int i = 0;
-      for (Double d : l) levels[i++] = d;
+      for (final Double d : l) levels[i++] = d;
       Arrays.sort(levels);
 
       cur = this.initial = initial;
@@ -233,7 +233,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     public List<Double> getLevels() {
       final ArrayList<Double> l = new ArrayList<>(levels.length);
-      for (double d : levels) l.add(d);
+      for (final double d : levels) l.add(d);
       return l;
     }
   }
@@ -241,13 +241,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   public Zoomer() {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
 
-    ActionListener zoomIn = e -> zoomIn();
+    final ActionListener zoomIn = e -> zoomIn();
 
-    ActionListener zoomOut = e -> zoomOut();
+    final ActionListener zoomOut = e -> zoomOut();
 
     zoomMenu = new ZoomMenu();
 
-    ActionListener zoomPick = e -> {
+    final ActionListener zoomPick = e -> {
       if (zoomPickButton.isShowing()) {
         zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
       }
@@ -546,7 +546,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           Double.parseDouble(s[0]) / Double.parseDouble(s[1]) :
           Double.parseDouble(s[0]);
       }
-      catch (NumberFormatException ex) {
+      catch (final NumberFormatException ex) {
         // should not happen, text already validated
         ErrorDialog.bug(ex);
       }
@@ -674,7 +674,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
 
       if ((e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) && SwingUtils.isSelectionToggle(e)) {
-        int units = e.getUnitsToScroll();
+        final int units = e.getUnitsToScroll();
 
         if ((units < 0) && state.hasHigherLevel()) {
           zoomIn();
@@ -764,7 +764,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       if (val != null) {
         // dump into a set to remove duplicates
         final HashSet<Double> levels = new HashSet<>();
-        for (String s : (String[]) val) {
+        for (final String s : (String[]) val) {
           levels.add(Double.valueOf(s));
         }
 
@@ -991,7 +991,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         setZoomLevel(Integer.parseInt(a.getActionCommand()));
         return;
       }
-      catch (NumberFormatException ignored) {
+      catch (final NumberFormatException ignored) {
       }
 
       final String cmd = a.getActionCommand();
@@ -1294,7 +1294,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -1348,8 +1348,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   @Override
   public void addLocalImageNames(Collection<String> s) {
     final String [] iconAttr = { PICK_ICON_NAME, IN_ICON_NAME, OUT_ICON_NAME };
-    for (String i : iconAttr) {
-      String f = getAttributeValueString(i);
+    for (final String i : iconAttr) {
+      final String f = getAttributeValueString(i);
       if (f != null) {
         s.add(f);
       }

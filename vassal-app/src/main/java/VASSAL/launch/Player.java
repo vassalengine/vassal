@@ -76,7 +76,7 @@ public class Player extends Launcher {
       GameModule.init(createModule(createDataArchive()));
 
       if (lr.autoext != null) {
-        for (String ext : lr.autoext) {
+        for (final String ext : lr.autoext) {
           createExtension(ext).build();
         }
       }

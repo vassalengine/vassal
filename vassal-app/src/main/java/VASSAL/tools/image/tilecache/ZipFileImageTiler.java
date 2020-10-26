@@ -104,7 +104,7 @@ public class ZipFileImageTiler {
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
-      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile();
+      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile(); //NON-NLS
 
       final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
       final ImageLoader loader = new ImageIOImageLoader(itc);

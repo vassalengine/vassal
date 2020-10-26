@@ -105,8 +105,8 @@ public class Scroller extends AbstractBuildable implements KeyListener {
   public void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
 
-    int dx;
-    int dy;
+    final int dx;
+    final int dy;
 
     if (Boolean.TRUE.equals(
           GameModule.getGameModule().getPrefs().getValue(USE_ARROWS))) {

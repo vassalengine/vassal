@@ -229,7 +229,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public void addImageNamesRecursively(Collection<String> s) {
     super.addImageNamesRecursively(s);
 
-    GamePiece p = getPiece();
+    final GamePiece p = getPiece();
     if (p != null && (p instanceof ImageSearchTarget)) {
       ((ImageSearchTarget)p).addImageNamesRecursively(s);
     }
@@ -256,7 +256,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       final FontMetrics fm = g.getFontMetrics();
       g.drawRect(0, 0, size.width - 1, size.height - 1);
       g.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-      String s = " " + Resources.getString("Editor.PieceSlot.nil") + " ";
+      final String s = " " + Resources.getString("Editor.PieceSlot.nil") + " ";
       g.drawString(s,  //NON-NLS
         size.width / 2 - fm.stringWidth(s) / 2,  //NON-NLS
         size.height / 2
@@ -280,7 +280,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public Dimension getPreferredSize() {
     // Preferred size is affected by our module-specified scale
     if (c != null && panel.getGraphics() != null) {
-      Dimension bound = c.boundingBox().getSize();
+      final Dimension bound = c.boundingBox().getSize();
       bound.width = (int) ((double)bound.width * getScale());
       bound.height = (int) ((double)bound.height * getScale());
       return bound;
@@ -294,7 +294,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   protected void startDrag() {
     // Recenter piece; panel may have been resized at some point resulting
     // in pieces with inaccurate positional information.
-    GamePiece p = getPiece();
+    final GamePiece p = getPiece();
     if (p == null) { // Found new ways to NPE after you've successfully soft-warninged your failed piece build :)
       return;
     }
@@ -308,7 +308,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     KeyBuffer.getBuffer().clear();
     DragBuffer.getBuffer().clear();
-    GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
+    final GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
     newPiece.setProperty(Properties.PIECE_ID, getGpId());
     DragBuffer.getBuffer().add(newPiece);
   }
@@ -438,7 +438,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
         width = Integer.parseInt(e.getAttribute(WIDTH));
         height = Integer.parseInt(e.getAttribute(HEIGHT));
       }
-      catch (NumberFormatException ex) {
+      catch (final NumberFormatException ex) {
         // Use default values.  Will be overwritten when module is saved
         width = 60;
         height = 60;
@@ -457,7 +457,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     panel.setDropTarget(AbstractDragHandler.makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
 
-    DragGestureListener dragGestureListener = dge -> {
+    final DragGestureListener dragGestureListener = dge -> {
       if (SwingUtils.isDragTrigger(dge)) {
         startDrag();
         AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
@@ -590,13 +590,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   public void updateGpId() {
     gpId = gpidSupport.generateGpId();
-    GamePiece piece = getPiece();
+    final GamePiece piece = getPiece();
     updateGpId(piece);
     setPiece(piece);
   }
 
   /**
-   * Allocate new gpid's in the given GamePiece
+   * Allocate new gpids in the given GamePiece
    *
    * @param piece GamePiece
    */
@@ -639,7 +639,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     @Override
     public Object getValue() {
-      PieceSlot slot = (PieceSlot) super.getValue();
+      final PieceSlot slot = (PieceSlot) super.getValue();
       if (slot != null) {
         slot.setPiece(definer.getPiece());
       }

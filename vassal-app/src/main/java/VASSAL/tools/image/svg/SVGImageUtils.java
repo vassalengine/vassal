@@ -249,7 +249,7 @@ public class SVGImageUtils {
       }
     }
 
-    for (String s : follow) {
+    for (final String s : follow) {
       known.addAll(getExternalReferences(s, known));
     }
 

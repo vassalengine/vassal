@@ -38,7 +38,7 @@ public class TraitConfigPanel extends JPanel {
   }
 
   /**
-   * Create a new default Trait Config Panel and sepcify debug option
+   * Create a new default Trait Config Panel and specify debug option
    *
    * @param debug Turn debug on?
    */
@@ -47,7 +47,7 @@ public class TraitConfigPanel extends JPanel {
   }
 
   /**
-   * Create a new Trait Congig Panel with a non-standard layout
+   * Create a new Trait Config Panel with a non-standard layout
    *
    * @param layout Non-standard layout
    */
@@ -65,7 +65,7 @@ public class TraitConfigPanel extends JPanel {
 
   /**
    * Add the Controls from a Configurer
-   * @param c Conigurer
+   * @param c Configurer
    */
   public void addControls(Configurer c) {
     add(c.getControls());
@@ -105,7 +105,7 @@ public class TraitConfigPanel extends JPanel {
   /**
    * Add a Configurer and its label to this panel
    *
-   * @param label Jlabel
+   * @param label JLabel
    * @param c Configurer
    */
   public void add(JLabel label, Configurer c) {
@@ -136,7 +136,7 @@ public class TraitConfigPanel extends JPanel {
   /**
    * Add an existing JLabel and existing JPanel containing controls.
    *
-   * @param label Jlabel
+   * @param label JLabel
    * @param panel JPanel
    */
   public void add(JLabel label, JPanel panel) {
@@ -145,7 +145,7 @@ public class TraitConfigPanel extends JPanel {
   /**
    * Add a label based on an i18Key and an existing JPanel containing controls
    * @param i18nKey i18n Key
-   * @param p Jpanel containing controls
+   * @param p JPanel containing controls
    */
   public void add(String i18nKey, JPanel p) {
     add(new JLabel(Resources.getString(i18nKey)), p);

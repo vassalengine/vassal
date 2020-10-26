@@ -117,7 +117,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     final File[] files = new File(cpath).listFiles();
     final List<String> names = new ArrayList<>(files.length);
 
-    for (File f : files) names.add(f.getPath());
+    for (final File f : files) names.add(f.getPath());
 
     return names;
   }
@@ -128,7 +128,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     final File[] files = new File(cpath).listFiles();
     final List<String> names = new ArrayList<>(files.length);
 
-    for (File f : files) {
+    for (final File f : files) {
       final String path = f.getPath();
       if (path.startsWith(root)) {
         names.add(path);

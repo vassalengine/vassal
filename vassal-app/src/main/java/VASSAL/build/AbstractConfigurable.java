@@ -73,7 +73,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    * Sets the name and fires a PropertyChangeEvent
    */
   public void setConfigureName(String s) {
-    String oldName = name;
+    final String oldName = name;
     if (changeSupport != null) {
       changeSupport.firePropertyChange(NAME_PROPERTY, oldName, s);
     }
@@ -188,7 +188,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   @Override
   public Configurable[] getConfigureComponents() {
     final ArrayList<Configurable> l = new ArrayList<>();
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       if (b instanceof Configurable) {
         l.add((Configurable) b);
       }
@@ -213,7 +213,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
 
   /**
    * {@link SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {

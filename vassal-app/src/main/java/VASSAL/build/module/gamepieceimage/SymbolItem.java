@@ -175,7 +175,7 @@ public class SymbolItem extends Item {
     if (defn != null) {
       si = defn.getSymbolInstance(getConfigureName());
     }
-    Symbol symbol = null;
+    final Symbol symbol;
     if (si == null) {
       symbol = new Symbol(Symbol.NATO, Symbol.NatoUnitSymbolSet.INFANTRY, Symbol.NatoUnitSymbolSet.NONE, Symbol.NatoUnitSymbolSet.SZ_DIVISION);
       si = new SymbolItemInstance();
@@ -184,12 +184,12 @@ public class SymbolItem extends Item {
       symbol = new Symbol(Symbol.NATO, si.getSymbol1(), si.getSymbol2(), si.getSize());
     }
 
-    Point origin = layout.getPosition(this);
-    Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
+    final Point origin = layout.getPosition(this);
+    final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
     if (getRotation() != 0) {
-      Graphics2D g2d = (Graphics2D) g;
-      AffineTransform newXForm =
+      final Graphics2D g2d = (Graphics2D) g;
+      final AffineTransform newXForm =
           AffineTransform.getRotateInstance(Math.toRadians(getRotation()), layout.getPosition(this).x, layout.getPosition(this).y);
       g2d.transform(newXForm);
     }
@@ -222,9 +222,9 @@ public class SymbolItem extends Item {
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 
-    SymbolItem item = new SymbolItem(l);
+    final SymbolItem item = new SymbolItem(l);
 
     sd.nextToken();
     item.width = sd.nextInt(54);
@@ -237,13 +237,13 @@ public class SymbolItem extends Item {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 
     se1.append(width);
     se1.append(height);
     se1.append(lineWidth);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
 
     return se2.getValue();

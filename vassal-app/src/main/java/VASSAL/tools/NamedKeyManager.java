@@ -56,7 +56,7 @@ public class NamedKeyManager {
     if (k == null) {
       return false;
     }
-    int code = k.getKeyCode();
+    final int code = k.getKeyCode();
     return code == NAMED_MARKER || (code >= NAMED_START && code <= NAMED_END);
   }
 

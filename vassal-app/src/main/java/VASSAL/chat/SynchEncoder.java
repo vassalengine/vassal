@@ -38,7 +38,7 @@ public class SynchEncoder implements CommandEncoder {
     if (!s.startsWith(COMMAND_PREFIX)) {
       return null;
     }
-    Player p = playerEncoder.stringToPlayer(s.substring(COMMAND_PREFIX.length()));
+    final Player p = playerEncoder.stringToPlayer(s.substring(COMMAND_PREFIX.length()));
     return new SynchCommand(p, client);
   }
 
@@ -47,7 +47,7 @@ public class SynchEncoder implements CommandEncoder {
     if (!(c instanceof SynchCommand)) {
       return null;
     }
-    SynchCommand cmd = (SynchCommand) c;
+    final SynchCommand cmd = (SynchCommand) c;
     return COMMAND_PREFIX + playerEncoder.playerToString(cmd.getPlayer());
   }
 

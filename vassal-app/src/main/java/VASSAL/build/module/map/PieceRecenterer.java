@@ -55,7 +55,7 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
   protected DeckVisitorDispatcher dispatcher;
 
   public PieceRecenterer() {
-    ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
+    final ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
     setNameKey("");
     launch = makeLaunchButton("Editor.PieceRecenterer.recenter",
                            "Editor.PieceRecenterer.recenter",
@@ -73,7 +73,7 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
     final GamePiece[] pieces = map.getPieces();
     final Rectangle r = new Rectangle(0, 0, -1, -1);
 
-    for (GamePiece p : pieces) {
+    for (final GamePiece p : pieces) {
       if (Boolean.TRUE.equals(dispatcher.accept(p))) {
         final Point pt = p.getPosition();
         final Rectangle pRect = p.getShape().getBounds();
@@ -85,7 +85,7 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
     if (r.height >= 0 && r.width >= 0) {
       final int dx = map.mapSize().width / 2 - (r.x + r.width / 2);
       final int dy = map.mapSize().height / 2 - (r.y + r.height / 2);
-      for (GamePiece p : pieces) {
+      for (final GamePiece p : pieces) {
         if (Boolean.TRUE.equals(dispatcher.accept(p))) {
           final ChangeTracker tracker = new ChangeTracker(p);
           final Point pt = p.getPosition();

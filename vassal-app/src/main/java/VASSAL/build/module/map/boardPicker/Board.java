@@ -230,7 +230,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         try {
           tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);  //NON-NLS
         }
-        catch (ImageIOException e) {
+        catch (final ImageIOException e) {
           // ignore, not tiled
         }
 
@@ -308,15 +308,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
     try {
       g.drawImage(fim.get(), tx, ty, obs);
     }
-    catch (CancellationException e) {
+    catch (final CancellationException e) {
       // FIXME: bug until we permit cancellation
       ErrorDialog.bug(e);
     }
-    catch (InterruptedException e) {
+    catch (final InterruptedException e) {
       // This happens if taking a snapshot of the map is cancelled.
       // FIXME: Can we handle this in ImageSaver instead?
     }
-    catch (ExecutionException e) {
+    catch (final ExecutionException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
   }
@@ -360,7 +360,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final int oh = op.getTileHeight();
 
       final Point[] tiles = op.getTileIndices(r);
-      for (Point tile : tiles) {
+      for (final Point tile : tiles) {
         // find tile position
         final int tx = location.x + tile.x * ow;
         final int ty = location.y + tile.y * oh;
@@ -412,7 +412,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
                   a.start();
                 }
                 else {
-                  Float a = alpha.get(tile);
+                  final Float a = alpha.get(tile);
                   if (a != null && a < 1.0f) {
                     final Composite oldComp = g2d.getComposite();
                     g2d.setComposite(
@@ -448,7 +448,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
 // FIXME: should getTileFuture() throw these? Yes, probably, because it's
 // synchronous when obs is null.
-        catch (CancellationException | ExecutionException e) {
+        catch (final CancellationException | ExecutionException e) {
           // FIXME: bug until we permit cancellation
           // FIXME: bug until we figure out why getTileFuture() throws ExecutionException
           ErrorDialog.bug(e);
@@ -456,14 +456,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
 
       if (map != null && obs == map.getView()) {
-        for (Point tile : requested.keySet().toArray(new Point[0])) {
+        for (final Point tile : requested.keySet().toArray(new Point[0])) {
           if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
             requested.remove(tile);
           }
         }
       }
       else {
-        for (Point tile : o_requested.keySet().toArray(new Point[0])) {
+        for (final Point tile : o_requested.keySet().toArray(new Point[0])) {
           if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
             o_requested.remove(tile);
           }
@@ -510,7 +510,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final ImageOp sop = Op.scale(boardImageOp, zoom);
       return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
     }
-    catch (CancellationException | ExecutionException | InterruptedException e) {
+    catch (final CancellationException | ExecutionException | InterruptedException e) {
       ErrorDialog.bug(e);
     }
     return null;
@@ -595,7 +595,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public Board copy() {
-    Board b = new Board();
+    final Board b = new Board();
     b.build(getBuildElement(Builder.createNewDocument()));
     return b;
   }
@@ -756,7 +756,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     @Override
     public void setup(boolean gameStarting) {
       if (gameStarted && !gameStarting) {
-        for (Board board : toClean) {
+        for (final Board board : toClean) {
           board.cleanUp();
         }
         toClean.clear();

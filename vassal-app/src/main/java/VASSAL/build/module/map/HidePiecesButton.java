@@ -83,7 +83,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
 
   public HidePiecesButton() {
-    ActionListener al = e -> setPiecesVisible(!piecesVisible);
+    final ActionListener al = e -> setPiecesVisible(!piecesVisible);
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, LAUNCH_ICON, al);
     launch.setAttribute(TOOLTIP, Resources.getString("Editor.HidePiecesButton.hide_all_pieces_on_this_map"));
     addMouseListener(this);
@@ -160,7 +160,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   @Override
   public String getAttributeValueString(String key) {
-    String s;
+    final String s;
     if (HIDDEN_ICON.equals(key)) {
       s = hiddenIcon;
     }
@@ -328,7 +328,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   /**
    * {@link SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {

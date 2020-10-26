@@ -30,8 +30,8 @@ import VASSAL.counters.Properties;
  */
 public class AddPiece extends Command {
   private Command undo;
-  private GamePiece target;
-  private String state;
+  private final GamePiece target;
+  private final String state;
 
   public AddPiece(GamePiece p) {
     this(p, p.getState());

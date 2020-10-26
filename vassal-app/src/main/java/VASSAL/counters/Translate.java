@@ -93,7 +93,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken(Resources.getString("Editor.MoveFixedDistance.default_command"));
     keyCommand = st.nextNamedKeyStroke('M');
     xDist.setFormat(st.nextToken(_0));
@@ -129,7 +129,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
       .append(keyCommand)
       .append(xDist.getFormat())
@@ -178,7 +178,7 @@ public class Translate extends Decorator implements TranslatablePiece {
    */
   protected Command newTranslate(KeyStroke stroke) {
 
-    GamePiece target = findTarget(stroke);
+    final GamePiece target = findTarget(stroke);
     if (target == null) {
       return null;
     }
@@ -191,9 +191,9 @@ public class Translate extends Decorator implements TranslatablePiece {
 
     // Handle rotation of the piece, movement is relative to the current facing of the unit.
     // Use the first Rotator trait below us, as no rotators above us can affect us
-    FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
+    final FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
     if (myRotation != null) {
-      Point2D myPosition = getPosition().getLocation();
+      final Point2D myPosition = getPosition().getLocation();
       Point2D p2d = p.getLocation();
       p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) Math.round(p2d.getX()), (int) Math.round(p2d.getY())); // Use Round not Truncate to prevent drift
@@ -207,7 +207,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Move the piece(s)
     Command c = new NullCommand();
     if (target instanceof Stack) {
-      for (GamePiece gp : ((Stack) target).asList()) {
+      for (final GamePiece gp : ((Stack) target).asList()) {
         final boolean pieceSelected = Boolean.TRUE.equals(gp.getProperty(Properties.SELECTED));
         if (pieceSelected || moveStack) {
           c = c.append(movePiece(gp, p));
@@ -268,7 +268,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       mover.setAdditionalCommand(putOldProperties(this));
       SwingUtilities.invokeLater(mover);
     }
-    GamePiece target = findTarget(stroke);
+    final GamePiece target = findTarget(stroke);
     if (target != null) {
       c = c.append(moveTarget(target));
     }
@@ -300,9 +300,9 @@ public class Translate extends Decorator implements TranslatablePiece {
     translate(p);
 
     // Handle rotation of the piece
-    FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
+    final FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
     if (myRotation != null) {
-      Point2D myPosition = getPosition().getLocation();
+      final Point2D myPosition = getPosition().getLocation();
       Point2D p2d = p.getLocation();
       p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) p2d.getX(), (int) p2d.getY());
@@ -495,7 +495,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
 
     private void updateAdvancedVisibility() {
-      boolean visible = advancedInput.booleanValue();
+      final boolean visible = advancedInput.booleanValue();
       xLabel.setVisible(visible);
       xControls.setVisible(visible);
       yLabel.setVisible(visible);
@@ -515,7 +515,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
         .append(key.getValueString())
         .append(xDist.getValueString())
@@ -551,7 +551,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       for (final Move move : moves) {
         final Map.Merger merger =
           new Map.Merger(move.map, move.pos, move.piece);
-        DeckVisitor v = new DeckVisitor() {
+        final DeckVisitor v = new DeckVisitor() {
           @Override
           public Object visitDeck(Deck d) {
             return merger.visitDeck(d);
@@ -580,7 +580,7 @@ public class Translate extends Decorator implements TranslatablePiece {
           }
         };
 
-        DeckVisitorDispatcher dispatch = new DeckVisitorDispatcher(v);
+        final DeckVisitorDispatcher dispatch = new DeckVisitorDispatcher(v);
         Command c = move.map.apply(dispatch);
         if (c == null) {
           c = move.map.placeAt(move.piece, move.pos);
@@ -597,9 +597,9 @@ public class Translate extends Decorator implements TranslatablePiece {
         pieces.remove(move.piece);
         move.map.repaint();
       }
-      MovementReporter r = new MovementReporter(comm);
+      final MovementReporter r = new MovementReporter(comm);
       if (GlobalOptions.getInstance().autoReportEnabled()) {
-        Command reportCommand = r.getReportCommand();
+        final Command reportCommand = r.getReportCommand();
         if (reportCommand != null) {
           reportCommand.execute();
         }
@@ -607,7 +607,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
       comm.append(r.markMovedPieces());
       if (stroke != null) {
-        for (GamePiece gamePiece : innerPieces) {
+        for (final GamePiece gamePiece : innerPieces) {
           comm.append(gamePiece.keyEvent(stroke));
         }
       }
@@ -643,7 +643,7 @@ public class Translate extends Decorator implements TranslatablePiece {
      */
     public Point getUpdatedPosition(GamePiece target) {
       Point p = null;
-      for (Move move : moves) {
+      for (final Move move : moves) {
         if (move.piece == target) {
           p = move.pos;
         }

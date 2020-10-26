@@ -40,7 +40,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
   private final ServerStatusControlsInitializer statusControls;
 
   public DummyClient() {
-    PeerPoolInfo publicInfo = new PeerPoolInfo() {
+    final PeerPoolInfo publicInfo = new PeerPoolInfo() {
       @Override
       public String getModuleName() {
         return GameModule.getGameModule() == null ? "[unnamed module]" : GameModule.getGameModule().getGameName(); //$NON-NLS-1$

@@ -47,7 +47,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
       catch (InterruptedException e) {
       }
 
-      String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
+      final String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       setRoom(new SimpleRoom(newRoom));
     }
   }
@@ -67,9 +67,9 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
 
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (VASSAL.chat.Room room : r) {
+    for (final VASSAL.chat.Room room : r) {
       buffer.append(room.getName()).append(": "); //$NON-NLS-1$
-      List<Player> l = room.getPlayerList();
+      final List<Player> l = room.getPlayerList();
       for (int j = 0; j < l.size(); ++j) {
         buffer.append(l.get(j));
         if (j < l.size() - 1) {

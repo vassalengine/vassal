@@ -48,8 +48,8 @@ public class StatusReporter implements Runnable {
       return;
     }
     final StringBuilder buffer = new StringBuilder();
-    for (Node pl : players) {
-      Node mod = server.getModule(pl);
+    for (final Node pl : players) {
+      final Node mod = server.getModule(pl);
       try {
         final String name = new PropertiesEncoder(pl.getInfo()).getProperties().getProperty(SimpleStatus.NAME);
         if (name != null) {
@@ -75,7 +75,7 @@ public class StatusReporter implements Runnable {
     if (currentContents != null
         && !currentContents.equals(lastReportedContents)) {
       try {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.put("STATUS", currentContents); //$NON-NLS-1$
         reportStatus.doPost("updateConnections", props); //$NON-NLS-1$
         sleepInterval = MIN_SLEEP;

@@ -134,7 +134,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
       .append(command)
       .append(key)
@@ -164,7 +164,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
-    Command c = piece.keyEvent(stroke);
+    final Command c = piece.keyEvent(stroke);
     return c == null ? myKeyEvent(stroke) : c.append(myKeyEvent(stroke));
   }
 
@@ -288,7 +288,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
-    String val = s.getText(outer, "0");
+    final String val = s.getText(outer, "0");
     try {
       i = Integer.parseInt(val);
     }
@@ -382,7 +382,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     name = st.nextToken(""); //$NON-NLS-1$
     command = st.nextToken("Trigger"); //$NON-NLS-1$
@@ -498,7 +498,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
               .getOutermost(piece));
       box.add(propertyMatch.getControls());
 
-      Box commandBox = Box.createHorizontalBox();
+      final Box commandBox = Box.createHorizontalBox();
       command = new StringConfigurer(null, Resources.getString("Editor.menu_command"), piece.command); //$NON-NLS-1$
       commandBox.add(command.getControls());
       key = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), piece.key); //$NON-NLS-1$
@@ -586,7 +586,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       indexStartConfig.getControls().setVisible(isLoop && isIndex);
       indexStepConfig.getControls().setVisible(isLoop && isIndex);
 
-      Window w = SwingUtilities.getWindowAncestor(box);
+      final Window w = SwingUtilities.getWindowAncestor(box);
       if (w != null) {
         w.pack();
       }
@@ -604,7 +604,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
         .append(command.getValueString())
         .append(key.getValueString())
@@ -645,7 +645,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(propertyMatch.getExpression());
     if (loop) {
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
@@ -678,7 +678,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     l.add(key);
     Collections.addAll(l, watchKeys);
     Collections.addAll(l, actionKeys);

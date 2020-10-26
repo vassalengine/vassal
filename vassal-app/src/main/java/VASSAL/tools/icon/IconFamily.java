@@ -17,28 +17,6 @@
  */
 package VASSAL.tools.icon;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.File;
-
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import net.miginfocom.swing.MigLayout;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -55,6 +33,24 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.swing.Dialogs;
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Window;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.File;
 
 /**
  * An IconFamily is a named set of Icons in the four standard Tango sizes.
@@ -328,7 +324,7 @@ public class IconFamily extends AbstractConfigurable {
 
   @Override
   public void setConfigureName(String s) {
-    String oldName = name;
+    final String oldName = name;
     this.name = s;
     propSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
   }
@@ -444,12 +440,9 @@ public class IconFamily extends AbstractConfigurable {
       final JPanel mig = new JPanel(new MigLayout("inset 5")); //$NON-NLS-1$
 
       title = new StringConfigurer(null, "", family.getConfigureName()); //$NON-NLS-1$
-      title.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            family.setConfigureName((String) evt.getNewValue());
-          }
+      title.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          family.setConfigureName((String) evt.getNewValue());
         }
       });
 
@@ -459,14 +452,11 @@ public class IconFamily extends AbstractConfigurable {
       errorLabel = new JLabel(Resources.getString("Editor.IconFamily.name_taken")); //$NON-NLS-1$
       errorLabel.setForeground(Color.red);
       errorLabel.setVisible(false);
-      family.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            final IconFamily savedFamily = IconFactory.getIconFamily(family
-                .getName());
-            errorLabel.setVisible(savedFamily != null && savedFamily != family);
-          }
+      family.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          final IconFamily savedFamily = IconFactory.getIconFamily(family
+              .getName());
+          errorLabel.setVisible(savedFamily != null && savedFamily != family);
         }
       });
       mig.add(errorLabel, "span 2,wrap"); //$NON-NLS-1$
@@ -560,12 +550,9 @@ public class IconFamily extends AbstractConfigurable {
         controls.add(p);
 
         final JButton select = new JButton(Resources.getString(Resources.SELECT));
-        select.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            selectImage();
-            p.repaint();
-          }
+        select.addActionListener(e -> {
+          selectImage();
+          p.repaint();
         });
         controls.add(select, "wrap"); //$NON-NLS-1$
 
@@ -647,7 +634,7 @@ public class IconFamily extends AbstractConfigurable {
 
     @Override
     protected void repack() {
-      Window w = SwingUtilities.getWindowAncestor(controls);
+      final Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
         w.pack();
       }

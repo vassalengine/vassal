@@ -71,7 +71,7 @@ public abstract class FileChooser {
    *          A FileConfigure that stores the preferred starting directory of the FileChooser in preferences
    */
   public static FileChooser createFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
-    FileChooser fc;
+    final FileChooser fc;
     if (SystemUtils.IS_OS_MAC_OSX) {
       // Mac has a good native file dialog
       System.setProperty("apple.awt.fileDialogForDirectories", String.valueOf(mode == DIRECTORIES_ONLY));
@@ -120,10 +120,10 @@ public abstract class FileChooser {
    * Selects <tt>filename.sav</tt> if <tt>filename.foo</tt> is selected.
    */
   public void selectDotSavFile() {
-    File file = getSelectedFile();
+    final File file = getSelectedFile();
     if (file != null) {
       String name = file.getPath();
-      int index = name.lastIndexOf('.');
+      final int index = name.lastIndexOf('.');
       if (index > 0) {
         name = name.substring(0, index) + ".vsav";
         setSelectedFile(new File(name));
@@ -212,7 +212,7 @@ public abstract class FileChooser {
 
     @Override
     public int showOpenDialog(Component parent) {
-      int value = fc.showOpenDialog(parent);
+      final int value = fc.showOpenDialog(parent);
       updateDirectoryPreference();
       return value;
     }
@@ -234,7 +234,7 @@ public abstract class FileChooser {
 
     @Override
     public FileFilter getFileFilter() {
-      javax.swing.filechooser.FileFilter ff = fc.getFileFilter();
+      final javax.swing.filechooser.FileFilter ff = fc.getFileFilter();
       return ff instanceof FileFilter ? (FileFilter) ff : null;
     }
 

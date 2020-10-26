@@ -69,12 +69,12 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
       scrollPanel.add(scroll, "grow"); // NON-NLS
       panel.add(scrollPanel);
 
-      NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
+      final NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
       if (keyStrokes == null || keyStrokes.length == 0) {
         addKey(null);
       }
       else {
-        for (NamedKeyStroke keyStroke : keyStrokes) {
+        for (final NamedKeyStroke keyStroke : keyStrokes) {
           addKey(keyStroke);
         }
       }
@@ -87,7 +87,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   }
 
   private void addKey(NamedKeyStroke keyStroke) {
-    NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
+    final NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
     configs.add(config);
     controls.add(config.getControls(), "grow,wrap"); // NON-NLS
     if (configs.size() == 6) {
@@ -133,9 +133,9 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   }
 
   public NamedKeyStroke[] getKeyStrokes() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    for (NamedHotKeyConfigurer hotKeyConfigurer : configs) {
-      NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
+    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    for (final NamedHotKeyConfigurer hotKeyConfigurer : configs) {
+      final NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
       if (value != null) {
         l.add(value);
       }
@@ -147,8 +147,8 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     if (s == null) {
       return null;
     }
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();
       if (!token.isEmpty()) {
@@ -162,8 +162,8 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     if (keys == null) {
       return null;
     }
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (NamedKeyStroke key : keys) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final NamedKeyStroke key : keys) {
       if (!key.isNull()) {
         se.append(NamedHotKeyConfigurer.encode(key));
       }

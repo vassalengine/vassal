@@ -58,7 +58,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     boards.addItem(prompt);
 
     final String[] lbn = picker.getAllowableLocalizedBoardNames();
-    for (String s : lbn) {
+    for (final String s : lbn) {
       boards.addItem(s);
     }
     boards.setSelectedIndex(lbn.length == 1 ? 1 : 0);
@@ -99,7 +99,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       setBoard(null);
     }
     else {
-      String selectedBoard = (String) boards.getSelectedItem();
+      final String selectedBoard = (String) boards.getSelectedItem();
       if (selectedBoard != null) {
         Board b = picker.getLocalizedBoard(selectedBoard);
         if (picker.getBoardsFromControls().contains(b)) {

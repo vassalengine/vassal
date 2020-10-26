@@ -156,7 +156,7 @@ public class ImageSaver extends AbstractToolbarItem {
     // FIXME: this is not really a good way to do this---should do
     // something with the minimum size or font metrics
     final int l = Resources.getString("Editor.ImageSaver.saving_map_image_as").length() + file.getName().length() + 7;
-    dialog.setLabel("N".repeat(Math.max(0, l)));
+    dialog.setLabel("N".repeat(Math.max(0, l))); //NON-NLS
 
     dialog.pack();
     dialog.setLabel(Resources.getString("Editor.ImageSaver.saving_map_image_as") + " ");
@@ -342,7 +342,7 @@ public class ImageSaver extends AbstractToolbarItem {
 
       // ensure that the size of the image data array (4 bytes per pixel)
       // does not exceed the maximum array size, 2^31-1 elements;
-      // otherwise we'll overflow an int and have a negavive array size
+      // otherwise we'll overflow an int and have a negative array size
       while ((long)tw * th > Integer.MAX_VALUE / 4) {
         if (tw > th) {
           tw = (int) Math.ceil(tw / 2.0);
@@ -421,7 +421,7 @@ public class ImageSaver extends AbstractToolbarItem {
       }
       catch (CancellationException e) {
         // on cancellation, remove all files we created
-        for (File f : files) f.delete();
+        for (final File f : files) f.delete();
       }
       catch (InterruptedException e) {
         ErrorDialog.bug(e);
@@ -447,10 +447,10 @@ public class ImageSaver extends AbstractToolbarItem {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void writeImage(OutputStream[] out) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    Dimension buffer = map.getEdgeBuffer();
-    int totalWidth =
+    final Dimension buffer = map.getEdgeBuffer();
+    final int totalWidth =
       (int) ((map.mapSize().width - 2 * buffer.width) * map.getZoom());
-    int totalHeight =
+    final int totalHeight =
       (int) ((map.mapSize().height - 2 * buffer.height) * map.getZoom());
     for (int i = 0; i < out.length; ++i) {
       int height = totalHeight / out.length;
@@ -458,8 +458,8 @@ public class ImageSaver extends AbstractToolbarItem {
         height = totalHeight - height * (out.length - 1);
       }
 
-      Image output = map.getView().createImage(totalWidth, height);
-      Graphics2D gg = (Graphics2D) output.getGraphics();
+      final Image output = map.getView().createImage(totalWidth, height);
+      final Graphics2D gg = (Graphics2D) output.getGraphics();
 
       map.paintRegion(gg, new Rectangle(
         -(int) (map.getZoom() * buffer.width),
@@ -467,7 +467,7 @@ public class ImageSaver extends AbstractToolbarItem {
         totalWidth, totalHeight), null);
       gg.dispose();
       try {
-        MediaTracker t = new MediaTracker(map.getView());
+        final MediaTracker t = new MediaTracker(map.getView());
         t.addImage(output, 0);
         t.waitForID(0);
       }

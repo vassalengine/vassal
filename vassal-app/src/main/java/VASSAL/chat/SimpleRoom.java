@@ -58,14 +58,14 @@ public class SimpleRoom implements Room {
 
   public void setPlayers(Player[] players) {
     this.players.clear();
-    for (Player p : players) {
+    for (final Player p : players) {
       addPlayer(p);
     }
   }
 
   @Override
   public void addPlayer(Player p) {
-    int index = players.indexOf(p);
+    final int index = players.indexOf(p);
     if (index < 0) {
       players.add(p);
     }
@@ -75,7 +75,7 @@ public class SimpleRoom implements Room {
   }
 
   public Player getPlayer(String id) {
-    for (Player player : players) {
+    for (final Player player : players) {
       if (player.getId().equals(id)) {
         return player;
       }

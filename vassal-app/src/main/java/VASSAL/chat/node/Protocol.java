@@ -51,7 +51,7 @@ public class Protocol {
    * @return
    */
   public static String encodeRegisterCommand(String id, String initialPath, String info) {
-    String msg = new SequenceEncoder(id, '\t').append(initialPath).append(info).getValue();
+    final String msg = new SequenceEncoder(id, '\t').append(initialPath).append(info).getValue();
     return REGISTER + msg;
   }
 
@@ -62,7 +62,7 @@ public class Protocol {
   public static String[] decodeRegisterCommand(String cmd) {
     String[] info = null;
     if (cmd.startsWith(REGISTER)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(REGISTER.length()), '\t');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(REGISTER.length()), '\t');
       info = new String[] {st.nextToken(), st.nextToken(), st.nextToken()};
     }
     return info;
@@ -116,7 +116,7 @@ public class Protocol {
    * @return
    */
   public static String encodeForwardCommand(String recipientPath, String message) {
-    String msg = new SequenceEncoder(recipientPath, '\t').append(message).getValue();
+    final String msg = new SequenceEncoder(recipientPath, '\t').append(message).getValue();
     return FORWARD + msg;
   }
 
@@ -127,7 +127,7 @@ public class Protocol {
   public static String[] decodeForwardCommand(String cmd) {
     String[] info = null;
     if (cmd.startsWith(FORWARD)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(FORWARD.length()), '\t');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(FORWARD.length()), '\t');
       info = new String[] {st.nextToken(), st.nextToken()};
     }
     return info;
@@ -182,7 +182,7 @@ public class Protocol {
     String[] s = null;
     if (cmd.startsWith(NODE_INFO)) {
       s = new String[2];
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(NODE_INFO.length()), '=');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(NODE_INFO.length()), '=');
       s[0] = st.nextToken();
       s[1] = st.nextToken();
     }
@@ -196,12 +196,12 @@ public class Protocol {
    * @return
    */
   public static String encodeRoomsInfo(Node[] rooms) {
-    Properties p = new Properties();
-    for (Node room : rooms) {
+    final Properties p = new Properties();
+    for (final Node room : rooms) {
       if (room.getInfo() != null && room.getInfo().length() > 0)
         p.setProperty(room.getId(), room.getInfo());
     }
-    String value = new PropertiesEncoder(p).getStringValue();
+    final String value = new PropertiesEncoder(p).getStringValue();
     return value == null ? ROOM_INFO : ROOM_INFO + value;
   }
 
@@ -227,15 +227,15 @@ public class Protocol {
    * @return
    */
   public static String encodeListCommand(Node[] nodes) {
-    SequenceEncoder list = new SequenceEncoder('\t');
-    for (Node node : nodes) {
+    final SequenceEncoder list = new SequenceEncoder('\t');
+    for (final Node node : nodes) {
       if (node.getPath() != null && node.getInfo() != null) {
-        SequenceEncoder info = new SequenceEncoder('=');
+        final SequenceEncoder info = new SequenceEncoder('=');
         info.append(node.getPath()).append(node.getInfo());
         list.append(info.getValue());
       }
     }
-    String value = list.getValue();
+    final String value = list.getValue();
     return value == null ? LIST : LIST + value;
   }
 
@@ -247,13 +247,13 @@ public class Protocol {
   public static Node decodeListCommand(String cmd) {
     Node node = null;
     if (cmd.startsWith(LIST)) {
-      Node root = new Node(null, null, null);
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(LIST.length()), '\t');
+      final Node root = new Node(null, null, null);
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(cmd.substring(LIST.length()), '\t');
       while (st.hasMoreTokens()) {
-        String nodeInfo = st.nextToken();
-        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(nodeInfo, '=');
-        String path = st2.nextToken();
-        String info = st2.nextToken();
+        final String nodeInfo = st.nextToken();
+        final SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(nodeInfo, '=');
+        final String path = st2.nextToken();
+        final String info = st2.nextToken();
         Node.build(root, path).setInfo(info);
       }
       node = root;

@@ -111,7 +111,7 @@ public class DoActionButton extends AbstractToolbarItem
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
-    ActionListener rollAction = e -> {
+    final ActionListener rollAction = e -> {
       try {
         doActions();
       }
@@ -458,7 +458,7 @@ public class DoActionButton extends AbstractToolbarItem
 
   protected String encodeHotkeys() {
     final SequenceEncoder se = new SequenceEncoder(',');
-    for (NamedKeyStroke key : hotkeys) {
+    for (final NamedKeyStroke key : hotkeys) {
       se.append(NamedHotKeyConfigurer.encode(key));
     }
 
@@ -467,10 +467,10 @@ public class DoActionButton extends AbstractToolbarItem
   }
 
   protected List<NamedKeyStroke> decodeHotkeys(String s) {
-    List<NamedKeyStroke> list = new ArrayList<>();
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final List<NamedKeyStroke> list = new ArrayList<>();
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     while (sd.hasMoreTokens()) {
-      NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
+      final NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
       list.add(key);
     }
     return list;
@@ -627,7 +627,7 @@ public class DoActionButton extends AbstractToolbarItem
       // Send the hotkeys. Individual hotkeys have already executed
       // the commands they generated.
       if (doHotkey) {
-        for (NamedKeyStroke key : hotkeys) {
+        for (final NamedKeyStroke key : hotkeys) {
           mod.fireKeyStroke(key);
         }
       }
@@ -647,7 +647,7 @@ public class DoActionButton extends AbstractToolbarItem
   protected void doHotKey(Command c, NamedKeyStroke key) {
     if (!key.isNull()) {
       final GameModule mod = GameModule.getGameModule();
-      boolean loggingPaused = mod.pauseLogging();
+      final boolean loggingPaused = mod.pauseLogging();
       try {
         mod.fireKeyStroke(key);
       }
@@ -686,11 +686,11 @@ public class DoActionButton extends AbstractToolbarItem
   }
 
   /**
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (doLoop) {
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
         l.add(whileExpression.getExpression());
@@ -737,7 +737,7 @@ public class DoActionButton extends AbstractToolbarItem
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
   }
 }

@@ -423,7 +423,7 @@ public class SequenceEncoder {
 
     public NamedKeyStroke nextNamedKeyStroke(NamedKeyStroke defaultValue) {
       if (val != null) {
-        String s = nextToken();
+        final String s = nextToken();
         if (s.length() == 0) {
           defaultValue = null;
         }
@@ -464,12 +464,12 @@ public class SequenceEncoder {
   }
 
   public static void main(String[] args) {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String arg : args) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String arg : args) {
       se.append(arg);
     }
     System.out.println(se.getValue());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(se.getValue(), ',');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(se.getValue(), ',');
     while (st.hasMoreTokens()) {
       System.out.println(st.nextToken());
     }

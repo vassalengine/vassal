@@ -193,7 +193,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
 
     @Override
     public V setValue(V value) {
-      V oldValue = this.value;
+      final V oldValue = this.value;
       this.value = value;
       return oldValue;
     }
@@ -201,7 +201,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
     @Override
     public boolean equals(Object o) {
       if (!(o instanceof Map.Entry)) return false;
-      Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+      final Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
       return Objects.equals(key, e.getKey()) &&
              Objects.equals(value, e.getValue());
     }

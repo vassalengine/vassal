@@ -31,7 +31,7 @@ public class AlertCommand extends Command {
 
   @Override
   protected void executeCommand() {
-    Runnable runnable = () -> JOptionPane.showMessageDialog(GameModule.getGameModule() == null ? null : GameModule.getGameModule().getPlayerWindow(), msg);
+    final Runnable runnable = () -> JOptionPane.showMessageDialog(GameModule.getGameModule() == null ? null : GameModule.getGameModule().getPlayerWindow(), msg);
     SwingUtilities.invokeLater(runnable);
   }
 

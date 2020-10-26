@@ -89,7 +89,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof GamePieceLayout) {
-      GamePieceLayout def = (GamePieceLayout) b;
+      final GamePieceLayout def = (GamePieceLayout) b;
       definitions.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
@@ -119,7 +119,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    for (GamePieceLayout d : definitions.values()) {
+    for (final GamePieceLayout d : definitions.values()) {
       if (d != null) {
         return d.getGenericDefn(defnName);
       }

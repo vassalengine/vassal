@@ -170,7 +170,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public void launch() {
-    GameModule g = GameModule.getGameModule();
+    final GameModule g = GameModule.getGameModule();
     if (useFile && fileName != null) {
       try {
         g.getGameState().loadGameInBackground(fileName, getSavedGameContents());
@@ -286,7 +286,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {

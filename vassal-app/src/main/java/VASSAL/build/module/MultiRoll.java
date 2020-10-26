@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -146,13 +145,13 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   public RollSet getRollSet() {
-    ArrayList<DieRoll> l = new ArrayList<>();
+    final ArrayList<DieRoll> l = new ArrayList<>();
     for (int i = 0; i < MAX_ROLLS; ++i) {
       if (useDie[i]) {
         l.add(rolls[i]);
       }
     }
-    DieRoll[] rolls = l.toArray(new DieRoll[0]);
+    final DieRoll[] rolls = l.toArray(new DieRoll[0]);
     return new RollSet(getDescription(), rolls);
   }
 
@@ -195,7 +194,7 @@ public class MultiRoll extends JDialog implements ActionListener {
 
     // And the body
     descPanel = new JPanel();
-    JLabel descLabel = new JLabel("Roll Description");
+    final JLabel descLabel = new JLabel("Roll Description");
     descText = new JTextField(20);
     descText.setText(GameModule.getGameModule().getChatter().getInputField().getText());
     descText.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -262,8 +261,8 @@ public class MultiRoll extends JDialog implements ActionListener {
 
   protected void setEmailHeader() {
 
-    String label;
-    Prefs prefs = GameModule.getGameModule().getPrefs();
+    final String label;
+    final Prefs prefs = GameModule.getGameModule().getPrefs();
 
     if ((Boolean) prefs.getValue(DieManager.USE_EMAIL)) {
       label = (String) prefs.getValue(DieManager.SECONDARY_EMAIL);
@@ -276,16 +275,16 @@ public class MultiRoll extends JDialog implements ActionListener {
 
   protected void updateEmailAddress() {
 
-    Prefs prefs = GameModule.getGameModule().getPrefs();
-    String[] aBook = (String[]) prefs.getValue(DieManager.ADDRESS_BOOK);
+    final Prefs prefs = GameModule.getGameModule().getPrefs();
+    final String[] aBook = (String[]) prefs.getValue(DieManager.ADDRESS_BOOK);
 
-    JPopupMenu popup = new JPopupMenu();
+    final JPopupMenu popup = new JPopupMenu();
 
     JMenuItem menuItem = new JMenuItem(EMAIL_OFF);
     menuItem.addActionListener(this);
     popup.add(menuItem);
 
-    for (String s : aBook) {
+    for (final String s : aBook) {
       menuItem = new JMenuItem(s);
       menuItem.addActionListener(this);
       popup.add(menuItem);
@@ -296,8 +295,8 @@ public class MultiRoll extends JDialog implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    String address = e.getActionCommand();
-    Prefs prefs = GameModule.getGameModule().getPrefs();
+    final String address = e.getActionCommand();
+    final Prefs prefs = GameModule.getGameModule().getPrefs();
     if (address.equals(EMAIL_OFF)) {
       prefs.setValue(DieManager.USE_EMAIL, Boolean.FALSE);
     }
@@ -313,13 +312,13 @@ public class MultiRoll extends JDialog implements ActionListener {
 
     public HeaderRow() {
 
-      Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-      Border myBorder = raisedbevel;
+      final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+      final Border myBorder = raisedbevel;
 
       //setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
       //setBorder(blackline);
 
-      JLabel col1 = new JLabel("Roll");
+      final JLabel col1 = new JLabel("Roll");
       col1.setPreferredSize(new Dimension(COL1_WIDTH, ROW_HEIGHT));
       col1.setHorizontalAlignment(JTextField.CENTER);
       col1.setBorder(myBorder);
@@ -329,25 +328,25 @@ public class MultiRoll extends JDialog implements ActionListener {
 //      col2.setHorizontalAlignment(JTextField.CENTER);
 //            col2.setBorder(myBorder);
 
-      JLabel col3 = new JLabel("Details");
+      final JLabel col3 = new JLabel("Details");
       col3.setPreferredSize(new Dimension(COL3_WIDTH, ROW_HEIGHT));
       col3.setBorder(myBorder);
 
-      JLabel col4 = new JLabel("nDice");
+      final JLabel col4 = new JLabel("nDice");
       col4.setBorder(myBorder);
       col4.setHorizontalAlignment(JTextField.CENTER);
       col4.setPreferredSize(new Dimension(COL4_WIDTH, ROW_HEIGHT));
 
-      JLabel col5 = new JLabel("nSides");
+      final JLabel col5 = new JLabel("nSides");
       col5.setBorder(myBorder);
       col5.setHorizontalAlignment(JTextField.CENTER);
       col5.setPreferredSize(new Dimension(COL5_WIDTH, ROW_HEIGHT));
 
-      JLabel col6 = new JLabel("add");
+      final JLabel col6 = new JLabel("add");
       col6.setBorder(myBorder);
       col6.setPreferredSize(new Dimension(COL6_WIDTH, ROW_HEIGHT));
 
-      JLabel col7 = new JLabel("Total");
+      final JLabel col7 = new JLabel("Total");
       col7.setBorder(myBorder);
       col7.setPreferredSize(new Dimension(COL7_WIDTH, ROW_HEIGHT));
 
@@ -401,13 +400,10 @@ public class MultiRoll extends JDialog implements ActionListener {
       col1 = new StateButton(Integer.toString(row + 1));
       col1.setPreferredSize(new Dimension(COL1_WIDTH, ROW_HEIGHT));
       col1.setState(useDie[myRow]);
-      col1.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          col1.switchState();
-          useDie[myRow] = col1.getState();
-          setEnabled(col1.getState());
-        }
+      col1.addActionListener(e -> {
+        col1.switchState();
+        useDie[myRow] = col1.getState();
+        setEnabled(col1.getState());
       });
 
       // Roll Description
@@ -432,8 +428,8 @@ public class MultiRoll extends JDialog implements ActionListener {
       col3.setEnabled(false);
 
       // Number of Dice
-      int[] allowableDice = dieManager.getServer().getnDiceList();
-      String[] diceData = new String[allowableDice.length];
+      final int[] allowableDice = dieManager.getServer().getnDiceList();
+      final String[] diceData = new String[allowableDice.length];
       int defaultNDIdx = 0;
       for (int i = 0; i < diceData.length; i++) {
         diceData[i] = Integer.toString(allowableDice[i]);
@@ -443,18 +439,15 @@ public class MultiRoll extends JDialog implements ActionListener {
       col4 = new JComboBox(diceData);
       col4.setSelectedIndex(defaultNDIdx);
       col4.setPreferredSize(new Dimension(COL4_WIDTH, ROW_HEIGHT));
-      col4.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
-        }
+      col4.addActionListener(e -> {
+        final JComboBox cb = (JComboBox) e.getSource();
+        rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
       });
       col4.setEnabled(false);
 
       // Number of Sides
-      int[] allowableSides = dieManager.getServer().getnSideList();
-      String[] sideData = new String[allowableSides.length];
+      final int[] allowableSides = dieManager.getServer().getnSideList();
+      final String[] sideData = new String[allowableSides.length];
       int defaultNSIdx = 0;
       for (int i = 0; i < sideData.length; i++) {
         sideData[i] = Integer.toString(allowableSides[i]);
@@ -464,12 +457,9 @@ public class MultiRoll extends JDialog implements ActionListener {
       col5 = new JComboBox(sideData);
       col5.setSelectedIndex(defaultNSIdx);
       col5.setPreferredSize(new Dimension(COL5_WIDTH, ROW_HEIGHT));
-      col5.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
-        }
+      col5.addActionListener(e -> {
+        final JComboBox cb = (JComboBox) e.getSource();
+        rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
       });
       col5.setEnabled(false);
 
@@ -498,12 +488,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col7.setPreferredSize(new Dimension(COL7_WIDTH, ROW_HEIGHT));
       col7.setHorizontalAlignment(JCheckBox.CENTER);
       col7.setSelected(rolls[myRow].isReportTotal());
-      col7.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          rolls[myRow].setReportTotal((e.getStateChange() == ItemEvent.SELECTED));
-        }
-      });
+      col7.addItemListener(e -> rolls[myRow].setReportTotal((e.getStateChange() == ItemEvent.SELECTED)));
       col7.setEnabled(false);
 
       add(col1);

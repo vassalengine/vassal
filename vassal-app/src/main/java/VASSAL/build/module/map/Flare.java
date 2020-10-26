@@ -481,7 +481,7 @@ public class Flare extends AbstractConfigurable
   @Override
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
-      SequenceEncoder se = new SequenceEncoder(DELIMITER);
+      final SequenceEncoder se = new SequenceEncoder(DELIMITER);
       se
         .append(((FlareCommand)c).getId())
         .append(((FlareCommand)c).getClickPoint().x)
@@ -499,7 +499,7 @@ public class Flare extends AbstractConfigurable
   @Override
   public Command decode(final String s) {
     if (s.startsWith(COMMAND_PREFIX + getId())) { // Make sure this command is for this flare
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
       sd.nextToken(); // Skip over the Command Prefix
       sd.nextToken(); // Skip over the Id
       final int x = sd.nextInt(0);
@@ -574,7 +574,7 @@ public class Flare extends AbstractConfigurable
     final Zone z = map.findZone(clickPoint);
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
     reportFormat.setProperty(FLARE_MAP, map.getMapName());
-    String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
+    final String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
     if (!reportText.isBlank()) {
       c = new Chatter.DisplayText(mod.getChatter(), "* " + reportText);
       c.execute();
@@ -676,7 +676,7 @@ public class Flare extends AbstractConfigurable
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
+      final boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
       return new String[] {
         FLARE_ALT_LOCAL,
         SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
@@ -719,7 +719,7 @@ public class Flare extends AbstractConfigurable
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
   }
 }

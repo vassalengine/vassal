@@ -311,7 +311,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    * @return true if the supplied Object is one of the allowed values
    */
   public boolean isValidValue(Object o) {
-    for (String validValue : validValues) {
+    for (final String validValue : validValues) {
       if (validValue.equals(o)) {
         return true;
       }
@@ -398,8 +398,8 @@ public class TranslatingStringEnumConfigurer extends Configurer {
 
   // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
-    JFrame f = new JFrame();
-    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); // NON-NLS
+    final JFrame f = new JFrame();
+    final StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); // NON-NLS
     c.addPropertyChangeListener(evt -> System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()));
     f.add(c.getControls());
     f.pack();

@@ -108,7 +108,7 @@ public class GlobalMap implements AutoConfigurable,
     scroll.setAlignmentX(0.0f);
     scroll.setAlignmentY(0.0f);
 
-    ActionListener al = e -> scroll.setVisible(!scroll.isVisible());
+    final ActionListener al = e -> scroll.setVisible(!scroll.isVisible());
 
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);
@@ -538,8 +538,8 @@ public class GlobalMap implements AutoConfigurable,
         this
       );
 
-      for (GamePiece gp : map.getPieces()) {
-        Point p = mapToDrawing(gp.getPosition(), os_scale);
+      for (final GamePiece gp : map.getPieces()) {
+        final Point p = mapToDrawing(gp.getPosition(), os_scale);
         gp.draw(g, p.x, p.y, this, dscale);
       }
 
@@ -616,7 +616,7 @@ public class GlobalMap implements AutoConfigurable,
 
   /**
    * {@link SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -682,7 +682,7 @@ public class GlobalMap implements AutoConfigurable,
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    String imageName = getAttributeValueString(ICON_NAME);
+    final String imageName = getAttributeValueString(ICON_NAME);
     if (imageName != null) {
       s.add(imageName);
     }

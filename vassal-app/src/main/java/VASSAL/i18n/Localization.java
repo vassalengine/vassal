@@ -78,9 +78,9 @@ public class Localization extends Language {
    */
   public String[] getTranslationList() {
     Collections.sort(translations);
-    String[] s = new String[translations.size()];
+    final String[] s = new String[translations.size()];
     int idx = 0;
-    for (Translation t : translations) {
+    for (final Translation t : translations) {
       s[idx++] = t.getDescription();
     }
     return s;
@@ -93,7 +93,7 @@ public class Localization extends Language {
    * @return Translation object
    */
   public Translation getTranslation(String description) {
-    for (Translation t : translations) {
+    for (final Translation t : translations) {
       if (t.getDescription().equals(description)) {
         return t;
       }
@@ -118,7 +118,7 @@ public class Localization extends Language {
    */
   public void saveTranslatableAttribute(Translatable component, String name, String value) {
     if (GameModule.getGameModule().isLocalizationEnabled()) {
-      TranslatableAttribute ta = new TranslatableAttribute(component, name, value);
+      final TranslatableAttribute ta = new TranslatableAttribute(component, name, value);
       translatableItems.add(ta);
     }
   }
@@ -136,22 +136,22 @@ public class Localization extends Language {
    */
   public void translate() throws IOException {
     if (GameModule.getGameModule().isLocalizationEnabled()) {
-      for (Translation t : moduleTranslations) {
+      for (final Translation t : moduleTranslations) {
         addBundle(t.getBundle());
       }
-      for (Translation t : languageTranslations) {
+      for (final Translation t : languageTranslations) {
         addBundle(t.getBundle());
       }
-      for (Translation t : countryTranslations) {
+      for (final Translation t : countryTranslations) {
         addBundle(t.getBundle());
       }
       if (masterBundle != null) {
         translationInProgress = true;
-        for (TranslatableAttribute attr : translatableItems) {
+        for (final TranslatableAttribute attr : translatableItems) {
           if (attr.isTranslatable()) {
-            String key = attr.getKey();
+            final String key = attr.getKey();
             try {
-              String translation = masterBundle.getString(key);
+              final String translation = masterBundle.getString(key);
               attr.applyTranslation(translation);
             }
             catch (MissingResourceException e) {

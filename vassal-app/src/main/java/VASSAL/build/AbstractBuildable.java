@@ -122,7 +122,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
     final ArrayList<T> l = new ArrayList<>();
-    for (Buildable b : buildComponents) {
+    for (final Buildable b : buildComponents) {
       if (target.isInstance(b)) {
         l.add(target.cast(b));
       }
@@ -152,7 +152,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
    * @return {@link List} of all components that are instances of the given class
    */
   public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
-    ArrayList<T> l = new ArrayList<>();
+    final ArrayList<T> l = new ArrayList<>();
     addComponents(target, l);
     return l;
   }
@@ -161,7 +161,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     if (target.isInstance(this)) {
       l.add(target.cast(this));
     }
-    for (Buildable b : buildComponents) {
+    for (final Buildable b : buildComponents) {
       if (target.isInstance(b)) {
         l.add(target.cast(b));
       }
@@ -173,16 +173,16 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
 
   @Override
   public Element getBuildElement(org.w3c.dom.Document doc) {
-    Element el = doc.createElement(getClass().getName());
-    String[] names = getAttributeNames();
-    for (String name : names) {
-      String val = getAttributeValueString(name);
+    final Element el = doc.createElement(getClass().getName());
+    final String[] names = getAttributeNames();
+    for (final String name : names) {
+      final String val = getAttributeValueString(name);
       if (val != null) {
         el.setAttribute(name, val);
       }
     }
 
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       el.appendChild(b.getBuildElement(doc));
     }
     return el;
@@ -225,7 +225,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     if (validator != null) {
       validator.validate(target, report);
     }
-    for (Buildable child : buildComponents) {
+    for (final Buildable child : buildComponents) {
       if (child instanceof ValidityChecker) {
         ((ValidityChecker) child).validate(child, report);
       }
@@ -249,7 +249,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
   public void addImageNamesRecursively(Collection<String> s) {
     addLocalImageNames(s);
 
-    for (Buildable child : buildComponents) {
+    for (final Buildable child : buildComponents) {
       if (child instanceof ImageSearchTarget) {
         ((ImageSearchTarget) child).addImageNamesRecursively(s);
       }

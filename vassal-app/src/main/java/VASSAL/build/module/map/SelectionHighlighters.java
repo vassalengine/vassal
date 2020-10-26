@@ -59,14 +59,14 @@ public class SelectionHighlighters extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     map = (Map) parent;
-    for (SelectionHighlighter highlighter : highlighters) {
+    for (final SelectionHighlighter highlighter : highlighters) {
       addToMap(highlighter);
     }
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-    for (SelectionHighlighter highlighter : highlighters) {
+    for (final SelectionHighlighter highlighter : highlighters) {
       removeFromMap(highlighter);
     }
   }

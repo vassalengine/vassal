@@ -79,7 +79,7 @@ public class LocaleConfigurer extends Configurer {
   public void setValue(String s) {
     getControls();
     if (!noUpdate && langBox != null && countryBox != null) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
       setLanguage(sd.nextToken(Locale.getDefault().getLanguage()));
       setCountry(sd.nextToken(""));
     }
@@ -87,12 +87,12 @@ public class LocaleConfigurer extends Configurer {
   }
 
   protected void setLanguage(String l) {
-    String lang = (new Locale(l, "")).getDisplayLanguage(Locale.getDefault());
+    final String lang = (new Locale(l, "")).getDisplayLanguage(Locale.getDefault());
     langBox.setSelectedItem(lang);
   }
 
   protected void setCountry(String c) {
-    String country;
+    final String country;
     if (c.length() == 0) {
       country = ANY_COUNTRY;
     }
@@ -123,18 +123,18 @@ public class LocaleConfigurer extends Configurer {
   }
 
   protected void updateValue() {
-    String language = languages.get(langBox.getSelectedItem());
-    String country = countries.get(countryBox.getSelectedItem());
+    final String language = languages.get(langBox.getSelectedItem());
+    final String country = countries.get(countryBox.getSelectedItem());
 
     setValue(language + "," + country);
   }
 
   protected String[] getLanguageList() {
     if (languageList == null) {
-      String[] langs = Locale.getISOLanguages();
-      ArrayList<String> sortedLangs = new ArrayList<>();
-      for (String s : langs) {
-        String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
+      final String[] langs = Locale.getISOLanguages();
+      final ArrayList<String> sortedLangs = new ArrayList<>();
+      for (final String s : langs) {
+        final String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
         languages.put(lang, s);
         sortedLangs.add(lang);
       }
@@ -146,10 +146,10 @@ public class LocaleConfigurer extends Configurer {
 
   protected String[] getCountryList() {
     if (countryList == null) {
-      String[] c = Locale.getISOCountries();
-      ArrayList<String> sortedCountries = new ArrayList<>();
-      for (String s : c) {
-        String country =
+      final String[] c = Locale.getISOCountries();
+      final ArrayList<String> sortedCountries = new ArrayList<>();
+      for (final String s : c) {
+        final String country =
                 (new Locale("en", s)).getDisplayCountry(Locale.getDefault()); //NON-NLS
         countries.put(country, s);
         sortedCountries.add(country);
@@ -163,7 +163,7 @@ public class LocaleConfigurer extends Configurer {
   }
 
   public static Locale stringToLocale(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     return new Locale(sd.nextToken(""), sd.nextToken(""));
   }
 

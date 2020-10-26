@@ -41,7 +41,7 @@ public class EditContainedPiecesAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent evt) {
     final MassPieceDefiner mass = new MassPieceDefiner(target);
-    Configurer c = new Configurer("", "") {
+    final Configurer c = new Configurer("", "") {
       @Override
       public void setValue(String s) {
       }

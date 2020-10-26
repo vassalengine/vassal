@@ -51,10 +51,10 @@ public class PrivateMessageAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent evt) {
-    PrivateChatter chat = mgr.getChatterFor(p);
+    final PrivateChatter chat = mgr.getChatterFor(p);
     // Chat is null of other player is ignoring us.
     if (chat != null) {
-      Window f = (Window)chat.getTopLevelAncestor();
+      final Window f = (Window)chat.getTopLevelAncestor();
       f.setVisible(true);
       f.toFront();
     }

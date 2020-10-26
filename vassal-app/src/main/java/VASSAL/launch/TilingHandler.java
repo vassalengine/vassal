@@ -80,7 +80,7 @@ public class TilingHandler {
    * Creates a {@code TilingHandler}.
    *
    * @param aname the path to the ZIP archive
-   * @param cdir the tile cache diretory
+   * @param cdir the tile cache directory
    * @param tdim the tile size
    * @param pid the id of the child process
    */
@@ -127,7 +127,7 @@ public class TilingHandler {
 
     final FileArchive fa = archive.getArchive();
 
-    for (String iname : images) {
+    for (final String iname : images) {
       final String ipath = DataArchive.IMAGE_DIR + iname;
 
       // skip images with fresh tiles
@@ -305,7 +305,7 @@ public class TilingHandler {
     final List<Pair<String, IOException>> failed =
       new ArrayList<>();
 
-    Pair<Integer, Integer> s;
+    final Pair<Integer, Integer> s;
     try (DataArchive archive = new DataArchive(aname)) {
       final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
       s = findImages(archive, tcache, multi, failed);

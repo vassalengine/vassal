@@ -60,14 +60,14 @@ public class FormattedStringConfigurer
   public void setOptions(String[] options) {
     optionsModel.removeAllElements();
     optionsModel.addElement(Resources.getString("Editor.FormattedStringConfigurer.insert"));
-    for (String option : options) {
+    for (final String option : options) {
       optionsModel.addElement(option);
     }
     setListVisibility();
   }
 
   public String[] getOptions() {
-    String[] s = new String[optionsModel.getSize()];
+    final String[] s = new String[optionsModel.getSize()];
     for (int i = 0; i < s.length; ++i) {
       s[i] = optionsModel.getElementAt(i);
     }
@@ -103,9 +103,9 @@ public class FormattedStringConfigurer
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    String item;
+    final String item;
 
-    int selectedIndex = dropList.getSelectedIndex();
+    final int selectedIndex = dropList.getSelectedIndex();
 
     if (selectedIndex > 0) {
       item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
@@ -114,15 +114,15 @@ public class FormattedStringConfigurer
       int pos = nameField.getCaretPosition();
       // Cut out any selected text
       if (nameField.getSelectedText() != null) {
-        int start = nameField.getSelectionStart();
-        int end = nameField.getSelectionEnd();
+        final int start = nameField.getSelectionStart();
+        final int end = nameField.getSelectionEnd();
         work = work.substring(0, start) + work.substring(end);
         if (pos > work.length()) {
           pos = work.length();
         }
       }
 
-      String news = work.substring(0, pos) + item + work.substring(pos);
+      final String news = work.substring(0, pos) + item + work.substring(pos);
       nameField.setText(news);
       nameField.setCaretPosition(pos + item.length());
 

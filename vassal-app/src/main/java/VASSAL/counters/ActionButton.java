@@ -82,7 +82,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(stroke).append(bounds.x).append(bounds.y).append(bounds.width).append(bounds.height).append(description);
     return ID + se.getValue();
   }
@@ -137,7 +137,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     stroke = st.nextNamedKeyStroke('A');
     bounds.x = st.nextInt(-20);
@@ -167,7 +167,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof ActionButton)) return false;
-    ActionButton c = (ActionButton) o;
+    final ActionButton c = (ActionButton) o;
     if (! Objects.equals(bounds, c.bounds)) return false;
     return Objects.equals(description, c.description);
   }
@@ -215,7 +215,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(strokeConfig.getValueString()).append(xConfig.getValueString()).append(yConfig.getValueString()).append(widthConfig.getValueString()).append(
           heightConfig.getValueString()).append(descConfig.getValueString());
       return ID + se.getValue();
@@ -287,13 +287,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
           }
         }
         if (piece instanceof ActionButton) {
-          ActionButton action = (ActionButton) piece;
+          final ActionButton action = (ActionButton) piece;
           if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
             // Save state prior to command
             p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
             try {
               RecursionLimiter.startExecution(action);
-              Command command = p.keyEvent(action.stroke.getKeyStroke());
+              final Command command = p.keyEvent(action.stroke.getKeyStroke());
               GameModule.getGameModule().sendAndLog(command);
             }
             catch (RecursionLimitException e) {

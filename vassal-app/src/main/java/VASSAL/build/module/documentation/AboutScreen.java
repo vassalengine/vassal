@@ -91,7 +91,7 @@ public class AboutScreen extends AbstractConfigurable {
       Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         g.getLocalizedGameName(), g.getGameVersion()));
 
-    for (ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
+    for (final ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
       sb.append("<br/>").append(//NON-NLS
         Resources.getString("AboutScreen.extension_version",  //$NON-NLS-1$
           ext.getName(), ext.getVersion()));
@@ -120,8 +120,8 @@ public class AboutScreen extends AbstractConfigurable {
    * The attributes of an AboutScreen are:
    *
    * <code>TITLE</code> the text of the menu entry in the Help menu
-   * <code>FILE</code> the name of an image file in the {@link
-   * DataArchive}.  The image is displayed when the menu item is
+   * <code>FILE</code> the name of an image file in the @link
+   * DataArchive.  The image is displayed when the menu item is
    * selected
    */
   @Override

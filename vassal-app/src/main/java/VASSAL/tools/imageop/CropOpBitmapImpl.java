@@ -97,7 +97,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     final ArrayList<VASSAL.tools.opcache.Op<?>> ops =
       new ArrayList<>(tiles.length);
 
-    for (Point tile : tiles) ops.add(sop.getTileOp(tile));
+    for (final Point tile : tiles) ops.add(sop.getTileOp(tile));
 
     return ops;
   }
@@ -123,7 +123,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
 
     final Graphics2D g = dst.createGraphics();
 
-    for (Point tile : tiles) {
+    for (final Point tile : tiles) {
       g.drawImage(sop.getTile(tile, null), tile.x * tw - x0, tile.y * th - y0, null);
     }
 

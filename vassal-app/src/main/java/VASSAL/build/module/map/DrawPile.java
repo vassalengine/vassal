@@ -95,7 +95,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   protected JPopupMenu buildPopup() {
-    JPopupMenu popup = new JPopupMenu();
+    final JPopupMenu popup = new JPopupMenu();
     return popup.getComponentCount() > 0 ? popup : null;
   }
 
@@ -122,40 +122,40 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return (DrawPile) idMgr.findInstance(id);
   }
 
-  public static final String WIDTH = "width";
-  public static final String HEIGHT = "height";
-  public static final String ALLOW_MULTIPLE = "allowMultiple";
-  public static final String ALLOW_SELECT = "allowSelect";
-  public static final String SELECT_DISPLAY_PROPERTY = "selectDisplayProperty";
-  public static final String SELECT_SORT_PROPERTY = "selectSortProperty";
-  public static final String FACE_DOWN = "faceDown";
-  public static final String DRAW_FACE_UP = "drawFaceUp";
-  public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat";
-  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey";
+  public static final String WIDTH = "width"; //NON-NLS
+  public static final String HEIGHT = "height"; //NON-NLS
+  public static final String ALLOW_MULTIPLE = "allowMultiple"; //NON-NLS
+  public static final String ALLOW_SELECT = "allowSelect"; //NON-NLS
+  public static final String SELECT_DISPLAY_PROPERTY = "selectDisplayProperty"; //NON-NLS
+  public static final String SELECT_SORT_PROPERTY = "selectSortProperty"; //NON-NLS
+  public static final String FACE_DOWN = "faceDown"; //NON-NLS
+  public static final String DRAW_FACE_UP = "drawFaceUp"; //NON-NLS
+  public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat"; //NON-NLS
+  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey"; //NON-NLS
   public static final String SHUFFLE = "shuffle";                       // "Re-shuffle deck" - see below //NON-NLS
-  public static final String SHUFFLE_REPORT_FORMAT = "shuffleFormat";
-  public static final String SHUFFLE_HOTKEY = "shuffleHotkey";
-  public static final String SHUFFLE_COMMAND = "shuffleCommand";
-  public static final String REVERSIBLE = "reversible";
-  public static final String REVERSE_REPORT_FORMAT = "reverseFormat";
-  public static final String REVERSE_HOTKEY = "reverseHotkey";
-  public static final String REVERSE_COMMAND = "reverseCommand";
-  public static final String DRAW = "draw";
-  public static final String COLOR = "color";
-  public static final String MAXSTACK = "maxStack";
-  public static final String EXPRESSIONCOUNTING = "expressionCounting";
-  public static final String COUNTEXPRESSIONS = "countExpressions";
+  public static final String SHUFFLE_REPORT_FORMAT = "shuffleFormat"; //NON-NLS
+  public static final String SHUFFLE_HOTKEY = "shuffleHotkey"; //NON-NLS
+  public static final String SHUFFLE_COMMAND = "shuffleCommand"; //NON-NLS //NON-NLS
+  public static final String REVERSIBLE = "reversible"; //NON-NLS
+  public static final String REVERSE_REPORT_FORMAT = "reverseFormat"; //NON-NLS
+  public static final String REVERSE_HOTKEY = "reverseHotkey"; //NON-NLS
+  public static final String REVERSE_COMMAND = "reverseCommand"; //NON-NLS
+  public static final String DRAW = "draw"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String MAXSTACK = "maxStack"; //NON-NLS
+  public static final String EXPRESSIONCOUNTING = "expressionCounting"; //NON-NLS
+  public static final String COUNTEXPRESSIONS = "countExpressions"; //NON-NLS
   public static final String RESHUFFLABLE = "reshufflable";             // "Send to another deck" -- see above //NON-NLS
-  public static final String RESHUFFLE_COMMAND = "reshuffleCommand";
-  public static final String RESHUFFLE_TARGET = "reshuffleTarget";
-  public static final String RESHUFFLE_MESSAGE = "reshuffleMessage";
-  public static final String RESHUFFLE_HOTKEY = "reshuffleHotkey";
-  public static final String REPORT_FORMAT = "reportFormat";
-  public static final String CAN_SAVE = "canSave";
-  public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty";
-  public static final String EMPTY_HOTKEY = "emptyHotkey";
-  public static final String RESTRICT_OPTION = "restrictOption";
-  public static final String RESTRICT_EXPRESSION = "restrictExpression";
+  public static final String RESHUFFLE_COMMAND = "reshuffleCommand"; //NON-NLS
+  public static final String RESHUFFLE_TARGET = "reshuffleTarget"; //NON-NLS
+  public static final String RESHUFFLE_MESSAGE = "reshuffleMessage"; //NON-NLS
+  public static final String RESHUFFLE_HOTKEY = "reshuffleHotkey"; //NON-NLS
+  public static final String REPORT_FORMAT = "reportFormat"; //NON-NLS
+  public static final String CAN_SAVE = "canSave"; //NON-NLS
+  public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty"; //NON-NLS
+  public static final String EMPTY_HOTKEY = "emptyHotkey"; //NON-NLS
+  public static final String RESTRICT_OPTION = "restrictOption"; //NON-NLS
+  public static final String RESTRICT_EXPRESSION = "restrictExpression"; //NON-NLS
 
   public static final String ALWAYS = "Always"; //NON-NLS
   public static final String NEVER = "Never"; //NON-NLS
@@ -200,12 +200,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
      */
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      ArrayList<String> l = new ArrayList<>();
+      final ArrayList<String> l = new ArrayList<>();
       l.add(NONE);
-      for (GameComponent g :
+      for (final GameComponent g :
            GameModule.getGameModule().getGameState().getGameComponents()) {
         if (g instanceof Map) {
-          for (DrawPile dp : ((Map) g).getComponentsOf(DrawPile.class)) {
+          for (final DrawPile dp : ((Map) g).getComponentsOf(DrawPile.class)) {
             if (dp.getConfigureName() != null)
               l.add(dp.getConfigureName());
           }
@@ -219,12 +219,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
      */
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      List<String> l = new ArrayList<>();
+      final List<String> l = new ArrayList<>();
       l.add(NONE_NAME);
-      for (GameComponent g :
+      for (final GameComponent g :
         GameModule.getGameModule().getGameState().getGameComponents()) {
         if (g instanceof Map) {
-          for (DrawPile dp : ((Map) g).getComponentsOf(DrawPile.class)) {
+          for (final DrawPile dp : ((Map) g).getComponentsOf(DrawPile.class)) {
             if (dp.getLocalizedConfigureName() != null)
               l.add(dp.getLocalizedConfigureName());
           }
@@ -376,7 +376,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   public boolean isReshufflable() {
-    return "true".equals(getAttributeValueString(RESHUFFLABLE));
+    return "true".equals(getAttributeValueString(RESHUFFLABLE));  //NON-NLS
   }
 
   @Override
@@ -721,8 +721,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   }
 
   public Point getPosition() {
-    Point p = new Point(pos);
-    Board b = map.getBoardByName(owningBoardName);
+    final Point p = new Point(pos);
+    final Board b = map.getBoardByName(owningBoardName);
     if (b != null) {
       p.translate(b.bounds().x, b.bounds().y);
     }
@@ -748,7 +748,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   protected Stack initializeContents() {
-    Stack s = super.initializeContents();
+    final Stack s = super.initializeContents();
     myDeck = new Deck(GameModule.getGameModule(), getDeckType());
     myDeck.setPropertySource(source);
     s.asList().forEach(gamePiece -> myDeck.add(gamePiece));
@@ -788,7 +788,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData myI18nData = super.getI18nData();
+    final ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(SELECT_DISPLAY_PROPERTY, false);
     myI18nData.setAttributeTranslatable(SELECT_SORT_PROPERTY, false);
     return myI18nData;
@@ -816,9 +816,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(getConfigureName() + "_numPieces"); //NON-NLS
-    for (String ce : dummy.getCountExpressions()) {
+    for (final String ce : dummy.getCountExpressions()) {
       l.add(getConfigureName() + "_" + (new Deck.CountExpression(ce)).getName());
     }
     return l;
@@ -827,11 +827,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>(super.getExpressionList());
+    final List<String> l = new ArrayList<>(super.getExpressionList());
     if (dummy != null) {
       if (dummy.isRestrictOption()) {
         l.add(dummy.getRestrictExpression().getExpression());
@@ -878,7 +878,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
    */
   @Override
   public List<String> getMenuTextList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (dummy != null) {
       if (USE_MENU.equals(dummy.getShuffleOption())) { // Confusingly, the term "shuffle" internally matches to "Re-shuffle" in external menus...
         l.add(dummy.getShuffleCommand());

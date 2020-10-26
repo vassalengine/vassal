@@ -100,7 +100,7 @@ public class FormattedStringExpression extends Expression {
     boolean isProperty = true;
     boolean first = true;
     while (st.hasMoreTokens()) {
-      String token = st.nextToken();
+      final String token = st.nextToken();
       isProperty = !isProperty;
       if (token.length() > 0) {
         /*

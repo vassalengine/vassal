@@ -66,7 +66,7 @@ public class MenuProxy extends AbstractParent<JMenu> {
       menu.setMnemonic(mnemonic);
     }
 
-    for (ChildProxy<?> child : children) {
+    for (final ChildProxy<?> child : children) {
       final JComponent peer = child.createPeer();
       if (peer != null) menu.add(peer);
     }

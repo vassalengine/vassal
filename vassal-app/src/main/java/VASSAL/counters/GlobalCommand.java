@@ -121,7 +121,7 @@ public class GlobalCommand {
    */
   private boolean passesPropertyFastMatch(GamePiece gamePiece) {
     if (!target.fastMatchProperty || fastProperty.isEmpty()) return true;
-    String value = (String) gamePiece.getProperty(fastProperty);
+    final String value = (String) gamePiece.getProperty(fastProperty);
     return fastValue.equals(value);
   }
 
@@ -145,7 +145,7 @@ public class GlobalCommand {
       RecursionLimiter.startExecution(owner); // Trap infinite loops of Global Key Commands
 
       // Send our report, if one is specified
-      String reportText = reportFormat.getLocalizedText(source);
+      final String reportText = reportFormat.getLocalizedText(source);
       if (reportText.length() > 0) {
         command = new Chatter.DisplayText(
           GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
@@ -162,7 +162,7 @@ public class GlobalCommand {
       String fastY = "";
 
       // Context piece, if we are doing current-piece-relative fast-matching (may be null otherwise)
-      GamePiece curPiece = target.getCurPiece();
+      final GamePiece curPiece = target.getCurPiece();
 
       // Evaluate all location-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
       if (target.fastMatchLocation) {
@@ -201,18 +201,18 @@ public class GlobalCommand {
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-      Visitor visitor = new Visitor(command, filter, keyStroke);
-      DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+      final Visitor visitor = new Visitor(command, filter, keyStroke);
+      final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
-          Stack stack = curPiece.getParent();
+          final Stack stack = curPiece.getParent();
           if (stack instanceof Deck) {
             command = command.append(((Deck)stack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
           }
-          List<GamePiece> pieces = stack.asList();
-          for (GamePiece gamePiece : pieces) {
+          final List<GamePiece> pieces = stack.asList();
+          for (final GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(gamePiece)) {
               continue;
@@ -225,11 +225,11 @@ public class GlobalCommand {
       }
       // If we're using "specific deck", then we find that deck and iterate through it, checking fast property matches only
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.DECK) {
-        DrawPile d = DrawPile.findDrawPile(fastDeck);
+        final DrawPile d = DrawPile.findDrawPile(fastDeck);
         if (d != null) {
           command = command.append(d.getDeck().maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
-          List<GamePiece> pieces = d.getDeck().asList();
-          for (GamePiece gamePiece : pieces) {
+          final List<GamePiece> pieces = d.getDeck().asList();
+          for (final GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(gamePiece)) {
               continue;
@@ -244,7 +244,7 @@ public class GlobalCommand {
         // For most Global Key Commands we need to run through the larger lists of maps & pieces. Ideally the Fast Matches
         // here will filter some of that out to improve performance, but we also want to do the best job possible for old
         // modules that don't take advantage of Fast Match yet.
-        for (Map map : maps) {
+        for (final Map map : maps) {
           // First check that this is a map we're even interested in
           if (target.fastMatchLocation) {
             // "Current Map" only cares about the map the issuing piece is on
@@ -260,20 +260,20 @@ public class GlobalCommand {
           }
 
           // Now we go through all the pieces/stacks/decks on this map
-          GamePiece[] everythingOnMap = map.getPieces();
+          final GamePiece[] everythingOnMap = map.getPieces();
 
           if (!target.fastMatchLocation) {
             // If NOT doing Location fast-matching we do tighter loops (because perf is important during GKCs)
             if (!target.fastMatchProperty) {
               // This is the no-fast-matching-at-all version, with "minimum extra overhead" since it's already going to be slow.
-              for (GamePiece pieceOrStack : everythingOnMap) {
+              for (final GamePiece pieceOrStack : everythingOnMap) {
                 dispatcher.accept(pieceOrStack);
               }
             }
             else {
               // This loop is WITH property Fast Match but WITHOUT location Fast Match
-              for (GamePiece pieceOrStack : everythingOnMap) {
-                List<GamePiece> pieceList;
+              for (final GamePiece pieceOrStack : everythingOnMap) {
+                final List<GamePiece> pieceList;
 
                 // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
                 if (pieceOrStack instanceof Stack) {
@@ -284,7 +284,7 @@ public class GlobalCommand {
                 }
 
                 // This will iterate through actual game pieces
-                for (GamePiece gamePiece : pieceList) {
+                for (final GamePiece gamePiece : pieceList) {
                   // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
                   if (!passesPropertyFastMatch(gamePiece)) {
                     continue;
@@ -296,8 +296,8 @@ public class GlobalCommand {
           }
           else {
             // WITH Location Fast Matching we have some extra steps
-            for (GamePiece pieceOrStack : everythingOnMap) {
-              List<GamePiece> pieceList;
+            for (final GamePiece pieceOrStack : everythingOnMap) {
+              final List<GamePiece> pieceList;
 
               // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
               if (pieceOrStack instanceof Stack) {
@@ -308,7 +308,7 @@ public class GlobalCommand {
               }
 
               // This will iterate through actual game pieces
-              for (GamePiece gamePiece : pieceList) {
+              for (final GamePiece gamePiece : pieceList) {
                 // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
                 if (!passesPropertyFastMatch(gamePiece)) {
                   continue;
@@ -338,7 +338,7 @@ public class GlobalCommand {
                   if (!fastBoard.isEmpty() && !fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
                     continue;
                   }
-                  Point pt = new Point(gamePiece.getPosition());
+                  final Point pt = new Point(gamePiece.getPosition());
                   if (!fastX.equals(Integer.toString((int) pt.getX())) || !fastY.equals(Integer.toString((int) pt.getY()))) {
                     continue;
                   }
@@ -431,7 +431,7 @@ public class GlobalCommand {
         
         // Keep drawing until required select count met or all cards in Deck have been processed
         selectedCount = 0;
-        for (PieceIterator it = d.drawCards(); it.hasMoreElements() && (getSelectFromDeck() < 0 || getSelectFromDeck() > selectedCount);) {
+        for (final PieceIterator it = d.drawCards(); it.hasMoreElements() && (getSelectFromDeck() < 0 || getSelectFromDeck() > selectedCount);) {
           apply(it.nextPiece(), true);
         }
       }
@@ -513,7 +513,7 @@ public class GlobalCommand {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    GlobalCommand other = (GlobalCommand) obj;
+    final GlobalCommand other = (GlobalCommand) obj;
     if (keyStroke == null) {
       if (other.keyStroke != null)
         return false;

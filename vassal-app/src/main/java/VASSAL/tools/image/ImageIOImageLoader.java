@@ -66,7 +66,7 @@ public class ImageIOImageLoader implements ImageLoader {
   protected static final boolean YCbCrBug;
 
   static {
-    BufferedImage img;
+    final BufferedImage img;
 
     try (InputStream in = ImageIOImageLoader.class.getResourceAsStream("/images/black.jpg")) { //NON-NLS
       // We intentionally bypass the normal image loading system

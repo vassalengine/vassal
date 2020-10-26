@@ -247,7 +247,7 @@ public class FormattedString implements Loopable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    FormattedString other = (FormattedString) obj;
+    final FormattedString other = (FormattedString) obj;
     if (formatString == null) {
       return other.formatString == null;
     }

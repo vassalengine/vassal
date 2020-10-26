@@ -133,11 +133,11 @@ public class KeyCommand extends AbstractAction {
         GameModule.getGameModule().sendAndLog(KeyBuffer.getBuffer().keyCommand(stroke));
       }
       else {
-        BoundsTracker t = new BoundsTracker();
-        GamePiece outer = Decorator.getOutermost(target);
+        final BoundsTracker t = new BoundsTracker();
+        final GamePiece outer = Decorator.getOutermost(target);
         t.addPiece(outer);
         outer.setProperty(Properties.SNAPSHOT, ((PropertyExporter) outer).getProperties()); // save state prior to command
-        Command c = outer.keyEvent(stroke);
+        final Command c = outer.keyEvent(stroke);
         if (target.getId() != null) {
           GameModule.getGameModule().sendAndLog(c);
         }
@@ -163,7 +163,7 @@ public class KeyCommand extends AbstractAction {
       String localizedName = name;
       if (i18nPiece != null && GameModule.getGameModule().isLocalizationEnabled()) {
         String key = null;
-        for (PieceI18nData.Property p : i18nPiece.getI18nData().getProperties()) {
+        for (final PieceI18nData.Property p : i18nPiece.getI18nData().getProperties()) {
           if (p.getName().equals(name)) {
             key = TranslatablePiece.PREFIX + p.getName();
           }

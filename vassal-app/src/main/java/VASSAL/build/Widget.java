@@ -64,9 +64,9 @@ public abstract class Widget extends AbstractConfigurable {
   public void build(Element el) {
     buildElement = el;
     if (el != null) {
-      NamedNodeMap n = el.getAttributes();
+      final NamedNodeMap n = el.getAttributes();
       for (int i = 0; i < n.getLength(); ++i) {
-        Attr att = (Attr) n.item(i);
+        final Attr att = (Attr) n.item(i);
         setAttribute(att.getName(), att.getValue());
         Localization.getInstance().saveTranslatableAttribute(this, att.getName(), att.getValue());
       }

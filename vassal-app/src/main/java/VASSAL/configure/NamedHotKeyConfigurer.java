@@ -45,7 +45,7 @@ import net.miginfocom.swing.MigLayout;
  * A configurer for Configuring Key Strokes. It allows the entry of either
  * a standard keystroke, or a Named command.
  *
- * It contains two seperate Text fields, one for the Name and one for the keystroke.
+ * It contains two separate Text fields, one for the Name and one for the keystroke.
  * A user can fill in one or the other. Filling in one, clears the other.
  *
  * This Configurer has a limited undo function. Whenever one of the two fields gains focus,
@@ -235,13 +235,13 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     if (s == null) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
-    String[] parts = s.split(",");
+    final String[] parts = s.split(",");
     if (parts.length < 2) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
 
     try {
-      KeyStroke stroke = KeyStroke.getKeyStroke(
+      final KeyStroke stroke = KeyStroke.getKeyStroke(
         Integer.parseInt(parts[0]),
         Integer.parseInt(parts[1])
       );
@@ -263,7 +263,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     if (stroke == null) {
       return "";
     }
-    KeyStroke key = stroke.getStroke();
+    final KeyStroke key = stroke.getStroke();
     if (key == null) {
       return "";
     }

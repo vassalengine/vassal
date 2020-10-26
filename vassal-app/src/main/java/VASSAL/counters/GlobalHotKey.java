@@ -68,7 +68,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(commandKey).append(globalHotKey).append(description);
     return ID + se.getValue();
   }
@@ -123,7 +123,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
     commandName = sd.nextToken();
     commandKey = sd.nextNamedKeyStroke('H');
     globalHotKey = sd.nextNamedKeyStroke(null);
@@ -188,7 +188,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString()).append(descConfig.getValueString());
       return ID + se.getValue();
     }

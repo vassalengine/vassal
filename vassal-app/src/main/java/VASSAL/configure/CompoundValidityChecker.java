@@ -41,7 +41,7 @@ public class CompoundValidityChecker implements ValidityChecker {
 
   @Override
   public void validate(Buildable target, ValidationReport report) {
-    for (ValidityChecker c : checkers) {
+    for (final ValidityChecker c : checkers) {
       c.validate(target, report);
     }
   }

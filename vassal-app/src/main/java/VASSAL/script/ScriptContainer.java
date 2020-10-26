@@ -100,7 +100,7 @@ public class ScriptContainer extends AbstractConfigurable {
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData data = super.getI18nData();
+    final ComponentI18nData data = super.getI18nData();
     data.setAllAttributesUntranslatable();
     return data;
   }

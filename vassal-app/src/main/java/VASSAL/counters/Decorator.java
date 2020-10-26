@@ -335,7 +335,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    */
   @Override
   public void setState(String newState) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, '\t');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, '\t');
     mySetState(st.nextToken());
     try {
       piece.setState(st.nextToken());
@@ -359,12 +359,12 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    */
   @Override
   public void mergeState(String newState, String oldState) {
-    SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, '\t');
-    String myNewState = stNew.nextToken();
-    String innerNewState = stNew.nextToken();
-    SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, '\t');
-    String myOldState = stOld.nextToken();
-    String innerOldState = stOld.nextToken();
+    final SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, '\t');
+    final String myNewState = stNew.nextToken();
+    final String innerNewState = stNew.nextToken();
+    final SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, '\t');
+    final String myOldState = stOld.nextToken();
+    final String innerOldState = stOld.nextToken();
     if (!myOldState.equals(myNewState)) {
       mySetState(myNewState);
     }
@@ -395,7 +395,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    */
   @Override
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(myGetState(), '\t');
+    final SequenceEncoder se = new SequenceEncoder(myGetState(), '\t');
     se.append(piece.getState());
     return se.getValue();
   }
@@ -424,7 +424,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    */
   @Override
   public String getType() {
-    SequenceEncoder se = new SequenceEncoder(myGetType(), '\t');
+    final SequenceEncoder se = new SequenceEncoder(myGetType(), '\t');
     se.append(piece.getType());
     return se.getValue();
   }
@@ -485,7 +485,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
-    Command c = myKeyEvent(stroke);
+    final Command c = myKeyEvent(stroke);
     return c == null ? piece.keyEvent(stroke)
       : c.append(piece.keyEvent(stroke));
   }
@@ -630,13 +630,13 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   protected PieceI18nData getI18nData(String command, String description) {
-    PieceI18nData data = new PieceI18nData(this);
+    final PieceI18nData data = new PieceI18nData(this);
     data.add(command, description);
     return data;
   }
 
   protected PieceI18nData getI18nData(String[] commands, String[] descriptions) {
-    PieceI18nData data = new PieceI18nData(this);
+    final PieceI18nData data = new PieceI18nData(this);
     for (int i = 0; i < commands.length; i++) {
       data.add(commands[i], descriptions[i]);
     }
@@ -652,7 +652,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   protected String getTranslation(String key) {
-    String fullKey = TranslatablePiece.PREFIX + key;
+    final String fullKey = TranslatablePiece.PREFIX + key;
     return Localization.getInstance().translate(fullKey, key);
   }
 
@@ -721,7 +721,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
     if (!(p instanceof PersistentPropertyContainer)) {
       return null;
     }
-    PersistentPropertyContainer container = (PersistentPropertyContainer) p;
+    final PersistentPropertyContainer container = (PersistentPropertyContainer) p;
 
     String mapName = ""; //$NON-NLS-1$
     String boardName = ""; //$NON-NLS-1$

@@ -59,7 +59,7 @@ public class PlayerWindow extends JFrame {
   protected final JPanel controlPanel = new JPanel();
 
   public PlayerWindow() {
-    setTitle("VASSAL");
+    setTitle(Resources.getString("General.VASSAL"));
     setLayout(new BorderLayout());
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -81,8 +81,8 @@ public class PlayerWindow extends JFrame {
       new MenuProxy(Resources.getString("General.file"));
     fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
 
-    fileMenu.add(mm.addMarker("PredefinedSetup.start"));
-    fileMenu.add(mm.addMarker("PredefinedSetup.end"));
+    fileMenu.add(mm.addMarker("PredefinedSetup.start"));  //NON-NLS
+    fileMenu.add(mm.addMarker("PredefinedSetup.end"));  //NON-NLS
 
     fileMenu.add(mm.addKey("GameState.new_game"));
     fileMenu.add(mm.addKey("GameState.load_game"));
@@ -94,8 +94,8 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("BasicLogger.end_logfile"));
 
     if (SystemUtils.IS_OS_MAC_OSX) {
-      fileMenu.add(mm.addMarker("Editor.File.start"));
-      fileMenu.add(mm.addMarker("Editor.File.end"));
+      fileMenu.add(mm.addMarker("Editor.File.start"));  //NON-NLS
+      fileMenu.add(mm.addMarker("Editor.File.end"));  //NON-NLS
     }
     else {
       fileMenu.addSeparator();
@@ -110,18 +110,17 @@ public class PlayerWindow extends JFrame {
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
 
-    // FIMXE: setting mnemonic from first letter could cause collisions in
-    // some languages
+    // FIXME: setting mnemonic from first letter could cause collisions in some languages
     helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
-    helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));
+    helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));  //NON-NLS
     helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addKey("Help.user_guide"));
-    helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));
+    helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));  //NON-NLS
 
     helpMenu.addSeparator();
-    helpMenu.add(mm.addMarker("Documentation.Module.start"));
-    helpMenu.add(mm.addMarker("Documentation.Module.end"));
+    helpMenu.add(mm.addMarker("Documentation.Module.start"));  //NON-NLS
+    helpMenu.add(mm.addMarker("Documentation.Module.end"));  //NON-NLS
 
     helpMenu.add(mm.addKey("Documentation.about_module"));
 
@@ -159,8 +158,8 @@ public class PlayerWindow extends JFrame {
 
     mb.add(fileMenu);
     mb.add(toolsMenu);
-    mb.add(mm.addMarker("Editor.MenuBar.start"));
-    mb.add(mm.addMarker("Editor.MenuBar.end"));
+    mb.add(mm.addMarker("Editor.MenuBar.start"));  //NON-NLS
+    mb.add(mm.addMarker("Editor.MenuBar.end"));  //NON-NLS
     mb.add(helpMenu);
 
     setJMenuBar(mm.getMenuBarFor(this));
@@ -194,9 +193,10 @@ public class PlayerWindow extends JFrame {
   @Deprecated
   public ComponentSplitter.SplitPane splitControlPanel(Component newComponent, int hideablePosition, boolean resize) {
     int index = -1;
-    Container parent = controlPanel.getParent();
+    final Container parent = controlPanel.getParent();
     if (parent != null) {
-      for (int i = 0, n = parent.getComponentCount(); i < n; ++i) {
+      final int n = parent.getComponentCount();
+      for (int i = 0; i < n; ++i) {
         if (controlPanel == parent.getComponent(i)) {
           index = i;
           break;

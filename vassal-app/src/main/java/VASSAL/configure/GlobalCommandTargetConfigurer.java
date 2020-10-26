@@ -252,7 +252,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
   @Override
   public void repack() {
-    Window w = SwingUtilities.getWindowAncestor(controls);
+    final Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
       // Don't let pack make dialog smaller.
       w.setMinimumSize(w.getSize());

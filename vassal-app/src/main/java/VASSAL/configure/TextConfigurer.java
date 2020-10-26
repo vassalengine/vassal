@@ -80,11 +80,11 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
    * @return
    */
   public static String escapeNewlines(String s) {
-    SequenceEncoder se = new SequenceEncoder('|');
-    StringTokenizer st = new StringTokenizer(s, "\n\r", true);
+    final SequenceEncoder se = new SequenceEncoder('|');
+    final StringTokenizer st = new StringTokenizer(s, "\n\r", true);
     boolean wasNewLine = true;
     while (st.hasMoreTokens()) {
-      String token = st.nextToken();
+      final String token = st.nextToken();
       switch (token.charAt(0)) {
       case '\n':
         if (wasNewLine) {
@@ -104,7 +104,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
 
   @Override
   public void setValue(String s) {
-    String text = restoreNewlines(s);
+    final String text = restoreNewlines(s);
     setValue((Object) text);
   }
 
@@ -143,7 +143,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
         }
       });
       textArea.setText((String) getValue());
-      JScrollPane scroll = new ScrollPane(textArea);
+      final JScrollPane scroll = new ScrollPane(textArea);
       if (name != null) {
         scroll.setBorder(new TitledBorder(name));
       }
@@ -164,7 +164,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     }
     else if (!updateQueued) {
       updateQueued = true;
-      Runnable delayedUpdate = () -> {
+      final Runnable delayedUpdate = () -> {
         try {
           Thread.sleep(updateFrequencey);
         }

@@ -110,8 +110,8 @@ public abstract class EditorWindow extends JFrame {
 
     // file menu
     if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Editor.File", mm.addKey("Editor.save"));
-      mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));
+      mm.addToSection("Editor.File", mm.addKey("Editor.save"));  //NON-NLS
+      mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));  //NON-NLS
     } 
     else {
       final MenuProxy fileMenu = new MenuProxy(Resources.getString("General.file"));
@@ -145,13 +145,13 @@ public abstract class EditorWindow extends JFrame {
     final MenuProxy toolsMenu = new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
-    toolsMenu.add(mm.addKey("create_module_updater"));
+    toolsMenu.add(mm.addKey("create_module_updater"));  //NON-NLS
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
-    toolsMenu.add(mm.addKey("RemoveUnusedImagesDialog.remove_unused"));
+    toolsMenu.add(mm.addKey("Editor.UnusedImages.remove_unused_images"));
 
     if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Editor.MenuBar", editMenu);
-      mm.addToSection("Editor.MenuBar", toolsMenu);
+      mm.addToSection("Editor.MenuBar", editMenu);  //NON-NLS
+      mm.addToSection("Editor.MenuBar", toolsMenu);  //NON-NLS
     } 
     else {
       mb.add(editMenu);
@@ -160,7 +160,7 @@ public abstract class EditorWindow extends JFrame {
 
     // help menu
     if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));
+      mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));  //NON-NLS
     } 
     else {
       final MenuProxy helpMenu = new MenuProxy(Resources.getString("General.help"));
@@ -231,9 +231,9 @@ public abstract class EditorWindow extends JFrame {
       }
     };
     createUpdater.setEnabled(false);
-    mm.addAction("create_module_updater", createUpdater);
+    mm.addAction("create_module_updater", createUpdater);  //NON-NLS
 
-    mm.addAction("RemoveUnusedImagesDialog.remove_unused", new AbstractAction("Remove Unused Images") {
+    mm.addAction("Editor.UnusedImages.remove_unused_images", new AbstractAction("Remove Unused Images") {  //NON-NLS
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -348,12 +348,12 @@ public abstract class EditorWindow extends JFrame {
   boolean isTempFile(String name) {
     return name == null || 
            name.isEmpty() ||
-           ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));
+           ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
   }
 
   void setModuleName(String name) {
     if (isTempFile(name)) {
-      moduleName = Resources.getString("Resources.ModuleEditor.creating_new_module");
+      moduleName = Resources.getString("Editor.ModuleEditor.creating_new_module");
     }
     else {
       moduleName = name;
@@ -363,7 +363,7 @@ public abstract class EditorWindow extends JFrame {
 
   void setExtensionName(String name) {
     if (isTempFile(name)) {
-      extensionName = Resources.getString("Resources.ExtensionEditor.creating_new_extension");
+      extensionName = Resources.getString("Editor.ExtensionEditor.creating_new_extension");
     }
     else {
       extensionName = name;
@@ -377,7 +377,7 @@ public abstract class EditorWindow extends JFrame {
   }
 
   protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
-    for (ChildProxy<?> c : mb.getChildren()) {
+    for (final ChildProxy<?> c : mb.getChildren()) {
       if (c instanceof MenuProxy) {
         final MenuProxy m = (MenuProxy) c;
         if (name.equals(m.getText()))

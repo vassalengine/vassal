@@ -76,7 +76,7 @@ public class PropertiesPieceFilter {
         for (int i = 0; i < CONDITIONS.length && f == null; i++) {
           if (expression.contains(CONDITIONS[i].pattern())) {
             s = CONDITIONS[i].split(expression);
-            String name;
+            final String name;
             String value = "";
             if (s.length > 0) {
               name = s[0].trim();
@@ -155,7 +155,7 @@ public class PropertiesPieceFilter {
     }
 
     protected int compareTo(GamePiece piece) {
-      String property = String.valueOf(piece.getProperty(name));
+      final String property = String.valueOf(piece.getProperty(name));
       try {
         return Integer.valueOf(property).compareTo(Integer.valueOf(value));
       }
@@ -192,7 +192,7 @@ public class PropertiesPieceFilter {
 
     @Override
     public boolean accept(GamePiece piece) {
-      String property = String.valueOf(piece.getProperty(name));
+      final String property = String.valueOf(piece.getProperty(name));
       boolean retVal = value.equals(property);
       if (alternate != null && isBooleanString(property)) {
         retVal |= alternate.equals(Boolean.valueOf(property));
@@ -219,7 +219,7 @@ public class PropertiesPieceFilter {
 
     @Override
     public boolean accept(GamePiece piece) {
-      String property = String.valueOf(piece.getProperty(name));
+      final String property = String.valueOf(piece.getProperty(name));
       boolean retVal = !value.equals(property);
       if (alternate != null && isBooleanString(property)) {
         retVal &= !alternate.equals(Boolean.valueOf(property));
@@ -329,7 +329,7 @@ public class PropertiesPieceFilter {
 
     @Override
     public boolean accept(GamePiece piece) {
-      String property = String.valueOf(piece.getProperty(name));
+      final String property = String.valueOf(piece.getProperty(name));
       return Pattern.matches(value, property);
     }
 

@@ -39,7 +39,7 @@ public abstract class Compressor {
         zipOut.close();
       }
       // FIXME: review error message
-      catch (IOException e) {
+      catch (final IOException e) {
         e.printStackTrace();
       }
     }
@@ -58,7 +58,7 @@ public abstract class Compressor {
         zipIn.close();
       }
       // FIXME: review error message
-      catch (IOException e) {
+      catch (final IOException e) {
         e.printStackTrace();
       }
     }

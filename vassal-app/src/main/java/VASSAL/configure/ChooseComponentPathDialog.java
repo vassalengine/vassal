@@ -49,8 +49,8 @@ public class ChooseComponentPathDialog extends ChooseComponentDialog {
       final DefaultMutableTreeNode node =
         (DefaultMutableTreeNode) p.getLastPathComponent();
 
-      Object[] x = node.getUserObjectPath();
-      Configurable[] userObjectPath = new Configurable[x.length];
+      final Object[] x = node.getUserObjectPath();
+      final Configurable[] userObjectPath = new Configurable[x.length];
 
       for (int i = 0; i < x.length; i++) {
         userObjectPath[i] = (Configurable) x[i];

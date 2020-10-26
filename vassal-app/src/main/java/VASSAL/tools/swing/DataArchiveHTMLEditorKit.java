@@ -51,7 +51,7 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
       final String src = (String) getElement().getAttributes().getAttribute(HTML.Attribute.SRC);
 
       URL url = null;
-      Path out = Info.getTempDir().toPath().resolve(src);
+      final Path out = Info.getTempDir().toPath().resolve(src);
 
       try {
         if (!Files.exists(out)) {

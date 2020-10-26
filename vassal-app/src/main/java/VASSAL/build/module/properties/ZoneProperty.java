@@ -55,11 +55,11 @@ public class ZoneProperty extends GlobalProperty {
 
   @Override
   protected String getPropertyId() {
-    String zoneName = parentZone == null ? null : parentZone.getName();
-    Board board = parentZone == null ? null : parentZone.getBoard();
-    String boardName = board == null ? null : board.getName();
-    Map map = board == null ? null : board.getMap();
-    String mapName = map == null ? null : map.getConfigureName();
+    final String zoneName = parentZone == null ? null : parentZone.getName();
+    final Board board = parentZone == null ? null : parentZone.getBoard();
+    final String boardName = board == null ? null : board.getName();
+    final Map map = board == null ? null : board.getMap();
+    final String mapName = map == null ? null : map.getConfigureName();
     return getConfigureName() + "\t" + zoneName + "\t" + boardName + "\t" + mapName;
   }
 

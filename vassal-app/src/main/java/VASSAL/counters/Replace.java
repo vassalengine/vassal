@@ -50,13 +50,13 @@ public class Replace extends PlaceMarker {
   }
 
   protected Command replacePiece() {
-    Command c;
+    final Command c;
     c = placeMarker();
     if (c == null) {
       reportDataError(this, Resources.getString("Error.bad_replace"));
     }
     else {
-      Command remove = new RemovePiece(Decorator.getOutermost(this));
+      final Command remove = new RemovePiece(Decorator.getOutermost(this));
       remove.execute();
       c.append(remove);
     }
@@ -90,7 +90,7 @@ public class Replace extends PlaceMarker {
 
   @Override
   public GamePiece createMarker() {
-    GamePiece marker = super.createMarker();
+    final GamePiece marker = super.createMarker();
     if (marker != null && matchRotation) {
       if (above) {
         matchTraits(this, marker);
@@ -120,7 +120,7 @@ public class Replace extends PlaceMarker {
             candidate = null;
           }
           else {
-            GamePiece inner = candidate.getInner();
+            final GamePiece inner = candidate.getInner();
             if (inner instanceof Decorator) {
               candidate = (Decorator) inner;
             }

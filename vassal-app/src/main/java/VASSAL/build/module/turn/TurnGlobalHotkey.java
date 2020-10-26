@@ -127,9 +127,9 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   public void apply() {
     if (match.isNull() || match.accept(checkPiece)) {
       GameModule.getGameModule().fireKeyStroke(hotkey);
-      String reportText = format.getLocalizedText();
+      final String reportText = format.getLocalizedText();
       if (reportText.length() > 0) {
-        Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
+        final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
         c.execute();
         GameModule.getGameModule().sendAndLog(c);
       }
@@ -139,7 +139,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {

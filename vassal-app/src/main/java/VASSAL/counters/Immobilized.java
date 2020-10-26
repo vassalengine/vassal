@@ -117,10 +117,10 @@ public class Immobilized extends Decorator implements EditablePiece {
     moveIfSelected = false;
     neverBandSelect = false;
     altToBandSelect = false;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    String selectionOptions = st.nextToken("");
-    String movementOptions = st.nextToken("");
+    final String selectionOptions = st.nextToken("");
+    final String movementOptions = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
@@ -322,7 +322,7 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Immobilized.trait_desciption");
+    return Resources.getString("Editor.Immobilized.trait_description");
   }
 
   @Override
@@ -340,7 +340,7 @@ public class Immobilized extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);

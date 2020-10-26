@@ -109,7 +109,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Because selecting a piece affects its visibility
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE;
-    boolean isDeck = (p != null) && (p instanceof Deck);
+    final boolean isDeck = (p != null) && (p instanceof Deck);
     if (p != null) {
       if (isDeck) {
         p = null;
@@ -123,9 +123,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
     }
 
-    boolean ignoreEvent = filter != null && filter.rejectEvent(e);
+    final boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
-      boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
+      final boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
       if (!kbuf.contains(p)) {
         if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) {
           kbuf.clear();
@@ -141,7 +141,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           kbuf.add(p);
         }
         else {
-          Stack s = p.getParent();
+          final Stack s = p.getParent();
           s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().add(gamePiece));
         }
         // End RFE 1629255
@@ -149,7 +149,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       else {
         // RFE 1659481 Ctrl-click deselects clicked units
         if (SwingUtils.isSelectionToggle(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-          Stack s = p.getParent();
+          final Stack s = p.getParent();
           if (s == null) {
             kbuf.remove(p);
           }
@@ -185,7 +185,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         anchor = map.mapToComponent(e.getPoint());
         selection = new Rectangle(anchor.x, anchor.y, 0, 0);
         if (map.getHighlighter() instanceof ColoredBorder) {
-          ColoredBorder b = (ColoredBorder) map.getHighlighter();
+          final ColoredBorder b = (ColoredBorder) map.getHighlighter();
           color = b.getColor();
           thickness = b.getThickness();
         }
@@ -199,7 +199,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       return;
     }
 
-    PieceVisitorDispatcher d = createDragSelector(
+    final PieceVisitorDispatcher d = createDragSelector(
       !SwingUtils.isSelectionToggle(e), e.isAltDown(), map.componentToMap(selection)
     );
 
@@ -213,7 +213,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         final Point finish = map.mapToComponent(e.getPoint());
         // Open to suggestions about a better way to distinguish "click" from
         // "lasso" (not that Vassal doesn't already suck immensely at
-        // click-vs-drag threshhold). FWIW, this "works".
+        // click-vs-drag threshold). FWIW, this "works".
         final boolean isLasso = finish.distance(anchor) >= 10;
         if (isLasso) {
           bandSelectPiece = null;
@@ -249,8 +249,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   public class KBDeckVisitor implements DeckVisitor {
-    boolean selecting = false;
-    boolean altDown = false;
+    boolean selecting;
+    boolean altDown;
     Rectangle mapsel;
 
     public KBDeckVisitor(boolean b, boolean c, Rectangle ms) {
@@ -273,7 +273,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           return null;
         }
         if (s.isExpanded()) {
-          Point[] pos = new Point[s.getPieceCount()];
+          final Point[] pos = new Point[s.getPieceCount()];
           map.getStackMetrics().getContents(s, pos, null, null, s.getPosition().x, s.getPosition().y);
           for (int i = 0; i < pos.length; ++i) {
             if (mapsel.contains(pos[i])) {
@@ -297,7 +297,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Does Not Stack units deselect normally once selected
     @Override
     public Object visitDefault(GamePiece p) {
-      Stack s = p.getParent();
+      final Stack s = p.getParent();
       if (s instanceof Deck) {
         // Clear any deck *members* out of the KeyBuffer.
         // (yes, members of decks can be does-not-stack)

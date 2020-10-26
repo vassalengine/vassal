@@ -56,7 +56,7 @@ public class DragBuffer {
         !pieces.contains(p) &&
         !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED_MOVEMENT))) {
       if (p instanceof Stack) {
-        for (GamePiece gamePiece : ((Stack) p).asList()) {
+        for (final GamePiece gamePiece : ((Stack) p).asList()) {
           if (Boolean.TRUE.equals(
                 gamePiece.getProperty(Properties.RESTRICTED_MOVEMENT))) {
             return;
@@ -88,7 +88,7 @@ public class DragBuffer {
       @Override
       public void mouseReleased(MouseEvent e) {
         e.getComponent().setCursor(null);
-        Component source = (Component) e.getSource();
+        final Component source = (Component) e.getSource();
 
         e.translatePoint(source.getLocationOnScreen().x,
                          source.getLocationOnScreen().y);
@@ -109,7 +109,7 @@ public class DragBuffer {
     c.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseEntered(MouseEvent e) {
-        Component source = (Component) e.getSource();
+        final Component source = (Component) e.getSource();
         if (source.isShowing()) {
           if (lastRelease != null) {
             e.translatePoint(source.getLocationOnScreen().x,
@@ -147,8 +147,8 @@ public class DragBuffer {
    * @param s Stack to test.
    */
   public boolean containsAllMembers(Stack s) {
-    List<GamePiece> members = s.asList();
-    for (GamePiece p : members) {
+    final List<GamePiece> members = s.asList();
+    for (final GamePiece p : members) {
       if (!contains(p)) {
         return false;
       }
@@ -174,7 +174,7 @@ public class DragBuffer {
 
   public String contents() {
     String s = "";
-    for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
+    for (final Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
       s = s.concat(i.next().getName());
       if (i.hasNext())
         s = s.concat(",");
@@ -183,14 +183,14 @@ public class DragBuffer {
   }
 
   public static void main(String[] args) {
-    JFrame f1 = new JFrame();
+    final JFrame f1 = new JFrame();
     f1.setSize(200, 200);
     f1.setVisible(true);
-    JFrame f2 = new JFrame();
+    final JFrame f2 = new JFrame();
     f2.setSize(200, 200);
     f2.setLocation(200, 0);
     f2.setVisible(true);
-    MouseListener l = new MouseAdapter() {
+    final MouseListener l = new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent evt) {
         evt.translatePoint(((JFrame) evt.getSource()).getLocationOnScreen().x, ((JFrame) evt.getSource()).getLocationOnScreen().y);

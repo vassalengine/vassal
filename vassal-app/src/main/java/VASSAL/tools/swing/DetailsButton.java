@@ -155,7 +155,7 @@ public class DetailsButton extends JButton {
   }
 
   protected void fixSize(Container c) {
-    for (Component comp : c.getComponents()) {
+    for (final Component comp : c.getComponents()) {
       if (comp != expander && comp instanceof Container) {
         final Container con = (Container) comp;
 

@@ -112,7 +112,7 @@ public class ServerAddressBook {
       try {
         localIPAddress = getLocalHostLANAddress().getHostAddress();
       }
-      catch (UnknownHostException e) {
+      catch (final UnknownHostException e) {
         localIPAddress = "?"; //$NON-NLS-1$
       }
     }
@@ -129,7 +129,7 @@ public class ServerAddressBook {
       try {
         externalIPAddress = discoverMyIpAddressFromRemote();
       }
-      catch (IOException e) {
+      catch (final IOException e) {
         externalIPAddress = "?"; //$NON-NLS-1$
       }
     }
@@ -138,8 +138,8 @@ public class ServerAddressBook {
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
     String theIp = null;
-    HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
-    List<String> l = r.doGet(null);
+    final HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
+    final List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
       theIp = l.get(0);
     }
@@ -177,11 +177,11 @@ public class ServerAddressBook {
     try {
       InetAddress candidateAddress = null;
       // Iterate all NICs (network interface cards)...
-      for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
-        NetworkInterface iface = ifaces.nextElement();
+      for (final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
+        final NetworkInterface iface = ifaces.nextElement();
         // Iterate all IP addresses assigned to each card...
-        for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
-          InetAddress inetAddr = inetAddrs.nextElement();
+        for (final Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
+          final InetAddress inetAddr = inetAddrs.nextElement();
           if (!inetAddr.isLoopbackAddress()) {
 
             if (inetAddr.isSiteLocalAddress()) {
@@ -207,14 +207,14 @@ public class ServerAddressBook {
       }
       // At this point, we did not find a non-loopback address.
       // Fall back to returning whatever InetAddress.getLocalHost() returns...
-      InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+      final InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
       if (jdkSuppliedAddress == null) {
         throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
       }
       return jdkSuppliedAddress;
     }
-    catch (Exception e) {
-      UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
+    catch (final Exception e) {
+      final UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
       unknownHostException.initCause(e);
       throw unknownHostException;
     }
@@ -240,7 +240,7 @@ public class ServerAddressBook {
         public void mouseClicked(MouseEvent e) {
           if (editButton.isEnabled() && e.getClickCount() == 2
                                      && SwingUtils.isMainMouseButtonDown(e)) {
-            int index = myList.locationToIndex(e.getPoint());
+            final int index = myList.locationToIndex(e.getPoint());
             editServer(index);
           }
         }
@@ -308,7 +308,7 @@ public class ServerAddressBook {
     // Check for Basic Types, regardless of other properties
     int index = 0;
     final String type = p.getProperty(TYPE_KEY);
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final Properties ep = entry.getProperties();
 
@@ -363,7 +363,7 @@ public class ServerAddressBook {
   public void showPopup(JComponent source) {
     final JPopupMenu popup = new JPopupMenu();
 
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final JMenuItem item = new JMenuItem(entry.toString());
       item.setAction(new MenuAction(entry));
@@ -471,7 +471,7 @@ public class ServerAddressBook {
     decodeAddressBook(addressConfig.getValueString());
 
     final DefaultListModel<AddressBookEntry> newAddressBook = new DefaultListModel<>();
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof OfficialEntry) {
         newAddressBook.add(0, entry);
@@ -488,7 +488,7 @@ public class ServerAddressBook {
     boolean privateServer = false;
     boolean updated = false;
 
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof OfficialEntry) {
         officialServer = true;
@@ -529,8 +529,8 @@ public class ServerAddressBook {
   }
 
   private String encodeAddressBook() {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry != null) {
         se.append(entry.encode());
@@ -541,7 +541,7 @@ public class ServerAddressBook {
 
   private void decodeAddressBook(String s) {
     addressBook.clear();
-    for (SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd.hasMoreTokens();) {
+    for (final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd.hasMoreTokens();) {
       final String token = sd.nextToken(""); //$NON-NLS-1$
       if (token.length() > 0) {
         final AddressBookEntry entry = buildEntry(token);
@@ -565,7 +565,7 @@ public class ServerAddressBook {
     try {
       newProperties = new PropertiesEncoder(s).getProperties();
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       // FIXME: Error Message?
     }
     return buildEntry(newProperties);

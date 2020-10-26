@@ -45,7 +45,7 @@ public class QuickColors {
    */
   public static int getQuickColor(String s) {
     if (StringUtils.isEmpty(s)) return QUICK_COLOR_NONE;
-    String s2 = s.trim();
+    final String s2 = s.trim();
     if (s2.isEmpty()) return QUICK_COLOR_NONE;
     return getQuickColor(s2.charAt(0));
   }

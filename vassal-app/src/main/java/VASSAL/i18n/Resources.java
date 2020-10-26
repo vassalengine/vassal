@@ -102,7 +102,7 @@ public class Resources {
   private void init() {
     Locale myLocale = Locale.getDefault();
 
-    ResourceBundle rb = ResourceBundle.getBundle(VASSAL_BUNDLE, myLocale, bundleLoader); //$NON-NLS-1$
+    final ResourceBundle rb = ResourceBundle.getBundle(VASSAL_BUNDLE, myLocale, bundleLoader); //$NON-NLS-1$
 
     // If the user has a resource bundle for their default language on their
     // local machine, add it to the list of supported locales
@@ -111,7 +111,7 @@ public class Resources {
     }
 
     final ArrayList<String> languages = new ArrayList<>();
-    for (Locale l : supportedLocales) {
+    for (final Locale l : supportedLocales) {
       languages.add(l.getLanguage());
     }
 
@@ -140,7 +140,7 @@ public class Resources {
 
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-              JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+              final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
               l.setText(new Locale((String) value).getDisplayLanguage());
               return l;
             }
@@ -182,10 +182,10 @@ public class Resources {
     l = new Locale(l.getLanguage());
     if (!supportedLocales.contains(l)) {
       supportedLocales.add(0, l);
-      StringEnumConfigurer config = (StringEnumConfigurer) Prefs
+      final StringEnumConfigurer config = (StringEnumConfigurer) Prefs
           .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
       if (config != null) {
-        ArrayList<String> valid = new ArrayList<>(Arrays
+        final ArrayList<String> valid = new ArrayList<>(Arrays
           .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
         config.setValidValues(valid.toArray(new String[0]));

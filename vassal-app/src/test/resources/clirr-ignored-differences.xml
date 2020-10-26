@@ -895,4 +895,11 @@
         <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6006</differenceType>
+        <field>gpIdSupport</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+
 </differences>

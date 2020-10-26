@@ -57,14 +57,14 @@ public class UnitTest implements UserDialog {
   }
 
   private static void testPeerManagers() throws InterruptedException, IOException {
-    UserDialog serverDialog = new UnitTest("Server"); //$NON-NLS-1$
-    PendingPeerManager serverPpm = new PendingPeerManager(serverDialog);
+    final UserDialog serverDialog = new UnitTest("Server"); //$NON-NLS-1$
+    final PendingPeerManager serverPpm = new PendingPeerManager(serverDialog);
     new AcceptPeerThread(5555, serverPpm).start();
 
-    UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
-    PendingPeerManager ppm = new PendingPeerManager(d);
-    ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client", 5556), d, ppm); //$NON-NLS-1$
-    PeerInfo info = new PeerInfo("Server", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
+    final UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
+    final PendingPeerManager ppm = new PendingPeerManager(d);
+    final ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client", 5556), d, ppm); //$NON-NLS-1$
+    final PeerInfo info = new PeerInfo("Server", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("Server"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(5000);
@@ -110,7 +110,7 @@ public class UnitTest implements UserDialog {
 
     final Runnable runnable = () -> {
       try {
-        ServerSocket server;
+        final ServerSocket server;
         synchronized (lock) {
           server = new ServerSocket(port);
           lock.notifyAll();

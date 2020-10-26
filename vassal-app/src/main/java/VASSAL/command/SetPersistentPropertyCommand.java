@@ -26,7 +26,7 @@ public class SetPersistentPropertyCommand extends Command {
 
   @Override
   protected void executeCommand() {
-    GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
+    final GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (target != null) {
       // Not all GamePieces will have persistent Properties
       if (target instanceof PersistentPropertyContainer) {

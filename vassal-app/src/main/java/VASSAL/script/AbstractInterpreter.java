@@ -146,7 +146,7 @@ public abstract class AbstractInterpreter extends Interpreter {
    */
   public VASSAL.script.proxy.Map findMap(String mapName) {
     Map map = null;
-    for (Map m : GameModule.getGameModule().getAllDescendantComponentsOf(
+    for (final Map m : GameModule.getGameModule().getAllDescendantComponentsOf(
         Map.class)) {
       if (m.getMapName().equals(mapName) && isAccessible(m)) {
         map = m;
@@ -165,7 +165,7 @@ public abstract class AbstractInterpreter extends Interpreter {
    */
   protected boolean isAccessible(Map m) {
     if (m instanceof PrivateMap) {
-      String mySide = PlayerRoster.getMySide();
+      final String mySide = PlayerRoster.getMySide();
       if (mySide == null) {
         return true;
       }

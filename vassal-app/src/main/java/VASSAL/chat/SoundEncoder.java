@@ -49,7 +49,7 @@ public class SoundEncoder implements CommandEncoder {
     if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
     sd.nextToken();
     final String soundKey = sd.nextToken();
     final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
@@ -61,8 +61,8 @@ public class SoundEncoder implements CommandEncoder {
     if (!(c instanceof Cmd)) {
       return null;
     }
-    Cmd cmd = (Cmd) c;
-    SequenceEncoder se = new SequenceEncoder('\t');
+    final Cmd cmd = (Cmd) c;
+    final SequenceEncoder se = new SequenceEncoder('\t');
     se.append(cmd.soundKey);
     se.append(playerEncoder.playerToString(cmd.getSender()));
     return COMMAND_PREFIX + se.getValue();
@@ -74,7 +74,7 @@ public class SoundEncoder implements CommandEncoder {
     private static long lastTime = System.currentTimeMillis();
     private static Player lastSender;
     private static int sendCount;
-    private static ArrayList<Player> banned = new ArrayList<>();
+    private static final ArrayList<Player> banned = new ArrayList<>();
     private static boolean updating = false;
 
     private final String soundKey;

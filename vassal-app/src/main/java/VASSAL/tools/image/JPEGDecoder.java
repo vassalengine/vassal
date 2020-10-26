@@ -76,7 +76,7 @@ class JPEGDecoder {
       throw new IOException("initial byte of chunk must be FF");
     }
 
-    byte[] data;
+    final byte[] data;
 
     if (type == TEM || (RST0 <= type && type <= EOI)) {
       // These chunks have no data

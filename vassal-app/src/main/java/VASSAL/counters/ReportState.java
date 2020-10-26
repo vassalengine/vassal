@@ -113,7 +113,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(NamedKeyStrokeArrayConfigurer.encode(keys))
       .append(reportFormat)
       .append(NamedKeyStrokeArrayConfigurer.encode(cycleDownKeys))
@@ -125,15 +125,15 @@ public class ReportState extends Decorator implements TranslatablePiece {
   // We perform the inner commands first so that their effects will be reported
   @Override
   public Command keyEvent(KeyStroke stroke) {
-    Command c = piece.keyEvent(stroke);
+    final Command c = piece.keyEvent(stroke);
     return c == null ? myKeyEvent(stroke) : c.append(myKeyEvent(stroke));
   }
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    GamePiece outer = getOutermost(this);
+    final GamePiece outer = getOutermost(this);
 
-    // Retrieve the name, location and visibilty of the unit prior to the
+    // Retrieve the name, location and visibility of the unit prior to the
     // trait being executed if it is outside this one.
 
     format.setProperty(MAP_NAME, getMap() == null ? null : getMap().getConfigureName());
@@ -143,7 +143,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     Command c = null;
 
-    java.util.Map<String, Object> oldPiece;
+    final java.util.Map<String, Object> oldPiece;
     final Object o = getProperty(Properties.SNAPSHOT);
     // If the SNAPSHOT is returned as a PropertyExporter instead of a Map, then it been set from custom code
     // that is still calling using PieceCloner.clonePiece. Extract the Property Map from the supplied GamePiece and annoy the user.
@@ -156,13 +156,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
       oldPiece = (java.util.Map<String, Object>) o;
     }
 
-    boolean wasVisible = oldPiece != null && !Boolean.TRUE.equals(oldPiece.get(Properties.INVISIBLE_TO_OTHERS));
-    boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
+    final boolean wasVisible = oldPiece != null && !Boolean.TRUE.equals(oldPiece.get(Properties.INVISIBLE_TO_OTHERS));
+    final boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
 
     PieceAccess.GlobalAccess.hideAll();
-    String oldUnitName = oldPiece == null ? null : (String) oldPiece.get(PropertyExporter.LOCALIZED_NAME);
+    final String oldUnitName = oldPiece == null ? null : (String) oldPiece.get(PropertyExporter.LOCALIZED_NAME);
     format.setProperty(OLD_UNIT_NAME, oldUnitName);
-    String newUnitName = outer.getLocalizedName();
+    final String newUnitName = outer.getLocalizedName();
     format.setProperty(NEW_UNIT_NAME, newUnitName);
     PieceAccess.GlobalAccess.revertAll();
 
@@ -181,15 +181,15 @@ public class ReportState extends Decorator implements TranslatablePiece {
           // Find the Command Name
           //
           String commandName = "";
-          KeyCommand[] k = ((Decorator) outer).getKeyCommands();
-          for (KeyCommand keyCommand : k) {
-            KeyStroke commandKey = keyCommand.getKeyStroke();
+          final KeyCommand[] k = ((Decorator) outer).getKeyCommands();
+          for (final KeyCommand keyCommand : k) {
+            final KeyStroke commandKey = keyCommand.getKeyStroke();
             if (stroke.equals(commandKey)) {
               commandName = keyCommand.getName();
             }
           }
 
-          ChangeTracker tracker = new ChangeTracker(this);
+          final ChangeTracker tracker = new ChangeTracker(this);
 
           format.setProperty(COMMAND_NAME, commandName);
 
@@ -206,7 +206,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
           }
           format.setFormat(getTranslation(theFormat));
 
-          OldAndNewPieceProperties properties = new OldAndNewPieceProperties(oldPiece, outer);
+          final OldAndNewPieceProperties properties = new OldAndNewPieceProperties(oldPiece, outer);
 
           String reportText = format.getLocalizedText(properties);
 
@@ -223,7 +223,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
           reportText = format.getLocalizedText(properties);
 
           if (reportText.length() > 0) {
-            Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
+            final Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
             display.execute();
             c = display;
           }
@@ -238,7 +238,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   protected String getPieceName() {
 
-    String name;
+    final String name;
 
     PieceAccess.GlobalAccess.hideAll();
 
@@ -282,9 +282,9 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    String encodedKeys = st.nextToken("");
+    final String encodedKeys = st.nextToken("");
     if (encodedKeys.indexOf(',') > 0) {
       keys = NamedKeyStrokeArrayConfigurer.decode(encodedKeys);
     }
@@ -295,7 +295,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       }
     }
     reportFormat = st.nextToken("$" + LOCATION_NAME + "$: $" + NEW_UNIT_NAME + "$ *");
-    String encodedCycleDownKeys = st.nextToken("");
+    final String encodedCycleDownKeys = st.nextToken("");
     if (encodedCycleDownKeys.indexOf(',') > 0) {
       cycleDownKeys = NamedKeyStrokeArrayConfigurer.decode(encodedCycleDownKeys);
     }
@@ -316,9 +316,9 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    int c = cycleReportFormat == null ? 0 : cycleReportFormat.length;
-    String[] formats = new String[c + 1];
-    String[] descriptions = new String[c + 1];
+    final int c = cycleReportFormat == null ? 0 : cycleReportFormat.length;
+    final String[] formats = new String[c + 1];
+    final String[] descriptions = new String[c + 1];
     formats[0] = reportFormat;
     descriptions[0] = getCommandDescription(description, Resources.getString("Editor.ReportState.report_format"));
     int j = 1;
@@ -333,7 +333,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof ReportState)) return false;
-    ReportState c = (ReportState) o;
+    final ReportState c = (ReportState) o;
     if (!Arrays.equals(keys, c.keys)) return false;
     if (! Objects.equals(reportFormat, c.reportFormat)) return false;
     if (!Arrays.equals(cycleDownKeys, c.cycleDownKeys)) return false;
@@ -423,7 +423,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(keys.getValueString())
         .append(format.getValueString())
         .append(cycleDownKeys.getValueString())
@@ -484,7 +484,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getFormattedStringList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
 
     if (cycleIndex >= 0 && cycleReportFormat.length > 0) {
       Collections.addAll(l, cycleReportFormat);
@@ -503,7 +503,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
   public void addLocalImageNames(Collection<String> s) {
     HTMLImageFinder h;
     if (cycleIndex >= 0 && cycleReportFormat.length > 0) {
-      for (String r : cycleReportFormat) {
+      for (final String r : cycleReportFormat) {
         h = new HTMLImageFinder(r);
         h.addImageNames(s);
       }

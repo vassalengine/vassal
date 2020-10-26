@@ -27,7 +27,7 @@ import VASSAL.command.Command;
 // TODO: throw this away or make it a JUnit test
 public class EchoClient implements Runnable, PropertyChangeListener {
   public static final String NAME = "EchoBot"; //$NON-NLS-1$
-  private static Random rng = new Random();
+  private static final Random rng = new Random();
   private final int changeRoom;
   private final int numRooms;
   private final FileWriter log;
@@ -48,12 +48,12 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   }
 
   public synchronized void showCHAT(PeerInfo pPeerInfo, String msg) {
-    Player sender = new P2PPlayer(pPeerInfo);
+    final Player sender = new P2PPlayer(pPeerInfo);
     if (!sender.getName().startsWith(NAME)
       && msg.startsWith("CHAT")) { //$NON-NLS-1$
       msg = "<" + client.getUserInfo().getName() //$NON-NLS-1$
         + msg.substring(msg.indexOf("> -")); //$NON-NLS-1$
-      Command c = new Chatter.DisplayText(null, msg);
+      final Command c = new Chatter.DisplayText(null, msg);
       client.sendTo(sender, c);
     }
   }
@@ -62,13 +62,13 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   public void run() {
     while (true) {
       try {
-        int nextSleep = Math.round(rng.nextFloat() * 2 * changeRoom * 1000);
+        final int nextSleep = Math.round(rng.nextFloat() * 2 * changeRoom * 1000);
         Thread.sleep(nextSleep);
       }
       catch (InterruptedException e) {
       }
 
-      String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
+      final String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       client.setRoom(new SimpleRoom(newRoom));
     }
   }
@@ -91,7 +91,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
 
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (VASSAL.chat.Room room : r) {
+    for (final VASSAL.chat.Room room : r) {
       buffer
         .append(room.getName())
         .append(": ") //$NON-NLS-1$

@@ -52,7 +52,7 @@ public class NumericPropertyPrompt extends PropertyPrompt {
       final int value = Integer.parseInt(s);
       return value <= max && value >= min;
     }
-    catch (NumberFormatException e) {
+    catch (final NumberFormatException e) {
       return false;
     }
   }
