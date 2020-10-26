@@ -255,7 +255,7 @@ public class ModuleManager {
   private final FileOutputStream lout;
   private final FileLock lock;
 
-  private final ServerSocket serverSocket;
+  private final ServerSocket serverSocket; //NOPMD
 
   public ModuleManager(ServerSocket serverSocket, long key,
                        FileOutputStream lout, FileLock lock)

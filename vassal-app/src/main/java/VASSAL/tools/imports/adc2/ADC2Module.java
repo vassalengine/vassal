@@ -1477,7 +1477,7 @@ public class ADC2Module extends Importer {
   private int version;
   private int classCombatSummaryValues;
   private int pieceCombatSummaryValues;
-  private final StatusDots[] statusDots = new StatusDots[6];
+  private final StatusDots[] statusDots = new StatusDots[6]; //NOPMD
   private final List<String> turnNames = new ArrayList<>();
   private boolean useLOS;
   private String deckName;
