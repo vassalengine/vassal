@@ -17,7 +17,6 @@
  */
 package VASSAL.i18n;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -38,9 +37,10 @@ import javax.swing.JList;
 import javax.swing.UIManager;
 
 import VASSAL.Info;
-import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 
 public class Resources {
 
@@ -129,13 +129,13 @@ public class Resources {
     setInstanceLocale(myLocale);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
         Resources.LOCALE_PREF_KEY,
-        getInstanceString("Prefs.language"), //$NON-NLS-1$
+        getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
       @Override
       public Component getControls() {
-        if (box == null) {
+        if (getBox() == null) {
           final Component c = super.getControls();
-          box.setRenderer(new DefaultListCellRenderer() {
+          getBox().setRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
             @Override

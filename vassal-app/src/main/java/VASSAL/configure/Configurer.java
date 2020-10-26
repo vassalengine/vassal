@@ -206,4 +206,14 @@ public abstract class Configurer {
   public void setHint(String hint) {
     this.hint = hint;
   }
+
+  /**
+   * Show/Hide the internal label maintained by this Configurer. It is up
+   * to individual Configurers to track and hide the label (if they can).
+   *
+   * @param visible Hide label if true
+   */
+  public void setLabelVisibility(boolean visible) {
+
+  }
 }

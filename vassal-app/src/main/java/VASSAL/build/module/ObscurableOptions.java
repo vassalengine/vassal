@@ -104,16 +104,6 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
   }
 
-  /**
-   * Set the text accompanying the "Allow opponent to unmask" control in the Preferences
-   */
-  public void setPrompt(String preferencesPrompt) {
-    final Configurer c = GameModule.getGameModule().getPrefs().getOption(PREFS_KEY);
-    if (c != null) {
-      c.setName(preferencesPrompt);
-    }
-  }
-
   public void allowAll() {
     override = Boolean.TRUE;
   }

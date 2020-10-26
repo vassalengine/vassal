@@ -121,4 +121,11 @@ public class StringConfigurer extends Configurer {
   protected JTextField buildTextField() {
     return new HintTextField(length, hint);
   }
+
+  @Override
+  public void setLabelVisibility(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
+  }
 }
