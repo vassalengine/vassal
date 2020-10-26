@@ -987,7 +987,15 @@
     <difference>
         <className>VASSAL/i18n/TranslateWindow</className>
         <differenceType>7004</differenceType>
-        <method>TranslateWindow(java.awt.Frame, boolean, VASSAL.i18n.Translatable, VASSAL.build.module.documentation.HelpWindow, VASSAL.configure.ConfigureTree)</method>
+        <method>*</method>
         <justification>no one should have extended this class</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/i18n/TranslateVassalWindow</className>
+        <differenceType>7004</differenceType>
+        <method>*</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+
 </differences>
