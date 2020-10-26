@@ -197,7 +197,7 @@ public class SetGlobalProperty extends DynamicProperty {
     Command comm = new NullCommand();
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
-        final MutableProperty prop;
+        MutableProperty prop = null;
         final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
 
         final ArrayList<MutablePropertiesContainer> propertyContainers =
