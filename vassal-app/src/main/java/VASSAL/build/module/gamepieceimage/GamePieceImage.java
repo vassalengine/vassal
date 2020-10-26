@@ -358,7 +358,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return out.toByteArray();
   }
 
-  public ItemInstance getInstance(String name) {
+  public ItemInstance getInstance(String name) { //NOPMD
     for (final ItemInstance instance : instances) {
       if (name.equals(instance.getName())) {
         return instance;
