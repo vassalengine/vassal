@@ -23,6 +23,7 @@ import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * An {@link InputStream} which concatenates other <code>InputStreams</code>.
@@ -39,7 +40,7 @@ import java.util.List;
  */
 public class CompositeInputStream extends InputStream {
 
-  protected final List<InputStream> queue;
+  protected final Queue<InputStream> queue;
 
   protected InputStream in;
 
@@ -51,7 +52,7 @@ public class CompositeInputStream extends InputStream {
    */
   public CompositeInputStream(List<InputStream> streams) {
     queue = new LinkedList<>(streams);
-    in = ((LinkedList<InputStream>)queue).poll();
+    in = queue.poll();
   }
 
   /**
@@ -67,7 +68,7 @@ public class CompositeInputStream extends InputStream {
   protected void nextStream() throws IOException {
     if (in != null) {
       in.close();
-      in = ((LinkedList<InputStream>)queue).poll();
+      in = queue.poll();
     }
   }
 
