@@ -811,7 +811,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     private final JTextField downCommand = new JTextField("Decrease");
     private final KeyModifiersConfigurer downModifiers = new KeyModifiersConfigurer(null, "  key:  ");
     // random layers
-    private JTextField rndCommand = new JTextField(8);
+    private final JTextField rndCommand = new JTextField(12);
     // random layers
     private final JTextField xOffInput = new JTextField(2);
     private final JTextField yOffInput = new JTextField(2);
@@ -885,7 +885,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       p.add(rnd1Controls);
       rnd2Controls = Box.createHorizontalBox();
       rnd2Controls.add(new JLabel("  Command:  "));
-      rndCommand = new JTextField(12);
       rndCommand.setMaximumSize(rndCommand.getPreferredSize());
       rndCommand.setText(e.rndText);
       rnd2Controls.add(rndCommand);
