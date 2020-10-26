@@ -1357,7 +1357,7 @@ public class Inventory extends AbstractToolbarItem
      */
     protected class Numerical extends CompareCounterNodes
                               implements Comparator<CounterNode> {
-      protected final String regex =  "\\d+"; //$NON-NLS-1$
+      protected final String regex =  "\\d+"; //$NON-NLS-1$ //NOPMD
       protected final Pattern p = Pattern.compile(regex);
 
       /**

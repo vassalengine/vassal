@@ -829,7 +829,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     private IconButton nextButton;
     private IconButton prevButton;
 
-    protected final int BUTTON_SIZE = 22;
+    protected final int BUTTON_SIZE = 22; //NOPMD
 
     protected JLabel turnLabel = new JLabel();
 
