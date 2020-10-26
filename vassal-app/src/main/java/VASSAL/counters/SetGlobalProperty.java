@@ -277,7 +277,7 @@ public class SetGlobalProperty extends DynamicProperty {
       keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
         @Override
         protected Configurer buildChildConfigurer() {
-          DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
+          final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
           c.addPropertyChangeListener(e -> resize());
           return c;
         }
@@ -293,7 +293,7 @@ public class SetGlobalProperty extends DynamicProperty {
       nameConfig = new FormattedExpressionConfigurer(m.getKey(), (EditablePiece) m);
       controls.add("Editor.SetGlobalProperty.global_property_name", nameConfig);
 
-      String[] levelKeys = {
+      final String[] levelKeys = {
         "Editor.SetGlobalProperty.current",
         "Editor.SetGlobalProperty.named_zone",
         "Editor.SetGlobalProperty.named_map"
@@ -328,7 +328,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls.add(keyCommandListConfig.getControls(), "left,grow,span 2"); // NON-NLS
 
       numericConfig.addPropertyChangeListener(evt -> {
-        boolean isNumeric = numericConfig.booleanValue();
+        final boolean isNumeric = numericConfig.booleanValue();
         minConfig.getControls().setVisible(isNumeric);
         minLabel.setVisible(isNumeric);
         maxConfig.getControls().setVisible(isNumeric);

@@ -99,7 +99,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
       @Override
       protected Configurer buildChildConfigurer() {
-        DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(DynamicProperty.this);
+        final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(DynamicProperty.this);
         c.addPropertyChangeListener(e -> resize());
         return c;
       }
@@ -437,7 +437,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands")) {
         @Override
         protected Configurer buildChildConfigurer() {
-          DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
+          final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
           c.addPropertyChangeListener(e -> resize());
           return c;
         }
