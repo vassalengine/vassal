@@ -41,17 +41,12 @@ import javax.swing.JPanel;
 import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 public class HexGridNumbering extends RegularGridNumbering {
-  private static final Logger logger = LoggerFactory.getLogger(HexGridNumbering.class); //NOPMD
-
   private HexGrid grid;
   private boolean stagger = true;
 
