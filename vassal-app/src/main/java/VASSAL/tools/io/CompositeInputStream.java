@@ -51,7 +51,7 @@ public class CompositeInputStream extends InputStream {
    */
   public CompositeInputStream(List<InputStream> streams) {
     queue = new LinkedList<>(streams);
-    in = queue.poll();
+    in = ((LinkedList<InputStream>)queue).poll();
   }
 
   /**
@@ -67,7 +67,7 @@ public class CompositeInputStream extends InputStream {
   protected void nextStream() throws IOException {
     if (in != null) {
       in.close();
-      in = queue.poll();
+      in = ((LinkedList<InputStream>)queue).poll();
     }
   }
 

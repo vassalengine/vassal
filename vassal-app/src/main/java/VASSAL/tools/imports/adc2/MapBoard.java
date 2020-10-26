@@ -625,7 +625,7 @@ public class MapBoard extends Importer {
     }
 
     @Override
-    ArrayList<Line> getLineList(Hex h) {
+    List<Line> getLineList(Hex h) {
       return h.hexLines;
     }
   }
@@ -714,7 +714,7 @@ public class MapBoard extends Importer {
     }
 
     @Override
-    ArrayList<Line> getLineList(Hex h) {
+    List<Line> getLineList(Hex h) {
       return h.hexSides;
     }
   }

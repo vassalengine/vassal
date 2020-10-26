@@ -85,11 +85,11 @@ public class MassPieceLoader {
 
   protected Configurable target;
   protected ConfigureTree configureTree;
-  final private List<String> imageNames = new ArrayList<>();
-  final private List<String> baseImages = new ArrayList<>();
-  final private List<String> levelImages = new ArrayList<>();
-  final private Map<String, PieceInfo> pieceInfo = new HashMap<>();
-  final private List<Emb> layers = new ArrayList<>();
+  private final List<String> imageNames = new ArrayList<>();
+  private final List<String> baseImages = new ArrayList<>();
+  private final List<String> levelImages = new ArrayList<>();
+  private final Map<String, PieceInfo> pieceInfo = new HashMap<>();
+  private final List<Emb> layers = new ArrayList<>();
   protected MassLoaderDialog dialog;
   private static final DirectoryConfigurer dirConfig = new DirectoryConfigurer(null,
       "Image Directory: ");
