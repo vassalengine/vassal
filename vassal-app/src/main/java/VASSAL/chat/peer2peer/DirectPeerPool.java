@@ -284,10 +284,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     JTextField portField;
 
     public Entry() {
-      this("", "", "5050", "");
+      this("", "", "5050");
     }
 
-    public Entry(String description, String address, String port, String passwd) {
+    public Entry(String description, String address, String port) {
       this.description = description;
       this.address = address;
       this.port = port;

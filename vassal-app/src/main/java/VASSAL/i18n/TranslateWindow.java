@@ -96,8 +96,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected ConfigureTree myConfigureTree;
   protected CopyButton[] copyButtons;
 
-  public TranslateWindow(Frame owner, boolean modal, final Translatable target,
-      HelpWindow helpWindow, ConfigureTree tree) {
+  public TranslateWindow(Frame owner, boolean modal, final Translatable target, ConfigureTree tree) {
     super(owner, modal);
     this.target = target;
     myConfigureTree = tree;

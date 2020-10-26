@@ -58,7 +58,7 @@ public class ExtensionsManager {
   }
 
   public ExtensionsManager(GameModule module) {
-    this.moduleFile = new File(GameModule.getGameModule().getDataArchive().getName());
+    this.moduleFile = new File(module.getDataArchive().getName());
   }
 
   /**
