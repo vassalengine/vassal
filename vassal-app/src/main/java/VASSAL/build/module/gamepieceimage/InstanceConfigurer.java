@@ -81,7 +81,7 @@ public class InstanceConfigurer extends Configurer {
   /** @deprecated Use {@link #getValueList()} instead. */
   @SuppressWarnings("unchecked")
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  public ArrayList<ItemInstance> getValueArrayList() {
+  public ArrayList<ItemInstance> getValueArrayList() { //NOPMD
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return (ArrayList<ItemInstance>) getValue();
   }
