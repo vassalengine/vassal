@@ -834,4 +834,65 @@
         <justification>no longer needed; no one should have extended this class</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>advancedControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>boardControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>mapControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetGlobalProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetGlobalProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>levelConfig</field>
+        <from>VASSAL.configure.StringEnumConfigurer</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetGlobalProperty$Ed</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
 </differences>
