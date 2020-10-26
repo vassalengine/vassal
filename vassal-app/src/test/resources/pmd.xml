@@ -5,6 +5,8 @@
   xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>Custom rules</description>
 
+  <rule ref="category/java/bestpractices.xml/AccessorClassGeneration" />
+  <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" />
   <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField" />
   <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
 <!--

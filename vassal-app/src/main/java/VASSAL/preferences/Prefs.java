@@ -205,10 +205,7 @@ public class Prefs implements Closeable {
 
     try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
       final FileChannel ch = raf.getChannel();
-
-      // lock the prefs file
       try (FileLock lock = ch.lock()) {
-
         // read the old key-value pairs
         final InputStream in = Channels.newInputStream(ch);
         storedValues.load(in);
