@@ -64,6 +64,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     this(null, null, validValues, i18nKeys);
   }
 
+  public TranslatingStringEnumConfigurer(String[] validValues, String[] i18nKeys, boolean isDisplayNames) {
+    this(null, null, validValues, i18nKeys, isDisplayNames);
+  }
+
   /**
    * Create a drop-list of localised display values that allows you to select a value from an
    * underlying list of 'internal' untranslated values.
