@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -162,6 +161,7 @@ import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
