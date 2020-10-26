@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipException;
 
@@ -45,7 +46,7 @@ public class ExtensionsLoader implements CommandEncoder {
   public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<>();
-  protected HashMap<String, String> loadedIds = new HashMap<>();
+  protected Map<String, String> loadedIds = new HashMap<>();
 
   protected ExtensionsManager extMgr;
   protected ExtensionsManager globalExtMgr;

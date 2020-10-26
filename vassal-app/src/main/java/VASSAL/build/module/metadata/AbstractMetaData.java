@@ -273,7 +273,7 @@ public abstract class AbstractMetaData {
   static class Attribute {
     protected String attributeName;
     protected String value;
-    protected HashMap<String, String> translations = new HashMap<>();
+    protected Map<String, String> translations = new HashMap<>();
 
     /**
      * Build Attribute class based on attribute value and translations

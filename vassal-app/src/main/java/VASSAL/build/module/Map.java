@@ -207,7 +207,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
-  protected ArrayList<Drawable> drawComponents = new ArrayList<>();
+  protected List<Drawable> drawComponents = new ArrayList<>();
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
   protected ComponentSplitter.SplitPane mainWindowDock;
@@ -225,13 +225,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected String markUnmovedText = ""; //$NON-NLS-1$
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
   protected MouseListener multicaster = null;
-  protected ArrayList<MouseListener> mouseListenerStack = new ArrayList<>();
+  protected List<MouseListener> mouseListenerStack = new ArrayList<>();
   protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
   protected PieceCollection pieces = new DefaultPieceCollection();
   protected Highlighter highlighter = new ColoredBorder();
-  protected ArrayList<Highlighter> highlighters = new ArrayList<>();
+  protected List<Highlighter> highlighters = new ArrayList<>();
   protected boolean clearFirst = false; // Whether to clear the display before
   // drawing the map
   protected boolean hideCounters = false; // Option to hide counters to see

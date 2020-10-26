@@ -83,7 +83,7 @@ public class ConditionalCommand extends Command {
       this.allowed = allowed;
     }
 
-    @Deprecated
+    @Deprecated (since = "2020-10-26", forRemoval = true)
     public Eq(String property, Vector<String> allowed) {
       this.property = property;
       this.allowed = allowed;

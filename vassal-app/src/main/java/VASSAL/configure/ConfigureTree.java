@@ -326,7 +326,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  private void addActionGroup(JPopupMenu menu, ArrayList<Action> l) {
+  private void addActionGroup(JPopupMenu menu, List<Action> l) {
     boolean empty = true;
     for (final Action a : l) {
       if (a != null) {

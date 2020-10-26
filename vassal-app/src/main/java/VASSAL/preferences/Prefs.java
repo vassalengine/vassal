@@ -207,26 +207,27 @@ public class Prefs implements Closeable {
       final FileChannel ch = raf.getChannel();
 
       // lock the prefs file
-      final FileLock lock = ch.lock();
+      try (FileLock lock = ch.lock()) {
 
-      // read the old key-value pairs
-      final InputStream in = Channels.newInputStream(ch);
-      storedValues.load(in);
+        // read the old key-value pairs
+        final InputStream in = Channels.newInputStream(ch);
+        storedValues.load(in);
 
-      // merge in the current key-value pairs
-      for (final Configurer c : options.values()) {
-        final String val = c.getValueString();
-        if (val != null) {
-          storedValues.put(c.getKey(), val);
+        // merge in the current key-value pairs
+        for (final Configurer c : options.values()) {
+          final String val = c.getValueString();
+          if (val != null) {
+            storedValues.put(c.getKey(), val);
+          }
         }
-      }
 
-      // write back the key-value pairs
-      ch.truncate(0);
-      ch.position(0);
-      final OutputStream out = Channels.newOutputStream(ch);
-      storedValues.store(out, null);
-      out.flush();
+        // write back the key-value pairs
+        ch.truncate(0);
+        ch.position(0);
+        final OutputStream out = Channels.newOutputStream(ch);
+        storedValues.store(out, null);
+        out.flush();
+      }
     }
     // channel and streams closed, lock released
   }

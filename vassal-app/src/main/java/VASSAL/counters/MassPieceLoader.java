@@ -66,6 +66,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -84,11 +85,11 @@ public class MassPieceLoader {
 
   protected Configurable target;
   protected ConfigureTree configureTree;
-  protected ArrayList<String> imageNames = new ArrayList<>();
-  protected ArrayList<String> baseImages = new ArrayList<>();
-  protected ArrayList<String> levelImages = new ArrayList<>();
-  protected HashMap<String, PieceInfo> pieceInfo = new HashMap<>();
-  protected ArrayList<Emb> layers = new ArrayList<>();
+  final private List<String> imageNames = new ArrayList<>();
+  final private List<String> baseImages = new ArrayList<>();
+  final private List<String> levelImages = new ArrayList<>();
+  final private Map<String, PieceInfo> pieceInfo = new HashMap<>();
+  final private List<Emb> layers = new ArrayList<>();
   protected MassLoaderDialog dialog;
   private static final DirectoryConfigurer dirConfig = new DirectoryConfigurer(null,
       "Image Directory: ");
@@ -992,7 +993,7 @@ public class MassPieceLoader {
    * Subclass of Embellishment to allow us to directly manipulate its members
    */
   static class Emb extends Embellishment {
-    private final ArrayList<String> builtImages = new ArrayList<>();
+    private final List<String> builtImages = new ArrayList<>();
 
     public Emb() {
       super();
@@ -1048,17 +1049,17 @@ public class MassPieceLoader {
       return false;
     }
 
-    /**
-     * Set the actual layer images based on a base image and the layer image
-     * template specification.
-     *
-     * @param baseImage
-     *          base Image name
-     * @param levelImages
-     *          List of available level images
-     * @return true if at least one layer built
-     */
-    public boolean buildLayers(String baseImage, ArrayList<String> levelImages) {
+      /**
+       * Set the actual layer images based on a base image and the layer image
+       * template specification.
+       *
+       * @param baseImage
+       *          base Image name
+       * @param levelImages
+       *          List of available level images
+       * @return true if at least one layer built
+       */
+    public boolean buildLayers(String baseImage, List<String> levelImages) {
       final String base = baseImage.split("\\.")[0];
       int count = 0;
       builtImages.clear();

@@ -33,6 +33,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
@@ -56,7 +57,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;"; // NON-NLS
-  private static final HashMap<String, Shape> shapeCache = new HashMap<>();
+  private static final Map<String, Shape> shapeCache = new HashMap<>();
 
   private String type;
   private Shape shape;

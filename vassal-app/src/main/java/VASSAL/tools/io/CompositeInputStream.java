@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class CompositeInputStream extends InputStream {
 
-  protected final LinkedList<InputStream> queue;
+  protected final List<InputStream> queue;
 
   protected InputStream in;
 
