@@ -106,12 +106,12 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   /**
    * Set the text accompanying the "Allow opponent to unmask" control in the Preferences
+   * No longer required with new Configurers. Caused double-up label in config display.
+   * @deprecated No replacement
    */
+  @Deprecated (since = "2020-10-27", forRemoval = true)
   public void setPrompt(String preferencesPrompt) {
-    final Configurer c = GameModule.getGameModule().getPrefs().getOption(PREFS_KEY);
-    if (c != null) {
-      c.setName(preferencesPrompt);
-    }
+    ProblemDialog.showDeprecated("2020-10-27");
   }
 
   public void allowAll() {

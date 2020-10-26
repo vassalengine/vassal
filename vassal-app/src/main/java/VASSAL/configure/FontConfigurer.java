@@ -17,6 +17,8 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.ScrollPane;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -25,11 +27,8 @@ import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-import VASSAL.tools.ScrollPane;
 
 /**
  * A Configurer for {@link Font} values
@@ -66,9 +65,7 @@ public class FontConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(name));
+      p = new ConfigurerPanel(getName(), "[]rel[]", "[]rel[]rel[]"); // NON-NLS
       family = new JComboBox<>();
       final String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       for (final String element : s) {
@@ -106,6 +103,13 @@ public class FontConfigurer extends Configurer {
 
   public static String encode(Font f) {
     return f.getName() + "," + f.getSize();
+  }
+
+  @Override
+  public void setLabelVisibility(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
   }
 
   public static void main(String[] args) {

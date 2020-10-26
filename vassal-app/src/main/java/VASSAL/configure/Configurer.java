@@ -206,4 +206,23 @@ public abstract class Configurer {
   public void setHint(String hint) {
     this.hint = hint;
   }
+
+  /**
+   * Show/Hide the internal label maintained by this Configurer. It is up
+   * to individual Configurers to track and hide the label (if they can).
+   *
+   * This method is currently only utilized by the Preference configs
+   * {@link VASSAL.preferences.PrefsEditor#addOption(String, Configurer)}
+   * to extract an existing label in a configurer, display correctly
+   * aligned and suppress the original label. This keeps compatibility with
+   * custom module code setting up preferences.
+   *
+   * This method only needs to be implemented in Configurers that are
+   * added as preferences.
+   *
+   * @param visible Hide label if true
+   */
+  public void setLabelVisibility(boolean visible) {
+
+  }
 }

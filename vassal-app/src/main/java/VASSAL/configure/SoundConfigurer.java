@@ -18,17 +18,13 @@
 package VASSAL.configure;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import VASSAL.build.GameModule;
@@ -50,7 +46,7 @@ public class SoundConfigurer extends Configurer {
   public static final String DEFAULT = "default"; //NON-NLS
   private final String defaultResource;
   private String clipName;
-  private JPanel controls;
+  private ConfigurerPanel controls;
   private JTextField textField;
   private final AudioClipFactory clipFactory;
 
@@ -67,9 +63,8 @@ public class SoundConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
-      controls.add(new JLabel(name));
+      controls = new ConfigurerPanel(getName(), "[]rel[]rel[]rel[grow,fill]", "[]rel[]rel[]rel[]rel[grow,fill]"); // NON-NLS
+
       JButton b = new JButton(Resources.getString("Editor.SoundConfigurer.play"));
       b.addActionListener(e -> play());
       controls.add(b);
@@ -79,13 +74,10 @@ public class SoundConfigurer extends Configurer {
       b = new JButton(Resources.getString("Editor.SoundConfigurer.select"));
       b.addActionListener(e -> chooseClip());
       controls.add(b);
-      textField = new JTextField();
-      textField.setMaximumSize(
-        new Dimension(textField.getMaximumSize().width,
-                      textField.getPreferredSize().height));
+      textField = new JTextField(20);
       textField.setEditable(false);
       textField.setText(DEFAULT.equals(clipName) ? defaultResource : clipName);
-      controls.add(textField);
+      controls.add(textField, "growx"); // NON-NLS
     }
     return controls;
   }
@@ -180,5 +172,10 @@ public class SoundConfigurer extends Configurer {
       final File f = fc.getSelectedFile();
       setValue(f.getName());
     }
+  }
+
+  @Override
+  public void setLabelVisibility(boolean visible) {
+    controls.setLabelVisibility(visible);
   }
 }

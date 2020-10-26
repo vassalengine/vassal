@@ -1012,4 +1012,11 @@
         <justification>Just a utility class - not instantiated independently</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/configure/StringEnumConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>static test function, nothing should call it</justification>
+    </difference>
+
 </differences>

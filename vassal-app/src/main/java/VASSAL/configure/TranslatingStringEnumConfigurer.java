@@ -15,12 +15,13 @@
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -400,13 +401,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     setValue((Object) s);
   }
 
-  // TODO move test code to a manual unit test annotated with @Ignore
-  public static void main(String[] args) {
-    final JFrame f = new JFrame();
-    final StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); // NON-NLS
-    c.addPropertyChangeListener(evt -> System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()));
-    f.add(c.getControls());
-    f.pack();
-    f.setVisible(true);
+  @Override
+  public void setLabelVisibility(boolean visible) {
+    if (panel instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) panel).setLabelVisibility(visible);
+    }
   }
 }

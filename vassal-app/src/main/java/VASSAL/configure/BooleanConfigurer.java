@@ -124,4 +124,11 @@ public class BooleanConfigurer extends Configurer {
   public Boolean booleanValue() {
     return (Boolean) value;
   }
+
+  @Override
+  public void setLabelVisibility(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
+  }
 }

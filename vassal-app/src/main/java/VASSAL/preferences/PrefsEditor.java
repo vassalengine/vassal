@@ -17,6 +17,13 @@
  */
 package VASSAL.preferences;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.SplashScreen;
+import VASSAL.tools.WriteErrorDialog;
+
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -33,7 +40,6 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -42,13 +48,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.BrowserSupport;
 import net.miginfocom.swing.MigLayout;
-import VASSAL.configure.Configurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.SplashScreen;
-import VASSAL.tools.WriteErrorDialog;
 
 public class PrefsEditor {
   private JDialog dialog;
@@ -152,7 +152,7 @@ public class PrefsEditor {
     final int i = optionsTab.indexOfTab(category);
     if (i == -1) { // No match
       pan = new JPanel();
-      pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
+      pan.setLayout(new MigLayout("ins 0,gapy 2", "[right][fill,grow]")); // NON-NLS
       optionsTab.addTab(category, pan);
     }
     else {
@@ -166,10 +166,12 @@ public class PrefsEditor {
       options.add(c);
     }
 
-    final Box b = Box.createHorizontalBox();
-    b.add(c.getControls());
-    b.add(Box.createHorizontalGlue());
-    pan.add(b);
+    final String name = c.getName();
+    final JLabel label = new JLabel(name);
+    c.setLabelVisibility(false);
+    label.setLabelFor(c.getControls());
+    pan.add(label);
+    pan.add(c.getControls(), "grow,wrap"); // NON-NLS
   }
 
   private synchronized void storeValues() {
