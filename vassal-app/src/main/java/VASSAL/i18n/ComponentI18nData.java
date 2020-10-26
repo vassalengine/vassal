@@ -184,7 +184,7 @@ public class ComponentI18nData {
   /**
    * Return a unique key prefix including a full path of parent prefixes. All Translatable Pieces share a common prefix.
    *
-   * @return
+   * @return Full Prefix
    */
   public String getFullPrefix() {
     if (TranslatablePiece.PREFIX.equals(prefix)) {
@@ -291,7 +291,7 @@ public class ComponentI18nData {
   /**
    * Return description for named Attribute
    *
-   * @param attr
+   * @param attr Attribute
    * @return description
    */
   public String getAttributeDescription(String attr) {

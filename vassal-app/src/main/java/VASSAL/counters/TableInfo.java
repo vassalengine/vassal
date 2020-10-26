@@ -17,21 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.BoxLayout;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
@@ -40,16 +25,31 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+
 /**
  * A Decorator class that endows a GamePiece with an editable
  * spreadsheet (i.e. JTable) */
 public class TableInfo extends Decorator implements TranslatablePiece {
-  public static final String ID = "table;";
+  public static final String ID = "table;"; // NON-NLS
 
   protected String values;
   protected String oldState;
@@ -61,7 +61,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   protected JDialog frame;
 
   public TableInfo() {
-    this(ID + "2;2;Show Data;S", null);
+    this(ID + "2;2;" + Resources.getString("Editor.TableInfo.default_command") + ";S", null); // NON-NLS
   }
 
   public TableInfo(String type, GamePiece p) {
@@ -83,7 +83,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     nRows = st.nextInt(2);
     nCols = st.nextInt(2);
-    command = st.nextToken();
+    command = st.nextToken(Resources.getString("Editor.TableInfo.default_command"));
     launchKey = st.nextNamedKeyStroke(null);
     frame = null;
     table = null;
@@ -204,12 +204,12 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return "Spreadsheet";
+    return Resources.getString("Editor.TableInfo.trait_description");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Spreadsheet.html");
+    return HelpFile.getReferenceManualPage("Spreadsheet.html"); // NON-NLS
   }
 
   @Override
@@ -219,28 +219,44 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(command, "Table Info command");
+    return getI18nData(command, Resources.getString("Editor.TableInfo.table_info_command"));
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof TableInfo)) return false;
+    final TableInfo c = (TableInfo) o;
+
+    if (! Objects.equals(nRows, c.nRows)) return false;
+    if (! Objects.equals(nCols, c.nCols)) return false;
+    if (! Objects.equals(command, c.command)) return false;
+    if (! Objects.equals(launchKey, c.launchKey)) return false;
+
+    return Objects.equals(values, c.values);
   }
 
   private static class Ed implements PieceEditor {
-    private final IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
-    private final IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");
-    private final StringConfigurer commandConfig = new StringConfigurer(null, "Menu Command:  ");
+    private final IntConfigurer rowConfig;
+    private final IntConfigurer colConfig;
+    private final StringConfigurer commandConfig;
     private final NamedHotKeyConfigurer keyConfig;
-    private final JPanel panel;
+    private final TraitConfigPanel panel;
 
     public Ed(TableInfo p) {
-      rowConfig.setValue(p.nRows);
-      colConfig.setValue(p.nCols);
-      commandConfig.setValue(p.command);
-      keyConfig = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.launchKey);
 
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      panel.add(commandConfig.getControls());
-      panel.add(keyConfig.getControls());
-      panel.add(rowConfig.getControls());
-      panel.add(colConfig.getControls());
+      panel = new TraitConfigPanel();
+
+      commandConfig = new StringConfigurer(p.command);
+      panel.add("Editor.menu_command", commandConfig);
+
+      keyConfig = new NamedHotKeyConfigurer(p.launchKey);
+      panel.add("Editor.keyboard_command", keyConfig);
+
+      rowConfig = new IntConfigurer(p.nRows);
+      panel.add("Editor.TableInfo.number_of_rows", rowConfig);
+
+      colConfig = new IntConfigurer(p.nCols);
+      panel.add("Editor.TableInfo.number_of_columns", colConfig);
     }
 
     @Override
@@ -290,7 +306,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(launchKey);
+    return Collections.singletonList(launchKey);
   }
 
   /**

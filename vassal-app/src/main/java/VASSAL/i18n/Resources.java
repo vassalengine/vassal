@@ -250,7 +250,6 @@ public class Resources {
   /*
    * Common Editor labels that appear in many components.
    */
-  // FIXME Locate all usages of the raw strings and replace with the constants.
   public static final String BUTTON_TEXT = "Editor.button_text_label"; //$NON-NLS-1$
   public static final String TOOLTIP_TEXT = "Editor.tooltip_text_label"; //$NON-NLS-1$
   public static final String BUTTON_ICON = "Editor.button_icon_label"; //$NON-NLS-1$
