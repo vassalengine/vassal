@@ -216,9 +216,9 @@ public class MovePiece extends Command {
       }
     });
   }
+
   @Override
   public String getDetails() {
     return "id=" + id + ",map=" + newMapId + ",position=" + newPosition + ",under=" + newUnderneathId; //NON-NLS
   }
-
 }

@@ -18,7 +18,7 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.7.
   <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-other.zip'  target='_new'>Other</a></li>
 </ul>
 
-<h2>Changes since 3.4.5</h2>
+<h2>Changes since 3.4.6</h2>
 <h3>Bug fixes</h3>
 <ul>
 <li>13547: Don't raise a bug dialog on failure to read an MP3</li>
