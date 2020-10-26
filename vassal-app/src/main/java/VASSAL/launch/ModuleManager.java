@@ -255,8 +255,6 @@ public class ModuleManager {
   private final FileOutputStream lout;
   private final FileLock lock;
 
-  private final ServerSocket serverSocket; //NOPMD
-
   public ModuleManager(ServerSocket serverSocket, long key,
                        FileOutputStream lout, FileLock lock)
                                                            throws IOException {
@@ -264,7 +262,6 @@ public class ModuleManager {
     if (instance != null) throw new IllegalStateException();
     instance = this;
 
-    this.serverSocket = serverSocket;
     this.key = key;
 
     // we hang on to these to prevent the lock from being lost
