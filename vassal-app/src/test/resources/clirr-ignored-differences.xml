@@ -984,4 +984,18 @@
         <justification>Hopefully this is okay?</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/Builder</className>
+        <differenceType>7009</differenceType>
+        <method>Builder()</method>
+        <justification>Just a utility class - not instantiated independently</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/chat/Compressor</className>
+        <differenceType>7009</differenceType>
+        <method>Compressor()</method>
+        <justification>Just a utility class - not instantiated independently</justification>
+    </difference>
+
 </differences>
