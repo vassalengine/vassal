@@ -232,6 +232,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       }
     }
 
+    @Deprecated(since = "2020-10-26", forRemoval = true)
     public void register(Component obs, GamePiece piece, int x, int y) {
       if (obs != null) {
         ComponentMouseListener l = componentMouseListeners.get(obs);
@@ -318,6 +319,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       }
     }
 
+    @Deprecated(since = "2020-10-26", forRemoval = true)
     protected class ComponentMouseListener extends MouseAdapter {
       private GamePiece target;
       private int xOffset;
