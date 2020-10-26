@@ -18,6 +18,7 @@
 package VASSAL.chat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -74,7 +75,7 @@ public class SoundEncoder implements CommandEncoder {
     private static long lastTime = System.currentTimeMillis();
     private static Player lastSender;
     private static int sendCount;
-    private static final ArrayList<Player> banned = new ArrayList<>();
+    private static final List<Player> banned = new ArrayList<>();
     private static boolean updating = false;
 
     private final String soundKey;

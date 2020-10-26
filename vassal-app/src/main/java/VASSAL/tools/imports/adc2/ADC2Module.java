@@ -52,6 +52,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
@@ -196,9 +198,9 @@ public class ADC2Module extends Importer {
 
   public class Pool {
     public final String name;
-    public final ArrayList<Piece> pieces;
+    public final List<Piece> pieces;
 
-    Pool(String name, ArrayList<Piece> pieces) {
+    Pool(String name, List<Piece> pieces) {
       this.name = name;
       this.pieces = pieces;
     }
@@ -222,7 +224,7 @@ public class ADC2Module extends Importer {
   public class Cards extends Pool {
     protected Player owner;
 
-    Cards(String name, ArrayList<Piece> pieces) {
+    Cards(String name, List<Piece> pieces) {
       super(name, pieces);
       // cull non-cards
       if (pieces != null) {
@@ -247,14 +249,14 @@ public class ADC2Module extends Importer {
   }
 
   public class DeckPool extends Cards {
-    DeckPool(String name, ArrayList<Piece> pieces) {
+    DeckPool(String name, List<Piece> pieces) {
       super(name, pieces);
     }
 
   }
 
   public class HandPool extends Cards {
-    HandPool(String name, ArrayList<Piece> pieces) {
+    HandPool(String name, List<Piece> pieces) {
       super(name, pieces);
     }
 
@@ -278,7 +280,7 @@ public class ADC2Module extends Importer {
       return false;
     }
 
-    ForcePool(String name, ArrayList<Piece> pieces) {
+    ForcePool(String name, List<Piece> pieces) {
       super(name, pieces);
     }
   }
@@ -369,7 +371,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private final HashSet<String> uniquePieceNames = new HashSet<>();
+  private final Set<String> uniquePieceNames = new HashSet<>();
   private static boolean usePieceNames = false;
 
   public class Piece {
@@ -409,13 +411,13 @@ public class ADC2Module extends Importer {
       this.hideState = hidden;
       this.facing = facing;
 
-      final HashMap<Integer, ArrayList<Piece>> hash;
+      final java.util.Map<Integer, List<Piece>> hash;
       if (inForcePool())
         hash = forcePoolHashMap;
       else
         hash = stacks;
 
-      ArrayList<Piece> stack = hash.get(position);
+      List<Piece> stack = hash.get(position);
       if (stack == null) {
         stack = new ArrayList<>();
         stack.add(this);
@@ -798,7 +800,7 @@ public class ADC2Module extends Importer {
     private final SymbolSet.SymbolData hiddenSymbol;
     private final int hiddenPieceOptions;
     private final int order;
-    private final TreeSet<Player> allies = new TreeSet<>(Comparator.comparingInt(p -> p.order));
+    private final SortedSet<Player> allies = new TreeSet<>(Comparator.comparingInt(p -> p.order));
 
     public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
       this.name = name;
@@ -860,7 +862,7 @@ public class ADC2Module extends Importer {
     }
   }
 
-  private final HashMap<Integer, SymbolSet> cardDecks = new HashMap<>();
+  private final java.util.Map<Integer, SymbolSet> cardDecks = new HashMap<>();
 
   public class CardClass extends PieceClass {
     private final int setIndex;
@@ -1441,11 +1443,11 @@ public class ADC2Module extends Importer {
   public static final String COMMON_PROPERTIES = "Common Properties";
   private String name;
   private MapBoard map = null;
-  private final ArrayList<PieceClass> pieceClasses = new ArrayList<>();
-  private final ArrayList<Piece> pieces = new ArrayList<>();
-  private final ArrayList<Player> players = new ArrayList<>();
-  private final HashMap<Integer, ArrayList<Piece>> stacks = new HashMap<>();
-  private final HashMap<Integer, ArrayList<Piece>> forcePoolHashMap = new HashMap<>();
+  private final List<PieceClass> pieceClasses = new ArrayList<>();
+  private final List<Piece> pieces = new ArrayList<>();
+  private final List<Player> players = new ArrayList<>();
+  private final java.util.Map<Integer, List<Piece>> stacks = new HashMap<>();
+  private final java.util.Map<Integer, List<Piece>> forcePoolHashMap = new HashMap<>();
   private final ForcePoolList forcePools = new ForcePoolList();
   private final String[] classValues = new String[8];
   private final String[] pieceValues = new String[8];
@@ -1471,12 +1473,12 @@ public class ADC2Module extends Importer {
     return set;
   }
 
-  private HashMap<StateFlag, HashMap<Dimension, String>> hiddenFlagImages;
+  private java.util.Map<StateFlag, java.util.Map<Dimension, String>> hiddenFlagImages;
   private int version;
   private int classCombatSummaryValues;
   private int pieceCombatSummaryValues;
   private final StatusDots[] statusDots = new StatusDots[6];
-  private final ArrayList<String> turnNames = new ArrayList<>();
+  private final List<String> turnNames = new ArrayList<>();
   private boolean useLOS;
   private String deckName;
   private int nCardSets;
@@ -1555,7 +1557,7 @@ public class ADC2Module extends Importer {
     if (hiddenFlagImages == null)
       hiddenFlagImages = new HashMap<>();
 
-    final HashMap<Dimension, String> map = hiddenFlagImages.computeIfAbsent(flag, k -> new HashMap<>());
+    final java.util.Map<Dimension, String> map = hiddenFlagImages.computeIfAbsent(flag, k -> new HashMap<>());
 
     final Dimension d = new Dimension(0, height);
     String imageName = map.get(d);
@@ -1585,7 +1587,7 @@ public class ADC2Module extends Importer {
     if (hiddenFlagImages == null)
       hiddenFlagImages = new HashMap<>();
 
-    final HashMap<Dimension, String> map = hiddenFlagImages.computeIfAbsent(flag, k -> new HashMap<>());
+    final java.util.Map<Dimension, String> map = hiddenFlagImages.computeIfAbsent(flag, k -> new HashMap<>());
 
     String imageName = map.get(d);
     if (imageName == null) {
@@ -2805,7 +2807,7 @@ public class ADC2Module extends Importer {
     final Map mainMap = getMainMap();
 
     final Point offset = getMap().getCenterOffset();
-    for (final java.util.Map.Entry<Integer, ArrayList<Piece>> en : stacks.entrySet()) {
+    for (final java.util.Map.Entry<Integer, List<Piece>> en : stacks.entrySet()) {
       final int hex = en.getKey();
       final Point p = getMap().indexToPosition(hex);
       if (p == null) continue;

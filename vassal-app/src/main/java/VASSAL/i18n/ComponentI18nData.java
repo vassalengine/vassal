@@ -67,17 +67,23 @@ public class ComponentI18nData {
     init(c, prefix, c.getAttributeNames(), c.getAttributeTypes(), c.getAttributeDescriptions());
   }
 
+  @Deprecated(since = "2020-10-26", forRemoval = true)
   public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) {
     init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
   }
-  /**
-   * Build from an AutoConfigurable
-   *
-   * @param c
-   *          AutoConfigurable component
-   * @param prefix
-   *          I18n prefix
-   */
+
+  public ComponentI18nData(AbstractConfigurable c, String prefix, List<String> names, List<Class<?>> types, List<String> descriptions) {
+    init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
+  }
+
+    /**
+     * Build from an AutoConfigurable
+     *
+     * @param c
+     *          AutoConfigurable component
+     * @param prefix
+     *          I18n prefix
+     */
   public ComponentI18nData(AutoConfigurable c, String prefix) {
     this.prefix = prefix;
     parent = null;

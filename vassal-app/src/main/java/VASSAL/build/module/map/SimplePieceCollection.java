@@ -18,12 +18,13 @@
 package VASSAL.build.module.map;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import VASSAL.counters.GamePiece;
 
 /** Stores {@link VASSAL.counters.GamePiece}s in a simple array */
 public class SimplePieceCollection implements PieceCollection {
-  private final ArrayList<GamePiece> pieces = new ArrayList<>();
+  private final List<GamePiece> pieces = new ArrayList<>();
 
   /**
    * Returns the index of a piece.  When painting the map, pieces

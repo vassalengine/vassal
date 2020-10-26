@@ -902,4 +902,86 @@
         <justification>should have been final in the first place</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader</className>
+        <differenceType>6006</differenceType>
+        <field>*</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/ExtensionsLoader</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/imports/adc2/*</className>
+        <differenceType>6002</differenceType>
+        <field>*</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/imports/adc2/*</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/imports/adc2/*</className>
+        <differenceType>6006</differenceType>
+        <field>**</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/io/CompositeInputStream</className>
+        <differenceType>6004</differenceType>
+        <field>queue</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Hopefully this is okay?</justification>
+    </difference>
+
 </differences>

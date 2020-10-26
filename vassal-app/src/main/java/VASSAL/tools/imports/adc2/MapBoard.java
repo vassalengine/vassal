@@ -99,14 +99,14 @@ public class MapBoard extends Importer {
   private static final String PLACE_NAME = "Location Names";
 
   protected class MapLayer {
-    private final ArrayList<? extends MapDrawable> elements;
+    private final List<? extends MapDrawable> elements;
     private final String name;
     private final boolean switchable;
-    protected ArrayList<MapLayer> layers = null;
+    protected List<MapLayer> layers = null;
     protected String imageName;
     boolean shouldDraw = true;
 
-    MapLayer(ArrayList<? extends MapDrawable> elements, String name, boolean switchable) {
+    MapLayer(List<? extends MapDrawable> elements, String name, boolean switchable) {
       this.elements = elements;
       this.name = name;
       this.switchable = switchable;
@@ -462,9 +462,9 @@ public class MapBoard extends Importer {
    * the default order of line definitions for hex sides and hex lines.
    */
   private static class Hex {
-    ArrayList<Line> hexLines = new ArrayList<>();
+    List<Line> hexLines = new ArrayList<>();
 
-    ArrayList<Line> hexSides = new ArrayList<>();
+    List<Line> hexSides = new ArrayList<>();
   }
 
   /**
@@ -625,7 +625,7 @@ public class MapBoard extends Importer {
     }
 
     @Override
-    ArrayList<Line> getLineList(Hex h) {
+    List<Line> getLineList(Hex h) {
       return h.hexLines;
     }
   }
@@ -714,7 +714,7 @@ public class MapBoard extends Importer {
     }
 
     @Override
-    ArrayList<Line> getLineList(Hex h) {
+    List<Line> getLineList(Hex h) {
       return h.hexSides;
     }
   }
@@ -982,7 +982,7 @@ public class MapBoard extends Importer {
     /**
      * @return The list of lines by hex.
      */
-    abstract ArrayList<Line> getLineList(Hex h);
+    abstract List<Line> getLineList(Hex h);
 
     // I no longer remember how this works, but I do remember it took a long time to figure out.
     int compare(LineDefinition o1, LineDefinition o2) {
@@ -2186,7 +2186,7 @@ public class MapBoard extends Importer {
   }
 
   // tertiary symbols.
-  private final ArrayList<HexData> attributes = new ArrayList<>();
+  private final List<HexData> attributes = new ArrayList<>();
 
   // name of the map board is derived from the file name
   private String baseName;
@@ -2195,10 +2195,10 @@ public class MapBoard extends Importer {
   private Hex[] hexes;
 
   // hexline data
-  private final ArrayList<HexLine> hexLines = new ArrayList<>();
+  private final List<HexLine> hexLines = new ArrayList<>();
 
   // hexside data
-  private final ArrayList<HexSide> hexSides = new ArrayList<>();
+  private final List<HexSide> hexSides = new ArrayList<>();
 
   // layout of the hexes or squares
   private Layout layout;
@@ -2207,28 +2207,28 @@ public class MapBoard extends Importer {
   private LineDefinition[] lineDefinitions;
 
   // organizes all the drawable elements in order of drawing priority
-  private ArrayList<MapLayer> mapElements = new ArrayList<>();
+  private List<MapLayer> mapElements = new ArrayList<>();
 
   // grid numbering systems
-  private final ArrayList<MapSheet> mapSheets = new ArrayList<>();
+  private final List<MapSheet> mapSheets = new ArrayList<>();
 
   // labels; not necessary actual places corresponding to a hex, although
   // that's how it's described by ADC2
-  private final ArrayList<PlaceName> placeNames = new ArrayList<>();
+  private final List<PlaceName> placeNames = new ArrayList<>();
 
   // optional place symbol in addition to primary and secondary mapboard
   // symbol
-  private final ArrayList<HexData> placeSymbols = new ArrayList<>();
+  private final List<HexData> placeSymbols = new ArrayList<>();
 
   // primary mapboard symbols. Every hex must have one even if it's null.
-  private final ArrayList<HexData> primaryMapBoardSymbols = new ArrayList<>();
+  private final List<HexData> primaryMapBoardSymbols = new ArrayList<>();
 
   // and secondary mapboard symbols (typically a lot fewer)
-  private final ArrayList<HexData> secondaryMapBoardSymbols = new ArrayList<>();
+  private final List<HexData> secondaryMapBoardSymbols = new ArrayList<>();
 
   // overlay symbol. there's only one, but we make it an ArrayList<> for consistency
   // with other drawing objects
-  private final ArrayList<MapBoardOverlay> overlaySymbol = new ArrayList<>();
+  private final List<MapBoardOverlay> overlaySymbol = new ArrayList<>();
 
   // symbol set associated with this map -- needed for mapboard symbols
   private SymbolSet set;

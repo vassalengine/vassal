@@ -19,6 +19,7 @@ package VASSAL.command;
 
 import VASSAL.tools.ProblemDialog;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import VASSAL.tools.ErrorDialog;
@@ -45,7 +46,7 @@ import VASSAL.build.module.GameComponent;
  * compound commands this way, each {@link CommandEncoder} need only handle single (not compound) commands.
  */
 public abstract class Command {
-  private LinkedList<Command> seq = new LinkedList<>();
+  private List<Command> seq = new LinkedList<>();
   private Command undo;
 
   public Command[] getSubCommands() {
@@ -63,7 +64,7 @@ public abstract class Command {
     catch (Throwable t) {
       handleFailure(t);
 
-      final LinkedList<Command> oldSeq = seq;
+      final List<Command> oldSeq = seq;
       stripSubCommands();
       seq = oldSeq;
     }

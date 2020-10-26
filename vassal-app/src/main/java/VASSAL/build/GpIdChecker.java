@@ -22,6 +22,8 @@ import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.counters.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
@@ -44,8 +46,8 @@ public class GpIdChecker {
   protected int maxId;
   protected boolean useName = false;
   protected boolean extensionsLoaded = false;
-  final HashMap<String, SlotElement> goodSlots = new HashMap<>();
-  final ArrayList<SlotElement> errorSlots = new ArrayList<>();
+  final Map<String, SlotElement> goodSlots = new HashMap<>();
+  final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
 
   public GpIdChecker() {

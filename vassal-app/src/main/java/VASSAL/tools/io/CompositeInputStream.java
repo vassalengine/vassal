@@ -23,6 +23,7 @@ import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * An {@link InputStream} which concatenates other <code>InputStreams</code>.
@@ -39,7 +40,7 @@ import java.util.List;
  */
 public class CompositeInputStream extends InputStream {
 
-  protected final LinkedList<InputStream> queue;
+  protected final Queue<InputStream> queue;
 
   protected InputStream in;
 
