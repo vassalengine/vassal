@@ -267,10 +267,10 @@ public class SVGRenderer {
       g2d.dispose();
       rend = null; // We're done with it...
 
-      writeImage(dest, output);
+      writeImage(dest);
     }
 
-    private void writeImage(BufferedImage image, TranscoderOutput output) {
+    private void writeImage(BufferedImage image) {
       this.image = image;
     }
 

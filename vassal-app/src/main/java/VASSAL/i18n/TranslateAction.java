@@ -55,7 +55,7 @@ public class TranslateAction extends AbstractAction {
   public void actionPerformed(ActionEvent evt) {
     TranslateWindow w = openWindows.get(target);
     if (w == null) {
-      w = new TranslateWindow(dialogOwner, false, target, helpWindow, tree);
+      w = new TranslateWindow(dialogOwner, false, target, tree);
       w.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(WindowEvent e) {

@@ -83,7 +83,7 @@ public interface MutableProperty {
     /**
      * @param source will be the source of any {@link PropertyChangeEvent} fired by this object
      */
-    public Impl(String propertyName, Object source) {
+    public Impl(String propertyName, Object source) { //NOPMD
       this.propertyName = propertyName;
       propSupport = new PropertyChangeSupport(this);
     }
