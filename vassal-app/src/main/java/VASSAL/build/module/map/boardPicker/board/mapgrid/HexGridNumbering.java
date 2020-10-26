@@ -50,8 +50,7 @@ import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 public class HexGridNumbering extends RegularGridNumbering {
-  private static final Logger logger =
-    LoggerFactory.getLogger(HexGridNumbering.class);
+  private static final Logger logger = LoggerFactory.getLogger(HexGridNumbering.class); //NOPMD
 
   private HexGrid grid;
   private boolean stagger = true;
