@@ -33,6 +33,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.Charset;
@@ -83,6 +84,24 @@ public class ModuleManager {
 
   @Deprecated(since = "2020-10-21", forRemoval = true)
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
+
+  private static FileLock acquireLock(FileChannel fc) throws IOException {
+    try {
+      return fc.lock();
+    }
+    catch (OverlappingFileLockException e) {
+      throw new IOException(e);
+    }
+  }
+
+  private static FileLock tryLock(FileChannel fc) throws IOException {
+    try {
+      return fc.tryLock();
+    }
+    catch (OverlappingFileLockException e) {
+      throw new IOException(e);
+    }
+  }
 
   public static void main(String[] args) {
     // do this before the graphics subsystem fires up or it won't stick
@@ -152,56 +171,44 @@ public class ModuleManager {
     int port = 0;
     long key = 0;
 
-    FileLock klock = null;
     try (RandomAccessFile kraf = new RandomAccessFile(keyfile, "rw")) {
       // acquire an exclusive lock on the key file
-      try {
-        klock = kraf.getChannel().lock();
-      }
-      catch (OverlappingFileLockException e) {
-        throw new IOException(e);
-      }
+      try (FileLock klock = acquireLock(kraf.getChannel())) {
+        // determine whether we are the server or a client
 
-      // determine whether we are the server or a client
+        // Note: We purposely keep lout open in the case where we are the
+        // server, because closing lout will release the lock.
+        final FileOutputStream lout = new FileOutputStream(lockfile);
+        final FileLock lock = tryLock(lout.getChannel());
 
-      // Note: We purposely keep lout open in the case where we are the
-      // server, because closing lout will release the lock.
-      FileLock lock = null;
-      final FileOutputStream lout = new FileOutputStream(lockfile);
-      try {
-        lock = lout.getChannel().tryLock();
-      }
-      catch (OverlappingFileLockException e) {
-        throw new IOException(e);
-      }
+        if (lock != null) {
+          // we have the lock, so we will be the request server
 
-      if (lock != null) {
-        // we have the lock, so we will be the request server
+          // bind to an available port on the loopback device
+          final ServerSocket serverSocket =
+            new ServerSocket(0, 0, InetAddress.getByName(null));
 
-        // bind to an available port on the loopback device
-        final ServerSocket serverSocket =
-          new ServerSocket(0, 0, InetAddress.getByName(null));
+          // write the port number where we listen to the key file
+          port = serverSocket.getLocalPort();
+          kraf.writeInt(port);
 
-        // write the port number where we listen to the key file
-        port = serverSocket.getLocalPort();
-        kraf.writeInt(port);
+          // create new security key and write it to the key file
+          key = (long) (Math.random() * Long.MAX_VALUE);
+          kraf.writeLong(key);
 
-        // create new security key and write it to the key file
-        key = (long) (Math.random() * Long.MAX_VALUE);
-        kraf.writeLong(key);
+          // create a new Module Manager
+          new ModuleManager(serverSocket, key, lout, lock);
+        }
+        else {
+          // we do not have the lock, so we will be a request client
+          lout.close();
 
-        // create a new Module Manager
-        new ModuleManager(serverSocket, key, lout, lock);
-      }
-      else {
-        // we do not have the lock, so we will be a request client
-        lout.close();
+          // read the port number we will connect to from the key file
+          port = kraf.readInt();
 
-        // read the port number we will connect to from the key file
-        port = kraf.readInt();
-
-        // read the security key from the key file
-        key = kraf.readLong();
+          // read the security key from the key file
+          key = kraf.readLong();
+        }
       }
     }
     catch (IOException e) {
