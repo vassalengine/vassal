@@ -31,7 +31,7 @@ import bsh.Interpreter;
 import bsh.NameSpace;
 import bsh.UtilEvalError;
 
-public abstract class dfAbstractInterpreter extends Interpreter {
+public abstract class AbstractInterpreter extends Interpreter {
 
   protected static final String THIS = "_interp"; //NON-NLS
   protected static final String SOURCE = "_source"; //NON-NLS
