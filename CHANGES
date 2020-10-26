@@ -1,3 +1,7 @@
+3.4.8 - ???
+
+* 13560: Don't register mouse listeners from ActionButton.draw()
+
 3.4.7 - 25 October 2020
 
 * 13547: Don't raise a bug dialog on failure to read an MP3
