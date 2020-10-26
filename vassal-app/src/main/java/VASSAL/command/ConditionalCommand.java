@@ -84,7 +84,7 @@ public class ConditionalCommand extends Command {
     }
 
     @Deprecated (since = "2020-10-26", forRemoval = true)
-    public Eq(String property, Vector<String> allowed) {
+    public Eq(String property, Vector<String> allowed) { //NOPMD
       this.property = property;
       this.allowed = allowed;
     }

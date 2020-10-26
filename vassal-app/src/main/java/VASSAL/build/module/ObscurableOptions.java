@@ -237,7 +237,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
     /** @deprecated Use {@link #SetAllowed(List)} instead. */
     @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetAllowed(Vector<String> allowed) {
+    public SetAllowed(Vector<String> allowed) { //NOPMD
       ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.allowed = allowed;
     }

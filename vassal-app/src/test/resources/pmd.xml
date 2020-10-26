@@ -5,6 +5,7 @@
   xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
   <description>Custom rules</description>
 
+  <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod" />
   <rule ref="category/java/bestpractices.xml/AccessorClassGeneration" />
   <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" />
   <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField" />
@@ -16,8 +17,8 @@
   <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" />
   <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" />
   <rule ref="category/java/bestpractices.xml/JUnitUseExpected" />
+  <rule ref="category/java/bestpractices.xml/LooseCoupling" />
 <!--
-    <rule ref="category/java/bestpractices.xml/LooseCoupling" />
     <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
   -->
   <rule ref="category/java/bestpractices.xml/MissingOverride" />
@@ -58,8 +59,8 @@
   <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
   <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
   <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
-<!--
   <rule ref="category/java/codestyle.xml/UseDiamondOperator" />
+<!--
   <rule ref="category/java/codestyle.xml/UselessParentheses" />
 -->
   <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
@@ -78,8 +79,8 @@
   <rule ref="category/java/design.xml/DoNotExtendJavaLangError" />
 <!--
   <rule ref="category/java/design.xml/ExceptionAsFlowControl" />
-  <rule ref="category/java/design.xml/FinalFieldCouldBeStatic" />
 -->
+  <rule ref="category/java/design.xml/FinalFieldCouldBeStatic" />
   <rule ref="category/java/design.xml/ImmutableField" />
   <rule ref="category/java/design.xml/LogicInversion" />
 <!--

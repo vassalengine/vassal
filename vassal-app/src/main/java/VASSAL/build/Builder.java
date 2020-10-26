@@ -50,9 +50,13 @@ import VASSAL.tools.ThrowableUtils;
 /**
  * This class holds static convenience methods for building {@link Buildable} objects.
  */
-public abstract class Builder {
+public class Builder {
 
   private static final Logger logger = LoggerFactory.getLogger(Builder.class);
+
+  private Builder() {
+    // Helper class - not to be instantiated alone.
+  }
 
   /**
    * General building algorithm.  For each subelement of the build
