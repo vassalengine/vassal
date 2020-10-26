@@ -514,7 +514,6 @@ public class GlobalOptions extends AbstractConfigurable {
     }
     else if (PROMPT_STRING.equals(key)) {
       promptString = (String) value;
-      //ObscurableOptions.getInstance().setPrompt(promptString);
     }
     else if (CHATTER_HTML_SUPPORT.equals(key)) {
       chatterHTMLSupport = (String) value;
