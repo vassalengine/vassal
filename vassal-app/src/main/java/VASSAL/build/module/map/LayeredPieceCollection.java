@@ -140,7 +140,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   @Override
   public void removeFrom(Buildable parent) {
     map.setPieceCollection(new DefaultPieceCollection());
-    for (LayerControl lc : this.getComponentsOf(LayerControl.class)) {
+    for (final LayerControl lc : this.getComponentsOf(LayerControl.class)) {
       lc.removeFrom(this);
     }
   }
@@ -199,7 +199,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     @Override
     public String getLayerNameForPiece(GamePiece p) {
-      int layer = getLayerForPiece(p);
+      final int layer = getLayerForPiece(p);
       return layer >= layerOrder.length ? "" : layerOrder[layer];
     }
 
@@ -216,7 +216,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     @Override
     public Object visitDefault(GamePiece p) {
-      String property = (String) p.getProperty(propertyName);
+      final String property = (String) p.getProperty(propertyName);
       int layer = layerOrder.length;
       for (int i = 0; i < layerOrder.length; ++i) {
         if (layerOrder[i].equals(property)) {
@@ -230,7 +230,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     @Override
     public Object visitStack(Stack s) {
-      GamePiece top = s.topPiece();
+      final GamePiece top = s.topPiece();
       if (top == null) {
         return layerOrder.length;
       }
@@ -244,7 +244,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
    */
   @Override
   public List<String> getPropertyList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(collection.propertyName);
     l.addAll(Arrays.asList(collection.layerOrder));
     return l;

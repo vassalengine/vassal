@@ -76,19 +76,19 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   }
 
   public void allowSome(String preferencesPrompt) {
-    Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
+    final Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
     GameModule.getGameModule().getPrefs().addOption(c);
     c.addPropertyChangeListener(evt -> {
       if (Boolean.TRUE.equals(evt.getNewValue())) {
         ObscurableOptions.getInstance().allow(GameModule.getUserId());
-        String side = PlayerRoster.getMySide();
+        final String side = PlayerRoster.getMySide();
         if (side != null) {
           ObscurableOptions.getInstance().allow(side);
         }
       }
       else {
         ObscurableOptions.getInstance().disallow(GameModule.getUserId());
-        String side = PlayerRoster.getMySide();
+        final String side = PlayerRoster.getMySide();
         if (side != null) {
           ObscurableOptions.getInstance().disallow(side);
         }
@@ -108,7 +108,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    * Set the text accompanying the "Allow opponent to unmask" control in the Preferences
    */
   public void setPrompt(String preferencesPrompt) {
-    Configurer c = GameModule.getGameModule().getPrefs().getOption(PREFS_KEY);
+    final Configurer c = GameModule.getGameModule().getPrefs().getOption(PREFS_KEY);
     if (c != null) {
       c.setName(preferencesPrompt);
     }
@@ -139,8 +139,8 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
 
     command = command.substring(COMMAND_ID.length());
-    List<String> l = new ArrayList<>();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    final List<String> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -154,8 +154,8 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
 
     final List<String> l = ((SetAllowed) c).getAllowedIds();
-    SequenceEncoder se = new SequenceEncoder('\t');
-    for (String s : l) {
+    final SequenceEncoder se = new SequenceEncoder('\t');
+    for (final String s : l) {
       se.append(s);
     }
     return COMMAND_ID + se.getValue();
@@ -174,7 +174,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       se.append(override);
     }
     se.append(allowed.size());
-    for (String who : allowed) {
+    for (final String who : allowed) {
       se.append(who);
     }
 

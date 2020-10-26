@@ -73,8 +73,8 @@ public class Visualizer extends JPanel {
 
   public void refresh() {
     if (observer != null) {
-      int width = observer.getVisualizerWidth();
-      int height = observer.getVisualizerHeight();
+      final int width = observer.getVisualizerWidth();
+      final int height = observer.getVisualizerHeight();
 
       visPanel.setSize(width, height);
       visPanel.setPreferredSize(new Dimension(width, height));
@@ -82,7 +82,7 @@ public class Visualizer extends JPanel {
       setSize(width + OFFSET, height + OFFSET);
       setPreferredSize(new Dimension(width + OFFSET, height + OFFSET));
 
-      Window w = SwingUtilities.getWindowAncestor(this);
+      final Window w = SwingUtilities.getWindowAncestor(this);
       if (w != null) {
         w.pack();
       }

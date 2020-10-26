@@ -80,7 +80,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
-    ActionListener al = e -> launchButtonPressed();
+    final ActionListener al = e -> launchButtonPressed();
     launch = new LaunchButton(Resources.getString("Editor.PieceWindow.pieces"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
     scale = 1.0;
@@ -216,7 +216,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     idMgr.add(this);
 
     if (!hidden) {
-      String key = PositionOption.key + getConfigureName();
+      final String key = PositionOption.key + getConfigureName();
       if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
         mainWindowDock = ComponentSplitter.split(
           GameModule.getGameModule().getControlPanel(),
@@ -289,7 +289,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       setAttribute(BUTTON_TEXT, value);
     }
     else if (NAME.equals(name)) {
-      String s = (String) value;
+      final String s = (String) value;
       setConfigureName(s);
       if (tooltip.length() == 0) {
         launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", s));
@@ -363,7 +363,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    String fileName = launch.getAttributeValueString(ICON);
+    final String fileName = launch.getAttributeValueString(ICON);
     if (fileName != null) {
       s.add(fileName);
     }

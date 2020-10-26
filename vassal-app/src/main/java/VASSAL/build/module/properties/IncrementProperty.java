@@ -52,14 +52,14 @@ public class IncrementProperty implements PropertyChanger {
         value = Integer.parseInt(oldValue);
       }
     }
-    catch (NumberFormatException e) {
+    catch (final NumberFormatException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.non_number_error"), "Increment " + prop.getName() + ": oldValue " + "=" + oldValue, e)); //NON-NLS
       return oldValue;
     }
 
     try {
 
-      int incr = Integer.parseInt(format.getText(constraints.getPropertySource()));
+      final int incr = Integer.parseInt(format.getText(constraints.getPropertySource()));
       if (constraints.isWrap()) {
         if (value + incr > constraints.getMaximumValue()) {
           value = constraints.getMinimumValue() + (value + incr - constraints.getMaximumValue() - 1);
@@ -78,7 +78,7 @@ public class IncrementProperty implements PropertyChanger {
       }
       return String.valueOf(value);
     }
-    catch (NumberFormatException e) {
+    catch (final NumberFormatException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.non_number_error"),
         "Increment " + prop.getName() + ": format=" + format.getFormat() + ", value=" + format.getText(constraints), e)); //NON-NLS
       return oldValue;

@@ -72,14 +72,14 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   public JComboBox<String> getComboBox() {
-    JComboBox<String> b = new JComboBox<>(validValues);
+    final JComboBox<String> b = new JComboBox<>(validValues);
     b.setMaximumSize(new Dimension(b.getMaximumSize().width,
                                    b.getPreferredSize().height));
     return b;
   }
 
   public boolean isValidValue(Object o) {
-    for (String validValue : validValues) {
+    for (final String validValue : validValues) {
       if (validValue.equals(o)) {
         return true;
       }
@@ -119,8 +119,8 @@ public class StringEnumConfigurer extends Configurer {
 
   // move test code to manual unit test annotated with @Ignore
   public static void main(String[] args) {
-    JFrame f = new JFrame();
-    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    final JFrame f = new JFrame();
+    final StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     c.addPropertyChangeListener(evt -> {
       System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()); //$NON-NLS-1$
     });

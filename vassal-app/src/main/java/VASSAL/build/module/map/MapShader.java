@@ -244,13 +244,13 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   protected void checkPiece(Area area, GamePiece piece) {
     if (piece instanceof Stack) {
-      Stack s = (Stack) piece;
+      final Stack s = (Stack) piece;
       s.asList().forEach(gamePiece -> checkPiece(area, gamePiece));
     }
     else {
-      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
+      final ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
       if (shaded != null) {
-        Area shape = shaded.getArea(this);
+        final Area shape = shaded.getArea(this);
         if (shape != null) {
           if (type.equals(FG_TYPE)) {
             area.add(shape);
@@ -620,8 +620,8 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   protected void buildBoardClip() {
     if (boardClip == null) {
       boardClip = new Area();
-      for (Board b : map.getBoards()) {
-        String boardName = b.getName();
+      for (final Board b : map.getBoards()) {
+        final String boardName = b.getName();
         boolean doShade = false;
         switch (boardSelection) {
         case ALL_BOARDS:

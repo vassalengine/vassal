@@ -297,7 +297,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     int groupCount = 0;
 
     while (se.hasMoreTokens()) {
-      String token = se.nextToken();
+      final String token = se.nextToken();
       isProperty = !isProperty;
 
       if (token.length() > 0) {
@@ -325,9 +325,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
     assert (matcher.groupCount() == groupCount);
 
-    Point p;
+    final Point p;
     if (groupCount > 0) {
-      String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
+      final String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
       p = getGrid().getLocation(locationName);
       if (p == null || !contains(p)) {
         throw new BadCoords();
@@ -512,7 +512,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   @Override
   public Object getProperty(Object key) {
-    Object value;
+    final Object value;
     final MutableProperty p =
       propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
@@ -543,8 +543,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   @Override
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<>();
-    for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
+    final List<String> l = new ArrayList<>();
+    for (final ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
       l.add(zp.getConfigureName());
     }
     return l;

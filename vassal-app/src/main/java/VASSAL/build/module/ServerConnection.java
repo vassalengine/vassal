@@ -23,7 +23,7 @@ import VASSAL.command.Command;
  * Represents the connection to a live server
  */
 public interface ServerConnection {
-  /** Name of the property fired when the connection is opened/clused. Value is Boolean.TRUE or Boolean.FALSE */
+  /** Name of the property fired when the connection is opened/closed. Value is Boolean.TRUE or Boolean.FALSE */
   String CONNECTED = "Connected"; //$NON-NLS-1$
 
   /** Send a command to other players on the server */

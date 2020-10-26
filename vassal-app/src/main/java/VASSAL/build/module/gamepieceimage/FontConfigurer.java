@@ -113,10 +113,10 @@ public class FontConfigurer extends Configurer {
 
       updateValue();
 
-      ItemListener l = evt -> updateValue();
+      final ItemListener l = evt -> updateValue();
       family.addItemListener(l);
 
-      PropertyChangeListener pc = evt -> updateValue();
+      final PropertyChangeListener pc = evt -> updateValue();
       size.addPropertyChangeListener(pc);
       bold.addPropertyChangeListener(pc);
       italic.addPropertyChangeListener(pc);
@@ -160,7 +160,7 @@ public class FontConfigurer extends Configurer {
   }
 
   public static String encode(OutlineFont f) {
-    SequenceEncoder se = new SequenceEncoder(f.getName(), ',');
+    final SequenceEncoder se = new SequenceEncoder(f.getName(), ',');
     se.append(f.getStyle());
     se.append(f.getSize());
     se.append(f.isOutline());

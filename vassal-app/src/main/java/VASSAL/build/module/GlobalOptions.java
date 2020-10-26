@@ -215,7 +215,7 @@ public class GlobalOptions extends AbstractConfigurable {
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
     
-    BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
+    final BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
     prefs.addOption(config);
 
     //CC// center_on_move_border_proximity_pct (is the pct of distance from border to center of window that triggers a recenter
@@ -374,7 +374,7 @@ public class GlobalOptions extends AbstractConfigurable {
    */
   public void addOption(Configurer option) {
     OPTION_CONFIGURERS.put(option.getKey(), option);
-    Object initValue = OPTION_INITIAL_VALUES.get(option.getKey());
+    final Object initValue = OPTION_INITIAL_VALUES.get(option.getKey());
 
     if (initValue instanceof String) {
       option.setValue((String)initValue);
@@ -425,7 +425,7 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public Element getBuildElement(Document doc) {
     final Element e = super.getBuildElement(doc);
-    for (Configurer c : OPTION_CONFIGURERS.values()) {
+    for (final Configurer c : OPTION_CONFIGURERS.values()) {
       final Element option = doc.createElement("option"); //$NON-NLS-1$
       option.setAttribute("name", c.getKey()); //$NON-NLS-1$
       option.appendChild(doc.createTextNode(c.getValueString()));
@@ -438,7 +438,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public Configurer getConfigurer() {
     if (config == null) {
       final Configurer defaultConfig = super.getConfigurer();
-      for (Configurer c : OPTION_CONFIGURERS.values()) {
+      for (final Configurer c : OPTION_CONFIGURERS.values()) {
         final Container container = (Container) defaultConfig.getControls();
         final String name = c.getName();
         final JLabel label = new JLabel(name);
@@ -479,7 +479,7 @@ public class GlobalOptions extends AbstractConfigurable {
       return Integer.toString(dragThreshold);  
     }
     else if (!OPTION_CONFIGURERS.containsKey(key)) {
-      Object val = properties.get(key);
+      final Object val = properties.get(key);
       return val != null ? val.toString() : null;
     }
     else {
@@ -522,14 +522,14 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
       if (PROMPT.equals(autoReport)) {
-        BooleanConfigurer config = new BooleanConfigurer(AUTO_REPORT, Resources.getString("GlobalOptions.auto_report")); //$NON-NLS-1$
+        final BooleanConfigurer config = new BooleanConfigurer(AUTO_REPORT, Resources.getString("GlobalOptions.auto_report")); //$NON-NLS-1$
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
     else if (MARK_MOVED.equals(key)) {
       markMoved = (String) value;
       if (PROMPT.equals(markMoved)) {
-        BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved")); //$NON-NLS-1$
+        final BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved")); //$NON-NLS-1$
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
@@ -603,7 +603,7 @@ public class GlobalOptions extends AbstractConfigurable {
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       if (b instanceof BasicPreference) {
         l.add(((BasicPreference) b).getVariableName());
       }
@@ -626,7 +626,7 @@ public class GlobalOptions extends AbstractConfigurable {
    */
   @Override
   public void addImageNamesRecursively(Collection<String> s) {
-    for (Configurer c : OPTION_CONFIGURERS.values()) {
+    for (final Configurer c : OPTION_CONFIGURERS.values()) {
       if (!(c instanceof IconConfigurer)) {
         continue;
       }

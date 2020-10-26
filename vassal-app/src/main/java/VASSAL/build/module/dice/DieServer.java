@@ -159,13 +159,13 @@ public abstract class DieServer {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void doInbuiltRoll(RollSet mroll) {
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    DieRoll[] rolls = mroll.getDieRolls();
-    for (DieRoll roll : rolls) {
-      String desc = roll.getDescription();
-      int nSides = roll.getNumSides();
-      int nDice = roll.getNumDice();
-      int plus = roll.getPlus();
-      boolean reportTotal = roll.isReportTotal();
+    final DieRoll[] rolls = mroll.getDieRolls();
+    for (final DieRoll roll : rolls) {
+      final String desc = roll.getDescription();
+      final int nSides = roll.getNumSides();
+      final int nDice = roll.getNumDice();
+      final int plus = roll.getPlus();
+      final boolean reportTotal = roll.isReportTotal();
 
       String val = getReportPrefix(desc);
       int total = 0;
@@ -240,15 +240,15 @@ public abstract class DieServer {
 
   public void reportResult(RollSet mroll, FormattedString format) {
     final DieRoll[] rolls = mroll.getDieRolls();
-    for (DieRoll roll : rolls) {
-      int nDice = roll.getNumDice();
-      boolean reportTotal = roll.isReportTotal();
+    for (final DieRoll roll : rolls) {
+      final int nDice = roll.getNumDice();
+      final boolean reportTotal = roll.isReportTotal();
 
-      StringBuilder val = new StringBuilder();
+      final StringBuilder val = new StringBuilder();
       int total = 0;
 
       for (int j = 0; j < nDice; j++) {
-        int result = roll.getResult(j);
+        final int result = roll.getResult(j);
         if (reportTotal) {
           total += result;
         }
@@ -279,16 +279,16 @@ public abstract class DieServer {
     final URLConnection connection = url.openConnection();
     connection.setDoOutput(true);
 
-    try (OutputStream os = connection.getOutputStream();
-         PrintWriter out = new PrintWriter(os, true, StandardCharsets.UTF_8)) {
-      for (String s : rollString) {
+    try (final OutputStream os = connection.getOutputStream();
+         final PrintWriter out = new PrintWriter(os, true, StandardCharsets.UTF_8)) {
+      for (final String s : rollString) {
         out.println(s);
       }
     }
 
-    try (InputStream is = connection.getInputStream();
-         InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-         BufferedReader in = new BufferedReader(isr)) {
+    try (final InputStream is = connection.getInputStream();
+         final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+         final BufferedReader in = new BufferedReader(isr)) {
       String inputLine;
       while ((inputLine = in.readLine()) != null) {
         returnString.add(inputLine);
@@ -303,8 +303,8 @@ public abstract class DieServer {
    * Allows Email addresses like 'Joe Blow <j.blow@somewhere.com>'
    */
   public String extractEmail(String email) {
-    int start = email.indexOf('<');
-    int end = email.indexOf('>');
+    final int start = email.indexOf('<');
+    final int end = email.indexOf('>');
     if (start >= 0 && end >= 0 && end > start) {
       return email.substring(start + 1, end);
     }

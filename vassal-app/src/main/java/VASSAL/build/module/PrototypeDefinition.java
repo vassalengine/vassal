@@ -86,7 +86,7 @@ public class PrototypeDefinition extends AbstractConfigurable
 
   @Override
   public void setConfigureName(String s) {
-    String oldName = name;
+    final String oldName = name;
     this.name = s;
     propSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
   }
@@ -137,7 +137,7 @@ public class PrototypeDefinition extends AbstractConfigurable
   public void addImageNamesRecursively(Collection<String> s) {
     super.addImageNamesRecursively(s);
 
-    GamePiece p = getPiece();
+    final GamePiece p = getPiece();
     if (p instanceof ImageSearchTarget) {
       ((ImageSearchTarget)p).addImageNamesRecursively(s);
     }
@@ -154,7 +154,7 @@ public class PrototypeDefinition extends AbstractConfigurable
    * @return Created Piece
    */
   public GamePiece getPiece(PropertySource props) {
-    String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
+    final String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
     return getPiece(def);
   }
 
@@ -193,7 +193,7 @@ public class PrototypeDefinition extends AbstractConfigurable
 
   @Override
   public Element getBuildElement(Document doc) {
-    Element el = doc.createElement(getClass().getName());
+    final Element el = doc.createElement(getClass().getName());
     el.setAttribute(NAME_PROPERTY, name);
     el.appendChild(doc.createTextNode(pieceDefinition));
     return el;
@@ -252,10 +252,10 @@ public class PrototypeDefinition extends AbstractConfigurable
       @Override
       public void setPiece(GamePiece piece) {
         if (piece != null) {
-          GamePiece inner = Decorator.getInnermost(piece);
+          final GamePiece inner = Decorator.getInnermost(piece);
           if (!(inner instanceof Plain)) {
-            Plain plain = new Plain();
-            Object outer = inner.getProperty(Properties.OUTER);
+            final Plain plain = new Plain();
+            final Object outer = inner.getProperty(Properties.OUTER);
             if (outer instanceof Decorator) {
               ((Decorator) outer).setInner(plain);
             }

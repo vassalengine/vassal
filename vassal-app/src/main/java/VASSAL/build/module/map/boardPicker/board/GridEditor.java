@@ -81,7 +81,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     setTitle(Resources.getString("Editor.ModuleEditor.edit", grid.getGridName())); //$NON-NLS-1$
     setModal(true);
     this.grid = grid;
-    GridContainer container = grid.getContainer();
+    final GridContainer container = grid.getContainer();
     if (container != null) {
       board = container.getBoard();
     }
@@ -123,12 +123,12 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     scroll.setPreferredSize(new Dimension(800, 600));
     add(scroll, BorderLayout.CENTER);
 
-    Box textPanel = Box.createVerticalBox();
+    final Box textPanel = Box.createVerticalBox();
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(SystemUtils.IS_OS_MAC_OSX ? Resources.getString("Editor.GridEditor.command_arrow_keys") : Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.shift_key"))); //$NON-NLS-1$
 
-    JPanel buttonPanel = new JPanel();
+    final JPanel buttonPanel = new JPanel();
 
     okButton = new JButton(OK);
     okButton.addActionListener(e -> {
@@ -141,7 +141,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     });
     buttonPanel.add(okButton);
 
-    JButton canButton = new JButton(CANCEL);
+    final JButton canButton = new JButton(CANCEL);
     canButton.addActionListener(e -> cancel());
     buttonPanel.add(canButton);
 
@@ -167,7 +167,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     numberingButton.setRequestFocusEnabled(false);
     buttonPanel.add(numberingButton);
 
-    Box controlPanel = Box.createVerticalBox();
+    final Box controlPanel = Box.createVerticalBox();
     controlPanel.add(textPanel);
     controlPanel.add(buttonPanel);
 
@@ -218,7 +218,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return;
     }
 
-    boolean sideways = grid.isSideways();
+    final boolean sideways = grid.isSideways();
 
     switch (e.getKeyCode()) {
     case KeyEvent.VK_UP:
@@ -361,7 +361,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     if (e.isShiftDown()) {
       delta *= FAST;
     }
-    Point p = grid.getOrigin();
+    final Point p = grid.getOrigin();
     setNewOrigin(new Point(p.x + delta, p.y));
   }
 
@@ -370,7 +370,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     if (e.isShiftDown()) {
       delta *= FAST;
     }
-    Point p = grid.getOrigin();
+    final Point p = grid.getOrigin();
     setNewOrigin(new Point(p.x, p.y + delta));
   }
 
@@ -392,8 +392,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   protected void setNewOrigin(Point p) {
 
-    int width = (int) Math.round(grid.getDx());
-    int height = (int) Math.round(grid.getDy());
+    final int width = (int) Math.round(grid.getDx());
+    final int height = (int) Math.round(grid.getDy());
 
     if (p.x < (-width)) {
       p.x += width;

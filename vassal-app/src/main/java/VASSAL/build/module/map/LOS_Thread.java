@@ -154,8 +154,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
   protected String persistentIconName;
   protected String global = ALWAYS;
   protected String threadId = "";
-  protected boolean persisting = false;
-  protected boolean mirroring = false;
+  protected boolean persisting;
+  protected boolean mirroring;
   protected String iconName;
   protected boolean ctrlWhenClick = false;
   protected boolean initializing;
@@ -166,7 +166,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
     visible = false;
     persisting = false;
     mirroring = false;
-    ActionListener al = e -> launch();
+    final ActionListener al = e -> launch();
 
     setNameKey(NAME);
     setButtonTextKey(LABEL);
@@ -214,7 +214,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
         Resources.getString("LOS_Thread.snap_thread_preference")));
 
     if (fixedColor == null) {
-      ColorConfigurer config = new ColorConfigurer(LOS_COLOR,
+      final ColorConfigurer config = new ColorConfigurer(LOS_COLOR,
         Resources.getString("LOS_Thread.thread_color_preference"));
       GameModule.getGameModule().getPrefs().addOption(
         getConfigureName(), config);
@@ -327,12 +327,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
     if (h < 0) {
       hideOpacity = 0;
     }
-    else if (h > 100) {
-      hideOpacity = 100;
-    }
-    else {
-      hideOpacity = h;
-    }
+    else hideOpacity = Math.min(h, 100);
   }
 
   @Override
@@ -405,7 +400,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
    */
 
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(anchor.x).append(anchor.y).append(arrow.x).append(arrow.y);
     se.append(persisting);
     se.append(mirroring);
@@ -413,7 +408,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
   }
 
   public void setState(String state) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(state, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(state, ';');
     anchor.x = sd.nextInt(anchor.x);
     anchor.y = sd.nextInt(anchor.y);
     arrow.x = sd.nextInt(arrow.x);
@@ -432,25 +427,25 @@ public class LOS_Thread extends AbstractToolbarItem implements
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     g.setColor(threadColor);
-    Point mapAnchor = map.mapToDrawing(anchor, os_scale);
-    Point mapArrow = map.mapToDrawing(arrow, os_scale);
+    final Point mapAnchor = map.mapToDrawing(anchor, os_scale);
+    final Point mapArrow = map.mapToDrawing(arrow, os_scale);
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
 
     if (drawRange) {
       if (rangeScale > 0) {
-        int dist = (int)(rangeRounding + anchor.getLocation().distance(arrow.getLocation()) / rangeScale);
+        final int dist = (int)(rangeRounding + anchor.getLocation().distance(arrow.getLocation()) / rangeScale);
         drawRange(g, dist);
       }
       else  {
-        Board b = map.findBoard(anchor);
+        final Board b = map.findBoard(anchor);
         if (b != null) {
           MapGrid grid = b.getGrid();
 
           if (grid != null) {
             if (grid instanceof ZonedGrid) {
-              Point bp = new Point(anchor);
+              final Point bp = new Point(anchor);
               bp.translate(-b.bounds().x, -b.bounds().y);
-              Zone z = ((ZonedGrid) b.getGrid()).findZone(bp);
+              final Zone z = ((ZonedGrid) b.getGrid()).findZone(bp);
               if (z != null) {
                 grid = z.getGrid();
               }
@@ -551,7 +546,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
       if (retainAfterRelease && !(ctrlWhenClick && persistence.equals(CTRL_CLICK))) {
         retainAfterRelease = false;
         if (global.equals(ALWAYS)) {
-          Command com = new LOSCommand(this, getAnchor(), getArrow(), false, true);
+          final Command com = new LOSCommand(this, getAnchor(), getArrow(), false, true);
           GameModule.getGameModule().sendAndLog(com);
         }
       }
@@ -560,12 +555,12 @@ public class LOS_Thread extends AbstractToolbarItem implements
         if (global.equals(ALWAYS) || global.equals(WHEN_PERSISTENT)) {
           if (persistence.equals(ALWAYS) || (ctrlWhenClick && persistence.equals(CTRL_CLICK))) {
             anchor = lastAnchor;
-            Command com = new LOSCommand(this, getAnchor(), getArrow(), true, false);
+            final Command com = new LOSCommand(this, getAnchor(), getArrow(), true, false);
             GameModule.getGameModule().sendAndLog(com);
             setPersisting(true);
           }
           else {
-            Command com = new LOSCommand(this, getAnchor(), getArrow(), false, false);
+            final Command com = new LOSCommand(this, getAnchor(), getArrow(), false, false);
             GameModule.getGameModule().sendAndLog(com);
           }
         }
@@ -664,16 +659,16 @@ public class LOS_Thread extends AbstractToolbarItem implements
       }
       arrow = map.componentToMap(p);
 
-      String location = map.localizedLocationName(arrow);
+      final String location = map.localizedLocationName(arrow);
       if (!checkList.contains(location) && !location.equals(anchorLocation)) {
         checkList.add(location);
         lastLocation = location;
       }
 
-      Point mapAnchor = lastAnchor;
-      Point mapArrow = lastArrow;
-      int fudge = (int) (1.0 / map.getZoom() * 2);
-      Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x) - fudge,
+      final Point mapAnchor = lastAnchor;
+      final Point mapArrow = lastArrow;
+      final int fudge = (int) (1.0 / map.getZoom() * 2);
+      final Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x) - fudge,
           Math.min(mapAnchor.y, mapArrow.y) - fudge,
           Math.abs(mapAnchor.x - mapArrow.x) + 1 + fudge * 2,
           Math.abs(mapAnchor.y - mapArrow.y) + 1 + fudge * 2);
@@ -694,8 +689,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-    Point mapArrow = map.mapToDrawing(arrow, os_scale);
-    Point mapAnchor = map.mapToDrawing(anchor, os_scale);
+    final Point mapArrow = map.mapToDrawing(arrow, os_scale);
+    final Point mapAnchor = map.mapToDrawing(anchor, os_scale);
 
     g.setColor(Color.black);
     g.setFont(RANGE_FONT.deriveFont((float)(RANGE_FONT.getSize() * os_scale)));
@@ -712,8 +707,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
     }
     final String rangeMsg = Resources.getString("LOS_Thread.range");
 
-    int wid = fm.stringWidth(" " + rangeMsg + "  " + buffer);
-    int hgt = fm.getAscent() + 2;
+    final int wid = fm.stringWidth(" " + rangeMsg + "  " + buffer);
+    final int hgt = fm.getAscent() + 2;
 
     final int w = mapArrow.x - mapAnchor.x;
     final int h = mapArrow.y - mapAnchor.y;
@@ -915,13 +910,13 @@ public class LOS_Thread extends AbstractToolbarItem implements
     if (!command.startsWith(LOS_THREAD_COMMAND + getId())) {
       return null;
     }
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
     sd.nextToken();
     sd.nextToken();
-    Point anchor = new Point(sd.nextInt(0), sd.nextInt(0));
-    Point arrow = new Point(sd.nextInt(0), sd.nextInt(0));
-    boolean persisting = sd.nextBoolean(false);
-    boolean mirroring = sd.nextBoolean(false);
+    final Point anchor = new Point(sd.nextInt(0), sd.nextInt(0));
+    final Point arrow = new Point(sd.nextInt(0), sd.nextInt(0));
+    final boolean persisting = sd.nextBoolean(false);
+    final boolean mirroring = sd.nextBoolean(false);
     return new LOSCommand(this, anchor, arrow, persisting, mirroring);
   }
 
@@ -930,8 +925,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
     if (!(c instanceof LOSCommand)) {
       return null;
     }
-    LOSCommand com = (LOSCommand) c;
-    SequenceEncoder se = new SequenceEncoder(com.target.getId(), '\t');
+    final LOSCommand com = (LOSCommand) c;
+    final SequenceEncoder se = new SequenceEncoder(com.target.getId(), '\t');
     se
       .append(com.newAnchor.x)
       .append(com.newAnchor.y)
@@ -990,7 +985,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
   }
 }

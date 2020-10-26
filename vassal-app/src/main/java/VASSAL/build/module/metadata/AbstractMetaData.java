@@ -136,13 +136,13 @@ public abstract class AbstractMetaData {
   }
 
   public void save(FileArchive archive) throws IOException {
-    try (OutputStream out = archive.getOutputStream(getZipEntryName())) {
+    try (final OutputStream out = archive.getOutputStream(getZipEntryName())) {
       save(out);
     }
   }
 
   protected void save(OutputStream out) throws IOException {
-    Document doc;
+    final Document doc;
     Element e;
     try {
       doc = DocumentBuilderFactory.newInstance()
@@ -176,7 +176,7 @@ public abstract class AbstractMetaData {
 
       addElements(doc, root);
     }
-    catch (ParserConfigurationException ex) {
+    catch (final ParserConfigurationException ex) {
       ErrorDialog.bug(ex);
       throw new IOException(ex);
     }
@@ -189,11 +189,11 @@ public abstract class AbstractMetaData {
         "{http://xml.apache.org/xslt}indent-amount", "2"); //NON-NLS
       xformer.transform(new DOMSource(doc), new StreamResult(out));
     }
-    catch (TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
+    catch (final TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
       ErrorDialog.bug(ex);
       throw new IOException(ex);
     }
-    catch (TransformerException ex) {
+    catch (final TransformerException ex) {
       throw new IOException(ex);
     }
   }
@@ -226,11 +226,11 @@ public abstract class AbstractMetaData {
 
   public void copyModuleMetadata(FileArchive archive) throws IOException {
     final DataArchive mda = GameModule.getGameModule().getDataArchive();
-    try (InputStream inner = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME);
-         BufferedInputStream in = new BufferedInputStream(inner)) {
+    try (final InputStream inner = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME);
+         final BufferedInputStream in = new BufferedInputStream(inner)) {
       archive.add(ModuleMetaData.ZIP_ENTRY_NAME, in);
     }
-    catch (FileNotFoundException e) {
+    catch (final FileNotFoundException e) {
       // No Metadata in source module, create a fresh copy
       new ModuleMetaData(GameModule.getGameModule()).save(archive);
     }
@@ -289,7 +289,7 @@ public abstract class AbstractMetaData {
       if (key.length() > 0) key += ".";
       key += attributeName;
 
-      for (Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {
+      for (final Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {
         addTranslation(t.getLanguageCode(), t.translate(key));
       }
     }
@@ -321,8 +321,8 @@ public abstract class AbstractMetaData {
      * @return translated value
      */
     public String getLocalizedValue() {
-      String lang = Locale.getDefault().getLanguage();
-      String tx = translations.get(lang);
+      final String lang = Locale.getDefault().getLanguage();
+      final String tx = translations.get(lang);
       return tx == null ? getValue() : tx;
     }
 
@@ -345,7 +345,7 @@ public abstract class AbstractMetaData {
       e.appendChild(doc.createTextNode(value));
       root.appendChild(e);
 
-      for (Map.Entry<String, String> en : translations.entrySet()) {
+      for (final Map.Entry<String, String> en : translations.entrySet()) {
         e = doc.createElement(prefix);
         e.setAttribute(LANG_ATTR, en.getValue());
         e.appendChild(doc.createTextNode(en.getKey()));
@@ -370,7 +370,7 @@ public abstract class AbstractMetaData {
     try {
       return SAXParserFactory.newDefaultInstance().newSAXParser().getXMLReader();
     }
-    catch (SAXException | ParserConfigurationException e) {
+    catch (final SAXException | ParserConfigurationException e) {
       // This should never happen.
       ErrorDialog.bug(e);
     }
@@ -404,7 +404,7 @@ public abstract class AbstractMetaData {
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
 
-      String value = accumulator.toString().trim();
+      final String value = accumulator.toString().trim();
 
       if (VERSION_ELEMENT.equals(qName)) {
         setVersion(value);

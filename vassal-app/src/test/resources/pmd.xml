@@ -46,9 +46,7 @@
   <rule ref="category/java/codestyle.xml/ExtendsObject" />
   <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop" />
   <rule ref="category/java/codestyle.xml/IdenticalCatchBranches" />
-<!--
   <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
--->
   <rule ref="category/java/codestyle.xml/NoPackage" />
 <!--
   <rule ref="category/java/codestyle.xml/PrematureDeclaration" />

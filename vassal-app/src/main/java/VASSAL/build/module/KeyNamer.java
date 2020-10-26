@@ -60,8 +60,8 @@ public class KeyNamer implements Buildable {
       return null;
     }
 
-    StringBuilder sb = new StringBuilder();
-    int code = k.getKeyCode();
+    final StringBuilder sb = new StringBuilder();
+    final int code = k.getKeyCode();
     switch (code) {
     // The addition of underscores screws up these names
     case KeyEvent.VK_ADD:

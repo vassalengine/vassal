@@ -115,7 +115,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   protected void extractContents() {
-    try (ZipInputStream in =
+    try (final ZipInputStream in =
            new ZipInputStream(new BufferedInputStream(
              GameModule.getGameModule().getDataArchive().getInputStream(
                "help/" + getContentsResource())))) { //$NON-NLS-1$
@@ -163,7 +163,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       }
       else {
 // FIXME: no way to distinguish between read and write errors here
-        try (FileOutputStream fos = new FileOutputStream(new File(output, entry.getName()))) {
+        try (final FileOutputStream fos = new FileOutputStream(new File(output, entry.getName()))) {
           IOUtils.copy(in, fos);
         }
       }
@@ -175,7 +175,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
-      for (File f : output.listFiles()) {
+      for (final File f : output.listFiles()) {
         recursiveDelete(f);
       }
     }
@@ -338,9 +338,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       File packed = null;
       try {
         packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-        try (FileOutputStream fout = new FileOutputStream(packed);
-             ZipOutputStream out = new ZipOutputStream(fout)) {
-          for (File f : dir.listFiles()) {
+        try (final FileOutputStream fout = new FileOutputStream(packed);
+             final ZipOutputStream out = new ZipOutputStream(fout)) {
+          for (final File f : dir.listFiles()) {
             packFile(f, "", out); //$NON-NLS-1$
           }
         }
@@ -357,7 +357,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     protected void packFile(File packed, String prefix, ZipOutputStream out)
                                                           throws IOException {
       if (packed.isDirectory()) {
-        for (File f : packed.listFiles()) {
+        for (final File f : packed.listFiles()) {
           packFile(f, prefix + packed.getName() + "/", out); //$NON-NLS-1$
         }
       }
@@ -365,7 +365,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         final ZipEntry entry = new ZipEntry(prefix + packed.getName());
         out.putNextEntry(entry);
 
-        try (FileInputStream in = new FileInputStream(packed)) {
+        try (final FileInputStream in = new FileInputStream(packed)) {
           IOUtils.copy(in, out);
         }
       }
@@ -437,7 +437,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return new DirectoryConfigurer(key, name) {
         @Override
         public Component getControls() {
-          Component controls = super.getControls();
+          final Component controls = super.getControls();
           tf.setEditable(false);
           return controls;
         }

@@ -53,12 +53,12 @@ public class RandomTextButton extends DiceButton {
 
   public RandomTextButton() {
     super();
-    ActionListener ranAction = e -> {
+    final ActionListener ranAction = e -> {
       if (promptAlways) {
         promptAlways = false; // Show the usu
         // Remove label, hotkey, and prompt controls
-        AutoConfigurer ac = (AutoConfigurer) getConfigurer();
-        ConfigurerWindow w = new ConfigurerWindow(ac, true);
+        final AutoConfigurer ac = (AutoConfigurer) getConfigurer();
+        final ConfigurerWindow w = new ConfigurerWindow(ac, true);
         ac.getConfigurer(NAME).getControls().setVisible(false);
         ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
         ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
@@ -150,8 +150,8 @@ public class RandomTextButton extends DiceButton {
     if (reportTotal && isNumeric)
       result.append(total);
 
-    String report = formatResult(result.toString());
-    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
+    final String report = formatResult(result.toString());
+    final Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
     c.append(property.setPropertyValue(result.toString()));
     GameModule.getGameModule().sendAndLog(c);
@@ -179,7 +179,7 @@ public class RandomTextButton extends DiceButton {
    */
   @Override
   public String[] getAttributeNames() {
-    ArrayList<String> l =
+    final ArrayList<String> l =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(N_SIDES);
     l.add(FACES);
@@ -189,9 +189,9 @@ public class RandomTextButton extends DiceButton {
 
   @Override
   public String[] getAttributeDescriptions() {
-    ArrayList<String> l =
+    final ArrayList<String> l =
       new ArrayList<>(Arrays.asList(super.getAttributeDescriptions()));
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(Resources.getString("Editor.RandomTextButton.faces")); //$NON-NLS-1$
@@ -201,9 +201,9 @@ public class RandomTextButton extends DiceButton {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    ArrayList<Class<?>> l =
+    final ArrayList<Class<?>> l =
       new ArrayList<>(Arrays.asList(super.getAttributeTypes()));
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
@@ -262,7 +262,7 @@ public class RandomTextButton extends DiceButton {
   @Override
   public void addLocalImageNames(Collection<String> s) {
     HTMLImageFinder h;
-    for (String f : m_faces) {
+    for (final String f : m_faces) {
       h = new HTMLImageFinder(f);
       h.addImageNames(s);
     }

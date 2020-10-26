@@ -125,7 +125,7 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      for (Map m : Map.getMapList()) {
+      for (final Map m : Map.getMapList()) {
         if (m.getMapName().equals(value)) {
           surrogate = m;
           break;
@@ -227,7 +227,7 @@ public class PrivateMap extends Map {
    * @see PlayerRoster
    */
   public boolean isAccessibleTo(String playerSide) {
-    for (String owner : owners) {
+    for (final String owner : owners) {
       if (owner.equals(playerSide)) {
         return true;
       }
@@ -351,13 +351,13 @@ public class PrivateMap extends Map {
      * Disable all keyboard and mouse listeners on this component
      */
     protected void disableListeners() {
-      for (KeyListener l : keyListeners) {
+      for (final KeyListener l : keyListeners) {
         removeKeyListener(l);
       }
-      for (MouseListener l : mouseListeners) {
+      for (final MouseListener l : mouseListeners) {
         removeMouseListener(l);
       }
-      for (MouseMotionListener l : mouseMotionListeners) {
+      for (final MouseMotionListener l : mouseMotionListeners) {
         removeMouseMotionListener(l);
       }
       super.setDropTarget(null);
@@ -368,13 +368,13 @@ public class PrivateMap extends Map {
      * Enable all keyboard and mouse listeners on this component
      */
     protected void enableListeners() {
-      for (KeyListener l : keyListeners) {
+      for (final KeyListener l : keyListeners) {
         super.addKeyListener(l);
       }
-      for (MouseListener l : mouseListeners) {
+      for (final MouseListener l : mouseListeners) {
         super.addMouseListener(l);
       }
-      for (MouseMotionListener l : mouseMotionListeners) {
+      for (final MouseMotionListener l : mouseMotionListeners) {
         super.addMouseMotionListener(l);
       }
       super.setDropTarget(dropTarget);

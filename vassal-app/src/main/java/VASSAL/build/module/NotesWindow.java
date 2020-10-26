@@ -80,7 +80,7 @@ public class NotesWindow extends AbstractToolbarItem
     secretNotes = new SecretNotesController();
     frame = new NotesDialog();
     frame.setTitle(Resources.getString("Notes.notes")); //$NON-NLS-1$
-    ActionListener al = e -> {
+    final ActionListener al = e -> {
       captureState();
       frame.setVisible(!frame.isShowing());
     };
@@ -124,7 +124,7 @@ public class NotesWindow extends AbstractToolbarItem
   }
 
   protected void save() {
-    Command c = new NullCommand();
+    final Command c = new NullCommand();
     if (!lastSavedScenarioNotes.equals(scenarioNotes.getValue())) {
       c.append(new SetScenarioNote(scenarioNotes.getValueString()));
     }
@@ -159,7 +159,7 @@ public class NotesWindow extends AbstractToolbarItem
 
       scenarioNotes = new TextConfigurer(null, null);
       publicNotes = new TextConfigurer(null, null);
-      JTabbedPane tab = new JTabbedPane();
+      final JTabbedPane tab = new JTabbedPane();
       add(tab);
 
       Box b = Box.createVerticalBox();
@@ -176,14 +176,14 @@ public class NotesWindow extends AbstractToolbarItem
 
       tab.addTab(Resources.getString("Notes.delayed"), secretNotes.getControls()); //$NON-NLS-1$
 
-      JPanel p = new JPanel();
-      JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
+      final JPanel p = new JPanel();
+      final JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       p.add(saveButton);
       saveButton.addActionListener(e -> {
         save();
         setVisible(false);
       });
-      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+      final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(e -> {
         cancel();
         setVisible(false);
@@ -296,7 +296,7 @@ public class NotesWindow extends AbstractToolbarItem
 
   @Override
   public Command getRestoreCommand() {
-    Command c = new SetScenarioNote(scenarioNotes.getValueString());
+    final Command c = new SetScenarioNote(scenarioNotes.getValueString());
     c.append(new SetPublicNote(publicNotes.getValueString()));
     c.append(privateNotes.getRestoreCommand());
     c.append(secretNotes.getRestoreCommand());

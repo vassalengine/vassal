@@ -85,11 +85,11 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public void findMaximumStrings(List<String> levels, int currentLevel) {
-    String s = getLongestFormattedValue();
+    final String s = getLongestFormattedValue();
     if (levels.size() < (currentLevel + 1) || levels.get(currentLevel) == null || levels.get(currentLevel).length() < s.length()) {
       levels.add(currentLevel, s);
     }
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       if (b instanceof TurnLevel) {
         ((TurnLevel) b).findMaximumStrings(levels, currentLevel + 1);
       }
@@ -120,7 +120,7 @@ public abstract class TurnLevel extends TurnComponent {
     rolledOver = false;
     subLevelRolledOver = false;
     if (getTurnLevelCount() > 0) {
-      TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
       subLevel.advance();
       if (subLevel.hasRolledOver()) {
         currentSubLevel++;
@@ -137,7 +137,7 @@ public abstract class TurnLevel extends TurnComponent {
     rolledOver = false;
     subLevelRolledOver = false;
     if (getTurnLevelCount() > 0) {
-      TurnLevel subLevel = getTurnLevel(currentSubLevel);
+      final TurnLevel subLevel = getTurnLevel(currentSubLevel);
       subLevel.retreat();
       if (subLevel.hasRolledOver()) {
         currentSubLevel--;
@@ -157,9 +157,9 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public List<TurnLevel> getActiveChildLevels() {
-    ArrayList<TurnLevel> children = new ArrayList<>();
+    final ArrayList<TurnLevel> children = new ArrayList<>();
     if (getTurnLevelCount() > 0) {
-      TurnLevel activeChild = getTurnLevel(currentSubLevel);
+      final TurnLevel activeChild = getTurnLevel(currentSubLevel);
       children.add(activeChild);
       children.addAll(activeChild.getActiveChildLevels());
     }
@@ -167,7 +167,7 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   protected void buildConfigMenu(JMenu menu) {
-    JMenu m = getConfigMenu();
+    final JMenu m = getConfigMenu();
     if (m != null) {
       menu.add(m);
     }
@@ -175,7 +175,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   protected JMenu getConfigMenu() {
 
-    JMenu menu = new JMenu(getConfigureName());
+    final JMenu menu = new JMenu(getConfigureName());
 
     for (int i = 0; i < getTurnLevelCount(); i++) {
       getTurnLevel(i).buildConfigMenu(menu);
@@ -204,7 +204,7 @@ public abstract class TurnLevel extends TurnComponent {
 
     levelSetControls = new JPanel();
     levelSetControls.setLayout(new BoxLayout(levelSetControls, BoxLayout.Y_AXIS));
-    JPanel p = new JPanel();
+    final JPanel p = new JPanel();
     p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     p.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -213,14 +213,14 @@ public abstract class TurnLevel extends TurnComponent {
     p.add(Box.createRigidArea(FILLER));
 
     if (getTurnLevelCount() > 1) {
-      String[] s = new String[getTurnLevelCount()];
+      final String[] s = new String[getTurnLevelCount()];
       for (int i = 0; i < s.length; i++) {
         s[i] = getTurnLevel(i).getConfigureName();
       }
-      StringEnumConfigurer e = new StringEnumConfigurer(null, Resources.getString("Editor.TurnLevel.select"), s);
+      final StringEnumConfigurer e = new StringEnumConfigurer(null, Resources.getString("Editor.TurnLevel.select"), s);
       e.setValue(getTurnLevel(currentSubLevel).getConfigureName());
       e.addPropertyChangeListener(e1 -> {
-        String option = ((StringEnumConfigurer) e1.getSource()).getValueString();
+        final String option = ((StringEnumConfigurer) e1.getSource()).getValueString();
         for (int i = 0; i < getTurnLevelCount(); i++) {
           if (option.equals(getTurnLevel(i).getConfigureName())) {
             currentSubLevel = i;
@@ -345,7 +345,7 @@ public abstract class TurnLevel extends TurnComponent {
   public void addTo(Buildable parent) {
     this.parent = (TurnComponent) parent;
     ((TurnComponent) parent).addLevel(this);
-    MutableProperty.Impl existingValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(propertyName);
+    final MutableProperty.Impl existingValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(propertyName);
     if (existingValue == null) {
       myValue.addTo(GameModule.getGameModule());
     }
@@ -374,7 +374,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData myI18nData = super.getI18nData();
+    final ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(PROP, false);
     return myI18nData;
   }

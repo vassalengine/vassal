@@ -68,7 +68,7 @@ public class ChartWindow extends Widget {
 
   public ChartWindow() {
     root = new JPanel();
-    ActionListener al = new ActionListener() {
+    final ActionListener al = new ActionListener() {
       boolean initialized;
 
       @Override
@@ -103,7 +103,7 @@ public class ChartWindow extends Widget {
     }
     root = frame.getContentPane();
     frame.setTitle(launch.getAttributeValueString(DEPRECATED_NAME));
-    int count = GameModule.getGameModule().getComponentsOf(ChartWindow.class).size();
+    final int count = GameModule.getGameModule().getComponentsOf(ChartWindow.class).size();
     id = "ChartWindow" + count; //$NON-NLS-1$
   }
 
@@ -255,7 +255,7 @@ public class ChartWindow extends Widget {
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    String string = launch.getAttributeValueString(launch.getIconAttribute());
+    final String string = launch.getAttributeValueString(launch.getIconAttribute());
     if (string != null) { // Launch buttons sometimes have null icon attributes - yay
       s.add(string);
     }

@@ -169,18 +169,18 @@ public class ToolbarMenu extends AbstractToolbarItem
   }
 
   protected void buildMenu() {
-    for (AbstractButton b : buttonsToMenuMap.keySet()) {
+    for (final AbstractButton b : buttonsToMenuMap.keySet()) {
       b.removePropertyChangeListener(this);
       b.setVisible(true);
       b.putClientProperty(HIDDEN_BY_TOOLBAR, null);
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
-    HashMap<String, JButton> nameToButton = new HashMap<>();
+    final HashMap<String, JButton> nameToButton = new HashMap<>();
     if (toolbar != null) {
       for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {
-          JButton b = ((JButton) toolbar.getComponentAtIndex(i));
+          final JButton b = ((JButton) toolbar.getComponentAtIndex(i));
           String text =
             (String) b.getClientProperty(LaunchButton.UNTRANSLATED_TEXT);
           if (text == null) {
@@ -191,10 +191,10 @@ public class ToolbarMenu extends AbstractToolbarItem
       }
     }
 
-    for (String item : menuItems) {
+    for (final String item : menuItems) {
       final JButton b = nameToButton.get(item);
       if (b != null) {
-        Object property = b.getClientProperty(MENU_PROPERTY);
+        final Object property = b.getClientProperty(MENU_PROPERTY);
         b.addPropertyChangeListener(this);
         b.setVisible(false);
         b.putClientProperty(HIDDEN_BY_TOOLBAR, Boolean.TRUE);
@@ -202,13 +202,13 @@ public class ToolbarMenu extends AbstractToolbarItem
         if (property instanceof JPopupMenu) {
           // This button corresponds to another ToolbarMenu button.
           // Turn it into a submenu.
-          JPopupMenu toolbarMenu = (JPopupMenu) property;
+          final JPopupMenu toolbarMenu = (JPopupMenu) property;
           toolbarMenu.addContainerListener(this);
-          JMenu subMenu = new JMenu(b.getText());
-          Component[] items = toolbarMenu.getComponents();
-          for (Component component : items) {
+          final JMenu subMenu = new JMenu(b.getText());
+          final Component[] items = toolbarMenu.getComponents();
+          for (final Component component : items) {
             final JMenuItem otherItem = (JMenuItem) component;
-            JMenuItem myItem =
+            final JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(e -> otherItem.doClick());
             subMenu.add(myItem);
@@ -218,7 +218,7 @@ public class ToolbarMenu extends AbstractToolbarItem
           menu.add(subMenu);
         }
         else {
-          JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
+          final JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
           mi.setEnabled(b.isEnabled());
           mi.addActionListener(e -> b.doClick());
           buttonsToMenuMap.put(b, mi);
@@ -250,8 +250,8 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    JButton b = (JButton) evt.getSource();
-    JMenuItem mi = buttonsToMenuMap.get(b);
+    final JButton b = (JButton) evt.getSource();
+    final JMenuItem mi = buttonsToMenuMap.get(b);
     if (mi != null) {
       if (AbstractButton.TEXT_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
         scheduleBuildMenu();
@@ -282,7 +282,7 @@ public class ToolbarMenu extends AbstractToolbarItem
    */
   @Override
   public List<String> getMenuTextList() {
-    List<String> l = new ArrayList<>(super.getMenuTextList());
+    final List<String> l = new ArrayList<>(super.getMenuTextList());
     l.addAll(menuItems);
     return l;
   }

@@ -116,7 +116,7 @@ public class ModuleMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile
-      DefaultHandler handler;
+      final DefaultHandler handler;
 
       ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
       if (data == null) {
@@ -129,8 +129,8 @@ public class ModuleMetaData extends AbstractMetaData {
         handler = new MetadataXMLHandler();
       }
 
-      try (InputStream zin = zip.getInputStream(data);
-           BufferedInputStream in = new BufferedInputStream(zin)) {
+      try (final InputStream zin = zip.getInputStream(data);
+           final BufferedInputStream in = new BufferedInputStream(zin)) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);
@@ -140,10 +140,10 @@ public class ModuleMetaData extends AbstractMetaData {
         }
       }
     }
-    catch (SAXEndException e) {
+    catch (final SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
-    catch (IOException | SAXException e) {
+    catch (final IOException | SAXException e) {
       logger.error("", e);
     }
   }

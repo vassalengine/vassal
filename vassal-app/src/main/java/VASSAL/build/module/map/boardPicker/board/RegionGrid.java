@@ -264,7 +264,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public void configureRegions() {
-    for (Region r : regionList.values()) {
+    for (final Region r : regionList.values()) {
       r.setSelected(false);
     }
     regionConfigurer = new Config(this);
@@ -293,7 +293,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   @Override
   public Point getLocation(String name) throws BadCoords {
-    Region reg = findRegion(name);
+    final Region reg = findRegion(name);
     if (reg == null)
       throw new BadCoords();
     else
@@ -334,7 +334,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     Point snapPoint = p;
 
     // Iterate over each grid point and determine the closest.
-    for (Point checkPoint : regionList.keySet()) {
+    for (final Point checkPoint : regionList.keySet()) {
       distSq =
           (p.x - checkPoint.x) * (p.x - checkPoint.x)
           + (p.y - checkPoint.y) * (p.y - checkPoint.y);
@@ -373,7 +373,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
    * Return Region selected by Point
    */
   public Region getRegion(Point p) {
-    for (Region checkRegion : regionList.values()) {
+    for (final Region checkRegion : regionList.values()) {
       if (checkRegion.contains(p))
         return checkRegion;
     }
@@ -384,7 +384,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
    * Return Region by Name
    */
   public Region findRegion(String name) {
-    for (Region checkRegion : regionList.values()) {
+    for (final Region checkRegion : regionList.values()) {
       if (checkRegion.getConfigureName().equals(name)) {
         return checkRegion;
       }
@@ -530,7 +530,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     public void init() {
-      for (Region r : selectedRegions) {
+      for (final Region r : selectedRegions) {
         r.setSelected(false);
       }
     }
@@ -541,7 +541,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
      */
     public void save() {
       saveRegions = new ArrayList<>(grid.regionList.size());
-      for (Region r : grid.regionList.values()) {
+      for (final Region r : grid.regionList.values()) {
         saveRegions.add(new Region(r));
       }
     }
@@ -552,7 +552,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
      */
     public void restore() {
       grid.removeAllRegions();
-      for (Region r : saveRegions) {
+      for (final Region r : saveRegions) {
         r.addTo(grid);
         grid.add(r);
       }
@@ -573,7 +573,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     /**
-     * Scoll map so that the argument point is at least a certain distance from the visible edge
+     * Scroll map so that the argument point is at least a certain distance from the visible edge
      * @param evtPt
      */
     protected void scrollAtEdge(Point evtPt, int dist) {
@@ -582,7 +582,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
               evtPt.x - scroll.getViewport().getViewPosition().x,
               evtPt.y - scroll.getViewport().getViewPosition().y);
       int dx = 0, dy = 0;
-      Dimension viewSize = scroll.getViewport().getSize();
+      final Dimension viewSize = scroll.getViewport().getSize();
       if (p.x < dist && p.x >= 0)
         dx = -1;
       if (p.x >= viewSize.width - dist
@@ -640,7 +640,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       @Override
       public void paint(Graphics g) {
-        Rectangle b = getVisibleRect();
+        final Rectangle b = getVisibleRect();
         g.clearRect(b.x, b.y, b.width, b.height);
         myBoard.draw(g, 0, 0, 1.0, this);
         final Rectangle bounds =
@@ -686,10 +686,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       public void drop(DropTargetDropEvent event) {
         removeDragCursor();
         final Point dragEnd = event.getLocation();
-        int x = dragEnd.x - dragStart.x;
-        int y = dragEnd.y - dragStart.y;
+        final int x = dragEnd.x - dragStart.x;
+        final int y = dragEnd.y - dragStart.y;
 
-        for (Region r : config.selectedRegions) {
+        for (final Region r : config.selectedRegions) {
           r.move(x, y, this);
           config.setDirty(true);
         }
@@ -713,7 +713,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           return;
         }
 
-        Point piecePosition = new Point(r.getOrigin());
+        final Point piecePosition = new Point(r.getOrigin());
 
         originalPieceOffsetX = piecePosition.x - mousePosition.x;
         originalPieceOffsetY = piecePosition.y - mousePosition.y;
@@ -733,7 +733,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
                         new StringSelection(""), this); //$NON-NLS-1$
           dge.getDragSource().addDragSourceMotionListener(this);
         }
-        catch (InvalidDnDOperationException e) {
+        catch (final InvalidDnDOperationException e) {
           ErrorDialog.bug(e);
         }
       }
@@ -827,9 +827,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 
         // Draw each region into the drag cursor in the correct place
-        for (Region r : config.selectedRegions) {
-          int x = -boundingBox.x * 2;
-          int y = -boundingBox.y * 2;
+        for (final Region r : config.selectedRegions) {
+          final int x = -boundingBox.x * 2;
+          final int y = -boundingBox.y * 2;
           r.draw(g, boundingBox, getVisibleRect(), 1.0f, false, x, y);
         }
 
@@ -916,10 +916,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       final String command = e.getActionCommand();
 
-      if (command.equals("close")) {
+      if (command.equals("close")) { //NON-NLS
         this.setVisible(false);
       }
-      else if (command.equals("showhide")) {
+      else if (command.equals("showhide")) {  //NON-NLS
         grid.setVisible(!grid.isVisible());
         view.repaint();
       }
@@ -935,7 +935,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         view.repaint();
       }
       else if (command.equals(DELETE_REGION)) {
-        for (Region r : selectedRegions) {
+        for (final Region r : selectedRegions) {
           r.removeFrom(grid);
           grid.remove(r);
           lastClickedRegion = null;
@@ -1013,7 +1013,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     protected void unSelectAll() {
-      for (Region r : selectedRegions) {
+      for (final Region r : selectedRegions) {
         r.setSelected(false);
         view.repaint(r.getSelectionRect());
       }
@@ -1026,7 +1026,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     public Rectangle getSelectedBox() {
       Rectangle rect = null;
-      for (Region r : selectedRegions) {
+      for (final Region r : selectedRegions) {
         final Rectangle sel = r.getSelectionRect();
         if (rect == null) {
           rect = sel;
@@ -1083,7 +1083,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         doPopupMenu(e);
       }
       else if (selectionRect != null && SwingUtils.isMainMouseButtonDown(e)) {
-        for (Region r : grid.regionList.values()) {
+        for (final Region r : grid.regionList.values()) {
           if (selectionRect.contains(r.getOrigin())) {
             if (SwingUtils.isSelectionToggle(e)) {
               unselect(r);
@@ -1160,7 +1160,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         return;
       }
 
-      for (Region r : selectedRegions) {
+      for (final Region r : selectedRegions) {
         r.move(dx, dy, view);
       }
 

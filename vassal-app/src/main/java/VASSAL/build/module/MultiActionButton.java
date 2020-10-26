@@ -64,7 +64,7 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
       RecursionLimiter.startExecution(this);
 
       for (int i = 0, n = menu.getComponentCount(); i < n; ++i) {
-        Component c = menu.getComponent(i);
+        final Component c = menu.getComponent(i);
         if (c instanceof JMenuItem) {
           ((JMenuItem)c).doClick();
         }

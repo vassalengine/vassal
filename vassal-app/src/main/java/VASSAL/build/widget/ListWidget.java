@@ -41,7 +41,7 @@ import VASSAL.tools.ScrollPane;
  * A Widget that corresponds to a panel with a {@link JList} sitting
  * to the right of a {@link JPanel} with a {@link CardLayout} layout.
  * Adding a Widget to a ListWidget adds the child Widget's component to
- * the JPanel and add's the child's name (via {@link
+ * the JPanel and adds the child's name (via {@link
  * Configurable#getConfigureName}) to the JList.  Changing the
  * selection of the JList shows the corresponding child's
  * component */
@@ -104,8 +104,8 @@ public class ListWidget extends Widget
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
       multiPanel.setLayout(layout);
 
-      for (Buildable b : getBuildables()) {
-        Widget w = (Widget) b;
+      for (final Buildable b : getBuildables()) {
+        final Widget w = (Widget) b;
         multiPanel.add(getKey(w), w.getComponent());
       }
 
@@ -119,8 +119,8 @@ public class ListWidget extends Widget
 
       if (width > 0 && height > 0) {
         // This was causing bad behavior in piece palettes - Jlist aggressively grabs space. This lets the size of the rest of the Piece Palette and/or Chatter govern.
-        int grabWidth  = isMainPiecePalette() ? width / 2 : width;
-        int grabHeight = isMainPiecePalette() ? height / 2 : height;
+        final int grabWidth  = isMainPiecePalette() ? width / 2 : width;
+        final int grabHeight = isMainPiecePalette() ? height / 2 : height;
         split.setPreferredSize(new Dimension(grabWidth, grabHeight));
       }
       if (divider > 0) {
@@ -133,7 +133,7 @@ public class ListWidget extends Widget
   @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       widgets.addElement(w);
       if (panel != null) {
         multiPanel.add(getKey(w), w.getComponent());
@@ -162,7 +162,7 @@ public class ListWidget extends Widget
 
   @Override
   public void valueChanged(ListSelectionEvent e) {
-    Object selected = list.getSelectedValue();
+    final Object selected = list.getSelectedValue();
     if (selected != null) {
       layout.show(multiPanel, getKey(selected));
     }

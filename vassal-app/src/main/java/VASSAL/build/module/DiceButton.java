@@ -102,13 +102,13 @@ public class DiceButton extends AbstractToolbarItem {
         final List<String> keepAttributes =
           Arrays.asList(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL);
 
-        for (String key : keepAttributes) {
+        for (final String key : keepAttributes) {
           delegate.setAttribute(key, getAttributeValueString(key));
         }
 
         final AutoConfigurer ac = new AutoConfigurer(delegate);
         final ConfigurerWindow w = new ConfigurerWindow(ac, true);
-        for (String key : getAttributeNames()) {
+        for (final String key : getAttributeNames()) {
           if (!keepAttributes.contains(key)) {
             final Component controls = ac.getConfigurer(key).getControls();
             controls.getParent().remove(controls);
@@ -118,7 +118,7 @@ public class DiceButton extends AbstractToolbarItem {
         w.setLocationRelativeTo(getLaunchButton().getTopLevelAncestor());
         w.setVisible(true);
 
-        for (String key : keepAttributes) {
+        for (final String key : keepAttributes) {
           setAttribute(key, delegate.getAttributeValueString(key));
         }
         if (! w.isCancelled()) {
@@ -166,7 +166,7 @@ public class DiceButton extends AbstractToolbarItem {
    * method of the {@link Chatter} of the {@link GameModule}.  Format is
    * prefix+[comma-separated roll list]+suffix */
   protected void DR() {
-    StringBuilder val = new StringBuilder();
+    final StringBuilder val = new StringBuilder();
     int total = addToTotal;
     int[] dice = null; // stays null if no sorting
 
@@ -202,8 +202,8 @@ public class DiceButton extends AbstractToolbarItem {
       }
     }
 
-    String report = formatResult(val.toString());
-    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
+    final String report = formatResult(val.toString());
+    final Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
     c.append(property.setPropertyValue(val.toString()));
     GameModule.getGameModule().sendAndLog(c);
@@ -214,14 +214,14 @@ public class DiceButton extends AbstractToolbarItem {
    * @param result Result format
    * @return Formatted result
    */
-  protected String formatResult(String result) {
+  protected String formatResult(final String result) {
     reportFormat.setProperty(REPORT_NAME, getLocalizedConfigureName());
     reportFormat.setProperty(RESULT, result);
     reportFormat.setProperty(N_DICE, Integer.toString(nDice));
     reportFormat.setProperty(N_SIDES, Integer.toString(nSides));
     reportFormat.setProperty(PLUS, Integer.toString(plus));
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
-    String text = reportFormat.getLocalizedText();
+    final String text = reportFormat.getLocalizedText();
     String report = text;
     if (text.length() > 0) {
       report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -270,14 +270,14 @@ public class DiceButton extends AbstractToolbarItem {
   @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+    public Configurer getConfigurer(final AutoConfigurable c, final String key, final String name) {
       return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+    public Configurer getConfigurer(final AutoConfigurable c, final String key, final String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
     }
   }
@@ -306,7 +306,7 @@ public class DiceButton extends AbstractToolbarItem {
   private final VisibilityCondition canSort = () -> !reportTotal;
 
   @Override
-  public VisibilityCondition getAttributeVisibility(String name) {
+  public VisibilityCondition getAttributeVisibility(final String name) {
     if (List.of(N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL).contains(name)) {
       return cond;
     }
@@ -320,10 +320,10 @@ public class DiceButton extends AbstractToolbarItem {
 
   /**
    * Expects to be added to a GameModule.  Adds the button to the
-   * control window's toolbar and registers itself as a {@link
-   * KeyStrokeListener} */
+   * control window's toolbar and registers itself as a @link
+   * KeyStrokeListener */
   @Override
-  public void addTo(Buildable parent) {
+  public void addTo(final Buildable parent) {
     super.addTo(parent);
     ran = GameModule.getGameModule().getRNG();
     property.setPropertyValue("1"); // Initialize with a numeric value //$NON-NLS-1$
@@ -332,7 +332,7 @@ public class DiceButton extends AbstractToolbarItem {
 
 
   @Override
-  public void setAttribute(String key, Object o) {
+  public void setAttribute(final String key, final Object o) {
     if (DEPRECATED_NAME.equals(key)) { // Backward compatibility.  Before v1.3, name and button text were combined into one attribute
       setAttribute(NAME, o);
       setAttribute(BUTTON_TEXT, o);
@@ -411,7 +411,7 @@ public class DiceButton extends AbstractToolbarItem {
   }
 
   @Override
-  public String getAttributeValueString(String key) {
+  public String getAttributeValueString(final String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
     }
@@ -472,8 +472,8 @@ public class DiceButton extends AbstractToolbarItem {
    * @param s Collection to add image names to
    */
   @Override
-  public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+  public void addLocalImageNames(final Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
   }
 }

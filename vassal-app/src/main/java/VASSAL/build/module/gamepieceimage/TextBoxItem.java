@@ -181,11 +181,11 @@ public class TextBoxItem extends TextItem {
       tbi = new TextBoxItemInstance();
     }
 
-    Color fg = tbi.getFgColor().getColor();
-    Color bg = tbi.getBgColor().getColor();
+    final Color fg = tbi.getFgColor().getColor();
+    final Color bg = tbi.getBgColor().getColor();
 
-    Point origin = layout.getPosition(this);
-    Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
+    final Point origin = layout.getPosition(this);
+    final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
     String s = null;
     if (textSource.equals(SRC_FIXED)) {
       s = text;
@@ -198,14 +198,14 @@ public class TextBoxItem extends TextItem {
       }
     }
 
-    Graphics2D g2d = ((Graphics2D) g);
+    final Graphics2D g2d = ((Graphics2D) g);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
       RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
 
     AffineTransform saveXForm = null;
     if (getRotation() != 0) {
       saveXForm = g2d.getTransform();
-      AffineTransform newXForm =
+      final AffineTransform newXForm =
         AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth() / 2,
           getLayout().getVisualizerHeight() / 2);
       g2d.transform(newXForm);
@@ -216,14 +216,14 @@ public class TextBoxItem extends TextItem {
       g.fillRect(r.x, r.y, r.width, r.height);
     }
 
-    JTextPane l = new JTextPane();
+    final JTextPane l = new JTextPane();
     if (isHTML) l.setContentType("text/html"); //$NON-NLS-1$
     l.setText(s);
     l.setSize(width - 2, height - 2);
     l.setBackground(bg != null ? bg : new Color(0, true));
     l.setForeground(fg != null ? fg : new Color(0, true));
-    FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
-    Font f = fs.getFont();
+    final FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
+    final Font f = fs.getFont();
     l.setFont(f);
 
     final BufferedImage img = ImageUtils.createCompatibleTranslucentImage(
@@ -258,12 +258,12 @@ public class TextBoxItem extends TextItem {
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    TextBoxItem item = new TextBoxItem(l);
+    final TextBoxItem item = new TextBoxItem(l);
 
-    SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, ',');
-    String s1 = sd1.nextToken(""); //$NON-NLS-1$
+    final SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, ',');
+    final String s1 = sd1.nextToken(""); //$NON-NLS-1$
 
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s1, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s1, ';');
     sd.nextToken();
     item.width = sd.nextInt(30);
     item.height = sd.nextInt(40);
@@ -277,13 +277,13 @@ public class TextBoxItem extends TextItem {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TextBoxItem.TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TextBoxItem.TYPE, ';');
 
     se1.append(width);
     se1.append(height);
     se1.append(isHTML);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), ',');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), ',');
     se2.append(super.encode());
 
     return se2.getValue();

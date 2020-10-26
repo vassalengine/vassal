@@ -117,7 +117,7 @@ public class ChessClockControl extends AbstractConfigurable
     chessClocksVisible = false;
     onlineGame         = false;
 
-    ActionListener al = e -> pressControlButton();
+    final ActionListener al = e -> pressControlButton();
 
     chessClockButton = new LaunchButton("Chess Clocks", BUTTON_TOOLTIP, BUTTON_TEXT, SHOW_HOTKEY, ICON, al); //$NON-NLS-1$
     chessClockButton.setToolTipText(Resources.getString("Editor.tooltip_text_label"));
@@ -126,7 +126,7 @@ public class ChessClockControl extends AbstractConfigurable
 
     // Set up listeners for hotkeys
     nextListener = new NamedKeyStrokeListener(e -> {
-      Command c = startNextClock();
+      final Command c = startNextClock();
       if ((c != null) && !c.isNull()) {
         c.execute();
         GameModule.getGameModule().sendAndLog(c);
@@ -138,7 +138,7 @@ public class ChessClockControl extends AbstractConfigurable
     GameModule.getGameModule().addKeyStrokeListener(showListener);
 
     pauseListener = new NamedKeyStrokeListener(e -> {
-      Command command = stopAllClocks();
+      final Command command = stopAllClocks();
       command.execute();
       GameModule.getGameModule().sendAndLog(command);
     });
@@ -169,10 +169,10 @@ public class ChessClockControl extends AbstractConfigurable
     }
 
     // When creating a brand new Chess Clock Control, start with one chess clock for each "non solo" side in the roster.
-    PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     int added = 0;
     if (r != null) {
-      for (String s : r.sides) {
+      for (final String s : r.sides) {
         if (!r.isSoloSide(s)) {
           addChild(new ChessClock(s));
           added++;
@@ -205,7 +205,7 @@ public class ChessClockControl extends AbstractConfigurable
 
     //BR// We handle adding our chessclocks to the toolbar during initial build, because otherwise their buttons
     //BR// would annoyingly appear before ours, because of the awkward post-order behavior of build.
-    for (ChessClock c : chessclocks) {
+    for (final ChessClock c : chessclocks) {
       c.addToToolbar();
     }
 
@@ -456,7 +456,7 @@ public class ChessClockControl extends AbstractConfigurable
   public int getClocksTicking() {
     int running = 0;
     if (instanceIsActive && (getInstance() != null)) {
-      for (ChessClock c : getInstance().chessclocks) {
+      for (final ChessClock c : getInstance().chessclocks) {
         if (c.isTicking()) {
           running++;
         }
@@ -471,7 +471,7 @@ public class ChessClockControl extends AbstractConfigurable
   public Command stopAllClocks() {
     Command command = new NullCommand();
     if (instanceIsActive && getInstance() != null) {
-      for (ChessClock c : getInstance().chessclocks) {
+      for (final ChessClock c : getInstance().chessclocks) {
         if (!c.isTicking()) {
           continue;
         }
@@ -493,7 +493,7 @@ public class ChessClockControl extends AbstractConfigurable
 
     ChessClock first = null;
     boolean found = false;
-    for (ChessClock clock : chessclocks) {
+    for (final ChessClock clock : chessclocks) {
       if (first == null) {
         first = clock; // Mark first clock, in case we run off the end and that's the one we need
         // to start.
@@ -533,7 +533,7 @@ public class ChessClockControl extends AbstractConfigurable
   public void hideClocks() {
     chessClocksVisible = false;
     if (instanceIsActive && (getInstance() != null)) {
-      for (ChessClock c : getInstance().chessclocks) {
+      for (final ChessClock c : getInstance().chessclocks) {
         c.hideClock();
       }
     }
@@ -545,7 +545,7 @@ public class ChessClockControl extends AbstractConfigurable
   public void showClocks() {
     chessClocksVisible = true;
     if (instanceIsActive && (getInstance() != null)) {
-      for (ChessClock c : getInstance().chessclocks) {
+      for (final ChessClock c : getInstance().chessclocks) {
         c.showClock();
       }
     }
@@ -556,7 +556,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   public void updateAllClocks() {
     if (instanceIsActive && (getInstance() != null)) {
-      for (ChessClock c : getInstance().chessclocks) {
+      for (final ChessClock c : getInstance().chessclocks) {
         c.setTimerButton();
       }
     }
@@ -575,7 +575,7 @@ public class ChessClockControl extends AbstractConfigurable
     }
     else {
       if (getClocksTicking() > 0) {
-        Command command = stopAllClocks();
+        final Command command = stopAllClocks();
         command.execute();
         GameModule.getGameModule().sendAndLog(command);
       }
@@ -763,16 +763,16 @@ public class ChessClockControl extends AbstractConfigurable
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-      String command = e.getActionCommand();
+      final String command = e.getActionCommand();
       if (command.contains(CHESSMENU_NEXT)) {
-        Command c = startNextClock();
+        final Command c = startNextClock();
         if ((c != null) && !c.isNull()) {
           c.execute();
           GameModule.getGameModule().sendAndLog(c);
         }
       }
       else if (command.contains(CHESSMENU_PAUSE)) {
-        Command c = stopAllClocks();
+        final Command c = stopAllClocks();
         c.execute();
         GameModule.getGameModule().sendAndLog(c);
       }

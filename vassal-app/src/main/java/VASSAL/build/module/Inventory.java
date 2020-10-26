@@ -203,7 +203,7 @@ public class Inventory extends AbstractToolbarItem
 
 
   public Inventory() {
-    ActionListener al = e -> launch();
+    final ActionListener al = e -> launch();
     launch = makeLaunchButton(Resources.getString("Inventory.show_inventory"),
                               Resources.getString("Inventory.inventory"),
                              "/images/inventory.gif", //NON-NLS
@@ -225,7 +225,7 @@ public class Inventory extends AbstractToolbarItem
     GameModule.getGameModule().getGameState().addGameComponent(this);
     frame = new JDialog(GameModule.getGameModule().getPlayerWindow());
     frame.setTitle(getConfigureName());
-    String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
+    final String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
     frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
     frame.add(initTree());
@@ -247,7 +247,7 @@ public class Inventory extends AbstractToolbarItem
     // If wanted center on a selected counter
     tree.addTreeSelectionListener(e -> {
       if (centerOnPiece) {
-        GamePiece piece = getSelectedCounter();
+        final GamePiece piece = getSelectedCounter();
         if (piece != null && piece.getMap() != null)
           piece.getMap().centerAt(piece.getPosition());
       }
@@ -271,7 +271,7 @@ public class Inventory extends AbstractToolbarItem
               final CounterNode node = (CounterNode) path.getLastPathComponent();
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
-                JPopupMenu menu = MenuDisplayer.createPopup(piece);
+                final JPopupMenu menu = MenuDisplayer.createPopup(piece);
                 //$NON-NLS-1$
                 menu.addPropertyChangeListener("visible", evt -> { //NON-NLS
                   if (Boolean.FALSE.equals(evt.getNewValue())) {
@@ -287,7 +287,7 @@ public class Inventory extends AbstractToolbarItem
     });
     tree.addKeyListener(new HotKeySender());
 
-    JScrollPane scrollPane = new ScrollPane(tree,
+    final JScrollPane scrollPane = new ScrollPane(tree,
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     refresh();
@@ -349,15 +349,15 @@ public class Inventory extends AbstractToolbarItem
   }
 
   protected Component initButtons() {
-    Box buttonBox = Box.createHorizontalBox();
+    final Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
-    JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
+    final JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
     writeButton.addActionListener(e -> inventoryToText());
     buttonBox.add(writeButton);
-    JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
+    final JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
     refreshButton.addActionListener(e -> refresh());
     buttonBox.add(refreshButton);
-    JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
+    final JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
     closeButton.addActionListener(e -> frame.setVisible(false));
     buttonBox.add(closeButton);
     return buttonBox;
@@ -375,7 +375,7 @@ public class Inventory extends AbstractToolbarItem
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) return;
 
     final StringBuilder output = new StringBuilder();
@@ -390,9 +390,9 @@ public class Inventory extends AbstractToolbarItem
   //      mapSeparator, System.getProperty("line.separator"));
 
     // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
-         BufferedWriter bw = new BufferedWriter(fw);
-         PrintWriter p = new PrintWriter(bw)) {
+    try (final Writer fw = new FileWriter(file, Charset.defaultCharset());
+         final BufferedWriter bw = new BufferedWriter(fw);
+         final PrintWriter p = new PrintWriter(bw)) {
       p.print(output);
 
       final Command c = new Chatter.DisplayText(
@@ -408,7 +408,7 @@ public class Inventory extends AbstractToolbarItem
 
   public GamePiece getSelectedCounter() {
     GamePiece piece = null;
-    CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
+    final CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
     if (node != null && node.isLeaf()) {
       piece = node.getCounter().getPiece();
     }
@@ -441,7 +441,7 @@ public class Inventory extends AbstractToolbarItem
 
   private void buildTreeModel() {
     // Initialize all pieces with CurrentBoard correctly.
-    for (VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapList()) {
+    for (final VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapList()) {
       m.getPieces();
     }
 
@@ -460,9 +460,9 @@ public class Inventory extends AbstractToolbarItem
       final GamePiece p = pi.nextPiece();
 
       if (p instanceof Decorator || p instanceof BasicPiece) {
-        for (String s : groupBy) {
+        for (final String s : groupBy) {
           if (s.length() > 0) {
-            String prop = (String) p.getProperty(s);
+            final String prop = (String) p.getProperty(s);
             if (prop != null)
               groups.add(prop);
           }
@@ -480,7 +480,7 @@ public class Inventory extends AbstractToolbarItem
   }
 
   protected int getTotalValue(GamePiece p) {
-    String s = (String) p.getProperty(nonLeafFormat);
+    final String s = (String) p.getProperty(nonLeafFormat);
     int count;
     try {
       count = Integer.parseInt(s);
@@ -780,7 +780,7 @@ public class Inventory extends AbstractToolbarItem
   }
 
   protected void setupLaunch() {
-    LaunchButton myButton = getLaunchButton();
+    final LaunchButton myButton = getLaunchButton();
     myButton.setEnabled(enabledForPlayersSide());
     // Only change button visibility if it has not already been hidden by a ToolBarMenu
     if (myButton.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
@@ -799,7 +799,7 @@ public class Inventory extends AbstractToolbarItem
   protected boolean enabledForPlayersSide() {
     if (sides == null || sides.length == 0)
       return true;
-    for (String side : sides) {
+    for (final String side : sides) {
       if (side.equalsIgnoreCase(PlayerRoster.getMySide()))
         return true;
     }
@@ -811,17 +811,17 @@ public class Inventory extends AbstractToolbarItem
    *         within the pieces.
    */
   protected Command sendHotKeyToPieces(final KeyStroke keyStroke) {
-    Command c = new NullCommand();
+    final Command c = new NullCommand();
     final TreePath[] tp = tree.getSelectionPaths();
     // set to not get duplicates
-    HashSet<GamePiece> pieces = new HashSet<>();
-    for (TreePath treePath : tp) {
-      CounterNode node = (CounterNode) treePath.getLastPathComponent();
+    final HashSet<GamePiece> pieces = new HashSet<>();
+    for (final TreePath treePath : tp) {
+      final CounterNode node = (CounterNode) treePath.getLastPathComponent();
       if (node.isLeaf()) {
         pieces.add(node.getCounter().getPiece());
       }
       else {
-        for (Iterator<CounterNode> j = node.iterator(); j.hasNext();) {
+        for (final Iterator<CounterNode> j = node.iterator(); j.hasNext();) {
           final CounterNode childNode = j.next();
           if (childNode.isLeaf())
             pieces.add(childNode.getCounter().getPiece());
@@ -829,7 +829,7 @@ public class Inventory extends AbstractToolbarItem
       }
     }
 
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       GameModule.getGameModule().sendAndLog(piece.keyEvent(keyStroke));
     }
     return c;
@@ -841,7 +841,7 @@ public class Inventory extends AbstractToolbarItem
 
   private void refresh() {
     // Make an attempt to keep the same nodes expanded
-    HashSet<String> expanded = new HashSet<>();
+    final HashSet<String> expanded = new HashSet<>();
     for (int i = 0, n = tree.getRowCount(); i < n; ++i) {
       if (tree.isExpanded(i)) {
         expanded.add(tree.getPathForRow(i).getLastPathComponent().toString());
@@ -863,9 +863,9 @@ public class Inventory extends AbstractToolbarItem
 
     public void keyCommand(KeyStroke stroke) {
       if (forwardKeystroke) {
-        CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
+        final CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
         if (node != null) {
-          Command comm = getCommand(node, stroke);
+          final Command comm = getCommand(node, stroke);
           if (comm != null && !comm.isNull()) {
             tracker.repaint();
             GameModule.getGameModule().sendAndLog(comm);
@@ -877,7 +877,7 @@ public class Inventory extends AbstractToolbarItem
     }
 
     protected Command getCommand(CounterNode node, KeyStroke stroke) {
-      GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
+      final GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
       Command comm;
       if (p != null) {
         // Save state first
@@ -1008,24 +1008,24 @@ public class Inventory extends AbstractToolbarItem
     public boolean equals(Object o) {
       if (!(o instanceof Counter))
         return false;
-      Counter c = (Counter) o;
+      final Counter c = (Counter) o;
       return getPath().equals(c.getPath());
     }
 
     @Override
     public Object getProperty(Object key) {
       Object value = null;
-      String s = (String) key;
+      final String s = (String) key;
       if (s.startsWith("sum_")) { //$NON-NLS-1$
         if (piece != null) {
           value = piece.getProperty(s.substring(4));
         }
         else {
           int sum = 0;
-          int n = results.getChildCount(node);
+          final int n = results.getChildCount(node);
           for (int i = 0; i < n; ++i) {
             try {
-              CounterNode childNode = (CounterNode) results.getChild(node, i);
+              final CounterNode childNode = (CounterNode) results.getChild(node, i);
               sum += Integer.parseInt((String) (childNode.getCounter()).getProperty(key));
             }
             catch (NumberFormatException e) {
@@ -1161,7 +1161,7 @@ public class Inventory extends AbstractToolbarItem
       else
         name.append(getEntry());
 
-      for (CounterNode child : children) {
+      for (final CounterNode child : children) {
         name.append(child.toResultString());
       }
       return name.toString();
@@ -1233,7 +1233,7 @@ public class Inventory extends AbstractToolbarItem
         value = counter.getValue();
 
       // inform children about update
-      for (CounterNode child : children) {
+      for (final CounterNode child : children) {
         value += child.updateValues();
       }
 
@@ -1252,14 +1252,14 @@ public class Inventory extends AbstractToolbarItem
         return;
       }
 
-      for (CounterNode child : children) {
+      for (final CounterNode child : children) {
         child.cutLevel(cut - 1);
       }
     }
 
     public void cutLeaves() {
-      ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
-      for (CounterNode child : children) {
+      final ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
+      for (final CounterNode child : children) {
         if (child.isLeaf())
           toBeRemoved.add(child);
         else
@@ -1368,13 +1368,13 @@ public class Inventory extends AbstractToolbarItem
        */
       protected int getInt(String key) {
         int found = Integer.MIN_VALUE;
-        Matcher match = p.matcher(key);
+        final Matcher match = p.matcher(key);
 
         if (!match.find()) {
           // return minimum value
           return found;
         }
-        int start = match.start();
+        final int start = match.start();
         found = Integer.parseInt(key.substring(start, match.end()));
 
         // Check for sign
@@ -1396,8 +1396,8 @@ public class Inventory extends AbstractToolbarItem
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
 
-        int l = getInt(left.toSortKey());
-        int r = getInt(right.toSortKey());
+        final int l = getInt(left.toSortKey());
+        final int r = getInt(right.toSortKey());
 
         if (l < r)
           return -1;
@@ -1421,8 +1421,8 @@ public class Inventory extends AbstractToolbarItem
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
 
-        int leftLength = left.toSortKey().length();
-        int rightLength = right.toSortKey().length();
+        final int leftLength = left.toSortKey().length();
+        final int rightLength = right.toSortKey().length();
         if (leftLength < rightLength)
           return -1;
         if (leftLength > rightLength)
@@ -1468,7 +1468,7 @@ public class Inventory extends AbstractToolbarItem
       final StringBuilder hash = new StringBuilder();
 
       CounterNode insertNode = root;
-      CounterNode newNode = null;
+      CounterNode newNode;
       for (int j = 0; path != null && j < path.length; j++) {
         hash.append(path[j]);
         if (inventory.get(hash.toString()) == null) {
@@ -1528,13 +1528,13 @@ public class Inventory extends AbstractToolbarItem
 
     @Override
     public int getChildCount(Object parent) {
-      CounterNode counter = (CounterNode) parent;
+      final CounterNode counter = (CounterNode) parent;
       return counter.getChildCount();
     }
 
     @Override
     public boolean isLeaf(Object node) {
-      CounterNode counter = (CounterNode) node;
+      final CounterNode counter = (CounterNode) node;
       return counter.isLeaf();
     }
 
@@ -1550,21 +1550,21 @@ public class Inventory extends AbstractToolbarItem
 
     public void fireNodesRemoved(Object[] path, int[] childIndices,
                                  Object[] children) {
-      TreeModelEvent e = new TreeModelEvent(this, path, childIndices, children);
-      for (TreeModelListener l : treeModelListeners) {
+      final TreeModelEvent e = new TreeModelEvent(this, path, childIndices, children);
+      for (final TreeModelListener l : treeModelListeners) {
         l.treeNodesRemoved(e);
       }
     }
 
     @Override
     public Object getChild(Object parent, int index) {
-      CounterNode counter = (CounterNode) parent;
+      final CounterNode counter = (CounterNode) parent;
       return counter.getChild(index);
     }
 
     @Override
     public int getIndexOfChild(Object parent, Object child) {
-      CounterNode counter = (CounterNode) parent;
+      final CounterNode counter = (CounterNode) parent;
       return counter.getIndexOfChild(child);
     }
 
@@ -1576,7 +1576,7 @@ public class Inventory extends AbstractToolbarItem
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -1589,7 +1589,7 @@ public class Inventory extends AbstractToolbarItem
    */
   @Override
   public List<String> getFormattedStringList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(nonLeafFormat);
     if (piecesVisible.shouldBeVisible()) {
       l.add(pieceFormat);

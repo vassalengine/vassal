@@ -191,7 +191,7 @@ public class SpecialDie extends AbstractConfigurable {
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(format.getFormat());
+    final HTMLImageFinder h = new HTMLImageFinder(format.getFormat());
     h.addImageNames(s);
   }
 }

@@ -56,7 +56,7 @@ public class TextSaver extends AbstractToolbarItem {
   protected LaunchButton launch;
 
   public TextSaver() {
-    ActionListener al = e -> apply();
+    final ActionListener al = e -> apply();
 
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT);
@@ -92,7 +92,7 @@ public class TextSaver extends AbstractToolbarItem {
       writeMapAsText();
       break;
     case JOptionPane.YES_OPTION:
-      String myId = GameModule.getUserId();
+      final String myId = GameModule.getUserId();
       GameModule.setUserId("yendoR117"); //NON-NLS
       writeMapAsText();
       GameModule.setUserId(myId);
@@ -107,17 +107,17 @@ public class TextSaver extends AbstractToolbarItem {
     final File file =  fc.getSelectedFile();
 
     // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
-         BufferedWriter bw = new BufferedWriter(fw);
-         PrintWriter p = new PrintWriter(bw)) {
-      for (GamePiece gp : map.getPieces()) {
+    try (final Writer fw = new FileWriter(file, Charset.defaultCharset());
+         final BufferedWriter bw = new BufferedWriter(fw);
+         final PrintWriter p = new PrintWriter(bw)) {
+      for (final GamePiece gp : map.getPieces()) {
         final String s = gp.getName();
         if (s.length() > 0) {
           p.println(map.locationName(gp.getPosition()) + ": " + s);
         }
       }
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       WriteErrorDialog.error(e, file);
     }
   }

@@ -338,7 +338,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         if (getConfigureName() != null && getConfigureName().length() > 0) {
           w.addImage(getConfigureName(),
                      getEncodedImage((BufferedImage) visImage));
-          SourceOp op = Op.load(getConfigureName());
+          final SourceOp op = Op.load(getConfigureName());
           op.update();
         }
       }
@@ -359,7 +359,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ItemInstance getInstance(String name) {
-    for (ItemInstance instance : instances) {
+    for (final ItemInstance instance : instances) {
       if (name.equals(instance.getName())) {
         return instance;
       }
@@ -368,7 +368,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public TextItemInstance getTextInstance(String name) {
-    for (ItemInstance instance : instances) {
+    for (final ItemInstance instance : instances) {
       if (instance instanceof TextItemInstance) {
         if (name.equals(instance.getName())) {
           return (TextItemInstance) instance;
@@ -379,7 +379,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public TextBoxItemInstance getTextBoxInstance(String name) {
-    for (ItemInstance instance : instances) {
+    for (final ItemInstance instance : instances) {
       if (instance instanceof TextBoxItemInstance) {
         if (name.equals(instance.getName())) {
           return (TextBoxItemInstance) instance;
@@ -390,7 +390,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public SymbolItemInstance getSymbolInstance(String name) {
-    for (ItemInstance instance : instances) {
+    for (final ItemInstance instance : instances) {
       if (instance instanceof SymbolItemInstance) {
         if (name.equals(instance.getName())) {
           return (SymbolItemInstance) instance;
@@ -401,7 +401,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ShapeItemInstance getShapeInstance(String name) {
-    for (ItemInstance instance : instances) {
+    for (final ItemInstance instance : instances) {
       if (instance instanceof ShapeItemInstance) {
         if (name.equals(instance.getName())) {
           return (ShapeItemInstance) instance;
@@ -412,7 +412,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ImageItemInstance getImageInstance(String name) {
-    for (ItemInstance instance : instances) {
+    for (final ItemInstance instance : instances) {
       if (instance instanceof ImageItemInstance) {
         if (name.equals(instance.getName())) {
           return (ImageItemInstance) instance;
@@ -428,7 +428,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected void rebuildInstances() {
     final ArrayList<ItemInstance> newInstances = new ArrayList<>();
 
-    for (ItemInstance prop : instances) {
+    for (final ItemInstance prop : instances) {
       final Item item = layout.getItem(prop.getName());
       if (item != null && item.getType().equals(prop.getType())) {
         prop.setLocation(item.getLocation());
@@ -437,13 +437,13 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
 
     if (layout != null) {
-      for (Item item : layout.getItems()) {
+      for (final Item item : layout.getItems()) {
         final String name = item.getConfigureName();
         final String type = item.getType();
         final String location = item.getLocation();
 
         boolean found = false;
-        for (ItemInstance prop : instances) {
+        for (final ItemInstance prop : instances) {
           found = name.equals(prop.getName());
           if (found) break;
         }

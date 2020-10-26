@@ -348,8 +348,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       markUnmovedTooltip = (String) value;
     }
     else if ("edge".equals(key)) { // Backward-compatible //$NON-NLS-1$
-      String s = (String) value;
-      int i = s.indexOf(','); //$NON-NLS-1$
+      final String s = (String) value;
+      final int i = s.indexOf(','); //$NON-NLS-1$
       if (i > 0) {
         edgeBuffer = new Dimension(Integer.parseInt(s.substring(0, i)), Integer.parseInt(s.substring(i + 1)));
       }
@@ -537,7 +537,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void build(Element e) {
-    ActionListener al = e1 -> {
+    final ActionListener al = e1 -> {
       if (mainWindowDock == null && getLaunchButton().isEnabled() && theMap.getTopLevelAncestor() != null) {
         theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
       }
@@ -772,7 +772,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     toolBar.addHierarchyListener(new HierarchyListener() {
       @Override
       public void hierarchyChanged(HierarchyEvent e) {
-        Window w;
+        final Window w;
         if ((w = SwingUtilities.getWindowAncestor(toolBar)) != null) {
           w.validate();
         }
@@ -831,7 +831,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void removeFrom(Buildable b) {
     GameModule.getGameModule().getGameState().removeGameComponent(this);
-    Window w = SwingUtilities.getWindowAncestor(theMap);
+    final Window w = SwingUtilities.getWindowAncestor(theMap);
     if (w != null) {
       w.dispose();
     }
@@ -862,7 +862,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public synchronized void setBoards(Collection<Board> c) {
     boards.clear();
-    for (Board b : c) {
+    for (final Board b : c) {
       b.setMap(this);
       boards.add(b);
     }
@@ -887,7 +887,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return the {@link Board} on this map containing the argument point
    */
   public Board findBoard(Point p) {
-    for (Board b : boards) {
+    for (final Board b : boards) {
       if (b.bounds().contains(p))
         return b;
     }
@@ -900,12 +900,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return the {@link Zone} on this map containing the argument point
    */
   public Zone findZone(Point p) {
-    Board b = findBoard(p);
+    final Board b = findBoard(p);
     if (b != null) {
-      MapGrid grid = b.getGrid();
+      final MapGrid grid = b.getGrid();
       if (grid instanceof ZonedGrid) {
-        Rectangle r = b.bounds();
-        Point pos = new Point(p);
+        final Rectangle r = b.bounds();
+        final Point pos = new Point(p);
         pos.translate(-r.x, -r.y);  // Translate to Board co-ords
         return ((ZonedGrid) grid).findZone(pos);
       }
@@ -919,9 +919,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return Located zone, or null if not found
    */
   public Zone findZone(String name) {
-    for (Board b : boards) {
-      for (ZonedGrid zg : b.getAllDescendantComponentsOf(ZonedGrid.class)) {
-        Zone z = zg.findZone(name);
+    for (final Board b : boards) {
+      for (final ZonedGrid zg : b.getAllDescendantComponentsOf(ZonedGrid.class)) {
+        final Zone z = zg.findZone(name);
         if (z != null) {
           return z;
         }
@@ -936,9 +936,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return Located region, or null if none
    */
   public Region findRegion(String name) {
-    for (Board b : boards) {
-      for (RegionGrid rg : b.getAllDescendantComponentsOf(RegionGrid.class)) {
-        Region r = rg.findRegion(name);
+    for (final Board b : boards) {
+      for (final RegionGrid rg : b.getAllDescendantComponentsOf(RegionGrid.class)) {
+        final Region r = rg.findRegion(name);
         if (r != null) {
           return r;
         }
@@ -954,7 +954,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public Board getBoardByName(String name) {
     if (name != null) {
-      for (Board b : boards) {
+      for (final Board b : boards) {
         if (name.equals(b.getName())) {
           return b;
         }
@@ -980,7 +980,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 // FIXME: why synchronized?
   public synchronized Dimension mapSize() {
     final Rectangle r = new Rectangle(0, 0);
-    for (Board b : boards) r.add(b.bounds());
+    for (final Board b : boards) r.add(b.bounds());
     r.width += edgeBuffer.width;
     r.height += edgeBuffer.height;
     return r.getSize();
@@ -991,10 +991,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    *         nearest grid location
    */
   public boolean isLocationRestricted(Point p) {
-    Board b = findBoard(p);
+    final Board b = findBoard(p);
     if (b != null) {
-      Rectangle r = b.bounds();
-      Point snap = new Point(p);
+      final Rectangle r = b.bounds();
+      final Point snap = new Point(p);
       snap.translate(-r.x, -r.y);
       return b.isLocationRestricted(snap);
     }
@@ -1421,7 +1421,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String locationName(Point p) {
     String loc = getDeckNameAt(p);
     if (loc == null) {
-      Board b = findBoard(p);
+      final Board b = findBoard(p);
       if (b != null) {
         loc = b.locationName(new Point(p.x - b.bounds().x, p.y - b.bounds().y));
       }
@@ -1441,7 +1441,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String localizedLocationName(Point p) {
     String loc = getLocalizedDeckNameAt(p);
     if (loc == null) {
-      Board b = findBoard(p);
+      final Board b = findBoard(p);
       if (b != null) {
         loc = b.localizedLocationName(new Point(p.x - b.bounds().x, p.y - b.bounds().y));
       }
@@ -1468,8 +1468,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String getDeckNameContaining(Point p) {
     String deck = null;
     if (p != null) {
-      for (DrawPile d : getComponentsOf(DrawPile.class)) {
-        Rectangle box = d.boundingBox();
+      for (final DrawPile d : getComponentsOf(DrawPile.class)) {
+        final Rectangle box = d.boundingBox();
         if (box != null && box.contains(p)) {
           deck = d.getConfigureName();
           break;
@@ -1488,7 +1488,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String getDeckNameAt(Point p) {
     String deck = null;
     if (p != null) {
-      for (DrawPile d : getComponentsOf(DrawPile.class)) {
+      for (final DrawPile d : getComponentsOf(DrawPile.class)) {
         if (d.getPosition().equals(p)) {
           deck = d.getConfigureName();
           break;
@@ -1507,7 +1507,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public String getLocalizedDeckNameAt(Point p) {
     String deck = null;
     if (p != null) {
-      for (DrawPile d : getComponentsOf(DrawPile.class)) {
+      for (final DrawPile d : getComponentsOf(DrawPile.class)) {
         if (d.getPosition().equals(p)) {
           deck = d.getLocalizedConfigureName();
           break;
@@ -1669,7 +1669,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       final KeyBuffer kbuf = KeyBuffer.getBuffer();
       final ArrayList<GamePiece> l = new ArrayList<>(kbuf.asList());
 
-      for (GamePiece p : l) {
+      for (final GamePiece p : l) {
         if (p.getMap() == activeMap) {
           kbuf.remove(p);
           dirty = true;
@@ -1702,7 +1702,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseReleased(MouseEvent e) {
     // don't write over Java's mouse event
-    Point p = e.getPoint();
+    final Point p = e.getPoint();
     p.translate(theMap.getX(), theMap.getY());
     if (theMap.getBounds().contains(p)) {
       if (!mouseListenerStack.isEmpty()) {
@@ -1728,7 +1728,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public void enableKeyListeners() {
     if (saveKeyListeners == null) return;
 
-    for (KeyListener kl : saveKeyListeners) {
+    for (final KeyListener kl : saveKeyListeners) {
       theMap.addKeyListener(kl);
     }
 
@@ -1742,7 +1742,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (saveKeyListeners != null) return;
 
     saveKeyListeners = theMap.getKeyListeners();
-    for (KeyListener kl : saveKeyListeners) {
+    for (final KeyListener kl : saveKeyListeners) {
       theMap.removeKeyListener(kl);
     }
   }
@@ -2009,7 +2009,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double dzoom = getZoom() * os_scale;
-    for (Board b : boards) {
+    for (final Board b : boards) {
       b.drawRegion(g, getLocation(b, dzoom), visibleRect, dzoom, c);
     }
   }
@@ -2040,11 +2040,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final double dzoom = getZoom() * os_scale;
 
-    Composite oldComposite = g2d.getComposite();
+    final Composite oldComposite = g2d.getComposite();
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
     final GamePiece[] stack = pieces.getPieces();
-    for (GamePiece gamePiece : stack) {
+    for (final GamePiece gamePiece : stack) {
       final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       if (gamePiece.getClass() == Stack.class) {
         getStackMetrics().draw(
@@ -2086,13 +2086,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       return;
     }
 
-    Graphics2D g2d = (Graphics2D) g;
+    final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-    Composite oldComposite = g2d.getComposite();
+    final Composite oldComposite = g2d.getComposite();
     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
-    GamePiece[] stack = pieces.getPieces();
-    for (GamePiece gamePiece : stack) {
-      Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
+    final GamePiece[] stack = pieces.getPieces();
+    for (final GamePiece gamePiece : stack) {
+      final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       gamePiece.draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
       if (Boolean.TRUE.equals(gamePiece.getProperty(Properties.SELECTED))) {
         highlighter.draw(gamePiece, g, pt.x - xOffset, pt.y - yOffset, theMap, getZoom());
@@ -2109,7 +2109,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param aboveCounters true means we should draw only the drawables that go above the counters; false means we should draw only the ones that go below
    */
   public void drawDrawable(Graphics g, boolean aboveCounters) {
-    for (Drawable drawable : drawComponents) {
+    for (final Drawable drawable : drawComponents) {
       if (aboveCounters == drawable.drawAboveCounters()) {
         drawable.draw(g, this);
       }
@@ -2190,7 +2190,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
       if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
         r.add(highlighter.boundingBox(p));
-        for (Iterator<Highlighter> i = getHighlighters(); i.hasNext();) {
+        for (final Iterator<Highlighter> i = getHighlighters(); i.hasNext();) {
           r.add(i.next().boundingBox(p));
         }
       }
@@ -2217,7 +2217,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final Rectangle r = p.getShape().getBounds();
     r.translate(p.getPosition().x, p.getPosition().y);
     if (p.getParent() != null) {
-      Point pt = getStackMetrics().relativePosition(p.getParent(), p);
+      final Point pt = getStackMetrics().relativePosition(p.getParent(), p);
       r.translate(pt.x, pt.y);
     }
     return r;
@@ -2312,22 +2312,22 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected void setBoardBoundaries() {
     int maxX = 0;
     int maxY = 0;
-    for (Board b : boards) {
-      Point relPos = b.relativePosition();
+    for (final Board b : boards) {
+      final Point relPos = b.relativePosition();
       maxX = Math.max(maxX, relPos.x);
       maxY = Math.max(maxY, relPos.y);
     }
     boardWidths = new int[maxX + 1][maxY + 1];
     boardHeights = new int[maxX + 1][maxY + 1];
-    for (Board b : boards) {
-      Point relPos = b.relativePosition();
+    for (final Board b : boards) {
+      final Point relPos = b.relativePosition();
       boardWidths[relPos.x][relPos.y] = b.bounds().width;
       boardHeights[relPos.x][relPos.y] = b.bounds().height;
     }
-    Point offset = new Point(edgeBuffer.width, edgeBuffer.height);
-    for (Board b : boards) {
-      Point relPos = b.relativePosition();
-      Point location = getLocation(relPos.x, relPos.y, 1.0);
+    final Point offset = new Point(edgeBuffer.width, edgeBuffer.height);
+    for (final Board b : boards) {
+      final Point relPos = b.relativePosition();
+      final Point location = getLocation(relPos.x, relPos.y, 1.0);
       b.setLocation(location.x, location.y);
       b.translate(offset.x, offset.y);
     }
@@ -2341,12 +2341,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return Relative position of the board at given scale
    */
   protected Point getLocation(Board b, double zoom) {
-    Point p;
+    final Point p;
     if (zoom == 1.0) {
       p = b.bounds().getLocation();
     }
     else {
-      Point relPos = b.relativePosition();
+      final Point relPos = b.relativePosition();
       p = getLocation(relPos.x, relPos.y, zoom);
       p.translate((int) (zoom * edgeBuffer.width), (int) (zoom * edgeBuffer.height));
     }
@@ -2362,7 +2362,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return location of the board in Map space
    */
   protected Point getLocation(int column, int row, double zoom) {
-    Point p = new Point();
+    final Point p = new Point();
     for (int x = 0; x < column; ++x) {
       p.translate((int) Math.floor(zoom * boardWidths[x][row]), 0);
     }
@@ -2382,8 +2382,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param obs observer Component
    */
   public void drawBoards(Graphics g, int xoffset, int yoffset, double zoom, Component obs) {
-    for (Board b : boards) {
-      Point p = getLocation(b, zoom);
+    for (final Board b : boards) {
+      final Point p = getLocation(b, zoom);
       p.translate(xoffset, yoffset);
       b.draw(g, p.x, p.y, zoom, obs);
     }
@@ -2436,8 +2436,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public Object getProperty(Object key) {
-    Object value;
-    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    final Object value;
+    final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();
     }
@@ -2456,7 +2456,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public Object getLocalizedProperty(Object key) {
     Object value = null;
-    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();
     }
@@ -2482,13 +2482,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   protected Window createParentFrame() {
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-      JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow());
+      final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow());
       d.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       d.setTitle(getDefaultWindowTitle());
       return d;
     }
     else {
-      JFrame d = new JFrame();
+      final JFrame d = new JFrame();
       d.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       d.setTitle(getDefaultWindowTitle());
       d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
@@ -2508,7 +2508,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
 
     // otherwise dock if this map is the first not to show via a button
-    for (Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
+    for (final Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
       if (m == this) {
         return true;
       }
@@ -2622,7 +2622,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (mainWindowDock != null) {
       return;
     }
-    Component c = theMap.getTopLevelAncestor();
+    final Component c = theMap.getTopLevelAncestor();
     if (c instanceof JFrame) {
       ((JFrame) c).setTitle(getDefaultWindowTitle());
     }
@@ -2650,9 +2650,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return a visible piece at the given location, or null if none.
    */
   public GamePiece findPiece(Point pt, PieceFinder finder) {
-    GamePiece[] stack = pieces.getPieces();
+    final GamePiece[] stack = pieces.getPieces();
     for (int i = stack.length - 1; i >= 0; --i) {
-      GamePiece p = finder.select(this, stack[i], pt);
+      final GamePiece p = finder.select(this, stack[i], pt);
       if (p != null) {
         return p;
       }
@@ -2668,9 +2668,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return a piece at the given location, regardless of visibility, or null if none.
    */
   public GamePiece findAnyPiece(Point pt, PieceFinder finder) {
-    GamePiece[] stack = pieces.getAllPieces();
+    final GamePiece[] stack = pieces.getAllPieces();
     for (int i = stack.length - 1; i >= 0; --i) {
-      GamePiece p = finder.select(this, stack[i], pt);
+      final GamePiece p = finder.select(this, stack[i], pt);
       if (p != null) {
         return p;
       }
@@ -2686,7 +2686,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return a {@link Command} that reproduces this action
    */
   public Command placeAt(GamePiece piece, Point pt) {
-    Command c;
+    final Command c;
     if (GameModule.getGameModule().getGameState().getPieceForId(piece.getId()) == null) {
       piece.setPosition(pt);
       addPiece(piece);
@@ -2694,7 +2694,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       c = new AddPiece(piece);
     }
     else {
-      MoveTracker tracker = new MoveTracker(piece);
+      final MoveTracker tracker = new MoveTracker(piece);
       piece.setPosition(pt);
       addPiece(piece);
       c = tracker.getMoveCommand();
@@ -2710,7 +2710,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param commandFactory The PieceVisitorDispatcher to apply
    */
   public Command apply(PieceVisitorDispatcher commandFactory) {
-    GamePiece[] stack = pieces.getPieces();
+    final GamePiece[] stack = pieces.getPieces();
     Command c = null;
     for (int i = 0; i < stack.length && c == null; ++i) {
       c = (Command) commandFactory.accept(stack[i]);
@@ -2835,10 +2835,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public void ensureVisible(Rectangle r) {
     if (scroll != null) {
-      boolean bTriggerRecenter;
+      final boolean bTriggerRecenter;
       final Point p = mapToComponent(r.getLocation());
       final Rectangle rCurrent = theMap.getVisibleRect();
-      Rectangle rNorecenter = new Rectangle(0, 0);
+      final Rectangle rNorecenter = new Rectangle(0, 0);
 
       // If r is already visible decide if unit is close enough to
       // border to justify a recenter
@@ -3114,7 +3114,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     else {
       String val = Resources.getString("Editor.Map.report_created_in_default");
       if (!boards.isEmpty()) {
-        Board b = boards.get(0);
+        final Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() == null) {
           val = ""; //$NON-NLS-1$
         }
@@ -3140,7 +3140,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     else {
       String val = Resources.getString("Editor.Map.report_move_to_default");
       if (!boards.isEmpty()) {
-        Board b = boards.get(0);
+        final Board b = boards.get(0);
         if (b.getGrid() == null || b.getGrid().getGridNumbering() != null) {
           val = ""; //$NON-NLS-1$
         }
@@ -3159,7 +3159,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     else {
       String val = Resources.getString("Editor.Map.report_move_within_default");
       if (!boards.isEmpty()) {
-        Board b = boards.get(0);
+        final Board b = boards.get(0);
         if (b.getGrid() == null) {
           val = ""; //$NON-NLS-1$
         }
@@ -3246,8 +3246,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final GameModule g = GameModule.getGameModule();
 
     final List<Map> l = g.getComponentsOf(Map.class);
-    for (ChartWindow cw : g.getComponentsOf(ChartWindow.class)) {
-      for (MapWidget mw : cw.getAllDescendantComponentsOf(MapWidget.class)) {
+    for (final ChartWindow cw : g.getComponentsOf(ChartWindow.class)) {
+      for (final MapWidget mw : cw.getAllDescendantComponentsOf(MapWidget.class)) {
         l.add(mw.getMap());
       }
     }
@@ -3294,7 +3294,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public MutableProperty removeMutableProperty(String key) {
-    MutableProperty p = propsContainer.removeMutableProperty(key);
+    final MutableProperty p = propsContainer.removeMutableProperty(key);
     if (p != null) {
       p.removeMutablePropertyChangeListener(repaintOnPropertyChange);
     }
@@ -3382,7 +3382,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       // prevent non-base components from overlapping the base's scrollbars
       final int n = target.getComponentCount();
       for (int i = 0; i < n; ++i) {
-        Component c = target.getComponent(i);
+        final Component c = target.getComponent(i);
         if (c != base && c.isVisible()) {
           final Rectangle b = c.getBounds();
           b.width = Math.min(b.width, viewSize.width);
@@ -3558,7 +3558,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public List<String> getMenuTextList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (!GlobalOptions.NEVER.equals(markMovedOption)) {
       l.add(markUnmovedText);
       l.add(markUnmovedTooltip);

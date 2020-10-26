@@ -41,7 +41,7 @@ import VASSAL.i18n.Resources;
  * A Widget that corresponds to a panel with a {@link JComboBox} above
  * a {@link JPanel} with a {@link CardLayout} layout.
  * Adding a Widget to a BoxWidget adds the child Widget's component
- * to the JPanel and add's the child's name
+ * to the JPanel and adds the child's name
  * (via {@link Configurable#getConfigureName}) to the JComboBox.  Changing
  * the selection of the JComboBox shows the corresponding child's component
  */
@@ -65,7 +65,7 @@ public class BoxWidget extends Widget
   @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       widgets.addElement(w);
       w.addPropertyChangeListener(this);
       //      w.setAllowableConfigureComponents(getAllowableConfigureComponents());
@@ -126,7 +126,7 @@ public class BoxWidget extends Widget
   @Override
   public void itemStateChanged(ItemEvent e) {
     if (box.getSelectedItem() != null) {
-      Widget w = (Widget) box.getSelectedItem();
+      final Widget w = (Widget) box.getSelectedItem();
       if (!built.contains(w)) {
         multiPanel.add(getKey(w), w.getComponent());
         built.add(w);

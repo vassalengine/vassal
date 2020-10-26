@@ -69,7 +69,7 @@ public class FontStyleConfigurer extends Configurer {
 
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-      Box box = Box.createHorizontalBox();
+      final Box box = Box.createHorizontalBox();
       box.add(new JLabel(name));
 
       box.add(fontPanel);
@@ -90,14 +90,14 @@ public class FontStyleConfigurer extends Configurer {
     }
 
     fonts = new JComboBox();
-    String[] s = FontManager.getFontManager().getFontNames();
-    for (String item : s) {
+    final String[] s = FontManager.getFontManager().getFontNames();
+    for (final String item : s) {
       fonts.addItem(item);
     }
     fonts.setSelectedItem(value == null ? "Default" : ((FontStyle) value).getConfigureName()); //$NON-NLS-1$
     fontPanel.add(fonts);
 
-    ItemListener l = evt -> updateValue();
+    final ItemListener l = evt -> updateValue();
 
     fonts.addItemListener(l);
 
@@ -114,12 +114,12 @@ public class FontStyleConfigurer extends Configurer {
   }
 
   public static FontStyle decode(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     return new FontStyle(sd.nextToken("Default"), FontConfigurer.decode(sd.nextToken(""))); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public static String encode(FontStyle f) {
-    SequenceEncoder se = new SequenceEncoder(f.getConfigureName(), '|');
+    final SequenceEncoder se = new SequenceEncoder(f.getConfigureName(), '|');
     se.append(FontConfigurer.encode(f.getFont()));
     return se.getValue();
   }

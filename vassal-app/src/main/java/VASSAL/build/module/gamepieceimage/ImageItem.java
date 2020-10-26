@@ -166,7 +166,7 @@ public class ImageItem extends Item {
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
     loadImage(defn);
-    Point origin = layout.getPosition(this);
+    final Point origin = layout.getPosition(this);
 
     if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -213,7 +213,7 @@ public class ImageItem extends Item {
       Ii = new ImageItemInstance();
     }
 
-    String iName;
+    final String iName;
     if (imageSource.equals(SRC_FIXED)) {
       iName = imageName;
     }

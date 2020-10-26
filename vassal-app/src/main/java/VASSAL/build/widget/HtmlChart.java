@@ -94,11 +94,11 @@ public class HtmlChart extends Widget implements MouseListener {
 
     final DataArchive mda = GameModule.getGameModule().getDataArchive();
     String s = null;
-    try (InputStream inner = mda.getInputStream(fname);
-         InputStream in = new BufferedInputStream(inner)) {
+    try (final InputStream inner = mda.getInputStream(fname);
+         final InputStream in = new BufferedInputStream(inner)) {
       s = IOUtils.toString(in, StandardCharsets.UTF_8);
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e)); //NON-NLS
     }
 
@@ -130,7 +130,7 @@ public class HtmlChart extends Widget implements MouseListener {
       scroller.getViewport().setAlignmentY(0.0F);
 
       final Font f = new JLabel().getFont();
-      FontMetrics fm = htmlWin.getFontMetrics(f);
+      final FontMetrics fm = htmlWin.getFontMetrics(f);
       scroller.getVerticalScrollBar().setUnitIncrement(fm.getHeight() * 3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
     }
     return scroller;
@@ -277,7 +277,7 @@ public class HtmlChart extends Widget implements MouseListener {
         try {
           htmlWin.setPage(event.getURL());
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
           ReadErrorDialog.error(ex, event.getURL().toString());
         }
         htmlWin.revalidate();
@@ -291,7 +291,7 @@ public class HtmlChart extends Widget implements MouseListener {
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    HTMLImageFinder h = new HTMLImageFinder(new File(fileName));
+    final HTMLImageFinder h = new HTMLImageFinder(new File(fileName));
     h.addImageNames(s);
   }
 

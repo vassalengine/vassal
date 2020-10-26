@@ -50,11 +50,11 @@ public class BonesDiceServer extends DieServer {
 
   @Override
   public String[] buildInternetRollString(RollSet toss) {
-    DieRoll[] rolls = toss.getDieRolls();
-    StringBuilder query = new StringBuilder("req=");
+    final DieRoll[] rolls = toss.getDieRolls();
+    final StringBuilder query = new StringBuilder("req=");
 
     // format is "{{ xdy + n }}"
-    for (DieRoll roll : rolls) {
+    for (final DieRoll roll : rolls) {
       query.append("{{")
            .append(roll.getNumDice())
            .append('D')
@@ -113,7 +113,7 @@ public class BonesDiceServer extends DieServer {
     connection.setRequestMethod("GET");
     connection.connect();
 
-    try (BufferedReader in = new BufferedReader(
+    try (final BufferedReader in = new BufferedReader(
       new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
 
       String line;

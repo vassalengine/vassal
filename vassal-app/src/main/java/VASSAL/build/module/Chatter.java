@@ -136,8 +136,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
     
-    FontMetrics fm = getFontMetrics(myFont);
-    int fontHeight = fm.getHeight();
+    final FontMetrics fm = getFontMetrics(myFont);
+    final int fontHeight = fm.getHeight();
 
     conversationPane.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
 
@@ -249,8 +249,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
 
     // Now we have to fix up any legacy angle brackets around the word <observer>
-    String keystring = Resources.getString("PlayerRoster.observer");
-    String replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
+    final String keystring = Resources.getString("PlayerRoster.observer");
+    final String replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
     if (!replace.equals(keystring)) {
       s = s.replace(keystring, replace);
     }
@@ -361,7 +361,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    */
   @Override
   public void addTo(Buildable b) {
-    GameModule mod = (GameModule) b;
+    final GameModule mod = (GameModule) b;
     mod.setChatter(this);
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
@@ -532,7 +532,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.  
    */
   public static void warning(String msg) {
-    Chatter chatter = GameModule.getGameModule().getChatter();
+    final Chatter chatter = GameModule.getGameModule().getChatter();
     chatter.send(msg);
   }
 
@@ -559,7 +559,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         break;
       case KeyEvent.VK_BACK_SPACE:
       case KeyEvent.VK_DELETE:
-        String s = input.getText();
+        final String s = input.getText();
         if (!s.isEmpty())
           input.setText(s.substring(0, s.length() - 1));
         break;
@@ -611,8 +611,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   public static void main(String[] args) {
-    Chatter chat = new Chatter();
-    JFrame f = new JFrame();
+    final Chatter chat = new Chatter();
+    final JFrame f = new JFrame();
     f.add(chat);
     f.pack();
     f.setVisible(true);

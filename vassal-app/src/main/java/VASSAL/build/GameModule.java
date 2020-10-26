@@ -236,7 +236,7 @@ public class GameModule extends AbstractConfigurable
   private final MutablePropertiesContainer propsContainer = new Impl();
   private final PropertyChangeListener repaintOnPropertyChange = 
     evt -> {
-      for (Map map : Map.getMapList()) {
+      for (final Map map : Map.getMapList()) {
         map.repaint();
       }
     };
@@ -475,7 +475,7 @@ public class GameModule extends AbstractConfigurable
       getPrefs().getEditor().getEditAction());
 
     // Our counter refresher
-    GameRefresher gameRefresher = new GameRefresher(this);
+    final GameRefresher gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
     MenuManager.getInstance().addAction("GameRefresher.refresh_counters", //NON-NLS
       gameRefresher.getRefreshAction());
@@ -529,11 +529,11 @@ public class GameModule extends AbstractConfigurable
    */
   private void initIdentityPreferences() {
     idChangeSupport = new PropertyChangeSupport(this);
-    StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    final StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    final StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
@@ -557,7 +557,7 @@ public class GameModule extends AbstractConfigurable
     ChatServerFactory.register("jabber", oncf);
 
     server = new DynamicClient();
-    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
+    final AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
@@ -680,7 +680,7 @@ public class GameModule extends AbstractConfigurable
     }
     else if (VASSAL_VERSION_CREATED.equals(name)) {
       vassalVersionCreated = (String) value;
-      String runningVersion = Info.getVersion();
+      final String runningVersion = Info.getVersion();
       if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         WarningDialog.show("GameModule.version_warning", //NON-NLS
                            vassalVersionCreated, runningVersion);
@@ -888,7 +888,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
     keyStrokeSources.add(src);
-    for (KeyStrokeListener l : keyStrokeListeners) {
+    for (final KeyStrokeListener l : keyStrokeListeners) {
       l.addKeyStrokeSource(src);
     }
   }
@@ -904,7 +904,7 @@ public class GameModule extends AbstractConfigurable
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
     keyStrokeListeners.add(l);
-    for (KeyStrokeSource s : keyStrokeSources) {
+    for (final KeyStrokeSource s : keyStrokeSources) {
       l.addKeyStrokeSource(s);
     }
   }
@@ -923,7 +923,7 @@ public class GameModule extends AbstractConfigurable
   public void fireKeyStroke(KeyStroke stroke) {
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (stroke != null) {
-      for (KeyStrokeListener l : keyStrokeListeners) {
+      for (final KeyStrokeListener l : keyStrokeListeners) {
         l.keyPressed(stroke);
       }
     }
@@ -1033,9 +1033,9 @@ public class GameModule extends AbstractConfigurable
    * @return Created Piece
    */
   public GamePiece createPiece(String type) {
-    for (CommandEncoder commandEncoder : commandEncoders) {
+    for (final CommandEncoder commandEncoder : commandEncoders) {
       if (commandEncoder instanceof BasicCommandEncoder) {
-        GamePiece p = ((BasicCommandEncoder) commandEncoder).createPiece(type);
+        final GamePiece p = ((BasicCommandEncoder) commandEncoder).createPiece(type);
         if (p != null) {
           return p;
         }
@@ -1051,9 +1051,9 @@ public class GameModule extends AbstractConfigurable
    * @return Created Piece
    */
   public GamePiece createPiece(String type, GamePiece inner) {
-    for (CommandEncoder commandEncoder : commandEncoders) {
+    for (final CommandEncoder commandEncoder : commandEncoders) {
       if (commandEncoder instanceof BasicCommandEncoder) {
-        GamePiece p = ((BasicCommandEncoder) commandEncoder).createDecorator(type, inner);
+        final GamePiece p = ((BasicCommandEncoder) commandEncoder).createDecorator(type, inner);
         if (p != null) {
           return p;
         }
@@ -1104,7 +1104,7 @@ public class GameModule extends AbstractConfigurable
   public void setChatter(Chatter c) {
     chat = c;
     if (!deferredChat.isEmpty()) {
-      for (String msg : deferredChat) {
+      for (final String msg : deferredChat) {
         warn(msg);
       }
       deferredChat.clear();
@@ -1150,7 +1150,7 @@ public class GameModule extends AbstractConfigurable
     Command c;
     final SequenceEncoder.Decoder st =
       new SequenceEncoder.Decoder(command, COMMAND_SEPARATOR);
-    String first = st.nextToken();
+    final String first = st.nextToken();
     if (command.equals(first)) {
       c = decodeSubCommand(first);
     }
@@ -1194,10 +1194,10 @@ public class GameModule extends AbstractConfigurable
     }
     String s = encodeSubCommand(c);
     String s2;
-    Command[] sub = c.getSubCommands();
+    final Command[] sub = c.getSubCommands();
     if (sub.length > 0) {
-      SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
-      for (Command command : sub) {
+      final SequenceEncoder se = new SequenceEncoder(s, COMMAND_SEPARATOR);
+      for (final Command command : sub) {
         s2 = encode(command);
         if (s2 != null) {
           se.append(s2);
@@ -1248,7 +1248,7 @@ public class GameModule extends AbstractConfigurable
     ProblemDialog.showDeprecated("2020-08-06");
     if (fileDialog == null) {
       fileDialog = new FileDialog(getPlayerWindow());
-      File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
+      final File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
       if (f != null) {
         fileDialog.setDirectory(f.getPath());
       }
@@ -1300,7 +1300,7 @@ public class GameModule extends AbstractConfigurable
   public void updateTitleBar() {
     frame.setTitle(getTitleString());  //$NON-NLS-1$
 
-    for (Map m : getComponentsOf(Map.class)) {
+    for (final Map m : getComponentsOf(Map.class)) {
       m.updateTitleBar();
     }
   }
@@ -1383,7 +1383,7 @@ public class GameModule extends AbstractConfigurable
           cancelled = true;
         }
       }
-      for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
+      for (final ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
         cancelled = !ext.confirmExit();
       }
     }
@@ -1553,7 +1553,7 @@ public class GameModule extends AbstractConfigurable
      * Tell any Plugin components that the build is complete so that they
      * can finish initialization.
      */
-    for (Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
+    for (final Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
       plugin.init();
     }
   }
@@ -1616,12 +1616,12 @@ public class GameModule extends AbstractConfigurable
    */
   private void checkGpIds() {
     final GpIdChecker checker = new GpIdChecker(this);
-    for (PieceSlot pieceSlot : getAllDescendantComponentsOf(PieceSlot.class)) {
+    for (final PieceSlot pieceSlot : getAllDescendantComponentsOf(PieceSlot.class)) {
       checker.add(pieceSlot);
     }
 
     // Add any PieceSlots in Prototype Definitions
-    for (PrototypesContainer pc : getComponentsOf(PrototypesContainer.class)) {
+    for (final PrototypesContainer pc : getComponentsOf(PrototypesContainer.class)) {
       pc.getDefinitions().forEach(checker::add);
     }
 
@@ -1745,7 +1745,7 @@ public class GameModule extends AbstractConfigurable
    * @return an XML element that can be used to {@link Buildable#build} the module object.
    */
   private String buildString() {
-    Document doc = Builder.createNewDocument();
+    final Document doc = Builder.createNewDocument();
     doc.appendChild(getBuildElement(doc));
     return Builder.toString(doc);
   }
@@ -1759,7 +1759,7 @@ public class GameModule extends AbstractConfigurable
   @Override
   public Object getProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
-      String mySide = PlayerRoster.getMySide();
+      final String mySide = PlayerRoster.getMySide();
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
     else if (GlobalOptions.PLAYER_NAME.equals(key) || GlobalOptions.PLAYER_NAME_ALT.equals(key)) {
@@ -1789,7 +1789,7 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
     }
-    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
 
@@ -1824,7 +1824,7 @@ public class GameModule extends AbstractConfigurable
    */
   @Override
   public MutableProperty removeMutableProperty(String key) {
-    MutableProperty p = propsContainer.removeMutableProperty(key);
+    final MutableProperty p = propsContainer.removeMutableProperty(key);
     if (p != null) {
       p.removeMutablePropertyChangeListener(repaintOnPropertyChange);
     }
@@ -1846,7 +1846,7 @@ public class GameModule extends AbstractConfigurable
   @Override
   public Object getLocalizedProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
-      String mySide = PlayerRoster.getMyLocalizedSide();
+      final String mySide = PlayerRoster.getMyLocalizedSide();
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
     else {
@@ -1873,7 +1873,7 @@ public class GameModule extends AbstractConfigurable
       files.add(new File(getDataArchive().getName()));
     }
 
-    for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
+    for (final ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
       if (ext.getDataArchive().getArchive() != null) {
         files.add(new File(ext.getDataArchive().getName()));
       }
@@ -1893,7 +1893,7 @@ public class GameModule extends AbstractConfigurable
    */
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData myI18nData = super.getI18nData();
+    final ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(MODULE_VERSION, false);
     return myI18nData;
   }
@@ -1913,14 +1913,14 @@ public class GameModule extends AbstractConfigurable
    * @param l new SideChangeListener
    */
   public void addSideChangeListenerToPlayerRoster(PlayerRoster.SideChangeListener l) {
-    PlayerRoster r = getPlayerRoster();
+    final PlayerRoster r = getPlayerRoster();
     if (r != null) {
       r.addSideChangeListenerToInstance(l);
     }
   }
 
   /**
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {

@@ -260,7 +260,7 @@ public class PieceMover extends AbstractBuildable
       public Object visitDeck(Deck d) {
         final DragBuffer dbuf = DragBuffer.getBuffer();
         dbuf.clear();
-        for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
+        for (final PieceIterator it = d.drawCards(); it.hasMoreElements();) {
           final GamePiece p = it.nextPiece();
           p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW)); // Bug 13433 restore correct OBSCURED_BY
           dbuf.add(p);
@@ -298,7 +298,7 @@ public class PieceMover extends AbstractBuildable
           // If clicking on a stack with a selected piece, put all selected
           // pieces in other stacks into the drag buffer
           kbuf.sort(PieceMover.this);
-          for (GamePiece piece : kbuf.asList()) {
+          for (final GamePiece piece : kbuf.asList()) {
             if (piece.getParent() != s) {
               dbuf.add(piece);
             }
@@ -322,7 +322,7 @@ public class PieceMover extends AbstractBuildable
           // If clicking on a selected piece, put all selected pieces into the
           // drag buffer
           kbuf.sort(PieceMover.this);
-          for (GamePiece piece : kbuf.asList()) {
+          for (final GamePiece piece : kbuf.asList()) {
             dbuf.add(piece);
           }
         }
@@ -388,7 +388,7 @@ public class PieceMover extends AbstractBuildable
   protected void initButton() {
     final String value = getMarkOption();
     if (GlobalOptions.PROMPT.equals(value)) {
-      BooleanConfigurer config = new BooleanConfigurer(
+      final BooleanConfigurer config = new BooleanConfigurer(
         Map.MARK_MOVED, Resources.getString("Editor.PieceMover.mark_moved_pieces"), Boolean.TRUE);
       GameModule.getGameModule().getPrefs().addOption(config);
     }
@@ -398,7 +398,7 @@ public class PieceMover extends AbstractBuildable
         final ActionListener al = e -> {
           final GamePiece[] p = map.getAllPieces();
           final Command c = new NullCommand();
-          for (GamePiece gamePiece : p) {
+          for (final GamePiece gamePiece : p) {
             c.append(markMoved(gamePiece, false));
           }
           GameModule.getGameModule().sendAndLog(c);
@@ -508,7 +508,7 @@ public class PieceMover extends AbstractBuildable
   protected Command setOldLocations(GamePiece p) {
     Command comm = new NullCommand();
     if (p instanceof Stack) {
-      for (GamePiece gamePiece : ((Stack) p).asList()) {
+      for (final GamePiece gamePiece : ((Stack) p).asList()) {
         comm = comm.append(Decorator.putOldProperties(gamePiece));
       }
     }
@@ -527,7 +527,7 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
-        for (GamePiece gamePiece : ((Stack) p).asList()) {
+        for (final GamePiece gamePiece : ((Stack) p).asList()) {
           c = c.append(markMoved(gamePiece, hasMoved));
         }
       }
@@ -659,7 +659,7 @@ public class PieceMover extends AbstractBuildable
         // user Deck.NO_USER
         if (mergeWith instanceof Deck) {
           final ArrayList<GamePiece> newList = new ArrayList<>(0);
-          for (GamePiece piece : draggedPieces) {
+          for (final GamePiece piece : draggedPieces) {
             if (((Deck) mergeWith).mayContain(piece)) {
               final boolean isObscuredToMe = Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME));
               if (!isObscuredToMe || Deck.NO_USER.equals(piece.getProperty(Properties.OBSCURED_BY))) {
@@ -679,7 +679,7 @@ public class PieceMover extends AbstractBuildable
         // into an expanded Stack and the merge order must be reversed to
         // maintain the order of the merging pieces.
         if (mergeWith instanceof Stack) {
-          for (GamePiece draggedPiece : draggedPieces) {
+          for (final GamePiece draggedPiece : draggedPieces) {
             comm = comm.append(movedPiece(draggedPiece, mergeWith.getPosition()));
             comm = comm.append(map.getStackMetrics().merge(mergeWith, draggedPiece));
           }
@@ -692,7 +692,7 @@ public class PieceMover extends AbstractBuildable
         }
       }
 
-      for (GamePiece piece : draggedPieces) {
+      for (final GamePiece piece : draggedPieces) {
         KeyBuffer.getBuffer().add(piece);
       }
 
@@ -728,7 +728,7 @@ public class PieceMover extends AbstractBuildable
 
   protected Command applyKeyAfterMove(List<GamePiece> pieces, KeyStroke key) {
     Command comm = new NullCommand();
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
         piece.setProperty(Properties.SNAPSHOT, ((PropertyExporter) piece).getProperties());
       }
@@ -1136,7 +1136,7 @@ public class PieceMover extends AbstractBuildable
       int index = 0;
       Point lastPos = null;
       int stackCount = 0;
-      for (PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
+      for (final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
            dragContents.hasMoreElements(); ) {
 
         final GamePiece piece = dragContents.nextPiece();
@@ -1258,9 +1258,9 @@ public class PieceMover extends AbstractBuildable
       // selected in a selection rectangle, unless they are being
       // dragged from a piece palette (i.e., getMap() == null).
       final List<GamePiece> pieces = new ArrayList<>();
-      for (PieceIterator i = db.getIterator();
+      for (final PieceIterator i = db.getIterator();
            i.hasMoreElements(); pieces.add(i.nextPiece()));
-      for (GamePiece piece : pieces) {
+      for (final GamePiece piece : pieces) {
         if (piece.getMap() != null &&
             Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
           db.remove(piece);

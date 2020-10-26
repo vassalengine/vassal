@@ -72,15 +72,15 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   }
 
   public void launch() {
-    String oldValue = property.getPropertyValue();
-    String newValue = getNewValue();
+    final String oldValue = property.getPropertyValue();
+    final String newValue = getNewValue();
     if (newValue != null && !newValue.equals(oldValue)) {
-      Command c = property.setPropertyValue(newValue);
+      final Command c = property.setPropertyValue(newValue);
       if (report.getFormat().length() > 0) {
         report.setProperty(OLD_VALUE_FORMAT, oldValue);
         report.setProperty(NEW_VALUE_FORMAT, property.getPropertyValue());
         report.setProperty(DESCRIPTION_FORMAT, property.getDescription());
-        Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText());
+        final Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText());
         chatCommand.execute();
         c.append(chatCommand);
       }
@@ -256,9 +256,9 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
 
-    PropertyChanger propChanger = getPropertyChanger();
+    final PropertyChanger propChanger = getPropertyChanger();
     if (propChanger != null) {
       if (propChanger instanceof IncrementProperty) {
         l.add(((IncrementProperty) propChanger).getIncrement());
@@ -267,11 +267,11 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
         l.add(((PropertySetter) propChanger).getRawValue());
       }
       else if (propChanger instanceof PropertyPrompt) {
-        PropertyPrompt pp = (PropertyPrompt) propChanger;
+        final PropertyPrompt pp = (PropertyPrompt) propChanger;
         l.add(pp.getPrompt());
         if (pp instanceof EnumeratedPropertyPrompt) {
-          Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
-          for (Expression e : ve) {
+          final Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
+          for (final Expression e : ve) {
             if (e == null) {
               continue;
             }

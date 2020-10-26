@@ -63,7 +63,7 @@ public class ImageItemInstance extends ItemInstance {
   }
 
   public void decode(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     setType(sd.nextToken("")); //$NON-NLS-1$
     setName(sd.nextToken("")); //$NON-NLS-1$
     setLocation(sd.nextToken("")); //$NON-NLS-1$

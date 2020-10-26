@@ -125,12 +125,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     // In case we're adding these on the fly, let's see if we can find a "decent" player side to "be",
     // in other words one that hasn't been assigned to any clock yet. This is a little bit tongue-in-cheek,
     // but it's intended to be heuristic not perfect, and doesn't have to be perfect. So there.
-    PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-    ChessClockControl ctrl = ChessClockControl.getInstance();
+    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    final ChessClockControl ctrl = ChessClockControl.getInstance();
     if ((r != null) && (ctrl != null)) {
-      for (String s : r.getSides()) {
+      for (final String s : r.getSides()) {
         boolean okay = true;
-        for (ChessClock c : ctrl.getChessClocks()) {
+        for (final ChessClock c : ctrl.getChessClocks()) {
           if (c.getSide().equals(s)) {
             okay = false;
             break;
@@ -161,9 +161,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     timer.addActionListener(this);
 
     // Action listener for clicking on the clock
-    ActionListener al = e -> {
+    final ActionListener al = e -> {
       Command command = new NullCommand();
-      ChessClockControl ccc = ChessClockControl.getInstance();
+      final ChessClockControl ccc = ChessClockControl.getInstance();
       if ((ccc != null) && ccc.getClocksTicking() > 0) {
         command = command.append(ChessClockControl.getInstance().startNextClock());
       }
@@ -273,12 +273,12 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       }
       startTimer();
       if (GameModule.getGameModule().getServer().isConnected()) {
-        ChessClockControl ccc = ChessClockControl.getInstance();
+        final ChessClockControl ccc = ChessClockControl.getInstance();
         if (ccc != null) ccc.setOnline(true);
       }
 
       // This part is mostly so that "testing" the chess clocks when game not yet going feels responsive. Also gives referee control access to clocks.
-      boolean noChecks = GameModule.getGameModule().getGameState().isGameStarted() || isReferee(who) || ((ChessClockControl.getInstance() != null) && !ChessClockControl.getInstance().isOnline());
+      final boolean noChecks = GameModule.getGameModule().getGameState().isGameStarted() || isReferee(who) || ((ChessClockControl.getInstance() != null) && !ChessClockControl.getInstance().isOnline());
 
       if (who.equals(me) || noChecks) {
         // my computer reporting back: restore
@@ -319,7 +319,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       updateTimerColor();
 
       if (clockTicking || (restore && (elapsedTime > 0))) {
-        ChessClockControl ccc = ChessClockControl.getInstance();
+        final ChessClockControl ccc = ChessClockControl.getInstance();
         if (ccc != null) ccc.showClocks();
       }
     }
@@ -390,8 +390,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       return;
     }
 
-    long currentTime = System.currentTimeMillis();
-    long elapsed = currentTime - startTime;
+    final long currentTime = System.currentTimeMillis();
+    final long elapsed = currentTime - startTime;
     startTime = currentTime;
 
     if (clockTicking) {
@@ -415,22 +415,22 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   public boolean setTimerButton() {
     long time = elapsedTime;
-    int days = (int) (time / MILLISECONDS_PER_DAY);
+    final int days = (int) (time / MILLISECONDS_PER_DAY);
     time %= MILLISECONDS_PER_DAY;
     int hours = (int) (time / MILLISECONDS_PER_HOUR);
     time %= MILLISECONDS_PER_HOUR;
     int minutes = (int) (time / MILLISECONDS_PER_MINUTE);
     time %= MILLISECONDS_PER_MINUTE;
-    int seconds = (int) time / 1000;
+    final int seconds = (int) time / 1000;
     time %= 1000;
-    int tenths  = (int) time / 100;
+    final int tenths  = (int) time / 100;
 
-    String showingDays;
-    String showingHours;
-    String showingSeconds;
-    String showingTenths;
+    final String showingDays;
+    final String showingHours;
+    final String showingSeconds;
+    final String showingTenths;
 
-    ChessClockControl c = ChessClockControl.getInstance();
+    final ChessClockControl c = ChessClockControl.getInstance();
     if ((c != null) && instanceIsActive) {
       showingDays = c.getShowDays();
       showingHours = c.getShowHours();
@@ -444,14 +444,14 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       showingTenths  = ChessClockControl.STYLE_AUTO;
     }
 
-    boolean doDays  = (ChessClockControl.STYLE_ALWAYS).equals(showingDays) || ((days > 0) && !((ChessClockControl.STYLE_NEVER).equals(showingDays)));
-    boolean doHours = doDays || (ChessClockControl.STYLE_ALWAYS).equals(showingHours) || (((hours > 0) || ((ChessClockControl.STYLE_NEVER).equals(showingTenths))) && !((ChessClockControl.STYLE_NEVER).equals(showingHours)));
-    boolean doTenths  = (ChessClockControl.STYLE_ALWAYS).equals(showingTenths) || (!doHours && !((ChessClockControl.STYLE_NEVER).equals(showingTenths)));
-    boolean doSeconds = doTenths || (ChessClockControl.STYLE_ALWAYS).equals(showingSeconds) || (!doDays && !((ChessClockControl.STYLE_NEVER).equals(showingSeconds)));
+    final boolean doDays  = (ChessClockControl.STYLE_ALWAYS).equals(showingDays) || ((days > 0) && !((ChessClockControl.STYLE_NEVER).equals(showingDays)));
+    final boolean doHours = doDays || (ChessClockControl.STYLE_ALWAYS).equals(showingHours) || (((hours > 0) || ((ChessClockControl.STYLE_NEVER).equals(showingTenths))) && !((ChessClockControl.STYLE_NEVER).equals(showingHours)));
+    final boolean doTenths  = (ChessClockControl.STYLE_ALWAYS).equals(showingTenths) || (!doHours && !((ChessClockControl.STYLE_NEVER).equals(showingTenths)));
+    final boolean doSeconds = doTenths || (ChessClockControl.STYLE_ALWAYS).equals(showingSeconds) || (!doDays && !((ChessClockControl.STYLE_NEVER).equals(showingSeconds)));
 
-    boolean oldTocking = tocking;
+    final boolean oldTocking = tocking;
     tocking = (tenths >= 5);
-    String baseline;
+    final String baseline;
 
     if (doDays) {
       if (doTenths) {
@@ -547,7 +547,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       gameModule.getGameState().addGameComponent(this);
 
       //BR// Add ourselves to the chess clock controller
-      ChessClockControl ccc = ((ChessClockControl) parent);
+      final ChessClockControl ccc = ((ChessClockControl) parent);
       ccc.addChessClock(this);
 
       //BR// Chess Clock Control handles adding our button to the toolbar when it is built (because otherwise
@@ -782,7 +782,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public Command getRestoreCommand() {
-    long verified = isReferee(PlayerRoster.getMySide()) ? elapsedTime : verifiedTime;
+    final long verified = isReferee(PlayerRoster.getMySide()) ? elapsedTime : verifiedTime;
     return new UpdateTimerCommand(PlayerRoster.getMySide(), getName(), elapsedTime, verified, false, true);
   }
 
@@ -823,8 +823,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static class PlayerSidesConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-      ArrayList<String> sides = new ArrayList<>(r.getSides());
+      final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+      final ArrayList<String> sides = new ArrayList<>(r.getSides());
       if (r.getSides().size() == 0) {
         sides.add(GENERIC);
       }
@@ -833,9 +833,9 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      ArrayList<String> sides = new ArrayList<>();
-      PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-      for (String s : r.getSides()) {
+      final ArrayList<String> sides = new ArrayList<>();
+      final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+      for (final String s : r.getSides()) {
         sides.add(r.translateSide(s));
       }
       if (r.getSides().size() == 0) {

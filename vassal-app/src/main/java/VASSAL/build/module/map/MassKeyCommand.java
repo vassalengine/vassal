@@ -137,7 +137,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public MassKeyCommand() {
-    ActionListener al = e -> apply();
+    final ActionListener al = e -> apply();
     launch = new LaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
   }
 
@@ -354,14 +354,14 @@ public class MassKeyCommand extends AbstractConfigurable
       controls2.add(typeConfig.getControls());
       controls2.add(intConfig.getControls());
 
-      PropertyChangeListener l = evt -> {
+      final PropertyChangeListener l = evt -> {
         intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-        Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
+        final Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
         if (w != null) {
           w.pack();
         }
       };
-      PropertyChangeListener l2 = evt -> setValue(getIntValue());
+      final PropertyChangeListener l2 = evt -> setValue(getIntValue());
       typeConfig.addPropertyChangeListener(l);
       typeConfig.addPropertyChangeListener(l2);
       intConfig.addPropertyChangeListener(l2);
@@ -378,7 +378,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
 
     public int getIntValue() {
-      String type = typeConfig.getValueString();
+      final String type = typeConfig.getValueString();
       if (ALL.equals(type)) {
         return -1;
       }
@@ -396,7 +396,7 @@ public class MassKeyCommand extends AbstractConfigurable
         typeConfig.setFrozen(true);
         intConfig.setFrozen(true);
         if (o instanceof Integer) {
-          Integer i = (Integer) o;
+          final Integer i = (Integer) o;
           switch (i) {
           case 0:
             typeConfig.setValue(NONE);
@@ -568,7 +568,7 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       else {
         filter = piece -> {
-          for (String s : names) {
+          for (final String s : names) {
             if (Decorator.getInnermost(piece).getName().equals(s)) {
               return true;
             }
@@ -642,7 +642,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -678,7 +678,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    String string = launch.getAttributeValueString(launch.getIconAttribute());
+    final String string = launch.getAttributeValueString(launch.getIconAttribute());
     if (string != null) { // Launch buttons sometimes have null icon attributes - yay
       s.add(string);
     }

@@ -71,7 +71,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
 
   @Override
   public void clear() {
-    for (SimplePieceCollection layer : layers) {
+    for (final SimplePieceCollection layer : layers) {
       layer.clear();
     }
   }
@@ -86,7 +86,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
 
   protected GamePiece[] getPieces(boolean includeDisabled) {
-    ArrayList<GamePiece> l = new ArrayList<>();
+    final ArrayList<GamePiece> l = new ArrayList<>();
     int layer = bottomLayer;
     for (int i = 0; i < layers.length; ++i) {
       if (includeDisabled || (!includeDisabled && enabled[layer])) {
@@ -107,7 +107,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
 
   @Override
   public int indexOf(GamePiece p) {
-    int layer = getLayerForPiece(p);
+    final int layer = getLayerForPiece(p);
     int index = layers[layer].indexOf(p);
     if (index >= 0) {
       for (int i = 0; i < layer - 1; ++i) {
@@ -134,7 +134,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
 
   @Override
   public boolean canMerge(GamePiece p1, GamePiece p2) {
-    boolean canMerge = false;
+    final boolean canMerge;
     if (p1 instanceof Deck
         || p2 instanceof Deck) {
       canMerge = true;
@@ -162,7 +162,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
 
   protected boolean canStackAndPieceMerge(Stack s, GamePiece p) {
     boolean canMerge = false;
-    GamePiece top = s.topPiece();
+    final GamePiece top = s.topPiece();
     if (top != null) {
       canMerge = canPiecesMerge(top, p);
     }
