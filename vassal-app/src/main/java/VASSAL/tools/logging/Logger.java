@@ -91,7 +91,7 @@ public class Logger {
   }
 
   public static Future<?> enqueue(final LogEntry entry) {
-    final SimpleFuture<?> f = new SimpleFuture<Void>();
+    final SimpleFuture<?> f = new SimpleFuture<>();
     f.set(null);
     return f;
   }
