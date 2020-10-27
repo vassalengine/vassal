@@ -21,6 +21,7 @@
 * 13333: Better handling of logfile/savefile comments
 * 13326: Saving a module will default to .vmod, an extension to .vext
 * 13323: Player switching sides now reported in Chat Log
+* 13314: Expose Module Version number as a Global Property
 * 13297: Ability to Deselect a piece with a Key Command (also remove it from
     its stack)
 * 13296: Flare feature for map
