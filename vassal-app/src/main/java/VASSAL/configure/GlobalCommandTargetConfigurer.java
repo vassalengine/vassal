@@ -56,6 +56,8 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
   private FormattedExpressionConfigurer targetPropertyConfig;
   private JLabel targetPropertyLabel;
+  private CompareConfigurer targetCompareConfig;
+  private JLabel targetCompareLabel;
   private FormattedExpressionConfigurer targetValueConfig;
   private JLabel targetValueLabel;
 
@@ -183,6 +185,12 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetPropertyLabel, "span 2"); // NON-NLS
       controls.add(targetPropertyConfig.getControls(), "wrap"); // NON-NLS
 
+      targetCompareConfig = new CompareConfigurer();
+      targetCompareConfig.addPropertyChangeListener(evt -> getTarget().setTargetProperty(targetCompareConfig.getValueString()));
+      targetCompareLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_compare"));
+      controls.add(targetCompareLabel, "span 2"); //NON-NLS
+      controls.add(targetCompareConfig.getControls(), "wrap"); //NON-NLS
+
       targetValueConfig = new FormattedExpressionConfigurer(target.getTargetValue().getExpression());
       targetValueConfig.addPropertyChangeListener(evt -> getTarget().setTargetValue(targetValueConfig.getValueString()));
       targetValueLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_value"));
@@ -258,6 +266,15 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       w.setMinimumSize(w.getSize());
       w.pack();
       w.setMinimumSize(null);
+    }
+  }
+
+  /**
+   * Happy little Configurer class for the Compare Modes
+   */
+  private static class CompareConfigurer extends StringEnumConfigurer {
+    CompareConfigurer() {
+      super(null, null, GlobalCommandTarget.CompareMode.getSymbols());
     }
   }
 }
