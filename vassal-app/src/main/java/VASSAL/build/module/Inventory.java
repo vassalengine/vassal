@@ -826,8 +826,12 @@ public class Inventory extends AbstractConfigurable
   @Override
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting && enabledForPlayersSide());
-    if (gameStarting)
+    if (gameStarting) {
       setupLaunch();
+    }
+    else {
+      frame.setVisible(false);
+    }
   }
 
   protected void setupLaunch() {
