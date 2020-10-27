@@ -89,6 +89,15 @@ public class GlobalCommandTarget implements ConfigurerFactory {
       return symbol;
     }
 
+    public static CompareMode whichSymbol(String symbol) {
+      for (CompareMode mode : GlobalCommandTarget.CompareMode.values()) {
+        if (mode.getSymbol().equals(symbol)) {
+          return mode;
+        }
+      }
+      return EQUALS;
+    }
+
     public static String[] getSymbols() {
       return Arrays.stream(values())
         .map(GlobalCommandTarget.CompareMode::getSymbol)

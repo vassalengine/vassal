@@ -65,7 +65,7 @@ public class GlobalCommand {
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
   private boolean fastIsNumber = false; // Used during property Fast Match to remember if value is numeric
-  private int fastNumber = 0;           // Used during property Fast Match to hold evaluated numerical value
+  private double fastNumber = 0;        // Used during property Fast Match to hold evaluated numerical value
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -148,7 +148,7 @@ public class GlobalCommand {
     }
 
     // Numerical comparisons for numbers
-    final int num = Integer.parseInt(value);
+    final double num = Double.parseDouble(value);
 
     switch (target.targetCompare) {
     case GREATER_EQUALS:
@@ -165,12 +165,12 @@ public class GlobalCommand {
   }
 
   /**
-   * Need a super-fast (i.e. non-exception-throwing) plan for detecting valid numbers
+   * Need a super-fast (i.e. not dependent on exception-throwing) plan for detecting valid numbers
    * @param s string to check
    * @return true if a value number
    */
   private boolean isNumeric(String s) {
-    return s.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    return s.matches("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
   }
 
   /**
@@ -253,7 +253,7 @@ public class GlobalCommand {
         }
         else {
           fastIsNumber = isNumeric(fastValue);
-          fastNumber = fastIsNumber ? Integer.parseInt(fastValue) : 0;
+          fastNumber = fastIsNumber ? Double.parseDouble(fastValue) : 0;
         }
       }
 

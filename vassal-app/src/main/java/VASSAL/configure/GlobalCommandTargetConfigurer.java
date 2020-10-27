@@ -186,7 +186,8 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetPropertyConfig.getControls(), "wrap"); // NON-NLS
 
       targetCompareConfig = new CompareConfigurer();
-      targetCompareConfig.addPropertyChangeListener(evt -> getTarget().setTargetProperty(targetCompareConfig.getValueString()));
+      targetCompareConfig.setValue(getTarget().getTargetCompare().getSymbol());
+      targetCompareConfig.addPropertyChangeListener(evt -> getTarget().setTargetCompare(GlobalCommandTarget.CompareMode.whichSymbol(targetCompareConfig.getValueString())));
       targetCompareLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_compare"));
       controls.add(targetCompareLabel, "span 2"); //NON-NLS
       controls.add(targetCompareConfig.getControls(), "wrap"); //NON-NLS
