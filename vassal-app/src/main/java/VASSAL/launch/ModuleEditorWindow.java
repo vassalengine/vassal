@@ -65,6 +65,8 @@ public class ModuleEditorWindow extends EditorWindow {
     updateSavedGame.setEnabled(true);
 
     pack();
+
+    tree.requestFocus(); //BR// Focus starts on the root node, not on the little icons on the toolbar
   }
 
   @Override

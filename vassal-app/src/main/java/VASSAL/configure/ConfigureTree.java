@@ -57,6 +57,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -227,6 +228,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     scrollPathToVisible(path);
 
     chatter = GameModule.getGameModule().getChatter();
+
+    createKeyBindings();
   }
 
 
@@ -265,6 +268,35 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public JFrame getFrame() {
     return editorWindow;
   }
+
+
+  /**
+   * Create a key binding for ENTER key to do meaningful things.
+   */
+  private void createKeyBindings() {
+    getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+    getActionMap().put("Enter", new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent ae) {
+        // Do something meaningful when Enter key pressed
+        TreePath path = getSelectionPath();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+        if (isExpanded(path) || (node.getChildCount() == 0)) {
+          Configurable target = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+          if ((target != null) && (target.getConfigurer() != null)) {
+            Action a = buildEditAction(target);
+            if (a != null) {
+              a.actionPerformed(new ActionEvent(ae.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
+            }
+          }
+        }
+        else {
+          setExpandedState(path, true);
+        }
+      }
+    });
+  }
+
 
   class KeyAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
