@@ -256,6 +256,8 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     targetPropertyLabel.setVisible(target.isFastMatchProperty());
     targetValueConfig.getControls().setVisible(target.isFastMatchProperty());
     targetValueLabel.setVisible(target.isFastMatchProperty());
+    targetCompareConfig.getControls().setVisible(target.isFastMatchProperty());
+    targetCompareLabel.setVisible(target.isFastMatchProperty());
     repack();
   }
 
