@@ -817,7 +817,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void activateOrExpandNode(TreePath path) {
-      ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
       mmw.selectedNode = (MyTreeNode) path.getLastPathComponent();
 
       final AbstractInfo target =
@@ -861,17 +861,16 @@ public class ModuleManagerWindow extends JFrame {
         public void actionPerformed(ActionEvent ae) {
           //do something meaningful on JTable enter pressed
 
-          MyTree tree = ModuleManagerWindow.getInstance().tree;
-          int row = tree.getSelectedRow();
+          final MyTree tree = ModuleManagerWindow.getInstance().tree;
+          final int row = tree.getSelectedRow();
 
-          TreePath path = tree.getPathForRow(row);
-          if (path == null) return;
-
-          tree.activateOrExpandNode(path);
+          final TreePath path = tree.getPathForRow(row);
+          if (path != null) {
+            tree.activateOrExpandNode(path);
+          }
         }
       });
     }
-
 
 // FIXME: Where's the rest of the comment???
     /**

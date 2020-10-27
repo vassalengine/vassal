@@ -57,7 +57,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
@@ -279,12 +278,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       @Override
       public void actionPerformed(ActionEvent ae) {
         // Do something meaningful when Enter key pressed
-        TreePath path = getSelectionPath();
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+        final TreePath path = getSelectionPath();
+        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
         if (isExpanded(path) || (node.getChildCount() == 0)) {
-          Configurable target = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+          final Configurable target = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
           if ((target != null) && (target.getConfigurer() != null)) {
-            Action a = buildEditAction(target);
+            final Action a = buildEditAction(target);
             if (a != null) {
               a.actionPerformed(new ActionEvent(ae.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
             }
