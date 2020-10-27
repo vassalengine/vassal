@@ -777,6 +777,9 @@ public class Inventory extends AbstractToolbarItem
     if (gameStarting) {
       setupLaunch();
     }
+    else {
+      frame.setVisible(false);
+    }
   }
 
   protected void setupLaunch() {
