@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Aug 31, 2002
- * Time: 10:20:59 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.tools;
 
 import java.util.Vector;

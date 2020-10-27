@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: unknown
- * Date: Dec 30, 2002
- * Time: 12:42:01 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.counters;
 
 import java.awt.Component;
