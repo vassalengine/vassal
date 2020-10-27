@@ -569,39 +569,7 @@ public class ModuleManagerWindow extends JFrame {
           if (path == null || (lastExpansionPath == path &&
               e.getWhen() - lastExpansionTime <= doubleClickInterval)) return;
 
-          selectedNode = (MyTreeNode) path.getLastPathComponent();
-
-          final int row = tree.getRowForPath(path);
-          if (row < 0) return;
-
-          final AbstractInfo target =
-            (AbstractInfo) selectedNode.getUserObject();
-
-          // launch module or load save, otherwise expand or collapse node
-          if (target instanceof ModuleInfo) {
-            final ModuleInfo modInfo = (ModuleInfo) target;
-            if (modInfo.isModuleTooNew()) {
-              ErrorDialog.show(
-                "Error.module_too_new",
-                modInfo.getFile().getPath(),
-                modInfo.getVassalVersion(),
-                Info.getVersion()
-              );
-              return;
-            }
-            else {
-              ((ModuleInfo) target).play();
-            }
-          }
-          else if (target instanceof SaveFileInfo) {
-            ((SaveFileInfo) target).play();
-          }
-          else if (tree.isExpanded(row)) {
-            tree.collapseRow(row);
-          }
-          else {
-            tree.expandRow(row);
-          }
+          tree.activateOrExpandNode(path);
         }
       }
 
@@ -853,6 +821,43 @@ public class ModuleManagerWindow extends JFrame {
       createKeyBindings(this);
     }
 
+    public void activateOrExpandNode(TreePath path) {
+      ModuleManagerWindow.getInstance().selectedNode = (MyTreeNode) path.getLastPathComponent();
+
+      final AbstractInfo target =
+        (AbstractInfo) ModuleManagerWindow.getInstance().selectedNode.getUserObject();
+
+      final int row = ModuleManagerWindow.getInstance().tree.getRowForPath(path);
+      if (row < 0) return;
+
+      // launch module or load save, otherwise expand or collapse node
+      if (target instanceof ModuleInfo) {
+        final ModuleInfo modInfo = (ModuleInfo) target;
+        if (modInfo.isModuleTooNew()) {
+          ErrorDialog.show(
+            "Error.module_too_new",
+            modInfo.getFile().getPath(),
+            modInfo.getVassalVersion(),
+            Info.getVersion()
+          );
+          return;
+        }
+        else {
+          ((ModuleInfo) target).play();
+        }
+      }
+      else if (target instanceof SaveFileInfo) {
+        ((SaveFileInfo) target).play();
+      }
+      else if (isExpanded(row)) {
+        collapseRow(row);
+      }
+      else {
+        expandRow(row);
+      }
+    }
+
+
     private void createKeyBindings(JTable table) {
       table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
       table.getActionMap().put("Enter", new AbstractAction() {
@@ -866,36 +871,7 @@ public class ModuleManagerWindow extends JFrame {
           TreePath path = tree.getPathForRow(row);
           if (path == null) return;
 
-          ModuleManagerWindow.getInstance().selectedNode = (MyTreeNode) path.getLastPathComponent();
-
-          final AbstractInfo target =
-            (AbstractInfo) ModuleManagerWindow.getInstance().selectedNode.getUserObject();
-
-          // launch module or load save, otherwise expand or collapse node
-          if (target instanceof ModuleInfo) {
-            final ModuleInfo modInfo = (ModuleInfo) target;
-            if (modInfo.isModuleTooNew()) {
-              ErrorDialog.show(
-                "Error.module_too_new",
-                modInfo.getFile().getPath(),
-                modInfo.getVassalVersion(),
-                Info.getVersion()
-              );
-              return;
-            }
-            else {
-              ((ModuleInfo) target).play();
-            }
-          }
-          else if (target instanceof SaveFileInfo) {
-            ((SaveFileInfo) target).play();
-          }
-          else if (tree.isExpanded(row)) {
-            tree.collapseRow(row);
-          }
-          else {
-            tree.expandRow(row);
-          }
+          tree.activateOrExpandNode(path);
         }
       });
     }
