@@ -67,7 +67,9 @@ public class GlobalCommand {
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
   private boolean fastIsNumber = false; // Used during property Fast Match to remember if value is numeric
   private double fastNumber = 0;        // Used during property Fast Match to hold evaluated numerical value
-  private Pattern fastPattern = Pattern.compile(""); // Fast Match regex pattern
+  private Pattern fastPattern;          // Fast Match regex pattern
+
+  private final Pattern fastCheckNumber = Pattern.compile("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -176,7 +178,7 @@ public class GlobalCommand {
    * @return true if a value number
    */
   private boolean isNumeric(String s) {
-    return s.matches("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
+    return fastCheckNumber.matcher(s).matches(); //match a number with optional +/- and decimal.
   }
 
   /**
