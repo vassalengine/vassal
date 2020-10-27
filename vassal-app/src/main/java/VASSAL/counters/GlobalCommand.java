@@ -37,6 +37,7 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -66,6 +67,7 @@ public class GlobalCommand {
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
   private boolean fastIsNumber = false; // Used during property Fast Match to remember if value is numeric
   private double fastNumber = 0;        // Used during property Fast Match to hold evaluated numerical value
+  private Pattern fastPattern = Pattern.compile(""); // Fast Match regex pattern
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -131,6 +133,10 @@ public class GlobalCommand {
       return fastValue.equals(value);
     case NOT_EQUALS:
       return !fastValue.equals(value);
+    case MATCH:
+      return fastPattern.matcher(value).matches();
+    case NOT_MATCH:
+      return !fastPattern.matcher(value).matches();
     }
 
     // Lexical comparisons for strings
@@ -248,6 +254,12 @@ public class GlobalCommand {
         fastValue    = target.targetValue.tryEvaluate(source);
         if ((target.targetCompare == GlobalCommandTarget.CompareMode.EQUALS) ||
             (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_EQUALS)) {
+          fastIsNumber = false;
+          fastNumber   = 0;
+        }
+        else if ((target.targetCompare == GlobalCommandTarget.CompareMode.MATCH) ||
+                 (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_MATCH)) {
+          fastPattern  = Pattern.compile(fastValue);
           fastIsNumber = false;
           fastNumber   = 0;
         }

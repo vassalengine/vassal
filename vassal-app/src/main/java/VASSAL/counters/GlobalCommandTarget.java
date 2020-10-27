@@ -77,7 +77,9 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     GREATER(">"),
     GREATER_EQUALS(">="),
     LESS("<"),
-    LESS_EQUALS("<=");
+    LESS_EQUALS("<="),
+    MATCH("=~"),
+    NOT_MATCH("!~");
 
     String symbol;
 
