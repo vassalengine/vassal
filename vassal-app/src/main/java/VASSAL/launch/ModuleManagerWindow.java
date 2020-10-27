@@ -31,6 +31,7 @@ import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -44,7 +45,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -62,6 +62,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -154,7 +155,7 @@ public class ModuleManagerWindow extends JFrame {
   private MyTreeNode rootNode;
   private MyTree tree;
   private MyTreeTableModel treeModel;
-  private MyTreeNode selectedNode;
+  protected MyTreeNode selectedNode;
 
   private long lastExpansionTime;
   private TreePath lastExpansionPath;
@@ -568,39 +569,7 @@ public class ModuleManagerWindow extends JFrame {
           if (path == null || (lastExpansionPath == path &&
               e.getWhen() - lastExpansionTime <= doubleClickInterval)) return;
 
-          selectedNode = (MyTreeNode) path.getLastPathComponent();
-
-          final int row = tree.getRowForPath(path);
-          if (row < 0) return;
-
-          final AbstractInfo target =
-            (AbstractInfo) selectedNode.getUserObject();
-
-          // launch module or load save, otherwise expand or collapse node
-          if (target instanceof ModuleInfo) {
-            final ModuleInfo modInfo = (ModuleInfo) target;
-            if (modInfo.isModuleTooNew()) {
-              ErrorDialog.show(
-                "Error.module_too_new",
-                modInfo.getFile().getPath(),
-                modInfo.getVassalVersion(),
-                Info.getVersion()
-              );
-              return;
-            }
-            else {
-              ((ModuleInfo) target).play();
-            }
-          }
-          else if (target instanceof SaveFileInfo) {
-            ((SaveFileInfo) target).play();
-          }
-          else if (tree.isExpanded(row)) {
-            tree.collapseRow(row);
-          }
-          else {
-            tree.expandRow(row);
-          }
+          tree.activateOrExpandNode(path);
         }
       }
 
@@ -849,7 +818,65 @@ public class ModuleManagerWindow extends JFrame {
 
     public MyTree(MyTreeTableModel treeModel) {
       super(treeModel);
+      createKeyBindings(this);
     }
+
+    public void activateOrExpandNode(TreePath path) {
+      ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      mmw.selectedNode = (MyTreeNode) path.getLastPathComponent();
+
+      final AbstractInfo target =
+        (AbstractInfo) mmw.selectedNode.getUserObject();
+
+      final int row = mmw.tree.getRowForPath(path);
+      if (row < 0) return;
+
+      // launch module or load save, otherwise expand or collapse node
+      if (target instanceof ModuleInfo) {
+        final ModuleInfo modInfo = (ModuleInfo) target;
+        if (modInfo.isModuleTooNew()) {
+          ErrorDialog.show(
+            "Error.module_too_new",
+            modInfo.getFile().getPath(),
+            modInfo.getVassalVersion(),
+            Info.getVersion()
+          );
+          return;
+        }
+        else {
+          ((ModuleInfo) target).play();
+        }
+      }
+      else if (target instanceof SaveFileInfo) {
+        ((SaveFileInfo) target).play();
+      }
+      else if (isExpanded(row)) {
+        collapseRow(row);
+      }
+      else {
+        expandRow(row);
+      }
+    }
+
+
+    private void createKeyBindings(JTable table) {
+      table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
+      table.getActionMap().put("Enter", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+          //do something meaningful on JTable enter pressed
+
+          MyTree tree = ModuleManagerWindow.getInstance().tree;
+          int row = tree.getSelectedRow();
+
+          TreePath path = tree.getPathForRow(row);
+          if (path == null) return;
+
+          tree.activateOrExpandNode(path);
+        }
+      });
+    }
+
 
 // FIXME: Where's the rest of the comment???
     /**
