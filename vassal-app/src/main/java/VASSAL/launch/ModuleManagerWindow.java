@@ -822,12 +822,13 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void activateOrExpandNode(TreePath path) {
-      ModuleManagerWindow.getInstance().selectedNode = (MyTreeNode) path.getLastPathComponent();
+      ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      mmw.selectedNode = (MyTreeNode) path.getLastPathComponent();
 
       final AbstractInfo target =
-        (AbstractInfo) ModuleManagerWindow.getInstance().selectedNode.getUserObject();
+        (AbstractInfo) mmw.selectedNode.getUserObject();
 
-      final int row = ModuleManagerWindow.getInstance().tree.getRowForPath(path);
+      final int row = mmw.tree.getRowForPath(path);
       if (row < 0) return;
 
       // launch module or load save, otherwise expand or collapse node
