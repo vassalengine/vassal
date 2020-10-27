@@ -1,6 +1,7 @@
 3.4.8 - ???
 
 * 13560: Don't register mouse listeners from ActionButton.draw()
+* 13449: Inventory window remains open when the game is closed in the Player
 
 3.4.7 - 25 October 2020
 
