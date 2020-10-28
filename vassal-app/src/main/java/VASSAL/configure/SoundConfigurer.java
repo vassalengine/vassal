@@ -17,16 +17,6 @@
  */
 package VASSAL.configure;
 
-import java.awt.Component;
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.swing.JButton;
-import javax.swing.JTextField;
-
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AudioClip;
@@ -36,6 +26,16 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
+
+import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.swing.JButton;
+import javax.swing.JTextField;
 
 /**
  * Configurer for specifying a Clip. This class is intended to allow
@@ -175,7 +175,7 @@ public class SoundConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibility(boolean visible) {
+  public void setLabelVisibile(boolean visible) {
     controls.setLabelVisibility(visible);
   }
 }

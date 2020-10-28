@@ -17,18 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.Collection;
-import java.util.HashMap;
-
-import javax.swing.Box;
-
-import VASSAL.search.ImageSearchTarget;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
@@ -51,9 +39,24 @@ import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
+
+import java.awt.Component;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Collection;
+import java.util.HashMap;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
@@ -204,19 +207,24 @@ public class PrototypeDefinition extends AbstractConfigurable
   }
 
   public static class Config extends Configurer {
-    private final Box box;
+    private final JPanel box;
     private final PieceDefiner pieceDefiner;
     private final StringConfigurer name;
     private final PrototypeDefinition def;
 
     public Config(PrototypeDefinition def) {
       super(null, null, def);
-      box = Box.createVerticalBox();
-      name = new StringConfigurer(null, Resources.getString(Resources.NAME_LABEL), def.name);
-      box.add(name.getControls());
+      box = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[][grow]"));  // NON-NLS
+
+      final JPanel namePanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
+      namePanel.add(new JLabel(Resources.getString(Resources.NAME_LABEL)));
+      name = new StringConfigurer(def.name);
+      namePanel.add(name.getControls(), "grow"); // NON-NLS
+      box.add(namePanel, "grow,wrap"); // NON-NLS
+
       pieceDefiner = new Definer(GameModule.getGameModule().getGpIdSupport());
       pieceDefiner.setPiece(def.getPiece());
-      box.add(pieceDefiner);
+      box.add(pieceDefiner, "growy");  // NON-NLS
       this.def = def;
     }
 

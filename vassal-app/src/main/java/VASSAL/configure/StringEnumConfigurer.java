@@ -18,6 +18,7 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
@@ -116,7 +117,7 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibility(boolean visible) {
+  public void setLabelVisibile(boolean visible) {
     panel.setLabelVisibility(visible);
   }
 }

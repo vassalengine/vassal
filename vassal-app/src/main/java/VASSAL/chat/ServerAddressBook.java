@@ -17,6 +17,22 @@
  */
 package VASSAL.chat;
 
+import VASSAL.build.GameModule;
+import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
+import VASSAL.chat.node.PrivateNodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
+import VASSAL.configure.ConfigurerLayout;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.PropertiesEncoder;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -49,21 +65,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
-
-import VASSAL.build.GameModule;
-import VASSAL.chat.node.NodeClientFactory;
-import VASSAL.chat.node.OfficialNodeClientFactory;
-import VASSAL.chat.node.PrivateNodeClientFactory;
-import VASSAL.chat.peer2peer.P2PClientFactory;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.PropertiesEncoder;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.swing.Dialogs;
-import VASSAL.tools.swing.SwingUtils;
 
 public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
@@ -137,7 +138,7 @@ public class ServerAddressBook {
   }
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
-    String theIp = null;
+    String theIp;
     final HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
     final List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
@@ -461,7 +462,7 @@ public class ServerAddressBook {
 
   /**
    * Set up the default server
-   * @return
+   * @return Default Server Properties
    */
   public Properties getDefaultServerProperties() {
     return (new OfficialEntry()).getProperties();
@@ -726,14 +727,16 @@ public class ServerAddressBook {
 
       public JComponent getControls() {
         if (configControls == null) {
-          configControls = new JPanel();
-          configControls.setLayout(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-          configControls.add(
+          configControls = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[]")); // NON-NLS
+          final JPanel configPanel = new JPanel();
+          configPanel.setLayout(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[align right]rel[]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          configPanel.add(
               new JLabel(IconFactory.getIcon(entry.getIconName(), IconFamily.LARGE)),
               "span 2, align center, wrap"); //$NON-NLS-1$
-          configControls.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
-          configControls.add(description, "wrap, grow, push"); //$NON-NLS-1$
-          entry.addAdditionalControls(configControls, enabled);
+          configPanel.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
+          configPanel.add(description, "wrap, grow, push"); //$NON-NLS-1$
+          entry.addAdditionalControls(configPanel, enabled);
+          configControls.add(configPanel, "growx"); // NON-NLS
           description.setEditable(isDescriptionEditable() && isEnabled());
         }
         return configControls;

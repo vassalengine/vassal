@@ -106,7 +106,7 @@ public class FontConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibility(boolean visible) {
+  public void setLabelVisibile(boolean visible) {
     if (p instanceof ConfigurerPanel) {
       ((ConfigurerPanel) p).setLabelVisibility(visible);
     }

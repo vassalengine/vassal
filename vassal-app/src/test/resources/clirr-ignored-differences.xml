@@ -1019,4 +1019,28 @@
         <justification>static test function, nothing should call it</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/FontConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>p</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/i18n/LocaleConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>panel</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/FontConfigurer</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>No chance this class has been subclassed</justification>
+    </difference>
 </differences>

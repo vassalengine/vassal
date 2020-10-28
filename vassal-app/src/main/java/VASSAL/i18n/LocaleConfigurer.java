@@ -17,18 +17,19 @@
  */
 package VASSAL.i18n;
 
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerPanel;
+import VASSAL.tools.SequenceEncoder;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
-import VASSAL.configure.Configurer;
-import VASSAL.tools.SequenceEncoder;
+import javax.swing.JPanel;
 
 /**
  * Configure a Locale Value using full, localized Language and Country names
@@ -39,14 +40,14 @@ import VASSAL.tools.SequenceEncoder;
 public class LocaleConfigurer extends Configurer {
   //FIXME needs an i18n strategy
   protected static final String ANY_COUNTRY = "[Any Country]";
-  protected Box panel;
+  protected JPanel panel;
   protected static final Map<String, String> languages = new HashMap<>();
   protected static String[] languageList;
   protected static final Map<String, String> countries = new HashMap<>();
   protected static String[] countryList;
 
-  protected JComboBox langBox;
-  protected JComboBox countryBox;
+  protected JComboBox<String> langBox;
+  protected JComboBox<String> countryBox;
 
   public LocaleConfigurer(String key, String name) {
     this(key, name, "");
@@ -105,14 +106,15 @@ public class LocaleConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (panel == null) {
-      panel = Box.createHorizontalBox();
-      langBox = new JComboBox(getLanguageList());
+      panel = new ConfigurerPanel(getName(), "[]rel[][]rel[]", "[]rel[]rel[][]rel[]"); // NON-NLS
+
+      langBox = new JComboBox<>(getLanguageList());
       langBox.setSelectedItem(Locale.getDefault().getDisplayLanguage());
       langBox.addActionListener(e -> updateValue());
       panel.add(new JLabel(Resources.getString("Editor.LocaleConfigurer.language")));
       panel.add(langBox);
 
-      countryBox = new JComboBox(getCountryList());
+      countryBox = new JComboBox<>(getCountryList());
       countryBox.setSelectedItem(ANY_COUNTRY);
       countryBox.addActionListener(e -> updateValue());
       panel.add(new JLabel((Resources.getString("Editor.LocaleConfigurer.country"))));

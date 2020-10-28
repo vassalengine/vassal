@@ -24,6 +24,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import javax.swing.SwingUtilities;
 
 /**
@@ -222,7 +223,7 @@ public abstract class Configurer {
    *
    * @param visible Hide label if true
    */
-  public void setLabelVisibility(boolean visible) {
+  public void setLabelVisibile(boolean visible) {
 
   }
 }

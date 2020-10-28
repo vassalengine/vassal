@@ -31,8 +31,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import javax.swing.UIManager;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -115,7 +115,7 @@ public abstract class ListConfigurer extends Configurer implements
       controls = new JPanel(new MigLayout("ins 2", "[grow,fill]")); // NON-NLS
       final JScrollPane scroll = new JScrollPane(controls);
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
-      configControls = new JPanel(new MigLayout("ins 0,gapy 2", "[grow]")); // NON-NLS
+      configControls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow]")); // NON-NLS
 
       final JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
       addButton.addActionListener(e -> {
@@ -163,7 +163,7 @@ public abstract class ListConfigurer extends Configurer implements
         c.setValue(value);
         c.addPropertyChangeListener(this);
         configurers.add(c);
-        final JPanel b = new JPanel(new MigLayout("ins 0,gapy 2", "[][fill,grow]")); // NON-NLS
+        final JPanel b = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[][fill,grow]")); // NON-NLS
         final JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
         delButton.addActionListener(e -> {
           getListValue().remove(c.getValue());
