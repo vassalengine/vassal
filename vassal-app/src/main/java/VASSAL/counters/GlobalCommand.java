@@ -135,6 +135,14 @@ public class GlobalCommand {
       return fastValue.equals(value);
     case NOT_EQUALS:
       return !fastValue.equals(value);
+    }
+
+    // The non-equals-y ones have to deal with null
+    if (value == null) {
+      return false;
+    }
+
+    switch(target.targetCompare) {
     case MATCH:
       return fastPattern.matcher(value).matches();
     case NOT_MATCH:
