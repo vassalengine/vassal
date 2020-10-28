@@ -26,7 +26,22 @@
     <prudent>true</prudent>
   </appender>
 
+  <!-- Console - //FIXME we ought to think about making an easy way to turn this on, seeing errorLog in my IDE window is GREAT! -->
+  <!--
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%date [%contextName-%thread] %-5level %logger - %msg%n</pattern>
+    </encoder>
+    <prudent>true</prudent>
+  </appender>
+  -->
+
+  <!-- Chatter -->
+  <appender name="CHATTER" class="VASSAL.build.module.Console$Appender"/>
+
   <root level="info">
     <appender-ref ref="FILE" />
+    <appender-ref ref="CHATTER" />
+    <!-- <appender-ref ref="CONSOLE" /> -->
   </root>
 </configuration>

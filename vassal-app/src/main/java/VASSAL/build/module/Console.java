@@ -23,6 +23,8 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.tools.BugUtils;
 import VASSAL.tools.SequenceEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.AppenderBase;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
@@ -36,6 +38,11 @@ import java.io.IOException;
 public class Console {
   SequenceEncoder.Decoder decode;
   String commandLine;
+  private boolean errorLogging = false;
+
+  public boolean isErrorLogging() {
+    return errorLogging;
+  }
 
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(Console.class);
@@ -45,11 +52,11 @@ public class Console {
   }
 
 
-  private Boolean matches(String s1, String s2) {
+  private boolean matches(String s1, String s2) {
     return matches(s1, s2, 2);
   }
 
-  private Boolean matches(String s1, String s2, int min) {
+  private boolean matches(String s1, String s2, int min) {
     if (s2.isEmpty() || (s2.length() > s1.length()) || ((s2.length() < min) && (s1.length() > s2.length()))) {
       return false;
     }
@@ -60,7 +67,7 @@ public class Console {
   }
 
 
-  private Boolean doErrorLog() {
+  private boolean doErrorLog() {
     String option = decode.nextToken("");
     if (matches("show", option)) { //NON-NLS
       String errorLog = BugUtils.getErrorLog();
@@ -68,9 +75,9 @@ public class Console {
       String[] lines = errorLog.split(delims2);
 
       if (lines.length > 0) {
-        int end         = lines.length - 1;
+        int end = lines.length - 1;
         int linesToShow = decode.nextInt(0);
-        int start       = (linesToShow <= 0) ? 0 : Math.max(0, end - linesToShow + 1);
+        int start = (linesToShow <= 0) ? 0 : Math.max(0, end - linesToShow + 1);
 
         for (int line = start; line <= end; line++) {
           show(lines[line]);
@@ -96,6 +103,14 @@ public class Console {
         System.out.println("Illegal argument"); //NON-NLS
       }
     }
+    else if (matches("noecho", option)) { //NON-NLS
+      errorLogging = false;
+      show("Errorlog Echo: OFF"); //NON-NLS
+    }
+    else if (matches("echo", option)) { //NON-NLS
+      errorLogging = true;
+      show("Errorlog Echo: ON"); //NON-NLS
+    }
     else if (matches("open", option)) { //NON-NLS
       Desktop desktop = Desktop.getDesktop();
       try {
@@ -119,20 +134,26 @@ public class Console {
         show("Failed to wipe errorlog"); //NON-NLS
       }
     }
-    else if (matches("?", option) || matches("help", option)) { //NON-NLS
+    else if (matches("?", option) || matches("help", option) || ("".equals(option))) { //NON-NLS
       show("Usage:"); //NON-NLS
+      show("  /errorlog echo         - Echoes new errorlog info in chat log"); //NON-NLS
       show("  /errorlog folder       - Opens folder containing errorlog"); //NON-NLS
+      show("  /errorlog noecho       - Disables echoing of errorlog info in chat log"); //NON-NLS
       show("  /errorlog open         - Opens errorlog in OS"); //NON-NLS
       show("  /errorlog show [n]     - Show last n lines of errorlog"); //NON-NLS
       show("  /errorlog wipe         - Wipe the errorlog file"); //NON-NLS
       show("  /errorlog write [text] - Write text into the errorlog file"); //NON-NLS
+    }
+    else {
+      show("Unknown command."); //NON-NLS
+      show("Use '/errorlog help' for usage info."); //NON-NLS
     }
 
     return true;
   }
 
 
-  private Boolean doProperty() {
+  private boolean doProperty() {
     String option   = decode.nextToken("");
     String property = decode.nextToken("");
 
@@ -159,13 +180,13 @@ public class Console {
   }
 
 
-  public Boolean consoleHook(String s, String commandLine, String cl, String command, SequenceEncoder.Decoder decode) {
+  public boolean consoleHook(String s, String commandLine, String cl, String command, SequenceEncoder.Decoder decode) {
     // Hook for console subclasses, etc.
     return false;
   }
 
 
-  public Boolean exec(String s, String style, boolean html_allowed) {
+  public boolean exec(String s, String style, boolean html_allowed) {
     if (s.charAt(0) != '/') {
       return false;
     }
@@ -217,5 +238,15 @@ public class Console {
     }
 
     return true;
+  }
+
+  public class Appender extends AppenderBase<ILoggingEvent> {
+    @Override
+    protected void append(ILoggingEvent event) {
+      if (!isErrorLogging()) {
+        return;
+      }
+      show(event.getMessage());
+    }
   }
 }
