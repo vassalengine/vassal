@@ -119,7 +119,11 @@ public class HexGridNumbering extends RegularGridNumbering {
     final Graphics2D g2d = (Graphics2D) g;
     final AffineTransform oldT = g2d.getTransform();
     if (reversed) {
-      final AffineTransform t = AffineTransform.getRotateInstance(Math.PI, bounds.x + .5 * bounds.width, bounds.y + .5 * bounds.height);
+      final AffineTransform t = AffineTransform.getRotateInstance(
+        Math.PI,
+        bounds.x + 0.5 * bounds.width,
+        bounds.y + 0.5 * bounds.height
+      );
       g2d.transform(t);
       visibleRect = t.createTransformedShape(visibleRect).getBounds();
     }
@@ -208,6 +212,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         );
       }
     }
+
     if (rotateTextDegrees != 0) {
       g2d.rotate(-radians);
     }
