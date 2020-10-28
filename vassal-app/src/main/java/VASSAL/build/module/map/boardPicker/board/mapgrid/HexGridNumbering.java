@@ -175,8 +175,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
     double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font("Dialog", Font.PLAIN, size);
-    Point p = new Point();
+    final Font f = new Font(Font.DIALOG, Font.PLAIN, size);
     int alignment = LabelUtils.TOP;
     int offset = -(int) Math.round(deltaY / 2);
     if (grid.isSideways() || rotateTextDegrees != 0) {
@@ -184,7 +183,8 @@ public class HexGridNumbering extends RegularGridNumbering {
       offset = 0;
     }
 
-    Point gridp = new Point();
+    final Point p = new Point();
+    final Point gridp = new Point();
 
     Point centerPoint = null;
     double radians = 0;
@@ -195,9 +195,8 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     for (double x = xmin; x < xmax; x += 2 * deltaX) {
       for (double y = ymin; y < ymax; y += deltaY) {
-
         p.setLocation((int) Math.round(x), (int) Math.round(y) + offset);
-        gridp = new Point(p.x, p.y - offset);
+        gridp.setLocation(p.x, p.y - offset);
         grid.rotateIfSideways(p);
 
         // Convert from map co-ordinates to board co-ordinates
@@ -214,7 +213,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         );
 
         p.setLocation((int) Math.round(x + deltaX), (int) Math.round(y + deltaY / 2) + offset);
-        gridp = new Point(p.x, p.y - offset);
+        gridp.setLocation(p.x, p.y - offset);
         grid.rotateIfSideways(p);
 
         // Convert from map co-ordinates to board co-ordinates
