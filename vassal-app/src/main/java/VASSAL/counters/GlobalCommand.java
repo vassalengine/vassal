@@ -142,7 +142,7 @@ public class GlobalCommand {
       return false;
     }
 
-    switch(target.targetCompare) {
+    switch (target.targetCompare) {
     case MATCH:
       return fastPattern.matcher(value).matches();
     case NOT_MATCH:
