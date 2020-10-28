@@ -19,6 +19,7 @@ package VASSAL.preferences;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerLayout;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SplashScreen;
@@ -152,7 +153,7 @@ public class PrefsEditor {
     final int i = optionsTab.indexOfTab(category);
     if (i == -1) { // No match
       pan = new JPanel();
-      pan.setLayout(new MigLayout("ins 0,gapy 2", "[right][fill,grow]")); // NON-NLS
+      pan.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY, "[right][fill,grow]")); // NON-NLS
       optionsTab.addTab(category, pan);
     }
     else {
@@ -168,7 +169,7 @@ public class PrefsEditor {
 
     final String name = c.getName();
     final JLabel label = new JLabel(name);
-    c.setLabelVisibility(false);
+    c.setLabelVisibile(false);
     label.setLabelFor(c.getControls());
     pan.add(label);
     pan.add(c.getControls(), "grow,wrap"); // NON-NLS

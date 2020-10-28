@@ -116,7 +116,7 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   @Override
-  public void setLabelVisibility(boolean visible) {
+  public void setLabelVisibile(boolean visible) {
     panel.setLabelVisibility(visible);
   }
 }

@@ -114,6 +114,7 @@ public class IconConfigurer extends Configurer {
     if (holdingPanel != null) {
       if (icon == null) {
         holdingPanel.setPreferredSize(new Dimension(32, 32));
+        holdingPanel.setMinimumSize(new Dimension(32, 32));
       }
       else {
         holdingPanel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));

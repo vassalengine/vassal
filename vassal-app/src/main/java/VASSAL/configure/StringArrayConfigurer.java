@@ -106,7 +106,7 @@ public class StringArrayConfigurer extends Configurer {
       panel.setLayout(new MigLayout("fill")); //NON-NLS
 
       final JPanel buttonBox =  new JPanel(new MigLayout("ins 0", "push[][][]push")); // NON-NLS
-      final JPanel leftBox = new JPanel(new MigLayout("ins 0,gapy 2", "[fill,grow]")); // NON-NLS
+      final JPanel leftBox = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill,grow]")); // NON-NLS
 
       model = new DefaultListModel<>();
       updateModel();

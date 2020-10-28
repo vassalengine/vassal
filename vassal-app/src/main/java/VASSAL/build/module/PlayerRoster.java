@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.counters.TraitConfigPanel;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -50,6 +49,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.counters.TraitConfigPanel;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -70,10 +70,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   public static final String OBSERVER = "<observer>"; //$NON-NLS-1$
 
-  public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks)
-  public static final String REFEREE   = "Referee";
-  public static final String SOLO      = "Solo";
-  public static final String MODERATOR = "Moderator";
+  public static final String SOLITAIRE = "Solitaire"; // Various common names for sides that have access to all pieces (and chess clocks) // NON-NLS
+  public static final String REFEREE   = "Referee";   // NON-NLS
+  public static final String SOLO      = "Solo";      // NON-NLS
+  public static final String MODERATOR = "Moderator"; // NON-NLS
 
   protected List<PlayerInfo> players = new ArrayList<>();
   protected List<String> sides = new ArrayList<>();
@@ -325,7 +325,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
   public List<String> getSides() {
-    return new ArrayList(sides);
+    return new ArrayList<>(sides);
   }
 
   public void add(String playerId, String playerName, String side) {
@@ -625,7 +625,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       iconConfig = new IconConfigurer(BUTTON_ICON, "", null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString()));
-      controls.add("Editor.PlayerRoster.retire_button_icon", iconConfig);
+      controls.add("Editor.PlayerRoster.retire_button_icon", iconConfig, "grow"); // NON-NLS
 
       keyConfig = (NamedHotKeyConfigurer) retireButton.getHotkeyConfigurer();
       keyConfig.setName("");

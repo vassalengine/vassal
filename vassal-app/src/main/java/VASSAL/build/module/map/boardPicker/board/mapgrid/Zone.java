@@ -76,6 +76,7 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name"; //NON-NLS
@@ -605,6 +606,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return null;
   }
   public static class Editor extends Configurer {
+    private final JPanel buttonPanel;
     private final JButton button;
     private final PolygonEditor editor;
     private Board board;
@@ -615,7 +617,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     public Editor(final Zone zone) {
       super(PATH, null);
+      buttonPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
       button = new JButton(Resources.getString("Editor.Zone.define_shape"));
+      buttonPanel.add(button);
       button.addActionListener(e -> init(zone));
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
@@ -722,7 +726,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     @Override
     public Component getControls() {
-      return button;
+      return buttonPanel;
     }
 
     @Override

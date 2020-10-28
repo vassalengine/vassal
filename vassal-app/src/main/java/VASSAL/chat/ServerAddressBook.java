@@ -17,6 +17,7 @@
  */
 package VASSAL.chat;
 
+import VASSAL.configure.ConfigurerLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -726,14 +727,16 @@ public class ServerAddressBook {
 
       public JComponent getControls() {
         if (configControls == null) {
-          configControls = new JPanel();
-          configControls.setLayout(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-          configControls.add(
+          configControls = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[]")); // NON-NLS
+          final JPanel configPanel = new JPanel();
+          configPanel.setLayout(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[align right]rel[]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          configPanel.add(
               new JLabel(IconFactory.getIcon(entry.getIconName(), IconFamily.LARGE)),
               "span 2, align center, wrap"); //$NON-NLS-1$
-          configControls.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
-          configControls.add(description, "wrap, grow, push"); //$NON-NLS-1$
-          entry.addAdditionalControls(configControls, enabled);
+          configPanel.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
+          configPanel.add(description, "wrap, grow, push"); //$NON-NLS-1$
+          entry.addAdditionalControls(configPanel, enabled);
+          configControls.add(configPanel, "growx"); // NON-NLS
           description.setEditable(isDescriptionEditable() && isEnabled());
         }
         return configControls;

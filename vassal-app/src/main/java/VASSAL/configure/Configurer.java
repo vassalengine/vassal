@@ -222,7 +222,7 @@ public abstract class Configurer {
    *
    * @param visible Hide label if true
    */
-  public void setLabelVisibility(boolean visible) {
+  public void setLabelVisibile(boolean visible) {
 
   }
 }

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.ConfigurerLayout;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -624,7 +625,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
 
     protected void buildControls() {
-      controls = new JPanel(new MigLayout("ins panel,gapy 2,hidemode 3", "[]rel[][]rel[]")); // NON-NLS
+      controls = new JPanel(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ",hidemode 3", "[]rel[][]rel[]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
       JLabel label = new JLabel(Resources.getString("Editor.menu_command"));
       label.setLabelFor(commandConfig.getControls());

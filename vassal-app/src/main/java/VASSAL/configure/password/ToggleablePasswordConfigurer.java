@@ -72,4 +72,9 @@ public class ToggleablePasswordConfigurer extends Configurer {
   public Component getControls() {
     return panel.getPanel();
   }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    panel.setLabeLVisible(visible);
+  }
 }

@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.counters.TraitConfigPanel;
 import VASSAL.tools.ProblemDialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -793,50 +794,56 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   private class Config extends Configurer {
-    private final JPanel controls;
+    private final TraitConfigPanel controls;
 
     public Config() {
       super(null, null);
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      final StringConfigurer title = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.dialog_title"), BoardPicker.this.title); //$NON-NLS-1$
+      controls = new TraitConfigPanel();
+
+
+      final StringConfigurer title = new StringConfigurer(BoardPicker.this.title);
       title.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           BoardPicker.this.title = (String) evt.getNewValue();
         }
       });
-      controls.add(title.getControls());
-      final StringConfigurer prompt = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.board_prompt"), BoardPicker.this.boardPrompt); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.dialog_title", title);
+
+      final StringConfigurer prompt = new StringConfigurer(BoardPicker.this.boardPrompt);
       prompt.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           BoardPicker.this.boardPrompt = (String) evt.getNewValue();
         }
       });
-      controls.add(prompt.getControls());
-      final DoubleConfigurer scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), slotScale); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.board_prompt", prompt);
+
+      final DoubleConfigurer scale = new DoubleConfigurer(slotScale);
       scale.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           slotScale = (Double) evt.getNewValue();
         }
       });
-      controls.add(scale.getControls());
-      final IntConfigurer width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), psize.width); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.cell_scale_factor", scale);
+
+      final IntConfigurer width = new IntConfigurer(psize.width);
       width.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           psize.width = (Integer) evt.getNewValue();
         }
       });
-      controls.add(width.getControls());
-      final IntConfigurer height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), psize.height); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.cell_width", width);
+
+      final IntConfigurer height = new IntConfigurer(psize.height);
       height.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           psize.height = (Integer) evt.getNewValue();
         }
       });
-      controls.add(height.getControls());
+      controls.add("Editor.BoardPicker.cell_height", height);
+
       final JButton selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
       selectButton.addActionListener(e -> selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null));
-      controls.add(selectButton);
+      controls.add(selectButton, "skip 1,grow 0"); // NON-NLS
     }
 
     @Override
