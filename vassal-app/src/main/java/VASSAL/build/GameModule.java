@@ -168,15 +168,15 @@ public class GameModule extends AbstractConfigurable
 
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
-  public static final String DESCRIPTION = "description";
+  public static final String DESCRIPTION = "description"; //NON-NLS
   public static final String VASSAL_VERSION_CREATED = "VassalVersion";  //$NON-NLS-1$
   /**
    * The System property of this name will return a version identifier for the version of VASSAL being run
    */
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
-  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
-  public static final String BUILDFILE = "buildFile.xml";
-  public static final String BUILDFILE_OLD = "buildFile";
+  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId"; //NON-NLS
+  public static final String BUILDFILE = "buildFile.xml"; //NON-NLS
+  public static final String BUILDFILE_OLD = "buildFile"; //NON-NLS
 
   /** The {@link Prefs} key for the user's real name */
   public static final String REAL_NAME = "RealName"; //$NON-NLS-1$
@@ -185,13 +185,13 @@ public class GameModule extends AbstractConfigurable
   /** The {@link Prefs} key for the user's personal info */
   public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
-  public static final String MODULE_NAME_PROPERTY = "ModuleName";
-  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion";
-  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription";
-  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1";
-  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2";
-  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated";
-  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning";
+  public static final String MODULE_NAME_PROPERTY = "ModuleName"; //NON-NLS
+  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion"; //NON-NLS
+  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription"; //NON-NLS
+  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1"; //NON-NLS
+  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
+  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
+  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -199,13 +199,13 @@ public class GameModule extends AbstractConfigurable
    * Last type of game save/load for our current game
    */
   public enum GameFileMode {
-    SAVED_GAME("saved"),
-    LOADED_GAME("loaded"),
-    REPLAYED_GAME("replayed"),
-    REPLAYING_GAME("replaying"),
-    LOGGING_GAME("logging"),
-    LOGGED_GAME("logged"),
-    NEW_GAME("new");
+    SAVED_GAME("saved"), //NON-NLS
+    LOADED_GAME("loaded"), //NON-NLS
+    REPLAYED_GAME("replayed"), //NON-NLS
+    REPLAYING_GAME("replaying"), //NON-NLS
+    LOGGING_GAME("logging"), //NON-NLS
+    LOGGED_GAME("logged"), //NON-NLS
+    NEW_GAME("new"); //NON-NLS
 
     private final String prettyName;
 
@@ -279,7 +279,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * The Chat Log Console
    */
-  private   Console console = new Console();
+  private final Console console = new Console();
 
   /**
    * Random number generator
@@ -585,7 +585,7 @@ public class GameModule extends AbstractConfigurable
     // legacy server used to be stored as node type
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, oncf);
     // redirect removed jabber type to official server
-    ChatServerFactory.register("jabber", oncf);
+    ChatServerFactory.register("jabber", oncf);  //NON-NLS
 
     server = new DynamicClient();
     final AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
@@ -1101,8 +1101,8 @@ public class GameModule extends AbstractConfigurable
   public void warn(String s) {
     String s2 = s;
     if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
-    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-           .replaceAll(">", "&gt;"); //$NON-NLS
+      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+             .replaceAll(">", "&gt;"); //$NON-NLS
     }
     if (chat == null) {
       deferredChat.add(s2);
@@ -1508,7 +1508,7 @@ public class GameModule extends AbstractConfigurable
    * @return any outstanding {@link Command} (can contain multiple chained commands)
    */
   public Command resumeLogging() {
-    Command c;
+    final Command c;
     synchronized (loggingLock) {
       c = pausedCommands == null ? new NullCommand() : pausedCommands;
       pausedCommands = null;
