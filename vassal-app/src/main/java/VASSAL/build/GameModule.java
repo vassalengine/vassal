@@ -339,6 +339,11 @@ public class GameModule extends AbstractConfigurable
   private Long crc = null;
 
   /**
+   * Error Logging to {@link Chatter}?
+   */
+  private static boolean errorLogToChat = false;
+
+  /**
    * @return the top-level frame of the controls window
    * @deprecated use {@link #getPlayerWindow()}
    */
@@ -398,6 +403,20 @@ public class GameModule extends AbstractConfigurable
    */
   public Console getConsole() {
     return console;
+  }
+
+  /**
+   * @return True if errorLog should also be sent to chat log.
+   */
+  public static boolean isErrorLogToChat() {
+    return errorLogToChat;
+  }
+
+  /**
+   * @param errorLogToChat true if errorLog should also be sent to chat log
+   */
+  public static void setErrorLogToChat(boolean errorLogToChat) {
+    GameModule.errorLogToChat = errorLogToChat;
   }
 
   /*

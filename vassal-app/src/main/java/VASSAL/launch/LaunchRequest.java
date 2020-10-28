@@ -18,6 +18,7 @@
 
 package VASSAL.launch;
 
+import VASSAL.build.GameModule;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
@@ -173,6 +174,7 @@ public class LaunchRequest implements Serializable {
       StartUp.initSystemProperties(). You have been warned. :)
     */
     return Resources.getString("LaunchRequest.usage") + ":\n" +
+      "  VASSAL -c\n" + //NON-NLS
       "  VASSAL -e [option]... module\n" + //NON-NLS
       "  VASSAL -i [option]... module\n" + //NON-NLS
       "  VASSAL -l [option]... module|save|log...\n" + //NON-NLS
@@ -184,6 +186,7 @@ public class LaunchRequest implements Serializable {
       "\n" +
       Resources.getString("LaunchRequest.options") + ":\n" +
       "  -a, --auto          TODO\n" + //NON-NLS
+      "  -c, --chatlog       " + Resources.getString("LaunchRequest.chatlog") + "\n" + //NON-NLS
       "  -e, --edit          " + Resources.getString("LaunchRequest.edit") + "\n" + //NON-NLS
       "  -h, --help          " + Resources.getString("LaunchRequest.help") + "\n" + //NON-NLS
       "  -i, --import        " + Resources.getString("LaunchRequest.import") + "\n" + //NON-NLS
@@ -222,6 +225,7 @@ public class LaunchRequest implements Serializable {
 
     final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
+      new LongOpt("chatlog",    LongOpt.NO_ARGUMENT, null, 'c'), //NON-NLS
       new LongOpt("edit",       LongOpt.NO_ARGUMENT, null, 'e'), //NON-NLS
       new LongOpt("help",       LongOpt.NO_ARGUMENT, null, 'h'), //NON-NLS
       new LongOpt("import",     LongOpt.NO_ARGUMENT, null, 'i'), //NON-NLS
@@ -276,6 +280,9 @@ public class LaunchRequest implements Serializable {
         break;
       case 'a':
         lr.builtInModule = true;
+        break;
+      case 'c':
+        GameModule.setErrorLogToChat(true);
         break;
       case 'e':
         setMode(lr, Mode.EDIT);

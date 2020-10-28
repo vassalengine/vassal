@@ -37,7 +37,7 @@
   -->
 
   <!-- Chatter -->
-  <appender name="CHATTER" class="VASSAL.build.module.Console$Appender"/>
+  <appender name="CHATTER" class="VASSAL.build.module.ConsoleAppender"/>
 
   <root level="info">
     <appender-ref ref="FILE" />

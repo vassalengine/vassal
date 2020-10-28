@@ -23,8 +23,6 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.tools.BugUtils;
 import VASSAL.tools.SequenceEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.AppenderBase;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
@@ -38,11 +36,6 @@ import java.io.IOException;
 public class Console {
   SequenceEncoder.Decoder decode;
   String commandLine;
-  private boolean errorLogging = false;
-
-  public boolean isErrorLogging() {
-    return errorLogging;
-  }
 
   private static final org.slf4j.Logger log =
     LoggerFactory.getLogger(Console.class);
@@ -68,16 +61,16 @@ public class Console {
 
 
   private boolean doErrorLog() {
-    String option = decode.nextToken("");
+    final String option = decode.nextToken("");
     if (matches("show", option)) { //NON-NLS
-      String errorLog = BugUtils.getErrorLog();
-      String delims2 = "[\n]+";
-      String[] lines = errorLog.split(delims2);
+      final String errorLog = BugUtils.getErrorLog();
+      final String delims2 = "[\n]+";
+      final String[] lines = errorLog.split(delims2);
 
       if (lines.length > 0) {
-        int end = lines.length - 1;
-        int linesToShow = decode.nextInt(0);
-        int start = (linesToShow <= 0) ? 0 : Math.max(0, end - linesToShow + 1);
+        final int end = lines.length - 1;
+        final int linesToShow = decode.nextInt(0);
+        final int start = (linesToShow <= 0) ? 0 : Math.max(0, end - linesToShow + 1);
 
         for (int line = start; line <= end; line++) {
           show(lines[line]);
@@ -85,15 +78,15 @@ public class Console {
       }
     }
     else if (matches("write", option)) { //NON-NLS
-      int where = commandLine.toLowerCase().indexOf("write"); //NON-NLS
+      final int where = commandLine.toLowerCase().indexOf("write"); //NON-NLS
       if ((where > 0) && commandLine.length() > where + 6) {
         log.info(commandLine.substring(where + 6));
       }
     }
     else if (matches("folder", option)) { //NON-NLS
-      Desktop desktop = Desktop.getDesktop();
+      final Desktop desktop = Desktop.getDesktop();
       try {
-        File dirToOpen = Info.getConfDir();
+        final File dirToOpen = Info.getConfDir();
         desktop.open(dirToOpen);
       }
       catch (IOException e) {
@@ -104,17 +97,17 @@ public class Console {
       }
     }
     else if (matches("noecho", option)) { //NON-NLS
-      errorLogging = false;
+      GameModule.setErrorLogToChat(false);
       show("Errorlog Echo: OFF"); //NON-NLS
     }
     else if (matches("echo", option)) { //NON-NLS
-      errorLogging = true;
+      GameModule.setErrorLogToChat(true);
       show("Errorlog Echo: ON"); //NON-NLS
     }
     else if (matches("open", option)) { //NON-NLS
-      Desktop desktop = Desktop.getDesktop();
+      final Desktop desktop = Desktop.getDesktop();
       try {
-        File dirToOpen = Info.getErrorLogPath();
+        final File dirToOpen = Info.getErrorLogPath();
         desktop.open(dirToOpen);
       }
       catch (IOException e) {
@@ -154,8 +147,8 @@ public class Console {
 
 
   private boolean doProperty() {
-    String option   = decode.nextToken("");
-    String property = decode.nextToken("");
+    final String option   = decode.nextToken("");
+    final String property = decode.nextToken("");
 
     if (matches("?", option) || matches("help", option)) { //NON-NLS
       show("Usage:"); //NON-NLS
@@ -163,13 +156,13 @@ public class Console {
       show("  /property set [property] [value] - set global property new value"); //NON-NLS
     }
     else if (matches("show", option)) { //NON-NLS
-      MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
+      final MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
       if (propValue != null) {
         show("[" + property + "]: " + propValue.getPropertyValue());
       }
     }
     else if (matches("set", option)) { //NON-NLS
-      MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
+      final MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
       if (propValue != null) {
         propValue.setPropertyValue(decode.nextToken(""));
         show("[" + property + "]: " + propValue.getPropertyValue());
@@ -194,7 +187,7 @@ public class Console {
 
     // If this has EVER been a multiplayer game (has ever been connected to Server, or has ever had two player slots filled simultaneously), then
     // it will not accept console commands.
-    Logger log = GameModule.getGameModule().getLogger();
+    final Logger log = GameModule.getGameModule().getLogger();
     if (log instanceof BasicLogger) {
       if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().getPlayerRoster().isMultiPlayer()) {
         show("<b>Console commands not allowed in multiplayer games.</b>"); //NON-NLS
@@ -205,11 +198,11 @@ public class Console {
     show(s);
 
     // First get rid of any extra spaces between things
-    String delims = "[ ]+";
-    String[] tokens = commandLine.split(delims);
-    StringBuilder sb = new StringBuilder();
+    final String delims = "[ ]+";
+    final String[] tokens = commandLine.split(delims);
+    final StringBuilder sb = new StringBuilder();
     boolean first = true;
-    for (String t : tokens) {
+    for (final String t : tokens) {
       if (first) {
         first = false;
       }
@@ -218,11 +211,11 @@ public class Console {
       }
       sb.append(t);
     }
-    String cl = sb.toString(); // Our command line with things separated by no more than one space
+    final String cl = sb.toString(); // Our command line with things separated by no more than one space
 
     decode = new SequenceEncoder.Decoder(cl, ' ');
 
-    String command = decode.nextToken("");
+    final String command = decode.nextToken("");
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
@@ -238,15 +231,5 @@ public class Console {
     }
 
     return true;
-  }
-
-  public class Appender extends AppenderBase<ILoggingEvent> {
-    @Override
-    protected void append(ILoggingEvent event) {
-      if (!isErrorLogging()) {
-        return;
-      }
-      show(event.getMessage());
-    }
   }
 }
