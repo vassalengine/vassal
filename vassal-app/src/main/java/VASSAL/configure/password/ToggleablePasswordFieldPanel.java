@@ -16,6 +16,10 @@
  */
 package VASSAL.configure.password;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,10 +28,6 @@ import javax.swing.JPasswordField;
 import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
-
-import VASSAL.i18n.Resources;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
 
 public class ToggleablePasswordFieldPanel {
   private static final char ECHO_CHAR = '•';

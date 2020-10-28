@@ -17,8 +17,34 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GameSetupStep;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.BoardSlot;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.DoubleConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.ValidityChecker;
 import VASSAL.counters.TraitConfigPanel;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Localization;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.Translatable;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -52,32 +78,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GameSetupStep;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.BoardSlot;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.configure.ConfigureTree;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.DoubleConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.ValidationReport;
-import VASSAL.configure.ValidityChecker;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.Translatable;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * This class is responsible for maintaining the {@link Board}s on a {@link Map}. As a {@link CommandEncoder}, it

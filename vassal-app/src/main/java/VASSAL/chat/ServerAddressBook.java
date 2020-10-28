@@ -17,7 +17,22 @@
  */
 package VASSAL.chat;
 
+import VASSAL.build.GameModule;
+import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
+import VASSAL.chat.node.PrivateNodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.ConfigurerLayout;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.PropertiesEncoder;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -50,21 +65,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
-
-import VASSAL.build.GameModule;
-import VASSAL.chat.node.NodeClientFactory;
-import VASSAL.chat.node.OfficialNodeClientFactory;
-import VASSAL.chat.node.PrivateNodeClientFactory;
-import VASSAL.chat.peer2peer.P2PClientFactory;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.PropertiesEncoder;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.swing.Dialogs;
-import VASSAL.tools.swing.SwingUtils;
 
 public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
@@ -138,7 +138,7 @@ public class ServerAddressBook {
   }
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
-    String theIp = null;
+    String theIp;
     final HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
     final List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
@@ -462,7 +462,7 @@ public class ServerAddressBook {
 
   /**
    * Set up the default server
-   * @return
+   * @return Default Server Properties
    */
   public Properties getDefaultServerProperties() {
     return (new OfficialEntry()).getProperties();

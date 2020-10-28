@@ -24,6 +24,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import javax.swing.SwingUtilities;
 
 /**

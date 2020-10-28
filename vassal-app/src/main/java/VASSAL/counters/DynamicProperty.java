@@ -17,7 +17,33 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
+import VASSAL.build.module.properties.IncrementProperty;
+import VASSAL.build.module.properties.PropertyChanger;
+import VASSAL.build.module.properties.PropertyChangerConfigurer;
+import VASSAL.build.module.properties.PropertyPrompt;
+import VASSAL.build.module.properties.PropertySetter;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerLayout;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.ListConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.Expression;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -39,32 +65,6 @@ import javax.swing.KeyStroke;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.StringUtils;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
-import VASSAL.build.module.properties.IncrementProperty;
-import VASSAL.build.module.properties.PropertyChanger;
-import VASSAL.build.module.properties.PropertyChangerConfigurer;
-import VASSAL.build.module.properties.PropertyPrompt;
-import VASSAL.build.module.properties.PropertySetter;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.ListConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.script.expression.Expression;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * Trait that contains a property accessible via getProperty() and updatable

@@ -16,11 +16,11 @@
  */
 package VASSAL.configure.password;
 
+import VASSAL.configure.Configurer;
+
+import java.awt.Component;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.Component;
-
-import VASSAL.configure.Configurer;
 
 public class ToggleablePasswordConfigurer extends Configurer {
 
