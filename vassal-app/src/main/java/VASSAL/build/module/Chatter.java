@@ -214,8 +214,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * Display a message in the text area - use show() from outside the class - MUST run on EventDispatchThread
    */
   private void doShow(String s) {
-    String style;
-    boolean html_allowed;
+    final String style;
+    final boolean html_allowed;
 
     // Choose an appropriate style to display this message in
     s = s.trim();

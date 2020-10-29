@@ -59,10 +59,10 @@ public class Builder {
   }
 
   /**
-   * General building algorithm.  For each subelement of the build
+   * General building algorithm.  For each sub-element of the build
    * Element, this method creates an instance of the class (which
    * must implement Buildable) whose name matches the XML element
-   * tag name, builds that instance with the subelement, and adds it
+   * tag name, builds that instance with the sub-element, and adds it
    * to the parent Buildable
    *
    * This algorithm calls a component's {@link Buildable#build} method
@@ -87,7 +87,7 @@ public class Builder {
           ErrorDialog.bug(ex);
         }
         catch (RuntimeException | Error ex) {
-          logger.error("Error building " + child.getNodeName());
+          logger.error("Error building " + child.getNodeName()); //NON-NLS
           throw ex;
         }
       }
@@ -128,7 +128,7 @@ public class Builder {
           t instanceof SecurityException ||
           t instanceof ExceptionInInitializerError ||
           t instanceof LinkageError) {
-        // one of the standard classloading problems occured
+        // one of the standard classloading problems occurred
         throw new IllegalBuildException("failed to load class " + name, t);
       }
       else if (t instanceof Error) {

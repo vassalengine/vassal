@@ -74,7 +74,7 @@ public class ChartWindow extends Widget {
       @Override
       public void actionPerformed(ActionEvent e) {
         if (!initialized) {
-          String key = PositionOption.key + id;
+          final String key = PositionOption.key + id;
           GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
           initialized = true;
         }
