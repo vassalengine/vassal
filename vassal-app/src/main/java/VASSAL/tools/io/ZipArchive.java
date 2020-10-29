@@ -47,6 +47,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import VASSAL.i18n.Resources;
 import org.apache.commons.io.FilenameUtils;
 
 import VASSAL.Info;
@@ -421,22 +422,55 @@ public class ZipArchive implements FileArchive {
       // impossible when the source and destination aren't on the same
       // filesystem.
 
+      boolean gotHalfwayDone = false;
+
       try {
         // attempt to copy to the destination
         Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
       }
-      catch (IOException e) {
-        // copy failed
-        final String fmt = "Unable to overwrite %s, so data written to %s instead:\n %s";
+      catch (IOException copyException) {
+        Path dst2 = dst.resolveSibling(src.getFileName()); // Our "temp" name but in the destination directory
+        final String fmt = Resources.getString("Editor.ZipArchive.overwrite") + "\n%s"; //NON-NLS
+        try {
+          // Try to at least put it in same directory as the module
+          Files.copy(src, dst2, StandardCopyOption.REPLACE_EXISTING);
+
+          // Since we at least managed to copy it out of the temp directory, we delete the one out of our temp directory
+          try {
+            Files.delete(src);
+          }
+          catch (IOException ignoreDeleteException) {
+            // No action because we have a more important and informative exception to throw
+          }
+
+          // Tell where we moved the file to - don't need the obnoxious long paths in this case because they're in same directory.
+          gotHalfwayDone = true;
+          throw new IOException(
+            String.format(
+              fmt,
+              dst.toFile().getName(),
+              dst2.toFile().getName(),
+              copyException.getMessage()
+            ),
+            copyException
+          );
+        }
+        catch (IOException didEverythingFail) {
+          // If we got the file at least moved into the right directory (with wrong name), we report that instead of a total failure
+          if (gotHalfwayDone) {
+            throw new IOException(didEverythingFail);
+          }
+          // all copy attempts failed, so we leave it in the temp directory
         throw new IOException(
           String.format(
             fmt,
             dst.toFile().getName(),
             src.toAbsolutePath(),
-            e.getMessage()
+              didEverythingFail.getMessage()
           ),
-          e
+            didEverythingFail
         );
+      }
       }
 
       try {
