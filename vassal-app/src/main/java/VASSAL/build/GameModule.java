@@ -1107,7 +1107,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       String[] msgs = e.getLocalizedMessage().split("\n");
       boolean first = true;
       for (String msg : msgs) {
-        warn((first ? QUICK_COLOR_RED + HTML_BOLD : "") + msg); //BR// Might as well e.g. tell them the name of where the tmp file got written to when replacing vmod fails.
+        warn((first ? "~" + "<b>" : "") + msg); //BR// Might as well e.g. tell them the name of where the tmp file got written to when replacing vmod fails.
         first = false;
       }
       WriteErrorDialog.error(e, writer.getName());
