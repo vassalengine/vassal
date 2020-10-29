@@ -17,8 +17,22 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.GpIdSupport;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.documentation.HelpWindowExtension;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -27,7 +41,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -42,17 +55,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.GpIdSupport;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.documentation.HelpWindowExtension;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -71,6 +73,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected JLabel pieceIdLabel = new JLabel("");
   protected GpIdSupport gpidSupport;
   protected boolean changed;
+  private JPanel slotPanel;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -177,6 +180,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     inUseModel.insertElementAt(piece == null ? new BasicPiece() : piece, 0);
     inUseList.setSelectedIndex(0);
+    inUseList.setVisibleRowCount(availableModel.size());
 
     refresh();
   }
@@ -214,53 +218,54 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * This method is called from within the constructor to initialize the form.
    */
   private void initComponents() {
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    add(slot.getComponent());
+    setLayout(new MigLayout("ins panel", "[grow,fill]")); // NON-NLS
 
-    final JPanel controls = new JPanel();
-    controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
+    final JPanel controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:300:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
 
-    final JPanel availablePanel = new JPanel();
-    final JScrollPane availableScroll = new JScrollPane();
+    slotPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
+    slotPanel.add(slot.getComponent());
+    controls.add(slotPanel, "span 4,center,grow,wrap"); // NON-NLS
+
+    final JPanel availablePanel = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
     availableList = new JList<>();
     helpButton = new JButton();
     final JButton importButton = new JButton();
+
     final JPanel addRemovePanel = new JPanel();
     addButton = new JButton();
     removeButton = new JButton();
+
     final JPanel inUsePanel = new JPanel();
-    final JScrollPane inUseScroll = new JScrollPane();
     inUseList = new JList<>();
     propsButton = new JButton();
-    final JPanel moveUpDownPanel = new JPanel();
+
+    final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
     moveUpButton = new JButton();
     moveDownButton = new JButton();
     copyButton = new JButton();
     pasteButton = new JButton();
-
-    availablePanel.setLayout(new BoxLayout(availablePanel, BoxLayout.Y_AXIS));
-
 
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(r);
     availableList.addListSelectionListener(evt -> {
       final Object o = availableList.getSelectedValue();
-      helpButton.setEnabled(o instanceof EditablePiece
-                            && ((EditablePiece) o).getHelpFile() != null);
+      helpButton.setEnabled(o instanceof EditablePiece && ((EditablePiece) o).getHelpFile() != null);
       addButton.setEnabled(o instanceof Decorator);
     });
 
-    availableScroll.setViewportView(availableList);
+    final JPanel availableListPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "grow,fill")); // NON-NLS
+    availableListPanel.add(availableList, "grow"); // NON-NLS
+
+    final JScrollPane availableScroll = new JScrollPane(availableListPanel);
     availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
+    availablePanel.add(availableScroll, "grow"); // NON-NLS
 
-    availablePanel.add(availableScroll);
-
+    final JPanel availableButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push")); // NON-NLS
 
     helpButton.setText(Resources.getString("General.help"));
-    helpButton.addActionListener(evt -> showHelpForPiece()
-    );
-    availablePanel.add(helpButton);
+    helpButton.addActionListener(evt -> showHelpForPiece());
+    availableButtonPanel.add(helpButton);
 
     importButton.setText(Resources.getString("General.import"));
     importButton.addActionListener(evt -> {
@@ -269,14 +274,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       );
       importPiece(className);
     });
+    availableButtonPanel.add(importButton);
+    controls.add(availablePanel, "grow"); // NON-NLS
 
-    availablePanel.add(importButton);
+    addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1")); // NON-NLS
 
-    controls.add(availablePanel);
-
-    addRemovePanel.setLayout(new BoxLayout(addRemovePanel, BoxLayout.Y_AXIS));
-
-    addButton.setText(Resources.getString("General.add") + " ->");
+    //addButton.setText(Resources.getString("General.add") + " ->");
+    addButton.setIcon(IconFactory.getIcon("go-next", IconFamily.MEDIUM)); // NON-NLS
     addButton.addActionListener(evt -> {
       final Object selected = availableList.getSelectedValue();
       if (selected instanceof Decorator) {
@@ -312,31 +316,32 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       }
     });
-    addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(addButton);
 
-    removeButton.setText("<- " + Resources.getString("General.remove"));
+    // removeButton.setText("<- " + Resources.getString("General.remove"));
+    removeButton.setIcon(IconFactory.getIcon("go-previous", IconFamily.MEDIUM)); // NON-NLS
     removeButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index >= 0) {
         removeTrait(index);
         if (inUseModel.getSize() > 0) {
           inUseList.setSelectedIndex(
-            Math.min(inUseModel.getSize() - 1, Math.max(index, 0)));
+            Math.min(inUseModel.getSize() - 1, index));
         }
       }
-    }
-    );
-    removeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    });
+    //removeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(removeButton);
 
-    pieceIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    addRemovePanel.add(pieceIdLabel);
+    //pieceIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    addRemovePanel.add(pieceIdLabel, "center"); // NON-NLS
 
-    controls.add(addRemovePanel);
+    controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
-    inUsePanel.setLayout(new BoxLayout(inUsePanel, BoxLayout.Y_AXIS));
+    inUsePanel.setLayout(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
 
+    inUseList.setVisibleRowCount(availableModel.size());
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     inUseList.setCellRenderer(r);
@@ -352,8 +357,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       pasteButton.setEnabled(clipBoard != null);
       moveUpButton.setEnabled(index > 1);
-      moveDownButton.setEnabled(index > 0
-                                && index < inUseModel.size() - 1);
+      moveTopButton.setEnabled(index > 1);
+      moveDownButton.setEnabled(index > 0 && index < inUseModel.size() - 1);
+      moveBottomButton.setEnabled(index > 0 && index < inUseModel.size() - 1);
     });
 
     inUseList.addMouseListener(new MouseAdapter() {
@@ -368,56 +374,20 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       }
     });
-    inUseScroll.setViewportView(inUseList);
-
+    final JPanel inUseListPanel = new JPanel(new BorderLayout());
+    inUseListPanel.add(inUseList, BorderLayout.CENTER);
+    final JScrollPane inUseScroll = new JScrollPane(inUseListPanel);
     inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
+    inUsePanel.add(inUseScroll, "grow"); // NON-NLS
 
-    inUsePanel.add(inUseScroll);
-
-
-    propsButton.setText(Resources.getString("Editor.properties"));
-    propsButton.addActionListener(evt -> {
-      final int index = inUseList.getSelectedIndex();
-      if (index >= 0) {
-        edit(index);
-      }
-    });
-    inUsePanel.add(propsButton);
-
-
-    controls.add(inUsePanel);
-
-
-    moveUpDownPanel.setLayout(new BoxLayout(moveUpDownPanel, BoxLayout.Y_AXIS));
-
-    moveUpButton.setText(Resources.getString("Editor.PieceDefiner.move_up"));
-    moveUpButton.addActionListener(evt -> {
-      final int index = inUseList.getSelectedIndex();
-      if (index > 1 && index < inUseModel.size()) {
-        moveDecoratorUp(index);
-      }
-    }
-    );
-    moveUpDownPanel.add(moveUpButton);
-
-
-    moveDownButton.setText(Resources.getString("Editor.PieceDefiner.move_down"));
-    moveDownButton.addActionListener(evt -> {
-      final int index = inUseList.getSelectedIndex();
-      if (index > 0 && index < inUseModel.size() - 1) {
-        moveDecoratorDown(index);
-      }
-    }
-    );
-    moveUpDownPanel.add(moveDownButton);
-
+    final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     copyButton.setText(Resources.getString("Editor.copy"));
     copyButton.addActionListener(evt -> {
       pasteButton.setEnabled(true);
       final int index = inUseList.getSelectedIndex();
       clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
     });
-    moveUpDownPanel.add(copyButton);
+    inUseButtonPanel.add(copyButton);
 
     pasteButton.setText(Resources.getString("Editor.paste"));
     pasteButton.setEnabled(clipBoard != null);
@@ -426,11 +396,66 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         paste();
       }
     });
-    moveUpDownPanel.add(pasteButton);
+    inUseButtonPanel.add(pasteButton);
 
-    controls.add(moveUpDownPanel);
+    propsButton.setText(Resources.getString("Editor.properties"));
+    propsButton.addActionListener(evt -> {
+      final int index = inUseList.getSelectedIndex();
+      if (index >= 0) {
+        edit(index);
+      }
+    });
 
-    add(controls);
+    inUseButtonPanel.add(propsButton);
+
+    controls.add(inUsePanel, "grow"); // NON-NLS
+
+    moveTopButton = new JButton(IconFactory.getIcon("go-top", IconFamily.MEDIUM)); // NON-NLS
+    moveTopButton.addActionListener(evt -> {
+      final int index = inUseList.getSelectedIndex();
+      if (index > 1 && index < inUseModel.size()) {
+        moveDecoratorTop(index);
+      }
+    });
+    moveUpDownPanel.add(moveTopButton, "grow"); // NON-NLS
+
+    // moveUpButton.setText(Resources.getString("Editor.PieceDefiner.move_up"));
+    moveUpButton.setIcon(IconFactory.getIcon("go-up", IconFamily.MEDIUM)); // NON-NLS
+    moveUpButton.addActionListener(evt -> {
+      final int index = inUseList.getSelectedIndex();
+      if (index > 1 && index < inUseModel.size()) {
+        moveDecoratorUp(index);
+      }
+    });
+    moveUpDownPanel.add(moveUpButton, "grow"); // NON-NLS
+
+
+    // moveDownButton.setText(Resources.getString("Editor.PieceDefiner.move_down"));
+    moveDownButton.setIcon(IconFactory.getIcon("go-down", IconFamily.MEDIUM)); // NON-NLS
+    moveDownButton.addActionListener(evt -> {
+      final int index = inUseList.getSelectedIndex();
+      if (index > 0 && index < inUseModel.size() - 1) {
+        moveDecoratorDown(index);
+      }
+    });
+    moveUpDownPanel.add(moveDownButton, "grow"); // NON-NLS
+
+    moveBottomButton = new JButton(IconFactory.getIcon("go-bottom", IconFamily.MEDIUM)); // NON-NLS
+    moveBottomButton.addActionListener(evt -> {
+      final int index = inUseList.getSelectedIndex();
+      if (index > 0 && index < inUseModel.size() - 1) {
+        moveDecoratorBottom(index);
+      }
+    });
+    moveUpDownPanel.add(moveBottomButton, "grow"); // NON-NLS
+
+    controls.add(moveUpDownPanel, "wrap"); // NON-NLS
+
+    controls.add(availableButtonPanel, "center"); // NON-NLS
+    controls.add(new JLabel(""));
+    controls.add(inUseButtonPanel, "center"); // NON-NLS
+
+    add(controls, "grow"); // NON-NLS
 
   }
 
@@ -446,40 +471,122 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void moveDecoratorDown(int index) {
-    final GamePiece selm1 = inUseModel.elementAt(index - 1);
-    final Decorator sel = (Decorator) inUseModel.elementAt(index);
-    final Decorator selp1 = (Decorator) inUseModel.elementAt(index + 1);
-    final Decorator selp2 = index < inUseModel.size() - 2 ? (Decorator) inUseModel.elementAt(index + 2) : null;
-    selp1.setInner(selm1);
-    sel.setInner(selp1);
-    if (selp2 != null) {
-      selp2.setInner(sel);
-    }
-    inUseModel.setElementAt(selp1, index);
-    inUseModel.setElementAt(sel, index + 1);
+    moveDecorator(index, index + 1);
+//    final GamePiece selm1 = inUseModel.elementAt(index - 1);
+//    final Decorator sel = (Decorator) inUseModel.elementAt(index);
+//    final Decorator selp1 = (Decorator) inUseModel.elementAt(index + 1);
+//    final Decorator selp2 = index < inUseModel.size() - 2 ? (Decorator) inUseModel.elementAt(index + 2) : null;
+//    selp1.setInner(selm1);
+//    sel.setInner(selp1);
+//    if (selp2 != null) {
+//      selp2.setInner(sel);
+//    }
+//    inUseModel.setElementAt(selp1, index);
+//    inUseModel.setElementAt(sel, index + 1);
+//    inUseModel.lastElement().setProperty(Properties.OUTER, null);
+//    inUseList.setSelectedIndex(index + 1);
+//    refresh();
+//    setChanged(true);
+  }
+
+  protected void moveDecoratorUp(int index) {
+    moveDecorator(index, index - 1);
+//    final GamePiece selm2 = inUseModel.elementAt(index - 2);
+//    final Decorator sel = (Decorator) inUseModel.elementAt(index);
+//    final Decorator selm1 = (Decorator) inUseModel.elementAt(index - 1);
+//    final Decorator selp1 = index < inUseModel.size() - 1 ?
+//      (Decorator) inUseModel.elementAt(index + 1) : null;
+//    sel.setInner(selm2);
+//    selm1.setInner(sel);
+//    if (selp1 != null) {
+//      selp1.setInner(selm1);
+//    }
+//    inUseModel.setElementAt(selm1, index);
+//    inUseModel.setElementAt(sel, index - 1);
+//    inUseModel.lastElement().setProperty(Properties.OUTER, null);
+//    inUseList.setSelectedIndex(index - 1);
+//    refresh();
+//    setChanged(true);
+  }
+
+  protected void moveDecoratorTop(int index) {
+    moveDecorator(index, 1);
+  }
+
+  protected void moveDecoratorBottom(int index) {
+    moveDecorator(index, inUseModel.size() - 1);
+  }
+
+  /**
+   * Move a Decorator to a new position in the list
+   *
+   * @param fromIndex Old Position
+   * @param toIndex New Position
+   */
+  protected void moveDecorator(int fromIndex, int toIndex) {
+
+    // Remove the piece from it's current position
+    final GamePiece piece = removeDecorator(fromIndex);
+
+    // Insert it at the new position
+    insertDecorator(toIndex, piece);
+
+    // Make the sure the outermost trait knows it is outermost
     inUseModel.lastElement().setProperty(Properties.OUTER, null);
-    inUseList.setSelectedIndex(index + 1);
+
+    // Select the newly inserted piece
+    inUseList.setSelectedIndex(toIndex);
+
+    // Tidy up
     refresh();
     setChanged(true);
   }
 
-  protected void moveDecoratorUp(int index) {
-    final GamePiece selm2 = inUseModel.elementAt(index - 2);
-    final Decorator sel = (Decorator) inUseModel.elementAt(index);
-    final Decorator selm1 = (Decorator) inUseModel.elementAt(index - 1);
-    final Decorator selp1 = index < inUseModel.size() - 1 ?
-      (Decorator) inUseModel.elementAt(index + 1) : null;
-    sel.setInner(selm2);
-    selm1.setInner(sel);
-    if (selp1 != null) {
-      selp1.setInner(selm1);
+  /**
+   * Remove the Decorator at a given position in the list
+   *
+   * @param index Position of Decorator to remove
+   * @return Removed Decorator
+   */
+  protected GamePiece removeDecorator(int index) {
+
+    // Find the existing inner and outer of the piece to be removed
+    final GamePiece inner = inUseModel.elementAt(index - 1);
+    final Decorator outer = index < inUseModel.size() - 1 ?  (Decorator) inUseModel.elementAt(index + 1) : null;
+
+    // Remove the piece at index
+    final GamePiece piece = inUseModel.remove(index);
+
+    // If this was not the outermost Decorator, set the inner of the outer to the new inner :)
+    if (outer != null) {
+      outer.setInner(inner);
     }
-    inUseModel.setElementAt(selm1, index);
-    inUseModel.setElementAt(sel, index - 1);
-    inUseModel.lastElement().setProperty(Properties.OUTER, null);
-    inUseList.setSelectedIndex(index - 1);
-    refresh();
-    setChanged(true);
+
+    // Return the removed piece
+    return piece;
+  }
+
+  /**
+   * Insert a Decorator into the list at a given position
+   *
+   * @param index Position to insert Decorator
+   * @param piece Decorator to insert
+   */
+  protected void insertDecorator(int index, GamePiece piece) {
+
+    // Find the pieces that will be the new inner and outer for our piece
+    final GamePiece inner = inUseModel.elementAt(index - 1);
+    final Decorator outer = index < inUseModel.size() ? (Decorator) inUseModel.elementAt(index) : null;
+
+    // Insert the new piece
+    inUseModel.insertElementAt(piece, index);
+
+    // Update the inner pointers
+    ((Decorator) piece).setInner(inner);
+    if (outer != null) {
+      outer.setInner(piece);
+    }
+
   }
 
   protected void importPiece(String className) {
@@ -643,6 +750,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private JButton propsButton;
   private JButton moveUpButton;
   private JButton moveDownButton;
+  private JButton moveTopButton;
+  private JButton moveBottomButton;
   protected JButton copyButton;
   protected JButton pasteButton;
 
