@@ -437,7 +437,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
               }
             }
             else {
-              if ((map != null) && (obs == map.getView())) {
+              if (map != null && obs == map.getView()) {
                 requested.putIfAbsent(tile, fim);
               }
               else {
