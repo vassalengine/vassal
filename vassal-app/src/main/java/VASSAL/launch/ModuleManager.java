@@ -43,7 +43,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
@@ -61,7 +60,6 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -283,41 +281,6 @@ public class ModuleManager {
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
     start.initSystemProperties();
-
-    // try to migrate old preferences if there are no current ones
-    final File pdir = Info.getPrefsDir();
-    if (!pdir.exists()) {
-      // Check the 3.2.0 through 3.2.7 location
-      File pzip = new File(Info.getConfDir(), "Preferences");
-      if (!pzip.exists()) {
-        // Check the pre-3.2 location.
-        pzip = new File(System.getProperty("user.home"), "VASSAL/Preferences");
-      }
-
-      if (pzip.exists()) {
-        FileUtils.forceMkdir(pdir);
-
-        final byte[] buf = new byte[4096];
-
-        try {
-          try (ZipArchive za = new ZipArchive(pzip)) {
-            for (final String f : za.getFiles()) {
-              final File ofile = new File(
-                pdir, "VASSAL".equals(f) ? "V_Global" : Prefs.sanitize(f) //NON-NLS
-              );
-
-              try (InputStream in = za.getInputStream(f);
-                   OutputStream out = new FileOutputStream(ofile)) {
-                IOUtils.copy(in, out, buf);
-              }
-            }
-          }
-        }
-        catch (IOException e) {
-          logger.error("Failed to convert legacy preferences file.", e); //NON-NLS
-        }
-      }
-    }
 
     if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
