@@ -567,8 +567,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void warn(String s) {
     String s2 = s;
-    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-           .replaceAll(">", "&gt;"); //$NON-NLS
+      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+        .replaceAll(">", "&gt;"); //$NON-NLS
     if (chat == null) {
       deferredChat.add(s2);
     }
@@ -647,9 +647,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
       if (c == null) {
         System.err.println("Failed to decode " + command); //$NON-NLS-1$
-      }
-      return c;
     }
+    return c;
+  }
   }
 
   /**
@@ -722,13 +722,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public void appendToTitle(String s) {
     if (s == null) {
       frame.setTitle(Resources.getString("GameModule.frame_title", getLocalizedGameName()));  //$NON-NLS-1$
-    }
+  }
     else {
       frame.setTitle(frame.getTitle() + s);
-    }
+  }
     for (Map m : getComponentsOf(Map.class)) {
       m.appendToTitle(s);
-    }
+  }
   }
 
   /**
@@ -1104,6 +1104,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       lastSavedConfiguration = save;
     }
     catch (IOException e) {
+      String[] msgs = e.getLocalizedMessage().split("\n");
+      for (String msg : msgs) {
+        warn(QUICK_COLOR_RED + HTML_BOLD + msg); //BR// Might as well e.g. tell them the name of where the tmp file got written to when replacing vmod fails.
+      }
       WriteErrorDialog.error(e, writer.getName());
     }
   }

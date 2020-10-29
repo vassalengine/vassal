@@ -427,11 +427,11 @@ public class ZipArchive implements FileArchive {
       }
       catch (IOException e) {
         // copy failed
-        final String fmt = "Unable to overwrite %s, so data written to %s instead: %s";
+        final String fmt = "Unable to overwrite %s, so data written to %s instead:\n %s";
         throw new IOException(
           String.format(
             fmt,
-            dst.toAbsolutePath(),
+            dst.toFile().getName(),
             src.toAbsolutePath(),
             e.getMessage()
           ),
@@ -445,11 +445,11 @@ public class ZipArchive implements FileArchive {
       }
       catch (IOException e) {
         // successful copy, but removing the source failed
-        final String fmt = "File %s saved, but unable to remove temporary file %s: %s";
+        final String fmt = "File %s saved, but unable to remove temporary file %s:\n %s";
         throw new IOException(
           String.format(
             fmt,
-            dst.toAbsolutePath(),
+            dst.toFile().getName(),
             src.toAbsolutePath(),
             e.getMessage()
           ),
