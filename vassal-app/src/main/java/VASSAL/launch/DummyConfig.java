@@ -21,12 +21,12 @@ import java.nio.file.Path;
 public class DummyConfig implements Config {
   @Override
   public String getVersion() {
-    return "3.4.3";
+    return "1.2.3";
   }
 
   @Override
   public String getReportableVersion() {
-    return "3.4";
+    return "1.2";
   }
 
   @Override
