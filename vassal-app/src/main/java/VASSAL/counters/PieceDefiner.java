@@ -33,17 +33,33 @@ import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import java.awt.image.BufferedImage;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -54,6 +70,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import javax.swing.TransferHandler;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -63,7 +80,14 @@ import net.miginfocom.swing.MigLayout;
 public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private static final long serialVersionUID = 1L;
 
+  private static final String AVAILABLE = "Available"; // NON-NLS
+  private static final String INUSE = "InUse"; // NON-NLS
+
   protected static DefaultListModel<GamePiece> availableModel;
+  protected static DefaultListModel<GamePiece> alphaModel;
+  protected static DefaultListModel<GamePiece> classicModel;
+  private static final SortedMap<String, GamePiece> alphaMap = new TreeMap<>();
+  private static Boolean sorted = false;
   protected DefaultListModel<GamePiece> inUseModel;
   protected ListCellRenderer<? super GamePiece> r;
   protected PieceSlot slot;
@@ -73,7 +97,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected JLabel pieceIdLabel = new JLabel("");
   protected GpIdSupport gpidSupport;
   protected boolean changed;
-  private JPanel slotPanel;
+
+  protected JList<GamePiece> availableList;
+  private JButton helpButton;
+  private JButton addButton;
+  private JButton removeButton;
+  private JList<GamePiece> inUseList;
+  private JButton propsButton;
+  private JButton moveUpButton;
+  private JButton moveDownButton;
+  private JButton moveTopButton;
+  private JButton moveBottomButton;
+  protected JButton copyButton;
+  protected JButton pasteButton;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -99,47 +135,84 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     gpidSupport = s;
   }
 
+  protected static void addElement(GamePiece piece) {
+    // Add piece to the standard model
+    classicModel.addElement(piece);
+
+    // Store the piece in a SortedMap, order by translated trait description
+    alphaMap.put(((EditablePiece) piece).getDescription(), piece);
+  }
+
+
   protected static void initDefinitions() {
     if (availableModel == null) {
+      classicModel = new DefaultListModel<>();
       availableModel = new DefaultListModel<>();
-      availableModel.addElement(new BasicPiece());
-      availableModel.addElement(new Delete());
-      availableModel.addElement(new Clone());
-      availableModel.addElement(new Embellishment());
-      availableModel.addElement(new UsePrototype());
-      availableModel.addElement(new Labeler());
-      availableModel.addElement(new ReportState());
-      availableModel.addElement(new TriggerAction());
-      availableModel.addElement(new GlobalHotKey());
-      availableModel.addElement(new ActionButton());
-      availableModel.addElement(new FreeRotator());
-      availableModel.addElement(new Pivot());
-      availableModel.addElement(new Hideable());
-      availableModel.addElement(new Obscurable());
-      availableModel.addElement(new SendToLocation());
-      availableModel.addElement(new CounterGlobalKeyCommand());
-      availableModel.addElement(new Translate());
-      availableModel.addElement(new ReturnToDeck());
-      availableModel.addElement(new Immobilized());
-      availableModel.addElement(new PropertySheet());
-      availableModel.addElement(new TableInfo());
-      availableModel.addElement(new PlaceMarker());
-      availableModel.addElement(new Replace());
-      availableModel.addElement(new NonRectangular());
-      availableModel.addElement(new PlaySound());
-      availableModel.addElement(new MovementMarkable());
-      availableModel.addElement(new Footprint());
-      availableModel.addElement(new AreaOfEffect());
-      availableModel.addElement(new SubMenu());
-      availableModel.addElement(new MenuSeparator());
-      availableModel.addElement(new RestrictCommands());
-      availableModel.addElement(new Restricted());
-      availableModel.addElement(new Marker());
-      availableModel.addElement(new DynamicProperty());
-      availableModel.addElement(new CalculatedProperty());
-      availableModel.addElement(new SetGlobalProperty());
-      availableModel.addElement(new Deselect());
+      //addElement(new BasicPiece()); // Not needed since you can never add it
+      addElement(new Delete());
+      addElement(new Clone());
+      addElement(new Embellishment());
+      addElement(new UsePrototype());
+      addElement(new Labeler());
+      addElement(new ReportState());
+      addElement(new TriggerAction());
+      addElement(new GlobalHotKey());
+      addElement(new ActionButton());
+      addElement(new FreeRotator());
+      addElement(new Pivot());
+      addElement(new Hideable());
+      addElement(new Obscurable());
+      addElement(new SendToLocation());
+      addElement(new CounterGlobalKeyCommand());
+      addElement(new Translate());
+      addElement(new ReturnToDeck());
+      addElement(new Immobilized());
+      addElement(new PropertySheet());
+      addElement(new TableInfo());
+      addElement(new PlaceMarker());
+      addElement(new Replace());
+      addElement(new NonRectangular());
+      addElement(new PlaySound());
+      addElement(new MovementMarkable());
+      addElement(new Footprint());
+      addElement(new AreaOfEffect());
+      addElement(new SubMenu());
+      addElement(new MenuSeparator());
+      addElement(new RestrictCommands());
+      addElement(new Restricted());
+      addElement(new Marker());
+      addElement(new DynamicProperty());
+      addElement(new CalculatedProperty());
+      addElement(new SetGlobalProperty());
+      addElement(new Deselect());
+
+      // Generate a model sorted by description, in the current users language
+      buildAlphaModel();
+
+      availableModel = classicModel;
     }
+  }
+
+  private static void buildAlphaModel() {
+    alphaModel = new DefaultListModel<>();
+
+    for (final GamePiece piece : alphaMap.values()) {
+      alphaModel.addElement(piece);
+    }
+
+  }
+
+  /**
+   * Add an additional definition to the list of available traits.
+   * Add to the bottom of the classic list
+   * Regenerate the Alpha list
+   * reset the model depending on the sort setting
+   * @param piece New Definition
+   */
+  private static void addAdditionalElement(GamePiece piece) {
+    initDefinitions();
+    addElement(piece);
+    buildAlphaModel();
   }
 
   /**
@@ -147,8 +220,15 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * @param definition GamePiece definition to add
    */
   public static void addDefinition(GamePiece definition) {
-    initDefinitions();
-    availableModel.addElement(definition);
+    addAdditionalElement(definition);
+  }
+
+  public static Boolean getSorted() {
+    return sorted;
+  }
+
+  public static void setSorted(Boolean sorted) {
+    PieceDefiner.sorted = sorted;
   }
 
   public void setPiece(GamePiece piece) {
@@ -168,7 +248,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       if (!contains) {
         try {
-          availableModel.addElement((GamePiece) pieceClass.getConstructor().newInstance());
+          addAdditionalElement((GamePiece) pieceClass.getConstructor().newInstance());
+          setSortOrder();
         }
         catch (Throwable t) {
           ReflectionUtils.handleNewInstanceFailure(t, pieceClass);
@@ -180,7 +261,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     inUseModel.insertElementAt(piece == null ? new BasicPiece() : piece, 0);
     inUseList.setSelectedIndex(0);
-    inUseList.setVisibleRowCount(availableModel.size());
 
     refresh();
   }
@@ -220,14 +300,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private void initComponents() {
     setLayout(new MigLayout("ins panel", "[grow,fill]")); // NON-NLS
 
-    final JPanel controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:300:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
+    final JPanel controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
 
-    slotPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
+    final JPanel slotPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
     slotPanel.add(slot.getComponent());
     controls.add(slotPanel, "span 4,center,grow,wrap"); // NON-NLS
 
+    final ListTransferHandler transferHandler = new ListTransferHandler(this);
+
     final JPanel availablePanel = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
     availableList = new JList<>();
+    availableList.setName(AVAILABLE);
+    availableList.setDragEnabled(true);
+    availableList.setTransferHandler(transferHandler);
     helpButton = new JButton();
     final JButton importButton = new JButton();
 
@@ -237,13 +322,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     final JPanel inUsePanel = new JPanel();
     inUseList = new JList<>();
+    inUseList.setName(INUSE);
+    inUseList.addKeyListener(new ListKeyAdapter(this));
+    inUseList.setDragEnabled(true);
+    inUseList.setDropMode(DropMode.INSERT);
+    inUseList.setTransferHandler(transferHandler);
     propsButton = new JButton();
-
-    final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
-    moveUpButton = new JButton();
-    moveDownButton = new JButton();
-    copyButton = new JButton();
-    pasteButton = new JButton();
 
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -261,11 +345,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
     availablePanel.add(availableScroll, "grow"); // NON-NLS
 
-    final JPanel availableButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push")); // NON-NLS
+    final JPanel availableButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
     helpButton.setText(Resources.getString("General.help"));
     helpButton.addActionListener(evt -> showHelpForPiece());
-    availableButtonPanel.add(helpButton);
+
 
     importButton.setText(Resources.getString("General.import"));
     importButton.addActionListener(evt -> {
@@ -274,74 +358,28 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       );
       importPiece(className);
     });
+
     availableButtonPanel.add(importButton);
+    availableButtonPanel.add(helpButton);
     controls.add(availablePanel, "grow"); // NON-NLS
 
     addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1")); // NON-NLS
 
-    //addButton.setText(Resources.getString("General.add") + " ->");
     addButton.setIcon(IconFactory.getIcon("go-next", IconFamily.MEDIUM)); // NON-NLS
-    addButton.addActionListener(evt -> {
-      final Object selected = availableList.getSelectedValue();
-      if (selected instanceof Decorator) {
-        if (inUseModel.getSize() > 0) {
-          final Decorator c = (Decorator) selected;
-          addTrait(c);
-          if (inUseModel.lastElement().getClass() == c.getClass()) {
-            if (! edit(inUseModel.size() - 1)) {
-              // Add was cancelled
-              if (!inUseModel.isEmpty())
-                removeTrait(inUseModel.size() - 1);
-            }
-          }
-        }
-      }
-      else if (selected != null && inUseModel.getSize() == 0) {
-        GamePiece p = null;
-        try {
-          p = (GamePiece) selected.getClass().getConstructor().newInstance();
-        }
-        catch (Throwable t) {
-          ReflectionUtils.handleNewInstanceFailure(t, selected.getClass());
-        }
-
-        if (p != null) {
-          setPiece(p);
-          if (inUseModel.getSize() > 0) {
-            if (! edit(0)) {
-              // Add was cancelled
-              removeTrait(0);
-            }
-          }
-        }
-      }
-    });
-    //addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    addButton.addActionListener(evt -> doAdd());
     addRemovePanel.add(addButton);
 
-    // removeButton.setText("<- " + Resources.getString("General.remove"));
     removeButton.setIcon(IconFactory.getIcon("go-previous", IconFamily.MEDIUM)); // NON-NLS
-    removeButton.addActionListener(evt -> {
-      final int index = inUseList.getSelectedIndex();
-      if (index >= 0) {
-        removeTrait(index);
-        if (inUseModel.getSize() > 0) {
-          inUseList.setSelectedIndex(
-            Math.min(inUseModel.getSize() - 1, index));
-        }
-      }
-    });
-    //removeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    removeButton.addActionListener(evt -> doRemove());
     addRemovePanel.add(removeButton);
 
-    //pieceIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(pieceIdLabel, "center"); // NON-NLS
 
     controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
     inUsePanel.setLayout(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
 
-    inUseList.setVisibleRowCount(availableModel.size());
+    //inUseList.setVisibleRowCount(availableModel.size());
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     inUseList.setCellRenderer(r);
@@ -381,21 +419,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     inUsePanel.add(inUseScroll, "grow"); // NON-NLS
 
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
-    copyButton.setText(Resources.getString("Editor.copy"));
-    copyButton.addActionListener(evt -> {
-      pasteButton.setEnabled(true);
-      final int index = inUseList.getSelectedIndex();
-      clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
-    });
+    copyButton = new JButton(Resources.getString("Editor.copy"));
+    copyButton.addActionListener(evt -> doCopy());
     inUseButtonPanel.add(copyButton);
 
-    pasteButton.setText(Resources.getString("Editor.paste"));
+    pasteButton = new JButton(Resources.getString("Editor.paste"));
     pasteButton.setEnabled(clipBoard != null);
-    pasteButton.addActionListener(evt -> {
-      if (clipBoard != null) {
-        paste();
-      }
-    });
+    pasteButton.addActionListener(evt -> doPaste());
     inUseButtonPanel.add(pasteButton);
 
     propsButton.setText(Resources.getString("Editor.properties"));
@@ -410,6 +440,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     controls.add(inUsePanel, "grow"); // NON-NLS
 
+    final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
+
     moveTopButton = new JButton(IconFactory.getIcon("go-top", IconFamily.MEDIUM)); // NON-NLS
     moveTopButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
@@ -419,8 +451,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     moveUpDownPanel.add(moveTopButton, "grow"); // NON-NLS
 
-    // moveUpButton.setText(Resources.getString("Editor.PieceDefiner.move_up"));
-    moveUpButton.setIcon(IconFactory.getIcon("go-up", IconFamily.MEDIUM)); // NON-NLS
+    moveUpButton = new JButton(IconFactory.getIcon("go-up", IconFamily.MEDIUM)); // NON-NLS
     moveUpButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
@@ -429,9 +460,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     moveUpDownPanel.add(moveUpButton, "grow"); // NON-NLS
 
-
-    // moveDownButton.setText(Resources.getString("Editor.PieceDefiner.move_down"));
-    moveDownButton.setIcon(IconFactory.getIcon("go-down", IconFamily.MEDIUM)); // NON-NLS
+    moveDownButton = new JButton(IconFactory.getIcon("go-down", IconFamily.MEDIUM)); // NON-NLS
     moveDownButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
@@ -457,6 +486,96 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     add(controls, "grow"); // NON-NLS
 
+    updateSortOrder();
+
+    final Dimension s = Toolkit.getDefaultToolkit().getScreenSize();
+    setMaximumSize(new Dimension((int) s.getWidth() - 100, (int) s.getHeight() - 200));
+  }
+
+  private void doCopy() {
+    final int index = inUseList.getSelectedIndex();
+    if (index >= 0) {
+      pasteButton.setEnabled(true);
+      clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
+    }
+  }
+
+  private void doPaste() {
+    if (clipBoard != null) {
+      paste();
+    }
+  }
+
+  private void doRemove() {
+    final int index = inUseList.getSelectedIndex();
+    if (index >= 0) {
+      removeTrait(index);
+      if (inUseModel.getSize() > 0) {
+        inUseList.setSelectedIndex(Math.min(inUseModel.getSize() - 1, index));
+      }
+    }
+  }
+
+
+  private void doAdd() {
+    doAdd(availableList.getSelectedIndex(), inUseList.getSelectedIndex() < 0 ? inUseList.getModel().getSize() : inUseList.getSelectedIndex());
+  }
+
+  private void doAdd(int sourceIndex, int insertIndex) {
+
+    final Object selected = availableModel.getElementAt(sourceIndex);
+    if (selected instanceof Decorator) {
+      if (inUseModel.getSize() > 0) {
+        final Decorator c = (Decorator) selected;
+        addTrait(c, insertIndex);
+        if (inUseModel.getElementAt(insertIndex + 1).getClass() == c.getClass()) {
+          final int previousSelect = inUseList.getSelectedIndex();
+          if (!edit(insertIndex + 1)) {
+            // Add was cancelled
+            if (!inUseModel.isEmpty()) {
+              removeTrait(insertIndex + 1);
+              inUseList.setSelectedIndex(Math.min(previousSelect, inUseModel.getSize()) - 1);
+            }
+          }
+        }
+      }
+    }
+    else if (selected != null && inUseModel.getSize() == 0) {
+      GamePiece p = null;
+      try {
+        p = (GamePiece) selected.getClass().getConstructor().newInstance();
+      }
+      catch (Throwable t) {
+        ReflectionUtils.handleNewInstanceFailure(t, selected.getClass());
+      }
+
+      if (p != null) {
+        setPiece(p);
+        if (inUseModel.getSize() > 0) {
+          if (!edit(0)) {
+            // Add was cancelled
+            removeTrait(0);
+          }
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Change Sort order by swapping models over
+   */
+  protected void updateSortOrder() {
+    setSorted(!getSorted());
+    setSortOrder();
+  }
+
+  protected void setSortOrder() {
+    final int selectedIndex = availableList.getSelectedIndex();
+    availableModel = getSorted() ? classicModel : alphaModel;
+    availableList.setModel(availableModel);
+    availableList.setSelectedIndex(selectedIndex);
+    refresh();
   }
 
   protected void paste() {
@@ -464,49 +583,20 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     if (c instanceof PlaceMarker) {
       ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
     }
+    final int selectedIndex = inUseList.getSelectedIndex();
     c.setInner(inUseModel.lastElement());
     inUseModel.addElement(c);
     c.mySetState(clipBoard.getState());
+    moveDecorator(inUseModel.size() - 1, selectedIndex + 1);
     refresh();
   }
 
   protected void moveDecoratorDown(int index) {
-    moveDecorator(index, index + 1);
-//    final GamePiece selm1 = inUseModel.elementAt(index - 1);
-//    final Decorator sel = (Decorator) inUseModel.elementAt(index);
-//    final Decorator selp1 = (Decorator) inUseModel.elementAt(index + 1);
-//    final Decorator selp2 = index < inUseModel.size() - 2 ? (Decorator) inUseModel.elementAt(index + 2) : null;
-//    selp1.setInner(selm1);
-//    sel.setInner(selp1);
-//    if (selp2 != null) {
-//      selp2.setInner(sel);
-//    }
-//    inUseModel.setElementAt(selp1, index);
-//    inUseModel.setElementAt(sel, index + 1);
-//    inUseModel.lastElement().setProperty(Properties.OUTER, null);
-//    inUseList.setSelectedIndex(index + 1);
-//    refresh();
-//    setChanged(true);
+    moveDecorator(index, index + 2); // Note +2, not +1 because moveDecorator subtracts 1 to take account of entries moving up
   }
 
   protected void moveDecoratorUp(int index) {
     moveDecorator(index, index - 1);
-//    final GamePiece selm2 = inUseModel.elementAt(index - 2);
-//    final Decorator sel = (Decorator) inUseModel.elementAt(index);
-//    final Decorator selm1 = (Decorator) inUseModel.elementAt(index - 1);
-//    final Decorator selp1 = index < inUseModel.size() - 1 ?
-//      (Decorator) inUseModel.elementAt(index + 1) : null;
-//    sel.setInner(selm2);
-//    selm1.setInner(sel);
-//    if (selp1 != null) {
-//      selp1.setInner(selm1);
-//    }
-//    inUseModel.setElementAt(selm1, index);
-//    inUseModel.setElementAt(sel, index - 1);
-//    inUseModel.lastElement().setProperty(Properties.OUTER, null);
-//    inUseList.setSelectedIndex(index - 1);
-//    refresh();
-//    setChanged(true);
   }
 
   protected void moveDecoratorTop(int index) {
@@ -514,7 +604,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void moveDecoratorBottom(int index) {
-    moveDecorator(index, inUseModel.size() - 1);
+    moveDecorator(index, inUseModel.size());
   }
 
   /**
@@ -525,17 +615,32 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    */
   protected void moveDecorator(int fromIndex, int toIndex) {
 
+    // Can't move anything above BasicPiece
+    if (inUseModel.size() > 0) {
+      if (inUseModel.getElementAt(0) instanceof BasicPiece && toIndex == 0) {
+        return;
+      }
+    }
+
+    if (toIndex == fromIndex) {
+      inUseList.setSelectedIndex(toIndex);
+      return;
+    }
+
     // Remove the piece from it's current position
     final GamePiece piece = removeDecorator(fromIndex);
 
-    // Insert it at the new position
-    insertDecorator(toIndex, piece);
+    // Insert it at the new position.
+    // The piece has already been removed from its old location, so if we are moving down,
+    // substract one from the toIndex as the list entries below us will have shifted up.
+    final int actualToIndex = toIndex > fromIndex ? toIndex - 1 : toIndex;
+    insertDecorator(actualToIndex, piece);
 
     // Make the sure the outermost trait knows it is outermost
     inUseModel.lastElement().setProperty(Properties.OUTER, null);
 
     // Select the newly inserted piece
-    inUseList.setSelectedIndex(toIndex);
+    inUseList.setSelectedIndex(actualToIndex);
 
     // Tidy up
     refresh();
@@ -604,7 +709,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     if (o == null) return;
 
     if (o instanceof GamePiece) {
-      availableModel.addElement((GamePiece) o);
+      addAdditionalElement((GamePiece) o);
+      setSortOrder();
     }
     else {
       ErrorDialog.show("Error.not_a_gamepiece", className); // NON-NLS Error Dialog Key
@@ -721,6 +827,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void addTrait(Decorator c) {
+    addTrait(c, inUseList.getSelectedIndex());
+  }
+
+  private void addTrait(Decorator c, int insertIndex) {
     final Class<? extends Decorator> cClass = c.getClass();
     Decorator d = null;
     try {
@@ -736,24 +846,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
       d.setInner(inUseModel.lastElement());
       inUseModel.addElement(d);
+      moveDecorator(inUseModel.size() - 1, insertIndex == -1 ? inUseModel.size() : insertIndex + 1);
       setChanged(true);
     }
 
     refresh();
   }
-
-  protected JList<GamePiece> availableList;
-  private JButton helpButton;
-  private JButton addButton;
-  private JButton removeButton;
-  private JList<GamePiece> inUseList;
-  private JButton propsButton;
-  private JButton moveUpButton;
-  private JButton moveDownButton;
-  private JButton moveTopButton;
-  private JButton moveBottomButton;
-  protected JButton copyButton;
-  protected JButton pasteButton;
 
   private static class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
@@ -793,4 +891,165 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       return state;
     }
   }
+
+  static class ListTransferHandler extends TransferHandler {
+
+    private static final long serialVersionUID = 1;
+
+    private final PieceDefiner definer;
+    private int fromIndex;
+    private String fromList;
+
+
+    public ListTransferHandler(PieceDefiner definer) {
+      super();
+      this.definer = definer;
+    }
+
+    public PieceDefiner getDefiner() {
+      return definer;
+    }
+
+    public int getFromIndex() {
+      return fromIndex;
+    }
+
+    public void setFromIndex(int fromIndex) {
+      this.fromIndex = fromIndex;
+    }
+
+    public String getFromList() {
+      return fromList;
+    }
+
+    public void setFromList(String fromList) {
+      this.fromList = fromList;
+    }
+
+    /**
+     * Called to see if we can drop our package at this point.
+     */
+    @Override
+    public boolean canImport(TransferHandler.TransferSupport info) {
+      // No Drop allowed in Available list
+      if (AVAILABLE.equals((info.getComponent()).getName())) {
+        return false;
+      }
+      else {
+        // No drop allowed above BasicPiece in InUseList
+        final JList<GamePiece> list = (JList<GamePiece>) info.getComponent();
+
+        if (list.getModel().getSize() > 0 && list.getModel().getElementAt(0).getClass() == BasicPiece.class && info.getDropLocation().getDropPoint().y < 10) {
+          return false;
+        }
+      }
+      return info.isDataFlavorSupported(DataFlavor.stringFlavor);
+    }
+
+    /**
+     * Called when the drag is started on the selected trait
+     */
+    @Override
+    protected Transferable createTransferable(JComponent c) {
+      final JList<GamePiece> list = (JList<GamePiece>) c;
+      setFromIndex(list.getSelectedIndex());
+      setFromList(list.getName());
+
+      final String description = ((EditablePiece) list.getModel().getElementAt(getFromIndex())).getDescription();
+
+      final Font DRAG_FONT = new Font(Font.DIALOG, Font.BOLD, 12);
+      final JLabel label = new JLabel();
+      label.setFont(DRAG_FONT);
+      label.setText(description);
+      final int w = label.getFontMetrics(DRAG_FONT).stringWidth(description) + 2;
+      final int h = label.getFontMetrics(DRAG_FONT).getHeight() + 2;
+      final BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
+      final Graphics2D g2 = img.createGraphics();
+      g2.setColor(Color.white);
+      g2.fillRect(0, 0, w, h);
+      g2.setColor(Color.black);
+      g2.setFont(DRAG_FONT);
+      g2.drawString(description, 2, h - 5);
+      g2.dispose();
+
+      setDragImage(img);
+      setDragImageOffset(new Point(0, h));
+
+      return new StringSelection("");
+    }
+
+    /**
+     * Move Only
+     */
+    @Override
+    public int getSourceActions(JComponent c) {
+
+      // Dragging fails if nothing selected in source, should never happen
+      if (getFromIndex() < 0) {
+        return TransferHandler.NONE;
+      }
+
+      return TransferHandler.MOVE;
+    }
+
+    /**
+     * Perform the actual import. Called when the drag is dropped.
+     */
+    @Override
+    public boolean importData(TransferHandler.TransferSupport info) {
+      if (!info.isDrop() || ! (info.getComponent() instanceof JList)) {
+        return false;
+      }
+
+      // The index where user wants to drop
+      final int toIndex = ((JList.DropLocation) info.getDropLocation()).getIndex();
+
+      if (toIndex > 0 && toIndex != getFromIndex()) {
+        // If the source list is AVAILABLE, then we need to an Add
+        if (AVAILABLE.equals(getFromList())) {
+          getDefiner().doAdd(getFromIndex(), toIndex - 1);
+        }
+        else {
+          // Ask the Definer to move the piece within the inUse list.
+          getDefiner().moveDecorator(getFromIndex(), toIndex);
+        }
+      }
+
+      return true;
+    }
+  }
+
+  /**
+   * KeyAdapter added to the InUseList. Look for cut/copy/paste and
+   * call the matching buttons to do the work.
+   */
+  static class ListKeyAdapter extends KeyAdapter {
+
+    private final PieceDefiner definer;
+
+    public ListKeyAdapter(PieceDefiner definer) {
+      this.definer = definer;
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+      if (SwingUtils.isModifierKeyDown(e)) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_C :
+          definer.copyButton.doClick();
+          break;
+        case KeyEvent.VK_V :
+          definer.pasteButton.doClick();
+          break;
+        case KeyEvent.VK_X :
+          definer.doCopy();
+          definer.removeButton.doClick();
+          break;
+        default :
+          break;
+        }
+      }
+    }
+  }
 }
+
