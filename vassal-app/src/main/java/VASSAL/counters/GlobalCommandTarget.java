@@ -49,6 +49,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
   protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
   protected Expression targetProperty;         // Name/Key of Fast Match property
   protected Expression targetValue;            // Value to match for that property
+  protected CompareMode targetCompare;         // Comparison mode
 
   private GamePiece curPiece; // Reference piece for "current <place>". NOT encoded into the module, only set and used at time of command execution.
 
@@ -65,6 +66,45 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     MAP,     /** {@link VASSAL.build.module.map.MassKeyCommand} */
     MODULE,  /** {@link VASSAL.build.module.GlobalKeyCommand} */
     DECK     // {@link VASSAL.build.module.map.DeckGlobalKeyCommand}
+  }
+
+  /**
+   * Comparison Modes for property match
+   */
+  public enum CompareMode {
+    EQUALS("=="),
+    NOT_EQUALS("!="),
+    GREATER(">"),
+    GREATER_EQUALS(">="),
+    LESS("<"),
+    LESS_EQUALS("<="),
+    MATCH("=~"),
+    NOT_MATCH("!~");
+
+    String symbol;
+
+    CompareMode(String symbol) {
+      this.symbol = symbol;
+    }
+
+    public String getSymbol() {
+      return symbol;
+    }
+
+    public static CompareMode whichSymbol(String symbol) {
+      for (CompareMode mode : GlobalCommandTarget.CompareMode.values()) {
+        if (mode.getSymbol().equals(symbol)) {
+          return mode;
+        }
+      }
+      return EQUALS;
+    }
+
+    public static String[] getSymbols() {
+      return Arrays.stream(values())
+        .map(GlobalCommandTarget.CompareMode::getSymbol)
+        .toArray(String[]::new);
+    }
   }
 
   /**
@@ -131,6 +171,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     targetValue    = Expression.createExpression("");
     targetX        = Expression.createExpression("0");
     targetY        = Expression.createExpression("0");
+    targetCompare  = CompareMode.EQUALS;
   }
 
   public GlobalCommandTarget(String s) {
@@ -155,7 +196,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
       .append(targetDeck.getExpression())
       .append(fastMatchProperty)
       .append(targetProperty.getExpression())
-      .append(targetValue.getExpression());
+      .append(targetValue.getExpression())
+      .append(targetCompare.name());
 
     return se.getValue();
   }
@@ -169,7 +211,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     final String source = sd.nextToken("");
     gkcType = source.isEmpty() ? GKCtype.MAP : GKCtype.valueOf(source);
     fastMatchLocation = sd.nextBoolean(false);
-    final String type = sd.nextToken(Target.MAP.toString());
+    final String type = sd.nextToken(Target.MAP.name());
     targetType = type.isEmpty() ? Target.MAP : Target.valueOf(type);
     targetMap = Expression.createExpression(sd.nextToken(""));
     targetBoard = Expression.createExpression(sd.nextToken(""));
@@ -181,6 +223,8 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     fastMatchProperty = sd.nextBoolean(false);
     targetProperty = Expression.createExpression(sd.nextToken(""));
     targetValue = Expression.createExpression(sd.nextToken(""));
+    final String compare = sd.nextToken(CompareMode.EQUALS.name());
+    targetCompare = compare.isEmpty() ? CompareMode.EQUALS : CompareMode.valueOf(compare);
   }
 
   /**
@@ -316,6 +360,18 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public void setTargetValue(String targetValue) {
     this.targetValue = Expression.createExpression(targetValue);
+  }
+
+  public CompareMode getTargetCompare() {
+    return targetCompare;
+  }
+
+  public void setTargetCompare(CompareMode targetCompare) {
+    this.targetCompare = targetCompare;
+  }
+
+  public void setTargetCompare(String targetCompare) {
+    this.targetCompare = CompareMode.valueOf(targetCompare);
   }
 
   public Expression getTargetX() {

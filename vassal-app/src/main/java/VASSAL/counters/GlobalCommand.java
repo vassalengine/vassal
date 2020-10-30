@@ -37,6 +37,7 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -64,6 +65,11 @@ public class GlobalCommand {
 
   private String fastProperty = "";     // Used during property Fast Match to hold *evaluated* expressions
   private String fastValue = "";        // Used during property Fast Match to hold *evaluated* expressions
+  private boolean fastIsNumber = false; // Used during property Fast Match to remember if value is numeric
+  private double fastNumber = 0;        // Used during property Fast Match to hold evaluated numerical value
+  private Pattern fastPattern;          // Fast Match regex pattern
+
+  private final Pattern fastCheckNumber = Pattern.compile("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
 
   public GlobalCommand(Loopable l) {
     this (l, null);
@@ -122,7 +128,65 @@ public class GlobalCommand {
   private boolean passesPropertyFastMatch(GamePiece gamePiece) {
     if (!target.fastMatchProperty || fastProperty.isEmpty()) return true;
     final String value = (String) gamePiece.getProperty(fastProperty);
-    return fastValue.equals(value);
+
+    // Intentionally favors the default "Equals" as first to process
+    switch (target.targetCompare) {
+    case EQUALS:
+      return fastValue.equals(value);
+    case NOT_EQUALS:
+      return !fastValue.equals(value);
+    }
+
+    // The non-equals-y ones have to deal with null
+    if (value == null) {
+      return false;
+    }
+
+    switch (target.targetCompare) {
+    case MATCH:
+      return fastPattern.matcher(value).matches();
+    case NOT_MATCH:
+      return !fastPattern.matcher(value).matches();
+    }
+
+    // Lexical comparisons for strings
+    if (!fastIsNumber || !isNumeric(value)) {
+      switch (target.targetCompare) {
+      case GREATER_EQUALS:
+        return value.compareTo(fastValue) >= 0;
+      case GREATER:
+        return value.compareTo(fastValue) > 0;
+      case LESS_EQUALS:
+        return value.compareTo(fastValue) <= 0;
+      case LESS:
+        return value.compareTo(fastValue) < 0;
+      }
+    }
+
+    // Numerical comparisons for numbers
+    final double num = Double.parseDouble(value);
+
+    switch (target.targetCompare) {
+    case GREATER_EQUALS:
+      return num >= fastNumber;
+    case GREATER:
+      return num > fastNumber;
+    case LESS_EQUALS:
+      return num <= fastNumber;
+    case LESS:
+      return num < fastNumber;
+    }
+
+    return false; // Never gets here, but checkStyle doesn't understand that.
+  }
+
+  /**
+   * Need a super-fast (i.e. not dependent on exception-throwing) plan for detecting valid numbers
+   * @param s string to check
+   * @return true if a value number
+   */
+  private boolean isNumeric(String s) {
+    return fastCheckNumber.matcher(s).matches(); //match a number with optional +/- and decimal.
   }
 
   /**
@@ -198,6 +262,21 @@ public class GlobalCommand {
       if (target.fastMatchProperty) {
         fastProperty = target.targetProperty.tryEvaluate(source);
         fastValue    = target.targetValue.tryEvaluate(source);
+        if ((target.targetCompare == GlobalCommandTarget.CompareMode.EQUALS) ||
+            (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_EQUALS)) {
+          fastIsNumber = false;
+          fastNumber   = 0;
+        }
+        else if ((target.targetCompare == GlobalCommandTarget.CompareMode.MATCH) ||
+                 (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_MATCH)) {
+          fastPattern  = Pattern.compile(fastValue);
+          fastIsNumber = false;
+          fastNumber   = 0;
+        }
+        else {
+          fastIsNumber = isNumeric(fastValue);
+          fastNumber = fastIsNumber ? Double.parseDouble(fastValue) : 0;
+        }
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
