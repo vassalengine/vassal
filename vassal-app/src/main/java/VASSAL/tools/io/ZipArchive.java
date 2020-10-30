@@ -454,7 +454,7 @@ public class ZipArchive implements FileArchive {
             e.getMessage()
           ),
           e
-         );
+        );
       }
     }
   }
