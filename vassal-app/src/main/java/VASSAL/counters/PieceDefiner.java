@@ -46,6 +46,7 @@ import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DragSource;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -378,8 +379,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
     inUsePanel.setLayout(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
-
-    //inUseList.setVisibleRowCount(availableModel.size());
+    
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     inUseList.setCellRenderer(r);
@@ -488,8 +488,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     updateSortOrder();
 
+    // Prevent the window opening too tall on smaller screens
     final Dimension s = Toolkit.getDefaultToolkit().getScreenSize();
-    setMaximumSize(new Dimension((int) s.getWidth() - 100, (int) s.getHeight() - 200));
+    setMaximumSize(new Dimension((int) s.getWidth() - 100, (int) s.getHeight() - 100));
   }
 
   private void doCopy() {
@@ -955,8 +956,15 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       setFromIndex(list.getSelectedIndex());
       setFromList(list.getName());
 
-      final String description = ((EditablePiece) list.getModel().getElementAt(getFromIndex())).getDescription();
+      // Set a DragImage showing the trait description on systems that support it (Windows)
+      if (DragSource.isDragImageSupported()) {
+        setDragImage(((EditablePiece) list.getModel().getElementAt(getFromIndex())).getDescription());
+      }
 
+      return new StringSelection("");
+    }
+
+    private void setDragImage(String description) {
       final Font DRAG_FONT = new Font(Font.DIALOG, Font.BOLD, 12);
       final JLabel label = new JLabel();
       label.setFont(DRAG_FONT);
@@ -974,10 +982,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       setDragImage(img);
       setDragImageOffset(new Point(0, h));
-
-      return new StringSelection("");
     }
-
     /**
      * Move Only
      */
