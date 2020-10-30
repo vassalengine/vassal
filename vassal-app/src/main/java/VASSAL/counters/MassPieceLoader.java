@@ -27,7 +27,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SequenceEncoder;
@@ -92,9 +92,9 @@ public class MassPieceLoader {
   private final List<Emb> layers = new ArrayList<>();
   protected MassLoaderDialog dialog;
   private static final DirectoryConfigurer dirConfig = new DirectoryConfigurer(null,
-      "Image Directory: ");
+      Resources.getString("Editor.MassPieceLoader.image_directory") + ": ");
   private static final BooleanConfigurer basicConfig = new BooleanConfigurer(null,
-      "Do not load images into Basic Piece traits?", Boolean.FALSE);
+    Resources.getString("Editor.MassPieceLoader.no_basic_piece"), Boolean.FALSE);
   private static final MassPieceDefiner definer = new MassPieceDefiner();
 
   public MassPieceLoader(ConfigureTree tree, Configurable target) {
@@ -126,7 +126,7 @@ public class MassPieceLoader {
     public MassLoaderDialog() {
       super(configureTree.getFrame());
       setModal(true);
-      setTitle("Load Multiple Pieces");
+      setTitle(Resources.getString("Editor.MassPieceLoader.load_multiple"));
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setPreferredSize(new Dimension(800, 600));
 
@@ -145,7 +145,7 @@ public class MassPieceLoader {
       add(basicConfig.getControls());
 
       defineDialog = new DefineDialog(this);
-      final JButton defineButton = new JButton("Edit Piece Template");
+      final JButton defineButton = new JButton(Resources.getString("Editor.MassPieceLoader.edit_piece_template"));
       defineButton.addActionListener(e -> {
         final GamePiece savePiece = definer.getPiece();
         defineDialog.setVisible(true);
@@ -176,7 +176,7 @@ public class MassPieceLoader {
       final JButton helpButton = new JButton(Resources
           .getString(Resources.HELP));
       helpButton.addActionListener(e -> {
-        final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.html");
+        final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.html"); //NON-NLS
         BrowserSupport.openURL(h.getContents().toString());
       });
       buttonBox.add(helpButton);
@@ -210,13 +210,9 @@ public class MassPieceLoader {
 
       // Do they really want to do this?
       if (pieceCount > 0) {
-        final String message = "This will load " + pieceCount + " piece"
-            + (pieceCount > 1 ? "s" : "") + " into component "
-            + target.getConfigureName()
-            + ". There is no UNDO option for this process. "
-            + "Are you sure you wish to continue with the load?";
-        final int result = Dialogs.showConfirmDialog(null, "Confirm Load",
-            "Confirm Load", message, JOptionPane.WARNING_MESSAGE,
+        final String message = Resources.getString("Editor.MassPieceLoader.this_will_load", pieceCount, target.getConfigureName());
+        final int result = Dialogs.showConfirmDialog(null, Resources.getString("Editor.MassPieceLoader.confirm_load"),
+          Resources.getString("Editor.MassPieceLoader.confirm_load"), message, JOptionPane.WARNING_MESSAGE,
             JOptionPane.YES_NO_CANCEL_OPTION);
         if (result == 1) {
           cancel();
@@ -371,7 +367,7 @@ public class MassPieceLoader {
         c.setEnabled(!node.isSkip());
         if (node instanceof PieceNode) {
           final String image = node.getImageName();
-          final String i = "<html><img src=\"file:/" + loadDirectory.getAbsolutePath() + "/" + image + "\"></html>";
+          final String i = "<html><img src=\"file:/" + loadDirectory.getAbsolutePath() + "/" + image + "\"></html>"; //NON-NLS
           c.setToolTipText(i);
         }
         return c;
@@ -609,7 +605,7 @@ public class MassPieceLoader {
     public DefineDialog(JDialog owner) {
       setModal(true);
       setVisible(false);
-      setTitle("Multiple Piece Template");
+      setTitle(Resources.getString("Editor.MassPieceLoader.multiple_piece_template"));
       setLocationRelativeTo(owner);
 
       final Box box = Box.createVerticalBox();
@@ -676,15 +672,15 @@ public class MassPieceLoader {
     public String getColumnName(int col) {
       switch (col) {
       case DESC_COL:
-        return "Item";
+        return Resources.getString("Editor.MassPieceLoader.item");
       case NAME_COL:
-        return "Piece Name";
+        return Resources.getString("Editor.MassPieceLoader.piece_name");
       case IMAGE_COL:
-        return "Image File";
+        return Resources.getString("Editor.MassPieceLoader.image_name");
       case SKIP_COL:
-        return "Skip?";
+        return Resources.getString("Editor.MassPieceLoader.skip");
       case COPIES_COL:
-        return "Copies";
+        return Resources.getString("Editor.MassPieceLoader.copies");
       }
       return "";
     }
@@ -842,7 +838,7 @@ public class MassPieceLoader {
     }
 
     public String getDescription() {
-      return "Root";
+      return Resources.getString("Editor.MassPieceLoader.root");
     }
 
     @Override
@@ -899,7 +895,7 @@ public class MassPieceLoader {
 
     @Override
     public String getDescription() {
-      return "Piece";
+      return Resources.getString("Editor.MassPieceLoader.piece_desc");
     }
 
     @Override
@@ -925,7 +921,7 @@ public class MassPieceLoader {
 
     @Override
     public String getDescription() {
-      return "Layer" + (name.length() > 0 ? " [" + name + "]" : "");
+      return Resources.getString("Editor.MassPieceLoader.layer_desc") + (name.length() > 0 ? " [" + name + "]" : "");
     }
 
     @Override
@@ -948,7 +944,7 @@ public class MassPieceLoader {
 
     @Override
     public String getDescription() {
-      return "Level " + (levelNumber + 1)
+      return Resources.getString("Editor.MassPieceLoader.level") + " " + (levelNumber + 1)
           + (name.length() > 0 ? " [" + name + "]" : "");
     }
 
@@ -1129,7 +1125,7 @@ public class MassPieceLoader {
 
     @Override
     public void addEntry() {
-      final String entry = "Image " + (imageListElements.size() + 1);
+      final String entry = Resources.getString("Editor.MassPieceLoader.image") + " " + (imageListElements.size() + 1);
       imageListElements.addElement(entry);
       final Entry pick = new Entry();
       multiPanel.add(entry, pick);
@@ -1164,27 +1160,35 @@ public class MassPieceLoader {
     }
   }
 
-  protected static final String ENDS_WITH = "ends with";
-  protected static final String INCLUDES = "includes";
-  protected static final String MATCHES = "matches";
-  protected static final String EQUALS = "same as";
-  protected static final String BASE_IMAGE = "use Base Image";
+  protected static final String ENDS_WITH = "ends with"; //NON-NLS (really)
+  protected static final String INCLUDES = "includes"; //NON-NLS (really)
+  protected static final String MATCHES = "matches"; //NON-NLS (really)
+  protected static final String EQUALS = "same as"; //NON-NLS (really)
+  protected static final String BASE_IMAGE = "use Base Image"; //NON-NLS (really)
 
   static class Entry extends JPanel {
     private static final long serialVersionUID = 1L;
-    private final StringEnumConfigurer typeConfig;
+    private final TranslatingStringEnumConfigurer typeConfig;
     private final StringConfigurer nameConfig;
-    private final JLabel warning = new JLabel("Warning - Image suffix included");
+    private final JLabel warning = new JLabel(Resources.getString("Editor.MassPieceLoader.warning_suffix"));
 
     public Entry() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
       add(new JLabel(
-          "Do NOT include image suffix (eg. .gif, .png) in level match strings"));
+        Resources.getString("Editor.MassPieceLoader.do_not_suffix")));
 
       final Box entry = Box.createHorizontalBox();
-      entry.add(new JLabel("Image name "));
-      typeConfig = new StringEnumConfigurer(null, "", new String[] {
-        ENDS_WITH, INCLUDES, MATCHES, EQUALS, BASE_IMAGE });
+      entry.add(new JLabel(Resources.getString("Editor.MassPieceLoader.image_name") + " "));
+      typeConfig = new TranslatingStringEnumConfigurer(null, "",
+        new String[] { ENDS_WITH, INCLUDES, MATCHES, EQUALS, BASE_IMAGE },
+        new String[] {
+          "Editor.MassPieceLoader.ends_with",
+          "Editor.MassPieceLoader.includes",
+          "Editor.MassPieceLoader.matches",
+          "Editor.MassPieceLoader.same_as",
+          "Editor.MassPieceLoader.base_image"
+        }
+        );
       entry.add(typeConfig.getControls());
       nameConfig = new StringConfigurer(null, "");
       entry.add(nameConfig.getControls());
