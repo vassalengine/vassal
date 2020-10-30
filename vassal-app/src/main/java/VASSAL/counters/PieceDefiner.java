@@ -379,7 +379,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
     inUsePanel.setLayout(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
-    
+
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     inUseList.setCellRenderer(r);
