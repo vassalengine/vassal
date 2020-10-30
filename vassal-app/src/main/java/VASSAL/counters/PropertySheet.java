@@ -164,7 +164,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   public PropertySheet() {
     // format is propertysheet;menu-name;keystroke;commitStyle;backgroundRed;backgroundGreen;backgroundBlue
-    this(ID + ";" + Resources.getString("Editor.PropertySheet.component_type") + ";P;;;;", null); //NON-NLS
+    this(ID + ";" + Resources.getString("Editor.PropertySheet.default_command") + ";P;;;;", null); //NON-NLS
   }
 
 
@@ -610,7 +610,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.PropertySheet.component_type");
+    return Resources.getString("Editor.PropertySheet.trait_description");
   }
 
   @Override
@@ -644,7 +644,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       c.gridx = 0;
       c.weightx = 0.0;
       c.fill = GridBagConstraints.NONE;
-      add(new JLabel("Keystroke:"), c);
+      add(new JLabel(Resources.getString("Editor.keyboard_command") + ":  "), c);
 
       ++c.gridx;
       final NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, "", value);
@@ -873,7 +873,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     final String[] menuNames = new String[items.size() + 1];
     final String[] descriptions = new String[items.size() + 1];
     menuNames[0]  = menuName;
-    descriptions[0] = Resources.getString("Editor.PropertySheet.component_type");
+    descriptions[0] = Resources.getString("Editor.PropertySheet.property_sheet_command");
     int j = 1;
     for (final String s : items) {
       menuNames[j] = s;

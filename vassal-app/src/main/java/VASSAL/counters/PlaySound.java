@@ -148,7 +148,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.PlaySound.component_type") + ((format.getFormat().length() == 0) ? "" : " - " + format.getFormat());
+    return buildDescription("Editor.PlaySound.trait_description", format.getFormat());
   }
 
   @Override
@@ -156,7 +156,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     format = new FormattedString(st.nextToken(""));
-    menuText = st.nextToken(Resources.getString("Editor.PlaySound.component_type"));
+    menuText = st.nextToken(Resources.getString("Editor.PlaySound.default_command"));
     stroke = st.nextNamedKeyStroke('P');
     sendToOthers = st.nextBoolean(false);
     commands = null;
@@ -174,7 +174,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(menuText, Resources.getString("Editor.PlaySound.component_type"));
+    return getI18nData(menuText, Resources.getString("Editor.PlaySound.play_sound_command"));
   }
 
   public static class Ed implements PieceEditor {
