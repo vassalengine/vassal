@@ -258,9 +258,25 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{FIRST, SEP, H_TYPE, H_LEADING, H_OFF, H_DESCEND,
-                        V_TYPE, V_LEADING, V_OFF, V_DESCEND, LOCATION_FORMAT, VISIBLE, FONT_SIZE, COLOR,
-                        ROTATE_TEXT, H_DRAW_OFF, V_DRAW_OFF};
+    return new String[]{
+      FIRST,
+      SEP,
+      H_TYPE,
+      H_LEADING,
+      H_OFF,
+      H_DESCEND,
+      V_TYPE,
+      V_LEADING,
+      V_OFF,
+      V_DESCEND,
+      LOCATION_FORMAT,
+      VISIBLE,
+      FONT_SIZE,
+      COLOR,
+      ROTATE_TEXT,
+      H_DRAW_OFF,
+      V_DRAW_OFF
+    };
   }
 
   @Override

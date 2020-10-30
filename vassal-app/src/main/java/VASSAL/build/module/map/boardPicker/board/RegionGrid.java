@@ -417,7 +417,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     boolean reversed)
   {
     for (final Region r : regionList.values()) {
-      r.draw(g, bounds, visibleRect, scale, reversed)
+      r.draw(g, bounds, visibleRect, scale, reversed);
     }
   }
 

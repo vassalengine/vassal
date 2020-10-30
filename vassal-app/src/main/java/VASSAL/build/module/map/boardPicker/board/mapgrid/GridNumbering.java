@@ -17,7 +17,9 @@
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 
@@ -28,7 +30,7 @@ public interface GridNumbering {
   public String locationName(Point pt);
   public String localizedLocationName(Point pt);
 
-  public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
+  void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed);
 
   public boolean isVisible();
   public Point getLocation(String location) throws BadCoords;

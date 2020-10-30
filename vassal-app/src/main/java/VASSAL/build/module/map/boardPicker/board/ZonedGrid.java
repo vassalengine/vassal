@@ -219,6 +219,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
       background.draw(g, bounds, visibleRect, scale, reversed);
       g2d.setClip(oldClip);
     }
+
     /*
      * Draw each Zone
      */

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2006 by Brent Easton, Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -78,7 +77,6 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     return new Class<?>[0];
   }
 
-
   @Override
   public void addTo(Buildable b) {
     ((ZonedGrid) b).setZoneHighlighter(this);
@@ -105,7 +103,6 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
 
   @Override
   public void setAttribute(String key, Object val) {
-
   }
 
   @Override
