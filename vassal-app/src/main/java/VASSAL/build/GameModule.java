@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -567,8 +568,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void warn(String s) {
     String s2 = s;
-      s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-        .replaceAll(">", "&gt;"); //$NON-NLS
+    s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
+           .replaceAll(">", "&gt;"); //$NON-NLS
     if (chat == null) {
       deferredChat.add(s2);
     }
@@ -647,9 +648,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
       if (c == null) {
         System.err.println("Failed to decode " + command); //$NON-NLS-1$
+      }
+      return c;
     }
-    return c;
-  }
   }
 
   /**
@@ -722,13 +723,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public void appendToTitle(String s) {
     if (s == null) {
       frame.setTitle(Resources.getString("GameModule.frame_title", getLocalizedGameName()));  //$NON-NLS-1$
-  }
+    }
     else {
       frame.setTitle(frame.getTitle() + s);
-  }
+    }
     for (Map m : getComponentsOf(Map.class)) {
       m.appendToTitle(s);
-  }
+    }
   }
 
   /**
@@ -1103,13 +1104,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
       lastSavedConfiguration = save;
     }
-    catch (IOException e) {
+    catch (FileSystemException e) {
       String[] msgs = e.getLocalizedMessage().split("\n");
-      boolean first = true;
       for (String msg : msgs) {
-        warn((first ? "~" + "<b>" : "") + msg); //BR// Might as well e.g. tell them the name of where the tmp file got written to when replacing vmod fails.
-        first = false;
+        warn(msg); //NON-NLS //BR// Might as well leave them with a chat log record of where the tmp file got written.
       }
+      WriteErrorDialog.reportFileOverwriteFailure(e, "Error.module_overwrite_error"); //NON-NLS
+    }
+    // Something Truly Terrible has happened if we get here.
+    catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
     }
   }

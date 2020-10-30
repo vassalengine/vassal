@@ -29,6 +29,7 @@ import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -422,8 +423,6 @@ public class ZipArchive implements FileArchive {
       // impossible when the source and destination aren't on the same
       // filesystem.
 
-      boolean gotHalfwayDone = false;
-
       try {
         // attempt to copy to the destination
         Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
@@ -444,33 +443,34 @@ public class ZipArchive implements FileArchive {
           }
 
           // Tell where we moved the file to - don't need the obnoxious long paths in this case because they're in same directory.
-          gotHalfwayDone = true;
-          throw new IOException(
+          throw new FileSystemException(
+            dst.toFile().getName(),
+            dst2.toFile().getName(),
             String.format(
               fmt,
               dst.toFile().getName(),
               dst2.toFile().getName(),
               copyException.getMessage()
-            ),
-            copyException
+            )
           );
         }
         catch (IOException didEverythingFail) {
-          // If we got the file at least moved into the right directory (with wrong name), we report that instead of a total failure
-          if (gotHalfwayDone) {
-            throw new IOException(didEverythingFail);
+          if (didEverythingFail instanceof FileSystemException) {
+            // If we picked up a FileSystemException, then it came from the inner loop meaning we at least "got halfway", so
+            // we pass that exception on rather than throwing the "worse" version.
+            throw(didEverythingFail);
           }
-          // all copy attempts failed, so we leave it in the temp directory
-        throw new IOException(
-          String.format(
-            fmt,
+          throw new FileSystemException(
             dst.toFile().getName(),
-            src.toAbsolutePath(),
-              didEverythingFail.getMessage()
-          ),
-            didEverythingFail
-        );
-      }
+            src.toAbsolutePath().toString(),
+            String.format(
+              fmt,
+              dst.toFile().getName(),
+              src.toAbsolutePath().toString(),
+              copyException.getMessage() // Yes we are going to report the message from the FIRST copy exception in this case.
+            )
+          );
+        }
       }
 
       try {

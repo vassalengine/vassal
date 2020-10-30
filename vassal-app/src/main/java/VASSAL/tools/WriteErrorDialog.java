@@ -20,6 +20,7 @@ package VASSAL.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 
 /**
  * @author Joel Uckelman
@@ -37,7 +38,7 @@ public class WriteErrorDialog {
     ErrorDialog.showDetails(
       t,
       ThrowableUtils.getStackTrace(e),
-      "Error.file_write_error",
+      "Error.file_write_error", //NON-NLS
       filename
     );
   }
@@ -65,5 +66,17 @@ public class WriteErrorDialog {
    */
   public static void error(IOException e, File file) {
     error(e, e, file.getPath());
+  }
+
+  /**
+   * These presently come from failure to replace a module file with a new version
+   * @param e
+   */
+  public static void reportFileOverwriteFailure(FileSystemException e, String messageKey) {
+    ErrorDialog.showFileOverwriteFailure(
+      e,
+      ThrowableUtils.getStackTrace(e),
+      messageKey
+    );
   }
 }
