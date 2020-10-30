@@ -547,19 +547,22 @@ public class ZipArchive implements FileArchive {
       }
     }
 
-    // Replace old archive with temp archive
-    moveFile(tmpFile.toPath(), archiveFile.toPath());
-
-    // Delete all temporary files
-    for (Entry e : entries.values()) {
-      if (e != null && e.file != null) {
-        e.file.delete();
-      }
+    try {
+      // Replace old archive with temp archive
+      moveFile(tmpFile.toPath(), archiveFile.toPath());
     }
+    finally {
+      // Delete all temporary files
+      for (Entry e : entries.values()) {
+        if (e != null && e.file != null) {
+          e.file.delete();
+        }
+      }
 
-    closed = true;
-    modified = false;
-    entries.clear();
+      closed = true;
+      modified = false;
+      entries.clear();
+    }
   }
 
   /** {@inheritDoc} */
