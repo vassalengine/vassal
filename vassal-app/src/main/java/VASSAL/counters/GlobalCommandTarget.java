@@ -92,7 +92,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     }
 
     public static CompareMode whichSymbol(String symbol) {
-      for (CompareMode mode : GlobalCommandTarget.CompareMode.values()) {
+      for (final CompareMode mode : GlobalCommandTarget.CompareMode.values()) {
         if (mode.getSymbol().equals(symbol)) {
           return mode;
         }
