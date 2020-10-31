@@ -171,8 +171,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString(Resources.NAME_LABEL),
-      Resources.getString("Editor.GlobalKeyCommand.command"), //$NON-NLS-1$
+      Resources.getString(Resources.MENU_COMMAND_LABEL),
+      Resources.getString("Editor.GlobalKeyCommand.global_key_command"), //$NON-NLS-1$
 
       Resources.getString("Editor.GlobalKeyCommand.pre_select"), // Fast Match parameters (not displayed)
 
@@ -213,6 +213,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
+    if (key.equals(TARGET)) {
+      return () -> false; // No fast match for Deck Global Key Commands
+    }
     return () -> true;
   }
 
@@ -223,7 +226,6 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
         "Editor.GlobalKeyCommand.all_pieces",
         "Editor.GlobalKeyCommand.fixed_number_of_pieces"
       });
-      prompt.setText(Resources.getString("Editor.DeckGlobalKeyCommand.affects"));
     }
   }
 
