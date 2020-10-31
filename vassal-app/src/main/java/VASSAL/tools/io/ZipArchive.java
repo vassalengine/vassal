@@ -47,10 +47,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
-import VASSAL.i18n.Resources;
 import org.apache.commons.io.FilenameUtils;
 
+import VASSAL.i18n.Resources;
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 

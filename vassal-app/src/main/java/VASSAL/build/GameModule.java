@@ -1105,8 +1105,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       lastSavedConfiguration = save;
     }
     catch (FileSystemException e) {
-      String[] msgs = e.getLocalizedMessage().split("\n");
-      for (String msg : msgs) {
+      final String[] msgs = e.getLocalizedMessage().split("\n");
+      for (final String msg : msgs) {
         warn(msg); //NON-NLS //BR// Might as well leave them with a chat log record of where the tmp file got written.
       }
       WriteErrorDialog.reportFileOverwriteFailure(e, "Error.module_overwrite_error"); //NON-NLS
