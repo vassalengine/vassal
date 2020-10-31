@@ -316,8 +316,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * This method is called from within the constructor to initialize the form.
    */
   private void initComponents() {
-    setLayout(new MigLayout("ins panel", "[grow,fill]")); // NON-NLS
+    final Insets buttonInsets = new Insets(1, 2, 1, 2);
 
+    setLayout(new MigLayout("ins panel", "[grow,fill]")); // NON-NLS
     controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
 
     final JPanel slotPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
@@ -336,10 +337,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableList.setTransferHandler(transferHandler);
     helpButton = new JButton();
     final JButton importButton = new JButton();
-
-    final JPanel addRemovePanel = new JPanel();
-    addButton = new JButton();
-    removeButton = new JButton();
 
     final JPanel inUsePanel = new JPanel();
     inUseList = new JList<>();
@@ -372,7 +369,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     helpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.help_tip"));
     helpButton.addActionListener(evt -> showHelpForPiece());
 
-
     importButton.setText(Resources.getString("General.import"));
     importButton.setToolTipText(Resources.getString("Editor.PieceDefiner.import_tip"));
     importButton.addActionListener(evt -> {
@@ -386,17 +382,21 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableButtonPanel.add(helpButton);
     controls.add(availablePanel, "grow"); // NON-NLS
 
+    final JPanel addRemovePanel = new JPanel();
     addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1")); // NON-NLS
 
-    addButton.setIcon(IconFactory.getIcon("go-next", IconFamily.MEDIUM)); // NON-NLS
+    addButton = new JButton(Resources.getString("Editor.PieceDefiner.add"), IconFactory.getIcon("go-next", IconFamily.SMALL)); // NON-NLS
+    addButton.setHorizontalTextPosition(SwingUtilities.LEFT);
+    addButton.setMargin(buttonInsets);
     addButton.setToolTipText(Resources.getString("Editor.PieceDefiner.add_tip"));
     addButton.addActionListener(evt -> doAdd());
-    addRemovePanel.add(addButton);
+    addRemovePanel.add(addButton, "grow"); // NON-NLS
 
-    removeButton.setIcon(IconFactory.getIcon("go-previous", IconFamily.MEDIUM)); // NON-NLS
+    removeButton = new JButton(Resources.getString("Editor.PieceDefiner.remove"), IconFactory.getIcon("go-previous", IconFamily.SMALL)); // NON-NLS
+    removeButton.setMargin(buttonInsets);
     removeButton.setToolTipText(Resources.getString("Editor.PieceDefiner.remove_tip"));
     removeButton.addActionListener(evt -> doRemove());
-    addRemovePanel.add(removeButton);
+    addRemovePanel.add(removeButton, "grow"); // NON-NLS
 
     addRemovePanel.add(pieceIdLabel, "center"); // NON-NLS
 
@@ -466,12 +466,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
 
-    final Insets iconButtonInsets = new Insets(1, 2, 1, 2);
-
     moveTopButton = new JButton(Resources.getString("Editor.PieceDefiner.move_top"), IconFactory.getIcon("go-top", IconFamily.SMALL)); // NON-NLS
     moveTopButton.setToolTipText(Resources.getString("Editor.PieceDefiner.top_tip"));
     moveTopButton.setHorizontalAlignment(SwingConstants.LEFT);
-    moveTopButton.setMargin(iconButtonInsets);
+    moveTopButton.setMargin(buttonInsets);
     moveTopButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
@@ -483,7 +481,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     moveUpButton = new JButton(Resources.getString("Editor.PieceDefiner.move_up"), IconFactory.getIcon("go-up", IconFamily.SMALL)); // NON-NLS
     moveUpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.up_tip"));
     moveUpButton.setHorizontalAlignment(SwingConstants.LEFT);
-    moveUpButton.setMargin(iconButtonInsets);
+    moveUpButton.setMargin(buttonInsets);
     moveUpButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
@@ -495,7 +493,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     moveDownButton = new JButton(Resources.getString("Editor.PieceDefiner.move_down"), IconFactory.getIcon("go-down", IconFamily.SMALL)); // NON-NLS
     moveDownButton.setToolTipText(Resources.getString("Editor.PieceDefiner.down_tip"));
     moveDownButton.setHorizontalAlignment(SwingConstants.LEFT);
-    moveDownButton.setMargin(iconButtonInsets);
+    moveDownButton.setMargin(buttonInsets);
     moveDownButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
@@ -507,7 +505,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     moveBottomButton = new JButton(Resources.getString("Editor.PieceDefiner.move_bottom"), IconFactory.getIcon("go-bottom", IconFamily.SMALL)); // NON-NLS
     moveBottomButton.setToolTipText(Resources.getString("Editor.PieceDefiner.bottom_trait"));
     moveBottomButton.setHorizontalAlignment(SwingConstants.LEFT);
-    moveBottomButton.setMargin(iconButtonInsets);
+    moveBottomButton.setMargin(buttonInsets);
     moveBottomButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
