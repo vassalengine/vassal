@@ -241,7 +241,12 @@ release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(V
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-release: clean release-other release-linux release-windows release-macosx
+$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
+
+release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
+
+release: clean release-other release-linux release-windows release-macosx release-sha256
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
