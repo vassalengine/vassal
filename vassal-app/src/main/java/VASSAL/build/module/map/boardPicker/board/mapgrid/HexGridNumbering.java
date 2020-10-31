@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 25, 2002
- * Time: 11:46:35 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
 import java.awt.BorderLayout;
@@ -58,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
@@ -146,7 +139,11 @@ public class HexGridNumbering extends RegularGridNumbering {
     Graphics2D g2d = (Graphics2D) g;
     AffineTransform oldT = g2d.getTransform();
     if (reversed) {
-      AffineTransform t = AffineTransform.getRotateInstance(Math.PI, bounds.x + .5 * bounds.width, bounds.y + .5 * bounds.height);
+      final AffineTransform t = AffineTransform.getRotateInstance(
+        Math.PI,
+        bounds.x + 0.5 * bounds.width,
+        bounds.y + 0.5 * bounds.height
+      );
       g2d.transform(t);
       visibleRect = t.createTransformedShape(visibleRect).getBounds();
     }
@@ -179,8 +176,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
     double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font("Dialog", Font.PLAIN, size);
-    Point p = new Point();
+    final Font f = new Font(Font.DIALOG, Font.PLAIN, size);
     int alignment = LabelUtils.TOP;
     int offset = -(int) Math.round(deltaY / 2);
     if (grid.isSideways() || rotateTextDegrees != 0) {
@@ -188,7 +184,8 @@ public class HexGridNumbering extends RegularGridNumbering {
       offset = 0;
     }
 
-    Point gridp = new Point();
+    final Point p = new Point();
+    final Point gridp = new Point();
 
     Point centerPoint = null;
     double radians = 0;
@@ -199,9 +196,8 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     for (double x = xmin; x < xmax; x += 2 * deltaX) {
       for (double y = ymin; y < ymax; y += deltaY) {
-
         p.setLocation((int) Math.round(x), (int) Math.round(y) + offset);
-        gridp = new Point(p.x, p.y - offset);
+        gridp.setLocation(p.x, p.y - offset);
         grid.rotateIfSideways(p);
 
         // Convert from map co-ordinates to board co-ordinates
@@ -218,7 +214,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         );
 
         p.setLocation((int) Math.round(x + deltaX), (int) Math.round(y + deltaY / 2) + offset);
-        gridp = new Point(p.x, p.y - offset);
+        gridp.setLocation(p.x, p.y - offset);
         grid.rotateIfSideways(p);
 
         // Convert from map co-ordinates to board co-ordinates
@@ -235,6 +231,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         );
       }
     }
+
     if (rotateTextDegrees != 0) {
       g2d.rotate(-radians);
     }

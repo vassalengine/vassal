@@ -72,7 +72,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   private GridNumbering gridNumbering;
 
-
   @Override
   public GridNumbering getGridNumbering() {
     return gridNumbering;
@@ -81,7 +80,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public void setGridNumbering(GridNumbering gridNumbering) {
     this.gridNumbering = gridNumbering;
   }
-
 
   @Override
   public double getDx() {
@@ -92,7 +90,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public void setDx(double d) {
     dx = d;
   }
-
 
   @Override
   public double getDy() {
@@ -245,7 +242,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return HelpFile.getReferenceManualPage("RectangularGrid.htm"); //$NON-NLS-1$
   }
 
-
   @Override
   public String getAttributeValueString(String key) {
     if (X0.equals(key)) {
@@ -359,10 +355,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public Point getLocation(String location) throws BadCoords {
-    if (gridNumbering == null)
+    if (gridNumbering == null) {
       throw new BadCoords();
-    else
-      return gridNumbering.getLocation(location);
+    }
+    return gridNumbering.getLocation(location);
   }
 
   @Override
@@ -377,7 +373,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
           + abs((int) floor((p2.y - p1.y) / dy + 0.5));
     }
   }
-
 
   @Override
   public Area getGridShape(Point center, int range) {
@@ -417,10 +412,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     if (! snapTo) {
       return p;
     }
-// nx,ny are the closest points to the half-grid
-// (0,0) is the center of the origin cell
-// (1,0) is the east edge of the origin cell
-// (1,1) is the lower-right corner of the origin cell
+
+    // nx,ny are the closest points to the half-grid
+    // (0,0) is the center of the origin cell
+    // (1,0) is the east edge of the origin cell
+    // (1,1) is the lower-right corner of the origin cell
 
     int offsetX = p.x - origin.x;
     int nx = (int) round(offsetX / (0.5 * dx));

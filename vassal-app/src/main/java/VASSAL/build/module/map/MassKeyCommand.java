@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Sep 25, 2002
- * Time: 10:43:11 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map;
 
 import java.awt.Component;
