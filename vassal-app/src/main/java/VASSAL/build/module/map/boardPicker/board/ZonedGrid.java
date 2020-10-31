@@ -165,12 +165,10 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-
     /*
      * Skip clipping if there is no background grid, or it isn't visible
      */
     if (background != null && background.isVisible()) {
-
       /*
        * Calculate and cache scaled shape consisting of all zones that do not
        * use the parent grid. (There may be none!)
@@ -221,6 +219,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
       background.draw(g, bounds, visibleRect, scale, reversed);
       g2d.setClip(oldClip);
     }
+
     /*
      * Draw each Zone
      */

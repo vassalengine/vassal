@@ -30,11 +30,12 @@ import java.awt.geom.Area;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
