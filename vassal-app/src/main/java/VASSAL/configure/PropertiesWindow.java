@@ -17,7 +17,11 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.widget.PieceSlot;
 import java.awt.Frame;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -109,6 +113,11 @@ public class PropertiesWindow extends JDialog {
     add(buttonBox);
     pack();
     setLocationRelativeTo(getParent());
+    // The PieceDefiner is now very large, ensure it is opened at the top of the usable screen
+    if (target instanceof PieceSlot || target instanceof PrototypeDefinition) {
+      Insets i = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+      setLocation(getLocation().x + 50, i.top);
+    }
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override

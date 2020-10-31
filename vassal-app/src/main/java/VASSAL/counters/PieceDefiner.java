@@ -19,6 +19,7 @@ package VASSAL.counters;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
+import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
@@ -40,6 +41,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -47,6 +49,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -67,8 +70,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import javax.swing.TransferHandler;
@@ -111,6 +116,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private JButton moveBottomButton;
   protected JButton copyButton;
   protected JButton pasteButton;
+  private JPanel controls;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -280,7 +286,18 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       piece = null;
     }
     slot.setPiece(piece);
+    controls.invalidate();
+    repack();
     slot.getComponent().repaint();
+  }
+
+  private void repack() {
+    final Window w = SwingUtilities.getWindowAncestor(controls);
+    if (w != null) {
+      w.setMinimumSize(w.getSize());
+      w.pack();
+      w.setMinimumSize(null);
+    }
   }
 
   public GamePiece getPiece() {
@@ -301,10 +318,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private void initComponents() {
     setLayout(new MigLayout("ins panel", "[grow,fill]")); // NON-NLS
 
-    final JPanel controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
+    controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
 
     final JPanel slotPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
-    slotPanel.add(slot.getComponent());
+    slotPanel.setMaximumSize(new Dimension(512, 128));
+    final JScrollPane scroll = new JScrollPane(slot.getComponent(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    slotPanel.add(scroll, "grow"); // NON-NLS
+
     controls.add(slotPanel, "span 4,center,grow,wrap"); // NON-NLS
 
     final ListTransferHandler transferHandler = new ListTransferHandler(this);
@@ -349,10 +369,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     final JPanel availableButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
     helpButton.setText(Resources.getString("General.help"));
+    helpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.help_tip"));
     helpButton.addActionListener(evt -> showHelpForPiece());
 
 
     importButton.setText(Resources.getString("General.import"));
+    importButton.setToolTipText(Resources.getString("Editor.PieceDefiner.import_tip"));
     importButton.addActionListener(evt -> {
       final String className = JOptionPane.showInputDialog(
         this, Resources.getString("Editor.PieceDefiner.enter_class")
@@ -367,10 +389,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1")); // NON-NLS
 
     addButton.setIcon(IconFactory.getIcon("go-next", IconFamily.MEDIUM)); // NON-NLS
+    addButton.setToolTipText(Resources.getString("Editor.PieceDefiner.add_tip"));
     addButton.addActionListener(evt -> doAdd());
     addRemovePanel.add(addButton);
 
     removeButton.setIcon(IconFactory.getIcon("go-previous", IconFamily.MEDIUM)); // NON-NLS
+    removeButton.setToolTipText(Resources.getString("Editor.PieceDefiner.remove_tip"));
     removeButton.addActionListener(evt -> doRemove());
     addRemovePanel.add(removeButton);
 
@@ -419,11 +443,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     inUsePanel.add(inUseScroll, "grow"); // NON-NLS
 
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
-    copyButton = new JButton(Resources.getString("Editor.copy"));
+    copyButton = new JButton(Resources.getString("Editor.copy") + " (" + getCtrlKeyName('C') + ")");
     copyButton.addActionListener(evt -> doCopy());
     inUseButtonPanel.add(copyButton);
 
-    pasteButton = new JButton(Resources.getString("Editor.paste"));
+    pasteButton = new JButton(Resources.getString("Editor.paste") + " (" + getCtrlKeyName('V') + ")");
     pasteButton.setEnabled(clipBoard != null);
     pasteButton.addActionListener(evt -> doPaste());
     inUseButtonPanel.add(pasteButton);
@@ -442,7 +466,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
 
-    moveTopButton = new JButton(IconFactory.getIcon("go-top", IconFamily.MEDIUM)); // NON-NLS
+    final Insets iconButtonInsets = new Insets(1, 2, 1, 2);
+
+    moveTopButton = new JButton(Resources.getString("Editor.PieceDefiner.move_top"), IconFactory.getIcon("go-top", IconFamily.SMALL)); // NON-NLS
+    moveTopButton.setToolTipText(Resources.getString("Editor.PieceDefiner.top_tip"));
+    moveTopButton.setHorizontalAlignment(SwingConstants.LEFT);
+    moveTopButton.setMargin(iconButtonInsets);
     moveTopButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
@@ -451,7 +480,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     moveUpDownPanel.add(moveTopButton, "grow"); // NON-NLS
 
-    moveUpButton = new JButton(IconFactory.getIcon("go-up", IconFamily.MEDIUM)); // NON-NLS
+    moveUpButton = new JButton(Resources.getString("Editor.PieceDefiner.move_up"), IconFactory.getIcon("go-up", IconFamily.SMALL)); // NON-NLS
+    moveUpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.up_tip"));
+    moveUpButton.setHorizontalAlignment(SwingConstants.LEFT);
+    moveUpButton.setMargin(iconButtonInsets);
     moveUpButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
@@ -460,7 +492,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     moveUpDownPanel.add(moveUpButton, "grow"); // NON-NLS
 
-    moveDownButton = new JButton(IconFactory.getIcon("go-down", IconFamily.MEDIUM)); // NON-NLS
+    moveDownButton = new JButton(Resources.getString("Editor.PieceDefiner.move_down"), IconFactory.getIcon("go-down", IconFamily.SMALL)); // NON-NLS
+    moveDownButton.setToolTipText(Resources.getString("Editor.PieceDefiner.down_tip"));
+    moveDownButton.setHorizontalAlignment(SwingConstants.LEFT);
+    moveDownButton.setMargin(iconButtonInsets);
     moveDownButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
@@ -469,7 +504,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     });
     moveUpDownPanel.add(moveDownButton, "grow"); // NON-NLS
 
-    moveBottomButton = new JButton(IconFactory.getIcon("go-bottom", IconFamily.MEDIUM)); // NON-NLS
+    moveBottomButton = new JButton(Resources.getString("Editor.PieceDefiner.move_bottom"), IconFactory.getIcon("go-bottom", IconFamily.SMALL)); // NON-NLS
+    moveBottomButton.setToolTipText(Resources.getString("Editor.PieceDefiner.bottom_trait"));
+    moveBottomButton.setHorizontalAlignment(SwingConstants.LEFT);
+    moveBottomButton.setMargin(iconButtonInsets);
     moveBottomButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
@@ -482,7 +520,21 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     controls.add(availableButtonPanel, "center"); // NON-NLS
     controls.add(new JLabel(""));
-    controls.add(inUseButtonPanel, "center"); // NON-NLS
+    controls.add(inUseButtonPanel, "center,wrap"); // NON-NLS
+
+    final JLabel note1 = new JLabel(Resources.getString("Editor.PieceDefiner.note1"));
+    final Font standardFont = note1.getFont();
+    final Font italicFont = new Font(standardFont.getFontName(), Font.ITALIC, standardFont.getSize());
+    note1.setFont(italicFont);
+
+    final JLabel note2 = new JLabel(Resources.getString("Editor.PieceDefiner.note2"));
+    note2.setFont(italicFont
+    );
+
+    final JPanel notePanel = new JPanel(new MigLayout("ins 0,wrap 1,gapy 0", "push[center]push")); // NON-NLS
+    notePanel.add(note1, "center"); // NON-NLS
+    notePanel.add(note2, "center"); // NON-NLS
+    controls.add(notePanel, "span 3,growx,wrap"); // NON-NLS
 
     add(controls, "grow"); // NON-NLS
 
@@ -490,7 +542,18 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     // Prevent the window opening too tall on smaller screens
     final Dimension s = Toolkit.getDefaultToolkit().getScreenSize();
-    setMaximumSize(new Dimension((int) s.getWidth() - 100, (int) s.getHeight() - 100));
+    setMaximumSize(new Dimension((int) s.getWidth() - 100, (int) s.getHeight() - 150));
+  }
+
+  /**
+   * Return the OS specific name for a control Key.
+   * This will usually be Ctrl+c or Cmd+c on a Mac for character c
+   *
+   * @param c Control Char
+   * @return OS specific name.
+   */
+  private String getCtrlKeyName(char c) {
+    return KeyNamer.getKeyString(SwingUtils.genericToSystem(KeyStroke.getKeyStroke(c, InputEvent.CTRL_DOWN_MASK)));
   }
 
   private void doCopy() {
