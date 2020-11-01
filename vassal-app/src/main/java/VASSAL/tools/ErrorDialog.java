@@ -20,6 +20,7 @@ package VASSAL.tools;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -239,6 +240,17 @@ public class ErrorDialog {
 
     return ProblemDialog.showDetails(
       JOptionPane.ERROR_MESSAGE, thrown, details, messageKey, args
+    );
+  }
+
+  public static Future<?> showFileOverwriteFailure( // I don't see why it shouldn't have a meaningful name? So much less confusing.
+    FileSystemException thrown,
+    String details,
+    String messageKey,
+    Object... args) {
+
+    return ProblemDialog.showFileOverwriteFailure(
+      JOptionPane.WARNING_MESSAGE, thrown, details, messageKey, args
     );
   }
 
