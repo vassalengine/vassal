@@ -19,7 +19,6 @@ package VASSAL.build.module.map.boardPicker.board;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
