@@ -453,12 +453,12 @@ public class ZipArchive implements FileArchive {
             )
           );
         }
+        catch (FileSystemException whereWePutIt) {
+          // If we picked up a FileSystemException, then it came from the inner loop meaning we at least "got halfway", so
+          // we pass that exception on
+          throw whereWePutIt;
+        }
         catch (IOException didEverythingFail) {
-          if (didEverythingFail instanceof FileSystemException) {
-            // If we picked up a FileSystemException, then it came from the inner loop meaning we at least "got halfway", so
-            // we pass that exception on rather than throwing the "worse" version.
-            throw(didEverythingFail);
-          }
           throw new FileSystemException(
             dst.toFile().getName(),
             src.toAbsolutePath().toString(),
