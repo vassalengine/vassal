@@ -85,7 +85,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected File outputFile;
   protected Action stepAction = new StepAction();
   protected SaveMetaData metadata;
-  private Boolean multiPlayer = false;
+  private boolean multiPlayer = false;
 
   public BasicLogger() {
     super();
@@ -200,11 +200,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void remove(Buildable b) {
   }
 
-  public void setMultiPlayer(Boolean multiPlayer) {
+  public void setMultiPlayer(boolean multiPlayer) {
     this.multiPlayer = multiPlayer;
   }
 
-  public Boolean isMultiPlayer() {
+  public boolean isMultiPlayer() {
     return multiPlayer;
   }
 
@@ -258,9 +258,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   private static class MultiplayerStateCommand extends Command {
-    Boolean state;
+    boolean state;
 
-    MultiplayerStateCommand(Boolean state) {
+    MultiplayerStateCommand(boolean state) {
       this.state = state;
     }
 
@@ -319,7 +319,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     final GameModule g = GameModule.getGameModule();
 
-    if ((Boolean) g.getPrefs().getValue(prefName)) {
+    if ((boolean) g.getPrefs().getValue(prefName)) {
       final Object[] options = {
         Resources.getString(Resources.YES),
         Resources.getString(Resources.NO),
