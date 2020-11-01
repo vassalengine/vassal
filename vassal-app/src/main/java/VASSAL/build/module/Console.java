@@ -59,6 +59,23 @@ public class Console {
     return s1.toLowerCase().substring(0, s2.length()).equals(s2.toLowerCase());
   }
 
+  /**
+   * Opens the specified file (or folder) using the Desktop's default method
+   * @param file file or folder to open
+   */
+  private void browseFileOrFolder(File file) {
+    final Desktop desktop = Desktop.getDesktop();
+    try {
+      desktop.open(file);
+    }
+    catch (IOException e) {
+      System.out.println("File Not Found"); //NON-NLS
+    }
+    catch (IllegalArgumentException iae) {
+      System.out.println("Illegal argument"); //NON-NLS
+    }
+  }
+
 
   private boolean doErrorLog() {
     final String option = decode.nextToken("");
@@ -84,17 +101,7 @@ public class Console {
       }
     }
     else if (matches("folder", option)) { //NON-NLS
-      final Desktop desktop = Desktop.getDesktop();
-      try {
-        final File dirToOpen = Info.getConfDir();
-        desktop.open(dirToOpen);
-      }
-      catch (IOException e) {
-        System.out.println("File Not Found"); //NON-NLS
-      }
-      catch (IllegalArgumentException iae) {
-        System.out.println("Illegal argument"); //NON-NLS
-      }
+      browseFileOrFolder(Info.getConfDir());
     }
     else if (matches("noecho", option)) { //NON-NLS
       GameModule.setErrorLogToChat(false);
@@ -105,17 +112,7 @@ public class Console {
       show("Errorlog Echo: ON"); //NON-NLS
     }
     else if (matches("open", option)) { //NON-NLS
-      final Desktop desktop = Desktop.getDesktop();
-      try {
-        final File dirToOpen = Info.getErrorLogPath();
-        desktop.open(dirToOpen);
-      }
-      catch (IOException e) {
-        System.out.println("File Not Found"); //NON-NLS
-      }
-      catch (IllegalArgumentException iae) {
-        System.out.println("Illegal argument"); //NON-NLS
-      }
+      browseFileOrFolder(Info.getErrorLogPath());
     }
     else if (matches("wipe", option)) { //NON-NLS
       final File errorLog = Info.getErrorLogPath();
