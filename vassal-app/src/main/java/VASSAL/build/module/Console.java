@@ -69,10 +69,10 @@ public class Console {
       desktop.open(file);
     }
     catch (IOException e) {
-      System.out.println("File Not Found"); //NON-NLS
+      log.error("File Not Found", e); //NON-NLS
     }
     catch (IllegalArgumentException iae) {
-      System.out.println("Illegal argument"); //NON-NLS
+      log.error("Illegal argument", iae); //NON-NLS
     }
   }
 
