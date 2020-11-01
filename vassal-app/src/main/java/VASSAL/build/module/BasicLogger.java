@@ -319,7 +319,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     final GameModule g = GameModule.getGameModule();
 
-    if ((Boolean) g.getPrefs().getValue(prefName)) {
+    if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName))) {
       final Object[] options = {
         Resources.getString(Resources.YES),
         Resources.getString(Resources.NO),
