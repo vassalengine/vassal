@@ -53,8 +53,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean neverSelect = false;
   protected boolean neverMove = false;
   protected boolean moveIfSelected = false;
-  protected boolean neverBandSelect = false; 
-  protected boolean altToBandSelect = false; 
+  protected boolean neverBandSelect = false;
+  protected boolean altToBandSelect = false;
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
   protected EventFilter bandselectFilter;
@@ -66,8 +66,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char SHIFT_SELECT = 'i';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
-  protected static final char NEVER_BAND_SELECT = 'Z'; 
-  protected static final char ALT_BAND_SELECT = 'A';   
+  protected static final char NEVER_BAND_SELECT = 'Z';
+  protected static final char ALT_BAND_SELECT = 'A';
 
   public class UseShift implements EventFilter {
     @Override
@@ -178,7 +178,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       moveFilter = null;
     }
-    
+
     if (neverBandSelect) {
       bandselectFilter = NEVER;
     }
@@ -297,7 +297,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (altToBandSelect) {
       buffer.append(ALT_BAND_SELECT);
     }
-    
+
     buffer.append(';');
     if (neverMove) {
       buffer.append(NEVER_MOVE);
@@ -428,7 +428,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       }
       else {
         bandSelectOption.setValue(NORMAL);
-      }      
+      }
       controls.add("Editor.Immobilized.band_select_piece", bandSelectOption);
 
       movementOption = new TranslatingStringEnumConfigurer(MOVE_OPTIONS, MOVE_KEYS);

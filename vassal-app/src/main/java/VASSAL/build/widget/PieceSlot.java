@@ -105,15 +105,15 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public PieceSlot(CardSlot card) {
     this((PieceSlot) card);
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public String getPieceDefinition() {
     return pieceDefinition;
   }
-  
+
   // If we're a child of a piece widget that allows scale control, get our scale from that. Otherwise default to 1.0
   @Override
   public double getScale() {
@@ -203,7 +203,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   public GamePiece getPiece() {
     if (c == null && pieceDefinition != null) {
-      final Command raw = GameModule.getGameModule().decode(pieceDefinition);   
+      final Command raw = GameModule.getGameModule().decode(pieceDefinition);
       final AddPiece comm = (raw instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
       if ((comm == null) || comm.isNull()) {
         ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));  //NON-NLS
@@ -298,7 +298,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (p == null) { // Found new ways to NPE after you've successfully soft-warninged your failed piece build :)
       return;
     }
-    
+
     final Dimension size = panel.getSize();
     p.setPosition(new Point(size.width / 2, size.height / 2));
 

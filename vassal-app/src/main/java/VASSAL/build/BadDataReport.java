@@ -128,8 +128,8 @@ public class BadDataReport {
   public BadDataReport(AbstractConfigurable c, String messageKey, String data) {
     this(c, messageKey, data, null);
   }
-  
-  
+
+
 
   /**
    * Expanded Bad Data Report for PieceSlot

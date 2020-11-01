@@ -49,7 +49,7 @@ public class VassalTranslation extends Translation {
       if (is == null) {
         throw new FileNotFoundException("VASSAL.properties not found");
       }
-      
+
       try (BufferedInputStream in = new BufferedInputStream(is)) {
         baseValues.load(in);
       }

@@ -133,8 +133,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public String getDescription() {
     return buildDescription("Editor.ActionButton.trait_description", description);
   }
-  
-  
+
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */

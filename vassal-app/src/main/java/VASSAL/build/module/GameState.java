@@ -731,13 +731,13 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    
+
     final SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
     // FIXME: It is extremely inefficient to produce the save string. It would
     // be faster to write directly to the output stream instead.
-    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write    
-    
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
+
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
       try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
@@ -802,7 +802,7 @@ public class GameState implements CommandEncoder {
                 msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
               }
               else {
-                msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
+                msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
               }
               GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
             }

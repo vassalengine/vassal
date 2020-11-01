@@ -501,13 +501,13 @@ public class GlobalCommand {
     @Override
     public Object visitDeck(Deck d) {
       if (getSelectFromDeck() != 0) {
-        
+
         // selectFromDeck = -1 means process all cards in Deck
         // selectFromDeck > 0 means select that many cards from the Deck
-        
-        // Ask for all cards to be drawn.        
+
+        // Ask for all cards to be drawn.
         d.setDragCount(d.getPieceCount());
-        
+
         // Keep drawing until required select count met or all cards in Deck have been processed
         selectedCount = 0;
         for (final PieceIterator it = d.drawCards(); it.hasMoreElements() && (getSelectFromDeck() < 0 || getSelectFromDeck() > selectedCount);) {

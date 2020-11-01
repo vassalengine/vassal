@@ -1142,7 +1142,7 @@ public class PieceMover extends AbstractBuildable
 
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
-        final Map map = piece.getMap();        
+        final Map map = piece.getMap();
 
         if (piece instanceof Stack) {
           stackCount = 0;

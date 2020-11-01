@@ -105,9 +105,9 @@ public class GlobalOptions extends AbstractConfigurable {
   private String autoReport = ALWAYS;
   private String markMoved = NEVER;
   private String chatterHTMLSupport = NEVER;
-  
+
   private int dragThreshold = 10;
-  
+
   private boolean macLegacy;
   private boolean soundGlobalMute = false;
   private boolean soundWakeupMute = false;
@@ -120,9 +120,9 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private static GlobalOptions instance = new GlobalOptions();
   private boolean useSingleWindow;
-  
+
   private boolean useClassicMoveFixedDistance = false;
-  private BooleanConfigurer classicMfd;  
+  private BooleanConfigurer classicMfd;
 
   private static void setInstance(GlobalOptions go) {
     instance = go;
@@ -180,7 +180,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), bug10295Conf);
     }
-    
+
     // Move Fixed Distance trait (Translate) has been substantially re-written.
     // Use new version by default. User may over-ride to use old buggy behaviour.
     classicMfd = new BooleanConfigurer(
@@ -202,7 +202,7 @@ public class GlobalOptions extends AbstractConfigurable {
       System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
     });
     prefs.addOption(dragThresholdConf);
-    
+
     //BR// Mac Legacy (essentially swaps Control and Command functions to their "old, bad, pre-3.3.3" mappings)
     final BooleanConfigurer macLegacyConf = new BooleanConfigurer(
         MAC_LEGACY,
@@ -214,7 +214,7 @@ public class GlobalOptions extends AbstractConfigurable {
       // Only need to *display* this preference if we're running on a Mac.
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
-    
+
     final BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
     prefs.addOption(config);
 
@@ -268,7 +268,7 @@ public class GlobalOptions extends AbstractConfigurable {
     // Tell SwingUtils we've changed our mind about Macs
     SwingUtils.setMacLegacy(b);
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
-    GameModule.getGameModule().refreshKeyStrokeListeners(); 
+    GameModule.getGameModule().refreshKeyStrokeListeners();
   }
 
   public boolean getPrefMacLegacy() {
@@ -476,7 +476,7 @@ public class GlobalOptions extends AbstractConfigurable {
       return playerIdFormat.getFormat();
     }
     else if (DRAG_THRESHOLD.equals(key)) {
-      return Integer.toString(dragThreshold);  
+      return Integer.toString(dragThreshold);
     }
     else if (!OPTION_CONFIGURERS.containsKey(key)) {
       final Object val = properties.get(key);
@@ -565,7 +565,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public String chatterHTMLSetting() {
     return chatterHTMLSupport;
   }
-  
+
   public boolean chatterHTMLSupport() {
     return isEnabled(chatterHTMLSupport, CHATTER_HTML_SUPPORT);
   }
@@ -573,11 +573,11 @@ public class GlobalOptions extends AbstractConfigurable {
   public boolean isMarkMoveEnabled() {
     return isEnabled(markMoved, MARK_MOVED);
   }
-  
+
   public int getDragThreshold() {
     return dragThreshold;
   }
-  
+
   public String getPlayerId() {
     playerIdFormat.setProperty(PLAYER_NAME, (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
     playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMyLocalizedSide());

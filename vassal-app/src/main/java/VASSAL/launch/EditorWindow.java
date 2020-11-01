@@ -112,7 +112,7 @@ public abstract class EditorWindow extends JFrame {
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.File", mm.addKey("Editor.save"));  //NON-NLS
       mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));  //NON-NLS
-    } 
+    }
     else {
       final MenuProxy fileMenu = new MenuProxy(Resources.getString("General.file"));
 
@@ -152,7 +152,7 @@ public abstract class EditorWindow extends JFrame {
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.MenuBar", editMenu);  //NON-NLS
       mm.addToSection("Editor.MenuBar", toolsMenu);  //NON-NLS
-    } 
+    }
     else {
       mb.add(editMenu);
       mb.add(toolsMenu);
@@ -161,7 +161,7 @@ public abstract class EditorWindow extends JFrame {
     // help menu
     if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));  //NON-NLS
-    } 
+    }
     else {
       final MenuProxy helpMenu = new MenuProxy(Resources.getString("General.help"));
 
@@ -169,7 +169,7 @@ public abstract class EditorWindow extends JFrame {
       // some languages
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
-      //BR// So here I "think"  I'm just adding my happy little help entries. 
+      //BR// So here I "think"  I'm just adding my happy little help entries.
       helpMenu.add(mm.addKey("Editor.ModuleEditor.table_of_contents"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.using_the_editor"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.designer_guide"));
@@ -245,7 +245,7 @@ public abstract class EditorWindow extends JFrame {
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction("Editor.ModuleEditor.table_of_contents", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -253,7 +253,7 @@ public abstract class EditorWindow extends JFrame {
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction("Editor.ModuleEditor.using_the_editor", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -262,7 +262,7 @@ public abstract class EditorWindow extends JFrame {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "designerguide/designerguide.pdf").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.designer_guide", new ShowHelpAction("Editor.ModuleEditor.designer_guide", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -270,58 +270,58 @@ public abstract class EditorWindow extends JFrame {
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction("Editor.ModuleEditor.module_components", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.map_components", new ShowHelpAction("Editor.ModuleEditor.map_components", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.toolbar_help", new ShowHelpAction("Editor.ModuleEditor.toolbar_help", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-  
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.html").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction("Editor.ModuleEditor.game_pieces_and_traits", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.html").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.expressions", new ShowHelpAction("Editor.ModuleEditor.expressions", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
+
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.html").toURI()
           .toURL();
-      
-      //BR// I dunno why this different pattern was used here. But "thangs warn't right" in general (this was the buggiest entry in the 3.2.17 version of this, and the gif thing had no noticeable effect) so I've just made it work like the others.      
-      
+
+      //BR// I dunno why this different pattern was used here. But "thangs warn't right" in general (this was the buggiest entry in the 3.2.17 version of this, and the gif thing had no noticeable effect) so I've just made it work like the others.
+
       //final ShowHelpAction helpAction = new ShowHelpAction(url,
       //    helpWindow.getClass().getResource("/images/Help16.gif"));
-      //helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$      
+      //helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
       //toolBar.add(helpAction);
-      
+
       mm.addAction("Editor.properties", new ShowHelpAction("Editor.properties", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -346,7 +346,7 @@ public abstract class EditorWindow extends JFrame {
    * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
    */
   boolean isTempFile(String name) {
-    return name == null || 
+    return name == null ||
            name.isEmpty() ||
            ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
   }
@@ -403,7 +403,7 @@ public abstract class EditorWindow extends JFrame {
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
     if (report.getWarnings().size() == 0) {
       save.run();
-    } 
+    }
     else {
       new ValidationReportDialog(report, new ValidationReportDialog.CallBack() {
         @Override

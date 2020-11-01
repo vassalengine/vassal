@@ -83,7 +83,7 @@ public class HttpRequestWrapper {
     conn.setUseCaches(false);
     try (InputStream in = conn.getInputStream()) {
       return readLines(in);
-    } 
+    }
   }
 
   public List<String> doPost(Properties p) throws IOException {
@@ -118,6 +118,6 @@ public class HttpRequestWrapper {
 
     try (InputStream in = conn.getInputStream()) {
       return readLines(in);
-    } 
+    }
   }
 }

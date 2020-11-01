@@ -23,7 +23,7 @@ import java.util.TreeSet;
 
 /**
  * Abstract implementation of {@link ImageSearchTarget} interface. Used to find images contained by components/pieces/traits
- * for "Image Purge" tool, 
+ * for "Image Purge" tool,
  */
 public abstract class AbstractImageFinder implements ImageSearchTarget {
   /**

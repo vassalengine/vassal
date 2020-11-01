@@ -36,17 +36,17 @@ public class DummyConfig implements Config {
 
   @Override
   public Path getBaseDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
   @Override
   public Path getDocDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
   @Override
   public Path getConfDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
   @Override
@@ -56,7 +56,7 @@ public class DummyConfig implements Config {
 
   @Override
   public Path getPrefsDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
   @Override

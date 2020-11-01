@@ -174,8 +174,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   public String getName() {
     return piece.getName();
   }
-  
-  
+
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
