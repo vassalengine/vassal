@@ -46,6 +46,7 @@
 * 13563: Hitting Enter in Editor expands or edits nodes
 * 13560: Don't register mouse listeners from ActionButton.draw()
 * 13449: Inventory window remains open when the game is closed in the Player
+* 13431: Cache grid and grid numbering painting for better performance
 * 10063: Hitting Enter on Module Manager opens the module
 
 3.4.7 - 25 October 2020
