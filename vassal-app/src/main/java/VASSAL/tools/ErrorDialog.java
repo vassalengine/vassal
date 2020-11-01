@@ -346,8 +346,8 @@ public class ErrorDialog {
 
   private static final Set<String> reportedDataWarnings =
     Collections.synchronizedSet(new HashSet<>());
-  
-  
+
+
   @Deprecated
   public static void dataError(BadDataReport e) {
     dataWarning(e);
@@ -367,7 +367,7 @@ public class ErrorDialog {
       final GameModule g = GameModule.getGameModule();
       if (g != null) {
         g.warn(Resources.getString("Error.data_error_message", e.getMessage(), e.getData()));
-      }      
+      }
     }
   }
 

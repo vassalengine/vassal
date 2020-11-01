@@ -510,7 +510,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return true;
     }
   }
-  
+
   /*
    * Interface to be implemented by a class that wants to be edited
    * by RegularGridEditor

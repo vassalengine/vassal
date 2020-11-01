@@ -237,7 +237,7 @@ public class GameModule extends AbstractConfigurable
   private FileChooser fileChooser;
   private FileDialog fileDialog;
   private final MutablePropertiesContainer propsContainer = new Impl();
-  private final PropertyChangeListener repaintOnPropertyChange = 
+  private final PropertyChangeListener repaintOnPropertyChange =
     evt -> {
       for (final Map map : Map.getMapList()) {
         map.repaint();
@@ -320,9 +320,9 @@ public class GameModule extends AbstractConfigurable
 
   private String gameFile     = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
-  
+
   private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
-  
+
   /**
    * Store the currently building GpId source. Only meaningful while
    * the GameModule or an Extension is actually in the process of being built
@@ -1083,7 +1083,7 @@ public class GameModule extends AbstractConfigurable
       chat.show(" - " + s2); //$NON-NLS-1$
     }
   }
-  
+
   /**
    * @return a single Random number generator that all objects may share
    */
@@ -1730,7 +1730,7 @@ public class GameModule extends AbstractConfigurable
       writer.addFile(BUILDFILE,
         new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
 
-      writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.     
+      writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
       if (saveAs) writer.saveAs(true);
       else writer.save(true);

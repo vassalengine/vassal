@@ -55,11 +55,11 @@ public class KeyBuffer {
     }
     return theBuffer;
   }
-  
+
   public void setClickPoint(Point p) {
     clickPoint.setLocation(p);
   }
-  
+
   public Point getClickPoint() {
     return clickPoint;
   }
@@ -122,7 +122,7 @@ public class KeyBuffer {
     for (final GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties()); // save state prior to command
-      
+
       // Send most recent click point location
       if (p instanceof PersistentPropertyContainer) {
         comm = comm.append(((PersistentPropertyContainer) p).setPersistentProperty(BasicPiece.CLICKED_X, String.valueOf(clickPoint.x)))

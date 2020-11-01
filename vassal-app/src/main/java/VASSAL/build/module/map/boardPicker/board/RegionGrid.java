@@ -1051,9 +1051,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     @Override
     public void mousePressed(MouseEvent e) {
       final Point p = e.getPoint();
-      lastClick = p;                          // NB These things need assigning no matter what happens in the if blocks later. 
+      lastClick = p;                          // NB These things need assigning no matter what happens in the if blocks later.
       lastClickedRegion = grid.getRegion(p);
-      
+
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }

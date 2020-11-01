@@ -144,10 +144,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   private void internalExtractContents(ZipInputStream in) throws IOException {
     final Path p = Path.of(
       Info.getTempDir().getAbsolutePath(),
-      "VASSAL", //$NON-NLS-1$ 
-      "help",   //$NON-NLS-1$ 
+      "VASSAL", //$NON-NLS-1$
+      "help",   //$NON-NLS-1$
       getContentsResource()
-    ); 
+    );
 
     if (Files.exists(p)) {
       PathUtils.deleteDirectory(p);

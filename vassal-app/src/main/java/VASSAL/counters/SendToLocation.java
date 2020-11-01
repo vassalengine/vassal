@@ -302,7 +302,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
               if (g != null) { // Board may not have a grid assigned.
                 dest = g.getLocation(gridLocation.getText(outer));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
-              } 
+              }
               else {
                 reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName());
               }

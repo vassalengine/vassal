@@ -546,8 +546,8 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
     }
     return null;
   }
-  
-  
+
+
   /**
    * {@link SearchTarget}
    * @return a list of the Decorator's string/expression fields if any (for search)
@@ -811,8 +811,8 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
       ((ImageSearchTarget) piece).addImageNamesRecursively(s);
     }
   }
-    
-  /**  
+
+  /**
    * Test if this Decorator's Class, Type and State are equal to another trait.
    *
    * Implementations of this method should compare the individual values of the fields that
