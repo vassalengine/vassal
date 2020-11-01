@@ -76,6 +76,8 @@ Any of them can be added by right-clicking on the _[Module]_ component in the Mo
 
 <<ChatLog.adoc#top,Chat Log>>
 
+<<ChessClock.adoc#top,Chess Clock Control>>
+
 <<#Definition_of_Player_Sides,Definition of Player Sides>>
 
 <<#DiceButton,Dice Button>>
@@ -403,3 +405,14 @@ At the appropriate time, the owning player may reveal the text of the message, a
 |image:images/NotesWindow2.png[]
 image:images/NotesWindow.png[]+
 |===
+
+[#ChessClock]
+==== Chess Clock Control
+
+[width="100%",cols="^50%,50%",]
+|===
+|image:images/ChessClockControl.png[]a|
+
+Chess Clocks allow online multiplayer games to be timed.
+
+<<ChessClock.adoc#top,See full article for details.>>
