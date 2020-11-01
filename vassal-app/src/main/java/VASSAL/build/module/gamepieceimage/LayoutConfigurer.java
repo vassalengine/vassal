@@ -345,7 +345,7 @@ public class LayoutConfigurer extends Configurer {
       private final String[] columnNames = {
         Resources.getString("Editor.LayoutConfigurer.name"),
         Resources.getString("Editor.LayoutConfigurer.type"),
-        Resources.getString("Editor.LayoutConfigurer.position") 
+        Resources.getString("Editor.LayoutConfigurer.position")
       };
 
       @Override

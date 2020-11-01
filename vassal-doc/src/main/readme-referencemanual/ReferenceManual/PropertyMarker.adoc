@@ -23,7 +23,7 @@ This value will remain constant for this piece throughout play, but other pieces
 (Example: some pieces could have a Marker named _Type_ whose value is _Infantry_ while other pieces have a Marker also named _Type_ but whose value is _Cavalry_.
 Pieces could also have an ArmorClass Marker with a numeric value.
 By using these Marker in expressions, e.g.
-__\{ (Type == "Infantry") && (ArmorClass < 5) }>__various decisions about pieces could be made by traits.
+__{ (Type == "Infantry") && (ArmorClass < 5) }>__various decisions about pieces could be made by traits.
 
 You can combine multiple name/value pairs by separating the names and values with a comma (','). To use a literal comma in a name or value, precede it with a backslash ('\').
 

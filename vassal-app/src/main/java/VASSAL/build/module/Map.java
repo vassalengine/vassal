@@ -2354,8 +2354,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * Finds the location of a board (in Map space) at a particular 
-   * column and row, based on passed zoom factor 
+   * Finds the location of a board (in Map space) at a particular
+   * column and row, based on passed zoom factor
    * @param column number of board to find
    * @param row number of board to find
    * @param zoom zoom factor to use

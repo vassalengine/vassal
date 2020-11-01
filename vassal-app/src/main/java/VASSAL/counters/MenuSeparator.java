@@ -43,7 +43,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   protected KeyCommand[] command;
   protected String desc;
   protected NamedKeyStroke key;
-  protected KeyCommand separatorCommand;    
+  protected KeyCommand separatorCommand;
 
   public MenuSeparator() {
     this(ID + ";", null);
@@ -89,7 +89,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator 
+    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator
   }
 
   @Override
@@ -155,7 +155,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
       controls.add("Editor.MenuSeparator.if_hidden", keyInput);
     }
 
-    
+
     @Override
     public Component getControls() {
       return controls;

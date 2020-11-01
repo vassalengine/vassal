@@ -20,6 +20,7 @@ package VASSAL.tools;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -242,6 +243,17 @@ public class ErrorDialog {
     );
   }
 
+  public static Future<?> showFileOverwriteFailure(
+    FileSystemException thrown,
+    String details,
+    String messageKey,
+    Object... args) {
+
+    return ProblemDialog.showFileOverwriteFailure(
+      JOptionPane.WARNING_MESSAGE, thrown, details, messageKey, args
+    );
+  }
+
   public static Future<?> showDetails(
     Component parent,
     Throwable thrown,
@@ -334,8 +346,8 @@ public class ErrorDialog {
 
   private static final Set<String> reportedDataWarnings =
     Collections.synchronizedSet(new HashSet<>());
-  
-  
+
+
   @Deprecated
   public static void dataError(BadDataReport e) {
     dataWarning(e);
@@ -355,7 +367,7 @@ public class ErrorDialog {
       final GameModule g = GameModule.getGameModule();
       if (g != null) {
         g.warn(Resources.getString("Error.data_error_message", e.getMessage(), e.getData()));
-      }      
+      }
     }
   }
 

@@ -120,7 +120,7 @@ public class SwingUtils {
     public boolean isModifierKeyDown(KeyEvent e) {
       return e.isControlDown();
     }
-    
+
     @Override
     public KeyStroke systemToGeneric(KeyStroke k) {
       return k;
@@ -201,7 +201,7 @@ public class SwingUtils {
      */
     @Override
     public boolean isSelectionToggle(MouseEvent e) {
-      return e.isMetaDown();       
+      return e.isMetaDown();
     }
 
     /**
@@ -335,7 +335,7 @@ public class SwingUtils {
   public static boolean isModifierKeyDown(KeyEvent e) {
     return INPUT_CLASSIFIER.isModifierKeyDown(e);
   }
-  
+
   /**
    * @return translation of keystroke from local system to platform-independent Vassal keystroke (to handle Mac platform support)
    *

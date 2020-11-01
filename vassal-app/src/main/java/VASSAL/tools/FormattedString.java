@@ -50,9 +50,9 @@ public class FormattedString implements Loopable {
 
   protected Map<String, String> props = new HashMap<>();
   protected PropertySource defaultProperties;
-  
+
   @Override
-  public String getComponentTypeName() {    
+  public String getComponentTypeName() {
     return Resources.getString("Editor.FormattedString.component_type");
   }
 

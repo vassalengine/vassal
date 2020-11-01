@@ -296,7 +296,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     }
     return i;
   }
-  
+
   protected boolean isIndex() {
     return loop && index && indexProperty != null && indexProperty.length() > 0;
   }

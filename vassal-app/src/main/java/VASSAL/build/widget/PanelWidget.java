@@ -53,16 +53,16 @@ public class PanelWidget extends Widget {
   public PanelWidget() {
     scale = 1.0;
   }
-  
+
   @Override
   public boolean hasScale() {
     return true;
   }
-  
+
   @Override
   public double getScale() {
     return scale;
-  }  
+  }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PanelWidget.component_type");
@@ -229,10 +229,10 @@ public class PanelWidget extends Widget {
       scale = (Double) value;
       if (scale < 0.01) { //BR// Just gonna go with some sanity.
         scale = 0.01;
-      } 
+      }
       else if (scale >= 4) {
-        scale = 4.0; 
-      } 
+        scale = 4.0;
+      }
     }
 
     if (panel != null) {

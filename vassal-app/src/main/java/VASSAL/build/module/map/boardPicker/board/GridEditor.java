@@ -429,7 +429,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         Resources.getString("Editor.GridEditor.does_not_look", grid.getGridName()), //$NON-NLS-1$
         Resources.getString("Editor.GridEditor.grid_shape_error"), //$NON-NLS-1$
         JOptionPane.ERROR_MESSAGE);
-
   }
 
   /*
@@ -511,7 +510,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return true;
     }
   }
-  
+
   /*
    * Interface to be implemented by a class that wants to be edited
    * by RegularGridEditor

@@ -397,11 +397,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   //
   @Override
   public void draw(
-      Graphics g,
-      Rectangle bounds,
-      Rectangle visibleRect,
-      double scale,
-      boolean reversed) {
+    Graphics g,
+    Rectangle bounds,
+    Rectangle visibleRect,
+    double scale,
+    boolean reversed) {
 
     if (visible) {
       forceDraw(g, bounds, visibleRect, scale, reversed);
@@ -409,13 +409,15 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public void forceDraw(
-      Graphics g,
-      Rectangle bounds,
-      Rectangle visibleRect,
-      double scale,
-      boolean reversed) {
-    regionList.values().forEach(
-      r -> r.draw(g, bounds, visibleRect, scale, reversed));
+    Graphics g,
+    Rectangle bounds,
+    Rectangle visibleRect,
+    double scale,
+    boolean reversed) {
+
+    for (final Region r : regionList.values()) {
+      r.draw(g, bounds, visibleRect, scale, reversed);
+    }
   }
 
   public void unSelectAll() {
@@ -1049,9 +1051,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     @Override
     public void mousePressed(MouseEvent e) {
       final Point p = e.getPoint();
-      lastClick = p;                          // NB These things need assigning no matter what happens in the if blocks later. 
+      lastClick = p;                          // NB These things need assigning no matter what happens in the if blocks later.
       lastClickedRegion = grid.getRegion(p);
-      
+
       if (e.isPopupTrigger()) {
         doPopupMenu(e);
       }

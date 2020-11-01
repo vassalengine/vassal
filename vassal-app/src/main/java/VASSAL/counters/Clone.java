@@ -151,7 +151,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   public String getDescription() {
     return Resources.getString("Editor.Clone.trait_description");
   }
-  
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */

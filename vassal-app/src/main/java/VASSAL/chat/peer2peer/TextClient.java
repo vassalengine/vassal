@@ -1,11 +1,3 @@
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 23, 2002
- * Time: 6:04:16 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.chat.peer2peer;
 
 import VASSAL.chat.ChatServerConnection;

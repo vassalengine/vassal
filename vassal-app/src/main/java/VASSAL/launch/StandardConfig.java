@@ -25,7 +25,7 @@ import org.apache.commons.lang3.SystemUtils;
 import VASSAL.tools.version.GitProperties;
 
 public class StandardConfig implements Config {
-  private final Path baseDir; 
+  private final Path baseDir;
   private final Path docDir;
   private final Path confDir;
   private final Path tmpDir;
@@ -79,7 +79,7 @@ public class StandardConfig implements Config {
       confDir = Path.of(System.getProperty("user.home"), ".VASSAL"); //NON-NLS
     }
 
-    Files.createDirectories(confDir);    
+    Files.createDirectories(confDir);
 
     prefsDir = confDir.resolve("prefs");
     errorLogPath = confDir.resolve("errorLog-" + getVersion());
@@ -98,7 +98,7 @@ public class StandardConfig implements Config {
 
   @Override
   public String getReportableVersion() {
-    return reportableVersion; 
+    return reportableVersion;
   }
 
   @Override

@@ -291,7 +291,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
   public int getSelectedIndex() {
     return box.getSelectedIndex();
   }
-  
+
   /**
    * Set the enabled status of the Configurer controls
    *

@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 21, 2002
- * Time: 10:18:26 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
 import java.awt.Color;
@@ -267,9 +259,25 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{FIRST, SEP, H_TYPE, H_LEADING, H_OFF, H_DESCEND,
-                        V_TYPE, V_LEADING, V_OFF, V_DESCEND, LOCATION_FORMAT, VISIBLE, FONT_SIZE, COLOR,
-                        ROTATE_TEXT, H_DRAW_OFF, V_DRAW_OFF};
+    return new String[]{
+      FIRST,
+      SEP,
+      H_TYPE,
+      H_LEADING,
+      H_OFF,
+      H_DESCEND,
+      V_TYPE,
+      V_LEADING,
+      V_OFF,
+      V_DESCEND,
+      LOCATION_FORMAT,
+      VISIBLE,
+      FONT_SIZE,
+      COLOR,
+      ROTATE_TEXT,
+      H_DRAW_OFF,
+      V_DRAW_OFF
+    };
   }
 
   @Override

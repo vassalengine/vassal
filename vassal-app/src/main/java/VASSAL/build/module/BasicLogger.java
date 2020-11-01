@@ -114,11 +114,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.getGameState().addGameComponent(this);
 
     final MenuManager mm = MenuManager.getInstance();
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     newLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.begin_logfile", newLogAction); //NON-NLS
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     endLogAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.end_logfile", endLogAction); //NON-NLS
@@ -130,13 +130,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     button = mod.getToolBar().add(stepAction);
     button.setToolTipText(Resources.getString("BasicLogger.step_forward_tooltip"));  //$NON-NLS-1$
     button.setAlignmentY((float) 0.0);
-    
+
     final NamedKeyStrokeListener undoKeyListener = new NamedKeyStrokeListener(undoAction, null);
     mod.addKeyStrokeListener(undoKeyListener);
 
     final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
-    
+
     final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK));
     mod.addKeyStrokeListener(newLogKeyListener);
 
@@ -145,14 +145,14 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     GlobalOptions.getInstance().addOption(stepIconConfig);
     stepIconConfig.addPropertyChangeListener(evt -> stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue()));
     stepIconConfig.fireUpdate();
-    
+
     final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
     GlobalOptions.getInstance().addOption(stepKeyConfig);
     stepKeyConfig.addPropertyChangeListener(evt -> {
       stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
       if (stepKeyListener.getKeyStroke() != null) {
         stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
-      } 
+      }
       else {
         stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip3"));  //$NON-NLS-1$
       }
@@ -162,7 +162,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON);  //$NON-NLS-1$ //$NON-NLS-2$
     undoIconConfig.setValue(UNDO_ICON);
     GlobalOptions.getInstance().addOption(undoIconConfig);
-    undoIconConfig.addPropertyChangeListener(evt -> undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue())); 
+    undoIconConfig.addPropertyChangeListener(evt -> undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue()));
     undoIconConfig.fireUpdate();
 
     final NamedHotKeyConfigurer undoKeyConfig = new NamedHotKeyConfigurer("undoHotKey", Resources.getString("BasicLogger.undo_hotkey"), undoKeyListener.getNamedKeyStroke()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -171,7 +171,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       undoKeyListener.setKeyStroke(undoKeyConfig.getValueNamedKeyStroke());
       if (undoKeyListener.getKeyStroke() != null) {
         undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_tooltip2", NamedHotKeyConfigurer.getString(undoKeyListener.getKeyStroke()))); //$NON-NLS-1$
-      } 
+      }
       else {
         undoAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.undo_last_move")); //$NON-NLS-1$
       }
@@ -305,8 +305,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return;
     }
 
-    String prefName;
-    String prompt;
+    final String prefName;
+    final String prompt;
 
     if (atStart) {
       prefName = PROMPT_NEW_LOG_START;

@@ -410,7 +410,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           p = PieceCloner.getInstance().clonePiece(p);
           GameModule.getGameModule().getGameState().addPiece(p);
           s.add(p);
-        } 
+        }
         else {
           ErrorDialog.dataWarning(new BadDataReport(slot, Resources.getString("Error.build_piece_at_start_stack", num, getConfigureName()), slot.getPieceDefinition()));
         }

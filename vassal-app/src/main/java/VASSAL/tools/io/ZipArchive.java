@@ -29,6 +29,7 @@ import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -49,6 +50,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 
+import VASSAL.i18n.Resources;
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
@@ -425,18 +427,50 @@ public class ZipArchive implements FileArchive {
         // attempt to copy to the destination
         Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
       }
-      catch (IOException e) {
-        // copy failed
-        final String fmt = "Unable to overwrite %s, so data written to %s instead: %s";
-        throw new IOException(
-          String.format(
-            fmt,
-            dst.toAbsolutePath(),
-            src.toAbsolutePath(),
-            e.getMessage()
-          ),
-          e
-        );
+      catch (IOException copyException) {
+        final Path dst2 = dst.resolveSibling(src.getFileName()); // Our "temp" name but in the destination directory
+        final String fmt = Resources.getString("Editor.ZipArchive.overwrite") + "\n%s"; //NON-NLS
+        try {
+          // Try to at least put it in same directory as the module
+          Files.copy(src, dst2, StandardCopyOption.REPLACE_EXISTING);
+
+          // Since we at least managed to copy it out of the temp directory, we delete the one out of our temp directory
+          try {
+            Files.delete(src);
+          }
+          catch (IOException ignoreDeleteException) {
+            // No action because we have a more important and informative exception to throw
+          }
+
+          // Tell where we moved the file to - don't need the obnoxious long paths in this case because they're in same directory.
+          throw new FileSystemException(
+            dst.toFile().getName(),
+            dst2.toFile().getName(),
+            String.format(
+              fmt,
+              dst.toFile().getName(),
+              dst2.toFile().getName(),
+              copyException.getMessage()
+            )
+          );
+        }
+        catch (FileSystemException whereWePutIt) {
+          // If we picked up a FileSystemException, then it came from the inner loop meaning we at least "got halfway", so
+          // we pass that exception on
+          throw whereWePutIt;
+        }
+        catch (IOException didEverythingFail) {
+          throw new FileSystemException(
+            dst.toFile().getName(),
+            src.toAbsolutePath().toString(),
+            String.format(
+              fmt,
+              dst.toFile().getName(),
+              src.toAbsolutePath().toString(),
+              copyException.getMessage() // Yes we are going to report the message from the FIRST copy exception in this case.
+            )
+          );
+        }
       }
 
       try {
@@ -445,16 +479,16 @@ public class ZipArchive implements FileArchive {
       }
       catch (IOException e) {
         // successful copy, but removing the source failed
-        final String fmt = "File %s saved, but unable to remove temporary file %s: %s";
+        final String fmt = "File %s saved, but unable to remove temporary file %s:\n %s";
         throw new IOException(
           String.format(
             fmt,
-            dst.toAbsolutePath(),
+            dst.toFile().getName(),
             src.toAbsolutePath(),
             e.getMessage()
           ),
           e
-         );
+        );
       }
     }
   }
@@ -513,19 +547,22 @@ public class ZipArchive implements FileArchive {
       }
     }
 
-    // Replace old archive with temp archive
-    moveFile(tmpFile.toPath(), archiveFile.toPath());
-
-    // Delete all temporary files
-    for (final Entry e : entries.values()) {
-      if (e != null && e.file != null) {
-        e.file.delete();
-      }
+    try {
+      // Replace old archive with temp archive
+      moveFile(tmpFile.toPath(), archiveFile.toPath());
     }
+    finally {
+      // Delete all temporary files
+      for (final Entry e : entries.values()) {
+        if (e != null && e.file != null) {
+          e.file.delete();
+        }
+      }
 
-    closed = true;
-    modified = false;
-    entries.clear();
+      closed = true;
+      modified = false;
+      entries.clear();
+    }
   }
 
   /** {@inheritDoc} */

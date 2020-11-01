@@ -40,6 +40,9 @@
 
 3.4.8 - ???
 
+* 13572: Stop converting preferences last written by 3.2.7 or earlier
+* 13567: Put backup in better location when writing to module fails and ensure
+  Editor is not left in a bad state
 * 13563: Hitting Enter in Editor expands or edits nodes
 * 13560: Don't register mouse listeners from ActionButton.draw()
 * 13449: Inventory window remains open when the game is closed in the Player

@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Sep 25, 2002
- * Time: 10:43:11 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map;
 
 import VASSAL.configure.GlobalCommandTargetConfigurer;
@@ -183,17 +175,18 @@ public class MassKeyCommand extends AbstractConfigurable
     if (condition == null) {
       return new String[]{
         Resources.getString(Resources.DESCRIPTION),                             // Description
-        Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$             // Key Command
-        Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
-
-        Resources.getString("Editor.GlobalKeyCommand.pre_select"),           // Fast match target info
-
-        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$           // Match properties
-        Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$    // Apply to pieces in deck
         Resources.getString(Resources.BUTTON_TEXT),                             // Button text
         Resources.getString(Resources.TOOLTIP_TEXT),                            // Button tooltip
         Resources.getString(Resources.BUTTON_ICON),                             // Button icon
         Resources.getString(Resources.HOTKEY_LABEL),                            // Hotkey
+
+        Resources.getString("Editor.GlobalKeyCommand.global_key_command"), //$NON-NLS-1$       // Key Command
+        Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$       // Apply to counters on this map only
+
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),          // Fast match target info
+
+        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties        
+        Resources.getString("Editor.GlobalKeyCommand.deck_policy"), //$NON-NLS-1$   // Apply to pieces in deck
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
         Resources.getString("Editor.report_format"), //$NON-NLS-1$          // Report format
       };
@@ -202,6 +195,10 @@ public class MassKeyCommand extends AbstractConfigurable
       // Backward compatibility
       return new String[]{
         Resources.getString(Resources.DESCRIPTION),                             // Description
+        Resources.getString(Resources.BUTTON_TEXT),                             // Button text
+        Resources.getString(Resources.TOOLTIP_TEXT),                            // Button tooltip
+        Resources.getString(Resources.BUTTON_ICON),                             // Button icon
+        Resources.getString(Resources.HOTKEY_LABEL),                            // Hotkey
         Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$             // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
 
@@ -209,10 +206,6 @@ public class MassKeyCommand extends AbstractConfigurable
 
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$           // Match properties
         Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$    // Apply to pieces in deck
-        Resources.getString(Resources.BUTTON_TEXT),                             // Button text
-        Resources.getString(Resources.TOOLTIP_TEXT),                            // Button tooltip
-        Resources.getString(Resources.BUTTON_ICON),                             // Button icon
-        Resources.getString(Resources.HOTKEY_LABEL),                            // Hotkey
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
         Resources.getString("Editor.report_format"), //$NON-NLS-1$          // Report format
         Resources.getString("Editor.MassKey.apply"), //$NON-NLS-1$          // Legacy condition
@@ -224,6 +217,10 @@ public class MassKeyCommand extends AbstractConfigurable
   public String[] getAttributeNames() {
     return new String[]{
       NAME,                                 // Description
+      BUTTON_TEXT,                          // Button text
+      TOOLTIP,                              // Button tooltip
+      ICON,                                 // Button icon
+      HOTKEY,                               // Hotkey
       KEY_COMMAND,                          // Key Command
       SINGLE_MAP,                           // Apply to counters on this map only
 
@@ -231,10 +228,6 @@ public class MassKeyCommand extends AbstractConfigurable
 
       PROPERTIES_FILTER,                    // Match properties
       DECK_COUNT,                           // Apply to pieces in deck
-      BUTTON_TEXT,                          // Button text
-      TOOLTIP,                              // Button tooltip
-      ICON,                                 // Button icon
-      HOTKEY,                               // Hotkey
       REPORT_SINGLE,                        // Suppress individual reports?
       REPORT_FORMAT,                        // Report format
       CONDITION,                            // Legacy condition
@@ -265,6 +258,10 @@ public class MassKeyCommand extends AbstractConfigurable
     if (condition == null) {
       return new Class<?>[]{
         String.class,                       // Description
+        String.class,                       // Button text
+        String.class,                       // Button tooltip
+        IconConfig.class,                   // Button icon
+        NamedKeyStroke.class,               // Hotkey
         NamedKeyStroke.class,               // Key Command
         Boolean.class,                      // Apply to counters on this map only
 
@@ -272,10 +269,6 @@ public class MassKeyCommand extends AbstractConfigurable
 
         PropertyExpression.class,           // Match properties
         DeckPolicyConfig.class,             // Apply to pieces in deck
-        String.class,                       // Button text
-        String.class,                       // Button tooltip
-        IconConfig.class,                   // Button icon
-        NamedKeyStroke.class,               // Hotkey
         Boolean.class,                      // Suppress individual reports?
         ReportFormatConfig.class            // Report format
       };
@@ -284,6 +277,10 @@ public class MassKeyCommand extends AbstractConfigurable
       // Backward compatibility
       return new Class<?>[]{
         String.class,
+        String.class,
+        String.class,
+        IconConfig.class,
+        NamedKeyStroke.class,
         NamedKeyStroke.class,
         Boolean.class,
 
@@ -291,10 +288,6 @@ public class MassKeyCommand extends AbstractConfigurable
 
         String.class,
         DeckPolicyConfig.class,
-        String.class,
-        String.class,
-        IconConfig.class,
-        NamedKeyStroke.class,
         Boolean.class,
         ReportFormatConfig.class,
         Prompt.class
@@ -328,7 +321,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
 
     public DeckPolicyConfig() {
-      this(true);
+      this(false);
     }
 
     public DeckPolicyConfig(boolean showPrompt) {
@@ -533,9 +526,6 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
-    if (key.equals(TARGET)) {
-      return () -> false; // No fast match for Deck Global Key Commands
-    }
     return () -> true;
   }
 

@@ -29,7 +29,7 @@ import VASSAL.script.expression.FormattedStringExpression;
  */
 public class PropertiesPieceFilter {
 
-  private static final Pattern[] CONDITIONS = { 
+  private static final Pattern[] CONDITIONS = {
     Pattern.compile("!="),
     Pattern.compile("<="),
     Pattern.compile(">="),
