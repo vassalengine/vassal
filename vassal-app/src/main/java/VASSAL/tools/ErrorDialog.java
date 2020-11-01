@@ -243,7 +243,7 @@ public class ErrorDialog {
     );
   }
 
-  public static Future<?> showFileOverwriteFailure( // I don't see why it shouldn't have a meaningful name? So much less confusing.
+  public static Future<?> showFileOverwriteFailure(
     FileSystemException thrown,
     String details,
     String messageKey,

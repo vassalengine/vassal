@@ -428,7 +428,7 @@ public class ZipArchive implements FileArchive {
         Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
       }
       catch (IOException copyException) {
-        Path dst2 = dst.resolveSibling(src.getFileName()); // Our "temp" name but in the destination directory
+        final Path dst2 = dst.resolveSibling(src.getFileName()); // Our "temp" name but in the destination directory
         final String fmt = Resources.getString("Editor.ZipArchive.overwrite") + "\n%s"; //NON-NLS
         try {
           // Try to at least put it in same directory as the module
@@ -553,7 +553,7 @@ public class ZipArchive implements FileArchive {
     }
     finally {
       // Delete all temporary files
-      for (Entry e : entries.values()) {
+      for (final Entry e : entries.values()) {
         if (e != null && e.file != null) {
           e.file.delete();
         }

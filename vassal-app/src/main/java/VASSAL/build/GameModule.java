@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import java.awt.FileDialog;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -30,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
