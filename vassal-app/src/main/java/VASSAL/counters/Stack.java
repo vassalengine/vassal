@@ -493,12 +493,11 @@ public class Stack implements GamePiece, StateMergeable {
   @Override
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(HAS_LAYER_MARKER).append(layer);
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$//
     for (int i = 0; i < pieceCount; ++i) {
       se.append(contents[i].getId());
     }
-    se.append(layer);
+    se.append(HAS_LAYER_MARKER + layer);
     return se.getValue();
   }
 
@@ -506,24 +505,28 @@ public class Stack implements GamePiece, StateMergeable {
   public void setState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
 
-    //BR// This encoding format with the "while" at the end made it challenging to work in a new parameter.
-    String next = st.nextToken();
-    if (HAS_LAYER_MARKER.equals(next)) {
-      layer = st.nextInt(LAYER_NOT_SET);
-      next  = st.nextToken();
+    final String mapId = st.nextToken();
+    if ("null".equals(mapId)) { //NON-NLS //BR// Looooks like if we encode null in getState then there's no position in the file to be read
+      setPosition(new Point(0, 0));
     }
     else {
-      layer = LAYER_NOT_SET;
+      setPosition(new Point(st.nextInt(0), st.nextInt(0)));
     }
-
-    final String mapId = next;
-    setPosition(new Point(st.nextInt(0), st.nextInt(0)));
     pieceCount = 0;
 
     final GameState gs = GameModule.getGameModule().getGameState();
     while (st.hasMoreTokens()) {
-      final GamePiece child = gs.getPieceForId(st.nextToken());
-      if (child != null) insertChild(child, pieceCount);
+      final String token = st.nextToken();
+      final GamePiece child = gs.getPieceForId(token);
+      if (child != null) {
+        insertChild(child, pieceCount);
+      }
+      else {
+        //BR// This encoding format with the "while" at the end made it challenging to work in a new parameter.
+        if (token.contains(HAS_LAYER_MARKER)) {
+          layer = Integer.valueOf(token.substring(HAS_LAYER_MARKER.length()));
+        }
+      }
     }
 
     Map m = null;
