@@ -523,7 +523,7 @@ public class Stack implements GamePiece, StateMergeable {
       }
       else {
         //BR// This encoding format with the "while" at the end made it challenging to work in a new parameter.
-        if (token.contains(HAS_LAYER_MARKER)) {
+        if (token.startsWith(HAS_LAYER_MARKER)) {
           layer = Integer.valueOf(token.substring(HAS_LAYER_MARKER.length()));
         }
       }
