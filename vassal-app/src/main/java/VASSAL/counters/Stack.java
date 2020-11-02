@@ -660,8 +660,9 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public void addImageNamesRecursively(Collection<String> s) {
     for (final Iterator<GamePiece> i = getPiecesIterator(); i.hasNext(); ) {
       final GamePiece p = i.next();
-      if (p instanceof ImageSearchTarget)
-      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+      if (p instanceof ImageSearchTarget) {
+        ((ImageSearchTarget)p).addImageNamesRecursively(s);
+      }
     }
   }
 
