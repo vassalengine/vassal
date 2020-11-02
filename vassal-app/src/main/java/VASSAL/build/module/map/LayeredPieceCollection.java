@@ -17,6 +17,10 @@
  */
 package VASSAL.build.module.map;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.swing.JToolBar;
 
 import VASSAL.build.AbstractConfigurable;
@@ -33,9 +37,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import static VASSAL.counters.Stack.LAYER_NOT_SET;
 
 /**
  * Defines PieceCollection in which pieces are assigned to an arbitrary number of layers
@@ -232,7 +234,8 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     public Object visitStack(Stack s) {
       final GamePiece top = s.topPiece();
       if (top == null) {
-        return layerOrder.length;
+        final int layer = s.getLayer();
+        return layer != LAYER_NOT_SET ? layer : layerOrder.length;
       }
       return visitDefault(top);
     }
