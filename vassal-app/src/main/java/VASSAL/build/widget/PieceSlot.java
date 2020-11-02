@@ -82,14 +82,16 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid"; //NON-NLS
+  private static final int DEFAULT_SIZE = 64;
   protected GamePiece c;
   protected GamePiece expanded;
   protected String pieceDefinition;
-  protected static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 12);
+  protected static final Font FONT = new Font(Font.DIALOG, Font.ITALIC, 12);
   protected final JPanel panel;
   protected int width, height;
   protected String gpId = ""; // Unique PieceSlot Id
   protected GpIdSupport gpidSupport;
+
 
   public PieceSlot() {
     panel = new PieceSlot.Panel(this);
@@ -250,7 +252,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     g.fillRect(0, 0, size.width, size.height);
     g.setColor(c);
 
-    if (getExpandedPiece() == null) {
+    if (getExpandedPiece() == null ||  getExpandedPiece().boundingBox().width == 0) {
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
 
       final FontMetrics fm = g.getFontMetrics();
@@ -281,8 +283,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     // Preferred size is affected by our module-specified scale
     if (c != null && panel.getGraphics() != null) {
       final Dimension bound = c.boundingBox().getSize();
-      bound.width = (int) ((double)bound.width * getScale());
-      bound.height = (int) ((double)bound.height * getScale());
+      bound.width = (int) ((double) (bound.width == 0 ? DEFAULT_SIZE : bound.width) * getScale());
+      bound.height = (int) ((double) (bound.height == 0 ? DEFAULT_SIZE : bound.height) * getScale());
       return bound;
     }
     else {
@@ -440,8 +442,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       }
       catch (final NumberFormatException ex) {
         // Use default values.  Will be overwritten when module is saved
-        width = 60;
-        height = 60;
+        width = DEFAULT_SIZE;
+        height = DEFAULT_SIZE;
       }
       pieceDefinition = Builder.getText(e);
       c = null;

@@ -24,7 +24,9 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ProblemDialog;
@@ -54,10 +56,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.awt.image.BufferedImage;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -70,13 +72,16 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-
 import javax.swing.TransferHandler;
+import javax.swing.plaf.SplitPaneUI;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -86,8 +91,16 @@ import net.miginfocom.swing.MigLayout;
 public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private static final long serialVersionUID = 1L;
 
+  // A Preference for holding the maximum split size between the image and the trait list panel.
+  // The preference is set when the user manually drags the splitter bar
+  private static final String MAX_SPLIT_PREF = "PieceDefinerMaxSplit"; // NON-NLS
+
+  // Identifying names for the two trait lists to allow them to share resources
   private static final String AVAILABLE = "Available"; // NON-NLS
   private static final String INUSE = "InUse"; // NON-NLS
+
+  // A reduced inset size for the icon buttons gives a better look
+  private static final Insets buttonInsets = new Insets(1, 2, 1, 2);
 
   protected static DefaultListModel<GamePiece> availableModel;
   protected static DefaultListModel<GamePiece> alphaModel;
@@ -96,7 +109,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private static Boolean sorted = false;
   protected DefaultListModel<GamePiece> inUseModel;
   protected ListCellRenderer<? super GamePiece> r;
-  protected PieceSlot slot;
+  protected ScaleablePieceSlot slot;
   private GamePiece piece;
   protected static TraitClipboard clipBoard;
   protected String pieceId = "";
@@ -117,13 +130,28 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected JButton copyButton;
   protected JButton pasteButton;
   private JPanel controls;
+  private JSplitPane splitPane;
+  private JPanel slotPanel;
+  private int maxPanelHeight;
+  private JLabel scaleLabel;
+  private final Prefs prefs;
+
+  // A Configurer to hold the users preferred maximum split size
+  private static final int MINIMUM_SPLIT_SIZE = 64;
+  private static final int DEFAULT_MAX_SPLIT = 256;
+  private IntConfigurer maxSplitConfig;
+  private boolean splitDragInProgress = false;
 
   /** Creates new form test */
   public PieceDefiner() {
+    prefs = GameModule.getGameModule().getPrefs();
+    maxSplitConfig = new IntConfigurer(MAX_SPLIT_PREF, null, DEFAULT_MAX_SPLIT);
+    prefs.addOption(MAX_SPLIT_PREF, maxSplitConfig);
+
     initDefinitions();
     inUseModel = new DefaultListModel<>();
     r = new Renderer();
-    slot = new PieceSlot();
+    slot = new ScaleablePieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
     setChanged(false);
@@ -278,6 +306,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     ProblemDialog.showDeprecated("20200912");
   }
 
+  /**
+   * The piece defined has been changed. It may have changed size, or image
+   *
+   */
   private void refresh() {
     if (inUseModel.getSize() > 0) {
       piece = inUseModel.lastElement();
@@ -286,8 +318,61 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       piece = null;
     }
     slot.setPiece(piece);
-    controls.invalidate();
+
+    if (piece != null) {
+      // Check the size of the image and re-size image and/or panel if required
+      resizeSlotPanel();
+    }
+
+    slotPanel.revalidate();
     repack();
+    slot.getComponent().repaint();
+  }
+
+  /**
+   *
+   * Re-calculate how to layout the left hand Piece display panel.
+   *
+   * 1. Always try and show the entire image 100% scale
+   * 2. If the image can't fit in the available space, scale it until it can
+   * 3. If the image size is < max split size, then set the divider size = image size to now waste space
+   *
+   */
+  private void resizeSlotPanel() {
+
+    // Reset the piece to 100% scale to get the actual size.
+    final double oldScale = slot.getScale();
+    slot.setScale(1.0);
+    final Dimension newSlotSize = new Dimension(slot.getPiece().boundingBox().width, slot.getPiece().boundingBox().height);
+    slot.setScale(oldScale);
+
+    final int maxSlotWidth = getMaxSplit();
+    final int maxSlotHeight = maxPanelHeight;
+
+    // Updated image size, work out a new scale factor and divider position to
+    // best display it.
+    if (newSlotSize.width <= maxSlotWidth && newSlotSize.height <= maxSlotHeight) {
+      // The new piece will fit at 100% scale. Set the maximum size of the slotPanel to prevent it expanding too far
+      slotPanel.setMaximumSize(new Dimension(newSlotSize.width, maxPanelHeight));
+      slotPanel.setPreferredSize(newSlotSize);
+      slot.setScale(1.0);
+      scaleLabel.setText("");
+    }
+    else {
+      // The new piece is too large to fit in the available space. Scale it to fit on the most oversized axis
+      final double xRatio = maxSlotWidth / newSlotSize.getWidth();
+      final double yRatio = maxSlotHeight / newSlotSize.getHeight();
+      final double newScale = (Math.min(xRatio, yRatio));
+      slot.setScale(newScale);
+      scaleLabel.setText("(" + (int) (newScale * 100) + "%)");
+      slot.getComponent().revalidate();
+      slot.getComponent().repaint();
+      final Dimension scaledSlotSize = new Dimension((int) (newSlotSize.width * newScale), (int) (newSlotSize.height * newScale));
+      slotPanel.setMaximumSize(new Dimension(Math.min(scaledSlotSize.width, maxSlotWidth), maxPanelHeight));
+      slotPanel.setPreferredSize(scaledSlotSize);
+    }
+    slotPanel.revalidate();
+    splitPane.resetToPreferredSizes();
     slot.getComponent().repaint();
   }
 
@@ -316,40 +401,63 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * This method is called from within the constructor to initialize the form.
    */
   private void initComponents() {
-    final Insets buttonInsets = new Insets(1, 2, 1, 2);
+    // Set a maximum size on this panel to prevent the window opening too tall on smaller screens
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    maxPanelHeight = (int) screenSize.getHeight() - 150;
+    setMaximumSize(new Dimension((int) screenSize.getWidth() - 100, maxPanelHeight));
 
-    setLayout(new MigLayout("ins panel", "[grow,fill]")); // NON-NLS
-    controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[shrink 0][grow,center][]")); // NON-NLS
+    // Main Layout for entire dialog. Just let it fill to max size
+    setLayout(new MigLayout("ins 0", "[grow,fill]")); // NON-NLS
 
-    final JPanel slotPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
-    slotPanel.setMaximumSize(new Dimension(512, 128));
-    final JScrollPane scroll = new JScrollPane(slot.getComponent(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    slotPanel.add(scroll, "grow"); // NON-NLS
+    // A Panel to hold the trait lists
+    controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[grow,center][][]")); // NON-NLS
 
-    controls.add(slotPanel, "span 4,center,grow,wrap"); // NON-NLS
+    // A Panel to hold the generated PieceSlot image
+    slotPanel = new JPanel(new MigLayout("ins 0", "push[]push", "push[]2[]push")); // NON-NLS
+    slotPanel.setMinimumSize(new Dimension(MINIMUM_SPLIT_SIZE, MINIMUM_SPLIT_SIZE));
+    final JPanel sPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS
+    sPanel.add(slot.getComponent(), "grow"); // NON-NLS
+    slotPanel.add(sPanel, "grow,wrap"); // NON-NLS
+    scaleLabel = new JLabel();
+    slotPanel.add(scaleLabel, "center,aligny top"); // NON-NLS
 
+    // Split the screen horizontally. PieceSlot image on the left, trait lists on the right.
+    splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, slotPanel, controls);
+    splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, e -> splitChanged());
+
+    // Set a MouseListener on the Divider so we can distinguish manual drags from auto-resizes
+    final SplitPaneUI spui = splitPane.getUI();
+    if (spui instanceof BasicSplitPaneUI) {
+      ((BasicSplitPaneUI) spui).getDivider().addMouseListener(new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent e) {
+          super.mousePressed(e);
+          setSplitDragInProgress(true);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+          super.mouseReleased(e);
+          setSplitDragInProgress(false);
+        }
+      });
+    }
+
+    add(splitPane, "grow,wrap"); // NON-NLS
+
+    // Custom TransferHandler to mediate drag and drop
     final ListTransferHandler transferHandler = new ListTransferHandler(this);
 
+    // The list of available Traits
     final JPanel availablePanel = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
     availableList = new JList<>();
     availableList.setName(AVAILABLE);
     availableList.setDragEnabled(true);
     availableList.setTransferHandler(transferHandler);
-    helpButton = new JButton();
-    final JButton importButton = new JButton();
-
-    final JPanel inUsePanel = new JPanel();
-    inUseList = new JList<>();
-    inUseList.setName(INUSE);
-    inUseList.addKeyListener(new ListKeyAdapter(this));
-    inUseList.setDragEnabled(true);
-    inUseList.setDropMode(DropMode.INSERT);
-    inUseList.setTransferHandler(transferHandler);
-    propsButton = new JButton();
-
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(r);
+    availableList.addKeyListener(new AvailableListKeyAdapter(this));
     availableList.addListSelectionListener(evt -> {
       final Object o = availableList.getSelectedValue();
       helpButton.setEnabled(o instanceof EditablePiece && ((EditablePiece) o).getHelpFile() != null);
@@ -358,18 +466,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     final JPanel availableListPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "grow,fill")); // NON-NLS
     availableListPanel.add(availableList, "grow"); // NON-NLS
-
     final JScrollPane availableScroll = new JScrollPane(availableListPanel);
-    availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
-    availablePanel.add(availableScroll, "grow"); // NON-NLS
 
+    availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
+    availablePanel.add(availableScroll, "grow,push"); // NON-NLS
+
+    // A Panel to hold the Help and Import button below the Available Traits
     final JPanel availableButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
-    helpButton.setText(Resources.getString("General.help"));
+    helpButton = new JButton(Resources.getString("General.help"));
     helpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.help_tip"));
     helpButton.addActionListener(evt -> showHelpForPiece());
 
-    importButton.setText(Resources.getString("General.import"));
+    final JButton importButton = new JButton(Resources.getString("General.import"));
     importButton.setToolTipText(Resources.getString("Editor.PieceDefiner.import_tip"));
     importButton.addActionListener(evt -> {
       final String className = JOptionPane.showInputDialog(
@@ -382,6 +491,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableButtonPanel.add(helpButton);
     controls.add(availablePanel, "grow"); // NON-NLS
 
+    // A Panel holding the add and Remove buttons between the two trait lists
     final JPanel addRemovePanel = new JPanel();
     addRemovePanel.setLayout(new MigLayout("ins 0,wrap 1")); // NON-NLS
 
@@ -397,12 +507,18 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     removeButton.setToolTipText(Resources.getString("Editor.PieceDefiner.remove_tip"));
     removeButton.addActionListener(evt -> doRemove());
     addRemovePanel.add(removeButton, "grow"); // NON-NLS
-
     addRemovePanel.add(pieceIdLabel, "center"); // NON-NLS
 
     controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
-    inUsePanel.setLayout(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
+    // The list of traits in use in this GamePiece
+    final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
+    inUseList = new JList<>();
+    inUseList.setName(INUSE);
+    inUseList.addKeyListener(new InUseListKeyAdapter(this));
+    inUseList.setDragEnabled(true);
+    inUseList.setDropMode(DropMode.INSERT);
+    inUseList.setTransferHandler(transferHandler);
 
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -442,6 +558,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     inUseScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.current_traits")));
     inUsePanel.add(inUseScroll, "grow"); // NON-NLS
 
+    // A panel holding the cut/paste/propertiues buttons below the In Use traits
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     copyButton = new JButton(Resources.getString("Editor.copy") + " (" + getCtrlKeyName('C') + ")");
     copyButton.addActionListener(evt -> doCopy());
@@ -452,7 +569,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     pasteButton.addActionListener(evt -> doPaste());
     inUseButtonPanel.add(pasteButton);
 
-    propsButton.setText(Resources.getString("Editor.properties"));
+    propsButton = new JButton(Resources.getString("Editor.properties"));
     propsButton.addActionListener(evt -> {
       final int index = inUseList.getSelectedIndex();
       if (index >= 0) {
@@ -464,6 +581,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     controls.add(inUsePanel, "grow"); // NON-NLS
 
+    // A panel to hold the trait navigation buttons.
     final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
 
     moveTopButton = new JButton(Resources.getString("Editor.PieceDefiner.move_top"), IconFactory.getIcon("go-top", IconFamily.SMALL)); // NON-NLS
@@ -520,6 +638,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     controls.add(new JLabel(""));
     controls.add(inUseButtonPanel, "center,wrap"); // NON-NLS
 
+    // A panel to hold the notes at the bottom of the screen
+    final JPanel notePanel = new JPanel(new MigLayout("ins 0,wrap 1,gapy 0", "push[center]push")); // NON-NLS
     final JLabel note1 = new JLabel(Resources.getString("Editor.PieceDefiner.note1"));
     final Font standardFont = note1.getFont();
     final Font italicFont = new Font(standardFont.getFontName(), Font.ITALIC, standardFont.getSize());
@@ -529,18 +649,49 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     note2.setFont(italicFont
     );
 
-    final JPanel notePanel = new JPanel(new MigLayout("ins 0,wrap 1,gapy 0", "push[center]push")); // NON-NLS
     notePanel.add(note1, "center"); // NON-NLS
     notePanel.add(note2, "center"); // NON-NLS
     controls.add(notePanel, "span 3,growx,wrap"); // NON-NLS
 
-    add(controls, "grow"); // NON-NLS
-
+    // Update the Sort Order
     updateSortOrder();
 
-    // Prevent the window opening too tall on smaller screens
-    final Dimension s = Toolkit.getDefaultToolkit().getScreenSize();
-    setMaximumSize(new Dimension((int) s.getWidth() - 100, (int) s.getHeight() - 150));
+  }
+
+  /**
+   * The user has manually dragged the divider to change the split size.
+   * Record the level as current maximum and resize the image if it is not
+   * at 100% already
+   */
+  private void splitChanged() {
+    // Exclude size changes due to resizes not initiated by the user
+    if (! isSplitDragInProgress()) {
+      return;
+    }
+
+    final int splitPosition = splitPane.getDividerLocation();
+
+    // Save the new split position
+    setMaxSplit(splitPosition);
+
+    // Re-size the image if necessary
+    resizeSlotPanel();
+  }
+
+  private int getMaxSplit() {
+    return (Integer) prefs.getValue(MAX_SPLIT_PREF);
+  }
+
+  private void setMaxSplit(int split) {
+    prefs.setValue(MAX_SPLIT_PREF, split);
+  }
+
+  public boolean isSplitDragInProgress() {
+    return splitDragInProgress;
+  }
+
+  public void setSplitDragInProgress(boolean splitDragInProgress) {
+    this.splitDragInProgress = splitDragInProgress;
   }
 
   /**
@@ -561,6 +712,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
     }
   }
+
 
   private void doPaste() {
     if (clipBoard != null) {
@@ -1089,33 +1241,83 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * KeyAdapter added to the InUseList. Look for cut/copy/paste and
    * call the matching buttons to do the work.
    */
-  static class ListKeyAdapter extends KeyAdapter {
+  static class InUseListKeyAdapter extends KeyAdapter {
 
     private final PieceDefiner definer;
 
-    public ListKeyAdapter(PieceDefiner definer) {
+    public InUseListKeyAdapter(PieceDefiner definer) {
       this.definer = definer;
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+
       if (SwingUtils.isModifierKeyDown(e)) {
         switch (e.getKeyCode()) {
-        case KeyEvent.VK_C :
+        case KeyEvent.VK_C:
           definer.copyButton.doClick();
           break;
-        case KeyEvent.VK_V :
+        case KeyEvent.VK_V:
           definer.pasteButton.doClick();
           break;
-        case KeyEvent.VK_X :
+        case KeyEvent.VK_X:
           definer.doCopy();
           definer.removeButton.doClick();
           break;
-        default :
+        default:
           break;
         }
       }
+      else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+        definer.removeButton.doClick();
+      }
+      else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        definer.propsButton.doClick();
+      }
     }
   }
+
+  /**
+   * KeyAdapter added to the AvailableList. Look for Enter and
+   * call the add button
+   */
+  static class AvailableListKeyAdapter extends KeyAdapter {
+
+    private final PieceDefiner definer;
+
+    public AvailableListKeyAdapter(PieceDefiner definer) {
+      this.definer = definer;
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        definer.addButton.doClick();
+      }
+    }
+  }
+
+  /**
+   * A PieceSlot that can be scaled externally, instead of relying
+   * on the scale of an enclosing widget
+   */
+  static class ScaleablePieceSlot extends PieceSlot {
+    private double scale = 1.0;
+
+    public ScaleablePieceSlot() {
+      super();
+      setScale(1.0);
+    }
+
+    @Override
+    public double getScale() {
+      return scale;
+    }
+
+    public void setScale(double scale) {
+      this.scale = scale;
+    }
+  }
+
 }
 
