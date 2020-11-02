@@ -33,6 +33,8 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
+import static VASSAL.counters.Stack.LAYER_NOT_SET;
+
 /**
  * Defines PieceCollection in which pieces are assigned to an arbitrary number of layers
  * according to a property setting
@@ -228,6 +230,10 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     public Object visitStack(Stack s) {
       GamePiece top = s.topPiece();
       if (top == null) {
+        int layer = s.getLayer();
+        if (layer != LAYER_NOT_SET) {
+          return layer;
+        }
         return layerOrder.length;
       }
       return visitDefault(top);

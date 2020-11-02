@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.map.CompoundPieceCollection;
+import VASSAL.build.module.map.PieceCollection;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -46,9 +48,12 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class Stack implements GamePiece, StateMergeable {
   public static final String TYPE = "stack"; //$NON-NLS-1$//
+  public static final String HAS_LAYER_MARKER = "@@";
+  public static final int LAYER_NOT_SET = -1;
   protected static final int INCR = 5;
   protected GamePiece[] contents = new GamePiece[INCR];
   protected int pieceCount = 0;
+  protected int layer = LAYER_NOT_SET;
 
   protected Point pos = new Point(0, 0);
 
@@ -133,6 +138,14 @@ public class Stack implements GamePiece, StateMergeable {
 //    return new VisibleOrderEnum();
   }
 
+
+  /**
+   * @return the layer we're bound to, or LAYER_NOT_SET if it we haven't been bound yet
+   */
+  public int getLayer() {
+    return layer;
+  }
+
   public void remove(GamePiece p) {
     removePieceAt(indexOf(p));
     p.setParent(null);
@@ -209,6 +222,16 @@ public class Stack implements GamePiece, StateMergeable {
    * @param c Stack to add piece to
    */
   public void add(GamePiece c) {
+    if ((pieceCount == 0) && (layer == LAYER_NOT_SET)) {
+      Map m = getMap();
+      if (m != null) {
+        PieceCollection p = m.getPieceCollection();
+        if (p instanceof CompoundPieceCollection) {
+          layer = ((CompoundPieceCollection) p).getLayerForPiece(c); //BR// Bind our stack to the layer of the first piece added
+        }
+      }
+    }
+    //FIXME - really, if at this point "layer" is set and the new piece wants to be in a different layer, that's BAD and will produce buggy behavior. But we are presently quietly ignoring that because of all the buggy stacks created in the past.
     insert(c, pieceCount);
   }
 
@@ -470,17 +493,30 @@ public class Stack implements GamePiece, StateMergeable {
   @Override
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
+    se.append(HAS_LAYER_MARKER).append(layer);
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$//
     for (int i = 0; i < pieceCount; ++i) {
       se.append(contents[i].getId());
     }
+    se.append(layer);
     return se.getValue();
   }
 
   @Override
   public void setState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
-    final String mapId = st.nextToken();
+
+    //BR// This encoding format with the "while" at the end made it challenging to work in a new parameter.
+    String next = st.nextToken();
+    if (HAS_LAYER_MARKER.equals(next)) {
+      layer = st.nextInt(LAYER_NOT_SET);
+      next  = st.nextToken();
+    }
+    else {
+      layer = LAYER_NOT_SET;
+    }
+
+    final String mapId = next;
     setPosition(new Point(st.nextInt(0), st.nextInt(0)));
     pieceCount = 0;
 
