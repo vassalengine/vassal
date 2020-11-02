@@ -645,12 +645,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     final Font italicFont = new Font(standardFont.getFontName(), Font.ITALIC, standardFont.getSize());
     note1.setFont(italicFont);
 
-    final JLabel note2 = new JLabel(Resources.getString("Editor.PieceDefiner.note2"));
-    note2.setFont(italicFont
-    );
-
     notePanel.add(note1, "center"); // NON-NLS
-    notePanel.add(note2, "center"); // NON-NLS
     controls.add(notePanel, "span 3,growx,wrap"); // NON-NLS
 
     // Update the Sort Order
