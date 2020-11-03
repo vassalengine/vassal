@@ -203,7 +203,7 @@ public class PieceMover extends AbstractBuildable
         if (selected != null &&
             DragBuffer.getBuffer().contains(selected) &&
             selected.getParent() != null &&
-            selected.getParent().topPiece() == selected) {
+            selected.getParent().topPiece() == selected) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
           selected = null;
         }
         return selected;
@@ -222,7 +222,7 @@ public class PieceMover extends AbstractBuildable
             this.map.getPieceCollection().canMerge(dragging, s) &&
             !DragBuffer.getBuffer().contains(s) &&
             !DragBuffer.getBuffer().containsAllMembers(s) &&  //BR// Don't merge back into a stack we are in the act of emptying
-            s.topPiece() != null) {
+            s.topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
           if (this.map.isLocationRestricted(pt) && !s.isExpanded()) {
             if (s.getPosition().equals(this.map.snapTo(pt))) {
               selected = s;

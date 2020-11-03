@@ -619,7 +619,7 @@ public class StackMetrics extends AbstractConfigurable {
    */
   public Command merge(GamePiece fixed, GamePiece moving) {
     Command comm;
-    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {
+    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       comm = merge(((Stack) fixed).topPiece(), moving);
     }
     else {

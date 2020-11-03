@@ -157,12 +157,12 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
 
   protected boolean canStacksMerge(Stack s1, Stack s2) {
-    return canPiecesMerge(s1.topPiece(), s2.topPiece());
+    return canPiecesMerge(s1.topPiece(), s2.topPiece()); //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
   }
 
   protected boolean canStackAndPieceMerge(Stack s, GamePiece p) {
     boolean canMerge = false;
-    final GamePiece top = s.topPiece();
+    final GamePiece top = s.topPiece();  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
     if (top != null) {
       canMerge = canPiecesMerge(top, p);
     }

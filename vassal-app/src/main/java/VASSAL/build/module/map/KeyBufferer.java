@@ -266,7 +266,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
     @Override
     public Object visitStack(Stack s) {
-      if (s.topPiece() != null) {
+      if (s.topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
         final KeyBuffer kbuf = KeyBuffer.getBuffer();
         if (s instanceof Deck) {
           s.asList().forEach(kbuf::remove); // Clear any deck *members* out of the KeyBuffer.

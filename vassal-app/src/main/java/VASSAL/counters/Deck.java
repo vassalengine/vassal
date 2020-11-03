@@ -1077,7 +1077,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     final int count = Math.min(getPieceCount(), maxStack);
     final GamePiece top = (nextDraw != null && !nextDraw.isEmpty()) ?
-      nextDraw.get(0) : topPiece();
+      nextDraw.get(0) : topPiece();  
 
     if (top != null) {
       final Object owner = top.getProperty(Properties.OBSCURED_BY);

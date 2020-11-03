@@ -3442,7 +3442,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
         return map.getStackMetrics().merge(s, p);
       }
       else {
