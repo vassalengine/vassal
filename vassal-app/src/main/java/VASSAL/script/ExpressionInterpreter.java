@@ -30,6 +30,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -97,17 +98,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
-  
-  
+
+
   public String getComponentTypeName() {
     return "ExpressionInterpreter";
   }
-  
-  
+
+
   public String getComponentName() {
     return "ExpressionInterpreter";
   }
-  
+
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -255,9 +256,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       // Default to the GameModule to satisfy properties if no
       // GamePiece supplied.
       source = ps == null ? GameModule.getGameModule() : ps;
-  
+
       setNameSpace(expressionNameSpace);
-    
+
       // Bind each undeclared variable with the value of the
       // corresponding Vassal property. Allow for old-style $variable$ references
       for (String var : variables) {
@@ -294,7 +295,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           }
         }
       }
-    
+
       final StringBuilder argList = new StringBuilder();
       for (String var : stringVariables) {
         if (argList.length() > 0) {
@@ -303,13 +304,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
         argList.append('"').append(value == null ? "" : value.toString()).append('"');
       }
-  
+
       // Re-evaluate the pre-parsed expression now that the undefined variables have
       // been bound to their Vassal property values.
-    
+
       setVar(THIS, this);
-      setVar(SOURCE, source);  
-        
+      setVar(SOURCE, source);
+
       try {
         eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
         result = get(MAGIC1).toString();
@@ -531,6 +532,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   /*
    * Sum & Count
    *
+   * Note that these methods are called from Beanshell and all arguements are passed
+   * as Object types.
+   *
    * Sum (property, match)      - Sum named property in units on all maps matching match
    * Sum (property, match, map) - Sum named property in units on named map matching match
    * Count (match)              - Count units on all maps matching match
@@ -549,12 +553,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
-    final List<Map> maps = getMapList(mapName, sourcePiece);
+    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    for (Map map : maps) {
+    for (Map map : getMapList(mapName, sourcePiece)) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (GamePiece p : ((Stack) piece).asList()) {
@@ -593,13 +596,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
+    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    final List<Map> maps = getMapList(mapName, sourcePiece);
-
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
-    for (Map map : maps) {
+    for (Map map : getMapList(mapName, sourcePiece)) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (GamePiece p : ((Stack) piece).asList()) {
@@ -656,4 +657,44 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return null;
   }
 
+  /**
+   * Utility function to replace $xxx$ variables with values from a GamePiece
+   *
+   * @param expression Expression possibly containing $$ variables
+   * @param source A GamePiece to use as a source for the $$ variable values
+   *
+   * @return Updated expression
+   */
+  private String replaceDollarVariables(String expression, GamePiece source) {
+    if (expression == null || !expression.contains("$")) {
+      return expression;
+    }
+
+    final StringBuilder buffer = new StringBuilder();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(expression, '$');
+    boolean isProperty = true;
+
+    while (st.hasMoreTokens()) {
+      final String token = st.nextToken();
+      isProperty = !isProperty;
+      if (token.length() > 0) {
+        /*
+         * Only even numbered tokens with at least one token after them are valid $propertName$ strings.
+         */
+        if (!isProperty || !st.hasMoreTokens()) {
+          buffer.append(token);
+        }
+        else if (source != null) {
+          final Object value = source.getProperty(token);
+          if (value != null) {
+            buffer.append(value.toString());
+          }
+        }
+        else {
+          buffer.append(token);
+        }
+      }
+    }
+    return buffer.toString();
+  }
 }
