@@ -362,6 +362,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (props == null) {
       props = new HashMap<>();
     }
+    if (Properties.SNAPSHOT.equals(key)) {
+      int i = 0;
+    }
     if (val == null) {
       props.remove(key);
     }
