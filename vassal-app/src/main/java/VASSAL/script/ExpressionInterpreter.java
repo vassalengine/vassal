@@ -30,7 +30,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
-import VASSAL.tools.SequenceEncoder;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -671,30 +671,62 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
 
     final StringBuilder buffer = new StringBuilder();
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(expression, '$');
-    boolean isProperty = true;
+    int state = 0;
+    final StringBuilder propertyName = new StringBuilder();
 
-    while (st.hasMoreTokens()) {
-      final String token = st.nextToken();
-      isProperty = !isProperty;
-      if (token.length() > 0) {
-        /*
-         * Only even numbered tokens with at least one token after them are valid $propertName$ strings.
-         */
-        if (!isProperty || !st.hasMoreTokens()) {
-          buffer.append(token);
+    for (int i = 0; i < expression.length(); i++) {
+      char c = expression.charAt(i);
+
+      switch (state) {
+      //
+      // State 0 - Looking for a $ sign that may be the start of a $$ property expression
+      //
+      case 0:
+        if (c == '$') {
+          // Seen a '$', start collecting a property name
+          state = 1;
+          propertyName.setLength(0);
         }
-        else if (source != null) {
-          final Object value = source.getProperty(token);
-          if (value != null) {
-            buffer.append(value.toString());
+        else {
+          buffer.append(c);
+        }
+        break;
+      // State 1 - Assembling a possible property name token
+      case 1:
+        if (c == '$') {
+          // Closing '$' seen, is this a property with a value?
+          final String propName = propertyName.toString();
+          final Object prop = source == null ? null : source.getLocalizedProperty(propName);
+          final String propertyValue = prop == null ? null : prop.toString();
+          if (propertyValue == null) {
+            // Not a property value. Add the initial '$' plus the assembled text to the output and start
+            // looking for a new property name from the end '$' sign.
+            buffer.append('$');
+            buffer.append(propertyName);
+            propertyName.setLength(0);
+            state = 1;
+          }
+          else {
+            // This is a valid property value, add it to the output string and start looking for next property.
+            buffer.append(propertyValue);
+            state = 0;
           }
         }
         else {
-          buffer.append(token);
+          propertyName.append(c);
         }
+        break;
       }
     }
+
+    // End of String reached. If we are still in state 1, then the we need to copy over
+    // the token in progress plus its initiating '$' sign
+    if (state == 1) {
+      buffer.append('$');
+      buffer.append(propertyName);
+    }
+
     return buffer.toString();
   }
+
 }
