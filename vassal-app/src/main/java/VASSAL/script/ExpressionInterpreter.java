@@ -30,6 +30,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -531,6 +532,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   /*
    * Sum & Count
    *
+   * Note that these methods are called from Beanshell and all arguements are passed
+   * as Object types.
+   *
    * Sum (property, match)      - Sum named property in units on all maps matching match
    * Sum (property, match, map) - Sum named property in units on named map matching match
    * Count (match)              - Count units on all maps matching match
@@ -549,12 +553,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
-    final List<Map> maps = getMapList(mapName, sourcePiece);
+    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    for (Map map : maps) {
+    for (Map map : getMapList(mapName, sourcePiece)) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (GamePiece p : ((Stack) piece).asList()) {
@@ -593,13 +596,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
+    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    final List<Map> maps = getMapList(mapName, sourcePiece);
-
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
-    for (Map map : maps) {
+    for (Map map : getMapList(mapName, sourcePiece)) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (GamePiece p : ((Stack) piece).asList()) {
@@ -656,4 +657,44 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return null;
   }
 
+  /**
+   * Utility function to replace $xxx$ variables with values from a GamePiece
+   *
+   * @param expression Expression possibly containing $$ variables
+   * @param source A GamePiece to use as a source for the $$ variable values
+   *
+   * @return Updated expression
+   */
+  private String replaceDollarVariables(String expression, GamePiece source) {
+    if (expression == null || !expression.contains("$")) {
+      return expression;
+    }
+
+    final StringBuilder buffer = new StringBuilder();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(expression, '$');
+    boolean isProperty = true;
+
+    while (st.hasMoreTokens()) {
+      final String token = st.nextToken();
+      isProperty = !isProperty;
+      if (token.length() > 0) {
+        /*
+         * Only even numbered tokens with at least one token after them are valid $propertName$ strings.
+         */
+        if (!isProperty || !st.hasMoreTokens()) {
+          buffer.append(token);
+        }
+        else if (source != null) {
+          final Object value = source.getProperty(token);
+          if (value != null) {
+            buffer.append(value.toString());
+          }
+        }
+        else {
+          buffer.append(token);
+        }
+      }
+    }
+    return buffer.toString();
+  }
 }
