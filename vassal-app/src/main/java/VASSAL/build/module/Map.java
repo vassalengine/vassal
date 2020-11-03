@@ -229,7 +229,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
-  protected PieceCollection pieces = new DefaultPieceCollection();
+  protected PieceCollection pieces = new DefaultPieceCollection(); // All the pieces on the map, but sorted into visual layers
   protected Highlighter highlighter = new ColoredBorder();
   protected ArrayList<Highlighter> highlighters = new ArrayList<>(); //NOPMD
   protected boolean clearFirst = false; // Whether to clear the display before
@@ -652,8 +652,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * Every map must include a single {@link StackMetrics} as one of its build components, which governs the stacking behavior
-   * of GamePieces on the map.
+   * Every map must include a single {@link StackMetrics} as one of its build components, which governs the visuals
+   * of stacking of GamePieces on the map.
    * @param sm {@link StackMetrics} component to register
    */
   public void setStackMetrics(StackMetrics sm) {
@@ -662,7 +662,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * Every map must include a single {@link StackMetrics} object as one of its build
-   * components, which governs the stacking behavior of GamePieces on the map
+   * components, which governs the visuals of stacking of GamePieces on the map
    *
    * @return the StackMetrics for this map
    */
@@ -2043,7 +2043,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final Composite oldComposite = g2d.getComposite();
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
-    final GamePiece[] stack = pieces.getPieces();
+    final GamePiece[] stack = pieces.getPieces(); // Gets map pieces, sorted by visual layer
     for (final GamePiece gamePiece : stack) {
       final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       if (gamePiece.getClass() == Stack.class) {
@@ -2090,7 +2090,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final Composite oldComposite = g2d.getComposite();
     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
-    final GamePiece[] stack = pieces.getPieces();
+    final GamePiece[] stack = pieces.getPieces(); // Gets map pieces, sorted by visual layer
     for (final GamePiece gamePiece : stack) {
       final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       gamePiece.draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
@@ -2241,30 +2241,31 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * @return an array of all GamePieces on the map, subject to visibility. This is a read-only copy.
-   * Altering the array does not alter the pieces on the map.
+   * @return an array of all GamePieces on the map, subject to visibility, and sorted in order of
+   * visual layers. This is a read-only copy. Altering the array does not alter the pieces on the map.
    */
   public GamePiece[] getPieces() {
     return pieces.getPieces();
   }
 
   /**
-   * @return an array of all GamePieces on the map, regardless of visibility.
-   * This is a read-only copy. Altering the array does not alter the pieces on the map.
+   * @return an array of all GamePieces on the map, regardless of visibility, and sorted
+   * in order of visual layer. This is a read-only copy. Altering the array does not alter
+   * the pieces on the map.
    */
   public GamePiece[] getAllPieces() {
     return pieces.getAllPieces();
   }
 
   /**
-   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control")
+   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control"), which keeps the pieces sorted by visual layer
    */
   public void setPieceCollection(PieceCollection pieces) {
     this.pieces = pieces;
   }
 
   /**
-   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control")
+   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control"), which maintains a list of all the pieces on the map sorted by visual layer.
    */
   public PieceCollection getPieceCollection() {
     return pieces;
@@ -2594,8 +2595,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * As a {@link GameComponent}, Map does not have any action inherently needing to be taken for "restoring" itself for load/save and
-   * network play purposes (the locations of pieces, etc, are stored in the pieces). Map's interest in GameComponent is entirely for
-   * game start/stop purposes (see {@link #setup}, above)
+   * network play purposes (the locations of pieces, etc, are stored in the pieces, and are restored from {@link GameState} in its
+   * {@link GameState#getRestorePiecesCommand} method, which creates an AddPiece command for each piece). Map's interest in GameComponent
+   * is entirely for game start/stop purposes (see {@link #setup}, above).
    * @return null since no restore command needed.
    */
   @Override
