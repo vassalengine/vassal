@@ -229,7 +229,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
-  protected PieceCollection pieces = new DefaultPieceCollection(); // All the pieces on the map, but sorted into visual layers
+  protected PieceCollection pieces = new DefaultPieceCollection(); // All the pieces on the map, but sorted into visual layers. Will be replaced by a LayeredPieceCollection if Map has a "Game Piece Layers" Component.
   protected Highlighter highlighter = new ColoredBorder();
   protected ArrayList<Highlighter> highlighters = new ArrayList<>(); //NOPMD
   protected boolean clearFirst = false; // Whether to clear the display before
@@ -2258,14 +2258,14 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control"), which keeps the pieces sorted by visual layer
+   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control"), which keeps the pieces/stacks/decks sorted by visual layer, and within each layer by back-to-front draw order
    */
   public void setPieceCollection(PieceCollection pieces) {
     this.pieces = pieces;
   }
 
   /**
-   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control"), which maintains a list of all the pieces on the map sorted by visual layer.
+   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control"), which maintains a list of all the pieces/stacks/decks on the map sorted by visual layer, and within each layer by back-to-front draw order
    */
   public PieceCollection getPieceCollection() {
     return pieces;
