@@ -55,8 +55,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**
- * Encapsulates information on how to draw expanded and unexpanded
- * views of a stack
+ * StackMetrics provides the [Stacking options] component of a {@link Map}. It encapsulates information on how to draw
+ * expanded and unexpanded views of a stack.
  */
 public class StackMetrics extends AbstractConfigurable {
   protected int exSepX, exSepY;
