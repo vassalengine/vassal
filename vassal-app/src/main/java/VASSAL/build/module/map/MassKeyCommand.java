@@ -19,6 +19,7 @@ package VASSAL.build.module.map;
 
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.counters.CounterGlobalKeyCommand;
@@ -57,6 +58,7 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
@@ -103,6 +105,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
 
+  protected LaunchButton launch;
   protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
   protected String condition;
@@ -134,10 +137,15 @@ public class MassKeyCommand extends AbstractToolbarItem
     setButtonTextKey(BUTTON_TEXT);
     setHotKeyKey(HOTKEY);
 
-    makeLaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"),
-                     Resources.getString("Editor.GlobalKeyCommand.button_name"),
-              "", //Default art exists, but is a little weird, and wasn't actually being defaulted to before --> "/images/keyCommand.gif", //NON-NLS
-                     al);
+    launch = makeLaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"),
+                              Resources.getString("Editor.GlobalKeyCommand.button_name"),
+                      "", //Default art exists, but is a little weird, and wasn't actually being defaulted to before --> "/images/keyCommand.gif", //NON-NLS
+                             al);
+  }
+
+  @Override
+  public LaunchButton getLaunchButton() {
+    return launch;
   }
 
   @Override
@@ -278,6 +286,14 @@ public class MassKeyCommand extends AbstractToolbarItem
         ReportFormatConfig.class,
         Prompt.class
       );
+    }
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, "/images/keyCommand.gif"); //NON-NLS
     }
   }
 
