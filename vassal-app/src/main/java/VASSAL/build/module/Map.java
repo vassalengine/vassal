@@ -2671,6 +2671,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public GamePiece findAnyPiece(Point pt, PieceFinder finder) {
     final GamePiece[] stack = pieces.getAllPieces();
+    // Our piece collection is provided to us in "draw order", in other words "back-to-front", which means
+    // that we need to iterate backwards to prioritize checking pieces that are visually "in front of" others.
     for (int i = stack.length - 1; i >= 0; --i) {
       final GamePiece p = finder.select(this, stack[i], pt);
       if (p != null) {
