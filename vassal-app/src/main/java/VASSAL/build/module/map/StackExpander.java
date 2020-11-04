@@ -62,7 +62,7 @@ public class StackExpander extends MouseAdapter implements Buildable {
       if (p != null) {
         KeyBuffer.getBuffer().clear();
         ((Stack) p).setExpanded(!((Stack) p).isExpanded());
-        KeyBuffer.getBuffer().add(((Stack) p).topPiece());
+        KeyBuffer.getBuffer().add(((Stack) p).topPiece());  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       }
       e.consume();
     }

@@ -164,7 +164,7 @@ public class MovementReporter {
       return false;
     }
     if (target instanceof Stack) {
-      final GamePiece top = ((Stack) target).topPiece(null);
+      final GamePiece top = ((Stack) target).topPiece(null); //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       return top != null;
     }
     else {

@@ -47,29 +47,50 @@ import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
 
 /**
- * A collection of GamePieces which can be moved as a single unit
+ * A Stack is a collection of pieces in the same location that can often be moved with a single drag-and-drop.
+ * Because it implements the {@link GamePiece} interface, a Stack is formally a kind of GamePiece itself, which
+ * can lead to confusion when the terms pieces, GamePieces, etc are used loosely/interchangeably. The kind of "pieces"
+ * a Stack contains are the "regular" kind of pieces that have a {@link BasicPiece} plus an optional group of
+ * {@link Decorator} traits.
+ * <br><br>
+ * A standard Stack will only contain pieces that are "stackable" (i.e. doesn't have a "Does Not Stack" {@link Immobilized}
+ * trait, so that {@link Properties.NO_STACK} is false) and share the same X/Y position on the same {@link Map}, and all
+ * stackable pieces on a {@link Map} will always be part of <i>some</i> Stack -- even single stackable pieces will have
+ * a Stack created to contain them. Stacks <i>should</i> contain only pieces from the same visual layer (see
+ * {@link VASSAL.build.module.map.LayeredPieceCollection}), but presently bad behaviors can still develop (e.g. a piece
+ * uses a Dynamic Property to control its Game Piece Layer, and ends up changing layers without the Stack noticing) --
+ * ideally we should straighten that out in future versions.
+ * <br><br>
+ * {@link Deck} is a further extension of Stack which utilizes the piece-grouping code but overrides other aspects
+ * (e.g. can allow pieces regardless of their "stackability", has different drag-and-drop behavior, etc) to create
+ * a different kind of grouping.
  */
 public class Stack extends AbstractImageFinder implements GamePiece, StateMergeable {
   public static final String TYPE = "stack"; //$NON-NLS-1$//
-  public static final String HAS_LAYER_MARKER = "@@";
-  public static final int LAYER_NOT_SET = -1;
+  public static final String HAS_LAYER_MARKER = "@@"; // Horrific encoding hack necessitated by equally horrific legacy encoder
+  public static final int LAYER_NOT_SET = -1; // Brand new stacks with no pieces do not yet know their visual layer
   protected static final int INCR = 5;
-  protected GamePiece[] contents = new GamePiece[INCR];
-  protected int pieceCount = 0;
-  protected int layer = LAYER_NOT_SET;
 
-  protected Point pos = new Point(0, 0);
+  protected GamePiece[] contents = new GamePiece[INCR]; // array of GamePieces contained by the stack
+  protected int pieceCount = 0;        // Number of pieces currently in the stack
+
+  protected Map map;                   // Map that the stack is on
+  protected Point pos = new Point(0, 0); // X/Y position of the stack on its map. All pieces in a stack always share the same X/Y position
+  protected int layer = LAYER_NOT_SET; // Visual layer for this stack. Once the first piece is added, it is bound permanently.
+  private boolean expanded = false;    // Is stack currently visually expanded by the player (for easier viewing, and/or to drag individual pieces)
 
   private String id;
-  private boolean expanded = false;
 
-  protected Map map;
   private static StackMetrics defaultMetrics;
 
   public Stack() {
     this(null);
   }
 
+  /**
+   * Creates a Stack to contain a specific stackable piece.
+   * @param p piece to make a stack for
+   */
   public Stack(GamePiece p) {
     if (p != null) {
       setMap(p.getMap());
@@ -92,10 +113,10 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public Enumeration<GamePiece> getPieces() {
     ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new AllPieceIterator());
-    //    return new AllPieceEnum();
   }
 
   /**
+   * A list of the pieces in the stack.
    * @return an unmodifiable {@link List} which is a defensive copy of {@link GamePiece}s contained in
    * this {@link Stack}
    */
@@ -121,9 +142,14 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public Enumeration<GamePiece> getPiecesInReverseOrder() {
     ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new ReversePieceIterator());
-//    return new ReversePieceEnum();
   }
 
+  /**
+   * Returns pieces in the order in which they are visible to the player --
+   * topmost first In other words, selected pieces first, then unselected pieces
+   * from the top to the bottom.
+   * @return iterator
+   */
   public Iterator<GamePiece> getPiecesInVisibleOrderIterator() {
     return new VisibleOrderIterator();
   }
@@ -138,17 +164,19 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public Enumeration<GamePiece> getPiecesInVisibleOrder() {
     ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new VisibleOrderIterator());
-//    return new VisibleOrderEnum();
   }
 
 
   /**
-   * @return the layer we're bound to, or LAYER_NOT_SET if it we haven't been bound yet
+   * @return the visual layer we're bound to, or LAYER_NOT_SET if it we haven't been bound yet. Keeps the stack oriented to its correct Game Piece Layer - see {@link VASSAL.build.module.map.LayeredPieceCollection}
    */
   public int getLayer() {
     return layer;
   }
 
+  /**
+   * @param p Piece to remove from the stack
+   */
   public void remove(GamePiece p) {
     removePieceAt(indexOf(p));
     p.setParent(null);
@@ -157,6 +185,9 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
   }
 
+  /**
+   * @param index Index of piece to remove from the stack
+   */
   protected void removePieceAt(int index) {
     if (index >= 0 && index < pieceCount) {
       pieceCount--;
@@ -176,6 +207,11 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return null;
   }
 
+  /**
+   * Insert a piece at a particular point in the stack
+   * @param p piece to insert
+   * @param index place to insert it
+   */
   protected void insertPieceAt(GamePiece p, int index) {
     if (index < 0) {
       index = 0;
@@ -198,11 +234,19 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     pieceCount++;
   }
 
+  /**
+   * Marks the stack as empty
+   */
   public void removeAll() {
     pieceCount = 0;
     expanded = false;
   }
 
+  /**
+   * Finds the index of a piece in the stack
+   * @param p Piece to locate
+   * @return The index of the piece, or -1 if it is not present in the stack
+   */
   public int indexOf(GamePiece p) {
     int index = -1;
     for (int i = 0; i < pieceCount; ++i) {
@@ -214,6 +258,10 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return index;
   }
 
+  /**
+   * @param index Index in the stack
+   * @return the piece at the specified index
+   */
   public GamePiece getPieceAt(int index) {
     return contents[index];
   }
@@ -257,6 +305,9 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     insertPieceAt(child, index);
   }
 
+  /**
+   * @return the number of pieces in the stack
+   */
   public int getPieceCount() {
     return pieceCount;
   }
@@ -328,7 +379,8 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   }
 
   /**
-   * Return a comma-separated list of the names of the pieces in this Stack
+   * @param localized if true, use the localized names
+   * @return a comma-separated list of the names of the pieces in this Stack
    */
   public String getName(boolean localized) {
     final StringBuilder val = new StringBuilder();
@@ -344,16 +396,25 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return val.toString();
   }
 
+  /**
+   * @return a comma-separated list of the (non-localized) names of the pieces in this Stack
+   */
   @Override
   public String getName() {
     return getName(false);
   }
 
+  /**
+   * @return a comma-separated list of the (localized) names of the pieces in this Stack
+   */
   @Override
   public String getLocalizedName() {
     return getName(true);
   }
 
+  /**
+   * @return bounding box for the stack (minimum rectangle to contain the bounding boxes of all the pieces inside)
+   */
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = new Rectangle();
@@ -367,6 +428,9 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return r;
   }
 
+  /**
+   * @return shape for the stack (shape to contain the shapes of all the pieces inside)
+   */
   @Override
   public Shape getShape() {
     final Area a = new Area();
@@ -380,6 +444,10 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return a;
   }
 
+  /**
+   * Finds and selects (in the UI) the next piece in the stack after this one
+   * @param c Starting piece
+   */
   public void selectNext(GamePiece c) {
     KeyBuffer.getBuffer().remove(c);
     if (pieceCount > 1 && indexOf(c) >= 0) {
@@ -393,6 +461,11 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
   }
 
+  /**
+   * Finds the piece "underneath" the one provided
+   * @param c Starting piece
+   * @return piece underneath it, or null if none.
+   */
   public GamePiece getPieceBeneath(GamePiece p) {
     int index = indexOf(p);
     while (index-- > 0) {
@@ -403,6 +476,11 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return null;
   }
 
+  /**
+   * Finds the piece "above" the one provided
+   * @param c Starting piece
+   * @return piece above it, or null if none.
+   */
   public GamePiece getPieceAbove(GamePiece p) {
     int index = indexOf(p);
     while (++index < getPieceCount()) {
@@ -413,7 +491,10 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return null;
   }
 
-  /** @return the top visible piece in this stack */
+  /**
+   * <b>CAUTION:</b> returns the top VISIBLE piece in the stack, or null if none is visible.
+   * @return the top <b>visible</b> piece in this stack
+   */
   public GamePiece topPiece() {
     for (int i = pieceCount - 1; i >= 0; --i) {
       if (!Boolean.TRUE.equals(contents[i].getProperty(Properties.INVISIBLE_TO_ME))) {
@@ -474,9 +555,14 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
                          .count();
   }
 
+  /**
+   * Processes a key command for this stack, by sending it to the top visible piece in the stack.
+   * @param stroke keystroke to process
+   * @return Command encapsulating anything that happened as a result
+   */
   @Override
   public Command keyEvent(javax.swing.KeyStroke stroke) {
-    final GamePiece p = topPiece();
+    final GamePiece p = topPiece(); // NOTE: top VISIBLE piece
     if (p != null) {
       return p.keyEvent(stroke);
     }
@@ -485,14 +571,27 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
   }
 
+  /**
+   * @return true if stack has been visually expanded by the player
+   */
   public boolean isExpanded() {
     return expanded;
   }
 
+  /**
+   * Sets the expansion state of the stack. Players can expand (and un-expand) stacks by e.g. double-clicking on them.
+   * Expanded stacks are generally shown with the pieces drawn further apart, the better to see the individual pieces.
+   * When a stack is expanded, drag-and-drop operations can affect an individual piece rather than only the whole group.
+   * @param b true if stack should be expanded, false if not
+   */
   public void setExpanded(boolean b) {
     expanded = b && getPieceCount() > 1;
   }
 
+  /**
+   * Encodes the game state information of the stack into a string
+   * @return Current encoded "game state" string for the stack
+   */
   @Override
   public String getState() {
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -504,6 +603,10 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     return se.getValue();
   }
 
+  /**
+   * Decodes the game state information of the stack from a string
+   * @param s Game state information to be loaded into the stack
+   */
   @Override
   public void setState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
@@ -595,15 +698,27 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     setState(mergedState);
   }
 
+  /**
+   * @return the encoding type
+   */
   @Override
   public String getType() {
     return TYPE;
   }
 
+  /**
+   * Stacks themselves ignore property sets -- use {@link setPropertyOnContents} to apply
+   * a property to the members of a stack.
+   * @param key String key of property to be changed
+   * @param val Object containing new value of the property
+   */
   @Override
   public void setProperty(Object key, Object val) {
   }
 
+  /**
+   * @return string list of stack contents, for debugging-type purposes
+   */
   @Override
   public String toString() {
     return super.toString() + "[" + getName() + "]";
@@ -619,41 +734,71 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     asList().forEach(gamePiece -> gamePiece.setProperty(key, val));
   }
 
+  /**
+   * Stacks themselves do not have any properties, so always return null.
+   * @param key String key of property to be returned
+   * @return always null
+   */
   @Override
   public Object getProperty(Object key) {
     return null;
   }
 
+  /**
+   * Stacks themselves do not have any properties, so always return null.
+   * @param key String key of property to be returned
+   * @return always null
+   */
   @Override
   public Object getLocalizedProperty(Object key) {
     return getProperty(key);
   }
 
+  /**
+   * @param map Each stack belongs to a single {@link Map}
+   */
   @Override
   public void setMap(Map map) {
     this.map = map;
   }
 
+  /**
+   * @return the map for this Stack
+   */
   @Override
   public Map getMap() {
     return map;
   }
 
+  /**
+   * @return current X/Y position of stack
+   */
   @Override
   public Point getPosition() {
     return new Point(pos);
   }
 
+  /**
+   * @param p Sets the location of this stack on its {@link Map}
+   */
   @Override
   public void setPosition(Point p) {
     pos = p;
   }
 
+  /**
+   * Stacks cannot contain other stacks/decks, nor be contained in them, so parent is always null.
+   * @return always null
+   */
   @Override
   public Stack getParent() {
     return null;
   }
 
+  /**
+   * Required for interface but won't be needed for stacks
+   * @param s sets the {@link Stack} to which this piece belongs.
+   */
   @Override
   public void setParent(Stack s) {
     if (s != null) {
@@ -661,28 +806,56 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
     }
   }
 
+  /**
+   * @return stack's unique ID
+   */
   @Override
   public String getId() {
     return id;
   }
 
+  /**
+   * @param id sets unique ID for this piece
+   */
   @Override
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method sets the default metrics for the module, but each map can have its own configuration, which
+   * can be found in the [Stacking options] subcomponent of the Map in the Editor.
+   * @param s default stack metrics for the module
+   */
   public static void setDefaultMetrics(StackMetrics s) {
     defaultMetrics = s;
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method retrieves the appropriate stack metrics to use for a given map
+   * @param m a map
+   * @return stack metrics for the map, if provided, or the default one for the module.
+   */
   public StackMetrics getStackMetrics(Map m) {
     return m == null ? getDefaultMetrics() : m.getStackMetrics();
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method retrieves the appropriate stack metrics to use the stack, based on its map
+   * @return stack metrics for the map, if provided, or the default one for the module.
+   */
   public StackMetrics getStackMetrics() {
     return getStackMetrics(getMap());
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method retrieves the default stack metrics for the module.
+   * @return default stack metrics for the module
+   */
   public StackMetrics getDefaultMetrics() {
     if (defaultMetrics == null) {
       setDefaultMetrics(new StackMetrics());

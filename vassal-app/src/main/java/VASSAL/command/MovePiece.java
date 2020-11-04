@@ -185,7 +185,7 @@ public class MovePiece extends Command {
         if (s.getPosition().equals(pt)
             && map.getStackMetrics().isStackingEnabled()
             && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-            && s.topPiece(playerId) != null
+            && s.topPiece(playerId) != null  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
             && map.getPieceCollection().canMerge(p, s)) {
           return map.getStackMetrics().merge(s, p);
         }
