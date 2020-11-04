@@ -985,6 +985,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
+    super.addLocalImageNames(s);
     final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
   }

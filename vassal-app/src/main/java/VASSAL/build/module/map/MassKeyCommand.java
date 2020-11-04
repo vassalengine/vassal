@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
@@ -27,7 +28,6 @@ import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -35,7 +35,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -44,7 +43,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
@@ -59,11 +57,11 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
@@ -81,12 +79,9 @@ import net.miginfocom.swing.MigLayout;
  * {@link GlobalCommandTarget}           - "Fast Match" parameters
  * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
-public class MassKeyCommand extends AbstractConfigurable
+public class MassKeyCommand extends AbstractToolbarItem
                             implements RecursionLimiter.Loopable {
   public static final String DEPRECATED_NAME = "text"; // NON-NLS
-  public static final String NAME = "name"; // NON-NLS
-  public static final String ICON = "icon"; // NON-NLS
-  public static final String TOOLTIP = "tooltip"; // NON-NLS
   public static final String BUTTON_TEXT = "buttonText"; // NON-NLS
   public static final String HOTKEY = "buttonHotkey"; // NON-NLS
   public static final String KEY_COMMAND = "hotkey"; // NON-NLS
@@ -102,7 +97,12 @@ public class MassKeyCommand extends AbstractConfigurable
   public static final String CHECK_PROPERTY = "property"; // NON-NLS
   public static final String CHECK_VALUE = "propValue"; // NON-NLS
   public static final String SINGLE_MAP = "singleMap"; // NON-NLS
-  protected LaunchButton launch;
+
+  // These 3 identical to AbstractToolbarItem and here for clirr purposes only
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; // NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
+
   protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
   protected String condition;
@@ -130,7 +130,14 @@ public class MassKeyCommand extends AbstractConfigurable
 
   public MassKeyCommand() {
     final ActionListener al = e -> apply();
-    launch = new LaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
+
+    setButtonTextKey(BUTTON_TEXT);
+    setHotKeyKey(HOTKEY);
+
+    makeLaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"),
+                     Resources.getString("Editor.GlobalKeyCommand.button_name"),
+              "", //Default art exists, but is a little weird, and wasn't actually being defaulted to before --> "/images/keyCommand.gif", //NON-NLS
+                     al);
   }
 
   @Override
@@ -139,7 +146,7 @@ public class MassKeyCommand extends AbstractConfigurable
       map = (Map) parent;
     }
     if (parent instanceof ToolBarComponent) {
-      ((ToolBarComponent)parent).getToolBar().add(launch);
+      ((ToolBarComponent)parent).getToolBar().add(getLaunchButton());
     }
     if (parent instanceof PropertySource) {
       propertySource = (PropertySource) parent;
@@ -173,13 +180,8 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public String[] getAttributeDescriptions() {
     if (condition == null) {
-      return new String[]{
-        Resources.getString(Resources.DESCRIPTION),                             // Description
-        Resources.getString(Resources.BUTTON_TEXT),                             // Button text
-        Resources.getString(Resources.TOOLTIP_TEXT),                            // Button tooltip
-        Resources.getString(Resources.BUTTON_ICON),                             // Button icon
-        Resources.getString(Resources.HOTKEY_LABEL),                            // Hotkey
-
+      return ArrayUtils.addAll(
+        super.getAttributeDescriptions(),
         Resources.getString("Editor.GlobalKeyCommand.global_key_command"), //$NON-NLS-1$       // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$       // Apply to counters on this map only
 
@@ -188,17 +190,13 @@ public class MassKeyCommand extends AbstractConfigurable
         Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties        
         Resources.getString("Editor.GlobalKeyCommand.deck_policy"), //$NON-NLS-1$   // Apply to pieces in deck
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
-        Resources.getString("Editor.report_format"), //$NON-NLS-1$          // Report format
-      };
+        Resources.getString("Editor.report_format") //$NON-NLS-1$           // Report format
+      );
     }
     else {
       // Backward compatibility
-      return new String[]{
-        Resources.getString(Resources.DESCRIPTION),                             // Description
-        Resources.getString(Resources.BUTTON_TEXT),                             // Button text
-        Resources.getString(Resources.TOOLTIP_TEXT),                            // Button tooltip
-        Resources.getString(Resources.BUTTON_ICON),                             // Button icon
-        Resources.getString(Resources.HOTKEY_LABEL),                            // Hotkey
+      return ArrayUtils.addAll(
+        super.getAttributeDescriptions(),
         Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$             // Key Command
         Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
 
@@ -208,19 +206,15 @@ public class MassKeyCommand extends AbstractConfigurable
         Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$    // Apply to pieces in deck
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
         Resources.getString("Editor.report_format"), //$NON-NLS-1$          // Report format
-        Resources.getString("Editor.MassKey.apply"), //$NON-NLS-1$          // Legacy condition
-      };
+        Resources.getString("Editor.MassKey.apply") //$NON-NLS-1$           // Legacy condition
+      );
     }
   }
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{
-      NAME,                                 // Description
-      BUTTON_TEXT,                          // Button text
-      TOOLTIP,                              // Button tooltip
-      ICON,                                 // Button icon
-      HOTKEY,                               // Hotkey
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
       KEY_COMMAND,                          // Key Command
       SINGLE_MAP,                           // Apply to counters on this map only
 
@@ -234,7 +228,7 @@ public class MassKeyCommand extends AbstractConfigurable
       CHECK_VALUE,                          // NOT DISPLAYED
       CHECK_PROPERTY,                       // NOT DISPLAYED
       AFFECTED_PIECE_NAMES                  // NOT DISPLAYED
-    };
+    );
   }
 
   public static class Prompt extends TranslatableStringEnum {
@@ -256,12 +250,8 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public Class<?>[] getAttributeTypes() {
     if (condition == null) {
-      return new Class<?>[]{
-        String.class,                       // Description
-        String.class,                       // Button text
-        String.class,                       // Button tooltip
-        IconConfig.class,                   // Button icon
-        NamedKeyStroke.class,               // Hotkey
+      return ArrayUtils.addAll(
+        super.getAttributeTypes(),
         NamedKeyStroke.class,               // Key Command
         Boolean.class,                      // Apply to counters on this map only
 
@@ -271,16 +261,12 @@ public class MassKeyCommand extends AbstractConfigurable
         DeckPolicyConfig.class,             // Apply to pieces in deck
         Boolean.class,                      // Suppress individual reports?
         ReportFormatConfig.class            // Report format
-      };
+      );
     }
     else {
       // Backward compatibility
-      return new Class<?>[]{
-        String.class,
-        String.class,
-        String.class,
-        IconConfig.class,
-        NamedKeyStroke.class,
+      return ArrayUtils.addAll(
+        super.getAttributeTypes(),
         NamedKeyStroke.class,
         Boolean.class,
 
@@ -291,14 +277,7 @@ public class MassKeyCommand extends AbstractConfigurable
         Boolean.class,
         ReportFormatConfig.class,
         Prompt.class
-      };
-    }
-  }
-
-  public static class IconConfig implements ConfigurerFactory {
-    @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/keyCommand.gif"); // NON-NLS
+      );
     }
   }
 
@@ -430,10 +409,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (KEY_COMMAND.equals(key)) {
+    if (KEY_COMMAND.equals(key)) {
       return NamedHotKeyConfigurer.encode(stroke);
     }
     else if (AFFECTED_PIECE_NAMES.equals(key)) {
@@ -475,14 +451,6 @@ public class MassKeyCommand extends AbstractConfigurable
     return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
   }
 
-  protected LaunchButton getLaunchButton() {
-    return launch;
-  }
-
-  protected void setLaunchButton(LaunchButton launch) {
-    this.launch = launch;
-  }
-
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.html", "GlobalKeyCommand"); // NON-NLS
@@ -491,7 +459,7 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public void removeFrom(Buildable parent) {
     if (parent instanceof ToolBarComponent) {
-      ((ToolBarComponent)parent).getToolBar().remove(launch);
+      ((ToolBarComponent)parent).getToolBar().remove(getLaunchButton());
     }
   }
 
@@ -650,27 +618,10 @@ public class MassKeyCommand extends AbstractConfigurable
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
    * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)), NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
-  }
-
-  @Override
-  public void addLocalImageNames(Collection<String> s) {
-    final String string = launch.getAttributeValueString(launch.getIconAttribute());
-    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
-      s.add(string);
-    }
   }
 }

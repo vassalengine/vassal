@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.GlobalCommandTarget;
@@ -165,7 +166,6 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
     setAttribute(TARGET, sd.nextToken(""));
-
   }
 
   @Override
@@ -185,7 +185,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   @Override
   public String[] getAttributeNames() {
     return new String[]{
-      NAME,
+      AbstractToolbarItem.NAME,
       KEY_COMMAND,
 
       TARGET,             // Fast Match parameters (disabled for this variant)
