@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -19,7 +18,6 @@ package VASSAL.build.module;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -72,17 +70,30 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String HIDDEN = "hidden"; //$NON-NLS-1$
   public static final String SCALE = "scale"; //$NON-NLS-1$
-  protected static final UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
+  protected static final UniqueIdManager idMgr = new UniqueIdManager(PieceWindow.class.getSimpleName());
   protected JComponent root;
   protected ComponentSplitter.SplitPane mainWindowDock;
   protected String tooltip = ""; //$NON-NLS-1$
   protected double scale;
 
+  private static final String firstId = PieceWindow.class.getSimpleName() + '0';
+
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
-    final ActionListener al = e -> launchButtonPressed();
-    launch = new LaunchButton(Resources.getString("Editor.PieceWindow.pieces"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
-    launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
+
+    launch = new LaunchButton(
+      Resources.getString("Editor.PieceWindow.pieces"),
+      TOOLTIP,
+      BUTTON_TEXT,
+      HOTKEY,
+      ICON,
+      e -> launchButtonPressed()
+    );
+    launch.setToolTipText(
+      Resources.getString("Editor.PieceWindow.show_hide_pieces_window",
+      Resources.getString("Editor.PieceWindow.pieces"))
+    );
+
     scale = 1.0;
   }
 
@@ -147,7 +158,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public boolean shouldDockIntoMainWindow() {
-    return "PieceWindow0".equals(id); //$NON-NLS-1$
+    return firstId.equals(id); //$NON-NLS-1$
   }
 
   @Override
@@ -228,17 +239,18 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     idMgr.add(this);
 
     if (!hidden) {
-      final String key = PositionOption.key + getConfigureName();
-      if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
+      if (firstId.equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
         GameModule.getGameModule().setPieceWindow(this); //BR// Register as the docked PieceWindow
       }
       else {
+        final String key = PositionOption.key + getConfigureName();
         final Window w = initFrame();
         final PositionOption pos = new VisibilityOption(key, w);
         GameModule.getGameModule().getPrefs().addOption(pos);
       }
       GameModule.getGameModule().getToolBar().add(launch);
     }
+
     setAttributeTranslatable(NAME, false);
   }
 
@@ -298,7 +310,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     else if (NAME.equals(name)) {
       final String s = (String) value;
       setConfigureName(s);
-      if (tooltip.length() == 0) {
+      if (tooltip.isEmpty()) {
         launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", s));
       }
     }
@@ -342,7 +354,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       return String.valueOf(scale);
     }
     else if (TOOLTIP.equals(name)) {
-      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
+      return tooltip.isEmpty() ? launch.getAttributeValueString(name) : tooltip;
     }
     else {
       return launch.getAttributeValueString(name);
