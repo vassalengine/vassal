@@ -162,7 +162,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   @Override
-  public java.awt.Component getComponent() {
+  public Component getComponent() {
     return root;
   }
 

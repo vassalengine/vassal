@@ -549,6 +549,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     launchButton = makeLaunchButton("", Resources.getString("Editor.Map.map"), "/images/map.gif", al); //NON-NLS
     getLaunchButton().setEnabled(false);
     getLaunchButton().setVisible(false);
+
     if (e != null) {
       super.build(e);
       getBoardPicker();
@@ -570,18 +571,23 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       addChild(new Flare());
       setMapName(Resources.getString("Map.main_map"));
     }
+
     if (getComponentsOf(GlobalProperties.class).isEmpty()) {
       addChild(new GlobalProperties());
     }
+
     if (getComponentsOf(SelectionHighlighters.class).isEmpty()) {
       addChild(new SelectionHighlighters());
     }
+
     if (getComponentsOf(HighlightLastMoved.class).isEmpty()) {
       addChild(new HighlightLastMoved());
     }
+
     if (getComponentsOf(Flare.class).isEmpty()) {
       addChild(new Flare());
     }
+
     setup(false);
   }
 
@@ -2638,6 +2644,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (mainWindowDock != null) {
       return;
     }
+
     final Component c = theMap.getTopLevelAncestor();
     if (c instanceof JFrame) {
       ((JFrame) c).setTitle(getDefaultWindowTitle());
