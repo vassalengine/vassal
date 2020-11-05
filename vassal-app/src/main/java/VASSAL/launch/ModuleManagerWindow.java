@@ -417,10 +417,14 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusControls.setBorder(
       new TitledBorder(Resources.getString("Chat.server_status")));
 
-    splitPane = new SplitPane(moduleControls, serverStatusControls);
+    splitPane = new SplitPane(
+      SplitPane.HORIZONTAL_SPLIT,
+      moduleControls, serverStatusControls
+    );
 
     // show the server status controls according to the prefs
     splitPane.setRightVisible(serverStatusConfig.booleanValue());
+    splitPane.setResizeWeight(1.0);
 
     splitPane.setDividerLocation(getPreferredDividerLocation());
     splitPane.addPropertyChangeListener(

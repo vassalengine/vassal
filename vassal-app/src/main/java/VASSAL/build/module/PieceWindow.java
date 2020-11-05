@@ -17,6 +17,8 @@
 package VASSAL.build.module;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,6 +54,8 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SplitPane;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A window from which players can create new {@link GamePiece}s by
@@ -72,9 +76,13 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   public static final String SCALE = "scale"; //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager(PieceWindow.class.getSimpleName());
   protected JComponent root;
-  protected ComponentSplitter.SplitPane mainWindowDock;
   protected String tooltip = ""; //$NON-NLS-1$
   protected double scale;
+
+  @Deprecated
+  protected ComponentSplitter.SplitPane mainWindowDock;
+
+  protected SplitPane splitPane;
 
   private static final String firstId = PieceWindow.class.getSimpleName() + '0';
 
@@ -138,8 +146,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public void launchButtonPressed() {
-    if (mainWindowDock != null) {
-      mainWindowDock.toggleVisibility();
+    if (splitPane != null) {
+      splitPane.toggleLeft();
     }
     else {
       root.getTopLevelAncestor().setVisible(!root.getTopLevelAncestor().isVisible());
@@ -239,8 +247,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     idMgr.add(this);
 
     if (!hidden) {
-      if (firstId.equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
-        GameModule.getGameModule().setPieceWindow(this); //BR// Register as the docked PieceWindow
+      if (firstId.equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) {
+        // Register as the docked PieceWindow
+        GameModule.getGameModule().setPieceWindow(this);
       }
       else {
         final String key = PositionOption.key + getConfigureName();
@@ -256,7 +265,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   @Override
   public void removeFrom(Buildable parent) {
-    if (mainWindowDock == null && root != null && root.getTopLevelAncestor() != null) {
+    if (splitPane == null && root != null && root.getTopLevelAncestor() != null) {
       root.getTopLevelAncestor().setVisible(false);
     }
     GameModule.getGameModule().getToolBar().remove(launch);

@@ -17,8 +17,8 @@ public class SplitPane extends JSplitPane {
   private int prevDividerLocation = 0;
   private int prevDividerSize = 0;
 
-  public SplitPane(Component left, Component right) {
-    super(HORIZONTAL_SPLIT, left, right);
+  public SplitPane(int orientation, Component first, Component second) {
+    super(orientation, first, second);
     setDividerLocation(0.5);
     setContinuousLayout(true);
   }
@@ -29,6 +29,14 @@ public class SplitPane extends JSplitPane {
 
   public void setRightVisible(boolean vis) {
     setComponentVisible(getRightComponent(), vis);
+  }
+
+  public void setTopVisible(boolean vis) {
+    setComponentVisible(getTopComponent(), vis);
+  }
+
+  public void setBottomVisible(boolean vis) {
+    setComponentVisible(getBottomComponent(), vis);
   }
 
   private void setComponentVisible(Component c, boolean vis) {
@@ -45,12 +53,28 @@ public class SplitPane extends JSplitPane {
     return getRightComponent().isVisible();
   }
 
+  public boolean isTopVisible() {
+    return getTopComponent().isVisible();
+  }
+
+  public boolean isBottomVisible() {
+    return getBottomComponent().isVisible();
+  }
+
   public void showLeft() {
     showComponent(getLeftComponent());
   }
 
   public void showRight() {
     showComponent(getRightComponent());
+  }
+
+  public void showTop() {
+    showComponent(getTopComponent());
+  }
+
+  public void showBottom() {
+    showComponent(getBottomComponent());
   }
 
   private void showComponent(Component c) {
@@ -67,6 +91,14 @@ public class SplitPane extends JSplitPane {
     hideComponent(getRightComponent());
   }
 
+  public void hideTop() {
+    hideComponent(getTopComponent());
+  }
+
+  public void hideBottom() {
+    hideComponent(getBottomComponent());
+  }
+
   private void hideComponent(Component c) {
     if (c.isVisible()) {
       toggleComponent(c);
@@ -79,6 +111,14 @@ public class SplitPane extends JSplitPane {
 
   public void toggleRight() {
     toggleComponent(getRightComponent());
+  }
+
+  public void toggleTop() {
+    toggleComponent(getTopComponent());
+  }
+
+  public void toggleBottom() {
+    toggleComponent(getBottomComponent());
   }
 
   private void toggleComponent(Component c) {
@@ -100,7 +140,7 @@ public class SplitPane extends JSplitPane {
 
     final JButton left = new JButton("Left");
     final JButton right = new JButton("Right");
-    final SplitPane sp = new SplitPane(left, right);
+    final SplitPane sp = new SplitPane(HORIZONTAL_SPLIT, left, right);
 
     left.addActionListener(e -> {
       if (left.isVisible() && right.isVisible()) {
