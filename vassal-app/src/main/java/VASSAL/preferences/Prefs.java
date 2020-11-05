@@ -46,14 +46,16 @@ import VASSAL.tools.ReadErrorDialog;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
- * which is responsible for writing the preferences to disk
+ * which is responsible for writing the preferences to disk.
+ * <br>See also:
+ * <br>{@link VASSAL.build.module.GlobalOptions} - main nexus for preferences being added
  */
 public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //NON-NLS
   public static final String DISABLE_D3D = "disableD3d"; //NON-NLS
 
-  private static Prefs globalPrefs;
+  private static Prefs globalPrefs; // A Global Preferences object
 
   private final Map<String, Configurer> options = new HashMap<>();
   private final Properties storedValues = new Properties();
