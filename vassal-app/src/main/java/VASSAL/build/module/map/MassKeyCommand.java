@@ -105,7 +105,9 @@ public class MassKeyCommand extends AbstractToolbarItem
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
 
-  protected LaunchButton launch;
+  @Deprecated (since = "2020-10-21", forRemoval = true)
+  protected LaunchButton launch; // Exists for clirr - but use getLaunchButton()
+
   protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
   protected String condition;
@@ -145,7 +147,7 @@ public class MassKeyCommand extends AbstractToolbarItem
 
   @Override
   public LaunchButton getLaunchButton() {
-    return launch;
+    return super.getLaunchButton();
   }
 
   @Override
@@ -459,7 +461,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       return target.encode();
     }
     else {
-      return launch.getAttributeValueString(key);
+      return getLaunchButton().getAttributeValueString(key);
     }
   }
 
@@ -521,8 +523,8 @@ public class MassKeyCommand extends AbstractToolbarItem
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) value);
-      if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, value);
+      if (getLaunchButton().getAttributeValueString(TOOLTIP) == null) {
+        getLaunchButton().setAttribute(TOOLTIP, value);
       }
     }
     else if (KEY_COMMAND.equals(key)) {
@@ -599,7 +601,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       }
     }
     else {
-      launch.setAttribute(key, value);
+      getLaunchButton().setAttribute(key, value);
     }
   }
 
