@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
@@ -2538,7 +2539,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           mainWindowDock.showComponent();
           final int height = (Integer)
             Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-          if (height > 0) {
+          if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
             final Container top = mainWindowDock.getTopLevelAncestor();
             top.setSize(top.getWidth(), height);
           }
