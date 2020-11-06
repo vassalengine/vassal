@@ -1,6 +1,8 @@
 3.4.8 - ???
 
 * 13577: Stacks properly restore their visual 'layer' level when saved/restored
+* 13573:  Beanshell count function not working with $$ variables in Restrict
+  Commands property match
 * 13572: Stop converting preferences last written by 3.2.7 or earlier
 * 13567: Put backup in better location when writing to module fails and ensure
   Editor is not left in a bad state
