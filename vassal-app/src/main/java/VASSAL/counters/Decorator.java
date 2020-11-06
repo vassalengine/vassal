@@ -550,9 +550,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   public java.util.Map<String, Object> getProperties(java.util.Map<String, Object> result) {
 
     for (String propertyName : getPropertyNames()) {
-      if (! result.containsKey(propertyName)) {
-        result.put(propertyName, getLocalizedProperty(propertyName));
-      }
+      result.computeIfAbsent(propertyName, pn -> getLocalizedProperty(pn));
     }
 
     return piece == null ? result : ((PropertyExporter) piece).getProperties(result);
