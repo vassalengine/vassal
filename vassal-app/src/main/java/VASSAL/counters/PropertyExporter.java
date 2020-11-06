@@ -41,9 +41,7 @@ public interface PropertyExporter extends PropertyNameSource, PropertySource {
     final List<String> propertyNames = getPropertyNames();
 
     for (String propertyName : propertyNames) {
-      if (! result.containsKey(propertyName)) {
-        result.put(propertyName, getLocalizedProperty(propertyName));
-      }
+      result.computeIfAbsent(propertyName, pn -> getLocalizedProperty(pn));
     }
 
     return result;
