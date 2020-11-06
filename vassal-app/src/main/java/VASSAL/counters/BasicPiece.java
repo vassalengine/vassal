@@ -835,4 +835,6 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     l.add(CLICKED_Y);
     return l;
   }
+
+
 }
