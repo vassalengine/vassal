@@ -65,7 +65,10 @@ import VASSAL.tools.swing.SwingUtils;
  * If the user clicks on a {@link GamePiece}, that piece is added to the {@link KeyBuffer}. {@link #draw(Graphics, Map)}
  * is responsible for drawing the mouse selection rectangle, and {@link #mouseDragged(MouseEvent)} is responsible
  * for triggering repaint events as the selection rectangle is moved.
- *
+ * <br><br>
+ * If you are looking for the drag-and-drop handler for dragging pieces on or between maps,
+ * instead see {@link PieceMover}.
+ * <br><br>
  * @see Map#addLocalMouseListener
  */
 public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionListener, Drawable {

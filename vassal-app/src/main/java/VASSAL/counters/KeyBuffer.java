@@ -30,13 +30,18 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.property.PersistentPropertyContainer;
 
-
+/**
+ * The KeyBuffer is the list of "currently selected pieces" in the VASSAL UI (map windows). Its somewhat confusing name
+ * derives from the idea that if the player then presses a key, a key command will be sent to all of the pieces in the
+ * buffer. KeyBuffer is a "singleton", so there is one for the whole app, across all map windows.
+ */
 public class KeyBuffer {
-  private static KeyBuffer theBuffer;
-  private final List<GamePiece> pieces;
-  private final BoundsTracker bounds;
-  private final Comparator<GamePiece> pieceSorter = new PieceSorter();
-  private final Point clickPoint;
+  private static KeyBuffer theBuffer;    // Our singleton buffer instance
+  private final List<GamePiece> pieces;  // Our list of currently selected pieces
+  private final BoundsTracker bounds;    // Visual boundaries tracker
+  private final Comparator<GamePiece> pieceSorter = new PieceSorter(); // Used to sort pieces in visual order
+  private final Point clickPoint;        // Most recent click point on the map (used to make this information
+                                         // available to traits of pieces)
 
   private KeyBuffer() {
     pieces = new ArrayList<>();
@@ -64,6 +69,10 @@ public class KeyBuffer {
     return clickPoint;
   }
 
+  /**
+   * Adding a piece to the {@link KeyBuffer} "selects the piece" (and lets it know about in its SELECTED property)
+   * @param p Piece to select
+   */
   public void add(GamePiece p) {
 // FIXME: should we use a HashSet or LinkedHashSet instead to make contains()
 // checks faster? Is insertion order important?
@@ -73,6 +82,9 @@ public class KeyBuffer {
     }
   }
 
+  /**
+   * Deselects all pieces (removes them all from the {@link KeyBuffer})
+   */
   public void clear() {
     for (final GamePiece p : pieces) {
       p.setProperty(Properties.SELECTED, null);
@@ -80,6 +92,10 @@ public class KeyBuffer {
     pieces.clear();
   }
 
+  /**
+   * Deselect the specified piece -- removes it from the {@link KeyBuffer}
+   * @param p piece to deselect
+   */
   public void remove(GamePiece p) {
     if (p != null) {
       p.setProperty(Properties.SELECTED, null);
@@ -87,6 +103,11 @@ public class KeyBuffer {
     }
   }
 
+  /**
+   * Tells if a particular piece is selected (i.e. present in the KeyBuffer)
+   * @param p piece to check
+   * @return True if the piece is in the {@link KeyBuffer}, i.e. is selected
+   */
   public boolean contains(GamePiece p) {
     if (p instanceof Stack) {
       return pieces.containsAll(((Stack) p).asList());
@@ -96,10 +117,18 @@ public class KeyBuffer {
     }
   }
 
+  /**
+   * @return true if the {@link KeyBuffer} is empty - i.e. no pieces are selected
+   */
   public boolean isEmpty() {
     return pieces.isEmpty();
   }
 
+  /**
+   * Applies a key command to every selected piece (i.e. to piece in the {@link KeyBuffer})
+   * @param stroke Keystroke to apply
+   * @return Command that encapsulates any changes to the game state made while processing the key command, for replay on other clients or in logfile.
+   */
   public Command keyCommand(javax.swing.KeyStroke stroke) {
     sort(pieceSorter);
     Command comm = new NullCommand();
@@ -135,6 +164,7 @@ public class KeyBuffer {
   }
 
   /**
+   * Returns a list of all selected pieces.
    * @return an unmodifiable {@link List} of {@link GamePiece}s contained in
    * this {@link KeyBuffer}
    */
@@ -142,6 +172,10 @@ public class KeyBuffer {
     return Collections.unmodifiableList(pieces);
   }
 
+  /**
+   * Returns an iterator for all selected pieces.
+   * @return an iterator for the {@link GamePiece}s contained in the {@link KeyBuffer}
+   */
   public Iterator<GamePiece> getPiecesIterator() {
     return pieces.iterator();
   }
@@ -152,12 +186,16 @@ public class KeyBuffer {
     return Collections.enumeration(pieces);
   }
 
+  /**
+   * Sorts the selected pieces based on a particular Comparator
+   * @param comp Comparator to use
+   */
   public void sort(Comparator<GamePiece> comp) {
     pieces.sort(comp);
   }
 
   /**
-   *
+   * Check if any member of the specified Stack is currently selected
    * @param stack Stack to check
    * @return true if a child of the specified Stack is selected
    */
