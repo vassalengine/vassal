@@ -260,7 +260,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       }
 
-      value = activateKey.length() > 0 ? -1 : 1;
+      value = canBeActivated() ? -1 : 1;
       nValues = imageName.length;
       size = new Rectangle[imageName.length];
       imagePainter = new ScaledImagePainter[imageName.length];
@@ -272,6 +272,17 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
 
     commands = null;
+  }
+
+  /**
+   * Can this Layer be Activated?
+   * Old-style depended on checking if any activation keys where specified.
+   * New-stule maintains a separate alwaysActive variable
+   *
+   * @return true if this layer trait has an activate command
+   */
+  public boolean canBeActivated() {
+    return getVersion() == BASE_VERSION ? activateKey.length() > 0 : !alwaysActive;
   }
 
   /**
@@ -1408,7 +1419,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
     final String prefix = name.length() > 0 ? name + ": " : "";
-    if (activateKey.length() > 0) {
+    if (canBeActivated()) {
       data.add(activateCommand, prefix + "Activate command");
     }
     if (!followProperty) {
