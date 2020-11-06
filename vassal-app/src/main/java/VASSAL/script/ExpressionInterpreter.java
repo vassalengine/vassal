@@ -30,6 +30,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -97,17 +98,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
   protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
-  
-  
+
+
   public String getComponentTypeName() {
     return "ExpressionInterpreter";
   }
-  
-  
+
+
   public String getComponentName() {
     return "ExpressionInterpreter";
   }
-  
+
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -255,9 +256,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       // Default to the GameModule to satisfy properties if no
       // GamePiece supplied.
       source = ps == null ? GameModule.getGameModule() : ps;
-  
+
       setNameSpace(expressionNameSpace);
-    
+
       // Bind each undeclared variable with the value of the
       // corresponding Vassal property. Allow for old-style $variable$ references
       for (String var : variables) {
@@ -294,7 +295,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           }
         }
       }
-    
+
       final StringBuilder argList = new StringBuilder();
       for (String var : stringVariables) {
         if (argList.length() > 0) {
@@ -303,13 +304,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
         argList.append('"').append(value == null ? "" : value.toString()).append('"');
       }
-  
+
       // Re-evaluate the pre-parsed expression now that the undefined variables have
       // been bound to their Vassal property values.
-    
+
       setVar(THIS, this);
-      setVar(SOURCE, source);  
-        
+      setVar(SOURCE, source);
+
       try {
         eval(MAGIC1 + "=" + MAGIC2 + "(" + argList.toString() + ")");
         result = get(MAGIC1).toString();
@@ -531,6 +532,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   /*
    * Sum & Count
    *
+   * Note that these methods are called from Beanshell and all arguements are passed
+   * as Object types.
+   *
    * Sum (property, match)      - Sum named property in units on all maps matching match
    * Sum (property, match, map) - Sum named property in units on named map matching match
    * Count (match)              - Count units on all maps matching match
@@ -549,12 +553,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
-    final List<Map> maps = getMapList(mapName, sourcePiece);
+    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    for (Map map : maps) {
+    for (Map map : getMapList(mapName, sourcePiece)) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (GamePiece p : ((Stack) piece).asList()) {
@@ -593,13 +596,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final String matchString = (String) propertyMatch;
     final GamePiece sourcePiece = (GamePiece) source;
+    final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
+    final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    final List<Map> maps = getMapList(mapName, sourcePiece);
-
-    PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
-    for (Map map : maps) {
+    for (Map map : getMapList(mapName, sourcePiece)) {
       for (GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
           for (GamePiece p : ((Stack) piece).asList()) {
@@ -654,6 +655,78 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
     }
     return null;
+  }
+
+  /**
+   * Utility function to replace $xxx$ variables with values from a GamePiece
+   *
+   * @param expression Expression possibly containing $$ variables
+   * @param source A GamePiece to use as a source for the $$ variable values
+   *
+   * @return Updated expression
+   */
+  private String replaceDollarVariables(String expression, GamePiece source) {
+    if (expression == null || !expression.contains("$")) {
+      return expression;
+    }
+
+    final StringBuilder buffer = new StringBuilder();
+    int state = 0;
+    final StringBuilder propertyName = new StringBuilder();
+
+    for (int i = 0; i < expression.length(); i++) {
+      char c = expression.charAt(i);
+
+      switch (state) {
+      //
+      // State 0 - Looking for a $ sign that may be the start of a $$ property expression
+      //
+      case 0:
+        if (c == '$') {
+          // Seen a '$', start collecting a property name
+          state = 1;
+          propertyName.setLength(0);
+        }
+        else {
+          buffer.append(c);
+        }
+        break;
+      // State 1 - Assembling a possible property name token
+      case 1:
+        if (c == '$') {
+          // Closing '$' seen, is this a property with a value?
+          final String propName = propertyName.toString();
+          final Object prop = source == null ? null : source.getLocalizedProperty(propName);
+          final String propertyValue = prop == null ? null : prop.toString();
+          if (propertyValue == null) {
+            // Not a property value. Add the initial '$' plus the assembled text to the output and start
+            // looking for a new property name from the end '$' sign.
+            buffer.append('$');
+            buffer.append(propertyName);
+            propertyName.setLength(0);
+            state = 1;
+          }
+          else {
+            // This is a valid property value, add it to the output string and start looking for next property.
+            buffer.append(propertyValue);
+            state = 0;
+          }
+        }
+        else {
+          propertyName.append(c);
+        }
+        break;
+      }
+    }
+
+    // End of String reached. If we are still in state 1, then the we need to copy over
+    // the token in progress plus its initiating '$' sign
+    if (state == 1) {
+      buffer.append('$');
+      buffer.append(propertyName);
+    }
+
+    return buffer.toString();
   }
 
 }
