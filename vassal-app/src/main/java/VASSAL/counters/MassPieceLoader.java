@@ -439,17 +439,19 @@ public class MassPieceLoader {
     /**
      * Load all image names in the target directory
      *
-     * @param dir
+     * @param dir Image Directory
      */
     protected void loadImageNames(File dir) {
       imageNames.clear();
       if (dir != null && dir.isDirectory()) {
         final File[] files = dir.listFiles();
-        Arrays.sort(files);
-        for (File file : files) {
-          final String imageName = file.getName();
-          if (ImageUtils.hasImageSuffix(imageName)) {
-            imageNames.add(imageName);
+        if (files != null) {
+          Arrays.sort(files);
+          for (final File file : files) {
+            final String imageName = file.getName();
+            if (ImageUtils.hasImageSuffix(imageName)) {
+              imageNames.add(imageName);
+            }
           }
         }
       }
@@ -484,15 +486,17 @@ public class MassPieceLoader {
     public void load(PieceNode pieceNode) {
 
       // Add the Base Image to the module
-      final String baseImage = pieceNode.getImageName();
+      final String baseImage = pieceNode.getBaseImageName();
       addImageToModule(baseImage);
 
       // Create the BasicPiece
-      final String basicType = new SequenceEncoder("", ';').append("").append(
-          baseImage).append(pieceNode.getName()).getValue();
-      final BasicPiece basic = (BasicPiece) GameModule.getGameModule()
-          .createPiece(BasicPiece.ID + basicType);
+      final String basicType =
+        new SequenceEncoder("", ';')
+          .append("")
+          .append(basicConfig.booleanValue() ? "" : baseImage)
+          .append(pieceNode.getName()).getValue();
 
+      final BasicPiece basic = (BasicPiece) GameModule.getGameModule().createPiece(BasicPiece.ID + basicType);
 
       // Build the piece from the template
       GamePiece template = definer.getPiece();
@@ -513,7 +517,7 @@ public class MassPieceLoader {
         // has no matching images at all, do not add it to the new counter.
         for (Decorator trait : traits) {
           if (trait instanceof Emb) {
-            Emb newLayer = new Emb(trait.getType(), null);
+            final Emb newLayer = new Emb(trait.myGetType(), null);
             if (newLayer.buildLayers(baseImage, levelImages)) {
               for (String image : newLayer.getBuiltImageList()) {
                 addImageToModule(image);
@@ -525,7 +529,7 @@ public class MassPieceLoader {
             }
           }
           else {
-            final Decorator newTrait = (Decorator) GameModule.getGameModule().createPiece(trait.getType());
+            final Decorator newTrait = (Decorator) GameModule.getGameModule().createPiece(trait.myGetType());
             newTrait.setState(trait.getState());
             newTrait.setInner(piece);
             final String saveState = newTrait.getState();
@@ -792,13 +796,6 @@ public class MassPieceLoader {
       setRootVisible(false);
     }
 
-    //
-    // public String getToolTipText(MouseEvent event) {
-    // if (getComponentAt(event.getPoint().x, event.getPoint().y) == null)
-    // return null;
-    // return super.getToolTipText(event);
-    // }
-
     // Hide the Skip checkbox on rows other than Piece rows
     @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
@@ -924,6 +921,11 @@ public class MassPieceLoader {
       }
     }
 
+    public String getBaseImageName() {
+      return super.getImageName();
+    }
+
+
     @Override
     public String getImageName() {
       if (basicConfig.booleanValue()) {
@@ -1037,8 +1039,8 @@ public class MassPieceLoader {
       super();
     }
 
-    public Emb(String state, GamePiece p) {
-      super(state, p);
+    public Emb(String type, GamePiece p) {
+      super(type, p);
     }
 
     public String[] getImageNames() {
