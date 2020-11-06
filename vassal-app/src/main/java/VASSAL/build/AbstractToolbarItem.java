@@ -103,6 +103,14 @@ public abstract class AbstractToolbarItem extends AbstractConfigurable {
   }
 
   /**
+   * Sets launch button for this toolbar item
+   * @param launch - launch button
+   */
+  protected void setLaunchButton(LaunchButton launch) {
+    this.launch = launch;
+  }
+
+  /**
    * This getAttributeNames() will return the items specific to the Toolbar Button - classes extending this should
    * add their own items as well. If the "nameKey" is blank, then no "name" configure entry will be generated.
    * Extending classes can use ArrayUtils.addAll(super.getAttributeNames(), key1, ..., keyN), or supply their own
