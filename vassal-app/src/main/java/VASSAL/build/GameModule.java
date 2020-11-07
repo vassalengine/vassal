@@ -148,6 +148,10 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
+import static VASSAL.build.module.Map.MAIN_WINDOW_HEIGHT;
+import static VASSAL.build.module.Map.MAIN_WINDOW_WIDTH;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
+
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -611,9 +615,18 @@ public class GameModule extends AbstractConfigurable
     final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-// FIXME: annoying!
       frame.setLocation(screen.getLocation());
-      frame.setSize(screen.width, screen.height / 3);
+
+      final int height = (Integer)
+        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+      final int width = (Integer)
+        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
+      if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+        frame.setSize((width > 0) ? width : screen.width, height / 3);
+      }
+      else {
+        frame.setSize(screen.width, screen.height / 3);
+      }
     }
     else {
       final String key = "BoundsOfGameModule"; //$NON-NLS-1$

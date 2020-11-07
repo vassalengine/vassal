@@ -206,8 +206,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
-  protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
-  protected static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //$NON-NLS-1$
+  public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
+  public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>(); //NOPMD
