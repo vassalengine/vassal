@@ -280,6 +280,11 @@ public class GameModule extends AbstractConfigurable
   private Chatter chat;
 
   /**
+   * Docked PieceWindow (we need to know which one to get our splitters all splatting in the right order)
+   */
+  private PieceWindow pieceWindow = null;
+
+  /**
    * Random number generator
    */
   private final Random RNG = new SecureRandom();
@@ -472,6 +477,12 @@ public class GameModule extends AbstractConfigurable
           Resources.getString("BasicModule.io_error_reading_archive"), //$NON-NLS-1$
           e);
       }
+    }
+
+    //BR// If a dockable PieceWindow got registered, dock it now (since we're sure the Chatter will already be safely docked by this point)
+    final PieceWindow pw = getPieceWindow();
+    if (pw != null) {
+      pw.dockMe();
     }
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
@@ -1123,6 +1134,22 @@ public class GameModule extends AbstractConfigurable
    */
   public Chatter getChatter() {
     return chat;
+  }
+
+  /**
+   * @return the registered docked PieceWindow (game piece palette) for the module
+   */
+  public PieceWindow getPieceWindow() {
+    return pieceWindow;
+  }
+
+  /**
+   * Allows a PieceWindow that wants to be our docked PieceWindow to register itself.
+   *
+   * @param p PieceWindow to be our docked one
+   */
+  public void setPieceWindow(PieceWindow pieceWindow) {
+    this.pieceWindow = pieceWindow;
   }
 
   public void setPrefs(Prefs p) {
