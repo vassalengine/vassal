@@ -1043,4 +1043,12 @@
         <field>*</field>
         <justification>No chance this class has been subclassed</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader$Emb$LoaderEd</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+
 </differences>
