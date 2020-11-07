@@ -85,6 +85,7 @@ public class GlobalPrefs extends Prefs {
    * @param o Configurer for the preference
    * @param prompt If non-null and the value was not read from the preferences file on initialization
    */
+  @Override
   public void addOption(String category, Configurer o, String prompt) {
     super.addOption(category, o, prompt);
     o.addPropertyChangeListener(evt -> {
