@@ -62,6 +62,22 @@ public class GlobalPrefs extends Prefs {
   }
 
   /**
+   * Save the global preferences
+   */
+  public void saveGlobal() {
+    try {
+      save();
+    }
+    catch (IOException e) {
+      log.error(Resources.getString("GlobalPrefs.failed_to_write"), e);
+      final GameModule gm = GameModule.getGameModule();
+      if (gm != null) {
+        gm.warn(Resources.getString("GlobalPrefs.failed_to_write"));
+      }
+    }
+  }
+
+  /**
    * Adds the preference, and adds a listener for property changes, so that global preference file will be
    * automatically written after any change.
    *
@@ -73,16 +89,7 @@ public class GlobalPrefs extends Prefs {
     super.addOption(category, o, prompt);
     o.addPropertyChangeListener(evt -> {
       if (!isDisableAutoWrite()) {
-        try {
-          save();
-        }
-        catch (IOException e) {
-          log.error(Resources.getString("GlobalPrefs.failed_to_write"), e);
-          final GameModule gm = GameModule.getGameModule();
-          if (gm != null) {
-            gm.warn(Resources.getString("GlobalPrefs.failed_to_write"));
-          }
-        }
+        saveGlobal();
       }
     });
   }

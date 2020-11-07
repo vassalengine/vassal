@@ -73,6 +73,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import VASSAL.preferences.GlobalPrefs;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -206,6 +207,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
+  protected static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>(); //NOPMD
@@ -753,6 +755,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
+
+      final IntConfigurer configWidth =
+        new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
+      Prefs.getGlobalPrefs().addOption(null, configWidth);
 
       mainWindowDock = ComponentSplitter.split(
         ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
@@ -2539,9 +2545,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           mainWindowDock.showComponent();
           final int height = (Integer)
             Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+          final int width = (Integer)
+            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
           if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
             final Container top = mainWindowDock.getTopLevelAncestor();
-            top.setSize(top.getWidth(), height);
+            top.setSize((width > 0) ? width : top.getWidth(), height);
           }
         }
         if (toolBar.getParent() == null) {
@@ -2580,8 +2588,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       boards.clear();
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
-          Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+          final Component c = mainWindowDock.getTopLevelAncestor();
+          final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
+          p.setDisableAutoWrite(true);
+          p.getOption(MAIN_WINDOW_HEIGHT).setValue(c.getHeight());
+          p.getOption(MAIN_WINDOW_WIDTH).setValue(c.getWidth());
+          p.saveGlobal();
+          p.setDisableAutoWrite(false);
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
