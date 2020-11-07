@@ -51,7 +51,10 @@ import VASSAL.tools.swing.SwingUtils;
  * Provides support for hidden panels. Use the split methods to create an
  * instance of {@link SplitPane}, which can then be manipulated to show and
  * hide the panel
+ *
+ * @deprecated Use {@link VASSAL.tools.swing.SplitPane} instead.
  */
+@Deprecated(since = "2020-11-07", forRemoval = true)
 public class ComponentSplitter {
   /**
    * Create a new hideable panel to the right of the base component. The base component is replaced by a
