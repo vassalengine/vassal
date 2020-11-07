@@ -33,9 +33,22 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.Dialogs;
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
-import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -53,21 +66,12 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
  * Class to load a directory full of images and create counters
@@ -91,10 +95,8 @@ public class MassPieceLoader {
   private final Map<String, PieceInfo> pieceInfo = new HashMap<>();
   private final List<Emb> layers = new ArrayList<>();
   protected MassLoaderDialog dialog;
-  private static final DirectoryConfigurer dirConfig = new DirectoryConfigurer(null,
-      Resources.getString("Editor.MassPieceLoader.image_directory") + ": ");
-  private static final BooleanConfigurer basicConfig = new BooleanConfigurer(null,
-    Resources.getString("Editor.MassPieceLoader.no_basic_piece"), Boolean.FALSE);
+  private static final DirectoryConfigurer dirConfig = new DirectoryConfigurer(null, "");
+  private static final BooleanConfigurer basicConfig = new BooleanConfigurer(null, "", Boolean.FALSE);
   private static final MassPieceDefiner definer = new MassPieceDefiner();
 
   public MassPieceLoader(ConfigureTree tree, Configurable target) {
@@ -127,7 +129,7 @@ public class MassPieceLoader {
       super(configureTree.getFrame());
       setModal(true);
       setTitle(Resources.getString("Editor.MassPieceLoader.load_multiple"));
-      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+      setLayout(new MigLayout("ins panel,wrap 2," + TraitLayout.STANDARD_GAPY, "[right]rel[grow,fill]", "[][][][grow,fill][]")); // NON-NLS
       setPreferredSize(new Dimension(800, 600));
 
       dirConfig.addPropertyChangeListener(e -> {
@@ -135,13 +137,15 @@ public class MassPieceLoader {
           buildTree((File) e.getNewValue());
         }
       });
-      add(dirConfig.getControls());
+      add(new JLabel(Resources.getString("Editor.MassPieceLoader.image_directory")));
+      add(dirConfig.getControls(), "grow"); // NON-NLS
 
       basicConfig.addPropertyChangeListener(e -> {
         if (e.getNewValue() != null) {
           buildTree(dirConfig.getFileValue());
         }
       });
+      add(new JLabel(Resources.getString("Editor.MassPieceLoader.no_basic_piece")));
       add(basicConfig.getControls());
 
       defineDialog = new DefineDialog(this);
@@ -156,14 +160,16 @@ public class MassPieceLoader {
           buildTree(dirConfig.getFileValue());
         }
       });
-      add(defineButton);
+      add(defineButton, "skip 1,growx 0"); // NON-NLS
 
       tree = new MyTreeTable();
       buildTree(dirConfig.getFileValue());
+      //final JPanel treePanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS
+      //treePanel.add(tree, "grow"); // NON-NLS
       final JScrollPane scrollPane = new JScrollPane(tree);
-      add(scrollPane);
+      add(scrollPane, "span 2,grow"); // NON-NLS
 
-      final Box buttonBox = Box.createHorizontalBox();
+      final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(e -> save());
       buttonBox.add(okButton);
@@ -181,7 +187,8 @@ public class MassPieceLoader {
       });
       buttonBox.add(helpButton);
 
-      add(buttonBox);
+      add(buttonBox, "span 2,center,grow 0"); // NON-NLS
+
       pack();
       setLocationRelativeTo(getParent());
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -295,8 +302,8 @@ public class MassPieceLoader {
             for (int i = 0; i < newLayer.getImageNames().length; i++) {
               final String levelName = newLayer.getLevelNames()[i];
               final BasicNode levelNode = new LevelNode(
-                  levelName == null ? "" : levelName, newLayer
-                      .getImageNames()[i], i);
+                levelName == null ? "" : levelName, newLayer
+                .getImageNames()[i], i);
               layerNode.add(levelNode);
             }
             pieceNode.add(layerNode);
@@ -386,21 +393,6 @@ public class MassPieceLoader {
           boolean isSelected, int row, int column) {
         final Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
         c.setForeground(Color.blue);
-        return c;
-      }
-    }
-
-    class SkipRenderer extends DefaultTableCellRenderer {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public Component getTableCellRendererComponent(JTable table,
-          Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        final Component c = super.getTableCellRendererComponent(table, value,
-            isSelected, hasFocus, row, col);
-        if (!(tree.getPathForRow(row).getLastPathComponent() instanceof PieceNode)) {
-          return new JLabel("");
-        }
         return c;
       }
     }
@@ -570,7 +562,7 @@ public class MassPieceLoader {
   static class MassPieceDefiner extends PrototypeDefinition.Config.Definer {
     private static final long serialVersionUID = 1L;
 
-    protected static DefaultListModel newModel;
+    protected static DefaultListModel<GamePiece> newModel;
 
     public MassPieceDefiner() {
       super(GameModule.getGameModule().getGpIdSupport());
@@ -578,14 +570,14 @@ public class MassPieceLoader {
       // Build a replacement model that uses a modified Embellishment trait
       // with a replacement ImagePicker.
       if (newModel == null) {
-        newModel = new DefaultListModel();
+        newModel = new DefaultListModel<>();
         for (final Enumeration<?> e = availableModel.elements(); e.hasMoreElements();) {
           final Object o = e.nextElement();
           if (o instanceof Embellishment) {
             newModel.addElement(new MassPieceLoader.Emb());
           }
           else {
-            newModel.addElement(o);
+            newModel.addElement((GamePiece) o);
           }
         }
       }
@@ -602,7 +594,7 @@ public class MassPieceLoader {
    * template.
    *
    */
-  class DefineDialog extends JDialog {
+  static class DefineDialog extends JDialog {
     private static final long serialVersionUID = 1L;
     protected boolean cancelled = false;
 
@@ -611,24 +603,20 @@ public class MassPieceLoader {
       setVisible(false);
       setTitle(Resources.getString("Editor.MassPieceLoader.multiple_piece_template"));
       setLocationRelativeTo(owner);
+      setLayout(new MigLayout("ins panel,wrap 1," + TraitLayout.STANDARD_GAPY, "[grow,fill]", "[grow,fill][]")); // NON-NLS
+      add(definer, "grow"); // NON-NLS
 
-      final Box box = Box.createVerticalBox();
-      box.add(definer);
-
-      final JButton saveButton = new JButton(Resources
-          .getString(Resources.SAVE));
+      final JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       saveButton.addActionListener(e -> save());
 
-      final JButton canButton = new JButton(Resources
-          .getString(Resources.CANCEL));
+      final JButton canButton = new JButton(Resources.getString(Resources.CANCEL));
       canButton.addActionListener(e -> cancel());
 
-      final Box bbox = Box.createHorizontalBox();
+      final JPanel bbox = new JPanel(new MigLayout("ins 0", "push[][]push")); // NON-NLS
       bbox.add(saveButton);
       bbox.add(canButton);
 
-      box.add(bbox);
-      add(box);
+      add(bbox, "center"); // NON-NLS
 
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
@@ -708,9 +696,8 @@ public class MassPieceLoader {
         if (column == NAME_COL || column == COPIES_COL) {
           return !((PieceNode) node).isSkip();
         }
-        else if (column == SKIP_COL) {
-          return true;
-        }
+        else
+          return column == SKIP_COL;
       }
       return false;
     }
@@ -773,7 +760,7 @@ public class MassPieceLoader {
   /**
    * Blank Cell Renderer
    */
-  class NullRenderer implements TableCellRenderer {
+  static class NullRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable arg0, Object arg1,
         boolean arg2, boolean arg3, int arg4, int arg5) {
@@ -785,7 +772,7 @@ public class MassPieceLoader {
    * *************************************************************************
    * Custom TreeTable Node
    */
-  class BasicNode extends DefaultMutableTreeTableNode {
+  static class BasicNode extends DefaultMutableTreeTableNode {
     protected String name;
     protected String imageName;
     protected boolean skip;
@@ -864,8 +851,6 @@ public class MassPieceLoader {
    */
   class PieceNode extends BasicNode {
 
-    boolean noBasicPieceImage;
-
     public PieceNode(String imageName) {
       super();
       setImageName(imageName);
@@ -916,7 +901,7 @@ public class MassPieceLoader {
   /**
    * Node representing a Layer trait of a GamePiece
    */
-  class LayerNode extends BasicNode {
+  static class LayerNode extends BasicNode {
     public LayerNode(String name) {
       super(name, "");
     }
@@ -936,7 +921,7 @@ public class MassPieceLoader {
    * Node representing an individual Image Level within a Layer trait
    *
    */
-  class LevelNode extends BasicNode {
+  static class LevelNode extends BasicNode {
     int levelNumber;
 
     public LevelNode(String name, String imageName, int level) {
@@ -961,7 +946,7 @@ public class MassPieceLoader {
    * load flag
    *
    */
-  class PieceInfo {
+  static class PieceInfo {
     protected String name;
     protected boolean skip;
 
@@ -1100,7 +1085,7 @@ public class MassPieceLoader {
       return builtImages;
     }
 
-    public class LoaderEd extends Embellishment.Ed {
+    public static class LoaderEd extends Embellishment.Ed {
       public LoaderEd(Embellishment e) {
         super(e);
       }
@@ -1132,7 +1117,7 @@ public class MassPieceLoader {
       final Entry pick = new Entry();
       multiPanel.add(entry, pick);
       imageList.setSelectedIndex(imageListElements.size() - 1);
-      cl.show(multiPanel, (String) imageList.getSelectedValue());
+      cl.show(multiPanel, imageList.getSelectedValue());
     }
 
     @Override
