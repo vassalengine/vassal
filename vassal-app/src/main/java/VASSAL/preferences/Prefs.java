@@ -287,7 +287,7 @@ public class Prefs implements Closeable {
     final BooleanConfigurer rememberConf = new BooleanConfigurer(
           MAIN_WINDOW_REMEMBER,
           Resources.getString("Prefs.main_window"),
-          Boolean.FALSE
+          Boolean.TRUE
         );
     globalPrefs.addOption(Resources.getString("Prefs.general_tab"), rememberConf);
 
