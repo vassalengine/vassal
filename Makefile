@@ -46,9 +46,9 @@ JDOCDIR:=jdoc
 # numeric part of the version only
 VNUM:=3.4.8
 
-MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+#MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 #MAVEN_VERSION:=$(VNUM)-beta1
-#MAVEN_VERSION:=$(VNUM)
+MAVEN_VERSION:=$(VNUM)
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
@@ -246,6 +246,11 @@ $(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
+$(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
+	jinja2 -Dversion=$(VNUM) -o $@ $<
+
+release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum
+
 release: clean release-other release-linux release-windows release-macosx release-sha256
 
 clean-release:
@@ -267,4 +272,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc jar clean-javadoc version-set
+.PHONY: compile test clean release release-linux release-macosx release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set
