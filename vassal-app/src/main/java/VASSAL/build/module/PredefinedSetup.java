@@ -18,13 +18,13 @@
 package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
@@ -34,12 +34,18 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.ParentProxy;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.SwingUtilities;
+
 
 /**
  * Defines a saved game that is accessible from the File menu.
@@ -248,6 +254,30 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
+
+  public void refresh() throws IOException {
+    final GameModule mod = GameModule.getGameModule();
+    final GameState gs = mod.getGameState();
+    final GameRefresher gameRefresher = new GameRefresher(mod);
+
+    Runnable refresh = () -> gameRefresher.execute(false, true);
+    try {
+      gs.setup(false, true);
+      gs.loadGameInBackground(fileName, getSavedGameContents());
+
+      SwingUtilities.invokeAndWait(refresh);
+      File tmp = File.createTempFile("vassal", null);
+      gs.saveGame(tmp);
+      gs.updateDone();
+
+      ArchiveWriter aw = mod.getArchiveWriter();
+      aw.addFile(tmp.getPath(), fileName);
+    }
+    // FIXME: review error message
+    catch (InterruptedException | InvocationTargetException e1) {
+    }
+  }
+
 
   @Override
   public HelpFile getHelpFile() {

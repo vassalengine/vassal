@@ -5,6 +5,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.Command;
+import VASSAL.counters.BasicPiece;
 import VASSAL.launch.BasicModule;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.io.FileArchive;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 
@@ -40,6 +42,19 @@ public final class Helper {
 
   public Command getCommand() {
     return myCommand[0];
+  }
+
+  public String getPieceImageName(BasicPiece piece) {
+    String imageName = "NONE";
+    try {
+      Field imageNameField = BasicPiece.class.getDeclaredField("imageName");
+      imageNameField.setAccessible(true);
+      imageName = (String) imageNameField.get(piece);
+    }
+    catch (IllegalAccessException | NoSuchFieldException e) {
+      e.printStackTrace();
+    }
+    return imageName;
   }
 
   public void saveGameModule(GameModule module) {

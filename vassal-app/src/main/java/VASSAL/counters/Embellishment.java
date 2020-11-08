@@ -242,21 +242,21 @@ public class Embellishment extends Decorator implements TranslatablePiece {
             activateKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
           }
           else {
-            activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers);
+            activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers, "activate");
           }
 
           if (upKey.length() == 0) {
             increaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
           }
           else {
-            increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
+            increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers, "increase");
           }
 
           if (downKey.length() == 0) {
             decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
           }
           else {
-            decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers);
+            decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers, "decrease");
           }
           version = CURRENT_VERSION;
         }
@@ -290,7 +290,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       new SequenceEncoder.Decoder(st.nextToken(), ';');
     activateKey = st2.nextToken().toUpperCase();
     if (activateKey.length() > 0) {
-      activateKeyStroke = new NamedKeyStroke(KeyStroke.getKeyStroke(activateKey));
+      activateKeyStroke = new NamedKeyStroke(KeyStroke.getKeyStroke(activateKey), "activate");
     }
     activateModifiers = InputEvent.CTRL_DOWN_MASK;
     if (st2.hasMoreTokens()) {
@@ -352,21 +352,21 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
     }
     else {
-      activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers);
+      activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers, "activate");
     }
 
     if (upKey.length() == 0) {
       increaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
     }
     else {
-      increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
+      increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers, "increase");
     }
 
     if (downKey.length() == 0) {
       decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
     }
     else {
-      decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers);
+      decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers, "decrease");
     }
     version = CURRENT_VERSION;
 
