@@ -209,6 +209,18 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   /**
+   * Docks us into the main window -- needs to be called AFTER Chatter has docked.
+   */
+  public void dockMe() {
+    mainWindowDock = ComponentSplitter.split(
+      GameModule.getGameModule().getControlPanel(),
+      root,
+      ComponentSplitter.SplitPane.HIDE_LEFT,
+      false
+    );
+  }
+
+  /**
    * Expects to be added to a {@link GameModule}.  When added, sets
    * the containing window to visible */
   @Override
@@ -218,12 +230,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     if (!hidden) {
       final String key = PositionOption.key + getConfigureName();
       if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
-        mainWindowDock = ComponentSplitter.split(
-          GameModule.getGameModule().getControlPanel(),
-          root,
-          ComponentSplitter.SplitPane.HIDE_LEFT,
-          false
-        );
+        GameModule.getGameModule().setPieceWindow(this); //BR// Register as the docked PieceWindow
       }
       else {
         final Window w = initFrame();
