@@ -594,7 +594,7 @@ public class MassPieceLoader {
    * template.
    *
    */
-  static class DefineDialog extends JDialog {
+  private static class DefineDialog extends JDialog {
     private static final long serialVersionUID = 1L;
     protected boolean cancelled = false;
 
@@ -733,7 +733,7 @@ public class MassPieceLoader {
    * illegal column numbers
    *
    */
-  class MyTreeTable extends JXTreeTable {
+  private class MyTreeTable extends JXTreeTable {
 
     private static final long serialVersionUID = 1L;
 
@@ -760,7 +760,7 @@ public class MassPieceLoader {
   /**
    * Blank Cell Renderer
    */
-  static class NullRenderer implements TableCellRenderer {
+  private static class NullRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable arg0, Object arg1,
         boolean arg2, boolean arg3, int arg4, int arg5) {
@@ -772,7 +772,7 @@ public class MassPieceLoader {
    * *************************************************************************
    * Custom TreeTable Node
    */
-  static class BasicNode extends DefaultMutableTreeTableNode {
+  private static class BasicNode extends DefaultMutableTreeTableNode {
     protected String name;
     protected String imageName;
     protected boolean skip;
@@ -849,7 +849,7 @@ public class MassPieceLoader {
    * Basic Piece image
    *
    */
-  class PieceNode extends BasicNode {
+  private class PieceNode extends BasicNode {
 
     public PieceNode(String imageName) {
       super();
@@ -901,7 +901,7 @@ public class MassPieceLoader {
   /**
    * Node representing a Layer trait of a GamePiece
    */
-  static class LayerNode extends BasicNode {
+  private static class LayerNode extends BasicNode {
     public LayerNode(String name) {
       super(name, "");
     }
@@ -921,7 +921,7 @@ public class MassPieceLoader {
    * Node representing an individual Image Level within a Layer trait
    *
    */
-  static class LevelNode extends BasicNode {
+  private static class LevelNode extends BasicNode {
     int levelNumber;
 
     public LevelNode(String name, String imageName, int level) {
@@ -946,7 +946,7 @@ public class MassPieceLoader {
    * load flag
    *
    */
-  static class PieceInfo {
+  private static class PieceInfo {
     protected String name;
     protected boolean skip;
 
@@ -975,7 +975,7 @@ public class MassPieceLoader {
   /**
    * Subclass of Embellishment to allow us to directly manipulate its members
    */
-  static class Emb extends Embellishment {
+  private static class Emb extends Embellishment {
     private final List<String> builtImages = new ArrayList<>();
 
     public Emb() {
@@ -1107,7 +1107,7 @@ public class MassPieceLoader {
   /**
    * Replacement class for the MultiImagePicker to specify image match strings
    */
-  static class LoaderImagePicker extends MultiImagePicker {
+  private static class LoaderImagePicker extends MultiImagePicker {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -1153,7 +1153,7 @@ public class MassPieceLoader {
   protected static final String EQUALS = "same as"; //NON-NLS (really)
   protected static final String BASE_IMAGE = "use Base Image"; //NON-NLS (really)
 
-  static class Entry extends JPanel {
+  private static class Entry extends JPanel {
     private static final long serialVersionUID = 1L;
     private final TranslatingStringEnumConfigurer typeConfig;
     private final StringConfigurer nameConfig;
