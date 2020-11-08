@@ -194,6 +194,9 @@ public class PrefsEditor {
       c.setFrozen(false);
     }
     dialog.setVisible(false);
+    for (final Prefs p : prefs) {
+      p.setDisableAutoWrite(false); //BR// Turn auto-write back on, if this was globalPrefs
+    }
   }
 
   protected synchronized void save() {
@@ -212,6 +215,10 @@ public class PrefsEditor {
     write();
 
     dialog.setVisible(false);
+
+    for (final Prefs p : prefs) {
+      p.setDisableAutoWrite(false); //BR// Turn auto-write back on, if this was globalPrefs
+    }
   }
 
   public Action getEditAction() {
@@ -222,6 +229,9 @@ public class PrefsEditor {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+          for (final Prefs p : prefs) {
+            p.setDisableAutoWrite(true); //BR// Turn off auto-write while we're editing globalPrefs (we will write the whole thing at the end)
+          }
           storeValues();
           dialog.pack();
           final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

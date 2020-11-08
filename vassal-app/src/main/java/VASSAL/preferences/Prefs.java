@@ -54,6 +54,7 @@ public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //NON-NLS
   public static final String DISABLE_D3D = "disableD3d"; //NON-NLS
+  public static final String MAIN_WINDOW_REMEMBER = "mainWindowRemember"; //NON-NLS
 
   private static Prefs globalPrefs; // A Global Preferences object
 
@@ -90,6 +91,16 @@ public class Prefs implements Closeable {
   public File getFile() {
     return file;
   }
+
+  /** @return false -> overridden by GlobalPrefs */
+  public boolean isDisableAutoWrite() {
+    return false;
+  }
+
+  /** @param b - no action taken -> overridden by GlobalPrefs */
+  public void setDisableAutoWrite(boolean b) {
+  }
+
 
   public void addOption(Configurer o) {
     addOption(Resources.getString("Prefs.general_tab"), o); //$NON-NLS-1$
@@ -253,7 +264,7 @@ public class Prefs implements Closeable {
     if (globalPrefs == null) {
       final PrefsEditor ed = new PrefsEditor();
       // The underscore prevents collisions with module prefs
-      globalPrefs = new Prefs(ed, new File(Info.getPrefsDir(), "V_Global"));
+      globalPrefs = new GlobalPrefs(ed, new File(Info.getPrefsDir(), "V_Global"));
 
       final DirectoryConfigurer c =
         new DirectoryConfigurer(MODULES_DIR_KEY, null);
@@ -271,6 +282,14 @@ public class Prefs implements Closeable {
    */
   public static void initSharedGlobalPrefs() {
     getGlobalPrefs();
+
+    // Option to remember main window height
+    final BooleanConfigurer rememberConf = new BooleanConfigurer(
+          MAIN_WINDOW_REMEMBER,
+          Resources.getString("Prefs.main_window"),
+          Boolean.TRUE
+        );
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), rememberConf);
 
     // Option to disable D3D pipeline
     if (SystemUtils.IS_OS_WINDOWS) {
