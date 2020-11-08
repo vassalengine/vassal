@@ -1,4 +1,4 @@
-3.4.8 - ???
+3.4.8 - 8 November 2020
 
 * 13577: Stacks properly restore their visual 'layer' level when saved/restored
 * 13574: Fix reporting on oldXXXXXX properties in ReportState
