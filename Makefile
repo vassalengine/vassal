@@ -252,7 +252,7 @@ release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 $(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
 	jinja2 -Dversion=$(VNUM) -o $@ $<
 
-release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum
+release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
 
 release: clean release-other release-linux release-windows release-macosx release-sha256
 
