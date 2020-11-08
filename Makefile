@@ -30,6 +30,9 @@
 # to use during packaging. For Macs, you will additionally need genisoimage,
 # and dmg from libdmg-hfsplus.
 #
+# For producing the release announcements from the templates, you will need
+# jinja2 and jinja2-cli.
+#
 # Run bootstrap.sh to download the appropriate JDKs and download and compile
 # dmg.
 #
