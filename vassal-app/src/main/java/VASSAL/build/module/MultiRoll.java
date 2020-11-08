@@ -264,7 +264,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     final String label;
     final Prefs prefs = GameModule.getGameModule().getPrefs();
 
-    if ((Boolean) prefs.getValue(DieManager.USE_EMAIL)) {
+    if (Boolean.TRUE.equals(prefs.getValue(DieManager.USE_EMAIL))) {
       label = (String) prefs.getValue(DieManager.SECONDARY_EMAIL);
     }
     else {

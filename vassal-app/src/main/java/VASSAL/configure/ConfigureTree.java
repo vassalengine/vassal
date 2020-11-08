@@ -383,7 +383,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addActionGroup(popup, l);
     l.add(buildSearchAction(target));
     addActionGroup(popup, l);
-    l.add(buildDeleteAction(target));    
+    l.add(buildDeleteAction(target));
     l.add(buildCutAction(target));
     l.add(buildCopyAction(target));
     l.add(buildPasteAction(target));
@@ -398,8 +398,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addAction(popup, buildImportAction(target));
     return popup;
   }
-  
-  
+
+
   /**
    * Enumerates our configure tree in preparation for searching it
    * @param root - root of our module's tree.
@@ -414,8 +414,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
     return searchNodes;
   }
-  
-  
+
+
   /**
    * @return Search action - runs search dialog box, then searches
    */
@@ -424,7 +424,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     a.setEnabled(true);
     return a;
   }
-  
+
 
   protected Action buildMoveAction(final Configurable target) {
     Action a = null;
@@ -1318,15 +1318,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private boolean matchMessages;
 
     /** Attach to our module preferences, if relevant */
-    private static Prefs prefs;    
-    
+    private static Prefs prefs;
+
     /**
      * Constructs a new search parameters object, using the preferences.
      */
     public SearchParameters() {
-      // Attach to our module preferences if constructed this way. This also marks that we will write them when modified 
-      prefs = GameModule.getGameModule().getPrefs(); 
-      
+      // Attach to our module preferences if constructed this way. This also marks that we will write them when modified
+      prefs = GameModule.getGameModule().getPrefs();
+
       prefs.addOption(null, new StringConfigurer(SearchParameters.SEARCH_STRING, null, ""));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_CASE,   null, false));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
@@ -1344,7 +1344,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       matchNames   = (Boolean)prefs.getValue(SearchParameters.MATCH_NAMES);
       matchTypes       = (Boolean)prefs.getValue(SearchParameters.MATCH_TYPES);
       matchAdvanced    = (Boolean)prefs.getValue(SearchParameters.MATCH_ADVANCED);
-      matchTraits      = (Boolean)prefs.getValue(SearchParameters.MATCH_TRAITS);                   
+      matchTraits      = (Boolean)prefs.getValue(SearchParameters.MATCH_TRAITS);
       matchExpressions = (Boolean)prefs.getValue(SearchParameters.MATCH_EXPRESSIONS);
       matchProperties  = (Boolean)prefs.getValue(SearchParameters.MATCH_PROPERTIES);
       matchKeys        = (Boolean)prefs.getValue(SearchParameters.MATCH_KEYS);
@@ -1368,7 +1368,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       this.matchMenus       = matchMenus;
       this.matchMessages    = matchMessages;
     }
-    
+
     public String getSearchString() {
       return searchString;
     }
@@ -1417,16 +1417,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public boolean isMatchTraits() {
       return matchTraits;
     }
-    
+
     public void setMatchTraits(boolean matchTraits) {
       this.matchTraits = matchTraits;
       writePrefs();
     }
-    
+
     public boolean isMatchExpressions() {
       return matchExpressions;
     }
-    
+
     public void setMatchExpressions(boolean matchExpressions) {
       this.matchExpressions = matchExpressions;
       writePrefs();
@@ -1444,7 +1444,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     public boolean isMatchKeys() {
       return matchKeys;
     }
-    
+
     public void setMatchKeys(boolean matchKeys) {
       this.matchKeys = matchKeys;
       writePrefs();
@@ -1484,7 +1484,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       matchMessages    = searchParameters.isMatchMessages();
       writePrefs();
     }
-    
+
     public void writePrefs() {
       if (prefs != null) {
         prefs.setValue(SEARCH_STRING, searchString);
@@ -1839,25 +1839,25 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (!searchParameters.isMatchAdvanced()) {
         return false;
       }
-     
+
       // From here down we are only searching inside of SearchTarget objects (Piece/Prototypes, or searchable AbstractConfigurables)
       GamePiece p;
       boolean protoskip;
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
         protoskip = false;
-      } 
+      }
       else if (c instanceof PrototypeDefinition) {
         p = ((PrototypeDefinition)c).getPiece();
         protoskip = true;
-      } 
+      }
       else if (c instanceof SearchTarget) {
         return checkSearchTarget((SearchTarget) c, searchString);
       }
       else {
         return false;
       }
-      
+
       p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.
       do {
         if (!protoskip) { // Skip the fake "Basic Piece" on a Prototype definition
@@ -1878,7 +1878,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
         protoskip = false;
         p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
-      } while (p != null);            
+      } while (p != null);
 
       return false;
     }
@@ -1972,7 +1972,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       keyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress);
     }
-        
+
     /**
      * If this node contains a Game Piece of some kind, displays a list of Trait information from the piece that
      * matches our search parameters.
@@ -1987,11 +1987,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
         protoskip = false; // This is a "real" GamePiece so we will look at the BasicPiece too
-      } 
+      }
       else if (c instanceof PrototypeDefinition) {
         p = ((PrototypeDefinition)c).getPiece();
         protoskip = true; // This is a prototype definition, so we will ignore the BasicPiece entry
-      } 
+      }
       else {
         showConfigurableHitList(node, searchString); // If no GamePiece, try regular Configurable search.
         return;
@@ -2006,7 +2006,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
       // the same order they're listed in the PieceDefiner window.
 
-      p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.      
+      p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.
       do {
         if (!protoskip && (p instanceof EditablePiece) && (p instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
           final String desc = ((EditablePiece) p).getDescription();
@@ -2028,7 +2028,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
         protoskip = false;
         p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
-      } while (p != null);                  
+      } while (p != null);
     }
 
     /**

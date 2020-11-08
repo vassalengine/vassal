@@ -806,7 +806,7 @@ public class ChessClockControl extends AbstractConfigurable
       });
 
       JMenuItem item;
-      String s;
+      final String s;
 
       if (getClocksTicking() > 0) {
         s = CHESSMENU_PAUSE + "  " + NamedHotKeyConfigurer.getString(pauseListener.getNamedKeyStroke());

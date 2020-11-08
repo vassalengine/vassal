@@ -30,6 +30,9 @@
 # to use during packaging. For Macs, you will additionally need genisoimage,
 # and dmg from libdmg-hfsplus.
 #
+# For producing the release announcements from the templates, you will need
+# jinja2 and jinja2-cli.
+#
 # Run bootstrap.sh to download the appropriate JDKs and download and compile
 # dmg.
 #
@@ -83,6 +86,13 @@ NSIS:=makensis
 LAUNCH4J:=$(DISTDIR)/launch4j/launch4j/launch4j
 
 SKIPS:=
+
+# -Dasciidoctor.skip=true
+# -Dspotbugs.skip=true
+# -Dlicense.skipDownloadLicenses
+# -Dclirr.skip=true
+# -Dmaven.javadoc.skip=true
+# -Dpmd.skip=true
 
 jar: SKIPS:=-Dasciidoctor.skip=true -Dspotbugs.skip=true -Dlicense.skipDownloadLicenses
 jar: $(LIBDIR)/Vengine.jar
@@ -234,7 +244,17 @@ release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(V
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-release: clean release-other release-linux release-windows release-macosx
+$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
+
+release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
+
+$(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
+	jinja2 -Dversion=$(VNUM) -o $@ $<
+
+release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
+
+release: clean release-other release-linux release-windows release-macosx release-sha256
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
@@ -255,4 +275,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: compile test clean release release-linux release-macosx release-windows release-other clean-release post-release javadoc jar clean-javadoc version-set
+.PHONY: compile test clean release release-linux release-macosx release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set

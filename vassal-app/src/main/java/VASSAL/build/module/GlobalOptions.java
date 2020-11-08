@@ -67,26 +67,51 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.swing.SwingUtils;
 
+/**
+ * GlobalOptions is a junction point for several flavors of "preferences"-related categories. It also configures the
+ * toolbar buttons basic VASSAL functions: Undo, Step Forward, and show/hide Servers. Global Options is a Singleton.
+ * <br>(1) Its <i>attributes</i>, set in the Editor, control the module-designer-set "hybrid preference" categories
+ * (Allowing non-owners to unmask pieces, Enabling HTML chat, format of player ID in reports), determining whether the
+ * preference in question is forced on or off, or whether a player preference is used.
+ * <br>(2) Its <i>sub-components</i> allow the module designer to "create custom preferences" which appear in their
+ * own tab.
+ * <br>(3) Many of its <i>fields</i>, configured mostly in the {@link #addTo} method, supply the majority of the
+ * preferences shown on the "General" tab, though some of that tab's preferences are also set elsewhere -- see:
+ * <br>{@link Prefs} - reading/writing the preference file, maintaining lists of configurers for tabs
+ * <br>{@link Prefs#initSharedGlobalPrefs} - disable d3d pipeline, wizard support
+ * <br>{@link BasicLogger} - configurers for Undo & Step Forward. Adds logging-related preferences to pane
+ * <br>{@link VASSAL.tools.AdjustableSpeedScrollPane} - scroll increment
+ */
 public class GlobalOptions extends AbstractConfigurable {
+  // Hybrid preferences (designer-set attribute OR possibly a player preference)
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$
   public static final String PROMPT_STRING = "promptString"; //$NON-NLS-1$
-  public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
-  public static final String CENTER_ON_MOVE_SENSITIVITY = "centerOnMoveSensitivity"; //$NON-NLS-1$
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
+
+  // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
   public static final String NEVER = "Never"; //$NON-NLS-1$
   public static final String PROMPT = "Use Preferences Setting"; //$NON-NLS-1$
+
+  // General Tab preferences
+  public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
+  public static final String CENTER_ON_MOVE_SENSITIVITY = "centerOnMoveSensitivity"; //$NON-NLS-1$
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
+  public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
+
+  // Compatibility Tab preferences
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
-  public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
+
+  // Sound Tab preferences
   public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
   public static final String SOUND_WAKEUP_MUTE = "soundWakeupMute"; //NON-NLS
 
+  // Player ID format configuration
   public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
   public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
   public static final String PLAYER_SIDE = "PlayerSide"; //$NON-NLS-1$
@@ -100,42 +125,70 @@ public class GlobalOptions extends AbstractConfigurable {
   @Deprecated(since = "2020-10-21", forRemoval = true)
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
-  private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
-  private String nonOwnerUnmaskable = NEVER;
-  private String autoReport = ALWAYS;
-  private String markMoved = NEVER;
-  private String chatterHTMLSupport = NEVER;
-  
-  private int dragThreshold = 10;
-  
-  private boolean macLegacy;
-  private boolean soundGlobalMute = false;
-  private boolean soundWakeupMute = false;
+  /************************************************************
+   * Attributes configured by module designer
+   ************************************************************/
+  private String nonOwnerUnmaskable = NEVER; // "Pieces can be unmasked by non-owners" -> defaults to forced off
+  private String autoReport = ALWAYS;        // "Auto-report moves" -> defaults to forced on
+  private String markMoved = NEVER;          // **NO LONGER USED**
+  private String chatterHTMLSupport = NEVER; // "Enable HTML Chat" - > defaults to forced off
 
+  // Configurable prompt string for unmask-my-pieces
+  private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
+
+  // Configurable Player ID format in messages
+  private final FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$");
+
+  /************************************************************
+   * Standard player preferences
+   ************************************************************/
+  private int dragThreshold = 10;            // Drag threshold for distinguishing drags from clicks
+
+  private boolean macLegacy;                 // Mac Legacy support enabled? (presently forced on - will be deprecated or restored to service)
+  private boolean soundGlobalMute = false;   // Global "mute all sounds" flag
+  private boolean soundWakeupMute = false;   // Separate Mute for the "wakeup" sound
+  private boolean useSingleWindow;           // If true, first map should dock to the main module window (along with the Chatter)
+  private boolean useClassicMoveFixedDistance = false; // Compatibility preference for move-fixed distance
+
+  /************************************************************
+   * Custom preferences
+   ************************************************************/
   private final Map<String, Object> properties = new HashMap<>();
   private static final Map<String, Configurer> OPTION_CONFIGURERS = new LinkedHashMap<>();
   private static final Properties OPTION_INITIAL_VALUES = new Properties();
 
-  private final FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
-
+  // Manage our singleton instance
   private static GlobalOptions instance = new GlobalOptions();
-  private boolean useSingleWindow;
-  
-  private boolean useClassicMoveFixedDistance = false;
-  private BooleanConfigurer classicMfd;  
 
+  /** @param go sets our singleton instance */
   private static void setInstance(GlobalOptions go) {
     instance = go;
   }
 
+  /** @return our singleton instance */
+  public static GlobalOptions getInstance() {
+    return instance;
+  }
+
+  /**
+   * GlobalOptions are added to the {@link GameModule}. This method creates
+   * the configurers for the "General" tab of the preference dialog, and some
+   * for the "Compatibility" tab.
+   * @param parent our GameModule object
+   */
   @Override
   public void addTo(Buildable parent) {
     setInstance(this);
 
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
+    validator = new SingleChildInstance(gm, getClass());
 
-    // should this module use a combined main window?
+    /////////////////////
+    // GENERAL TAB TAB //
+    /////////////////////
+
+    // should this module use a combined main window? (first map window docks to main module window w/ Chatter)
     final BooleanConfigurer combConf = new BooleanConfigurer(
       SINGLE_WINDOW,
       Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
@@ -152,6 +205,32 @@ public class GlobalOptions extends AbstractConfigurable {
     );
     prefs.addOption(maxHeapConf);
 
+    //BR// Drag Threshold - # pixels mouse must move to distinguish drag from click
+    final IntConfigurer dragThresholdConf = new IntConfigurer(
+      DRAG_THRESHOLD,
+      Resources.getString("GlobalOptions.mouse_drag_threshold"),  //$NON-NLS-1$
+      10
+    );
+    dragThresholdConf.addPropertyChangeListener(e -> {
+      dragThreshold = dragThresholdConf.getIntValue(10);
+      System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
+    });
+    prefs.addOption(dragThresholdConf);
+
+
+    // Preference to center on opponent's moves (used to be module-designer-set attribute, now always a player preference)
+    final BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
+    prefs.addOption(config);
+
+    //CC// Center-on-Moves Sensitivity (is the pct of distance from border to center of window that triggers a recenter)
+    final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
+      Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10); //$NON-NLS-1$
+    prefs.addOption(pctRecenterOn);
+
+    ///////////////////////
+    // COMPATIBILITY TAB //
+    ///////////////////////
+
     // Bug 10295: Sometimes, for unknown reasons, the native drag handler
     // fails to draw images properly on Windows. This lets the user select
     // the drag handler to use.
@@ -164,8 +243,8 @@ public class GlobalOptions extends AbstractConfigurable {
 
       final boolean dragHandlerNoImageNecessary =
         Boolean.TRUE.equals(bug10295Conf.getValue()) &&
-        !(PieceMover.AbstractDragHandler.getTheDragHandler()
-          instanceof PieceMover.DragHandlerNoImage);
+          !(PieceMover.AbstractDragHandler.getTheDragHandler()
+            instanceof PieceMover.DragHandlerNoImage);
 
       if (dragHandlerNoImageNecessary) {
         PieceMover.AbstractDragHandler.setTheDragHandler(new PieceMover.DragHandlerNoImage());
@@ -173,58 +252,39 @@ public class GlobalOptions extends AbstractConfigurable {
 
       bug10295Conf.addPropertyChangeListener(e -> PieceMover.AbstractDragHandler.setTheDragHandler(
         (Boolean.TRUE.equals(e.getNewValue()) ||
-         !DragSource.isDragImageSupported()) ?
-         new PieceMover.DragHandlerNoImage() :
-         new PieceMover.DragHandler()
+          !DragSource.isDragImageSupported()) ?
+          new PieceMover.DragHandlerNoImage() :
+          new PieceMover.DragHandler()
       ));
 
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), bug10295Conf);
     }
-    
+
     // Move Fixed Distance trait (Translate) has been substantially re-written.
     // Use new version by default. User may over-ride to use old buggy behaviour.
-    classicMfd = new BooleanConfigurer(
-        CLASSIC_MFD,
-        Resources.getString("GlobalOptions.classic_mfd"),
-        Boolean.FALSE
-      );
+    final BooleanConfigurer classicMfd = new BooleanConfigurer(
+      CLASSIC_MFD,
+      Resources.getString("GlobalOptions.classic_mfd"),
+      Boolean.FALSE
+    );
     classicMfd.addPropertyChangeListener(evt -> setUseClassicMoveFixedDistance(classicMfd.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.compatibility_tab"), classicMfd);
 
-    //BR// Drag Threshold
-    final IntConfigurer dragThresholdConf = new IntConfigurer(
-      DRAG_THRESHOLD,
-      Resources.getString("GlobalOptions.mouse_drag_threshold"),  //$NON-NLS-1$
-      10
-    );
-    dragThresholdConf.addPropertyChangeListener(e -> {
-      dragThreshold = dragThresholdConf.getIntValue(10);
-      System.setProperty("awt.dnd.drag.threshold", Integer.toString(dragThreshold));
-    });
-    prefs.addOption(dragThresholdConf);
-    
     //BR// Mac Legacy (essentially swaps Control and Command functions to their "old, bad, pre-3.3.3" mappings)
     final BooleanConfigurer macLegacyConf = new BooleanConfigurer(
-        MAC_LEGACY,
-        Resources.getString("GlobalOptions.mac_legacy"),
-        Boolean.FALSE);
+      MAC_LEGACY,
+      Resources.getString("GlobalOptions.mac_legacy"),
+      Boolean.FALSE);
     macLegacyConf.addPropertyChangeListener(evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
 
     if (!FORCE_MAC_LEGACY && SystemUtils.IS_OS_MAC_OSX) {
       // Only need to *display* this preference if we're running on a Mac.
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
-    
-    final BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
-    prefs.addOption(config);
 
-    //CC// center_on_move_border_proximity_pct (is the pct of distance from border to center of window that triggers a recenter
-    final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
-      Resources.getString("GlobalOptions.center_on_move_sensitivity"), 10); //$NON-NLS-1$
-    prefs.addOption(pctRecenterOn);
-
-    validator = new SingleChildInstance(gm, getClass());
-
+    ////////////////
+    // SOUNDS TAB //
+    ////////////////
     final BooleanConfigurer soundWakeupMuteConf = new BooleanConfigurer(
       SOUND_WAKEUP_MUTE,
       Resources.getString("GlobalOptions.sound_wakeup_mute"),
@@ -240,18 +300,17 @@ public class GlobalOptions extends AbstractConfigurable {
     prefs.addOption(Resources.getString("Prefs.sounds_tab"), soundGlobalMuteConf);
   }
 
-  public static GlobalOptions getInstance() {
-    return instance;
-  }
-
+  /** @return true if preference to dock first map window to main module window with Chatter is selected */
   public boolean isUseSingleWindow() {
     return useSingleWindow;
   }
 
+  /** @return true if compatibility version of Move Fixed Distance is selected */
   public boolean isUseClassicMoveFixedDistance() {
     return useClassicMoveFixedDistance;
   }
 
+  /** @param b sets the compatibility Move Fixed Distance preference */
   public void setUseClassicMoveFixedDistance(boolean b) {
     useClassicMoveFixedDistance = b;
   }
@@ -263,38 +322,51 @@ public class GlobalOptions extends AbstractConfigurable {
     return true;
   }
 
+  /** @param b sets the Mac Legacy compatibility preference */
   public void setPrefMacLegacy(boolean b) {
     macLegacy = b;
     // Tell SwingUtils we've changed our mind about Macs
     SwingUtils.setMacLegacy(b);
     // Since we've changed our key mapping paradigm, we need to refresh all the keystroke listeners.
-    GameModule.getGameModule().refreshKeyStrokeListeners(); 
+    GameModule.getGameModule().refreshKeyStrokeListeners();
   }
 
+  /** @return the Mac Legacy compatibility preference */
   public boolean getPrefMacLegacy() {
     return macLegacy;
   }
 
+  /** @param b sets the global sound mute preference */
   public void setSoundGlobalMute(Boolean b) {
     soundGlobalMute = b;
   }
 
+  /** @return true if sounds should be muted globally  */
   public Boolean isSoundGlobalMute() {
     return soundGlobalMute;
   }
 
+  /** @param b sets the mute for the wake-up sound */
   public void setSoundWakeupMute(Boolean b) {
     soundWakeupMute = b;
   }
 
+  /** @return true if the wake-up sound should be muted */
   public Boolean isSoundWakeupMute() {
     return soundWakeupMute;
   }
 
+  /** @return component name to be displayed in the editor, e.g. [Global Options] */
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$
   }
 
+  /**
+   * The Prompt class allows certain attribute settings to be configured by the module designer:
+   * ALWAYS = the "preference" is forced on
+   * NEVER  = the "preference" is forced off
+   * PROMPT = the player actually receives a preference on the General tab to control this behavior
+   */
   public static class Prompt extends StringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
@@ -302,6 +374,11 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /**
+   * The PromptOnOff class allows certain attribute settings to be configured by the module designer:
+   * ALWAYS = the "preference" is forced on
+   * NEVER  = the "preference" is forced off
+   */
   public static class PromptOnOff extends StringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
@@ -309,6 +386,9 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /**
+   * Configurer for the Player's ID
+   */
   public static class PlayerIdFormatConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -316,6 +396,9 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /**
+   * @return classes allowed to be added as subcomponents (in this case, custom preferences)
+   */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
@@ -328,6 +411,9 @@ public class GlobalOptions extends AbstractConfigurable {
     };
   }
 
+  /**
+   * @return Display strings describing attributes available for configuration
+   */
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
@@ -339,6 +425,9 @@ public class GlobalOptions extends AbstractConfigurable {
     };
   }
 
+  /**
+   * @return Attribute keys for XML buildFile
+   */
   @Override
   public String[] getAttributeNames() {
     final ArrayList<String> attributes = new ArrayList<>(
@@ -356,6 +445,9 @@ public class GlobalOptions extends AbstractConfigurable {
     return attributes.toArray(new String[0]);
   }
 
+  /**
+   * @return configurer classes for our attributes
+   */
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
@@ -371,6 +463,7 @@ public class GlobalOptions extends AbstractConfigurable {
    * Components may use GlobalOptions to store generic global attributes.
    * This method registers the given key as an attribute of the GlobalOptions
    * with the given type.
+   * @param option - configurer to add
    */
   public void addOption(Configurer option) {
     OPTION_CONFIGURERS.put(option.getKey(), option);
@@ -385,6 +478,11 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /**
+   * Builds our component from the buildFile. In our case it mainly involves checkout for subcomponents which
+   * represent "custom preferences" and appropriately creating configurers and a preferences tab for them.
+   * @param e our XML element from the buildFile
+   */
   @Override
   public void build(Element e) {
     if (e == null) return;
@@ -422,6 +520,11 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /**
+   * Packages any "custom preferences" back up into XML for the buildFile
+   * @param doc the XML document we are writing to
+   * @return XML Element
+   */
   @Override
   public Element getBuildElement(Document doc) {
     final Element e = super.getBuildElement(doc);
@@ -434,6 +537,9 @@ public class GlobalOptions extends AbstractConfigurable {
     return e;
   }
 
+  /**
+   * @return a configurer including all custom preferences
+   */
   @Override
   public Configurer getConfigurer() {
     if (config == null) {
@@ -452,6 +558,11 @@ public class GlobalOptions extends AbstractConfigurable {
     return config;
   }
 
+  /**
+   * Returns current setting of an attribute in String form
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @return String value of attribute
+   */
   @Override
   public String getAttributeValueString(String key) {
     if (NON_OWNER_UNMASKABLE.equals(key)) {
@@ -476,7 +587,7 @@ public class GlobalOptions extends AbstractConfigurable {
       return playerIdFormat.getFormat();
     }
     else if (DRAG_THRESHOLD.equals(key)) {
-      return Integer.toString(dragThreshold);  
+      return Integer.toString(dragThreshold);
     }
     else if (!OPTION_CONFIGURERS.containsKey(key)) {
       final Object val = properties.get(key);
@@ -487,15 +598,29 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /**
+   * @return Help file to be used on this component's configuration dialog
+   */
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GlobalOptions.html"); //$NON-NLS-1$
   }
 
+  /**
+   * Removes us from our parent component
+   * @param parent our parent (GameModule)
+   */
   @Override
   public void removeFrom(Buildable parent) {
   }
 
+  /**
+   * Sets a new value for one of our attributes. Some special attention is needed when one of the designer-controlled
+   * attributes changes, as it may necessitate the showing/hiding of a new user preference checkbox configurer
+   * @param key the name of the attribute. Will be one of those listed in {@link #getAttributeNames}
+   * @param value If the <code>value</code> parameter is a String, it will be the value returned by {@link #getAttributeValueString} for the same
+   *              <code>key</code>. If the implementing class extends {@link AbstractConfigurable}, then <code>value</code> can also be an instance of
+   */
   @Override
   public void setAttribute(String key, Object value) {
     if (NON_OWNER_UNMASKABLE.equals(key)) {
@@ -543,14 +668,17 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
+  /** @return true if auto-reporting moves is enabled (designer-setting or user-pref, depending) */
   public boolean autoReportEnabled() {
     return isEnabled(autoReport, AUTO_REPORT);
   }
 
+  /** @return true if center-on-opponents-move user pref is selected (no longer a designer setting) */
   public boolean centerOnOpponentsMove() {
     return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE));
   }
 
+  /** @return percent-distance-from-center sensitivity for centering on opponent's move */
   public double centerOnOpponentsMoveSensitivity() {
     int sensitivity = (Integer) GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE_SENSITIVITY);
     if (sensitivity > 100) {
@@ -562,28 +690,34 @@ public class GlobalOptions extends AbstractConfigurable {
     return sensitivity;
   }
 
+  /** @return designer's setting for enabling HTML chat */
   public String chatterHTMLSetting() {
     return chatterHTMLSupport;
   }
-  
+
+  /** @return true if chat is enabled in HTML (uses designer setting only) */
   public boolean chatterHTMLSupport() {
     return isEnabled(chatterHTMLSupport, CHATTER_HTML_SUPPORT);
   }
 
+  /** @return - NO LONGER USED */
   public boolean isMarkMoveEnabled() {
     return isEnabled(markMoved, MARK_MOVED);
   }
-  
+
+  /** @return drag threshold - pixels of movement required to distinguish drag from click */
   public int getDragThreshold() {
     return dragThreshold;
   }
-  
+
+  /** @return player ID for current player using the designer-configured format */
   public String getPlayerId() {
     playerIdFormat.setProperty(PLAYER_NAME, (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
     playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMyLocalizedSide());
     return playerIdFormat.getText();
   }
 
+  /** @return whether specific hybrid preference is enabled (could be designer-forced setting, could be player preference) */
   private boolean isEnabled(String attValue, String prefsPrompt) {
     if (ALWAYS.equals(attValue)) {
       return true;
@@ -598,6 +732,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   /**
    * Implement PropertyNameSource - Expose our preference names
+   * @return property names for custom preferences
    */
   @Override
   public List<String> getPropertyNames() {

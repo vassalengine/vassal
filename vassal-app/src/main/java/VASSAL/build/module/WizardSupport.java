@@ -230,9 +230,9 @@ public class WizardSupport {
 
   /**
    * Returns true if user has supplied a real name for current GameModule.
-   * 
+   *
    * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
-   * 
+   *
    * @return <code>true</code> if user supplied a real name
    */
   private boolean isRealName() {
@@ -240,7 +240,7 @@ public class WizardSupport {
     return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
-  
+
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one

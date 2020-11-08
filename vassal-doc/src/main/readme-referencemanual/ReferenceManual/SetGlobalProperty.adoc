@@ -15,7 +15,7 @@ image:images/SetGlobalProperty.png[]
 
 *Global Property Name*  An <<Expression.adoc#top,Expression>> that defines the name of the property to be set.
 Often, a specific Global Property is simply listed by name, but it is possible to compute the name of the Global Property to be changed based on other properties of the piece, e.g.
-_\{ "Resources" + GetProperty("Side")_ }. In this case when the property Side holds the value "Allied" then the Global Property to be set will be _ResourcesAllied_.
+_{ "Resources" + GetProperty("Side")_ }. In this case when the property Side holds the value "Allied" then the Global Property to be set will be _ResourcesAllied_.
 
 *Locate Property starting in the:*  You may name a Zone or Map containing the Global Property to be set, or you may set the property based on the piece's current location, looking for the occupied Zone or Map before defaulting to the Module.
 The name of the Zone or Map is defined using an <<Expression.adoc#top,Expression>>, and so again can be named directly or computed based on the values of Properties.

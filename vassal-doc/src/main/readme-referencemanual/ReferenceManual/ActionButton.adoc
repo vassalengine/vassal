@@ -35,7 +35,7 @@ To make a button that can be activated and deactivated, combine an Action Button
 A Layer named __Energy__is used to represent the energy.
 The image for the lowest level of the layer adds an icon for a self-destruct button.
 An Action Button trait uses the boundaries of the button icon and invokes _Ctrl+Alt+T_.
-A <<TriggerAction.adoc#top,Trigger Action>> trait watches for _Ctrl+Alt+T_ and invokes the keyboard command for self-destruct when the properties match _\{ Energy_Level == 1 }_.
+A <<TriggerAction.adoc#top,Trigger Action>> trait watches for _Ctrl+Alt+T_ and invokes the keyboard command for self-destruct when the properties match _{ Energy_Level == 1 }_.
 
 |image:images/ActionButton.png[]
 

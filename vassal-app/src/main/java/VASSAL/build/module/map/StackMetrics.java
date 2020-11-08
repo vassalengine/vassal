@@ -55,8 +55,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**
- * Encapsulates information on how to draw expanded and unexpanded
- * views of a stack
+ * StackMetrics provides the [Stacking options] component of a {@link Map}. It encapsulates information on how to draw
+ * expanded and unexpanded views of a stack.
  */
 public class StackMetrics extends AbstractConfigurable {
   protected int exSepX, exSepY;
@@ -619,7 +619,7 @@ public class StackMetrics extends AbstractConfigurable {
    */
   public Command merge(GamePiece fixed, GamePiece moving) {
     Command comm;
-    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {
+    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       comm = merge(((Stack) fixed).topPiece(), moving);
     }
     else {

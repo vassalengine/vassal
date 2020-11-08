@@ -21,12 +21,21 @@ package VASSAL.build.module.map;
 import VASSAL.counters.GamePiece;
 
 /**
- * Manages a collection of {@link VASSAL.counters.GamePiece}s in a {@link VASSAL.build.module.Map}
+ * A PieceCollection generally holds a list of {@link VASSAL.counters.GamePiece}s on a {@link VASSAL.build.module.Map}.
+ * Each Map has a master {@link CompoundPieceCollection} that contains all of its pieces, stacks, and decks -- usually
+ * this will be a {@link LayeredPieceCollection} but possibly a simpler {@link DefaultPieceCollection}. Within a
+ * CompoundPieceCollection, there may be several {@link SimplePieceCollection}s, each containing the pieces in a single
+ * visual layer.
+ * <br><br>
+ * In addition to providing a means to maintain a list of all the pieces in a map, this interface provides a means to
+ * manage the draw order of pieces, in part by grouping pieces into different visual layers for e.g. Game Piece Layer
+ * Control and Game Piece Layer components of a Map. Within each layer, pieces are also listed in the order they should
+ * be drawn (i.e. lowest index at the back/bottom, highest index at the front/top).
  */
 public interface PieceCollection {
-  /** Reposition a piece to the front of all others in the same layer*/
+  /** Reposition a piece to the front of all others in the same visual layer*/
   void moveToFront(GamePiece p);
-  /** Reposition a piece to the back of all others in the same layer*/
+  /** Reposition a piece to the back of all others in the same visual layer*/
   void moveToBack(GamePiece p);
   /** Return all currently-visible pieces in the collection as a read-only array */
   GamePiece[] getPieces();
@@ -36,7 +45,8 @@ public interface PieceCollection {
   boolean canMerge(GamePiece p1, GamePiece p2);
   /**
    * Returns the index of a piece.  When painting the map, pieces
-   * are drawn in order of index */
+   * are drawn in order of index -- lowest index drawn first and therefore
+   * appearing "below" later pieces which are drawn on top of it. */
   int indexOf(GamePiece p);
   /** Removes the piece */
   void remove(GamePiece p);

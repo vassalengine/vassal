@@ -133,8 +133,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public String getDescription() {
     return buildDescription("Editor.ActionButton.trait_description", description);
   }
-  
-  
+
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
@@ -256,6 +256,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       }
     }
 
+    @Deprecated(since = "2020-10-26", forRemoval = true)
     public void register(Component obs, GamePiece piece, int x, int y) {
       if (obs != null) {
         ComponentMouseListener l = componentMouseListeners.get(obs);
@@ -297,7 +298,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
             return;
           }
         }
-        if (piece instanceof ActionButton) {
+        else if (piece instanceof ActionButton) {
           final ActionButton action = (ActionButton) piece;
           if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
             // Save state prior to command
@@ -339,6 +340,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       }
     }
 
+    @Deprecated(since = "2020-10-26", forRemoval = true)
     protected class ComponentMouseListener extends MouseAdapter {
       private GamePiece target;
       private int xOffset;

@@ -77,9 +77,9 @@ public interface AutoConfigurable extends Configurable {
   class Util {
     public static void buildAttributes(Element e, AutoConfigurable parent) {
       if (e != null) {
-        NamedNodeMap n = e.getAttributes();
+        final NamedNodeMap n = e.getAttributes();
         for (int i = 0; i < n.getLength(); ++i) {
-          Attr att = (Attr) n.item(i);
+          final Attr att = (Attr) n.item(i);
           parent.setAttribute(att.getName(), att.getValue());
           Localization.getInstance().saveTranslatableAttribute(parent, att.getName(), att.getValue());
         }
@@ -87,10 +87,10 @@ public interface AutoConfigurable extends Configurable {
     }
 
     public static Element getBuildElement(Document doc, AutoConfigurable parent) {
-      Element el = doc.createElement(parent.getClass().getName());
-      String[] names = parent.getAttributeNames();
-      for (String name : names) {
-        String val = parent.getAttributeValueString(name);
+      final Element el = doc.createElement(parent.getClass().getName());
+      final String[] names = parent.getAttributeNames();
+      for (final String name : names) {
+        final String val = parent.getAttributeValueString(name);
         if (val != null) {
           el.setAttribute(name, val);
         }

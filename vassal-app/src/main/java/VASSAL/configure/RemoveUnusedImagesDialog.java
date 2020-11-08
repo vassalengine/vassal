@@ -48,7 +48,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
   public RemoveUnusedImagesDialog(Frame owner) {
     super(owner, Resources.getString("Editor.UnusedImages.remove_unused_images"), true);
-  
+
     final FlowLabel text =
       new FlowLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 

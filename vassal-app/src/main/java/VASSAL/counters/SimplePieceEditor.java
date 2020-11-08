@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -51,15 +53,14 @@ public class SimplePieceEditor implements PieceEditor {
     panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     Box b = Box.createHorizontalBox();
-    b.add(new JLabel("Type: "));
+    b.add(new JLabel(Resources.getString("Editor.SimplePieceEditor.type") + ": "));
     b.add(typeField);
     panel.add(b);
 
     b = Box.createHorizontalBox();
-    b.add(new JLabel("State: "));
+    b.add(new JLabel(Resources.getString("Editor.SimplePieceEditor.state") + ": "));
     b.add(stateField);
     panel.add(b);
-
   }
 
   @Override

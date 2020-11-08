@@ -85,12 +85,12 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
     scale = 1.0;
   }
-  
+
   @Override
   public boolean hasScale() {
     return true;
   }
-  
+
   @Override
   public double getScale() {
     return scale;
@@ -209,6 +209,18 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   /**
+   * Docks us into the main window -- needs to be called AFTER Chatter has docked.
+   */
+  public void dockMe() {
+    mainWindowDock = ComponentSplitter.split(
+      GameModule.getGameModule().getControlPanel(),
+      root,
+      ComponentSplitter.SplitPane.HIDE_LEFT,
+      false
+    );
+  }
+
+  /**
    * Expects to be added to a {@link GameModule}.  When added, sets
    * the containing window to visible */
   @Override
@@ -218,12 +230,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     if (!hidden) {
       final String key = PositionOption.key + getConfigureName();
       if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
-        mainWindowDock = ComponentSplitter.split(
-          GameModule.getGameModule().getControlPanel(),
-          root,
-          ComponentSplitter.SplitPane.HIDE_LEFT,
-          false
-        );
+        GameModule.getGameModule().setPieceWindow(this); //BR// Register as the docked PieceWindow
       }
       else {
         final Window w = initFrame();
@@ -305,13 +312,13 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       if (value instanceof String) {
         value = Double.valueOf((String)value);
       }
-      scale = (Double) value;      
+      scale = (Double) value;
       if (scale < 0.01) { //BR// Just gonna go with some sanity.
         scale = 0.01;
-      } 
+      }
       else if (scale >= 4) {
-        scale = 4.0; 
-      } 
+        scale = 4.0;
+      }
     }
     else if (TOOLTIP.equals(name)) {
       tooltip = (String) value;
@@ -322,7 +329,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
   }
 
-  
+
   @Override
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {

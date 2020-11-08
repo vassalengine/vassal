@@ -1052,4 +1052,12 @@
         <to>VASSAL.counters.PieceDefiner$ScaleablePieceSlot</to>
         <justification>Required for PieceDefiner major update.</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader$Emb$LoaderEd</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+
 </differences>

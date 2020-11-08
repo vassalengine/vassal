@@ -87,7 +87,7 @@ public interface PieceFinder {
       GamePiece selected = (GamePiece) super.visitStack(s);
       if (selected == s
           && !s.isExpanded()) {
-        selected = s.topPiece();
+        selected = s.topPiece();  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       }
       return selected;
     }

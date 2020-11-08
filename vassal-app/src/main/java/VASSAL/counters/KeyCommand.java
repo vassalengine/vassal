@@ -146,14 +146,14 @@ public class KeyCommand extends AbstractAction {
       }
     }
   }
-  
-  
+
+
   // Returns true if this command exists simply to produce a menu separator
   public boolean isMenuSeparator() {
     return MenuSeparator.SEPARATOR_NAME.equals(name);
-  }  
+  }
 
-  
+
   /**
    * The human-readable text that will appear in the right-click menu, translated to the user's Locale
    * @return Localized text

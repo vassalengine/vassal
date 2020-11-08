@@ -88,7 +88,7 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
     final int c = e.getKeyCode();
     // Don't pass modifier keys alone to counters
     final boolean onlyModifierKeys = (c == KeyEvent.VK_SHIFT || c == KeyEvent.VK_CONTROL || c == KeyEvent.VK_ALT || c == KeyEvent.VK_META);
-    if (!e.isConsumed() && !onlyModifierKeys) { 
+    if (!e.isConsumed() && !onlyModifierKeys) {
       final Command comm = KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
       if (comm != null && !comm.isNull()) {
         GameModule.getGameModule().sendAndLog(comm);

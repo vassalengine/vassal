@@ -133,8 +133,8 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   protected String getExpression() {
     return expression.getExpression();
   }
-  
-  
+
+
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */

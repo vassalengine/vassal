@@ -28,8 +28,8 @@ import VASSAL.tools.swing.SwingUtils;
 
 
 /**
- * Translates key codes into human-readable strings (e.g. "Backspace"). 
- * 
+ * Translates key codes into human-readable strings (e.g. "Backspace").
+ *
  * Exists as a buildable (buildFile element) so that it can be overridden by custom classes
  */
 public class KeyNamer implements Buildable {
@@ -48,7 +48,7 @@ public class KeyNamer implements Buildable {
 
   @Override
   public void add(Buildable b) {
-  }  
+  }
 
   /**
    * Implements VASSAL's plain text representation of a KeyStroke.
@@ -70,7 +70,7 @@ public class KeyNamer implements Buildable {
     case KeyEvent.VK_SUBTRACT:
       sb.append(Resources.getString("Keys.numminus")); //$NON-NLS-1$ //$NON-NLS-2$
       break;
-    // More compact name, also commonly printed keys  
+    // More compact name, also commonly printed keys
     case KeyEvent.VK_PAGE_UP:
       sb.append(Resources.getString("Keys.pgup")); //$NON-NLS-1$ //$NON-NLS-2$
       break;
@@ -88,7 +88,7 @@ public class KeyNamer implements Buildable {
       break;
     }
     if (sb.toString().isEmpty() || sb.toString().contains("Keys.")) { //$NON-NLS-1$
-      sb.append(KeyEvent.getKeyText(code)); 
+      sb.append(KeyEvent.getKeyText(code));
     }
 
     final int mods = SwingUtils.genericToSystem(k).getModifiers();

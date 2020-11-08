@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 20, 2002
- * Time: 3:52:36 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Component;

@@ -32,7 +32,7 @@ public class OwningOpMultiResolutionImage extends OpMultiResolutionImage {
 
   @Override
   public Image getResolutionVariant(double w, double h) {
-    Image img = imgs.get(w);  
+    Image img = imgs.get(w);
     if (img == null) {
       img = Op.scale(sop, w / sop.getWidth()).getImage();
       imgs.put(w, img);
@@ -43,5 +43,5 @@ public class OwningOpMultiResolutionImage extends OpMultiResolutionImage {
   @Override
   public List<Image> getResolutionVariants() {
     return List.copyOf(imgs.values());
-  } 
+  }
 }

@@ -17,6 +17,43 @@
  */
 package VASSAL.build;
 
+import java.awt.FileDialog;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import org.slf4j.LoggerFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
@@ -111,39 +148,10 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
-import java.awt.FileDialog;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import static VASSAL.build.module.Map.MAIN_WINDOW_HEIGHT;
+import static VASSAL.build.module.Map.MAIN_WINDOW_WIDTH;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -167,15 +175,15 @@ public class GameModule extends AbstractConfigurable
 
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
-  public static final String DESCRIPTION = "description";
+  public static final String DESCRIPTION = "description"; //NON-NLS
   public static final String VASSAL_VERSION_CREATED = "VassalVersion";  //$NON-NLS-1$
   /**
    * The System property of this name will return a version identifier for the version of VASSAL being run
    */
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
-  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
-  public static final String BUILDFILE = "buildFile.xml";
-  public static final String BUILDFILE_OLD = "buildFile";
+  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId"; //NON-NLS
+  public static final String BUILDFILE = "buildFile.xml"; //NON-NLS
+  public static final String BUILDFILE_OLD = "buildFile"; //NON-NLS
 
   /** The {@link Prefs} key for the user's real name */
   public static final String REAL_NAME = "RealName"; //$NON-NLS-1$
@@ -184,13 +192,13 @@ public class GameModule extends AbstractConfigurable
   /** The {@link Prefs} key for the user's personal info */
   public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
-  public static final String MODULE_NAME_PROPERTY = "ModuleName";
-  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion";
-  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription";
-  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1";
-  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2";
-  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated";
-  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning";
+  public static final String MODULE_NAME_PROPERTY = "ModuleName"; //NON-NLS
+  public static final String MODULE_VERSION_PROPERTY = "ModuleVersion"; //NON-NLS
+  public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription"; //NON-NLS
+  public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1"; //NON-NLS
+  public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
+  public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
+  public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -198,13 +206,13 @@ public class GameModule extends AbstractConfigurable
    * Last type of game save/load for our current game
    */
   public enum GameFileMode {
-    SAVED_GAME("saved"),
-    LOADED_GAME("loaded"),
-    REPLAYED_GAME("replayed"),
-    REPLAYING_GAME("replaying"),
-    LOGGING_GAME("logging"),
-    LOGGED_GAME("logged"),
-    NEW_GAME("new");
+    SAVED_GAME("saved"), //NON-NLS
+    LOADED_GAME("loaded"), //NON-NLS
+    REPLAYED_GAME("replayed"), //NON-NLS
+    REPLAYING_GAME("replaying"), //NON-NLS
+    LOGGING_GAME("logging"), //NON-NLS
+    LOGGED_GAME("logged"), //NON-NLS
+    NEW_GAME("new"); //NON-NLS
 
     private final String prettyName;
 
@@ -233,7 +241,7 @@ public class GameModule extends AbstractConfigurable
   private FileChooser fileChooser;
   private FileDialog fileDialog;
   private final MutablePropertiesContainer propsContainer = new Impl();
-  private final PropertyChangeListener repaintOnPropertyChange = 
+  private final PropertyChangeListener repaintOnPropertyChange =
     evt -> {
       for (final Map map : Map.getMapList()) {
         map.repaint();
@@ -276,6 +284,11 @@ public class GameModule extends AbstractConfigurable
   private Chatter chat;
 
   /**
+   * Docked PieceWindow (we need to know which one to get our splitters all splatting in the right order)
+   */
+  private PieceWindow pieceWindow = null;
+
+  /**
    * Random number generator
    */
   private final Random RNG = new SecureRandom();
@@ -316,9 +329,9 @@ public class GameModule extends AbstractConfigurable
 
   private String gameFile     = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
-  
+
   private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
-  
+
   /**
    * Store the currently building GpId source. Only meaningful while
    * the GameModule or an Extension is actually in the process of being built
@@ -470,6 +483,12 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
+    //BR// If a dockable PieceWindow got registered, dock it now (since we're sure the Chatter will already be safely docked by this point)
+    final PieceWindow pw = getPieceWindow();
+    if (pw != null) {
+      pw.dockMe();
+    }
+
     MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
       getPrefs().getEditor().getEditAction());
 
@@ -553,7 +572,7 @@ public class GameModule extends AbstractConfigurable
     // legacy server used to be stored as node type
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, oncf);
     // redirect removed jabber type to official server
-    ChatServerFactory.register("jabber", oncf);
+    ChatServerFactory.register("jabber", oncf); //NON-NLS
 
     server = new DynamicClient();
     final AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
@@ -607,9 +626,18 @@ public class GameModule extends AbstractConfigurable
     final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-// FIXME: annoying!
       frame.setLocation(screen.getLocation());
-      frame.setSize(screen.width, screen.height / 3);
+
+      final int height = (Integer)
+        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+      final int width = (Integer)
+        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
+      if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+        frame.setSize((width > 0) ? width : screen.width, height / 3);
+      }
+      else {
+        frame.setSize(screen.width, screen.height / 3);
+      }
     }
     else {
       final String key = "BoundsOfGameModule"; //$NON-NLS-1$
@@ -1079,7 +1107,7 @@ public class GameModule extends AbstractConfigurable
       chat.show(" - " + s2); //$NON-NLS-1$
     }
   }
-  
+
   /**
    * @return a single Random number generator that all objects may share
    */
@@ -1119,6 +1147,22 @@ public class GameModule extends AbstractConfigurable
    */
   public Chatter getChatter() {
     return chat;
+  }
+
+  /**
+   * @return the registered docked PieceWindow (game piece palette) for the module
+   */
+  public PieceWindow getPieceWindow() {
+    return pieceWindow;
+  }
+
+  /**
+   * Allows a PieceWindow that wants to be our docked PieceWindow to register itself.
+   *
+   * @param p PieceWindow to be our docked one
+   */
+  public void setPieceWindow(PieceWindow pieceWindow) {
+    this.pieceWindow = pieceWindow;
   }
 
   public void setPrefs(Prefs p) {
@@ -1476,7 +1520,7 @@ public class GameModule extends AbstractConfigurable
    * @return any outstanding {@link Command} (can contain multiple chained commands)
    */
   public Command resumeLogging() {
-    Command c;
+    final Command c;
     synchronized (loggingLock) {
       c = pausedCommands == null ? new NullCommand() : pausedCommands;
       pausedCommands = null;
@@ -1726,7 +1770,7 @@ public class GameModule extends AbstractConfigurable
       writer.addFile(BUILDFILE,
         new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
 
-      writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.     
+      writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
       if (saveAs) writer.saveAs(true);
       else writer.save(true);
@@ -1735,6 +1779,14 @@ public class GameModule extends AbstractConfigurable
 
       GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
+    catch (FileSystemException e) {
+      final String[] msgs = e.getLocalizedMessage().split("\n");
+      for (final String msg : msgs) {
+        warn(msg); //NON-NLS //BR// Might as well leave them with a chat log record of where the tmp file got written.
+      }
+      WriteErrorDialog.reportFileOverwriteFailure(e, "Error.module_overwrite_error"); //NON-NLS
+    }
+    // Something Truly Terrible has happened if we get here.
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
     }

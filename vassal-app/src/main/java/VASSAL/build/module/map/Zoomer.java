@@ -686,11 +686,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
     };
-       
+
     map.getComponent().addMouseWheelListener(listener);
   }
-  
-  
+
+
   @Override
   public String getAttributeValueString(String key) {
     if (ZOOM_START.equals(key)) {
@@ -837,7 +837,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getToolBar().remove(zoomInButton);
     map.getToolBar().remove(zoomPickButton);
     map.getToolBar().remove(zoomOutButton);
-    
+
     if (listener != null) {
       map.getComponent().removeMouseWheelListener(listener);
       listener = null;

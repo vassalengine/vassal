@@ -95,25 +95,25 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   @Override
   public void build(Element e) {
   }
-  
-  
-  // For those who wish to override text behavior of both menus and submenus 
+
+
+  // For those who wish to override text behavior of both menus and submenus
   protected static String getMenuText(KeyCommand keyCommand) {
-    return keyCommand.getLocalizedMenuText();  
-  }  
-  
-  // This both eliminates duplicate code AND makes this critical menu-building functionality able to "play well with others". 
+    return keyCommand.getLocalizedMenuText();
+  }
+
+  // This both eliminates duplicate code AND makes this critical menu-building functionality able to "play well with others".
   // Menu text & behavior can now be custom-classed without needing to override the monster that is MenuDisplayer#createPopup.
   protected static JMenuItem makeMenuItem(KeyCommand keyCommand) {
-    
+
     final JMenuItem item = new JMenuItem(keyCommand.isMenuSeparator() ? MenuSeparator.SEPARATOR_NAME : getMenuText(keyCommand));
     item.addActionListener(keyCommand);
     item.setFont(POPUP_MENU_FONT);
     item.setEnabled(keyCommand.isEnabled());
-    
+
     return item;
   }
-  
+
 
   public static JPopupMenu createPopup(GamePiece target) {
     return createPopup(target, false);
@@ -210,7 +210,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       for (final JMenuItem item : commands) {
         if ((item.getText() != null) && MenuSeparator.SEPARATOR_NAME.equals(item.getText())) {
           popup.addSeparator();
-        } 
+        }
         else {
           popup.add(item);
         }
@@ -270,7 +270,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     if (map.getView().isShowing()) {
 
       // Inform the piece where player clicked, if it wants to know.
-      KeyBuffer.getBuffer().setClickPoint(e.getPoint());      
+      KeyBuffer.getBuffer().setClickPoint(e.getPoint());
 
       popup.show(map.getView(), pt.x, pt.y);
     }

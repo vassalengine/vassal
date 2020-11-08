@@ -185,8 +185,8 @@ public class CounterGlobalKeyCommand extends Decorator
   public Shape getShape() {
     return piece.getShape();
   }
-  
-  
+
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
@@ -286,7 +286,7 @@ public class CounterGlobalKeyCommand extends Decorator
     if (! Objects.equals(target, trait.target)) return false;
     return Objects.equals(globalCommand.getSelectFromDeck(), trait.globalCommand.getSelectFromDeck());
   }
-  
+
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected NamedHotKeyConfigurer keyInput;
