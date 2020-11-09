@@ -72,4 +72,25 @@ _Prompt user to select from list_ pops up a dialog with a drop-down menu for the
 |image:images/ChangePropertyButton.png[]
 |===
 
+'''''
+=== Custom Code
+
+Module custom code can read and modify a Global Property value.
+To get access to a Global Property named "PropertyName" you need to declare a variable as follows:
+
+[listing]
+MutableProperty property = GameModule.getGameModule().getMutableProperty("PropertyName");
+
+You can then get the value or set the value with:
+
+[listing]
+property.getPropertyValue()
+property.setPropertyValue()
+
+You can also trigger events on the change of the global property with the following methods:
+
+[listing]
+addMutablePropertyChangeListener()
+removeMutablePropertyChangeListener()
+
 [#Definition]
