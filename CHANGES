@@ -39,6 +39,10 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
+3.4.9 - ???
+
+* 13598: IndexOutOfBoundsException when drawing grids over SVG
+
 3.4.8 - 8 November 2020
 
 * 13577: Stacks properly restore their visual 'layer' level when saved/restored
