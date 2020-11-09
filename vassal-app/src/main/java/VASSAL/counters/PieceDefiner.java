@@ -45,6 +45,7 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
@@ -284,11 +285,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       if (!contains) {
         try {
           addAdditionalElement((GamePiece) pieceClass.getConstructor().newInstance());
-          setSortOrder();
         }
         catch (Throwable t) {
           ReflectionUtils.handleNewInstanceFailure(t, pieceClass);
         }
+        setSortOrder();
       }
 
       piece = ((Decorator) piece).piece;
@@ -343,7 +344,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     // Reset the piece to 100% scale to get the actual size.
     final double oldScale = slot.getScale();
     slot.setScale(1.0);
-    final Dimension newSlotSize = new Dimension(slot.getPiece().boundingBox().width, slot.getPiece().boundingBox().height);
+    final Rectangle bb = slot.getPiece().boundingBox();
+    final Dimension newSlotSize = new Dimension(bb.width, bb.height);
     slot.setScale(oldScale);
 
     final int maxSlotWidth = getMaxSplit();
@@ -362,7 +364,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       // The new piece is too large to fit in the available space. Scale it to fit on the most oversized axis
       final double xRatio = maxSlotWidth / newSlotSize.getWidth();
       final double yRatio = maxSlotHeight / newSlotSize.getHeight();
-      final double newScale = (Math.min(xRatio, yRatio));
+      final double newScale = Math.min(xRatio, yRatio);
       slot.setScale(newScale);
       scaleLabel.setText("(" + (int) (newScale * 100) + "%)");
       slot.getComponent().revalidate();
