@@ -298,7 +298,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
             return;
           }
         }
-        if (piece instanceof ActionButton) {
+        else if (piece instanceof ActionButton) {
           final ActionButton action = (ActionButton) piece;
           if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
             // Save state prior to command

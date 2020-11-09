@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
@@ -72,6 +73,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import VASSAL.preferences.GlobalPrefs;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -204,7 +206,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
-  protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
+  public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
+  public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>(); //NOPMD
@@ -229,7 +232,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected List<Board> boards = new CopyOnWriteArrayList<>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
-  protected PieceCollection pieces = new DefaultPieceCollection();
+  protected PieceCollection pieces = new DefaultPieceCollection(); // All the pieces on the map, but sorted into visual layers. Will be replaced by a LayeredPieceCollection if Map has a "Game Piece Layers" Component.
   protected Highlighter highlighter = new ColoredBorder();
   protected ArrayList<Highlighter> highlighters = new ArrayList<>(); //NOPMD
   protected boolean clearFirst = false; // Whether to clear the display before
@@ -652,8 +655,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * Every map must include a single {@link StackMetrics} as one of its build components, which governs the stacking behavior
-   * of GamePieces on the map.
+   * Every map must include a single {@link StackMetrics} as one of its build components, which governs the visuals
+   * of stacking of GamePieces on the map.
    * @param sm {@link StackMetrics} component to register
    */
   public void setStackMetrics(StackMetrics sm) {
@@ -662,7 +665,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * Every map must include a single {@link StackMetrics} object as one of its build
-   * components, which governs the stacking behavior of GamePieces on the map
+   * components, which governs the visuals of stacking of GamePieces on the map
    *
    * @return the StackMetrics for this map
    */
@@ -752,6 +755,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
+
+      final IntConfigurer configWidth =
+        new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
+      Prefs.getGlobalPrefs().addOption(null, configWidth);
 
       mainWindowDock = ComponentSplitter.split(
         ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
@@ -2043,7 +2050,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final Composite oldComposite = g2d.getComposite();
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
-    final GamePiece[] stack = pieces.getPieces();
+    final GamePiece[] stack = pieces.getPieces(); // Gets map pieces, sorted by visual layer
     for (final GamePiece gamePiece : stack) {
       final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       if (gamePiece.getClass() == Stack.class) {
@@ -2090,7 +2097,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final Composite oldComposite = g2d.getComposite();
     g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
-    final GamePiece[] stack = pieces.getPieces();
+    final GamePiece[] stack = pieces.getPieces(); // Gets map pieces, sorted by visual layer
     for (final GamePiece gamePiece : stack) {
       final Point pt = mapToDrawing(gamePiece.getPosition(), os_scale);
       gamePiece.draw(g, pt.x + xOffset, pt.y + yOffset, theMap, getZoom());
@@ -2241,30 +2248,31 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * @return an array of all GamePieces on the map, subject to visibility. This is a read-only copy.
-   * Altering the array does not alter the pieces on the map.
+   * @return an array of all GamePieces on the map, subject to visibility, and sorted in order of
+   * visual layers. This is a read-only copy. Altering the array does not alter the pieces on the map.
    */
   public GamePiece[] getPieces() {
     return pieces.getPieces();
   }
 
   /**
-   * @return an array of all GamePieces on the map, regardless of visibility.
-   * This is a read-only copy. Altering the array does not alter the pieces on the map.
+   * @return an array of all GamePieces on the map, regardless of visibility, and sorted
+   * in order of visual layer. This is a read-only copy. Altering the array does not alter
+   * the pieces on the map.
    */
   public GamePiece[] getAllPieces() {
     return pieces.getAllPieces();
   }
 
   /**
-   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control")
+   * @param pieces Sets the PieceCollection for this map (usually a LayeredPieceCollection a/k/a "Game Piece Layer Control"), which keeps the pieces/stacks/decks sorted by visual layer, and within each layer by back-to-front draw order
    */
   public void setPieceCollection(PieceCollection pieces) {
     this.pieces = pieces;
   }
 
   /**
-   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control")
+   * @return piece collection for this map (a/k/a its LayeredPieceCollection or "Game Piece Layer Control"), which maintains a list of all the pieces/stacks/decks on the map sorted by visual layer, and within each layer by back-to-front draw order
    */
   public PieceCollection getPieceCollection() {
     return pieces;
@@ -2537,9 +2545,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           mainWindowDock.showComponent();
           final int height = (Integer)
             Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-          if (height > 0) {
+          final int width = (Integer)
+            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
+          if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
             final Container top = mainWindowDock.getTopLevelAncestor();
-            top.setSize(top.getWidth(), height);
+            top.setSize((width > 0) ? width : top.getWidth(), height);
           }
         }
         if (toolBar.getParent() == null) {
@@ -2578,8 +2588,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       boards.clear();
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
-          Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
+          final Component c = mainWindowDock.getTopLevelAncestor();
+          final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
+          p.setDisableAutoWrite(true);
+          p.getOption(MAIN_WINDOW_HEIGHT).setValue(c.getHeight());
+          p.getOption(MAIN_WINDOW_WIDTH).setValue(c.getWidth());
+          p.saveGlobal();
+          p.setDisableAutoWrite(false);
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);
@@ -2594,8 +2609,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
   /**
    * As a {@link GameComponent}, Map does not have any action inherently needing to be taken for "restoring" itself for load/save and
-   * network play purposes (the locations of pieces, etc, are stored in the pieces). Map's interest in GameComponent is entirely for
-   * game start/stop purposes (see {@link #setup}, above)
+   * network play purposes (the locations of pieces, etc, are stored in the pieces, and are restored from {@link GameState} in its
+   * {@link GameState#getRestorePiecesCommand} method, which creates an AddPiece command for each piece). Map's interest in GameComponent
+   * is entirely for game start/stop purposes (see {@link #setup}, above).
    * @return null since no restore command needed.
    */
   @Override
@@ -2669,6 +2685,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public GamePiece findAnyPiece(Point pt, PieceFinder finder) {
     final GamePiece[] stack = pieces.getAllPieces();
+    // Our piece collection is provided to us in "draw order", in other words "back-to-front", which means
+    // that we need to iterate backwards to prioritize checking pieces that are visually "in front of" others.
     for (int i = stack.length - 1; i >= 0; --i) {
       final GamePiece p = finder.select(this, stack[i], pt);
       if (p != null) {
@@ -3442,7 +3460,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     @Override
     public Object visitStack(Stack s) {
       if (s.getPosition().equals(pt) && map.getStackMetrics().isStackingEnabled() && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {
+          && s.topPiece() != null && map.getPieceCollection().canMerge(s, p)) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
         return map.getStackMetrics().merge(s, p);
       }
       else {

@@ -17,23 +17,21 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.filechooser.FileChooser;
+
 import java.awt.Component;
 import java.io.File;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import VASSAL.build.GameModule;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * A Configurer for java.io.File values
@@ -122,9 +120,8 @@ public class FileConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
+      p = new ConfigurerPanel(getName(), "[]rel[grow,fill]", "[]rel[]rel[grow,fill]"); // NON-NLS
+
       final JButton b = new JButton(Resources.getString("Editor.select"));
       p.add(b);
 

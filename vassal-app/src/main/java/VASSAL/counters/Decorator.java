@@ -800,6 +800,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   /**
+<<<<<<< HEAD
    * {@link ImageSearchTarget}
    * Adds all images used by this component AND any children to the collection
    * @param s Collection to add image names to
@@ -846,4 +847,24 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   protected String buildDescription(String i18nKey) {
     return Resources.getString(i18nKey);
   }
+
+  /**
+   * Implement PropertyExporter.getProperties at the Decorator level.
+   * Add the properties from this Decorator to the supplied Map, then
+   * call the next innermost piece to do the same.
+   *
+   * Do not overwrite values if an outer trait has a property with the same name.
+   *
+   * @param result Map of property values
+   * @return Updated Map of property values
+   */
+  @Override
+  public java.util.Map<String, Object> getProperties(java.util.Map<String, Object> result) {
+    for (final String propertyName : getPropertyNames()) {
+      result.computeIfAbsent(propertyName, pn -> getLocalizedProperty(pn));
+    }
+
+    return piece == null ? result : ((PropertyExporter) piece).getProperties(result);
+  }
 }
+

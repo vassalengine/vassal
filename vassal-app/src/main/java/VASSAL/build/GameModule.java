@@ -149,6 +149,10 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
+import static VASSAL.build.module.Map.MAIN_WINDOW_HEIGHT;
+import static VASSAL.build.module.Map.MAIN_WINDOW_WIDTH;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
+
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -284,6 +288,11 @@ public class GameModule extends AbstractConfigurable
    * The Chat Log Console
    */
   private final Console console = new Console();
+  
+  /**
+   * Docked PieceWindow (we need to know which one to get our splitters all splatting in the right order)
+   */
+  private PieceWindow pieceWindow = null;
 
   /**
    * Random number generator
@@ -506,6 +515,12 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
+    //BR// If a dockable PieceWindow got registered, dock it now (since we're sure the Chatter will already be safely docked by this point)
+    final PieceWindow pw = getPieceWindow();
+    if (pw != null) {
+      pw.dockMe();
+    }
+
     MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
       getPrefs().getEditor().getEditAction());
 
@@ -643,9 +658,18 @@ public class GameModule extends AbstractConfigurable
     final Rectangle screen = SwingUtils.getScreenBounds(frame);
 
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
-// FIXME: annoying!
       frame.setLocation(screen.getLocation());
-      frame.setSize(screen.width, screen.height / 3);
+
+      final int height = (Integer)
+        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+      final int width = (Integer)
+        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
+      if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+        frame.setSize((width > 0) ? width : screen.width, height / 3);
+      }
+      else {
+        frame.setSize(screen.width, screen.height / 3);
+      }
     }
     else {
       final String key = "BoundsOfGameModule"; //$NON-NLS-1$
@@ -1155,6 +1179,22 @@ public class GameModule extends AbstractConfigurable
    */
   public Chatter getChatter() {
     return chat;
+  }
+
+  /**
+   * @return the registered docked PieceWindow (game piece palette) for the module
+   */
+  public PieceWindow getPieceWindow() {
+    return pieceWindow;
+  }
+
+  /**
+   * Allows a PieceWindow that wants to be our docked PieceWindow to register itself.
+   *
+   * @param p PieceWindow to be our docked one
+   */
+  public void setPieceWindow(PieceWindow pieceWindow) {
+    this.pieceWindow = pieceWindow;
   }
 
   public void setPrefs(Prefs p) {

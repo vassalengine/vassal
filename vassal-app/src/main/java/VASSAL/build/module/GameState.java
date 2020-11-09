@@ -676,9 +676,12 @@ public class GameState implements CommandEncoder {
   public static final String SAVEFILE_ZIP_ENTRY = "savedGame";  //$NON-NLS-1$
 
   /**
-   * Return a {@link Command} that, when executed, will restore the
-   * game to its current state.  Invokes {@link GameComponent#getRestoreCommand}
-   * on each registered {@link GameComponent} */
+   * @return a {@link Command} that, when executed, will restore the
+   * game to its current state -- this command can then be written to
+   * a save game file. Invokes {@link GameComponent#getRestoreCommand}
+   * on each registered {@link GameComponent}, and then creates an AddPiece command
+   * for each game piece.
+   */
   public Command getRestoreCommand() {
     if (!saveGame.isEnabled()) {
       return null;
@@ -851,7 +854,8 @@ public class GameState implements CommandEncoder {
 
   /**
    * @return a Command that, when executed, will add all pieces currently
-   * in the game. Used when saving a game.
+   * in the game. Used when saving a game. Pieces are grouped by map, and
+   * within a map by visual layer.
    */
   public Command getRestorePiecesCommand() {
     // TODO remove stacks that were empty when the game was loaded and are still empty now

@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13593: Global preferences are never written except when prefs dialog is closed
 * 13522: Performance improvements for Global Key Commands
 * 13509: Save As in Editor, if it fails, complains about old filename instead
     of new filename
@@ -38,14 +39,22 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
-3.4.8 - ???
+3.4.8 - 8 November 2020
 
+* 13577: Stacks properly restore their visual 'layer' level when saved/restored
+* 13574: Fix reporting on oldXXXXXX properties in ReportState
+* 13573: Beanshell count function not working with $$ variables in Restrict
+  Commands property match
 * 13572: Stop converting preferences last written by 3.2.7 or earlier
 * 13567: Put backup in better location when writing to module fails and ensure
   Editor is not left in a bad state
 * 13563: Hitting Enter in Editor expands or edits nodes
 * 13560: Don't register mouse listeners from ActionButton.draw()
 * 13449: Inventory window remains open when the game is closed in the Player
+* 13431: Cache grid and grid numbering painting for better performance
+* 13379: Mass Piece Loader - Base Image can now be loaded into layers
+* 13379: Mass Piece Loader - Decrease key now loads correctly
+* 13379: Mass Piece Loader - Layers are no longer loaded Activated
 * 10063: Hitting Enter on Module Manager opens the module
 
 3.4.7 - 25 October 2020

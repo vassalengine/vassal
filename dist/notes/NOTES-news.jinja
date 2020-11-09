@@ -1,5 +1,5 @@
 <p>
-The VASSAL Team is happy to announce the release of VASSAL 3.4.7.
+The VASSAL Team is happy to announce the release of VASSAL {{version}}.
 </p>
 
 <h2>IMPORTANT</h2>
@@ -11,11 +11,32 @@ The VASSAL Team is happy to announce the release of VASSAL 3.4.7.
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-macosx.dmg' target='_new'>Mac OS X</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/3.4.7/VASSAL-3.4.7-other.zip'  target='_new'>Other</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-linux.tar.bz2' target='_new'>Linux</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-macosx.dmg' target='_new'>Mac OS X</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
+</ul>
+
+<h2>Changes since 3.4.7</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13577: Stacks properly restore their visual 'layer' level when saved/restored</li>
+<li>13574: Fix reporting on oldXXXXXX properties in ReportState</li>
+<li>13573: Beanshell count function not working with $$ variables in Restrict Commands property match</li>
+<li>13567: Put backup in better location when writing to module fails and ensure Editor is not left in a bad state</li>
+<li>13560: Don't register mouse listeners from ActionButton.draw()</li>
+<li>13449: Inventory window remains open when the game is closed in the Player</li>
+<li>13379: Mass Piece Loader - Decrease key now loads correctly</li>
+<li>13379: Mass Piece Loader - Layers are no longer loaded Activated</li>
+</ul>
+<h3>Other improvements</h3>
+<ul>
+<li>13572: Stop converting preferences last written by 3.2.7 or earlier</li>
+<li>13563: Hitting Enter in Editor expands or edits nodes</li>
+<li>13431: Cache grid and grid numbering painting for better performance</li>
+<li>13379: Mass Piece Loader - Base Image can now be loaded into layers</li>
+<li>10063: Hitting Enter on Module Manager opens the module</li>
 </ul>
 
 <h2>Changes since 3.4.6</h2>

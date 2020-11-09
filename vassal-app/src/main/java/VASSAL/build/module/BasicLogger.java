@@ -67,6 +67,20 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
 
+/**
+ * BasicLogger deals with VLOG Vassal Log files (i.e. NOT the errorLog--see below):
+ * <br>(1) Starts/stops logging to a VLOG file.
+ * <br>(2) Supplies prompt dialogs related to starting logfiles
+ * <br>(3) Steps through VLOG files ("step forward") button
+ * <br>(4) Executes the "UNDO" action when user clicks that Undo button
+ * <br>(5) Provides configurers to {@link GlobalOptions} for the Undo and Step Forward buttons
+ * <br><br>
+ * For the errorLog file see {@link org.slf4j.Logger}, e.g.:
+ * <br>org.slf4j.Logger log = LoggerFactory.getLogger(Console.class);
+ * <br>log.error("write to errorlog as an error")
+ * <br>log.warning("write a warning")
+ * <br>log.info("write some info")
+ */
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
   public static final String END = "end_log";  //$NON-NLS-1$
@@ -97,6 +111,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     logOutput = new ArrayList<>();
   }
 
+  /** Presently no XML attributes or subcomponents to be built */
   @Override
   public void build(Element e) { }
 
@@ -207,18 +222,24 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public boolean isMultiPlayer() {
     return multiPlayer;
   }
-
-
+  
+  /**
+   * Our setup method is called by GameState whenever a game starts or ends.
+   * @param startingGame True if a new game starting, false if a game is ending/closing
+   */
   @Override
-  public void setup(boolean show) {
-    newLogAction.setEnabled(show);
-    if (show) {
+  public void setup(boolean startingGame) {
+    newLogAction.setEnabled(startingGame);
+
+    if (startingGame) {
+      // When starting a game
       logOutput.clear();
       nextInput = 0;
       nextUndo = -1;
       beginningState = null; // Will create one when we actually start a log
     }
     else {
+      // When ending/closing a game
       if (endLogAction.isEnabled()) {
         if (JOptionPane.showConfirmDialog(
             GameModule.getGameModule().getPlayerWindow(),
@@ -244,10 +265,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   }
 
+  /** @return true if we're currently logging the game to a VLOG file */
   public boolean isLogging() {
     return outputFile != null;
   }
 
+  /** @return true if we're currently replaying a VLOG file, that has unexecuted "step forwards" remaining */
   public boolean isReplaying() {
     return nextInput < logInput.size();
   }
@@ -282,6 +305,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void enableDrawing(boolean show) {
   }
 
+  /**
+   * Step forward through the currently replaying vlog logfile, by getting the next {@link Command} and executing it.
+   */
   protected void step() {
     final Command c = logInput.get(nextInput++);
     c.execute();
@@ -297,8 +323,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   }
 
-  /*
-   * Check if user would like to create a new logfile
+  /**
+   * Check if user would like to create a new logfile (only prompts if the appropriate preference is on)
+   * @param atStart true if prompting because we're just starting a session; false if prompting because we just finished replaying a logfile.
    */
   public void queryNewLogFile(boolean atStart) {
     if (isLogging()) {
@@ -347,8 +374,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   /**
-   * Write the logfile to a file. The file will have been selected when the logfile was begun.
-   *
+   * Write the logfile to a file. The filename will have been selected when the logfile was begun.
    */
   public void write() throws IOException {
     if (!logOutput.isEmpty()) {
@@ -448,6 +474,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     metadata = new SaveMetaData();
   }
 
+  /**
+   * This handles the UNDO button, executing the actual "Undo".
+   */
   protected void undo() {
     final Command lastOutput = logOutput.get(nextUndo);
     final Command lastInput = (nextInput > logInput.size() || nextInput < 1) ?
@@ -472,6 +501,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     logOutput.add(undo);
   }
 
+  /**
+   * Logs a Command to output
+   * @param c Command to be logged
+   */
   @Override
   public void log(Command c) {
     if (c != null && c.isLoggable()) {
@@ -484,7 +517,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   /**
-   * Are there Input Steps yet to be replayed?
+   * @return true if there are Input Steps yet to be replayed
    */
   public boolean hasMoreCommands() {
     return nextInput < logInput.size();
