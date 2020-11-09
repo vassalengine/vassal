@@ -18,6 +18,7 @@ package VASSAL.build.module.map.boardPicker.board;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -78,26 +79,34 @@ public class GridOp extends AbstractTiledOpImpl {
     return draw(0, 0, size.width, size.height, sop, grid, bounds, scale, reversed, hints);
   }
 
-  private static BufferedImage draw(int dx0, int dy0, int dw, int dh, ImageOp sop, MapGrid grid, Rectangle bounds, double scale, boolean reversed, RenderingHints hints) throws ExecutionException, InterruptedException {
-    if (dw < 1 || dh < 1) {
+  private static BufferedImage draw(int x0, int y0, int w, int h, ImageOp sop, MapGrid grid, Rectangle bounds, double scale, boolean reversed, RenderingHints hints) throws ExecutionException, InterruptedException {
+    if (w < 1 || h < 1) {
       return ImageUtils.NULL_IMAGE;
     }
 
-    // get the source tile and create the destination tile
-    final BufferedImage src = sop.getImage(null);
+    final Rectangle visible = new Rectangle(x0, y0, w, h);
+
+    // cobble source from tiles
+    final Point[] tiles = sop.getTileIndices(visible);
+    final int tw = sop.getTileWidth();
+    final int th = sop.getTileHeight();
+
+    // match the transparency of the first tile
     final BufferedImage dst = ImageUtils.createCompatibleImage(
-      dw, dh,
-      src.getTransparency() != BufferedImage.OPAQUE
+      w, h,
+      sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
     );
 
     // paint the source onto the destination
     final Graphics2D g = (Graphics2D) dst.getGraphics();
     g.setRenderingHints(hints);
-    g.drawImage(src, 0, 0, null);
+
+    for (Point tile : tiles) {
+      g.drawImage(sop.getTile(tile, null), tile.x * tw - x0, tile.y * th - y0, null);
+    }
 
     // paint the grid onto the destination
-    final Rectangle visible = new Rectangle(dx0, dy0, dw, dh);
-    g.translate(-dx0, -dy0);
+    g.translate(-x0, -y0);
     g.setClip(visible);
     grid.draw(g, bounds, visible, scale, reversed);
 
@@ -135,25 +144,23 @@ public class GridOp extends AbstractTiledOpImpl {
         throw new IndexOutOfBoundsException();
       }
 
+      sop = (ImageOp) gop.getSources().get(0);
+
       scale = gop.getScale();
       grid = gop.getGrid();
       reversed = gop.getReversed();
       hints = gop.getHints();
       bounds = new Rectangle(0, 0, gop.getWidth(), gop.getHeight());
 
-      final ImageOp sgop = (ImageOp) gop.getSources().get(0);
-
-      final int stw = sgop.getTileWidth();
-      final int sth = sgop.getTileHeight();
+      final int stw = gop.getTileWidth();
+      final int sth = gop.getTileHeight();
 
       dx0 = tileX * stw;
       dy0 = tileY * sth;
-      dw = Math.min(stw, sgop.getWidth() - dx0);
-      dh = Math.min(sth, sgop.getHeight() - dy0);
+      dw = Math.min(stw, gop.getWidth() - dx0);
+      dh = Math.min(sth, gop.getHeight() - dy0);
 
       size = new Dimension(dw, dh);
-
-      sop = sgop.getTileOp(tileX, tileY);
 
       hash = Objects.hash(sop, dx0, dy0, dw, dh, grid, scale, reversed, hints);
     }
