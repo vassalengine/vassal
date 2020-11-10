@@ -140,13 +140,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   // A Configurer to hold the users preferred maximum split size
   private static final int MINIMUM_SPLIT_SIZE = 64;
   private static final int DEFAULT_MAX_SPLIT = 256;
-  private IntConfigurer maxSplitConfig;
   private boolean splitDragInProgress = false;
 
   /** Creates new form test */
   public PieceDefiner() {
     prefs = GameModule.getGameModule().getPrefs();
-    maxSplitConfig = new IntConfigurer(MAX_SPLIT_PREF, null, DEFAULT_MAX_SPLIT);
+    final IntConfigurer maxSplitConfig = new IntConfigurer(MAX_SPLIT_PREF, null, DEFAULT_MAX_SPLIT);
     prefs.addOption(MAX_SPLIT_PREF, maxSplitConfig);
 
     initDefinitions();
@@ -325,8 +324,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       resizeSlotPanel();
     }
 
+    controls.revalidate();
     slotPanel.revalidate();
-    repack();
     slot.getComponent().repaint();
   }
 
@@ -378,15 +377,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     slot.getComponent().repaint();
   }
 
-  private void repack() {
-    final Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      w.setMinimumSize(w.getSize());
-      w.pack();
-      w.setMinimumSize(null);
-    }
-  }
-
   public GamePiece getPiece() {
     return piece;
   }
@@ -409,7 +399,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     setMaximumSize(new Dimension((int) screenSize.getWidth() - 100, maxPanelHeight));
 
     // Main Layout for entire dialog. Just let it fill to max size
-    setLayout(new MigLayout("ins 0", "[grow,fill]")); // NON-NLS
+    setLayout(new MigLayout("ins 0", "[grow,fill]", "[grow,fill,push]")); // NON-NLS
 
     // A Panel to hold the trait lists
     controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[grow,center][][]")); // NON-NLS
@@ -451,7 +441,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     final ListTransferHandler transferHandler = new ListTransferHandler(this);
 
     // The list of available Traits
-    final JPanel availablePanel = new JPanel(new MigLayout("ins 0", "[fill,grow]")); // NON-NLS
+    final JPanel availablePanel = new JPanel(new MigLayout("ins 0", "[fill,grow]", "[fill,grow,push]")); // NON-NLS
     availableList = new JList<>();
     availableList.setName(AVAILABLE);
     availableList.setDragEnabled(true);
@@ -466,8 +456,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addButton.setEnabled(o instanceof Decorator);
     });
 
-    final JPanel availableListPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "grow,fill")); // NON-NLS
-    availableListPanel.add(availableList, "grow"); // NON-NLS
+    final JPanel availableListPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill,push]")); // NON-NLS
+    availableListPanel.add(availableList, "grow,push"); // NON-NLS
     final JScrollPane availableScroll = new JScrollPane(availableListPanel);
 
     availableScroll.setBorder(BorderFactory.createTitledBorder(Resources.getString("Editor.PieceDefiner.available_traits")));
@@ -491,7 +481,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     availableButtonPanel.add(importButton);
     availableButtonPanel.add(helpButton);
-    controls.add(availablePanel, "grow"); // NON-NLS
+    controls.add(availablePanel, "grow,pushy"); // NON-NLS
 
     // A Panel holding the add and Remove buttons between the two trait lists
     final JPanel addRemovePanel = new JPanel();
