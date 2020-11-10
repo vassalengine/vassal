@@ -48,10 +48,10 @@
 * 13577: Stacks properly restore their visual 'layer' level when saved/restored
 * 13574: Fix reporting on oldXXXXXX properties in ReportState
 * 13573: Beanshell count function not working with $$ variables in Restrict
-  Commands property match
+    Commands property match
 * 13572: Stop converting preferences last written by 3.2.7 or earlier
 * 13567: Put backup in better location when writing to module fails and ensure
-  Editor is not left in a bad state
+    Editor is not left in a bad state
 * 13563: Hitting Enter in Editor expands or edits nodes
 * 13560: Don't register mouse listeners from ActionButton.draw()
 * 13449: Inventory window remains open when the game is closed in the Player
@@ -66,15 +66,15 @@
 * 13547: Don't raise a bug dialog on failure to read an MP3
 * 13546: Change backup Resource directory from temp folder to base folder
 * 13542: Interaction between Move Fixed Distance and Rotate traits has changed
-  between 3.2.17 and 3.4.6
+    between 3.2.17 and 3.4.6
 * 13540: Macs now use Command as modifier key for grid-resizing,
-  setup-stack-moving in Editor
+    setup-stack-moving in Editor
 * 13525: HFS+ stores filenames in NFD, so must check for that variant when
-  loading
+    loading
 * 13524: Masked card dragged from Player Hand reports differently between
-  3.2.17 and 3.4.6
+    3.2.17 and 3.4.6
 * 13520: Made Command+Click the select/deselect combo for Macs (and
-  Command+Wheel to zoom)
+    Command+Wheel to zoom)
 * 13489: Pieces scaled incorrectly during drags on HiDPI screens on Windows
 
 3.4.6 - 12 October 2020
@@ -82,10 +82,10 @@
 * 13508: NPE in GamePieceOpImpl.getTileIndices()
 * 13505: Dragging a card/piece off the top of a deck should not also band-select
 * 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map
-  padding specified
+    padding specified
 * 13467: Edited modules containing HTML img elements can't be saved on Windows
 * 13456: At-Start Stack using Grid Location uses Location on first board, not
-  chosen board (additional fix for 12576)
+    chosen board (additional fix for 12576)
 
 3.4.5 - 6 October 2020
 
