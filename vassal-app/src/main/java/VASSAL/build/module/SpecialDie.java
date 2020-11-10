@@ -18,8 +18,10 @@
 package VASSAL.build.module;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import VASSAL.search.HTMLImageFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +40,8 @@ public class SpecialDie extends AbstractConfigurable {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDie.class);
 
-  private List<SpecialDieFace> dieFaceList = new ArrayList<>();
-  private FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
+  private final List<SpecialDieFace> dieFaceList = new ArrayList<>();
+  private final FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String FORMAT = "format"; //$NON-NLS-1$
@@ -145,7 +147,7 @@ public class SpecialDie extends AbstractConfigurable {
     else {
       final SpecialDieFace aFace = dieFaceList.get(face);
       format.setProperty(RESULT, aFace.getTextValue());
-      format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
+      format.setProperty(NUMERICAL_VALUE, Integer.toString(aFace.getIntValue()));
     }
     return format.getLocalizedText();
   }
@@ -181,5 +183,15 @@ public class SpecialDie extends AbstractConfigurable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(format.getFormat());
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(format.getFormat());
+    h.addImageNames(s);
   }
 }

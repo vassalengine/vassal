@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 21, 2002
- * Time: 10:18:26 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
 import java.awt.Color;
@@ -267,9 +259,25 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{FIRST, SEP, H_TYPE, H_LEADING, H_OFF, H_DESCEND,
-                        V_TYPE, V_LEADING, V_OFF, V_DESCEND, LOCATION_FORMAT, VISIBLE, FONT_SIZE, COLOR,
-                        ROTATE_TEXT, H_DRAW_OFF, V_DRAW_OFF};
+    return new String[]{
+      FIRST,
+      SEP,
+      H_TYPE,
+      H_LEADING,
+      H_OFF,
+      H_DESCEND,
+      V_TYPE,
+      V_LEADING,
+      V_OFF,
+      V_DESCEND,
+      LOCATION_FORMAT,
+      VISIBLE,
+      FONT_SIZE,
+      COLOR,
+      ROTATE_TEXT,
+      H_DRAW_OFF,
+      V_DRAW_OFF
+    };
   }
 
   @Override
@@ -386,9 +394,9 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public Configurer getConfigurer() {
-    AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
-    String[] s = getAttributeNames();
-    for (String value : s) {
+    final AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
+    final String[] s = getAttributeNames();
+    for (final String value : s) {
       c.getConfigurer(value).addPropertyChangeListener(evt -> visualizer.repaint());
     }
     ((Container) c.getControls()).add(getGridVisualizer());
@@ -405,8 +413,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   }
 
   protected String getName(int row, int column) {
-    String rowName = getName(row + vOff, vType, vLeading);
-    String colName = getName(column + hOff, hType, hLeading);
+    final String rowName = getName(row + vOff, vType, vLeading);
+    final String colName = getName(column + hOff, hType, hLeading);
     if (first == 'H') {
       return colName + sep + rowName;
     }
@@ -429,14 +437,14 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   @Override
   public Point getLocation(String location) throws BadCoords {
 
-    SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
+    final SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
     boolean isProperty = true;
     final StringBuilder regex = new StringBuilder();
     int colGroup = 0;
     int rowGroup = 0;
     int groupCount = 0;
     while (se.hasMoreTokens()) {
-      String token = se.nextToken();
+      final String token = se.nextToken();
       isProperty = !isProperty;
       if (token.length() > 0) {
         if (!isProperty || !se.hasMoreTokens()) {
@@ -473,18 +481,18 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     if (regex.length() == 0 || colGroup == 0 || rowGroup == 0)
       throw new BadCoords();
 
-    Pattern pattern = Pattern.compile(regex.toString());
-    Matcher matcher = pattern.matcher(location);
+    final Pattern pattern = Pattern.compile(regex.toString());
+    final Matcher matcher = pattern.matcher(location);
     if (!matcher.matches()) {
 // FIXME: rename to BadCoordsException
       throw new BadCoords();
     }
     assert (matcher.groupCount() == groupCount && groupCount >= 2);
 
-    String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
-    String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
-    int row = parseName(rowName, vType);
-    int col = parseName(colName, hType);
+    final String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
+    final String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
+    final int row = parseName(rowName, vType);
+    final int col = parseName(colName, hType);
 
     return getCenterPoint(col - hOff, row - vOff);
   }
@@ -493,8 +501,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public String locationName(Point pt) {
-    int row = getRow(pt);
-    int col = getColumn(pt);
+    final int row = getRow(pt);
+    final int col = getColumn(pt);
     format.setFormat(locationFormat);
     format.setProperty(GRID_LOCATION, getName(row, col));
     format.setProperty(ROW, getName(row + vOff, vType, vLeading));
@@ -562,7 +570,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   }
 
   public Point offsetLabelCenter(int x, int y, double zoom) {
-    Point n = new Point(x, y);
+    final Point n = new Point(x, y);
     switch (rotateTextDegrees) {
     case 0:
       break;

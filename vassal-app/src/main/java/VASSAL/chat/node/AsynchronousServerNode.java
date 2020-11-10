@@ -41,7 +41,7 @@ import VASSAL.tools.PropertiesEncoder;
  * Children of rooms represent players.
  */
 public class AsynchronousServerNode extends ServerNode {
-  private static Logger logger =
+  private static final Logger logger =
     Logger.getLogger(AsynchronousServerNode.class.getName());
   private StatusReporter statusReporter;
   private ReportContentsThread contentsReporter;
@@ -63,8 +63,8 @@ public class AsynchronousServerNode extends ServerNode {
   }
 
   public static class ReportContentsThread extends Thread {
-    private AsynchronousServerNode server;
-    private Set<Node> changed;
+    private final AsynchronousServerNode server;
+    private final Set<Node> changed;
     private long lastGlobalUpdate;
     private static final long GLOBAL_UPDATE_INTERVAL = 1000L * 120L;
 
@@ -83,15 +83,15 @@ public class AsynchronousServerNode extends ServerNode {
             sendContents();
           }
         }
-        catch (InterruptedException e) {
+        catch (final InterruptedException e) {
         }
       }
     }
 
     private synchronized void sendContents() {
       server.statusReporter.updateContents(server.getLeafDescendants());
-      long time = System.currentTimeMillis();
-      Iterator<Node> modules;
+      final long time = System.currentTimeMillis();
+      final Iterator<Node> modules;
       if (time - lastGlobalUpdate < GLOBAL_UPDATE_INTERVAL) {
         modules = Arrays.asList(server.getChildren()).iterator();
         lastGlobalUpdate = time;
@@ -100,14 +100,14 @@ public class AsynchronousServerNode extends ServerNode {
         modules = changed.iterator();
       }
       while (modules.hasNext()) {
-        Node module = modules.next();
+        final Node module = modules.next();
         logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
-        Node[] players = module.getLeafDescendants();
-        Node[] rooms = module.getChildren();
+        final Node[] players = module.getLeafDescendants();
+        final Node[] rooms = module.getChildren();
 
         // Check if any rooms have lost their first player
         for (int i = 1; i < rooms.length; i++) {
-          Node[] c = rooms[i].getChildren();
+          final Node[] c = rooms[i].getChildren();
           if (c.length > 0) {
             try {
               final Properties roomProps = new PropertiesEncoder(rooms[i].getInfo()).getProperties();
@@ -118,17 +118,17 @@ public class AsynchronousServerNode extends ServerNode {
                 rooms[i].setInfo(new PropertiesEncoder(roomProps).toString());
               }
             }
-            catch (IOException e) {
+            catch (final IOException e) {
               // Error encoding/decoding properties. Shouldn't happen.
               e.printStackTrace();
             }
           }
         }
 
-        String listCommand = Protocol.encodeListCommand(players);
+        final String listCommand = Protocol.encodeListCommand(players);
         logger.finer(listCommand);
         module.send(listCommand);
-        String roomInfo = Protocol.encodeRoomsInfo(rooms);
+        final String roomInfo = Protocol.encodeRoomsInfo(rooms);
         module.send(roomInfo);
       }
       changed.clear();

@@ -38,7 +38,7 @@ import VASSAL.tools.SequenceEncoder;
 public class PrivateNotesController implements GameComponent, CommandEncoder, SetPrivateTextCommand.Interface {
   public static final String COMMAND_PREFIX = "PNOTE\t"; //$NON-NLS-1$
 
-  private Set<PrivateText> notes;
+  private final Set<PrivateText> notes;
   private String myLastSavedNotes;
   private Component controls;
   private TextConfigurer text;
@@ -49,7 +49,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
 
   public Component getControls() {
     if (controls == null) {
-      Box b = Box.createVerticalBox();
+      final Box b = Box.createVerticalBox();
       b.add(new JLabel(Resources.getString("Notes.invisible"))); //$NON-NLS-1$
       text = new TextConfigurer(null, null);
       b.add(text.getControls());
@@ -72,9 +72,9 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
-    String owner = st.nextToken();
-    String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : ""; //$NON-NLS-1$
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+    final String owner = st.nextToken();
+    final String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : ""; //$NON-NLS-1$
     return new SetPrivateTextCommand(this, new PrivateText(owner, text));
   }
 
@@ -83,8 +83,8 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
     if (!(c instanceof SetPrivateTextCommand)) {
       return null;
     }
-    PrivateText t = ((SetPrivateTextCommand) c).getPrivateText();
-    SequenceEncoder se = new SequenceEncoder('\t');
+    final PrivateText t = ((SetPrivateTextCommand) c).getPrivateText();
+    final SequenceEncoder se = new SequenceEncoder('\t');
     return COMMAND_PREFIX +
       se
         .append(t.getOwner())
@@ -95,8 +95,8 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
   @Override
   public Command getRestoreCommand() {
     Command comm = null;
-    for (PrivateText privateText : notes) {
-      SetPrivateTextCommand c = new SetPrivateTextCommand(this, privateText);
+    for (final PrivateText privateText : notes) {
+      final SetPrivateTextCommand c = new SetPrivateTextCommand(this, privateText);
       if (comm == null) {
         comm = c;
       }

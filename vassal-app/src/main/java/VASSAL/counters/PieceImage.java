@@ -32,7 +32,7 @@ import VASSAL.tools.imageop.GamePieceOp;
  */
 @Deprecated
 public class PieceImage {
-  private GamePiece piece;
+  private final GamePiece piece;
   private String lastState = null;
   private Image im;
 
@@ -44,11 +44,11 @@ public class PieceImage {
     if (isChanged()) {
       lastState = String.valueOf(piece.getProperty(Properties.VISIBLE_STATE));
 
-      Rectangle bbox = piece.boundingBox();
+      final Rectangle bbox = piece.boundingBox();
       im = new BufferedImage(Math.max(bbox.width, 1), Math.max(bbox.height, 1), BufferedImage.TYPE_4BYTE_ABGR);
       ((BufferedImage) im).setRGB(0, 0, bbox.width, bbox.height, new int[bbox.width * bbox.height], 0, bbox.width);
 
-      Graphics2D g = (Graphics2D) im.getGraphics();
+      final Graphics2D g = (Graphics2D) im.getGraphics();
       piece.draw(g, -bbox.x, -bbox.y, obs, 1.0);
       g.dispose();
     }

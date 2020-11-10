@@ -28,10 +28,10 @@ import VASSAL.counters.GamePiece;
  * @see ChangeTracker
  */
 public class MoveTracker {
-  private String oldMapId;
-  private Point oldPosition;
-  private String oldUnderneathId;
-  private GamePiece piece;
+  private final String oldMapId;
+  private final Point oldPosition;
+  private final String oldUnderneathId;
+  private final GamePiece piece;
 
   public MoveTracker(GamePiece piece) {
     this.piece = piece;
@@ -43,7 +43,7 @@ public class MoveTracker {
   private String getUnderneathId() {
     String id = null;
     if (piece.getParent() != null) {
-      int index = piece.getParent().indexOf(piece);
+      final int index = piece.getParent().indexOf(piece);
       if (index > 0) {
         id = piece.getParent().getPieceAt(index - 1).getId();
       }

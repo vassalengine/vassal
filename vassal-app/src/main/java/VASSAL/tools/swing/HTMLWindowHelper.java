@@ -34,10 +34,9 @@ import javax.swing.event.HyperlinkListener;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
 
 public class HTMLWindowHelper implements HyperlinkListener {
-  private JEditorPane pane = new JEditorPane();
+  private final JEditorPane pane = new JEditorPane();
 
   public HTMLWindowHelper() {
     pane.setEditable(false);
@@ -75,9 +74,9 @@ public class HTMLWindowHelper implements HyperlinkListener {
   }
 
   public void setup(Window w, URL contents) {
-    ScrollPane s = new ScrollPane(pane);
+    final ScrollPane s = new ScrollPane(pane);
     final Font f = new JLabel().getFont();
-    FontMetrics fm = w.getFontMetrics(f);
+    final FontMetrics fm = w.getFontMetrics(f);
     s.getVerticalScrollBar().setUnitIncrement(fm.getHeight() * 3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
     w.add(s);
     update(contents);

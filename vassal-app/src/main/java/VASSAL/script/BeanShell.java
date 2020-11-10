@@ -59,11 +59,11 @@ public class BeanShell {
 
   public void init() {
     // Read in the Vassal Script init script
-    URL ini = instance.getClass().getResource(INIT_SCRIPT);
+    final URL ini = instance.getClass().getResource(INIT_SCRIPT);
     try (BufferedReader in = new BufferedReader(
       new InputStreamReader(ini.openStream(), StandardCharsets.UTF_8))) {
 
-      CompileResult result = compile(in);
+      final CompileResult result = compile(in);
       if (!result.isSuccess()) {
         result.printStackTrace();
       }

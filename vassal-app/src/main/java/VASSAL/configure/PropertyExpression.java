@@ -60,11 +60,15 @@ public class PropertyExpression implements PieceFilter {
     return getFilter(source).accept(piece);
   }
 
+  @Override
+  public int hashCode() {
+    return getExpression().hashCode();
+  }
+
+  @Override
   public boolean equals(Object o) {
-    if (o instanceof PropertyExpression) {
-      return getExpression().equals(((PropertyExpression) o).getExpression());
-    }
-    return false;
+    return o instanceof PropertyExpression &&
+           getExpression().equals(((PropertyExpression) o).getExpression());
   }
 
   /**

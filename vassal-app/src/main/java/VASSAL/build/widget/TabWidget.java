@@ -42,9 +42,7 @@ import VASSAL.i18n.Resources;
 public class TabWidget extends Widget
     implements ChangeListener, PropertyChangeListener {
   private JTabbedPane tab = null;
-  private List<Widget> widgets = new ArrayList<>();
-
-  public TabWidget() { }
+  private final List<Widget> widgets = new ArrayList<>();
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.TabWidget.component_type");
@@ -52,7 +50,7 @@ public class TabWidget extends Widget
 
   @Override
   public void stateChanged(ChangeEvent e) {
-    int index = tab.getSelectedIndex();
+    final int index = tab.getSelectedIndex();
     if (index >= 0) {
       tab.setComponentAt(index, widgets.get(index).getComponent());
     }
@@ -113,7 +111,7 @@ public class TabWidget extends Widget
         tab.addTab(w.getConfigureName(), new JPanel());
       }
       tab.addChangeListener(this);
-      if (widgets.size() > 0) {
+      if (!widgets.isEmpty()) {
         tab.setSelectedIndex(0);
       }
       stateChanged(null);

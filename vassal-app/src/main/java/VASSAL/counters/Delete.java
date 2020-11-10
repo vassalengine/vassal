@@ -63,7 +63,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken();
     key = st.nextNamedKeyStroke('D');
     keyCommands = null;
@@ -71,7 +71,7 @@ public class Delete extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(key);
     return ID + se.getValue();
   }
@@ -101,14 +101,14 @@ public class Delete extends Decorator implements TranslatablePiece {
     Command c = null;
     myGetKeyCommands();
     if (deleteCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = Decorator.getOutermost(this);
       if (getParent() != null) {
         GamePiece next = getParent().getPieceBeneath(outer);
         if (next == null)
           next = getParent().getPieceAbove(outer);
         if (next != null) {
           final GamePiece selected = next;
-          Runnable runnable = () -> {
+          final Runnable runnable = () -> {
             // Don't select if the next piece has itself been deleted
             if (GameModule.getGameModule().getGameState().getPieceForId(selected.getId()) != null) {
               KeyBuffer.getBuffer().add(selected);
@@ -187,7 +187,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Delete)) return false;
-    Delete c = (Delete) o;
+    final Delete c = (Delete) o;
     if (! Objects.equals(commandName, c.commandName)) return false;
     return Objects.equals(key, c.key);
   }
@@ -215,7 +215,7 @@ public class Delete extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString()).append(keyInput.getValueString());
       return ID + se.getValue();
     }

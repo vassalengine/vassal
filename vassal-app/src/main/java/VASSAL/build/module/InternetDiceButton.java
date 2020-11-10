@@ -45,10 +45,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   /** Report format variale */
   public static final String DETAILS = "rollDetails"; //$NON-NLS-1$
 
-  public InternetDiceButton() {
-    super();
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.InternetDiceButton.component_type"); //$NON-NLS-1$
   }
@@ -138,7 +134,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   private static class SetSecondaryEmail extends Command {
-    private String msg;
+    private final String msg;
 
     private SetSecondaryEmail(String s) {
       msg = s;

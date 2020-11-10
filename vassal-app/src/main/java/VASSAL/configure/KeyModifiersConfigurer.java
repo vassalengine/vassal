@@ -54,7 +54,7 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
 
   @Override
   public String getValueString() {
-    Object val = getValue();
+    final Object val = getValue();
     return val != null ? val.toString() : "0";
   }
 

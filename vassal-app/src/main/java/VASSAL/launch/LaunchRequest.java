@@ -162,7 +162,7 @@ public class LaunchRequest implements Serializable {
   /**
    * @return Usage string
    */
-  private static final String helpMeSpock() {
+  private static String helpMeSpock() {
     /*
       NB: Resources has a configurer, which means that calling its methods
       initializes the Swing graphics subsystem. The init method of StartUp
@@ -220,7 +220,7 @@ public class LaunchRequest implements Serializable {
     final int VERSION = 6;
     final int TRANSLATE = 7;
 
-    final LongOpt[] longOpts = new LongOpt[]{
+    final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
       new LongOpt("edit",       LongOpt.NO_ARGUMENT, null, 'e'), //NON-NLS
       new LongOpt("help",       LongOpt.NO_ARGUMENT, null, 'h'), //NON-NLS
@@ -245,7 +245,7 @@ public class LaunchRequest implements Serializable {
       switch (c) {
       case AUTO_EXT:
         if (lr.autoext == null) lr.autoext = new ArrayList<>();
-        for (String ext : g.getOptarg().split(",")) {
+        for (final String ext : g.getOptarg().split(",")) {
           lr.autoext.add(ext.replace("_", " "));
         }
         break;

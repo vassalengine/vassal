@@ -38,6 +38,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -79,6 +80,7 @@ import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
@@ -218,7 +220,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     view = map.getView();
     validator = new SingleChildInstance(map, getClass());
     map.addDrawComponent(this);
-    String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
+    final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
         new BooleanConfigurer(USE_KEYBOARD, Resources.getString("CounterDetailViewer.use_prompt", keyDesc), Boolean.FALSE));
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
@@ -305,7 +307,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     visibleRect.width *= os_scale;
     visibleRect.height *= os_scale;
 
-    int origX = dbounds.x;
+    final int origX = dbounds.x;
 
     // Account for edges of window, stuff like that
     dbounds.x = Math.min(dbounds.x, visibleRect.x + visibleRect.width - dbounds.width);
@@ -335,16 +337,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g.drawRect(dbounds.x - 2, dbounds.y - 2, dbounds.width + 3, dbounds.height + 3);
     }
 
-    Shape oldClip = g.getClip();
+    final Shape oldClip = g.getClip();
 
     Object owner = null;
     int borderOffset = borderWidth;
-    double graphicsZoom = graphicsZoomLevel;
+    final double graphicsZoom = graphicsZoomLevel;
     boolean anyUnderText = false;
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       // Draw the next piece
       // pt is the location of the left edge of the piece
-      Rectangle pieceBounds = getBounds(piece);
+      final Rectangle pieceBounds = getBounds(piece);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
       g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
       final Stack parent = piece.getParent();
@@ -367,7 +369,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
-        String text = counterReportFormat.getLocalizedText(piece);
+        final String text = counterReportFormat.getLocalizedText(piece);
         int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
         if (text.length() > 0) {
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
@@ -383,7 +385,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           }
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
-          int x = dbounds.x  - (int) (pieceBounds.x * graphicsZoom * os_scale)  + (int) (borderOffset * os_scale) + (int)(borderWidth * os_scale);
+          final int x = dbounds.x  - (int) (pieceBounds.x * graphicsZoom * os_scale)  + (int) (borderOffset * os_scale) + (int)(borderWidth * os_scale);
           drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
           anyUnderText = true;
         }
@@ -401,7 +403,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces) {
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       final Dimension pieceBounds = getBounds(piece).getSize();
       bounds.width += (int) Math.round(pieceBounds.width * graphicsZoomLevel) + borderWidth;
       bounds.height = Math.max(bounds.height, (int) Math.round(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
@@ -421,7 +423,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   protected Rectangle getBounds(GamePiece piece) {
     if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
-    Rectangle pieceBounds = piece.getShape().getBounds();
+    final Rectangle pieceBounds = piece.getShape().getBounds();
     if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
     return pieceBounds;
   }
@@ -457,25 +459,25 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-    String report;
+    final String report;
     int x;
     int y = (int)((bounds.y - verticalTopText) * os_scale);
 
-    String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
+    final String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.isEmpty()) {
       x = (int)((bounds.x - bounds.width) * os_scale);
       y = (int)((bounds.y - verticalTopText) * os_scale);
-      Point mapPt = map.componentToMap(currentMousePosition.getPoint());
-      Point snapPt = map.snapTo(mapPt);
-      String locationName = map.localizedLocationName(snapPt);
+      final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
+      final Point snapPt = map.snapTo(mapPt);
+      final String locationName = map.localizedLocationName(snapPt);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
-      Board b = map.findBoard(snapPt);
-      String boardName = (b == null) ? "" : b.getLocalizedName();
+      final Board b = map.findBoard(snapPt);
+      final String boardName = (b == null) ? "" : b.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_BOARD, boardName);
-      Zone z = map.findZone(snapPt);
-      String zone = (z == null) ? "" : z.getLocalizedName();
+      final Zone z = map.findZone(snapPt);
+      final String zone = (z == null) ? "" : z.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
       report = emptyHexReportFormat.getLocalizedText();
       if (report.length() > 0) {
@@ -486,8 +488,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }
     else {
-      GamePiece topPiece = displayablePieces.get(0);
-      String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
+      final GamePiece topPiece = displayablePieces.get(0);
+      final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
       if (report.length() > 0) {
@@ -529,8 +531,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    */
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox) {
     if (label != null) {
-      Color labelFgColor = fgColor == null ? Color.black : fgColor;
-      Graphics2D g2d = (Graphics2D) g;
+      final Color labelFgColor = fgColor == null ? Color.black : fgColor;
+      final Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       // If HTML is enabled in the checkbox, OR the text has an explicit <html> tag surrounding it, we use HTML.
@@ -555,9 +557,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * space - Depends on setting of
      */
 
-    double zoom = getZoom();
+    final double zoom = getZoom();
     if (displayablePieces.size() < minimumDisplayablePieces) {
-      if (displayablePieces.size() > 0) {
+      if (!displayablePieces.isEmpty()) {
         graphicsVisible = zoom < zoomLevel;
         textVisible = zoom < zoomLevel && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
       }
@@ -582,11 +584,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * on selection criteria setup in config.
    */
   protected List<GamePiece> getDisplayablePieces() {
-    GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
+    final GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
-    Visitor visitor = new Visitor(new Filter(), map,
+    final Visitor visitor = new Visitor(new Filter(), map,
       map.componentToMap(currentMousePosition.getPoint()), showOverlap);
-    DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+    final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
      * Process pieces from the top down to make it easier to check for top layer
@@ -663,7 +665,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
-          for (String displayLayer : displayLayers) {
+          for (final String displayLayer : displayLayers) {
             if (layerName.equals(displayLayer)) {
               return true;
             }
@@ -672,7 +674,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Exclude pieces from named layers.
         else if (displayWhat.equals(EXC_LAYERS)) {
-          for (String displayLayer : displayLayers) {
+          for (final String displayLayer : displayLayers) {
             if (layerName.equals(displayLayer)) {
               return false;
             }
@@ -727,7 +729,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         int shownPieces = 0;
         while (p != null && shownPieces < showDeckDepth) {
           if (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
-            Rectangle r = (Rectangle) d.getShape();
+            final Rectangle r = (Rectangle) d.getShape();
             r.x += d.getPosition().x;
             r.y += d.getPosition().y;
             if (r.contains(pt)) {
@@ -744,7 +746,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     @Override
     public Object visitStack(Stack s) {
-      boolean addContents = foundPieceAt == null ?
+      final boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
         s.asList().forEach(this::apply);
@@ -766,8 +768,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * passed pieces from the top down.
      */
     protected void apply(GamePiece p) {
-      int layer;
-      String layerName;
+      final int layer;
+      final String layerName;
 
       layer = collection.getLayerForPiece(p);
       layerName = collection.getLayerNameForPiece(p);
@@ -1518,7 +1520,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -1541,5 +1543,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+
+  /**
+   * In case our labels refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    h = new HTMLImageFinder(summaryReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(counterReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(emptyHexReportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

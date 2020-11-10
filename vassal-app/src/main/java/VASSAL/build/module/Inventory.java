@@ -36,7 +36,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -65,7 +64,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -79,10 +78,10 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
@@ -99,13 +98,13 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.swing.SwingUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
-public class Inventory extends AbstractConfigurable
+public class Inventory extends AbstractToolbarItem
                        implements GameComponent,
                                   PlayerRoster.SideChangeListener {
   protected LaunchButton launch;
@@ -113,11 +112,7 @@ public class Inventory extends AbstractConfigurable
   protected JTree tree;
 
   public static final String VERSION = "2.1"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+
   // public static final String DEST = "destination";
 
   /*
@@ -129,11 +124,6 @@ public class Inventory extends AbstractConfigurable
   /*
    * Options Destination - Chat, Dialog, File.
    */
-//  public static final String DEST_CHAT = "Chat Window";
-//  public static final String DEST_DIALOG = "Dialog Window";
-//  public static final String DEST_TREE = "Tree Window";
-//  public static final String[] DEST_OPTIONS = { DEST_CHAT, DEST_DIALOG, DEST_TREE };
-//  protected String destination = DEST_TREE;
 
   public static final String FILTER = "include"; //$NON-NLS-1$
   protected PropertyExpression piecePropertiesFilter = new PropertyExpression(); //$NON-NLS-1$
@@ -188,21 +178,38 @@ public class Inventory extends AbstractConfigurable
   public static final String NUMERIC = "numeric"; //$NON-NLS-1$
   public static final String[] SORT_OPTIONS = { ALPHA, LENGTHALPHA, NUMERIC };
 
+  public static final String LAUNCH_FUNCTION  = "launchFunction"; //NON-NLS
+  public static final String FUNCTION_REFRESH = "functionRefresh"; //NON-NLS
+  public static final String FUNCTION_HIDE    = "functionHide"; //NON-NLS
+  public static final String[] FUNCTION_OPTIONS = { FUNCTION_REFRESH, FUNCTION_HIDE };
+  public static final String[] FUNCTION_KEYS    = { "Editor.Inventory.function_refresh", //NON-NLS
+                                                    "Editor.Inventory.function_hide"}; //NON-NLS
+  protected String launchFunction = FUNCTION_REFRESH;
+
   protected String sortStrategy = ALPHA;
 
   public static final String SORTING = "sorting"; //$NON-NLS-1$
 
+  public static final String BUTTON_FUNCTION = "buttonFunction"; //NON-NLS
+
   protected JDialog frame;
 
+  // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+
+
   public Inventory() {
-    ActionListener al = e -> launch();
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
-    setAttribute(NAME, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
-    setAttribute(BUTTON_TEXT, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
-    setAttribute(TOOLTIP, Resources.getString("Inventory.show_inventory")); //$NON-NLS-1$
-    setAttribute(ICON, "/images/inventory.gif"); //$NON-NLS-1$
-    launch.setEnabled(false);
-    launch.setVisible(false);
+    final ActionListener al = e -> launch();
+    launch = makeLaunchButton(Resources.getString("Inventory.show_inventory"),
+                              Resources.getString("Inventory.inventory"),
+                             "/images/inventory.gif", //NON-NLS
+                              al);
+    getLaunchButton().setEnabled(false);
+    getLaunchButton().setVisible(false);
   }
 
   public static String getConfigureTypeName() {
@@ -211,14 +218,14 @@ public class Inventory extends AbstractConfigurable
 
   @Override
   public void addTo(Buildable b) {
+    super.addTo(b);
     // Support for players changing sides
     GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
-    launch.setAlignmentY(0.0F);
-    GameModule.getGameModule().getToolBar().add(getComponent());
+    getLaunchButton().setAlignmentY(0.0F);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     frame = new JDialog(GameModule.getGameModule().getPlayerWindow());
     frame.setTitle(getConfigureName());
-    String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
+    final String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
     frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
     frame.add(initTree());
@@ -240,7 +247,7 @@ public class Inventory extends AbstractConfigurable
     // If wanted center on a selected counter
     tree.addTreeSelectionListener(e -> {
       if (centerOnPiece) {
-        GamePiece piece = getSelectedCounter();
+        final GamePiece piece = getSelectedCounter();
         if (piece != null && piece.getMap() != null)
           piece.getMap().centerAt(piece.getPosition());
       }
@@ -264,7 +271,7 @@ public class Inventory extends AbstractConfigurable
               final CounterNode node = (CounterNode) path.getLastPathComponent();
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
-                JPopupMenu menu = MenuDisplayer.createPopup(piece);
+                final JPopupMenu menu = MenuDisplayer.createPopup(piece);
                 //$NON-NLS-1$
                 menu.addPropertyChangeListener("visible", evt -> { //NON-NLS
                   if (Boolean.FALSE.equals(evt.getNewValue())) {
@@ -280,7 +287,7 @@ public class Inventory extends AbstractConfigurable
     });
     tree.addKeyListener(new HotKeySender());
 
-    JScrollPane scrollPane = new ScrollPane(tree,
+    final JScrollPane scrollPane = new ScrollPane(tree,
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     refresh();
@@ -342,15 +349,15 @@ public class Inventory extends AbstractConfigurable
   }
 
   protected Component initButtons() {
-    Box buttonBox = Box.createHorizontalBox();
+    final Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
-    JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
+    final JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
     writeButton.addActionListener(e -> inventoryToText());
     buttonBox.add(writeButton);
-    JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
+    final JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
     refreshButton.addActionListener(e -> refresh());
     buttonBox.add(refreshButton);
-    JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
+    final JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
     closeButton.addActionListener(e -> frame.setVisible(false));
     buttonBox.add(closeButton);
     return buttonBox;
@@ -368,10 +375,10 @@ public class Inventory extends AbstractConfigurable
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-    final StringBuilder output = new StringBuilder(); //$NON-NLS-1$
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) return;
 
+    final StringBuilder output = new StringBuilder();
     final File file = fc.getSelectedFile();
 
     // TODO replace this hack
@@ -401,20 +408,16 @@ public class Inventory extends AbstractConfigurable
 
   public GamePiece getSelectedCounter() {
     GamePiece piece = null;
-    CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
+    final CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
     if (node != null && node.isLeaf()) {
       piece = node.getCounter().getPiece();
     }
     return piece;
   }
 
-  protected Component getComponent() {
-    return launch;
-  }
-
   @Override
   public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getToolBar().remove(getComponent());
+    super.removeFrom(b);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
 
@@ -427,13 +430,18 @@ public class Inventory extends AbstractConfigurable
   }
 
   protected void launch() {
-    refresh();
-    frame.setVisible(true);
+    if (FUNCTION_HIDE.equals(launchFunction) && frame.isVisible()) {
+      frame.setVisible(false);
+    }
+    else {
+      refresh();
+      frame.setVisible(true);
+    }
   }
 
   private void buildTreeModel() {
     // Initialize all pieces with CurrentBoard correctly.
-    for (VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapList()) {
+    for (final VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapList()) {
       m.getPieces();
     }
 
@@ -452,9 +460,9 @@ public class Inventory extends AbstractConfigurable
       final GamePiece p = pi.nextPiece();
 
       if (p instanceof Decorator || p instanceof BasicPiece) {
-        for (String s : groupBy) {
+        for (final String s : groupBy) {
           if (s.length() > 0) {
-            String prop = (String) p.getProperty(s);
+            final String prop = (String) p.getProperty(s);
             if (prop != null)
               groups.add(prop);
           }
@@ -472,7 +480,7 @@ public class Inventory extends AbstractConfigurable
   }
 
   protected int getTotalValue(GamePiece p) {
-    String s = (String) p.getProperty(nonLeafFormat);
+    final String s = (String) p.getProperty(nonLeafFormat);
     int count;
     try {
       count = Integer.parseInt(s);
@@ -486,7 +494,7 @@ public class Inventory extends AbstractConfigurable
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Inventory.html"); //$NON-NLS-1$
   }
 
@@ -497,12 +505,7 @@ public class Inventory extends AbstractConfigurable
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {
-      Resources.getString(Resources.NAME_LABEL),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(super.getAttributeDescriptions(),
       // "Display",
       Resources.getString("Editor.Inventory.show_pieces"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.sort_group_properties"), //$NON-NLS-1$
@@ -517,18 +520,14 @@ public class Inventory extends AbstractConfigurable
       Resources.getString("Editor.Inventory.rightclick_piece"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.draw_piece"), //$NON-NLS-1$
       Resources.getString("Editor.Inventory.zoom"), //$NON-NLS-1$
-      Resources.getString("Editor.Inventory.available") //$NON-NLS-1$
-    };
+      Resources.getString("Editor.Inventory.available"), //$NON-NLS-1$
+      Resources.getString("Editor.Inventory.function") //$NON-NLS-1$
+    );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
+    return ArrayUtils.addAll(super.getAttributeTypes(),
       // DestConfig.class,
       PropertyExpression.class,
       String[].class,
@@ -543,18 +542,14 @@ public class Inventory extends AbstractConfigurable
       Boolean.class,
       Boolean.class,
       Double.class,
-      String[].class
-    };
+      String[].class,
+      FunctionConfig.class
+    );
   }
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {
-      NAME,
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY,
+    return ArrayUtils.addAll(super.getAttributeNames(),
    // DEST,
       FILTER,
       GROUP_BY,
@@ -569,10 +564,12 @@ public class Inventory extends AbstractConfigurable
       SHOW_MENU,
       DRAW_PIECES,
       PIECE_ZOOM,
-      SIDES
-    };
+      SIDES,
+      LAUNCH_FUNCTION
+    );
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -586,11 +583,6 @@ public class Inventory extends AbstractConfigurable
       return new GamePieceFormattedStringConfigurer(key, name);
     }
   }
-//  public static class DestConfig implements ConfigurerFactory {
-//    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-//      return new StringEnumConfigurer(key, name, DEST_OPTIONS);
-//    }
-//  }
 
   public static class SortConfig implements ConfigurerFactory {
     @Override
@@ -599,12 +591,16 @@ public class Inventory extends AbstractConfigurable
     }
   }
 
+  public static class FunctionConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new TranslatingStringEnumConfigurer(key, name, FUNCTION_OPTIONS, FUNCTION_KEYS);
+    }
+  }
+
   @Override
   public void setAttribute(String key, Object o) {
-    if (NAME.equals(key)) {
-      setConfigureName((String) o);
-    }
-    else if (FILTER.equals(key)) {
+    if (FILTER.equals(key)) {
       piecePropertiesFilter.setExpression((String) o);
     }
     else if (GROUP_BY.equals(key)) {
@@ -676,16 +672,15 @@ public class Inventory extends AbstractConfigurable
     else if (SORTING.equals(key)) {
       sortStrategy = (String) o;
     }
-//    else if (DEST.equals(key)) {
-//      destination = (String) o;
-//    }
-
+    else if (LAUNCH_FUNCTION.equals(key)) {
+      launchFunction = (String) o;
+    }
     else {
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
   }
 
-  private VisibilityCondition piecesVisible = () -> !foldersOnly;
+  private final VisibilityCondition piecesVisible = () -> !foldersOnly;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -712,10 +707,7 @@ public class Inventory extends AbstractConfigurable
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (FILTER.equals(key)) {
+    if (FILTER.equals(key)) {
       return piecePropertiesFilter.getExpression();
     }
     else if (GROUP_BY.equals(key)) {
@@ -752,13 +744,13 @@ public class Inventory extends AbstractConfigurable
       return HotKeyConfigurer.encode(keyStroke);
     }
     else if (CUTBELOWROOT.equals(key)) {
-      return cutBelowRoot + ""; //$NON-NLS-1$
+      return Integer.toString(cutBelowRoot);
     }
     else if (CUTABOVELEAVES.equals(key)) {
-      return cutAboveLeaves + ""; //$NON-NLS-1$
+      return Integer.toString(cutAboveLeaves);
     }
     else if (SORT_PIECES.equals(key)) {
-      return sortPieces + ""; //$NON-NLS-1$
+      return Boolean.toString(sortPieces);
     }
     else if (SORT_FORMAT.equals(key)) {
       return sortFormat;
@@ -766,12 +758,11 @@ public class Inventory extends AbstractConfigurable
     else if (SORTING.equals(key)) {
       return sortStrategy;
     }
-//    else if (DEST.equals(key)) {
-//      return destination;
-//    }
-
+    else if (LAUNCH_FUNCTION.equals(key)) {
+      return launchFunction;
+    }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -782,16 +773,21 @@ public class Inventory extends AbstractConfigurable
 
   @Override
   public void setup(boolean gameStarting) {
-    launch.setEnabled(gameStarting && enabledForPlayersSide());
-    if (gameStarting)
+    getLaunchButton().setEnabled(gameStarting && enabledForPlayersSide());
+    if (gameStarting) {
       setupLaunch();
+    }
+    else {
+      frame.setVisible(false);
+    }
   }
 
   protected void setupLaunch() {
-    launch.setEnabled(enabledForPlayersSide());
-    // Only change button visibilty if it has not already been hidden by a ToolBarMenu
-    if (launch.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
-      launch.setVisible(launch.isEnabled());
+    final LaunchButton myButton = getLaunchButton();
+    myButton.setEnabled(enabledForPlayersSide());
+    // Only change button visibility if it has not already been hidden by a ToolBarMenu
+    if (myButton.getClientProperty(ToolbarMenu.HIDDEN_BY_TOOLBAR) == null) {
+      myButton.setVisible(myButton.isEnabled());
     }
   }
 
@@ -806,60 +802,29 @@ public class Inventory extends AbstractConfigurable
   protected boolean enabledForPlayersSide() {
     if (sides == null || sides.length == 0)
       return true;
-    for (String side : sides) {
+    for (final String side : sides) {
       if (side.equalsIgnoreCase(PlayerRoster.getMySide()))
         return true;
     }
     return false;
   }
 
-//  protected void executeCommand() {
-//    if (destination.equals(DEST_CHAT)) {
-//      Command c = new NullCommand();
-//      String res[] = results.getResultStringArray();
-//
-//      for (int i = 0; i < res.length; i++) {
-//        c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), res[i]));
-//      }
-//      c.execute();
-//      GameModule.getGameModule().sendAndLog(c);
-//    }
-//    else if (destination.equals(DEST_DIALOG)) {
-//      String res[] = results.getResultStringArray();
-//      String text = "";
-//      for (int i = 0; i < res.length; i++) {
-//        text += res[i] + "\n";
-//      }
-//      JTextArea textArea = new JTextArea(text);
-//      textArea.setEditable(false);
-//
-//      JScrollPane scrollPane = new ScrollPane(textArea,
-//         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-//         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//
-//      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), scrollPane, getConfigureName(), JOptionPane.PLAIN_MESSAGE);
-//    }
-//    else if (destination.equals(DEST_TREE)) {
-//      initTree();
-//    }
-//  }
-
   /**
    * @return Command which only has some text in. The actual processing is done
    *         within the pieces.
    */
   protected Command sendHotKeyToPieces(final KeyStroke keyStroke) {
-    Command c = new NullCommand();
+    final Command c = new NullCommand();
     final TreePath[] tp = tree.getSelectionPaths();
     // set to not get duplicates
-    HashSet<GamePiece> pieces = new HashSet<>();
-    for (TreePath treePath : tp) {
-      CounterNode node = (CounterNode) treePath.getLastPathComponent();
+    final HashSet<GamePiece> pieces = new HashSet<>();
+    for (final TreePath treePath : tp) {
+      final CounterNode node = (CounterNode) treePath.getLastPathComponent();
       if (node.isLeaf()) {
         pieces.add(node.getCounter().getPiece());
       }
       else {
-        for (Iterator<CounterNode> j = node.iterator(); j.hasNext();) {
+        for (final Iterator<CounterNode> j = node.iterator(); j.hasNext();) {
           final CounterNode childNode = j.next();
           if (childNode.isLeaf())
             pieces.add(childNode.getCounter().getPiece());
@@ -867,7 +832,7 @@ public class Inventory extends AbstractConfigurable
       }
     }
 
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       GameModule.getGameModule().sendAndLog(piece.keyEvent(keyStroke));
     }
     return c;
@@ -879,8 +844,9 @@ public class Inventory extends AbstractConfigurable
 
   private void refresh() {
     // Make an attempt to keep the same nodes expanded
-    HashSet<String> expanded = new HashSet<>();
-    for (int i = 0, n = tree.getRowCount(); i < n; ++i) {
+    final HashSet<String> expanded = new HashSet<>();
+    final int n = tree.getRowCount();
+    for (int i = 0; i < n; ++i) {
       if (tree.isExpanded(i)) {
         expanded.add(tree.getPathForRow(i).getLastPathComponent().toString());
       }
@@ -901,9 +867,9 @@ public class Inventory extends AbstractConfigurable
 
     public void keyCommand(KeyStroke stroke) {
       if (forwardKeystroke) {
-        CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
+        final CounterNode node = (CounterNode) tree.getLastSelectedPathComponent();
         if (node != null) {
-          Command comm = getCommand(node, stroke);
+          final Command comm = getCommand(node, stroke);
           if (comm != null && !comm.isNull()) {
             tracker.repaint();
             GameModule.getGameModule().sendAndLog(comm);
@@ -915,7 +881,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     protected Command getCommand(CounterNode node, KeyStroke stroke) {
-      GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
+      final GamePiece p = node.getCounter() == null ? null : node.getCounter().getPiece();
       Command comm;
       if (p != null) {
         // Save state first
@@ -928,7 +894,8 @@ public class Inventory extends AbstractConfigurable
       }
       else {
         comm = new NullCommand();
-        for (int i = 0, n = node.getChildCount(); i < n; ++i) {
+        final int n = node.getChildCount();
+        for (int i = 0; i < n; ++i) {
           comm = comm.append(getCommand((CounterNode) node.getChild(i), stroke));
         }
       }
@@ -949,7 +916,6 @@ public class Inventory extends AbstractConfigurable
     public void keyTyped(KeyEvent e) {
       keyCommand(SwingUtils.getKeyStrokeForEvent(e));
     }
-
   }
 
 //  public static class Dest extends StringEnum {
@@ -1010,10 +976,12 @@ public class Inventory extends AbstractConfigurable
       return localName;
     }
 
+    @Override
     public int hashCode() {
       return getName().hashCode();
     }
 
+    @Override
     public String toString() {
       return format.getLocalizedText(this);
     }
@@ -1041,27 +1009,28 @@ public class Inventory extends AbstractConfigurable
       this.piece = piece;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (!(o instanceof Counter))
         return false;
-      Counter c = (Counter) o;
+      final Counter c = (Counter) o;
       return getPath().equals(c.getPath());
     }
 
     @Override
     public Object getProperty(Object key) {
       Object value = null;
-      String s = (String) key;
+      final String s = (String) key;
       if (s.startsWith("sum_")) { //$NON-NLS-1$
         if (piece != null) {
           value = piece.getProperty(s.substring(4));
         }
         else {
           int sum = 0;
-          int n = results.getChildCount(node);
+          final int n = results.getChildCount(node);
           for (int i = 0; i < n; ++i) {
             try {
-              CounterNode childNode = (CounterNode) results.getChild(node, i);
+              final CounterNode childNode = (CounterNode) results.getChild(node, i);
               sum += Integer.parseInt((String) (childNode.getCounter()).getProperty(key));
             }
             catch (NumberFormatException e) {
@@ -1092,7 +1061,6 @@ public class Inventory extends AbstractConfigurable
     public void setNode(CounterNode node) {
       this.node = node;
     }
-
   }
 
   /**
@@ -1166,6 +1134,7 @@ public class Inventory extends AbstractConfigurable
       children = new ArrayList<>();
     }
 
+    @Override
     public String toString() {
       if (counter != null)
         return counter.toString();
@@ -1197,7 +1166,7 @@ public class Inventory extends AbstractConfigurable
       else
         name.append(getEntry());
 
-      for (CounterNode child : children) {
+      for (final CounterNode child : children) {
         name.append(child.toResultString());
       }
       return name.toString();
@@ -1269,7 +1238,7 @@ public class Inventory extends AbstractConfigurable
         value = counter.getValue();
 
       // inform children about update
-      for (CounterNode child : children) {
+      for (final CounterNode child : children) {
         value += child.updateValues();
       }
 
@@ -1288,14 +1257,14 @@ public class Inventory extends AbstractConfigurable
         return;
       }
 
-      for (CounterNode child : children) {
+      for (final CounterNode child : children) {
         child.cutLevel(cut - 1);
       }
     }
 
     public void cutLeaves() {
-      ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
-      for (CounterNode child : children) {
+      final ArrayList<CounterNode> toBeRemoved = new ArrayList<>();
+      for (final CounterNode child : children) {
         if (child.isLeaf())
           toBeRemoved.add(child);
         else
@@ -1391,7 +1360,7 @@ public class Inventory extends AbstractConfigurable
      */
     protected class Numerical extends CompareCounterNodes
                               implements Comparator<CounterNode> {
-      protected final String regex =  "\\d+"; //$NON-NLS-1$
+      protected final String regex =  "\\d+"; //$NON-NLS-1$ //NOPMD
       protected final Pattern p = Pattern.compile(regex);
 
       /**
@@ -1404,13 +1373,13 @@ public class Inventory extends AbstractConfigurable
        */
       protected int getInt(String key) {
         int found = Integer.MIN_VALUE;
-        Matcher match = p.matcher(key);
+        final Matcher match = p.matcher(key);
 
         if (!match.find()) {
           // return minimum value
           return found;
         }
-        int start = match.start();
+        final int start = match.start();
         found = Integer.parseInt(key.substring(start, match.end()));
 
         // Check for sign
@@ -1432,8 +1401,8 @@ public class Inventory extends AbstractConfigurable
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
 
-        int l = getInt(left.toSortKey());
-        int r = getInt(right.toSortKey());
+        final int l = getInt(left.toSortKey());
+        final int r = getInt(right.toSortKey());
 
         if (l < r)
           return -1;
@@ -1457,8 +1426,8 @@ public class Inventory extends AbstractConfigurable
         if (!argsOK(left, right))
           return compareStrangeArgs(left, right);
 
-        int leftLength = left.toSortKey().length();
-        int rightLength = right.toSortKey().length();
+        final int leftLength = left.toSortKey().length();
+        final int rightLength = right.toSortKey().length();
         if (leftLength < rightLength)
           return -1;
         if (leftLength > rightLength)
@@ -1504,7 +1473,7 @@ public class Inventory extends AbstractConfigurable
       final StringBuilder hash = new StringBuilder();
 
       CounterNode insertNode = root;
-      CounterNode newNode = null;
+      CounterNode newNode;
       for (int j = 0; path != null && j < path.length; j++) {
         hash.append(path[j]);
         if (inventory.get(hash.toString()) == null) {
@@ -1564,13 +1533,13 @@ public class Inventory extends AbstractConfigurable
 
     @Override
     public int getChildCount(Object parent) {
-      CounterNode counter = (CounterNode) parent;
+      final CounterNode counter = (CounterNode) parent;
       return counter.getChildCount();
     }
 
     @Override
     public boolean isLeaf(Object node) {
-      CounterNode counter = (CounterNode) node;
+      final CounterNode counter = (CounterNode) node;
       return counter.isLeaf();
     }
 
@@ -1586,21 +1555,21 @@ public class Inventory extends AbstractConfigurable
 
     public void fireNodesRemoved(Object[] path, int[] childIndices,
                                  Object[] children) {
-      TreeModelEvent e = new TreeModelEvent(this, path, childIndices, children);
-      for (TreeModelListener l : treeModelListeners) {
+      final TreeModelEvent e = new TreeModelEvent(this, path, childIndices, children);
+      for (final TreeModelListener l : treeModelListeners) {
         l.treeNodesRemoved(e);
       }
     }
 
     @Override
     public Object getChild(Object parent, int index) {
-      CounterNode counter = (CounterNode) parent;
+      final CounterNode counter = (CounterNode) parent;
       return counter.getChild(index);
     }
 
     @Override
     public int getIndexOfChild(Object parent, Object child) {
-      CounterNode counter = (CounterNode) parent;
+      final CounterNode counter = (CounterNode) parent;
       return counter.getIndexOfChild(child);
     }
 
@@ -1612,7 +1581,7 @@ public class Inventory extends AbstractConfigurable
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -1625,30 +1594,12 @@ public class Inventory extends AbstractConfigurable
    */
   @Override
   public List<String> getFormattedStringList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(nonLeafFormat);
     if (piecesVisible.shouldBeVisible()) {
       l.add(pieceFormat);
     }
     l.add(sortFormat);
     return l;
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

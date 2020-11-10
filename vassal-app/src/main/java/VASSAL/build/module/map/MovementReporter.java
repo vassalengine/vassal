@@ -21,6 +21,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import VASSAL.build.GameModule;
@@ -55,13 +56,13 @@ public class MovementReporter {
   protected void extractMoveCommands(Command c) {
     MoveSummary summary = null;
     if (c instanceof AddPiece) {
-      AddPiece addPiece = ((AddPiece) c);
+      final AddPiece addPiece = ((AddPiece) c);
       if (shouldReport(addPiece)) {
         summary = createMoveSummary(addPiece);
       }
     }
     else if (c instanceof MovePiece) {
-      MovePiece movePiece = (MovePiece) c;
+      final MovePiece movePiece = (MovePiece) c;
       if (shouldReport(movePiece)) {
         summary = createMoveSummary(movePiece);
       }
@@ -69,11 +70,11 @@ public class MovementReporter {
     if (summary != null) {
       // Do we already have an instance that represents movement
       // between the same two map positions on the same two maps?
-      int index = movesToReport.indexOf(summary);
+      final int index = movesToReport.indexOf(summary);
       if (index >= 0
           && c instanceof MovePiece
           && shouldReport((MovePiece) c)) {
-        MoveSummary existing = movesToReport.get(index);
+        final MoveSummary existing = movesToReport.get(index);
         existing.append((MovePiece) c);
       }
       else {
@@ -83,8 +84,8 @@ public class MovementReporter {
         movesToMark.add(summary);
       }
     }
-    Command[] sub = c.getSubCommands();
-    for (Command command : sub) {
+    final Command[] sub = c.getSubCommands();
+    for (final Command command : sub) {
       extractMoveCommands(command);
     }
   }
@@ -105,8 +106,8 @@ public class MovementReporter {
     Command c = null;
     if (!movesToMark.isEmpty()) {
       c = new NullCommand();
-      for (MoveSummary ms : movesToMark) {
-        for (GamePiece p : ms.pieces) {
+      for (final MoveSummary ms : movesToMark) {
+        for (final GamePiece p : ms.pieces) {
           c.append(markMoved(p));
         }
       }
@@ -118,13 +119,13 @@ public class MovementReporter {
     Command c = null;
     if (p instanceof Stack) {
       c = new NullCommand();
-      for (GamePiece gp : ((Stack)p).asList()) {
+      for (final GamePiece gp : ((Stack)p).asList()) {
         c = c.append(markMoved(gp));
       }
     }
     else if (p.getProperty(Properties.MOVED) != null) {
       if (p.getId() != null) {
-        ChangeTracker comm = new ChangeTracker(p);
+        final ChangeTracker comm = new ChangeTracker(p);
         p.setProperty(Properties.MOVED, Boolean.TRUE);
         c = comm.getChangeCommand();
       }
@@ -133,7 +134,7 @@ public class MovementReporter {
   }
 
   protected boolean shouldMarkMoved(MoveSummary summary) {
-    Map mappy = Map.getMapById(summary.getNewMapId());
+    final Map mappy = Map.getMapById(summary.getNewMapId());
     String option = (mappy == null) ? null : mappy.getAttributeValueString(Map.MARK_MOVED);
     if (option == null) {
       option = GlobalOptions.getInstance().getAttributeValueString(GlobalOptions.MARK_MOVED);
@@ -150,25 +151,20 @@ public class MovementReporter {
   }
 
   protected boolean shouldReport(AddPiece addPiece) {
-    GamePiece target = addPiece.getTarget();
-    if (target != null
-        && !(target instanceof Stack)
-        && !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
-        && !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    final GamePiece target = addPiece.getTarget();
+    return target != null &&
+      !(target instanceof Stack) &&
+      !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME)) &&
+      !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS));
   }
 
   protected boolean shouldReport(MovePiece movePiece) {
-    GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
+    final GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
     if (target == null) {
       return false;
     }
     if (target instanceof Stack) {
-      GamePiece top = ((Stack) target).topPiece(null);
+      final GamePiece top = ((Stack) target).topPiece(null); //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       return top != null;
     }
     else {
@@ -181,9 +177,9 @@ public class MovementReporter {
     PieceAccess.GlobalAccess.hideAll();
 
     Command c = new NullCommand();
-    for (MoveSummary ms : movesToReport) {
-      Map fromMap = Map.getMapById(ms.getOldMapId());
-      Map toMap = Map.getMapById(ms.getNewMapId());
+    for (final MoveSummary ms : movesToReport) {
+      final Map fromMap = Map.getMapById(ms.getOldMapId());
+      final Map toMap = Map.getMapById(ms.getNewMapId());
       format.clearProperties();
       if (fromMap == null) {
         format.setFormat(toMap.getCreateFormat());
@@ -205,7 +201,7 @@ public class MovementReporter {
       }
       format.setProperty(Map.MAP_NAME, toMap.getLocalizedConfigureName());
 
-      String moveText = format.getLocalizedText();
+      final String moveText = format.getLocalizedText();
 
       if (moveText.length() > 0) {
         c = c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + moveText));
@@ -241,21 +237,16 @@ public class MovementReporter {
 
     @Override
     protected boolean shouldReport(AddPiece addPiece) {
-      GamePiece target = addPiece.getTarget();
-      if (target != null
-          && !(target instanceof Stack)
-          && (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
-              || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)))) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      final GamePiece target = addPiece.getTarget();
+      return target != null &&
+        !(target instanceof Stack) &&
+        (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME)) ||
+         Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)));
     }
 
     @Override
     protected boolean shouldReport(MovePiece movePiece) {
-      GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
+      final GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
       if (target == null) {
         return false;
       }
@@ -283,14 +274,14 @@ public class MovementReporter {
     protected List<GamePiece> pieces = new ArrayList<>();
 
     public MoveSummary(AddPiece c) {
-      GamePiece target = c.getTarget();
+      final GamePiece target = c.getTarget();
       newMapId = target.getMap().getIdentifier();
       newPosition = target.getPosition();
       pieces.add(target);
     }
 
     public MoveSummary(MovePiece c) {
-      GamePiece target = GameModule.getGameModule()
+      final GamePiece target = GameModule.getGameModule()
                                    .getGameState().getPieceForId(c.getId());
       oldMapId = c.getOldMapId();
       newMapId = c.getNewMapId();
@@ -317,6 +308,7 @@ public class MovementReporter {
       return oldPosition;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof MoveSummary)) return false;
@@ -325,15 +317,16 @@ public class MovementReporter {
 
       if (!newPosition.equals(moveSummary.newPosition)) return false;
       if (!newMapId.equals(moveSummary.newMapId)) return false;
-      if (oldMapId != null ? !oldMapId.equals(moveSummary.oldMapId) : moveSummary.oldMapId != null) return false;
+      if (!Objects.equals(oldMapId, moveSummary.oldMapId)) return false;
       if (oldMapId != null) {
         // If there is no old map, then ignore the old position for equals() purposes.
-        if (oldPosition != null ? !oldPosition.equals(moveSummary.oldPosition) : moveSummary.oldPosition != null) return false;
+        return Objects.equals(oldPosition, moveSummary.oldPosition);
       }
 
       return true;
     }
 
+    @Override
     public int hashCode() {
       int result;
       result = (oldMapId != null ? oldMapId.hashCode() : 0);
@@ -346,7 +339,7 @@ public class MovementReporter {
     }
 
     public void append(MovePiece movePiece) {
-      GamePiece target = GameModule.getGameModule()
+      final GamePiece target = GameModule.getGameModule()
                                    .getGameState()
                                    .getPieceForId(movePiece.getId());
       if (target != null && !pieces.contains(target)) {
@@ -356,7 +349,7 @@ public class MovementReporter {
 
     public String getPieceName() {
       final StringBuilder names = new StringBuilder();
-      for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
+      for (final Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
         names.append(i.next().getLocalizedName());
         if (i.hasNext()) {
           names.append(", ");
@@ -380,14 +373,14 @@ public class MovementReporter {
     public String getPieceName() {
       final StringBuilder names = new StringBuilder();
       boolean first = true;
-      for (GamePiece piece : pieces) {
+      for (final GamePiece piece : pieces) {
         if (piece instanceof Stack) {
-          for (GamePiece p : ((Stack) piece).asList()) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
             if (isInvisible(p)) {
               if (!first) {
                 names.append(", ");
               }
-              names.append("?");
+              names.append('?');
               first = false;
             }
           }
@@ -397,7 +390,7 @@ public class MovementReporter {
             if (!first) {
               names.append(", ");
             }
-            names.append("?");
+            names.append('?');
             first = false;
           }
         }

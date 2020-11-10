@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -67,9 +66,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return prototypeName != null && prototypeName.length() > 0 ?
-      Resources.getString("Editor.UsePrototype.trait_description_named", prototypeName) :
-      Resources.getString("Editor.UsePrototype.trait_description");
+    return buildDescription("Editor.UsePrototype.trait_description", prototypeName);
   }
 
   @Override
@@ -80,17 +77,17 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   @Override
   public void mySetType(String type) {
     this.type = type;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
     prototypeName = st.nextToken("");
     if (st.hasMoreTokens()) {
       final java.util.Properties p = new java.util.Properties();
-      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), ',');
+      final SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), ',');
       while (st2.hasMoreTokens()) {
-        SequenceEncoder.Decoder st3 = new SequenceEncoder.Decoder(st2.nextToken(), '=');
+        final SequenceEncoder.Decoder st3 = new SequenceEncoder.Decoder(st2.nextToken(), '=');
         if (st3.hasMoreTokens()) {
-          String key = st3.nextToken();
+          final String key = st3.nextToken();
           if (st3.hasMoreTokens()) {
-            String value = st3.nextToken();
+            final String value = st3.nextToken();
             p.setProperty(key, value);
           }
         }
@@ -227,7 +224,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof UsePrototype)) return false;
-    UsePrototype c = (UsePrototype) o;
+    final UsePrototype c = (UsePrototype) o;
     return Objects.equals(prototypeName, c.prototypeName);
   }
 

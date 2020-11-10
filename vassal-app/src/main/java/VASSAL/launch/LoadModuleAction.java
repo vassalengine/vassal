@@ -64,7 +64,7 @@ public class LoadModuleAction extends GameModuleAction {
       }
 
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-        File f = fc.getSelectedFile();
+        final File f = fc.getSelectedFile();
         if (f != null && f.exists()) {
           target = f;
         }

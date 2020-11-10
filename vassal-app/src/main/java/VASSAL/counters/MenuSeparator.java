@@ -23,8 +23,7 @@ import java.awt.Shape;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import java.util.Objects;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -39,12 +38,12 @@ import VASSAL.tools.SequenceEncoder;
  * This trait adds a command that creates a duplicate of the selected Gamepiece
  */
 public class MenuSeparator extends Decorator implements TranslatablePiece {
-  public static final String ID = "menuSeparator;";
-  public static final String SEPARATOR_NAME = "<separator>";
+  public static final String ID = "menuSeparator;"; // NON-NLS
+  public static final String SEPARATOR_NAME = "<separator>"; // NON-NLS
   protected KeyCommand[] command;
   protected String desc;
   protected NamedKeyStroke key;
-  protected KeyCommand separatorCommand;    
+  protected KeyCommand separatorCommand;
 
   public MenuSeparator() {
     this(ID + ";", null);
@@ -58,7 +57,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     desc        = st.nextToken();
     key         = st.nextNamedKeyStroke(null);
     command     = null;
@@ -66,7 +65,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(desc).append(key);
     return ID + se.getValue();
   }
@@ -90,7 +89,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator 
+    return null; // We don't ever actually "do" anything to the game state, we're just here to mark a menu separator
   }
 
   @Override
@@ -124,37 +123,39 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    if ((desc != null) && !desc.isEmpty()) {
-      return "Menu Separator" + " - " + desc;  
-    } 
-    else {
-      return "Menu Separator";  
-    }    
+    return buildDescription("Editor.MenuSeparator.trait_description", desc);
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof MenuSeparator)) return false;
+    final MenuSeparator c = (MenuSeparator) o;
+    if (!Objects.equals(desc, c.desc)) return false;
+    return Objects.equals(key, c.key);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MenuSeparator.html");
+    return HelpFile.getReferenceManualPage("MenuSeparator.html"); // NON-NLS
   }
 
 
   public static class Ed implements PieceEditor {
-    private StringConfigurer descInput;
-    private NamedHotKeyConfigurer keyInput;
-    private JPanel controls;
+    private final StringConfigurer descInput;
+    private final NamedHotKeyConfigurer keyInput;
+    private final TraitConfigPanel controls;
 
     public Ed(MenuSeparator p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      descInput = new StringConfigurer(null, "Separator Description:  ", p.desc);
-      controls.add(descInput.getControls());
+      descInput = new StringConfigurer(p.desc);
+      controls.add("Editor.MenuSeparator.separator_description", descInput);
 
-      keyInput = new NamedHotKeyConfigurer(null, "If this keystroke is hidden, hide separator:  ", p.key);
-      controls.add(keyInput.getControls());
+      keyInput = new NamedHotKeyConfigurer(p.key);
+      controls.add("Editor.MenuSeparator.if_hidden", keyInput);
     }
 
-    
+
     @Override
     public Component getControls() {
       return controls;
@@ -162,7 +163,7 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(descInput.getValueString()).append(keyInput.getValueString());
       return ID + se.getValue();
     }

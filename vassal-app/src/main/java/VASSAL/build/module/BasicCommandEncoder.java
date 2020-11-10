@@ -21,10 +21,6 @@ import java.awt.Point;
 import java.util.Map;
 
 import VASSAL.build.BadDataReport;
-import VASSAL.tools.ErrorDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -79,6 +75,7 @@ import VASSAL.counters.TableInfo;
 import VASSAL.counters.Translate;
 import VASSAL.counters.TriggerAction;
 import VASSAL.counters.UsePrototype;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -113,9 +110,6 @@ import VASSAL.tools.SequenceEncoder;
  * custom {@link GamePiece} classes.
  */
 public class BasicCommandEncoder implements CommandEncoder, Buildable {
-  private static final Logger logger =
-    LoggerFactory.getLogger(BasicCommandEncoder.class);
-
   /**
    * Factory interface for Decorators
    *
@@ -256,9 +250,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * @param type definition string of the piece or trait to be created.
    */
   public GamePiece createPiece(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, '\t');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, '\t');
     type = st.nextToken();
-    String innerType = st.hasMoreTokens() ? st.nextToken() : null;
+    final String innerType = st.hasMoreTokens() ? st.nextToken() : null;
 
     if (innerType != null) {
       GamePiece inner = createPiece(innerType);
@@ -266,7 +260,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
         ErrorDialog.dataWarning(new BadDataReport("Could not create piece with type " + innerType, type)); //NON-NLS
         inner = new BasicPiece();
       }
-      Decorator d = createDecorator(type, inner);
+      final Decorator d = createDecorator(type, inner);
       return d != null ? d : inner;
     }
     else {
@@ -330,10 +324,10 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (command.startsWith(ADD)) {
       command = command.substring(ADD.length());
       st = new SequenceEncoder.Decoder(command, PARAM_SEPARATOR);
-      String id = unwrapNull(st.nextToken());
-      String type = st.nextToken();
-      String state = st.nextToken();
-      GamePiece p = createPiece(type);
+      final String id = unwrapNull(st.nextToken());
+      final String type = st.nextToken();
+      final String state = st.nextToken();
+      final GamePiece p = createPiece(type);
       if (p == null) {
         return null;
       }
@@ -343,8 +337,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       }
     }
     else if (command.startsWith(REMOVE)) {
-      String id = command.substring(REMOVE.length());
-      GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
+      final String id = command.substring(REMOVE.length());
+      final GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
       if (target == null) {
         return new RemovePiece(id);
       }
@@ -355,24 +349,24 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     else if (command.startsWith(CHANGE)) {
       command = command.substring(CHANGE.length());
       st = new SequenceEncoder.Decoder(command, PARAM_SEPARATOR);
-      String id = st.nextToken();
-      String newState = st.nextToken();
-      String oldState = st.hasMoreTokens() ? st.nextToken() : null;
+      final String id = st.nextToken();
+      final String newState = st.nextToken();
+      final String oldState = st.hasMoreTokens() ? st.nextToken() : null;
       return new ChangePiece(id, oldState, newState);
     }
     else if (command.startsWith(MOVE)) {
       command = command.substring(MOVE.length());
       st = new SequenceEncoder.Decoder(command, PARAM_SEPARATOR);
-      String id = unwrapNull(st.nextToken());
-      String newMapId = unwrapNull(st.nextToken());
-      int newX = Integer.parseInt(st.nextToken());
-      int newY = Integer.parseInt(st.nextToken());
-      String newUnderId = unwrapNull(st.nextToken());
-      String oldMapId = unwrapNull(st.nextToken());
-      int oldX = Integer.parseInt(st.nextToken());
-      int oldY = Integer.parseInt(st.nextToken());
-      String oldUnderId = unwrapNull(st.nextToken());
-      String playerid = st.nextToken(GameModule.getUserId());
+      final String id = unwrapNull(st.nextToken());
+      final String newMapId = unwrapNull(st.nextToken());
+      final int newX = Integer.parseInt(st.nextToken());
+      final int newY = Integer.parseInt(st.nextToken());
+      final String newUnderId = unwrapNull(st.nextToken());
+      final String oldMapId = unwrapNull(st.nextToken());
+      final int oldX = Integer.parseInt(st.nextToken());
+      final int oldY = Integer.parseInt(st.nextToken());
+      final String oldUnderId = unwrapNull(st.nextToken());
+      final String playerid = st.nextToken(GameModule.getUserId());
       return new MovePiece(id, newMapId, new Point(newX, newY), newUnderId, oldMapId, new Point(oldX, oldY), oldUnderId, playerid);
     }
     else {
@@ -407,9 +401,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    */
   @Override
   public String encode(Command c) {
-    SequenceEncoder se = new SequenceEncoder(PARAM_SEPARATOR);
+    final SequenceEncoder se = new SequenceEncoder(PARAM_SEPARATOR);
     if (c instanceof AddPiece) {
-      AddPiece a = (AddPiece) c;
+      final AddPiece a = (AddPiece) c;
       return ADD +
         se
           .append(wrapNull(a.getTarget().getId()))
@@ -421,7 +415,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       return REMOVE + ((RemovePiece) c).getId();
     }
     else if (c instanceof ChangePiece) {
-      ChangePiece cp = (ChangePiece) c;
+      final ChangePiece cp = (ChangePiece) c;
       se.append(cp.getId()).append(cp.getNewState());
       if (cp.getOldState() != null) {
         se.append(cp.getOldState());
@@ -429,7 +423,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       return CHANGE + se.getValue();
     }
     else if (c instanceof MovePiece) {
-      MovePiece mp = (MovePiece) c;
+      final MovePiece mp = (MovePiece) c;
       se.append(mp.getId())
         .append(wrapNull(mp.getNewMapId()))
         .append(mp.getNewPosition().x)

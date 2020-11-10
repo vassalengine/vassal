@@ -17,23 +17,21 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.filechooser.FileChooser;
+
 import java.awt.Component;
 import java.io.File;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import VASSAL.build.GameModule;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * A Configurer for java.io.File values
@@ -65,7 +63,7 @@ public class FileConfigurer extends Configurer {
   }
 
   protected FileChooser initFileChooser() {
-    FileChooser fc = FileChooser.createFileChooser(null, startingDirectory);
+    final FileChooser fc = FileChooser.createFileChooser(null, startingDirectory);
     if (startingDirectory == null && GameModule.getGameModule() != null) {
       fc.setCurrentDirectory((File) Prefs.getGlobalPrefs().getValue(Prefs.MODULES_DIR_KEY));
     }
@@ -94,7 +92,7 @@ public class FileConfigurer extends Configurer {
   @Override
   public void setValue(Object o) {
 // FIXME: this creates a problem when the referenced file is in the JAR
-    File f = (File) o;
+    final File f = (File) o;
     if (f != null && f.exists()) {
       if (archive != null) {
         addToArchive(f);
@@ -122,10 +120,9 @@ public class FileConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
-      JButton b = new JButton(Resources.getString("Editor.select"));
+      p = new ConfigurerPanel(getName(), "[]rel[grow,fill]", "[]rel[]rel[grow,fill]"); // NON-NLS
+
+      final JButton b = new JButton(Resources.getString("Editor.select"));
       p.add(b);
 
       tf = new JTextField(getValueString());
@@ -149,8 +146,8 @@ public class FileConfigurer extends Configurer {
         }
 
         public void update() {
-          String text = tf.getText();
-          File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null; // NON-NLS
+          final String text = tf.getText();
+          final File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null; // NON-NLS
           noUpdate = true;
           setValue(f);
           noUpdate = false;

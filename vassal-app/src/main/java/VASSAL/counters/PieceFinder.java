@@ -29,7 +29,7 @@ import VASSAL.build.module.Map;
 @FunctionalInterface
 public interface PieceFinder {
   /** Return the argument GamePiece (or one of its children if a Stack) found at the given point on the given Map */
-  public GamePiece select(Map map, GamePiece piece, Point pt);
+  GamePiece select(Map map, GamePiece piece, Point pt);
 
   /** Return a Stack overlapping the given point */
   PieceFinder STACK_ONLY = new StackOnly();
@@ -52,7 +52,7 @@ public interface PieceFinder {
    */
   PieceFinder MOVABLE = new Movable();
 
-  public class StackOnly extends Movable {
+  class StackOnly extends Movable {
     @Override
     public Object visitDefault(GamePiece piece) {
       return null;
@@ -70,30 +70,30 @@ public interface PieceFinder {
   }
 
 
-  public class DeckOrPieceInStack extends PieceInStack {
+  class DeckOrPieceInStack extends PieceInStack {
     @Override
     public Object visitDeck(Deck d) {
-      Shape s = d.getShape();
-      Point pos = d.getPosition();
-      Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      final Shape s = d.getShape();
+      final Point pos = d.getPosition();
+      final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
       return (s.contains(p) ? d : null);
     }
   }
 
 
-  public class PieceInStack extends Movable {
+  class PieceInStack extends Movable {
     @Override
     public Object visitStack(Stack s) {
       GamePiece selected = (GamePiece) super.visitStack(s);
       if (selected == s
           && !s.isExpanded()) {
-        selected = s.topPiece();
+        selected = s.topPiece();  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       }
       return selected;
     }
   }
 
-  public class Movable implements PieceFinder, DeckVisitor {
+  class Movable implements PieceFinder, DeckVisitor {
     protected Shape[] shapes = new Shape[0];
     protected Map map;
     protected Point pt;
@@ -117,9 +117,9 @@ public interface PieceFinder {
     @Override
     public Object visitDefault(GamePiece piece) {
       GamePiece selected = null;
-      Shape s = piece.getShape();
-      Point pos = piece.getPosition();
-      Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+      final Shape s = piece.getShape();
+      final Point pos = piece.getPosition();
+      final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
       if (s.contains(p)) {
         selected = piece;
       }
@@ -133,9 +133,9 @@ public interface PieceFinder {
         shapes = new Shape[s.getPieceCount()];
       }
       map.getStackMetrics().getContents(s, null, shapes, null, s.getPosition().x, s.getPosition().y);
-      for (Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
+      for (final Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
            i.hasNext();) {
-        GamePiece child = i.next();
+        final GamePiece child = i.next();
 
         // Pieces can be moved by background threads causing the size of
         // the Stack to change after the Iterator is generated.

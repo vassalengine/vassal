@@ -27,10 +27,10 @@ import java.awt.image.ColorModel;
  */
 @Deprecated(since = "2020-10-12", forRemoval = true)
 public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
-  private int savedWidth;
-  private int savedHeight;
-  private int[] savedPixels;
-  private static ColorModel defaultCM = ColorModel.getRGBdefault();
+  private final int savedWidth;
+  private final int savedHeight;
+  private final int[] savedPixels;
+  private static final ColorModel defaultCM = ColorModel.getRGBdefault();
 
   public ImprovedAveragingScaleFilter(int savedWidth, int savedHeight, int destWidth, int destHeight) {
     super(destWidth, destHeight);
@@ -70,7 +70,7 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
 
     int sourceOffset = offset;
     int destinationOffset = y * savedWidth + x;
-    boolean bytearray = (pixels instanceof byte[]);
+    final boolean bytearray = (pixels instanceof byte[]);
     for (int yy = 0; yy < height; yy++) {
       for (int xx = 0; xx < width; xx++)
         if (bytearray)
@@ -91,11 +91,11 @@ public class ImprovedAveragingScaleFilter extends AreaAveragingScaleFilter {
     }
     else {
       // get orig image width and height
-      int[] pixels = new int [savedWidth];
+      final int[] pixels = new int [savedWidth];
       int position;
       for (int yy = 0; yy < savedHeight; yy++) {
         position = 0;
-        int start = yy * savedWidth;
+        final int start = yy * savedWidth;
         for (int xx = 0; xx < savedWidth; xx++) {
           pixels[position++] = savedPixels[start + xx];
         }

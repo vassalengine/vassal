@@ -18,23 +18,6 @@
 
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Window;
-import java.awt.event.InputEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -46,7 +29,7 @@ import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
@@ -57,6 +40,21 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 
 /**
  * Macro Execute a series of Keystrokes against this same piece - Triggered by
@@ -129,12 +127,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public String myGetState() {
-    return ""; //$NON-NLS-1$
+    return "";
   }
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
       .append(command)
       .append(key)
@@ -159,12 +157,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   /**
    * Apply key commands to inner pieces first
    *
-   * @param stroke
-   * @return
+   * @param stroke Keystroke
+   * @return Generated command
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
-    Command c = piece.keyEvent(stroke);
+    final Command c = piece.keyEvent(stroke);
     return c == null ? myKeyEvent(stroke) : c.append(myKeyEvent(stroke));
   }
 
@@ -182,6 +180,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     for (int i = 0; i < watchKeys.length && !seen; i++) {
       if (watchKeys[i].equals(stroke)) {
         seen = true;
+        break;
       }
     }
 
@@ -212,8 +211,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     // 5. Looping
 
     // Set up Index Property
-    indexValue = parse("Index Property Start Value", indexStart, outer);
-    final int step = parse("Index Property increment value", indexStep, outer);
+    indexValue = parse("Index Property Start Value", indexStart, outer); // NON-NLS Error onlu=y
+    final int step = parse("Index Property increment value", indexStep, outer); // NON-NLS Error only
 
     // Issue the Pre-loop key
     c = c.append(executeKey(preLoopKey));
@@ -288,7 +287,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
-    String val = s.getText(outer, "0");
+    final String val = s.getText(outer, "0");
     try {
       i = Integer.parseInt(val);
     }
@@ -297,7 +296,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     }
     return i;
   }
-  
+
   protected boolean isIndex() {
     return loop && index && indexProperty != null && indexProperty.length() > 0;
   }
@@ -353,11 +352,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   protected boolean matchesFilter() {
-    final GamePiece outer = Decorator.getOutermost(this);
-    if (propertyMatch.isNull()) {
-      return true;
-    }
-    return propertyMatch.accept(outer);
+    return propertyMatch.isNull() ||
+           propertyMatch.accept(Decorator.getOutermost(this));
   }
 
   @Override
@@ -385,7 +381,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     name = st.nextToken(""); //$NON-NLS-1$
     command = st.nextToken("Trigger"); //$NON-NLS-1$
@@ -466,107 +462,130 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return getI18nData(command, getCommandDescription(name, "Trigger command")); //$NON-NLS-1$
   }
 
-  public static class Ed implements PieceEditor {
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof TriggerAction)) return false;
+    final TriggerAction c = (TriggerAction) o;
 
-    private StringConfigurer name;
-    private StringConfigurer command;
-    private NamedHotKeyConfigurer key;
-    private PropertyExpressionConfigurer propertyMatch;
-    private NamedKeyStrokeArrayConfigurer watchKeys;
-    private NamedKeyStrokeArrayConfigurer actionKeys;
-    private JPanel box;
-    private BooleanConfigurer loopConfig;
-    private NamedHotKeyConfigurer preLoopKeyConfig;
-    private NamedHotKeyConfigurer postLoopKeyConfig;
-    private StringEnumConfigurer loopTypeConfig;
-    private PropertyExpressionConfigurer whileExpressionConfig;
-    private PropertyExpressionConfigurer untilExpressionConfig;
-    private FormattedStringConfigurer loopCountConfig;
-    private BooleanConfigurer indexConfig;
-    private StringConfigurer indexPropertyConfig;
-    private FormattedStringConfigurer indexStartConfig;
-    private FormattedStringConfigurer indexStepConfig;
+    if (! Objects.equals(command, c.command)) return false;
+    if (! Objects.equals(key, c.key)) return false;
+    if (! Objects.equals(propertyMatch, c.propertyMatch)) return false;
+    if (! Arrays.equals(watchKeys, c.watchKeys)) return false;
+    if (! Arrays.equals(actionKeys, c.actionKeys)) return false;
+    if (! Objects.equals(loop, c.loop)) return false;
+    if (! Objects.equals(preLoopKey, c.preLoopKey)) return false;
+    if (! Objects.equals(postLoopKey, c.postLoopKey)) return false;
+    if (! Objects.equals(loopType, c.loopType)) return false;
+    if (! Objects.equals(whileExpression, c.whileExpression)) return false;
+    if (! Objects.equals(untilExpression, c.untilExpression)) return false;
+    if (! Objects.equals(loopCount, c.loopCount)) return false;
+    if (! Objects.equals(index, c.index)) return false;
+    if (! Objects.equals(indexProperty, c.indexProperty)) return false;
+    if (! Objects.equals(indexStart, c.indexStart)) return false;
+
+    return Objects.equals(indexStep, c.indexStep);
+  }
+
+  public static class Ed implements PieceEditor {
+    private final StringConfigurer name;
+    private final StringConfigurer command;
+    private final NamedHotKeyConfigurer key;
+    private final PropertyExpressionConfigurer propertyMatch;
+    private final NamedKeyStrokeArrayConfigurer watchKeys;
+    private final NamedKeyStrokeArrayConfigurer actionKeys;
+    private final TraitConfigPanel box;
+    private final BooleanConfigurer loopConfig;
+    private final JLabel preLabel;
+    private final NamedHotKeyConfigurer preLoopKeyConfig;
+    private final JLabel postLabel;
+    private final NamedHotKeyConfigurer postLoopKeyConfig;
+    private final JLabel loopTypeLabel;
+    private final TranslatingStringEnumConfigurer loopTypeConfig;
+    private final JLabel whileLabel;
+    private final PropertyExpressionConfigurer whileExpressionConfig;
+    private final JLabel untilLabel;
+    private final PropertyExpressionConfigurer untilExpressionConfig;
+    private final JLabel loopCountLabel;
+    private final FormattedStringConfigurer loopCountConfig;
+    private final JLabel indexLabel;
+    private final BooleanConfigurer indexConfig;
+    private final JLabel indexPropertyLabel;
+    private final StringConfigurer indexPropertyConfig;
+    private final JLabel indexStartLabel;
+    private final FormattedStringConfigurer indexStartConfig;
+    private final JLabel indexStepLabel;
+    private final FormattedStringConfigurer indexStepConfig;
 
     public Ed(TriggerAction piece) {
 
       final PropertyChangeListener updateListener = arg0 -> updateVisibility();
 
-      box = new JPanel();
-      box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+      box = new TraitConfigPanel();
 
-      name = new StringConfigurer(null, Resources.getString("Editor.description_label"), piece.name); //$NON-NLS-1$
-      box.add(name.getControls());
+      name = new StringConfigurer(piece.name);
+      box.add("Editor.description_label", name);
 
-      propertyMatch = new PropertyExpressionConfigurer(null,
-          Resources.getString("Editor.TriggerAction.trigger_when_properties"), piece.propertyMatch, Decorator //$NON-NLS-1$
-              .getOutermost(piece));
-      box.add(propertyMatch.getControls());
+      propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, Decorator.getOutermost(piece));
+      box.add("Editor.TriggerAction.trigger_when_properties", propertyMatch);
 
-      Box commandBox = Box.createHorizontalBox();
-      command = new StringConfigurer(null, Resources.getString("Editor.menu_command"), piece.command); //$NON-NLS-1$
-      commandBox.add(command.getControls());
-      key = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), piece.key); //$NON-NLS-1$
-      commandBox.add(key.getControls());
-      box.add(commandBox);
+      command = new StringConfigurer(piece.command);
+      box.add("Editor.menu_command", command);
 
-      watchKeys = new NamedKeyStrokeArrayConfigurer(null,
-          Resources.getString("Editor.TriggerAction.watch_for"), piece.watchKeys); //$NON-NLS-1$
-      box.add(watchKeys.getControls());
+      key = new NamedHotKeyConfigurer(piece.key);
+      box.add("Editor.keyboard_command", key);
 
-      actionKeys = new NamedKeyStrokeArrayConfigurer(null,
-          Resources.getString("Editor.TriggerAction.perform_keystrokes"), piece.actionKeys); //$NON-NLS-1$
-      box.add(actionKeys.getControls());
+      watchKeys = new NamedKeyStrokeArrayConfigurer(piece.watchKeys);
+      box.add("Editor.TriggerAction.watch_for", watchKeys);
 
-      loopConfig = new BooleanConfigurer(null,
-          Resources.getString("Editor.TriggerAction.repeat_this"), piece.loop); //$NON-NLS-1$
+      actionKeys = new NamedKeyStrokeArrayConfigurer(piece.actionKeys);
+      box.add("Editor.TriggerAction.perform_keystrokes", actionKeys);
+
+      loopConfig = new BooleanConfigurer(piece.loop);
       loopConfig.addPropertyChangeListener(updateListener);
-      box.add(loopConfig.getControls());
+      box.add("Editor.TriggerAction.repeat_this", loopConfig);
 
-      loopTypeConfig = new StringEnumConfigurer(null, Resources.getString("Editor.LoopControl.type_of_loop"), //$NON-NLS-1$
-          LoopControl.LOOP_TYPE_DESCS);
-      loopTypeConfig.setValue(LoopControl.loopTypeToDesc(piece.loopType));
-
+      loopTypeLabel = new JLabel(Resources.getString("Editor.LoopControl.type_of_loop"));
+      loopTypeConfig = new TranslatingStringEnumConfigurer(LoopControl.LOOP_TYPES, LoopControl.LOOP_TYPE_DESCS, true);
+      loopTypeConfig.setValue(piece.loopType);
       loopTypeConfig.addPropertyChangeListener(updateListener);
-      box.add(loopTypeConfig.getControls());
+      box.add(loopTypeLabel, loopTypeConfig);
 
-      loopCountConfig = new FormattedExpressionConfigurer(null,
-          Resources.getString("Editor.LoopControl.loop_how_many"), piece.loopCount.getFormat(), piece); //$NON-NLS-1$
-      box.add(loopCountConfig.getControls());
+      loopCountLabel = new JLabel(Resources.getString("Editor.LoopControl.loop_how_many"));
+      loopCountConfig = new FormattedExpressionConfigurer(piece.loopCount.getFormat(), piece);
+      box.add(loopCountLabel, loopCountConfig);
 
-      whileExpressionConfig = new PropertyExpressionConfigurer(null,
-          Resources.getString("Editor.TriggerAction.looping_continues"), piece.whileExpression); //$NON-NLS-1$
-      box.add(whileExpressionConfig.getControls());
+      whileLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_continues"));
+      whileExpressionConfig = new PropertyExpressionConfigurer(piece.whileExpression);
+      box.add(whileLabel, whileExpressionConfig);
 
-      untilExpressionConfig = new PropertyExpressionConfigurer(null,
-          Resources.getString("Editor.TriggerAction.looping_ends"), piece.untilExpression); //$NON-NLS-1$
-      box.add(untilExpressionConfig.getControls());
+      untilLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_ends"));
+      untilExpressionConfig = new PropertyExpressionConfigurer(piece.untilExpression);
+      box.add(untilLabel, untilExpressionConfig);
 
-      preLoopKeyConfig = new NamedHotKeyConfigurer(null,
-          Resources.getString("Editor.TriggerAction.keystroke_before"), //$NON-NLS-1$
-          piece.preLoopKey);
-      box.add(preLoopKeyConfig.getControls());
+      preLabel = new JLabel(Resources.getString("Editor.TriggerAction.keystroke_before"));
+      preLoopKeyConfig = new NamedHotKeyConfigurer(piece.preLoopKey);
+      box.add(preLabel, preLoopKeyConfig);
 
-      postLoopKeyConfig = new NamedHotKeyConfigurer(null,
-          Resources.getString("Editor.TriggerAction.keystroke_after"), //$NON-NLS-1$
-          piece.postLoopKey);
-      box.add(postLoopKeyConfig.getControls());
+      postLabel = new JLabel(Resources.getString("Editor.TriggerAction.keystroke_after"));
+      postLoopKeyConfig = new NamedHotKeyConfigurer(piece.postLoopKey);
+      box.add(postLabel, postLoopKeyConfig);
 
-      indexConfig = new BooleanConfigurer(null,
-          Resources.getString("Editor.LoopControl.loop_index"), piece.index); //$NON-NLS-1$
+      indexLabel = new JLabel(Resources.getString("Editor.LoopControl.loop_index"));
+      indexConfig = new BooleanConfigurer(piece.index);
       indexConfig.addPropertyChangeListener(updateListener);
-      box.add(indexConfig.getControls());
+      box.add(indexLabel, indexConfig);
 
-      indexPropertyConfig = new StringConfigurer(null,
-          Resources.getString("Editor.LoopControl.index_name"), piece.indexProperty); //$NON-NLS-1$
-      box.add(indexPropertyConfig.getControls());
+      indexPropertyLabel = new JLabel(Resources.getString("Editor.LoopControl.index_name"));
+      indexPropertyConfig = new StringConfigurer(piece.indexProperty);
+      box.add(indexPropertyLabel, indexPropertyConfig);
 
-      indexStartConfig = new FormattedExpressionConfigurer(null,
-          Resources.getString("Editor.LoopControl.index_start"), piece.indexStart.getFormat(), piece); //$NON-NLS-1$
-      box.add(indexStartConfig.getControls());
+      indexStartLabel = new JLabel(Resources.getString("Editor.LoopControl.index_start"));
+      indexStartConfig = new FormattedExpressionConfigurer(piece.indexStart.getFormat(), piece);
+      box.add(indexStartLabel, indexStartConfig);
 
-      indexStepConfig = new FormattedExpressionConfigurer(null,
-          Resources.getString("Editor.LoopControl.index_step"), piece.indexStep.getFormat(), piece); //$NON-NLS-1$
-      box.add(indexStepConfig.getControls());
+      indexStepLabel = new JLabel(Resources.getString("Editor.LoopControl.index_step"));
+      indexStepConfig = new FormattedExpressionConfigurer(piece.indexStep.getFormat(), piece);
+      box.add(indexStepLabel, indexStepConfig);
 
       updateVisibility();
     }
@@ -574,26 +593,39 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     private void updateVisibility() {
       final boolean isLoop = loopConfig.booleanValue();
       final boolean isIndex = indexConfig.booleanValue();
-      final String type = LoopControl.loopDescToType(loopTypeConfig.getValueString());
+      final String type = loopTypeConfig.getValueString();
 
       loopTypeConfig.getControls().setVisible(isLoop);
-      loopCountConfig.getControls().setVisible(
-          isLoop && type.equals(LoopControl.LOOP_COUNTED));
-      whileExpressionConfig.getControls().setVisible(
-          isLoop && type.equals(LoopControl.LOOP_WHILE));
-      untilExpressionConfig.getControls().setVisible(
-          isLoop && type.equals(LoopControl.LOOP_UNTIL));
-      preLoopKeyConfig.getControls().setVisible(isLoop);
-      postLoopKeyConfig.getControls().setVisible(isLoop);
-      indexConfig.getControls().setVisible(isLoop);
-      indexPropertyConfig.getControls().setVisible(isLoop && isIndex);
-      indexStartConfig.getControls().setVisible(isLoop && isIndex);
-      indexStepConfig.getControls().setVisible(isLoop && isIndex);
+      loopTypeLabel.setVisible(isLoop);
 
-      Window w = SwingUtilities.getWindowAncestor(box);
-      if (w != null) {
-        w.pack();
-      }
+      loopCountConfig.getControls().setVisible(isLoop && type.equals(LoopControl.LOOP_COUNTED));
+      loopCountLabel.setVisible(isLoop && type.equals(LoopControl.LOOP_COUNTED));
+
+      whileExpressionConfig.getControls().setVisible(isLoop && type.equals(LoopControl.LOOP_WHILE));
+      whileLabel.setVisible(isLoop && type.equals(LoopControl.LOOP_WHILE));
+
+      untilExpressionConfig.getControls().setVisible(isLoop && type.equals(LoopControl.LOOP_UNTIL));
+      untilLabel.setVisible(isLoop && type.equals(LoopControl.LOOP_UNTIL));
+
+      preLoopKeyConfig.getControls().setVisible(isLoop);
+      preLabel.setVisible(isLoop);
+
+      postLoopKeyConfig.getControls().setVisible(isLoop);
+      postLabel.setVisible(isLoop);
+
+      indexConfig.getControls().setVisible(isLoop);
+      indexLabel.setVisible(isLoop);
+
+      indexPropertyConfig.getControls().setVisible(isLoop && isIndex);
+      indexPropertyLabel.setVisible(isLoop && isIndex);
+
+      indexStartConfig.getControls().setVisible(isLoop && isIndex);
+      indexStartLabel.setVisible(isLoop && isIndex);
+
+      indexStepConfig.getControls().setVisible(isLoop && isIndex);
+      indexStepLabel.setVisible(isLoop && isIndex);
+
+      repack(box);
     }
 
     @Override
@@ -608,7 +640,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
         .append(command.getValueString())
         .append(key.getValueString())
@@ -649,7 +681,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     l.add(propertyMatch.getExpression());
     if (loop) {
       if (LoopControl.LOOP_WHILE.equals(loopType)) {
@@ -674,7 +706,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     if (loop && LoopControl.LOOP_COUNTED.equals(loopType)) {
       return List.of(indexProperty);
     }
-    return Collections.EMPTY_LIST;
+    return new ArrayList<>();
   }
 
   /**
@@ -682,7 +714,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     l.add(key);
     Collections.addAll(l, watchKeys);
     Collections.addAll(l, actionKeys);

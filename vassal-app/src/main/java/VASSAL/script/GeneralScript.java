@@ -47,14 +47,10 @@ import VASSAL.tools.UniqueIdManager;
 public class GeneralScript extends AbstractScript
    implements UniqueIdManager.Identifyable, ValidityChecker {
 
-  private static UniqueIdManager idMgr = new UniqueIdManager("General-"); //NON-NLS
+  private static final UniqueIdManager idMgr = new UniqueIdManager("General-"); //NON-NLS
 
   public static String getConfigureTypeName() {
     return "General Script";
-  }
-
-  public GeneralScript() {
-    super();
   }
 
   public String evaluate(PropertySource target) {
@@ -157,7 +153,7 @@ public class GeneralScript extends AbstractScript
       panel.add(headerLine);
       panel.add(scriptConfig.getControls());
 
-      Box compileBox = Box.createHorizontalBox();
+      final Box compileBox = Box.createHorizontalBox();
       compileButton = new JButton("Compile");
       compileButton.addActionListener(this);
       compileBox.add(compileButton);
@@ -194,7 +190,7 @@ public class GeneralScript extends AbstractScript
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-      CompileResult r = script.compile();
+      final CompileResult r = script.compile();
       if (r.isSuccess()) {
         error.setText("");
       }

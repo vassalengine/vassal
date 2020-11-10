@@ -43,9 +43,9 @@ public class SymbolConfigurer extends StringEnumConfigurer {
 
   public SymbolConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolNames());
-    if (symbolMap.size() == 0) {
-      String[] symbolNames = Symbol.NatoUnitSymbolSet.getSymbolNames();
-      String[] symbolKeys = Symbol.NatoUnitSymbolSet.getSymbolDisplayNames();
+    if (symbolMap.isEmpty()) {
+      final String[] symbolNames = Symbol.NatoUnitSymbolSet.getSymbolNames();
+      final String[] symbolKeys = Symbol.NatoUnitSymbolSet.getSymbolDisplayNames();
       for (int i = 0; i < symbolNames.length; i++) {
         symbolMap.put(symbolNames[i], Resources.getString(symbolKeys[i]));
       }
@@ -64,11 +64,11 @@ public class SymbolConfigurer extends StringEnumConfigurer {
     static final int sample_h = 13;
 
     public SymbolComboBox() {
-      String[] s = Symbol.NatoUnitSymbolSet.getSymbolNames();
-      for (String item : s) {
+      final String[] s = Symbol.NatoUnitSymbolSet.getSymbolNames();
+      for (final String item : s) {
         addItem(item);
       }
-      SymbolRenderer renderer = new SymbolRenderer();
+      final SymbolRenderer renderer = new SymbolRenderer();
       setRenderer(renderer);
     }
 

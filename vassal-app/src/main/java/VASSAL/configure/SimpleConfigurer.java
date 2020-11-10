@@ -36,9 +36,9 @@ import VASSAL.build.Configurable;
  */
 public class SimpleConfigurer extends Configurer
                               implements PropertyChangeListener {
-  private javax.swing.JPanel p;
-  private Configurer[] attConfig;
-  private Configurable target;
+  private JPanel p;
+  private final Configurer[] attConfig;
+  private final Configurable target;
 
   public SimpleConfigurer(Configurable c, Configurer[] attConfigurers) {
     super(null, c.getConfigureName());
@@ -69,7 +69,7 @@ public class SimpleConfigurer extends Configurer
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-      for (Configurer configurer : attConfig) {
+      for (final Configurer configurer : attConfig) {
         p.add(configurer.getControls());
         // configurer.addPropertyChangeListener(this);
       }
@@ -79,7 +79,7 @@ public class SimpleConfigurer extends Configurer
 
   @Override
   public void propertyChange(final PropertyChangeEvent p1) {
-    for (Configurer configurer : attConfig) {
+    for (final Configurer configurer : attConfig) {
       // System.err.println(configurer.getName()+" = "+configurer.getValue());
       if (configurer.getValue() == null) {
         setValue((Object) null);

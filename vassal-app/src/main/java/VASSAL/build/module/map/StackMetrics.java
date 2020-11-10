@@ -55,13 +55,13 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
 /**
- * Encapsulates information on how to draw expanded and unexpanded
- * views of a stack
+ * StackMetrics provides the [Stacking options] component of a {@link Map}. It encapsulates information on how to draw
+ * expanded and unexpanded views of a stack.
  */
 public class StackMetrics extends AbstractConfigurable {
   protected int exSepX, exSepY;
   protected int unexSepX, unexSepY;
-  protected boolean disabled = false;
+  protected boolean disabled;
 
   protected KeyStroke topKey = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
   protected KeyStroke bottomKey = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
@@ -98,7 +98,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           exSepX = Integer.parseInt((String) value);
         }
-        catch (NumberFormatException NaN) {
+        catch (final NumberFormatException NaN) {
           exSepX = DEFAULT_EXSEP_X;
           ErrorDialog.dataWarning(
               new BadDataReport(
@@ -114,7 +114,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           exSepY = Integer.parseInt((String) value);
         }
-        catch (NumberFormatException NaN) {
+        catch (final NumberFormatException NaN) {
           exSepY = DEFAULT_EXSEP_Y;
           ErrorDialog.dataWarning(
               new BadDataReport(
@@ -130,7 +130,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           unexSepX = Integer.parseInt((String) value);
         }
-        catch (NumberFormatException NaN) {
+        catch (final NumberFormatException NaN) {
           unexSepX = DEFAULT_UNEXSEP_X;
           ErrorDialog.dataWarning(
               new BadDataReport(
@@ -146,7 +146,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           unexSepY = Integer.parseInt((String) value);
         }
-        catch (NumberFormatException NaN) {
+        catch (final NumberFormatException NaN) {
           unexSepY = DEFAULT_UNEXSEP_Y;
           ErrorDialog.dataWarning(
               new BadDataReport(
@@ -258,18 +258,18 @@ public class StackMetrics extends AbstractConfigurable {
    * the stack.
    */
   public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom) {
-    Highlighter highlighter = stack.getMap() == null ? BasicPiece.getHighlighter() : stack.getMap().getHighlighter();
-    Point[] positions = new Point[stack.getPieceCount()];
+    final Highlighter highlighter = stack.getMap() == null ? BasicPiece.getHighlighter() : stack.getMap().getHighlighter();
+    final Point[] positions = new Point[stack.getPieceCount()];
     getContents(stack, positions, null, null, x, y);
 
-    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
+    for (final PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              unselectedVisible);
          e.hasMoreElements();) {
 
-      GamePiece next = e.nextPiece();
-      int index = stack.indexOf(next);
-      int nextX = x + (int) (zoom * (positions[index].x - x));
-      int nextY = y + (int) (zoom * (positions[index].y - y));
+      final GamePiece next = e.nextPiece();
+      final int index = stack.indexOf(next);
+      final int nextX = x + (int) (zoom * (positions[index].x - x));
+      final int nextY = y + (int) (zoom * (positions[index].y - y));
       if (stack.isExpanded() || !e.hasMoreElements()) {
         next.draw(g, nextX, nextY, obs, zoom);
       }
@@ -281,9 +281,9 @@ public class StackMetrics extends AbstractConfigurable {
     stack.asList().stream()
          .filter(gamePiece -> selectedVisible.accept(gamePiece))
          .forEach(gamePiece -> {
-           int index = stack.indexOf(gamePiece);
-           int nextX = x + (int) (zoom * (positions[index].x - x));
-           int nextY = y + (int) (zoom * (positions[index].y - y));
+           final int index = stack.indexOf(gamePiece);
+           final int nextX = x + (int) (zoom * (positions[index].x - x));
+           final int nextY = y + (int) (zoom * (positions[index].y - y));
            gamePiece.draw(g, nextX, nextY, obs, zoom);
            highlighter.draw(gamePiece, g, nextX, nextY, obs, zoom);
          });
@@ -302,21 +302,21 @@ public class StackMetrics extends AbstractConfigurable {
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-    Component view = map.getView();
-    Highlighter highlighter = map.getHighlighter();
-    Point mapLocation = map.drawingToMap(location, os_scale);
-    Rectangle region = visibleRect == null ? null : map.drawingToMap(visibleRect, os_scale);
-    Point[] positions = new Point[stack.getPieceCount()];
-    Rectangle[] bounds = region == null ? null : new Rectangle[stack.getPieceCount()];
+    final Component view = map.getView();
+    final Highlighter highlighter = map.getHighlighter();
+    final Point mapLocation = map.drawingToMap(location, os_scale);
+    final Rectangle region = visibleRect == null ? null : map.drawingToMap(visibleRect, os_scale);
+    final Point[] positions = new Point[stack.getPieceCount()];
+    final Rectangle[] bounds = region == null ? null : new Rectangle[stack.getPieceCount()];
     getContents(stack, positions, null, bounds, mapLocation.x, mapLocation.y);
 
-    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
+    for (final PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
                                              unselectedVisible);
          e.hasMoreElements();) {
 
-      GamePiece next = e.nextPiece();
-      int index = stack.indexOf(next);
-      Point pt = map.mapToDrawing(positions[index], os_scale);
+      final GamePiece next = e.nextPiece();
+      final int index = stack.indexOf(next);
+      final Point pt = map.mapToDrawing(positions[index], os_scale);
       if (bounds == null || isVisible(region, bounds[index])) {
         if (stack.isExpanded() || !e.hasMoreElements()) {
           next.draw(g, pt.x, pt.y, view, zoom);
@@ -330,9 +330,9 @@ public class StackMetrics extends AbstractConfigurable {
     stack.asList().stream()
          .filter(gamePiece -> selectedVisible.accept(gamePiece))
          .forEach(gamePiece -> {
-           int index = stack.indexOf(gamePiece);
+           final int index = stack.indexOf(gamePiece);
            if (bounds == null || isVisible(region, bounds[index])) {
-             Point pt = map.mapToDrawing(positions[index], os_scale);
+             final Point pt = map.mapToDrawing(positions[index], os_scale);
              gamePiece.draw(g, pt.x, pt.y, view, zoom);
              highlighter.draw(gamePiece, g, pt.x, pt.y, view, zoom);
            }
@@ -358,10 +358,10 @@ public class StackMetrics extends AbstractConfigurable {
       p.draw(g, x, y, obs, zoom);
     }
     else {
-      Graphics2D g2d = (Graphics2D) g;
+      final Graphics2D g2d = (Graphics2D) g;
       g.setColor(blankColor);
       Shape s = p.getShape();
-      AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
+      final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
       t.translate(x / zoom, y / zoom);
       s = t.createTransformedShape(s);
       g2d.fill(s);
@@ -400,14 +400,14 @@ public class StackMetrics extends AbstractConfigurable {
     if (shapes != null) {
       count = Math.min(count, shapes.length);
     }
-    int dx = parent.isExpanded() ? exSepX : unexSepX;
-    int dy = parent.isExpanded() ? exSepY : unexSepY;
-    Point currentPos = null, nextPos = null;
-    Rectangle currentSelBounds = null, nextSelBounds = null;
+    final int dx = parent.isExpanded() ? exSepX : unexSepX;
+    final int dy = parent.isExpanded() ? exSepY : unexSepY;
+    Point currentPos = null, nextPos;
+    Rectangle currentSelBounds = null, nextSelBounds;
     for (int index = 0; index < count; ++index) {
-      GamePiece child = parent.getPieceAt(index);
+      final GamePiece child = parent.getPieceAt(index);
       if (Boolean.TRUE.equals(child.getProperty(Properties.INVISIBLE_TO_ME))) {
-        Rectangle blank = new Rectangle(x, y, 0, 0);
+        final Rectangle blank = new Rectangle(x, y, 0, 0);
         if (positions != null) {
           positions[index] = blank.getLocation();
         }
@@ -436,7 +436,7 @@ public class StackMetrics extends AbstractConfigurable {
           positions[index] = nextPos;
         }
         if (boundingBoxes != null) {
-          Rectangle bbox = child.boundingBox();
+          final Rectangle bbox = child.boundingBox();
           bbox.translate(nextPos.x, nextPos.y);
           boundingBoxes[index] = bbox;
         }
@@ -453,7 +453,8 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   protected void nextPosition(Point currentPos, Rectangle currentBounds, Point nextPos, Rectangle nextBounds, int dx, int dy) {
-    int deltaX, deltaY;
+    final int deltaX;
+    final int deltaY;
     if (dx > 0) {
       deltaX = currentBounds.x + dx - nextBounds.x;
     }
@@ -556,7 +557,7 @@ public class StackMetrics extends AbstractConfigurable {
     };
   }
 
-  private VisibilityCondition cond = () -> !disabled;
+  private final VisibilityCondition cond = () -> !disabled;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -618,7 +619,7 @@ public class StackMetrics extends AbstractConfigurable {
    */
   public Command merge(GamePiece fixed, GamePiece moving) {
     Command comm;
-    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {
+    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
       comm = merge(((Stack) fixed).topPiece(), moving);
     }
     else {
@@ -650,7 +651,7 @@ public class StackMetrics extends AbstractConfigurable {
         }
 
         if (moving instanceof Stack) {
-          for (GamePiece p : ((Stack) moving).asList()) {
+          for (final GamePiece p : ((Stack) moving).asList()) {
             final MoveTracker t = new MoveTracker(p);
             fixedParent.insertChild(p, index++);
             comm = comm.append(t.getMoveCommand());

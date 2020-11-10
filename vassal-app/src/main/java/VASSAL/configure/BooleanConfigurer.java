@@ -110,7 +110,7 @@ public class BooleanConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
+      p = new ConfigurerPanel(getName(), "[]0[0]", "[][][]"); // NON-NLS
 
       box = new JCheckBox();
       box.setSelected(booleanValue());
@@ -123,5 +123,12 @@ public class BooleanConfigurer extends Configurer {
 
   public Boolean booleanValue() {
     return (Boolean) value;
+  }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
   }
 }

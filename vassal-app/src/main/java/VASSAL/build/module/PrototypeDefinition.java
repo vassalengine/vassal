@@ -17,16 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Component;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.HashMap;
-
-import javax.swing.Box;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
@@ -49,9 +39,24 @@ import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
+
+import java.awt.Component;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Collection;
+import java.util.HashMap;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
@@ -84,7 +89,7 @@ public class PrototypeDefinition extends AbstractConfigurable
 
   @Override
   public void setConfigureName(String s) {
-    String oldName = name;
+    final String oldName = name;
     this.name = s;
     propSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
   }
@@ -131,6 +136,16 @@ public class PrototypeDefinition extends AbstractConfigurable
     idMgr.add(this);
   }
 
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    super.addImageNamesRecursively(s);
+
+    final GamePiece p = getPiece();
+    if (p instanceof ImageSearchTarget) {
+      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    }
+  }
+
   public GamePiece getPiece() {
     return getPiece(pieceDefinition);
   }
@@ -142,7 +157,7 @@ public class PrototypeDefinition extends AbstractConfigurable
    * @return Created Piece
    */
   public GamePiece getPiece(PropertySource props) {
-    String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
+    final String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
     return getPiece(def);
   }
 
@@ -181,7 +196,7 @@ public class PrototypeDefinition extends AbstractConfigurable
 
   @Override
   public Element getBuildElement(Document doc) {
-    Element el = doc.createElement(getClass().getName());
+    final Element el = doc.createElement(getClass().getName());
     el.setAttribute(NAME_PROPERTY, name);
     el.appendChild(doc.createTextNode(pieceDefinition));
     return el;
@@ -192,19 +207,24 @@ public class PrototypeDefinition extends AbstractConfigurable
   }
 
   public static class Config extends Configurer {
-    private final Box box;
+    private final JPanel box;
     private final PieceDefiner pieceDefiner;
     private final StringConfigurer name;
     private final PrototypeDefinition def;
 
     public Config(PrototypeDefinition def) {
       super(null, null, def);
-      box = Box.createVerticalBox();
-      name = new StringConfigurer(null, Resources.getString(Resources.NAME_LABEL), def.name);
-      box.add(name.getControls());
+      box = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[][grow]"));  // NON-NLS
+
+      final JPanel namePanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
+      namePanel.add(new JLabel(Resources.getString(Resources.NAME_LABEL)));
+      name = new StringConfigurer(def.name);
+      namePanel.add(name.getControls(), "grow"); // NON-NLS
+      box.add(namePanel, "grow,wrap"); // NON-NLS
+
       pieceDefiner = new Definer(GameModule.getGameModule().getGpIdSupport());
       pieceDefiner.setPiece(def.getPiece());
-      box.add(pieceDefiner);
+      box.add(pieceDefiner, "growy");  // NON-NLS
       this.def = def;
     }
 
@@ -240,10 +260,10 @@ public class PrototypeDefinition extends AbstractConfigurable
       @Override
       public void setPiece(GamePiece piece) {
         if (piece != null) {
-          GamePiece inner = Decorator.getInnermost(piece);
+          final GamePiece inner = Decorator.getInnermost(piece);
           if (!(inner instanceof Plain)) {
-            Plain plain = new Plain();
-            Object outer = inner.getProperty(Properties.OUTER);
+            final Plain plain = new Plain();
+            final Object outer = inner.getProperty(Properties.OUTER);
             if (outer instanceof Decorator) {
               ((Decorator) outer).setInner(plain);
             }

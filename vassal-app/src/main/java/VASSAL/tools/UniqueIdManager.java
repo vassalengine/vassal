@@ -48,8 +48,8 @@ import VASSAL.i18n.Resources;
  * and can use {@link #findInstance} to look up a component by id.
  */
 public class UniqueIdManager implements ValidityChecker {
-  private List<Identifyable> instances = new ArrayList<>();
-  private String prefix;
+  private final List<Identifyable> instances = new ArrayList<>();
+  private final String prefix;
 
   public UniqueIdManager(String prefix) {
     this.prefix = prefix;
@@ -61,9 +61,10 @@ public class UniqueIdManager implements ValidityChecker {
   }
 
   public void remove(Identifyable i) {
-    int index = instances.indexOf(i);
+    final int index = instances.indexOf(i);
     if (index >= 0) {
-      for (int j = index + 1, n = instances.size(); j < n; ++j) {
+      final int n = instances.size();
+      for (int j = index + 1; j < n; ++j) {
         instances.get(j).setId(prefix + (j - 1));
       }
       instances.remove(index);
@@ -96,7 +97,7 @@ public class UniqueIdManager implements ValidityChecker {
    */
   public Identifyable findInstance(String id) {
     if (id != null) {
-      for (Identifyable i : instances) {
+      for (final Identifyable i : instances) {
         if (id.equals(i.getConfigureName()) || id.equals(i.getId())) {
           return i;
         }
@@ -109,14 +110,14 @@ public class UniqueIdManager implements ValidityChecker {
   @Override
   public void validate(Buildable target, ValidationReport report) {
     if (target instanceof Identifyable) {
-      Identifyable iTarget = (Identifyable) target;
+      final Identifyable iTarget = (Identifyable) target;
       if (iTarget.getConfigureName() == null ||
           iTarget.getConfigureName().length() == 0) {
         report.addWarning(Resources.getString("Editor.UniqueIdManager.a_girl_has_no_name", ConfigureTree.getConfigureName(target.getClass())));
       }
       else if (instances.contains(iTarget)) {
         Identifyable compare = null;
-        for (Iterator<Identifyable> i = instances.iterator();
+        for (final Iterator<Identifyable> i = instances.iterator();
              i.hasNext() && compare != iTarget; ) {
           compare = i.next();
           if (compare != iTarget &&

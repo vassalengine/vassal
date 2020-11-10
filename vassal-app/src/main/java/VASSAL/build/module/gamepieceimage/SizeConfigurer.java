@@ -41,8 +41,8 @@ public class SizeConfigurer extends StringEnumConfigurer {
 
   public SizeConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolSizes());
-    if (symbolMap.size() == 0) {
-      for (Symbol.SizeOption size : Symbol.NatoUnitSymbolSet.SIZES) {
+    if (symbolMap.isEmpty()) {
+      for (final Symbol.SizeOption size : Symbol.NatoUnitSymbolSet.SIZES) {
         symbolMap.put(size.getName(), size.getDisplayName());
       }
     }
@@ -57,11 +57,11 @@ public class SizeConfigurer extends StringEnumConfigurer {
     private static final long serialVersionUID = 1L;
 
     public SizeComboBox() {
-      String[] s = Symbol.NatoUnitSymbolSet.getSymbolSizes();
-      for (String item : s) {
+      final String[] s = Symbol.NatoUnitSymbolSet.getSymbolSizes();
+      for (final String item : s) {
         addItem(item);
       }
-      SizeRenderer renderer = new SizeRenderer();
+      final SizeRenderer renderer = new SizeRenderer();
       setRenderer(renderer);
     }
 
@@ -118,7 +118,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
 
         final BufferedImage simg = Symbol.NatoUnitSymbolSet.buildSizeImage(
           (String) value, sample_w, sample_h, sample_g);
-        int x = (w / 2) - (simg.getWidth() / 2);
+        final int x = (w / 2) - (simg.getWidth() / 2);
         g.drawImage(simg, x, 0, null);
         g.dispose();
 

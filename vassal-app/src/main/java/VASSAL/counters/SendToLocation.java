@@ -18,25 +18,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.configure.StringEnumConfigurer;
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -56,6 +37,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
@@ -63,6 +45,25 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import net.miginfocom.swing.MigLayout;
+
 /**
  * This trait adds a command that sends a piece to another location. Options for the
  * target location are:
@@ -123,7 +124,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   private Map map;
 
   public SendToLocation() {
-    this(ID + ";;;;0;0;;;", null);
+    this(ID, null);
   }
 
   public SendToLocation(String type, GamePiece inner) {
@@ -134,7 +135,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken("");
     key = st.nextNamedKeyStroke(null);
     mapId.setFormat(st.nextToken(""));
@@ -187,7 +188,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
-      ArrayList<KeyCommand> l = new ArrayList<>();
+      final ArrayList<KeyCommand> l = new ArrayList<>();
       if (commandName.length() > 0 && key != null && !key.isNull()) {
         l.add(sendCommand);
       }
@@ -197,14 +198,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       command = l.toArray(new KeyCommand[0]);
     }
 
-    for (KeyCommand c : command) {
+    for (final KeyCommand c : command) {
       if (c.getName().equals(backCommandName)) {
         c.setEnabled(getMap() != null &&
                      getProperty(BACK_MAP) != null &&
                      getProperty(BACK_POINT) != null);
       }
       else {
-        Point p = getSendLocation();
+        final Point p = getSendLocation();
         c.setEnabled(getMap() != null && p != null &&
             (map != getMap() || !p.equals(getPosition())));
       }
@@ -232,15 +233,15 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetState() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    Map backMap = (Map)getProperty(BACK_MAP);
+    final SequenceEncoder se = new SequenceEncoder(';');
+    final Map backMap = (Map)getProperty(BACK_MAP);
     if (backMap != null) {
       se.append(backMap.getIdentifier());
     }
     else {
       se.append("");
     }
-    Point backPoint = (Point)getProperty(BACK_POINT);
+    final Point backPoint = (Point)getProperty(BACK_POINT);
     if (backPoint != null) {
       se.append(backPoint.x).append(backPoint.y);
     }
@@ -251,18 +252,18 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   }
 
   private Point getSendLocation() {
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     map = null;
     Point dest = null;
     // Home in on a counter
     if (destination.equals(DEST_COUNTER.substring(0, 1))) {
       GamePiece target = null;
       // Find first counter matching the properties
-      for (GamePiece piece :
+      for (final GamePiece piece :
            GameModule.getGameModule().getGameState().getAllPieces()) {
         if (piece instanceof Stack) {
-          Stack s = (Stack) piece;
-          for (GamePiece gamePiece : s.asList()) {
+          final Stack s = (Stack) piece;
+          for (final GamePiece gamePiece : s.asList()) {
             if (propertyFilter.accept(this, gamePiece)) {
               target = gamePiece;
               if (target != null) break;
@@ -291,17 +292,17 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         map = getMap();
       }
       if (map != null) {
-        Board b;
+        final Board b;
         switch (destination.charAt(0)) {
         case 'G':
           b = map.getBoardByName(boardName.getText(outer));
           if (b != null) {
             try {
-              MapGrid g = b.getGrid(); 
+              final MapGrid g = b.getGrid();
               if (g != null) { // Board may not have a grid assigned.
                 dest = g.getLocation(gridLocation.getText(outer));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
-              } 
+              }
               else {
                 reportDataError(this, Resources.getString("Error.no_grid_assigned"), map.getMapName());
               }
@@ -328,25 +329,25 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
         case 'Z':
           final String zoneName = zone.getText(outer);
-          Zone z = map.findZone(zoneName);
+          final Zone z = map.findZone(zoneName);
           if (z == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone")); // NON-NLS
           }
           else {
-            Rectangle r = z.getBounds();
-            Rectangle r2 = z.getBoard().bounds();
+            final Rectangle r = z.getBounds();
+            final Rectangle r2 = z.getBoard().bounds();
             dest = new Point(r2.x + r.x + r.width / 2, r2.y + r.y + r.height / 2);
           }
           break;
 
         case 'R':
           final String regionName = region.getText(outer);
-          Region r = map.findRegion(regionName);
+          final Region r = map.findRegion(regionName);
           if (r == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region")); // NON-NLS
           }
           else {
-            Rectangle r2 = r.getBoard().bounds();
+            final Rectangle r2 = r.getBoard().bounds();
             dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
           }
           break;
@@ -367,8 +368,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     Command c = null;
     myGetKeyCommands();
     if (sendCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
-      Stack parent = outer.getParent();
+      final GamePiece outer = Decorator.getOutermost(this);
+      final Stack parent = outer.getParent();
       Point dest = getSendLocation();
       if (map != null && dest != null) {
         if (map == getMap() && dest.equals(getPosition())) {
@@ -395,9 +396,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       }
     }
     else if (backCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
-      Map backMap = (Map) getProperty(BACK_MAP);
-      Point backPoint = (Point) getProperty(BACK_POINT);
+      final GamePiece outer = Decorator.getOutermost(this);
+      final Map backMap = (Map) getProperty(BACK_MAP);
+      final Point backPoint = (Point) getProperty(BACK_POINT);
       final ChangeTracker tracker = new ChangeTracker(this);
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
@@ -420,14 +421,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    * Offset the destination by the Advanced Options offset
    */
   protected Point offsetDestination(int x, int y, GamePiece outer) {
-    int xPos = x + parse("xIndex", xIndex, outer) * parse("xOffset", xOffset, outer); // NON-NLS
-    int yPos = y + parse("yIndex", yIndex, outer) * parse("yOffset", yOffset, outer); // NON-NLS
+    final int xPos = x + parse("xIndex", xIndex, outer) * parse("xOffset", xOffset, outer); // NON-NLS
+    final int yPos = y + parse("yIndex", yIndex, outer) * parse("yOffset", yOffset, outer); // NON-NLS
     return new Point(xPos, yPos);
   }
 
   private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
-    String val = s.getText(outer, _0);
+    final String val = s.getText(outer, _0);
     try {
       i = Integer.parseInt(val);
     }
@@ -439,13 +440,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetState(String newState) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
-    String mapId = st.nextToken("");
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, ';');
+    final String mapId = st.nextToken("");
     if (mapId.length() > 0) {
       setProperty(BACK_MAP, Map.getMapById(mapId));
     }
-    String x = st.nextToken("");
-    String y = st.nextToken("");
+    final String x = st.nextToken("");
+    final String y = st.nextToken("");
     if (x.length() > 0 && y.length() > 0) {
       try {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
@@ -503,6 +504,43 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
                                      getCommandDescription(description, Resources.getString("Editor.SendToLocation.back_command_description"))});
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof SendToLocation)) return false;
+    final SendToLocation c = (SendToLocation) o;
+
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    if (! Objects.equals(key, c.key)) return false;
+    if (! Objects.equals(mapId, c.mapId)) return false;
+    if (! Objects.equals(boardName, c.boardName)) return false;
+    if (! Objects.equals(x, c.x)) return false;
+    if (! Objects.equals(y, c.y)) return false;
+    if (! Objects.equals(backCommandName, c.backCommandName)) return false;
+    if (! Objects.equals(backKey, c.backKey)) return false;
+    if (! Objects.equals(xIndex, c.xIndex)) return false;
+    if (! Objects.equals(yIndex, c.yIndex)) return false;
+    if (! Objects.equals(xOffset, c.xOffset)) return false;
+    if (! Objects.equals(yOffset, c.yOffset)) return false;
+    if (! Objects.equals(description, c.description)) return false;
+    if (! Objects.equals(destination, c.destination)) return false;
+    if (! Objects.equals(zone, c.zone)) return false;
+    if (! Objects.equals(region, c.region)) return false;
+    if (! Objects.equals(propertyFilter, c.propertyFilter)) return false;
+    if (! Objects.equals(gridLocation, c.gridLocation)) return false;
+
+    final Map backMap = (Map) getProperty(BACK_MAP);
+    final String id1 = backMap == null ? "" : backMap.getIdentifier();
+    final Map backMapc = (Map) c.getProperty(BACK_MAP);
+    final String id2 = backMapc == null ? "" : backMapc.getIdentifier();
+    if (! Objects.equals(id1, id2)) return false;
+
+    final Point bp1 = (Point) getProperty(BACK_POINT);
+    final Point bp2 = (Point) c.getProperty(BACK_POINT);
+
+    return Objects.equals(bp1, bp2);
+
+  }
+
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected StringConfigurer backNameInput;
@@ -510,9 +548,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     protected NamedHotKeyConfigurer backKeyInput;
     protected FormattedStringConfigurer mapIdInput;
     protected FormattedStringConfigurer boardNameInput;
+    protected JLabel xInputLabel;
     protected FormattedStringConfigurer xInput;
+    protected JLabel yInputLabel;
     protected FormattedStringConfigurer yInput;
+    protected JLabel advancedLabel;
     protected BooleanConfigurer advancedInput;
+    protected JLabel xAdvancedLabel;
+    protected JLabel yAdvancedLabel;
     protected FormattedStringConfigurer xIndexInput;
     protected FormattedStringConfigurer xOffsetInput;
     protected FormattedStringConfigurer yIndexInput;
@@ -520,132 +563,165 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     protected StringConfigurer descInput;
     protected StringEnumConfigurer destInput;
     protected TranslatingStringEnumConfigurer newDestInput;
+    protected JLabel propertyLabel;
     protected PropertyExpressionConfigurer propertyInput;
+    protected JLabel zoneLabel;
     protected FormattedStringConfigurer zoneInput;
+    protected JLabel regionLabel;
     protected FormattedStringConfigurer regionInput;
-    //protected Map map;
-    protected JPanel controls;
-    protected Box mapControls;
-    protected Box boardControls;
-    protected Box advancedControls;
+    protected TraitConfigPanel controls;
+    protected JLabel mapLabel;
+    protected JPanel mapControls;
+    protected JLabel boardLabel;
+    protected JPanel boardControls;
+    protected JPanel advancedControls;
+    protected JPanel yAdvancedControls;
+    protected JLabel gridLabel;
     protected StringConfigurer gridLocationInput;
 
     public Ed(SendToLocation p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      descInput = new StringConfigurer(null, Resources.getString("Editor.description_label"), p.description);
-      controls.add(descInput.getControls());
+      descInput = new StringConfigurer(p.description);
+      controls.add("Editor.description_label", descInput);
 
-      nameInput = new StringConfigurer(null, Resources.getString("Editor.menu_command"), p.commandName);
-      controls.add(nameInput.getControls());
+      nameInput = new StringConfigurer(p.commandName);
+      controls.add("Editor.menu_command", nameInput);
 
-      keyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command"), p.key);
-      controls.add(keyInput.getControls());
+      keyInput = new NamedHotKeyConfigurer(p.key);
+      controls.add("Editor.keyboard_command", keyInput);
 
-      backNameInput = new StringConfigurer(null, Resources.getString("Editor.SendToLocation.send_back_command_name"), p.backCommandName);
-      controls.add(backNameInput.getControls());
+      backNameInput = new StringConfigurer(p.backCommandName);
+      controls.add("Editor.SendToLocation.send_back_command_name", backNameInput);
 
-      backKeyInput = new NamedHotKeyConfigurer(null, Resources.getString("Editor.SendToLocation.send_back_keyboard_command"), p.backKey);
-      controls.add(backKeyInput.getControls());
+      backKeyInput = new NamedHotKeyConfigurer(p.backKey);
+      controls.add("Editor.SendToLocation.send_back_keyboard_command", backKeyInput);
 
-      newDestInput = new TranslatingStringEnumConfigurer(null, Resources.getString("Editor.SendToLocation.destination"), DEST_OPTIONS, DEST_KEYS);
+      newDestInput = new TranslatingStringEnumConfigurer(DEST_OPTIONS, DEST_KEYS);
       newDestInput.setValue(DEST_LOCATION);
-      for (String destOption : DEST_OPTIONS) {
+      for (final String destOption : DEST_OPTIONS) {
         if (destOption.substring(0, 1).equals(p.destination)) {
           newDestInput.setValue(destOption);
         }
       }
       newDestInput.addPropertyChangeListener(arg0 -> updateVisibility());
-      controls.add(newDestInput.getControls());
+      controls.add("Editor.SendToLocation.destination", newDestInput);
 
-      mapControls = Box.createHorizontalBox();
-      mapIdInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.map"), p.mapId.getFormat(), p);
-      mapControls.add(mapIdInput.getControls());
+      mapLabel = new JLabel(Resources.getString("Editor.SendToLocation.map"));
+      mapControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
+      final JPanel mapPanel = new JPanel(new MigLayout("ins 0", "[grow]", "push[]push")); // NON-NLS
+      mapIdInput = new FormattedExpressionConfigurer(p.mapId.getFormat(), p);
+      mapPanel.add(mapIdInput.getControls(), "grow"); // NON-NLS
+      mapControls.add(mapPanel, "grow"); // NON-NLS
       JButton select = new JButton(Resources.getString("Editor.select"));
       select.addActionListener(e -> selectMap());
       mapControls.add(select);
       JButton clear = new JButton(Resources.getString("Editor.clear"));
       clear.addActionListener(e -> clearMap());
       mapControls.add(clear);
-      controls.add(mapControls);
+      controls.add(mapLabel, mapControls);
 
-      boardControls = Box.createHorizontalBox();
-      boardNameInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.board"), p.boardName.getFormat(), p);
-      boardControls.add(boardNameInput.getControls());
+      boardLabel = new JLabel(Resources.getString("Editor.SendToLocation.board"));
+      boardControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
+      boardNameInput = new FormattedExpressionConfigurer(p.boardName.getFormat(), p);
+      final JPanel boardPanel = new JPanel(new MigLayout("ins 0", "[grow]", "push[]push")); // NON-NLS
+      boardPanel.add(boardNameInput.getControls(), "grow"); // NON-NLS
+      boardControls.add(boardPanel, "grow"); // NON-NLS
       select = new JButton(Resources.getString("Editor.select"));
       select.addActionListener(e -> selectBoard());
       clear = new JButton(Resources.getString("Editor.clear"));
       clear.addActionListener(e -> clearBoard());
       boardControls.add(select);
       boardControls.add(clear);
-      controls.add(boardControls);
+      controls.add(boardLabel, boardControls);
 
+      xInputLabel = new JLabel(Resources.getString("Editor.x_position"));
+      xInput = new FormattedExpressionConfigurer(p.x.getFormat(), p);
+      controls.add(xInputLabel, xInput);
 
-      xInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.x_position"), p.x.getFormat(), p);
-      controls.add(xInput.getControls());
+      yInputLabel = new JLabel(Resources.getString("Editor.y_position"));
+      yInput = new FormattedExpressionConfigurer(p.y.getFormat(), p);
+      controls.add(yInputLabel, yInput);
 
-      yInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.y_position"), p.y.getFormat(), p);
-      controls.add(yInput.getControls());
+      zoneLabel = new JLabel(Resources.getString("Editor.SendToLocation.zone_name"));
+      zoneInput = new FormattedExpressionConfigurer(p.zone.getFormat(), p);
+      controls.add(zoneLabel, zoneInput);
 
-      zoneInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.zone_name"), p.zone.getFormat(), p);
-      controls.add(zoneInput.getControls());
+      regionLabel = new JLabel(Resources.getString("Editor.SendToLocation.region_name"));
+      regionInput = new FormattedExpressionConfigurer(p.region.getFormat(), p);
+      controls.add(regionLabel, regionInput);
 
-      regionInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.region_name"), p.region.getFormat(), p);
-      controls.add(regionInput.getControls());
+      propertyLabel = new JLabel(Resources.getString("Editor.property_match_label"));
+      propertyInput = new PropertyExpressionConfigurer(p.propertyFilter);
+      controls.add(propertyLabel, propertyInput);
 
-      propertyInput = new PropertyExpressionConfigurer(null, Resources.getString("Editor.property_match_label"), p.propertyFilter);
-      controls.add(propertyInput.getControls());
+      gridLabel = new JLabel(Resources.getString("Editor.SendToLocation.grid_location"));
+      gridLocationInput = new StringConfigurer(p.gridLocation.getFormat());
+      controls.add(gridLabel, gridLocationInput);
 
-      gridLocationInput = new StringConfigurer(null, Resources.getString("Editor.SendToLocation.grid_location"), p.gridLocation.getFormat());
-      controls.add(gridLocationInput.getControls());
-
-      advancedInput = new BooleanConfigurer(null, Resources.getString("Editor.SendToLocation.advanced_options"), false);
+      advancedLabel = new JLabel(Resources.getString("Editor.SendToLocation.advanced_options"));
+      advancedInput = new BooleanConfigurer(false);
       advancedInput.addPropertyChangeListener(arg0 -> updateVisibility());
-      controls.add(advancedInput.getControls());
+      controls.add(advancedLabel, advancedInput);
 
-      advancedControls = Box.createHorizontalBox();
-      xIndexInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.additional_x_offset"), p.xIndex.getFormat(), p);
-      advancedControls.add(xIndexInput.getControls());
-      xOffsetInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.times"), p.xOffset.getFormat(), p);
-      advancedControls.add(xOffsetInput.getControls());
-      controls.add(advancedControls);
+      xAdvancedLabel = new JLabel(Resources.getString("Editor.SendToLocation.additional_x_offset"));
+      advancedControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[grow,fill]")); // NON-NLS
+      xIndexInput = new FormattedExpressionConfigurer(p.xIndex.getFormat(), p);
+      advancedControls.add(xIndexInput.getControls(), "grow"); // NON-NLS
+      advancedControls.add(new JLabel(Resources.getString("Editor.SendToLocation.times")));
+      xOffsetInput = new FormattedExpressionConfigurer(p.xOffset.getFormat(), p);
+      advancedControls.add(xOffsetInput.getControls(), "grow"); // NON-NLS
+      controls.add(xAdvancedLabel, advancedControls);
 
-      advancedControls = Box.createHorizontalBox();
-      yIndexInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.additional_y_offset"), p.yIndex.getFormat(), p);
-      advancedControls.add(yIndexInput.getControls());
-      yOffsetInput = new FormattedExpressionConfigurer(null, Resources.getString("Editor.SendToLocation.times"), p.yOffset.getFormat(), p);
-      advancedControls.add(yOffsetInput.getControls());
-      controls.add(advancedControls);
+      yAdvancedLabel = new JLabel(Resources.getString("Editor.SendToLocation.additional_y_offset"));
+      yAdvancedControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[grow,fill]")); // NON-NLS
+      yIndexInput = new FormattedExpressionConfigurer(p.yIndex.getFormat(), p);
+      yAdvancedControls.add(yIndexInput.getControls(), "grow"); // NON-NLS
+      yAdvancedControls.add(new JLabel(Resources.getString("Editor.SendToLocation.times")));
+      yOffsetInput = new FormattedExpressionConfigurer(p.yOffset.getFormat(), p);
+      yAdvancedControls.add(yOffsetInput.getControls(), "grow"); // NON-NLS
+      controls.add(yAdvancedLabel, yAdvancedControls);
 
       updateVisibility();
     }
 
     private void updateVisibility() {
-//      boolean advancedVisible = advancedInput.booleanValue();
+
       advancedInput.getControls().setVisible(!newDestInput.getValue().equals(DEST_GRIDLOCATION));
-      boolean advancedVisible = advancedInput.booleanValue()
-        && advancedInput.getControls().isVisible();
-      xIndexInput.getControls().setVisible(advancedVisible);
-      xOffsetInput.getControls().setVisible(advancedVisible);
-      yIndexInput.getControls().setVisible(advancedVisible);
-      yOffsetInput.getControls().setVisible(advancedVisible);
+      advancedLabel.setVisible(!newDestInput.getValue().equals(DEST_GRIDLOCATION));
 
-      String destOption = newDestInput.getValueString();
+      final boolean advancedVisible = advancedInput.booleanValue() && advancedInput.getControls().isVisible();
+      advancedControls.setVisible(advancedVisible);
+      xAdvancedLabel.setVisible(advancedVisible);
+      yAdvancedControls.setVisible(advancedVisible);
+      yAdvancedLabel.setVisible(advancedVisible);
+
+      final String destOption = newDestInput.getValueString();
+
       xInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
+      xInputLabel.setVisible(destOption.equals(DEST_LOCATION));
       yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
-      mapControls.setVisible(!destOption.equals(DEST_COUNTER));
-      boardControls.setVisible(destOption.equals(DEST_LOCATION)
-        || destOption.equals(DEST_GRIDLOCATION));
-      zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
-      regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
-      propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
-      gridLocationInput.getControls().setVisible(destOption.equals(DEST_GRIDLOCATION));
+      yInputLabel.setVisible(destOption.equals(DEST_LOCATION));
 
-      Window w = SwingUtilities.getWindowAncestor(controls);
-      if (w != null) {
-        w.pack();
-      }
+      mapControls.setVisible(!destOption.equals(DEST_COUNTER));
+      mapLabel.setVisible(!destOption.equals(DEST_COUNTER));
+
+      boardControls.setVisible(destOption.equals(DEST_LOCATION) || destOption.equals(DEST_GRIDLOCATION));
+      boardLabel.setVisible(destOption.equals(DEST_LOCATION) || destOption.equals(DEST_GRIDLOCATION));
+
+      zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
+      zoneLabel.setVisible(destOption.equals(DEST_ZONE));
+
+      regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
+      regionLabel.setVisible(destOption.equals(DEST_REGION));
+
+      propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
+      propertyLabel.setVisible(destOption.equals(DEST_COUNTER));
+
+      gridLocationInput.getControls().setVisible(destOption.equals(DEST_GRIDLOCATION));
+      gridLabel.setVisible(destOption.equals(DEST_GRIDLOCATION));
+
+      repack(controls);
     }
 
     private void clearBoard() {
@@ -658,19 +734,19 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     private void selectBoard() {
-      ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Board.class);
+      final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Board.class);
       d.setVisible(true);
       if (d.getTarget() != null) {
-        Board b = (Board) d.getTarget();
+        final Board b = (Board) d.getTarget();
         boardNameInput.setValue(b.getName());
       }
     }
 
     private void selectMap() {
-      ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Map.class);
+      final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Map.class);
       d.setVisible(true);
       if (d.getTarget() != null) {
-        Map map = (Map) d.getTarget();
+        final Map map = (Map) d.getTarget();
         mapIdInput.setValue(map.getMapName());
       }
     }
@@ -682,10 +758,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
         .append(keyInput.getValueString())
-        //.append(map == null ? "" : map.getIdentifier())
         .append(mapIdInput.getValueString())
         .append(boardNameInput.getValueString())
         .append(xInput.getValueString())
@@ -717,7 +792,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
 
     if (destination.equals(DEST_COUNTER.substring(0, 1))) {
       l.add(propertyFilter.getExpression());
@@ -750,7 +825,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(key);
+    return Collections.singletonList(key);
   }
 
   /**

@@ -17,37 +17,36 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.counters.TraitConfigPanel;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for {@link Font}values
  */
 public class FontConfigurer extends Configurer {
 
-  protected JPanel p;
-  protected IntConfigurer size;
-  protected BooleanConfigurer bold;
-  protected BooleanConfigurer italic;
-  protected BooleanConfigurer outline;
-  protected JComboBox family;
-  protected JTextField demo;
+  private TraitConfigPanel p;
+  private IntConfigurer size;
+  private BooleanConfigurer bold;
+  private BooleanConfigurer italic;
+  private BooleanConfigurer outline;
+  private JComboBox<String> family;
+  private JTextField demo;
 
   public FontConfigurer(String key, String name) {
     super(key, name);
@@ -76,47 +75,44 @@ public class FontConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new JPanel();
 
-      p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+      // Use a TraitConfig Panel as it works well for a combined 'multi-configurer'
+      p = new TraitConfigPanel();
 
-      Box box = Box.createHorizontalBox();
-      box.add(new JLabel(Resources.getString("Editor.FontConfigurer.font_family")));
-
-      family = new JComboBox();
+      final JPanel familyPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
+      family = new JComboBox<>();
       //String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       for (int i = 0; i < FontManager.ALLOWABLE_FONTS.length; ++i) {
         family.addItem(FontManager.ALLOWABLE_FONTS[i]);
       }
       family.setSelectedItem(value == null ? FontManager.SANS_SERIF : (getFontValue().getFamily()));
-      box.add(family);
-      p.add(box);
+      familyPanel.add(family);
+      p.add("Editor.FontConfigurer.font_family", familyPanel);
 
-      size = new IntConfigurer(null, Resources.getString("Editor.FontConfigurer.font_size"), getFontValue().getSize());
-      p.add(size.getControls());
+      size = new IntConfigurer(getFontValue().getSize());
+      p.add("Editor.FontConfigurer.font_size", size);
 
-      box = Box.createHorizontalBox();
-      bold = new BooleanConfigurer(null, Resources.getString("Editor.FontConfigurer.bold_checkbox"), isBold());
-      box.add(bold.getControls());
-      italic = new BooleanConfigurer(null, Resources.getString("Editor.FontConfigurer.italic_checkbox"), isItalic());
-      box.add(italic.getControls());
-      outline = new BooleanConfigurer(null, Resources.getString("Editor.FontConfigurer.outline_checkbox"), isOutline());
-      box.add(outline.getControls());
-      p.add(box);
+      bold = new BooleanConfigurer(isBold());
+      p.add("Editor.FontConfigurer.bold_checkbox", bold);
+      italic = new BooleanConfigurer(isItalic());
+      p.add("Editor.FontConfigurer.italic_checkbox", italic);
 
-      box = Box.createHorizontalBox();
-      box.add(new JLabel(Resources.getString("Editor.FontConfigurer.sample_label")));
+      // Not Implemented
+      outline = new BooleanConfigurer(isOutline());
+      // p.add("Editor.FontConfigurer.outline_checkbox", outline);
+
+      final JPanel demoPanel = new JPanel(new MigLayout("ins 0", "grow,fill")); // NON-NLS
       demo = new JTextField(Resources.getString("Editor.FontConfigurer.sample_text"), 20);
       demo.setEditable(false);
-      box.add(demo);
-      p.add(box);
+      demoPanel.add(demo, "grow"); // NON-NLS
+      p.add("Editor.FontConfigurer.sample_label", demoPanel, "grow"); // NON-NLS
 
       updateValue();
 
-      ItemListener l = evt -> updateValue();
+      final ItemListener l = evt -> updateValue();
       family.addItemListener(l);
 
-      PropertyChangeListener pc = evt -> updateValue();
+      final PropertyChangeListener pc = evt -> updateValue();
       size.addPropertyChangeListener(pc);
       bold.addPropertyChangeListener(pc);
       italic.addPropertyChangeListener(pc);
@@ -160,7 +156,7 @@ public class FontConfigurer extends Configurer {
   }
 
   public static String encode(OutlineFont f) {
-    SequenceEncoder se = new SequenceEncoder(f.getName(), ',');
+    final SequenceEncoder se = new SequenceEncoder(f.getName(), ',');
     se.append(f.getStyle());
     se.append(f.getSize());
     se.append(f.isOutline());

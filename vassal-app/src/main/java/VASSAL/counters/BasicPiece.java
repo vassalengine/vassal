@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +57,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
+import VASSAL.search.AbstractImageFinder;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -67,7 +69,7 @@ import net.miginfocom.swing.MigLayout;
  * Note like traits, BasicPiece implements GamePiece (via TranslatablePiece), but UNLIKE traits it is NOT a
  * Decorator, and thus must be treated specially.
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
+public class BasicPiece extends AbstractImageFinder implements TranslatablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter {
 
   public static final String ID = "piece;"; // NON-NLS
@@ -161,6 +163,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     imageName = st.nextToken();
     commonName = st.nextToken();
     imagePainter.setImageName(imageName);
+    imageBounds = null;  // New image, clear the old imageBounds
     commands = null;
   }
 
@@ -555,7 +558,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * @param enable true to enable, false to disable.
    */
   private void enableCommand(String name, boolean enable) {
-    for (KeyCommand command : commands) {
+    for (final KeyCommand command : commands) {
       if (name.equals(command.getName())) {
         command.setEnabled(enable);
       }
@@ -570,7 +573,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (stroke == null) {
       return false;
     }
-    for (KeyCommand command : commands) {
+    for (final KeyCommand command : commands) {
       if (stroke.equals(command.getKeyStroke())) {
         return command.isEnabled();
       }
@@ -709,7 +712,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
         if (GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
           final String name = outer.getLocalizedName();
           final String loc = getMap().locationName(outer.getPosition());
-          String s;
+          final String s;
           if (loc != null) {
             s = Resources.getString("BasicPiece.clone_report_1", name, loc);
           }
@@ -727,7 +730,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled() && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
         final String name = outer.getLocalizedName();
         final String loc = getMap().locationName(outer.getPosition());
-        String s;
+        final String s;
         if (loc != null) {
           s = Resources.getString("BasicPiece.delete_report_1", name, loc);
         }
@@ -957,7 +960,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    * @return the unique gamepiece ID for this piece, as stored in the Property "scratchpad"
    */
   public String getGpId() {
-    String id = (String) getProperty(Properties.PIECE_ID);
+    final String id = (String) getProperty(Properties.PIECE_ID);
     return id == null ? "" : id;
   }
 
@@ -1018,7 +1021,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (! Objects.equals(pp1, pp2)) return false;
 
     if (persistentProps != null && bp.persistentProps != null) {
-      for (Object key : persistentProps.keySet()) {
+      for (final Object key : persistentProps.keySet()) {
         if (!Objects.equals(persistentProps.get(key), bp.persistentProps.get(key)))
           return false;
       }
@@ -1061,7 +1064,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       pieceName = new JTextField(20);
       pieceName.setText(p.commonName);
       pieceName.setMaximumSize(pieceName.getPreferredSize());
-      JPanel col = new JPanel(new TraitLayout());
+      final JPanel col = new JPanel(new TraitLayout());
       col.add(new JLabel(Resources.getString("Editor.name_label")));
       col.add(pieceName);
       if (p.cloneKey != 0) {
@@ -1111,6 +1114,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   /**
    * @return String enumeration of type and state information.
    */
+  @Override
   public String toString() {
     return super.toString() + "[name=" + getName() + ",type=" + getType() + ",state=" + getState() + "]"; // NON-NLS
   }
@@ -1131,7 +1135,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(LOCATION_NAME);
     l.add(CURRENT_MAP);
     l.add(CURRENT_BOARD);
@@ -1150,5 +1154,15 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     l.add(CLICKED_X);
     l.add(CLICKED_Y);
     return l;
+  }
+
+  /**
+   * See {@link AbstractImageFinder}
+   * Adds our image (if any) to the list of images
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 }

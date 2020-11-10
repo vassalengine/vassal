@@ -21,14 +21,40 @@ import java.util.List;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.CounterGlobalKeyCommand;
+import VASSAL.counters.GlobalCommand;
+import VASSAL.counters.GlobalCommandTarget;
 
 /**
- * This version of {@link MassKeyCommand} is added directly to a
- * {@link VASSAL.build.GameModule} and applies to all maps
+ * This version of {@link MassKeyCommand} is added directly to a {@link VASSAL.build.GameModule} and applies to all maps.
+ *
+ * The "Global Key Command" functionality, as the term is used in Vassal Modules, is spread out over several classes internally:
+ * {@link GlobalCommand} - primary functionality for sending commands to multiple pieces based on matching parameters
+ * {@link VASSAL.build.module.GlobalKeyCommand}         - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand}  - Global Key Commands from a Module "At Startup"
+ * {@link VASSAL.build.module.map.MassKeyCommand}       - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand}                      - Global Key Commands from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class GlobalKeyCommand extends MassKeyCommand {
 
+  /**
+   * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown.
+   */
+  @Override
+  public GlobalCommandTarget.GKCtype getGKCtype() {
+    return GlobalCommandTarget.GKCtype.MODULE;
+  }
+
+  /**
+   * This version of Global Key Commands searches every map in the module
+   */
   @Override
   public void apply() {
     final List<Map> l = Map.getMapList();

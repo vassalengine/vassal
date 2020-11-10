@@ -17,7 +17,6 @@
  */
 package VASSAL.i18n;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -38,9 +37,10 @@ import javax.swing.JList;
 import javax.swing.UIManager;
 
 import VASSAL.Info;
-import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 
 public class Resources {
 
@@ -102,7 +102,7 @@ public class Resources {
   private void init() {
     Locale myLocale = Locale.getDefault();
 
-    ResourceBundle rb = ResourceBundle.getBundle(VASSAL_BUNDLE, myLocale, bundleLoader); //$NON-NLS-1$
+    final ResourceBundle rb = ResourceBundle.getBundle(VASSAL_BUNDLE, myLocale, bundleLoader); //$NON-NLS-1$
 
     // If the user has a resource bundle for their default language on their
     // local machine, add it to the list of supported locales
@@ -111,7 +111,7 @@ public class Resources {
     }
 
     final ArrayList<String> languages = new ArrayList<>();
-    for (Locale l : supportedLocales) {
+    for (final Locale l : supportedLocales) {
       languages.add(l.getLanguage());
     }
 
@@ -129,18 +129,18 @@ public class Resources {
     setInstanceLocale(myLocale);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
         Resources.LOCALE_PREF_KEY,
-        getInstanceString("Prefs.language"), //$NON-NLS-1$
+        getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
       @Override
       public Component getControls() {
-        if (box == null) {
+        if (getBox() == null) {
           final Component c = super.getControls();
-          box.setRenderer(new DefaultListCellRenderer() {
+          getBox().setRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-              JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+              final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
               l.setText(new Locale((String) value).getDisplayLanguage());
               return l;
             }
@@ -182,10 +182,10 @@ public class Resources {
     l = new Locale(l.getLanguage());
     if (!supportedLocales.contains(l)) {
       supportedLocales.add(0, l);
-      StringEnumConfigurer config = (StringEnumConfigurer) Prefs
+      final StringEnumConfigurer config = (StringEnumConfigurer) Prefs
           .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
       if (config != null) {
-        ArrayList<String> valid = new ArrayList<>(Arrays
+        final ArrayList<String> valid = new ArrayList<>(Arrays
           .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
         config.setValidValues(valid.toArray(new String[0]));
@@ -250,7 +250,6 @@ public class Resources {
   /*
    * Common Editor labels that appear in many components.
    */
-  // FIXME Locate all usages of the raw strings and replace with the constants.
   public static final String BUTTON_TEXT = "Editor.button_text_label"; //$NON-NLS-1$
   public static final String TOOLTIP_TEXT = "Editor.tooltip_text_label"; //$NON-NLS-1$
   public static final String BUTTON_ICON = "Editor.button_icon_label"; //$NON-NLS-1$
@@ -392,7 +391,9 @@ public class Resources {
     public URL getAResource(String name) {
       URL url = null;
       final String propFileName = name.substring(name.lastIndexOf('/') + 1);
-      final File propFile = new File(Info.getConfDir(), propFileName);
+
+      // Check the Base (home, working) folder for the resource in case we are running under a Debugger
+      final File propFile = new File(Info.getBaseDir(), propFileName);
       if (propFile.exists()) {
         try {
           url = propFile.toURI().toURL();

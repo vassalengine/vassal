@@ -18,6 +18,7 @@
 package VASSAL.chat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -38,7 +39,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class SoundEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "PLAY\t"; //$NON-NLS-1$
-  private PlayerEncoder playerEncoder;
+  private final PlayerEncoder playerEncoder;
 
   public SoundEncoder(PlayerEncoder p) {
     playerEncoder = p;
@@ -49,7 +50,7 @@ public class SoundEncoder implements CommandEncoder {
     if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
     sd.nextToken();
     final String soundKey = sd.nextToken();
     final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
@@ -61,8 +62,8 @@ public class SoundEncoder implements CommandEncoder {
     if (!(c instanceof Cmd)) {
       return null;
     }
-    Cmd cmd = (Cmd) c;
-    SequenceEncoder se = new SequenceEncoder('\t');
+    final Cmd cmd = (Cmd) c;
+    final SequenceEncoder se = new SequenceEncoder('\t');
     se.append(cmd.soundKey);
     se.append(playerEncoder.playerToString(cmd.getSender()));
     return COMMAND_PREFIX + se.getValue();
@@ -74,11 +75,11 @@ public class SoundEncoder implements CommandEncoder {
     private static long lastTime = System.currentTimeMillis();
     private static Player lastSender;
     private static int sendCount;
-    private static ArrayList<Player> banned = new ArrayList<>();
+    private static final List<Player> banned = new ArrayList<>();
     private static boolean updating = false;
 
-    private String soundKey;
-    private Player sender;
+    private final String soundKey;
+    private final Player sender;
 
     public Cmd(String soundKey, Player player) {
       this.soundKey = soundKey;

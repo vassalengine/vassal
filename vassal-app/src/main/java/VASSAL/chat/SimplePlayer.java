@@ -16,13 +16,15 @@
  */
 package VASSAL.chat;
 
+import java.util.Objects;
+
 import VASSAL.build.module.Chatter;
 
 
 /**
  * Simple Player bean
  */
-public class SimplePlayer implements VASSAL.chat.Player {
+public class SimplePlayer implements Player {
   protected String id;
   protected String name;
   protected PlayerStatus status;
@@ -42,13 +44,14 @@ public class SimplePlayer implements VASSAL.chat.Player {
     this(null);
   }
 
+  @Override
   public String toString() {
     return name;
   }
 
   @Override
   public String getName() {
-    if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("[nobody]")) {  //$NON-NLS-1$
+    if (name == null || name.length() == 0 || name.isBlank() || name.equals("[nobody]")) {  //$NON-NLS-1$
       return "(" + Chatter.getAnonymousUserName() + ")";  //$NON-NLS-1$  //$NON-NLS-2$
     }
     return name;
@@ -58,6 +61,12 @@ public class SimplePlayer implements VASSAL.chat.Player {
     this.name = name;
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o instanceof Player) {
       return id != null && id.equals(((Player) o).getId());

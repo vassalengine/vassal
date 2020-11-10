@@ -51,7 +51,7 @@ public interface MutableProperty {
      */
     public static MutableProperty findMutableProperty(String propertyName, List<MutablePropertiesContainer> propertyContainers) {
       MutableProperty p = null;
-      for (MutablePropertiesContainer c : propertyContainers) {
+      for (final MutablePropertiesContainer c : propertyContainers) {
         p = (c == null ? null : c.getMutableProperty(propertyName));
         if (p != null) {
           break;
@@ -69,13 +69,13 @@ public interface MutableProperty {
    * @author rkinney
    */
   class Impl implements MutableProperty {
-    private PropertyChangeSupport propSupport;
+    private final PropertyChangeSupport propSupport;
     private String value = "";
     private String propertyName;
     private MutablePropertiesContainer parent;
 
     // Maintain a static list of all Global Properties known to module
-    private static List<Impl> allProperties = new ArrayList<>();
+    private static final List<Impl> allProperties = new ArrayList<>();
     public static List<Impl> getAllProperties() {
       return allProperties;
     }
@@ -83,7 +83,7 @@ public interface MutableProperty {
     /**
      * @param source will be the source of any {@link PropertyChangeEvent} fired by this object
      */
-    public Impl(String propertyName, Object source) {
+    public Impl(String propertyName, Object source) { //NOPMD
       this.propertyName = propertyName;
       propSupport = new PropertyChangeSupport(this);
     }
@@ -142,8 +142,8 @@ public interface MutableProperty {
       if (newValue == null) {
         newValue = "";
       }
-      String oldValue = value;
-      Command c = getChangeCommand(value, newValue);
+      final String oldValue = value;
+      final Command c = getChangeCommand(value, newValue);
       value = newValue;
       propSupport.firePropertyChange(propertyName, oldValue, newValue);
       return c;

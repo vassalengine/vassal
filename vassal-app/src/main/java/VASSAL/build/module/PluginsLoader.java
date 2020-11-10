@@ -36,12 +36,12 @@ public class PluginsLoader extends ExtensionsLoader {
 
   public static final String COMMAND_PREFIX = "PLUGIN\t"; //$NON-NLS-1$
 
-  private ExtensionsManager extMgr = new ExtensionsManager("plugins"); //NON-NLS
+  private final ExtensionsManager extMgr = new ExtensionsManager("plugins"); //NON-NLS
 
   @Override
   public void addTo(GameModule mod) {
     mod.addCommandEncoder(this);
-    for (File ext : extMgr.getActiveExtensions()) {
+    for (final File ext : extMgr.getActiveExtensions()) {
       addExtension(ext);
     }
   }
@@ -55,7 +55,7 @@ public class PluginsLoader extends ExtensionsLoader {
   @Override
   public Command decode(String command) {
     if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
       return new ModulePlugin.RegCmd(st.nextToken(), st.nextToken());
     }
 
@@ -65,8 +65,8 @@ public class PluginsLoader extends ExtensionsLoader {
   @Override
   public String encode(Command c) {
     if (c instanceof ModulePlugin.RegCmd) {
-      ModulePlugin.RegCmd cmd = (ModulePlugin.RegCmd) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
+      final ModulePlugin.RegCmd cmd = (ModulePlugin.RegCmd) c;
+      final SequenceEncoder se = new SequenceEncoder('\t');
       se
         .append(cmd.getName())
         .append(cmd.getVersion());

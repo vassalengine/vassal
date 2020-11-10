@@ -17,20 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Window;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-import org.apache.commons.lang3.StringUtils;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
@@ -46,10 +32,22 @@ import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -61,10 +59,10 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class SetGlobalProperty extends DynamicProperty {
   protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-  public static final String ID = "setprop;";
-  public static final String CURRENT_ZONE = "Current Zone/Current Map/Module";
-  public static final String NAMED_ZONE = "Named Zone";
-  public static final String NAMED_MAP = "Named Map";
+  public static final String ID = "setprop;"; // NON-NLS
+  public static final String CURRENT_ZONE = "Current Zone/Current Map/Module"; // NON-NLS
+  public static final String NAMED_ZONE = "Named Zone"; // NON-NLS
+  public static final String NAMED_MAP = "Named Map"; // NON-NLS
   protected String description;
   protected String propertyLevel;
   protected String searchName;
@@ -80,22 +78,17 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public String getDescription() {
-    String s = "Set Global Property";
-    if (description.length() > 0) {
-      s += " - " + description;
-    }
-    return s;
+    return buildDescription("Editor.SetGlobalProperty.trait_description", description);
   }
 
   @Override
   public void mySetType(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = keyCommandListConfig.getListValue().toArray(
-      new DynamicKeyCommand[0]);
+    keyCommands = keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[0]);
 
     menuCommands = Arrays.stream(keyCommands).filter(
       kc -> !StringUtils.isEmpty(kc.getName())
@@ -108,7 +101,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
     se.append(encodeConstraints());
     se.append(keyCommandListConfig.getValueString());
@@ -184,7 +177,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SetGlobalProperty.html");
+    return HelpFile.getReferenceManualPage("SetGlobalProperty.html"); // NON-NLS
   }
 
   /*
@@ -195,17 +188,17 @@ public class SetGlobalProperty extends DynamicProperty {
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command comm = new NullCommand();
-    for (DynamicKeyCommand keyCommand : keyCommands) {
+    for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
         MutableProperty prop = null;
-        String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
+        final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
 
-        ArrayList<MutablePropertiesContainer> propertyContainers =
+        final ArrayList<MutablePropertiesContainer> propertyContainers =
           new ArrayList<>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
-          String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
+          final String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
           map = Map.getMapById(mapName);
         }
         if (map != null) {
@@ -216,7 +209,7 @@ public class SetGlobalProperty extends DynamicProperty {
           z = getMap().findZone(getPosition());
         }
         else if (NAMED_ZONE.equals(propertyLevel) && getMap() != null) {
-          String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
+          final String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
           z = getMap().findZone(zoneName);
         }
         if (z != null) {
@@ -228,12 +221,12 @@ public class SetGlobalProperty extends DynamicProperty {
          * Chat Window if no property can be found to update.
          */
         if (prop == null) {
-          final String message = "Unable to locate Global Property in " + propertyLevel + ".";
-          final String data = "Property Expression=[" + key + "], Property Name=" + propertyName + "].";
+          final String message = "Unable to locate Global Property in " + propertyLevel + "."; // NON-NLS
+          final String data = "Property Expression=[" + key + "], Property Name=" + propertyName + "]."; // NON-NLS
           ErrorDialog.dataWarning(new BadDataReport(this, message, data));
         }
         else {
-          String oldValue = prop.getPropertyValue();
+          final String oldValue = prop.getPropertyValue();
           String newValue = keyCommand.propChanger.getNewValue(oldValue);
           format.setFormat(newValue);
           newValue = format.getText(Decorator.getOutermost(this));
@@ -248,81 +241,120 @@ public class SetGlobalProperty extends DynamicProperty {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof SetGlobalProperty)) return false;
+    final SetGlobalProperty c = (SetGlobalProperty) o;
+
+    if (! Objects.equals(key, c.key)) return false;
+    if (! Objects.equals(encodeConstraints(), c.encodeConstraints())) return false;
+    if (! Objects.equals(keyCommandListConfig.getValueString(), c.keyCommandListConfig.getValueString())) return false;
+    if (! Objects.equals(description, c.description)) return false;
+    if (! Objects.equals(propertyLevel, c.propertyLevel)) return false;
+    return Objects.equals(searchName, c.searchName);
+  }
+
   protected static class Ed implements PieceEditor {
     protected StringConfigurer descConfig;
     protected FormattedExpressionConfigurer nameConfig;
     protected BooleanConfigurer numericConfig;
+    protected JLabel minLabel;
     protected IntConfigurer minConfig;
+    protected JLabel maxLabel;
     protected IntConfigurer maxConfig;
+    protected JLabel wrapLabel;
     protected BooleanConfigurer wrapConfig;
     protected ListConfigurer keyCommandListConfig;
-    protected StringEnumConfigurer levelConfig;
+    protected TranslatingStringEnumConfigurer levelConfig;
     protected FormattedExpressionConfigurer searchNameConfig;
-    protected JLabel mapLabel = new JLabel("map");
-    protected JLabel zoneLabel = new JLabel("zone");
-    protected Box controls;
-    protected Box nameBox;
+    protected String mapText = Resources.getString("Editor.SetGlobalProperty.name_of_map");
+    protected String zoneText = Resources.getString("Editor.SetGlobalProperty.name_of_zone");
+    protected JLabel searchLabel;
+    protected TraitConfigPanel controls;
 
     public Ed(final SetGlobalProperty m) {
-      keyCommandListConfig = new ListConfigurer(null, "Key Commands") {
+      keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
         @Override
         protected Configurer buildChildConfigurer() {
-          return new DynamicKeyCommandConfigurer(m);
+          final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
+          c.addPropertyChangeListener(e -> resize());
+          return c;
         }
       };
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
-      PropertyChangeListener l = evt -> {
-        boolean isNumeric = numericConfig.booleanValue();
-        minConfig.getControls().setVisible(isNumeric);
-        maxConfig.getControls().setVisible(isNumeric);
-        wrapConfig.getControls().setVisible(isNumeric);
-        keyCommandListConfig.repack();
+
+      controls = new TraitConfigPanel();
+
+      descConfig = new StringConfigurer(m.description);
+      controls.add("Editor.description_label", descConfig);
+
+      nameConfig = new FormattedExpressionConfigurer(m.getKey(), (EditablePiece) m);
+      controls.add("Editor.SetGlobalProperty.global_property_name", nameConfig);
+
+      final String[] levelKeys = {
+        "Editor.SetGlobalProperty.current",
+        "Editor.SetGlobalProperty.named_zone",
+        "Editor.SetGlobalProperty.named_map"
       };
-      controls = Box.createVerticalBox();
-      descConfig = new StringConfigurer(null, "Description:  ", m.description);
-      controls.add(descConfig.getControls());
-      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), (EditablePiece) m);
-      controls.add(nameConfig.getControls());
-      levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
-      levelConfig.setValue(m.propertyLevel);
+      levelConfig = new TranslatingStringEnumConfigurer(
+        new String[] { CURRENT_ZONE, NAMED_ZONE, NAMED_MAP },
+        levelKeys,
+        m.propertyLevel);
       levelConfig.addPropertyChangeListener(e -> updateVisibility());
-      Box box = Box.createHorizontalBox();
-      box.add(new JLabel("Locate Property starting in the:   "));
-      box.add(levelConfig.getControls());
-      controls.add(box);
-      nameBox = Box.createHorizontalBox();
-      nameBox.add(new JLabel("Name of "));
-      nameBox.add(mapLabel);
-      nameBox.add(zoneLabel);
-      nameBox.add(new JLabel(" containing property:  "));
-      searchNameConfig = new FormattedExpressionConfigurer(null, "", m.searchName, (EditablePiece) m);
-      nameBox.add(searchNameConfig.getControls());
-      controls.add(nameBox);
-      numericConfig = new BooleanConfigurer(null, "Is numeric?", m.isNumeric());
-      controls.add(numericConfig.getControls());
-      minConfig =
-        new IntConfigurer(null, "Minimum value:  ", m.getMinimumValue());
-      controls.add(minConfig.getControls());
-      maxConfig =
-        new IntConfigurer(null, "Maximum value:  ", m.getMaximumValue());
-      controls.add(maxConfig.getControls());
-      wrapConfig = new BooleanConfigurer(null, "Wrap?", m.isWrap());
-      controls.add(wrapConfig.getControls());
-      controls.add(keyCommandListConfig.getControls());
-      numericConfig.addPropertyChangeListener(l);
+      controls.add("Editor.SetGlobalProperty.locate_property", levelConfig);
+
+      searchNameConfig = new FormattedExpressionConfigurer(m.searchName, (EditablePiece) m);
+      searchLabel = new JLabel(mapText);
+      controls.add(searchLabel, searchNameConfig);
+
+      numericConfig = new BooleanConfigurer(m.isNumeric());
+      controls.add("Editor.DynamicProperty.is_numeric", numericConfig);
+
+      minLabel = new JLabel(Resources.getString("Editor.GlobalProperty.minimum_value"));
+      minConfig = new IntConfigurer(m.getMinimumValue());
+      controls.add(minLabel, minConfig);
+
+      maxLabel = new JLabel(Resources.getString("Editor.GlobalProperty.minimum_value"));
+      maxConfig = new IntConfigurer(m.getMaximumValue());
+      controls.add(maxLabel, maxConfig);
+
+      wrapLabel  = new JLabel(Resources.getString("Editor.DynamicProperty.wrap"));
+      wrapConfig = new BooleanConfigurer(m.isWrap());
+      controls.add(wrapLabel, wrapConfig);
+
+
+      controls.add(keyCommandListConfig.getControls(), "left,grow,span 2"); // NON-NLS
+
+      numericConfig.addPropertyChangeListener(evt -> {
+        final boolean isNumeric = numericConfig.booleanValue();
+        minConfig.getControls().setVisible(isNumeric);
+        minLabel.setVisible(isNumeric);
+        maxConfig.getControls().setVisible(isNumeric);
+        maxLabel.setVisible(isNumeric);
+        wrapConfig.getControls().setVisible(isNumeric);
+        wrapLabel.setVisible(isNumeric);
+        keyCommandListConfig.repack();
+      });
+
       numericConfig.fireUpdate();
       updateVisibility();
     }
 
     protected void updateVisibility() {
-      mapLabel.setVisible(levelConfig.getValueString().equals(NAMED_MAP));
-      zoneLabel.setVisible(levelConfig.getValueString().equals(NAMED_ZONE));
-      nameBox.setVisible(!levelConfig.getValueString().equals(CURRENT_ZONE));
-      Window w = SwingUtilities.getWindowAncestor(controls);
-      if (w != null) {
-        w.pack();
+      switch (levelConfig.getValueString()) {
+      case NAMED_MAP :
+        searchLabel.setText(mapText);
+        break;
+      case NAMED_ZONE :
+        searchLabel.setText(zoneText);
+        break;
       }
+      searchLabel.setVisible(!levelConfig.getValueString().equals(CURRENT_ZONE));
+      searchNameConfig.getControls().setVisible(!levelConfig.getValueString().equals(CURRENT_ZONE));
+
+      repack(controls);
     }
 
     @Override
@@ -331,13 +363,17 @@ public class SetGlobalProperty extends DynamicProperty {
     }
 
     protected String encodeConstraints() {
-      return new SequenceEncoder(',').append(numericConfig.getValueString()).append(minConfig.getValueString()).append(maxConfig.getValueString()).append(
-          wrapConfig.getValueString()).getValue();
+      return new SequenceEncoder(',')
+        .append(numericConfig.getValueString())
+        .append(minConfig.getValueString())
+        .append(maxConfig.getValueString())
+        .append(wrapConfig.getValueString())
+        .getValue();
     }
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString());
       se.append(encodeConstraints());
       se.append(keyCommandListConfig.getValueString());

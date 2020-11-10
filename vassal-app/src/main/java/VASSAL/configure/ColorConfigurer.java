@@ -133,4 +133,11 @@ public class ColorConfigurer extends Configurer {
     // default to black in case of bad data
     return Color.BLACK;
   }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
+  }
 }

@@ -58,10 +58,13 @@ public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   private DefaultListModel<File> savedGamesModel;
-  private SavedGameUpdater updater = new SavedGameUpdater();
+  private final SavedGameUpdater updater = new SavedGameUpdater();
   private Properties oldPieceInfo;
-  private JFileChooser fc;
+  private final JFileChooser fc;
+
+  //FIXME Is it really supposed to be moduleVerion[sic] below? Is it okay to "fix" it?
   private static final String VERSION_KEY = "moduleVerion"; //NON-NLS
+
   private static final String MODULE_NAME_KEY = "moduleName"; //NON-NLS
   private JButton updateButton;
   private JTextField versionField;
@@ -76,27 +79,27 @@ public class SavedGameUpdaterDialog extends JDialog {
 
   private void initComponents() {
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    Box versionBox = Box.createHorizontalBox();
+    final Box versionBox = Box.createHorizontalBox();
     versionBox.add(new JLabel(Resources.getString("Editor.SavedGameUpdaterDialog.module_version")));
     versionField = new JTextField(8);
     versionField.setEditable(false);
     versionField.setMaximumSize(new Dimension(versionField.getMaximumSize().width, versionField.getPreferredSize().height));
     versionBox.add(versionField);
-    JButton importButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.import_gamepiece"));
+    final JButton importButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.import_gamepiece"));
     importButton.addActionListener(e -> importPieceInfo());
     versionBox.add(importButton);
     add(versionBox);
-    JButton exportButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.export_gamepiece"));
+    final JButton exportButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.export_gamepiece"));
     exportButton.addActionListener(e -> exportPieceInfo());
-    Box importExportBox = Box.createHorizontalBox();
+    final Box importExportBox = Box.createHorizontalBox();
     importExportBox.add(importButton);
     importExportBox.add(exportButton);
     add(importExportBox);
 
-    Box savedGamesBox = Box.createHorizontalBox();
-    Box left = Box.createVerticalBox();
+    final Box savedGamesBox = Box.createHorizontalBox();
+    final Box left = Box.createVerticalBox();
     left.add(new JLabel(Resources.getString("Editor.SavedGameUpdaterDialog.saved_games")));
-    JButton chooseGamesButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.choose"));
+    final JButton chooseGamesButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.choose"));
     chooseGamesButton.addActionListener(e -> chooseSavedGames());
     left.add(chooseGamesButton);
     savedGamesBox.add(left);
@@ -121,12 +124,12 @@ public class SavedGameUpdaterDialog extends JDialog {
     savedGamesBox.add(new ScrollPane(savedGamesList));
     add(savedGamesBox);
 
-    Box buttonsBox = Box.createHorizontalBox();
+    final Box buttonsBox = Box.createHorizontalBox();
     updateButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.update_games"));
     updateButton.addActionListener(e -> updateGames());
     updateButton.setEnabled(false);
     buttonsBox.add(updateButton);
-    JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
+    final JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
 
     HelpFile hf = null;
     try {
@@ -140,7 +143,7 @@ public class SavedGameUpdaterDialog extends JDialog {
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     buttonsBox.add(helpButton);
-    JButton closeButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.close"));
+    final JButton closeButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.close"));
     closeButton.addActionListener(e -> dispose());
     buttonsBox.add(closeButton);
     add(buttonsBox);
@@ -150,16 +153,16 @@ public class SavedGameUpdaterDialog extends JDialog {
 
   private void updateGames() {
     updateButton.setEnabled(false);
-    Runnable runnable = () -> {
+    final Runnable runnable = () -> {
       for (int i = 0, n = savedGamesModel.size(); i < n; ++i) {
         try {
-          File savedGame = savedGamesModel.getElementAt(i);
+          final File savedGame = savedGamesModel.getElementAt(i);
           updater.updateSavedGame(oldPieceInfo, savedGame);
           GameModule.getGameModule().warn(Resources.getString("Editor.SavedGameUpdaterDialog.updated_message", savedGame.getName(), versionField.getText(), GameModule.getGameModule().getGameVersion()));
         }
         // FIXME: review error message
         catch (final IOException e) {
-          Runnable showError = () -> showErrorMessage(e, Resources.getString("Editor.SavedGameUpdaterDialog.fail"), Resources.getString("Editor.SavedGameUpdaterDialog.unable"));
+          final Runnable showError = () -> showErrorMessage(e, Resources.getString("Editor.SavedGameUpdaterDialog.fail"), Resources.getString("Editor.SavedGameUpdaterDialog.unable"));
           try {
             SwingUtilities.invokeAndWait(showError);
           }
@@ -176,10 +179,10 @@ public class SavedGameUpdaterDialog extends JDialog {
   private void chooseSavedGames() {
     fc.setMultiSelectionEnabled(true);
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
-      File[] selectedFiles = fc.getSelectedFiles();
+      final File[] selectedFiles = fc.getSelectedFiles();
       if (selectedFiles != null) {
         savedGamesModel.clear();
-        for (File selectedFile : selectedFiles) {
+        for (final File selectedFile : selectedFiles) {
           savedGamesModel.addElement(selectedFile);
         }
       }
@@ -212,8 +215,8 @@ public class SavedGameUpdaterDialog extends JDialog {
            BufferedInputStream in = new BufferedInputStream(fin)) {
         oldPieceInfo.load(in);
 
-        String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
-        String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
+        final String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
+        final String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
         if (!GameModule.getGameModule().getGameName().equals(moduleName)) {
           showErrorMessage(null, Resources.getString("Editor.SavedGameUpdaterDialog.im_fail"), Resources.getString("Editor.SavedGameUpdaterDialog.im_wrong", moduleName));
           oldPieceInfo = null;

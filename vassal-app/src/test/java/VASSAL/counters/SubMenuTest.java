@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright 2020 Vassal Development Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -15,14 +15,25 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.counters;
 
+import java.lang.reflect.InvocationTargetException;
+import org.junit.Test;
 
-/**
- * Utility class for reporting failure to load a resource from a module file
- *
- * @author rodneykinney
- */
-public class ResourceErrorDialog {
-  private ResourceErrorDialog() { }
+public class SubMenuTest extends DecoratorTest {
+
+  @Test
+  public void serializeTests() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
+    SubMenu trait = new SubMenu();
+
+    // Default trait
+    serializeTest("Default trait", trait); // NON-NLS
+
+    // Complex trait
+    trait = new SubMenu();
+    trait.mySetType(SubMenu.ID + ";xyzzy;abc,def,ghi"); // NON-NLS
+    serializeTest("Complex trait", trait); // NON-NLS
+
+  }
 }

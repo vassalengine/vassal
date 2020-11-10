@@ -105,8 +105,8 @@ public class StringArrayConfigurer extends Configurer {
       panel.setBorder(new TitledBorder(name));
       panel.setLayout(new MigLayout("fill")); //NON-NLS
 
-      JPanel buttonBox =  new JPanel(new MigLayout("ins 0", "push[][][]push")); // NON-NLS
-      JPanel leftBox = new JPanel(new MigLayout("ins 0,gapy 2", "[fill,grow]")); // NON-NLS
+      final JPanel buttonBox =  new JPanel(new MigLayout("ins 0", "push[][][]push")); // NON-NLS
+      final JPanel leftBox = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill,grow]")); // NON-NLS
 
       model = new DefaultListModel<>();
       updateModel();
@@ -116,24 +116,24 @@ public class StringArrayConfigurer extends Configurer {
       list.setPrototypeCellValue("MMMMMMMM"); //NON-NLS
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-      JButton addButton = new JButton(Resources.getString(Resources.ADD));
+      final JButton addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.addActionListener(e -> {
-        String s = getTextValue();
+        final String s = getTextValue();
         addValue(s);
         setTextValue("");
         updateViewable(list.getModel().getSize());
       });
       buttonBox.add(addButton);
 
-      JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
+      final JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
       removeButton.addActionListener(e -> {
         list.getSelectedValuesList().forEach(this::removeValue);
         updateViewable(list.getModel().getSize());
       });
       buttonBox.add(removeButton);
 
-      JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
-      ActionListener insertAction = e -> {
+      final JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
+      final ActionListener insertAction = e -> {
         if (value == null) {
           addValue(getTextValue());
         }
@@ -155,7 +155,7 @@ public class StringArrayConfigurer extends Configurer {
       leftBox.add(textComponent, "growx,wrap"); // NON-NLS
       leftBox.add(buttonBox, "growx"); // NON-NLS
 
-      JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      final JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       pane.setBackground(Color.white);
       pane.setLeftComponent(leftBox);
       pane.setRightComponent(new ScrollPane(list));
@@ -168,7 +168,9 @@ public class StringArrayConfigurer extends Configurer {
 
   public void updateViewable(int rows) {
     list.setVisibleRowCount(Math.max(minRows, Math.min(rows, maxRows)));
-    panel.invalidate();
+    if (rows <= maxRows) {
+      repack(panel);
+    }
   }
 
   protected Component getTextComponent() {
@@ -209,8 +211,8 @@ public class StringArrayConfigurer extends Configurer {
     if (s == null || s.length == 0) {
       return "";
     }
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String item : s) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String item : s) {
       se.append(item != null ? item : "");
     }
     return se.getValue();
@@ -227,7 +229,7 @@ public class StringArrayConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    String[] val = stringToArray(s);
+    final String[] val = stringToArray(s);
     setValue(val);
   }
 
@@ -236,8 +238,8 @@ public class StringArrayConfigurer extends Configurer {
         || s.length() == 0) {
       return EMPTY;
     }
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    List<String> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -247,8 +249,8 @@ public class StringArrayConfigurer extends Configurer {
   protected void updateModel() {
     if (model != null) {
       model.removeAllElements();
-      String[] s = getStringArray();
-      for (String item : s) {
+      final String[] s = getStringArray();
+      for (final String item : s) {
         model.addElement(item);
       }
     }
@@ -256,7 +258,7 @@ public class StringArrayConfigurer extends Configurer {
 
   // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
-    JFrame f = new JFrame();
+    final JFrame f = new JFrame();
     final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  "); //NON-NLS
     c.addPropertyChangeListener(evt -> System.err.println(c.getName() + " = " + c.getValueString()));
     c.setValue("Rack,Shack,Benny"); //NON-NLS

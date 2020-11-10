@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2006 by Brent Easton, Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -52,7 +51,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   }
 
   public ZoneHighlight getZoneHighlightByName(String highlightName) {
-    for (ZoneHighlight h : highlightList) {
+    for (final ZoneHighlight h : highlightList) {
       if (h.getName().equals(highlightName)) {
         return h;
       }
@@ -79,7 +78,6 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     return new Class<?>[0];
   }
 
-
   @Override
   public void addTo(Buildable b) {
     ((ZonedGrid) b).setZoneHighlighter(this);
@@ -95,7 +93,7 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ZonedGrid.html", "ZoneHighlighter"); //NON-NLS
   }
 
@@ -106,7 +104,6 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
 
   @Override
   public void setAttribute(String key, Object val) {
-
   }
 
   @Override

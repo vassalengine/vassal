@@ -25,7 +25,7 @@ import VASSAL.command.CommandEncoder;
  */
 public class InviteEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "INVITE\t"; //$NON-NLS-1$
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   public InviteEncoder(ChatServerConnection client) {
     this.client = client;
@@ -37,7 +37,7 @@ public class InviteEncoder implements CommandEncoder {
       return null;
     }
 
-    String[] info = s.split("\\t"); //$NON-NLS-1$
+    final String[] info = s.split("\\t"); //$NON-NLS-1$
     if (info.length != 4) {
       return null;
     }
@@ -50,7 +50,7 @@ public class InviteEncoder implements CommandEncoder {
     if (!(c instanceof InviteCommand)) {
       return null;
     }
-    InviteCommand cmd = (InviteCommand) c;
+    final InviteCommand cmd = (InviteCommand) c;
     return COMMAND_PREFIX + cmd.getPlayer() + "\t" + cmd.getPlayerId() + "\t" + cmd.getRoom(); //$NON-NLS-1$ //$NON-NLS-2$
   }
 

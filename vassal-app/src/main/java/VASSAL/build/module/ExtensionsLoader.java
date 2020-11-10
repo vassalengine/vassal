@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipException;
 
@@ -45,7 +46,7 @@ public class ExtensionsLoader implements CommandEncoder {
   public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<>();
-  protected HashMap<String, String> loadedIds = new HashMap<>();
+  protected Map<String, String> loadedIds = new HashMap<>();
 
   protected ExtensionsManager extMgr;
   protected ExtensionsManager globalExtMgr;
@@ -71,12 +72,12 @@ public class ExtensionsLoader implements CommandEncoder {
   }
 
   protected void addExtensions() {
-    for (File ext : globalExtMgr.getActiveExtensions()) {
+    for (final File ext : globalExtMgr.getActiveExtensions()) {
       if (!addExtension(ext)) {
         globalExtMgr.setActive(ext, false);
       }
     }
-    for (File ext : extMgr.getActiveExtensions()) {
+    for (final File ext : extMgr.getActiveExtensions()) {
       if (!addExtension(ext)) {
         GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.deactivating_extension", ext.getName()));
         extMgr.setActive(ext, false);
@@ -86,7 +87,7 @@ public class ExtensionsLoader implements CommandEncoder {
 
   protected boolean addExtension(File extension) {
     logger.info("Loading extension " + extension); //NON-NLS
-    String extname = extension.getPath();
+    final String extname = extension.getPath();
     boolean success = loadedExtensions.contains(extname);
     if (!success) {
       try {
@@ -96,7 +97,7 @@ public class ExtensionsLoader implements CommandEncoder {
         final String id = ext.getExtensionId();
         String idMsg = "";
         if (id.length() > 0) {
-          for (String loadedId : loadedIds.keySet()) {
+          for (final String loadedId : loadedIds.keySet()) {
             if (loadedId.equals(id)) {
               idMsg = Resources.getString("ExtensionsLoader.id_conflict", extension.getName(), id, loadedIds.get(id));
             }
@@ -152,7 +153,7 @@ public class ExtensionsLoader implements CommandEncoder {
     if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
     return new ModuleExtension.RegCmd(st.nextToken(), st.nextToken());
   }
 
@@ -161,8 +162,8 @@ public class ExtensionsLoader implements CommandEncoder {
     if (!(c instanceof ModuleExtension.RegCmd)) {
       return null;
     }
-    ModuleExtension.RegCmd cmd = (ModuleExtension.RegCmd) c;
-    SequenceEncoder se = new SequenceEncoder('\t');
+    final ModuleExtension.RegCmd cmd = (ModuleExtension.RegCmd) c;
+    final SequenceEncoder se = new SequenceEncoder('\t');
     se
       .append(cmd.getName())
       .append(cmd.getVersion());

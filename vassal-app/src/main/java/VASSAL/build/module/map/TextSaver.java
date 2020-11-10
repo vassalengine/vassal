@@ -25,12 +25,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -39,62 +37,35 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
-public class TextSaver extends AbstractConfigurable {
+public class TextSaver extends AbstractToolbarItem {
 
-  protected static final String HOTKEY = "hotkey"; //NON-NLS
   protected static final String BUTTON_TEXT = "buttonText"; //NON-NLS
-  protected static final String TOOLTIP = "tooltip"; //NON-NLS
   protected static final String ICON_NAME = "icon"; //NON-NLS
+
+  // These two identical to AbstractToolbarItem and exist only for clirr purposes
+  @Deprecated protected static final String HOTKEY = "hotkey"; //NON-NLS
+  @Deprecated protected static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected Map map;
   protected LaunchButton launch;
 
   public TextSaver() {
-    ActionListener al = e -> apply();
+    final ActionListener al = e -> apply();
 
-    launch = new LaunchButton(Resources.getString("Editor.TextSaver.save_text"), TOOLTIP, BUTTON_TEXT,
-                              HOTKEY, ICON_NAME, al);
-    launch.setAttribute(TOOLTIP, Resources.getString("Editor.TextSaver.save_tooltip"));
+    setNameKey("");
+    setButtonTextKey(BUTTON_TEXT);
+    makeLaunchButton(Resources.getString("Editor.TextSaver.save_tooltip"),
+                     Resources.getString("Editor.TextSaver.save_text"),
+                     "", al);
   }
 
-  @Override
-  public String[] getAttributeNames() {
-    return new String[] {
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON_NAME,
-      HOTKEY
-    };
-  }
-
-  @Override
-  public String[] getAttributeDescriptions() {
-    return new String[] {
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
-    };
-  }
-
-  @Override
-  public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class
-    };
-  }
-
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -103,25 +74,15 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   @Override
-  public void setAttribute(String key, Object value) {
-    launch.setAttribute(key, value);
-  }
-
-  @Override
-  public String getAttributeValueString(String key) {
-    return launch.getAttributeValueString(key);
-  }
-
-  @Override
   public void addTo(Buildable b) {
     map = (Map) b;
-    map.getToolBar().add(launch);
+    map.getToolBar().add(getLaunchButton());
   }
 
   @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
-    map.getToolBar().remove(launch);
+    map.getToolBar().remove(getLaunchButton());
     map.getToolBar().revalidate();
   }
 
@@ -131,7 +92,7 @@ public class TextSaver extends AbstractConfigurable {
       writeMapAsText();
       break;
     case JOptionPane.YES_OPTION:
-      String myId = GameModule.getUserId();
+      final String myId = GameModule.getUserId();
       GameModule.setUserId("yendoR117"); //NON-NLS
       writeMapAsText();
       GameModule.setUserId(myId);
@@ -149,14 +110,14 @@ public class TextSaver extends AbstractConfigurable {
     try (Writer fw = new FileWriter(file, Charset.defaultCharset());
          BufferedWriter bw = new BufferedWriter(fw);
          PrintWriter p = new PrintWriter(bw)) {
-      for (GamePiece gp : map.getPieces()) {
+      for (final GamePiece gp : map.getPieces()) {
         final String s = gp.getName();
         if (s.length() > 0) {
           p.println(map.locationName(gp.getPosition()) + ": " + s);
         }
       }
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       WriteErrorDialog.error(e, file);
     }
   }
@@ -177,23 +138,5 @@ public class TextSaver extends AbstractConfigurable {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Collections.singletonList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
   }
 }

@@ -83,7 +83,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public static final String EXTENSION_ID = "extensionId"; //$NON-NLS-1$
   public static final String DESCRIPTION = "description"; //NON-NLS
 
-  private DataArchive archive;
+  private final DataArchive archive;
   private String version = "0.0"; //$NON-NLS-1$
   protected boolean universal = false;
 
@@ -122,7 +122,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     final String fileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE; //NON-NLS
 
     if (!(data instanceof ExtensionMetaData)) {
-      logger.error("Not an extension file {}", fileName, null); //NON-NLS
+      logger.error("Not an extension file {}", fileName); //NON-NLS
       throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + fileName); //NON-NLS
     }
 
@@ -164,7 +164,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
       // Fix missing, duplicate and illegal GamePieceId's
       final GpIdChecker checker = new GpIdChecker(this);
-      for (Buildable b : getBuildables()) {
+      for (final Buildable b : getBuildables()) {
         checkGpIds(b, checker);
       }
       checker.fixErrors();
@@ -182,7 +182,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       checkGpIds(((ExtensionElement) b).getExtension(), checker);
     }
     else if (b instanceof AbstractBuildable) {
-      for (Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
+      for (final Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         checkGpIds(buildable, checker);
       }
     }
@@ -195,7 +195,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
    *
    */
   protected void updateGpIds() {
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       updateGpIds(b);
     }
   }
@@ -208,7 +208,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       updateGpIds(((ExtensionElement) b).getExtension());
     }
     else if (b instanceof AbstractBuildable) {
-      for (Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
+      for (final Buildable buildable : ((AbstractBuildable) b).getBuildables()) {
         updateGpIds(buildable);
       }
     }
@@ -323,7 +323,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
     }
     else if (BASE_MODULE_VERSION.equals(key)) {
-      String version = (String) value;
+      final String version = (String) value;
       if (!universal && VersionUtils.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
             Resources.getString("ModuleExtension.wrong_module_version", //NON-NLS
@@ -333,7 +333,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     else if (VASSAL_VERSION_CREATED.equals(key)) {
       vassalVersionCreated = (String) value;
-      String runningVersion = Info.getVersion();
+      final String runningVersion = Info.getVersion();
       if (VersionUtils.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         GameModule.getGameModule().warn(
           Resources.getString(
@@ -401,7 +401,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public String buildString() {
-    org.w3c.dom.Document doc = Builder.createNewDocument();
+    final Document doc = Builder.createNewDocument();
     doc.appendChild(getBuildElement(doc));
     return Builder.toString(doc);
   }
@@ -462,15 +462,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
        * The Extension id should not normally be changed once saved games
        * have been created. Display a dialog with warnings.
        */
-      Box idBox = Box.createHorizontalBox();
+      final Box idBox = Box.createHorizontalBox();
       idBox.add(new JLabel(Resources.getString("Editor.ExtensionEditor.extension_id")));
       idDisplay = new JTextField(12);
       idDisplay.setText(extensionId);
       idDisplay.setEditable(false);
       idBox.add(idDisplay);
-      JButton change = new JButton(Resources.getString("Editor.ExtensionEditor.change_button"));
+      final JButton change = new JButton(Resources.getString("Editor.ExtensionEditor.change_button"));
       change.addActionListener(e -> {
-        String s = (String)JOptionPane.showInputDialog(
+        final String s = (String)JOptionPane.showInputDialog(
             GameModule.getGameModule().getPlayerWindow(),
             Resources.getString("Editor.ExtensionEditor.change_warning"),
             "", //NON-NLS
@@ -490,8 +490,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, Resources.getString("Editor.ExtensionEditor.universal_checkbox"), universal);
       d.add(uconfig.getControls());
 
-      Box b = Box.createHorizontalBox();
-      JButton ok = new JButton(Resources.getString("General.save"));
+      final Box b = Box.createHorizontalBox();
+      final JButton ok = new JButton(Resources.getString("General.save"));
       ok.addActionListener(e -> {
         setAttribute(VERSION, config.getValue());
         setAttribute(DESCRIPTION, dconfig.getValue());
@@ -499,7 +499,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         d.dispose();
       });
       b.add(ok);
-      JButton cancel = new JButton(Resources.getString("General.cancel"));
+      final JButton cancel = new JButton(Resources.getString("General.cancel"));
       cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);
@@ -513,7 +513,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
           d.setVisible(true);
         }
       };
-      URL iconURL = getClass().getResource("/images/Edit16.gif"); //$NON-NLS-1$
+      final URL iconURL = getClass().getResource("/images/Edit16.gif"); //$NON-NLS-1$
       if (iconURL != null) {
         editAction.putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
       }
@@ -529,8 +529,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
    * A command that verifies that a certain extension has been loaded
    */
   public static class RegCmd extends Command {
-    private String name;
-    private String version;
+    private final String name;
+    private final String version;
 
     public RegCmd(String name, String version) {
       this.name = name;
@@ -548,7 +548,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     @Override
     protected void executeCommand() {
       boolean containsExtension = false;
-      for (ModuleExtension ext :
+      for (final ModuleExtension ext :
            GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
         if (ext.getName().equals(name)) {
           containsExtension = true;

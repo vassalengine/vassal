@@ -110,8 +110,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public BufferedImage eval() throws ImageIOException {
     try (InputStream in = getInputStream()) {
-      final BufferedImage img = ImageUtils.getImage(name, in);
-      return img;
+      return ImageUtils.getImage(name, in);
     }
     catch (ImageIOException e) {
       // Don't wrap, just rethrow.
@@ -139,8 +138,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   protected Dimension getImageSize() {
     try {
       try (InputStream in = getInputStream()) {
-        final Dimension d = ImageUtils.getImageSize(name, in);
-        return d;
+        return ImageUtils.getImageSize(name, in);
       }
       catch (ImageIOException e) {
         // Don't wrap, just rethrow.
@@ -194,6 +192,6 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getClass().getName() + "[name=" + name + "]";
+    return getClass().getName() + "[name=" + name + "]";  //NON-NLS
   }
 }

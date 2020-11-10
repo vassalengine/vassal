@@ -43,13 +43,13 @@ public class SumProperties implements PropertySource {
       final String propertyName = keyString.substring(4, keyString.length() - 1);
       int sum = 0;
       boolean indeterminate = false;
-      for (GamePiece p : pieces) {
+      for (final GamePiece p : pieces) {
         final Object val = p.getLocalizedProperty(propertyName);
         if (val != null) {
           try {
             sum += Integer.parseInt(val.toString());
           }
-          catch (NumberFormatException e) {
+          catch (final NumberFormatException e) {
           }
         }
         else {
@@ -64,7 +64,7 @@ public class SumProperties implements PropertySource {
         value = sum + (indeterminate ? "+?" : "");
       }
     }
-    else if (pieces.size() > 0) {
+    else if (!pieces.isEmpty()) {
       value = pieces.iterator().next().getProperty(key);
     }
     return value;

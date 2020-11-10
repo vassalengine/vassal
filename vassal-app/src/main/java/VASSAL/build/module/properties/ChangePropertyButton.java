@@ -19,12 +19,10 @@ package VASSAL.build.module.properties;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Icon;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -33,14 +31,13 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Adds a toolbar button that changes the value of a global property
@@ -48,11 +45,12 @@ import VASSAL.tools.NamedKeyStroke;
  * @author rkinney
  *
  */
-public class ChangePropertyButton extends AbstractConfigurable implements PropertyChangerConfigurer.Constraints {
+public class ChangePropertyButton extends AbstractToolbarItem implements PropertyChangerConfigurer.Constraints {
   public static final String BUTTON_TEXT = "text"; //NON-NLS
   public static final String BUTTON_TOOLTIP = "tooltip"; //NON-NLS
   public static final String BUTTON_ICON = "icon"; //NON-NLS
   public static final String HOTKEY = "hotkey"; //NON-NLS
+
   public static final String PROPERTY_CHANGER = "propChanger"; //NON-NLS
 
   public static final String REPORT_FORMAT = "reportFormat"; //NON-NLS
@@ -67,19 +65,22 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   protected FormattedString format = new FormattedString();
 
   public ChangePropertyButton() {
-    launch = new LaunchButton(Resources.getString("Editor.ChangePropertyButton.change"), BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, e -> launch());
+    setNameKey("");
+    launch = makeLaunchButton(Resources.getString("Editor.ChangePropertyButton.change"),
+                              Resources.getString("Editor.ChangePropertyButton.change"),
+                              "", e -> launch());
   }
 
   public void launch() {
-    String oldValue = property.getPropertyValue();
-    String newValue = getNewValue();
+    final String oldValue = property.getPropertyValue();
+    final String newValue = getNewValue();
     if (newValue != null && !newValue.equals(oldValue)) {
-      Command c = property.setPropertyValue(newValue);
+      final Command c = property.setPropertyValue(newValue);
       if (report.getFormat().length() > 0) {
         report.setProperty(OLD_VALUE_FORMAT, oldValue);
         report.setProperty(NEW_VALUE_FORMAT, property.getPropertyValue());
         report.setProperty(DESCRIPTION_FORMAT, property.getDescription());
-        Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText());
+        final Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText());
         chatCommand.execute();
         c.append(chatCommand);
       }
@@ -100,38 +101,29 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {
-      Resources.getString("Editor.button_text_label"),
-      Resources.getString("Editor.tooltip_text_label"),
-      Resources.getString("Editor.button_icon_label"),
-      Resources.getString("Editor.hotkey_label"),
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
       Resources.getString("Editor.report_format"),
       Resources.getString("Editor.ChangePropertyButton.options")
-    };
+    );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      Icon.class,
-      NamedKeyStroke.class,
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
       ReportFormatConfig.class,
       PropChangerOptions.class
-    };
+    );
   }
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {
-      BUTTON_TEXT,
-      BUTTON_TOOLTIP,
-      BUTTON_ICON,
-      HOTKEY,
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
       REPORT_FORMAT,
       PROPERTY_CHANGER
-    };
+    );
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
@@ -165,7 +157,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
       if (BUTTON_TEXT.equals(key)) {
         setConfigureName((String)value);
       }
-      launch.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
@@ -178,13 +170,13 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
       return report.getFormat();
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-    property.getToolBar().remove(launch);
+    property.getToolBar().remove(getLaunchButton());
   }
 
   @Override
@@ -200,7 +192,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   @Override
   public void addTo(Buildable parent) {
     property = (GlobalProperty) parent;
-    property.getToolBar().add(launch);
+    property.getToolBar().add(getLaunchButton());
     propChangeConfig.setName(property.getConfigureName());
   }
 
@@ -210,7 +202,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   @Override
   public Component getComponent() {
-    return launch.getTopLevelAncestor();
+    return getLaunchButton().getTopLevelAncestor();
   }
 
   @Override
@@ -260,21 +252,13 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
 
   /**
-   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Collections.singletonList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
-  }
-
-  /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
 
-    PropertyChanger propChanger = getPropertyChanger();
+    final PropertyChanger propChanger = getPropertyChanger();
     if (propChanger != null) {
       if (propChanger instanceof IncrementProperty) {
         l.add(((IncrementProperty) propChanger).getIncrement());
@@ -283,11 +267,11 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
         l.add(((PropertySetter) propChanger).getRawValue());
       }
       else if (propChanger instanceof PropertyPrompt) {
-        PropertyPrompt pp = (PropertyPrompt) propChanger;
+        final PropertyPrompt pp = (PropertyPrompt) propChanger;
         l.add(pp.getPrompt());
         if (pp instanceof EnumeratedPropertyPrompt) {
-          Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
-          for (Expression e : ve) {
+          final Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
+          for (final Expression e : ve) {
             if (e == null) {
               continue;
             }
@@ -298,13 +282,5 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     }
 
     return l;
-  }
-
-  /**
-   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(BUTTON_TOOLTIP));
   }
 }

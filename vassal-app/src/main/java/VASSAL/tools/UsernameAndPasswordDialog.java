@@ -18,24 +18,23 @@
 
 package VASSAL.tools;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Frame;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.LayoutStyle;
-
 import VASSAL.build.GameModule;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+
+import java.awt.Color;
+import java.awt.Frame;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 // FIXME: Would be better if this didn't set the username and password
 // directly, but instead had a static method for returning them.
@@ -55,22 +54,25 @@ public class UsernameAndPasswordDialog extends JDialog {
     setLocationRelativeTo(parent);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-    final StringConfigurer nameConfig = new StringConfigurer(null,
-      Resources.getString("WizardSupport.RealName")); //$NON-NLS-1$
-    final StringConfigurer pwd = new PasswordConfigurer(null,
-      Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
-    final StringConfigurer pwd2 = new PasswordConfigurer(null,
-      Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
+    setLayout(new MigLayout("ins panel,gapy 4,wrap 2", "[right]rel[fill,grow]")); // NON-NLS
 
-    final Component nc = nameConfig.getControls();
-    final Component p1 = pwd.getControls();
-    final Component p2 = pwd2.getControls();
+    add(new JLabel(Resources.getString("WizardSupport.RealName")));
+    final StringConfigurer nameConfig = new StringConfigurer("");
+    add(nameConfig.getControls());
 
-    final JLabel note =
-      new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+    add(new JLabel(Resources.getString("WizardSupport.Password")));
+    final StringConfigurer pwd = new PasswordConfigurer(null, "");
+    add(pwd.getControls());
 
-    final JLabel error = new JLabel(Resources.getString(
-      "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
+    add(new JLabel(Resources.getString("WizardSupport.ConfirmPassword")));
+    final StringConfigurer pwd2 = new PasswordConfigurer(null, "");
+    add(pwd2.getControls());
+
+    final JLabel note = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+    add(note, "span 2,center"); // NON-NLS
+
+    final JLabel error = new JLabel(Resources.getString("WizardSupport.EnterNameAndPassword"));
+    add(error, "span 2,center"); // NON-NLS
 
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.setEnabled(false);
@@ -87,52 +89,16 @@ public class UsernameAndPasswordDialog extends JDialog {
         WriteErrorDialog.error(ex, p.getFile());
       }
 
-      UsernameAndPasswordDialog.this.dispose();
+      dispose();
     });
 
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(e -> UsernameAndPasswordDialog.this.dispose());
+    cancel.addActionListener(e -> dispose());
 
-    final JPanel panel = new JPanel();
-
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
-
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
-        .addComponent(nc)
-        .addComponent(p1)
-        .addComponent(p2)
-        .addComponent(note)
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(error)
-          .addGap(0, 0, Integer.MAX_VALUE))
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(ok)
-          .addComponent(cancel)));
-
-    layout.setVerticalGroup(
-      layout.createSequentialGroup()
-        .addComponent(nc)
-        .addComponent(p1)
-        .addComponent(p2)
-        .addComponent(note)
-        .addComponent(error)
-        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                         GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .addGroup(
-          layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
-            .addComponent(ok)
-            .addComponent(cancel)));
-
-    layout.linkSize(ok, cancel);
-
-    add(panel);
+    final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push")); // NON-NLS
+    buttonPanel.add(ok);
+    buttonPanel.add(cancel);
+    add(buttonPanel, "span 2,center"); // NON-NLS
 
     pack();
     setMinimumSize(getSize());

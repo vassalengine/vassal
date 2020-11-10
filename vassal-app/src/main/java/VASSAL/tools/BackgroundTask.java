@@ -35,7 +35,7 @@ public abstract class BackgroundTask {
 
   public Thread start() {
     final Runnable later = this::doLater;
-    Runnable first = () -> {
+    final Runnable first = () -> {
       try {
         doFirst();
       }
@@ -46,7 +46,7 @@ public abstract class BackgroundTask {
         SwingUtilities.invokeLater(later);
       }
     };
-    Thread t = new Thread(first);
+    final Thread t = new Thread(first);
     t.start();
     return t;
   }

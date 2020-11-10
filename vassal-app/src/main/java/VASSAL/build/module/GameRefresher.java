@@ -67,15 +67,15 @@ public final class GameRefresher implements GameComponent {
   private static final Logger logger = LoggerFactory.getLogger(GameRefresher.class);
 
   private Action refreshAction;
-  protected GpIdSupport gpIdSupport;
-  protected GpIdChecker gpIdChecker;
-  protected int updatedCount;
-  protected int notFoundCount;
-  protected int notOwnedCount;
-  protected RefreshDialog dialog;
-  protected boolean testMode;
+  private final GpIdSupport gpIdSupport;
+  private GpIdChecker gpIdChecker;
+  private int updatedCount;
+  private int notFoundCount;
+  private int notOwnedCount;
+  private RefreshDialog dialog;
+  private boolean testMode;
 
-  public GameRefresher(GpIdSupport gpIdSupport) {
+  public GameRefresher(final GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
   }
 
@@ -118,12 +118,12 @@ public final class GameRefresher implements GameComponent {
      * PieceSlots and PlaceMarker's in the module.
      */
     gpIdChecker = new GpIdChecker(useName);
-    for (PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+    for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
 
     // Add any PieceSlots in Prototype Definitions
-    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+    for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
       pc.getDefinitions().forEach(gpIdChecker::add);
     }
 
@@ -142,14 +142,14 @@ public final class GameRefresher implements GameComponent {
     final Command command = new NullCommand();
     final ArrayList<GamePiece> pieces = new ArrayList<>();
 
-    for (GamePiece piece : theModule.getGameState().getAllPieces()) {
+    for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
       if (piece instanceof Deck) {
-        for (Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           pieces.add(0, i.next());
         }
       }
       else if (piece instanceof Stack) {
-        for (Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           final GamePiece p = i.next();
           if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
               && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
@@ -174,7 +174,7 @@ public final class GameRefresher implements GameComponent {
     /*
      * 3. Generate the commands to update the pieces
      */
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       if (isTestMode()) {
         testGamePiece(piece);
       }
@@ -228,7 +228,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     final Point pos = piece.getPosition();
-    GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+    final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
 
     final Stack oldStack = piece.getParent();
     final int oldPos = oldStack == null ? 0 : oldStack.indexOf(piece);

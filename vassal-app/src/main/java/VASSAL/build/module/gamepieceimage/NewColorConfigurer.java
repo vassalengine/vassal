@@ -75,7 +75,7 @@ public class NewColorConfigurer extends Configurer {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-      Box box = Box.createHorizontalBox();
+      final Box box = Box.createHorizontalBox();
       box.add(new JLabel(Resources.getString("Editor.NewColorConfigurer.use_named_colors")));
       bc = new BooleanConfigurer(null, "", Boolean.FALSE); //$NON-NLS-1$
       box.add(bc.getControls());
@@ -93,7 +93,7 @@ public class NewColorConfigurer extends Configurer {
       cp.setMinimumSize(new java.awt.Dimension(40, 40));
       cp.setSize(new java.awt.Dimension(40, 40));
       colorBox.add(cp);
-      JButton b = new JButton(Resources.getString("Editor.select"));
+      final JButton b = new JButton(Resources.getString("Editor.select"));
       colorBox.add(b);
       p.add(colorBox);
 

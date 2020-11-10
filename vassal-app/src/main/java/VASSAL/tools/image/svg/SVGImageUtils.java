@@ -105,18 +105,12 @@ public class SVGImageUtils {
 
   public static Dimension getImageSize(SVGDocument doc) throws IOException {
     final SVGSVGElement root = doc.getRootElement();
-    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
-    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
-    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
-
     final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
     final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
 
-    float w = -1.0f;
-    float h = -1.0f;
-    float[] vb = null;
-
     // try to parse the width
+    float w = -1.0f;
+    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
     if (!ws.isEmpty()) {
       try {
         w = UnitProcessor.svgHorizontalLengthToUserSpace(ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx);
@@ -128,6 +122,8 @@ public class SVGImageUtils {
     }
 
     // try to parse the height
+    float h = -1.0f;
+    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
     if (!hs.isEmpty()) {
       try {
         h = UnitProcessor.svgVerticalLengthToUserSpace(hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx);
@@ -139,6 +135,8 @@ public class SVGImageUtils {
     }
 
     // try to parse the viewBox
+    float[] vb = null;
+    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
     if (!vbs.isEmpty()) {
       try {
         vb = ViewBox.parseViewBoxAttribute(root, vbs, bctx);
@@ -219,7 +217,6 @@ public class SVGImageUtils {
   protected static List<String> getExternalReferences(
                           String path, List<String> known) throws IOException {
 
-    final HashSet<String> follow = new HashSet<>();
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
 
     Document doc = null;
@@ -232,6 +229,7 @@ public class SVGImageUtils {
       throw new IOException(e);
     }
 
+    final HashSet<String> follow = new HashSet<>();
     final NodeList usenodes = doc.getElementsByTagName("use"); //NON-NLS
     for (int i = 0; i < usenodes.getLength(); ++i) {
       final Element e = (Element) usenodes.item(i);
@@ -251,7 +249,7 @@ public class SVGImageUtils {
       }
     }
 
-    for (String s : follow) {
+    for (final String s : follow) {
       known.addAll(getExternalReferences(s, known));
     }
 

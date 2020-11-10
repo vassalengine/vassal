@@ -171,7 +171,7 @@ public class BeanShellExpression extends Expression {
    * @return Expression
    */
   public static Expression createExpression(String s, boolean dontCreateStringExpressions) {
-    String expr;
+    final String expr;
     final String t = s.trim();
 
     if (t.startsWith("{") && t.endsWith("}")) {
@@ -181,7 +181,7 @@ public class BeanShellExpression extends Expression {
       expr = t;
     }
 
-    if (expr.trim().length() == 0) {
+    if (expr.isBlank()) {
       return new NullExpression();
     }
 
@@ -203,10 +203,5 @@ public class BeanShellExpression extends Expression {
     // Return a generalised Beanshell expression
     return new BeanShellExpression(expr);
 
-  }
-
-  @Override
-  public boolean equals(Object bse) {
-    return super.equals(bse);
   }
 }

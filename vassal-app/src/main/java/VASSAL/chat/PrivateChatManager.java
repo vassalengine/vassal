@@ -22,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -33,7 +34,7 @@ import VASSAL.tools.menu.MenuManager;
  * Manages {@link PrivateChatter} instances
  */
 public class PrivateChatManager {
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   private final List<Entry> chatters;
   private final List<Player> banned;
@@ -49,7 +50,7 @@ public class PrivateChatManager {
       return null;
     }
     PrivateChatter chat = null;
-    int index = chatters.indexOf(new Entry(sender, null));
+    final int index = chatters.indexOf(new Entry(sender, null));
     if (index >= 0) {
       chat = chatters.get(index).chatter;
     }
@@ -91,13 +92,16 @@ public class PrivateChatManager {
     private final PrivateChatter chatter;
 
     private Entry(Player p, PrivateChatter chat) {
-      if (p == null) {
-        throw new NullPointerException();
-      }
-      player = p;
+      player = Objects.requireNonNull(p);
       chatter = chat;
     }
 
+    @Override
+    public int hashCode() {
+      return player.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
       return o instanceof Entry && player.equals(((Entry) o).player);
     }

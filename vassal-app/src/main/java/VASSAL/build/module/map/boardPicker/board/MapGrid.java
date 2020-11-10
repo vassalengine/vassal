@@ -17,7 +17,9 @@
  */
 package VASSAL.build.module.map.boardPicker.board;
 
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 
@@ -29,7 +31,7 @@ public interface MapGrid {
   /**
    * @return the nearest grid location to the given point
    */
-  Point snapTo(java.awt.Point p);
+  Point snapTo(Point p);
 
   /**
    * @return true if the given point may not be a local location.
@@ -63,7 +65,7 @@ public interface MapGrid {
    * @param bounds the boundaries of the grid (in magnified coordinates)
    * @param scale the magnification factor
    */
-  void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
+  void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed);
 
   GridNumbering getGridNumbering();
 

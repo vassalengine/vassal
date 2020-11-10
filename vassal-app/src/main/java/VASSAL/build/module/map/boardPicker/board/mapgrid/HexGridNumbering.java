@@ -15,18 +15,8 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 25, 2002
- * Time: 11:46:35 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -34,37 +24,21 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 
-import javax.swing.Box;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
-import VASSAL.tools.ScrollPane;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 public class HexGridNumbering extends RegularGridNumbering {
-  private static final Logger logger =
-    LoggerFactory.getLogger(HexGridNumbering.class);
-
   private HexGrid grid;
   private boolean stagger = true;
 
@@ -137,15 +111,19 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   /** Draw the numbering, even if not visible */
   public void forceDraw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    int size = (int) (scale * fontSize + 0.5);
+    final int size = (int) (scale * fontSize + 0.5);
     if (size < 5) {
       return;
     }
 
-    Graphics2D g2d = (Graphics2D) g;
-    AffineTransform oldT = g2d.getTransform();
+    final Graphics2D g2d = (Graphics2D) g;
+    final AffineTransform oldT = g2d.getTransform();
     if (reversed) {
-      AffineTransform t = AffineTransform.getRotateInstance(Math.PI, bounds.x + .5 * bounds.width, bounds.y + .5 * bounds.height);
+      final AffineTransform t = AffineTransform.getRotateInstance(
+        Math.PI,
+        bounds.x + 0.5 * bounds.width,
+        bounds.y + 0.5 * bounds.height
+      );
       g2d.transform(t);
       visibleRect = t.createTransformedShape(visibleRect).getBounds();
     }
@@ -156,30 +134,29 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g.getClip();
+    final Shape oldClip = g.getClip();
     if (oldClip != null) {
-      Area clipArea = new Area(oldClip);
+      final Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
       g.setClip(clipArea);
     }
 
-    double deltaX = scale * grid.getHexWidth();
-    double deltaY = scale * grid.getHexSize();
+    final double deltaX = scale * grid.getHexWidth();
+    final double deltaY = scale * grid.getHexSize();
 
     if (grid.isSideways()) {
       bounds = new Rectangle(bounds.y, bounds.x, bounds.height, bounds.width);
       region = new Rectangle(region.y, region.x, region.height, region.width);
     }
 
-    int minCol = 2 * (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / (2 * deltaX));
-    double xmin = bounds.x + scale * grid.getOrigin().x + deltaX * minCol;
-    double xmax = region.x + region.width + deltaX;
-    int minRow = (int) Math.floor((region.y - bounds.y - scale * grid.getOrigin().y) / deltaY);
-    double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
-    double ymax = region.y + region.height + deltaY;
+    final int minCol = 2 * (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / (2 * deltaX));
+    final double xmin = bounds.x + scale * grid.getOrigin().x + deltaX * minCol;
+    final double xmax = region.x + region.width + deltaX;
+    final int minRow = (int) Math.floor((region.y - bounds.y - scale * grid.getOrigin().y) / deltaY);
+    final double ymin = bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
+    final double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font(Font.DIALOG, Font.PLAIN, size);
-    Point p = new Point();
+    final Font f = new Font(Font.DIALOG, Font.PLAIN, size);
     int alignment = LabelUtils.TOP;
     int offset = -(int) Math.round(deltaY / 2);
     if (grid.isSideways() || rotateTextDegrees != 0) {
@@ -187,7 +164,8 @@ public class HexGridNumbering extends RegularGridNumbering {
       offset = 0;
     }
 
-    Point gridp = new Point();
+    final Point p = new Point();
+    final Point gridp = new Point();
 
     Point centerPoint = null;
     double radians = 0;
@@ -198,9 +176,8 @@ public class HexGridNumbering extends RegularGridNumbering {
 
     for (double x = xmin; x < xmax; x += 2 * deltaX) {
       for (double y = ymin; y < ymax; y += deltaY) {
-
         p.setLocation((int) Math.round(x), (int) Math.round(y) + offset);
-        gridp = new Point(p.x, p.y - offset);
+        gridp.setLocation(p.x, p.y - offset);
         grid.rotateIfSideways(p);
 
         // Convert from map co-ordinates to board co-ordinates
@@ -217,7 +194,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         );
 
         p.setLocation((int) Math.round(x + deltaX), (int) Math.round(y + deltaY / 2) + offset);
-        gridp = new Point(p.x, p.y - offset);
+        gridp.setLocation(p.x, p.y - offset);
         grid.rotateIfSideways(p);
 
         // Convert from map co-ordinates to board co-ordinates
@@ -234,6 +211,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         );
       }
     }
+
     if (rotateTextDegrees != 0) {
       g2d.rotate(-radians);
     }
@@ -275,7 +253,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         row = getMaxRows() - row;
     }
 
-    Point p = new Point();
+    final Point p = new Point();
 
     p.x = (int) (col * grid.getHexWidth());
     p.x += grid.getOrigin().x;
@@ -389,11 +367,11 @@ public class HexGridNumbering extends RegularGridNumbering {
   protected int getRawRow(Point p) {
     p = new Point(p);
     grid.rotateIfSideways(p);
-    Point origin = grid.getOrigin();
-    double dx = grid.getHexWidth();
-    double dy = grid.getHexSize();
-    int nx = (int) Math.round((p.x - origin.x) / dx);
-    int ny;
+    final Point origin = grid.getOrigin();
+    final double dx = grid.getHexWidth();
+    final double dy = grid.getHexSize();
+    final int nx = (int) Math.round((p.x - origin.x) / dx);
+    final int ny;
     if (nx % 2 == 0) {
       ny = (int) Math.round((p.y - origin.y) / dy);
     }
@@ -414,81 +392,5 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   protected int getMaxColumns() {
     return (int) Math.floor(grid.getContainer().getSize().width / grid.getHexSize() + 0.5);
-  }
-
-  public static void main(String[] args) {
-    class TestPanel extends JPanel {
-      private static final long serialVersionUID = 1L;
-
-      private boolean reversed;
-      private double scale = 1.0;
-      private HexGrid grid;
-      private HexGridNumbering numbering;
-
-      private TestPanel() {
-        setLayout(new BorderLayout());
-        Box b = Box.createHorizontalBox();
-        final JTextField tf = new JTextField("1.0");
-        b.add(tf);
-        tf.addKeyListener(new KeyAdapter() {
-          @Override
-          public void keyReleased(KeyEvent e) {
-            try {
-              scale = Double.parseDouble(tf.getText());
-              repaint();
-            }
-            // FIXME: review error message
-            catch (NumberFormatException e1) {
-              logger.error("", e1);
-            }
-          }
-        });
-        final JCheckBox reverseBox = new JCheckBox(Resources.getString("Editor.HexGridNumbering.reversed"));
-        reverseBox.addItemListener(e -> {
-          reversed = reverseBox.isSelected();
-          repaint();
-        });
-        b.add(reverseBox);
-        final JCheckBox sidewaysBox = new JCheckBox(Resources.getString("Editor.HexGridNumbering.sideways"));
-        sidewaysBox.addItemListener(e -> {
-          grid.setAttribute(HexGrid.SIDEWAYS, sidewaysBox.isSelected() ? Boolean.TRUE : Boolean.FALSE);
-          repaint();
-        });
-        b.add(sidewaysBox);
-        add(BorderLayout.NORTH, b);
-        grid = new HexGrid();
-        grid.setAttribute(HexGrid.COLOR, Color.black);
-        numbering = new HexGridNumbering();
-        numbering.setAttribute(HexGridNumbering.COLOR, Color.black);
-        numbering.addTo(grid);
-        JPanel p = new JPanel() {
-          private static final long serialVersionUID = 1L;
-
-          @Override
-          public void paint(Graphics g) {
-            Rectangle r = new Rectangle(0, 0, getWidth(), getHeight());
-            g.clearRect(r.x, r.y, r.width, r.height);
-            grid.forceDraw(g, r, getVisibleRect(), scale, reversed);
-            numbering.forceDraw(g, getBounds(), getVisibleRect(), scale, reversed);
-          }
-        };
-        Dimension d = new Dimension(4000, 4000);
-        p.setPreferredSize(d);
-        add(BorderLayout.CENTER, new ScrollPane(p));
-      }
-    }
-    JFrame f = new JFrame();
-    f.add(new TestPanel());
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    screenSize.height -= 100;
-    screenSize.width -= 100;
-    f.setSize(screenSize);
-    f.setVisible(true);
-    f.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        System.exit(0);
-      }
-    });
   }
 }

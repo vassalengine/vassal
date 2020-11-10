@@ -29,13 +29,13 @@ import VASSAL.tools.PropertiesEncoder;
  * Date: Jun 7, 2003
  */
 public class StatusReporter implements Runnable {
-  private HttpRequestWrapper reportStatus;
+  private final HttpRequestWrapper reportStatus;
   private String lastReportedContents;
   private String currentContents;
   private long sleepInterval = MIN_SLEEP;
   private static final long MIN_SLEEP = 2000;
   private static final long MAX_SLEEP = 1000 * 60 * 60 * 2;
-  private AsynchronousServerNode server;
+  private final AsynchronousServerNode server;
 
   public StatusReporter(HttpRequestWrapper reportStatus, AsynchronousServerNode server) {
     this.reportStatus = reportStatus;
@@ -48,8 +48,8 @@ public class StatusReporter implements Runnable {
       return;
     }
     final StringBuilder buffer = new StringBuilder();
-    for (Node pl : players) {
-      Node mod = server.getModule(pl);
+    for (final Node pl : players) {
+      final Node mod = server.getModule(pl);
       try {
         final String name = new PropertiesEncoder(pl.getInfo()).getProperties().getProperty(SimpleStatus.NAME);
         if (name != null) {
@@ -75,7 +75,7 @@ public class StatusReporter implements Runnable {
     if (currentContents != null
         && !currentContents.equals(lastReportedContents)) {
       try {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.put("STATUS", currentContents); //$NON-NLS-1$
         reportStatus.doPost("updateConnections", props); //$NON-NLS-1$
         sleepInterval = MIN_SLEEP;

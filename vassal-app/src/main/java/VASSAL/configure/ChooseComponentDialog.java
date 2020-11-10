@@ -42,9 +42,9 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
   private static final long serialVersionUID = 1L;
 
   private Configurable target;
-  private Class<? extends Buildable> targetClass;
-  private JButton okButton;
-  private VASSAL.configure.ConfigureTree tree;
+  private final Class<? extends Buildable> targetClass;
+  private final JButton okButton;
+  private final ConfigureTree tree;
 
   public ChooseComponentDialog(Frame owner, Class<? extends Buildable> targetClass) {
     super(owner, true);
@@ -64,11 +64,11 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     };
     tree.addTreeSelectionListener(this);
     add(new ScrollPane(tree));
-    Box b = Box.createHorizontalBox();
+    final Box b = Box.createHorizontalBox();
     okButton = new JButton(Resources.getString("General.ok"));
     okButton.setEnabled(false);
     okButton.addActionListener(e -> dispose());
-    JButton cancelButton = new JButton(Resources.getString("General.cancel"));
+    final JButton cancelButton = new JButton(Resources.getString("General.cancel"));
     cancelButton.addActionListener(e -> {
       target = null;
       dispose();
@@ -83,9 +83,9 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
   public void valueChanged(TreeSelectionEvent e) {
     boolean enabled = false;
     target = null;
-    TreePath path = tree.getSelectionPath();
+    final TreePath path = tree.getSelectionPath();
     if (path != null) {
-      Object selected = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+      final Object selected = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
       enabled = isValidTarget(selected);
       if (enabled) {
         target = (Configurable) selected;

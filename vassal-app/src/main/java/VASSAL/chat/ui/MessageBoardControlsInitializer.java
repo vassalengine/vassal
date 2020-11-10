@@ -24,8 +24,7 @@ import VASSAL.chat.messageboard.MessageBoardControls;
 
 /** Adds controls to post/retrieve message from a message board */
 public class MessageBoardControlsInitializer implements ChatControlsInitializer {
-
-  private MessageBoardControls msgMgr;
+  private final MessageBoardControls msgMgr;
   private JButton checkMsgButton;
   private JButton postMsgButton;
 

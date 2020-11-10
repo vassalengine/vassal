@@ -70,11 +70,11 @@ public class ArchiveWriter extends DataArchive {
       isTempArchive = true;
 
       if (this.defaultExtension == null) {
-        this.defaultExtension = ".zip";
+        this.defaultExtension = ".zip";  //NON-NLS
       }
 
       try {
-        archiveName = Files.createTempFile(Info.getTempDir().toPath(), "tmp_", this.defaultExtension).toAbsolutePath().toString();
+        archiveName = Files.createTempFile(Info.getTempDir().toPath(), "tmp_", this.defaultExtension).toAbsolutePath().toString();  //NON-NLS
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, archiveName);
@@ -148,7 +148,7 @@ public class ArchiveWriter extends DataArchive {
   public void addImage(String path, String name) {
     // check SVG for external references and pull them in
     if (name.toLowerCase().endsWith(".svg")) { //$NON-NLS-1$//
-      List<String> exrefs;
+      final List<String> exrefs;
       try {
         exrefs = SVGImageUtils.getExternalReferences(path);
       }
@@ -157,10 +157,10 @@ public class ArchiveWriter extends DataArchive {
         return;
       }
 
-      for (String s : exrefs) {
+      for (final String s : exrefs) {
         final File f = new File(s);
 
-        byte[] buf;
+        final byte[] buf;
         try {
           buf = SVGImageUtils.relativizeExternalReferences(s);
         }

@@ -17,12 +17,21 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.GameState;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.command.ChangePiece;
+import VASSAL.search.AbstractImageFinder;
+import VASSAL.search.ImageSearchTarget;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.search.SearchTarget;
+import VASSAL.tools.ProblemDialog;
 
 import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,21 +46,15 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
-import VASSAL.build.module.GameState;
-import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.command.ChangePiece;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
-import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
@@ -65,15 +68,12 @@ import VASSAL.tools.ProblemDialog;
  * So a full logical GamePiece (the thing you see on the board), may consist of many Decorator instances (one for each trait) wrapped around the
  * BasicPiece.
  */
-public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
-  PropertyExporter, SearchTarget {
+public abstract class Decorator extends AbstractImageFinder implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
+  PropertyExporter, SearchTarget, ImageSearchTarget {
 
   protected GamePiece piece;
   private Decorator dec;
   private boolean selected = false;
-
-  public Decorator() {
-  }
 
   /** @param p Set the inner GamePiece -- usually the next Trait (Decorator) inward, or the BasicPiece itself. */
   public void setInner(GamePiece p) {
@@ -291,7 +291,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /** @return next piece "outward" (away from BasicPiece) in the trait list. This method is required
-   * by {@link Obscurable} to handle pasking of getProperty calls. */
+   * by {@link Obscurable} to handle masking of getProperty calls. */
   public Decorator getOuter() {
     return dec;
   }
@@ -335,7 +335,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   @Override
   public void setState(String newState) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, '\t');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState, '\t');
     mySetState(st.nextToken());
     try {
       piece.setState(st.nextToken());
@@ -359,12 +359,12 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   @Override
   public void mergeState(String newState, String oldState) {
-    SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, '\t');
-    String myNewState = stNew.nextToken();
-    String innerNewState = stNew.nextToken();
-    SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, '\t');
-    String myOldState = stOld.nextToken();
-    String innerOldState = stOld.nextToken();
+    final SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, '\t');
+    final String myNewState = stNew.nextToken();
+    final String innerNewState = stNew.nextToken();
+    final SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, '\t');
+    final String myOldState = stOld.nextToken();
+    final String innerOldState = stOld.nextToken();
     if (!myOldState.equals(myNewState)) {
       mySetState(myNewState);
     }
@@ -395,7 +395,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   @Override
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(myGetState(), '\t');
+    final SequenceEncoder se = new SequenceEncoder(myGetState(), '\t');
     se.append(piece.getState());
     return se.getValue();
   }
@@ -424,7 +424,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   @Override
   public String getType() {
-    SequenceEncoder se = new SequenceEncoder(myGetType(), '\t');
+    final SequenceEncoder se = new SequenceEncoder(myGetType(), '\t');
     se.append(piece.getType());
     return se.getValue();
   }
@@ -485,7 +485,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   @Override
   public Command keyEvent(KeyStroke stroke) {
-    Command c = myKeyEvent(stroke);
+    final Command c = myKeyEvent(stroke);
     return c == null ? piece.keyEvent(stroke)
       : c.append(piece.keyEvent(stroke));
   }
@@ -546,8 +546,8 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     }
     return null;
   }
-  
-  
+
+
   /**
    * {@link SearchTarget}
    * @return a list of the Decorator's string/expression fields if any (for search)
@@ -602,6 +602,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /** @return string information on trait, for debugging purposes */
+  @Override
   public String toString() {
     if (piece == null) {
       return super.toString();
@@ -629,13 +630,13 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   protected PieceI18nData getI18nData(String command, String description) {
-    PieceI18nData data = new PieceI18nData(this);
+    final PieceI18nData data = new PieceI18nData(this);
     data.add(command, description);
     return data;
   }
 
   protected PieceI18nData getI18nData(String[] commands, String[] descriptions) {
-    PieceI18nData data = new PieceI18nData(this);
+    final PieceI18nData data = new PieceI18nData(this);
     for (int i = 0; i < commands.length; i++) {
       data.add(commands[i], descriptions[i]);
     }
@@ -651,7 +652,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   protected String getTranslation(String key) {
-    String fullKey = TranslatablePiece.PREFIX + key;
+    final String fullKey = TranslatablePiece.PREFIX + key;
     return Localization.getInstance().translate(fullKey, key);
   }
 
@@ -720,7 +721,7 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
     if (!(p instanceof PersistentPropertyContainer)) {
       return null;
     }
-    PersistentPropertyContainer container = (PersistentPropertyContainer) p;
+    final PersistentPropertyContainer container = (PersistentPropertyContainer) p;
 
     String mapName = ""; //$NON-NLS-1$
     String boardName = ""; //$NON-NLS-1$
@@ -799,6 +800,20 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   }
 
   /**
+<<<<<<< HEAD
+   * {@link ImageSearchTarget}
+   * Adds all images used by this component AND any children to the collection
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    addLocalImageNames(s);
+    if (piece instanceof ImageSearchTarget) {
+      ((ImageSearchTarget) piece).addImageNamesRecursively(s);
+    }
+  }
+
+  /**
    * Test if this Decorator's Class, Type and State are equal to another trait.
    *
    * Implementations of this method should compare the individual values of the fields that
@@ -832,4 +847,24 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
   protected String buildDescription(String i18nKey) {
     return Resources.getString(i18nKey);
   }
+
+  /**
+   * Implement PropertyExporter.getProperties at the Decorator level.
+   * Add the properties from this Decorator to the supplied Map, then
+   * call the next innermost piece to do the same.
+   *
+   * Do not overwrite values if an outer trait has a property with the same name.
+   *
+   * @param result Map of property values
+   * @return Updated Map of property values
+   */
+  @Override
+  public java.util.Map<String, Object> getProperties(java.util.Map<String, Object> result) {
+    for (final String propertyName : getPropertyNames()) {
+      result.computeIfAbsent(propertyName, pn -> getLocalizedProperty(pn));
+    }
+
+    return piece == null ? result : ((PropertyExporter) piece).getProperties(result);
+  }
 }
+

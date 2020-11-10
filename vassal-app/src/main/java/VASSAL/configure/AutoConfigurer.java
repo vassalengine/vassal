@@ -67,24 +67,24 @@ public class AutoConfigurer extends Configurer
     });
 
     p = new JPanel();
-    //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     p.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ", hidemode 3", "[align right]rel[fill,grow]")); // NON-NLS
 
-    String[] name = c.getAttributeNames();
-    String[] prompt = c.getAttributeDescriptions();
-    Class<?>[] type = c.getAttributeTypes();
+    final String[] name = c.getAttributeNames();
+    final String[] prompt = c.getAttributeDescriptions();
+    final Class<?>[] type = c.getAttributeTypes();
 
-    int n = Math.min(name.length, Math.min(prompt.length, type.length));
+    final int n = Math.min(name.length, Math.min(prompt.length, type.length));
     for (int i = 0; i < n; ++i) {
       if (type[i] == null) {
         continue;
       }
-      Configurer config;
+      final Configurer config;
       config = createConfigurer(type[i], name[i], "", target);
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
         final JLabel label = new JLabel(prompt[i]);
+        label.setLabelFor(config.getControls());
         labels.put(name[i], label);
         p.add(label);
         p.add(config.getControls(), "wrap,grow"); // NON-NLS
@@ -189,9 +189,9 @@ public class AutoConfigurer extends Configurer
   }
 
   public void reset() {
-    String[] s = target.getAttributeNames();
-    for (String item : s) {
-      Configurer config = getConfigurer(item);
+    final String[] s = target.getAttributeNames();
+    for (final String item : s) {
+      final Configurer config = getConfigurer(item);
       if (config != null) {
         config.setValue(target.getAttributeValueString(item));
       }
@@ -233,13 +233,13 @@ public class AutoConfigurer extends Configurer
   protected void checkVisibility() {
     boolean visChanged = false;
     if (conditions != null) {
-      for (Configurer c : configurers) {
-        VisibilityCondition cond = conditions.get(c.getKey());
+      for (final Configurer c : configurers) {
+        final VisibilityCondition cond = conditions.get(c.getKey());
         if (cond != null) {
           if (c.getControls().isVisible() != cond.shouldBeVisible()) {
             visChanged = true;
             c.getControls().setVisible(cond.shouldBeVisible());
-            JLabel label = labels.get(c.getKey());
+            final JLabel label = labels.get(c.getKey());
             if (label != null) {
               label.setVisible(cond.shouldBeVisible());
             }
@@ -254,7 +254,7 @@ public class AutoConfigurer extends Configurer
   }
 
   public Configurer getConfigurer(String attribute) {
-    for (Configurer c : configurers) {
+    for (final Configurer c : configurers) {
       if (attribute.equals(c.getKey())) {
         return c;
       }

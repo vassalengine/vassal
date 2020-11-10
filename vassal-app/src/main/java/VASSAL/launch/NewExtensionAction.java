@@ -41,10 +41,10 @@ public class NewExtensionAction extends GameModuleAction {
 
   @Override
   public void performAction(ActionEvent e) {
-    ModuleExtension ext = new ModuleExtension(new ArchiveWriter((String) null, ".vext")); //NON-NLS
+    final ModuleExtension ext = new ModuleExtension(new ArchiveWriter((String) null, ".vext")); //NON-NLS
     ext.build();
-    JFrame frame = GameModule.getGameModule().getPlayerWindow();
-    ExtensionEditorWindow w = new ExtensionEditorWindow(GameModule.getGameModule(), ext);
+    final JFrame frame = GameModule.getGameModule().getPlayerWindow();
+    final ExtensionEditorWindow w = new ExtensionEditorWindow(GameModule.getGameModule(), ext);
     w.setLocation(0, frame.getY() + frame.getHeight());
     w.setSize(SwingUtils.getScreenBounds(frame).width / 2, w.getHeight());
     w.setVisible(true);

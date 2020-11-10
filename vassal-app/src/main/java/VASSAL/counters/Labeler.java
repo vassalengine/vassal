@@ -35,6 +35,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.plaf.basic.BasicHTML;
 
+import VASSAL.search.HTMLImageFinder;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -283,7 +285,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return;
     }
 
-    float fsize = (float)(font.getSize() * zoom);
+    final float fsize = (float)(font.getSize() * zoom);
 
     // Windows renders some characters (e.g. "4") very poorly at 8pt. To
     // mitigate that, we upscale, render, then downscale when the font
@@ -321,7 +323,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       lastCachedOp = Op.scale(baseOp, zoom);
     }
     else {
-      float fsize = (float)(font.getSize() * zoom);
+      final float fsize = (float)(font.getSize() * zoom);
       final Font zfont = font.deriveFont(fsize);
       lastCachedOp = new LabelOp(lastCachedLabel, zfont, textFg, textBg);
     }
@@ -618,6 +620,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return im;
     }
 
+    @Override
     protected JLabel buildDimensions() {
       // Build a JLabel to render HTML
       final JLabel l = new JLabel(txt);
@@ -658,7 +661,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public Shape getShape() {
-    Shape innerShape = piece.getShape();
+    final Shape innerShape = piece.getShape();
 
     // If the label has a Control key, then the image of the label is NOT
     // included in the selectable area of the counter
@@ -779,7 +782,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     if (propertyName.length() > 0) {
       l.add(propertyName);
     }
@@ -826,11 +829,11 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       fontFamily = new TranslatingStringEnumConfigurer(
         new String[]{Font.SERIF, Font.SANS_SERIF, Font.MONOSPACED, Font.DIALOG, Font.DIALOG_INPUT},
         new String[] {
-          Resources.getString("Editor.Font.serif"),
-          Resources.getString("Editor.Font.sans_serif"),
-          Resources.getString("Editor.Font.monospaced"),
-          Resources.getString("Editor.Font.dialog"),
-          Resources.getString("Editor.Font.dialog_input")},
+          "Editor.Font.serif",
+          "Editor.Font.sans_serif",
+          "Editor.Font.monospaced",
+          "Editor.Font.dialog",
+          "Editor.Font.dialog_input"},
           l.font.getFamily());
 
       JPanel p = new JPanel(new MigLayout("ins 0", "[]unrel[]rel[]unrel[]rel[]unrel[]rel[]")); // NON-NLS
@@ -857,9 +860,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       vPos = new TranslatingStringEnumConfigurer(
         new String[] {"c", "t", "b"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.top"),
-          Resources.getString("Editor.bottom")
+          "Editor.center",
+          "Editor.top",
+          "Editor.bottom"
         },
         l.verticalPos
       );
@@ -874,9 +877,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       hPos = new TranslatingStringEnumConfigurer(
         new String[] {"c", "l", "r"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.left"),
-          Resources.getString("Editor.right")
+          "Editor.center",
+          "Editor.left",
+          "Editor.right"
         },
         l.horizontalPos
       );
@@ -891,9 +894,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       vJust = new TranslatingStringEnumConfigurer(
         new String[] {"c", "t", "b"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.top"),
-          Resources.getString("Editor.bottom")
+          "Editor.center",
+          "Editor.top",
+          "Editor.bottom"
         },
         l.verticalJust
       );
@@ -902,9 +905,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       hJust = new TranslatingStringEnumConfigurer(
         new String[] {"c", "l", "r"}, // NON-NLS
         new String[] {
-          Resources.getString("Editor.center"),
-          Resources.getString("Editor.left"),
-          Resources.getString("Editor.right")
+          "Editor.center",
+          "Editor.left",
+          "Editor.right"
         },
         l.horizontalJust
       );
@@ -952,7 +955,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       final int style = Font.PLAIN +
         (bold.booleanValue() ? Font.BOLD : 0) +
         (italic.booleanValue() ? Font.ITALIC : 0);
-      se.append(style + "");
+      se.append(style);
       i = (Integer) rotate.getValue();
       if (i == null) i = 0;
 
@@ -1035,5 +1038,15 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(label, nameFormat.getFormat(), labelFormat.getFormat());
+  }
+
+  /**
+   * In case our labels refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(label);
+    h.addImageNames(s);
   }
 }

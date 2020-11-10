@@ -17,6 +17,29 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.ProblemDialog;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.awt.geom.Area;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.KeyStroke;
+
+import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -35,7 +58,6 @@ import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
@@ -43,29 +65,9 @@ import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.InputEvent;
-import java.awt.geom.Area;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import java.util.Objects;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -187,7 +189,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     else {
       s = s.substring(ID.length());
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("");
       activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
       activateKey = st.nextToken("A"); // NON-NLS
@@ -262,7 +264,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       }
 
-      value = activateKey.length() > 0 ? -1 : 1;
+      value = canBeActivated() ? -1 : 1;
       nValues = imageName.length;
       size = new Rectangle[imageName.length];
       imagePainter = new ScaledImagePainter[imageName.length];
@@ -277,13 +279,24 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   /**
+   * Can this Layer be Activated?
+   * Old-style depended on checking if any activation keys where specified.
+   * New-stule maintains a separate alwaysActive variable
+   *
+   * @return true if this layer trait has an activate command
+   */
+  public boolean canBeActivated() {
+    return getVersion() == BASE_VERSION ? activateKey.length() > 0 : !alwaysActive;
+  }
+
+  /**
    * This original way of representing the type causes problems because it's not
    * extensible
    *
    * @param s Original type
    */
   private void originalSetType(String s) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
 
     st.nextToken();
     final SequenceEncoder.Decoder st2 =
@@ -384,7 +397,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String getName(boolean localized) {
     checkPropertyLevel(); // Name Change?
-    String ret;
+    final String ret;
 
     final String cname = 0 < value && value - 1 < commonName.length ?
                          getCommonName(localized, value - 1) : null;
@@ -486,7 +499,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     for (int i = 0; i < nValues; ++i) {
       if (commonName[i] != null) {
-        SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
+        final SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
         se.append(sub.append(commonName[i]).getValue());
       }
       else {
@@ -575,7 +588,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (activateCommand != null && activateCommand.length() > 0 &&
           !alwaysActive) {
 
-        KeyCommand k;
+        final KeyCommand k;
         k = new KeyCommand(activateCommand, activateKeyStroke, outer, this);
         k.setEnabled(nValues > 0);
         l.add(k);
@@ -654,7 +667,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       // random layers
       if (rndKey != null && rndKey.equals(stroke)) {
-        int val;
+        final int val;
         val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
       }
@@ -880,7 +893,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    List<NamedKeyStroke> l = new ArrayList<>();
+    final List<NamedKeyStroke> l = new ArrayList<>();
     if (!alwaysActive) {
       l.add(activateKeyStroke);
     }
@@ -898,7 +911,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getMenuTextList() {
-    List<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     if (!alwaysActive) {
       l.add(activateCommand);
     }
@@ -964,7 +977,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(name + IMAGE);
     l.add(name + LEVEL);
     l.add(name + ACTIVE);
@@ -975,7 +988,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Embellishment)) return false;
-    Embellishment c = (Embellishment) o;
+    final Embellishment c = (Embellishment) o;
     if (! Objects.equals(value, c.value)) return false;
     if (! Objects.equals(activateCommand, c.activateCommand)) return false;
     if (! Objects.equals(activateModifiers, c.activateModifiers)) return false;
@@ -1024,7 +1037,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final JRadioButton prefix = new JRadioButton(Resources.getString("Editor.Embellishment.is_prefix"));
     private final JRadioButton suffix = new JRadioButton(Resources.getString("Editor.Embellishment.is_suffix"));
     private final JCheckBox drawUnderneath = new JCheckBox();
-    private final FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, Resources.getString("Editor.Embellishment.level_number"));
+    private final JLabel resetLevelLabel = new JLabel(Resources.getString("Editor.Embellishment.level_number"));
+    private final FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer("");
     private final StringConfigurer resetCommand;
     private final JCheckBox loop = new JCheckBox();
 
@@ -1064,11 +1078,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final JLabel optionLabel;
 
     public Ed(Embellishment e) {
-      Box box;
+      final Box box;
       version = e.version;
 
       controls = new JPanel();
-      controls.setLayout(new MigLayout("hidemode 2,fillx," + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[]")); // NON-NLS
+      controls.setLayout(new MigLayout("hidemode 2,fillx," + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[grow 0]")); // NON-NLS
 
       nameConfig = new StringConfigurer(e.getName());
       controls.add(new JLabel(Resources.getString("Editor.name_label")));
@@ -1079,7 +1093,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.always_active")));
       controls.add(alwaysActiveConfig.getControls(), "wrap"); // NON-NLS
-      
+
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.underneath_when_highlighted")));
       controls.add(drawUnderneath, "wrap"); // NON-NLS
 
@@ -1137,33 +1151,34 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateLabel = new JLabel(Resources.getString("Editor.Embellishment.activate_layer"));
       controls.add(activateLabel);
       activateCommand = new StringConfigurer(e.activateCommand);
-      controls.add(activateCommand.getControls(), "grow"); // NON-NLS
-      controls.add(activateConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(activateCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(activateConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       increaseLabel = new JLabel(Resources.getString("Editor.Embellishment.increase_level"));
       controls.add(increaseLabel);
       upCommand = new StringConfigurer(e.upCommand);
-      controls.add(upCommand.getControls(), "grow"); // NON-NLS
-      controls.add(increaseConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(upCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(increaseConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       decreaseLabel = new JLabel(Resources.getString("Editor.Embellishment.decrease_level"));
       controls.add(decreaseLabel);
       downCommand = new StringConfigurer(e.downCommand);
-      controls.add(downCommand.getControls(), "grow"); // NON-NLS
-      controls.add(decreaseConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(downCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(decreaseConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       resetLabel = new JLabel(Resources.getString("Editor.Embellishment.reset_to_level"));
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(e.resetCommand);
-      controls.add(resetCommand.getControls(), "grow"); // NON-NLS
-      controls.add(resetConfig.getControls(), "align center"); // NON-NLS
-      controls.add(resetLevel.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(resetCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(resetConfig.getControls(), "grow 2"); // NON-NLS
+      controls.add(resetLevelLabel, "split 2"); // NON-NLS
+      controls.add(resetLevel.getControls(), "wrap"); // NON-NLS
 
       rndLabel = new JLabel(Resources.getString("Editor.Embellishment.randomize"));
       controls.add(rndLabel);
       rndCommand = new StringConfigurer(e.rndText);
-      controls.add(rndCommand.getControls(), "grow"); // NON-NLS
-      controls.add(rndKeyConfig.getControls(), "align center,wrap"); // NON-NLS
+      controls.add(rndCommand.getControls(), "grow 1"); // NON-NLS
+      controls.add(rndKeyConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       images = getImagePicker();
       images.addListSelectionListener(e12 -> setUpDownEnabled());
@@ -1302,6 +1317,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       resetCommand.getControls().setVisible(controlled);
       resetConfig.getControls().setVisible(controlled);
       resetLevel.getControls().setVisible(controlled);
+      resetLevelLabel.setVisible(controlled);
 
       rndLabel.setVisible(controlled);
       rndCommand.getControls().setVisible(controlled);
@@ -1318,7 +1334,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
 
     private void updateLevelName() {
-      int index = images.getList().getSelectedIndex();
+      final int index = images.getList().getSelectedIndex();
       if (index < 0) {
         levelNameInput.setValue(null);
       }
@@ -1330,9 +1346,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
 
     private void changeLevelName() {
-      int index = images.getList().getSelectedIndex();
+      final int index = images.getList().getSelectedIndex();
       if (index >= 0) {
-        String s = levelNameInput.getValueString();
+        final String s = levelNameInput.getValueString();
         names.set(index, s);
         if (prefix.isSelected()) {
           isPrefix.set(index, PREFIX);
@@ -1361,7 +1377,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final ArrayList<String> imageNames = new ArrayList<>();
       final ArrayList<String> commonNames = new ArrayList<>();
       int i = 0;
-      for (String n : images.getImageNameList()) {
+      for (final String n : images.getImageNameList()) {
         imageNames.add(n);
         String commonName = names.get(i);
         if (commonName != null && commonName.length() > 0) {
@@ -1443,10 +1459,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         String s = e.commonName[i];
         Integer is = NEITHER;
         if (s != null && s.length() > 0) {
-          SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '+');
-          String first = st.nextToken();
+          final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '+');
+          final String first = st.nextToken();
           if (st.hasMoreTokens()) {
-            String second = st.nextToken();
+            final String second = st.nextToken();
             if (first.length() == 0) {
               s = second;
               is = SUFFIX;
@@ -1500,7 +1516,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     final PieceI18nData data = new PieceI18nData(this);
     final String prefix = name.length() > 0 ? name + ": " : "";
-    if (activateKey.length() > 0) {
+    if (canBeActivated()) {
       data.add(activateCommand, prefix + Resources.getString("Editor.Embellishment.activate_command"));
     }
     if (!followProperty) {
@@ -1514,5 +1530,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       data.add(strip(commonName[i]), prefix + Resources.getString("Editor.Embellishment.level_name_description",  (i + 1)));
     }
     return data;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    Collections.addAll(s, imageName);
   }
 }

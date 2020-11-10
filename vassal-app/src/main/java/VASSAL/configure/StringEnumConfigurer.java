@@ -18,11 +18,9 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.Box;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 /**
  * A Configurer that returns a String from among a list of possible values
@@ -30,18 +28,26 @@ import javax.swing.JLabel;
 public class StringEnumConfigurer extends Configurer {
   private String[] validValues;
   private JComboBox<String> box;
-  private Box panel;
+  private ConfigurerPanel panel;
 
   public StringEnumConfigurer(String key, String name, String[] validValues) {
     super(key, name);
     this.validValues = validValues;
   }
 
+  public JComboBox<String> getBox() {
+    return box;
+  }
+
+  public void setBox(JComboBox<String> box) {
+    this.box = box;
+  }
+
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = Box.createHorizontalBox();
-      panel.add(new JLabel(name));
+      panel = new ConfigurerPanel(getName(), "[]", "[]rel[]"); // NON-NLS
+
       box = new JComboBox<>(validValues);
       box.setMaximumSize(new Dimension(box.getMaximumSize().width, box.getPreferredSize().height));
       if (isValidValue(getValue())) {
@@ -69,7 +75,7 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   public boolean isValidValue(Object o) {
-    for (String validValue : validValues) {
+    for (final String validValue : validValues) {
       if (validValue.equals(o)) {
         return true;
       }
@@ -110,13 +116,8 @@ public class StringEnumConfigurer extends Configurer {
     setValue((Object) s);
   }
 
-  // TODO move test code to a manual unit test annotated with @Ignore
-  public static void main(String[] args) {
-    JFrame f = new JFrame();
-    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); // NON-NLS
-    c.addPropertyChangeListener(evt -> System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()));
-    f.add(c.getControls());
-    f.pack();
-    f.setVisible(true);
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    panel.setLabelVisibility(visible);
   }
 }

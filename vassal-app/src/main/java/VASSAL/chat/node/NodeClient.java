@@ -110,7 +110,7 @@ public class NodeClient implements LockableChatServerConnection,
     roomControls = new LockableNodeRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
-    PrivateChatManager privateChatManager = new PrivateChatManager(this);
+    final PrivateChatManager privateChatManager = new PrivateChatManager(this);
     roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this,
         privateChatManager));
     roomControls.addPlayerActionFactory(SendSoundAction.factory(this, Resources
@@ -151,18 +151,18 @@ public class NodeClient implements LockableChatServerConnection,
     if (connect) {
       if (!isConnected()) {
         try {
-          NodePlayer oldPlayer = me;
+          final NodePlayer oldPlayer = me;
           me = new NodePlayer(playerId);
           setUserInfo(oldPlayer);
           initializeConnection();
-          Command welcomeMessage = welcomer.getWelcomeMessage();
+          final Command welcomeMessage = welcomer.getWelcomeMessage();
           if (welcomeMessage != null) {
             welcomeMessage.execute();
           }
           registerNewConnection();
         }
         // FIXME: review error message
-        catch (IOException e) {
+        catch (final IOException e) {
           propSupport.firePropertyChange(STATUS, null, Resources.getString(
               "Chat.unable_to_establish", e.getMessage())); //$NON-NLS-1$
         }
@@ -180,12 +180,12 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void registerNewConnection() {
-    String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName)
+    final String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName)
         .getValue();
     send(Protocol.encodeRegisterCommand(me.getId(), path,
         new PropertiesEncoder(me.toProperties()).getStringValue()));
     if (GameModule.getGameModule() != null) {
-      String username = (String) GameModule.getGameModule().getPrefs()
+      final String username = (String) GameModule.getGameModule().getPrefs()
           .getValue("Login"); //$NON-NLS-1$
       if (username != null) {
         send(Protocol.encodeLoginCommand(username));
@@ -194,13 +194,13 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void initializeConnection() throws UnknownHostException, IOException {
-    Socket s = new Socket(host, port);
+    final Socket s = new Socket(host, port);
     sender = new SocketHandler(s, this);
     sender.start();
   }
 
   protected void closeConnection() {
-    SocketHandler s = sender;
+    final SocketHandler s = sender;
     sender = null;
     s.close();
   }
@@ -234,7 +234,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public boolean isDefaultRoom(Room r) {
-    return r == null ? false : r.getName().equals(getDefaultRoomName());
+    return r != null && r.getName().equals(getDefaultRoomName());
   }
 
   protected void sendStats() {
@@ -251,7 +251,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   public void sendToAll(String msg) {
     if (currentRoom != null) {
-      String path = new SequenceEncoder(moduleName, '/').append(
+      final String path = new SequenceEncoder(moduleName, '/').append(
           currentRoom.getName()).getValue();
       forward(path, msg);
     }
@@ -267,7 +267,7 @@ public class NodeClient implements LockableChatServerConnection,
           );
         }
         // FIXME: review error message
-        catch (IOException e) {
+        catch (final IOException e) {
           e.printStackTrace();
         }
       }
@@ -277,7 +277,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   public void sendToOthers(String msg) {
     if (currentRoom != null) {
-      String path = new SequenceEncoder(moduleName, '/').append(
+      final String path = new SequenceEncoder(moduleName, '/').append(
           currentRoom.getName()).append("~" + me.getId()).getValue(); //$NON-NLS-1$
       forward(path, msg);
     }
@@ -285,7 +285,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public void sendTo(Player recipient, Command c) {
-    String path = new SequenceEncoder(moduleName, '/')
+    final String path = new SequenceEncoder(moduleName, '/')
       .append("*").append(recipient.getId()).getValue(); //$NON-NLS-1$
     forward(path, encoder.encode(c));
   }
@@ -356,7 +356,7 @@ public class NodeClient implements LockableChatServerConnection,
    */
   @Override
   public void doInvite(String playerId, String roomName) {
-    for (Room room : getAvailableRooms()) {
+    for (final Room room : getAvailableRooms()) {
       if (room.getName().equals(roomName)) {
         if (room instanceof NodeRoom) {
           final String owner = ((NodeRoom) room).getOwner();
@@ -419,10 +419,10 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   public void sendRoomInfo(NodeRoom r) {
-    Node dummy = new Node(null, r.getName(), new PropertiesEncoder(r.getInfo())
+    final Node dummy = new Node(null, r.getName(), new PropertiesEncoder(r.getInfo())
         .getStringValue());
     if (isConnected()) {
-      String msg = Protocol.encodeRoomsInfo(new Node[] { dummy });
+      final String msg = Protocol.encodeRoomsInfo(new Node[] { dummy });
       send(msg);
     }
   }
@@ -437,7 +437,7 @@ public class NodeClient implements LockableChatServerConnection,
       final String newRoom = r.getName();
       final String newPath = new SequenceEncoder(moduleName, '/').append(
           newRoom).getValue();
-      String msg = Protocol.encodeJoinCommand(newPath, password);
+      final String msg = Protocol.encodeJoinCommand(newPath, password);
       send(msg);
       // Request a synch if we are not the owner
       if (r instanceof NodeRoom) {
@@ -465,10 +465,10 @@ public class NodeClient implements LockableChatServerConnection,
    *          Encoded message
    */
   public void handleMessageFromServer(String msg) {
-    Node n;
-    Properties p;
+    final Node n;
+    final Properties p;
     if ((n = Protocol.decodeListCommand(msg)) != null) {
-      Node mod = n.getChild(moduleName);
+      final Node mod = n.getChild(moduleName);
       if (mod != null) {
         updateRooms(mod);
       }
@@ -484,15 +484,15 @@ public class NodeClient implements LockableChatServerConnection,
       }
     }
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
-      for (NodeRoom aRoom : allRooms) {
-        String infoString = p.getProperty(aRoom.getName());
+      for (final NodeRoom aRoom : allRooms) {
+        final String infoString = p.getProperty(aRoom.getName());
         if (infoString != null && infoString.length() > 0) {
           try {
-            Properties info = new PropertiesEncoder(infoString).getProperties();
+            final Properties info = new PropertiesEncoder(infoString).getProperties();
             aRoom.setInfo(info);
           }
           // FIXME: review error message
-          catch (IOException e) {
+          catch (final IOException e) {
             e.printStackTrace();
           }
         }
@@ -516,7 +516,7 @@ public class NodeClient implements LockableChatServerConnection,
           );
         }
         // FIXME: review error message
-        catch (IOException e) {
+        catch (final IOException e) {
           e.printStackTrace();
         }
       }
@@ -530,12 +530,12 @@ public class NodeClient implements LockableChatServerConnection,
   }
 
   protected void updateRooms(Node module) {
-    Node[] roomNodes = module.getChildren();
-    NodeRoom[] rooms = new NodeRoom[roomNodes.length];
+    final Node[] roomNodes = module.getChildren();
+    final NodeRoom[] rooms = new NodeRoom[roomNodes.length];
     int defaultRoomIndex = -1;
     for (int i = 0; i < roomNodes.length; ++i) {
-      Node[] playerNodes = roomNodes[i].getChildren();
-      NodePlayer[] players = new NodePlayer[playerNodes.length];
+      final Node[] playerNodes = roomNodes[i].getChildren();
+      final NodePlayer[] players = new NodePlayer[playerNodes.length];
       boolean containsMe = false;
       for (int j = 0; j < playerNodes.length; ++j) {
         players[j] = new NodePlayer(playerNodes[j].getId());
@@ -543,7 +543,7 @@ public class NodeClient implements LockableChatServerConnection,
           containsMe = true;
         }
         try {
-          Properties p = new PropertiesEncoder(playerNodes[j].getInfo())
+          final Properties p = new PropertiesEncoder(playerNodes[j].getInfo())
               .getProperties();
           players[j].setInfo(p);
           if (players[j].equals(me)) {
@@ -551,7 +551,7 @@ public class NodeClient implements LockableChatServerConnection,
           }
         }
         // FIXME: review error message
-        catch (IOException e) {
+        catch (final IOException e) {
           e.printStackTrace();
         }
       }
@@ -572,7 +572,7 @@ public class NodeClient implements LockableChatServerConnection,
         }
       }
       // FIXME: review error message
-      catch (IOException e) {
+      catch (final IOException e) {
         e.printStackTrace();
       }
       if (containsMe) {
@@ -587,7 +587,7 @@ public class NodeClient implements LockableChatServerConnection,
     }
     else {
       allRooms = rooms;
-      NodeRoom swap = allRooms[0];
+      final NodeRoom swap = allRooms[0];
       allRooms[0] = allRooms[defaultRoomIndex];
       allRooms[defaultRoomIndex] = swap;
     }
@@ -602,12 +602,12 @@ public class NodeClient implements LockableChatServerConnection,
   public Player stringToPlayer(String s) {
     NodePlayer p = null;
     try {
-      PropertiesEncoder propEncoder = new PropertiesEncoder(s);
+      final PropertiesEncoder propEncoder = new PropertiesEncoder(s);
       p = new NodePlayer(null);
       p.setInfo(propEncoder.getProperties());
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
     return p;
@@ -615,7 +615,7 @@ public class NodeClient implements LockableChatServerConnection,
 
   @Override
   public String playerToString(Player p) {
-    Properties props = ((NodePlayer) p).toProperties();
+    final Properties props = ((NodePlayer) p).toProperties();
     return new PropertiesEncoder(props).getStringValue();
   }
 

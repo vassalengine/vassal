@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
  * A Preferences option controlling the visibility of a window
  */
 public class VisibilityOption extends PositionOption {
-  private boolean isVisible = true;
+  private boolean isVisible;
   public VisibilityOption(String key, Window f) {
     super(key, f);
     isVisible = f.isVisible();
@@ -43,7 +43,7 @@ public class VisibilityOption extends PositionOption {
 
   @Override
   public void setValue(String in) {
-    StringTokenizer st = new StringTokenizer(in, "\t");
+    final StringTokenizer st = new StringTokenizer(in, "\t");
     super.setValue(st.nextToken());
     if (st.hasMoreTokens()) {
       isVisible = "true".equals(st.nextToken()); //NON-NLS

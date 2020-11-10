@@ -28,6 +28,7 @@ import javax.swing.JPanel;
  * A standardised Panel for use by Trait configurers
  */
 public class TraitConfigPanel extends JPanel {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Create a new default Trait Config Panel
@@ -37,7 +38,7 @@ public class TraitConfigPanel extends JPanel {
   }
 
   /**
-   * Create a new default Trait Config Panel and sepcify debug option
+   * Create a new default Trait Config Panel and specify debug option
    *
    * @param debug Turn debug on?
    */
@@ -46,7 +47,7 @@ public class TraitConfigPanel extends JPanel {
   }
 
   /**
-   * Create a new Trait Congig Panel with a non-standard layout
+   * Create a new Trait Config Panel with a non-standard layout
    *
    * @param layout Non-standard layout
    */
@@ -64,7 +65,7 @@ public class TraitConfigPanel extends JPanel {
 
   /**
    * Add the Controls from a Configurer
-   * @param c Conigurer
+   * @param c Configurer
    */
   public void addControls(Configurer c) {
     add(c.getControls());
@@ -74,18 +75,37 @@ public class TraitConfigPanel extends JPanel {
     add(c.getControls(), configurerConstraints);
   }
 
+  /**
+   * Add a component and its label with additional MigLayout constraints to this panel.
+   *
+   * NOTE: This is the base level add() method. All other add() overrides should eventually
+   * call this method.
+   *
+   * @param label Label
+   * @param c Configurer components
+   * @param constraints MigLayout constraints
+   */
   public void add(JLabel label, Component c, String constraints) {
+    label.setLabelFor(c);
     add(label);
     add(c, constraints);
   }
 
+  /**
+   * Add a Configurer and its label with additional MigLayout constraints to this panel.
+   *
+   * @param label Label
+   * @param c Configurer
+   * @param configureConstraints Miglayout Constraints
+   */
   public void add(JLabel label, Configurer c, String configureConstraints) {
     add(label, c.getControls(), configureConstraints);
   }
 
   /**
-   * Add an existing JLabel and add Configurer Controls
-   * @param label Jlabel
+   * Add a Configurer and its label to this panel
+   *
+   * @param label JLabel
    * @param c Configurer
    */
   public void add(JLabel label, Configurer c) {
@@ -94,6 +114,7 @@ public class TraitConfigPanel extends JPanel {
 
   /**
    * Generate and add a label for an i18nKey and add Configurer controls
+   *
    * @param i18nKey i18n Key
    * @param c Configurer
    */
@@ -101,6 +122,13 @@ public class TraitConfigPanel extends JPanel {
     add(new JLabel(Resources.getString(i18nKey)), c);
   }
 
+  /**
+   * Generate and add a label for an i18nKey and add Configurer controls with MigLayout constraints
+   *
+   * @param i18nKey I18n key
+   * @param c Configurer
+   * @param configureConstraints MigLayout constraints
+   */
   public void add(String i18nKey, Configurer c, String configureConstraints) {
     add(new JLabel(Resources.getString(i18nKey)), c, configureConstraints);
   }
@@ -108,20 +136,22 @@ public class TraitConfigPanel extends JPanel {
   /**
    * Add an existing JLabel and existing JPanel containing controls.
    *
-   * @param label Jlabel
+   * @param label JLabel
    * @param panel JPanel
    */
   public void add(JLabel label, JPanel panel) {
-    add(label);
-    add(panel);
+    add(label, panel, "");
   }
   /**
    * Add a label based on an i18Key and an existing JPanel containing controls
    * @param i18nKey i18n Key
-   * @param p Jpanel containing controls
+   * @param p JPanel containing controls
    */
   public void add(String i18nKey, JPanel p) {
-    addLabel(Resources.getString(i18nKey));
-    add(p);
+    add(new JLabel(Resources.getString(i18nKey)), p);
+  }
+
+  public void add(String i18nKey, JPanel p, String constraints) {
+    add(new JLabel(Resources.getString(i18nKey)), p, constraints);
   }
 }

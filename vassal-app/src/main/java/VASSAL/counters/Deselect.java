@@ -44,7 +44,7 @@ import VASSAL.configure.StringConfigurer;
 
 
 /**
- * Implements a trait to allow a piece to be deselected from the KeyBuffer in response to a Key Command. 
+ * Implements a trait to allow a piece to be deselected from the KeyBuffer in response to a Key Command.
  * @author Brian Reynolds
  */
 public class Deselect extends Decorator implements TranslatablePiece {
@@ -69,9 +69,10 @@ public class Deselect extends Decorator implements TranslatablePiece {
     setInner(inner);
   }
 
+  @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, DELIMITER);
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, DELIMITER);
     commandName = st.nextToken();
     key = st.nextNamedKeyStroke('K');
     description = st.nextToken("");
@@ -79,12 +80,14 @@ public class Deselect extends Decorator implements TranslatablePiece {
     command = null;
   }
 
+  @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(DELIMITER);
+    final SequenceEncoder se = new SequenceEncoder(DELIMITER);
     se.append(commandName).append(key).append(description).append(unstack);
     return ID + se.getValue();
   }
 
+  @Override
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       deselectCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
@@ -102,22 +105,24 @@ public class Deselect extends Decorator implements TranslatablePiece {
     return command;
   }
 
+  @Override
   public String myGetState() {
     return "";
   }
 
+  @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
     if (deselectCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = Decorator.getOutermost(this);
 
       final Map m = getMap();
 
       if (unstack) {
-        Stack stack = outer.getParent();      //BR// If we're now being dragged around as part of a stack                                            
+        final Stack stack = outer.getParent();      //BR// If we're now being dragged around as part of a stack
         if (stack != null) {
-          Point pos = outer.getPosition();    //BR// Figure out where stack was/is
+          final Point pos = outer.getPosition();    //BR// Figure out where stack was/is
           stack.setExpanded(true);            //BR// Expand the stack
           stack.remove(outer);                //BR// Remove our piece from the stack
           c = m.placeAt(outer, pos);          //BR// Put it back on the map so it won't be missing
@@ -125,42 +130,51 @@ public class Deselect extends Decorator implements TranslatablePiece {
       }
       outer.setProperty(Properties.SELECTED, false); //BR// Mark as not selected
       DragBuffer.getBuffer().remove(outer); //BR// Remove from the drag buffer
-      KeyBuffer.getBuffer().remove(outer);  //BR// Remove from the key buffer                                            
+      KeyBuffer.getBuffer().remove(outer);  //BR// Remove from the key buffer
     }
     return c;
   }
 
+  @Override
   public void mySetState(String newState) {
   }
 
+  @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
+  @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
+  @Override
   public String getName() {
     return piece.getName();
   }
 
+  @Override
   public Shape getShape() {
     return piece.getShape();
   }
 
+  @Override
   public PieceEditor getEditor() {
     return new Ed(this);
   }
 
+  @Override
   public String getDescription() {
     return buildDescription("Editor.Deselect.deselect", description);
   }
 
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Deselect.htm", ""); // NON-NLS
   }
 
+  @Override
   public PieceI18nData getI18nData() {
     return getI18nData(commandName, Resources.getString("Editor.Deselect.deselect_command"));
   }
@@ -168,7 +182,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Deselect)) return false;
-    Deselect c = (Deselect) o;
+    final Deselect c = (Deselect) o;
     if (! Objects.equals(commandName, c.commandName)) return false;
     if (! Objects.equals(description, c.description)) return false;
     if (! Objects.equals(unstack, c.unstack)) return false;
@@ -198,27 +212,30 @@ public class Deselect extends Decorator implements TranslatablePiece {
       controls.add("Editor.Deselect.remove_piece_from_stack", unstackInput);
     }
 
+    @Override
     public Component getControls() {
       return controls;
     }
 
+    @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(DELIMITER);
+      final SequenceEncoder se = new SequenceEncoder(DELIMITER);
       se.append(nameInput.getValueString()).append(keyInput.getValueString()).append(descInput.getValueString()).append(unstackInput.getValueString());
       return ID + se.getValue();
     }
 
+    @Override
     public String getState() {
       return "";
     }
   }
 
-
   /**
    * Return Property names exposed by this trait
    */
+  @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.SELECTED);
     return l;
   }

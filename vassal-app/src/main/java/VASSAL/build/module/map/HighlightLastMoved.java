@@ -122,7 +122,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
 
   @Override
   public void addTo(Buildable parent) {
-    Map map = (Map) parent;
+    final Map map = (Map) parent;
     map.addDrawComponent(this);
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -132,7 +132,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
 
   @Override
   public void removeFrom(Buildable parent) {
-    Map map = (Map) parent;
+    final Map map = (Map) parent;
     map.removeDrawComponent(this);
     map.removeLocalMouseListener(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
@@ -176,7 +176,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   }
 
   public static void setLastMoved(GamePiece p) {
-    HighlightLastMoved h = instances.get(p.getMap());
+    final HighlightLastMoved h = instances.get(p.getMap());
     if (h != null) {
       h.setLastMovedPiece(p);
     }

@@ -59,7 +59,7 @@ public class PropertiesWindow extends JDialog {
     originalState = target.getBuildElement(Builder.createNewDocument());
     Node child = originalState.getFirstChild();
     while (child != null) {
-      Node nextChild = child.getNextSibling();
+      final Node nextChild = child.getNextSibling();
       if (Node.ELEMENT_NODE == child.getNodeType()) {
         // Cull Buildables from the state.
         try {
@@ -78,7 +78,6 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    //setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     setLayout(new MigLayout("ins panel, wrap 1", "[grow, fill]")); // NON-NLS
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(evt -> {

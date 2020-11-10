@@ -17,6 +17,8 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.ScrollPane;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -25,11 +27,8 @@ import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-import VASSAL.tools.ScrollPane;
 
 /**
  * A Configurer for {@link Font} values
@@ -38,7 +37,7 @@ public class FontConfigurer extends Configurer {
   private JPanel p;
   private JComboBox<Integer> size;
   private JComboBox<String> family;
-  private int[] sizes;
+  private final int[] sizes;
 
   public FontConfigurer(String key, String name) {
     this(key, name, new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -66,12 +65,10 @@ public class FontConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(name));
+      p = new ConfigurerPanel(getName(), "[]rel[]", "[]rel[]rel[]"); // NON-NLS
       family = new JComboBox<>();
-      String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-      for (String element : s) {
+      final String[] s = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+      for (final String element : s) {
         family.addItem(element);
       }
       family.setSelectedItem(value == null ? Font.SANS_SERIF : ((Font) value).getFamily()); //NON-NLS
@@ -79,7 +76,7 @@ public class FontConfigurer extends Configurer {
       p.add(family);
 
       size = new JComboBox<>();
-      for (int item : sizes) {
+      for (final int item : sizes) {
         size.addItem(item);
       }
       size.setSelectedItem(
@@ -88,7 +85,7 @@ public class FontConfigurer extends Configurer {
       size.setMaximumSize(new Dimension(size.getMaximumSize().width, size.getPreferredSize().height));
       p.add(size);
 
-      ItemListener l = evt -> setValue(new Font(
+      final ItemListener l = evt -> setValue(new Font(
         (String) family.getSelectedItem(),
         Font.PLAIN,
         (Integer) size.getSelectedItem()
@@ -100,7 +97,7 @@ public class FontConfigurer extends Configurer {
   }
 
   public static Font decode(String s) {
-    int i = s.indexOf(',');
+    final int i = s.indexOf(',');
     return new Font(s.substring(0, i), Font.PLAIN, Integer.parseInt(s.substring(i + 1)));
   }
 
@@ -108,17 +105,24 @@ public class FontConfigurer extends Configurer {
     return f.getName() + "," + f.getSize();
   }
 
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
+  }
+
   public static void main(String[] args) {
     final JFrame f = new JFrame();
     f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
-    FontConfigurer c = new FontConfigurer("a", "Font: ", null, new int[]{4, 5, 6, 13}); //NON-NLS
+    final FontConfigurer c = new FontConfigurer("a", "Font: ", null, new int[]{4, 5, 6, 13}); //NON-NLS
     f.add(c.getControls());
     final JTextArea tf = new JTextArea();
     tf.setText("The quick brown fox jumps over the lazy dog."); //NON-NLS
     f.add(new ScrollPane(tf));
     c.addPropertyChangeListener(evt -> {
       Font font = (Font) evt.getNewValue();
-      FontConfigurer fc = new FontConfigurer(null, null, font);
+      final FontConfigurer fc = new FontConfigurer(null, null, font);
       fc.setValue(fc.getValueString());
       font = (Font) fc.getValue();
       tf.setFont(font);

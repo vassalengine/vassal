@@ -31,37 +31,37 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ServerNode extends Node {
   private static final Logger logger = Logger.getLogger(ServerNode.class.getName());
-  private SendContentsTask sendContents;
+  private final SendContentsTask sendContents;
 
   public ServerNode() {
     super(null, null, null);
     sendContents = new SendContentsTask();
-    Timer t = new Timer();
+    final Timer t = new Timer();
     t.schedule(sendContents, 0, 1000);
   }
 
   public synchronized void forward(String senderPath, String msg) {
-    MsgSender target = getMsgSender(senderPath);
+    final MsgSender target = getMsgSender(senderPath);
     target.send(msg);
   }
 
   public synchronized MsgSender getMsgSender(String path) {
-    Node[] target = new Node[]{this};
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
+    Node[] target = {this};
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
       if ("*".equals(childId)) { //$NON-NLS-1$
-        ArrayList<Node> l = new ArrayList<>();
-        for (Node node : target) {
+        final ArrayList<Node> l = new ArrayList<>();
+        for (final Node node : target) {
           l.addAll(Arrays.asList(node.getChildren()));
         }
         target = l.toArray(new Node[0]);
       }
       else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
-        ArrayList<Node> l = new ArrayList<>();
-        for (Node node : target) {
-          for (Node child : node.getChildren()) {
+        final ArrayList<Node> l = new ArrayList<>();
+        for (final Node node : target) {
+          for (final Node child : node.getChildren()) {
             if (!childId.equals(child.getId())) {
               l.add(child);
             }
@@ -71,9 +71,9 @@ public class ServerNode extends Node {
       }
       else {
         int i = 0;
-        int n = target.length;
+        final int n = target.length;
         for (; i < n; ++i) {
-          Node child = target[i].getChild(childId);
+          final Node child = target[i].getChild(childId);
           if (child != null) {
             target = new Node[]{child};
             break;
@@ -88,16 +88,16 @@ public class ServerNode extends Node {
     final MsgSender[] senders = Arrays.copyOf(target, target.length);
 
     return msg -> {
-      for (MsgSender sender : senders) {
+      for (final MsgSender sender : senders) {
         sender.send(msg);
       }
     };
   }
 
   public synchronized void disconnect(Node target) {
-    Node mod = getModule(target);
+    final Node mod = getModule(target);
     if (mod != null) {
-      Node room = target.getParent();
+      final Node room = target.getParent();
       room.remove(target);
       if (room.getChildren().length == 0) {
         room.getParent().remove(room);
@@ -114,9 +114,9 @@ public class ServerNode extends Node {
   }
 
   public synchronized void registerNode(String parentPath, Node newNode) {
-    Node newParent = Node.build(this, parentPath);
+    final Node newParent = Node.build(this, parentPath);
     newParent.add(newNode);
-    Node module = getModule(newParent);
+    final Node module = getModule(newParent);
     if (module != null) {
       sendContents(module);
     }
@@ -131,10 +131,10 @@ public class ServerNode extends Node {
   }
 
   public synchronized void move(Node target, String newParentPath) {
-    Node oldMod = getModule(target);
-    Node newParent = Node.build(this, newParentPath);
+    final Node oldMod = getModule(target);
+    final Node newParent = Node.build(this, newParentPath);
     newParent.add(target);
-    Node mod = getModule(newParent);
+    final Node mod = getModule(newParent);
     if (mod != null) {
       sendContents(mod);
     }
@@ -144,7 +144,7 @@ public class ServerNode extends Node {
   }
 
   public synchronized void updateInfo(Node target) {
-    Node mod = getModule(target);
+    final Node mod = getModule(target);
     if (mod != null) {
       sendContents(mod);
     }
@@ -160,7 +160,7 @@ public class ServerNode extends Node {
   public synchronized void kick(PlayerNode kicker, String kickeeId) {
     // Check the kicker owns the room he is in
     final Node roomNode = kicker.getParent();
-    String roomOwnerId;
+    final String roomOwnerId;
     try {
       roomOwnerId = new PropertiesEncoder(roomNode.getInfo()).getProperties().getProperty(NodeRoom.OWNER);
     }
@@ -183,7 +183,7 @@ public class ServerNode extends Node {
 
   private static class SendContentsTask extends TimerTask {
     // FIXME: should modules be wrapped by Collections.synchronizedMap()?
-    private Set<Node> modules = new HashSet<>();
+    private final Set<Node> modules = new HashSet<>();
 
     public void markChanged(Node module) {
       synchronized (modules) {
@@ -193,18 +193,18 @@ public class ServerNode extends Node {
 
     @Override
     public void run() {
-      HashSet<Node> s = new HashSet<>();
+      final HashSet<Node> s = new HashSet<>();
       synchronized (modules) {
         s.addAll(modules);
       }
-      for (Node module : s) {
+      for (final Node module : s) {
         logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
-        Node[] players = module.getLeafDescendants();
-        Node[] rooms = module.getChildren();
-        String listCommand = Protocol.encodeListCommand(players);
+        final Node[] players = module.getLeafDescendants();
+        final Node[] rooms = module.getChildren();
+        final String listCommand = Protocol.encodeListCommand(players);
         module.send(listCommand);
         logger.finer(listCommand);
-        String roomInfo = Protocol.encodeRoomsInfo(rooms);
+        final String roomInfo = Protocol.encodeRoomsInfo(rooms);
         module.send(roomInfo);
         logger.finer(roomInfo);
       }

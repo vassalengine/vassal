@@ -46,7 +46,7 @@ import VASSAL.tools.ReflectionUtils;
 public class ExtensionTree extends ConfigureTree {
   private static final long serialVersionUID = 1L;
 
-  private ModuleExtension extension;
+  private final ModuleExtension extension;
 
   public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extension, EditorWindow editorWindow) {
     super(root, helpWindow, editorWindow);
@@ -59,7 +59,7 @@ public class ExtensionTree extends ConfigureTree {
       return false;
     }
     if (node != null) {
-      for (ExtensionElement el :
+      for (final ExtensionElement el :
            extension.getComponentsOf(ExtensionElement.class)) {
         if (el.getExtension() == node.getUserObject()) {
           return true;
@@ -73,8 +73,8 @@ public class ExtensionTree extends ConfigureTree {
   }
 
   public Configurable[] getPath(DefaultMutableTreeNode node) {
-    Object[] nodePath = node.getUserObjectPath();
-    Configurable[] path = new Configurable[nodePath.length - 1];
+    final Object[] nodePath = node.getUserObjectPath();
+    final Configurable[] path = new Configurable[nodePath.length - 1];
     for (int i = 0; i < path.length; ++i) {
       path[i] = (Configurable) nodePath[i + 1];
     }
@@ -113,14 +113,14 @@ public class ExtensionTree extends ConfigureTree {
           }
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
-              PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
+              final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public void save() {
                   super.save();
                   if (!isEditable(target)) {
-                    ExtensionElement el = new ExtensionElement(child, getPath(getTreeNode(target)));
+                    final ExtensionElement el = new ExtensionElement(child, getPath(getTreeNode(target)));
                     extension.add(el);
                   }
                 }
@@ -135,7 +135,7 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
           else {
-            boolean inserted = insert(target, child, getTreeNode(target).getChildCount());
+            final boolean inserted = insert(target, child, getTreeNode(target).getChildCount());
             if (inserted && !isEditable(getTreeNode(target))) {
               extension.add(new ExtensionElement(child, getPath(getTreeNode(target))));
             }
@@ -157,7 +157,7 @@ public class ExtensionTree extends ConfigureTree {
           try {
             child.build(null);
             if (child.getConfigurer() != null) {
-              PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
+              final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -165,7 +165,7 @@ public class ExtensionTree extends ConfigureTree {
                   super.save();
                   insert(target, child, getTreeNode(target).getChildCount());
                   if (!isEditable(target)) {
-                    ExtensionElement el = new ExtensionElement(child, getPath(getTreeNode(target)));
+                    final ExtensionElement el = new ExtensionElement(child, getPath(getTreeNode(target)));
                     extension.add(el);
                   }
                 }
@@ -211,7 +211,7 @@ public class ExtensionTree extends ConfigureTree {
 
   @Override
   protected Action buildPasteAction(final Configurable target) {
-    Action a;
+    final Action a;
     if (isEditable(target)) {
       a = super.buildPasteAction(target);
     }
@@ -222,8 +222,8 @@ public class ExtensionTree extends ConfigureTree {
         @Override
         public void actionPerformed(ActionEvent e) {
           if (cutData != null) {
-            DefaultMutableTreeNode targetNode = getTreeNode(target);
-            Configurable cutTarget = (Configurable) cutData.getUserObject();
+            final DefaultMutableTreeNode targetNode = getTreeNode(target);
+            final Configurable cutTarget = (Configurable) cutData.getUserObject();
             if (remove(getParent(cutData), cutTarget)) {
               if (insert(target, cutTarget, targetNode.getChildCount())) {
                 extension.add(new ExtensionElement(cutTarget, getPath(targetNode)));
@@ -284,7 +284,7 @@ public class ExtensionTree extends ConfigureTree {
       ((PieceSlot) c).updateGpId(extension);
     }
     else {
-      for (Configurable conf : c.getConfigureComponents()) updateGpIds(conf);
+      for (final Configurable conf : c.getConfigureComponents()) updateGpIds(conf);
     }
   }
 
@@ -305,10 +305,10 @@ public class ExtensionTree extends ConfigureTree {
 
         @Override
         public void actionPerformed(ActionEvent evt) {
-          boolean removed = remove(parent, target);
+          final boolean removed = remove(parent, target);
           if (removed && !isEditable(parent)) {
             // We've removed an ExtensionElement
-            for (ExtensionElement el :
+            for (final ExtensionElement el :
                  extension.getComponentsOf(ExtensionElement.class)) {
               if (el.getExtension() == target) {
                 extension.remove(el);
@@ -396,7 +396,7 @@ public class ExtensionTree extends ConfigureTree {
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
         boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-      Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
+      final Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
           hasFocus);
       c.setForeground(isEditable((DefaultMutableTreeNode) value) ? Color.BLACK : Color.GRAY);
 

@@ -34,22 +34,35 @@ public class StringConfigurer extends Configurer {
   protected int length;
   protected static final int DEFAULT_LENGHTH = 20;
 
+  /**
+   * Base Constructor for StringConfigurer
+   *
+   * @param key Configurer Key - Not used for new-style configs
+   * @param name Configurer Name (label)
+   * @param val Initial Configurer value
+   * @param length Configurer length
+   * @param hint Hint text
+   */
+  public StringConfigurer(String key, String name, int length, String hint, String val) {
+    super(key, name, val);
+    this.length = length > 0 ? length : DEFAULT_LENGHTH;
+    this.hint = hint;
+  }
+
+  public StringConfigurer(String key, String name, String val) {
+    this(key, name, DEFAULT_LENGHTH, "", val);
+  }
+
+  public StringConfigurer(String key, String name, int length) {
+    this (key, name, length, "", "");
+  }
+
   public StringConfigurer(String key, String name) {
     this(key, name, "");
   }
 
-  public StringConfigurer(String key, String name, String val) {
-    super(key, name, val);
-    length = DEFAULT_LENGHTH;
-  }
-
   public StringConfigurer(String val) {
     this (null, "", val);
-  }
-
-  public StringConfigurer(String key, String name, int length) {
-    this (key, name);
-    this.length = length > 0 ? length : DEFAULT_LENGHTH;
   }
 
   @Override
@@ -106,6 +119,13 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
-    return new JTextField(length);
+    return new HintTextField(length, hint);
+  }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
   }
 }

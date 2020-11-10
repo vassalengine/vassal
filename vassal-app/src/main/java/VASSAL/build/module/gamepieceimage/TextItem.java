@@ -153,7 +153,7 @@ public class TextItem extends Item {
       return fontStyleName;
     }
     else if (SOURCE.equals(key)) {
-      return textSource + ""; //$NON-NLS-1$
+      return textSource;
     }
     else if (TEXT.equals(key)) {
       return text;
@@ -178,33 +178,27 @@ public class TextItem extends Item {
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
 
-    TextItemInstance ti = null;
+    TextItemInstance ti;
 
-    FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
-    Font f = fs.getFont();
-
-    if (defn != null) {
-      ti = defn.getTextInstance(name);
-    }
-    else {
+    if (defn == null) {
       defn = new GamePieceImage(getLayout());
-      ti = defn.getTextInstance(name);
     }
+    ti = defn.getTextInstance(name);
 
     if (ti == null) {
       ti = new TextItemInstance();
     }
 
-    Color fg = ti.getFgColor().getColor();
-    Color bg = ti.getBgColor().getColor();
+    final Color fg = ti.getFgColor().getColor();
+    final Color bg = ti.getBgColor().getColor();
     if (fg == null && bg == null) {
       return;
     }
 
-    boolean outline = ti.isOutline();
-    Color ol = ti.getOutlineColor().getColor();
+    final boolean outline = ti.isOutline();
+    final Color ol = ti.getOutlineColor().getColor();
 
-    String compass = GamePieceLayout.getCompassPoint(getLocation());
+    final String compass = GamePieceLayout.getCompassPoint(getLocation());
     int hAlign = AL_CENTER;
     switch (compass.charAt(compass.length() - 1)) {
     case 'W':
@@ -222,7 +216,7 @@ public class TextItem extends Item {
       vAlign = AL_BOTTOM;
     }
 
-    Point origin = layout.getPosition(this);
+    final Point origin = layout.getPosition(this);
     String s = null;
     if (textSource.equals(SRC_FIXED)) {
       s = text;
@@ -237,18 +231,21 @@ public class TextItem extends Item {
       }
     }
 
-    Graphics2D g2d = ((Graphics2D) g);
+    final Graphics2D g2d = ((Graphics2D) g);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
       RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
 
     AffineTransform saveXForm = null;
     if (getRotation() != 0) {
       saveXForm = g2d.getTransform();
-      AffineTransform newXForm =
+      final AffineTransform newXForm =
         AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth() / 2,
           getLayout().getVisualizerHeight() / 2);
       g2d.transform(newXForm);
     }
+
+    final FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
+    final Font f = fs.getFont();
 
     drawLabel(g, s, origin.x, origin.y, f, hAlign, vAlign, fg, bg, null, outline, ol);
     if (saveXForm != null) {
@@ -273,13 +270,13 @@ public class TextItem extends Item {
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    TextItem item = new TextItem(l);
+    final TextItem item = new TextItem(l);
     decode(item, s);
     return item;
   }
 
   public static void decode(TextItem item, String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 
     sd.nextToken();
     item.fontStyleName = sd.nextToken(FontManager.DEFAULT);
@@ -299,7 +296,7 @@ public class TextItem extends Item {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
 
     se1.append(fontStyleName == null ? "" : fontStyleName); //$NON-NLS-1$
     se1.append(textSource);
@@ -310,7 +307,7 @@ public class TextItem extends Item {
     se1.append(lockKey);
     se1.append(lockable);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
 
     return se2.getValue();
@@ -348,9 +345,9 @@ public class TextItem extends Item {
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, boolean outline, Color outlineColor) {
     g.setFont(f);
-    int buffer = g.getFontMetrics().getLeading();
-    int width = g.getFontMetrics().stringWidth(text) + 2 * buffer;
-    int height = g.getFontMetrics().getHeight();
+    final int buffer = g.getFontMetrics().getLeading();
+    final int width = g.getFontMetrics().stringWidth(text) + 2 * buffer;
+    final int height = g.getFontMetrics().getHeight();
     int x0 = x;
     int y0 = y;
     switch (hAlign) {
@@ -379,8 +376,8 @@ public class TextItem extends Item {
       g.drawRect(x0, y0, width, height);
     }
 
-    int y1 = y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent();
-    int x1 = x0 + buffer;
+    final int y1 = y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent();
+    final int x1 = x0 + buffer;
     if (outline && outlineColor != null) {
       g.setColor(outlineColor);
       g.drawString(text, x1 - 1, y1 - 1);

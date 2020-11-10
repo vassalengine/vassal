@@ -104,7 +104,7 @@ public class FreeRotator extends Decorator
 
   protected boolean useUnrotatedShape;
 
-  protected double[] validAngles = new double[] {0.0};
+  protected double[] validAngles = {0.0};
   protected int angleIndex = 0;
 
   @Deprecated(since = "2020-08-06", forRemoval = true)
@@ -195,7 +195,7 @@ public class FreeRotator extends Decorator
   public double getCumulativeAngle() {
     double angle = getAngle();
     // Add cumulative angle of any other FreeRotator trait in this piece
-    FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
+    final FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
     if (nextRotation != null) {
       angle += nextRotation.getCumulativeAngle();
     }
@@ -681,7 +681,7 @@ public class FreeRotator extends Decorator
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Rotate.html"); //$NON-NLS-1$//
   }
 
@@ -705,7 +705,7 @@ public class FreeRotator extends Decorator
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(name + FACING);
     l.add(name + DEGREES);
     return l;
@@ -714,7 +714,7 @@ public class FreeRotator extends Decorator
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof FreeRotator)) return false;
-    FreeRotator c = (FreeRotator) o;
+    final FreeRotator c = (FreeRotator) o;
     if (! Objects.equals(validAngles.length, c.validAngles.length)) return false;
 
     if (validAngles.length == 1) {
@@ -766,7 +766,7 @@ public class FreeRotator extends Decorator
         new TraitLayout(
           false,
           TraitLayout.STANDARD_INSETS + "," + TraitLayout.STANDARD_GAPY + ",hidemode 3,wrap 3", // NON-NLS
-          "[right]rel[fill,grow]rel[align center]")); // NON-NLS
+          "[right]rel[fill,grow 1]rel[fill,grow 2]")); // NON-NLS
 
       nameConfig = new StringConfigurer(p.name);
       panel.add("Editor.description_label", nameConfig, "span 2,wrap"); // NON-NLS
@@ -781,10 +781,11 @@ public class FreeRotator extends Decorator
       final JLabel menuLabel = new JLabel(Resources.getString("Editor.menu_command"));
       final Font boldFont = new Font(menuLabel.getFont().getFamily(), Font.BOLD, menuLabel.getFont().getSize());
       menuLabel.setFont(boldFont);
-      panel.add(menuLabel, "skip 1,align center"); // NON-NLS
+      panel.add(new JLabel(""));
+      panel.add(menuLabel, "grow 0,align center"); // NON-NLS
       final JLabel keyLabel = new JLabel(Resources.getString("Editor.keyboard_command"));
       keyLabel.setFont(boldFont);
-      panel.add(keyLabel, "align center,wrap"); // NON-NLS
+      panel.add(keyLabel, "grow 0,align center,wrap"); // NON-NLS
 
       cwLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_clockwise"));
       panel.add(cwLabel);
@@ -807,7 +808,7 @@ public class FreeRotator extends Decorator
       anyKeyConfig = new NamedHotKeyConfigurer(p.setAngleKey);
       panel.add(anyKeyConfig.getControls(), "wrap"); // NON-NLS
 
-      JLabel rndLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_randomly"));
+      final JLabel rndLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_randomly"));
       panel.add(rndLabel);
       rndCommand = new StringConfigurer(p.rotateRNDText);
       panel.add(rndCommand.getControls());

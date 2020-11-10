@@ -17,6 +17,8 @@
  */
 package VASSAL.build.module;
 
+import java.util.Collection;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -57,6 +59,11 @@ public class SpecialDieFace extends AbstractConfigurable {
       Integer.class,
       IconConfig.class
     };
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 
   public static class IconConfig implements ConfigurerFactory {

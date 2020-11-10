@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -26,6 +25,7 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -35,33 +35,62 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.map.CompoundPieceCollection;
+import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
 import VASSAL.tools.EnumeratedIterator;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.search.AbstractImageFinder;
+import VASSAL.search.ImageSearchTarget;
 
 /**
- * A collection of GamePieces which can be moved as a single unit
+ * A Stack is a collection of pieces in the same location that can often be moved with a single drag-and-drop.
+ * Because it implements the {@link GamePiece} interface, a Stack is formally a kind of GamePiece itself, which
+ * can lead to confusion when the terms pieces, GamePieces, etc are used loosely/interchangeably. The kind of "pieces"
+ * a Stack contains are the "regular" kind of pieces that have a {@link BasicPiece} plus an optional group of
+ * {@link Decorator} traits.
+ * <br><br>
+ * A standard Stack will only contain pieces that are "stackable" (i.e. doesn't have a "Does Not Stack" {@link Immobilized}
+ * trait, so that {@link Properties.NO_STACK} is false) and share the same X/Y position on the same {@link Map}, and all
+ * stackable pieces on a {@link Map} will always be part of <i>some</i> Stack -- even single stackable pieces will have
+ * a Stack created to contain them. Stacks <i>should</i> contain only pieces from the same visual layer (see
+ * {@link VASSAL.build.module.map.LayeredPieceCollection}), but presently bad behaviors can still develop (e.g. a piece
+ * uses a Dynamic Property to control its Game Piece Layer, and ends up changing layers without the Stack noticing) --
+ * ideally we should straighten that out in future versions.
+ * <br><br>
+ * {@link Deck} is a further extension of Stack which utilizes the piece-grouping code but overrides other aspects
+ * (e.g. can allow pieces regardless of their "stackability", has different drag-and-drop behavior, etc) to create
+ * a different kind of grouping.
  */
-public class Stack implements GamePiece, StateMergeable {
+public class Stack extends AbstractImageFinder implements GamePiece, StateMergeable {
   public static final String TYPE = "stack"; //$NON-NLS-1$//
+  public static final String HAS_LAYER_MARKER = "@@"; // Horrific encoding hack necessitated by equally horrific legacy encoder
+  public static final int LAYER_NOT_SET = -1; // Brand new stacks with no pieces do not yet know their visual layer
   protected static final int INCR = 5;
-  protected GamePiece[] contents = new GamePiece[INCR];
-  protected int pieceCount = 0;
 
-  protected Point pos = new Point(0, 0);
+  protected GamePiece[] contents = new GamePiece[INCR]; // array of GamePieces contained by the stack
+  protected int pieceCount = 0;        // Number of pieces currently in the stack
+
+  protected Map map;                   // Map that the stack is on
+  protected Point pos = new Point(0, 0); // X/Y position of the stack on its map. All pieces in a stack always share the same X/Y position
+  protected int layer = LAYER_NOT_SET; // Visual layer for this stack. Once the first piece is added, it is bound permanently.
+  private boolean expanded = false;    // Is stack currently visually expanded by the player (for easier viewing, and/or to drag individual pieces)
 
   private String id;
-  private boolean expanded = false;
 
-  protected Map map;
   private static StackMetrics defaultMetrics;
 
   public Stack() {
     this(null);
   }
 
+  /**
+   * Creates a Stack to contain a specific stackable piece.
+   * @param p piece to make a stack for
+   */
   public Stack(GamePiece p) {
     if (p != null) {
       setMap(p.getMap());
@@ -84,15 +113,15 @@ public class Stack implements GamePiece, StateMergeable {
   public Enumeration<GamePiece> getPieces() {
     ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new AllPieceIterator());
-    //    return new AllPieceEnum();
   }
 
   /**
+   * A list of the pieces in the stack.
    * @return an unmodifiable {@link List} which is a defensive copy of {@link GamePiece}s contained in
    * this {@link Stack}
    */
   public List<GamePiece> asList() {
-    List<GamePiece> result = new ArrayList<>();
+    final List<GamePiece> result = new ArrayList<>();
     for (int i = 0; i < pieceCount; i++) {
       result.add(contents[i]);
     }
@@ -113,9 +142,14 @@ public class Stack implements GamePiece, StateMergeable {
   public Enumeration<GamePiece> getPiecesInReverseOrder() {
     ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new ReversePieceIterator());
-//    return new ReversePieceEnum();
   }
 
+  /**
+   * Returns pieces in the order in which they are visible to the player --
+   * topmost first In other words, selected pieces first, then unselected pieces
+   * from the top to the bottom.
+   * @return iterator
+   */
   public Iterator<GamePiece> getPiecesInVisibleOrderIterator() {
     return new VisibleOrderIterator();
   }
@@ -130,9 +164,19 @@ public class Stack implements GamePiece, StateMergeable {
   public Enumeration<GamePiece> getPiecesInVisibleOrder() {
     ProblemDialog.showDeprecated("2020-08-06");
     return new EnumeratedIterator<>(new VisibleOrderIterator());
-//    return new VisibleOrderEnum();
   }
 
+
+  /**
+   * @return the visual layer we're bound to, or LAYER_NOT_SET if it we haven't been bound yet. Keeps the stack oriented to its correct Game Piece Layer - see {@link VASSAL.build.module.map.LayeredPieceCollection}
+   */
+  public int getLayer() {
+    return layer;
+  }
+
+  /**
+   * @param p Piece to remove from the stack
+   */
   public void remove(GamePiece p) {
     removePieceAt(indexOf(p));
     p.setParent(null);
@@ -141,6 +185,9 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
+  /**
+   * @param index Index of piece to remove from the stack
+   */
   protected void removePieceAt(int index) {
     if (index >= 0 && index < pieceCount) {
       pieceCount--;
@@ -160,6 +207,11 @@ public class Stack implements GamePiece, StateMergeable {
     return null;
   }
 
+  /**
+   * Insert a piece at a particular point in the stack
+   * @param p piece to insert
+   * @param index place to insert it
+   */
   protected void insertPieceAt(GamePiece p, int index) {
     if (index < 0) {
       index = 0;
@@ -169,7 +221,7 @@ public class Stack implements GamePiece, StateMergeable {
     }
 
     if (pieceCount >= contents.length) {
-      GamePiece[] newContents = new GamePiece[contents.length + INCR];
+      final GamePiece[] newContents = new GamePiece[contents.length + INCR];
       System.arraycopy(contents, 0, newContents, 0, pieceCount);
       contents = newContents;
     }
@@ -182,11 +234,19 @@ public class Stack implements GamePiece, StateMergeable {
     pieceCount++;
   }
 
+  /**
+   * Marks the stack as empty
+   */
   public void removeAll() {
     pieceCount = 0;
     expanded = false;
   }
 
+  /**
+   * Finds the index of a piece in the stack
+   * @param p Piece to locate
+   * @return The index of the piece, or -1 if it is not present in the stack
+   */
   public int indexOf(GamePiece p) {
     int index = -1;
     for (int i = 0; i < pieceCount; ++i) {
@@ -198,6 +258,10 @@ public class Stack implements GamePiece, StateMergeable {
     return index;
   }
 
+  /**
+   * @param index Index in the stack
+   * @return the piece at the specified index
+   */
   public GamePiece getPieceAt(int index) {
     return contents[index];
   }
@@ -209,6 +273,16 @@ public class Stack implements GamePiece, StateMergeable {
    * @param c Stack to add piece to
    */
   public void add(GamePiece c) {
+    if ((pieceCount == 0) && (layer == LAYER_NOT_SET)) {
+      final Map m = getMap();
+      if (m != null) {
+        final PieceCollection p = m.getPieceCollection();
+        if (p instanceof CompoundPieceCollection) {
+          layer = ((CompoundPieceCollection) p).getLayerForPiece(c); //BR// Bind our stack to the layer of the first piece added
+        }
+      }
+    }
+    //FIXME - really, if at this point "layer" is set and the new piece wants to be in a different layer, that's BAD and will produce buggy behavior. But we are presently quietly ignoring that because of all the buggy stacks created in the past.
     insert(c, pieceCount);
   }
 
@@ -231,6 +305,9 @@ public class Stack implements GamePiece, StateMergeable {
     insertPieceAt(child, index);
   }
 
+  /**
+   * @return the number of pieces in the stack
+   */
   public int getPieceCount() {
     return pieceCount;
   }
@@ -256,7 +333,7 @@ public class Stack implements GamePiece, StateMergeable {
     }
     pos = Math.max(pos, 0);
     pos = Math.min(pos, pieceCount);
-    int index = indexOf(p);
+    final int index = indexOf(p);
     if (index >= 0) {
       final boolean origExpanded = isExpanded(); // Bug #2766794
       if (pos > index) {
@@ -302,7 +379,8 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   /**
-   * Return a comma-separated list of the names of the pieces in this Stack
+   * @param localized if true, use the localized names
+   * @return a comma-separated list of the names of the pieces in this Stack
    */
   public String getName(boolean localized) {
     final StringBuilder val = new StringBuilder();
@@ -318,16 +396,25 @@ public class Stack implements GamePiece, StateMergeable {
     return val.toString();
   }
 
+  /**
+   * @return a comma-separated list of the (non-localized) names of the pieces in this Stack
+   */
   @Override
   public String getName() {
     return getName(false);
   }
 
+  /**
+   * @return a comma-separated list of the (localized) names of the pieces in this Stack
+   */
   @Override
   public String getLocalizedName() {
     return getName(true);
   }
 
+  /**
+   * @return bounding box for the stack (minimum rectangle to contain the bounding boxes of all the pieces inside)
+   */
   @Override
   public Rectangle boundingBox() {
     final Rectangle r = new Rectangle();
@@ -341,11 +428,14 @@ public class Stack implements GamePiece, StateMergeable {
     return r;
   }
 
+  /**
+   * @return shape for the stack (shape to contain the shapes of all the pieces inside)
+   */
   @Override
   public Shape getShape() {
-    Area a = new Area();
-    Shape[] childBounds = new Shape[getPieceCount()];
-    StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
+    final Area a = new Area();
+    final Shape[] childBounds = new Shape[getPieceCount()];
+    final StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
     metrics.getContents(this, null, childBounds, null, 0, 0);
     asList().stream()
             .filter(PieceIterator.VISIBLE)
@@ -354,10 +444,14 @@ public class Stack implements GamePiece, StateMergeable {
     return a;
   }
 
+  /**
+   * Finds and selects (in the UI) the next piece in the stack after this one
+   * @param c Starting piece
+   */
   public void selectNext(GamePiece c) {
     KeyBuffer.getBuffer().remove(c);
     if (pieceCount > 1 && indexOf(c) >= 0) {
-      int newSelectedIndex = indexOf(c) == pieceCount - 1 ? pieceCount - 2 : indexOf(c) + 1;
+      final int newSelectedIndex = indexOf(c) == pieceCount - 1 ? pieceCount - 2 : indexOf(c) + 1;
       for (int i = 0; i < pieceCount; ++i) {
         if (indexOf(contents[i]) == newSelectedIndex) {
           KeyBuffer.getBuffer().add(contents[i]);
@@ -367,6 +461,11 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
+  /**
+   * Finds the piece "underneath" the one provided
+   * @param c Starting piece
+   * @return piece underneath it, or null if none.
+   */
   public GamePiece getPieceBeneath(GamePiece p) {
     int index = indexOf(p);
     while (index-- > 0) {
@@ -377,6 +476,11 @@ public class Stack implements GamePiece, StateMergeable {
     return null;
   }
 
+  /**
+   * Finds the piece "above" the one provided
+   * @param c Starting piece
+   * @return piece above it, or null if none.
+   */
   public GamePiece getPieceAbove(GamePiece p) {
     int index = indexOf(p);
     while (++index < getPieceCount()) {
@@ -387,7 +491,10 @@ public class Stack implements GamePiece, StateMergeable {
     return null;
   }
 
-  /** @return the top visible piece in this stack */
+  /**
+   * <b>CAUTION:</b> returns the top VISIBLE piece in the stack, or null if none is visible.
+   * @return the top <b>visible</b> piece in this stack
+   */
   public GamePiece topPiece() {
     for (int i = pieceCount - 1; i >= 0; --i) {
       if (!Boolean.TRUE.equals(contents[i].getProperty(Properties.INVISIBLE_TO_ME))) {
@@ -405,7 +512,7 @@ public class Stack implements GamePiece, StateMergeable {
    */
   public GamePiece topPiece(String playerId) {
     for (int i = pieceCount - 1; i >= 0; --i) {
-      String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
+      final String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
       if (hiddenBy == null || hiddenBy.equals(playerId)) {
         return contents[i];
       }
@@ -421,7 +528,7 @@ public class Stack implements GamePiece, StateMergeable {
    */
   public GamePiece bottomPiece(String playerId) {
     for (int i = 0; i < pieceCount; ++i) {
-      String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
+      final String hiddenBy = (String) contents[i].getProperty(Properties.HIDDEN_BY);
       if (hiddenBy == null || hiddenBy.equals(playerId)) {
         return contents[i];
       }
@@ -448,9 +555,14 @@ public class Stack implements GamePiece, StateMergeable {
                          .count();
   }
 
+  /**
+   * Processes a key command for this stack, by sending it to the top visible piece in the stack.
+   * @param stroke keystroke to process
+   * @return Command encapsulating anything that happened as a result
+   */
   @Override
   public Command keyEvent(javax.swing.KeyStroke stroke) {
-    GamePiece p = topPiece();
+    final GamePiece p = topPiece(); // NOTE: top VISIBLE piece
     if (p != null) {
       return p.keyEvent(stroke);
     }
@@ -459,42 +571,75 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
+  /**
+   * @return true if stack has been visually expanded by the player
+   */
   public boolean isExpanded() {
     return expanded;
   }
 
+  /**
+   * Sets the expansion state of the stack. Players can expand (and un-expand) stacks by e.g. double-clicking on them.
+   * Expanded stacks are generally shown with the pieces drawn further apart, the better to see the individual pieces.
+   * When a stack is expanded, drag-and-drop operations can affect an individual piece rather than only the whole group.
+   * @param b true if stack should be expanded, false if not
+   */
   public void setExpanded(boolean b) {
     expanded = b && getPieceCount() > 1;
   }
 
+  /**
+   * Encodes the game state information of the stack into a string
+   * @return Current encoded "game state" string for the stack
+   */
   @Override
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$//
     for (int i = 0; i < pieceCount; ++i) {
       se.append(contents[i].getId());
     }
+    se.append(HAS_LAYER_MARKER + layer);
     return se.getValue();
   }
 
+  /**
+   * Decodes the game state information of the stack from a string
+   * @param s Game state information to be loaded into the stack
+   */
   @Override
   public void setState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+
     final String mapId = st.nextToken();
-    setPosition(new Point(st.nextInt(0), st.nextInt(0)));
+    if ("null".equals(mapId)) { //NON-NLS //BR// Looooks like if we encode null in getState then there's no position in the file to be read
+      setPosition(new Point(0, 0));
+    }
+    else {
+      setPosition(new Point(st.nextInt(0), st.nextInt(0)));
+    }
     pieceCount = 0;
 
     final GameState gs = GameModule.getGameModule().getGameState();
     while (st.hasMoreTokens()) {
-      final GamePiece child = gs.getPieceForId(st.nextToken());
-      if (child != null) insertChild(child, pieceCount);
+      final String token = st.nextToken();
+      final GamePiece child = gs.getPieceForId(token);
+      if (child != null) {
+        insertChild(child, pieceCount);
+      }
+      else {
+        //BR// This encoding format with the "while" at the end made it challenging to work in a new parameter.
+        if (token.startsWith(HAS_LAYER_MARKER)) {
+          layer = Integer.valueOf(token.substring(HAS_LAYER_MARKER.length()));
+        }
+      }
     }
 
     Map m = null;
     if (!"null".equals(mapId)) { //$NON-NLS-1$//
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null));
+        ErrorDialog.dataWarning(new BadDataReport("Could not find map", mapId, null)); // NON-NLS
       }
     }
 
@@ -510,7 +655,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   /**
    * Compute the difference between <code>newState</code> and
-   * <code>oldState</code> and appy that difference to the current state
+   * <code>oldState</code> and apply that difference to the current state
    *
    * @param newState New State
    * @param oldState Old State
@@ -519,32 +664,33 @@ public class Stack implements GamePiece, StateMergeable {
   public void mergeState(String newState, String oldState) {
     String mergedState = newState;
     if (!oldState.equals(getState())) {
-      SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, ';');
-      SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, ';');
-      SequenceEncoder merge = new SequenceEncoder(';');
+      final SequenceEncoder.Decoder stNew = new SequenceEncoder.Decoder(newState, ';');
+      final SequenceEncoder.Decoder stOld = new SequenceEncoder.Decoder(oldState, ';');
+      final SequenceEncoder merge = new SequenceEncoder(';');
       merge.append(stNew.nextToken());
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
-      ArrayList<String> newContents = new ArrayList<>();
+      final ArrayList<String> newContents = new ArrayList<>();
       while (stNew.hasMoreTokens()) {
         newContents.add(stNew.nextToken());
       }
-      ArrayList<String> oldContents = new ArrayList<>();
+      final ArrayList<String> oldContents = new ArrayList<>();
       while (stOld.hasMoreTokens()) {
         oldContents.add(stOld.nextToken());
       }
-      for (int i = 0, j = getPieceCount(); i < j; ++i) {
-        String id = getPieceAt(i).getId();
+      final int j = getPieceCount();
+      for (int i = 0; i < j; ++i) {
+        final String id = getPieceAt(i).getId();
         if (!newContents.contains(id) && !oldContents.contains(id)) {
-          int index = i == 0 ? -1 :
+          final int index = i == 0 ? -1 :
             newContents.indexOf(getPieceAt(i - 1).getId());
           newContents.add(index + 1, id);
         }
       }
-      for (String s : newContents) {
+      for (final String s : newContents) {
         merge.append(s);
       }
       mergedState = merge.getValue();
@@ -552,15 +698,28 @@ public class Stack implements GamePiece, StateMergeable {
     setState(mergedState);
   }
 
+  /**
+   * @return the encoding type
+   */
   @Override
   public String getType() {
     return TYPE;
   }
 
+  /**
+   * Stacks themselves ignore property sets -- use {@link setPropertyOnContents} to apply
+   * a property to the members of a stack.
+   * @param key String key of property to be changed
+   * @param val Object containing new value of the property
+   */
   @Override
   public void setProperty(Object key, Object val) {
   }
 
+  /**
+   * @return string list of stack contents, for debugging-type purposes
+   */
+  @Override
   public String toString() {
     return super.toString() + "[" + getName() + "]";
   }
@@ -575,75 +734,148 @@ public class Stack implements GamePiece, StateMergeable {
     asList().forEach(gamePiece -> gamePiece.setProperty(key, val));
   }
 
+  /**
+   * Stacks themselves do not have any properties, so always return null.
+   * @param key String key of property to be returned
+   * @return always null
+   */
   @Override
   public Object getProperty(Object key) {
     return null;
   }
 
+  /**
+   * Stacks themselves do not have any properties, so always return null.
+   * @param key String key of property to be returned
+   * @return always null
+   */
   @Override
   public Object getLocalizedProperty(Object key) {
     return getProperty(key);
   }
 
+  /**
+   * @param map Each stack belongs to a single {@link Map}
+   */
   @Override
   public void setMap(Map map) {
     this.map = map;
   }
 
+  /**
+   * @return the map for this Stack
+   */
   @Override
   public Map getMap() {
     return map;
   }
 
+  /**
+   * @return current X/Y position of stack
+   */
   @Override
   public Point getPosition() {
     return new Point(pos);
   }
 
+  /**
+   * @param p Sets the location of this stack on its {@link Map}
+   */
   @Override
   public void setPosition(Point p) {
     pos = p;
   }
 
+  /**
+   * Stacks cannot contain other stacks/decks, nor be contained in them, so parent is always null.
+   * @return always null
+   */
   @Override
   public Stack getParent() {
     return null;
   }
 
+  /**
+   * Required for interface but won't be needed for stacks
+   * @param s sets the {@link Stack} to which this piece belongs.
+   */
   @Override
   public void setParent(Stack s) {
     if (s != null) {
-      ErrorDialog.dataWarning(new BadDataReport("Cannot add stack to another stack", toString(), null));
+      ErrorDialog.dataWarning(new BadDataReport("Cannot add stack to another stack", toString(), null)); // NON-NLS
     }
   }
 
+  /**
+   * @return stack's unique ID
+   */
   @Override
   public String getId() {
     return id;
   }
 
+  /**
+   * @param id sets unique ID for this piece
+   */
   @Override
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method sets the default metrics for the module, but each map can have its own configuration, which
+   * can be found in the [Stacking options] subcomponent of the Map in the Editor.
+   * @param s default stack metrics for the module
+   */
   public static void setDefaultMetrics(StackMetrics s) {
     defaultMetrics = s;
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method retrieves the appropriate stack metrics to use for a given map
+   * @param m a map
+   * @return stack metrics for the map, if provided, or the default one for the module.
+   */
   public StackMetrics getStackMetrics(Map m) {
     return m == null ? getDefaultMetrics() : m.getStackMetrics();
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method retrieves the appropriate stack metrics to use the stack, based on its map
+   * @return stack metrics for the map, if provided, or the default one for the module.
+   */
   public StackMetrics getStackMetrics() {
     return getStackMetrics(getMap());
   }
 
+  /**
+   * {@link StackMetrics} encapsulate information on how to draw expanded/unexpanded views of stacks.
+   * This method retrieves the default stack metrics for the module.
+   * @return default stack metrics for the module
+   */
   public StackMetrics getDefaultMetrics() {
     if (defaultMetrics == null) {
       setDefaultMetrics(new StackMetrics());
     }
     return defaultMetrics;
+  }
+
+  /**
+   * See {@link AbstractImageFinder}
+   * Tells each of the pieces in the stack to add its images to the collection
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    for (final Iterator<GamePiece> i = getPiecesIterator(); i.hasNext(); ) {
+      final GamePiece p = i.next();
+      if (p instanceof ImageSearchTarget) {
+        ((ImageSearchTarget)p).addImageNamesRecursively(s);
+      }
+    }
   }
 
   private class VisibleOrderIterator implements Iterator<GamePiece> {

@@ -33,6 +33,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -52,9 +53,11 @@ import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.board.GridOp;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
+import VASSAL.build.module.map.boardPicker.board.SolidColorOp;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
@@ -99,9 +102,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
-
-  public Board() {
-  }
 
   /**
    * @return this <code>Board</code>'s {@link Map}.
@@ -221,7 +221,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
       imageFile = (String) val;
 
-      if (imageFile == null || imageFile.trim().length() == 0) {
+      if (imageFile == null || imageFile.isBlank()) {
         boardImageOp = null;
       }
       else {
@@ -232,7 +232,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         try {
           tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);  //NON-NLS
         }
-        catch (ImageIOException e) {
+        catch (final ImageIOException e) {
           // ignore, not tiled
         }
 
@@ -310,15 +310,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
     try {
       g.drawImage(fim.get(), tx, ty, obs);
     }
-    catch (CancellationException e) {
+    catch (final CancellationException e) {
       // FIXME: bug until we permit cancellation
       ErrorDialog.bug(e);
     }
-    catch (InterruptedException e) {
+    catch (final InterruptedException e) {
       // This happens if taking a snapshot of the map is cancelled.
       // FIXME: Can we handle this in ImageSaver instead?
     }
-    catch (ExecutionException e) {
+    catch (final ExecutionException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
   }
@@ -342,8 +342,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     visibleRect = visibleRect.intersection(bounds);
+
+    ImageOp op;
     if (boardImageOp != null) {
-      final ImageOp op;
       if (zoom == 1.0 && !reversed) {
         op = boardImageOp;
       }
@@ -353,153 +354,151 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
         op = reversed ? Op.rotate(scaledImageOp, 180) : scaledImageOp;
       }
+    }
+    else {
+      op = new SolidColorOp(color == null ? Color.WHITE : color, bounds.width, bounds.height);
+    }
 
-      final Rectangle r = new Rectangle(visibleRect.x - location.x,
-                                        visibleRect.y - location.y,
-                                        visibleRect.width,
-                                        visibleRect.height);
-      final int ow = op.getTileWidth();
-      final int oh = op.getTileHeight();
+    if (grid != null) {
+      op = new GridOp(op, grid, zoom, reversed, g2d.getRenderingHints());
+    }
 
-      final Point[] tiles = op.getTileIndices(r);
-      for (Point tile : tiles) {
-        // find tile position
-        final int tx = location.x + tile.x * ow;
-        final int ty = location.y + tile.y * oh;
+    final Rectangle r = new Rectangle(visibleRect.x - location.x,
+                                      visibleRect.y - location.y,
+                                      visibleRect.width,
+                                      visibleRect.height);
+    final int ow = op.getTileWidth();
+    final int oh = op.getTileHeight();
 
-        // find actual tile size
-        final int tw = Math.min(ow, location.x + bounds.width - tx);
-        final int th = Math.min(oh, location.y + bounds.height - ty);
+    final Point[] tiles = op.getTileIndices(r);
+    for (final Point tile : tiles) {
+      // find tile position
+      final int tx = location.x + tile.x * ow;
+      final int ty = location.y + tile.y * oh;
 
-        // find position in component
-        final int cx = (int)(tx / os_scale);
-        final int cy = (int)(ty / os_scale);
+      // find actual tile size
+      final int tw = Math.min(ow, location.x + bounds.width - tx);
+      final int th = Math.min(oh, location.y + bounds.height - ty);
 
-        // find tile size in component
-        final int cw = (int) Math.ceil(tw / os_scale);
-        final int ch = (int) Math.ceil(th / os_scale);
+      // find position in component
+      final int cx = (int)(tx / os_scale);
+      final int cy = (int)(ty / os_scale);
 
-        final Repainter rep = obs == null ? null :
-          new Repainter(obs, cx, cy, cw, ch);
+      // find tile size in component
+      final int cw = (int) Math.ceil(tw / os_scale);
+      final int ch = (int) Math.ceil(th / os_scale);
 
-        try {
-          final Future<BufferedImage> fim =
-            op.getFutureTile(tile.x, tile.y, rep);
+      final Repainter rep = obs == null ? null :
+        new Repainter(obs, cx, cy, cw, ch);
 
-          if (obs == null) {
-            drawTile(g, fim, tx, ty, obs);
-          }
-          else {
-            if (fim.isDone()) {
+      try {
+        final Future<BufferedImage> fim =
+          op.getFutureTile(tile.x, tile.y, rep);
+
+        if (obs == null) {
+          drawTile(g, fim, tx, ty, obs);
+        }
+        else {
+          if (fim.isDone()) {
 // FIXME: We check whether the observer here is a map view in order to
 // avoid mixing requests (and fade-in) between maps and their overview
 // maps. This is a kludge which should be fixed when model-view
 // separation happens.
-              if (map != null && obs == map.getView()) {
-                if (requested.containsKey(tile)) {
-                  requested.remove(tile);
-                  final Point t = tile;
+            if (map != null && obs == map.getView()) {
+              if (requested.containsKey(tile)) {
+                requested.remove(tile);
+                final Point t = tile;
 
-                  final Animator a = new Animator(100,
-                    new TimingTargetAdapter() {
-                      @Override
-                      public void timingEvent(float fraction) {
-                        alpha.put(t, fraction);
-                        obs.repaint(cx, cy, cw, ch);
-                      }
+                final Animator a = new Animator(100,
+                  new TimingTargetAdapter() {
+                    @Override
+                    public void timingEvent(float fraction) {
+                      alpha.put(t, fraction);
+                      obs.repaint(cx, cy, cw, ch);
                     }
-                  );
+                  }
+                );
 
-                  a.setResolution(20);
-                  a.start();
-                }
-                else {
-                  Float a = alpha.get(tile);
-                  if (a != null && a < 1.0f) {
-                    final Composite oldComp = g2d.getComposite();
-                    g2d.setComposite(
-                      AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));
-                    drawTile(g2d, fim, tx, ty, obs);
-                    g2d.setComposite(oldComp);
-                  }
-                  else {
-                    alpha.remove(tile);
-                    drawTile(g, fim, tx, ty, obs);
-                  }
-                }
+                a.setResolution(20);
+                a.start();
               }
               else {
-                if (o_requested.containsKey(tile)) {
-                  o_requested.remove(tile);
-                  obs.repaint(cx, cy, cw, ch);
+                final Float a = alpha.get(tile);
+                if (a != null && a < 1.0f) {
+                  final Composite oldComp = g2d.getComposite();
+                  g2d.setComposite(
+                    AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));
+                  drawTile(g2d, fim, tx, ty, obs);
+                  g2d.setComposite(oldComp);
                 }
                 else {
+                  alpha.remove(tile);
                   drawTile(g, fim, tx, ty, obs);
                 }
               }
             }
             else {
-              if ((map != null) && (obs == map.getView())) {
-                requested.putIfAbsent(tile, fim);
+              if (o_requested.containsKey(tile)) {
+                o_requested.remove(tile);
+                obs.repaint(cx, cy, cw, ch);
               }
               else {
-                o_requested.putIfAbsent(tile, fim);
+                drawTile(g, fim, tx, ty, obs);
               }
             }
           }
+          else {
+            if (map != null && obs == map.getView()) {
+              requested.putIfAbsent(tile, fim);
+            }
+            else {
+              o_requested.putIfAbsent(tile, fim);
+            }
+          }
         }
+      }
 // FIXME: should getTileFuture() throw these? Yes, probably, because it's
 // synchronous when obs is null.
-        catch (CancellationException | ExecutionException e) {
-          // FIXME: bug until we permit cancellation
-          // FIXME: bug until we figure out why getTileFuture() throws ExecutionException
-          ErrorDialog.bug(e);
-        }
+      catch (final CancellationException | ExecutionException e) {
+        // FIXME: bug until we permit cancellation
+        // FIXME: bug until we figure out why getTileFuture() throws ExecutionException
+        ErrorDialog.bug(e);
       }
+    }
 
-      if (map != null && obs == map.getView()) {
-        for (Point tile : requested.keySet().toArray(new Point[0])) {
-          if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
-            requested.remove(tile);
-          }
-        }
-      }
-      else {
-        for (Point tile : o_requested.keySet().toArray(new Point[0])) {
-          if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
-            o_requested.remove(tile);
-          }
-        }
-      }
-/*
-      final StringBuilder sb = new StringBuilder();
-      for (Point tile : requested.keySet().toArray(new Point[0])) {
+    if (map != null && obs == map.getView()) {
+      for (final Point tile : requested.keySet().toArray(new Point[0])) {
         if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
-          final Future<Image> fim = requested.remove(tile);
-          if (!fim.isDone()) {
-            sb.append("(")
-              .append(tile.x)
-              .append(",")
-              .append(tile.y)
-              .append(") ");
-          }
+          requested.remove(tile);
         }
       }
-      if (sb.length() > 0) {
-        sb.insert(0, "cancelling: ").append("\n");
-        System.out.print(sb.toString());
+    }
+    else {
+      for (final Point tile : o_requested.keySet().toArray(new Point[0])) {
+        if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
+          o_requested.remove(tile);
+        }
       }
+    }
+/*
+    final StringBuilder sb = new StringBuilder();
+    for (Point tile : requested.keySet().toArray(new Point[0])) {
+      if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
+        final Future<Image> fim = requested.remove(tile);
+        if (!fim.isDone()) {
+          sb.append("(")
+            .append(tile.x)
+            .append(",")
+            .append(tile.y)
+            .append(") ");
+        }
+      }
+    }
+    if (sb.length() > 0) {
+      sb.insert(0, "cancelling: ").append("\n");
+      System.out.print(sb.toString());
+    }
 */
-    }
-    else if (color != null) {
-      g.setColor(color);
-      g.fillRect(visibleRect.x, visibleRect.y,
-                 visibleRect.width, visibleRect.height);
-    }
-
-    if (grid != null) {
-      grid.draw(g, bounds, visibleRect, zoom, reversed);
-    }
   }
 
   /**
@@ -512,7 +511,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final ImageOp sop = Op.scale(boardImageOp, zoom);
       return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
     }
-    catch (CancellationException | ExecutionException | InterruptedException e) {
+    catch (final CancellationException | ExecutionException | InterruptedException e) {
       ErrorDialog.bug(e);
     }
     return null;
@@ -597,7 +596,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public Board copy() {
-    Board b = new Board();
+    final Board b = new Board();
     b.build(getBuildElement(Builder.createNewDocument()));
     return b;
   }
@@ -758,7 +757,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     @Override
     public void setup(boolean gameStarting) {
       if (gameStarted && !gameStarting) {
-        for (Board board : toClean) {
+        for (final Board board : toClean) {
           board.cleanUp();
         }
         toClean.clear();
@@ -775,5 +774,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
     this.magnification = magnification;
     fixedBoundaries = false;
     bounds();
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageFile != null) s.add(imageFile);
   }
 }

@@ -1,9 +1,4 @@
-package VASSAL.build.module.noteswindow;
-
-import VASSAL.command.Command;
-
 /*
- *
  * Copyright (c) 2004 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -19,13 +14,16 @@ import VASSAL.command.Command;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL.build.module.noteswindow;
+
+import VASSAL.command.Command;
 
 /**
  * When executed, adds a {@link SecretNote} to a specified List.
  */
 public class AddSecretNoteCommand extends Command {
-  private Interface i;
-  private SecretNote note;
+  private final Interface i;
+  private final SecretNote note;
 
   public AddSecretNoteCommand(Interface i, SecretNote note) {
     this.i = i;

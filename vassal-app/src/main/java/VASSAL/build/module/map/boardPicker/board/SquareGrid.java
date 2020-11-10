@@ -70,7 +70,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   private GridNumbering gridNumbering;
 
-
   @Override
   public GridNumbering getGridNumbering() {
     return gridNumbering;
@@ -79,7 +78,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public void setGridNumbering(GridNumbering gridNumbering) {
     this.gridNumbering = gridNumbering;
   }
-
 
   @Override
   public double getDx() {
@@ -90,7 +88,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public void setDx(double d) {
     dx = d;
   }
-
 
   @Override
   public double getDy() {
@@ -239,10 +236,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("RectangularGrid.html"); //$NON-NLS-1$
   }
-
 
   @Override
   public String getAttributeValueString(String key) {
@@ -357,10 +353,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public Point getLocation(String location) throws BadCoords {
-    if (gridNumbering == null)
+    if (gridNumbering == null) {
       throw new BadCoords();
-    else
-      return gridNumbering.getLocation(location);
+    }
+    return gridNumbering.getLocation(location);
   }
 
   @Override
@@ -376,21 +372,20 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
   }
 
-
   @Override
   public Area getGridShape(Point center, int range) {
     Area shape = shapeCache.get(range);
     if (shape == null) {
       shape = getSingleSquareShape(0, 0);
-      double dx = getDx();
-      double dy = getDy();
+      final double dx = getDx();
+      final double dy = getDy();
 
       for (int x = -range; x < range + 1; x++) {
-        int x1 = (int) (x * dx);
+        final int x1 = (int) (x * dx);
 //        int yRange = range - abs(x); /* This creates a diamond-shaped range.  Configuration option?  */
-        int yRange = range;
+        final int yRange = range;
         for (int y = -yRange; y < yRange + 1; y++) {
-          int y1 = (int) (y * dy);
+          final int y1 = (int) (y * dy);
           shape.add(getSingleSquareShape(x1, y1));
         }
       }
@@ -404,9 +399,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
    * Return the Shape of a single grid square
    */
   public Area getSingleSquareShape(int centerX, int centerY) {
-    double dx = getDx();
-    double dy = getDy();
-    Rectangle rect = new Rectangle((int) (centerX - dx / 2), (int) (centerY - dy / 2), (int) dx, (int) dy);
+    final double dx = getDx();
+    final double dy = getDy();
+    final Rectangle rect = new Rectangle((int) (centerX - dx / 2), (int) (centerY - dy / 2), (int) dx, (int) dy);
     return new Area(rect);
   }
 
@@ -415,14 +410,15 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     if (! snapTo) {
       return p;
     }
-// nx,ny are the closest points to the half-grid
-// (0,0) is the center of the origin cell
-// (1,0) is the east edge of the origin cell
-// (1,1) is the lower-right corner of the origin cell
 
-    int offsetX = p.x - origin.x;
+    // nx,ny are the closest points to the half-grid
+    // (0,0) is the center of the origin cell
+    // (1,0) is the east edge of the origin cell
+    // (1,1) is the lower-right corner of the origin cell
+
+    final int offsetX = p.x - origin.x;
     int nx = (int) round(offsetX / (0.5 * dx));
-    int offsetY = p.y - origin.y;
+    final int offsetY = p.y - origin.y;
     int ny = (int) round(offsetY / (0.5 * dy));
 
     Point snap = null;
@@ -519,31 +515,31 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return;
     }
 
-    Graphics2D g2d = (Graphics2D) g;
+    final Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
-    Rectangle region = bounds.intersection(visibleRect);
+    final Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g2d.getClip();
+    final Shape oldClip = g2d.getClip();
     if (oldClip != null) {
-      Area clipArea = new Area(oldClip);
+      final Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
       g2d.setClip(clipArea);
     }
 
-    double deltaX = scale * dx;
-    double deltaY = scale * dy;
+    final double deltaX = scale * dx;
+    final double deltaY = scale * dy;
 
     double xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX) + deltaX / 2
         : bounds.x + scale * origin.x + deltaX * round((region.x - bounds.x - scale * origin.x) / deltaX) + deltaX / 2;
-    double xmax = region.x + region.width;
+    final double xmax = region.x + region.width;
     double ymin = reversed ? bounds.y + scale * origin.y + bounds.height - deltaY * round((bounds.y + scale * origin.y + bounds.height - region.y) / deltaY) + deltaY / 2
         : bounds.y + scale * origin.y + deltaY * round((region.y - bounds.y - scale * origin.y) / deltaY) + deltaY / 2;
-    double ymax = region.y + region.height;
+    final double ymax = region.y + region.height;
 
-    Point p1 = new Point();
-    Point p2 = new Point();
+    final Point p1 = new Point();
+    final Point p2 = new Point();
     g2d.setColor(color);
     // x is the location of a vertical line
     for (double x = xmin; x < xmax; x += deltaX) {
@@ -571,10 +567,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public Configurer getConfigurer() {
-    boolean buttonExists = config != null;
-    Configurer c = super.getConfigurer();
+    final boolean buttonExists = config != null;
+    final Configurer c = super.getConfigurer();
     if (!buttonExists) {
-      JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
+      final JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
       b.addActionListener(e -> editGrid());
       ((Container) c.getControls()).add(b);
     }
@@ -586,7 +582,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     gridEditor.setVisible(true);
     // Local variables may have been updated by GridEditor so refresh
     // configurers.
-    AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
+    final AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
     cfg.getConfigurer(DX).setValue(String.valueOf(dx));
     cfg.getConfigurer(DY).setValue(String.valueOf(dy));
     cfg.getConfigurer(X0).setValue(String.valueOf(origin.x));
@@ -608,10 +604,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       if ((isPerpendicular(hp1, hp2) && isPerpendicular(hp1, hp3) && !isPerpendicular(hp2, hp3)) ||
           (isPerpendicular(hp2, hp1) && isPerpendicular(hp2, hp3) && !isPerpendicular(hp1, hp3)) ||
           (isPerpendicular(hp3, hp1) && isPerpendicular(hp3, hp2) && !isPerpendicular(hp1, hp2))) {
-        int height = max(abs(hp1.y - hp2.y), abs(hp1.y - hp3.y));
-        int width = max(abs(hp1.x - hp2.x), abs(hp1.x - hp3.x));
-        int top = min(hp1.y, min(hp2.y, hp3.y));
-        int left = min(hp1.x, min(hp2.x, hp3.x));
+        final int height = max(abs(hp1.y - hp2.y), abs(hp1.y - hp3.y));
+        final int width = max(abs(hp1.x - hp2.x), abs(hp1.x - hp3.x));
+        final int top = min(hp1.y, min(hp2.y, hp3.y));
+        final int left = min(hp1.x, min(hp2.x, hp3.x));
         grid.setDx(width);
         grid.setDy(height);
         setNewOrigin(new Point(left + width / 2, top + height / 2));

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -48,27 +49,26 @@ import VASSAL.tools.swing.SwingUtils;
 public class ImagePicker extends JPanel
                          implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;
-  private static final String NO_IMAGE = "(No Image)";
+  private static final String NO_IMAGE = "(" + Resources.getString("Editor.ImagePicker.no_image") + ")";
   private String imageName = null;
-  protected static final Font FONT = new Font("Dialog", Font.PLAIN, 11);
+  protected static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   private final JTextArea noImage;
   private final JComboBox<String> select;
   private final OpIcon icon;
-  private final JLabel imageView;
   private final JPanel imageViewer;
   private final JScrollPane imageScroller;
 
   public ImagePicker() {
     noImage = new JTextArea(1, 10);
     noImage.setFont(FONT);
-    noImage.setText("Double-click here to add new image");
+    noImage.setText(Resources.getString("Editor.ImagePicker.double_click_here"));
     noImage.addMouseListener(this);
     noImage.setEditable(false);
     noImage.setLineWrap(true);
     noImage.setWrapStyleWord(true);
     noImage.setMinimumSize(new Dimension(15, 32));
     icon = new OpIcon();
-    imageView = new JLabel(icon);
+    final JLabel imageView = new JLabel(icon);
     imageView.addMouseListener(this);
 
     imageViewer = new JPanel(new BorderLayout());
@@ -95,15 +95,23 @@ public class ImagePicker extends JPanel
   public void setImageName(String name) {
     imageName = name;
     remove(0);
-    if (name == null || name.trim().length() == 0 || name.equals(NO_IMAGE)) {
+    if (name == null || name.isBlank() || name.equals(NO_IMAGE)) {
       imageName = "";
       add(noImage, 0);
     }
     else {
       icon.setOp(Op.load(imageName));
-      Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+      final Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+
       if (d.width > 200) d.width = 200;
-      if (d.height > 200) d.height = 200; else d.height += 4;
+
+      if (d.height > 200) {
+        d.height = 200;
+      }
+      else {
+        d.height += 4;
+      }
+
       imageScroller.setPreferredSize(d);
       imageScroller.setMinimumSize(d);
 
@@ -113,7 +121,7 @@ public class ImagePicker extends JPanel
     select.removeItemListener(this);
     select.setSelectedItem(name);
     if (name != null && !name.equals(select.getSelectedItem())) {
-      select.setSelectedItem(name + ".gif");
+      select.setSelectedItem(name + ".gif"); // NON-NLS
     }
     select.addItemListener(this);
     revalidate();
@@ -159,9 +167,9 @@ public class ImagePicker extends JPanel
 
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
          && fc.getSelectedFile().exists()) {
-      String name = fc.getSelectedFile().getName();
+      final String name = fc.getSelectedFile().getName();
       gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
-      select.setModel(new DefaultComboBoxModel<String>(
+      select.setModel(new DefaultComboBoxModel<>(
         ArrayUtils.addFirst(gm.getDataArchive().getImageNames(), NO_IMAGE)
       ));
       setImageName(name);

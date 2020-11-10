@@ -39,6 +39,7 @@ public abstract class NodeClientFactory extends ChatServerFactory {
 
   protected abstract ChatServerConnection buildServerImpl(Properties param);
 
+  @Override
   public ChatServerConnection buildServer(Properties param) {
     final ChatServerConnection server = buildServerImpl(param);
 
@@ -50,7 +51,7 @@ public abstract class NodeClientFactory extends ChatServerFactory {
     server.addPropertyChangeListener(ChatServerConnection.STATUS, e -> {
       final String mess = (String) e.getNewValue();
       GameModule.getGameModule().warn(mess);
-      logger.error("", mess);
+      logger.error(mess);
     });
 
     server.addPropertyChangeListener(

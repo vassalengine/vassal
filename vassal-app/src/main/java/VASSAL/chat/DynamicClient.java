@@ -41,9 +41,6 @@ public class DynamicClient extends HybridClient {
 
   private boolean connecting;
 
-  public DynamicClient() {
-  }
-
   protected ChatServerConnection buildDelegate() throws IOException {
     final Properties p = ServerAddressBook.getInstance().getCurrentServerProperties();
     return ChatServerFactory.build(p);
@@ -66,11 +63,11 @@ public class DynamicClient extends HybridClient {
               setDelegate(get());
               DynamicClient.super.setConnected(connect);
             }
-            catch (InterruptedException e) {
+            catch (final InterruptedException e) {
               log.error("Error while connecting: interrupted", e); //NON-NLS
             }
-            catch (ExecutionException ex) {
-              Throwable e = ex.getCause();
+            catch (final ExecutionException ex) {
+              final Throwable e = ex.getCause();
               fireStatus(Resources.getString("Server.bad_address3")); //$NON-NLS-1$
               ErrorDialog.showDetails(e, ThrowableUtils.getStackTrace(e), "Error.network_communication_error"); //$NON-NLS-1$
               e.printStackTrace();
@@ -86,7 +83,7 @@ public class DynamicClient extends HybridClient {
         try {
           setDelegate(buildDelegate());
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
           log.error("Error while connecting", ex); //NON-NLS
         }
       }

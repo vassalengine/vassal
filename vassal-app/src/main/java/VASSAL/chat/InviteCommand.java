@@ -31,10 +31,10 @@ import VASSAL.tools.swing.Dialogs;
  *
  */
 public class InviteCommand extends Command {
-  private String room;
-  private String player;
-  private String playerId;
-  private ChatServerConnection client;
+  private final String room;
+  private final String player;
+  private final String playerId;
+  private final ChatServerConnection client;
 
   public InviteCommand(String player, String playerId, String room, ChatServerConnection client) {
     this.player = player;

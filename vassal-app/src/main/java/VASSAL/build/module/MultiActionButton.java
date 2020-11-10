@@ -28,6 +28,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Combines multiple buttons from the toolbar into a single button. Pushing the single button is equivalent to pushing
@@ -42,19 +43,14 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     super();
     setAttribute(BUTTON_TEXT, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
     setAttribute(TOOLTIP, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
-    launch.putClientProperty(MENU_PROPERTY, null);
+    getLaunchButton().putClientProperty(MENU_PROPERTY, null);
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {
-        Resources.getString(Resources.DESCRIPTION),
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(super.getAttributeDescriptions(),
         Resources.getString("Editor.MultiActionButton.buttons") //$NON-NLS-1$
-    };
+    );
   }
 
   @Override
@@ -67,8 +63,9 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     try {
       RecursionLimiter.startExecution(this);
 
-      for (int i = 0, n = menu.getComponentCount(); i < n; ++i) {
-        Component c = menu.getComponent(i);
+      final int n = menu.getComponentCount();
+      for (int i = 0; i < n; ++i) {
+        final Component c = menu.getComponent(i);
         if (c instanceof JMenuItem) {
           ((JMenuItem)c).doClick();
         }

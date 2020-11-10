@@ -155,7 +155,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       inUseModel.insertElementAt(piece, 0);
       boolean contains = false;
-      for (int i = 0, j = availableModel.size(); i < j; ++i) {
+      final int j = availableModel.size();
+      for (int i = 0; i < j; ++i) {
         if (pieceClass.isInstance(availableModel.elementAt(i))) {
           contains = true;
           break;
@@ -216,22 +217,22 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     add(slot.getComponent());
 
-    JPanel controls = new JPanel();
+    final JPanel controls = new JPanel();
     controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
 
-    JPanel availablePanel = new JPanel();
-    JScrollPane availableScroll = new JScrollPane();
+    final JPanel availablePanel = new JPanel();
+    final JScrollPane availableScroll = new JScrollPane();
     availableList = new JList<>();
     helpButton = new JButton();
-    JButton importButton = new JButton();
-    JPanel addRemovePanel = new JPanel();
+    final JButton importButton = new JButton();
+    final JPanel addRemovePanel = new JPanel();
     addButton = new JButton();
     removeButton = new JButton();
-    JPanel inUsePanel = new JPanel();
-    JScrollPane inUseScroll = new JScrollPane();
+    final JPanel inUsePanel = new JPanel();
+    final JScrollPane inUseScroll = new JScrollPane();
     inUseList = new JList<>();
     propsButton = new JButton();
-    JPanel moveUpDownPanel = new JPanel();
+    final JPanel moveUpDownPanel = new JPanel();
     moveUpButton = new JButton();
     moveDownButton = new JButton();
     copyButton = new JButton();
@@ -244,7 +245,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(r);
     availableList.addListSelectionListener(evt -> {
-      Object o = availableList.getSelectedValue();
+      final Object o = availableList.getSelectedValue();
       helpButton.setEnabled(o instanceof EditablePiece
                             && ((EditablePiece) o).getHelpFile() != null);
       addButton.setEnabled(o instanceof Decorator);
@@ -263,7 +264,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     importButton.setText(Resources.getString("General.import"));
     importButton.addActionListener(evt -> {
-      String className = JOptionPane.showInputDialog(PieceDefiner.this, Resources.getString("Editor.PieceDefiner.enter_class"));
+      final String className = JOptionPane.showInputDialog(
+        this, Resources.getString("Editor.PieceDefiner.enter_class")
+      );
       importPiece(className);
     });
 
@@ -275,10 +278,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     addButton.setText(Resources.getString("General.add") + " ->");
     addButton.addActionListener(evt -> {
-      Object selected = availableList.getSelectedValue();
+      final Object selected = availableList.getSelectedValue();
       if (selected instanceof Decorator) {
         if (inUseModel.getSize() > 0) {
-          Decorator c = (Decorator) selected;
+          final Decorator c = (Decorator) selected;
           addTrait(c);
           if (inUseModel.lastElement().getClass() == c.getClass()) {
             if (! edit(inUseModel.size() - 1)) {
@@ -314,7 +317,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     removeButton.setText("<- " + Resources.getString("General.remove"));
     removeButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
+      final int index = inUseList.getSelectedIndex();
       if (index >= 0) {
         removeTrait(index);
         if (inUseModel.getSize() > 0) {
@@ -358,7 +361,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 // FIXME: mouseClicked()?
       public void mouseReleased(MouseEvent e) {
         if (e.getClickCount() == 2 && SwingUtils.isMainMouseButtonDown(e)) {
-          int index = inUseList.locationToIndex(e.getPoint());
+          final int index = inUseList.locationToIndex(e.getPoint());
           if (index >= 0) {
             edit(index);
           }
@@ -374,7 +377,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     propsButton.setText(Resources.getString("Editor.properties"));
     propsButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
+      final int index = inUseList.getSelectedIndex();
       if (index >= 0) {
         edit(index);
       }
@@ -389,7 +392,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     moveUpButton.setText(Resources.getString("Editor.PieceDefiner.move_up"));
     moveUpButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
+      final int index = inUseList.getSelectedIndex();
       if (index > 1 && index < inUseModel.size()) {
         moveDecoratorUp(index);
       }
@@ -400,7 +403,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     moveDownButton.setText(Resources.getString("Editor.PieceDefiner.move_down"));
     moveDownButton.addActionListener(evt -> {
-      int index = inUseList.getSelectedIndex();
+      final int index = inUseList.getSelectedIndex();
       if (index > 0 && index < inUseModel.size() - 1) {
         moveDecoratorDown(index);
       }
@@ -411,7 +414,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     copyButton.setText(Resources.getString("Editor.copy"));
     copyButton.addActionListener(evt -> {
       pasteButton.setEnabled(true);
-      int index = inUseList.getSelectedIndex();
+      final int index = inUseList.getSelectedIndex();
       clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
     });
     moveUpDownPanel.add(copyButton);
@@ -443,10 +446,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void moveDecoratorDown(int index) {
-    GamePiece selm1 = inUseModel.elementAt(index - 1);
-    Decorator sel = (Decorator) inUseModel.elementAt(index);
-    Decorator selp1 = (Decorator) inUseModel.elementAt(index + 1);
-    Decorator selp2 = index < inUseModel.size() - 2 ? (Decorator) inUseModel.elementAt(index + 2) : null;
+    final GamePiece selm1 = inUseModel.elementAt(index - 1);
+    final Decorator sel = (Decorator) inUseModel.elementAt(index);
+    final Decorator selp1 = (Decorator) inUseModel.elementAt(index + 1);
+    final Decorator selp2 = index < inUseModel.size() - 2 ? (Decorator) inUseModel.elementAt(index + 2) : null;
     selp1.setInner(selm1);
     sel.setInner(selp1);
     if (selp2 != null) {
@@ -502,22 +505,22 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   private void showHelpForPiece() {
-    Object o = availableList.getSelectedValue();
+    final Object o = availableList.getSelectedValue();
     if (o instanceof EditablePiece) {
-      HelpFile h = ((EditablePiece) o).getHelpFile();
+      final HelpFile h = ((EditablePiece) o).getHelpFile();
       BrowserSupport.openURL(h.getContents().toString());
     }
   }
 
   protected boolean edit(int index) {
-    Object o = inUseModel.elementAt(index);
+    final Object o = inUseModel.elementAt(index);
     if (!(o instanceof EditablePiece)) {
       return false;
     }
-    EditablePiece p = (EditablePiece) o;
+    final EditablePiece p = (EditablePiece) o;
     if (p.getEditor() != null) {
-      Ed ed;
-      Window w = SwingUtilities.getWindowAncestor(this);
+      final Ed ed;
+      final Window w = SwingUtilities.getWindowAncestor(this);
       if (w instanceof Frame) {
         ed = new Ed((Frame) w, p);
       }
@@ -530,7 +533,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       final String oldState = p.getState();
       final String oldType = p.getType();
       ed.setVisible(true);
-      PieceEditor c = ed.getEditor();
+      final PieceEditor c = ed.getEditor();
       if (c != null) {
         p.mySetType(c.getType());
         if (p instanceof Decorator) {
@@ -570,7 +573,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", "")); //NON-NLS
       add(ed.getControls(), "spanx 3,grow,push,wrap"); //NON-NLS
 
-      JPanel buttonBox = new JPanel(new MigLayout());
+      final JPanel buttonBox = new JPanel(new MigLayout());
 
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
@@ -590,7 +593,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         buttonBox.add(b, "tag help"); //NON-NLS
       }
 
-      add(buttonBox, "spanx 3,center");
+      add(buttonBox, "spanx 3,center"); // NON-NLS
 
       pack();
       setLocationRelativeTo(getOwner());
@@ -647,7 +650,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public java.awt.Component getListCellRendererComponent(
+    public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
       super.getListCellRendererComponent(list, value, index, selected, hasFocus);
@@ -655,7 +658,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         setText(((EditablePiece) value).getDescription());
       }
       else {
-        String s = value.getClass().getName();
+        final String s = value.getClass().getName();
         setText(s.substring(s.lastIndexOf('.') + 1));
       }
       return this;

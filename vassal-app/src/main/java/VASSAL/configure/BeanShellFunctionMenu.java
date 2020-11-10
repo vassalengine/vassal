@@ -30,9 +30,20 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 public class BeanShellFunctionMenu extends JPopupMenu {
+  private static final long serialVersionUID = 1L;
 
-  protected static final String[] SUM_COUNT_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
-  protected static final String[] SUM_COUNT_MAP_HINTS = new String[]{Resources.getString("Editor.BeanShell.warning"), Resources.getString("Editor.BeanShell.map_warning"), Resources.getString("Editor.BeanShell.warning2"), Resources.getString("Editor.BeanShell.warning3") };
+  protected static final String[] SUM_COUNT_HINTS = {
+    Resources.getString("Editor.BeanShell.warning"),
+    Resources.getString("Editor.BeanShell.warning2"),
+    Resources.getString("Editor.BeanShell.warning3")
+  };
+
+  protected static final String[] SUM_COUNT_MAP_HINTS = {
+    Resources.getString("Editor.BeanShell.warning"),
+    Resources.getString("Editor.BeanShell.map_warning"),
+    Resources.getString("Editor.BeanShell.warning2"),
+    Resources.getString("Editor.BeanShell.warning3")
+  };
 
   protected static int maxScrollItems = 0;
   protected BeanShellExpressionConfigurer configurer;
@@ -254,8 +265,8 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     JMenu pieceMenu = null;
 
     if (piece instanceof PropertyNameSource) {
-      List<String> propNames = ((PropertyNameSource) piece).getPropertyNames();
-      for (String propName : propNames) {
+      final List<String> propNames = ((PropertyNameSource) piece).getPropertyNames();
+      for (final String propName : propNames) {
         if (pieceMenu == null) {
           pieceMenu = new JMenu();
           pieceMenu.setText(piece.getDescription());
@@ -292,11 +303,11 @@ public class BeanShellFunctionMenu extends JPopupMenu {
     final JMenu myMenu = new JMenu(menuName);
 
     final List<String> propNames = target.getPropertyNames();
-    for (String propName : propNames) {
+    for (final String propName : propNames) {
       addProp(useParentMenu ? parentMenu : myMenu, propName, true);
     }
 
-    for (Buildable b : buildables) {
+    for (final Buildable b : buildables) {
       if (b instanceof AbstractConfigurable) {
         // Remove 'filler' menu levels due to intermediate holding components
         final boolean useParent = (b instanceof GlobalProperties || b instanceof Board || b instanceof ZonedGrid);

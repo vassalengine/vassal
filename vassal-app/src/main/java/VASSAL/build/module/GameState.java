@@ -111,8 +111,6 @@ public class GameState implements CommandEncoder {
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
 
-  public GameState() {}
-
   /**
    * Expects to be added to a GameModule.  Adds <code>New</code>,
    * <code>Load</code>, <code>Close</code>, and <code>Save</code>
@@ -199,7 +197,7 @@ public class GameState implements CommandEncoder {
    * @return true if the game state is different from when it was last saved
    */
   public boolean isModified() {
-    String s = saveString();
+    final String s = saveString();
     return s != null && !s.equals(lastSave);
   }
 
@@ -253,8 +251,8 @@ public class GameState implements CommandEncoder {
    * yet finished
    */
   public Iterator<GameSetupStep> getUnfinishedSetupSteps() {
-    ArrayList<GameSetupStep> l = new ArrayList<>();
-    for (GameSetupStep step : setupSteps) {
+    final ArrayList<GameSetupStep> l = new ArrayList<>();
+    for (final GameSetupStep step : setupSteps) {
       if (!step.isFinished()) {
         l.add(step);
       }
@@ -340,7 +338,7 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted &= this.gameStarting;
-    for (GameComponent gc : gameComponents) {
+    for (final GameComponent gc : gameComponents) {
       gc.setup(this.gameStarting);
     }
 
@@ -353,7 +351,7 @@ public class GameState implements CommandEncoder {
 
       if (gameStarting) {
         SwingUtilities.invokeLater(() -> {
-          Logger logger = GameModule.getGameModule().getLogger();
+          final Logger logger = GameModule.getGameModule().getLogger();
           if (logger instanceof BasicLogger) {
             ((BasicLogger)logger).queryNewLogFile(true);
           }
@@ -365,7 +363,7 @@ public class GameState implements CommandEncoder {
   private void adjustSplitter() {
     // If there is a docked map, set the splitter to a reasonable location
     final GameModule g = GameModule.getGameModule();
-    for (VASSAL.build.module.Map m : g.getComponentsOf(VASSAL.build.module.Map.class)) {
+    for (final VASSAL.build.module.Map m : g.getComponentsOf(VASSAL.build.module.Map.class)) {
       if (m.shouldDockIntoMainWindow()) {
         final Component c = SwingUtilities.getAncestorOfClass(
           ComponentSplitter.SplitPane.class, m.getView()
@@ -611,10 +609,10 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadContinuation(File f) throws IOException {
-    GameModule g = GameModule.getGameModule();
+    final GameModule g = GameModule.getGameModule();
     g.warn(Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
     Command c = decodeSavedGame(f);
-    CommandFilter filter = new CommandFilter() {
+    final CommandFilter filter = new CommandFilter() {
       @Override
       protected boolean accept(Command c) {
         return c instanceof BasicLogger.LogCommand;
@@ -672,17 +670,20 @@ public class GameState implements CommandEncoder {
   public static final String SAVEFILE_ZIP_ENTRY = "savedGame";  //$NON-NLS-1$
 
   /**
-   * Return a {@link Command} that, when executed, will restore the
-   * game to its current state.  Invokes {@link GameComponent#getRestoreCommand}
-   * on each registered {@link GameComponent} */
+   * @return a {@link Command} that, when executed, will restore the
+   * game to its current state -- this command can then be written to
+   * a save game file. Invokes {@link GameComponent#getRestoreCommand}
+   * on each registered {@link GameComponent}, and then creates an AddPiece command
+   * for each game piece.
+   */
   public Command getRestoreCommand() {
     if (!saveGame.isEnabled()) {
       return null;
     }
-    Command c = new SetupCommand(false);
+    final Command c = new SetupCommand(false);
     c.append(checkVersionCommand());
     c.append(getRestorePiecesCommand());
-    for (GameComponent gc : gameComponents) {
+    for (final GameComponent gc : gameComponents) {
       c.append(gc.getRestoreCommand());
     }
     c.append(new SetupCommand(true));
@@ -690,11 +691,11 @@ public class GameState implements CommandEncoder {
   }
 
   private Command checkVersionCommand() {
-    String runningVersion = GameModule.getGameModule().getAttributeValueString(GameModule.VASSAL_VERSION_RUNNING);
+    final String runningVersion = GameModule.getGameModule().getAttributeValueString(GameModule.VASSAL_VERSION_RUNNING);
     ConditionalCommand.Condition cond = new ConditionalCommand.Lt(GameModule.VASSAL_VERSION_RUNNING, runningVersion);
-    Command c = new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand(Resources.getString("GameState.version_mismatch", runningVersion)));  //$NON-NLS-1$
-    String moduleName = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_NAME);
-    String moduleVersion = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_VERSION);
+    final Command c = new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand(Resources.getString("GameState.version_mismatch", runningVersion)));  //$NON-NLS-1$
+    final String moduleName = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_NAME);
+    final String moduleVersion = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_VERSION);
     cond = new ConditionalCommand.Lt(GameModule.MODULE_VERSION, moduleVersion);
     c.append(
       new ConditionalCommand(
@@ -733,18 +734,18 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    
-    SaveMetaData metaData;
+
+    final SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
     // FIXME: It is extremely inefficient to produce the save string. It would
     // be faster to write directly to the output stream instead.
-    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write    
-    
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
+
     final String save = saveString();
     try (FileArchive archive = new ZipArchive(f)) {
-      try (final OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           final BufferedOutputStream bout = new BufferedOutputStream(zout);
-           final OutputStream out = new ObfuscatingOutputStream(bout)) {
+      try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+           BufferedOutputStream bout = new BufferedOutputStream(zout);
+           OutputStream out = new ObfuscatingOutputStream(bout)) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
 
@@ -754,8 +755,8 @@ public class GameState implements CommandEncoder {
     Launcher.getInstance().sendSaveCmd(f);
 
     lastSave = save;
-    String msg;
-    String saveComments = metaData.getLocalizedDescription();
+    final String msg;
+    final String saveComments = metaData.getLocalizedDescription();
     if (!StringUtils.isEmpty(saveComments)) {
       msg = "!" + Resources.getString("GameState.game_saved") + ": <b>" + saveComments + "</b>"; //$NON-NLS-1$
     }
@@ -804,7 +805,7 @@ public class GameState implements CommandEncoder {
                 msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
               }
               else {
-                msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$ 
+                msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
               }
               GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
             }
@@ -847,7 +848,8 @@ public class GameState implements CommandEncoder {
 
   /**
    * @return a Command that, when executed, will add all pieces currently
-   * in the game. Used when saving a game.
+   * in the game. Used when saving a game. Pieces are grouped by map, and
+   * within a map by visual layer.
    */
   public Command getRestorePiecesCommand() {
     // TODO remove stacks that were empty when the game was loaded and are still empty now
@@ -892,7 +894,7 @@ public class GameState implements CommandEncoder {
     });
 
     final Command c = new NullCommand();
-    for (GamePiece p : pieceList) {
+    for (final GamePiece p : pieceList) {
       c.append(new AddPiece(p));
     }
     return c;
@@ -918,9 +920,9 @@ public class GameState implements CommandEncoder {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
-            final Command c = GameModule.getGameModule().decode(
-              IOUtils.toString(din, StandardCharsets.UTF_8));
-            return c;
+            return GameModule.getGameModule().decode(
+              IOUtils.toString(din, StandardCharsets.UTF_8)
+            );
           }
         }
       }

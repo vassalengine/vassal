@@ -26,7 +26,7 @@ import VASSAL.build.Buildable;
  * Combines multiple instances of ValidityChecker
  */
 public class CompoundValidityChecker implements ValidityChecker {
-  private List<ValidityChecker> checkers = new ArrayList<>();
+  private final List<ValidityChecker> checkers = new ArrayList<>();
 
   public CompoundValidityChecker(ValidityChecker checker1,
                                  ValidityChecker checker2) {
@@ -41,7 +41,7 @@ public class CompoundValidityChecker implements ValidityChecker {
 
   @Override
   public void validate(Buildable target, ValidationReport report) {
-    for (ValidityChecker c : checkers) {
+    for (final ValidityChecker c : checkers) {
       c.validate(target, report);
     }
   }

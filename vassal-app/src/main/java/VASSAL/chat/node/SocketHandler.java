@@ -30,11 +30,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class SocketHandler {
-  private Socket sock;
-  private SocketWatcher handler;
-  private BufferedReader reader;
-  private BufferedWriter writer;
-  private BlockingQueue<String> writeQueue = new LinkedBlockingQueue<>();
+  private final Socket sock;
+  private final SocketWatcher handler;
+  private final BufferedReader reader;
+  private final BufferedWriter writer;
+  private final BlockingQueue<String> writeQueue = new LinkedBlockingQueue<>();
   private boolean isOpen = true;
   private Thread readThread = null;
   private Thread writeThread = null;

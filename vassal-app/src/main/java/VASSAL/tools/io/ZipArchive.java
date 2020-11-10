@@ -29,6 +29,7 @@ import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.zip.CRC32;
@@ -48,6 +50,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 
+import VASSAL.i18n.Resources;
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
@@ -154,7 +157,7 @@ public class ZipArchive implements FileArchive {
     final byte[] buf = new byte[8192];
 
     // copy each entry to the new archive
-    for (String name : src.getFiles()) {
+    for (final String name : src.getFiles()) {
       try (InputStream in = src.getInputStream(name);
            OutputStream out = getOutputStream(name)) {
         IOUtils.copy(in, out, buf);
@@ -346,7 +349,7 @@ public class ZipArchive implements FileArchive {
       }
 
       // delete all temporary files
-      for (Entry e : entries.values()) {
+      for (final Entry e : entries.values()) {
         if (e != null && e.file != null) {
           e.file.delete();
         }
@@ -424,18 +427,50 @@ public class ZipArchive implements FileArchive {
         // attempt to copy to the destination
         Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
       }
-      catch (IOException e) {
-        // copy failed
-        final String fmt = "Unable to overwrite %s, so data written to %s instead: %s";
-        throw new IOException(
-          String.format(
-            fmt,
-            dst.toAbsolutePath(),
-            src.toAbsolutePath(),
-            e.getMessage()
-          ),
-          e
-        );
+      catch (IOException copyException) {
+        final Path dst2 = dst.resolveSibling(src.getFileName()); // Our "temp" name but in the destination directory
+        final String fmt = Resources.getString("Editor.ZipArchive.overwrite") + "\n%s"; //NON-NLS
+        try {
+          // Try to at least put it in same directory as the module
+          Files.copy(src, dst2, StandardCopyOption.REPLACE_EXISTING);
+
+          // Since we at least managed to copy it out of the temp directory, we delete the one out of our temp directory
+          try {
+            Files.delete(src);
+          }
+          catch (IOException ignoreDeleteException) {
+            // No action because we have a more important and informative exception to throw
+          }
+
+          // Tell where we moved the file to - don't need the obnoxious long paths in this case because they're in same directory.
+          throw new FileSystemException(
+            dst.toFile().getName(),
+            dst2.toFile().getName(),
+            String.format(
+              fmt,
+              dst.toFile().getName(),
+              dst2.toFile().getName(),
+              copyException.getMessage()
+            )
+          );
+        }
+        catch (FileSystemException whereWePutIt) {
+          // If we picked up a FileSystemException, then it came from the inner loop meaning we at least "got halfway", so
+          // we pass that exception on
+          throw whereWePutIt;
+        }
+        catch (IOException didEverythingFail) {
+          throw new FileSystemException(
+            dst.toFile().getName(),
+            src.toAbsolutePath().toString(),
+            String.format(
+              fmt,
+              dst.toFile().getName(),
+              src.toAbsolutePath().toString(),
+              copyException.getMessage() // Yes we are going to report the message from the FIRST copy exception in this case.
+            )
+          );
+        }
       }
 
       try {
@@ -444,16 +479,16 @@ public class ZipArchive implements FileArchive {
       }
       catch (IOException e) {
         // successful copy, but removing the source failed
-        final String fmt = "File %s saved, but unable to remove temporary file %s: %s";
+        final String fmt = "File %s saved, but unable to remove temporary file %s:\n %s";
         throw new IOException(
           String.format(
             fmt,
-            dst.toAbsolutePath(),
+            dst.toFile().getName(),
             src.toAbsolutePath(),
             e.getMessage()
           ),
           e
-         );
+        );
       }
     }
   }
@@ -499,7 +534,7 @@ public class ZipArchive implements FileArchive {
         }
       }
 
-      for (Entry e : entries.values()) {
+      for (final Entry e : entries.values()) {
         // skip removed or unmodified files
         if (e == null || e.file == null) continue;
 
@@ -512,19 +547,22 @@ public class ZipArchive implements FileArchive {
       }
     }
 
-    // Replace old archive with temp archive
-    moveFile(tmpFile.toPath(), archiveFile.toPath());
-
-    // Delete all temporary files
-    for (Entry e : entries.values()) {
-      if (e != null && e.file != null) {
-        e.file.delete();
-      }
+    try {
+      // Replace old archive with temp archive
+      moveFile(tmpFile.toPath(), archiveFile.toPath());
     }
+    finally {
+      // Delete all temporary files
+      for (final Entry e : entries.values()) {
+        if (e != null && e.file != null) {
+          e.file.delete();
+        }
+      }
 
-    closed = true;
-    modified = false;
-    entries.clear();
+      closed = true;
+      modified = false;
+      entries.clear();
+    }
   }
 
   /** {@inheritDoc} */
@@ -609,7 +647,7 @@ public class ZipArchive implements FileArchive {
       root += '/';
       final ArrayList<String> names = new ArrayList<>();
 
-      for (String n : entries.keySet()) {
+      for (final String n : entries.keySet()) {
         if (n.startsWith(root)) {
           names.add(n);
         }
@@ -644,11 +682,7 @@ public class ZipArchive implements FileArchive {
   /** An {@link InputStream} which releases the read lock on close. */
   private class ZipArchiveInputStream extends FilterInputStream {
     public ZipArchiveInputStream(InputStream in) {
-      super(in);
-
-      if (in == null) {
-        throw new NullPointerException("in == null");
-      }
+      super(Objects.requireNonNull(in));
     }
 
     private boolean closed = false;
@@ -674,26 +708,13 @@ public class ZipArchive implements FileArchive {
    * written, and releases the write lock on close.
    */
   private class ZipArchiveOutputStream extends CheckedOutputStream {
-    private ZipEntry entry;
+    private final ZipEntry entry;
     private long count = 0;
 
     public ZipArchiveOutputStream(OutputStream out,
                                   Checksum cksum, ZipEntry e) {
-      super(out, cksum);
-
-      if (out == null) {
-        throw new NullPointerException("out == null");
-      }
-
-      if (cksum == null) {
-        throw new NullPointerException("cksum == null");
-      }
-
-      if (e == null) {
-        throw new NullPointerException("e == null");
-      }
-
-      entry = e;
+      super(Objects.requireNonNull(out), Objects.requireNonNull(cksum));
+      entry = Objects.requireNonNull(e);
     }
 
     @Override

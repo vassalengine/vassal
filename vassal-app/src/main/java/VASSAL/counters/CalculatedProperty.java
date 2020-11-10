@@ -92,7 +92,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
       .append(getExpression());
     return ID + se.getValue();
@@ -124,7 +124,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     name = st.nextToken("");
     expression = BeanShellExpression.createExpression(st.nextToken(""), true);
@@ -133,8 +133,8 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   protected String getExpression() {
     return expression.getExpression();
   }
-  
-  
+
+
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
    */
@@ -212,7 +212,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof CalculatedProperty)) return false;
-    CalculatedProperty c = (CalculatedProperty) o;
+    final CalculatedProperty c = (CalculatedProperty) o;
     if (! Objects.equals(name, c.name)) return false;
     return Objects.equals(expression, c.expression);
   }
@@ -257,7 +257,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString()).append(expressionConfig.getValueString());
       return ID + se.getValue();
     }
@@ -280,7 +280,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(name);
     return l;
   }

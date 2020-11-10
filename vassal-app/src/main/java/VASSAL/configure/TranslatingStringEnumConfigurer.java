@@ -15,12 +15,13 @@
 package VASSAL.configure;
 
 import VASSAL.i18n.Resources;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -62,6 +63,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    */
   public TranslatingStringEnumConfigurer(String[] validValues, String[] i18nKeys) {
     this(null, null, validValues, i18nKeys);
+  }
+
+  public TranslatingStringEnumConfigurer(String[] validValues, String[] i18nKeys, boolean isDisplayNames) {
+    this(null, null, validValues, i18nKeys, isDisplayNames);
   }
 
   /**
@@ -283,6 +288,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     return panel;
   }
 
+  public int getSelectedIndex() {
+    return box.getSelectedIndex();
+  }
+
   /**
    * Set the enabled status of the Configurer controls
    *
@@ -307,7 +316,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    * @return true if the supplied Object is one of the allowed values
    */
   public boolean isValidValue(Object o) {
-    for (String validValue : validValues) {
+    for (final String validValue : validValues) {
       if (validValue.equals(o)) {
         return true;
       }
@@ -392,13 +401,10 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     setValue((Object) s);
   }
 
-  // TODO move test code to a manual unit test annotated with @Ignore
-  public static void main(String[] args) {
-    JFrame f = new JFrame();
-    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); // NON-NLS
-    c.addPropertyChangeListener(evt -> System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()));
-    f.add(c.getControls());
-    f.pack();
-    f.setVisible(true);
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (panel instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) panel).setLabelVisibility(visible);
+    }
   }
 }

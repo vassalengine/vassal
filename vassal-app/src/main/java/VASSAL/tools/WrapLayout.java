@@ -32,9 +32,6 @@ import javax.swing.JComponent;
 public class WrapLayout extends FlowLayout {
   private static final long serialVersionUID = 1L;
 
-  // The preferred size for this container.
-  private Dimension preferredLayoutSize;
-
   /**
    * Constructs a new <code>WrapLayout</code> with a left
    * alignment and a default 5-unit horizontal and vertical gap.
@@ -108,7 +105,7 @@ public class WrapLayout extends FlowLayout {
       //  When the container width = 0, the preferred width of the container
       //  has not yet been calculated so lets ask for the maximum.
 
-      Dimension targetSize = target.getSize();
+      final Dimension targetSize = target.getSize();
       int targetWidth = 0;
 
       if (targetSize.width == 0)
@@ -116,24 +113,24 @@ public class WrapLayout extends FlowLayout {
       else
         targetWidth = targetSize.width;
 
-      int hgap = getHgap();
-      int vgap = getVgap();
-      Insets insets = target.getInsets();
-      int maxWidth = targetWidth - (insets.left + insets.right + hgap * 2);
+      final int hgap = getHgap();
+      final int vgap = getVgap();
+      final Insets insets = target.getInsets();
+      final int maxWidth = targetWidth - (insets.left + insets.right + hgap * 2);
 
       //  Fit components into the allowed width
 
-      Dimension dim = new Dimension(0, 0);
+      final Dimension dim = new Dimension(0, 0);
       int rowWidth = 0;
       int rowHeight = 0;
 
-      int nmembers = target.getComponentCount();
+      final int nmembers = target.getComponentCount();
 
       for (int i = 0; i < nmembers; i++) {
-        Component m = target.getComponent(i);
+        final Component m = target.getComponent(i);
 
         if (m.isVisible()) {
-          Dimension d = preferred ? m.getPreferredSize() : m.getMinimumSize();
+          final Dimension d = preferred ? m.getPreferredSize() : m.getMinimumSize();
 
           if (rowWidth + d.width > maxWidth) {
             addRow(dim, rowWidth, rowHeight);

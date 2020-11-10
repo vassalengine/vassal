@@ -18,6 +18,7 @@
 package VASSAL.build.module.documentation;
 
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -34,7 +36,6 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;
@@ -171,7 +172,7 @@ public class HelpFile extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    File dir = Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return new HelpFile(null, new File(dir, "HelpMenu.html"), "#HelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -261,14 +262,14 @@ public class HelpFile extends AbstractConfigurable {
   @Override
   public void addTo(Buildable b) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(true);
   }
 
   @Override
   public void removeFrom(Buildable b) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem);
+               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 
@@ -280,7 +281,7 @@ public class HelpFile extends AbstractConfigurable {
     if (anchor != null && !anchor.startsWith("#")) { //$NON-NLS-1$
       anchor = "#" + anchor; //$NON-NLS-1$
     }
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    File dir = Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return anchor == null ? new HelpFile(null, new File(dir, page)) :
@@ -299,6 +300,16 @@ public class HelpFile extends AbstractConfigurable {
   @Override
   public List<String> getFormattedStringList() {
     return List.of(title);
+  }
+
+  /**
+   * {@link VASSAL.search.AbstractImageFinder} - add any images referenced in our html file to our list of images
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(getAttributeValueString(FILE));
+    h.addImageNames(s);
   }
 }
 

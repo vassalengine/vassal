@@ -46,10 +46,8 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
-  private List<PlayerActionFactory> playerActionFactories =
-    new ArrayList<>();
-  private List<RoomActionFactory> roomActionFactories =
-    new ArrayList<>();
+  private final List<PlayerActionFactory> playerActionFactories = new ArrayList<>();
+  private final List<RoomActionFactory> roomActionFactories = new ArrayList<>();
   protected ChatServerConnection client;
   private MouseAdapter currentRoomPopupBuilder;
   private MouseAdapter roomPopupBuilder;
@@ -75,14 +73,15 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
 
       private void maybePopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
-          JTree tree = (JTree) e.getSource();
-          TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+          final JTree tree = (JTree) e.getSource();
+          final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
           if (path != null) {
-            Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+            final Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
             if (target instanceof Player) {
-              JPopupMenu popup = buildPopupForPlayer((SimplePlayer) target, tree);
+              final JPopupMenu popup = buildPopupForPlayer((SimplePlayer) target, tree);
               if (popup != null) {
-                for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
+                final int n = popup.getComponentCount();
+                for (int i = 0; i < n; ++i) {
                   popup.getComponent(i).setFont(POPUP_MENU_FONT);
                 }
                 popup.show(tree, e.getX(), e.getY());
@@ -107,40 +106,41 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           maybePopup(e);
         }
         else if (e.getClickCount() == 2 && SwingUtils.isMainMouseButtonDown(e)) {
-          JTree tree = (JTree) e.getSource();
-          TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+          final JTree tree = (JTree) e.getSource();
+          final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
           if (path != null) {
-            Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+            final Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
             if (target instanceof SimpleRoom) {
-              int row = tree.getRowForLocation(e.getX(), e.getY());
+              final int row = tree.getRowForLocation(e.getX(), e.getY());
               if (tree.isCollapsed(row)) {
                 tree.expandRow(row);
               }
               else {
                 tree.collapseRow(row);
               }
-              doubleClickRoom((VASSAL.chat.Room) target, tree);
+              doubleClickRoom((Room) target, tree);
             }
           }
         }
       }
 
       private void maybePopup(MouseEvent e) {
-        JTree tree = (JTree) e.getSource();
-        TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+        final JTree tree = (JTree) e.getSource();
+        final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
         if (path != null) {
-          Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+          final Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
           JPopupMenu popup = null;
 
           if (target instanceof Player) {
             popup = buildPopupForPlayer((SimplePlayer) target, tree);
           }
           else if (target instanceof SimpleRoom) {
-            popup = buildPopupForRoom((VASSAL.chat.Room) target, tree);
+            popup = buildPopupForRoom((Room) target, tree);
           }
 
           if (popup != null) {
-            for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
+            final int n = popup.getComponentCount();
+            for (int i = 0; i < n; ++i) {
               popup.getComponent(i).setFont(POPUP_MENU_FONT);
             }
             popup.show(tree, e.getX(), e.getY());
@@ -161,8 +161,8 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   }
 
   public JPopupMenu buildPopupForRoom(Room room, JTree tree) {
-    JPopupMenu popup = new JPopupMenu();
-    for (RoomActionFactory f : roomActionFactories) {
+    final JPopupMenu popup = new JPopupMenu();
+    for (final RoomActionFactory f : roomActionFactories) {
       popup.add(f.getAction(room, tree));
     }
     return popup.getComponentCount() == 0 ? null : popup;
@@ -183,8 +183,8 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   }
 
   public JPopupMenu buildPopupForPlayer(SimplePlayer target, JTree tree) {
-    JPopupMenu popup = new JPopupMenu();
-    for (PlayerActionFactory f : playerActionFactories) {
+    final JPopupMenu popup = new JPopupMenu();
+    for (final PlayerActionFactory f : playerActionFactories) {
       final Action a = f.getAction(target, tree);
       if (a != null) {
         popup.add(a);

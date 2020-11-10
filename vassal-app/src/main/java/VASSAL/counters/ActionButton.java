@@ -82,8 +82,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(stroke).append(bounds.x).append(bounds.y).append(bounds.width).append(bounds.height).append(description);
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(stroke)
+      .append(bounds.x)
+      .append(bounds.y)
+      .append(bounds.width)
+      .append(bounds.height)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -100,9 +105,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
-    if (getMap() != null) { // Do not allow button pushes if piece is not on a map
-      pusher.register(getMap());
-    }
   }
 
   @Override
@@ -121,11 +123,18 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
+  public void setMap(Map m) {
+    // Register the map for button pushes
+    pusher.register(m);
+    piece.setMap(m);
+  }
+
+  @Override
   public String getDescription() {
     return buildDescription("Editor.ActionButton.trait_description", description);
   }
-  
-  
+
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
@@ -137,7 +146,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     stroke = st.nextNamedKeyStroke('A');
     bounds.x = st.nextInt(-20);
@@ -167,7 +176,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof ActionButton)) return false;
-    ActionButton c = (ActionButton) o;
+    final ActionButton c = (ActionButton) o;
     if (! Objects.equals(bounds, c.bounds)) return false;
     return Objects.equals(description, c.description);
   }
@@ -215,9 +224,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
-      se.append(strokeConfig.getValueString()).append(xConfig.getValueString()).append(yConfig.getValueString()).append(widthConfig.getValueString()).append(
-          heightConfig.getValueString()).append(descConfig.getValueString());
+      final SequenceEncoder se = new SequenceEncoder(';');
+      se.append(strokeConfig.getValueString())
+        .append(xConfig.getValueString())
+        .append(yConfig.getValueString())
+        .append(widthConfig.getValueString())
+        .append(heightConfig.getValueString())
+        .append(descConfig.getValueString());
       return ID + se.getValue();
     }
 
@@ -237,14 +250,13 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     private final java.util.Map<Component, ComponentMouseListener> componentMouseListeners = new HashMap<>();
 
     public void register(Map map) {
-      if (map != null) {
-        if (!maps.contains(map)) {
-          map.addLocalMouseListener(new MapMouseListener(map));
-          maps.add(map);
-        }
+      if (map != null && !maps.contains(map)) {
+        map.addLocalMouseListener(new MapMouseListener(map));
+        maps.add(map);
       }
     }
 
+    @Deprecated(since = "2020-10-26", forRemoval = true)
     public void register(Component obs, GamePiece piece, int x, int y) {
       if (obs != null) {
         ComponentMouseListener l = componentMouseListeners.get(obs);
@@ -286,14 +298,14 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
             return;
           }
         }
-        if (piece instanceof ActionButton) {
-          ActionButton action = (ActionButton) piece;
+        else if (piece instanceof ActionButton) {
+          final ActionButton action = (ActionButton) piece;
           if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
             // Save state prior to command
             p.setProperty(Properties.SNAPSHOT, ((PropertyExporter) p).getProperties());
             try {
               RecursionLimiter.startExecution(action);
-              Command command = p.keyEvent(action.stroke.getKeyStroke());
+              final Command command = p.keyEvent(action.stroke.getKeyStroke());
               GameModule.getGameModule().sendAndLog(command);
             }
             catch (RecursionLimitException e) {
@@ -328,6 +340,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       }
     }
 
+    @Deprecated(since = "2020-10-26", forRemoval = true)
     protected class ComponentMouseListener extends MouseAdapter {
       private GamePiece target;
       private int xOffset;

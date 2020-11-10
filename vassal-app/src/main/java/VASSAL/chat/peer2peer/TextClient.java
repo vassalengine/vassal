@@ -1,48 +1,23 @@
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 23, 2002
- * Time: 6:04:16 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.chat.peer2peer;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Date;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Room;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 
+import java.beans.PropertyChangeEvent;
+import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class TextClient {
-  private boolean reportRooms = true;
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   public TextClient(ChatServerConnection client) {
     this.client = client;
-    client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        availableRoomsChanged(evt);
-      }
-    });
-    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        incomingMessageReceived(evt);
-      }
-    });
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        statusReceived(evt);
-      }
-    });
+    client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this::availableRoomsChanged);
+    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, this::incomingMessageReceived);
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, this::statusReceived);
     client.setConnected(true);
   }
 
@@ -55,22 +30,20 @@ public class TextClient {
   }
 
   private void incomingMessageReceived(PropertyChangeEvent evt) {
-    String msg = (String) evt.getNewValue();
+    final String msg = (String) evt.getNewValue();
     if (msg.startsWith("CHAT")) { //$NON-NLS-1$
       System.out.println(msg.substring(4));
     }
   }
 
   private void availableRoomsChanged(PropertyChangeEvent evt) {
-    if (reportRooms) {
-      System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
-      System.out.print(report((Room[]) evt.getNewValue()));
-    }
+    System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
+    System.out.print(report((Room[]) evt.getNewValue()));
   }
 
   public static String report(Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (Room room : r) {
+    for (final Room room : r) {
       buffer
         .append(room.getName())
         .append(": ") //$NON-NLS-1$
@@ -81,7 +54,7 @@ public class TextClient {
             .map(Objects::toString)
             .collect(Collectors.joining(", ")) //$NON-NLS-1$
         )
-        .append("\n"); //$NON-NLS-1$
+        .append('\n'); //$NON-NLS-1$
     }
     return buffer.toString();
   }
@@ -215,8 +188,10 @@ public class TextClient {
     };
     new Thread(r).start();
   }
-*/  public static class ShowText extends Command {
-    private String msg;
+*/
+
+  public static class ShowText extends Command {
+    private final String msg;
 
     public ShowText(String msg) {
       this.msg = msg;

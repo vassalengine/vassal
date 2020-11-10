@@ -60,7 +60,7 @@ public abstract class ItemInstance extends AbstractConfigurable {
 
   protected void setItem() {
     if (defn != null) {
-      GamePieceLayout layout = defn.getLayout();
+      final GamePieceLayout layout = defn.getLayout();
       if (layout != null) {
         item = layout.getItem(name);
       }

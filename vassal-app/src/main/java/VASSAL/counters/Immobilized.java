@@ -53,8 +53,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean neverSelect = false;
   protected boolean neverMove = false;
   protected boolean moveIfSelected = false;
-  protected boolean neverBandSelect = false; 
-  protected boolean altToBandSelect = false; 
+  protected boolean neverBandSelect = false;
+  protected boolean altToBandSelect = false;
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
   protected EventFilter bandselectFilter;
@@ -66,8 +66,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char SHIFT_SELECT = 'i';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
-  protected static final char NEVER_BAND_SELECT = 'Z'; 
-  protected static final char ALT_BAND_SELECT = 'A';   
+  protected static final char NEVER_BAND_SELECT = 'Z';
+  protected static final char ALT_BAND_SELECT = 'A';
 
   public class UseShift implements EventFilter {
     @Override
@@ -117,10 +117,10 @@ public class Immobilized extends Decorator implements EditablePiece {
     moveIfSelected = false;
     neverBandSelect = false;
     altToBandSelect = false;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    String selectionOptions = st.nextToken("");
-    String movementOptions = st.nextToken("");
+    final String selectionOptions = st.nextToken("");
+    final String movementOptions = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
@@ -178,7 +178,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       moveFilter = null;
     }
-    
+
     if (neverBandSelect) {
       bandselectFilter = NEVER;
     }
@@ -297,7 +297,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (altToBandSelect) {
       buffer.append(ALT_BAND_SELECT);
     }
-    
+
     buffer.append(';');
     if (neverMove) {
       buffer.append(NEVER_MOVE);
@@ -322,7 +322,7 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Immobilized.trait_desciption");
+    return Resources.getString("Editor.Immobilized.trait_description");
   }
 
   @Override
@@ -340,7 +340,7 @@ public class Immobilized extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);
@@ -376,29 +376,29 @@ public class Immobilized extends Decorator implements EditablePiece {
     private static final String NEVER = "never"; // NON-NLS
     private static final String SELECTED = "only if selected"; // NON-NLS
 
-    private static final String[] SELECT_OPTIONS = new String[] { NORMAL, SHIFT, ALT, NEVER}; // NON-NLS
+    private static final String[] SELECT_OPTIONS = { NORMAL, SHIFT, ALT, NEVER}; // NON-NLS
 
-    private static final String[] SELECT_KEYS = new String[] {
-      Resources.getString("Editor.Immobilized.normally"),
-      Resources.getString("Editor.Immobilized.when_shift_key_down"),
-      Resources.getString("Editor.Immobilized.when_alt_key_down"),
-      Resources.getString("Editor.Immobilized.never")
+    private static final String[] SELECT_KEYS = {
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.when_shift_key_down",
+      "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.never"
     };
 
-    private static final String[] BAND_SELECT_OPTIONS = new String[] { NORMAL, ALT, NEVER}; // NON-NLS
+    private static final String[] BAND_SELECT_OPTIONS = { NORMAL, ALT, NEVER}; // NON-NLS
 
-    private static final String[] BAND_SELECT_KEYS = new String[] {
-      Resources.getString("Editor.Immobilized.normally"),
-      Resources.getString("Editor.Immobilized.when_alt_key_down"),
-      Resources.getString("Editor.Immobilized.never")
+    private static final String[] BAND_SELECT_KEYS = {
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.never"
     };
 
-    private static final String[] MOVE_OPTIONS = new String[] { NORMAL, SELECTED, NEVER }; // NON-NLS
+    private static final String[] MOVE_OPTIONS = { NORMAL, SELECTED, NEVER }; // NON-NLS
 
-    private static final String[] MOVE_KEYS = new String[] {
-      Resources.getString("Editor.Immobilized.normally"),
-      Resources.getString("Editor.Immobilized.only_if_selected"),
-      Resources.getString("Editor.Immobilized.never")
+    private static final String[] MOVE_KEYS = {
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.only_if_selected",
+      "Editor.Immobilized.never"
     };
 
     public Ed(Immobilized p) {
@@ -428,7 +428,7 @@ public class Immobilized extends Decorator implements EditablePiece {
       }
       else {
         bandSelectOption.setValue(NORMAL);
-      }      
+      }
       controls.add("Editor.Immobilized.band_select_piece", bandSelectOption);
 
       movementOption = new TranslatingStringEnumConfigurer(MOVE_OPTIONS, MOVE_KEYS);

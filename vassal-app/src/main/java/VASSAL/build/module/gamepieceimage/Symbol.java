@@ -34,8 +34,8 @@ import VASSAL.tools.image.ImageUtils;
 public class Symbol {
 
   protected static final String NATO = "NATO Unit Symbols"; //NON-NLS (no, really!)
-  protected static final String[] SYMBOL_SETS = new String[] { NATO };
-  protected static final String[] SYMBOL_SETS_DESC = new String[] { "Editor.Symbol.NATO" };
+  protected static final String[] SYMBOL_SETS = { NATO };
+  protected static final String[] SYMBOL_SETS_DESC = { "Editor.Symbol.NATO" };
 
   protected String symbolSetName;
   protected String symbolName1;
@@ -165,7 +165,7 @@ public class Symbol {
 
 
     protected static SizeOption findSize(String name) {
-      for (SizeOption size : SIZES) {
+      for (final SizeOption size : SIZES) {
         if (name.equals(size.getName())) {
           return size;
         }
@@ -175,7 +175,7 @@ public class Symbol {
 
 
     protected static SizeOption findSizeByDisplayName(String displayName) {
-      for (SizeOption size : SIZES) {
+      for (final SizeOption size : SIZES) {
         if (displayName.equals(size.getDisplayName())) {
           return size;
         }
@@ -184,7 +184,7 @@ public class Symbol {
     }
 
 
-    public static final SizeOption[] SIZES = new SizeOption[] {
+    public static final SizeOption[] SIZES = {
       new SizeOption(SZ_NONE, Resources.getString("Editor.Symbol.Size.none"), 0, ""), //$NON-NLS-1$
       new SizeOption(SZ_INSTALLATION, Resources.getString("Editor.Symbol.Size.installation"), 1, INSTALLATION_SYMBOL),
       new SizeOption(SZ_TEAM, Resources.getString("Editor.Symbol.Size.team"), 1, TEAM_SYMBOL),
@@ -211,8 +211,8 @@ public class Symbol {
       }
 
       g.setColor(fg);
-      BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-      Graphics2D g2 = ((Graphics2D) g);
+      final BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+      final Graphics2D g2 = ((Graphics2D) g);
       g2.setStroke(stroke);
       //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -227,27 +227,26 @@ public class Symbol {
     }
 
     protected static void draw(Graphics g, float lineWidth, String name, Rectangle bounds, boolean drawLow) {
-
-      Graphics2D g2 = (Graphics2D) g;
-      BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-      g2.setStroke(stroke);
-
-      int x_left = bounds.x;
-      int x_center = bounds.x + bounds.width / 2 + 1;
-      int x_right = bounds.x + bounds.width;
-
-      int y_top = bounds.y;
-      int y_center = bounds.y + bounds.height / 2;
-      int y_bottom = bounds.y + bounds.height;
-
       if (name.equals(NONE) || name.equals(MARINES)) {
         return;
       }
 
+      final Graphics2D g2 = (Graphics2D) g;
+      final BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+      g2.setStroke(stroke);
+
+      final int x_left = bounds.x;
+      final int x_center = bounds.x + bounds.width / 2 + 1;
+      final int x_right = bounds.x + bounds.width;
+
+      final int y_top = bounds.y;
+      final int y_center = bounds.y + bounds.height / 2;
+      final int y_bottom = bounds.y + bounds.height;
+
       switch (name) {
       case AIRBORNE: {
-        int x1 = x_center - bounds.width / 4;
-        int y1 = y_top + bounds.height * 4 / 5 + 1;
+        final int x1 = x_center - bounds.width / 4;
+        final int y1 = y_top + bounds.height * 4 / 5 + 1;
         g2.draw(new Arc2D.Double(x1, y1, bounds.width / 4, bounds.height / 4, 0,
           180, Arc2D.OPEN));
         g2.draw(new Arc2D.Double(x_center, y1, bounds.width / 4, bounds.height / 4, 0,
@@ -262,9 +261,9 @@ public class Symbol {
         break;
 
       case AIR_FORCE: {
-        int xoff1 = (int) (bounds.width * 0.15);
-        int xoff2 = (int) (bounds.width * 0.2);
-        int yoff = (int) (bounds.height * 0.35);
+        final int xoff1 = (int) (bounds.width * 0.15);
+        final int xoff2 = (int) (bounds.width * 0.2);
+        final int yoff = (int) (bounds.height * 0.35);
         g.drawLine(x_center - xoff2, y_top + yoff, x_center + xoff2, y_bottom - yoff);
         g.drawLine(x_center + xoff2, y_top + yoff, x_center - xoff2, y_bottom - yoff);
         g2.draw(new Arc2D.Double(x_center - xoff2 - xoff1, y_top + yoff, xoff1 * 2, bounds.height - (2 * yoff), 90, 180,
@@ -281,9 +280,9 @@ public class Symbol {
         break;
 
       case ARMORED: {
-        int yoff = (int) (bounds.height * .25);
-        int xoff1 = (int) (bounds.width * .15);
-        int xoff2 = (int) (bounds.width * .20);
+        final int yoff = (int) (bounds.height * .25);
+        final int xoff1 = (int) (bounds.width * .15);
+        final int xoff2 = (int) (bounds.width * .20);
         g.drawLine(x_left + xoff1 + xoff2, y_top + yoff, x_right - xoff1 - xoff2, y_top + yoff);
         g.drawLine(x_left + xoff1 + xoff2, y_bottom - yoff, x_right - xoff1 - xoff2, y_bottom - yoff);
         g2.draw(
@@ -295,9 +294,9 @@ public class Symbol {
       }
 
       case ARMY_AVIATION: {
-        int xoff = (int) (bounds.height * 0.25);
-        int yoff = (int) (bounds.height * 0.33);
-        GeneralPath p = new GeneralPath();
+        final int xoff = (int) (bounds.height * 0.25);
+        final int yoff = (int) (bounds.height * 0.33);
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_left + xoff, y_top + yoff);
         p.lineTo(x_right - yoff, y_bottom - yoff);
         p.lineTo(x_right - yoff, y_top + yoff);
@@ -308,8 +307,8 @@ public class Symbol {
       }
 
       case ARTILLERY: {
-        int radius = bounds.height / 5;
-        int yoff = (drawLow ? (int) (bounds.height * .2) : 0);
+        final int radius = bounds.height / 5;
+        final int yoff = (drawLow ? (int) (bounds.height * .2) : 0);
         g.fillOval(x_center - radius, y_center - radius + yoff, radius * 2, radius * 2);
         break;
       }
@@ -317,10 +316,10 @@ public class Symbol {
       case COMMANDO: {
         g.drawLine(x_left, y_top, x_right, y_bottom);
         g.drawLine(x_left, y_bottom, x_right, y_top);
-        int x1 = (int) (bounds.width / 2.5);
-        int y1 = (int) (bounds.height / 2.5);
+        final int x1 = (int) (bounds.width / 2.5);
+        final int y1 = (int) (bounds.height / 2.5);
 
-        GeneralPath p = new GeneralPath();
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
         p.lineTo(x_left + x1, y_top);
         p.lineTo(x_left + x1, y_top + y1);
@@ -335,17 +334,17 @@ public class Symbol {
       }
 
       case ENGINEERS: {
-        BasicStroke oldStroke = (BasicStroke) g2.getStroke();
-        BasicStroke estroke =
+        final BasicStroke oldStroke = (BasicStroke) g2.getStroke();
+        final BasicStroke estroke =
           new BasicStroke(oldStroke.getLineWidth() * 1.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g2.setStroke(estroke);
-        int yh = (int) (bounds.height * 0.2);
-        int y1 = drawLow ? y_bottom - yh - 1 : y_top + (bounds.height - yh) / 2;
-        int y2 = y1 + yh;
-        int x1 = x_center - bounds.width / 5;
-        int x2 = x_center + bounds.width / 5;
+        final int yh = (int) (bounds.height * 0.2);
+        final int y1 = drawLow ? y_bottom - yh - 1 : y_top + (bounds.height - yh) / 2;
+        final int y2 = y1 + yh;
+        final int x1 = x_center - bounds.width / 5;
+        final int x2 = x_center + bounds.width / 5;
 
-        GeneralPath p = new GeneralPath();
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x1, y2);
         p.lineTo(x1, y1);
         p.lineTo(x2, y1);
@@ -361,7 +360,7 @@ public class Symbol {
         break;
       case GUERILLA: {
 
-        GeneralPath p = new GeneralPath();
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
         p.lineTo(x_right, y_bottom);
         p.lineTo(x_right, y_top);
@@ -378,8 +377,8 @@ public class Symbol {
 
         break;
       case MOUNTAIN: {
-        int x_off = bounds.width / 6;
-        GeneralPath p = new GeneralPath();
+        final int x_off = bounds.width / 6;
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_center, y_center);
         p.lineTo(x_center + x_off, y_bottom);
         p.lineTo(x_center - x_off, y_bottom);
@@ -388,10 +387,10 @@ public class Symbol {
         break;
       }
       case NAVY: {
-        int yoff1 = (int) (bounds.height * 0.20);
-        int yoff2 = (int) (bounds.height * 0.15);
-        int xoff1 = (int) (bounds.width * 0.15);
-        int xoff2 = (int) (bounds.width * 0.30);
+        final int yoff1 = (int) (bounds.height * 0.20);
+        final int yoff2 = (int) (bounds.height * 0.15);
+        final int xoff1 = (int) (bounds.width * 0.15);
+        final int xoff2 = (int) (bounds.width * 0.30);
         g.drawLine(x_center, y_top + yoff1, x_center, y_bottom - yoff1);
         g.drawLine(x_center - xoff1, y_top + yoff1 + yoff2, x_center + xoff1, y_top + yoff1 + yoff2);
         g2.draw(new Arc2D.Double(x_center - xoff2, y_top + yoff1, xoff2 * 2, bounds.height - (2 * yoff1), 225, 90,
@@ -418,35 +417,35 @@ public class Symbol {
         return;
       }
 
-      SizeOption option = findSize(size);
-      String type = option.getType();
-      int count = option.getCount();
+      final SizeOption option = findSize(size);
+      final String type = option.getType();
+      final int count = option.getCount();
 
-      int sym_w;
-      int sym_h = bounds.height / 3;
+      final int sym_w;
+      final int sym_h = bounds.height / 3;
       if (count <= 4) {
         sym_w = bounds.width / 5;
       }
       else {
         sym_w = bounds.width / 7;
       }
-      int gap = bounds.width / 15;
+      final int gap = bounds.width / 15;
 
-      BufferedImage bi = buildSizeImage(g, count, type, sym_w, sym_h, gap);
+      final BufferedImage bi = buildSizeImage(g, count, type, sym_w, sym_h, gap);
 
-      int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
-      int ypos = bounds.y - sym_h - 1;
+      final int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
+      final int ypos = bounds.y - sym_h - 1;
       g.drawImage(bi, xpos, ypos, null);
     }
 
     public static BufferedImage buildSizeImage(String size, int sym_w, int sym_h, int gap) {
 
-      SizeOption option = findSize(size);
-      String type = option.getType();
-      int count = option.getCount();
+      final SizeOption option = findSize(size);
+      final String type = option.getType();
+      final int count = option.getCount();
 
-      BufferedImage bi = createImage(count, sym_w, sym_h, gap);
-      Graphics2D g = bi.createGraphics();
+      final BufferedImage bi = createImage(count, sym_w, sym_h, gap);
+      final Graphics2D g = bi.createGraphics();
       g.setBackground(null);
       g.setColor(Color.BLACK);
       return buildSizeImage(g, count, type, sym_w, sym_h, gap);
@@ -460,8 +459,8 @@ public class Symbol {
 
     public static BufferedImage buildSizeImage(Graphics g, int count, String type, int sym_w, int sym_h, int gap) {
 
-      Graphics2D g2 = (Graphics2D) g;
-      BufferedImage bi;
+      final Graphics2D g2 = (Graphics2D) g;
+      final BufferedImage bi;
 
       if (type.equals(INSTALLATION_SYMBOL)) {
         bi = createImage(count, sym_w * 3, sym_h, gap);
@@ -469,7 +468,7 @@ public class Symbol {
       else {
         bi = createImage(count, sym_w, sym_h, gap);
       }
-      Graphics2D big = bi.createGraphics();
+      final Graphics2D big = bi.createGraphics();
       big.setColor(g2.getColor());
       big.setBackground(null);
 
@@ -480,12 +479,12 @@ public class Symbol {
       int x_pos = 0;
       for (int i = 0; i < count; i++) {
         if (type.equals(TEAM_SYMBOL)) {
-          int radius = sym_w / 2;
+          final int radius = sym_w / 2;
           big.drawOval(x_pos, sym_h / 3, radius * 2, radius * 2);
           big.drawLine(x_pos, sym_h, x_pos + sym_w, 0);
         }
         else if (type.equals(SQUAD_SYMBOL)) {
-          int radius = sym_w / 2;
+          final int radius = sym_w / 2;
           big.fillOval(x_pos, sym_h / 3, radius * 2, radius * 2);
         }
         else if (type.equals(COMPANY_SYMBOL)) {

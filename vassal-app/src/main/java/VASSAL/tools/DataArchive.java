@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -17,10 +16,6 @@
  */
 package VASSAL.tools;
 
-////////////////////////////////////////////////////////
-// These imports are used in deprecated methods only. //
-////////////////////////////////////////////////////////
-import VASSAL.i18n.Resources;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -41,6 +36,7 @@ import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,6 +49,9 @@ import java.util.zip.ZipFile;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import org.apache.xmlgraphics.image.loader.ImageSource;
+
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
@@ -63,7 +62,6 @@ import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
-import org.apache.xmlgraphics.image.loader.ImageSource;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
@@ -200,6 +198,17 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     // Ridiculous crap we have to check for backwards compatibility
     //
 
+    // Maybe someone unzipped and rezipped this module on a Mac with an
+    // HFS+ filesystem and the filename contains decomposable characters,
+    // so it got munged into NFD. Aauugh! Seriously, DIAF Apple!
+    final String nfd = Normalizer.normalize(fileName, Normalizer.Form.NFD);
+    if (fileName != nfd) {
+      in = getInputStreamImpl(nfd);
+      if (in != null) {
+        return in;
+      }
+    }
+
     // Maybe it's a resource missing its initial slash. Aauugh!
     in = getClass().getResourceAsStream("/" + fileName);
     if (in != null) {
@@ -235,7 +244,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     // we don't have it, try our extensions
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getInputStream(fileName);
       }
@@ -283,7 +292,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return new URL(getURL(), fileName);
     }
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getURL(fileName);
       }
@@ -340,7 +349,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (localImages == null) localImages = getLocalImageNames();
     s.addAll(localImages);
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       ext.getImageNamesRecursively(s);
     }
   }
@@ -351,7 +360,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (archive != null) {
       try {
 //        for (String filename : archive.getFiles(imageDir)) {
-        for (String filename : archive.getFiles("images")) { //NON-NLS
+        for (final String filename : archive.getFiles("images")) { //NON-NLS
           s.add(filename.substring(imageDir.length()));
         }
       }
@@ -383,7 +392,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public ArchiveWriter getWriter() {
     if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       final ArchiveWriter writer = ext.getWriter();
       if (writer != null) return writer;
     }
@@ -430,7 +439,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
     final String slashname = name.replace('.', '/');
-    byte[] data;
+    final byte[] data;
 
     try (InputStream stream = getInputStream(slashname + ".class")) { //NON-NLS
       data = IOUtils.toByteArray(stream);
@@ -778,7 +787,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Rectangle getImageBounds(Image im) {
     ProblemDialog.showDeprecated("2020-08-06");
-    ImageIcon icon = new ImageIcon(im);
+    final ImageIcon icon = new ImageIcon(im);
     return new Rectangle(-icon.getIconWidth() / 2, -icon.getIconHeight() / 2,
                           icon.getIconWidth(), icon.getIconHeight());
   }
@@ -789,13 +798,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image improvedScaling(Image img, int width, int height) {
     ProblemDialog.showDeprecated("2020-08-06");
-    ImageFilter filter;
+    final ImageFilter filter;
 
     filter = new ImprovedAveragingScaleFilter(img.getWidth(null),
                                               img.getHeight(null),
                                               width, height);
 
-    ImageProducer prod;
+    final ImageProducer prod;
     prod = new FilteredImageSource(img.getSource(), filter);
     return Toolkit.getDefaultToolkit().createImage(prod);
   }

@@ -71,6 +71,6 @@ public class DefaultEventListenerSupport<T> implements EventListenerSupport<T> {
   /** {@inheritDoc} */
   @Override
   public void notify(T event) {
-    for (EventListener<? super T> l : listeners) l.receive(src, event);
+    for (final EventListener<? super T> l : listeners) l.receive(src, event);
   }
 }

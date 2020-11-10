@@ -64,8 +64,8 @@ public abstract class Importer {
     final List<LayeredPieceCollection> l =
       map.getComponentsOf(LayeredPieceCollection.class);
 
-    LayeredPieceCollection collection;
-    if (l.size() == 0) {
+    final LayeredPieceCollection collection;
+    if (l.isEmpty()) {
       collection = new LayeredPieceCollection();
       insertComponent(collection, map);
       collection.setAttribute(LayeredPieceCollection.PROPERTY_NAME, "Layer"); //NON-NLS
@@ -160,7 +160,7 @@ public abstract class Importer {
       if (ch >= 0x20 && ch <= 0x7e)
         sb.append(ch);
       else if (ch != 0)
-        sb.append(" ");
+        sb.append(' ');
       else
         break;
     }

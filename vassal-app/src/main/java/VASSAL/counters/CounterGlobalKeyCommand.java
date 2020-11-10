@@ -18,26 +18,13 @@
 
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import java.util.Objects;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
@@ -50,8 +37,34 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
 /**
- * Adds a menu item that applies a {@link GlobalCommand} to other pieces
+ * Trait that sends a Key Command to other pieces, selected with various filters.
+ * Shares {@link GlobalCommand} with the other types of Global Key Command.
+ *
+ * The "Global Key Command" functionality, as the term is used in Vassal Modules, is spread out over several classes internally:
+ * {@link GlobalCommand} - primary functionality for sending commands to multiple pieces based on matching parameters
+ * {@link VASSAL.build.module.GlobalKeyCommand}         - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand}  - Global Key Commands from a Module "At Startup"
+ * {@link VASSAL.build.module.map.MassKeyCommand}       - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand}                      - Global Key Commands from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class CounterGlobalKeyCommand extends Decorator
   implements TranslatablePiece,
@@ -69,7 +82,7 @@ public class CounterGlobalKeyCommand extends Decorator
   protected String rangeProperty = "";
   private KeyCommand myCommand;
   protected String description;
-
+  protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
   public CounterGlobalKeyCommand() {
     this(ID, null);
   }
@@ -82,7 +95,7 @@ public class CounterGlobalKeyCommand extends Decorator
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken(Resources.getString("Editor.GlobalkeyCommand.command"));
     key = st.nextNamedKeyStroke('G');
     globalKey = st.nextNamedKeyStroke('K');
@@ -95,12 +108,17 @@ public class CounterGlobalKeyCommand extends Decorator
     rangeProperty = st.nextToken("");
     description = st.nextToken("");
     globalCommand.setSelectFromDeck(st.nextInt(-1));
+    target.decode(st.nextToken(""));
+    target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
+    target.setCurPiece(this);
+    globalCommand.setPropertySource(Decorator.getOutermost(this));
+
     command = null;
   }
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
       .append(key)
       .append(globalKey)
@@ -111,7 +129,8 @@ public class CounterGlobalKeyCommand extends Decorator
       .append(fixedRange)
       .append(rangeProperty)
       .append(description)
-      .append(globalCommand.getSelectFromDeck());
+      .append(globalCommand.getSelectFromDeck())
+      .append(target.encode());
     return ID + se.getValue();
   }
 
@@ -166,8 +185,8 @@ public class CounterGlobalKeyCommand extends Decorator
   public Shape getShape() {
     return piece.getShape();
   }
-  
-  
+
+
   /**
    * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
    */
@@ -210,7 +229,11 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.GlobalkeyCommand.global_key_command", description);
+    String d = Resources.getString("Editor.GlobalkeyCommand.global_key_command");
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   @Override
@@ -224,7 +247,7 @@ public class CounterGlobalKeyCommand extends Decorator
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
-        String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
+        final String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
         try {
           r = Integer.parseInt(rangeValue);
         }
@@ -235,9 +258,7 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
-    for (Map m : Map.getMapList()) {
-      c = c.append(globalCommand.apply(m, filter));
-    }
+    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target));
 
     return c;
   }
@@ -250,7 +271,7 @@ public class CounterGlobalKeyCommand extends Decorator
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof CounterGlobalKeyCommand)) return false;
-    CounterGlobalKeyCommand trait = (CounterGlobalKeyCommand) o;
+    final CounterGlobalKeyCommand trait = (CounterGlobalKeyCommand) o;
 
     if (! Objects.equals(commandName, trait.commandName)) return false;
     if (! Objects.equals(key, trait.key)) return false;
@@ -262,9 +283,10 @@ public class CounterGlobalKeyCommand extends Decorator
     if (! Objects.equals(fixedRange, trait.fixedRange)) return false;
     if (! Objects.equals(rangeProperty, trait.rangeProperty)) return false;
     if (! Objects.equals(description, trait.description)) return false;
+    if (! Objects.equals(target, trait.target)) return false;
     return Objects.equals(globalCommand.getSelectFromDeck(), trait.globalCommand.getSelectFromDeck());
   }
-  
+
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected NamedHotKeyConfigurer keyInput;
@@ -283,12 +305,14 @@ public class CounterGlobalKeyCommand extends Decorator
     protected JPanel controls;
     protected TraitConfigPanel traitPanel;
 
+    protected GlobalCommandTargetConfigurer targetConfig;
+
     public Ed(CounterGlobalKeyCommand p) {
 
-      PropertyChangeListener pl = evt -> {
+      final PropertyChangeListener pl = evt -> {
 
-        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+        final boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        final boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
         range.getControls().setVisible(isRange && isFixed);
         rangeLabel.setVisible(isRange && isFixed);
@@ -314,6 +338,9 @@ public class CounterGlobalKeyCommand extends Decorator
 
       globalKey = new NamedHotKeyConfigurer(p.globalKey);
       traitPanel.add("Editor.GlobalkeyCommand.global_key_command", globalKey);
+
+      targetConfig = new GlobalCommandTargetConfigurer(p.target);
+      traitPanel.add("Editor.GlobalKeyCommand.pre_select", targetConfig);
 
       propertyMatch = new PropertyExpressionConfigurer(p.propertiesFilter);
       traitPanel.add("Editor.GlobalKeyCommand.matching_properties", propertyMatch);
@@ -352,7 +379,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
         .append(keyInput.getValueString())
         .append(globalKey.getValueString())
@@ -363,7 +390,8 @@ public class CounterGlobalKeyCommand extends Decorator
         .append(fixedRange.booleanValue())
         .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
-        .append(deckPolicy.getIntValue());
+        .append(deckPolicy.getIntValue())
+        .append(targetConfig.getValueString());
       return ID + se.getValue();
     }
 
@@ -384,5 +412,4 @@ public class CounterGlobalKeyCommand extends Decorator
   public String getComponentTypeName() {
     return getDescription();
   }
-
 }

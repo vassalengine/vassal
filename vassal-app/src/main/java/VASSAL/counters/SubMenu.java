@@ -17,6 +17,15 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -24,29 +33,20 @@ import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-
-import net.miginfocom.swing.MigLayout;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.SequenceEncoder;
 
 /** A trait that groups menu items of other traits into a sub-menu */
 public class SubMenu extends Decorator implements TranslatablePiece {
-  public static final String ID = "submenu;";
+  public static final String ID = "submenu;"; // NON-NLS
   private String subMenu;
   private KeyCommandSubMenu keyCommandSubMenu;
   private final KeyCommand[] keyCommands = new KeyCommand[1];
+  private static final String DEFAULT_MENU_NAME = Resources.getString("Editor.SubMenu.default_menu_name");
 
   public SubMenu() {
-    this(ID + "Sub-Menu;", null);
+    this(ID + Resources.getString("Editor.SubMenu.default_menu_name") + ";", null);
   }
 
   public SubMenu(String type, GamePiece inner) {
@@ -56,17 +56,12 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    if ("Sub-Menu".equals(getMenuName())) {
-      return "Sub-Menu";
-    }
-    else {
-      return "Sub-Menu:  " + getMenuName();
-    }
+    return buildDescription("Editor.SubMenu.trait_description", DEFAULT_MENU_NAME.equals(subMenu) ? null : subMenu);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SubMenu.html");
+    return HelpFile.getReferenceManualPage("SubMenu.html"); // NON-NLS
   }
 
   @Override
@@ -80,8 +75,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     st.nextToken();
     subMenu = st.nextToken();
     keyCommandSubMenu = new KeyCommandSubMenu(subMenu, this, this);
-    keyCommandSubMenu.setCommands(
-      StringArrayConfigurer.stringToArray(st.nextToken()));
+    keyCommandSubMenu.setCommands(StringArrayConfigurer.stringToArray(st.nextToken()));
 
     keyCommands[0] = keyCommandSubMenu;
   }
@@ -99,14 +93,14 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(getMenuName()).append(
-      StringArrayConfigurer.arrayToString(getSubcommands()));
+    se.append(getMenuName())
+      .append(StringArrayConfigurer.arrayToString(getSubcommands()));
     return ID + se.getValue();
   }
 
   public String[] getSubcommands() {
     final ArrayList<String> l = new ArrayList<>();
-    for (Iterator<String> i = keyCommandSubMenu.getCommands(); i.hasNext(); ) {
+    for (final Iterator<String> i = keyCommandSubMenu.getCommands(); i.hasNext(); ) {
       l.add(i.next());
     }
     return l.toArray(new String[0]);
@@ -147,23 +141,28 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(getMenuName(), "Sub Menu Name");
+    return getI18nData(getMenuName(), Resources.getString("Editor.SubMenu.sub_menu.name"));
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof SubMenu)) return false;
+    final SubMenu c = (SubMenu) o;
+    if (! Objects.equals(subMenu, c.subMenu)) return false;
+    return Objects.equals(StringArrayConfigurer.arrayToString(getSubcommands()), StringArrayConfigurer.arrayToString(c.getSubcommands()));
   }
 
   public static class Editor implements PieceEditor {
-    private StringConfigurer nameConfig;
-    private StringArrayConfigurer commandsConfig;
-    private JPanel panel = new JPanel();
+    private final StringConfigurer nameConfig;
+    private final StringArrayConfigurer commandsConfig;
+    private final TraitConfigPanel panel = new TraitConfigPanel();
 
     public Editor(SubMenu p) {
-      nameConfig = new StringConfigurer(null, "Menu name:  ", p.getMenuName());
-      commandsConfig = new StringArrayConfigurer(
-        null, "Sub-commands", p.getSubcommands()
-      );
+      nameConfig = new StringConfigurer(p.getMenuName());
+      panel.add("Editor.SubMenu.menu_name", nameConfig);
 
-      panel.setLayout(new MigLayout("fill", "[]rel[]"));
-      panel.add(nameConfig.getControls(), "growx,wrap");
-      panel.add(commandsConfig.getControls(), "grow,push");
+      commandsConfig = new StringArrayConfigurer(p.getSubcommands(), 4, 20);
+      panel.add("Editor.SubMenu.sub_commands", commandsConfig);
     }
 
     @Override
@@ -178,7 +177,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString()).append(commandsConfig.getValueString());
       return ID + se.getValue();
     }

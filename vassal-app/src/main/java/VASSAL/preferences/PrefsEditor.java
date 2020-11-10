@@ -17,6 +17,14 @@
  */
 package VASSAL.preferences;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerLayout;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.SplashScreen;
+import VASSAL.tools.WriteErrorDialog;
+
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -25,7 +33,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +41,6 @@ import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -43,27 +49,18 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.BrowserSupport;
 import net.miginfocom.swing.MigLayout;
-import VASSAL.configure.Configurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.SplashScreen;
-import VASSAL.tools.WriteErrorDialog;
 
 public class PrefsEditor {
   private JDialog dialog;
-  private List<Configurer> options = new ArrayList<>();
-  private List<Configurer> extras = new ArrayList<>();
+  private final List<Configurer> options = new ArrayList<>();
+  private final List<Configurer> extras = new ArrayList<>();
   private boolean iterating = false;
-  private Map<Configurer, Object> savedValues = new HashMap<>();
-  private List<Prefs> prefs = new ArrayList<>();
-  private JTabbedPane optionsTab = new JTabbedPane();
+  private final Map<Configurer, Object> savedValues = new HashMap<>();
+  private final List<Prefs> prefs = new ArrayList<>();
+  private final JTabbedPane optionsTab = new JTabbedPane();
   private JDialog setupDialog;
-  private File pfile;
   private Action editAction;
-
-  public PrefsEditor() {}
 
   public void initDialog(Frame parent) {
     if (dialog == null) {
@@ -82,9 +79,9 @@ public class PrefsEditor {
       // Help button looks up help in Preferences.html, by tab-name
       final JButton help = new JButton(Resources.getString(Resources.HELP));
       help.addActionListener(e -> {
-        int index = optionsTab.getSelectedIndex();
-        String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top"; //NON-NLS
-        HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName); //NON-NLS
+        final int index = optionsTab.getSelectedIndex();
+        final String tabName = (index >= 0) ? optionsTab.getTitleAt(index) : "top"; //NON-NLS
+        final HelpFile helpFile = HelpFile.getReferenceManualPage("Preferences.html", tabName); //NON-NLS
         BrowserSupport.openURL(helpFile.getContents().toString());
       });
 
@@ -129,13 +126,13 @@ public class PrefsEditor {
       p.add(new JLabel(prompt));
       setupDialog.add(p);
       setupDialog.add(c.getControls());
-      JButton b = new JButton(Resources.getString(Resources.OK));
+      final JButton b = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
       p.add(b);
       setupDialog.add(p);
       setupDialog.pack();
-      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       setupDialog.setLocation(
         d.width / 2 - setupDialog.getSize().width / 2,
         d.height / 2 - setupDialog.getSize().height / 2
@@ -151,12 +148,12 @@ public class PrefsEditor {
       category = Resources.getString("Prefs.general_tab"); //$NON-NLS-1$
     }
 
-    JPanel pan = null;
+    JPanel pan;
 
-    int i = optionsTab.indexOfTab(category);
+    final int i = optionsTab.indexOfTab(category);
     if (i == -1) { // No match
       pan = new JPanel();
-      pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
+      pan.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY, "[right][fill,grow]")); // NON-NLS
       optionsTab.addTab(category, pan);
     }
     else {
@@ -170,15 +167,17 @@ public class PrefsEditor {
       options.add(c);
     }
 
-    final Box b = Box.createHorizontalBox();
-    b.add(c.getControls());
-    b.add(Box.createHorizontalGlue());
-    pan.add(b);
+    final String name = c.getName();
+    final JLabel label = new JLabel(name);
+    c.setLabelVisibile(false);
+    label.setLabelFor(c.getControls());
+    pan.add(label);
+    pan.add(c.getControls(), "grow,wrap"); // NON-NLS
   }
 
   private synchronized void storeValues() {
     savedValues.clear();
-    for (Configurer c : options) {
+    for (final Configurer c : options) {
       c.setFrozen(true);
       if (c.getValue() != null) {
         savedValues.put(c, c.getValue());
@@ -187,19 +186,22 @@ public class PrefsEditor {
   }
 
   protected synchronized void cancel() {
-    for (Configurer c : options) {
-      Object o = savedValues.get(c);
+    for (final Configurer c : options) {
+      final Object o = savedValues.get(c);
       if (o != null) {
         c.setValue(o);
       }
       c.setFrozen(false);
     }
     dialog.setVisible(false);
+    for (final Prefs p : prefs) {
+      p.setDisableAutoWrite(false); //BR// Turn auto-write back on, if this was globalPrefs
+    }
   }
 
   protected synchronized void save() {
     iterating = true;
-    for (Configurer c : options) {
+    for (final Configurer c : options) {
       if ((savedValues.get(c) == null && c.getValue() != null) || (savedValues.get(c) != null && !savedValues.get(c).equals(c.getValue()))) {
         c.fireUpdate();
       }
@@ -213,6 +215,10 @@ public class PrefsEditor {
     write();
 
     dialog.setVisible(false);
+
+    for (final Prefs p : prefs) {
+      p.setDisableAutoWrite(false); //BR// Turn auto-write back on, if this was globalPrefs
+    }
   }
 
   public Action getEditAction() {
@@ -223,6 +229,9 @@ public class PrefsEditor {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+          for (final Prefs p : prefs) {
+            p.setDisableAutoWrite(true); //BR// Turn off auto-write while we're editing globalPrefs (we will write the whole thing at the end)
+          }
           storeValues();
           dialog.pack();
           final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -230,15 +239,14 @@ public class PrefsEditor {
           dialog.setVisible(true);
         }
       };
-      // FIMXE: setting nmemonic from first letter could cause collisions in
-      // some languages
+      // FIXME: setting mnemonic from first letter could cause collisions in some languages
       editAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("Prefs.edit_preferences").charAt(0));
     }
     return editAction;
   }
 
   public void write() {
-    for (Prefs p : prefs) {
+    for (final Prefs p : prefs) {
       try {
         p.save();
       }

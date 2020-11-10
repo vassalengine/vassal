@@ -98,7 +98,7 @@ public class PrototypesContainer extends AbstractConfigurable {
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof PrototypeDefinition) {
-      PrototypeDefinition def = (PrototypeDefinition) b;
+      final PrototypeDefinition def = (PrototypeDefinition) b;
       definitions.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
@@ -121,7 +121,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   public static PrototypeDefinition getPrototype(String name) {
     if (instance == null) {
-      Iterator<PrototypesContainer> i =
+      final Iterator<PrototypesContainer> i =
         GameModule.getGameModule()
                   .getComponentsOf(PrototypesContainer.class)
                   .iterator();
@@ -137,7 +137,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData data = super.getI18nData();
+    final ComponentI18nData data = super.getI18nData();
     data.setPrefix(""); //$NON-NLS-1$
     return data;
   }

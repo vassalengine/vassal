@@ -15,17 +15,11 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 21, 2002
- * Time: 10:15:59 PM
- * To change template for new interface use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 
@@ -36,7 +30,7 @@ public interface GridNumbering {
   String locationName(Point pt);
   String localizedLocationName(Point pt);
 
-  void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
+  void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed);
 
   boolean isVisible();
   Point getLocation(String location) throws BadCoords;

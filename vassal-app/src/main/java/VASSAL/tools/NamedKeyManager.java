@@ -19,6 +19,7 @@
 package VASSAL.tools;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.KeyStroke;
 
@@ -37,10 +38,7 @@ public class NamedKeyManager {
   protected static final int NAMED_MARKER = '\uF8FF';
 
   protected static int nextNamedKey = NAMED_START;
-  protected static final HashMap<String, KeyStroke> strokes = new HashMap<>();
-
-  public NamedKeyManager() {
-  }
+  protected static final Map<String, KeyStroke> strokes = new HashMap<>();
 
   public static NamedKeyManager getInstance() {
     if (instance == null) {
@@ -59,7 +57,7 @@ public class NamedKeyManager {
     if (k == null) {
       return false;
     }
-    int code = k.getKeyCode();
+    final int code = k.getKeyCode();
     return code == NAMED_MARKER || (code >= NAMED_START && code <= NAMED_END);
   }
 

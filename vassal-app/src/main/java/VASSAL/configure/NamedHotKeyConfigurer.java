@@ -17,16 +17,22 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OpIcon;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -35,10 +41,28 @@ import javax.swing.text.DocumentFilter;
 
 import net.miginfocom.swing.MigLayout;
 
-public class NamedHotKeyConfigurer extends Configurer {
-  private final JTextField keyStroke = new JTextField(16);
-  private final JTextField keyName = new JTextField(16);
+/**
+ * A configurer for Configuring Key Strokes. It allows the entry of either
+ * a standard keystroke, or a Named command.
+ *
+ * It contains two separate Text fields, one for the Name and one for the keystroke.
+ * A user can fill in one or the other. Filling in one, clears the other.
+ *
+ * This Configurer has a limited undo function. Whenever one of the two fields gains focus,
+ * the current state of the Configurer is saved and the Undo button enabled.
+ * The undo button will return to the state when that field gained focus.
+ * This provides a one-step undo if a user accidentally types in one of the fields and
+ * wipes out data in the other field.
+ */
+public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
+  private static final String STROKE_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.keystroke");
+  private static final String NAME_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.command");
+  private final HintTextField keyStroke = new HintTextField(16, STROKE_HINT);
+  private final HintTextField keyName = new HintTextField(16, NAME_HINT);
   private JPanel controls;
+  private String lastValue;
+  private JButton undoButton;
+
 
   public static String getFancyString(NamedKeyStroke k) {
     String s = getString(k);
@@ -48,20 +72,30 @@ public class NamedHotKeyConfigurer extends Configurer {
     return s;
   }
 
+  /**
+   * Return a String representation of a NamedKeyStroke
+   * @param k NamedKeyStroke
+   * @return String representation
+   */
   public static String getString(NamedKeyStroke k) {
     return (k == null || k.isNull()) ? "" : getString(k.getStroke());
   }
 
+  /**
+   * Return a string representation of a KeyStroke
+   * @param k KeyStroke
+   * @return String representation
+   */
   public static String getString(KeyStroke k) {
     return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }
 
-  public NamedHotKeyConfigurer(String key, String name) {
-    this(key, name, new NamedKeyStroke());
-  }
-
   public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
     super(key, name, val);
+  }
+
+  public NamedHotKeyConfigurer(String key, String name) {
+    this(key, name, new NamedKeyStroke());
   }
 
   public NamedHotKeyConfigurer(NamedKeyStroke val) {
@@ -87,14 +121,27 @@ public class NamedHotKeyConfigurer extends Configurer {
     setFrozen(true); // Prevent changes to the input fields triggering further updates
     if (controls != null) {
       if (isNamed()) {
+        if (keyName.getText().isEmpty()) {
+          keyName.setText(((NamedKeyStroke) value).getName());
+        }
         keyStroke.setText("");
       }
       else {
         keyName.setText("");
         keyStroke.setText(keyToString());
       }
+      updateVisibility();
     }
     setFrozen(false);
+  }
+
+  protected void updateVisibility() {
+    keyName.setFocusOnly(iSnonNullValue());
+    keyStroke.setFocusOnly(iSnonNullValue());
+  }
+
+  private boolean iSnonNullValue() {
+    return value != null && !((NamedKeyStroke) value).isNull();
   }
 
   @Override
@@ -123,19 +170,50 @@ public class NamedHotKeyConfigurer extends Configurer {
       keyStroke.setText(keyToString());
       keyStroke.addKeyListener(new KeyStrokeAdapter());
       ((AbstractDocument) keyStroke.getDocument()).setDocumentFilter(new KeyStrokeFilter());
+      keyStroke.addFocusListener(this);
 
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width, keyName.getPreferredSize().height));
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       ((AbstractDocument) keyName.getDocument()).setDocumentFilter(new KeyNameFilter());
+      keyName.addFocusListener(this);
 
-      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]")); // NON-NLS
-      panel.add(keyStroke, "grow"); // NON-NLS
-      panel.add(new JLabel("-")); // NON-NLS
+      final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]0[]")); // NON-NLS
       panel.add(keyName, "grow"); // NON-NLS
+      panel.add(new JLabel("-")); // NON-NLS
+      panel.add(keyStroke, "grow"); // NON-NLS
+
+      undoButton = new JButton(new OpIcon(Op.load("Undo16.gif"))); // NON-NLS
+      final int size = (int) keyName.getPreferredSize().getHeight();
+      undoButton.setPreferredSize(new Dimension(size, size));
+      undoButton.setMaximumSize(new Dimension(size, size));
+      undoButton.addActionListener(e -> undo());
+      undoButton.setEnabled(false);
+      panel.add(undoButton);
 
       controls.add(panel, "grow"); // NON-NLS
+      updateVisibility();
     }
     return controls;
+  }
+
+  private void undo() {
+    if (lastValue != null) {
+      setValue(lastValue);
+      lastValue = null;
+      undoButton.setEnabled(false);
+      keyName.requestFocus();
+    }
+  }
+
+  @Override
+  public void focusGained(FocusEvent e) {
+    lastValue = getValueString();
+    undoButton.setEnabled(true);
+  }
+
+  @Override
+  public void focusLost(FocusEvent e) {
+
   }
 
   public String keyToString() {
@@ -157,13 +235,13 @@ public class NamedHotKeyConfigurer extends Configurer {
     if (s == null) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
-    String[] parts = s.split(",");
+    final String[] parts = s.split(",");
     if (parts.length < 2) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
 
     try {
-      KeyStroke stroke = KeyStroke.getKeyStroke(
+      final KeyStroke stroke = KeyStroke.getKeyStroke(
         Integer.parseInt(parts[0]),
         Integer.parseInt(parts[1])
       );
@@ -185,7 +263,7 @@ public class NamedHotKeyConfigurer extends Configurer {
     if (stroke == null) {
       return "";
     }
-    KeyStroke key = stroke.getStroke();
+    final KeyStroke key = stroke.getStroke();
     if (key == null) {
       return "";
     }

@@ -48,7 +48,7 @@ public class PrivateChatter extends Chatter {
   public void send(String msg) {
     if (msg != null && !msg.isEmpty()) {
       show(msg);
-      PrivMsgCommand c = new PrivMsgCommand(null, client.getUserInfo(), msg);
+      final PrivMsgCommand c = new PrivMsgCommand(null, client.getUserInfo(), msg);
       client.sendTo(other, c);
     }
   }

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
@@ -93,9 +92,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   // memory-related constants
   //
   protected static final int PHYS_MEMORY;
-  protected static final int DEFAULT_INITIAL_HEAP = 256;
   protected static final int DEFAULT_MAXIMUM_HEAP = 512;
-  protected static final int FAILSAFE_INITIAL_HEAP = 64;
   protected static final int FAILSAFE_MAXIMUM_HEAP = 128;
 
   static {
@@ -161,7 +158,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     // must synchronize when iterating over a Collections.synchronizedList()
     synchronized (children) {
-      for (IPCMessenger ipc : children) {
+      for (final IPCMessenger ipc : children) {
         try {
           futures.add(ipc.send(new Launcher.CloseRequest()));
         }
@@ -173,7 +170,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     // FIXME: not working!
-    for (Future<IPCMessage> f : futures) {
+    for (final Future<IPCMessage> f : futures) {
       try {
         if (f.get() instanceof Launcher.CloseReject) {
           System.out.println("rejected!"); //NON-NLS
@@ -212,7 +209,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if (lr.module.exists()) {
           final AbstractMetaData metadata =
             MetaDataFactory.buildMetaData(lr.module);
-          if (metadata == null || ! (metadata instanceof ModuleMetaData)) {
+          if (!(metadata instanceof ModuleMetaData)) {
             ErrorDialog.show(
               "Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
             logger.error(
@@ -283,7 +280,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         // slice tiles for extensions
         final ExtensionsManager mgr = new ExtensionsManager(lr.module);
-        for (File ext : mgr.getActiveExtensions()) {
+        for (final File ext : mgr.getActiveExtensions()) {
           final TilingHandler eth = new TilingHandler(
             ext.getAbsolutePath(),
             cdir,
@@ -314,9 +311,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 // end FIXME
 
-      // set default heap sizes
-      int initialHeap = DEFAULT_INITIAL_HEAP;
+      // set default heap size
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
+      int initialHeap = DEFAULT_MAXIMUM_HEAP;
 
       String moduleName = null;
 
@@ -342,10 +339,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
 
-          // read initial heap size
-          initialHeap = getHeapSize(
-            p, GlobalOptions.INITIAL_HEAP, DEFAULT_INITIAL_HEAP);
-
           // read maximum heap size
           maximumHeap = getHeapSize(
             p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP);
@@ -353,10 +346,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       else if (lr.importFile != null) {
         final Prefs p = Prefs.getGlobalPrefs();
-
-        // read initial heap size
-        initialHeap = getHeapSize(
-          p, GlobalOptions.INITIAL_HEAP, DEFAULT_INITIAL_HEAP);
 
         // read maximum heap size
         maximumHeap = getHeapSize(
@@ -375,8 +364,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 // actions.
       // maximum heap must fit in physical RAM
       if (maximumHeap > PHYS_MEMORY) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+        initialHeap = maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
         FutureUtils.wait(WarningDialog.show(
           "Warning.maximum_heap_too_large", //NON-NLS
@@ -385,32 +373,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       // maximum heap must be at least the failsafe size
       else if (maximumHeap < FAILSAFE_MAXIMUM_HEAP) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+        initialHeap = maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
         FutureUtils.wait(WarningDialog.show(
           "Warning.maximum_heap_too_small", //NON-NLS
           FAILSAFE_MAXIMUM_HEAP
-        ));
-      }
-      // initial heap must be at least the failsafe size
-      else if (initialHeap < FAILSAFE_INITIAL_HEAP) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
-
-        FutureUtils.wait(WarningDialog.show(
-          "Warning.initial_heap_too_small", //NON-NLS
-          FAILSAFE_INITIAL_HEAP
-        ));
-      }
-      // initial heap must be less than or equal to maximum heap
-      else if (initialHeap > maximumHeap) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
-
-        FutureUtils.wait(WarningDialog.show(
-          "Warning.initial_heap_too_large", //NON-NLSf
-          FAILSAFE_INITIAL_HEAP
         ));
       }
 
@@ -425,9 +392,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       args[1] = "-Xms" + initialHeap + "M"; //NON-NLS
       args[2] = "-Xmx" + maximumHeap + "M"; //NON-NLS
 
-
       ProcessWrapper proc = new ProcessLauncher().launch(args);
-
       try {
         proc.future.get(1000L, TimeUnit.MILLISECONDS);
       }
@@ -444,7 +409,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // if launch failed, use conservative heap sizes
       if (proc.future.isDone()) {
-        args[1] = "-Xms" + FAILSAFE_INITIAL_HEAP + "M"; //NON-NLS
+        args[1] = "-Xms" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
         args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
         proc = new ProcessLauncher().launch(args);
 

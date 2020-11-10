@@ -50,7 +50,7 @@ public class TurnComponent extends AbstractConfigurable {
   }
 
   protected TurnLevel getTurnLevel(int i) {
-    if (levels.size() == 0) {
+    if (levels.isEmpty()) {
       return null;
     }
     else {

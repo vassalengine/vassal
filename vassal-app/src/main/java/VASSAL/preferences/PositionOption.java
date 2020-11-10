@@ -34,7 +34,7 @@ import VASSAL.tools.ErrorDialog;
 public class PositionOption extends VASSAL.configure.Configurer
   implements ComponentListener {
   public static final String key = "BoundsOf"; //NON-NLS
-  private static Point initialPos = new Point(0, 0);
+  private static final Point initialPos = new Point(0, 0);
 
   protected Window theFrame;
   protected Rectangle bounds;
@@ -52,7 +52,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   private static void adjustInitialOffset() {
-    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+    final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     if (initialPos.x >= d.width - 30
       || initialPos.y >= d.height - 30) {
       initialPos.move(0, 0);
@@ -124,7 +124,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   @Override
   public void componentMoved(ComponentEvent e) {
     if (theFrame.isShowing()) {
-      Point p = theFrame.getLocationOnScreen();
+      final Point p = theFrame.getLocationOnScreen();
       if (isOnScreen(p)) {
         // Save the previous size in case this is the start of a Maximize
         previousBounds = new Rectangle(bounds);
@@ -167,8 +167,8 @@ public class PositionOption extends VASSAL.configure.Configurer
     theFrame.setLocation(bounds.getLocation());
 
     // Reduce size to fit on desktop
-    int width = Math.min(theFrame.getSize().width, desktopBounds.width);
-    int height = Math.min(theFrame.getSize().height, desktopBounds.height);
+    final int width = Math.min(theFrame.getSize().width, desktopBounds.width);
+    final int height = Math.min(theFrame.getSize().height, desktopBounds.height);
     if (width != theFrame.getSize().width || height != theFrame.getSize().height) {
       theFrame.setSize(width, height);
     }

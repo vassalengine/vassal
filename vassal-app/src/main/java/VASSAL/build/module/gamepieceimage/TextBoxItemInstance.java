@@ -62,7 +62,7 @@ public class TextBoxItemInstance extends ItemInstance {
 
   @Override
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
     se.append(getName());
     se.append(getLocation());
@@ -73,7 +73,7 @@ public class TextBoxItemInstance extends ItemInstance {
   }
 
   public void decode(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     setType(sd.nextToken("")); //$NON-NLS-1$
     setName(sd.nextToken("")); //$NON-NLS-1$
     setLocation(sd.nextToken("")); //$NON-NLS-1$
@@ -161,7 +161,7 @@ public class TextBoxItemInstance extends ItemInstance {
     }
   }
 
-  private VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
+  private final VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
 
   public static class FgColorSwatchConfig implements ConfigurerFactory {
     @Override

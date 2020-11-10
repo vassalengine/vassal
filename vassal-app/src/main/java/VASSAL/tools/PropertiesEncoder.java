@@ -28,8 +28,8 @@ import java.util.StringTokenizer;
  * Encodes a set of properties into a String, without using an '\n' character.
  */
 public class PropertiesEncoder {
-  private Properties prop;
-  private String stringValue;
+  private final Properties prop;
+  private final String stringValue;
 
   public PropertiesEncoder(Properties prop) {
     this.prop = prop;
@@ -42,7 +42,7 @@ public class PropertiesEncoder {
   }
 
   private String encode(Properties p) {
-    String s = null;
+    String s;
     try {
       final ByteArrayOutputStream out = new ByteArrayOutputStream();
       p.store(out, null);
@@ -88,6 +88,7 @@ public class PropertiesEncoder {
     return stringValue;
   }
 
+  @Override
   public String toString() {
     return stringValue;
   }

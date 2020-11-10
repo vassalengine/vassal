@@ -60,9 +60,6 @@ public class FontManager extends AbstractConfigurable {
 //  public static final String[] ALLOWABLE_FONTS = new String[] { DIALOG, DIALOG_INPUT, MONOSPACED, SANS_SERIF, SERIF };
   public static final String[] ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
-  public FontManager() {
-  }
-
   @Override
   public void build(Element e) {
     super.build(e);
@@ -78,7 +75,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   protected FontStyle getFontStyle(String name) {
-    FontStyle fs = fontStyles.get(name);
+    final FontStyle fs = fontStyles.get(name);
     return fs == null ? DEFAULT_STYLE : fs;
   }
 
@@ -130,7 +127,7 @@ public class FontManager extends AbstractConfigurable {
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof FontStyle) {
-      FontStyle def = (FontStyle) b;
+      final FontStyle def = (FontStyle) b;
       fontStyles.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
@@ -160,8 +157,8 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public String[] getFontNames() {
-    ArrayList<String> names = new ArrayList<>(fontStyles.size());
-    for (FontStyle fs : fontStyles.values()) {
+    final ArrayList<String> names = new ArrayList<>(fontStyles.size());
+    for (final FontStyle fs : fontStyles.values()) {
       names.add(fs.getConfigureName());
     }
     return names.toArray(new String[0]);

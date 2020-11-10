@@ -48,7 +48,7 @@ public class HTTPPostBuilder {
 
   private static final String endl = "\r\n";
 
-  private static Random rng = new Random();
+  private static final Random rng = new Random();
 
   private static String randomString() {
     return Long.toString(rng.nextLong(), Character.MAX_RADIX);

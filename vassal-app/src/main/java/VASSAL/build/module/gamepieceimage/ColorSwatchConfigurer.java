@@ -79,7 +79,7 @@ public class ColorSwatchConfigurer extends Configurer {
 
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-      Box box = Box.createHorizontalBox();
+      final Box box = Box.createHorizontalBox();
       box.add(new JLabel(name));
       buildSwatches();
 
@@ -89,8 +89,8 @@ public class ColorSwatchConfigurer extends Configurer {
       colorBox = Box.createHorizontalBox();
       config = new ColorConfigurer("", Resources.getString("Editor.ColorSwatchConfigurer.select_color")); //$NON-NLS-1$
       config.addPropertyChangeListener(e -> {
-        Color c = (Color) config.getValue();
-        ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
+        final Color c = (Color) config.getValue();
+        final ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
         setValue(cs);
         buildSwatches();
         updateValue();
@@ -113,7 +113,7 @@ public class ColorSwatchConfigurer extends Configurer {
       swatchPanel.remove(swatches);
     }
 
-    ItemListener l = evt -> updateValue();
+    final ItemListener l = evt -> updateValue();
 
     swatches = new SwatchComboBox(l, ((ColorSwatch) value).getConfigureName());
     swatchPanel.add(swatches);
@@ -121,7 +121,7 @@ public class ColorSwatchConfigurer extends Configurer {
   }
 
   protected void updateValue() {
-    String s = (String) swatches.getSelectedItem();
+    final String s = (String) swatches.getSelectedItem();
     if (ColorManager.SELECT_COLOR.equals(s)) {
       setValue(ColorManager.getColorManager().getColorSwatch((Color) config.getValue()));
     }
@@ -131,9 +131,10 @@ public class ColorSwatchConfigurer extends Configurer {
     repack();
   }
 
+  @Override
   protected void repack() {
     colorBox.setVisible(((ColorSwatch) getValue()).getConfigureName().equals(ColorManager.SELECT_COLOR));
-    Window w = SwingUtilities.getWindowAncestor(colorBox);
+    final Window w = SwingUtilities.getWindowAncestor(colorBox);
     if (w != null) {
       w.pack();
     }
@@ -146,12 +147,12 @@ public class ColorSwatchConfigurer extends Configurer {
   }
 
   public static ColorSwatch decode(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     return new ColorSwatch(sd.nextToken(), sd.nextColor(Color.WHITE));
   }
 
   public static String encode(ColorSwatch f) {
-    SequenceEncoder se = new SequenceEncoder(f.getConfigureName(), '|');
+    final SequenceEncoder se = new SequenceEncoder(f.getConfigureName(), '|');
     se.append(ColorConfigurer.colorToString(f.getColor()));
     return se.getValue();
   }

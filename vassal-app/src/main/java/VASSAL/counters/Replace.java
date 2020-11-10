@@ -30,10 +30,10 @@ import VASSAL.i18n.Resources;
  * GamePiece trait that replaces a GamePiece with another one
  */
 public class Replace extends PlaceMarker {
-  public static final String ID = "replace;";
+  public static final String ID = "replace;"; // NON-NLS
 
   public Replace() {
-    this(ID + "Replace;R;null", null);
+    this(ID + Resources.getString("Editor.Replace.default_command") + ";R;null", null); // NON-NLS
   }
 
   public Replace(String type, GamePiece inner) {
@@ -50,13 +50,13 @@ public class Replace extends PlaceMarker {
   }
 
   protected Command replacePiece() {
-    Command c;
+    final Command c;
     c = placeMarker();
     if (c == null) {
       reportDataError(this, Resources.getString("Error.bad_replace"));
     }
     else {
-      Command remove = new RemovePiece(Decorator.getOutermost(this));
+      final Command remove = new RemovePiece(Decorator.getOutermost(this));
       remove.execute();
       c.append(remove);
     }
@@ -70,16 +70,12 @@ public class Replace extends PlaceMarker {
 
   @Override
   public String getDescription() {
-    String d = "Replace with Other";
-    if (description.length() > 0) {
-      d += " - " + description;
-    }
-    return d;
+    return buildDescription("Editor.Replace.trait_description", description);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Replace.html");
+    return HelpFile.getReferenceManualPage("Replace.html"); // NON-NLS
   }
 
   @Override
@@ -94,7 +90,7 @@ public class Replace extends PlaceMarker {
 
   @Override
   public GamePiece createMarker() {
-    GamePiece marker = super.createMarker();
+    final GamePiece marker = super.createMarker();
     if (marker != null && matchRotation) {
       if (above) {
         matchTraits(this, marker);
@@ -124,7 +120,7 @@ public class Replace extends PlaceMarker {
             candidate = null;
           }
           else {
-            GamePiece inner = candidate.getInner();
+            final GamePiece inner = candidate.getInner();
             if (inner instanceof Decorator) {
               candidate = (Decorator) inner;
             }
@@ -145,24 +141,29 @@ public class Replace extends PlaceMarker {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(command.getName(), getCommandDescription(description, "Replace command"));
+    return getI18nData(command.getName(), getCommandDescription(description, Resources.getString("Editor.Replace.replace_command")));
   }
+
+  //@Override
+  //public boolean testEquals(Object o) {
+  //  return super.testEquals(o);
+  //}
 
   protected static class Ed extends PlaceMarker.Ed {
 
     public Ed(Replace piece) {
       super(piece);
-      defineButton.setText("Define Replacement");
+      defineButton.setText(Resources.getString("Editor.Replace.define_replacement"));
     }
 
     @Override
     protected BooleanConfigurer createMatchRotationConfig() {
-      return new BooleanConfigurer(null, "Match Current State?");
+      return new BooleanConfigurer(null, Resources.getString("Editor.Replace.match_current_state"));
     }
 
     @Override
     protected BooleanConfigurer createAboveConfig() {
-      return new BooleanConfigurer(null, "Only match states above this trait?");
+      return new BooleanConfigurer(null, Resources.getString("Editor.Replace.only_match_above"));
     }
 
     @Override

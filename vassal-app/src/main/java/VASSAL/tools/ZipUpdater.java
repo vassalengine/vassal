@@ -80,7 +80,7 @@ public class ZipUpdater implements Runnable {
     if (entry != null) {
       crc = entry.getCrc();
       if (crc < 0) {
-        CRC32 checksum = new CRC32();
+        final CRC32 checksum = new CRC32();
 
         try (InputStream in = file.getInputStream(entry)) {
           final byte[] buffer = new byte[1024];
@@ -109,8 +109,7 @@ public class ZipUpdater implements Runnable {
       }
 
       try (BufferedInputStream in = new BufferedInputStream(newContents)) {
-        long cs = writeEntry(in, output, newEntry);
-        return cs;
+        return writeEntry(in, output, newEntry);
       }
     }
   }
@@ -152,8 +151,8 @@ public class ZipUpdater implements Runnable {
       final ZipOutputStream output =
         new ZipOutputStream(new FileOutputStream(tempFile));
       try {
-        for (String entryName : checkSums.stringPropertyNames()) {
-          long targetSum;
+        for (final String entryName : checkSums.stringPropertyNames()) {
+          final long targetSum;
           try {
             targetSum =
               Long.parseLong(checkSums.getProperty(entryName, "<none>"));
@@ -189,9 +188,9 @@ public class ZipUpdater implements Runnable {
     }
 
     if (destination.getName().equals(oldFile.getName())) {
-      String updatedName = destination.getName();
-      int index = updatedName.lastIndexOf('.');
-      String backup = index < 0 || index == updatedName.length() - 1
+      final String updatedName = destination.getName();
+      final int index = updatedName.lastIndexOf('.');
+      final String backup = index < 0 || index == updatedName.length() - 1
           ? updatedName + "Backup" : updatedName.substring(0, index) + "Backup" + updatedName.substring(index);  //NON-NLS
       if (!oldFile.renameTo(new File(backup))) {
         throw new IOException("Unable to create backup file " + backup + ".\nUpdated file is in " + tempFile.getPath());
@@ -204,9 +203,9 @@ public class ZipUpdater implements Runnable {
   }
 
   public void createUpdater(File newFile) throws IOException {
-    String inputArchiveName = oldFile.getName();
-    int index = inputArchiveName.indexOf('.');
-    String jarName;
+    final String inputArchiveName = oldFile.getName();
+    final int index = inputArchiveName.indexOf('.');
+    final String jarName;
     if (index >= 0) {
       jarName = "update" + inputArchiveName.substring(0, index) + ".jar";
     }
@@ -231,7 +230,7 @@ public class ZipUpdater implements Runnable {
         try (OutputStream fout = new FileOutputStream(updaterFile);
              OutputStream bout = new BufferedOutputStream(fout);
              JarOutputStream out = new JarOutputStream(bout)) {
-          for (ZipEntry entry : IteratorUtils.iterate(goal.entries().asIterator())) {
+          for (final ZipEntry entry : IteratorUtils.iterate(goal.entries().asIterator())) {
             final long goalCrc = getCrc(goal, entry);
             final long inputCrc =
               getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()));
@@ -245,14 +244,13 @@ public class ZipUpdater implements Runnable {
                 writeEntry(gis, out, outputEntry);
               }
             }
-            checkSums.put(entry.getName(), goalCrc + "");
+            checkSums.put(entry.getName(), Long.toString(goalCrc));
           }
 
           final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //NON-NLS
           manifestEntry.setMethod(ZipEntry.DEFLATED);
           final StringBuilder buffer = new StringBuilder();
-          buffer.append("Manifest-Version: 1.0\n") //NON-NLS
-                .append("Main-Class: VASSAL.tools.ZipUpdater\n"); //NON-NLS
+          buffer.append("Manifest-Version: 1.0\nMain-Class: VASSAL.tools.ZipUpdater\n"); //NON-NLS
           writeEntry(
             new ByteArrayInputStream(buffer.toString().getBytes(StandardCharsets.UTF_8)),
             out,
@@ -319,8 +317,8 @@ public class ZipUpdater implements Runnable {
     try {
       if (args.length > 1) {
         oldArchiveName = args[0];
-        String goal = args[1];
-        ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
+        final String goal = args[1];
+        final ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
         updater.createUpdater(new File(goal));
       }
       else {

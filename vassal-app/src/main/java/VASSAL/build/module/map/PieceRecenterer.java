@@ -20,10 +20,7 @@ package VASSAL.build.module.map;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
-import java.util.Collections;
-import java.util.List;
-
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -35,7 +32,6 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
@@ -43,24 +39,28 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 
 /** Adds a button to a Maps toolbar that adjusts the positions of all pieces
  * so that their centroid is at the center of the map
  */
-public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor {
-  public static final String BUTTON_TEXT = "text"; //NON-NLS
-  public static final String ICON = "icon"; //NON-NLS
-  public static final String HOTKEY = "hotkey"; //NON-NLS
-  public static final String TOOLTIP = "tooltip"; //NON-NLS
+public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor {
+  // These 4 identical to AbstractToolbarItem and exist for "clirr purposes"
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected LaunchButton launch;
   protected Map map;
   protected DeckVisitorDispatcher dispatcher;
 
   public PieceRecenterer() {
-    ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
-    launch = new LaunchButton(Resources.getString("Editor.PieceRecenterer.recenter"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
+    final ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
+    setNameKey("");
+    launch = makeLaunchButton("Editor.PieceRecenterer.recenter",
+                           "Editor.PieceRecenterer.recenter",
+                              "/images/recenter.gif", //NON-NLS
+                                     al);
     dispatcher = new DeckVisitorDispatcher(this);
   }
 
@@ -73,7 +73,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     final GamePiece[] pieces = map.getPieces();
     final Rectangle r = new Rectangle(0, 0, -1, -1);
 
-    for (GamePiece p : pieces) {
+    for (final GamePiece p : pieces) {
       if (Boolean.TRUE.equals(dispatcher.accept(p))) {
         final Point pt = p.getPosition();
         final Rectangle pRect = p.getShape().getBounds();
@@ -85,7 +85,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     if (r.height >= 0 && r.width >= 0) {
       final int dx = map.mapSize().width / 2 - (r.x + r.width / 2);
       final int dy = map.mapSize().height / 2 - (r.y + r.height / 2);
-      for (GamePiece p : pieces) {
+      for (final GamePiece p : pieces) {
         if (Boolean.TRUE.equals(dispatcher.accept(p))) {
           final ChangeTracker tracker = new ChangeTracker(p);
           final Point pt = p.getPosition();
@@ -125,7 +125,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   @Override
   public void addTo(Buildable parent) {
     map = (Map)parent;
-    map.getToolBar().add(launch);
+    map.getToolBar().add(getLaunchButton());
   }
 
   @Override
@@ -133,46 +133,12 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     return new Class<?>[0];
   }
 
-  @Override
-  public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
-    };
-  }
-
-  @Override
-  public String[] getAttributeNames() {
-    return new String[]{
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY
-    };
-  }
-
-  @Override
-  public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class
-    };
-  }
-
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/recenter.gif"); //NON-NLS
     }
-  }
-
-  @Override
-  public String getAttributeValueString(String key) {
-    return launch.getAttributeValueString(key);
   }
 
   @Override
@@ -182,29 +148,6 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   @Override
   public void removeFrom(Buildable parent) {
-    map.getToolBar().remove(launch);
-  }
-
-  @Override
-  public void setAttribute(String key, Object value) {
-    launch.setAttribute(key, value);
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Collections.singletonList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+    map.getToolBar().remove(getLaunchButton());
   }
 }

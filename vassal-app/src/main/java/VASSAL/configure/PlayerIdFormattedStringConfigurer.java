@@ -25,6 +25,12 @@ import VASSAL.build.module.GlobalOptions;
  * keys for player name, side, and id
  */
 public class PlayerIdFormattedStringConfigurer extends FormattedStringConfigurer {
+
+  public PlayerIdFormattedStringConfigurer(String[] options, String initialValue) {
+    super(options);
+    setValue(initialValue);
+  }
+
   public PlayerIdFormattedStringConfigurer(String key, String name, String[] options) {
     super(key, name);
 

@@ -46,12 +46,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
@@ -200,7 +203,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return null;
   }
 
@@ -296,7 +299,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     int groupCount = 0;
 
     while (se.hasMoreTokens()) {
-      String token = se.nextToken();
+      final String token = se.nextToken();
       isProperty = !isProperty;
 
       if (token.length() > 0) {
@@ -324,9 +327,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
     assert (matcher.groupCount() == groupCount);
 
-    Point p;
+    final Point p;
     if (groupCount > 0) {
-      String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
+      final String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
       p = getGrid().getLocation(locationName);
       if (p == null || !contains(p)) {
         throw new BadCoords();
@@ -511,7 +514,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   @Override
   public Object getProperty(Object key) {
-    Object value;
+    final Object value;
     final MutableProperty p =
       propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
@@ -542,8 +545,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   @Override
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<>();
-    for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
+    final List<String> l = new ArrayList<>();
+    for (final ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
       l.add(zp.getConfigureName());
     }
     return l;
@@ -604,6 +607,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return null;
   }
   public static class Editor extends Configurer {
+    private final JPanel buttonPanel;
     private final JButton button;
     private final PolygonEditor editor;
     private Board board;
@@ -614,7 +618,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     public Editor(final Zone zone) {
       super(PATH, null);
+      buttonPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
       button = new JButton(Resources.getString("Editor.Zone.define_shape"));
+      buttonPanel.add(button);
       button.addActionListener(e -> init(zone));
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
@@ -721,7 +727,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     @Override
     public Component getControls() {
-      return button;
+      return buttonPanel;
     }
 
     @Override

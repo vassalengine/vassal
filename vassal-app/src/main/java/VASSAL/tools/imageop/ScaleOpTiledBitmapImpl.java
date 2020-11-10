@@ -181,7 +181,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       final int tw = rsop.getTileWidth();
       final int th = rsop.getTileHeight();
 
-      BufferedImage src;
+      final BufferedImage src;
       final boolean src_trans =
         ImageUtils.isTransparent(rsop.getTile(tiles[0], null));
 
@@ -203,7 +203,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
       final Graphics2D g = src.createGraphics();
 
-      for (Point tile : tiles) {
+      for (final Point tile : tiles) {
         g.drawImage(rsop.getTile(tile, null),
                     tile.x * tw - sx0, tile.y * th - sy0, null);
       }
@@ -276,17 +276,5 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
         "[sop=" + Arrays.toString(sop) + ",scale=" + scale + //NON-NLS
         ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]"; //NON-NLS
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || o.getClass() != this.getClass()) return false;
-
-    final ScaleOpTiledBitmapImpl op = (ScaleOpTiledBitmapImpl) o;
-    return scale == op.scale &&
-           sop.equals(op.sop) &&
-           hints.equals(op.hints);
   }
 }

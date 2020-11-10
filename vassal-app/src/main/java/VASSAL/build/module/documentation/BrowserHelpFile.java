@@ -144,10 +144,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   private void internalExtractContents(ZipInputStream in) throws IOException {
     final Path p = Path.of(
       Info.getTempDir().getAbsolutePath(),
-      "VASSAL", //$NON-NLS-1$ 
-      "help",   //$NON-NLS-1$ 
+      "VASSAL", //$NON-NLS-1$
+      "help",   //$NON-NLS-1$
       getContentsResource()
-    ); 
+    );
 
     if (Files.exists(p)) {
       PathUtils.deleteDirectory(p);
@@ -175,7 +175,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Deprecated(since = "2020-10-04", forRemoval = true)
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
-      for (File f : output.listFiles()) {
+      for (final File f : output.listFiles()) {
         recursiveDelete(f);
       }
     }
@@ -223,14 +223,14 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   @Override
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(true);
   }
 
   @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem);
+               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
     launch.setEnabled(false);
   }
 
@@ -340,7 +340,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
         try (FileOutputStream fout = new FileOutputStream(packed);
              ZipOutputStream out = new ZipOutputStream(fout)) {
-          for (File f : dir.listFiles()) {
+          for (final File f : dir.listFiles()) {
             packFile(f, "", out); //$NON-NLS-1$
           }
         }
@@ -357,7 +357,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     protected void packFile(File packed, String prefix, ZipOutputStream out)
                                                           throws IOException {
       if (packed.isDirectory()) {
-        for (File f : packed.listFiles()) {
+        for (final File f : packed.listFiles()) {
           packFile(f, prefix + packed.getName() + "/", out); //$NON-NLS-1$
         }
       }
@@ -392,7 +392,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
 
     @Override
-    public VASSAL.configure.Configurer getConfigurer() {
+    public Configurer getConfigurer() {
       return null;
     }
 
@@ -437,7 +437,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       return new DirectoryConfigurer(key, name) {
         @Override
         public Component getControls() {
-          Component controls = super.getControls();
+          final Component controls = super.getControls();
           tf.setEditable(false);
           return controls;
         }

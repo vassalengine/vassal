@@ -11,7 +11,7 @@ image:images/Expression.png[]
 
 Any field within the Vassal Editor that is followed by a Calculator icon image:images/calculator.png[] allows the entry of an Expression.
 Expressions are essentially an in-line <<CalculatedProperty.adoc#top,Calculated Property>> that are re-evaluated whenever their value is required.
-There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> which are identified by being surrounded by curly braces \{}, and <<#simple,Simple Expressions>> which are not.
+There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> which are identified by being surrounded by curly braces {}, and <<#simple,Simple Expressions>> which are not.
 
 When an expression (of either type) is used in e.g.
 a <<GlobalKeyCommand.adoc#top,Global Key Command>> to select which pieces to operate on by checking properties, it is called a <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
@@ -25,34 +25,34 @@ They only allow the inclusion of Property values, they do not allow any sort of 
 ==== BeanShell Expressions
 
 BeanShell Expressions (named after the software package that implements them in Vassal) allow you to use arbitrarily complex formulae to define the value returned.
-BeanShell Expressions are marked by being surrounded by curly braces \{}. The BeanShell processor is an accurate implementation of the Java programming language and BeanShell Expressions are made up of Java language components.
+BeanShell Expressions are marked by being surrounded by curly braces {}. The BeanShell processor is an accurate implementation of the Java programming language and BeanShell Expressions are made up of Java language components.
 You can use any introductory Java tutorial to learn more about the syntax of BeanShell Expressions.
 The basic components are as follows:
 
 [cols="^,,,",options="header",]
 |===
 |Type |Options |Examples |Notes
-|*Numbers* |  |\{35} |Vassal works with whole numbers.
+|*Numbers* |  |{35} |Vassal works with whole numbers.
 Decimal numbers are treated as Strings
-|*Strings* |  |\{"German"} |A String literal, or text message, must be enclosed in "" quotation marks
-|*Substitution* |$..$ |\{"$Nation$"} +
-\{$Attack$} |Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command.
+|*Strings* |  |{"German"} |A String literal, or text message, must be enclosed in "" quotation marks
+|*Substitution* |$..$ |{"$Nation$"} +
+{$Attack$} |Property names enclosed by $..$ symbols immediately substitute the property value, based on the piece or component issuing the command.
 Not normally needed in BeanShell as there are simpler ways to use a property value in an expression, but sometimes useful in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> to use properties from the issueing piece rather than target piece.
-|*Properties* |  |\{Nation} +
-\{LocationName} +
-\{CurrentMap} +
-\{playerName} |Any word not enclosed in "" is interpreted as a <<Properties.adoc#top,Property>> name.
+|*Properties* |  |{Nation} +
+{LocationName} +
+{CurrentMap} +
+{playerName} |Any word not enclosed in "" is interpreted as a <<Properties.adoc#top,Property>> name.
 
 Can refer by name to <<GlobalProperties.adoc#top,Global Properties>>, <<PropertyMarker.adoc#top,Marker>> and <<DynamicProperty.adoc#top,Dynamic Properties>> of pieces, and properties <<Properties.adoc#top,exposed by traits>>. The current value of the property will be used.
 |*Arithmetic* |+ Add +
 - Subtract +
 * Multiply +
 / Divide +
-% Modulo |\{(CurrentHP + 2) * (Damage - Resistance)} +
-\{FirstName + "-" + Surname} +
-\{Height * 10} +
-\{width / 5} +
-\{Level % 10} |Using the + operator on two String will concatenate (join) them.
+% Modulo |{(CurrentHP + 2) * (Damage - Resistance)} +
+{FirstName + "-" + Surname} +
+{Height * 10} +
+{width / 5} +
+{Level % 10} |Using the + operator on two String will concatenate (join) them.
 If the values on both sides of the + look like whole numbers, Vassal will attempt to add them.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
@@ -62,31 +62,31 @@ Parentheses can be used to organize operations and/or override the ordinary orde
 <= Not greater than +
 == Equals +
 != Not Equals +
-=~ Match regular Expression |\{height > 10 && width >= Level} +
-\{length < maxlength || breadth <= maxbreadth} +
-\{Nation=="Germany"} +
-\{Army!="Allied"} +
-\{Type=="^A$"} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
+=~ Match regular Expression |{height > 10 && width >= Level} +
+{length < maxlength || breadth <= maxbreadth} +
+{Nation=="Germany"} +
+{Army!="Allied"} +
+{Type=="^A$"} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also with the ? (ternary) operator.
 
 Parentheses can be used to organize operations and/or override the ordinary order of operations.
 |*Logical* |&& Logical AND +
 || Logical OR +
 ! Logical NOT +
-() Grouping |\{Nation=="Germany" && Type=="Unit"} +
-\{Nation=="Germany" || Type=="Unit"} +
-\{Nation=="Germany" && Type=="Unit"} +
-\{!isInUse} +
-\{A==B && (C==1 || D==2)} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also in the If function.
-|*Ternary* |_Expr_ *?* _IfTrue_ *:* _IfFalse_ |\{ (Nation=="Germany") ? "Axis" : "Allies" } +
-\{ (Nation=="Germany") ? 5 : 2 } +
-\{ States.contains(CurrentZone) ? 1 : 0 } +
-\{ IsRandom() ? "Heads" : "Tails" } +
-\{A==B ? C : D} |The Ternary or "?" operator can be thought of as posing a yes/no question: if the expression before the ? symbol evaluates as "true", then the value of the expression as a whole is equal to the middle ("if true") part of the expression; otherwise (initial part is false), the result is the right ("if false") side.
+() Grouping |{Nation=="Germany" && Type=="Unit"} +
+{Nation=="Germany" || Type=="Unit"} +
+{Nation=="Germany" && Type=="Unit"} +
+{!isInUse} +
+{A==B && (C==1 || D==2)} |Comparison operators are used primarily in <<PropertyMatchExpression.adoc#top,Property Match Expressions>> and also in the If function.
+|*Ternary* |_Expr_ *?* _IfTrue_ *:* _IfFalse_ |{ (Nation=="Germany") ? "Axis" : "Allies" } +
+{ (Nation=="Germany") ? 5 : 2 } +
+{ States.contains(CurrentZone) ? 1 : 0 } +
+{ IsRandom() ? "Heads" : "Tails" } +
+{A==B ? C : D} |The Ternary or "?" operator can be thought of as posing a yes/no question: if the expression before the ? symbol evaluates as "true", then the value of the expression as a whole is equal to the middle ("if true") part of the expression; otherwise (initial part is false), the result is the right ("if false") side.
 |*Math* |Math.abs(value1) +
 Math.min(value1, value2) +
-Math.max(value1, value2) + |\{Math.abs(Number - 5)} +
-\{Math.min(Health, Armor)} +
-\{Math.max(3, Random(6))} + |*Math.abs()* Returns the absolute value of the numeric property _value1_.
+Math.max(value1, value2) + |{Math.abs(Number - 5)} +
+{Math.min(Health, Armor)} +
+{Math.max(3, Random(6))} + |*Math.abs()* Returns the absolute value of the numeric property _value1_.
 
 *Math.min()* Returns the smaller of two numeric values.
 
@@ -95,10 +95,10 @@ Math.max(value1, value2) + |\{Math.abs(Number - 5)} +
 |*Property* |GetProperty(property) +
 GetMapProperty(property,map) +
 GetZoneProperty(property,zone) +
-GetZoneProperty(property,zone,map) + |\{GetProperty("Nation"+myNation)} +
-\{GetMapProperty("Owner",CurrentMap)} +
-\{GetZoneProperty("Militia","Georgia")} +
-\{GetZoneProperty("Modifier",OldZone,OldMap)} + |All *GetProperty()* family functions return the value of a named property.
+GetZoneProperty(property,zone,map) + |{GetProperty("Nation"+myNation)} +
+{GetMapProperty("Owner",CurrentMap)} +
+{GetZoneProperty("Militia","Georgia")} +
+{GetZoneProperty("Modifier",OldZone,OldMap)} + |All *GetProperty()* family functions return the value of a named property.
 The name of the property can be constructed from an expression.
 
 *GetMapProperty()* looks only on the specific map for the property.
@@ -108,10 +108,10 @@ The name of the property can be constructed from an expression.
 |*Random* |Random(value1) +
 Random(value1,value2) +
 IsRandom() +
-IsRandom(percent) + |\{Random(6)} +
-\{Random(AttackPower,AttackPower * 2)} +
-\{IsRandom()} +
-\{IsRandom(75)} + |*Random(value1)* returns a random number between 1 and _value1_.
+IsRandom(percent) + |{Random(6)} +
+{Random(AttackPower,AttackPower * 2)} +
+{IsRandom()} +
+{IsRandom(75)} + |*Random(value1)* returns a random number between 1 and _value1_.
 
 *Random(value1,value2)* returns a random number between _value1_ and _value2_.
 
@@ -127,16 +127,16 @@ IsRandom(percent) + |\{Random(6)} +
 .lastIndexOf(string2) +
 .substring(start) +
 .substring(start, end) +
-.replace(old, new) |\{ LocationName.length() } +
-\{ States.contains("Arkansas") } +
-\{ OwnerString.startsWith("Axis") } +
-\{ MaybeQuestion.endsWith("?") } +
-\{ String.matches("[^abc]") } +
-\{ WhereIsTheColon.indexOf(":") } +
-\{ MaybeLotsOfDivs.lastIndexOf("div") } +
-\{ CurrentZone.substring(5) } +
-\{ PlayerName.substring(1,5) } +
-\{ GetProperty("XX").replace("A","YY") } |*length()* the length in characters of the string.
+.replace(old, new) |{ LocationName.length() } +
+{ States.contains("Arkansas") } +
+{ OwnerString.startsWith("Axis") } +
+{ MaybeQuestion.endsWith("?") } +
+{ String.matches("[^abc]") } +
+{ WhereIsTheColon.indexOf(":") } +
+{ MaybeLotsOfDivs.lastIndexOf("div") } +
+{ CurrentZone.substring(5) } +
+{ PlayerName.substring(1,5) } +
+{ GetProperty("XX").replace("A","YY") } |*length()* the length in characters of the string.
 
 *contains(string2)* true if _string2_ is a substring of the original string.
 
@@ -159,11 +159,11 @@ IsRandom(percent) + |\{Random(6)} +
 Sum(prop, expression) +
 Sum(prop, expr, map) +
 Count(expr) +
-Count(expr, map) + |\{SumStack("Attack")} +
-\{Sum("Defense", "\{Type != \"Artillery\"}")} +
-\{Sum("Cost", "\{ Value > 0 }", "Purchases")} +
-\{Count("\{ Nation == \"$Nation$\" }")} +
-\{Count("\{ CombatValue > 0 }", "BattleMap") } + |*SumStack(prop)* returns the total of the specified property in all pieces in the same stack as this one.
+Count(expr, map) + |{SumStack("Attack")} +
+{Sum("Defense", "{Type != \"Artillery\"}")} +
+{Sum("Cost", "{ Value > 0 }", "Purchases")} +
+{Count("{ Nation == \"$Nation$\" }")} +
+{Count("{ CombatValue > 0 }", "BattleMap") } + |*SumStack(prop)* returns the total of the specified property in all pieces in the same stack as this one.
 
 *Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
 
@@ -175,7 +175,7 @@ Count(expr, map) + |\{SumStack("Attack")} +
 
 *NOTE:* Except for SumStack, these functions can have substantial performance cost as they must check all of the pieces on the map or in the entire game against the expression.
 Also, because Java requires that the expression itself must be passed as a string, the syntax is tricky here and quotation marks inside the expression must be quoted as \" +
-|*Alert* |Alert(message) + |\{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
+|*Alert* |Alert(message) + |{Alert("Adding 1 to HP")} + |*Alert* displays a message in a popup dialog box, to the currently active player only.
 If a message needs to be shown to _all_ players, the recommended method is to send something to the Chat Log e.g.
 with a <<ReportChanges.adoc#top,Report Action>> trait or other <<MessageFormat.adoc#top,Message Format>> field.
 

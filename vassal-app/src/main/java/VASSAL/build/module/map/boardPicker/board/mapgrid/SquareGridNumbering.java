@@ -89,41 +89,41 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
   /** Draw the numbering, even if not visible */
   public void forceDraw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    int size = (int) (scale * fontSize + 0.5);
+    final int size = (int) (scale * fontSize + 0.5);
     if (size < 5 || !bounds.intersects(visibleRect)) {
       return;
     }
-    Rectangle region = bounds.intersection(visibleRect);
-    Shape oldClip = g.getClip();
+    final Rectangle region = bounds.intersection(visibleRect);
+    final Shape oldClip = g.getClip();
     if (oldClip != null) {
-      Area clipArea = new Area(oldClip);
+      final Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
       g.setClip(clipArea);
     }
 
-    double deltaX = scale * grid.getDx();
-    double deltaY = scale * grid.getDy();
+    final double deltaX = scale * grid.getDx();
+    final double deltaY = scale * grid.getDy();
 
-    Point centerPoint = null;
-    Graphics2D g2d = (Graphics2D) g;
+    Point centerPoint;
+    final Graphics2D g2d = (Graphics2D) g;
     double radians = 0;
     if (rotateTextDegrees != 0) {
       radians = Math.toRadians(rotateTextDegrees);
       g2d.rotate(radians);
     }
 
-    int minCol = reversed ? (int) Math.ceil((bounds.x - scale * grid.getOrigin().x + bounds.width - region.x) / deltaX)
+    final int minCol = reversed ? (int) Math.ceil((bounds.x - scale * grid.getOrigin().x + bounds.width - region.x) / deltaX)
         : (int) Math.floor((region.x - bounds.x - scale * grid.getOrigin().x) / deltaX);
-    double xmin = reversed ? bounds.x - scale * grid.getOrigin().x + bounds.width - deltaX * minCol
+    final double xmin = reversed ? bounds.x - scale * grid.getOrigin().x + bounds.width - deltaX * minCol
         : bounds.x + scale * grid.getOrigin().x + deltaX * minCol;
-    double xmax = region.x + region.width + deltaX;
-    int minRow = reversed ? (int) Math.ceil((bounds.y - scale * grid.getOrigin().y + bounds.height - region.y) / deltaY)
+    final double xmax = region.x + region.width + deltaX;
+    final int minRow = reversed ? (int) Math.ceil((bounds.y - scale * grid.getOrigin().y + bounds.height - region.y) / deltaY)
         : (int) Math.floor((region.y - bounds.y - scale * grid.getOrigin().y) / deltaY);
-    double ymin = reversed ? bounds.y - scale * grid.getOrigin().y + bounds.height - deltaY * minRow
+    final double ymin = reversed ? bounds.y - scale * grid.getOrigin().y + bounds.height - deltaY * minRow
         : bounds.y + scale * grid.getOrigin().y + deltaY * minRow;
-    double ymax = region.y + region.height + deltaY;
+    final double ymax = region.y + region.height + deltaY;
 
-    Font f = new Font(Font.DIALOG, Font.PLAIN, size);
+    final Font f = new Font(Font.DIALOG, Font.PLAIN, size);
     int column = minCol;
     for (double x = xmin; x < xmax; x += deltaX, column += reversed ? -1 : 1) {
       int printRow, printColumn;
@@ -139,7 +139,8 @@ public class SquareGridNumbering extends RegularGridNumbering {
         }
 
         // When rotating text, keep basic label position as in center along edge
-        int newX, newY;
+        final int newX;
+        final int newY;
         switch (rotateTextDegrees) {
         case 90:
           newX = (int) (x + deltaX / 2);
@@ -175,7 +176,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
   @Override
   public int getColumn(Point p) {
-    int col = (int) Math.floor((p.x - grid.getOrigin().x) / grid.getDx() + 0.5);
+    final int col = (int) Math.floor((p.x - grid.getOrigin().x) / grid.getDx() + 0.5);
     if (hDescending) {
       return (getMaxColumns() - col);
     }
@@ -186,7 +187,7 @@ public class SquareGridNumbering extends RegularGridNumbering {
 
   @Override
   public int getRow(Point p) {
-    int row = (int) ((p.y - grid.getOrigin().y) / grid.getDy() + 0.5);
+    final int row = (int) ((p.y - grid.getOrigin().y) / grid.getDy() + 0.5);
     if (vDescending) {
       return (getMaxRows() - row);
     }

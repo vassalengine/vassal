@@ -68,11 +68,11 @@ public class JavaNameConfigurer extends Configurer {
         @Override
         public void keyReleased(java.awt.event.KeyEvent evt) {
           noUpdate = true;
-          String v = nameField.getText();
+          final String v = nameField.getText();
           int caret = nameField.getCaretPosition();
-          StringBuilder sb = new StringBuilder();
+          final StringBuilder sb = new StringBuilder();
           for (int i = 0; i < v.length(); i++) {
-            char c = v.charAt(i);
+            final char c = v.charAt(i);
             if (c == '$' || c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
               sb.append(c);
             }
@@ -80,7 +80,7 @@ public class JavaNameConfigurer extends Configurer {
               sb.append(c);
             }
           }
-          String newString = sb.toString();
+          final String newString = sb.toString();
           setValue(newString);
           nameField.setText(newString);
           if (newString.length() < v.length()) {

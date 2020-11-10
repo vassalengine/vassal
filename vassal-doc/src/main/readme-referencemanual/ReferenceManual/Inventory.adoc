@@ -24,8 +24,8 @@ Clicking the button will open a window that organizes and summarizes the pieces 
 The window will only summarize pieces for which the matching expression evaluates to true.
 <<Properties.adoc#top,Properties>> of the pieces can be used in the expression to create the desired set of summaries.
 (_Examples_: limit the pieces to a single map with the _CurrentMap_ property, e.g.
-_\{ CurrentMap == "Main Map" }_, or only select pieces with a a given value of a <<PropertyMarker.adoc#top,Marker>> trait, e.g.
-_\{ Type == "Infantry" }_)
+_{ CurrentMap == "Main Map" }_, or only select pieces with a a given value of a <<PropertyMarker.adoc#top,Marker>> trait, e.g.
+_{ Type == "Infantry" }_)
 
 *Sort and Group By Properties:* A list of <<Properties.adoc#top,Property>> names.
 Pieces with the same value of a given property will be grouped together at the same level.

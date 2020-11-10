@@ -109,7 +109,7 @@ public class Editor extends Launcher {
         ErrorDialog.showDetails(
           e,
           ThrowableUtils.getStackTrace(e),
-          "Error.socket_error"
+          "Error.socket_error" //NON-NLS
         );
       }
     }
@@ -174,11 +174,11 @@ public class Editor extends Launcher {
           if (lr.importFile.exists()) {
             final AbstractMetaData metadata =
               MetaDataFactory.buildMetaData(lr.importFile);
-            if (metadata == null || ! (metadata instanceof ImportMetaData)) {
+            if (!(metadata instanceof ImportMetaData)) {
               ErrorDialog.show(
-                "Error.invalid_import_file", lr.importFile.getAbsolutePath());
-              logger.error("Import of " + lr.importFile.getAbsolutePath() +
-                " failed: unrecognized import type");
+                "Error.invalid_import_file", lr.importFile.getAbsolutePath());  //NON-NLS
+              logger.error("Import of " + lr.importFile.getAbsolutePath() +  //NON-NLS
+                " failed: unrecognized import type");  //NON-NLS
               lr.importFile = null;
             }
           }
@@ -212,7 +212,7 @@ public class Editor extends Launcher {
         // don't permit editing of modules significantly newer than us
         if (Info.isModuleTooNew(vv)) {
           ErrorDialog.show(
-            "Error.module_too_new",
+            "Error.module_too_new",  //NON-NLS
             lr.module.getPath(),
             vv,
             Info.getVersion()
@@ -224,16 +224,16 @@ public class Editor extends Launcher {
         if (data instanceof ModuleMetaData) {
           final ModuleMetaData md = (ModuleMetaData) data;
           if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
-            if ("VASL".equals(md.getName())) {
+            if ("VASL".equals(md.getName())) {  //NON-NLS
               ErrorDialog.show(
-                "Error.VASL_too_old",
+                "Error.VASL_too_old",  //NON-NLS
                 Info.getVersion()
               );
               return;
             }
-            else if ("VSQL".equals(md.getName())) {
+            else if ("VSQL".equals(md.getName())) {  //NON-NLS
               ErrorDialog.show(
-                "Error.VSQL_too_old",
+                "Error.VSQL_too_old",  //NON-NLS
                 Info.getVersion()
               );
               return;
@@ -244,7 +244,7 @@ public class Editor extends Launcher {
         // warn user if editing this module would update it to our version
         if (Info.hasOldFormat(vv)) {
           WarningDialog.show(
-            "Warning.module_will_be_updated",
+            "Warning.module_will_be_updated",  //NON-NLS
             lr.module.getName(),
             VersionUtils.truncateToMinorVersion(Info.getVersion())
           );

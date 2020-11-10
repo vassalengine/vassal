@@ -183,9 +183,10 @@ public class ComponentSplitter {
     boolean resize) {
 
     int index = -1;
-    Container parent = base.getParent();
+    final Container parent = base.getParent();
     if (base.getParent() != null) {
-      for (int i = 0, n = base.getParent().getComponentCount(); i < n; ++i) {
+      final int n = base.getParent().getComponentCount();
+      for (int i = 0; i < n; ++i) {
         if (base == base.getParent().getComponent(i)) {
           index = i;
           break;
@@ -208,14 +209,13 @@ public class ComponentSplitter {
   public static class SplitPane extends JSplitPane {
     private static final long serialVersionUID = 1L;
 
-    private boolean resizeOnVisibilityChange;
-    private int hideablePosition;
+    private final boolean resizeOnVisibilityChange;
+    private final int hideablePosition;
     public static final int HIDE_TOP = 0;
     public static final int HIDE_BOTTOM = 1;
     public static final int HIDE_LEFT = 2;
     public static final int HIDE_RIGHT = 3;
-    private List<SplitPane> showingTransverseComponents =
-      new ArrayList<>();
+    private final List<SplitPane> showingTransverseComponents = new ArrayList<>();
     private int transverseHiddenSize;
 
     /**
@@ -344,7 +344,7 @@ public class ComponentSplitter {
     public void hideComponent() {
       if (getHideableComponent().isVisible()) {
         if (resizeOnVisibilityChange) {
-          Container ancestor = getTopLevelAncestor();
+          final Container ancestor = getTopLevelAncestor();
           if (ancestor != null) {
             switch (hideablePosition) {
             case HIDE_LEFT:
@@ -377,7 +377,7 @@ public class ComponentSplitter {
         //  }
         //};
         //SwingUtilities.invokeLater(runnable);
-        SplitPane split = getTransverseSplit();
+        final SplitPane split = getTransverseSplit();
         if (split != null) {
           split.hideTransverseComponent(this);
         }
@@ -427,7 +427,7 @@ public class ComponentSplitter {
      */
     protected int getPreferredBaseComponentSize() {
       int size = transverseHiddenSize;
-      for (SplitPane split : showingTransverseComponents) {
+      for (final SplitPane split : showingTransverseComponents) {
         switch (getOrientation()) {
         case VERTICAL_SPLIT:
           size = Math.max(size,
@@ -459,7 +459,7 @@ public class ComponentSplitter {
      * {@link #showTransverseComponent}.
      */
     protected Dimension getTransverseSize() {
-      Dimension newSize = getTopLevelAncestor().getSize();
+      final Dimension newSize = getTopLevelAncestor().getSize();
       switch (getOrientation()) {
       case VERTICAL_SPLIT:
         newSize.height += getPreferredBaseComponentSize()
@@ -562,7 +562,7 @@ public class ComponentSplitter {
       SplitPane split = null;
       for (Component c = getParent(); c != null; c = c.getParent()) {
         if (c instanceof SplitPane) {
-          SplitPane p = (SplitPane) c;
+          final SplitPane p = (SplitPane) c;
           if (p.getOrientation() != getOrientation() && SwingUtilities.isDescendingFrom(this, p.getBaseComponent())) {
             split = p;
             break;
@@ -601,7 +601,7 @@ public class ComponentSplitter {
   }
 
   public static void main(String[] args) {
-    JFrame f = new JFrame();
+    final JFrame f = new JFrame();
     f.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     f.addWindowListener(new WindowAdapter() {
       @Override
@@ -609,14 +609,14 @@ public class ComponentSplitter {
         System.exit(0);
       }
     });
-    JTextField status = new JTextField("status"); //NON-NLS
+    final JTextField status = new JTextField("status"); //NON-NLS
     status.setEditable(false);
     f.setLayout(new BorderLayout());
-    Box box = Box.createVerticalBox();
+    final Box box = Box.createVerticalBox();
     box.add(status);
-    JPanel main = new JPanel(new BorderLayout());
+    final JPanel main = new JPanel(new BorderLayout());
     f.add(main, BorderLayout.CENTER);
-    JToolBar toolbar = new JToolBar();
+    final JToolBar toolbar = new JToolBar();
     toolbar.setFloatable(false);
     toolbar.setAlignmentX(0.0F);
     box.add(toolbar);
@@ -624,10 +624,10 @@ public class ComponentSplitter {
     final JLabel smallLeft = new JLabel(new ImageIcon("small.gif")); //NON-NLS
     final JLabel smallRight = new JLabel(new ImageIcon("smallRight.gif")); //NON-NLS
     final JLabel large = new JLabel(new ImageIcon("large.jpg")); //NON-NLS
-    JPanel text = new JPanel();
+    final JPanel text = new JPanel();
     text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
     text.add(new ScrollPane(new JTextArea(15, 60)));
-    JTextField input = new JTextField(60);
+    final JTextField input = new JTextField(60);
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
     text.add(input);
     final SplitPane splitRight = ComponentSplitter.split(main, smallRight, SplitPane.HIDE_RIGHT, false);

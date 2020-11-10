@@ -19,43 +19,53 @@ package VASSAL.launch;
 import java.nio.file.Path;
 
 public class DummyConfig implements Config {
+  @Override
   public String getVersion() {
-    return "3.4.3";
+    return "1.2.3";
   }
 
+  @Override
   public String getReportableVersion() {
-    return "3.4";
+    return "1.2";
   }
 
+  @Override
   public int getInstanceID() {
     return -1;
   }
 
+  @Override
   public Path getBaseDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
+  @Override
   public Path getDocDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
+  @Override
   public Path getConfDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
+  @Override
   public Path getTempDir() {
     return Path.of(System.getProperty("java.io.tmpdir"));
   }
 
+  @Override
   public Path getPrefsDir() {
-    return getTempDir(); 
+    return getTempDir();
   }
 
+  @Override
   public Path getErrorLogPath() {
     return getConfDir().resolve("errorLog-" + getVersion());
   }
 
+  @Override
   public Path getJavaBinPath() {
-    return Path.of(System.getProperty("java.home"), "bin", "java");
+    return Path.of(System.getProperty("java.home"), "bin", "java"); //NON-NLS
   }
 }

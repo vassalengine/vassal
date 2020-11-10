@@ -49,9 +49,8 @@ import VASSAL.tools.FormattedString;
  */
 
 public class DieManager extends AbstractConfigurable {
-
-  private Map<String, DieServer> servers;
-  private List<InternetDiceButton> dieButtons = new ArrayList<>();
+  private final Map<String, DieServer> servers;
+  private final List<InternetDiceButton> dieButtons = new ArrayList<>();
   private String desc = "Die Manager"; //NON-NLS
   private boolean useMultiRoll;
   private int defaultNDice = 2;
@@ -78,7 +77,7 @@ public class DieManager extends AbstractConfigurable {
 
   public DieManager() {
 
-    DieServer d;
+    final DieServer d;
     servers = new HashMap<>();
 
     /*
@@ -119,7 +118,7 @@ public class DieManager extends AbstractConfigurable {
     GameModule.getGameModule().getPrefs().addOption(DIE_MANAGER, useemail);
 
     GameModule.getGameModule().getPrefs().addOption(DIE_MANAGER, abook);
-    String[] addressList = (String[]) GameModule.getGameModule().getPrefs().getValue(ADDRESS_BOOK);
+    final String[] addressList = (String[]) GameModule.getGameModule().getPrefs().getValue(ADDRESS_BOOK);
     semail = new StringEnumConfigurer(SECONDARY_EMAIL, "Secondary Email", addressList);
 
     GameModule.getGameModule().getPrefs().addOption(DIE_MANAGER, pemail);
@@ -128,21 +127,21 @@ public class DieManager extends AbstractConfigurable {
 
     setSemailValues();
 
-    DefaultListModel<String> m = abook.getModel();
-    ListDataListener ldl = new ListDataListener() {
+    final DefaultListModel<String> m = abook.getModel();
+    final ListDataListener ldl = new ListDataListener() {
 
       @Override
-      public void contentsChanged(ListDataEvent arg0) {
+      public void contentsChanged(final ListDataEvent arg0) {
         setSemailValues();
       }
 
       @Override
-      public void intervalAdded(ListDataEvent arg0) {
+      public void intervalAdded(final ListDataEvent arg0) {
         setSemailValues();
       }
 
       @Override
-      public void intervalRemoved(ListDataEvent arg0) {
+      public void intervalRemoved(final ListDataEvent arg0) {
         setSemailValues();
       }
     };
@@ -150,8 +149,8 @@ public class DieManager extends AbstractConfigurable {
   }
 
   public void setSemailValues() {
-    String currentSemail = (String) GameModule.getGameModule().getPrefs().getValue(SECONDARY_EMAIL);
-    String[] addressBook = (String[]) GameModule.getGameModule().getPrefs().getValue(ADDRESS_BOOK);
+    final String currentSemail = (String) GameModule.getGameModule().getPrefs().getValue(SECONDARY_EMAIL);
+    final String[] addressBook = (String[]) GameModule.getGameModule().getPrefs().getValue(ADDRESS_BOOK);
     semail.setValidValues(addressBook);
     semail.setValue(currentSemail);
   }
@@ -174,9 +173,9 @@ public class DieManager extends AbstractConfigurable {
       return null;
     }
     else {
-      String[] s = new String[servers.size()];
+      final String[] s = new String[servers.size()];
       int i = 0;
-      for (DieServer d : servers.values()) {
+      for (final DieServer d : servers.values()) {
         s[i++] = d.getDescription();
       }
       return s;
@@ -190,7 +189,7 @@ public class DieManager extends AbstractConfigurable {
 
   // Return server matching Description
   public DieServer getServerFromDescription(String de) {
-    for (DieServer d : servers.values()) {
+    for (final DieServer d : servers.values()) {
       if (de.equals(d.getDescription())) {
         return d;
       }
@@ -220,7 +219,7 @@ public class DieManager extends AbstractConfigurable {
   }
 
   public MultiRoll getMultiRoll(int nDice, int nSides) {
-    String serverName = getServer().getName();
+    final String serverName = getServer().getName();
     if (myMultiRoll == null || !serverName.equals(lastServerName)) {
       myMultiRoll = new MultiRoll(this, nDice, nSides);
     }
@@ -230,10 +229,10 @@ public class DieManager extends AbstractConfigurable {
   }
 
   public void roll(int nDice, int nSides, int plus, boolean reportTotal, String description, FormattedString format) {
-    MultiRoll mroll = getMultiRoll(nDice, nSides);
+    final MultiRoll mroll = getMultiRoll(nDice, nSides);
     getPrefs();
 
-    RollSet rollSet;
+    final RollSet rollSet;
 
     String desc = GameModule.getGameModule().getChatter().getInputField().getText();
     if (desc != null && desc.length() > 0) {
@@ -254,12 +253,12 @@ public class DieManager extends AbstractConfigurable {
 
     // Multi Roll preference not selected, so build a dummy MultiRoll object
     else {
-      DieRoll[] rolls = new DieRoll[]{new DieRoll(description, nDice, nSides, plus, reportTotal)};
+      final DieRoll[] rolls = {new DieRoll(description, nDice, nSides, plus, reportTotal)};
       rollSet = new RollSet(description, rolls);
       desc = "";
     }
 
-    Command chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(),
+    final Command chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(),
                                                   " - Roll sent to " + server.getDescription());
 
     if (desc == null || desc.length() == 0) {
@@ -292,10 +291,10 @@ public class DieManager extends AbstractConfigurable {
    */
   private void getPrefs() {
 
-    Prefs prefs = GameModule.getGameModule().getPrefs();
+    final Prefs prefs = GameModule.getGameModule().getPrefs();
 
     // Get the correct server
-    String serverName = ((String) prefs.getValue(DICE_SERVER));
+    final String serverName = ((String) prefs.getValue(DICE_SERVER));
     server = getServerFromDescription(serverName);
 
     // And tell it the prefs it will need
@@ -378,10 +377,10 @@ public class DieManager extends AbstractConfigurable {
       return desc;
     }
     else if (DFLT_NDICE.equals(key)) {
-      return defaultNDice + ""; //NON-NLS
+      return Integer.toString(defaultNDice);
     }
     else if (DFLT_NSIDES.equals(key)) {
-      return defaultNSides + ""; //NON-NLS
+      return Integer.toString(defaultNSides);
     }
     else
       return null;

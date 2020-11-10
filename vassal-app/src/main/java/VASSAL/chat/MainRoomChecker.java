@@ -25,16 +25,16 @@ import VASSAL.i18n.Resources;
 
 public class MainRoomChecker {
   private boolean warnedMain = false;
-  private MainRoomFilter filter = new MainRoomFilter();
+  private final MainRoomFilter filter = new MainRoomFilter();
 
   public String filter(String input, String mainRoom, String currentRoom) {
     if (GameModule.getGameModule() == null
       || input == null) {
       return input;
     }
-    String output;
+    final String output;
     if (mainRoom.equals(currentRoom)) {
-      Command c = filter.apply(GameModule.getGameModule().decode(input));
+      final Command c = filter.apply(GameModule.getGameModule().decode(input));
       output = GameModule.getGameModule().encode(c);
       if (!warnedMain && !input.equals(output)) {
         JOptionPane.showMessageDialog(

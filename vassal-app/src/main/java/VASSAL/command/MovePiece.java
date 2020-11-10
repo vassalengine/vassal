@@ -42,14 +42,14 @@ import VASSAL.counters.Stack;
  * stack has been deleted.  This Command will recover more gracefully.
  */
 public class MovePiece extends Command {
-  private String id;
-  private String newMapId;
-  private String oldMapId;
-  private Point newPosition;
-  private Point oldPosition;
-  private String newUnderneathId;
-  private String oldUnderneathId;
-  private String playerId;
+  private final String id;
+  private final String newMapId;
+  private final String oldMapId;
+  private final Point newPosition;
+  private final Point oldPosition;
+  private final String newUnderneathId;
+  private final String oldUnderneathId;
+  private final String playerId;
 
   /**
    *
@@ -107,15 +107,15 @@ public class MovePiece extends Command {
 
   @Override
   protected void executeCommand() {
-    GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
+    final GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (piece != null) {
-      BoundsTracker bounds = new BoundsTracker();
+      final BoundsTracker bounds = new BoundsTracker();
       bounds.addPiece(piece);
-      Map newMap = Map.getMapById(newMapId);
+      final Map newMap = Map.getMapById(newMapId);
       if (newMap != null) {
-        PieceVisitorDispatcher mergeFinder = createMergeFinder(newMap, piece, newPosition);
+        final PieceVisitorDispatcher mergeFinder = createMergeFinder(newMap, piece, newPosition);
         if (newUnderneathId != null) {
-          GamePiece under = GameModule.getGameModule().getGameState().getPieceForId(newUnderneathId);
+          final GamePiece under = GameModule.getGameModule().getGameState().getPieceForId(newUnderneathId);
           if (under != null
               && under.getPosition().equals(newPosition)) {
             newMap.getStackMetrics().merge(under, piece);
@@ -136,7 +136,7 @@ public class MovePiece extends Command {
         }
       }
       else {
-        Map oldMap = Map.getMapById(oldMapId);
+        final Map oldMap = Map.getMapById(oldMapId);
         if (oldMap != null) {
           oldMap.removePiece(piece);
         }
@@ -169,7 +169,7 @@ public class MovePiece extends Command {
    * @return
    */
   protected PieceVisitorDispatcher createMergeFinder(final Map map, final GamePiece p, final Point pt) {
-    PieceVisitorDispatcher dispatch = new DeckVisitorDispatcher(new DeckVisitor() {
+    return new DeckVisitorDispatcher(new DeckVisitor() {
       @Override
       public Object visitDeck(Deck d) {
         if (d.getPosition().equals(pt)) {
@@ -185,7 +185,7 @@ public class MovePiece extends Command {
         if (s.getPosition().equals(pt)
             && map.getStackMetrics().isStackingEnabled()
             && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
-            && s.topPiece(playerId) != null
+            && s.topPiece(playerId) != null  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
             && map.getPieceCollection().canMerge(p, s)) {
           return map.getStackMetrics().merge(s, p);
         }
@@ -201,7 +201,7 @@ public class MovePiece extends Command {
             && !Boolean.TRUE.equals(p.getProperty(Properties.NO_STACK))
             && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))
             && map.getPieceCollection().canMerge(p, piece)) {
-          String hiddenBy = (String) piece.getProperty(Properties.HIDDEN_BY);
+          final String hiddenBy = (String) piece.getProperty(Properties.HIDDEN_BY);
           if (hiddenBy == null
               || hiddenBy.equals(playerId)) {
             return map.getStackMetrics().merge(piece, p);
@@ -215,11 +215,10 @@ public class MovePiece extends Command {
         }
       }
     });
-    return dispatch;
   }
+
   @Override
   public String getDetails() {
     return "id=" + id + ",map=" + newMapId + ",position=" + newPosition + ",under=" + newUnderneathId; //NON-NLS
   }
-
 }

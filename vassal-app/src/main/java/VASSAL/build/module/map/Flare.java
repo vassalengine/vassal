@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.List;
 
 import VASSAL.build.BadDataReport;
@@ -36,6 +37,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
@@ -165,6 +167,7 @@ public class Flare extends AbstractConfigurable
    * Attribute types for this component's buildFile (xml) entry. These launch the proper configurers when the component is edited in the Editor.
    * @return list of classes for attributes
    */
+  @Override
   public Class<?>[] getAttributeTypes() {
     return new Class[] { String.class, FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class, ReportFormatConfig.class };
   }
@@ -173,6 +176,7 @@ public class Flare extends AbstractConfigurable
    * Attribute names for this component's buildFile (xml) entry.
    * @return list of names for attributes
    */
+  @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC, REPORT_FORMAT };
   }
@@ -181,16 +185,18 @@ public class Flare extends AbstractConfigurable
    * Attribute names for this component's buildFile (xml) entry. These show up in the Editor next to the configurers for each attribute.
    * @return list of names for attributes
    */
+  @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-            Resources.getString("Editor.name_label"), //$NON-NLS-1$
-            Resources.getString("Editor.Flare.flare_key"), //$NON-NLS-1$
-            Resources.getString("Editor.Flare.circle_size"), //$NON-NLS-1$
-            Resources.getString("Editor.Flare.circle_color"), //$NON-NLS-1$
-            Resources.getString("Editor.Flare.circle_scale"), //$NON-NLS-1$
-            Resources.getString("Editor.Flare.pulses"), //$NON-NLS-1$
-            Resources.getString("Editor.Flare.pulses_per_sec"), //$NON-NLS-1$
-            Resources.getString("Editor.report_format")}; //$NON-NLS-1$
+      Resources.getString("Editor.name_label"), //$NON-NLS-1$
+      Resources.getString("Editor.Flare.flare_key"), //$NON-NLS-1$
+      Resources.getString("Editor.Flare.circle_size"), //$NON-NLS-1$
+      Resources.getString("Editor.Flare.circle_color"), //$NON-NLS-1$
+      Resources.getString("Editor.Flare.circle_scale"), //$NON-NLS-1$
+      Resources.getString("Editor.Flare.pulses"), //$NON-NLS-1$
+      Resources.getString("Editor.Flare.pulses_per_sec"), //$NON-NLS-1$
+      Resources.getString("Editor.report_format") //$NON-NLS-1$
+    };
   }
 
   /**
@@ -200,6 +206,7 @@ public class Flare extends AbstractConfigurable
    *
    * @return current the value of one of this component's attributes, in string form.
    */
+  @Override
   public String getAttributeValueString(final String key) {
     if (NAME.equals(key)) {
       return getConfigureName();
@@ -235,6 +242,7 @@ public class Flare extends AbstractConfigurable
    *
    * @param value new value for attribute. Can pass either the Object itself or the String version.
    */
+  @Override
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
@@ -321,6 +329,7 @@ public class Flare extends AbstractConfigurable
    * Adds this component to a Buildable component. In this case, a Map.
    * @param parent - the Map to add the Flare to.
    */
+  @Override
   public void addTo(final Buildable parent) {
     idMgr.add(this);
     if (parent instanceof Map) {
@@ -339,6 +348,7 @@ public class Flare extends AbstractConfigurable
    * Removes this component from a Buildable parent.
    * @param parent - the Map to remove the Flare from.
    */
+  @Override
   public void removeFrom(final Buildable parent) {
     if (parent instanceof Map) {
       GameModule.getGameModule().removeCommandEncoder(this);
@@ -421,6 +431,7 @@ public class Flare extends AbstractConfigurable
    * @param g - Graphics
    * @param map - Map component
    */
+  @Override
   public void draw(final Graphics g, final Map map) {
     if (!active || (clickPoint == null)) {
       return;
@@ -457,6 +468,7 @@ public class Flare extends AbstractConfigurable
    * Flare is always drawn above counters
    * @return true
    */
+  @Override
   public boolean drawAboveCounters() {
     return true;
   }
@@ -466,9 +478,10 @@ public class Flare extends AbstractConfigurable
    * @param c Command
    * @return String version of Flare Command, or null if not a Flare Command.
    */
+  @Override
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
-      SequenceEncoder se = new SequenceEncoder(DELIMITER);
+      final SequenceEncoder se = new SequenceEncoder(DELIMITER);
       se
         .append(((FlareCommand)c).getId())
         .append(((FlareCommand)c).getClickPoint().x)
@@ -483,9 +496,10 @@ public class Flare extends AbstractConfigurable
    * @param s String for a Flare Command
    * @return Flare Command object
    */
+  @Override
   public Command decode(final String s) {
     if (s.startsWith(COMMAND_PREFIX + getId())) { // Make sure this command is for this flare
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
       sd.nextToken(); // Skip over the Command Prefix
       sd.nextToken(); // Skip over the Id
       final int x = sd.nextInt(0);
@@ -496,6 +510,7 @@ public class Flare extends AbstractConfigurable
     return null;
   }
 
+  @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -503,6 +518,7 @@ public class Flare extends AbstractConfigurable
   /**
    * @param e MouseEvent
    */
+  @Override
   public void mouseClicked(final MouseEvent e) {
   }
 
@@ -511,6 +527,7 @@ public class Flare extends AbstractConfigurable
    * with a Chat Log message if a Report Format has been specified in the component.
    * @param e - a MouseEvent
    */
+  @Override
   public void mousePressed(final MouseEvent e) {
     if (!SwingUtils.isMainMouseButtonDown(e)) {
       return;
@@ -557,8 +574,8 @@ public class Flare extends AbstractConfigurable
     final Zone z = map.findZone(clickPoint);
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
     reportFormat.setProperty(FLARE_MAP, map.getMapName());
-    String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
-    if (reportText.trim().length() > 0) {
+    final String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
+    if (!reportText.isBlank()) {
       c = new Chatter.DisplayText(mod.getChatter(), "* " + reportText);
       c.execute();
     }
@@ -574,24 +591,28 @@ public class Flare extends AbstractConfigurable
   /**
    * @param e MouseEvent
    */
+  @Override
   public void mouseReleased(final MouseEvent e) {
   }
 
   /**
    * @param e MouseEvent
    */
+  @Override
   public void mouseEntered(final MouseEvent e) {
   }
 
   /**
    * @param e MouseEvent
    */
+  @Override
   public void mouseExited(final MouseEvent e) {
   }
 
   /**
    * @param gameStarting true if starting a game, false if ending one
    */
+  @Override
   public void setup(final boolean gameStarting) {
   }
 
@@ -599,6 +620,7 @@ public class Flare extends AbstractConfigurable
    * @return Theoretically returns the command to "restore" this from a saved game or when adding a new player, but of
    * course Flare doesn't need to be "restored", so null.
    */
+  @Override
   public Command getRestoreCommand() {
     return null;
   }
@@ -654,7 +676,7 @@ public class Flare extends AbstractConfigurable
 
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
-      boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
+      final boolean macLegacy = GlobalOptions.getInstance().getPrefMacLegacy();
       return new String[] {
         FLARE_ALT_LOCAL,
         SystemUtils.IS_OS_MAC_OSX && !macLegacy ? FLARE_COMMAND_LOCAL : FLARE_CTRL_LOCAL,
@@ -689,5 +711,15 @@ public class Flare extends AbstractConfigurable
   @Override
   public List<String> getFormattedStringList() {
     return List.of(reportFormat.getFormat());
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

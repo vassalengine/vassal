@@ -20,6 +20,7 @@ package VASSAL.tools;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.nio.file.FileSystemException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -233,6 +234,18 @@ public class ProblemDialog {
     );
   }
 
+  public static Future<?> showFileOverwriteFailure(
+    int messageType,
+    FileSystemException thrown,
+    String details,
+    String messageKey,
+    Object... args) {
+
+    return showFileOverwriteFailure(
+      messageType, getFrame(), thrown, details, messageKey, args
+    );
+  }
+
   public static Future<?> showDetails(
     int messageType,
     Component parent,
@@ -246,6 +259,22 @@ public class ProblemDialog {
       Resources.getString(messageKey + "_title"), // NON-NLS
       Resources.getString(messageKey + "_heading"), // NON-NLS
       Resources.getString(messageKey + "_message", args) // NON-NLS
+    );
+  }
+
+  public static Future<?> showFileOverwriteFailure(
+    int messageType,
+    Component parent,
+    FileSystemException thrown,
+    String details,
+    String messageKey,
+    Object... args) {
+
+    return showDetails(
+      messageType, parent, thrown, details,
+      Resources.getString(messageKey + "_title", thrown.getFile(), thrown.getOtherFile()), // NON-NLS
+      Resources.getString(messageKey + "_heading", thrown.getFile(), thrown.getOtherFile()), // NON-NLS
+      Resources.getString(messageKey + "_message", thrown.getFile(), thrown.getOtherFile(), args) // NON-NLS
     );
   }
 
@@ -372,7 +401,7 @@ public class ProblemDialog {
    *    and does not contain details, it refers to the Error log for more detail
    * 2. The first warning message for EACH deprecated method is logged in error log with full details.
    * 3. After the initial warning period (6 months after deprecation), the initial user message will
-   *    be displayed as a Disableable dialog instead of in the Chatter.
+   *    be displayed as a Disable-able dialog instead of in the Chatter.
    *
    * @param date YYYYMMDD date the method was deprecated
    * @return A Future to allow closing of the Dialog box to be tracked.

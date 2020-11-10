@@ -17,18 +17,19 @@
  */
 package VASSAL.i18n;
 
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerPanel;
+import VASSAL.tools.SequenceEncoder;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
-import VASSAL.configure.Configurer;
-import VASSAL.tools.SequenceEncoder;
+import javax.swing.JPanel;
 
 /**
  * Configure a Locale Value using full, localized Language and Country names
@@ -39,14 +40,14 @@ import VASSAL.tools.SequenceEncoder;
 public class LocaleConfigurer extends Configurer {
   //FIXME needs an i18n strategy
   protected static final String ANY_COUNTRY = "[Any Country]";
-  protected Box panel;
+  protected JPanel panel;
   protected static final Map<String, String> languages = new HashMap<>();
   protected static String[] languageList;
   protected static final Map<String, String> countries = new HashMap<>();
   protected static String[] countryList;
 
-  protected JComboBox langBox;
-  protected JComboBox countryBox;
+  protected JComboBox<String> langBox;
+  protected JComboBox<String> countryBox;
 
   public LocaleConfigurer(String key, String name) {
     this(key, name, "");
@@ -79,7 +80,7 @@ public class LocaleConfigurer extends Configurer {
   public void setValue(String s) {
     getControls();
     if (!noUpdate && langBox != null && countryBox != null) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
       setLanguage(sd.nextToken(Locale.getDefault().getLanguage()));
       setCountry(sd.nextToken(""));
     }
@@ -87,12 +88,12 @@ public class LocaleConfigurer extends Configurer {
   }
 
   protected void setLanguage(String l) {
-    String lang = (new Locale(l, "")).getDisplayLanguage(Locale.getDefault());
+    final String lang = (new Locale(l, "")).getDisplayLanguage(Locale.getDefault());
     langBox.setSelectedItem(lang);
   }
 
   protected void setCountry(String c) {
-    String country;
+    final String country;
     if (c.length() == 0) {
       country = ANY_COUNTRY;
     }
@@ -105,14 +106,15 @@ public class LocaleConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (panel == null) {
-      panel = Box.createHorizontalBox();
-      langBox = new JComboBox(getLanguageList());
+      panel = new ConfigurerPanel(getName(), "[]rel[][]rel[]", "[]rel[]rel[][]rel[]"); // NON-NLS
+
+      langBox = new JComboBox<>(getLanguageList());
       langBox.setSelectedItem(Locale.getDefault().getDisplayLanguage());
       langBox.addActionListener(e -> updateValue());
       panel.add(new JLabel(Resources.getString("Editor.LocaleConfigurer.language")));
       panel.add(langBox);
 
-      countryBox = new JComboBox(getCountryList());
+      countryBox = new JComboBox<>(getCountryList());
       countryBox.setSelectedItem(ANY_COUNTRY);
       countryBox.addActionListener(e -> updateValue());
       panel.add(new JLabel((Resources.getString("Editor.LocaleConfigurer.country"))));
@@ -123,18 +125,18 @@ public class LocaleConfigurer extends Configurer {
   }
 
   protected void updateValue() {
-    String language = languages.get(langBox.getSelectedItem());
-    String country = countries.get(countryBox.getSelectedItem());
+    final String language = languages.get(langBox.getSelectedItem());
+    final String country = countries.get(countryBox.getSelectedItem());
 
     setValue(language + "," + country);
   }
 
   protected String[] getLanguageList() {
     if (languageList == null) {
-      String[] langs = Locale.getISOLanguages();
-      ArrayList<String> sortedLangs = new ArrayList<>();
-      for (String s : langs) {
-        String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
+      final String[] langs = Locale.getISOLanguages();
+      final ArrayList<String> sortedLangs = new ArrayList<>();
+      for (final String s : langs) {
+        final String lang = (new Locale(s)).getDisplayLanguage(Locale.getDefault());
         languages.put(lang, s);
         sortedLangs.add(lang);
       }
@@ -146,10 +148,10 @@ public class LocaleConfigurer extends Configurer {
 
   protected String[] getCountryList() {
     if (countryList == null) {
-      String[] c = Locale.getISOCountries();
-      ArrayList<String> sortedCountries = new ArrayList<>();
-      for (String s : c) {
-        String country =
+      final String[] c = Locale.getISOCountries();
+      final ArrayList<String> sortedCountries = new ArrayList<>();
+      for (final String s : c) {
+        final String country =
                 (new Locale("en", s)).getDisplayCountry(Locale.getDefault()); //NON-NLS
         countries.put(country, s);
         sortedCountries.add(country);
@@ -163,7 +165,7 @@ public class LocaleConfigurer extends Configurer {
   }
 
   public static Locale stringToLocale(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     return new Locale(sd.nextToken(""), sd.nextToken(""));
   }
 

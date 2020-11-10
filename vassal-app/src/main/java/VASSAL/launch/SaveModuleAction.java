@@ -27,9 +27,6 @@ import VASSAL.configure.ValidationReportDialog;
 public class SaveModuleAction extends SaveAction {
   private static final long serialVersionUID = 1L;
 
-  public SaveModuleAction() {
-  }
-
   @Override
   public void actionPerformed(ActionEvent e) {
     final ValidationReport report = new ValidationReport();

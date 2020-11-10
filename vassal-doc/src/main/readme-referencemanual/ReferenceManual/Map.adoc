@@ -25,9 +25,9 @@ They are designed for holding pieces and cards that are private to one player or
 
 [grid=none]
 [frame=none]
+[cols="a,a",]
 |===
 |*Map Name:*  The name of this map window.
-
 
 *Mark pieces that move:* If checked, then any pieces with the <<MarkMoved.adoc#top,Mark When Moved>> trait will be marked whenever being moved in this map window.
 The module designer can also allow players to control this option in their preferences.
@@ -88,9 +88,9 @@ Once you configure it, your new sub-component will appear at the bottom of the M
 [grid=none]
 [frame=none]
 |===
-|<<#SelectionHighlighter,Additional Selection Highlighters>> |<<SetupStack.adoc#top,At-Start Stack>> |<<Deck.adoc#top,Deck>> |<<#HidePieces,Hide Pieces Button>>
-|<<GamePieceLayers.adoc#top,Game Piece Layers>> |<<#GlobalKeyCommand,Global Key Command>> |<<GlobalProperties.adoc#top,Global Properties>> |<<#ImageCapture,Image Capture Tool>>
-|<<#LastMoveHighlighter,Last Move Highlighter>> |<<#LOS,Line of Sight Thread>> |<<#MapBoards,Map Boards>> |<<#MapShading,Map Shading>>
+|<<#SelectionHighlighter,Additional Selection Highlighters>> |<<SetupStack.adoc#top,At-Start Stack>> |<<Deck.adoc#top,Deck>> |<<Flare.adoc#top, Flare>>
+|<<GamePieceLayers.adoc#top,Game Piece Layers>> |<<#GlobalKeyCommand,Global Key Command>> |<<GlobalProperties.adoc#top,Global Properties>> |<<#HidePieces,Hide Pieces Button>>
+|<<#ImageCapture,Image Capture Tool>>|<<#LastMoveHighlighter,Last Move Highlighter>> |<<#LOS,Line of Sight Thread>> |<<#MapBoards,Map Boards>> |<<#MapShading,Map Shading>>
 |<<#StackViewer,Mouse-over Stack Viewer>> |<<#OverviewWindow,Overview Window>> |<<#PieceRecenterer,Recenter Pieces Button>> |<<#StackingOptions,Stacking Options>>
 |<<#StartupGlobalKeyCommand,Startup Global Key Command>> |<<#TextCapture,Text Capture Tool>> |<<ToolbarMenu.adoc#top,Toolbar Menu>> |<<#Zoom,Zoom Capability>>
 |===
@@ -197,7 +197,6 @@ If set to null (by clicking the "Select" button and then the "Cancel" button in 
 
 ==== <<ToolbarMenu.adoc#top,Toolbar Menu>>
 
-
 [grid=none]
 [frame=none]
 |===
@@ -213,7 +212,6 @@ image:images/ToolbarMenuExample.png[]] |image:images/ToolbarMenu.png[] +
 
 Adds a button to the Toolbar of the Map Window.
 Clicking the button will temporarily hide all pieces on the map, until the button is clicked again.
-
 
 [grid=none]
 [frame=none]
@@ -419,7 +417,7 @@ See <<SetupStack.adoc#top,full article>> for more details.
 [grid=none]
 [frame=none]
 |===
-Adds a button to the map window's Toolbar.
+|Adds a button to the map window's Toolbar.
 Clicking the button will shift the position of all pieces on the map such that they are centered around the middle of the map as much as possible.
 This is useful for games where there are no absolute terrain features, such as some air and naval games.|image:images/PieceRecenterer.png[]
 |===
@@ -447,47 +445,72 @@ Thus if you need the Startup GKC to initiate an activity that should only be don
 ==== Global Key Command
 [grid=none]
 [frame=none]
-
+[cols="a,a",]
 |===
-Adds a button to the map window's Toolbar.
+|Adds a button to the map window's Toolbar.
 Clicking the button will pick certain pieces from the map window and apply the same key command to all of them.
 
-*Description:*  A description of the action, used for the button's mouse-over tooltip.
+*Description:*::  An optional description of the action (for distinguishing between multiple similar commands in the Editor window).
 
-*Key Command:* The key command or <<NamedKeyCommand.adoc#top,Named Key Command>> that will be applied to the selected pieces.
+*Button text:*::  Text for the Toolbar button.
 
-*Matching properties:*  The command will apply to all pieces on the map that match the given <<PropertyMatchExpression.adoc#top,Property Match Expression>>. The Expression can use comparisons to match relevant <<Properties.adoc#top,Properties>> of the pieces on the map to determine which ones should receive the key command, such as _\{ LocationName != "Rome" }_ or _\{ ArmorValue < Hits + 5 }>_.
-An empty expression field matches every piece it finds.
+*Tooltip text:*::  Mouse-over hint text for the Toolbar button.
 
-*Apply to counters on this map only?:*  If checked, then only pieces on this map will be eligible to receive the key command.
+*Button icon:*::  Icon for the Toolbar button.
+
+*Hotkey:*:: Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
+This is the key command that will _initiate_ the Global Key Command, not the one that will be sent to the matching pieces -- the command to be sent is the one defined in the "Global Key Command: " field below.
+
+*Global Key Command:*:: The key command or <<NamedKeyCommand.adoc#top,Named Key Command>> that will be sent and applied to the selected pieces.
+
+*Apply to counters on this map only?:*::  If checked, then only pieces on this map will be eligible to receive the key command.
 Otherwise all pieces in the game will be eligible provide they match the expression above.
 
-*Within a Deck, apply to:*  Select how this command applies to pieces that are currently stacked in a <<Deck.adoc#top,Deck>>. +
+*Pre-select (Fast Match):*::  New from VASSAL 3.5, the *Fast Match* selections can be used to improve the performance of "slow" Global Key Commands by pre-matching the location and/or a single property value of the target piece. Essentially these run limited but much faster comparisons, to screen out some of the potentially hundreds of pieces needing to be checked for each Global Key Command. Fast Match expressions are _optional_ in that the same comparisons can always be run in the standard "Additional matching expression" field. Judicious use of them, however, can improve the performance of a Global Key Command by 25-33%.
 
-  _No pieces_ means that pieces in a Deck ignore the command.
+*by location?*;; If this box is checked, potential target pieces will be pre-filtered based on their locations.
 
-  _All pieces_ means that the command can apply to any piece in the entire Deck that matches the expression.
+*Select By:*::: Selects the type of Location-based filtering that will be done on target pieces.
++
+*_Specific Map_* - Only sends to pieces that are on the Map matching the supplied expression. The _expression_ is evaluated against Global Properties only, but then the result of the expression is compared to the Map of potential _target_ pieces to determine if they are valid targets.
++
+*_Specific Zone_* - Only sends to pieces that are in the Zone matching the supplied expression (an optional Map expression can be supplied as well). The _expressions_ are evaluated against Global Properties only, but then the results of the expressions are compared to the CurrentZone (and optionally CurrentMap) of potential _target_ pieces to determine if they are valid targets.
++
+*_Specific Location_* - Only sends to pieces that are in the Location matching the supplied expression (an optional Map expression can be supplied as well). The _expressions_ are evaluated against Global Properties only, but then the results of the expressions are compared to the LocationName (and optionally CurrentMap) of potential _target_ pieces to determine if they are valid targets.
++
+*_Specific X,Y Position_* - Only sends to pieces that are at the X,Y location matching the supplied expressions (optional Map and Board expressions can be supplied as well). The _expressions_ are evaluated against Global Properties only, but then the results of the expressions are compared to the CurrentX and CurrentY (and optionally CurrentMap and CurrentBoard) of potential _target_ pieces to determine if they are valid targets.
 
-  _Fixed number of pieces_ allows you to specify the number of pieces (drawn from the top) that the command will potentially apply to--the piece(s) in question must still match the expression in order to be included.
+*by property?*;; If this box is checked, a _single_ property of the target will be checked to determine if it is a valid target. This search will be performed more quickly than a similar search in the _Additional Matching Expression_ field.
 
-*Button text:*  Text for the Toolbar button.
+*Property Name*::: Can be a simple string containing the name of a property in potential target pieces to be checked, _or_ an expression to be evaluated against Global Properties only. The result of evaluating the expression is then used to find a property name in the potential _target_ piece.
 
-*Tooltip text:*  Mouse-over hint text for the Toolbar button.
+*Comparison*::: The type of comparison to be done with the value of the property specified above. Can be equals, not-equals, greater, greater-or-equal, less than, less-than-or-equal, or can be matches or non-matches a regular expression.
 
-*Button icon:*  Icon for the Toolbar button.
+*Property Value*::: Can be a simple string or number containing a specific value which will be compared to the value of the property specified above, _or_ an expression to be evaluated against the Global Properties only. The result of evaluating the expression is then used as the value to be compared against the property specified above using the comparison specified above.
 
-*Hotkey:* Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
-This is the key command that will _initiate_ the Global Key Command, not the one that will be sent to the matching pieces -- the command to be sent is the one defined in the "Key Command: " field up above.
+*Additional matching expression:*::  The command will apply to all pieces on the map that match the given <<PropertyMatchExpression.adoc#top,Property Match Expression>>. The Expression can use comparisons to match relevant <<Properties.adoc#top,Properties>> of the pieces on the map to determine which ones should receive the key command, such as _{ LocationName != "Rome" }_ or _{ ArmorValue < Hits + 5 }>_.
+An empty expression field matches every piece it finds.
 
-*Suppress individual reports:*  If selected, then any auto-reporting of the action by individual pieces via <<ReportChanges.adoc#top,Report Action>> traits will be suppressed.
+*Within a Deck, apply to:*::  Select how this command applies to pieces that are currently stacked in a <<Deck.adoc#top,Deck>>. +
 
-*Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that will be echoed to the chat area when the button is clicked or the hotkey pressed.
+_No pieces_;; means that pieces in a Deck ignore the command.
 
-*Example:* Suppose you have configured some pieces to contain a Layer indicating that a piece has fired, activated by Ctrl+F and with the name__Fired__.
+_All pieces_;; means that the command can apply to any piece in the entire Deck that matches the expression.
+
+_Fixed number of pieces_;; allows you to specify the number of pieces (drawn from the top) that the command will potentially apply to--the piece(s) in question must still match the expression in order to be included.
+
+*Suppress individual reports:*::  If selected, then any auto-reporting of the action by individual pieces via <<ReportChanges.adoc#top,Report Action>> traits will be suppressed.
+
+*Report Format:*::  A <<MessageFormat.adoc#top,Message Format>> that will be echoed to the chat area when the button is clicked or the hotkey pressed.
+
+*Example:*:: Suppose you have configured some pieces to contain a Layer indicating that a piece has fired, activated by Ctrl+F and with the name__Fired__.
 Give each piece the <<PropertyMarker.adoc#top,Marker>> trait with property name _canFire_ and value _true_.
-Configure the Global Key Command to apply to pieces whose properties match _\{ canFire == "true" && Fired_Active == "true" }_.
+Configure the Global Key Command to apply to pieces whose properties match _{ canFire == "true" && Fired_Active == "true" }_. 
 Specify CTRL-F as the key command.
-Now clicking the Global Key Command's button will set all marked pieces on the map to not having fired.|image:images/GlobalKeyCommand.png[]]
+Now clicking the Global Key Command's button will set all marked pieces on the map to not having fired. (Optionally take advantage of Fast Match
+by checking _by Property_ in the Fast Match area, setting _Property name_ to _{"canFire"}_, the _Comparison_ to _==_, and _Property value_ to _{"true"}_. In this case
+the _canFire == "true"_ can be removed from the _Additional matching expression_ as targets will be pre-screened for the _canFire_ property -- this will slightly speed
+execution of the Global Key Command)|image:images/GlobalKeyCommand.png[]]
 |===
 [#MapShading]
 ==== Map Shading
@@ -558,7 +581,7 @@ See the article on the <<GlobalProperties.adoc#top,Global Property trait>> of pi
 [grid=none]
 [frame=none]
 |===
-Allows you to define additional ways to highlight the selected piece on a map.
+|Allows you to define additional ways to highlight the selected piece on a map.
 The additional highlighters are drawn only if the selected piece matches the specified properties.
 If a piece matches the properties of more than one highlighter, all will be drawn, in addition to the highlighting color/border specified in the Map's properties.
 
@@ -579,3 +602,21 @@ The center of the image will be offset from the center of the piece by the given
 
 image:images/SelectionHighlighter.png[]
 |===
+
+
+==== Flare
+
+A <<Flare.adoc#top, Flare>> lets players their opponents' attention to something that
+has happened on the map by clicking a with certain modifier keys held down. The flare will be visible to other players
+both in online games and in play-by-email games using a log file.
+
+[grid=none]
+[frame=none]
+|===
+|image:images/Flare.png[]] |
+
+A Flare component is automatically added to each Map, so you will not normally need to add more. However, to add a Flare to your map, find your _[Map]_ component in the Editor, right-click it, and select _Add Flare_.
+
+See the full <<Flare.adoc#top, Flare>> article for more details.
+|===
+

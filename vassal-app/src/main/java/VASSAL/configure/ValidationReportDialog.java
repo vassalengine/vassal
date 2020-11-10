@@ -37,15 +37,15 @@ import VASSAL.tools.ScrollPane;
 public class ValidationReportDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private CallBack callback;
+  private final CallBack callback;
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
     super(GameModule.getGameModule().getPlayerWindow(), false);
     setTitle(Resources.getString("Editor.ValidationReportDialog.problems"));
     this.callback = cb;
-    Box reportBox = Box.createVerticalBox();
+    final Box reportBox = Box.createVerticalBox();
     add(reportBox);
-    JPanel buttonPanel = new JPanel();
+    final JPanel buttonPanel = new JPanel();
     add(buttonPanel, BorderLayout.SOUTH);
 
     final List<String> warnings = report.getWarnings();
@@ -63,7 +63,7 @@ public class ValidationReportDialog extends JDialog {
     default:
       reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.following_problems")));
       reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.danger_will_robinson")));
-      JList<String> list = new JList<>(warnings.toArray(new String[0]));
+      final JList<String> list = new JList<>(warnings.toArray(new String[0]));
       list.setVisibleRowCount(Math.min(list.getVisibleRowCount(), warnings.size()));
       reportBox.add(new ScrollPane(list));
       buttonPanel.add(createOkButton());
@@ -75,7 +75,7 @@ public class ValidationReportDialog extends JDialog {
   }
 
   private JButton createCancelButton() {
-    JButton cancel = new JButton(Resources.getString("General.cancel"));
+    final JButton cancel = new JButton(Resources.getString("General.cancel"));
     cancel.addActionListener(e -> {
       callback.cancel();
       dispose();
@@ -84,7 +84,7 @@ public class ValidationReportDialog extends JDialog {
   }
 
   private JButton createOkButton() {
-    JButton ok = new JButton(Resources.getString("Editor.ValidationReportDialog.ignore"));
+    final JButton ok = new JButton(Resources.getString("Editor.ValidationReportDialog.ignore"));
     ok.addActionListener(e -> {
       callback.ok();
       dispose();

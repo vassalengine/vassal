@@ -28,8 +28,8 @@ import VASSAL.chat.SimpleRoom;
 import VASSAL.i18n.Resources;
 
 public class RoomManager {
-  private List<Room> rooms = new ArrayList<>();
-  private SimpleRoom defaultRoom =
+  private final List<Room> rooms = new ArrayList<>();
+  private final SimpleRoom defaultRoom =
     new SimpleRoom(Resources.getString("Chat.main_room")); //$NON-NLS-1$
 
   public RoomManager() {
@@ -37,8 +37,8 @@ public class RoomManager {
   }
 
   public Room[] update(PeerInfo info) {
-    P2PPlayer p = new P2PPlayer(info);
-    Room oldRoom = getRoomContaining(p);
+    final P2PPlayer p = new P2PPlayer(info);
+    final Room oldRoom = getRoomContaining(p);
     Room newRoom = new SimpleRoom(p.getRoom());
     if (rooms.contains(newRoom)) {
       newRoom = rooms.get(rooms.indexOf(newRoom));
@@ -58,9 +58,9 @@ public class RoomManager {
   }
 
   public Room[] remove(PeerInfo info) {
-    P2PPlayer p = new P2PPlayer(info);
+    final P2PPlayer p = new P2PPlayer(info);
     for (int i = 0; i < rooms.size(); ++i) {
-      Room r = rooms.get(i);
+      final Room r = rooms.get(i);
       r.removePlayer(p);
       if (r.getPlayerList().size() == 0 &&
           !r.equals(defaultRoom)) {
@@ -71,9 +71,9 @@ public class RoomManager {
   }
 
   public P2PPlayer getPlayerById(String id) {
-    for (Room r : rooms) {
-      for (Player p : r.getPlayerList()) {
-        P2PPlayer p2pp = (P2PPlayer) p;
+    for (final Room r : rooms) {
+      for (final Player p : r.getPlayerList()) {
+        final P2PPlayer p2pp = (P2PPlayer) p;
         if (id.equals(p2pp.getId())) {
           return p2pp;
         }
@@ -99,8 +99,8 @@ public class RoomManager {
   }
 
   public SimpleRoom getRoomContaining(Player p) {
-    for (Room r : rooms) {
-      SimpleRoom sr = (SimpleRoom) r;
+    for (final Room r : rooms) {
+      final SimpleRoom sr = (SimpleRoom) r;
       if (sr.contains(p)) {
         return sr;
       }
@@ -112,7 +112,7 @@ public class RoomManager {
     defaultRoom.setName(name);
   }
 
-  public VASSAL.chat.Room getDefaultRoom() {
+  public Room getDefaultRoom() {
     return defaultRoom;
   }
 

@@ -40,7 +40,7 @@ public class MessageViewer extends JPanel {
   private JTable msgTable;
   private DefaultTableModel model;
   private JTextArea msgText;
-  private List<Message> msgList = new ArrayList<>();
+  private final List<Message> msgList = new ArrayList<>();
 
   public MessageViewer() {
     initComponents();
@@ -49,14 +49,14 @@ public class MessageViewer extends JPanel {
   public void setMessages(Enumeration<Message> msgEnum) {
     msgList.clear();
     msgText.setText("");  //$NON-NLS-1$
-    Vector<Vector<String>> rows = new Vector<>();
-    Vector<String> names = new Vector<>();
+    final Vector<Vector<String>> rows = new Vector<>();
+    final Vector<String> names = new Vector<>();
     names.addElement(Resources.getString("Chat.sender"));  //$NON-NLS-1$
     names.addElement(Resources.getString("Chat.date"));  //$NON-NLS-1$
     while (msgEnum.hasMoreElements()) {
-      Message msg = msgEnum.nextElement();
+      final Message msg = msgEnum.nextElement();
       msgList.add(msg);
-      Vector<String> cols = new Vector<>();
+      final Vector<String> cols = new Vector<>();
       cols.addElement(msg.getSender());
       cols.addElement(Resources.formatDate(msg.getDate()));
       rows.addElement(cols);
@@ -69,7 +69,7 @@ public class MessageViewer extends JPanel {
   }
 
   private void initComponents() {
-    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
     model = new DefaultTableModel(new Object[]{Resources.getString("Chat.sender"), Resources.getString("Chat.date")}, 0);   //$NON-NLS-1$ //$NON-NLS-2$
     msgTable = new JTable(model);
@@ -91,7 +91,7 @@ public class MessageViewer extends JPanel {
   private class ShowMsgText implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent evt) {
-      int index = msgTable.getSelectedRow();
+      final int index = msgTable.getSelectedRow();
       if (index >= 0 && index < msgList.size()) {
         msgText.setText(msgList.get(index).getText());
       }

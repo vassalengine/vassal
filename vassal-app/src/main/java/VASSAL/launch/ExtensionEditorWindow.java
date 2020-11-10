@@ -86,7 +86,7 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   protected void save() {
-    ExtensionEditorWindow.this.saver(() -> {
+    saver(() -> {
       try {
         extension.save();
         setExtensionName(extension.getDataArchive().getName());
@@ -99,7 +99,7 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   protected void saveAs() {
-    ExtensionEditorWindow.this.saver(() -> {
+    saver(() -> {
       try {
         extension.saveAs();
         setExtensionName(extension.getDataArchive().getName());

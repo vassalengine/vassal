@@ -52,7 +52,6 @@ import VASSAL.tools.ReadErrorDialog;
  *
  */
 public final class IconFactory {
-
   private static final Logger logger = LoggerFactory.getLogger(IconFactory.class);
 
   static final String FILE = "file:"; //$NON-NLS-1$
@@ -61,9 +60,9 @@ public final class IconFactory {
   private static final JarArchive jar = new JarArchive();
 
   private static IconFactory instance = new IconFactory();
-  private Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<>();
+  private final Map<String, IconFamily> iconFamilies = new ConcurrentHashMap<>();
   private static final Object preloadLock = new Object();
-  private Thread preloadThread;
+  private final Thread preloadThread;
 
   /**
    * Set the Singleton instance
@@ -113,7 +112,7 @@ public final class IconFactory {
    * @return Sized Icon
    */
   public static Icon getIcon(String iconFamilyName, int size) {
-    IconFamily family = getInstance().getFamily(iconFamilyName);
+    final IconFamily family = getInstance().getFamily(iconFamilyName);
     if (family == null) {
       throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName() + " " + iconFamilyName)); //$NON-NLS-1$
     }
@@ -306,7 +305,7 @@ public final class IconFactory {
    * @param size size to look for
    * @throws IOException oops
    */
-  protected void findLocalSizedIcons(int size) throws IOException {
+  private void findLocalSizedIcons(int size) throws IOException {
     final String path = DataArchive.ICON_DIR + IconFamily.SIZE_DIRS[size];
     final URL sizeURL = jar.getURL(path);
 
@@ -377,7 +376,7 @@ public final class IconFactory {
     final JarURLConnection j = (JarURLConnection) jar.getURL(DataArchive.IMAGE_DIR).openConnection();
     final JarFile vengine = j.getJarFile();
 
-    for (Enumeration<JarEntry> e = vengine.entries(); e.hasMoreElements();) {
+    for (final Enumeration<JarEntry> e = vengine.entries(); e.hasMoreElements();) {
       final JarEntry entry = e.nextElement();
       final String entryName = entry.getName();
 

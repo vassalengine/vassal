@@ -41,7 +41,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,7 +89,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     command = st.nextToken(Resources.getString("Editor.Pivot.default_pivot_command"));
     key = st.nextNamedKeyStroke(null);
     pivotX = st.nextInt(0);
@@ -123,7 +123,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(command)
         .append(key)
         .append(pivotX)
@@ -140,26 +140,26 @@ public class Pivot extends Decorator implements TranslatablePiece {
     Command c = null;
     if (pivotCommand.matches(stroke)) {
       if (fixedAngle) {
-        ChangeTracker t = new ChangeTracker(this);
-        double oldAngle = rotator.getAngle();
+        final ChangeTracker t = new ChangeTracker(this);
+        final double oldAngle = rotator.getAngle();
         rotator.setAngle(oldAngle - angle);
-        double newAngle = rotator.getAngle();
+        final double newAngle = rotator.getAngle();
         if (getMap() != null) {
           c = putOldProperties(this);
           Point pos = getPosition();
           pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
-          GamePiece outer = Decorator.getOutermost(this);
+          final GamePiece outer = Decorator.getOutermost(this);
           if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
             pos = getMap().snapTo(pos);
           }
           outer.setProperty(Properties.MOVED, Boolean.TRUE);
           c = c.append(t.getChangeCommand());
-          MoveTracker moveTracker = new MoveTracker(outer);
+          final MoveTracker moveTracker = new MoveTracker(outer);
           getMap().placeOrMerge(outer, pos);
           c = c.append(moveTracker.getMoveCommand());
-          MovementReporter r = new MovementReporter(c);
+          final MovementReporter r = new MovementReporter(c);
           if (GlobalOptions.getInstance().autoReportEnabled()) {
-            Command reportCommand = r.getReportCommand();
+            final Command reportCommand = r.getReportCommand();
             if (reportCommand != null) {
               reportCommand.execute();
             }
@@ -175,8 +175,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
       else if (getMap() != null) {
         c = putOldProperties(this);
         final double oldAngle = rotator.getAngleInRadians();
-        Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
-        AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
+        final Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
+        final AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
         t.transform(pivot2D, pivot2D);
         rotator.beginInteractiveRotate();
         rotator.setPivot(getPosition().x + (int) Math.round(pivot2D.getX()),
@@ -196,11 +196,11 @@ public class Pivot extends Decorator implements TranslatablePiece {
    * @param newAngle New Angle
    */
   private void pivotPoint(Point p, double oldAngle, double newAngle) {
-    Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
+    final Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
     AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
     t.transform(pivot2D, pivot2D);
     t = AffineTransform.getRotateInstance(newAngle - oldAngle, pivot2D.getX(), pivot2D.getY());
-    Point2D newPos2D = new Point2D.Float(0, 0);
+    final Point2D newPos2D = new Point2D.Float(0, 0);
     t.transform(newPos2D, newPos2D);
     p.x += (int) Math.round(newPos2D.getX());
     p.y += (int) Math.round(newPos2D.getY());
@@ -244,7 +244,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Pivot)) return false;
-    Pivot c = (Pivot) o;
+    final Pivot c = (Pivot) o;
 
     if (! Objects.equals(command, c.command)) return false;
     if (! Objects.equals(key, c.key)) return false;
@@ -315,7 +315,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(command.getValueString())
           .append(key.getValueString())
           .append(xOff.getValueString())
@@ -332,7 +332,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(key);
+    return Collections.singletonList(key);
   }
 
   /**

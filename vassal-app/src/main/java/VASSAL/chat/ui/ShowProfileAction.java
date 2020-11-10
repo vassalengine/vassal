@@ -34,10 +34,10 @@ import VASSAL.i18n.Resources;
 public class ShowProfileAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private SimplePlayer p;
-  private java.awt.Frame f;
+  private final SimplePlayer p;
+  private final Frame f;
 
-  public ShowProfileAction(SimplePlayer p, java.awt.Frame f) {
+  public ShowProfileAction(SimplePlayer p, Frame f) {
     super(Resources.getString("Chat.show_profile")); //$NON-NLS-1$
     this.p = p;
     this.f = f;

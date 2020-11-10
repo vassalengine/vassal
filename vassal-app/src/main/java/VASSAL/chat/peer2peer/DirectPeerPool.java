@@ -79,7 +79,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   @Override
   public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {
     int listenPort = 5050;
-    String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
+    final String port = params.getProperty(P2PClientFactory.P2P_LISTEN_PORT);
     if (port != null && port.length() > 0) {
       try {
         listenPort = Integer.parseInt(port);
@@ -125,11 +125,11 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       addressConfig = new StringArrayConfigurer(ADDRESS_PREF, null);
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
     }
-    String[] encodedEntries = addressConfig.getStringArray();
+    final String[] encodedEntries = addressConfig.getStringArray();
     addressBook = new DefaultListModel<>();
     addressList = new JList<>(addressBook);
 
-    for (String e : encodedEntries) {
+    for (final String e : encodedEntries) {
       addToList(new Entry(e));
     }
 
@@ -146,22 +146,22 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     final JScrollPane scroll = new JScrollPane(addressList);
     frame.add(scroll, "span 4, grow, push, w 300, h 400, wrap"); //$NON-NLS-1$
 
-    JButton invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
+    final JButton invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     invitePeerButton.setToolTipText(Resources.getString("Peer2Peer.invite_button_tooltip")); //$NON-NLS-1$))
     invitePeerButton.addActionListener(e -> invite(ppm));
     frame.add(invitePeerButton, "growx, push"); //$NON-NLS-1$
 
-    JButton addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
+    final JButton addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
     addButton.setToolTipText(Resources.getString("Peer2Peer.add_button_tooltip")); //$NON-NLS-1$))
     addButton.addActionListener(e -> addEntry());
     frame.add(addButton, "growx, push"); //$NON-NLS-1$
 
-    JButton editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
+    final JButton editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
     editButton.setToolTipText(Resources.getString("Peer2Peer.edit_button_tooltip")); //$NON-NLS-1$))
     editButton.addActionListener(e -> editEntry());
     frame.add(editButton, "growx, push"); //$NON-NLS-1$
 
-    JButton removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
+    final JButton removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
     removeButton.setToolTipText(Resources.getString("Peer2Peer.remove_button_tooltip")); //$NON-NLS-1$))
     removeButton.addActionListener(arg0 -> removeEntries());
     frame.add(removeButton, "growx, push, wrap"); //$NON-NLS-1$
@@ -173,7 +173,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
   protected void invite(final PendingPeerManager ppm) {
     final int[] selected = addressList.getSelectedIndices();
-    for (int value : selected) {
+    for (final int value : selected) {
       final Entry entry = addressBook.getElementAt(value);
       final PeerInfo info = PeerInfo.deFormat(entry.getAddress() + ":" + entry.getPort() + " " + entry.getDescription()); //$NON-NLS-1$ //$NON-NLS-2$
       if (info != null) {
@@ -233,17 +233,17 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
     final JPanel queryPanel = new JPanel(new MigLayout("", "10[][]10"));
     final String mess = (entries.length == 1 ? Resources.getString("Peer2Peer.remove_entry") : Resources.getString("Peer2Peer.remove_entries", entries.length));  //$NON-NLS-1$ //$NON-NLS-2$
-    queryPanel.add(new JLabel(mess), "align center, wrap");
-    queryPanel.add(new JLabel(), "wrap");
-    for (Entry entry : entries) {
-      queryPanel.add(new JLabel(entry.toString()), "wrap");
+    queryPanel.add(new JLabel(mess), "align center, wrap"); //NON-NLS
+    queryPanel.add(new JLabel(), "wrap"); //NON-NLS
+    for (final Entry entry : entries) {
+      queryPanel.add(new JLabel(entry.toString()), "wrap"); //NON-NLS
     }
 
     final Integer result = (Integer) Dialogs.showDialog(null, Resources.getString("Peer2Peer.remove_entry"), //$NON-NLS-1$
         queryPanel, JOptionPane.QUESTION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
         null, null, null, null);
     if (result != null && result == 0) {
-      for (Entry entry : entries) {
+      for (final Entry entry : entries) {
         addressBook.removeElement(entry);
       }
 
@@ -254,7 +254,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   protected void saveAddressBook() {
     final String[] entries = new String[addressBook.size()];
     int i = 0;
-    for (Enumeration<Entry> e = addressBook.elements(); e.hasMoreElements(); ) {
+    for (final Enumeration<Entry> e = addressBook.elements(); e.hasMoreElements(); ) {
       entries[i++] = e.nextElement().encode();
     }
     addressConfig.setValue(entries);
@@ -284,10 +284,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     JTextField portField;
 
     public Entry() {
-      this("", "", "5050", "");
+      this("", "", "5050");
     }
 
-    public Entry(String description, String address, String port, String passwd) {
+    public Entry(String description, String address, String port) {
       this.description = description;
       this.address = address;
       this.port = port;
@@ -313,19 +313,20 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 //      return passwd;
 //    }
 
+    @Override
     public String toString() {
       return description + " [" + address + ":" + port; // + (getPasswd().length() == 0 ? "" : "/") +  getPasswd() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     private void decode(String s) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
       description = sd.nextToken(""); //$NON-NLS-1$
       address = sd.nextToken(""); //$NON-NLS-1$
       port = sd.nextToken("5050"); //$NON-NLS-1$
     }
 
     public String encode() {
-      SequenceEncoder se = new SequenceEncoder('|');
+      final SequenceEncoder se = new SequenceEncoder('|');
       se.append(description);
       se.append(address);
       se.append(port);

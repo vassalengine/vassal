@@ -98,13 +98,13 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    */
   @Override
   protected String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(current);
     se.append(currentSubLevel);
     se.append(first);
-    String[] s = new String[active.length];
+    final String[] s = new String[active.length];
     for (int i = 0; i < s.length; i++) {
-      s[i] = active[i] + ""; //$NON-NLS-1$
+      s[i] = Boolean.toString(active[i]);
     }
     se.append(s);
     for (int i = 0; i < getTurnLevelCount(); i++) {
@@ -155,7 +155,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   @Override
   protected String getLongestValueName() {
     String s = "X"; //$NON-NLS-1$
-    for (String value : list) {
+    for (final String value : list) {
       if (value.length() > s.length()) {
         s = value;
       }
@@ -218,7 +218,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   /* A list turn level is active only if at least one item is active */
   @Override
   protected boolean isActive() {
-    for (boolean b : active) {
+    for (final boolean b : active) {
       if (b) {
         return true;
       }
@@ -228,13 +228,13 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   protected void buildConfigMenu(JMenu configMenu) {
-    JMenu menu = getConfigMenu();
+    final JMenu menu = getConfigMenu();
     if (menu != null) {
       configMenu.add(menu);
     }
 
     if (configFirst || configList) {
-      JMenuItem item = new JMenuItem(Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$
+      final JMenuItem item = new JMenuItem(Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$
       item.addActionListener(this);
       configMenu.add(item);
     }
@@ -251,10 +251,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   @Override
   protected Component getSetControl() {
 
-    StringEnumConfigurer config = new StringEnumConfigurer("", " " + getConfigureName() + ":  ", list); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    final StringEnumConfigurer config = new StringEnumConfigurer("", " " + getConfigureName() + ":  ", list); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.setValue(list[current]);
     config.addPropertyChangeListener(e -> {
-      String option = ((StringEnumConfigurer) e.getSource()).getValueString();
+      final String option = ((StringEnumConfigurer) e.getSource()).getValueString();
       for (int i = 0; i < list.length; i++) {
         if (option.equals(list[i])) {
           current = i;
@@ -337,10 +337,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       return StringArrayConfigurer.arrayToString(list);
     }
     else if (CONFIG_LIST.equals(key)) {
-      return configList + ""; //$NON-NLS-1$
+      return Boolean.toString(configList);
     }
     else if (CONFIG_FIRST.equals(key)) {
-      return configFirst + ""; //$NON-NLS-1$
+      return Boolean.toString(configFirst);
     }
     else if (PROMPT.equals(key)) {
       return prompt;
@@ -368,7 +368,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     }
   }
 
-  private VisibilityCondition promptCond = () -> configFirst;
+  private final VisibilityCondition promptCond = () -> configFirst;
 
   @Override
   public boolean isConfigurable() {
@@ -393,10 +393,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         if (prompt == null) {
           prompt = Resources.getString("Editor.ListTurnLevel.first_each", getConfigureName(), parent.getConfigureName());
         }
-        StringEnumConfigurer firstItem = new StringEnumConfigurer("", prompt + " :  ", list); //$NON-NLS-1$ //$NON-NLS-2$
+        final StringEnumConfigurer firstItem = new StringEnumConfigurer("", prompt + " :  ", list); //$NON-NLS-1$ //$NON-NLS-2$
         firstItem.setValue(list[first]);
         firstItem.addPropertyChangeListener(e -> {
-          String option = ((StringEnumConfigurer) e.getSource()).getValueString();
+          final String option = ((StringEnumConfigurer) e.getSource()).getValueString();
           for (int i = 0; i < list.length; i++) {
             if (list[i].equals(option)) {
               first = i;
@@ -410,10 +410,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
         add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$
         for (int i = 0; i < list.length; i++) {
-          BooleanConfigurer b = new BooleanConfigurer(null, list[i], active[i]);
+          final BooleanConfigurer b = new BooleanConfigurer(null, list[i], active[i]);
           b.addPropertyChangeListener(e -> {
-            BooleanConfigurer b1 = (BooleanConfigurer) e.getSource();
-            String option = b1.getName();
+            final BooleanConfigurer b1 = (BooleanConfigurer) e.getSource();
+            final String option = b1.getName();
             for (int i1 = 0; i1 < list.length; i1++) {
               if (list[i1].equals(option)) {
                 active[i1] = b1.booleanValue();
@@ -424,14 +424,14 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         }
       }
 
-      JPanel p = new JPanel();
+      final JPanel p = new JPanel();
 
-      JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
+      final JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       saveButton.setToolTipText(Resources.getString("TurnTracker.save_changes")); //$NON-NLS-1$
       p.add(saveButton);
       saveButton.addActionListener(e -> setVisible(false));
 
-      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+      final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.setToolTipText(Resources.getString("TurnTracker.discard_changes")); //$NON-NLS-1$
       cancelButton.addActionListener(e -> setVisible(false));
       p.add(cancelButton);
@@ -443,7 +443,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData myI18nData = super.getI18nData();
+    final ComponentI18nData myI18nData = super.getI18nData();
     myI18nData.setAttributeTranslatable(LIST, true);
     return myI18nData;
   }

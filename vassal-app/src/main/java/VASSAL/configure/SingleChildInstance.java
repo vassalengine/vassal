@@ -25,8 +25,8 @@ import VASSAL.build.Buildable;
  * belongs to a given parent
  */
 public class SingleChildInstance implements ValidityChecker {
-  private AbstractConfigurable target;
-  private Class<?> childClass;
+  private final AbstractConfigurable target;
+  private final Class<?> childClass;
 
   public SingleChildInstance(AbstractConfigurable target,
                              Class<?> childClass) {

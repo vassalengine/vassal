@@ -58,7 +58,7 @@ public class ExtensionsManager {
   }
 
   public ExtensionsManager(GameModule module) {
-    this.moduleFile = new File(GameModule.getGameModule().getDataArchive().getName());
+    this.moduleFile = new File(module.getDataArchive().getName());
   }
 
   /**
@@ -72,7 +72,7 @@ public class ExtensionsManager {
     if (extensionsDir == null && moduleFile != null) {
       File dir;
       String dirName = moduleFile.getPath();
-      int index = dirName.lastIndexOf('.');
+      final int index = dirName.lastIndexOf('.');
       if (index > 0) {
         dirName = dirName.substring(0, index);
       }
@@ -115,7 +115,7 @@ public class ExtensionsManager {
 
   public File getInactiveExtensionsDirectory(boolean mustExist) {
     if (inactiveDir == null) {
-      File extDir = getExtensionsDirectory(mustExist);
+      final File extDir = getExtensionsDirectory(mustExist);
       if (extDir == null) {
         return null;
       }
@@ -134,7 +134,7 @@ public class ExtensionsManager {
   }
 
   public File setActive(File extension, boolean active) {
-    File newExt;
+    final File newExt;
     if (active) {
       final File extensionsDirectory = getExtensionsDirectory(true);
       if (extensionsDirectory == null) {
@@ -156,12 +156,12 @@ public class ExtensionsManager {
   private List<File> getExtensions(File dir) {
     final List<File> extensions = new ArrayList<>(0);
     if (dir != null && dir.exists()) {
-      File[] files = dir.listFiles(filter);
+      final File[] files = dir.listFiles(filter);
       if (files == null) {
         ReadErrorDialog.error(new IOException(), dir);
       }
       else {
-        for (File file : files) {
+        for (final File file : files) {
           final AbstractMetaData metadata = MetaDataFactory.buildMetaData(file);
           if (metadata instanceof ExtensionMetaData) {
             extensions.add(file);
@@ -182,7 +182,7 @@ public class ExtensionsManager {
   }
 
   public boolean isExtensionActive(File extension) {
-    for (File f : getActiveExtensions()) {
+    for (final File f : getActiveExtensions()) {
       if (f.getName().equals(extension.getName())) {
         return true;
       }

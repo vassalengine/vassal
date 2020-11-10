@@ -71,7 +71,7 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
           value = valueExpressions[i].evaluate(propertySource.getPropertySource());
         }
       }
-      catch (ExpressionException e) {
+      catch (final ExpressionException e) {
         value = valueExpressions[i].getExpression();
       }
       finalValues[i] = value;

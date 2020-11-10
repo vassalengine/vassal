@@ -37,13 +37,13 @@ import VASSAL.tools.swing.SwingUtils;
 public class SplashScreen extends JWindow {
   private static final long serialVersionUID = 1L;
 
-  private static List<SplashScreen> instances = new ArrayList<>();
+  private static final List<SplashScreen> instances = new ArrayList<>();
 
   public SplashScreen(Image im) {
     instances.add(this);
     add(new JLabel(new ImageIcon(im)));
     pack();
-    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+    final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     setLocation(d.width / 2 - getSize().width / 2,
                 d.height / 2 - getSize().height / 2);
     addMouseListener(new MouseAdapter() {
@@ -65,13 +65,13 @@ public class SplashScreen extends JWindow {
   }
 
   public static void sendAllToBack() {
-    for (SplashScreen s : instances) {
+    for (final SplashScreen s : instances) {
       s.toBack();
     }
   }
 
   public static void disposeAll() {
-    for (SplashScreen s : instances) {
+    for (final SplashScreen s : instances) {
       s.dispose();
     }
   }

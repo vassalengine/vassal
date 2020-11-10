@@ -1,38 +1,65 @@
-[size=18][b]VASSAL 3.4.6 Released[/b][/size]
-The VASSAL Team is happy to announce the release of VASSAL 3.4.6.
+The VASSAL Team is happy to announce the release of VASSAL {{version}}.
 
-[size=16][b]IMPORTANT[/b][/size]
+<h3>IMPORTANT</h3>
 * Things may be broken which worked previously. If you find a new bug, please report it.
 
 * If you save a module in VASSAL 3.4, you will NOT be able to open it afterwards with VASSAL 3.3 or earlier. We recommend keeping a backup copy of any pre-3.4 modules you plan to modify in 3.4 until you've verified that everything works to your satisfaction.
 
 * Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code.
+<h3>Download</h3>
+* <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-linux.tar.bz2' target='_new'>Linux</a>
+* <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-macosx.dmg' target='_new'>Mac OS X</a>
+* <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-64.exe' target='_new'>Windows (64-bit)</a>
+* <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe' target='_new'>Windows (32-bit)</a>
+* <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a>
 
-[size=16][b]Download[/b][/size]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-macosx.dmg]Mac OS X[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/3.4.6/VASSAL-3.4.6-other.zip]Other[/url]
+<h3>Changes since 3.4.7</h3>
+Bug fixes
 
-[size=16][b]Changes since 3.4.5[/b][/size]
+* 13577: Stacks properly restore their visual 'layer' level when saved/restored
+* 13574: Fix reporting on oldXXXXXX properties in ReportState
+* 13573: Beanshell count function not working with $$ variables in Restrict Commands property match
+* 13567: Put backup in better location when writing to module fails and ensure Editor is not left in a bad state
+* 13560: Don't register mouse listeners from ActionButton.draw()
+* 13449: Inventory window remains open when the game is closed in the Player
+* 13379: Mass Piece Loader - Decrease key now loads correctly
+* 13379: Mass Piece Loader - Layers are no longer loaded Activated
 
+Other improvements
+
+* 13572: Stop converting preferences last written by 3.2.7 or earlier
+* 13563: Hitting Enter in Editor expands or edits nodes
+* 13431: Cache grid and grid numbering painting for better performance
+* 13379: Mass Piece Loader - Base Image can now be loaded into layers
+* 10063: Hitting Enter on Module Manager opens the module
+
+<h3>Changes since 3.4.6</h3>
+Bug fixes
+
+* 13547: Don't raise a bug dialog on failure to read an MP3
+* 13546: Change backup Resource directory from temp folder to base folder
+* 13542: Interaction between Move Fixed Distance and Rotate traits has changed between 3.2.17 and 3.4.6
+* 13540: Macs now use Command as modifier key for grid-resizing, setup-stack-moving in Editor
+* 13525: HFS+ stores filenames in NFD, so must check for that variant when loading
+* 13524: Masked card dragged from Player Hand reports differently between 3.2.17 and 3.4.6
+* 13520: Made Command+Click the select/deselect combo for Macs (and Command+Wheel to zoom)
+* 13489: Pieces scaled incorrectly during drags on HiDPI screens on Windows
+
+<h3>Changes since 3.4.5</h3>
 Bug fixes
 
 * 13508: NPE in GamePieceOpImpl.getTileIndices()
 * 13505: Dragging a card/piece off the top of a deck should not also band-select
-* 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map padding specified
+* 13503: At-Start Stacks and Decks in &lt;Any&gt; board appear in wrong place if map padding specified
 * 13467: Edited modules containing HTML img elements can't be saved on Windows
 * 13456: At-Start Stack using Grid Location uses Location on first board, not chosen board (additional fix for 12576)
 
-[size=16][b]Changes since 3.4.4[/b][/size]
-
+<h3>Changes since 3.4.4</h3>
 Bug fixes
 
 * 13490: Module Manager "Show Error Log" doesn't
 
-[size=16][b]Changes since 3.4.3[/b][/size]
-
+<h3>Changes since 3.4.3</h3>
 Bug fixes
 
 * 13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus
@@ -42,8 +69,7 @@ Bug fixes
 * 13454: ClassCastException in SetPersistentPropertyCommand.execute()
 * 13426: NegativeArraySizeException when receiving first private message
 
-[size=16][b]Changes since 3.4.2[/b][/size]
-
+<h3>Changes since 3.4.2</h3>
 Bug fixes
 
 * 13452: Bundle Java 15 with Windows and Mac packages
@@ -61,8 +87,7 @@ Bug fixes
 * 13307: Background transparency in Text Labels not working
 *  2569: Improved error message for NoSuchElementException in Decorator.mergeState()
 
-[size=16][b]Changes since 3.4.1[/b][/size]
-
+<h3>Changes since 3.4.1</h3>
 Bug fixes
 
 * 13425: Legacy property match expressions no longer evaluated == or != correctly
@@ -75,8 +100,7 @@ Bug fixes
 * 13300: Remove "Preference" option for HTML for Chatter
 * 13279: Pivot was auto-reporting moves when auto-reporting is turned off
 
-[size=16][b]Changes since 3.4.0[/b][/size]
-
+<h3>Changes since 3.4.0</h3>
 Bug fixes
 
 * 13389: Chatter flickers when updated
@@ -84,8 +108,7 @@ Bug fixes
 * 13374: NPE in ExtensionTree.isEditable()
 * 13373: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
 
-[size=16][b]Changes since 3.3.2[/b][/size]
-
+<h3>Changes since 3.3.2</h3>
 New features
 
 * 13313: Specify VM options for Player via a file
@@ -178,18 +201,16 @@ Other improvements
 * 13100: Replace Beanshell If function in Expression Builder with inline If ?:
 *  3042: Improved Retire/Resign/Switch Sides button flow
 
-See the [url=http://www.vassalengine.org/wiki/VASSAL_3.4_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.4.
+See the <a href="http://www.vassalengine.org/wiki/VASSAL_3.4_Release_Notes">Release Notes</a> for descriptions of the changes in 3.4.
 
-[size=16][b]Minimum Requirements[/b][/size]
+<h3>Minimum Requirements</h3>
 VASSAL 3.4 requires Java 11 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
-
-[size=16][b]Help us test[/b][/size]
+<h3>Help us test</h3>
 Should you find any problems/oddities/bugs, please tell us so that we can fix them for a future release of VASSAL.
 
-Please report bugs in the Technical Support & Bugs category at the [url=http://vassalengine.org/forum/viewforum.php?f=3]VASSAL forums[/url].
-
+Please report bugs here in the Technical Support & Bugs category at the <a href='http://vassalengine.org/forum/viewforum.php?f=3' target='_new'>VASSAL forums</a>.
 
 Cheers,
 

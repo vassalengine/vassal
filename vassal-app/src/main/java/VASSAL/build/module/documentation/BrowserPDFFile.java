@@ -86,7 +86,7 @@ public class BrowserPDFFile extends AbstractConfigurable {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
 
     try (InputStream in = archive.getInputStream(pdfFile)) {
-      Path out = Files.createTempFile(Info.getTempDir().toPath(), "pdfhelp_", ".pdf"); //NON-NLS
+      final Path out = Files.createTempFile(Info.getTempDir().toPath(), "pdfhelp_", ".pdf"); //NON-NLS
       try {
         Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
       }

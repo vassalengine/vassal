@@ -64,7 +64,7 @@ public class OpCache {
       this.op = op;
       this.version = version;
 
-      for (Op<?> dop : op.getSources()) deps.add(dop.newKey());
+      for (final Op<?> dop : op.getSources()) deps.add(dop.newKey());
 
       hash = op.hashCode() ^ version ^ deps.hashCode();
     }
@@ -258,7 +258,7 @@ public class OpCache {
                                                          InterruptedException,
                                                          ExecutionException {
 
-    Future<V> fut = getFuture(key, obs);
+    final Future<V> fut = getFuture(key, obs);
 
     // We block on the op when there is no observer, and
     // return right away if the op is already done.

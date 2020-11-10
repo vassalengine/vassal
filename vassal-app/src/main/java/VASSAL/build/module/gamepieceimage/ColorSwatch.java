@@ -164,7 +164,7 @@ public class ColorSwatch extends AbstractConfigurable
   }
 
   public void decode(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     setConfigureName(sd.nextToken());
     Color c = ColorManager.getColorManager().getColorByName(getConfigureName());
     if (c == null && !getConfigureName().equals(CLEAR)) {

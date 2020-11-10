@@ -17,12 +17,21 @@
  */
 package VASSAL.counters;
 
-
+import VASSAL.configure.PropertyExpression;
 
 /**
  * A filter for GamePieces
+ *
+ * Sample implementations include:
+ * {@link PropertyExpression} - used for "matching expressions" in Global Key Commands and the like
+ * {@link RangeFilter} - filters for pieces within range of a point
+ * {@link BooleanOrPieceFilter} - "OR"s two Filters together to make one Amazing Disjunctive Filter
+ * {@link BooleanAndPieceFilter} - "AND"s two Filters together and you'd better satisfy both
+ * {@link CounterDetailViewer.Filter} - Filter created from Mouseover Stack Viewer settings
+ * {@link Inventory.Selector} - Layered filter for Piece Inventory window
  */
+@SuppressWarnings("JavadocReference")
 @FunctionalInterface
 public interface PieceFilter {
-  public boolean accept(GamePiece piece);
+  boolean accept(GamePiece piece);
 }

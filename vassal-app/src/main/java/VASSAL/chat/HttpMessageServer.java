@@ -37,10 +37,10 @@ import VASSAL.command.NullCommand;
 import VASSAL.tools.SequenceEncoder;
 
 public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
-  private HttpRequestWrapper welcomeURL;
-  private HttpRequestWrapper getMessagesURL;
-  private HttpRequestWrapper postMessageURL;
-  private PeerPoolInfo info;
+  private final HttpRequestWrapper welcomeURL;
+  private final HttpRequestWrapper getMessagesURL;
+  private final HttpRequestWrapper postMessageURL;
+  private final PeerPoolInfo info;
 
   public HttpMessageServer(PeerPoolInfo info) {
     this(
@@ -63,12 +63,12 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     Command motd = new NullCommand();
     try {
       if (GameModule.getGameModule() != null) {
-        for (String s : welcomeURL.doGet(prepareInfo())) {
+        for (final String s : welcomeURL.doGet(prepareInfo())) {
           motd = motd.append(GameModule.getGameModule().decode(s));
         }
       }
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       System.err.println("IOException retrieving welcome message from " + welcomeURL); //$NON-NLS-1$
     }
     return motd;
@@ -78,11 +78,11 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   public Message[] getMessages() {
     final ArrayList<Message> msgList = new ArrayList<>();
     try {
-      for (String msg : getMessagesURL.doGet(prepareInfo())) {
+      for (final String msg : getMessagesURL.doGet(prepareInfo())) {
         try {
-          StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
+          final StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
           String s = st.nextToken();
-          String sender = s.substring(s.indexOf('=') + 1); //$NON-NLS-1$
+          final String sender = s.substring(s.indexOf('=') + 1); //$NON-NLS-1$
           String date = st.nextToken();
           date = date.substring(date.indexOf('=') + 1); //$NON-NLS-1$
           s = st.nextToken(""); //$NON-NLS-1$
@@ -93,31 +93,31 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
           );
 
           content = restorePercent(content);
-          Date created = null;
+          Date created;
           try {
             long time = Long.parseLong(date);
-            TimeZone t = TimeZone.getDefault();
+            final TimeZone t = TimeZone.getDefault();
             time += t.getOffset(Calendar.ERA, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK, Calendar.MILLISECOND);
             created = new Date(time);
           }
-          catch (NumberFormatException e1) {
+          catch (final NumberFormatException e1) {
             created = new Date();
           }
           msgList.add(new Message(sender, content, created));
         }
-        catch (NoSuchElementException ex) {
+        catch (final NoSuchElementException ex) {
           System.err.println("Badly formatted message in HttpMessageServer:  " + msg); //$NON-NLS-1$
         }
       }
     }
-    catch (IOException ex) {
+    catch (final IOException ex) {
       System.err.println("IOException retrieving messages from " + getMessagesURL); //$NON-NLS-1$
     }
     return msgList.toArray(new Message[0]);
   }
 
   private Properties prepareInfo() {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     p.put("module", info.getModuleName()); //$NON-NLS-1$
     return p;
   }
@@ -126,7 +126,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     final StringBuilder buff = new StringBuilder();
     final StringTokenizer st = new StringTokenizer(input, "%#", true); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
-      String s = st.nextToken();
+      final String s = st.nextToken();
       switch (s.charAt(0)) {
       case '%':
         buff.append("/#/"); //$NON-NLS-1$
@@ -159,19 +159,19 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
       return;
     }
     content = removePercent(content);
-    SequenceEncoder se = new SequenceEncoder('|');
-    StringTokenizer st = new StringTokenizer(content, "\n\r"); //$NON-NLS-1$
+    final SequenceEncoder se = new SequenceEncoder('|');
+    final StringTokenizer st = new StringTokenizer(content, "\n\r"); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
       se.append(st.nextToken());
     }
-    Properties p = prepareInfo();
+    final Properties p = prepareInfo();
     p.put("sender", info.getUserName()); //$NON-NLS-1$
     p.put("content", se.getValue()); //$NON-NLS-1$
     try {
       postMessageURL.doPost(p);
     }
     // FIXME: review error message
-    catch (IOException ex) {
+    catch (final IOException ex) {
       ex.printStackTrace();
     }
   }

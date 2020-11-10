@@ -17,6 +17,22 @@
  */
 package VASSAL.chat;
 
+import VASSAL.build.GameModule;
+import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.node.OfficialNodeClientFactory;
+import VASSAL.chat.node.PrivateNodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
+import VASSAL.configure.ConfigurerLayout;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.PropertiesEncoder;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -50,21 +66,6 @@ import javax.swing.ListSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
 
-import VASSAL.build.GameModule;
-import VASSAL.chat.node.NodeClientFactory;
-import VASSAL.chat.node.OfficialNodeClientFactory;
-import VASSAL.chat.node.PrivateNodeClientFactory;
-import VASSAL.chat.peer2peer.P2PClientFactory;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.PropertiesEncoder;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.swing.Dialogs;
-import VASSAL.tools.swing.SwingUtils;
-
 public class ServerAddressBook {
   public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
   protected static final String ADDRESS_PREF = "ServerAddressBook"; //$NON-NLS-1$
@@ -85,7 +86,7 @@ public class ServerAddressBook {
   private DefaultListModel<AddressBookEntry> addressBook;
   private AddressBookEntry currentEntry;
   private boolean enabled = true;
-  private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+  private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
   private static ServerAddressBook instance;
   private static String localIPAddress;
   private static String externalIPAddress;
@@ -112,7 +113,7 @@ public class ServerAddressBook {
       try {
         localIPAddress = getLocalHostLANAddress().getHostAddress();
       }
-      catch (UnknownHostException e) {
+      catch (final UnknownHostException e) {
         localIPAddress = "?"; //$NON-NLS-1$
       }
     }
@@ -129,7 +130,7 @@ public class ServerAddressBook {
       try {
         externalIPAddress = discoverMyIpAddressFromRemote();
       }
-      catch (IOException e) {
+      catch (final IOException e) {
         externalIPAddress = "?"; //$NON-NLS-1$
       }
     }
@@ -137,9 +138,9 @@ public class ServerAddressBook {
   }
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
-    String theIp = null;
-    HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
-    List<String> l = r.doGet(null);
+    String theIp;
+    final HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
+    final List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
       theIp = l.get(0);
     }
@@ -177,11 +178,11 @@ public class ServerAddressBook {
     try {
       InetAddress candidateAddress = null;
       // Iterate all NICs (network interface cards)...
-      for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
-        NetworkInterface iface = ifaces.nextElement();
+      for (final Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
+        final NetworkInterface iface = ifaces.nextElement();
         // Iterate all IP addresses assigned to each card...
-        for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
-          InetAddress inetAddr = inetAddrs.nextElement();
+        for (final Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
+          final InetAddress inetAddr = inetAddrs.nextElement();
           if (!inetAddr.isLoopbackAddress()) {
 
             if (inetAddr.isSiteLocalAddress()) {
@@ -207,14 +208,14 @@ public class ServerAddressBook {
       }
       // At this point, we did not find a non-loopback address.
       // Fall back to returning whatever InetAddress.getLocalHost() returns...
-      InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+      final InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
       if (jdkSuppliedAddress == null) {
         throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
       }
       return jdkSuppliedAddress;
     }
-    catch (Exception e) {
-      UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
+    catch (final Exception e) {
+      final UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
       unknownHostException.initCause(e);
       throw unknownHostException;
     }
@@ -229,7 +230,7 @@ public class ServerAddressBook {
       controls = new JPanel(new MigLayout());
       addressConfig = new StringConfigurer(ADDRESS_PREF, null, ""); //$NON-NLS-1$
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
-      addressBook = new DefaultListModel<AddressBookEntry>();
+      addressBook = new DefaultListModel<>();
       loadAddressBook();
       myList = new JList<>(addressBook);
       myList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -240,7 +241,7 @@ public class ServerAddressBook {
         public void mouseClicked(MouseEvent e) {
           if (editButton.isEnabled() && e.getClickCount() == 2
                                      && SwingUtils.isMainMouseButtonDown(e)) {
-            int index = myList.locationToIndex(e.getPoint());
+            final int index = myList.locationToIndex(e.getPoint());
             editServer(index);
           }
         }
@@ -308,7 +309,7 @@ public class ServerAddressBook {
     // Check for Basic Types, regardless of other properties
     int index = 0;
     final String type = p.getProperty(TYPE_KEY);
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final Properties ep = entry.getProperties();
 
@@ -363,7 +364,7 @@ public class ServerAddressBook {
   public void showPopup(JComponent source) {
     final JPopupMenu popup = new JPopupMenu();
 
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       final JMenuItem item = new JMenuItem(entry.toString());
       item.setAction(new MenuAction(entry));
@@ -375,7 +376,7 @@ public class ServerAddressBook {
 
   private class MenuAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private AddressBookEntry entry;
+    private final AddressBookEntry entry;
 
     public MenuAction(AddressBookEntry e) {
       super(e.toString());
@@ -461,7 +462,7 @@ public class ServerAddressBook {
 
   /**
    * Set up the default server
-   * @return
+   * @return Default Server Properties
    */
   public Properties getDefaultServerProperties() {
     return (new OfficialEntry()).getProperties();
@@ -471,7 +472,7 @@ public class ServerAddressBook {
     decodeAddressBook(addressConfig.getValueString());
 
     final DefaultListModel<AddressBookEntry> newAddressBook = new DefaultListModel<>();
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof OfficialEntry) {
         newAddressBook.add(0, entry);
@@ -488,7 +489,7 @@ public class ServerAddressBook {
     boolean privateServer = false;
     boolean updated = false;
 
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry instanceof OfficialEntry) {
         officialServer = true;
@@ -529,8 +530,8 @@ public class ServerAddressBook {
   }
 
   private String encodeAddressBook() {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final Enumeration<AddressBookEntry> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = e.nextElement();
       if (entry != null) {
         se.append(entry.encode());
@@ -541,7 +542,7 @@ public class ServerAddressBook {
 
   private void decodeAddressBook(String s) {
     addressBook.clear();
-    for (SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd.hasMoreTokens();) {
+    for (final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd.hasMoreTokens();) {
       final String token = sd.nextToken(""); //$NON-NLS-1$
       if (token.length() > 0) {
         final AddressBookEntry entry = buildEntry(token);
@@ -565,7 +566,7 @@ public class ServerAddressBook {
     try {
       newProperties = new PropertiesEncoder(s).getProperties();
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       // FIXME: Error Message?
     }
     return buildEntry(newProperties);
@@ -726,14 +727,16 @@ public class ServerAddressBook {
 
       public JComponent getControls() {
         if (configControls == null) {
-          configControls = new JPanel();
-          configControls.setLayout(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-          configControls.add(
+          configControls = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[]")); // NON-NLS
+          final JPanel configPanel = new JPanel();
+          configPanel.setLayout(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[align right]rel[]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          configPanel.add(
               new JLabel(IconFactory.getIcon(entry.getIconName(), IconFamily.LARGE)),
               "span 2, align center, wrap"); //$NON-NLS-1$
-          configControls.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
-          configControls.add(description, "wrap, grow, push"); //$NON-NLS-1$
-          entry.addAdditionalControls(configControls, enabled);
+          configPanel.add(new JLabel(Resources.getString("Editor.description_label"))); //$NON-NLS-1$
+          configPanel.add(description, "wrap, grow, push"); //$NON-NLS-1$
+          entry.addAdditionalControls(configPanel, enabled);
+          configControls.add(configPanel, "growx"); // NON-NLS
           description.setEditable(isDescriptionEditable() && isEnabled());
         }
         return configControls;
@@ -868,6 +871,7 @@ public class ServerAddressBook {
       props.setProperty(NodeClientFactory.NODE_PORT, serverPort.getText());
     }
 
+    @Override
     protected void setAdditionalProperties(Properties props) {
       serverIp.setText(props.getProperty(NodeClientFactory.NODE_HOST));
       serverPort.setText(props.getProperty(NodeClientFactory.NODE_PORT));
@@ -879,8 +883,8 @@ public class ServerAddressBook {
    *
    */
   private class PeerServerEntry extends AddressBookEntry {
-    private JTextField listenPort = new JTextField();
-    private JTextField serverPw = new JTextField();
+    private final JTextField listenPort = new JTextField();
+    private final JTextField serverPw = new JTextField();
 
     public PeerServerEntry() {
       super();
@@ -894,6 +898,7 @@ public class ServerAddressBook {
       super(props);
     }
 
+    @Override
     public String toString() {
       return Resources.getString("ServerAddressBook.peer_server") + " [" + getProperty(DESCRIPTION_KEY) + "]";
     }

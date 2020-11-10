@@ -96,8 +96,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected ConfigureTree myConfigureTree;
   protected CopyButton[] copyButtons;
 
-  public TranslateWindow(Frame owner, boolean modal, final Translatable target,
-      HelpWindow helpWindow, ConfigureTree tree) {
+  public TranslateWindow(Frame owner, boolean modal, final Translatable target, ConfigureTree tree) {
     super(owner, modal);
     this.target = target;
     myConfigureTree = tree;
@@ -105,8 +104,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
-    setTitle(Resources.getString("Editor.TranslateWindow.translate", VASSAL.configure.ConfigureTree.getConfigureName((Configurable) target)));
-    JPanel mainPanel = new JPanel(new BorderLayout());
+    setTitle(Resources.getString("Editor.TranslateWindow.translate", ConfigureTree.getConfigureName((Configurable) target)));
+    final JPanel mainPanel = new JPanel(new BorderLayout());
     /*
      * Place Language selector above Tree and Keys
      */
@@ -126,13 +125,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected Component getHeaderPanel() {
-    JPanel langPanel = new JPanel();
+    final JPanel langPanel = new JPanel();
     langPanel.add(new JLabel(Resources.getString("Editor.TranslateWindow.language")));
     langBox = new JComboBox<>(Localization.getInstance().getTranslationList());
     langPanel.add(langBox);
     boxListener = e -> {
       commitTableEdit();
-      String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
+      final String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
       changeLanguage(selectedTranslation);
     };
     langBox.addActionListener(boxListener);
@@ -141,7 +140,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     langPanel.setMinimumSize(new Dimension(800, 0));
 
-    JButton addButton = new JButton(Resources.getString("Editor.TranslateWindow.add_translation"));
+    final JButton addButton = new JButton(Resources.getString("Editor.TranslateWindow.add_translation"));
     addButton.addActionListener(e -> getNewTranslation());
 
     langPanel.add(addButton);
@@ -155,8 +154,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    *
    */
   protected void getNewTranslation() {
-    Translation t = new Translation();
-    PropertiesWindow w = new MyPropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), false, t, null, this);
+    final Translation t = new Translation();
+    final PropertiesWindow w = new MyPropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), false, t, null, this);
     w.setVisible(true);
   }
 
@@ -165,13 +164,13 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * @param target new Translation
    */
   protected void refreshTranslationList(Configurable target) {
-    Language language = GameModule.getGameModule().getComponentsOf(Language.class).iterator().next();
+    final Language language = GameModule.getGameModule().getComponentsOf(Language.class).iterator().next();
     if (language != null) {
       myConfigureTree.externalInsert(language, target);
     }
     langBox.removeAllItems();
-    String[] langs = Localization.getInstance().getTranslationList();
-    for (String lang : langs) {
+    final String[] langs = Localization.getInstance().getTranslationList();
+    for (final String lang : langs) {
       langBox.addItem(lang);
     }
     langBox.setSelectedItem(((Translation) target).getDescription());
@@ -200,20 +199,20 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected Component buildMainPanel() {
-    JPanel keyPanel = buildKeyTablePanel();
+    final JPanel keyPanel = buildKeyTablePanel();
 
     /*
      * Tree of all components from target component down
      */
-    JPanel treePanel = new JPanel(new BorderLayout());
-    MyTreeNode top = new MyTreeNode(target);
+    final JPanel treePanel = new JPanel(new BorderLayout());
+    final MyTreeNode top = new MyTreeNode(target);
     createNodes(top);
     tree = new JTree(top);
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     tree.addTreeSelectionListener(this);
     tree.setSelectionRow(0);
     tree.setCellRenderer(new MyTreeCellRenderer());
-    JScrollPane treeScroll = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    final JScrollPane treeScroll = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     treePanel.add(treeScroll, BorderLayout.CENTER);
     treePanel.setMinimumSize(new Dimension(400, 100));
@@ -222,7 +221,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     /*
      * First split between Tree display and Keys
      */
-    JSplitPane split1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treePanel, keyPanel);
+    final JSplitPane split1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treePanel, keyPanel);
     split1.setResizeWeight(0.5);
 
     return split1;
@@ -233,7 +232,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
      * Key Panel - Table of Keys for the component currently selected in the
      * Tree Panel
      */
-    JPanel keyPanel = new JPanel(new BorderLayout());
+    final JPanel keyPanel = new JPanel(new BorderLayout());
     keyPanel.setMinimumSize(new Dimension(800, 100));
     keyTable = new MyTable();
     keyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -251,7 +250,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     keyTable.getSelectionModel().addListSelectionListener(this);
     keyTable.setEnabled(currentTranslation != null);
 
-    JScrollPane keyScroll = new JScrollPane(keyTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    final JScrollPane keyScroll = new JScrollPane(keyTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     keyPanel.add(keyScroll, BorderLayout.CENTER);
     keyPanel.setMinimumSize(new Dimension(400, 100));
@@ -290,8 +289,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   // focus. Call this all over the place!
   protected void commitTableEdit() {
     if (keyTable != null && keyTable.isEditing()) {
-      int row = keyTable.getEditingRow();
-      int column = keyTable.getEditingColumn();
+      final int row = keyTable.getEditingRow();
+      final int column = keyTable.getEditingColumn();
       if (row != -1 && column != -1)
         keyTable.editCellAt(row, column);
     }
@@ -330,7 +329,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   @Override
   public void valueChanged(TreeSelectionEvent e) {
     commitTableEdit();
-    MyTreeNode node = (MyTreeNode) tree.getLastSelectedPathComponent();
+    final MyTreeNode node = (MyTreeNode) tree.getLastSelectedPathComponent();
     if (node == null)
       return;
     keys = node.getTarget().getI18nData().getAttributeKeys().toArray(new String[0]);
@@ -353,9 +352,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     if (e.getValueIsAdjusting())
       return;
 
-    ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+    final ListSelectionModel lsm = (ListSelectionModel) e.getSource();
     if (!lsm.isSelectionEmpty()) {
-      String key = keys[lsm.getMinSelectionIndex()];
+      final String key = keys[lsm.getMinSelectionIndex()];
       currentKey = keyTarget.getI18nData().getFullPrefix() + key; //$NON-NLS-1$
     }
   }
@@ -365,8 +364,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    */
 
   protected void createNodes(MyTreeNode top) {
-    for (Translatable child : top.getTarget().getI18nData().getChildren()) {
-      MyTreeNode childNode = new MyTreeNode(child);
+    for (final Translatable child : top.getTarget().getI18nData().getChildren()) {
+      final MyTreeNode childNode = new MyTreeNode(child);
       createNodes(childNode);
       top.add(childNode);
     }
@@ -376,12 +375,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     if (t == null) {
       return ""; //$NON-NLS-1$
     }
-    String type = ConfigureTree.getConfigureName(t.getClass());
+    final String type = ConfigureTree.getConfigureName(t.getClass());
     String name = ""; //$NON-NLS-1$
     if (t instanceof Configurable) {
       name = ((Configurable) t).getConfigureName();
     }
-    String s = (name == null) ? "" : (name + " "); //$NON-NLS-1$ //$NON-NLS-2$
+    final String s = (name == null) ? "" : (name + " "); //$NON-NLS-1$ //$NON-NLS-2$
     return s + " [" + type + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -469,12 +468,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     @Override
     public TableCellRenderer getCellRenderer(int row, int column) {
-      TableColumn tableColumn = getColumnModel().getColumn(column);
+      final TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       if (renderer == null) {
         Class<?> c = getColumnClass(column);
         if (c.equals(Object.class)) {
-          Object o = getValueAt(row, column);
+          final Object o = getValueAt(row, column);
           if (o != null)
             c = getValueAt(row, column).getClass();
         }
@@ -485,12 +484,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
     @Override
     public TableCellEditor getCellEditor(int row, int column) {
-      TableColumn tableColumn = getColumnModel().getColumn(column);
+      final TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellEditor editor = tableColumn.getCellEditor();
       if (editor == null) {
         Class<?> c = getColumnClass(column);
         if (c.equals(Object.class)) {
-          Object o = getValueAt(row, column);
+          final Object o = getValueAt(row, column);
           if (o != null)
             c = getValueAt(row, column).getClass();
         }
@@ -549,7 +548,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       if (editorComponent != null && anEvent instanceof MouseEvent
         && ((MouseEvent)anEvent).getID() == MouseEvent.MOUSE_PRESSED) {
 
-        Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3);
+        final Component dispatchComponent = SwingUtilities.getDeepestComponentAt(editorComponent, 3, 3);
         ((CopyButton) dispatchComponent).setSelected(true);
       }
       return false;
@@ -649,7 +648,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
       case TRAN_COL:
         if (currentTranslation != null) {
-          String key = keyTarget.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
+          final String key = keyTarget.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
           return currentTranslation.translate(key);
         }
       }
@@ -695,12 +694,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
         boolean hasFocus, int row, int col) {
-      Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+      final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
           col);
 
-      String fullKey = target.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
-      String translation = currentTranslation == null ? "" : currentTranslation.translate(fullKey);
-      String originalValue = target.getAttributeValueString(keys[row]);
+      final String fullKey = target.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
+      final String translation = currentTranslation == null ? "" : currentTranslation.translate(fullKey);
+      final String originalValue = target.getAttributeValueString(keys[row]);
 
       if (originalValue == null || originalValue.length() == 0) {
         c.setForeground(NO_TRANSLATION_NEEDED_COLOR);
@@ -734,7 +733,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-      String key = keys[row];
+      final String key = keys[row];
       currentKey = keyTarget.getI18nData().getFullPrefix() +  key; //$NON-NLS-1$
       currentTranslation.setProperty(currentKey, keyTarget.getAttributeValueString(keys[row]));
       checkEnabled();
@@ -742,7 +741,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     public void checkEnabled() {
       if (keyTarget != null && keys != null && keys[row] != null) {
-        String t = currentTranslation == null ? "" : currentTranslation.translate(keyTarget.getI18nData().getFullPrefix() + keys[row]); //$NON-NLS-1$
+        final String t = currentTranslation == null ? "" : currentTranslation.translate(keyTarget.getI18nData().getFullPrefix() + keys[row]); //$NON-NLS-1$
         setEnabled(t == null || t.length() == 0);
       }
       else {
@@ -763,10 +762,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
         boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-      Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
+      final Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
           hasFocus);
 
-      Translatable t = ((MyTreeNode) value).getTarget();
+      final Translatable t = ((MyTreeNode) value).getTarget();
       if (t.getI18nData().hasUntranslatedAttributes(currentTranslation)) {
         c.setForeground(TRANSLATION_NEEDED_COLOR);
       }
@@ -793,6 +792,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       return component;
     }
 
+    @Override
     public String toString() {
       return getDisplayName(component);
     }

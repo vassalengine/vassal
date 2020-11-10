@@ -26,7 +26,11 @@ import java.util.zip.ZipOutputStream;
 
 import VASSAL.tools.io.IOUtils;
 
-public abstract class Compressor {
+public class Compressor {
+  private Compressor() {
+    // Helper class - not to be instantiated alone.
+  }
+
   public static byte[] compress(byte[] in) throws IOException {
     final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     final ZipOutputStream zipOut = new ZipOutputStream(byteOut);
@@ -39,7 +43,7 @@ public abstract class Compressor {
         zipOut.close();
       }
       // FIXME: review error message
-      catch (IOException e) {
+      catch (final IOException e) {
         e.printStackTrace();
       }
     }
@@ -58,7 +62,7 @@ public abstract class Compressor {
         zipIn.close();
       }
       // FIXME: review error message
-      catch (IOException e) {
+      catch (final IOException e) {
         e.printStackTrace();
       }
     }

@@ -23,8 +23,11 @@ import net.miginfocom.swing.MigLayout;
  * A Standardised MigLayout for use by individual Configurers
  */
 public class ConfigurerLayout extends MigLayout {
+  private static final long serialVersionUID = 1L;
+
   public static final String STANDARD_INSETS = "ins 0"; // NON-NLS
-  public static final String STANDARD_GAPY = "gapy 2"; // NON-NLS
+  public static final String STANDARD_GAPY = "gapy 4"; // NON-NLS
+  public static final String STANDARD_INSERTS_GAPY = STANDARD_INSETS + "," + STANDARD_GAPY; // NON-NLS
 
   public static final String DEFAULT_CFG_LAYOUT_CONSTRAINTS = STANDARD_INSETS + ",hidemode 3"; // NON-NLS
 
@@ -39,6 +42,11 @@ public class ConfigurerLayout extends MigLayout {
    */
   public ConfigurerLayout(String name, String noNameColConstraints, String nameColConstraints) {
     this(DEFAULT_CFG_LAYOUT_CONSTRAINTS, (name == null || name.isEmpty()) ? noNameColConstraints : nameColConstraints);
+  }
+
+  public ConfigurerLayout(String name, String noNameColConstraints, String nameColConstraints, String rowConstraints) {
+    this(name, noNameColConstraints, nameColConstraints);
+    setRowConstraints(rowConstraints);
   }
 
   public ConfigurerLayout(String defaultLayoutConstraints, String defaultColumnConstraints) {

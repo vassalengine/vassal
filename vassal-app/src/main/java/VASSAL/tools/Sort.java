@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Aug 31, 2002
- * Time: 10:20:59 AM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.tools;
 
 import java.util.Vector;
@@ -33,8 +25,8 @@ import java.util.Vector;
  */
 @Deprecated
 public class Sort {
-  private static void swap(Vector<Object> v, int i, int j) {
-    Object tmp = v.elementAt(i);
+  private static void swap(Vector<Object> v, int i, int j) { //NOPMD
+    final Object tmp = v.elementAt(i);
     v.setElementAt(v.elementAt(j), i);
     v.setElementAt(tmp, j);
   }
@@ -48,18 +40,16 @@ public class Sort {
    * @param right - the last index.
    */
   private static void quicksort(
-    Vector<Object> v, int left, int right, Comparator comp) {
-
-    int i, last;
+    Vector<Object> v, int left, int right, Comparator comp) { //NOPMD
 
     if (left >= right) { // do nothing if array size < 2
       return;
     }
     swap(v, left, (left + right) / 2);
-    last = left;
-    for (i = left + 1; i <= right; i++) {
-      Object o1 = v.elementAt(i);
-      Object o2 = v.elementAt(left);
+    int last = left;
+    for (int i = left + 1; i <= right; i++) {
+      final Object o1 = v.elementAt(i);
+      final Object o2 = v.elementAt(left);
       if (comp.compare(o1, o2) < 0) {
         swap(v, ++last, i);
       }
@@ -119,7 +109,7 @@ public class Sort {
   /*
    * Preform a sort using the specified comparator object.
    */
-  public static void quicksort(Vector<Object> v, Comparator comp) {
+  public static void quicksort(Vector<Object> v, Comparator comp) { //NOPMD
     quicksort(v, 0, v.size() - 1, comp);
   }
 
@@ -141,9 +131,9 @@ public class Sort {
   public static class Alpha implements Comparator {
     @Override
     public int compare(Object o1, Object o2) {
-      String s1 = (String) o1;
-      String s2 = (String) o2;
-      int len = Math.min(s1.length(), s2.length());
+      final String s1 = (String) o1;
+      final String s2 = (String) o2;
+      final int len = Math.min(s1.length(), s2.length());
       int result;
       for (int i = 0; i < len; ++i) {
         result = s1.charAt(i) - s2.charAt(i);

@@ -38,7 +38,6 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.tools.ReadErrorDialog;
@@ -55,13 +54,12 @@ public class TranslateVassalWindow extends TranslateWindow {
   public TranslateVassalWindow(Frame owner,
                                boolean modal,
                                Translatable target,
-                               HelpWindow helpWindow,
                                ConfigureTree tree) {
-    super(owner, modal, target, helpWindow, tree);
+    super(owner, modal, target, tree);
   }
 
   public TranslateVassalWindow(Frame owner) {
-    super(owner, false, new VassalTranslation(), null, null);
+    super(owner, false, new VassalTranslation(), null);
     currentTranslation = (Translation) target;
     keyTable.setEnabled(true);
     newTranslation();
@@ -80,7 +78,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   @Override
   protected Component buildMainPanel() {
-    JSplitPane pane = (JSplitPane) super.buildMainPanel();
+    final JSplitPane pane = (JSplitPane) super.buildMainPanel();
     return pane.getBottomComponent();
   }
 
@@ -155,7 +153,7 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   protected void newTranslation() {
     ((VassalTranslation) target).clearProperties();
-    ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
+    final ArrayList<String> keyList = new ArrayList<>(Resources.getVassalKeys());
     Collections.sort(keyList);
     keys = keyList.toArray(new String[0]);
     copyButtons = new CopyButton[keys.length];

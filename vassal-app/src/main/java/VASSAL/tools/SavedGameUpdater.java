@@ -42,8 +42,8 @@ public class SavedGameUpdater {
    * @return Returns a mapping of GamePiece type to the id of a PieceSlot in the module
    */
   public Properties getPieceSlotsMap() {
-    Properties p = new Properties();
-    ArrayList<Configurable> l = new ArrayList<>();
+    final Properties p = new Properties();
+    final ArrayList<Configurable> l = new ArrayList<>();
     findPieceSlots(l, p);
     return p;
   }
@@ -70,10 +70,10 @@ public class SavedGameUpdater {
       }
     }
 
-    GamePiece[] gp_array = gs.getAllPieces().toArray(new GamePiece[0]);
-    for (GamePiece p : gp_array) {
+    final GamePiece[] gp_array = gs.getAllPieces().toArray(new GamePiece[0]);
+    for (final GamePiece p : gp_array) {
       if (!(p instanceof Stack)) {
-        String slotId = pieceSlot.getProperty(p.getType());
+        final String slotId = pieceSlot.getProperty(p.getType());
         if (slotId != null) {
           Configurable[] path = null;
           try {
@@ -87,7 +87,7 @@ public class SavedGameUpdater {
                   GameModule.getGameModule().getChatter().show(Resources.getString("Editor.SavedGameUpdater.basic_only", p.getName()));
                 }
                 else {
-                  ReplaceTrait r = new ReplaceTrait(p, slot.getPiece());
+                  final ReplaceTrait r = new ReplaceTrait(p, slot.getPiece());
                   r.replacePiece();
                 }
               }
@@ -110,7 +110,7 @@ public class SavedGameUpdater {
   }
 
   protected void findPieceSlots(List<Configurable> l, Properties p) {
-    final Configurable last = l.size() == 0 ?
+    final Configurable last = l.isEmpty() ?
       GameModule.getGameModule() : l.get(l.size() - 1);
 
     if (last instanceof PieceSlot) {
@@ -126,7 +126,7 @@ public class SavedGameUpdater {
     }
     else {
       final Configurable[] children = last.getConfigureComponents();
-      for (Configurable child : children) {
+      for (final Configurable child : children) {
         l.add(child);
         findPieceSlots(l, p);
         l.remove(child);
@@ -135,7 +135,7 @@ public class SavedGameUpdater {
   }
 
   private static class ReplaceTrait extends Replace {
-    private GamePiece replacement;
+    private final GamePiece replacement;
 
     public ReplaceTrait(GamePiece original, GamePiece replacement) {
       super(Replace.ID + "Replace;R;dummy;;0;0;true", original); //NON-NLS
@@ -146,7 +146,7 @@ public class SavedGameUpdater {
 
     @Override
     public GamePiece createMarker() {
-      GamePiece marker = PieceCloner.getInstance().clonePiece(replacement);
+      final GamePiece marker = PieceCloner.getInstance().clonePiece(replacement);
       if (matchRotation) {
         matchTraits(getInner(), marker);
       }

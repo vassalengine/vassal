@@ -132,7 +132,7 @@ public class ExtensionMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile.
-      DefaultHandler handler;
+      final DefaultHandler handler;
 
       ZipEntry data = zip.getEntry(getZipEntryName());
       if (data == null) {
@@ -165,10 +165,10 @@ public class ExtensionMetaData extends AbstractMetaData {
         moduleData = buildFileModuleData;
       }
     }
-    catch (SAXEndException e) {
+    catch (final SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
-    catch (IOException | SAXException e) {
+    catch (final IOException | SAXException e) {
       logger.error("", e);
     }
   }

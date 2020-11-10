@@ -71,7 +71,7 @@ public class TilesToImage {
     final Pattern p  = Pattern.compile(base + "\\((\\d+),(\\d+)\\)@1:");
     int max_row = 0;
     int max_col = 0;
-    for (File f : bdir.listFiles(filter)) {
+    for (final File f : bdir.listFiles(filter)) {
       final Matcher m = p.matcher(f.getPath());
       if (m.lookingAt()) {
         final int c = Integer.parseInt(m.group(1));

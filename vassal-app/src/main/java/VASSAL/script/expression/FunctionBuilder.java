@@ -61,7 +61,7 @@ public class FunctionBuilder extends JDialog {
     this.function = function;
     setLayout(new MigLayout("fillx,ins 0")); //NON-NLS
 
-    JPanel p = new JPanel(new MigLayout("fillx", "[]rel[grow]")); //NON-NLS
+    final JPanel p = new JPanel(new MigLayout("fillx", "[]rel[grow]")); //NON-NLS
 
     p.add(new JLabel(desc), "span 2,align center,wrap,growx"); //NON-NLS
     for (int i = 0; i < parmDesc.length; i++) {
@@ -81,22 +81,22 @@ public class FunctionBuilder extends JDialog {
     if (hints != null && hints.length > 0) {
       final JPanel hintPanel = new JPanel(new MigLayout("ins 5")); //NON-NLS
       hintPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-      for (String hint : hints) {
+      for (final String hint : hints) {
         hintPanel.add(new JLabel(hint), "wrap"); //NON-NLS
       }
       p.add(hintPanel, "span 2,growx,wrap"); //NON-NLS
     }
 
-    JPanel buttonBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push")); //NON-NLS
-    JButton okButton = ButtonFactory.getOkButton();
+    final JPanel buttonBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push")); //NON-NLS
+    final JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
-    JButton cancelButton = ButtonFactory.getCancelButton();
+    final JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
-    JButton helpButton = ButtonFactory.getHelpButton();
+    final JButton helpButton = ButtonFactory.getHelpButton();
     helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.html").getContents().toString())); //NON-NLS
     buttonBox.add(helpButton);
 
@@ -142,18 +142,18 @@ public class FunctionBuilder extends JDialog {
   }
 
   private String getFunctionBody(boolean skipFirstArgument) {
-    StringBuilder result;
-    result = new StringBuilder(function + "(");
+    final StringBuilder result;
+    result = new StringBuilder(function).append('(');
     boolean first = true;
     for (int i = skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
-      BeanShellExpressionConfigurer fec = configs.get(i);
+      final BeanShellExpressionConfigurer fec = configs.get(i);
       if (!first) {
-        result.append(",");
+        result.append(',');
       }
       result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()) : fec.getValueString());
       first = false;
     }
-    result.append(")");
+    result.append(')');
     return result.toString();
   }
 

@@ -23,7 +23,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class IpWatch implements Runnable {
-  private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  private final PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   private String currentIp;
   private long wait = 1000;
 
@@ -43,7 +43,7 @@ public class IpWatch implements Runnable {
   @Override
   public void run() {
     while (true) {
-      String newIp = findIp();
+      final String newIp = findIp();
       propSupport.firePropertyChange("address", currentIp, newIp); //$NON-NLS-1$
       currentIp = newIp;
 
@@ -61,12 +61,12 @@ public class IpWatch implements Runnable {
 
   private String findIp() {
     try {
-      InetAddress[] a = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
+      final InetAddress[] a = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
       final StringBuilder buff = new StringBuilder();
       for (int i = 0; i < a.length; ++i) {
         buff.append(a[i].getHostAddress());
         if (i < a.length - 1) {
-          buff.append(","); //$NON-NLS-1$
+          buff.append(',');
         }
       }
       return buff.toString();
@@ -78,7 +78,7 @@ public class IpWatch implements Runnable {
   }
 
   public static void main(String[] args) {
-    IpWatch w = new IpWatch();
+    final IpWatch w = new IpWatch();
     w.addPropertyChangeListener(evt -> {
       System.out.println("Address = " + evt.getNewValue()); //$NON-NLS-1$
     });

@@ -67,17 +67,23 @@ public class ComponentI18nData {
     init(c, prefix, c.getAttributeNames(), c.getAttributeTypes(), c.getAttributeDescriptions());
   }
 
-  public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) {
+  @Deprecated(since = "2020-10-26", forRemoval = true)
+  public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) { //NOPMD
     init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
   }
-  /**
-   * Build from an AutoConfigurable
-   *
-   * @param c
-   *          AutoConfigurable component
-   * @param prefix
-   *          I18n prefix
-   */
+
+  public ComponentI18nData(AbstractConfigurable c, String prefix, List<String> names, List<Class<?>> types, List<String> descriptions) {
+    init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
+  }
+
+    /**
+     * Build from an AutoConfigurable
+     *
+     * @param c
+     *          AutoConfigurable component
+     * @param prefix
+     *          I18n prefix
+     */
   public ComponentI18nData(AutoConfigurable c, String prefix) {
     this.prefix = prefix;
     parent = null;
@@ -87,7 +93,7 @@ public class ComponentI18nData {
 
   protected void init(Configurable c, String pfx, String[] names,
                       Class<?>[] types, String[] descriptions) {
-    boolean[] translatable = new boolean[types.length];
+    final boolean[] translatable = new boolean[types.length];
     for (int i = 0; i < types.length; i++) {
       translatable[i] = types[i] != null &&
         (types[i].equals(String.class) ||
@@ -101,7 +107,7 @@ public class ComponentI18nData {
     myComponent = c;
     children.addAll(Arrays.asList(myComponent.getConfigureComponents()));
     for (int i = 0; i < translatable.length; i++) {
-      Property p = new Property(names[i], descriptions[i]);
+      final Property p = new Property(names[i], descriptions[i]);
       allProperties.put(names[i], p);
       if (translatable[i]) {
         translatableProperties.put(names[i], p);
@@ -149,9 +155,9 @@ public class ComponentI18nData {
     parent = null;
     for (GamePiece p = piece; p != null;) {
       if (p instanceof TranslatablePiece) {
-        PieceI18nData pieceData = ((TranslatablePiece) p).getI18nData();
-        for (PieceI18nData.Property prop : pieceData.getProperties()) {
-          Property property = new Property(prop.getName(), prop.getDescription());
+        final PieceI18nData pieceData = ((TranslatablePiece) p).getI18nData();
+        for (final PieceI18nData.Property prop : pieceData.getProperties()) {
+          final Property property = new Property(prop.getName(), prop.getDescription());
           translatableProperties.put(prop.getName(), property);
           allProperties.put(prop.getName(), property);
         }
@@ -184,7 +190,7 @@ public class ComponentI18nData {
   /**
    * Return a unique key prefix including a full path of parent prefixes. All Translatable Pieces share a common prefix.
    *
-   * @return
+   * @return Full Prefix
    */
   public String getFullPrefix() {
     if (TranslatablePiece.PREFIX.equals(prefix)) {
@@ -236,10 +242,10 @@ public class ComponentI18nData {
    * @return component translatable status
    */
   public boolean isTranslatable() {
-    if (translatableProperties.size() > 0) {
+    if (!translatableProperties.isEmpty()) {
       return true;
     }
-    for (Translatable child : children) {
+    for (final Translatable child : children) {
       if (child.getI18nData().isTranslatable()) {
         return true;
       }
@@ -281,7 +287,7 @@ public class ComponentI18nData {
    *          Translated value
    */
   public void applyTranslation(String attr, String value) {
-    Property p = translatableProperties.get(attr);
+    final Property p = translatableProperties.get(attr);
     if (attr != null) {
       p.setUntranslatedValue(myComponent.getAttributeValueString(attr));
       myComponent.setAttribute(attr, value);
@@ -291,7 +297,7 @@ public class ComponentI18nData {
   /**
    * Return description for named Attribute
    *
-   * @param attr
+   * @param attr Attribute
    * @return description
    */
   public String getAttributeDescription(String attr) {
@@ -306,8 +312,8 @@ public class ComponentI18nData {
    * @return untranslated value
    */
   public String getLocalUntranslatedValue(String attr) {
-    String val;
-    Property p = allProperties.get(attr);
+    final String val;
+    final Property p = allProperties.get(attr);
     if (p == null || p.getUntranslatedValue() == null) {
       val = myComponent.getAttributeValueString(attr);
     }
@@ -333,7 +339,7 @@ public class ComponentI18nData {
    * Return a translation of an attribute
    */
   public String getTranslatedValue(String attr, Translation translation) {
-    String fullKey = getFullPrefix() + attr;
+    final String fullKey = getFullPrefix() + attr;
     return translation.translate(fullKey);
   }
 
@@ -361,10 +367,10 @@ public class ComponentI18nData {
     /*
      * Check attributes of this component first
      */
-    for (Property p : translatableProperties.values()) {
-      String currentValue = myComponent.getAttributeValueString(p.getName());
+    for (final Property p : translatableProperties.values()) {
+      final String currentValue = myComponent.getAttributeValueString(p.getName());
       if (currentValue != null && currentValue.length() > 0) {
-        String translation = getTranslatedValue(p.getName(), t);
+        final String translation = getTranslatedValue(p.getName(), t);
         if (translation == null || translation.length() == 0) {
           return true;
         }
@@ -373,7 +379,7 @@ public class ComponentI18nData {
     /*
      * Check Children
      */
-    for (Translatable child : children) {
+    for (final Translatable child : children) {
       if (child.getI18nData().hasUntranslatedAttributes(t)) {
         return true;
       }
@@ -385,8 +391,8 @@ public class ComponentI18nData {
   }
   /** An attribute of a Configurable component that can be translated into another language */
   public static class Property {
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     private String untranslatedValue;
 
     public Property(String name, String description) {

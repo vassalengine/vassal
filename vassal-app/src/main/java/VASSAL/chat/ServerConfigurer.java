@@ -53,7 +53,7 @@ public class ServerConfigurer extends Configurer {
   private static final String OFFICIAL_BUTTON = Resources.getString("Server.official"); //$NON-NLS-1$
   private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
   protected JComponent controls;
-  private HybridClient client;
+  private final HybridClient client;
   private JRadioButton officialButton;
   private JRadioButton p2pButton;
   private JLabel header;
@@ -75,7 +75,7 @@ public class ServerConfigurer extends Configurer {
       controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
       controls.add(header, "wrap"); //$NON-NLS-1$
-      ButtonGroup group = new ButtonGroup();
+      final ButtonGroup group = new ButtonGroup();
 
       p2pButton = new JRadioButton(P2P_BUTTON);
       p2pButton.addItemListener(e -> {
@@ -109,13 +109,13 @@ public class ServerConfigurer extends Configurer {
   }
 
   protected Properties buildPeerProperties() {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     p.setProperty(ChatServerFactory.TYPE_KEY, P2PClientFactory.P2P_TYPE);
     return p;
   }
 
   protected Properties buildLegacyProperties() {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     p.setProperty(ChatServerFactory.TYPE_KEY, OfficialNodeClientFactory.OFFICIAL_TYPE);
     return p;
   }
@@ -123,16 +123,16 @@ public class ServerConfigurer extends Configurer {
   @Override
   public String getValueString() {
     String s = ""; //$NON-NLS-1$
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
-      Properties p = (Properties) getValue();
+      final Properties p = (Properties) getValue();
       if (p != null) {
         p.store(out, null);
       }
       s = new String(out.toByteArray(), ENCODING);
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
     return s;
@@ -142,8 +142,8 @@ public class ServerConfigurer extends Configurer {
   public void setValue(Object o) {
     super.setValue(o);
     if (!noUpdate && o instanceof Properties && controls != null) {
-      Properties p = (Properties) o;
-      String type = p.getProperty(ChatServerFactory.TYPE_KEY, OfficialNodeClientFactory.OFFICIAL_TYPE);
+      final Properties p = (Properties) o;
+      final String type = p.getProperty(ChatServerFactory.TYPE_KEY, OfficialNodeClientFactory.OFFICIAL_TYPE);
       if (OfficialNodeClientFactory.OFFICIAL_TYPE.equals(type)) {
         officialButton.setSelected(true);
       }
@@ -158,19 +158,19 @@ public class ServerConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     try {
       p.load(new ByteArrayInputStream(s.getBytes(ENCODING)));
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
     setValue(p);
   }
 
   private Properties getServerInfo() {
-    Properties p = (Properties) getValue();
+    final Properties p = (Properties) getValue();
     return p == null ? new Properties() : new Properties(p);
   }
 
@@ -178,9 +178,9 @@ public class ServerConfigurer extends Configurer {
     ChatServerFactory.register(OfficialNodeClientFactory.OFFICIAL_TYPE, new OfficialNodeClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     new MacOSXMenuManager();
-    HybridClient c = new HybridClient();
-    ServerConfigurer config = new ServerConfigurer("server", "server", c); //$NON-NLS-1$ //$NON-NLS-2$
-    JFrame f = new JFrame();
+    final HybridClient c = new HybridClient();
+    final ServerConfigurer config = new ServerConfigurer("server", "server", c); //$NON-NLS-1$ //$NON-NLS-2$
+    final JFrame f = new JFrame();
     f.getContentPane().add(config.getControls());
     f.pack();
     f.setVisible(true);

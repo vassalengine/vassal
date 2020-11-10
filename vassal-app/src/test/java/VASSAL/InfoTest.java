@@ -19,7 +19,7 @@ public class InfoTest {
 
   @Test
   public void testHasOldFormatYes() {
-    assertTrue(Info.hasOldFormat("3.2.17"));
+    assertTrue(Info.hasOldFormat("0.0.1"));
   }
 
   @Test

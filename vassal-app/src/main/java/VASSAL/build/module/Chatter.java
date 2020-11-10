@@ -74,10 +74,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String MY_CHAT_COLOR    = "HTMLChatColor";          //$NON-NLS-1$ // Different tags to "restart" w/ new default scheme
   protected static final String OTHER_CHAT_COLOR = "HTMLotherChatColor";     //$NON-NLS-1$
   protected static final String GAME_MSG1_COLOR  = "HTMLgameMessage1Color";  //$NON-NLS-1$
-  protected static final String GAME_MSG2_COLOR  = "HTMLgameMessage2Color";  //$NON-NLS-1$ 
-  protected static final String GAME_MSG3_COLOR  = "HTMLgameMessage3Color";  //$NON-NLS-1$ 
-  protected static final String GAME_MSG4_COLOR  = "HTMLgameMessage4Color";  //$NON-NLS-1$ 
-  protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$ 
+  protected static final String GAME_MSG2_COLOR  = "HTMLgameMessage2Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG3_COLOR  = "HTMLgameMessage3Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG4_COLOR  = "HTMLgameMessage4Color";  //$NON-NLS-1$
+  protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$
   protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
 
   @Deprecated(since = "2020-08-06", forRemoval = true)
@@ -95,9 +95,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     return Resources.getString("Chat.anonymous"); //$NON-NLS-1$
   }
 
-  public Chatter() {    
+  public Chatter() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    
+
     conversation = new JTextArea(); // For backward override compatibility only.
 
     //BR// Conversation is now a JTextPane w/ HTMLEditorKit to process HTML, which gives us HTML support "for free".
@@ -115,7 +115,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       for (int i = 0; i < 15; ++i) {
         kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null); //NON-NLS
       }
-    } 
+    }
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
     }
@@ -135,9 +135,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       input.setText(""); //$NON-NLS-1$
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
-    
-    FontMetrics fm = getFontMetrics(myFont);
-    int fontHeight = fm.getHeight();
+
+    final FontMetrics fm = getFontMetrics(myFont);
+    final int fontHeight = fm.getHeight();
 
     conversationPane.setPreferredSize(new Dimension(input.getMaximumSize().width, fontHeight * 10));
 
@@ -145,15 +145,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     scroll.getVerticalScrollBar().setUnitIncrement(input.getPreferredSize().height); //Scroll this faster
     add(scroll);
     add(input);
-    
+
     setPreferredSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height + conversationPane.getPreferredSize().height));
   }
-  
-  
+
+
   /**
-   * Because our Chatters make themselves visible in their constructor, providing a way for an overriding class to 
+   * Because our Chatters make themselves visible in their constructor, providing a way for an overriding class to
    * "turn this chatter off" is friendlier than What Went Before.
-   * 
+   *
    * @param vis - whether this chatter should be visible
    */
   protected void setChatterVisible(boolean vis) {
@@ -161,29 +161,29 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     input.setVisible(vis);
     scroll.setVisible(vis);
   }
-  
+
 
   protected String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId();
     return String.format("&lt;%s&gt; - %s", id.isEmpty() ? "(" + getAnonymousUserName() + ")" : id, text); //HTML-friendly angle brackets //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
-  
+
   public JTextField getInputField() {
     return input;
   }
 
   /**
    * Styles a chat message based on the player who sent it. Presently just distinguishes a chat message "from me" from a chat message "from anyone else".
-   * 
+   *
    * To make the player colors easy to override in a custom class
    * (my modules have logic to assign individual player colors -- beyond the scope of the present effort but a perhaps a fun future addition)
    * @param s - chat message from a player
    * @return - an entry in our CSS style sheet to use for this chat message
    */
-  protected String getChatStyle(String s) {   
+  protected String getChatStyle(String s) {
     return s.startsWith(formatChat("").trim()) ? "mychat" : "other"; //NON-NLS
   }
-    
+
   /**
    * A hook for inserting a console class that accepts commands
    * @param s            - chat message
@@ -195,18 +195,18 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public boolean consoleHook(String s, String style, boolean html_allowed) {
     return false;
   }
-  
+
 
   /**
    * Display a message in the text area. Ensures we execute in the EDT
    */
-  public void show(String s) {  
+  public void show(String s) {
     if (SwingUtilities.isEventDispatchThread()) {
       doShow(s);
     }
     else {
       SwingUtilities.invokeLater(() -> doShow(s));
-    }      
+    }
   }
 
 
@@ -214,8 +214,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * Display a message in the text area - use show() from outside the class - MUST run on EventDispatchThread
    */
   private void doShow(String s) {
-    String style;
-    boolean html_allowed;
+    final String style;
+    final boolean html_allowed;
 
     // Choose an appropriate style to display this message in
     s = s.trim();
@@ -234,7 +234,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         style = getChatStyle(s);
         html_allowed = false;
       }
-    } 
+    }
     else {
       style = "msg";  //NON-NLS
       html_allowed = false;
@@ -242,15 +242,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     // Disable unwanted HTML tags in contexts where it shouldn't be allowed:
     // (1) Anything received from chat channel, for security reasons
-    // (2) Legacy module "report" text when not explicitly opted in w/ first character or preference setting 
+    // (2) Legacy module "report" text when not explicitly opted in w/ first character or preference setting
     if (!html_allowed) {
       s = s.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted tag from functioning
            .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
     }
 
     // Now we have to fix up any legacy angle brackets around the word <observer>
-    String keystring = Resources.getString("PlayerRoster.observer");
-    String replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
+    final String keystring = Resources.getString("PlayerRoster.observer");
+    final String replace = keystring.replace("<", "&lt;").replace(">", "&gt;"); //NON-NLS
     if (!replace.equals(keystring)) {
       s = s.replace(keystring, replace);
     }
@@ -260,7 +260,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     // messages.
     try {
       kit.insertHTML(doc, doc.getLength(), "\n<div class=" + style + ">" + s + "</div>", 0, 0, null); //NON-NLS
-    } 
+    }
     catch (BadLocationException | IOException ble) {
       ErrorDialog.bug(ble);
     }
@@ -284,9 +284,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
                   " {color:" +                                                               //NON-NLS
                   String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue()) +    //NON-NLS
                   "; font-family:" +                                                         //NON-NLS
-                  f.getFamily() + 
+                  f.getFamily() +
                   "; font-size:" +                                                           //NON-NLS
-                  (size > 0 ? size : f.getSize()) + 
+                  (size > 0 ? size : f.getSize()) +
                   "; " +                                                                     //NON-NLS
                   ((!font_weight.isBlank()) ? "font-weight:" + font_weight + "; " : "") +    //NON-NLS
                   "}");                                                                      //NON-NLS
@@ -307,7 +307,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       if (myFont == null) {
         f = new Font("SansSerif", Font.PLAIN, 12); //NON-NLS
         myFont = f;
-      } 
+      }
       else {
         f = myFont;
       }
@@ -321,7 +321,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     addStyle(".other ", f, otherChat, "bold", 0); //NON-NLS
     addStyle(".sys",    f, systemMsg, "",     0); //NON-NLS
 
-    // A fun extension would be letting the module designer provide extra class styles. 
+    // A fun extension would be letting the module designer provide extra class styles.
   }
 
   /**
@@ -335,7 +335,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         input.setText("XXX"); //$NON-NLS-1$
         input.setFont(f);
         input.setText(""); //$NON-NLS-1$
-      } 
+      }
       else {
         input.setFont(f);
       }
@@ -361,7 +361,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    */
   @Override
   public void addTo(Buildable b) {
-    GameModule mod = (GameModule) b;
+    final GameModule mod = (GameModule) b;
     mod.setChatter(this);
     mod.addCommandEncoder(this);
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
@@ -395,7 +395,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     gameMsg = (Color) globalPrefs.getValue(GAME_MSG1_COLOR);
 
-    // game message color #2 (messages starting with "!") 
+    // game message color #2 (messages starting with "!")
     final ColorConfigurer gameMsg2Color = new ColorConfigurer(GAME_MSG2_COLOR,
                                                               Resources.getString("Chatter.game_messages_preference_2"), new Color(0, 153, 51));
 
@@ -475,7 +475,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), myChatColor);
 
-    myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);    
+    myChat = (Color) globalPrefs.getValue(MY_CHAT_COLOR);
 
     final ColorConfigurer otherChatColor = new ColorConfigurer(
       OTHER_CHAT_COLOR,
@@ -490,7 +490,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     globalPrefs.addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
     otherChat = (Color) globalPrefs.getValue(OTHER_CHAT_COLOR);
-    
+
     makeStyleSheet(myFont);
   }
 
@@ -513,26 +513,26 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
     return DisplayText.PREFIX + ((DisplayText) c).getMessage();
   }
-  
-  
+
+
   /**
    * Displays the message, Also logs and sends to the server a {@link Command}
-   * that displays this message. 
+   * that displays this message.
    */
-  public void send(String msg) {    
+  public void send(String msg) {
     if (msg != null && !msg.isEmpty()) {
       show(msg);
       GameModule.getGameModule().sendAndLog(new DisplayText(this, msg));
     }
   }
-  
-  
-  
+
+
+
   /**
-   * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.  
+   * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.
    */
   public static void warning(String msg) {
-    Chatter chatter = GameModule.getGameModule().getChatter();
+    final Chatter chatter = GameModule.getGameModule().getChatter();
     chatter.send(msg);
   }
 
@@ -545,7 +545,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     if ((e.getKeyCode() == 0 || e.getKeyCode() == KeyEvent.CHAR_UNDEFINED)
       && !Character.isISOControl(e.getKeyChar())) {
-      if (!((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) == 0))  {
+      if ((e.getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0)  {
         return;  // This catches occasional Alt+Key events that should not be forwarded to Chatter
       }
       input.setText(input.getText() + e.getKeyChar());
@@ -559,7 +559,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         break;
       case KeyEvent.VK_BACK_SPACE:
       case KeyEvent.VK_DELETE:
-        String s = input.getText();
+        final String s = input.getText();
         if (!s.isEmpty())
           input.setText(s.substring(0, s.length() - 1));
         break;
@@ -584,7 +584,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       if (msg.startsWith("<>")) { //NON-NLS
         msg = "&lt;(" + Chatter.getAnonymousUserName() + ")&gt;" + s.substring(2); // HTML-friendly //NON-NLS
         // angle brackets
-      } 
+      }
       else {
         msg = s;
       }
@@ -611,8 +611,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   public static void main(String[] args) {
-    Chatter chat = new Chatter();
-    JFrame f = new JFrame();
+    final Chatter chat = new Chatter();
+    final JFrame f = new JFrame();
     f.add(chat);
     f.pack();
     f.setVisible(true);

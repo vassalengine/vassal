@@ -76,7 +76,7 @@ public class KeySpecifier extends JPanel implements KeyListener {
   }
 
   public String getKey() {
-    String s = tf.getText().trim();
+    final String s = tf.getText().trim();
     tf.setText(s.toUpperCase());
     return s.toUpperCase();
   }

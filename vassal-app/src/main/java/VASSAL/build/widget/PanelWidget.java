@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -44,7 +43,7 @@ import VASSAL.tools.ErrorDialog;
  */
 public class PanelWidget extends Widget {
   private JPanel panel;
-  private List<Widget> widgets = new ArrayList<>();
+  private final List<Widget> widgets = new ArrayList<>();
   private int nColumns = 3;
   private boolean vertical = false;
   private boolean fixed = false;
@@ -54,16 +53,16 @@ public class PanelWidget extends Widget {
   public PanelWidget() {
     scale = 1.0;
   }
-  
+
   @Override
   public boolean hasScale() {
     return true;
   }
-  
+
   @Override
   public double getScale() {
     return scale;
-  }  
+  }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PanelWidget.component_type");
@@ -75,7 +74,7 @@ public class PanelWidget extends Widget {
       rebuild();
       panel = new JPanel();
       panel.setLayout(getLayout(panel));
-      for (Widget w : widgets) {
+      for (final Widget w : widgets) {
         final Component c = w.getComponent();
         if (c instanceof JComponent) {
           ((JComponent) c).setAlignmentX(0.0F);
@@ -181,12 +180,10 @@ public class PanelWidget extends Widget {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLS.equals(name)) {
-      VisibilityCondition isFixed = () -> fixed;
-      return isFixed;
+      return () -> fixed;
     }
     else if (VERTICAL.equals(name)) {
-      VisibilityCondition notFixed = () -> !fixed;
-      return notFixed;
+      return () -> !fixed;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -232,10 +229,10 @@ public class PanelWidget extends Widget {
       scale = (Double) value;
       if (scale < 0.01) { //BR// Just gonna go with some sanity.
         scale = 0.01;
-      } 
+      }
       else if (scale >= 4) {
-        scale = 4.0; 
-      } 
+        scale = 4.0;
+      }
     }
 
     if (panel != null) {

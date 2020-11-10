@@ -46,9 +46,9 @@ public class SendSoundAction extends AbstractAction {
   private static Player lastPlayer;
   private static long lastSound = System.currentTimeMillis();
 
-  private ChatServerConnection client;
-  private Player target;
-  private String soundKey;
+  private final ChatServerConnection client;
+  private final Player target;
+  private final String soundKey;
 
   public SendSoundAction(String name, ChatServerConnection client, String soundKey, Player target) {
     super(name);
@@ -58,7 +58,7 @@ public class SendSoundAction extends AbstractAction {
 
     // Find which room our target player is in
     Room targetRoom = null;
-    for (Room room : client.getAvailableRooms()) {
+    for (final Room room : client.getAvailableRooms()) {
       if (room.getPlayerList().contains(target)) {
         targetRoom = room;
       }

@@ -65,6 +65,8 @@ public class ModuleEditorWindow extends EditorWindow {
     updateSavedGame.setEnabled(true);
 
     pack();
+
+    tree.requestFocus(); //BR// Focus starts on the root node, not on the little icons on the toolbar
   }
 
   @Override
@@ -85,7 +87,7 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   protected void save() {
-    ModuleEditorWindow.this.saver(() -> {
+    saver(() -> {
       GameModule.getGameModule().save();
       setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
@@ -93,7 +95,7 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   protected void saveAs() {
-    ModuleEditorWindow.this.saver(() -> {
+    saver(() -> {
       GameModule.getGameModule().saveAs();
       setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });

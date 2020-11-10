@@ -42,19 +42,20 @@ public class PrivMsgCommand extends Command {
 
   @Override
   public void executeCommand() {
-    PrivateChatter chat = mgr.getChatterFor(p);
+    final PrivateChatter chat = mgr.getChatterFor(p);
     if (chat == null) {
       return;
     }
 
-    Window f = SwingUtilities.getWindowAncestor(chat);
+    final Window f = SwingUtilities.getWindowAncestor(chat);
     if (!f.isVisible()) {
       f.setVisible(true);
-      Component c = KeyboardFocusManager.getCurrentKeyboardFocusManager()
+      final Component c = KeyboardFocusManager.getCurrentKeyboardFocusManager()
                                         .getFocusOwner();
       if (c == null || !SwingUtilities.isDescendingFrom(c, f)) {
         java.awt.Toolkit.getDefaultToolkit().beep();
-        for (int i = 0, j = chat.getComponentCount(); i < j; ++i) {
+        final int j = chat.getComponentCount();
+        for (int i = 0; i < j; ++i) {
           if (chat.getComponent(i) instanceof JTextField) {
             chat.getComponent(i).requestFocus();
             break;

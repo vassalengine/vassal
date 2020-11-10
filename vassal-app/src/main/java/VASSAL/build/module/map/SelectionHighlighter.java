@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.util.Collection;
 import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
@@ -261,5 +262,10 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   @Override
   public void addTo(Buildable parent) {
     ((SelectionHighlighters) parent).addHighlighter(this);
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 }

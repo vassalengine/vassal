@@ -168,22 +168,22 @@ public abstract class Item extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (LOCATION.equals(key)) {
-      return location + ""; //$NON-NLS-1$
+      return location;
     }
     else if (X_OFFSET.equals(key)) {
-      return xoffset + ""; //$NON-NLS-1$
+      return Integer.toString(xoffset);
     }
     else if (Y_OFFSET.equals(key)) {
-      return yoffset + ""; //$NON-NLS-1$
+      return Integer.toString(yoffset);
     }
     else if (ADVANCED.equals(key)) {
-      return advanced + ""; //$NON-NLS-1$
+      return Boolean.toString(advanced);
     }
     else if (ROTATION.equals(key)) {
-      return rotation + ""; //$NON-NLS-1$
+      return Integer.toString(rotation);
     }
     else if (ANTIALIAS.equals(key)) {
-      return antialias + ""; //$NON-NLS-1$
+      return Boolean.toString(antialias);
     }
     else
       return null;
@@ -262,11 +262,11 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public static Item decode(GamePieceLayout layout, String s) {
-    SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, '|');
-    String t1 = sd1.nextToken(""); //$NON-NLS-1$
-    String t2 = sd1.nextToken(""); //$NON-NLS-1$
+    final SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, '|');
+    final String t1 = sd1.nextToken(""); //$NON-NLS-1$
+    final String t2 = sd1.nextToken(""); //$NON-NLS-1$
 
-    Item item;
+    final Item item;
 
     if (t1.startsWith(SymbolItem.TYPE)) {
       item = SymbolItem.decode(layout, t1);
@@ -286,7 +286,7 @@ public abstract class Item extends AbstractConfigurable {
     else
       return null;
 
-    SequenceEncoder.Decoder sd2 = new SequenceEncoder.Decoder(t2, ';');
+    final SequenceEncoder.Decoder sd2 = new SequenceEncoder.Decoder(t2, ';');
     item.setConfigureName(sd2.nextToken());
     item.location = sd2.nextToken();
     item.xoffset = sd2.nextInt(0);
@@ -298,7 +298,7 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getConfigureName());
     se.append(location);
     se.append(xoffset);

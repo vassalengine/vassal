@@ -75,7 +75,7 @@ public class SaveMetaData extends AbstractMetaData {
       final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, GameModule.getGameModule().getPlayerWindow()), true);
       d.setTitle(Resources.getString("BasicLogger.log_file_comments"));
 
-      JLabel desc = new JLabel("<html><body><p style='width: 400px;'>" + Resources.getString("BasicLogger.enter_comments") + "</p></body></html>");  //NON-NLS
+      final JLabel desc = new JLabel("<html><body><p style='width: 400px;'>" + Resources.getString("BasicLogger.enter_comments") + "</p></body></html>");  //NON-NLS
 
       final JLabel commentLabel = new JLabel(Resources.getString("BasicLogger.log_file_comments"));
       final JTextField commentField = new JTextField("", 32);
@@ -88,7 +88,7 @@ public class SaveMetaData extends AbstractMetaData {
         if (stopBox.isSelected()) {
           GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
         }
-        String comments = commentField.getText();
+        final String comments = commentField.getText();
         setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
         d.dispose();
       });
@@ -120,8 +120,8 @@ public class SaveMetaData extends AbstractMetaData {
       d.getRootPane().setDefaultButton(okay); // Enter key activates search
 
       // Esc Key cancels
-      KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-      int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
+      final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+      final int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
       d.getRootPane().registerKeyboardAction(ee -> {
         if (stopBox.isSelected()) {
           GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
@@ -220,7 +220,7 @@ public class SaveMetaData extends AbstractMetaData {
       // read the matching Module data
       moduleData = new ModuleMetaData(zip);
     }
-    catch (IOException | SAXException e) {
+    catch (final IOException | SAXException e) {
       logger.error("", e);
     }
   }

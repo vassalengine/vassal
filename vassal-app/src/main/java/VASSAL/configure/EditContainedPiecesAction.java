@@ -31,7 +31,7 @@ import VASSAL.i18n.Resources;
 public class EditContainedPiecesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Configurable target;
+  private final Configurable target;
 
   public EditContainedPiecesAction(Configurable target) {
     super(Resources.getString("Editor.EditContainedPiecesAction.what_it_does"));
@@ -41,7 +41,7 @@ public class EditContainedPiecesAction extends AbstractAction {
   @Override
   public void actionPerformed(ActionEvent evt) {
     final MassPieceDefiner mass = new MassPieceDefiner(target);
-    Configurer c = new Configurer("", "") {
+    final Configurer c = new Configurer("", "") {
       @Override
       public void setValue(String s) {
       }

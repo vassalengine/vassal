@@ -75,6 +75,12 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/mapgrid/HexGridNumbering</className>
+        <differenceType>7002</differenceType>
+        <method>void main(java.lang.String[])</method>
+        <justification>static test function, nothing should call it</justification>
+   </difference>
+   <difference>
         <className>VASSAL/build/module/metadata/AbstractMetaData</className>
         <differenceType>6006</differenceType>
         <field>parser</field>
@@ -454,6 +460,18 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6011</differenceType>
+        <field>DEFAULT_INITIAL_HEAP</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6011</differenceType>
+        <field>FAILSAFE_INITIAL_HEAP</field>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+    <difference>
         <className>VASSAL/preferences/PositionOption</className>
         <differenceType>6006</differenceType>
         <field>key</field>
@@ -470,6 +488,11 @@
         <differenceType>6006</differenceType>
         <field>strokes</field>
         <justification>should have been final in the first place</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ResourceErrorDialog</className>
+        <differenceType>8001</differenceType>
+        <justification>not used; private ctor, impossible to extend</justification>
     </difference>
     <difference>
         <className>VASSAL/tools/image/ImageIOImageLoader</className>
@@ -593,6 +616,12 @@
         <justification>Protected method can be less visible as there shouldn't be any subclasses</justification>
     </difference>
     <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>Changing protected fields to private is irrelevant in a class which is already final</justification>
+    </difference>
+    <difference>
         <className>VASSAL/configure/NamedHotKeyConfigurer</className>
         <differenceType>4001</differenceType>
         <method>java.awt.event.KeyListener</method>
@@ -662,16 +691,16 @@
         <field>typeConfig</field>
         <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
         <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
-        <justification>Incorrect class was being used in first place</justification>
+    <justification>Incorrect class was being used in first place</justification>
     </difference>
 
     <difference>
-        <className>VASSAL/build/module/map/MassKeyCommand$DeckPolicyConfig</className>
-        <differenceType>6004</differenceType>
-        <field>typeConfig</field>
-        <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
+      <className>VASSAL/build/module/map/MassKeyCommand$DeckPolicyConfig</className>
+      <differenceType>6004</differenceType>
+      <field>typeConfig</field>
+      <from>VASSAL.build.module.gamepieceimage.StringEnumConfigurer</from>
         <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
-        <justification>Incorrect class was being used in first place</justification>
+      <justification>Needed for localization</justification>
     </difference>
 
     <difference>
@@ -762,6 +791,264 @@
         <from>javax.swing.JTextField</from>
         <to>VASSAL.configure.StringConfigurer</to>
         <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/icon/IconFactory</className>
+        <differenceType>7009</differenceType>
+        <method>void findLocalSizedIcons(int)</method>
+        <justification>Protected method can be less visible as it's in a final class</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/PlaceMarker$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>placementConfig</field>
+        <from>javax.swing.JComboBox</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/RestrictCommands$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>actionOption</field>
+        <from>javax.swing.JComboBox</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/RestrictCommands$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>box</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/chat/peer2peer/RoomTracker</className>
+        <differenceType>7002</differenceType>
+        <method>void finalize(VASSAL.chat.Room)</method>
+        <justification>no longer needed; no one should have extended this class</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>advancedControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>boardControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SendToLocation$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>mapControls</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetGlobalProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>controls</field>
+        <from>javax.swing.Box</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetGlobalProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>levelConfig</field>
+        <from>VASSAL.configure.StringEnumConfigurer</from>
+        <to>VASSAL.configure.TranslatingStringEnumConfigurer</to>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/SetGlobalProperty$Ed</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>Required for trait config cleanup-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6006</differenceType>
+        <field>gpIdSupport</field>
+        <justification>should have been final in the first place</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader</className>
+        <differenceType>6006</differenceType>
+        <field>*</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/ExtensionsLoader</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/imports/adc2/*</className>
+        <differenceType>6002</differenceType>
+        <field>*</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/imports/adc2/*</className>
+        <differenceType>6004</differenceType>
+        <field>*</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/imports/adc2/*</className>
+        <differenceType>6006</differenceType>
+        <field>**</field>
+        <justification>Nothing will have subclassed this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/io/CompositeInputStream</className>
+        <differenceType>6004</differenceType>
+        <field>queue</field>
+        <from>**</from>
+        <to>**</to>
+        <justification>Hopefully this is okay?</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/i18n/TranslateWindow</className>
+        <differenceType>7004</differenceType>
+        <method>*</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/i18n/TranslateVassalWindow</className>
+        <differenceType>7004</differenceType>
+        <method>*</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+  
+    <difference> 
+        <className>VASSAL/build/Builder</className>
+        <differenceType>7009</differenceType>
+        <method>Builder()</method>
+        <justification>Just a utility class - not instantiated independently</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/chat/Compressor</className>
+        <differenceType>7009</differenceType>
+        <method>Compressor()</method>
+        <justification>Just a utility class - not instantiated independently</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/StringEnumConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>static test function, nothing should call it</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/FontConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>p</field>
+        <from>javax.swing.JPanel</from>
+        <to>VASSAL.counters.TraitConfigPanel</to>
+        <justification>Required for trait config-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/i18n/LocaleConfigurer</className>
+        <differenceType>6004</differenceType>
+        <field>panel</field>
+        <from>javax.swing.Box</from>
+        <to>javax.swing.JPanel</to>
+        <justification>Required for trait config-subclass extremely unlikely</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/FontConfigurer</className>
+        <differenceType>6010</differenceType>
+        <field>*</field>
+        <justification>No chance this class has been subclassed</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/MassPieceLoader$Emb$LoaderEd</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
     </difference>
 
 </differences>

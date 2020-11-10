@@ -30,8 +30,8 @@ import VASSAL.tools.ArgsParser;
  * The server-side Main class
  */
 public class Server extends Thread {
-  private AsynchronousServerNode rootNode;
-  private ServerSocket socket;
+  private final AsynchronousServerNode rootNode;
+  private final ServerSocket socket;
 
   public Server(AsynchronousServerNode rootNode, int port) throws IOException {
     this.rootNode = rootNode;
@@ -45,12 +45,12 @@ public class Server extends Thread {
     int consecutiveFailures = 0;
     while (consecutiveFailures < 10) {
       try {
-        Socket s = socket.accept();
+        final Socket s = socket.accept();
         new PlayerNode(s, rootNode);
         consecutiveFailures = 0;
       }
       // FIXME: review error message
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
         consecutiveFailures++;
       }
@@ -59,9 +59,9 @@ public class Server extends Thread {
   }
 
   public static void main(String[] args) throws Exception {
-    Properties p = new ArgsParser(args).getProperties();
+    final Properties p = new ArgsParser(args).getProperties();
 
-    int port = Integer.parseInt(p.getProperty("port", "5050")); //$NON-NLS-1$ //$NON-NLS-2$
+    final int port = Integer.parseInt(p.getProperty("port", "5050")); //$NON-NLS-1$ //$NON-NLS-2$
     String reportURL = p.getProperty("URL", "http://www.vassalengine.org/util/"); //$NON-NLS-1$ //$NON-NLS-2$
     if ("null".equals(reportURL)) { //$NON-NLS-1$
       reportURL = null;
@@ -114,7 +114,7 @@ public class Server extends Thread {
             handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           }
           else if (line.startsWith("*")) { //$NON-NLS-1$
-            int length = Integer.parseInt(line.substring(1));
+            final int length = Integer.parseInt(line.substring(1));
             final StringBuilder buffer = new StringBuilder();
             for (int i = 0; i < length; ++i) {
               char c = (char) ('a' + i % 10);
@@ -123,7 +123,7 @@ public class Server extends Thread {
               }
               buffer.append(c);
             }
-            String msg = Protocol.encodeForwardCommand("test/*", buffer.toString()); //$NON-NLS-1$
+            final String msg = Protocol.encodeForwardCommand("test/*", buffer.toString()); //$NON-NLS-1$
             handler.writeLine(msg);
           }
           else {
@@ -136,7 +136,7 @@ public class Server extends Thread {
           reader.close();
         }
         // FIXME: review error message
-        catch (IOException e) {
+        catch (final IOException e) {
           e.printStackTrace();
         }
       }

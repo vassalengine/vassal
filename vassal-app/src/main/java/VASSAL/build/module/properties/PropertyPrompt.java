@@ -36,7 +36,7 @@ public class PropertyPrompt implements PropertyChanger {
 
   @Override
   public String getNewValue(String oldValue) {
-    String newValue;
+    final String newValue;
     if (constraints != null && constraints.isNumeric()) {
       newValue = new NumericPropertyPrompt(constraints.getComponent(), promptText, constraints.getMinimumValue(), constraints.getMaximumValue()).getNewValue(oldValue);
     }

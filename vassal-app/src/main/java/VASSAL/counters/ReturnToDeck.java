@@ -17,35 +17,13 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ChooseComponentDialog;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
@@ -56,14 +34,38 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
+
 /**
  * GamePiece trait that returns a piece to a {@link DrawPile}
  */
 public class ReturnToDeck extends Decorator implements TranslatablePiece {
-  public static final String ID = "return;";
+  public static final String ID = "return;"; // NON-NLS
   protected String deckId;
   protected String returnCommand;
-  protected String selectDeckPrompt = "Select destination";
+  protected String selectDeckPrompt = Resources.getString("Editor.ReturnToDeck.select_destination");
   protected NamedKeyStroke returnKey;
   protected DrawPile deck;
 
@@ -71,7 +73,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   protected KeyCommand myCommand;
 
   public ReturnToDeck() {
-    this(ID + "Return to Deck;R;", null);
+    this(ID + Resources.getString("Editor.ReturnToDeck.default_command") + ";R;", null); // NON-NLS
   }
 
   public ReturnToDeck(String type, GamePiece inner) {
@@ -102,7 +104,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     returnCommand = st.nextToken();
     returnKey = st.nextNamedKeyStroke(null);
     deckId = st.nextToken("");
@@ -111,7 +113,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     return ID + se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).getValue();
   }
 
@@ -130,11 +132,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       comm = putOldProperties(this);
       comm = comm.append(pile.addToContents(Decorator.getOutermost(this)));
       // Apply Auto-move key if the piece has moved
-      Map m = pile.getMap();
+      final Map m = pile.getMap();
       if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {
         comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
       }
-      pile.getMap().repaint();
+      if (m != null) {
+        m.repaint();
+      }
     }
     return comm;
   }
@@ -176,12 +180,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
     class AvailableDeck {
-      private DrawPile pile;
+      private final DrawPile pile;
 
       public AvailableDeck(DrawPile pile) {
         this.pile = pile;
       }
 
+      @Override
       public String toString() {
         return pile.getConfigureName();
       }
@@ -190,49 +195,41 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     final List<DrawPile> piles =
       GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
 
-    if (piles.size() == 0) {
-      reportDataError(this, "No decks in module.");
+    if (piles.isEmpty()) {
+      reportDataError(this, "No decks in module."); // NON-NLS
       return null;
     }
 
     final AvailableDeck[] decks = new AvailableDeck[piles.size()];
     int i = 0;
-    for (DrawPile p : piles)
+    for (final DrawPile p : piles)
       decks[i++] = new AvailableDeck(p);
 
     final JList<AvailableDeck> list = new JList<>(decks);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    JLabel prompt = new JLabel(selectDeckPrompt);
+    final JLabel prompt = new JLabel(selectDeckPrompt);
     prompt.setAlignmentX(0.5f);
     d.add(prompt); //$NON-NLS-1$
     d.add(new ScrollPane(list));
-    Box box = Box.createHorizontalBox();
+    final Box box = Box.createHorizontalBox();
     box.setAlignmentX(0.5F);
     JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        AvailableDeck selection = list.getSelectedValue();
-        if (selection != null)
-          deck = selection.pile;
-        d.dispose();
-      }
+    b.addActionListener(e -> {
+      final AvailableDeck selection = list.getSelectedValue();
+      if (selection != null)
+        deck = selection.pile;
+      d.dispose();
     });
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);
     // don't cache -- ask again next time
-    DrawPile pile = deck;
+    final DrawPile pile = deck;
     deck = null;
     return pile;
   }
@@ -248,81 +245,98 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    String d = "Return to Deck";
+    String deckName = "";
     if (deck != null) {
       findDeck();
       if (deck != null) {
-        d += " - " + deck.getConfigureName();
+        deckName = deck.getConfigureName();
       }
     }
-    return d;
+    return buildDescription("Editor.ReturnToDeck.trait_description", deckName);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ReturnToDeck.html");
+    return HelpFile.getReferenceManualPage("ReturnToDeck.html"); // NON-NLS
   }
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(returnCommand, "Return to Deck command");
+    return getI18nData(returnCommand, Resources.getString("Editor.ReturnToDeck.return_to_deck_command"));
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof ReturnToDeck)) return false;
+    final ReturnToDeck c = (ReturnToDeck) o;
+    if (! Objects.equals(returnCommand, c.returnCommand)) return false;
+    if (! Objects.equals(returnKey, c.returnKey)) return false;
+    if (! Objects.equals(deckId, c.deckId)) return false;
+    return Objects.equals(selectDeckPrompt, c.selectDeckPrompt);
   }
 
   private static class Ed implements PieceEditor {
-    private StringConfigurer menuName;
-    private NamedHotKeyConfigurer menuKey;
-    private JPanel controls;
+    private final StringConfigurer menuName;
+    private final NamedHotKeyConfigurer menuKey;
+    private final TraitConfigPanel controls;
     private String deckId;
     private final JTextField tf = new JTextField(12);
-    private StringConfigurer promptText;
-    private JCheckBox prompt;
+    private final JLabel promptLabel;
+    private final StringConfigurer promptText;
+    private final BooleanConfigurer prompt;
+    private final JLabel selectLabel;
+    private final JPanel selectPanel;
+
 
     public Ed(ReturnToDeck p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      menuName = new StringConfigurer(null, "Menu Text:  ", p.returnCommand);
-      controls.add(menuName.getControls());
-      menuKey = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.returnKey);
+      controls = new TraitConfigPanel();
       deckId = p.deckId;
-      controls.add(menuKey.getControls());
-      JButton select = new JButton("Select Deck");
+
+      menuName = new StringConfigurer(p.returnCommand);
+      controls.add("Editor.menu_command", menuName);
+
+      menuKey = new NamedHotKeyConfigurer(p.returnKey);
+      controls.add("Editor.keyboard_command", menuKey);
+
+      prompt = new BooleanConfigurer(p.deckId == null || p.deckId.isEmpty());
+      prompt.addPropertyChangeListener(e -> updateVisibility());
+      controls.add("Editor.ReturnToDeck.choose_destination_deck_at_game_time", prompt);
+
+      selectPanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
+      final JButton select = new JButton(Resources.getString("Editor.ReturnToDeck.select_deck"));
       tf.setEditable(false);
       updateDeckName();
-      select.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          VASSAL.configure.ChooseComponentDialog d = new VASSAL.configure.ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
-          d.setTitle("Select Deck");
-          d.setVisible(true);
-          if (d.getTarget() != null) {
-            deckId = UniqueIdManager.getIdentifier((UniqueIdManager.Identifyable)d.getTarget());
-            updateDeckName();
-          }
+      select.addActionListener(e -> {
+        final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
+        d.setTitle(Resources.getString("Editor.ReturnToDeck.select_deck"));
+        d.setVisible(true);
+        if (d.getTarget() != null) {
+          deckId = UniqueIdManager.getIdentifier((UniqueIdManager.Identifyable)d.getTarget());
+          updateDeckName();
         }
       });
-      final Box box = Box.createHorizontalBox();
-      box.add(select);
-      box.add(tf);
-      controls.add(box);
-      promptText = new StringConfigurer(null, "Prompt for destination deck:  ", p.selectDeckPrompt);
-      prompt = new JCheckBox("Choose destination deck at game time?");
-      controls.add(prompt);
-      controls.add(promptText.getControls());
-      promptText.getControls().setVisible(p.deckId == null || p.deckId.length() == 0);
-      box.setVisible(p.deckId != null && p.deckId.length() > 0);
-      prompt.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          box.setVisible(!prompt.isSelected());
-          promptText.getControls().setVisible(prompt.isSelected());
-        }
-      });
-      prompt.setSelected(p.deckId == null || p.deckId.length() == 0);
+      selectPanel.add(select);
+      selectPanel.add(tf, "grow"); // NON-NLS
+      selectLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.selected_deck"));
+      controls.add(selectLabel, selectPanel, "grow"); // NON-NLS;
+
+      promptLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.prompt_for_destination_deck"));
+      promptText = new StringConfigurer(p.selectDeckPrompt);
+      controls.add(promptLabel, promptText);
+
+      updateVisibility();
+    }
+
+    private void updateVisibility() {
+      promptLabel.setVisible(prompt.getValueBoolean());
+      promptText.getControls().setVisible(prompt.getValueBoolean());
+      selectPanel.setVisible(!prompt.getValueBoolean());
+      selectLabel.setVisible(!prompt.getValueBoolean());
     }
 
     private void updateDeckName() {
-      DrawPile p = DrawPile.findDrawPile(deckId);
-      tf.setText(p != null ? p.getConfigureName() : "<none>");
+      final DrawPile p = DrawPile.findDrawPile(deckId);
+      tf.setText(p != null ? p.getConfigureName() : ("[" + Resources.getString("Editor.ReturnToDeck.none") + "]"));
     }
 
     @Override
@@ -337,8 +351,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
-      return ID + se.append(menuName.getValueString()).append(menuKey.getValueString()).append(prompt.isSelected() ? "" : deckId).append(promptText.getValueString()).getValue();
+      final SequenceEncoder se = new SequenceEncoder(';');
+      se.append(menuName.getValueString())
+        .append(menuKey.getValueString())
+        .append(prompt.getValueBoolean() ? "" : deckId)
+        .append(promptText.getValueString());
+      return ID + se.getValue();
     }
   }
 
@@ -355,7 +373,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
-    return Arrays.asList(returnKey);
+    return Collections.singletonList(returnKey);
   }
 
   /**

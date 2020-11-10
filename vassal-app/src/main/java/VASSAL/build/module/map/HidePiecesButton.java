@@ -22,13 +22,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.JPanel;
 
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.search.SearchTarget;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AutoConfigurable;
@@ -43,10 +45,13 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
+import VASSAL.search.ImageSearchTarget;
+import VASSAL.search.SearchTarget;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 
@@ -54,8 +59,9 @@ import VASSAL.tools.NamedKeyStroke;
  * This removes all game pieces from the (@link Map)
  * therefore providing an un-cluttered view.
  */
+//FIXME - Why on earth does this extend JPanel instead of e.g. AbstractConfigurable
 public class HidePiecesButton extends JPanel implements MouseListener,
-    AutoConfigurable, GameComponent, Drawable, SearchTarget {
+    AutoConfigurable, GameComponent, Drawable, SearchTarget, ImageSearchTarget {
   private static final long serialVersionUID = 1L;
 
   protected boolean piecesVisible = false;
@@ -67,16 +73,17 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   public static final String DEFAULT_SHOWING_ICON = "/images/globe_unselected.gif"; //NON-NLS
   public static final String DEFAULT_HIDDEN_ICON = "/images/globe_selected.gif"; //NON-NLS
 
-  public static final String HOTKEY = "hotkey"; //NON-NLS
-  public static final String HIDDEN_ICON = "hiddenIcon"; //NON-NLS
-  public static final String SHOWING_ICON = "showingIcon"; //NON-NLS
   public static final String LAUNCH_ICON = "icon"; //NON-NLS
   public static final String TOOLTIP = "tooltip"; //NON-NLS
   public static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
+
+  public static final String HIDDEN_ICON = "hiddenIcon"; //NON-NLS
+  public static final String SHOWING_ICON = "showingIcon"; //NON-NLS
 
 
   public HidePiecesButton() {
-    ActionListener al = e -> setPiecesVisible(!piecesVisible);
+    final ActionListener al = e -> setPiecesVisible(!piecesVisible);
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, LAUNCH_ICON, al);
     launch.setAttribute(TOOLTIP, Resources.getString("Editor.HidePiecesButton.hide_all_pieces_on_this_map"));
     addMouseListener(this);
@@ -153,7 +160,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   @Override
   public String getAttributeValueString(String key) {
-    String s;
+    final String s;
     if (HIDDEN_ICON.equals(key)) {
       s = hiddenIcon;
     }
@@ -287,7 +294,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   @Override
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
+  public Element getBuildElement(Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
   }
 
@@ -321,7 +328,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   /**
    * {@link SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -344,5 +351,57 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   @Override
   public List<String> getPropertyList() {
     return Collections.emptyList();
+  }
+
+
+  /**
+   * @return names of all images used by the component and any subcomponents
+   */
+  @Override
+  public SortedSet<String> getAllImageNames() {
+    final TreeSet<String> s =
+      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+    addImageNamesRecursively(s);
+    return s;
+  }
+
+  /**
+   * Adds all images used by this component AND any children (or inner decorators/pieces) to the collection.
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addImageNamesRecursively(Collection<String> s) {
+    addLocalImageNames(s); // Default implementation just adds ours
+  }
+
+  /**
+   * @return names of all images used by this component
+   */
+  @Override
+  public SortedSet<String> getLocalImageNames() {
+    final TreeSet<String> s =
+      new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    addLocalImageNames(s);
+    return s;
+  }
+
+
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    String imageName = getAttributeValueString(SHOWING_ICON);
+    if (imageName != null) { // Unfortunately these can sometimes be null
+      s.add(imageName);
+    }
+    imageName = getAttributeValueString(HIDDEN_ICON);
+    if (imageName != null) {
+      s.add(imageName);
+    }
   }
 }

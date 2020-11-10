@@ -167,19 +167,19 @@ public class HexGrid extends AbstractConfigurable
   @Override
   public Configurer getConfigurer() {
 
-    boolean buttonExists = config != null;
+    final boolean buttonExists = config != null;
 
-    AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
+    final AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     final Configurer dxConfig = c.getConfigurer(DX);
     c.getConfigurer(DY).addPropertyChangeListener(evt -> {
       if (evt.getNewValue() != null) {
-        double hgt = (Double) evt.getNewValue();
-        dxConfig.setValue(Double.valueOf(sqrt3_2 * hgt).toString());
+        final double hgt = (Double) evt.getNewValue();
+        dxConfig.setValue(Double.toString(sqrt3_2 * hgt));
       }
     });
 
     if (!buttonExists) {
-      JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
+      final JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
       b.addActionListener(e -> editGrid());
       ((Container) c.getControls()).add(b);
     }
@@ -188,7 +188,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
 
-  protected boolean alternate = false; // true if hex B1 is above A1
+  protected boolean alternate; // true if hex B1 is above A1
 
   public HexGrid(double height, double width, boolean alt) {
     dy = height;
@@ -206,7 +206,7 @@ public class HexGrid extends AbstractConfigurable
 
   @Override
   public boolean isVisible() {
-    return visible == true || (numbering != null && numbering.isVisible());
+    return visible || (numbering != null && numbering.isVisible());
   }
 
   public boolean isEdgesLegal() {
@@ -309,7 +309,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HexGrid.html"); //$NON-NLS-1$
   }
 
@@ -459,11 +459,11 @@ public class HexGrid extends AbstractConfigurable
     if (! snapTo) {
       return p;
     }
-    Point center = snapToHex(p);
+    final Point center = snapToHex(p);
 
     if (edgesLegal && cornersLegal) {
-      Point edge = snapToHexSide(p);
-      Point vertex = snapToHexVertex(p);
+      final Point edge = snapToHexSide(p);
+      final Point vertex = snapToHexVertex(p);
       if ((p.x - edge.x) * (p.x - edge.x)
           + (p.y - edge.y) * (p.y - edge.y)
           < (p.x - vertex.x) * (p.x - vertex.x)
@@ -524,8 +524,8 @@ public class HexGrid extends AbstractConfigurable
     int x = sideX(p.x, p.y);
     int y = sideY(p.x, p.y);
     if (snapScale > 0) {
-      int hexX = hexX(p.x, p.y);
-      int hexY = hexY(p.x, p.y);
+      final int hexX = hexX(p.x, p.y);
+      final int hexY = hexY(p.x, p.y);
       if (abs(p.x - hexX) + abs(p.y - hexY) <= abs(p.x - x) + abs(p.y - y)) {
         x = hexX;
         y = hexY;
@@ -545,8 +545,8 @@ public class HexGrid extends AbstractConfigurable
     int x = vertexX(p.x, p.y);
     int y = vertexY(p.x, p.y);
     if (snapScale > 0) {
-      int hexX = hexX(p.x, p.y);
-      int hexY = hexY(p.x, p.y);
+      final int hexX = hexX(p.x, p.y);
+      final int hexY = hexY(p.x, p.y);
       if (abs(p.x - hexX) + abs(p.y - hexY) <= abs(p.x - x) + abs(p.y - y)) {
         x = hexX;
         y = hexY;
@@ -558,7 +558,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public void rotate(Point p) {
-    int swap = p.x;
+    final int swap = p.x;
     p.x = p.y;
     p.y = swap;
   }
@@ -575,15 +575,15 @@ public class HexGrid extends AbstractConfigurable
     Area shape = shapeCache.get(range);
     if (shape == null) {
       //Choose a starting point
-      Point origin = new Point(0, 0);
+      final Point origin = new Point(0, 0);
       shape = getSingleHexShape(origin.x, origin.y, false);
 
       for (int i = -range; i <= range; i++) {
-        int x = origin.x + (int) (i * dx);
+        final int x = origin.x + (int) (i * dx);
 
-        int length = range * 2 + 1 - abs(i);
+        final int length = range * 2 + 1 - abs(i);
 
-        int startY = 0;
+        final int startY;
         if (length % 2 == 1) {
           startY = origin.y - (int) (dy * (length - 1) / 2);
         }
@@ -593,7 +593,7 @@ public class HexGrid extends AbstractConfigurable
 
         int y = startY;
         for (int j = 0; j < length; j++) {
-          Point p = new Point(x, y);
+          final Point p = new Point(x, y);
           rotateIfSideways(p);
           shape.add(getSingleHexShape(p.x, p.y, false));
           y += dy;
@@ -616,24 +616,35 @@ public class HexGrid extends AbstractConfigurable
    * @return Hex Shape
    */
   protected Area getSingleHexShape(int centerX, int centerY, boolean reversed) {
-    Polygon poly = new Polygon();
+    final Polygon poly = new Polygon();
 
-    float x = (sideways ? centerY : centerX);
-    float y = (sideways ? centerX : centerY);
+    final float x = (sideways ? centerY : centerX);
+    final float y = (sideways ? centerX : centerY);
 
-    float x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6;
+    final float x1;
+    final float y1;
+    final float x2;
+    final float y2;
+    final float x3;
+    final float y3;
+    final float x4;
+    final float y4;
+    final float x5;
+    final float y5;
+    final float x6;
+    final float y6;
 
-    float deltaX = (float) (this.dx);
-    float deltaY = (float) (this.dy);
+    final float deltaX = (float) (this.dx);
+    final float deltaY = (float) (this.dy);
 
-    float r = 2.F * deltaX / 3.F;
+    final float r = 2.F * deltaX / 3.F;
 
-    Point p1 = new Point();
-    Point p2 = new Point();
-    Point p3 = new Point();
-    Point p4 = new Point();
-    Point p5 = new Point();
-    Point p6 = new Point();
+    final Point p1 = new Point();
+    final Point p2 = new Point();
+    final Point p3 = new Point();
+    final Point p4 = new Point();
+    final Point p5 = new Point();
+    final Point p6 = new Point();
 
     x1 = x - r;
     y1 = y;
@@ -685,8 +696,8 @@ public class HexGrid extends AbstractConfigurable
     rotateIfSideways(p1);
     p2 = new Point(p2);
     rotateIfSideways(p2);
-    int x = p2.x - p1.x;
-    int y = p2.y - p1.y;
+    final int x = p2.x - p1.x;
+    final int y = p2.y - p1.y;
     double theta = atan2((-x), (-y)) + PI;
     while (theta > PI / 3.)
       theta -= PI / 3.;
@@ -710,7 +721,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   protected int hexY(int x, int y) {
-    int nx = (int) floor((x - origin.x + dx / 2) / dx);
+    final int nx = (int) floor((x - origin.x + dx / 2) / dx);
     int loc;
     if (nx % 2 == 0)
       loc = ((int)
@@ -734,7 +745,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   protected int sideY(int x, int y) {
-    int nx = (int) floor((x - origin.x + dx / 4) * 2 / dx);
+    final int nx = (int) floor((x - origin.x + dx / 4) * 2 / dx);
     if (nx % 2 == 0) {
       return ((int) (dy / 2 * (int) floor((y - origin.y + dy / 4) * 2 / dy) + origin.y));
     }
@@ -748,7 +759,7 @@ public class HexGrid extends AbstractConfigurable
   // vertices are fine, so snapTo() has been changed to work around this.
   // There is a rounding error in here if someone else wants to track it down.
   protected int vertexX(int x, int y) {
-    int ny = (int) floor((y - origin.y + dy / 4) * 2 / dy);
+    final int ny = (int) floor((y - origin.y + dy / 4) * 2 / dy);
     if (ny % 2 == 0) {
       return ((int) (2 * dx / 3 * (int) (floor(x - origin.x + dx / 3) * 3 / (2 * dx)) + origin.x));
     }
@@ -779,25 +790,23 @@ public class HexGrid extends AbstractConfigurable
       return;
     }
 
-    Graphics2D g2d = (Graphics2D) g;
-
+    final Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
-
     g2d.setColor(color);
 
     float x1, y1, x2, y2, x3, y3, x4, y4;
 
-    float deltaX = (float) (this.dx * zoom);
-    float deltaY = (float) (this.dy * zoom);
+    final float deltaX = (float) (this.dx * zoom);
+    final float deltaY = (float) (this.dy * zoom);
 
-    float r = 2.F * deltaX / 3.F;
+    final float r = 2.F * deltaX / 3.F;
 
     Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g2d.getClip();
+    final Shape oldClip = g2d.getClip();
     if (oldClip != null) {
-      Area clipArea = new Area(oldClip);
+      final Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
       g2d.setClip(clipArea);
     }
@@ -807,18 +816,18 @@ public class HexGrid extends AbstractConfigurable
       region = new Rectangle(region.y, region.x, region.height, region.width);
     }
 
-    float xmin = reversed ? bounds.x + (float) zoom * origin.x + bounds.width - 2 * deltaX * (float) ceil((bounds.x + zoom * origin.x + bounds.width - region.x) / (2 * deltaX))
+    final float xmin = reversed ? bounds.x + (float) zoom * origin.x + bounds.width - 2 * deltaX * (float) ceil((bounds.x + zoom * origin.x + bounds.width - region.x) / (2 * deltaX))
         : bounds.x + (float) zoom * origin.x + 2 * deltaX * (float) floor((region.x - bounds.x - zoom * origin.x) / (2 * deltaX));
-    float xmax = region.x + region.width + 2 * deltaX;
-    float ymin = reversed ? bounds.y + (float) zoom * origin.y + bounds.height - deltaY * (float) ceil((bounds.y + zoom * origin.y + bounds.height - region.y) / deltaY)
+    final float xmax = region.x + region.width + 2 * deltaX;
+    final float ymin = reversed ? bounds.y + (float) zoom * origin.y + bounds.height - deltaY * (float) ceil((bounds.y + zoom * origin.y + bounds.height - region.y) / deltaY)
         : bounds.y + (float) zoom * origin.y + deltaY * (float) floor((region.y - bounds.y - zoom * origin.y) / deltaY);
-    float ymax = region.y + region.height + deltaY;
+    final float ymax = region.y + region.height + deltaY;
 
-    Point center = new Point();
-    Point p1 = new Point();
-    Point p2 = new Point();
-    Point p3 = new Point();
-    Point p4 = new Point();
+    final Point center = new Point();
+    final Point p1 = new Point();
+    final Point p2 = new Point();
+    final Point p3 = new Point();
+    final Point p4 = new Point();
 
     // x,y is the center of a hex
     for (float x = xmin; x < xmax; x += zoom * 2 * dx) {
@@ -914,8 +923,8 @@ public class HexGrid extends AbstractConfigurable
     gridEditor.setVisible(true);
     // Local variables may have been updated by GridEditor so refresh
     // configurers. Setting the Dy configurer will auto-recalculate dx
-    double origDx = dx;
-    AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
+    final double origDx = dx;
+    final AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
     cfg.getConfigurer(DY).setValue(String.valueOf(dy));
     dx = origDx;
     cfg.getConfigurer(DX).setValue(String.valueOf(dx));
@@ -993,16 +1002,16 @@ public class HexGrid extends AbstractConfigurable
 
     protected void check(boolean sideways, Point p1, Point p2, Point p3) {
 
-      int r = abs(p1.x - p2.x);
-      int width = r * 3 / 2;
+      final int r = abs(p1.x - p2.x);
+      final int width = r * 3 / 2;
       if (width < 1) {
         reportShapeError();
         return;
       }
-      int height = abs(p3.y - p2.y) * 2;
+      final int height = abs(p3.y - p2.y) * 2;
 
-      int Xoff = min(p1.x, p2.x) % width + r / 2;
-      int col = min(p1.x, p2.x) / width;
+      final int Xoff = min(p1.x, p2.x) % width + r / 2;
+      final int col = min(p1.x, p2.x) / width;
       int Yoff = min(p1.y, p2.y) % height - (col % 2 == 1 ? 0 : height / 2);
       if (Yoff < 0) Yoff += height;
 
@@ -1015,14 +1024,14 @@ public class HexGrid extends AbstractConfigurable
         return;
       }
 
-      int r = abs(p3.y - p1.y) * 2;
-      int width = r * 3 / 2;
-      int height = abs(p3.x - p2.x) * 2;
+      final int r = abs(p3.y - p1.y) * 2;
+      final int width = r * 3 / 2;
+      final int height = abs(p3.x - p2.x) * 2;
 
-      int xOrigin = p1.y - (p3.y < p1.y ? 0 : r);
-      int Xoff = xOrigin % width + r / 2;
-      int col = xOrigin / width;
-      int Yoff = min(p1.x, p2.x) % height - (col % 2 == 1 ? 0 : height / 2);
+      final int xOrigin = p1.y - (p3.y < p1.y ? 0 : r);
+      final int Xoff = xOrigin % width + r / 2;
+      final int col = xOrigin / width;
+      final int Yoff = min(p1.x, p2.x) % height - (col % 2 == 1 ? 0 : height / 2);
 
       setMetrics(width, height, Xoff, Yoff, sideways);
     }

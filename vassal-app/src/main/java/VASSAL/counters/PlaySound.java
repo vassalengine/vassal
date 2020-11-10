@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2006 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -53,7 +52,7 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class PlaySound extends Decorator implements TranslatablePiece {
-  public static final String ID = "playSound;";
+  public static final String ID = "playSound;"; //NON-NLS
   protected String menuText;
   protected NamedKeyStroke stroke;
   protected boolean sendToOthers;
@@ -121,7 +120,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
         }
       }
       catch (IOException e) {
-        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip=" + clipName, e);
+        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip=" + clipName, e); //NON-NLS
       }
     }
     return c;
@@ -149,15 +148,15 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return format.getFormat().length() == 0 ? "Play Sound" : "Play Sound - " + format.getFormat();
+    return buildDescription("Editor.PlaySound.trait_description", format.getFormat());
   }
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     format = new FormattedString(st.nextToken(""));
-    menuText = st.nextToken("Play Sound");
+    menuText = st.nextToken(Resources.getString("Editor.PlaySound.default_command"));
     stroke = st.nextNamedKeyStroke('P');
     sendToOthers = st.nextBoolean(false);
     commands = null;
@@ -165,7 +164,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PlaySound.html");
+    return HelpFile.getReferenceManualPage("PlaySound.html"); //NON-NLS
   }
 
   @Override
@@ -175,23 +174,23 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(menuText, "Play Sound command");
+    return getI18nData(menuText, Resources.getString("Editor.PlaySound.play_sound_command"));
   }
 
   public static class Ed implements PieceEditor {
-    private StringConfigurer menuConfig;
-    private NamedHotKeyConfigurer keyConfig;
-    private AudioClipConfigurer soundConfig;
-    private BooleanConfigurer sendConfig;
-    private JPanel panel;
+    private final StringConfigurer menuConfig;
+    private final NamedHotKeyConfigurer keyConfig;
+    private final AudioClipConfigurer soundConfig;
+    private final BooleanConfigurer sendConfig;
+    private final JPanel panel;
 
     public Ed(PlaySound p) {
-      menuConfig = new StringConfigurer(null, "Menu Text:  ", p.menuText);
-      keyConfig = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.stroke);
-      soundConfig = new AudioClipConfigurer(null, "Sound Clip:  ", GameModule.getGameModule().getArchiveWriter());
+      menuConfig = new StringConfigurer(null, Resources.getString("Editor.menu_command") + ":  ", p.menuText);
+      keyConfig = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command") + ":  ", p.stroke);
+      soundConfig = new AudioClipConfigurer(null, Resources.getString("Editor.PlaySound.sound_clip") + ":  ", GameModule.getGameModule().getArchiveWriter());
       soundConfig.setValue(p.format.getFormat());
       soundConfig.setEditable(true);
-      sendConfig = new BooleanConfigurer(null, "Send sound to other players?", p.sendToOthers);
+      sendConfig = new BooleanConfigurer(null, Resources.getString("Editor.PlaySound.other_players"), p.sendToOthers);
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       panel.add(menuConfig.getControls());
@@ -207,7 +206,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(soundConfig.getValueString()).append(menuConfig.getValueString()).append(keyConfig.getValueString()).append(sendConfig.getValueString());
       return ID + se.getValue();
     }

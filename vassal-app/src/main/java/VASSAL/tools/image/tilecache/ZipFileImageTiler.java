@@ -104,7 +104,7 @@ public class ZipFileImageTiler {
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
-      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile();
+      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile(); //NON-NLS
 
       final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
       final ImageLoader loader = new ImageIOImageLoader(itc);
@@ -142,7 +142,6 @@ public class ZipFileImageTiler {
                                     String[] ipaths, ExecutorService exec, ImageLoader loader,
                                     TileSlicer slicer) {
 
-    final int port = Integer.parseInt(portProp);
     final InetAddress lo;
     try {
       lo = InetAddress.getByName(null);
@@ -152,6 +151,7 @@ public class ZipFileImageTiler {
       return;
     }
 
+    final int port = Integer.parseInt(portProp);
     try (Socket sock = new Socket(lo, port)) {
       sock.shutdownInput();
 
@@ -166,7 +166,7 @@ public class ZipFileImageTiler {
   private static void writeToOutputStream(OutputStream os, String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th, String[] ipaths, ExecutorService exec,
                                           ImageLoader loader, TileSlicer slicer) {
 
-    try (final DataOutputStream out = new DataOutputStream(os)) {
+    try (DataOutputStream out = new DataOutputStream(os)) {
       final Callback<String> imageL = ipath -> {
         out.writeByte(STARTING_IMAGE);
         out.writeUTF(ipath);

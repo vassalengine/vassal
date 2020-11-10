@@ -24,6 +24,13 @@ import javax.swing.JPanel;
  * A standardised Panel to hold an individual Configurer
  */
 public class ConfigurerPanel extends JPanel {
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * For older-style Configurer calls that supply a label (e.g. as used for Prefs),
+   * keep a track of the internal label generated so that it can be hidden.
+   */
+  private JLabel label;
 
   /**
    * Create an alternate layout depending on whether or not a label is supplied for this configurer
@@ -37,10 +44,26 @@ public class ConfigurerPanel extends JPanel {
    * @param nameColConstraints Column constraints to apply if a label is supplied
    */
   public ConfigurerPanel(String name, String noNameColConstraints, String nameColConstraints) {
+    this(name, noNameColConstraints, nameColConstraints, "");
+  }
+
+  public ConfigurerPanel(String name, String noNameColConstraints, String nameColConstraints, String rowConstraints) {
     super();
-    setLayout(new ConfigurerLayout(name, noNameColConstraints, nameColConstraints));
+    setLayout(new ConfigurerLayout(name, noNameColConstraints, nameColConstraints, rowConstraints));
     if (name != null && ! name.isEmpty()) {
-      add(new JLabel(name));
+      label = new JLabel(name);
+      add(label);
+    }
+  }
+
+  /**
+   * Show/hide the internal label if this Configurer has one.
+   *
+   * @param visible Hide label if true
+   */
+  public void setLabelVisibility(boolean visible) {
+    if (label != null) {
+      label.setVisible(visible);
     }
   }
 }

@@ -50,7 +50,7 @@ public class ColorManager extends AbstractConfigurable {
   public static final Color DEFAULT_COLOR = Color.WHITE;
   public static final String SELECT_COLOR = "Select...";
 
-  protected static Color[] standardColors = new Color[] {
+  protected static Color[] standardColors = {
     Color.WHITE,
     Color.GRAY,
     Color.BLACK,
@@ -67,7 +67,7 @@ public class ColorManager extends AbstractConfigurable {
     Color.DARK_GRAY,
   };
 
-  protected static String[] standardColorNames = new String[] {
+  protected static String[] standardColorNames = {
     "WHITE",      // NON-NLS
     "GRAY",       // NON-NLS
     "BLACK",      // NON-NLS
@@ -84,7 +84,7 @@ public class ColorManager extends AbstractConfigurable {
     "DARK GRAY"   // NON-NLS
   };
 
-  protected static String[] standardColorKeys = new String[] {
+  protected static String[] standardColorKeys = {
     "Editor.ColorManager.white",
     "Editor.ColorManager.gray",
     "Editor.ColorManager.black",
@@ -143,7 +143,7 @@ public class ColorManager extends AbstractConfigurable {
     }
 
     ColorSwatch swatch = null;
-    for (ColorSwatch cs : userColors.values()) {
+    for (final ColorSwatch cs : userColors.values()) {
       if (color.equals(cs.getColor())) {
         swatch = cs;
         break;
@@ -212,7 +212,7 @@ public class ColorManager extends AbstractConfigurable {
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof ColorSwatch) {
-      ColorSwatch def = (ColorSwatch) b;
+      final ColorSwatch def = (ColorSwatch) b;
       userColors.put(def.getConfigureName(), def);
       def.addPropertyChangeListener(evt -> {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
@@ -243,7 +243,7 @@ public class ColorManager extends AbstractConfigurable {
 
   public Color getColorByName(String colorName) {
 
-    ColorSwatch gcolor = getColorSwatch(colorName);
+    final ColorSwatch gcolor = getColorSwatch(colorName);
     if (gcolor != null) {
       return gcolor.getColor();
     }
@@ -251,13 +251,13 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public String[] getColorNames() {
-    ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    final ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(a.size() + standardColors.length);
 
-    for (ColorSwatch cs : a) {
+    for (final ColorSwatch cs : a) {
       names.add(cs.getConfigureName());
     }
 
@@ -266,17 +266,17 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public String[] getColorDisplayNames() {
-    ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    final ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(a.size() + standardColors.length);
 
-    for (ColorSwatch cs : a) {
+    for (final ColorSwatch cs : a) {
       names.add(cs.getConfigureName());
     }
 
-    for (String key : standardColorKeys) {
+    for (final String key : standardColorKeys) {
       names.add(Resources.getString(key));
     }
     return names.toArray(new String[0]);

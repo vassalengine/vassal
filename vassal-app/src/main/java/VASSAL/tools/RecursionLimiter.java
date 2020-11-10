@@ -53,7 +53,7 @@ public class RecursionLimiter {
     );
     reporting = false;
   }
-  
+
   public static boolean isReportingInfiniteLoop() {
     return reporting;
   }

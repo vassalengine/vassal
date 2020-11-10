@@ -42,14 +42,14 @@ public class SwatchComboBox extends JComboBox<String> {
   private static final Map<String, String> colorMap = new HashMap<>();
 
   public SwatchComboBox() {
-    String[] s = ColorManager.getColorManager().getColorNames();
-    for (String value : s) {
+    final String[] s = ColorManager.getColorManager().getColorNames();
+    for (final String value : s) {
       addItem(value);
     }
-    SwatchRenderer renderer = new SwatchRenderer();
+    final SwatchRenderer renderer = new SwatchRenderer();
     setRenderer(renderer);
 
-    if (colorMap.size() == 0) {
+    if (colorMap.isEmpty()) {
       final String[] displayNames =  ColorManager.getColorManager().getColorDisplayNames();
       for (int i = 0; i < s.length; i++) {
         colorMap.put(s[i], displayNames[i]);
@@ -85,7 +85,7 @@ public class SwatchComboBox extends JComboBox<String> {
     public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected,
         boolean cellHasFocus) {
 
-      ColorSwatch swatch = ColorManager.getColorManager().getColorSwatch(value);
+      final ColorSwatch swatch = ColorManager.getColorManager().getColorSwatch(value);
 
       if (isSelected) {
         setBackground(list.getSelectionBackground());
@@ -114,7 +114,7 @@ public class SwatchComboBox extends JComboBox<String> {
     }
   }
 
-  class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
+  public class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
     private static final long serialVersionUID = 1L;
 
     public SwatchTableRenderer() {
@@ -133,7 +133,7 @@ public class SwatchComboBox extends JComboBox<String> {
         boolean isSelected, boolean hasFocus,
         int row, int column) {
 
-      ColorSwatch swatch = (ColorSwatch) value;
+      final ColorSwatch swatch = (ColorSwatch) value;
 
       if (isSelected) {
         setBackground(table.getSelectionBackground());

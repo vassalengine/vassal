@@ -122,7 +122,7 @@ public class LayoutConfigurer extends Configurer {
       filler.setPreferredSize(new Dimension(50, 10));
       panel.add(filler);
 
-      Window w = SwingUtilities.getWindowAncestor(itemPanel);
+      final Window w = SwingUtilities.getWindowAncestor(itemPanel);
       if (w != null) {
         w.pack();
       }
@@ -135,8 +135,9 @@ public class LayoutConfigurer extends Configurer {
     return null;
   }
 
+  @Override
   protected void repack() {
-    Window w = SwingUtilities.getWindowAncestor(panel);
+    final Window w = SwingUtilities.getWindowAncestor(panel);
     if (w != null) {
       w.pack();
     }
@@ -171,16 +172,16 @@ public class LayoutConfigurer extends Configurer {
       if (layout.getItemCount() > 0) {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
-      ListSelectionModel rowSM = table.getSelectionModel();
+      final ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.addListSelectionListener(e -> {
         if (e.getValueIsAdjusting()) return;
 
-        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        final ListSelectionModel lsm = (ListSelectionModel) e.getSource();
         if (lsm.isSelectionEmpty()) {
           showItem(NO_CURRENT_ITEM);
         }
         else {
-          int selectedRow = lsm.getMinSelectionIndex();
+          final int selectedRow = lsm.getMinSelectionIndex();
           showItem(selectedRow);
         }
       });
@@ -242,19 +243,19 @@ public class LayoutConfigurer extends Configurer {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      String action = e.getActionCommand();
-      int pos = layout.getItemCount();
-      int sel = table.getSelectedRow();
+      final String action = e.getActionCommand();
+      final int pos = layout.getItemCount();
+      final int sel = table.getSelectedRow();
 
       if (action.equals(ADD_SYMBOL)) {
         addItem(new SymbolItem(layout, "Symbol" + pos)); //$NON-NLS-1$
       }
       else if (action.equals(ADD_TEXT)) {
-        TextItem item = new TextItem(layout, "Text" + pos); //$NON-NLS-1$
+        final TextItem item = new TextItem(layout, "Text" + pos); //$NON-NLS-1$
         addItem(item);
       }
       else if (action.equals(ADD_TEXTBOX)) {
-        TextBoxItem item = new TextBoxItem(layout, "TextBox" + pos); //$NON-NLS-1$
+        final TextBoxItem item = new TextBoxItem(layout, "TextBox" + pos); //$NON-NLS-1$
         addItem(item);
       }
       else if (action.equals(ADD_IMAGE)) {
@@ -294,7 +295,7 @@ public class LayoutConfigurer extends Configurer {
 
     protected void addItem(Item item) {
       layout.addItem(item);
-      int pos = layout.getItemCount() - 1;
+      final int pos = layout.getItemCount() - 1;
       model.fireTableRowsInserted(pos, pos);
       table.getSelectionModel().setSelectionInterval(pos, pos);
     }
@@ -320,8 +321,8 @@ public class LayoutConfigurer extends Configurer {
       }
 
       if (itemNo != NO_CURRENT_ITEM && layout.getItemCount() > 0 && itemNo < layout.getItemCount()) {
-        Item item = layout.getItem(itemNo);
-        Configurer c = item.getConfigurer();
+        final Item item = layout.getItem(itemNo);
+        final Configurer c = item.getConfigurer();
         currentItemControls = c.getControls();
         itemConfigPanel.add(currentItemControls);
         currentItem = itemNo;
@@ -341,9 +342,11 @@ public class LayoutConfigurer extends Configurer {
     class MyTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private final String[] columnNames = new String[] { Resources.getString("Editor.LayoutConfigurer.name"),
-                                                          Resources.getString("Editor.LayoutConfigurer.type"),
-                                                          Resources.getString("Editor.LayoutConfigurer.position") };
+      private final String[] columnNames = {
+        Resources.getString("Editor.LayoutConfigurer.name"),
+        Resources.getString("Editor.LayoutConfigurer.type"),
+        Resources.getString("Editor.LayoutConfigurer.position")
+      };
 
       @Override
       public int getColumnCount() {

@@ -15,14 +15,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jun 11, 2002
- * Time: 9:30:01 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module;
 
 import VASSAL.tools.ProblemDialog;
@@ -125,7 +117,7 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      for (Map m : Map.getMapList()) {
+      for (final Map m : Map.getMapList()) {
         if (m.getMapName().equals(value)) {
           surrogate = m;
           break;
@@ -215,7 +207,7 @@ public class PrivateMap extends Map {
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
     }
-    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+    getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   @Override
@@ -227,7 +219,7 @@ public class PrivateMap extends Map {
    * @see PlayerRoster
    */
   public boolean isAccessibleTo(String playerSide) {
-    for (String owner : owners) {
+    for (final String owner : owners) {
       if (owner.equals(playerSide)) {
         return true;
       }
@@ -248,7 +240,7 @@ public class PrivateMap extends Map {
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
     }
-    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+    getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   @Override
@@ -262,6 +254,7 @@ public class PrivateMap extends Map {
 
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
+  @Override
   public void setBoards(Enumeration<Board> boardList) {
     ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (surrogate != null) {
@@ -350,13 +343,13 @@ public class PrivateMap extends Map {
      * Disable all keyboard and mouse listeners on this component
      */
     protected void disableListeners() {
-      for (KeyListener l : keyListeners) {
+      for (final KeyListener l : keyListeners) {
         removeKeyListener(l);
       }
-      for (MouseListener l : mouseListeners) {
+      for (final MouseListener l : mouseListeners) {
         removeMouseListener(l);
       }
-      for (MouseMotionListener l : mouseMotionListeners) {
+      for (final MouseMotionListener l : mouseMotionListeners) {
         removeMouseMotionListener(l);
       }
       super.setDropTarget(null);
@@ -367,13 +360,13 @@ public class PrivateMap extends Map {
      * Enable all keyboard and mouse listeners on this component
      */
     protected void enableListeners() {
-      for (KeyListener l : keyListeners) {
+      for (final KeyListener l : keyListeners) {
         super.addKeyListener(l);
       }
-      for (MouseListener l : mouseListeners) {
+      for (final MouseListener l : mouseListeners) {
         super.addMouseListener(l);
       }
-      for (MouseMotionListener l : mouseMotionListeners) {
+      for (final MouseMotionListener l : mouseMotionListeners) {
         super.addMouseMotionListener(l);
       }
       super.setDropTarget(dropTarget);

@@ -15,18 +15,15 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Sep 25, 2002
- * Time: 10:43:11 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.counters.CounterGlobalKeyCommand;
+import VASSAL.counters.GlobalCommandTarget;
 import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -39,7 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -48,12 +44,12 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BooleanAndPieceFilter;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Embellishment;
@@ -67,17 +63,27 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
  * with a given name.
+ *
+ * The "Global Key Command" functionality, as the term is used in Vassal Modules, is spread out over several classes internally:
+ * {@link GlobalCommand} - primary functionality for sending commands to multiple pieces based on matching parameters
+ * {@link VASSAL.build.module.GlobalKeyCommand}         - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand}  - Global Key Commands from a Module "At Startup"
+ * {@link VASSAL.build.module.map.MassKeyCommand}       - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand}                      - Global Key Commands from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
-public class MassKeyCommand extends AbstractConfigurable
+public class MassKeyCommand extends AbstractToolbarItem
                             implements RecursionLimiter.Loopable {
   public static final String DEPRECATED_NAME = "text"; // NON-NLS
-  public static final String NAME = "name"; // NON-NLS
-  public static final String ICON = "icon"; // NON-NLS
-  public static final String TOOLTIP = "tooltip"; // NON-NLS
   public static final String BUTTON_TEXT = "buttonText"; // NON-NLS
   public static final String HOTKEY = "buttonHotkey"; // NON-NLS
   public static final String KEY_COMMAND = "hotkey"; // NON-NLS
@@ -93,7 +99,15 @@ public class MassKeyCommand extends AbstractConfigurable
   public static final String CHECK_PROPERTY = "property"; // NON-NLS
   public static final String CHECK_VALUE = "propValue"; // NON-NLS
   public static final String SINGLE_MAP = "singleMap"; // NON-NLS
-  protected LaunchButton launch;
+
+  // These 3 identical to AbstractToolbarItem and here for clirr purposes only
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; // NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
+
+  @Deprecated (since = "2020-10-21", forRemoval = true)
+  protected LaunchButton launch; // Exists for clirr - but use getLaunchButton()
+
   protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
   protected String condition;
@@ -107,9 +121,33 @@ public class MassKeyCommand extends AbstractConfigurable
   protected FormattedString reportFormat = new FormattedString();
   protected boolean singleMap = true;
 
+  public static final String TARGET   = "target"; //NON-NLS
+
+  protected GlobalCommandTarget target = new GlobalCommandTarget(getGKCtype());
+
+  /**
+   * @return Our GKC type -- this method is overridden by {@link VASSAL.build.module.GlobalKeyCommand} for module-level GKC's
+   * and by {@link DeckGlobalKeyCommand} for Deck GKC's. This value affects what configurer options are shown.
+   */
+  public GlobalCommandTarget.GKCtype getGKCtype() {
+    return GlobalCommandTarget.GKCtype.MAP;
+  }
+
   public MassKeyCommand() {
-    ActionListener al = e -> apply();
-    launch = new LaunchButton("CTRL", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al); // NON-NLS
+    final ActionListener al = e -> apply();
+
+    setButtonTextKey(BUTTON_TEXT);
+    setHotKeyKey(HOTKEY);
+
+    launch = makeLaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"),
+                              Resources.getString("Editor.GlobalKeyCommand.button_name"),
+                      "", //Default art exists, but is a little weird, and wasn't actually being defaulted to before --> "/images/keyCommand.gif", //NON-NLS
+                             al);
+  }
+
+  @Override
+  public LaunchButton getLaunchButton() {
+    return super.getLaunchButton();
   }
 
   @Override
@@ -118,7 +156,7 @@ public class MassKeyCommand extends AbstractConfigurable
       map = (Map) parent;
     }
     if (parent instanceof ToolBarComponent) {
-      ((ToolBarComponent)parent).getToolBar().add(launch);
+      ((ToolBarComponent)parent).getToolBar().add(getLaunchButton());
     }
     if (parent instanceof PropertySource) {
       propertySource = (PropertySource) parent;
@@ -130,12 +168,12 @@ public class MassKeyCommand extends AbstractConfigurable
   public void apply() {
     buildFilter();
     if (singleMap) {
-      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter()));
+      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter(), target));
     }
     else {
       final List<Map> l = Map.getMapList();
       GameModule.getGameModule().sendAndLog(
-          globalCommand.apply(l.toArray(new Map[0]), getFilter()));
+          globalCommand.apply(l.toArray(new Map[0]), getFilter(), target));
     }
   }
 
@@ -152,58 +190,55 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public String[] getAttributeDescriptions() {
     if (condition == null) {
-      return new String[]{
-        Resources.getString(Resources.DESCRIPTION),
-        Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$
-        Resources.getString("Editor.report_format"), //$NON-NLS-1$
-      };
+      return ArrayUtils.addAll(
+        super.getAttributeDescriptions(),
+        Resources.getString("Editor.GlobalKeyCommand.global_key_command"), //$NON-NLS-1$       // Key Command
+        Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$       // Apply to counters on this map only
+
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),          // Fast match target info
+
+        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties        
+        Resources.getString("Editor.GlobalKeyCommand.deck_policy"), //$NON-NLS-1$   // Apply to pieces in deck
+        Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
+        Resources.getString("Editor.report_format") //$NON-NLS-1$           // Report format
+      );
     }
     else {
       // Backward compatibility
-      return new String[]{
-        Resources.getString(Resources.DESCRIPTION),
-        Resources.getString("Editor.keyboard_command"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$
-        Resources.getString("Editor.report_format"), //$NON-NLS-1$
-        Resources.getString("Editor.MassKey.apply"), //$NON-NLS-1$
-      };
+      return ArrayUtils.addAll(
+        super.getAttributeDescriptions(),
+        Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$             // Key Command
+        Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$        // Apply to counters on this map only
+
+        Resources.getString("Editor.GlobalKeyCommand.pre_select"),           // Fast match target info
+
+        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$           // Match properties
+        Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$    // Apply to pieces in deck
+        Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
+        Resources.getString("Editor.report_format"), //$NON-NLS-1$          // Report format
+        Resources.getString("Editor.MassKey.apply") //$NON-NLS-1$           // Legacy condition
+      );
     }
   }
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{
-      NAME,
-      KEY_COMMAND,
-      PROPERTIES_FILTER,
-      SINGLE_MAP,
-      DECK_COUNT,
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY,
-      REPORT_SINGLE,
-      REPORT_FORMAT,
-      CONDITION,
-      CHECK_VALUE,
-      CHECK_PROPERTY,
-      AFFECTED_PIECE_NAMES
-    };
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
+      KEY_COMMAND,                          // Key Command
+      SINGLE_MAP,                           // Apply to counters on this map only
+
+      TARGET,                               // Fast match target info
+
+      PROPERTIES_FILTER,                    // Match properties
+      DECK_COUNT,                           // Apply to pieces in deck
+      REPORT_SINGLE,                        // Suppress individual reports?
+      REPORT_FORMAT,                        // Report format
+      CONDITION,                            // Legacy condition
+      CHECK_VALUE,                          // NOT DISPLAYED
+      CHECK_PROPERTY,                       // NOT DISPLAYED
+      AFFECTED_PIECE_NAMES                  // NOT DISPLAYED
+    );
   }
 
   public static class Prompt extends TranslatableStringEnum {
@@ -225,55 +260,56 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public Class<?>[] getAttributeTypes() {
     if (condition == null) {
-      return new Class<?>[]{
-        String.class,
-        NamedKeyStroke.class,
-        PropertyExpression.class,
-        Boolean.class,
-        DeckPolicyConfig.class,
-        String.class,
-        String.class,
-        IconConfig.class,
-        NamedKeyStroke.class,
-        Boolean.class,
-        ReportFormatConfig.class
-      };
+      return ArrayUtils.addAll(
+        super.getAttributeTypes(),
+        NamedKeyStroke.class,               // Key Command
+        Boolean.class,                      // Apply to counters on this map only
+
+        GlobalCommandTarget.class,          // Fast Match target info
+
+        PropertyExpression.class,           // Match properties
+        DeckPolicyConfig.class,             // Apply to pieces in deck
+        Boolean.class,                      // Suppress individual reports?
+        ReportFormatConfig.class            // Report format
+      );
     }
     else {
       // Backward compatibility
-      return new Class<?>[]{
-        String.class,
+      return ArrayUtils.addAll(
+        super.getAttributeTypes(),
         NamedKeyStroke.class,
-        String.class,
         Boolean.class,
+
+        GlobalCommandTarget.class,
+
+        String.class,
         DeckPolicyConfig.class,
-        String.class,
-        String.class,
-        IconConfig.class,
-        NamedKeyStroke.class,
         Boolean.class,
         ReportFormatConfig.class,
         Prompt.class
-      };
+      );
     }
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/keyCommand.gif"); // NON-NLS
+      return new IconConfigurer(key, name, "/images/keyCommand.gif"); //NON-NLS
     }
   }
+
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[0]);
     }
   }
+
   public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
-    protected static final String FIXED = "Fixed number of pieces"; // NON-NLS
-    protected static final String NONE = "No pieces"; // NON-NLS
-    protected static final String ALL = "All pieces"; // NON-NLS
+    protected static final String FIXED = "Fixed number of pieces"; //NON-NLS (really)
+    protected static final String NONE = "No pieces"; //NON-NLS (really)
+    protected static final String ALL = "All pieces"; //NON-NLS (really)
     protected IntConfigurer intConfig;
     protected TranslatingStringEnumConfigurer typeConfig;
     protected JLabel prompt;
@@ -282,7 +318,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
 
     public DeckPolicyConfig() {
-      this(true);
+      this(false);
     }
 
     public DeckPolicyConfig(boolean showPrompt) {
@@ -308,14 +344,14 @@ public class MassKeyCommand extends AbstractConfigurable
       controls2.add(typeConfig.getControls());
       controls2.add(intConfig.getControls());
 
-      PropertyChangeListener l = evt -> {
+      final PropertyChangeListener l = evt -> {
         intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-        Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
+        final Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
         if (w != null) {
           w.pack();
         }
       };
-      PropertyChangeListener l2 = evt -> setValue(getIntValue());
+      final PropertyChangeListener l2 = evt -> setValue(getIntValue());
       typeConfig.addPropertyChangeListener(l);
       typeConfig.addPropertyChangeListener(l2);
       intConfig.addPropertyChangeListener(l2);
@@ -332,7 +368,7 @@ public class MassKeyCommand extends AbstractConfigurable
     }
 
     public int getIntValue() {
-      String type = typeConfig.getValueString();
+      final String type = typeConfig.getValueString();
       if (ALL.equals(type)) {
         return -1;
       }
@@ -350,7 +386,7 @@ public class MassKeyCommand extends AbstractConfigurable
         typeConfig.setFrozen(true);
         intConfig.setFrozen(true);
         if (o instanceof Integer) {
-          Integer i = (Integer) o;
+          final Integer i = (Integer) o;
           switch (i) {
           case 0:
             typeConfig.setValue(NONE);
@@ -391,10 +427,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (KEY_COMMAND.equals(key)) {
+    if (KEY_COMMAND.equals(key)) {
       return NamedHotKeyConfigurer.encode(stroke);
     }
     else if (AFFECTED_PIECE_NAMES.equals(key)) {
@@ -424,21 +457,16 @@ public class MassKeyCommand extends AbstractConfigurable
     else if (SINGLE_MAP.equals(key)) {
       return String.valueOf(singleMap);
     }
+    else if (TARGET.equals(key)) {
+      return target.encode();
+    }
     else {
-      return launch.getAttributeValueString(key);
+      return getLaunchButton().getAttributeValueString(key);
     }
   }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
-  }
-
-  protected LaunchButton getLaunchButton() {
-    return launch;
-  }
-
-  protected void setLaunchButton(LaunchButton launch) {
-    this.launch = launch;
   }
 
   @Override
@@ -449,7 +477,7 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public void removeFrom(Buildable parent) {
     if (parent instanceof ToolBarComponent) {
-      ((ToolBarComponent)parent).getToolBar().remove(launch);
+      ((ToolBarComponent)parent).getToolBar().remove(getLaunchButton());
     }
   }
 
@@ -483,6 +511,11 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   @Override
+  public VisibilityCondition getAttributeVisibility(String key) {
+    return () -> true;
+  }
+
+  @Override
   public void setAttribute(String key, Object value) {
     if (DEPRECATED_NAME.equals(key)) {
       setAttribute(NAME, value);
@@ -490,8 +523,8 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) value);
-      if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, value);
+      if (getLaunchButton().getAttributeValueString(TOOLTIP) == null) {
+        getLaunchButton().setAttribute(TOOLTIP, value);
       }
     }
     else if (KEY_COMMAND.equals(key)) {
@@ -511,7 +544,7 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       else {
         filter = piece -> {
-          for (String s : names) {
+          for (final String s : names) {
             if (Decorator.getInnermost(piece).getName().equals(s)) {
               return true;
             }
@@ -554,8 +587,21 @@ public class MassKeyCommand extends AbstractConfigurable
       }
       singleMap = ((Boolean) value);
     }
+    else if (TARGET.equals(key)) {
+      if (value instanceof String) {
+        value = new GlobalCommandTarget((String) value);
+      }
+      target = (GlobalCommandTarget) value;
+      target.setGKCtype(getGKCtype());
+
+      // Fast match currently disabled for DGKC's - they already search only their own deck
+      if (getGKCtype() == GlobalCommandTarget.GKCtype.DECK) {
+        target.setFastMatchLocation(false);
+        target.setFastMatchProperty(false);
+      }
+    }
     else {
-      launch.setAttribute(key, value);
+      getLaunchButton().setAttribute(key, value);
     }
   }
 
@@ -572,7 +618,7 @@ public class MassKeyCommand extends AbstractConfigurable
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurable's string/expression fields if any (for search)
+   * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
@@ -586,15 +632,6 @@ public class MassKeyCommand extends AbstractConfigurable
   @Override
   public List<String> getFormattedStringList() {
     return List.of(reportFormat.getFormat());
-  }
-
-  /**
-   * {@link VASSAL.search.SearchTarget}
-   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
-   */
-  @Override
-  public List<String> getMenuTextList() {
-    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
   }
 
   /**

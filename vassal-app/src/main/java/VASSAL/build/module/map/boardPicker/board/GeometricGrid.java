@@ -31,5 +31,5 @@ public interface GeometricGrid extends MapGrid {
    * @param range the number of tiles outward from the center to include
    * @return
    */
-  public Area getGridShape(Point center, int range);
+  Area getGridShape(Point center, int range);
 }

@@ -179,9 +179,9 @@ public class ShapeItem extends Item {
     }
   }
 
-  private VisibilityCondition falseCond = () -> false;
+  private final VisibilityCondition falseCond = () -> false;
 
-  private VisibilityCondition bevelCond = () -> shape.equals(RRECT);
+  private final VisibilityCondition bevelCond = () -> shape.equals(RRECT);
 
   public int getWidth() {
     return width;
@@ -202,11 +202,11 @@ public class ShapeItem extends Item {
       si = new ShapeItemInstance();
     }
 
-    Color fg = si.getFgColor().getColor();
-    Color bg = si.getBorderColor().getColor();
+    final Color fg = si.getFgColor().getColor();
+    final Color bg = si.getBorderColor().getColor();
 
-    Point origin = layout.getPosition(this);
-    Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
+    final Point origin = layout.getPosition(this);
+    final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
     if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -260,9 +260,9 @@ public class ShapeItem extends Item {
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 
-    ShapeItem item = new ShapeItem(l);
+    final ShapeItem item = new ShapeItem(l);
 
     sd.nextToken();
     item.width = sd.nextInt(30);
@@ -276,14 +276,14 @@ public class ShapeItem extends Item {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 
     se1.append(width);
     se1.append(height);
     se1.append(shape);
     se1.append(bevel);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
 
     return se2.getValue();

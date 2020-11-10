@@ -167,7 +167,7 @@ public class ADC2Utils {
    */
   static void readBlockHeader(DataInputStream in, String string) throws IOException {
     try {
-      int header = in.readByte();
+      final int header = in.readByte();
       if (header != BLOCK_SEPARATOR)
         throw new FileFormatException("Invalid " + string + " block header.");
     }

@@ -96,7 +96,7 @@ public class PropertyChangerConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      PropertyChangeListener l = evt -> {
+      final PropertyChangeListener l = evt -> {
         updateValue();
         updateControls();
       };
@@ -118,17 +118,21 @@ public class PropertyChangerConfigurer extends Configurer {
           "Editor.PropertyChangeConfigurer.select_type",
           });
       typeConfig.addPropertyChangeListener(l);
+      typeLabel.setLabelFor(typeConfig.getControls());
 
       valueLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.new_value"));
       valueConfig = new FormattedExpressionConfigurer("", constraints);
+      valueLabel.setLabelFor(valueConfig.getControls());
       valueConfig.addPropertyChangeListener(l);
 
       promptLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.prompt"));
       promptConfig = new StringConfigurer("");
+      promptLabel.setLabelFor(promptConfig.getControls());
       promptConfig.addPropertyChangeListener(l);
 
       incrLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.increment_by"));
       incrConfig = new FormattedExpressionConfigurer("", constraints);
+      incrLabel.setLabelFor(incrConfig.getControls());
       incrConfig.addPropertyChangeListener(l);
 
       validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints, 2, 4);
@@ -181,7 +185,7 @@ public class PropertyChangerConfigurer extends Configurer {
   }
 
   protected void updateControls() {
-    PropertyChanger pc = getPropertyChanger();
+    final PropertyChanger pc = getPropertyChanger();
     typeConfig.setValue(typeToDescription.get(pc.getClass()));
     if (pc instanceof PropertySetter) {
       valueConfig.setValue(((PropertySetter) pc).getRawValue());
@@ -221,7 +225,7 @@ public class PropertyChangerConfigurer extends Configurer {
   }
 
   protected void updateValue() {
-    PropertyChanger p;
+    final PropertyChanger p;
     switch (descriptionToCode.get(typeConfig.getValueString())) {
     case PROMPT_CODE:
       p = new PropertyPrompt(constraints, promptConfig.getValueString());
@@ -244,8 +248,8 @@ public class PropertyChangerConfigurer extends Configurer {
 
   @Override
   public String getValueString() {
-    PropertyChanger propChanger = getPropertyChanger();
-    SequenceEncoder se = new SequenceEncoder(',');
+    final PropertyChanger propChanger = getPropertyChanger();
+    final SequenceEncoder se = new SequenceEncoder(',');
     if (propChanger != null) {
       switch (typeToCode.get(propChanger.getClass())) {
       case PROMPT_CODE:
@@ -275,11 +279,11 @@ public class PropertyChangerConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    PropertyChanger p;
+    final PropertyChanger p;
     if (s == null || s.length() == 0) {
       s = Character.toString(PLAIN_CODE);
     }
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     switch (sd.nextChar(PLAIN_CODE)) {
     case PROMPT_CODE:
       p = new PropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.enter_new_value")));

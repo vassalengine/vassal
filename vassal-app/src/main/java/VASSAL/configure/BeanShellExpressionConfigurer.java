@@ -153,7 +153,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
       // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
       expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]"); // NON-NLS
@@ -244,7 +244,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       }
     }
 
-    String news = work.substring(0, pos) + name + work.substring(pos);
+    final String news = work.substring(0, pos) + name + work.substring(pos);
     nameField.setText(news);
     nameField.setCaretPosition(pos + name.length());
 
@@ -329,7 +329,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       cross = IconFactory.getIcon("no", IconFamily.XSMALL);  //NON-NLS
       tick = IconFactory.getIcon("yes", IconFamily.XSMALL); //NON-NLS
 
-      BufferedImage image = new BufferedImage(cross.getIconWidth(), cross.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+      final BufferedImage image = new BufferedImage(cross.getIconWidth(), cross.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
       none = new ImageIcon(image);
 
       setStatus(UNKNOWN);
@@ -378,7 +378,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           setDetails();
         }
         else {
-          BeanShellExpressionValidator v = new BeanShellExpressionValidator(getValueString());
+          final BeanShellExpressionValidator v = new BeanShellExpressionValidator(getValueString());
           if (v.isValid()) {
             validator.setStatus(VALID);
           }

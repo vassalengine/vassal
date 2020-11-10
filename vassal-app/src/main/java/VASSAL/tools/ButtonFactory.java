@@ -29,25 +29,25 @@ import VASSAL.i18n.Resources;
 public class ButtonFactory {
 
   public static JButton getOkButton() {
-    JButton button = new JButton(Resources.getString(Resources.OK));
+    final JButton button = new JButton(Resources.getString(Resources.OK));
     button.setToolTipText(Resources.getString(Resources.OK));
     return button;
   }
 
   public static JButton getCancelButton() {
-    JButton button =  new JButton(Resources.getString(Resources.CANCEL));
+    final JButton button =  new JButton(Resources.getString(Resources.CANCEL));
     button.setToolTipText(Resources.getString(Resources.CANCEL));
     return button;
   }
 
   public static JButton getHelpButton() {
-    JButton button =  new JButton(Resources.getString(Resources.HELP));
+    final JButton button =  new JButton(Resources.getString(Resources.HELP));
     button.setToolTipText(Resources.getString(Resources.HELP));
     return button;
   }
 
   public static JButton getHelpButton(Action a) {
-    JButton button = getHelpButton();
+    final JButton button = getHelpButton();
     button.setAction(a);
     return button;
   }
