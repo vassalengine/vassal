@@ -101,7 +101,7 @@ public class GridOp extends AbstractTiledOpImpl {
     final Graphics2D g = (Graphics2D) dst.getGraphics();
     g.setRenderingHints(hints);
 
-    for (Point tile : tiles) {
+    for (final Point tile : tiles) {
       g.drawImage(sop.getTile(tile, null), tile.x * tw - x0, tile.y * th - y0, null);
     }
 
