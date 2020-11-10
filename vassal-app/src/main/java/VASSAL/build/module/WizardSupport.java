@@ -56,11 +56,13 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import net.miginfocom.swing.MigLayout;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardBranchController;
@@ -78,6 +80,7 @@ import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandFilter;
 import VASSAL.command.NullCommand;
+import VASSAL.counters.TraitConfigPanel;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FileConfigurer;
 import VASSAL.configure.PasswordConfigurer;
@@ -120,7 +123,7 @@ public class WizardSupport {
    *
    * Only adds setups that are not menus.
    *
-   * @param setup
+   * @param setup Predefined Setup
    */
   public void addPredefinedSetup(PredefinedSetup setup) {
     if (!setup.isMenu()) {
@@ -135,7 +138,7 @@ public class WizardSupport {
   /**
    * Specify a {@link Tutorial} that the user may load from the {@link InitialWelcomeSteps}
    *
-   * @param tutorial
+   * @param tutorial Tutorial
    */
   public void setTutorial(Tutorial tutorial) {
     this.tutorial = tutorial;
@@ -378,12 +381,11 @@ public class WizardSupport {
 
     protected JComponent getNameControls(final WizardController controller, final Map<String, Object> settings) {
       if (nameControls == null) {
-        final Box box = Box.createVerticalBox();
-        box.add(Box.createVerticalGlue());
+        final TraitConfigPanel box = new TraitConfigPanel(); // NON-NLS
         controller.setProblem(Resources.getString("WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
-        final StringConfigurer nameConfig = new StringConfigurer(null, Resources.getString("WizardSupport.RealName")); //$NON-NLS-1$
-        final StringConfigurer pwd = new PasswordConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
-        final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
+        final StringConfigurer nameConfig = new StringConfigurer(null, ""); //$NON-NLS-1$
+        final StringConfigurer pwd = new PasswordConfigurer(null, ""); //$NON-NLS-1$
+        final StringConfigurer pwd2 = new PasswordConfigurer(null, ""); //$NON-NLS-1$
         final PropertyChangeListener pl = evt -> {
           settings.put(GameModule.REAL_NAME, nameConfig.getValue());
           settings.put(GameModule.SECRET_NAME, pwd.getValue());
@@ -420,13 +422,11 @@ public class WizardSupport {
         nameConfig.addPropertyChangeListener(pl);
         pwd.addPropertyChangeListener(pl);
         pwd2.addPropertyChangeListener(pl);
-        box.add(nameConfig.getControls());
-        box.add(pwd.getControls());
-        box.add(pwd2.getControls());
+        box.add("WizardSupport.RealName", nameConfig);
+        box.add("WizardSupport.Password", pwd);
+        box.add("WizardSupport.ConfirmPassword", pwd2);
         final JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
-        l.setAlignmentX(Box.CENTER_ALIGNMENT);
-        box.add(l);
-        box.add(Box.createVerticalGlue());
+        box.add(l, "span 2,center"); // NON-NLS
         nameControls = box;
       }
       return nameControls;
@@ -490,10 +490,8 @@ public class WizardSupport {
           return c;
         }
       });
-      final Box box = Box.createVerticalBox();
-      box.add(Box.createVerticalGlue());
-      box.add(setupSelection);
-      box.add(Box.createVerticalGlue());
+      final JPanel box = new JPanel(new MigLayout("ins 0", "[grow,fill]")); // NON-NLS
+      box.add(setupSelection, "grow"); // NON-NLS
       controller.setProblem(description);
       return box;
     }
