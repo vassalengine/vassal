@@ -159,10 +159,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
       l.add(target.cast(this));
     }
     for (Buildable b : buildComponents) {
-      if (target.isInstance(b)) {
-        l.add(target.cast(b));
-      }
-      else if (b instanceof AbstractBuildable) {
+      if (b instanceof AbstractBuildable) {
         ((AbstractBuildable) b).addComponents(target, l);
       }
     }
