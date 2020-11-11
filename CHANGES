@@ -1,5 +1,6 @@
 3.4.9 - ???
 
+* 13608: Grids fail to display in grid editor
 * 13598: IndexOutOfBoundsException when drawing grids over SVG
 
 3.4.8 - 8 November 2020
