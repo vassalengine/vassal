@@ -111,6 +111,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     });
 
+    board.setCacheGrid(false);
     view = new GridPanel(board);
 
     view.addMouseListener(this);
@@ -202,6 +203,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   }
 
   protected void cancel() {
+    board.setCacheGrid(true);
     cancelSetMode();
     grid.setDx(saveDx);
     grid.setDy(saveDy);
@@ -497,13 +499,15 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
         final Rectangle b = getVisibleRect();
+        final Point p = new Point(b.x, b.y);
+
         b.x *= os_scale;
         b.y *= os_scale;
         b.width *= os_scale;
         b.height *= os_scale;
 
         g.clearRect(b.x, b.y, b.width, b.height);
-        board.draw(g, 0, 0, os_scale, this);
+        board.drawRegion(g, p, b, os_scale, this);
         g2d.setTransform(orig_t);
 
         if (setMode) {

@@ -96,6 +96,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected Map map;
   protected double magnification = 1.0;
 
+  protected boolean cacheGrid = true;
+
   @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";
   @Deprecated(since = "2020-08-06", forRemoval = true) protected Image boardImage;
 
@@ -111,6 +113,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public Map getMap() {
     return map;
+  }
+
+  public void setCacheGrid(boolean cg) {
+    cacheGrid = cg;
   }
 
   public void setMap(Map map) {
@@ -362,7 +368,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       op = new SolidColorOp(color == null ? Color.WHITE : color, bounds.width, bounds.height);
     }
 
-    if (grid != null) {
+    if (cacheGrid && grid != null) {
       op = new GridOp(op, grid, zoom, reversed, g2d.getRenderingHints());
     }
 
@@ -483,6 +489,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
       }
     }
+
 /*
     final StringBuilder sb = new StringBuilder();
     for (Point tile : requested.keySet().toArray(new Point[0])) {
@@ -502,6 +509,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
       System.out.print(sb.toString());
     }
 */
+
+    if (!cacheGrid && grid != null) {
+      grid.draw(g, bounds, visibleRect, zoom, reversed);
+    }
   }
 
   /**
