@@ -495,7 +495,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
         final Rectangle b = getVisibleRect();
-        final Point p = new Point(b.x, b.y);
 
         b.x *= os_scale;
         b.y *= os_scale;
@@ -503,7 +502,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         b.height *= os_scale;
 
         g.clearRect(b.x, b.y, b.width, b.height);
-        board.drawRegion(g, p, b, os_scale, this);
+        board.drawRegion(g, new Point(0, 0), b, os_scale, this);
         g2d.setTransform(orig_t);
 
         if (setMode) {
