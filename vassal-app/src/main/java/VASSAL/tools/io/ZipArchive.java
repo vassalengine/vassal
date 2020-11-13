@@ -349,13 +349,7 @@ public class ZipArchive implements FileArchive {
         return;
       }
 
-      // delete all temporary files
-      for (final Entry e : entries.values()) {
-        if (e != null && e.file != null) {
-          e.file.delete();
-        }
-      }
-
+      deleteEntryTempFiles();
       modified = false;
     }
     finally {
@@ -535,13 +529,17 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private void writeCleanup() {
+  private void deleteEntryTempFiles() {
     // Delete all temporary files for new entries
     for (Entry e : entries.values()) {
       if (e != null && e.file != null) {
         e.file.delete();
       }
     }
+  }
+
+  private void writeCleanup() {
+    deleteEntryTempFiles();
     entries.clear();
 
     closed = true;
@@ -572,6 +570,7 @@ public class ZipArchive implements FileArchive {
       moveFile(tmpFile.toPath(), archiveFile.toPath());
     }
     finally {
+      // Delete all temporary files
       writeCleanup();
     }
   }
@@ -763,23 +762,5 @@ public class ZipArchive implements FileArchive {
         closed = true;
       }
     }
-  }
-
-  public static void main(String[] args) throws IOException {
-    final ZipArchive archive = new ZipArchive("test.zip"); //NON-NLS
-
-    // write test
-    archive.add("NOTES", "NOTES"); //NON-NLS
-    archive.add("README.txt", "README.txt"); //NON-NLS
-
-    archive.flush();
-
-    // read test
-
-    try (InputStream in = archive.getInputStream("NOTES")) { //NON-NLS
-      in.transferTo(System.out);
-    }
-
-    archive.close();
   }
 }
