@@ -1,5 +1,6 @@
 3.4.9 - ???
 
+* 13616: Java reports incorrect amount of RAM on Linux ARM systems
 * 13608: Grids fail to display in grid editor
 * 13598: IndexOutOfBoundsException when drawing grids over SVG
 
