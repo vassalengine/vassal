@@ -494,6 +494,60 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private void writeNewEntries(ZipOutputStream zout) throws IOException {
+    for (Entry e : entries.values()) {
+      // skip removed or unmodified files
+      if (e == null || e.file == null) continue;
+
+      // write new or modified file into the archive
+      e.ze.setTime(e.file.lastModified());
+      zout.putNextEntry(e.ze);
+      Files.copy(e.file.toPath(), zout);
+    }
+  }
+
+  private void writeOldEntries(ZipOutputStream zout) throws IOException {
+    // copy unmodified file into the temp archive
+    try (InputStream fin = Files.newInputStream(archiveFile.toPath());
+         InputStream bin = new BufferedInputStream(fin);
+         ZipInputStream in = new ZipInputStream(bin)) {
+      final byte[] buf = new byte[8192];
+
+      ZipEntry ze = null;
+      while ((ze = in.getNextEntry()) != null) {
+        // skip modified or removed entries
+        final Entry e = entries.get(ze.getName());
+        if (e == null || e.file != null) continue;
+
+        // We can't reuse entries for compressed files because there's
+        // no way to reset all fields to acceptable values.
+        if (ze.getMethod() == ZipEntry.DEFLATED) {
+          final ZipEntry nze = new ZipEntry(ze.getName());
+          nze.setTime(ze.getTime());
+          ze = nze;
+        }
+
+        zout.putNextEntry(ze);
+        IOUtils.copy(in, zout, buf);
+
+        entries.remove(ze.getName());
+      }
+    }
+  }
+
+  private void writeCleanup() {
+    // Delete all temporary files for new entries
+    for (Entry e : entries.values()) {
+      if (e != null && e.file != null) {
+        e.file.delete();
+      }
+    }
+    entries.clear();
+
+    closed = true;
+    modified = false;
+  }
+
   private void writeToDisk() throws IOException {
     // write all files to a temporary zip archive
     final File tmpFile = makeTempFileFor(archiveFile.getName());
@@ -503,49 +557,14 @@ public class ZipArchive implements FileArchive {
          ZipOutputStream out = new ZipOutputStream(bout)) {
       out.setLevel(9);
 
-      final byte[] buf = new byte[8192];
-
       if (zipFile != null) {
         zipFile.close();
         zipFile = null;
 
-        // copy unmodified file into the temp archive
-        try (InputStream fin = new FileInputStream(archiveFile);
-             InputStream bin = new BufferedInputStream(fin);
-             ZipInputStream in = new ZipInputStream(bin)) {
-          ZipEntry ze = null;
-          while ((ze = in.getNextEntry()) != null) {
-            // skip modified or removed entries
-            final Entry e = entries.get(ze.getName());
-            if (e == null || e.file != null) continue;
-
-            // We can't reuse entries for compressed files because there's
-            // no way to reset all fields to acceptable values.
-            if (ze.getMethod() == ZipEntry.DEFLATED) {
-              final ZipEntry nze = new ZipEntry(ze.getName());
-              nze.setTime(ze.getTime());
-              ze = nze;
-            }
-
-            out.putNextEntry(ze);
-            IOUtils.copyLarge(in, out, buf);
-
-            entries.remove(ze.getName());
-          }
-        }
+        writeOldEntries(out);
       }
 
-      for (final Entry e : entries.values()) {
-        // skip removed or unmodified files
-        if (e == null || e.file == null) continue;
-
-        // write new or modified file into the temp archive
-        try (FileInputStream in = new FileInputStream(e.file)) {
-          e.ze.setTime(e.file.lastModified());
-          out.putNextEntry(e.ze);
-          IOUtils.copyLarge(in, out, buf);
-        }
-      }
+      writeNewEntries(out);
     }
 
     try {
@@ -553,16 +572,7 @@ public class ZipArchive implements FileArchive {
       moveFile(tmpFile.toPath(), archiveFile.toPath());
     }
     finally {
-      // Delete all temporary files
-      for (final Entry e : entries.values()) {
-        if (e != null && e.file != null) {
-          e.file.delete();
-        }
-      }
-
-      closed = true;
-      modified = false;
-      entries.clear();
+      writeCleanup();
     }
   }
 
