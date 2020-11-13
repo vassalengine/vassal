@@ -121,7 +121,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     scroll = new AdjustableSpeedScrollPane(
       view,
       JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-      JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+      JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
+    );
 
     scroll.setPreferredSize(new Dimension(800, 600));
     add(scroll, BorderLayout.CENTER);
@@ -322,14 +323,11 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return;
     }
 
-
     repaint();
     e.consume();
-
   }
 
   public void rebuild() {
-
   }
 
   @Override
@@ -373,7 +371,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   @Override
   public void mouseReleased(MouseEvent e) {
-
   }
 
   protected static final int DELTA = 1;
@@ -466,7 +463,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    * Panel to display the Grid Editor
    */
   protected class GridPanel extends JPanel {
-
     private static final long serialVersionUID = 1L;
     protected Board board;
 
@@ -499,7 +495,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
         final Rectangle b = getVisibleRect();
-        final Point p = new Point(b.x, b.y);
 
         b.x *= os_scale;
         b.y *= os_scale;
@@ -507,7 +502,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         b.height *= os_scale;
 
         g.clearRect(b.x, b.y, b.width, b.height);
-        board.drawRegion(g, p, b, os_scale, this);
+        board.drawRegion(g, new Point(0, 0), b, os_scale, this);
         g2d.setTransform(orig_t);
 
         if (setMode) {
@@ -538,7 +533,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     }
   }
 
-
   /*
    * Interface to be implemented by a class that wants to be edited
    * by RegularGridEditor
@@ -563,7 +557,4 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     public String getGridName();
   }
-
-
-
 }
