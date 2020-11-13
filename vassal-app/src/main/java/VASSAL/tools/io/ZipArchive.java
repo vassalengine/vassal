@@ -275,9 +275,7 @@ public class ZipArchive implements FileArchive {
       final Entry old = entries.put(path, e);
 
       // clean up old temp file
-      if (old != null && old.file != null) {
-        old.file.delete();
-      }
+      deleteEntryTempFile(old);
 
       return new ZipArchiveOutputStream(
         new FileOutputStream(e.file), new CRC32(), e.ze
@@ -327,10 +325,7 @@ public class ZipArchive implements FileArchive {
       final Entry e = entries.remove(path);
       if (e != null) {
         modified = true;
-
-        if (e.file != null) {
-          e.file.delete();
-        }
+        deleteEntryTempFile(e);
       }
 
       return e != null;
@@ -529,13 +524,15 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private void deleteEntryTempFile(Entry e) {
+    if (e != null && e.file != null) {
+      e.file.delete();
+    }
+  }
+
   private void deleteEntryTempFiles() {
     // Delete all temporary files for new entries
-    for (Entry e : entries.values()) {
-      if (e != null && e.file != null) {
-        e.file.delete();
-      }
-    }
+    entries.values().forEach(e -> deleteEntryTempFile(e));
   }
 
   private void writeCleanup() {
