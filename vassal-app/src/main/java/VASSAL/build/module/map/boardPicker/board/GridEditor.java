@@ -109,6 +109,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     });
 
+    board.setCacheGrid(false);
     view = new GridPanel(board);
 
     view.addMouseListener(this);
@@ -118,7 +119,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     scroll = new AdjustableSpeedScrollPane(
       view,
       JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-      JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+      JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
+    );
 
     scroll.setPreferredSize(new Dimension(800, 600));
     add(scroll, BorderLayout.CENTER);
@@ -179,6 +181,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   }
 
   protected void cancel() {
+    board.setCacheGrid(true);
     cancelSetMode();
     grid.setDx(saveDx);
     grid.setDy(saveDy);
@@ -297,14 +300,11 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return;
     }
 
-
     repaint();
     e.consume();
-
   }
 
   public void rebuild() {
-
   }
 
   @Override
@@ -348,7 +348,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   @Override
   public void mouseReleased(MouseEvent e) {
-
   }
 
   protected static final int DELTA = 1;
@@ -441,7 +440,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    * Panel to display the Grid Editor
    */
   protected class GridPanel extends JPanel {
-
     private static final long serialVersionUID = 1L;
     protected Board board;
 
@@ -474,13 +472,14 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
         final Rectangle b = getVisibleRect();
+
         b.x *= os_scale;
         b.y *= os_scale;
         b.width *= os_scale;
         b.height *= os_scale;
 
         g.clearRect(b.x, b.y, b.width, b.height);
-        board.draw(g, 0, 0, os_scale, this);
+        board.drawRegion(g, new Point(0, 0), b, os_scale, this);
         g2d.setTransform(orig_t);
 
         if (setMode) {

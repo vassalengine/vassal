@@ -99,7 +99,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     // Determine how much physical RAM this machine has
     // Assume 4GB if we can't determine how much RAM there is
     final long physMemoryBytes = MemoryUtils.getPhysicalMemory();
-    PHYS_MEMORY = physMemoryBytes < 0 ? 4096 : (int)(physMemoryBytes >> 20);
+    PHYS_MEMORY = physMemoryBytes <= 0 ? 4096 : (int)(physMemoryBytes >> 20);
   }
 
   protected final Window window;
