@@ -35,17 +35,10 @@ public class MemoryUtils {
    */
   public static long getPhysicalMemory() {
     final Object o = ManagementFactory.getOperatingSystemMXBean();
-
-    try {
-      if (o instanceof OperatingSystemMXBean) {
-        final OperatingSystemMXBean osb = (OperatingSystemMXBean) o;
-        return osb.getTotalPhysicalMemorySize();
-      }
+    if (o instanceof OperatingSystemMXBean) {
+      final OperatingSystemMXBean osb = (OperatingSystemMXBean) o;
+      return osb.getTotalPhysicalMemorySize();
     }
-    catch (NoClassDefFoundError e) {
-      // com.sun.management.OperatingSystemMXBean doesn't exist in this JVM
-    }
-
     // We didn't get a com.sun.management.OperatingSystemMXBean.
     return -1;
   }
