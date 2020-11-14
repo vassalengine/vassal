@@ -24,8 +24,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import VASSAL.tools.io.IOUtils;
-
 public class Compressor {
   private Compressor() {
     // Helper class - not to be instantiated alone.
@@ -55,7 +53,7 @@ public class Compressor {
       new ZipInputStream(new ByteArrayInputStream(in));
     try {
       zipIn.getNextEntry();
-      return IOUtils.toByteArray(zipIn);
+      return zipIn.readAllBytes();
     }
     finally {
       try {
@@ -67,5 +65,4 @@ public class Compressor {
       }
     }
   }
-
 }

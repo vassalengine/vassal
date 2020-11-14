@@ -24,13 +24,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
+import VASSAL.tools.ProblemDialog;
+
 /**
  * General I/O stream manipulation utilities. This class provides static
  * utility methods to reduce boilerplate I/O code.
  *
  * @author Joel Uckelman
  * @since 3.1.0
+ *
+ * @deprecated Use {@link org.apache.commons.io.IOUtils} instead.
  */
+@Deprecated(since = "2020-11-14", forRemoval = true)
 public class IOUtils extends org.apache.commons.io.IOUtils {
   protected IOUtils() {}
 
@@ -45,8 +50,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @param out the destination
    * @throws IOException if one occurs while reading or writing
    */
+  @Deprecated(since = "2020-11-14", forRemoval = true)
   public static int copy(FileInputStream in, FileOutputStream out)
                                                            throws IOException {
+    ProblemDialog.showDeprecated("2020-11-14");
     final long count = copyLarge(in, out);
     return count > Integer.MAX_VALUE ? -1 : (int) count;
   }
@@ -62,8 +69,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @param out the destination
    * @throws IOException if one occurs while reading or writing
    */
+  @Deprecated(since = "2020-11-14", forRemoval = true)
   public static long copyLarge(FileInputStream in, FileOutputStream out)
                                                            throws IOException {
+    ProblemDialog.showDeprecated("2020-11-14");
     final FileChannel inc = in.getChannel();
     return inc.transferTo(0L, inc.size(), out.getChannel());
   }
@@ -80,8 +89,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @return the number of bytes copied
    * @throws IOException if one occurs while reading or writing
    */
+  @Deprecated(since = "2020-11-14", forRemoval = true)
   public static int copy(InputStream in, OutputStream out, byte[] buffer)
                                                            throws IOException {
+    ProblemDialog.showDeprecated("2020-11-14");
     final long count = copyLarge(in, out, buffer);
     return count > Integer.MAX_VALUE ? -1 : (int) count;
   }
@@ -93,8 +104,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @param c a (possibly <code>null</code>) {@link AutoCloseable}
    * @deprecated use try with resources or close and catch manually
    */
-  @Deprecated
+  @Deprecated(since = "2020-11-14", forRemoval = true)
   public static void closeQuietly(AutoCloseable c) {
+    ProblemDialog.showDeprecated("2020-11-14");
+
     if (c == null) return;
 
     try {

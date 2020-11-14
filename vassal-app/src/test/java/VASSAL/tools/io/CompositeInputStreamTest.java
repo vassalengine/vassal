@@ -75,7 +75,7 @@ public class CompositeInputStreamTest {
     final InputStream in = new CompositeInputStream(ch);
 
     final byte[] actual = new byte[100];
-    final int count = IOUtils.read(in, actual);
+    final int count = in.readNBytes(actual, 0, actual.length);
 
     assertEquals(actual.length, count);
     assertEquals(-1, in.read());

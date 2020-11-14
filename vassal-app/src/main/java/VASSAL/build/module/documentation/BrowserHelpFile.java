@@ -61,7 +61,6 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -164,7 +163,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       else {
 // FIXME: no way to distinguish between read and write errors here
         try (FileOutputStream fos = new FileOutputStream(new File(output, entry.getName()))) {
-          IOUtils.copy(in, fos);
+          in.transferTo(fos);
         }
       }
     }
@@ -366,7 +365,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         out.putNextEntry(entry);
 
         try (FileInputStream in = new FileInputStream(packed)) {
-          IOUtils.copy(in, out);
+          in.transferTo(out);
         }
       }
     }

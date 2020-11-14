@@ -35,7 +35,6 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
 import org.apache.commons.lang3.StringUtils;
 
@@ -243,7 +242,7 @@ public class ArchiveWriter extends DataArchive {
    */
   public void addFile(String fileName, InputStream in) {
     try (OutputStream out = archive.getOutputStream(fileName)) {
-      IOUtils.copy(in, out);
+      in.transferTo(out);
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());

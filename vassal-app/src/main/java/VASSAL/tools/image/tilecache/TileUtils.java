@@ -42,7 +42,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * A class for reading and writing image tiles.
@@ -119,12 +118,12 @@ public class TileUtils {
     final int type = bb.getInt();
 
     // read the image data
-    final byte[] cdata = IOUtils.toByteArray(in);
+    final byte[] cdata = in.readAllBytes();
 
     // decompress the image data
     try (InputStream bin = new ByteArrayInputStream(cdata);
          InputStream zin = new GZIPInputStream(bin)) {
-      bb = ByteBuffer.wrap(IOUtils.toByteArray(zin));
+      bb = ByteBuffer.wrap(zin.readAllBytes());
     }
 
     // build the image
@@ -159,7 +158,7 @@ public class TileUtils {
   static byte[] readHeader(InputStream in) throws IOException {
     // read the header
     final byte[] header = new byte[18];
-    if (IOUtils.read(in, header) != header.length) {
+    if (in.readNBytes(header, 0, header.length) != header.length) {
       throw new IOException("header too short!");
     }
 

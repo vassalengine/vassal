@@ -60,7 +60,6 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
 
 /**
@@ -442,7 +441,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final byte[] data;
 
     try (InputStream stream = getInputStream(slashname + ".class")) { //NON-NLS
-      data = IOUtils.toByteArray(stream);
+      data = stream.readAllBytes();
     }
     catch (IOException e) {
       throw new ClassNotFoundException("Unable to load class " + name, e);
@@ -756,12 +755,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * Read all available bytes from the given InputStream.
-   * @deprecated Use {@link IOUtils#toByteArray(InputStream)} instead.
+   * @deprecated Use {@link InputStream.readAllBytes()} instead.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static byte[] getBytes(InputStream in) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    return IOUtils.toByteArray(in);
+    return in.readAllBytes();
   }
 
   /**
