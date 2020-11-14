@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2009 by Joel Uckelman
+ * Copyright (c) 2009-2020 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -15,7 +14,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
 package VASSAL.tools.io;
 
 import java.io.BufferedInputStream;
@@ -33,6 +31,7 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +50,11 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
-import VASSAL.i18n.Resources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
 /**
@@ -60,6 +62,8 @@ import VASSAL.tools.concurrent.CountingReadWriteLock;
  * @since 3.2.0
  */
 public class ZipArchive implements FileArchive {
+  private static final Logger logger = LoggerFactory.getLogger(ZipArchive.class);
+
   private final File archiveFile;
   private ZipFile zipFile;
 
@@ -402,85 +406,87 @@ public class ZipArchive implements FileArchive {
   }
 
   private void moveFile(Path src, Path dst) throws IOException {
-    // Replace dst with src
     try {
-      // attempt an atomic move
-      Files.move(src, dst, StandardCopyOption.ATOMIC_MOVE);
+      Files.move(src, dst, StandardCopyOption.REPLACE_EXISTING);
     }
-    catch (IOException ignore) {
-      // Atomic move failed; this doesn't necessarily indicate a problem, as
-      // some filesystems don't support atomic moves and atomic moves are
-      // impossible when the source and destination aren't on the same
-      // filesystem.
+    catch (IOException e) {
+// TODO: check how this shows up
+      throw new FileSystemException(
+        dst.toFile().getName(),
+        src.toAbsolutePath().toString(),
+        String.format(
+          Resources.getString("Editor.ZipArchive.overwrite") + "\n%s", //NON-NLS
+          dst.toFile().getName(),
+          src.toAbsolutePath().toString(),
+          e.getMessage()
+        )
+      );
+    }
+  }
 
-      try {
-        // attempt to copy to the destination
-        Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
+  private OutputStream openNew(Path p) throws IOException {
+    return Files.newOutputStream(
+      p, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE
+    );
+  }
+
+  private OutputStream openExisting(Path p) throws IOException {
+    return Files.newOutputStream(
+      p, StandardOpenOption.WRITE
+    );
+  }
+
+  private void writeToZip(OutputStream out) throws IOException {
+    try (OutputStream bout = new BufferedOutputStream(out);
+         ZipOutputStream zout = new ZipOutputStream(bout)) {
+      zout.setLevel(9);
+      writeOldEntries(zout);
+      writeNewEntries(zout);
+    }
+  }
+
+  private void writeToDisk() throws IOException {
+    if (zipFile == null) {
+      // No existing zipfile so no old entries to copy;
+      // write directly to the destination
+      try (OutputStream out = openNew(archiveFile.toPath())) {
+        writeToZip(out);
       }
-      catch (IOException copyException) {
-        final Path dst2 = dst.resolveSibling(src.getFileName()); // Our "temp" name but in the destination directory
-        final String fmt = Resources.getString("Editor.ZipArchive.overwrite") + "\n%s"; //NON-NLS
-        try {
-          // Try to at least put it in same directory as the module
-          Files.copy(src, dst2, StandardCopyOption.REPLACE_EXISTING);
-
-          // Since we at least managed to copy it out of the temp directory, we delete the one out of our temp directory
-          try {
-            Files.delete(src);
-          }
-          catch (IOException ignoreDeleteException) {
-            // No action because we have a more important and informative exception to throw
-          }
-
-          // Tell where we moved the file to - don't need the obnoxious long paths in this case because they're in same directory.
-          throw new FileSystemException(
-            dst.toFile().getName(),
-            dst2.toFile().getName(),
-            String.format(
-              fmt,
-              dst.toFile().getName(),
-              dst2.toFile().getName(),
-              copyException.getMessage()
-            )
-          );
-        }
-        catch (FileSystemException whereWePutIt) {
-          // If we picked up a FileSystemException, then it came from the inner loop meaning we at least "got halfway", so
-          // we pass that exception on
-          throw whereWePutIt;
-        }
-        catch (IOException didEverythingFail) {
-          throw new FileSystemException(
-            dst.toFile().getName(),
-            src.toAbsolutePath().toString(),
-            String.format(
-              fmt,
-              dst.toFile().getName(),
-              src.toAbsolutePath().toString(),
-              copyException.getMessage() // Yes we are going to report the message from the FIRST copy exception in this case.
-            )
-          );
-        }
+    }
+    else {
+      // Destination already exists, must copy old entries;
+      // write to temp file first, then move to destination
+      final File tmpFile = makeTempFileFor(archiveFile.getName());
+      try (OutputStream out = openExisting(tmpFile.toPath())) {
+        writeToZip(out);
       }
 
       try {
-        // successful copy, so remove the source
-        Files.delete(src);
+        // Close so we can overwrite it
+        zipFile.close();
+        zipFile = null;
+
+        // Replace old archive with temp archive
+        Files.move(tmpFile.toPath(), archiveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
       }
       catch (IOException e) {
-        // successful copy, but removing the source failed
-        final String fmt = "File %s saved, but unable to remove temporary file %s:\n %s";
-        throw new IOException(
-          String.format(
-            fmt,
-            dst.toFile().getName(),
-            src.toAbsolutePath(),
-            e.getMessage()
-          ),
-          e
-        );
+        // Delete the failed temp archive
+        try {
+          Files.delete(tmpFile.toPath());
+        }
+        catch (IOException de) {
+          logger.error("Failed to delete temp archive " + tmpFile, de);
+        }
+
+        // Reopen the original archive
+        zipFile = new ZipFile(archiveFile);
+
+        throw e;
       }
     }
+
+    // Success if we're here, so clean up
+    writeCleanup();
   }
 
   private void writeNewEntries(ZipOutputStream zout) throws IOException {
@@ -496,7 +502,11 @@ public class ZipArchive implements FileArchive {
   }
 
   private void writeOldEntries(ZipOutputStream zout) throws IOException {
-    // copy unmodified file into the temp archive
+    if (!archiveFile.exists()) {
+      return;
+    }
+
+    // copy unmodified entries into the archive
     try (InputStream fin = Files.newInputStream(archiveFile.toPath());
          InputStream bin = new BufferedInputStream(fin);
          ZipInputStream in = new ZipInputStream(bin)) {
@@ -517,9 +527,7 @@ public class ZipArchive implements FileArchive {
         }
 
         zout.putNextEntry(ze);
-        IOUtils.copy(in, zout, buf);
-
-        entries.remove(ze.getName());
+        IOUtils.copyLarge(in, zout, buf);
       }
     }
   }
@@ -538,38 +546,8 @@ public class ZipArchive implements FileArchive {
   private void writeCleanup() {
     deleteEntryTempFiles();
     entries.clear();
-
     closed = true;
     modified = false;
-  }
-
-  private void writeToDisk() throws IOException {
-    // write all files to a temporary zip archive
-    final File tmpFile = makeTempFileFor(archiveFile.getName());
-
-    try (OutputStream fout = new FileOutputStream(tmpFile);
-         OutputStream bout = new BufferedOutputStream(fout);
-         ZipOutputStream out = new ZipOutputStream(bout)) {
-      out.setLevel(9);
-
-      if (zipFile != null) {
-        zipFile.close();
-        zipFile = null;
-
-        writeOldEntries(out);
-      }
-
-      writeNewEntries(out);
-    }
-
-    try {
-      // Replace old archive with temp archive
-      moveFile(tmpFile.toPath(), archiveFile.toPath());
-    }
-    finally {
-      // Delete all temporary files
-      writeCleanup();
-    }
   }
 
   /** {@inheritDoc} */
