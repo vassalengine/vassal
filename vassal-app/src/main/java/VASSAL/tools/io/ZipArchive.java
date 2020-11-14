@@ -405,25 +405,6 @@ public class ZipArchive implements FileArchive {
     return Files.createTempFile(Info.getTempDir().toPath(), base, ext).toFile();
   }
 
-  private void moveFile(Path src, Path dst) throws IOException {
-    try {
-      Files.move(src, dst, StandardCopyOption.REPLACE_EXISTING);
-    }
-    catch (IOException e) {
-// TODO: check how this shows up
-      throw new FileSystemException(
-        dst.toFile().getName(),
-        src.toAbsolutePath().toString(),
-        String.format(
-          Resources.getString("Editor.ZipArchive.overwrite") + "\n%s", //NON-NLS
-          dst.toFile().getName(),
-          src.toAbsolutePath().toString(),
-          e.getMessage()
-        )
-      );
-    }
-  }
-
   private OutputStream openNew(Path p) throws IOException {
     return Files.newOutputStream(
       p, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE
