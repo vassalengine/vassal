@@ -7,13 +7,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
+
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import VASSAL.Info;
-import VASSAL.tools.io.IOUtils;
-
 
 public class VersionUtils {
   protected VersionUtils() {}

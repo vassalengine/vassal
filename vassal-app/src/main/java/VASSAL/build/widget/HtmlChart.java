@@ -43,6 +43,8 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 
+import org.apache.commons.io.IOUtils;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -54,7 +56,6 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;

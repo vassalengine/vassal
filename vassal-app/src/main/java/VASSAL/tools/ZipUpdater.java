@@ -42,8 +42,6 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import VASSAL.tools.io.IOUtils;
-
 /**
  * Automatically builds a .jar file that will update a Zip archive.
  * Usage:  java VASSAL.tools.ZipUpdater <oldArchiveName> <newArchiveName>
@@ -118,7 +116,7 @@ public class ZipUpdater implements Runnable {
   private long writeEntry(InputStream zis, ZipOutputStream output, ZipEntry newEntry) throws IOException {
     // FIXME: is there a better way to do this, so that the whole input
     // stream isn't in memory at once?
-    final byte[] contents = IOUtils.toByteArray(zis);
+    final byte[] contents = zis.readAllBytes();
     final CRC32 checksum = new CRC32();
     checksum.update(contents);
     if (newEntry.getMethod() == ZipEntry.STORED) {

@@ -50,7 +50,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
+
 import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
@@ -80,7 +83,6 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;

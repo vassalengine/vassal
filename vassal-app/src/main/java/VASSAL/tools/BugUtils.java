@@ -1,16 +1,17 @@
 package VASSAL.tools;
 
-import VASSAL.build.GameModule;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.IOUtils;
 
 import VASSAL.Info;
-import VASSAL.tools.io.IOUtils;
-import java.util.stream.Stream;
+import VASSAL.build.GameModule;
 
 public class BugUtils {
 

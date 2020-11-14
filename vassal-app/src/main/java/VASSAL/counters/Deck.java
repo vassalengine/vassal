@@ -55,6 +55,8 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -83,7 +85,6 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.ProblemDialog;
 
 /**

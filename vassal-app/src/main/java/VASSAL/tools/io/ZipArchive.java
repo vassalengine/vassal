@@ -49,6 +49,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 
 import VASSAL.i18n.Resources;
 import VASSAL.Info;
@@ -160,7 +161,7 @@ public class ZipArchive implements FileArchive {
     for (final String name : src.getFiles()) {
       try (InputStream in = src.getInputStream(name);
            OutputStream out = getOutputStream(name)) {
-        IOUtils.copy(in, out, buf);
+        IOUtils.copyLarge(in, out, buf);
       }
     }
 
@@ -312,7 +313,7 @@ public class ZipArchive implements FileArchive {
   @Override
   public void add(String path, InputStream in) throws IOException {
     try (OutputStream out = getOutputStream(path)) {
-      IOUtils.copy(in, out);
+      in.transferTo(out);
     }
   }
 
@@ -527,7 +528,7 @@ public class ZipArchive implements FileArchive {
             }
 
             out.putNextEntry(ze);
-            IOUtils.copy(in, out, buf);
+            IOUtils.copyLarge(in, out, buf);
 
             entries.remove(ze.getName());
           }
@@ -542,7 +543,7 @@ public class ZipArchive implements FileArchive {
         try (FileInputStream in = new FileInputStream(e.file)) {
           e.ze.setTime(e.file.lastModified());
           out.putNextEntry(e.ze);
-          IOUtils.copy(in, out, buf);
+          IOUtils.copyLarge(in, out, buf);
         }
       }
     }
@@ -766,7 +767,7 @@ public class ZipArchive implements FileArchive {
     // read test
 
     try (InputStream in = archive.getInputStream("NOTES")) { //NON-NLS
-      IOUtils.copy(in, System.out);
+      in.transferTo(System.out);
     }
 
     archive.close();

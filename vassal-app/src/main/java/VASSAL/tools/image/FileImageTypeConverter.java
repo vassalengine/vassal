@@ -31,7 +31,6 @@ import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Reference;
 
@@ -164,7 +163,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
 
     for (int y = 0; y < h; ++y) {
       // read the row from the stream
-      IOUtils.read(in, bytes);
+      in.readNBytes(bytes, 0, bytes.length);
 
       // convert the bytes to an int[]
       bb.asIntBuffer().get(row);

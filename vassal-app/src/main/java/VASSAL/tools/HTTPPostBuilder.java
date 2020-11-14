@@ -30,8 +30,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
-import VASSAL.tools.io.IOUtils;
-
 /**
  * Builds HTTP POST requests conveniently.
  *
@@ -109,7 +107,7 @@ public class HTTPPostBuilder {
     bw.flush();
 
     // write the file to the byte buffer
-    IOUtils.copy(in, bytes);
+    in.transferTo(bytes);
 
     bw.append(endl);
   }

@@ -89,7 +89,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   public static void main(String[] args) throws IOException {
     try (InputStream in = args.length > 0 ? new FileInputStream(args[0]) : System.in;
          OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(System.out))) {
-      IOUtils.copy(in, out);
+      in.transferTo(out);
     }
 
     System.exit(0);

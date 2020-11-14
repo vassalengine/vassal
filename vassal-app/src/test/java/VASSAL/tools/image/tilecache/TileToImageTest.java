@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import VASSAL.tools.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 
 import org.junit.After;
 import org.junit.Test;

@@ -49,7 +49,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MacOSXMenuManager;
 
@@ -216,7 +215,7 @@ public class ModuleManager {
       out.flush();
 
       try (InputStream in = clientSocket.getInputStream()) {
-        IOUtils.copy(in, System.err);
+        in.transferTo(System.err);
       }
     }
     catch (UnknownHostException e) {

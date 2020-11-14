@@ -112,7 +112,7 @@ public class InputOutputStreamPump implements InputStreamPump,
     running = true;
 
     try {
-      IOUtils.copy(in, out);
+      in.transferTo(out);
     }
     catch (IOException e) {
       // Tell someone who cares.
