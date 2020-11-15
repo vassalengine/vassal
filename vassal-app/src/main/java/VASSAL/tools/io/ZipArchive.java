@@ -398,9 +398,13 @@ public class ZipArchive implements FileArchive {
   }
 
   private static File makeTempFileFor(String path) throws IOException {
+    return makeTempFileFor(path, Info.getTempDir().toPath());
+  }
+
+  private static File makeTempFileFor(String path, Path tmpDir) throws IOException {
     final String base = FilenameUtils.getBaseName(path) + "_";
     final String ext = extensionOf(path);
-    return Files.createTempFile(Info.getTempDir().toPath(), base, ext).toFile();
+    return Files.createTempFile(tmpDir, base, ext).toFile();
   }
 
   private static OutputStream openNew(Path p) throws IOException {
@@ -435,7 +439,9 @@ public class ZipArchive implements FileArchive {
     else {
       // Destination already exists, must copy old entries;
       // write to temp file first, then move to destination
-      final File tmpFile = makeTempFileFor(archiveFile.getName());
+      final File tmpFile = makeTempFileFor(
+        archiveFile.getName(), archiveFile.toPath().getParent()
+      );
       try (OutputStream out = openExisting(tmpFile.toPath())) {
         writeToZip(out);
       }
