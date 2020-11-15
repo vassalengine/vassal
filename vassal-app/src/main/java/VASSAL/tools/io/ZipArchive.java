@@ -394,24 +394,24 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private String extensionOf(String path) {
+  private static String extensionOf(String path) {
     final int dot = path.lastIndexOf('.');
     return dot == -1 ? "" : path.substring(dot);
   }
 
-  private File makeTempFileFor(String path) throws IOException {
+  private static File makeTempFileFor(String path) throws IOException {
     final String base = FilenameUtils.getBaseName(path) + "_";
     final String ext = extensionOf(path);
     return Files.createTempFile(Info.getTempDir().toPath(), base, ext).toFile();
   }
 
-  private OutputStream openNew(Path p) throws IOException {
+  private static OutputStream openNew(Path p) throws IOException {
     return Files.newOutputStream(
       p, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE
     );
   }
 
-  private OutputStream openExisting(Path p) throws IOException {
+  private static OutputStream openExisting(Path p) throws IOException {
     return Files.newOutputStream(
       p, StandardOpenOption.WRITE
     );
@@ -448,7 +448,10 @@ public class ZipArchive implements FileArchive {
         zipFile = null;
 
         // Replace old archive with temp archive
-        Files.move(tmpFile.toPath(), archiveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(
+          tmpFile.toPath(), archiveFile.toPath(),
+          StandardCopyOption.REPLACE_EXISTING
+        );
       }
       catch (IOException e) {
         // Delete the failed temp archive
@@ -483,7 +486,8 @@ public class ZipArchive implements FileArchive {
   }
 
   private void writeOldEntries(ZipOutputStream zout) throws IOException {
-    if (!archiveFile.exists()) {
+    if (zipFile == null ) {
+      // no old entries
       return;
     }
 
@@ -513,6 +517,13 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  private void writeCleanup() {
+    deleteEntryTempFiles();
+    entries.clear();
+    closed = true;
+    modified = false;
+  }
+
   private void deleteEntryTempFile(Entry e) {
     if (e != null && e.file != null) {
       e.file.delete();
@@ -522,13 +533,6 @@ public class ZipArchive implements FileArchive {
   private void deleteEntryTempFiles() {
     // Delete all temporary files for new entries
     entries.values().forEach(e -> deleteEntryTempFile(e));
-  }
-
-  private void writeCleanup() {
-    deleteEntryTempFiles();
-    entries.clear();
-    closed = true;
-    modified = false;
   }
 
   /** {@inheritDoc} */
