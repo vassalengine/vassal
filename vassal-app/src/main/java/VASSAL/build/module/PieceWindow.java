@@ -18,7 +18,6 @@ package VASSAL.build.module;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.Collection;
@@ -55,7 +54,6 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SplitPane;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A window from which players can create new {@link GamePiece}s by

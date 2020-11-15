@@ -2608,15 +2608,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       boards.clear();
       if (splitPane != null) {
         if (splitPane.isBottomVisible()) {
+          final Component c = mainWindowDock.getTopLevelAncestor();
           final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
           p.setDisableAutoWrite(true);
           p.getOption(MAIN_WINDOW_HEIGHT).setValue(c.getHeight());
           p.getOption(MAIN_WINDOW_WIDTH).setValue(c.getWidth());
           p.saveGlobal();
           p.setDisableAutoWrite(false);
-
-          Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-               .setValue(splitPane.getTopLevelAncestor().getHeight());
           splitPane.hideBottom();
         }
         toolBar.setVisible(false);
