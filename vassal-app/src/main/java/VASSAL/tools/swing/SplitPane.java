@@ -43,7 +43,7 @@ public class SplitPane extends JSplitPane {
     if (c.isVisible() != vis) {
       toggleComponent(c);
     }
-  } 
+  }
 
   public boolean isLeftVisible() {
     return getLeftComponent().isVisible();
