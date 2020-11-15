@@ -27,7 +27,6 @@ import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -54,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
 /**
@@ -474,7 +472,7 @@ public class ZipArchive implements FileArchive {
   }
 
   private void writeNewEntries(ZipOutputStream zout) throws IOException {
-    for (Entry e : entries.values()) {
+    for (final Entry e : entries.values()) {
       // skip removed or unmodified files
       if (e == null || e.file == null) continue;
 
@@ -486,7 +484,7 @@ public class ZipArchive implements FileArchive {
   }
 
   private void writeOldEntries(ZipOutputStream zout) throws IOException {
-    if (zipFile == null ) {
+    if (zipFile == null) {
       // no old entries
       return;
     }
