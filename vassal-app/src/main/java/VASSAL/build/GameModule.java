@@ -1777,7 +1777,12 @@ public class GameModule extends AbstractConfigurable
       GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, writer.getName());
+      WriteErrorDialog.showError(
+        GameModule.getGameModule().getPlayerWindow(),
+        e,
+        writer.getArchive().getFile(),
+        "Error.new_file_write_error"
+      );
     }
   }
 
