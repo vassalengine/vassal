@@ -236,9 +236,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
     splitPane = new SplitPane(SplitPane.HORIZONTAL_SPLIT, root, controlPanel);
-    cppar.add(splitPane, i);
-
     splitPane.hideLeft();
+    cppar.add(splitPane, i);
   }
 
   /**
