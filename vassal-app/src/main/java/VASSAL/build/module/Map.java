@@ -2561,16 +2561,20 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
-          final int height = (Integer)
-            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-          if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-            final int width = (Integer)
-              Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
-            final Container tla = splitPane.getTopLevelAncestor();
-            tla.setSize(width > 0 ? width : tla.getWidth(), height);
-          }
-
           splitPane.showBottom();
+
+          // set the stored window sizes if that's enabled
+          if (Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+            final int height = (Integer)
+              Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
+            if (height > 0) {
+              final int width = (Integer)
+                Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
+
+              final Container tla = splitPane.getTopLevelAncestor();
+              tla.setSize(width > 0 ? width : tla.getWidth(), height);
+            }
+          }
         }
 
         if (toolBar.getParent() == null) {
