@@ -25,7 +25,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -1766,8 +1765,7 @@ public class GameModule extends AbstractConfigurable
 
     try {
       final String save = buildString();
-      writer.addFile(BUILDFILE,
-        new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
+      writer.addFile(BUILDFILE, save.getBytes(StandardCharsets.UTF_8));
 
       writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
