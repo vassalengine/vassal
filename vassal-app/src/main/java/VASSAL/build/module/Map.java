@@ -779,7 +779,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
       Prefs.getGlobalPrefs().addOption(null, configWidth);
 
-      final Component controlPanel = GameModule.getGameModule().getControlPanel();
+      final Component controlPanel = g.getControlPanel();
       final Container cppar = controlPanel.getParent();
       final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
@@ -808,7 +808,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       }
     });
 
-    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
     g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new IntConfigurer(
@@ -818,7 +817,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       )
     );
 
-    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
+    g.addSideChangeListenerToPlayerRoster(this);
 
     // Create the Configurer for the Pref
     preferredScrollConfig = new IntConfigurer(
@@ -856,16 +855,19 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getGameState().removeGameComponent(this);
+    final GameModule g = GameModule.getGameModule();
+    g.getGameState().removeGameComponent(this);
+
     final Window w = SwingUtilities.getWindowAncestor(theMap);
     if (w != null) {
       w.dispose();
     }
-    GameModule.getGameModule().getToolBar().remove(getLaunchButton());
+
+    g.getToolBar().remove(getLaunchButton());
     idMgr.remove(this);
     if (picker != null) {
-      GameModule.getGameModule().removeCommandEncoder(picker);
-      GameModule.getGameModule().getGameState().addGameComponent(picker);
+      g.removeCommandEncoder(picker);
+      g.getGameState().addGameComponent(picker);
     }
     PlayerRoster.removeSideChangeListener(this);
   }
@@ -914,8 +916,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public Board findBoard(Point p) {
     for (final Board b : boards) {
-      if (b.bounds().contains(p))
+      if (b.bounds().contains(p)) {
         return b;
+      }
     }
     return null;
   }
