@@ -98,6 +98,9 @@ public class WriteErrorDialog {
       // AccessDeniedException has a useless message
       msg = "Access denied";
     }
+    else if (e instanceof FileSystemException) {
+      msg = ((FileSystemException) e).getReason();
+    }
     else {
       msg = e.getMessage();
     }
