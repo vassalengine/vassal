@@ -215,5 +215,4 @@ public class PlayerWindow extends JFrame {
   public void addChatter(Chatter chatter) {
     controlPanel.add(chatter, BorderLayout.CENTER);
   }
-
 }

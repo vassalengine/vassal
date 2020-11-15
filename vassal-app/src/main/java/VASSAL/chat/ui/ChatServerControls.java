@@ -81,7 +81,7 @@ public class ChatServerControls extends AbstractBuildable {
   protected JButton configServerButton;
   protected String configServerText;
 
-  @Deprecated
+  @Deprecated(since = "2020-11-15", forRemoval = true)
   protected ComponentSplitter.SplitPane splitter;
 
   protected SplitPane splitPane;

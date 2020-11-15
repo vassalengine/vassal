@@ -771,9 +771,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     g.getToolBar().add(getLaunchButton());
 
     if (shouldDockIntoMainWindow()) {
-      final IntConfigurer config =
+      final IntConfigurer configHeight =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, config);
+      Prefs.getGlobalPrefs().addOption(null, configHeight);
 
       final IntConfigurer configWidth =
         new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
@@ -793,6 +793,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       g.addKeyStrokeSource(
         new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
     }
+
     // Fix for bug 1630993: toolbar buttons not appearing
     toolBar.addHierarchyListener(new HierarchyListener() {
       @Override
@@ -2608,7 +2609,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       boards.clear();
       if (splitPane != null) {
         if (splitPane.isBottomVisible()) {
-          final Component c = mainWindowDock.getTopLevelAncestor();
+          final Component c = splitPane.getTopLevelAncestor();
           final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
           p.setDisableAutoWrite(true);
           p.getOption(MAIN_WINDOW_HEIGHT).setValue(c.getHeight());
