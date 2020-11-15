@@ -50,7 +50,6 @@ public class AbstractBuildableTest {
   private final Buildable c1_1_1;
   private final Buildable c1_2;
 
-
   public AbstractBuildableTest() {
     parent = new FakeParent();
     c1 = new FakeOne();
@@ -76,56 +75,56 @@ public class AbstractBuildableTest {
   @Test
   public void testGetAllDescendantComponentsFakeBuildable() {
     assertThat(
-        parent.getAllDescendantComponentsOf(FakeBuildable.class),
-        containsInAnyOrder(parent, c1, c2, c3, c13, c1_1, c1_1_1, c1_2)
+      parent.getAllDescendantComponentsOf(FakeBuildable.class),
+      containsInAnyOrder(parent, c1, c2, c3, c13, c1_1, c1_1_1, c1_2)
     );
   }
 
   @Test
   public void testGetAllDescendantComponentsFakeParent() {
     assertThat(
-        parent.getAllDescendantComponentsOf(FakeParent.class),
-        is(List.of(parent))
+      parent.getAllDescendantComponentsOf(FakeParent.class),
+      is(List.of(parent))
     );
   }
 
   @Test
   public void testGetAllDescendantComponentsFakeOne() {
     assertThat(
-        parent.getAllDescendantComponentsOf(FakeOne.class),
-        is(List.of(c1, c1_1, c1_1_1))
+      parent.getAllDescendantComponentsOf(FakeOne.class),
+      is(List.of(c1, c1_1, c1_1_1))
     );
   }
 
   @Test
   public void testGetAllDescendantComponentsFakeTwo() {
     assertThat(
-        parent.getAllDescendantComponentsOf(FakeTwo.class),
-        is(List.of(c1_2, c2))
+      parent.getAllDescendantComponentsOf(FakeTwo.class),
+      is(List.of(c1_2, c2))
     );
   }
 
   @Test
   public void testGetAllDescendantComponentsFakeThree() {
     assertThat(
-        parent.getAllDescendantComponentsOf(FakeThree.class),
-        is(List.of(c3))
+      parent.getAllDescendantComponentsOf(FakeThree.class),
+      is(List.of(c3))
     );
   }
 
   @Test
   public void testGetAllDescendantComponentsNone() {
     assertThat(
-        parent.getAllDescendantComponentsOf(None.class),
-        is(List.of())
+      parent.getAllDescendantComponentsOf(None.class),
+      is(List.of())
     );
   }
 
   @Test
   public void testGetAllDescendantComponentsOne() {
     assertThat(
-        parent.getAllDescendantComponentsOf(One.class),
-        is(List.of(c1, c1_1, c1_1_1, c13))
+      parent.getAllDescendantComponentsOf(One.class),
+      is(List.of(c1, c1_1, c1_1_1, c13))
     );
   }
 }
