@@ -28,6 +28,8 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Labeler;
+import VASSAL.counters.Marker;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
