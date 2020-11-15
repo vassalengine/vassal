@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -1779,14 +1778,6 @@ public class GameModule extends AbstractConfigurable
 
       GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
-    catch (FileSystemException e) {
-      final String[] msgs = e.getLocalizedMessage().split("\n");
-      for (final String msg : msgs) {
-        warn(msg); //NON-NLS //BR// Might as well leave them with a chat log record of where the tmp file got written.
-      }
-      WriteErrorDialog.reportFileOverwriteFailure(e, "Error.module_overwrite_error"); //NON-NLS
-    }
-    // Something Truly Terrible has happened if we get here.
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
     }
