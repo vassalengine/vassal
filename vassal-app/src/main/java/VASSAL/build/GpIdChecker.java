@@ -33,8 +33,6 @@ import VASSAL.counters.Marker;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
-import VASSAL.counters.Marker;
-import VASSAL.counters.Labeler;
 import VASSAL.i18n.Resources;
 
 /**
