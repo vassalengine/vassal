@@ -283,13 +283,13 @@ public class Prefs implements Closeable {
   public static void initSharedGlobalPrefs() {
     getGlobalPrefs();
 
-    // Option to remember main window height
-    final BooleanConfigurer rememberConf = new BooleanConfigurer(
-          MAIN_WINDOW_REMEMBER,
-          Resources.getString("Prefs.main_window"),
-          Boolean.TRUE
-        );
-    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), rememberConf);
+    // Options to remember main window size
+    final BooleanConfigurer windowRemember = new BooleanConfigurer(
+      MAIN_WINDOW_REMEMBER,
+      Resources.getString("Prefs.main_window"),
+      Boolean.TRUE
+    );
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), windowRemember);
 
     // Option to disable D3D pipeline
     if (SystemUtils.IS_OS_WINDOWS) {
