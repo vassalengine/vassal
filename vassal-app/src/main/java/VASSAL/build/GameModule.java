@@ -115,6 +115,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
@@ -125,6 +126,7 @@ import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
+import VASSAL.preferences.GlobalPrefs;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -148,10 +150,7 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
-import static VASSAL.build.module.Map.MAIN_WINDOW_HEIGHT;
-import static VASSAL.build.module.Map.MAIN_WINDOW_WIDTH;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
-
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -199,6 +198,9 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
+
+  public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //NON-NLS
+  public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -628,12 +630,37 @@ public class GameModule extends AbstractConfigurable
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
       frame.setLocation(screen.getLocation());
 
+/*
       final int height = (Integer)
         Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
       final int width = (Integer)
         Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
       if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
         frame.setSize((width > 0) ? width : screen.width, height / 3);
+      }
+      else {
+        frame.setSize(screen.width, screen.height / 3);
+      }
+*/
+
+      final Prefs p = Prefs.getGlobalPrefs();
+      if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+        final IntConfigurer configHeight =
+          new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
+        p.addOption(null, configHeight);
+
+        final IntConfigurer configWidth =
+          new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
+        p.addOption(null, configWidth);
+
+        final int height = (Integer) configHeight.getValue();
+        System.out.println("r h = " + height);
+
+        if (height > 0) {
+          final int width = (Integer) configWidth.getValue();
+          System.out.println("r w = " + width);
+          frame.setSize(width > 0 ? width : frame.getWidth(), height);
+        }
       }
       else {
         frame.setSize(screen.width, screen.height / 3);
@@ -1432,6 +1459,18 @@ public class GameModule extends AbstractConfigurable
     }
 
     if (!cancelled) {
+      // write window size prefs
+      final GlobalPrefs gp = (GlobalPrefs) Prefs.getGlobalPrefs();
+      if (Boolean.TRUE.equals(gp.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+        gp.setDisableAutoWrite(true);
+        System.out.println("w w = " + frame.getWidth());
+        gp.getOption(MAIN_WINDOW_HEIGHT).setValue(frame.getHeight());
+        System.out.println("w h = " + frame.getHeight());
+        gp.getOption(MAIN_WINDOW_WIDTH).setValue(frame.getWidth());
+        gp.saveGlobal();
+        gp.setDisableAutoWrite(false);
+      }
+
       Prefs p = null;
 
       // write and close module prefs

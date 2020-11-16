@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
@@ -72,7 +71,6 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import VASSAL.preferences.GlobalPrefs;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -166,7 +164,6 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
-import VASSAL.preferences.Prefs;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
@@ -206,8 +203,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
-  public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
-  public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>(); //NOPMD
@@ -771,20 +766,16 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     g.getToolBar().add(getLaunchButton());
 
     if (shouldDockIntoMainWindow()) {
-      final IntConfigurer configHeight =
-        new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, configHeight);
-
-      final IntConfigurer configWidth =
-        new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, configWidth);
-
       final Component controlPanel = g.getControlPanel();
       final Container cppar = controlPanel.getParent();
       final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
       splitPane = new SplitPane(SplitPane.VERTICAL_SPLIT, controlPanel, layeredPane);
       splitPane.setResizeWeight(0.0);
+
+      controlPanel.setMinimumSize(new Dimension(0, 0));
+      layeredPane.setMinimumSize(new Dimension(0, 0));
+
       cppar.add(splitPane, i);
 
       g.addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
@@ -2565,19 +2556,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
           splitPane.showBottom();
-
-          // set the stored window sizes if that's enabled
-          if (Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-            final int height = (Integer)
-              Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-            if (height > 0) {
-              final int width = (Integer)
-                Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
-
-              final Container tla = splitPane.getTopLevelAncestor();
-              tla.setSize(width > 0 ? width : tla.getWidth(), height);
-            }
-          }
         }
 
         if (toolBar.getParent() == null) {
@@ -2614,15 +2592,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     else {
       pieces.clear();
       boards.clear();
-      if (splitPane != null) {
-        if (splitPane.isBottomVisible()) {
-          final Component c = splitPane.getTopLevelAncestor();
-          final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
-          p.setDisableAutoWrite(true);
-          p.getOption(MAIN_WINDOW_HEIGHT).setValue(c.getHeight());
-          p.getOption(MAIN_WINDOW_WIDTH).setValue(c.getWidth());
-          p.saveGlobal();
-          p.setDisableAutoWrite(false);
+
+      if (shouldDockIntoMainWindow()) {
+        if (splitPane != null) {
           splitPane.hideBottom();
         }
         toolBar.setVisible(false);
@@ -2657,7 +2629,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public void appendToTitle(String s) {
     // replaced by updateTitleBar()
   }
-
 
   /**
    * Updates the title bar of the current window
