@@ -529,7 +529,7 @@ public class MassPieceLoader {
             }
           }
           else {
-            final Decorator newTrait = (Decorator) GameModule.getGameModule().createPiece(trait.myGetType());
+            final Decorator newTrait = (Decorator) GameModule.getGameModule().createPiece(trait.getType());
             newTrait.setState(trait.getState());
             newTrait.setInner(piece);
             final String saveState = newTrait.getState();
