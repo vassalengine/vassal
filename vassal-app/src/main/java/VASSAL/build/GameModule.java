@@ -653,6 +653,8 @@ public class GameModule extends AbstractConfigurable
         }
       }
       else {
+        p.getOption(MAIN_WINDOW_WIDTH).setValue(-1);
+        p.getOption(MAIN_WINDOW_HEIGHT).setValue(-1);
         frame.setSize(screen.width, screen.height / 3);
       }
     }
