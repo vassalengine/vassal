@@ -644,12 +644,9 @@ public class GameModule extends AbstractConfigurable
       final Prefs p = Prefs.getGlobalPrefs();
       if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
         final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
-        System.out.println("r h = " + h);
-
-        if (h > 0) {
-          final int w = (Integer) p.getOption(MAIN_WINDOW_WIDTH).getValue();
-          System.out.println("r w = " + w);
-          frame.setSize(w > 0 ? w : frame.getWidth(), h);
+        final int w = (Integer) p.getOption(MAIN_WINDOW_WIDTH).getValue();
+        if (w > 0 && h > 0) {
+          frame.setSize(w, h);
         }
       }
       else {
@@ -1455,9 +1452,7 @@ public class GameModule extends AbstractConfigurable
       final GlobalPrefs gp = (GlobalPrefs) Prefs.getGlobalPrefs();
       if (Boolean.TRUE.equals(gp.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
         gp.setDisableAutoWrite(true);
-        System.out.println("w w = " + frame.getWidth());
         gp.getOption(MAIN_WINDOW_HEIGHT).setValue(frame.getHeight());
-        System.out.println("w h = " + frame.getHeight());
         gp.getOption(MAIN_WINDOW_WIDTH).setValue(frame.getWidth());
         gp.saveGlobal();
         gp.setDisableAutoWrite(false);
