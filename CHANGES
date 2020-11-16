@@ -1,5 +1,6 @@
 3.4.9 - ???
 
+* 13602: NPE in MassPieceLoader.MassLoaderDialog.load()
 * 13539: Game Refresher resets Labels to editor setting if any of the Text
     Label attributes (e.g., text color) have changed
 * 13636: AbstractBuildable.getAllDescendantComponentsOf() does not recurse
