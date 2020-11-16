@@ -891,6 +891,13 @@
     </difference>
 
     <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>6011</differenceType>
+        <field>MAIN_WINDOW_HEIGHT</field>
+        <justification>This preference never worked, nothing should have used the key</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/counters/MassPieceLoader</className>
         <differenceType>6010</differenceType>
         <field>*</field>
