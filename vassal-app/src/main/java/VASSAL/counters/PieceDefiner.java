@@ -301,9 +301,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   @Override
-  @Deprecated(since = "20200912", forRemoval = true)
+  @Deprecated(since = "2020-09-12", forRemoval = true)
   public void setBaseWindow(HelpWindow w) {
-    ProblemDialog.showDeprecated("20200912");
+    ProblemDialog.showDeprecated("2020-09-12");
   }
 
   /**
@@ -399,17 +399,15 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     setMaximumSize(new Dimension((int) screenSize.getWidth() - 100, maxPanelHeight));
 
     // Main Layout for entire dialog. Just let it fill to max size
-    setLayout(new MigLayout("ins 0", "[grow,fill]", "[grow,fill,push]")); // NON-NLS
+    setLayout(new MigLayout("ins 0, fill")); // NON-NLS
 
     // A Panel to hold the trait lists
-    controls = new JPanel(new MigLayout("ins 0", "[fill,grow 1,:200:]rel[]rel[fill,grow 4,:400:]rel[]", "[grow,center][][]")); // NON-NLS
+    controls = new JPanel(new MigLayout("ins 0, fill", "[grow 1,:200:]rel[]rel[grow 4,:400:]rel[]", "[grow][][]")); // NON-NLS
 
     // A Panel to hold the generated PieceSlot image
     slotPanel = new JPanel(new MigLayout("ins 0", "push[]push", "push[]2[]push")); // NON-NLS
     slotPanel.setMinimumSize(new Dimension(MINIMUM_SPLIT_SIZE, MINIMUM_SPLIT_SIZE));
-    final JPanel sPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS
-    sPanel.add(slot.getComponent(), "grow"); // NON-NLS
-    slotPanel.add(sPanel, "grow,wrap"); // NON-NLS
+    slotPanel.add(slot.getComponent(), "grow"); // NON-NLS
     scaleLabel = new JLabel();
     slotPanel.add(scaleLabel, "center,aligny top"); // NON-NLS
 
@@ -435,13 +433,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       });
     }
 
-    add(splitPane, "grow,wrap"); // NON-NLS
+    add(splitPane, "grow,pushy"); // NON-NLS
 
     // Custom TransferHandler to mediate drag and drop
     final ListTransferHandler transferHandler = new ListTransferHandler(this);
 
     // The list of available Traits
-    final JPanel availablePanel = new JPanel(new MigLayout("ins 0", "[fill,grow]", "[fill,grow,push]")); // NON-NLS
+    final JPanel availablePanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableList = new JList<>();
     availableList.setName(AVAILABLE);
     availableList.setDragEnabled(true);
@@ -456,7 +454,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addButton.setEnabled(o instanceof Decorator);
     });
 
-    final JPanel availableListPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill,push]")); // NON-NLS
+    final JPanel availableListPanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableListPanel.add(availableList, "grow,push"); // NON-NLS
     final JScrollPane availableScroll = new JScrollPane(availableListPanel);
 
@@ -492,19 +490,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     addButton.setMargin(buttonInsets);
     addButton.setToolTipText(Resources.getString("Editor.PieceDefiner.add_tip"));
     addButton.addActionListener(evt -> doAdd());
-    addRemovePanel.add(addButton, "grow"); // NON-NLS
+    addRemovePanel.add(addButton, "sg"); // NON-NLS
 
     removeButton = new JButton(Resources.getString("Editor.PieceDefiner.remove"), IconFactory.getIcon("go-previous", IconFamily.SMALL)); // NON-NLS
     removeButton.setMargin(buttonInsets);
     removeButton.setToolTipText(Resources.getString("Editor.PieceDefiner.remove_tip"));
     removeButton.addActionListener(evt -> doRemove());
-    addRemovePanel.add(removeButton, "grow"); // NON-NLS
+    addRemovePanel.add(removeButton, "sg"); // NON-NLS
     addRemovePanel.add(pieceIdLabel, "center"); // NON-NLS
 
     controls.add(addRemovePanel, "aligny center"); // NON-NLS
 
     // The list of traits in use in this GamePiece
-    final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1", "[fill,grow]", "[fill,grow]")); // NON-NLS
+    final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1,fill")); // NON-NLS
     inUseList = new JList<>();
     inUseList.setName(INUSE);
     inUseList.addKeyListener(new InUseListKeyAdapter(this));
@@ -574,7 +572,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     controls.add(inUsePanel, "grow"); // NON-NLS
 
     // A panel to hold the trait navigation buttons.
-    final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow]")); // NON-NLS
+    final JPanel moveUpDownPanel = new JPanel(new MigLayout("ins 0,wrap 1")); // NON-NLS
 
     moveTopButton = new JButton(Resources.getString("Editor.PieceDefiner.move_top"), IconFactory.getIcon("go-top", IconFamily.SMALL)); // NON-NLS
     moveTopButton.setToolTipText(Resources.getString("Editor.PieceDefiner.top_tip"));
@@ -586,7 +584,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         moveDecoratorTop(index);
       }
     });
-    moveUpDownPanel.add(moveTopButton, "grow"); // NON-NLS
+    moveUpDownPanel.add(moveTopButton, "sg"); // NON-NLS
 
     moveUpButton = new JButton(Resources.getString("Editor.PieceDefiner.move_up"), IconFactory.getIcon("go-up", IconFamily.SMALL)); // NON-NLS
     moveUpButton.setToolTipText(Resources.getString("Editor.PieceDefiner.up_tip"));
@@ -598,7 +596,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         moveDecoratorUp(index);
       }
     });
-    moveUpDownPanel.add(moveUpButton, "grow"); // NON-NLS
+    moveUpDownPanel.add(moveUpButton, "sg"); // NON-NLS
 
     moveDownButton = new JButton(Resources.getString("Editor.PieceDefiner.move_down"), IconFactory.getIcon("go-down", IconFamily.SMALL)); // NON-NLS
     moveDownButton.setToolTipText(Resources.getString("Editor.PieceDefiner.down_tip"));
@@ -610,7 +608,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         moveDecoratorDown(index);
       }
     });
-    moveUpDownPanel.add(moveDownButton, "grow"); // NON-NLS
+    moveUpDownPanel.add(moveDownButton, "sg"); // NON-NLS
 
     moveBottomButton = new JButton(Resources.getString("Editor.PieceDefiner.move_bottom"), IconFactory.getIcon("go-bottom", IconFamily.SMALL)); // NON-NLS
     moveBottomButton.setToolTipText(Resources.getString("Editor.PieceDefiner.bottom_trait"));
@@ -622,7 +620,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         moveDecoratorBottom(index);
       }
     });
-    moveUpDownPanel.add(moveBottomButton, "grow"); // NON-NLS
+    moveUpDownPanel.add(moveBottomButton, "sg"); // NON-NLS
 
     controls.add(moveUpDownPanel, "wrap"); // NON-NLS
 
@@ -630,19 +628,16 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     controls.add(new JLabel(""));
     controls.add(inUseButtonPanel, "center,wrap"); // NON-NLS
 
-    // A panel to hold the notes at the bottom of the screen
-    final JPanel notePanel = new JPanel(new MigLayout("ins 0,wrap 1,gapy 0", "push[center]push")); // NON-NLS
-    final JLabel note1 = new JLabel(Resources.getString("Editor.PieceDefiner.note1"));
-    final Font standardFont = note1.getFont();
+    // A label to hold the notes at the bottom of the screen
+    final JLabel noteLabel = new JLabel(Resources.getString("Editor.PieceDefiner.note1"));
+    final Font standardFont = noteLabel.getFont();
     final Font italicFont = new Font(standardFont.getFontName(), Font.ITALIC, standardFont.getSize());
-    note1.setFont(italicFont);
+    noteLabel.setFont(italicFont);
 
-    notePanel.add(note1, "center"); // NON-NLS
-    controls.add(notePanel, "span 3,growx,wrap"); // NON-NLS
+    controls.add(noteLabel, "span 3,center"); // NON-NLS
 
     // Update the Sort Order
     updateSortOrder();
-
   }
 
   /**
@@ -700,7 +695,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
   }
 
-
   private void doPaste() {
     if (clipBoard != null) {
       paste();
@@ -717,13 +711,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
   }
 
-
   private void doAdd() {
     doAdd(availableList.getSelectedIndex(), inUseList.getSelectedIndex() < 0 ? inUseList.getModel().getSize() : inUseList.getSelectedIndex());
   }
 
   private void doAdd(int sourceIndex, int insertIndex) {
-
     final Object selected = availableModel.getElementAt(sourceIndex);
     if (selected instanceof Decorator) {
       if (inUseModel.getSize() > 0) {
@@ -761,7 +753,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
     }
   }
-
 
   /**
    * Change Sort order by swapping models over
@@ -879,7 +870,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * @param piece Decorator to insert
    */
   protected void insertDecorator(int index, GamePiece piece) {
-
     // Find the pieces that will be the new inner and outer for our piece
     final GamePiece inner = inUseModel.elementAt(index - 1);
     final Decorator outer = index < inUseModel.size() ? (Decorator) inUseModel.elementAt(index) : null;
@@ -892,7 +882,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     if (outer != null) {
       outer.setInner(piece);
     }
-
   }
 
   protected void importPiece(String className) {
@@ -984,30 +973,27 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
-      setLayout(new MigLayout("ins dialog,fill", "[]unrel[]", "")); //NON-NLS
-      add(ed.getControls(), "spanx 3,grow,push,wrap"); //NON-NLS
-
-      final JPanel buttonBox = new JPanel(new MigLayout());
+      setLayout(new MigLayout("ins dialog,fill", "[]", "[grow]unrel[]")); //NON-NLS
+      add(ed.getControls(), "grow,push"); //NON-NLS
 
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
 
-      buttonBox.add(b, "tag ok"); //NON-NLS
+      add(b, "split, tag ok"); //NON-NLS
 
       b = new JButton(Resources.getString("General.cancel"));
       b.addActionListener(evt -> {
         ed = null;
         dispose();
       });
-      buttonBox.add(b, "tag cancel"); //NON-NLS
+
+      add(b, "tag cancel"); //NON-NLS
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        buttonBox.add(b, "tag help"); //NON-NLS
+        add(b, "tag help"); //NON-NLS
       }
-
-      add(buttonBox, "spanx 3,center"); // NON-NLS
 
       pack();
       setLocationRelativeTo(getOwner());
