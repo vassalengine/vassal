@@ -180,6 +180,7 @@ import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
@@ -2553,16 +2554,21 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void setup(boolean show) {
-    if (show) {
-      final GameModule g = GameModule.getGameModule();
+    final GameModule g = GameModule.getGameModule();
 
+    if (show) {
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
+          final Dimension d = g.getPlayerWindow().getSize();
           final Prefs p = Prefs.getGlobalPrefs();
-          final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
-          if (h > 0) {
-            final Dimension d = g.getPlayerWindow().getSize();
-            g.getPlayerWindow().setSize(d.width, h);
+          if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+            final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
+            if (h > 0) {
+              g.getPlayerWindow().setSize(d.width, h);
+            }
+          }
+          else {
+            g.getPlayerWindow().setSize(d.width, d.height * 3);
           }
 
           splitPane.showBottom();
@@ -2606,6 +2612,18 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
           splitPane.hideBottom();
+
+          final Dimension d = g.getPlayerWindow().getSize();
+          final Prefs p = Prefs.getGlobalPrefs();
+          if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+            final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
+            if (h > 0) {
+              g.getPlayerWindow().setSize(d.width, h / 3);
+            }
+          }
+          else {
+            g.getPlayerWindow().setSize(d.width, d.height / 3);
+          }
         }
         toolBar.setVisible(false);
       }
