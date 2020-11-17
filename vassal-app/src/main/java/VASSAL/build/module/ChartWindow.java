@@ -159,7 +159,7 @@ public class ChartWindow extends Widget {
   }
 
   @Override
-  public Class<?>[] getAllowableConfigureComponents() {
+  public Class<?>[] getChildAllowableConfigureComponents() {
     return new Class<?>[]{
       Chart.class,
       HtmlChart.class,
@@ -169,6 +169,11 @@ public class ChartWindow extends Widget {
       ListWidget.class,
       MapWidget.class
     };
+  }
+
+  @Override
+  public Class<?>[] getAllowableConfigureComponents() {
+    return getChildAllowableConfigureComponents();
   }
 
   @Override
