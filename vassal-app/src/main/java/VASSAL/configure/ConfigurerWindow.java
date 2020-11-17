@@ -22,11 +22,12 @@ import VASSAL.i18n.Resources;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Window for displaying a {@link Configurer}.  The title of the window
@@ -55,8 +56,8 @@ public class ConfigurerWindow extends JDialog {
       }
     });
 
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    add(c.getControls());
+    setLayout(new MigLayout("ins 0", "[grow,fill]")); // NON-NLS
+    add(c.getControls(), "grow,wrap"); // NON-NLS
     c.addPropertyChangeListener(evt -> {
       if (Configurer.NAME_PROPERTY
         .equals(evt.getPropertyName())) {
@@ -79,7 +80,7 @@ public class ConfigurerWindow extends JDialog {
     final JPanel buttonPanel = new JPanel();
     buttonPanel.add(okButton);
     buttonPanel.add(canButton);
-    add(buttonPanel);
+    add(buttonPanel, "center"); // NON-NLS
     cancelled = false;
 
     pack();

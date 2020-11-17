@@ -1075,7 +1075,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final JLabel actionLabel;
     private final JLabel menuLabel;
     private final JLabel keyLabel;
-    private final JLabel optionLabel;
 
     public Ed(Embellishment e) {
       final Box box;
@@ -1111,7 +1110,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.levels_follow_expression_value")));
       controls.add(followConfig.getControls(), "span 2,split 3"); // NON-NLS
 
-      final JPanel levelBox = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS
+      final JPanel levelBox = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
       propertyLabel = new JLabel(Resources.getString("Editor.Embellishment.follow_expression"));
       propertyConfig = new PropertyNameExpressionConfigurer("");
       levelBox.add(propertyConfig.getControls(), "growx"); // NON-NLS
@@ -1120,7 +1119,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       levelBox.add(levelLabel);
       levelBox.add(firstLevelConfig.getControls());
       controls.add(propertyLabel, "gapleft 10"); // NON-NLS
-      controls.add(levelBox, "wrap"); // NON-NLS
+      controls.add(levelBox, "grow,wrap"); // NON-NLS
 
       followConfig.addPropertyChangeListener(e1 -> showHideFields());
 
@@ -1136,11 +1135,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       keyLabel = new JLabel(Resources.getString("Editor.keyboard_command"));
       keyLabel.setFont(boldFont);
-      controls.add(keyLabel, "align center"); // NON-NLS
-
-      optionLabel = new JLabel(Resources.getString("Editor.Embellishment.option"));
-      optionLabel.setFont(boldFont);
-      controls.add(optionLabel, "align center,wrap"); // NON-NLS
+      controls.add(keyLabel, "align center,wrap"); // NON-NLS
 
       activateConfig = new NamedHotKeyConfigurer(null, "", e.activateKeyStroke);
       increaseConfig = new NamedHotKeyConfigurer(null, "", e.increaseKeyStroke);
@@ -1170,8 +1165,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(e.resetCommand);
       controls.add(resetCommand.getControls(), "grow 1"); // NON-NLS
-      controls.add(resetConfig.getControls(), "grow 2"); // NON-NLS
-      controls.add(resetLevelLabel, "split 2"); // NON-NLS
+      controls.add(resetConfig.getControls(), "grow 2,wrap"); // NON-NLS
+      controls.add(resetLevelLabel);
       controls.add(resetLevel.getControls(), "wrap"); // NON-NLS
 
       rndLabel = new JLabel(Resources.getString("Editor.Embellishment.randomize"));
@@ -1327,7 +1322,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       actionLabel.setVisible(labelsVisible);
       menuLabel.setVisible(labelsVisible);
       keyLabel.setVisible(labelsVisible);
-      optionLabel.setVisible(controlled);
 
       Decorator.repack(controls);
 

@@ -352,7 +352,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription(Resources.getString("Editor.PlaceMarker.trait_description"), description);
+    return buildDescription("Editor.PlaceMarker.trait_description", description);
   }
 
   @Override

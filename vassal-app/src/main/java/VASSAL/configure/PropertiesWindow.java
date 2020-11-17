@@ -17,7 +17,10 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.widget.PieceSlot;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -78,14 +81,14 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    setLayout(new MigLayout("ins panel, wrap 1", "[grow, fill]")); // NON-NLS
+    setLayout(new MigLayout("ins panel,wrap 1", "[grow,fill]", "[grow][align top]")); // NON-NLS
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(evt -> {
       if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
         setTitle((String) evt.getNewValue());
       }
     });
-    add(configurer.getControls());
+    add(configurer.getControls(), "grow"); // NON-NLS
 
     setTitle(ConfigureTree.getConfigureName(target));
 
@@ -106,9 +109,13 @@ public class PropertiesWindow extends JDialog {
       pack();
     }
 
-    add(buttonBox);
+    add(buttonBox, "growy 0"); // NON-NLS
     pack();
     setLocationRelativeTo(getParent());
+    // The PieceDefiner is now very large, ensure it is opened at the top of the usable screen
+    if (target instanceof PieceSlot || target instanceof PrototypeDefinition) {
+      setLocation(getLocation().x + 50, Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration()).top);
+    }
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override

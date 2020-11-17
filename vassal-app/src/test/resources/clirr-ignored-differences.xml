@@ -1045,6 +1045,15 @@
     </difference>
 
     <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>6004</differenceType>
+        <field>slot</field>
+        <from>VASSAL.build.widget.PieceSlot</from>
+        <to>VASSAL.counters.PieceDefiner$ScaleablePieceSlot</to>
+        <justification>Required for PieceDefiner major update.</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/counters/MassPieceLoader$Emb$LoaderEd</className>
         <differenceType>7004</differenceType>
         <method>**</method>
