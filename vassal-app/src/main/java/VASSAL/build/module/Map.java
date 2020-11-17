@@ -119,6 +119,7 @@ import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
@@ -2025,6 +2026,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         }
         theMap.getTopLevelAncestor().setVisible(!useLaunchButton);
         theMap.revalidate();
+      }
+
+      for (Board b : boards) {
+        if (!b.getAllDescendantComponentsOf(ZoneHighlight.class).isEmpty()) {
+          b.setCacheGrid(false);
+        }
       }
     }
     else {
