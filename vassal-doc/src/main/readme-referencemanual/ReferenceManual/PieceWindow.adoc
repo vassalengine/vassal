@@ -38,7 +38,7 @@ a panel, a list, etc) contains its own scaling factor, that one overrides any fa
 
 The Game Piece Palette is highly configurable, and can contain any combination of tabs, lists, and pull-down menus containing individual Game Pieces.
 For example, the window may contain a tabbed pane with two entries, called "Info" and "Armies", each of which contain a list of pieces.
-Every component in the Palette should end with a Single Piece.
+Every component in the Palette should end with one or more Game Pieces.
 Since a typical game has many pieces that differ in only minor ways, you may find it convenient to clone Single Pieces.
 Also, the order of the pieces can be changed by dragging them within the configuration tree.
 |
@@ -94,10 +94,11 @@ image:images/PanelWidget2.png[]
 |===
 
 
-==== <<GamePiece.adoc#top,Single Piece>>
+==== Single <<GamePiece.adoc#top, Game Piece>>
 
 A Game Piece that can be dragged onto a playing area. A Game Piece can only be created inside a Game Piece Container.
 
+==== Multiple Game Pieces
 Game Pieces can be added individually inside a Game Piece Palette or the <<MassPieceLoader.adoc#top,Mass Piece Loader>> can be used to create multiple pieces at once, based on a folder of appropriately named images.
 
 
