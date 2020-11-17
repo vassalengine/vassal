@@ -164,6 +164,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
+import VASSAL.preferences.Prefs;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
@@ -177,6 +178,8 @@ import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
+
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
 
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
@@ -2555,6 +2558,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
+          final Prefs p = Prefs.getGlobalPrefs();
+          final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
+          if (h > 0) {
+            final Dimension d = g.getPlayerWindow().getSize();
+            g.getPlayerWindow().setSize(d.width, h);
+          }
+
           splitPane.showBottom();
         }
 

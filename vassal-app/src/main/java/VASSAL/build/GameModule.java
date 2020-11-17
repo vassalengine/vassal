@@ -646,7 +646,7 @@ public class GameModule extends AbstractConfigurable
         final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
         final int w = (Integer) p.getOption(MAIN_WINDOW_WIDTH).getValue();
         if (w > 0 && h > 0) {
-          frame.setSize(w, h);
+          frame.setSize(w, h / 3);
         }
       }
       else {
