@@ -407,7 +407,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     // A Panel to hold the generated PieceSlot image
     slotPanel = new JPanel(new MigLayout("ins 0", "push[]push", "push[]2[]push")); // NON-NLS
     slotPanel.setMinimumSize(new Dimension(MINIMUM_SPLIT_SIZE, MINIMUM_SPLIT_SIZE));
-    slotPanel.add(slot.getComponent(), "grow"); // NON-NLS
+    slotPanel.add(slot.getComponent(), "grow,wrap"); // NON-NLS
     scaleLabel = new JLabel();
     slotPanel.add(scaleLabel, "center,aligny top"); // NON-NLS
 
@@ -974,12 +974,14 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
       setLayout(new MigLayout("ins dialog,fill", "[]", "[grow]unrel[]")); //NON-NLS
-      add(ed.getControls(), "grow,push"); //NON-NLS
+      add(ed.getControls(), "growx,aligny top,push,wrap"); //NON-NLS
+
+      final JPanel buttonBox = new JPanel(new MigLayout());
 
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
 
-      add(b, "split, tag ok"); //NON-NLS
+      buttonBox.add(b, "split, tag ok"); //NON-NLS
 
       b = new JButton(Resources.getString("General.cancel"));
       b.addActionListener(evt -> {
@@ -987,14 +989,15 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         dispose();
       });
 
-      add(b, "tag cancel"); //NON-NLS
+      buttonBox.add(b, "tag cancel"); //NON-NLS
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        add(b, "tag help"); //NON-NLS
+        buttonBox.add(b, "tag help"); //NON-NLS
       }
 
+      add(buttonBox, "center"); // NON-NLS-
       pack();
       setLocationRelativeTo(getOwner());
     }
