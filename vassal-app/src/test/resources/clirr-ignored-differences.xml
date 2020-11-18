@@ -1060,4 +1060,11 @@
         <justification>no one should have extended this class</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/tools/io/ZipArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void main(java.lang.String[])</method>
+        <justification>static test function, nothing should call it</justification>
+   </difference>
+
 </differences>
