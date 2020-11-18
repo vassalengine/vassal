@@ -295,19 +295,19 @@ public class Prefs implements Closeable {
     );
     globalPrefs.addOption(Resources.getString("Prefs.general_tab"), windowRemember);
 
-    //final IntConfigurer windowWidth = new IntConfigurer(
-    //  MAIN_WINDOW_WIDTH,
-    //  null,
-    //  -1
-    //);
-    //globalPrefs.addOption(null, windowWidth);
+    final IntConfigurer windowWidth = new IntConfigurer(
+      MAIN_WINDOW_WIDTH,
+      null,
+      -1
+    );
+    globalPrefs.addOption(null, windowWidth);
 
-    //final IntConfigurer windowHeight = new IntConfigurer(
-    //  MAIN_WINDOW_HEIGHT,
-    //  null,
-    //  -1
-    //);
-    //globalPrefs.addOption(null, windowHeight);
+    final IntConfigurer windowHeight = new IntConfigurer(
+      MAIN_WINDOW_HEIGHT,
+      null,
+      -1
+    );
+    globalPrefs.addOption(null, windowHeight);
 
     // Option to disable D3D pipeline
     if (SystemUtils.IS_OS_WINDOWS) {

@@ -777,14 +777,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       final Container cppar = controlPanel.getParent();
       final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
-      final IntConfigurer config =
-        new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, config);
-
-      final IntConfigurer configWidth =
-        new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, configWidth);
-
       splitPane = new SplitPane(SplitPane.VERTICAL_SPLIT, controlPanel, layeredPane);
       splitPane.setResizeWeight(0.0);
       splitPane.hideBottom();
@@ -2571,6 +2563,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (show) {
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
+          // If we're docked to the main window, check the various player preferences w/r/t remembering desired window height.
+          // The window *width* has already been established, so we don't touch it here.
           final PlayerWindow window = g.getPlayerWindow();
           final Rectangle screen = SwingUtils.getScreenBounds(window);
           final Prefs p = Prefs.getGlobalPrefs();
@@ -2582,7 +2576,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
           splitPane.showBottom();
 
-          //final int divider = (int)g.getToolBar().getPreferredSize().getHeight() + (int)g.getChatter().getPreferredSize().getHeight();
+          //BR// Force the divider to the Chatter's "preferred height"
           final int divider = (int)g.getChatter().getPreferredSize().getHeight();
           splitPane.setDividerLocation(divider);
         }
@@ -2624,6 +2618,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
+          // If this is a docked-to-main-window map, AND it's presently visible, save our window size preferences
           if (splitPane.isBottomVisible()) {
             final Dimension d = g.getPlayerWindow().getSize();
             final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
@@ -2634,6 +2629,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
               p.saveGlobal();
               p.setDisableAutoWrite(false);
             }
+            // Now we hide the bottom part of the pane (the part where the map normally is)
             splitPane.hideBottom();
           }
         }
