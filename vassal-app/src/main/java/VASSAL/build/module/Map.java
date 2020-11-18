@@ -128,6 +128,7 @@ import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
@@ -2581,6 +2582,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         }
         theMap.getTopLevelAncestor().setVisible(!useLaunchButton);
         theMap.revalidate();
+      }
+
+      for (Board b : boards) {
+        if (!b.getAllDescendantComponentsOf(ZoneHighlight.class).isEmpty()) {
+          b.setCacheGrid(false);
+        }
       }
     }
     else {
