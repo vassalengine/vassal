@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
@@ -183,6 +182,7 @@ import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 
 /**
@@ -2577,7 +2577,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           splitPane.showBottom();
 
           //BR// Force the divider to the Chatter's "preferred height"
-          final int divider = (int)g.getChatter().getPreferredSize().getHeight();
+          final int divider = g.getChatter().getPreferredSize().height;
           splitPane.setDividerLocation(divider);
         }
 
@@ -2628,17 +2628,17 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
             final int h;
             if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
               p.setDisableAutoWrite(true);
-              p.getOption(MAIN_WINDOW_HEIGHT).setValue((int)d.getHeight());
-              p.getOption(MAIN_WINDOW_WIDTH).setValue((int)d.getWidth());
+              p.getOption(MAIN_WINDOW_HEIGHT).setValue(d.height);
+              p.getOption(MAIN_WINDOW_WIDTH).setValue(d.width);
               p.saveGlobal();
               p.setDisableAutoWrite(false);
 
-              h = (int)d.getHeight();
+              h = d.height;
             }
             else {
-              h = (int)screen.getHeight();
+              h = screen.height;
             }
-            
+
             // Now we hide the bottom part of the pane (the part where the map normally is)
             splitPane.hideBottom();
 
