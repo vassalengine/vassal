@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
@@ -71,6 +72,8 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import VASSAL.launch.PlayerWindow;
+import VASSAL.preferences.GlobalPrefs;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -774,8 +777,17 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       final Container cppar = controlPanel.getParent();
       final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
+      final IntConfigurer config =
+        new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
+      Prefs.getGlobalPrefs().addOption(null, config);
+
+      final IntConfigurer configWidth =
+        new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
+      Prefs.getGlobalPrefs().addOption(null, configWidth);
+
       splitPane = new SplitPane(SplitPane.VERTICAL_SPLIT, controlPanel, layeredPane);
       splitPane.setResizeWeight(0.0);
+      splitPane.hideBottom();
 
       controlPanel.setMinimumSize(new Dimension(0, 0));
       layeredPane.setMinimumSize(new Dimension(0, 0));
@@ -2559,19 +2571,20 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (show) {
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
-          final Dimension d = g.getPlayerWindow().getSize();
+          final PlayerWindow window = g.getPlayerWindow();
+          final Rectangle screen = SwingUtils.getScreenBounds(window);
           final Prefs p = Prefs.getGlobalPrefs();
-          if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-            final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
-            if (h > 0) {
-              g.getPlayerWindow().setSize(d.width, h);
-            }
-          }
-          else {
-            g.getPlayerWindow().setSize(d.width, d.height * 3);
-          }
+
+          final boolean remember = Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue());
+          final int h = remember ? ((Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue()) : -1;
+
+          window.setSize(window.getWidth(), (h > 0) ? h : screen.height);
 
           splitPane.showBottom();
+
+          //final int divider = (int)g.getToolBar().getPreferredSize().getHeight() + (int)g.getChatter().getPreferredSize().getHeight();
+          final int divider = (int)g.getChatter().getPreferredSize().getHeight();
+          splitPane.setDividerLocation(divider);
         }
 
         if (toolBar.getParent() == null) {
@@ -2611,18 +2624,17 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
       if (shouldDockIntoMainWindow()) {
         if (splitPane != null) {
-          splitPane.hideBottom();
-
-          final Dimension d = g.getPlayerWindow().getSize();
-          final Prefs p = Prefs.getGlobalPrefs();
-          if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-            final int h = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
-            if (h > 0) {
-              g.getPlayerWindow().setSize(d.width, h / 3);
+          if (splitPane.isBottomVisible()) {
+            final Dimension d = g.getPlayerWindow().getSize();
+            final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
+            if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+              p.setDisableAutoWrite(true);
+              p.getOption(MAIN_WINDOW_HEIGHT).setValue((int)d.getHeight());
+              p.getOption(MAIN_WINDOW_WIDTH).setValue((int)d.getWidth());
+              p.saveGlobal();
+              p.setDisableAutoWrite(false);
             }
-          }
-          else {
-            g.getPlayerWindow().setSize(d.width, d.height / 3);
+            splitPane.hideBottom();
           }
         }
         toolBar.setVisible(false);
