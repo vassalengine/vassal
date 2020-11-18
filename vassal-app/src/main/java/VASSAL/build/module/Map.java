@@ -2622,15 +2622,28 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           if (splitPane.isBottomVisible()) {
             final Dimension d = g.getPlayerWindow().getSize();
             final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
+            final PlayerWindow window = g.getPlayerWindow();
+            final Rectangle screen = SwingUtils.getScreenBounds(window);
+            final int w = window.getWidth();
+            final int h;
             if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
               p.setDisableAutoWrite(true);
               p.getOption(MAIN_WINDOW_HEIGHT).setValue((int)d.getHeight());
               p.getOption(MAIN_WINDOW_WIDTH).setValue((int)d.getWidth());
               p.saveGlobal();
               p.setDisableAutoWrite(false);
+
+              h = (int)d.getHeight();
             }
+            else {
+              h = (int)screen.getHeight();
+            }
+            
             // Now we hide the bottom part of the pane (the part where the map normally is)
             splitPane.hideBottom();
+
+            // Now we restore the main window to its "map is offline" state.
+            window.setSize(w, h/3);
           }
         }
         toolBar.setVisible(false);
