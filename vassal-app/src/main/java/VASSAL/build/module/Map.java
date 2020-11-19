@@ -2584,7 +2584,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
         theMap.revalidate();
       }
 
-      for (Board b : boards) {
+      for (final Board b : boards) {
         if (!b.getAllDescendantComponentsOf(ZoneHighlight.class).isEmpty()) {
           b.setCacheGrid(false);
         }
