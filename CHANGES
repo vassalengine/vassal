@@ -1,6 +1,9 @@
 3.5.0-beta1 - ???
 
 * 13661: Simplified ZIP archive writing and error reporting
+* 13660: Replaced ComponentSplitter with SplitPane for better splitter
+    positioning
+* 13659: "Remember window size" preference is ignored
 * 13593: Global preferences are never written except when prefs dialog is closed
 * 13522: Performance improvements for Global Key Commands
 * 13509: Save As in Editor, if it fails, complains about old filename instead
