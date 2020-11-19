@@ -17,29 +17,31 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.ParentProxy;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 
 /**
  * Defines a saved game that is accessible from the File menu.
@@ -83,10 +85,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-        Resources.getString(Resources.NAME_LABEL),
-        Resources.getString("Editor.PredefinedSetup.parent_menu"), //$NON-NLS-1$
-        Resources.getString("Editor.PredefinedSetup.predefined_file"), //$NON-NLS-1$
-        Resources.getString("Editor.PredefinedSetup.saved_game") //$NON-NLS-1$
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.PredefinedSetup.parent_menu"), //$NON-NLS-1$
+      Resources.getString("Editor.PredefinedSetup.predefined_file"), //$NON-NLS-1$
+      Resources.getString("Editor.PredefinedSetup.saved_game") //$NON-NLS-1$
     };
   }
 
@@ -170,7 +172,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public void launch() {
-    final GameModule g = GameModule.getGameModule();
+    GameModule g = GameModule.getGameModule();
     if (useFile && fileName != null) {
       try {
         g.getGameState().loadGameInBackground(fileName, getSavedGameContents());
@@ -230,7 +232,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public void removeFrom(Buildable parent) {
     if (parent instanceof GameModule) {
       MenuManager.getInstance()
-                 .removeFromSection("PredefinedSetup", getMenuInUse()); //$NON-NLS-1$
+        .removeFromSection("PredefinedSetup", getMenuInUse()); //$NON-NLS-1$
     }
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
@@ -248,6 +250,37 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
+
+  public void refresh() throws IOException, IllegalBuildException {
+    final GameModule mod = GameModule.getGameModule();
+    final GameState gs = mod.getGameState();
+    final GameRefresher gameRefresher = new GameRefresher(mod);
+
+    // since we're going to block the GUI, let's give some feedback
+    final Chatter chatter = mod.getChatter();
+    final Command msg = new Chatter.DisplayText(chatter, "----------"); //NON-NLS
+    msg.append(new Chatter.DisplayText(chatter, "Updating Predefined Setup: " + fileName));  //NON-NLS
+    msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
+    msg.execute();
+
+    // get a stream to the saved game in the module file
+    gs.setup(true, true);
+    gs.loadGameInForeground(fileName, getSavedGameContents());
+
+    // call the gameRefresher
+    gameRefresher.executeHeadless(true, true,   null);
+
+    // save the refreshed game into a temporary file
+    File tmp = File.createTempFile("vassal", null);
+    gs.saveGame(tmp);
+    gs.updateDone();
+
+    // write the updated saved game file into the module file
+    ArchiveWriter aw = mod.getArchiveWriter();
+    aw.removeFile(fileName);
+    aw.addFile(tmp.getPath(), fileName);
+  }
+
 
   @Override
   public HelpFile getHelpFile() {
@@ -286,7 +319,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   /**
    * {@link VASSAL.search.SearchTarget}
-   * @return a list of the Configurables string/expression fields if any (for search)
+   * @return a list of the Configurable's string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
