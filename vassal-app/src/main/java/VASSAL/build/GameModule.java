@@ -1437,16 +1437,6 @@ public class GameModule extends AbstractConfigurable
     }
 
     if (!cancelled) {
-      // write window size prefs
-      //final GlobalPrefs gp = (GlobalPrefs) Prefs.getGlobalPrefs();
-      //if (Boolean.TRUE.equals(gp.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-      //  gp.setDisableAutoWrite(true);
-      //  gp.getOption(MAIN_WINDOW_HEIGHT).setValue(frame.getHeight());
-      //  gp.getOption(MAIN_WINDOW_WIDTH).setValue(frame.getWidth());
-      //  gp.saveGlobal();
-      //  gp.setDisableAutoWrite(false);
-      //}
-
       Prefs p = null;
 
       // write and close module prefs
