@@ -51,7 +51,10 @@ import VASSAL.tools.swing.SwingUtils;
  * Provides support for hidden panels. Use the split methods to create an
  * instance of {@link SplitPane}, which can then be manipulated to show and
  * hide the panel
+ *
+ * @deprecated Use {@link VASSAL.tools.swing.SplitPane} instead.
  */
+@Deprecated(since = "2020-11-07", forRemoval = true)
 public class ComponentSplitter {
   /**
    * Create a new hideable panel to the right of the base component. The base component is replaced by a
@@ -65,10 +68,9 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
-   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  @Deprecated
   public SplitPane splitRight(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_RIGHT, resizeOnVisibilityChange);
   }
 
@@ -84,10 +86,9 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
-   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  @Deprecated
   public SplitPane splitLeft(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_LEFT, resizeOnVisibilityChange);
   }
 
@@ -103,10 +104,9 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
-   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  @Deprecated
   public SplitPane splitBottom(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_BOTTOM, resizeOnVisibilityChange);
   }
 
@@ -121,10 +121,9 @@ public class ComponentSplitter {
    *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
    *          shown or hidden
    * @return the {@link SplitPane} containing the two components
-   * @deprecated Use {@link #split(Component, Component, int, boolean)} instead.
    */
-  @Deprecated
   public SplitPane splitTop(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
+    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_TOP, resizeOnVisibilityChange);
   }
 
@@ -138,8 +137,8 @@ public class ComponentSplitter {
    *          If -1, return the last {@link SplitPane} ancestor
    * @return the {@link SplitPane} ancestor, or the original component if none is found
    */
-  @Deprecated
   public Component getSplitAncestor(Component c, int index) {
+    ProblemDialog.showDeprecated("2020-11-07");
     return splitAncestorOf(c, index);
   }
 
@@ -153,6 +152,7 @@ public class ComponentSplitter {
    * none is found
    */
   public static Component splitAncestorOf(Component c, int index) {
+    ProblemDialog.showDeprecated("2020-11-07");
     Component next = SwingUtilities.getAncestorOfClass(SplitPane.class, c);
     int count = -1;
     while (next != null && (index < 0 || count++ < index)) {
@@ -182,6 +182,7 @@ public class ComponentSplitter {
     int hideablePosition,
     boolean resize) {
 
+    ProblemDialog.showDeprecated("2020-11-07");
     int index = -1;
     final Container parent = base.getParent();
     if (base.getParent() != null) {
@@ -230,6 +231,7 @@ public class ComponentSplitter {
      */
     public SplitPane(Component hideableComponent, Component baseComponent, int hideablePosition, boolean resizeOnVisibilityChange) {
       super(HIDE_TOP == hideablePosition || HIDE_BOTTOM == hideablePosition ? VERTICAL_SPLIT : HORIZONTAL_SPLIT);
+      ProblemDialog.showDeprecated("2020-11-07");
       this.resizeOnVisibilityChange = resizeOnVisibilityChange;
       this.hideablePosition = hideablePosition;
       if (hideableComponent instanceof JComponent) {

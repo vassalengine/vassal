@@ -40,6 +40,7 @@ import VASSAL.Info;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
@@ -54,7 +55,10 @@ public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //NON-NLS
   public static final String DISABLE_D3D = "disableD3d"; //NON-NLS
+
   public static final String MAIN_WINDOW_REMEMBER = "mainWindowRemember"; //NON-NLS
+  public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //NON-NLS
+  public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //NON-NLS
 
   private static Prefs globalPrefs; // A Global Preferences object
 
@@ -283,13 +287,27 @@ public class Prefs implements Closeable {
   public static void initSharedGlobalPrefs() {
     getGlobalPrefs();
 
-    // Option to remember main window height
-    final BooleanConfigurer rememberConf = new BooleanConfigurer(
-          MAIN_WINDOW_REMEMBER,
-          Resources.getString("Prefs.main_window"),
-          Boolean.TRUE
-        );
-    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), rememberConf);
+    // Options to remember main window size
+    final BooleanConfigurer windowRemember = new BooleanConfigurer(
+      MAIN_WINDOW_REMEMBER,
+      Resources.getString("Prefs.main_window"),
+      Boolean.TRUE
+    );
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), windowRemember);
+
+    final IntConfigurer windowWidth = new IntConfigurer(
+      MAIN_WINDOW_WIDTH,
+      null,
+      -1
+    );
+    globalPrefs.addOption(null, windowWidth);
+
+    final IntConfigurer windowHeight = new IntConfigurer(
+      MAIN_WINDOW_HEIGHT,
+      null,
+      -1
+    );
+    globalPrefs.addOption(null, windowHeight);
 
     // Option to disable D3D pipeline
     if (SystemUtils.IS_OS_WINDOWS) {

@@ -64,7 +64,6 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
@@ -105,7 +104,6 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
@@ -118,6 +116,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.swing.Dialogs;
+import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
 
@@ -148,7 +147,7 @@ public class ModuleManagerWindow extends JFrame {
 
   private final CardLayout modulePanelLayout;
   private final JPanel moduleView;
-  private final ComponentSplitter.SplitPane serverStatusView;
+  private final SplitPane splitPane;
 
   private MyTreeNode rootNode;
   private MyTree tree;
@@ -257,11 +256,11 @@ public class ModuleManagerWindow extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        serverStatusView.toggleVisibility();
+        splitPane.toggleRight();
         serverStatusConfig.setValue(
           serverStatusConfig.booleanValue() ? Boolean.FALSE : Boolean.TRUE);
-        if (serverStatusView.isVisible()) {
-          setDividerLocation(getPreferredDividerLocation());
+        if (splitPane.isRightVisible()) {
+          splitPane.setDividerLocation(getPreferredDividerLocation());
         }
       }
     }, serverStatusConfig.booleanValue()));
@@ -418,22 +417,22 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusControls.setBorder(
       new TitledBorder(Resources.getString("Chat.server_status")));
 
-    serverStatusView = ComponentSplitter.split(
-      moduleControls,
-      serverStatusControls,
-      ComponentSplitter.SplitPane.HIDE_RIGHT,
-      false
+    splitPane = new SplitPane(
+      SplitPane.HORIZONTAL_SPLIT,
+      moduleControls, serverStatusControls
     );
-    serverStatusView.revalidate();
 
     // show the server status controls according to the prefs
-    if (serverStatusConfig.booleanValue()) {
-      serverStatusView.showComponent();
-    }
+    splitPane.setRightVisible(serverStatusConfig.booleanValue());
+    splitPane.setResizeWeight(1.0);
 
-    setDividerLocation(getPreferredDividerLocation());
-    serverStatusView.addPropertyChangeListener("dividerLocation",
-      e -> setPreferredDividerLocation((Integer) e.getNewValue()));
+    splitPane.setDividerLocation(getPreferredDividerLocation());
+    splitPane.addPropertyChangeListener(
+      "dividerLocation",
+      e -> setPreferredDividerLocation((Integer) e.getNewValue())
+    );
+
+    add(splitPane);
 
     final Rectangle r = SwingUtils.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
@@ -451,12 +450,6 @@ public class ModuleManagerWindow extends JFrame {
     setCursor(Cursor.getPredefinedCursor(
       wait ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR
     ));
-  }
-
-  protected void setDividerLocation(int i) {
-    final int loc = i;
-    final Runnable r = () -> serverStatusView.setDividerLocation(loc);
-    SwingUtilities.invokeLater(r);
   }
 
   protected void setPreferredDividerLocation(int i) {

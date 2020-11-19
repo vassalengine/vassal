@@ -17,6 +17,7 @@
 package VASSAL.tools.swing;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.GraphicsConfiguration;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -398,5 +399,17 @@ public class SwingUtils {
     bounds.setSize(bounds.width - insets.left - insets.right,
                    bounds.height - insets.top - insets.bottom);
     return bounds;
+  }
+
+  public static int getIndexInParent(Component child, Container parent) {
+    if (parent != null) {
+      final int n = parent.getComponentCount();
+      for (int i = 0; i < n; ++i) {
+        if (child == parent.getComponent(i)) {
+          return i;
+        }
+      }
+    }
+    return -1;
   }
 }

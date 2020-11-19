@@ -146,10 +146,9 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
-import static VASSAL.build.module.Map.MAIN_WINDOW_HEIGHT;
-import static VASSAL.build.module.Map.MAIN_WINDOW_WIDTH;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
-
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -626,16 +625,24 @@ public class GameModule extends AbstractConfigurable
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
       frame.setLocation(screen.getLocation());
 
-      final int height = (Integer)
-        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-      final int width = (Integer)
-        Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
-      if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-        frame.setSize((width > 0) ? width : screen.width, height / 3);
+      final Prefs p = Prefs.getGlobalPrefs();
+
+      // If not "remembering" window size, nuke the pref
+      if (Boolean.FALSE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+        p.getOption(MAIN_WINDOW_WIDTH).setValue(-1);
+        p.getOption(MAIN_WINDOW_HEIGHT).setValue(-1);
       }
-      else {
-        frame.setSize(screen.width, screen.height / 3);
-      }
+
+      // Read window size prefs
+      final int ph = (Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue();
+      final int pw = (Integer) p.getOption(MAIN_WINDOW_WIDTH).getValue();
+
+      // Use pref if valid, otherwise screen dimensions
+      final int h = (ph > 0) ? ph : screen.height;
+      final int w = (pw > 0) ? pw : screen.width;
+
+      // Before we have a map, we use 1/3 of height
+      frame.setSize(w, h/3);
     }
     else {
       final String key = "BoundsOfGameModule"; //$NON-NLS-1$
@@ -1430,6 +1437,16 @@ public class GameModule extends AbstractConfigurable
     }
 
     if (!cancelled) {
+      // write window size prefs
+      //final GlobalPrefs gp = (GlobalPrefs) Prefs.getGlobalPrefs();
+      //if (Boolean.TRUE.equals(gp.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+      //  gp.setDisableAutoWrite(true);
+      //  gp.getOption(MAIN_WINDOW_HEIGHT).setValue(frame.getHeight());
+      //  gp.getOption(MAIN_WINDOW_WIDTH).setValue(frame.getWidth());
+      //  gp.saveGlobal();
+      //  gp.setDisableAutoWrite(false);
+      //}
+
       Prefs p = null;
 
       // write and close module prefs

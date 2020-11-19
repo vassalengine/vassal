@@ -19,6 +19,7 @@ package VASSAL.chat.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -58,6 +59,8 @@ import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SplitPane;
+import VASSAL.tools.swing.SwingUtils;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -73,11 +76,15 @@ public class ChatServerControls extends AbstractBuildable {
   protected JButton launch;
   protected ChatServerConnection client;
   protected JPanel controlPanel;
-  protected ComponentSplitter.SplitPane splitter;
   protected ChatControlsInitializer oldClient;
   protected BasicChatControlsInitializer basicControls;
   protected JButton configServerButton;
   protected String configServerText;
+
+  @Deprecated(since = "2020-11-15", forRemoval = true)
+  protected ComponentSplitter.SplitPane splitter;
+
+  protected SplitPane splitPane;
 
   public ChatServerControls() {
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -210,15 +217,13 @@ public class ChatServerControls extends AbstractBuildable {
   public void toggleVisible() {
     if (controlPanel.getTopLevelAncestor() == null) {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
-        splitter = ComponentSplitter.split(
-          GameModule.getGameModule().getControlPanel(),
-          controlPanel,
-          ComponentSplitter.SplitPane.HIDE_RIGHT,
-          false
-        );
-        splitter.revalidate();
-        final Runnable runnable = () -> splitter.showComponent();
-        SwingUtilities.invokeLater(runnable);
+        final Component gmcp = GameModule.getGameModule().getControlPanel();
+        final Container gmcppar = gmcp.getParent();
+        final int i = SwingUtils.getIndexInParent(gmcp, gmcppar);
+
+        splitPane = new SplitPane(SplitPane.HORIZONTAL_SPLIT, gmcp, controlPanel);
+        splitPane.setResizeWeight(1.0);
+        gmcppar.add(splitPane, i);
       }
       else {
         final JFrame frame = new JFrame(Resources.getString("Chat.server"));  //$NON-NLS-1$
@@ -232,8 +237,8 @@ public class ChatServerControls extends AbstractBuildable {
         frame.setVisible(true);
       }
     }
-    else if (splitter != null) {
-      splitter.toggleVisibility();
+    else if (splitPane != null) {
+      splitPane.toggleRight();
     }
     else {
       controlPanel.getTopLevelAncestor().setVisible(!controlPanel.getTopLevelAncestor().isVisible());

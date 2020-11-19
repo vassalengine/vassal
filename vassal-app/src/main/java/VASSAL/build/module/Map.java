@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 import static java.lang.Math.round;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
@@ -39,7 +38,6 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
-import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
@@ -73,6 +71,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.GlobalPrefs;
 import net.miginfocom.swing.MigLayout;
 
@@ -180,7 +179,12 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
+
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
 
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
@@ -207,14 +211,17 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
-  public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
-  public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //$NON-NLS-1$
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
   protected JPanel theMap;  // Our main visual interface component
   protected ArrayList<Drawable> drawComponents = new ArrayList<>(); //NOPMD
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
+
+  @Deprecated(since = "2020-11-05", forRemoval = true)
   protected ComponentSplitter.SplitPane mainWindowDock;
+
+  protected SplitPane splitPane;
+
   protected BoardPicker picker;
   protected JToolBar toolBar = new JToolBar();
   protected Zoomer zoom;
@@ -541,15 +548,24 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void build(Element e) {
-    final ActionListener al = e1 -> {
-      if (mainWindowDock == null && getLaunchButton().isEnabled() && theMap.getTopLevelAncestor() != null) {
-        theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
-      }
-    };
     setButtonTextKey(BUTTON_NAME); // Uses non-standard "button text" key
-    launchButton = makeLaunchButton("", Resources.getString("Editor.Map.map"), "/images/map.gif", al); //NON-NLS
+
+    launchButton = makeLaunchButton(
+      "", //NON-NLS
+      Resources.getString("Editor.Map.map"), //NON-NLS
+      "/images/map.gif", //NON-NLS
+      evt -> {
+        if (splitPane == null && getLaunchButton().isEnabled()) {
+          final Container tla = theMap.getTopLevelAncestor();
+          if (tla != null) {
+            tla.setVisible(!tla.isVisible());
+          }
+        }
+      }
+    );
     getLaunchButton().setEnabled(false);
     getLaunchButton().setVisible(false);
+
     if (e != null) {
       super.build(e);
       getBoardPicker();
@@ -571,18 +587,23 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       addChild(new Flare());
       setMapName(Resources.getString("Map.main_map"));
     }
+
     if (getComponentsOf(GlobalProperties.class).isEmpty()) {
       addChild(new GlobalProperties());
     }
+
     if (getComponentsOf(SelectionHighlighters.class).isEmpty()) {
       addChild(new SelectionHighlighters());
     }
+
     if (getComponentsOf(HighlightLastMoved.class).isEmpty()) {
       addChild(new HighlightLastMoved());
     }
+
     if (getComponentsOf(Flare.class).isEmpty()) {
       addChild(new Flare());
     }
+
     setup(false);
   }
 
@@ -753,29 +774,26 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     g.getToolBar().add(getLaunchButton());
 
     if (shouldDockIntoMainWindow()) {
-      final IntConfigurer config =
-        new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, config);
+      final Component controlPanel = g.getControlPanel();
+      final Container cppar = controlPanel.getParent();
+      final int i = SwingUtils.getIndexInParent(controlPanel, cppar);
 
-      final IntConfigurer configWidth =
-        new IntConfigurer(MAIN_WINDOW_WIDTH, null, -1);
-      Prefs.getGlobalPrefs().addOption(null, configWidth);
+      splitPane = new SplitPane(SplitPane.VERTICAL_SPLIT, controlPanel, layeredPane);
+      splitPane.setResizeWeight(0.0);
+      splitPane.hideBottom();
 
-      mainWindowDock = ComponentSplitter.split(
-        ComponentSplitter.splitAncestorOf(g.getControlPanel(), -1),
-        layeredPane,
-        ComponentSplitter.SplitPane.HIDE_BOTTOM,
-        true
-      );
-      mainWindowDock.setResizeWeight(0.0);
+      controlPanel.setMinimumSize(new Dimension(0, 0));
+      layeredPane.setMinimumSize(new Dimension(0, 0));
 
-      g.addKeyStrokeSource(
-        new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
+      cppar.add(splitPane, i);
+
+      g.addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
     }
     else {
       g.addKeyStrokeSource(
         new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
     }
+
     // Fix for bug 1630993: toolbar buttons not appearing
     toolBar.addHierarchyListener(new HierarchyListener() {
       @Override
@@ -790,7 +808,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       }
     });
 
-    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
     g.getPrefs().addOption(
       Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
       new IntConfigurer(
@@ -800,7 +817,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       )
     );
 
-    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(this);
+    g.addSideChangeListenerToPlayerRoster(this);
 
     // Create the Configurer for the Pref
     preferredScrollConfig = new IntConfigurer(
@@ -838,16 +855,19 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getGameState().removeGameComponent(this);
+    final GameModule g = GameModule.getGameModule();
+    g.getGameState().removeGameComponent(this);
+
     final Window w = SwingUtilities.getWindowAncestor(theMap);
     if (w != null) {
       w.dispose();
     }
-    GameModule.getGameModule().getToolBar().remove(getLaunchButton());
+
+    g.getToolBar().remove(getLaunchButton());
     idMgr.remove(this);
     if (picker != null) {
-      GameModule.getGameModule().removeCommandEncoder(picker);
-      GameModule.getGameModule().getGameState().addGameComponent(picker);
+      g.removeCommandEncoder(picker);
+      g.getGameState().addGameComponent(picker);
     }
     PlayerRoster.removeSideChangeListener(this);
   }
@@ -896,8 +916,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public Board findBoard(Point p) {
     for (final Board b : boards) {
-      if (b.bounds().contains(p))
+      if (b.bounds().contains(p)) {
         return b;
+      }
     }
     return null;
   }
@@ -2538,21 +2559,50 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Override
   public void setup(boolean show) {
-    if (show) {
-      final GameModule g = GameModule.getGameModule();
+    final GameModule g = GameModule.getGameModule();
 
+    if (show) {
       if (shouldDockIntoMainWindow()) {
-        if (mainWindowDock != null) { // This is protected from null elsewhere, and crashed null here, so I'm thinking protect here too.
-          mainWindowDock.showComponent();
-          final int height = (Integer)
-            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT);
-          final int width = (Integer)
-            Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_WIDTH);
-          if (height > 0 && Boolean.TRUE.equals(Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_REMEMBER).getValue())) {
-            final Container top = mainWindowDock.getTopLevelAncestor();
-            top.setSize((width > 0) ? width : top.getWidth(), height);
+        // kludge for modules which still use mainWindowDock
+        // remove this when mainWindowDock is removed
+        if (mainWindowDock != null) {
+          splitPane = new SplitPane(
+            SplitPane.VERTICAL_SPLIT,
+            mainWindowDock.getTopComponent(),
+            mainWindowDock.getBottomComponent()
+          );
+          splitPane.setResizeWeight(0.0);
+
+          final Container mwdpar = mainWindowDock.getParent();
+          mwdpar.remove(mainWindowDock);
+          mwdpar.add(splitPane);
+        }
+
+        if (splitPane != null) {
+          // If we're docked to the main window, check the various player preferences w/r/t remembering desired window height.
+          // The window *width* has already been established, so we don't touch it here.
+          final PlayerWindow window = g.getPlayerWindow();
+          final Rectangle screen = SwingUtils.getScreenBounds(window);
+          final Prefs p = Prefs.getGlobalPrefs();
+
+          final boolean remember = Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue());
+          final int h = remember ? ((Integer) p.getOption(MAIN_WINDOW_HEIGHT).getValue()) : -1;
+
+          window.setSize(window.getWidth(), (h > 0) ? h : screen.height);
+
+          splitPane.showBottom();
+
+          //BR// Force the divider to the Chatter's "preferred height"
+          final int divider = g.getChatter().getPreferredSize().height;
+          splitPane.setDividerLocation(divider);
+
+          // kludge for modules which still use mainWindowDock
+          // remove this when mainWindowDock is removed
+          if (mainWindowDock != null) {
+            splitPane.setDividerSize(5);
           }
         }
+
         if (toolBar.getParent() == null) {
           g.getToolBar().addSeparator();
           g.getToolBar().add(toolBar);
@@ -2593,17 +2643,37 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     else {
       pieces.clear();
       boards.clear();
-      if (mainWindowDock != null) {
-        if (mainWindowDock.getHideableComponent().isShowing()) {
-          final Component c = mainWindowDock.getTopLevelAncestor();
-          final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
-          p.setDisableAutoWrite(true);
-          p.getOption(MAIN_WINDOW_HEIGHT).setValue(c.getHeight());
-          p.getOption(MAIN_WINDOW_WIDTH).setValue(c.getWidth());
-          p.saveGlobal();
-          p.setDisableAutoWrite(false);
+
+      if (shouldDockIntoMainWindow()) {
+        if (splitPane != null) {
+          // If this is a docked-to-main-window map, AND it's presently visible, save our window size preferences
+          if (splitPane.isBottomVisible()) {
+            final Dimension d = g.getPlayerWindow().getSize();
+            final GlobalPrefs p = (GlobalPrefs) Prefs.getGlobalPrefs();
+            final PlayerWindow window = g.getPlayerWindow();
+            final Rectangle screen = SwingUtils.getScreenBounds(window);
+            final int w = window.getWidth();
+            final int h;
+            if (Boolean.TRUE.equals(p.getOption(MAIN_WINDOW_REMEMBER).getValue())) {
+              p.setDisableAutoWrite(true);
+              p.getOption(MAIN_WINDOW_HEIGHT).setValue(d.height);
+              p.getOption(MAIN_WINDOW_WIDTH).setValue(d.width);
+              p.saveGlobal();
+              p.setDisableAutoWrite(false);
+
+              h = d.height;
+            }
+            else {
+              h = screen.height;
+            }
+
+            // Now we hide the bottom part of the pane (the part where the map normally is)
+            splitPane.hideBottom();
+
+            // Now we restore the main window to its "map is offline" state.
+            window.setSize(w, h/3);
+          }
         }
-        mainWindowDock.hideComponent();
         toolBar.setVisible(false);
       }
       else if (theMap.getTopLevelAncestor() != null) {
@@ -2637,14 +2707,14 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     // replaced by updateTitleBar()
   }
 
-
   /**
    * Updates the title bar of the current window
    */
   public void updateTitleBar() {
-    if (mainWindowDock != null) {
+    if (splitPane != null) {
       return;
     }
+
     final Component c = theMap.getTopLevelAncestor();
     if (c instanceof JFrame) {
       ((JFrame) c).setTitle(getDefaultWindowTitle());

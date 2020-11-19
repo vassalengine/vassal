@@ -15,6 +15,12 @@
         <justification>BasicModule is never referenced by custom code</justification>
     </difference>
     <difference>
+        <className>VASSAL/launch/ModuleManagerWindow</className>
+        <differenceType>7002</differenceType>
+        <method>void setDividerLocation(int)</method>
+        <justification>ModuleManagerWindow is never referenced by custom code</justification>
+    </difference>
+    <difference>
         <className>VASSAL/build/module/PieceWindow</className>
         <differenceType>6006</differenceType>
         <field>idMgr</field>
@@ -668,24 +674,6 @@
     </difference>
 
     <difference>
-        <!-- It is okay to add classes to the set of superclasses -->
-        <className>**</className>
-        <differenceType>5000</differenceType>
-        <to>**</to>
-    </difference>
-    <difference>
-        <!-- It is okay to add methods to an interface-->
-        <className>**</className>
-        <differenceType>7012</differenceType>
-        <method>*</method>
-    </difference>
-    <difference>
-        <!-- It is okay to add abstract methods to an abstract class -->
-        <className>**</className>
-        <differenceType>7013</differenceType>
-        <method>*</method>
-    </difference>
-    <difference>
         <className>VASSAL/build/module/properties/PropertyChangerConfigurer</className>
         <differenceType>6004</differenceType>
         <field>typeConfig</field>
@@ -903,6 +891,13 @@
     </difference>
 
     <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>6011</differenceType>
+        <field>MAIN_WINDOW_HEIGHT</field>
+        <justification>This preference never worked, nothing should have used the key</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/counters/MassPieceLoader</className>
         <differenceType>6010</differenceType>
         <field>*</field>
@@ -1065,6 +1060,25 @@
         <differenceType>7002</differenceType>
         <method>void main(java.lang.String[])</method>
         <justification>static test function, nothing should call it</justification>
-   </difference>
+    </difference>
+      
+    <difference>  
+        <!-- It is okay to add classes to the set of superclasses -->
+        <className>**</className>
+        <differenceType>5000</differenceType>
+        <to>**</to>
+    </difference>
+    <difference>
+        <!-- It is okay to add methods to an interface-->
+        <className>**</className>
+        <differenceType>7012</differenceType>
+        <method>*</method>
+    </difference>
+    <difference>
+        <!-- It is okay to add abstract methods to an abstract class -->
+        <className>**</className>
+        <differenceType>7013</differenceType>
+        <method>*</method>
+    </difference>
 
 </differences>
