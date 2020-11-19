@@ -2562,6 +2562,21 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     if (show) {
       if (shouldDockIntoMainWindow()) {
+        // kludge for modules which still use mainWindowDock
+        // remove this when mainWindowDock is removed
+        if (mainWindowDock != null) {
+          splitPane = new SplitPane(
+            SplitPane.VERTICAL_SPLIT,
+            mainWindowDock.getTopComponent(),
+            mainWindowDock.getBottomComponent()
+          );
+          splitPane.setResizeWeight(0.0);
+
+          final Container mwdpar = mainWindowDock.getParent();
+          mwdpar.remove(mainWindowDock);
+          mwdpar.add(splitPane);
+        }
+
         if (splitPane != null) {
           // If we're docked to the main window, check the various player preferences w/r/t remembering desired window height.
           // The window *width* has already been established, so we don't touch it here.
@@ -2579,6 +2594,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           //BR// Force the divider to the Chatter's "preferred height"
           final int divider = g.getChatter().getPreferredSize().height;
           splitPane.setDividerLocation(divider);
+
+          // kludge for modules which still use mainWindowDock
+          // remove this when mainWindowDock is removed
+          if (mainWindowDock != null) {
+            splitPane.setDividerSize(5);
+          }
         }
 
         if (toolBar.getParent() == null) {
