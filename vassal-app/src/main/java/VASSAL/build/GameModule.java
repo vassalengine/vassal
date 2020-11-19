@@ -25,13 +25,11 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -1784,8 +1782,7 @@ public class GameModule extends AbstractConfigurable
 
     try {
       final String save = buildString();
-      writer.addFile(BUILDFILE,
-        new ByteArrayInputStream(save.getBytes(StandardCharsets.UTF_8)));
+      writer.addFile(BUILDFILE, save.getBytes(StandardCharsets.UTF_8));
 
       writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
@@ -1796,16 +1793,13 @@ public class GameModule extends AbstractConfigurable
 
       GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
-    catch (FileSystemException e) {
-      final String[] msgs = e.getLocalizedMessage().split("\n");
-      for (final String msg : msgs) {
-        warn(msg); //NON-NLS //BR// Might as well leave them with a chat log record of where the tmp file got written.
-      }
-      WriteErrorDialog.reportFileOverwriteFailure(e, "Error.module_overwrite_error"); //NON-NLS
-    }
-    // Something Truly Terrible has happened if we get here.
     catch (IOException e) {
-      WriteErrorDialog.error(e, writer.getName());
+      WriteErrorDialog.showError(
+        GameModule.getGameModule().getPlayerWindow(),
+        e,
+        writer.getArchive().getFile(),
+        "Error.new_file_write_error"
+      );
     }
   }
 

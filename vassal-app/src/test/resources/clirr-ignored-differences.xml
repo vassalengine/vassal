@@ -1056,6 +1056,13 @@
     </difference>
 
     <difference>
+        <className>VASSAL/tools/io/ZipArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void main(java.lang.String[])</method>
+        <justification>static test function, nothing should call it</justification>
+    </difference>
+      
+    <difference>  
         <!-- It is okay to add classes to the set of superclasses -->
         <className>**</className>
         <differenceType>5000</differenceType>

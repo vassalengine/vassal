@@ -18,9 +18,16 @@
 
 package VASSAL.tools;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemException;
+
+
+import javax.swing.JOptionPane;
+
+import VASSAL.i18n.Resources;
 
 /**
  * @author Joel Uckelman
@@ -77,6 +84,35 @@ public class WriteErrorDialog {
       e,
       ThrowableUtils.getStackTrace(e),
       messageKey
+    );
+  }
+
+  public static void showError(
+    Component parent,
+    IOException e,
+    File file,
+    String messageKey) {
+
+    String msg;
+    if (e instanceof AccessDeniedException) {
+      // AccessDeniedException has a useless message
+      msg = "Access denied";
+    }
+    else if (e instanceof FileSystemException) {
+      msg = ((FileSystemException) e).getReason();
+    }
+    else {
+      msg = e.getMessage();
+    }
+
+    ProblemDialog.showDetails(
+      JOptionPane.WARNING_MESSAGE,
+      parent,
+      e,
+      ThrowableUtils.getStackTrace(e),
+      Resources.getString(messageKey + "_title"), // NON-NLS
+      Resources.getString(messageKey + "_heading"), // NON-NLS
+      Resources.getString(messageKey + "_message", file.getName(), msg) // NON-NLS
     );
   }
 }

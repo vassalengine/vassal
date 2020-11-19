@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13661: Simplified ZIP archive writing and error reporting
 * 13593: Global preferences are never written except when prefs dialog is closed
 * 13522: Performance improvements for Global Key Commands
 * 13509: Save As in Editor, if it fails, complains about old filename instead
@@ -42,6 +43,7 @@
 
 3.4.9 - ???
 
+* 13655: Grid caching interferes with drawing zone highlighters
 * 13602: NPE in MassPieceLoader.MassLoaderDialog.load()
 * 13539: Game Refresher resets Labels to editor setting if any of the Text
     Label attributes (e.g., text color) have changed
