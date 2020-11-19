@@ -48,7 +48,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
     final Box buttonsBox = Box.createHorizontalBox();
-    refreshButton = new JButton(Resources.getString("Editor.RefreshPredefinedSetupsDialog.refresh_predefined"));
+    refreshButton = new JButton(Resources.getString("Editor.ModuleEditor.refresh_predefined"));
     refreshButton.addActionListener(e -> refreshPredefinedSetups());
     refreshButton.setEnabled(true);
     buttonsBox.add(refreshButton);
