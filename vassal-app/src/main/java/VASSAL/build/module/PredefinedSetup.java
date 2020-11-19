@@ -326,3 +326,4 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return List.of(name);
   }
 }
+  
