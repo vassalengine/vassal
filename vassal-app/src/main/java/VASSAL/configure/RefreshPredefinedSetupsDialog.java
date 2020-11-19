@@ -33,8 +33,6 @@ import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -49,12 +47,12 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private void initComponents() {
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-    Box buttonsBox = Box.createHorizontalBox();
+    final Box buttonsBox = Box.createHorizontalBox();
     refreshButton = new JButton(Resources.getString("Editor.RefreshPredefinedSetupsDialog.refresh_predefined"));
     refreshButton.addActionListener(e -> refreshPredefinedSetups());
     refreshButton.setEnabled(true);
     buttonsBox.add(refreshButton);
-    JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
+    final JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
 
     HelpFile hf = null;
     try {
@@ -68,7 +66,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     buttonsBox.add(helpButton);
-    JButton closeButton = new JButton(Resources.getString("Editor.RefreshPredefinedSetupsDialog.close"));
+    final JButton closeButton = new JButton(Resources.getString("Editor.RefreshPredefinedSetupsDialog.close"));
     closeButton.addActionListener(e -> dispose());
     buttonsBox.add(closeButton);
     add(buttonsBox);
@@ -80,8 +78,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     refreshButton.setEnabled(false);
 
     final GameModule mod = GameModule.getGameModule();
-    List<PredefinedSetup> pdsList = new ArrayList<>();
-    for (PredefinedSetup pds : mod.getAllDescendantComponentsOf(PredefinedSetup.class)) {
+    // final List<PredefinedSetup> pdsList = new ArrayList<>();
+    for (final PredefinedSetup pds : mod.getAllDescendantComponentsOf(PredefinedSetup.class)) {
       if (!pds.isMenu()) {
         try {
           pds.refresh();

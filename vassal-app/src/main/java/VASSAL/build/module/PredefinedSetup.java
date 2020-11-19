@@ -172,7 +172,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public void launch() {
-    GameModule g = GameModule.getGameModule();
+    final GameModule g = GameModule.getGameModule();
     if (useFile && fileName != null) {
       try {
         g.getGameState().loadGameInBackground(fileName, getSavedGameContents());
@@ -271,12 +271,12 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     gameRefresher.executeHeadless(true, true,   null);
 
     // save the refreshed game into a temporary file
-    File tmp = File.createTempFile("vassal", null);
+    final File tmp = File.createTempFile("vassal", null);
     gs.saveGame(tmp);
     gs.updateDone();
 
     // write the updated saved game file into the module file
-    ArchiveWriter aw = mod.getArchiveWriter();
+    final ArchiveWriter aw = mod.getArchiveWriter();
     aw.removeFile(fileName);
     aw.addFile(tmp.getPath(), fileName);
   }
