@@ -87,6 +87,7 @@ public final class GameRefresher implements GameComponent {
   //private String player;
   private final Chatter chatter;
   private final Command msg;
+  private List<String> options;
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -115,7 +116,8 @@ public final class GameRefresher implements GameComponent {
   }
 
   public boolean isTestMode() {
-    return testMode;
+    return options.contains("TestMode");
+    //return testMode;
   }
 
   public void start() {
@@ -198,18 +200,23 @@ public final class GameRefresher implements GameComponent {
    * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
-  public void execute(boolean testMode,  boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
+  public void execute(List<String> options, boolean testMode,   boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
     this.testMode = testMode;
     this.useLabelerName = useLabelerName;
+    this.options = options;
     notFoundCount = 0;
     updatedCount = 0;
 
+    if (isTestMode()) {
+      log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
+      log("-"); //$NON-NLS-1$
+    }
 
     /*
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
      */
-    gpIdChecker = new GpIdChecker(useName, this.useLabelerName);
+    gpIdChecker = new GpIdChecker(useName, options);
     for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
@@ -403,44 +410,53 @@ public final class GameRefresher implements GameComponent {
 
   private void processGamePiece(GamePiece piece, Command command) {
 
+    // Piece needs to be on a map. Else how do we put it back.
     final Map map = piece.getMap();
     if (map == null) {
-      logger.error("Can't refresh piece " + piece.getName() + ": No Map"); //NON-NLS
+//      logger.error("Can't refresh piece " + piece.getName() + + "(" + piece.getId()+ "): No Map"); //NON-NLS
+        log("Can't refresh piece " + piece.getName() + "(" + piece.getId()+ "): No Map"); //NON-NLS
       return;
     }
 
-    final Point pos = piece.getPosition();
+    //create a new piece. If returns null, it failed
     final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+    if (newPiece == null) {
+      notFoundCount++;
+      //logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
+      log("Can't refresh piece " + piece.getName() + "(" + piece.getId()+ "): Can't find matching Piece Slot"); //NON-NLS
+      return;
+    }
 
-    final Stack oldStack = piece.getParent();
-    final int oldPos = oldStack == null ? 0 : oldStack.indexOf(piece);
 
     // Remove the old Piece if different
-    if (piece.equals(newPiece)) {
-      notFoundCount++;
-      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
-    }
-    else {
       updatedCount++;
 
-      if (! isTestMode()) {
-        // Place the new Piece.
-        final Command place = map.placeOrMerge(newPiece, pos);
-        command.append(place);
+    if (! isTestMode())
+    {
+      // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
+      final Point pos = piece.getPosition();
+      final Stack oldStack = piece.getParent();
+      final int oldPos = oldStack == null ? 0 : oldStack.indexOf(piece);
 
-        // Delete the old piece
-        final Command remove = new RemovePiece(Decorator.getOutermost(piece));
-        remove.execute();
-        command.append(remove);
-      }
-    }
+      // Place new piece on the map where the old piece was
+      // Then position it at the same position in the stack the old piece was
 
-    if (! isTestMode()) {
-      // If still in the same stack, move to correct position
+      // Place the new Piece.
+      final Command place = map.placeOrMerge(newPiece, pos);
+      command.append(place);
+
+      // Delete the old piece
+      final Command remove = new RemovePiece(Decorator.getOutermost(piece));
+      remove.execute();
+      command.append(remove);
+
+      // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
-      if ((newStack != null) && (newStack == oldStack)) {
+      if ((newStack != null) && (newStack == oldStack))
+      {
         final int newPos = newStack.indexOf(newPiece);
-        if (newPos >= 0 && oldPos >= 0 && newPos != oldPos) {
+        if (newPos >= 0 && oldPos >= 0 && newPos != oldPos)
+        {
           final String oldState = newStack.getState();
           newStack.insert(newPiece, oldPos);
           command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
@@ -485,6 +501,7 @@ public final class GameRefresher implements GameComponent {
     private JTextArea results;
     private JCheckBox nameCheck;
     private JCheckBox labelerNameCheck;
+    private List<String> options = new ArrayList<String>();
 
     RefreshDialog(GameRefresher refresher) {
       this.refresher = refresher;
@@ -536,18 +553,27 @@ public final class GameRefresher implements GameComponent {
       pack();
     }
 
+    protected void  setOptions() {
+      if (nameCheck.isSelected()) {
+        options.add("UseName");
+      }
+      if (labelerNameCheck.isSelected()) {
+        options.add("UseLabelerName");
+      }
+    }
+
     protected void exit() {
       setVisible(false);
     }
 
     protected void test() {
-      results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
-      refresher.execute(true, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
+      setOptions();
+      options.add("TestMode");
+      refresher.execute( options, true, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
     }
 
     protected void run() {
-      results.setText("");
-      refresher.execute(false, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
+      refresher.execute( options,false, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
       exit();
     }
 

@@ -40,6 +40,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -63,6 +64,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
   protected AbstractAction launchAction;
+  private List<String> options = new ArrayList<String>();
 
   public PredefinedSetup() {
     launchAction = new AbstractAction() {
@@ -80,7 +82,19 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     showFile = () -> !isMenu && useFile;
 
     showUseFile = () -> !isMenu;
+
+
   }
+
+  protected void  setOptions() {
+/*    if (nameCheck.isSelected()) {
+      options.add("useName");
+    }
+    if (labelerNameCheck.isSelected()) {
+      options.add("useLabelerName");
+    }*/
+  }
+
 
   @Override
   public String[] getAttributeDescriptions() {
@@ -269,7 +283,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // call the gameRefresher
     //FIXME Add test mode checkbox
-    gameRefresher.execute(false, true, true,   null);
+    gameRefresher.execute( options, false, true, true,   null);
 
     // save the refreshed game into a temporary file
     final File tmp = File.createTempFile("vassal", null);
