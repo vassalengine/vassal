@@ -414,7 +414,7 @@ public final class GameRefresher implements GameComponent {
     final Map map = piece.getMap();
     if (map == null) {
 //      logger.error("Can't refresh piece " + piece.getName() + + "(" + piece.getId()+ "): No Map"); //NON-NLS
-        log("Can't refresh piece " + piece.getName() + "(" + piece.getId()+ "): No Map"); //NON-NLS
+      log("Can't refresh piece " + piece.getName() + "(" + piece.getId() + "): No Map"); //NON-NLS
       return;
     }
 
@@ -423,16 +423,15 @@ public final class GameRefresher implements GameComponent {
     if (newPiece == null) {
       notFoundCount++;
       //logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
-      log("Can't refresh piece " + piece.getName() + "(" + piece.getId()+ "): Can't find matching Piece Slot"); //NON-NLS
+      log("Can't refresh piece " + piece.getName() + "(" + piece.getId() + "): Can't find matching Piece Slot"); //NON-NLS
       return;
     }
 
 
     // Remove the old Piece if different
-      updatedCount++;
+    updatedCount++;
 
-    if (! isTestMode())
-    {
+    if (! isTestMode()) {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
       final Point pos = piece.getPosition();
       final Stack oldStack = piece.getParent();
@@ -452,11 +451,9 @@ public final class GameRefresher implements GameComponent {
 
       // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
-      if ((newStack != null) && (newStack == oldStack))
-      {
+      if ((newStack != null) && (newStack == oldStack)) {
         final int newPos = newStack.indexOf(newPiece);
-        if (newPos >= 0 && oldPos >= 0 && newPos != oldPos)
-        {
+        if (newPos >= 0 && oldPos >= 0 && newPos != oldPos) {
           final String oldState = newStack.getState();
           newStack.insert(newPiece, oldPos);
           command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
@@ -569,11 +566,11 @@ public final class GameRefresher implements GameComponent {
     protected void test() {
       setOptions();
       options.add("TestMode");
-      refresher.execute( options, true, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
+      refresher.execute(options, true, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
     }
 
     protected void run() {
-      refresher.execute( options,false, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
+      refresher.execute(options, false, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
       exit();
     }
 
