@@ -1,4 +1,4 @@
-3.4.9 - ???
+3.4.9 - 20 November 2020
 
 * 13655: Grid caching interferes with drawing zone highlighters
 * 13631: NPE in Map.placeAt()
