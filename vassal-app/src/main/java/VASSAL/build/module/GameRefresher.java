@@ -78,15 +78,22 @@ public final class GameRefresher implements GameComponent {
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker  gpIdChecker;
-  private int updatedCount;
-  private int notFoundCount;
-  private int notOwnedCount;
   private RefreshDialog dialog;
   private boolean testMode;
   private boolean useLabelerName;
+  private int updatedCount;
+  private int notFoundCount;
+  private GameModule theModule;
+  private String player;
+  private Chatter chatter;
+  private Command msg;
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
+    theModule = GameModule.getGameModule();
+    player = GlobalOptions.getInstance().getPlayerId();
+    chatter = theModule.getChatter();
+    msg = new Chatter.DisplayText(chatter, "----------"); //$NON-NLS-1$
   }
 
   public void addTo(AbstractConfigurable parent) {
@@ -116,58 +123,41 @@ public final class GameRefresher implements GameComponent {
     dialog = null;
   }
 
-  public void refreshGame(boolean testMode, boolean useName, boolean useLabelerName) { // rewrite if execute but pass pieces
-    this.testMode = testMode;
-    this.useLabelerName = useLabelerName;
-    final GameModule theModule = GameModule.getGameModule();
-    updatedCount = 0;
-    notFoundCount = 0;
-    notOwnedCount = 0;
+ public void log(String message) {
+   // ex for dialog msg dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
+   // Log to chatter
+   msg.append(new Chatter.DisplayText(chatter, message));
+   logger.info(message);
+ }
 
-    /*
-     * 1. Use the GpIdChecker to build a cross-reference of all available
-     * PieceSlots and PlaceMarker's in the module.
-     */
-    gpIdChecker = new GpIdChecker(useName, this.useLabelerName);
-    for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
-      gpIdChecker.add(slot);
-    }
+ public List<GamePiece>  getCurrentGameRefresherPieces() {
+   final List<GamePiece> pieces = new ArrayList<>();
+   int totalCount = 0;
+   int notOwnedCount = 0;
+   int notVisibleCount = 0;
 
-    // Add any PieceSlots in Prototype Definitions
-    for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
-      pc.getDefinitions().forEach(gpIdChecker::add);
-    }
-
-    if (gpIdChecker.hasErrors()) {
-      // Any errors should have been resolved by the GpId check at startup, so
-      // this error indicates
-      // a bug in GpIdChecker.fixErrors().
-      ErrorDialog.show("GameRefresher.no_gpids"); //$NON-NLS-1$
-      gpIdChecker = null;
-      return;
-    }
-
-    /*
-     * 2. Make a list of all pieces in the game that we have access to
-     */
-    final Command command = new NullCommand();
-    final ArrayList<GamePiece> pieces = new ArrayList<>();
-
-    for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
-      if (piece instanceof Deck) {
-        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-          pieces.add(0, i.next());
-        }
-      }
-      else if (piece instanceof Stack) {
-        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+     for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
+       if (piece instanceof Deck) {
+         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+           pieces.add(0, i.next());
+           totalCount++;
+         }
+       }
+       else if (piece instanceof Stack) {
+         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           final GamePiece p = i.next();
+          totalCount++;
           if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
             && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
             pieces.add(0, p);
           }
           else {
-            notOwnedCount++;
+            if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)))
+            {
+              notVisibleCount++;
+            } else {
+              notOwnedCount++;
+            }
           }
         }
       }
@@ -177,74 +167,43 @@ public final class GameRefresher implements GameComponent {
           pieces.add(0, piece);
         }
         else {
-          notOwnedCount++;
-        }
-      }
-    }
-
-    /*
-     * 3. Generate the commands to update the pieces
-     */
-    for (final GamePiece piece : pieces) {
-      if (isTestMode()) {
-        testGamePiece(piece);
-      }
-      else {
-        processGamePiece(piece, command);
-      }
-    }
-
-    if (isTestMode()) {
-      if (dialog != null) { // Could be null if dialog box got closed while we were still running - see start() method above
-        dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
-        if (notOwnedCount > 0) {
-          dialog.addMessage(Resources.getString("GameRefresher.counters_not_owned_test", notOwnedCount));
-        }
-        if (notFoundCount > 0) {
-          dialog.addMessage(Resources.getString("GameRefresher.counters_not_found_test", notFoundCount));
-        }
-      }
-    }
-    else {
-      final String player = GlobalOptions.getInstance().getPlayerId();
-      final Chatter chatter = theModule.getChatter();
-      final Command msg = new Chatter.DisplayText(chatter, "----------"); //NON-NLS
-      msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
-      msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
-
-      if (notOwnedCount > 0) {
-        msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_owned", player, notOwnedCount)));
-      }
-
-      if (notFoundCount > 0) {
-        msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
-      }
-      msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
-      msg.execute();
-      command.append(msg);
-
-      // Send the update to other clients
-      theModule.sendAndLog(command);
-    }
-
-    gpIdChecker = null;
-  }
+          if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)))
+          {
+            notVisibleCount++;
+          } else {
+            notOwnedCount++;
+          }
+       }
+     }
+   }
+   log(Resources.getString("GameRefresher.get_all_pieces"));
+   log(Resources.getString("GameRefresher.counters_total", totalCount));
+   log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
+   log(Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+   log(Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+   log("-"); //$NON-NLS-1$
+//   msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_total", totalCount));
+//   msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+  return pieces;
+ }
 
 
   /**
    * This method is used by PredefinedSetup.refresh() to update a PredefinedSetup in a GameModule
-   * The default exectute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
+   * The default execute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
    * to set the pieces list, this method provides an alternative way to specify which pieces should be refreshed.
    * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
    * @param useName - tell the gpIdChecker to use the piece name
    * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
-  public void executeHeadless(boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
-    final GameModule theModule = GameModule.getGameModule();
-    updatedCount = 0;
+  public void execute(boolean testMode,  boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
+    this.testMode = testMode;
+    this.useLabelerName = useLabelerName;
     notFoundCount = 0;
-    notOwnedCount = 0;
+    updatedCount = 0;
+
+
     /*
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
@@ -271,36 +230,7 @@ public final class GameRefresher implements GameComponent {
      * 2. If we haven't been given a list of pieces, we use the default
      */
     if (Objects.isNull(pieces)) {
-      pieces = new ArrayList<>();
-
-      for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
-        if (piece instanceof Deck) {
-          for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-            pieces.add(0, i.next());
-          }
-        }
-        else if (piece instanceof Stack) {
-          for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-            final GamePiece p = i.next();
-            if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
-              && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
-              pieces.add(0, p);
-            }
-            else {
-              notOwnedCount++;
-            }
-          }
-        }
-        else if (piece.getParent() == null) {
-          if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-            && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
-            pieces.add(0, piece);
-          }
-          else {
-            notOwnedCount++;
-          }
-        }
-      }
+      pieces = getCurrentGameRefresherPieces();
     }
 
     /*
@@ -308,32 +238,47 @@ public final class GameRefresher implements GameComponent {
      */
     final Command command = new NullCommand();
     for (final GamePiece piece : pieces) {
-      processGamePiece(piece, command);
+      if (isTestMode()) {
+        testGamePiece(piece);
+      }
+      else {
+        processGamePiece(piece, command);
+      }
     }
-    final String player = GlobalOptions.getInstance().getPlayerId();
-    final Chatter chatter = theModule.getChatter();
-    final Command msg = new Chatter.DisplayText(chatter, "----------"); //NON-NLS
-    msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
-    msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
-
-    if (notOwnedCount > 0) {
-      msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_owned", player, notOwnedCount)));
+   /* if (isTestMode()) {
+      if (dialog != null) { // Could be null if dialog box got closed while we were still running - see start() method above
+        dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
+        if (notFoundCount > 0) {
+          dialog.addMessage(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+        }
+      }
     }
+    else {*/
 
-    if (notFoundCount > 0) {
-      msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
-    }
-    msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
-    msg.execute();
-    command.append(msg);
+      log(Resources.getString("GameRefresher.run_refresh_counters"));
+      log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
+      log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+      log("----------"); //$NON-NLS-1$
+      // msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
+      // msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
 
-    // Send the update to other clients
-    theModule.sendAndLog(command);
+      //if (notFoundCount > 0) {
+      //  msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
+      //}
 
-    logger.info("Refreshed pieces: " + updatedCount + ", Not found: " + notFoundCount); //NON-NLS
+      //msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
+      msg.execute();
+      command.append(msg);
+
+      // Send the update to other clients
+      theModule.sendAndLog(command);
+    //}
+
+    //logger.info("Refreshed pieces: " + updatedCount + ", Not found: " + notFoundCount); //NON-NLS
     gpIdChecker = null;
   }
 
+/*
   public void execute(boolean testMode, boolean useName, boolean useLabelerName) {
     this.testMode = testMode;
     this.useLabelerName = useLabelerName;
@@ -342,10 +287,12 @@ public final class GameRefresher implements GameComponent {
     updatedCount = 0;
     notFoundCount = 0;
     notOwnedCount = 0;
-    /*
+    */
+/*
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
-     */
+     *//*
+
     gpIdChecker = new GpIdChecker(useName, useLabelerName);
     for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
@@ -365,9 +312,11 @@ public final class GameRefresher implements GameComponent {
       return;
     }
 
-    /*
+    */
+/*
      * 2. Make a list of all pieces in the game that we have access to
-     */
+     *//*
+
     final Command command = new NullCommand();
     final ArrayList<GamePiece> pieces = new ArrayList<>();
 
@@ -400,9 +349,11 @@ public final class GameRefresher implements GameComponent {
       }
     }
 
-    /*
+    */
+/*
      * 3. Generate the commands to update the pieces
-     */
+     *//*
+
     for (final GamePiece piece : pieces) {
       if (isTestMode()) {
         testGamePiece(piece);
@@ -447,6 +398,7 @@ public final class GameRefresher implements GameComponent {
 
     gpIdChecker = null;
   }
+*/
 
   private void processGamePiece(GamePiece piece, Command command) {
 
@@ -589,12 +541,12 @@ public final class GameRefresher implements GameComponent {
 
     protected void test() {
       results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
-      refresher.execute(true, nameCheck.isSelected(), labelerNameCheck.isSelected());
+      refresher.execute(true, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
     }
 
     protected void run() {
       results.setText("");
-      refresher.execute(false, nameCheck.isSelected(), labelerNameCheck.isSelected());
+      refresher.execute(false, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
       exit();
     }
 
