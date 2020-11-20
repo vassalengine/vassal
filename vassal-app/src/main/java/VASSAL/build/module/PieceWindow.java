@@ -179,17 +179,31 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   /**
-   * A PieceWindow may contain a {@link TabWidget}, a {@link
+   * Children of PieceWindow may contain a {@link TabWidget}, a {@link
    * PanelWidget}, a {@link BoxWidget}, a {@link ListWidget}, or a
-   * {@link PieceSlot} */
+   * {@link PieceSlot}
+   **/
   @Override
-  public Class<?>[] getAllowableConfigureComponents() {
+  public Class<?>[] getChildAllowableConfigureComponents() {
     return new Class<?>[]{
       TabWidget.class,
       PanelWidget.class,
       BoxWidget.class,
       ListWidget.class,
       PieceSlot.class
+    };
+  }
+
+  /**
+   * A PieceWindow may contain a {@link TabWidget}, a {@link
+   * PanelWidget}, a {@link BoxWidget}, a {@link ListWidget} -- but not a lone piece slot */
+  @Override
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[]{
+      TabWidget.class,
+      PanelWidget.class,
+      BoxWidget.class,
+      ListWidget.class
     };
   }
 
