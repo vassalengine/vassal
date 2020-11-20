@@ -1092,5 +1092,11 @@
         <method>**</method>
         <justification>no one should have extended this class</justification>
     </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>no one should have extended this class</justification>
+    </difference>
 
 </differences>

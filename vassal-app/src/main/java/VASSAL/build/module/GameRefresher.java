@@ -83,15 +83,16 @@ public final class GameRefresher implements GameComponent {
   private boolean useLabelerName;
   private int updatedCount;
   private int notFoundCount;
-  private GameModule theModule;
-  private String player;
-  private Chatter chatter;
-  private Command msg;
+  private final GameModule theModule;
+  //private String player;
+  private final Chatter chatter;
+  private final Command msg;
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
     theModule = GameModule.getGameModule();
-    player = GlobalOptions.getInstance().getPlayerId();
+    //player = GlobalOptions.getInstance().getPlayerId();
+    //FIXME add messge abt player if in Player mode and not owned are found
     chatter = theModule.getChatter();
     msg = new Chatter.DisplayText(chatter, "----------"); //$NON-NLS-1$
   }
@@ -123,28 +124,28 @@ public final class GameRefresher implements GameComponent {
     dialog = null;
   }
 
- public void log(String message) {
-   // ex for dialog msg dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
-   // Log to chatter
-   msg.append(new Chatter.DisplayText(chatter, message));
-   logger.info(message);
- }
+  public void log(String message) {
+    // ex for dialog msg dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
+    // Log to chatter
+    msg.append(new Chatter.DisplayText(chatter, message));
+    logger.info(message);
+  }
 
- public List<GamePiece>  getCurrentGameRefresherPieces() {
-   final List<GamePiece> pieces = new ArrayList<>();
-   int totalCount = 0;
-   int notOwnedCount = 0;
-   int notVisibleCount = 0;
+  public List<GamePiece>  getCurrentGameRefresherPieces() {
+    final List<GamePiece> pieces = new ArrayList<>();
+    int totalCount = 0;
+    int notOwnedCount = 0;
+    int notVisibleCount = 0;
 
-     for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
-       if (piece instanceof Deck) {
-         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-           pieces.add(0, i.next());
-           totalCount++;
-         }
-       }
-       else if (piece instanceof Stack) {
-         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+    for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
+      if (piece instanceof Deck) {
+        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+          pieces.add(0, i.next());
+          totalCount++;
+        }
+      }
+      else if (piece instanceof Stack) {
+        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           final GamePiece p = i.next();
           totalCount++;
           if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
@@ -152,10 +153,10 @@ public final class GameRefresher implements GameComponent {
             pieces.add(0, p);
           }
           else {
-            if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)))
-            {
+            if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))) {
               notVisibleCount++;
-            } else {
+            }
+            else {
               notOwnedCount++;
             }
           }
@@ -167,25 +168,25 @@ public final class GameRefresher implements GameComponent {
           pieces.add(0, piece);
         }
         else {
-          if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)))
-          {
+          if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))) {
             notVisibleCount++;
-          } else {
+          }
+          else {
             notOwnedCount++;
           }
-       }
-     }
-   }
-   log(Resources.getString("GameRefresher.get_all_pieces"));
-   log(Resources.getString("GameRefresher.counters_total", totalCount));
-   log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
-   log(Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
-   log(Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
-   log("-"); //$NON-NLS-1$
+        }
+      }
+    }
+    log(Resources.getString("GameRefresher.get_all_pieces"));
+    log(Resources.getString("GameRefresher.counters_total", totalCount));
+    log(Resources.getString("GameRefresher.counters_kept", totalCount - notOwnedCount - notVisibleCount));
+    log(Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
+    log(Resources.getString("GameRefresher.counters_not_visible", notVisibleCount));
+    log("-"); //$NON-NLS-1$
 //   msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_total", totalCount));
 //   msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_owned", notOwnedCount));
-  return pieces;
- }
+    return pieces;
+  }
 
 
   /**
@@ -208,7 +209,7 @@ public final class GameRefresher implements GameComponent {
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
      */
-    gpIdChecker = new GpIdChecker(useName, useLabelerName);
+    gpIdChecker = new GpIdChecker(useName, this.useLabelerName);
     for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
@@ -255,23 +256,23 @@ public final class GameRefresher implements GameComponent {
     }
     else {*/
 
-      log(Resources.getString("GameRefresher.run_refresh_counters"));
-      log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
-      log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
-      log("----------"); //$NON-NLS-1$
-      // msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
-      // msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
+    log(Resources.getString("GameRefresher.run_refresh_counters"));
+    log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
+    log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+    log("----------"); //$NON-NLS-1$
+    // msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
+    // msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
 
-      //if (notFoundCount > 0) {
-      //  msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
-      //}
+    //if (notFoundCount > 0) {
+    //  msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
+    //}
 
-      //msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
-      msg.execute();
-      command.append(msg);
+    //msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
+    msg.execute();
+    command.append(msg);
 
-      // Send the update to other clients
-      theModule.sendAndLog(command);
+    // Send the update to other clients
+    theModule.sendAndLog(command);
     //}
 
     //logger.info("Refreshed pieces: " + updatedCount + ", Not found: " + notFoundCount); //NON-NLS
@@ -288,10 +289,10 @@ public final class GameRefresher implements GameComponent {
     notFoundCount = 0;
     notOwnedCount = 0;
     */
-/*
-     * 1. Use the GpIdChecker to build a cross-reference of all available
-     * PieceSlots and PlaceMarker's in the module.
-     *//*
+  /*
+   * 1. Use the GpIdChecker to build a cross-reference of all available
+   * PieceSlots and PlaceMarker's in the module.
+   *//*
 
     gpIdChecker = new GpIdChecker(useName, useLabelerName);
     for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
@@ -313,9 +314,9 @@ public final class GameRefresher implements GameComponent {
     }
 
     */
-/*
-     * 2. Make a list of all pieces in the game that we have access to
-     *//*
+  /*
+   * 2. Make a list of all pieces in the game that we have access to
+   *//*
 
     final Command command = new NullCommand();
     final ArrayList<GamePiece> pieces = new ArrayList<>();
@@ -350,9 +351,9 @@ public final class GameRefresher implements GameComponent {
     }
 
     */
-/*
-     * 3. Generate the commands to update the pieces
-     *//*
+  /*
+   * 3. Generate the commands to update the pieces
+   *//*
 
     for (final GamePiece piece : pieces) {
       if (isTestMode()) {

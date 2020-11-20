@@ -269,7 +269,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // call the gameRefresher
     //FIXME Add test mode checkbox
-    gameRefresher.execute( false, true, true,   null);
+    gameRefresher.execute(false, true, true,   null);
 
     // save the refreshed game into a temporary file
     final File tmp = File.createTempFile("vassal", null);
