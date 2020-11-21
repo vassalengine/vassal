@@ -22,20 +22,20 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.tools.BugUtils;
-import VASSAL.tools.SequenceEncoder;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 /**
  * Expandable "Console" to allow entering commands into the Chatter.
  */
 public class Console {
-  SequenceEncoder.Decoder decode;
+  Iterator<String> tok;
   String commandLine;
 
   private static final org.slf4j.Logger log =
@@ -60,6 +60,19 @@ public class Console {
     return s1.toLowerCase().substring(0, s2.length()).equals(s2.toLowerCase());
   }
 
+  private String nextString(String def) {
+    return tok.hasNext() ? tok.next() : "";
+  }
+
+  private int nextInt(int def) {
+    try {
+      return tok.hasNext() ? Integer.parseInt(tok.next()) : def;
+    }
+    catch (NumberFormatException e) {
+      return def;
+    }
+  }
+
   /**
    * Opens the specified file (or folder) using the Desktop's default method
    * @param file file or folder to open
@@ -79,7 +92,7 @@ public class Console {
 
 
   private boolean doErrorLog() {
-    final String option = decode.nextToken("");
+    final String option = nextString("");
     if (matches("show", option)) { //NON-NLS
       final String errorLog = BugUtils.getErrorLog();
       final String delims2 = "[\n]+";
@@ -87,7 +100,7 @@ public class Console {
 
       if (lines.length > 0) {
         final int end = lines.length - 1;
-        final int linesToShow = decode.nextInt(0);
+        final int linesToShow = nextInt(0);
         final int start = (linesToShow <= 0) ? 0 : Math.max(0, end - linesToShow + 1);
 
         for (int line = start; line <= end; line++) {
@@ -145,8 +158,8 @@ public class Console {
 
 
   private boolean doProperty() {
-    final String option   = decode.nextToken("");
-    final String property = decode.nextToken("");
+    final String option   = nextString("");
+    final String property = nextString("");
 
     if (matches("?", option) || matches("help", option)) { //NON-NLS
       show("Usage:"); //NON-NLS
@@ -162,7 +175,7 @@ public class Console {
     else if (matches("set", option)) { //NON-NLS
       final MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);
       if (propValue != null) {
-        propValue.setPropertyValue(decode.nextToken(""));
+        propValue.setPropertyValue(nextString(""));
         show("[" + property + "]: " + propValue.getPropertyValue());
       }
     }
@@ -171,7 +184,32 @@ public class Console {
   }
 
 
-  public boolean consoleHook(String s, String commandLine, String cl, String command, SequenceEncoder.Decoder decode) {
+  private boolean doHelp() {
+    final String topic = nextString("");
+
+    if (topic.isEmpty()) {
+      show("VASSAL console commands:"); //NON-NLS
+      show("  /errorlog - commands for opening/clearing/altering errorlog"); //NON-NLS
+      show("  /help     - shows list of commands"); //NON-NLS
+      show("  /property - commands for reading/writing global properties"); //NON-NLS
+    }
+    else {
+      tok = Pattern.compile(" +").splitAsStream("help").iterator(); //NON-NLS // Fake up a help subcommand
+      if (matches("errorlog", topic)) { //NON-NLS
+        return doErrorLog();
+      }
+      else if (matches("property", topic)) { //NON-NLS
+        return doProperty();
+      }
+
+      show("Unknown help topic"); //NON-NLS
+    }
+
+    return true;
+  }
+
+
+  public boolean consoleHook(String s, String commandLine, Iterator<String> tok, String command) {
     // Hook for console subclasses, etc.
     return false;
   }
@@ -196,11 +234,13 @@ public class Console {
     show(s);
 
     // First get rid of any extra spaces between things
-    final String cl = Pattern.compile(" +").matcher(commandLine).replaceAll(" ");
+    tok = Pattern.compile(" +").splitAsStream(commandLine).iterator();
 
-    decode = new SequenceEncoder.Decoder(cl, ' ');
+    final String command = nextString("");
 
-    final String command = decode.nextToken("");
+    if (matches("help", command) || matches("?", command)) { //NON-NLS
+      return doHelp();
+    }
 
     if (matches("errorlog", command)) { //NON-NLS
       return doErrorLog();
@@ -210,8 +250,8 @@ public class Console {
       return doProperty();
     }
 
-    if (!consoleHook(s, commandLine, cl, command, decode)) {
-      show("Unknown command."); //NON-NLS
+    if (!consoleHook(s, commandLine, tok, command)) {
+      show("Unknown command. Use /help for list of commands."); //NON-NLS
       return false;
     }
 
