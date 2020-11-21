@@ -64,7 +64,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
   protected AbstractAction launchAction;
-  private List<String> options = new ArrayList<String>();
+  private List<String> refresherOtions = new ArrayList<String>();
 
   public PredefinedSetup() {
     launchAction = new AbstractAction() {
@@ -86,12 +86,12 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   }
 
-  protected void  setOptions() {
+  protected void  setRefresherOptions() {
 /*    if (nameCheck.isSelected()) {
-      options.add("useName");
+      refresherOptions.add("useName");
     }
     if (labelerNameCheck.isSelected()) {
-      options.add("useLabelerName");
+      refresherOptions.add("useLabelerName");
     }*/
   }
 
@@ -283,10 +283,11 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // call the gameRefresher
     //FIXME Add test mode checkbox
-    gameRefresher.execute(options, false, true, true,   null);
+    gameRefresher.execute(refresherOtions, false, true, true,   null);
 
     // save the refreshed game into a temporary file
     final File tmp = File.createTempFile("vassal", null);
+    tmp.delete();
     gs.saveGame(tmp);
     gs.updateDone();
 

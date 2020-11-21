@@ -68,7 +68,9 @@ public class GpIdChecker {
 //    this.useName = useName;
 //    this.useLabelerName = useLabelerName;
     this.extensionsLoaded = true;
-    this.options.addAll(options);
+    if (!options.isEmpty()) {
+      this.options.addAll(options);
+    }
   }
 
   public boolean useLabelerName() {

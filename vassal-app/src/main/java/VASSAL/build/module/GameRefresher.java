@@ -87,7 +87,7 @@ public final class GameRefresher implements GameComponent {
   //private String player;
   private final Chatter chatter;
   private final Command msg;
-  private List<String> options;
+  private List<String> options = new ArrayList<>();
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -203,7 +203,9 @@ public final class GameRefresher implements GameComponent {
   public void execute(List<String> options, boolean testMode,   boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
     this.testMode = testMode;
     this.useLabelerName = useLabelerName;
-    this.options = options;
+    if (!options.isEmpty()) {
+      this.options.addAll(options);
+    }
     notFoundCount = 0;
     updatedCount = 0;
 
