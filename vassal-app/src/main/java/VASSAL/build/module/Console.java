@@ -61,7 +61,7 @@ public class Console {
   }
 
   private String nextString(String def) {
-    return tok.hasNext() ? tok.next() : "";
+    return tok.hasNext() ? tok.next() : def;
   }
 
   private int nextInt(int def) {
