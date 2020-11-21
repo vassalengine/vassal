@@ -1104,5 +1104,12 @@
         <field>*</field>
         <justification>no one should have extended this class</justification>
     </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7005</differenceType>
+        <field>*</field>
+        <to>*</to>
+        <justification>no one should have extended this class</justification>
+    </difference>
 
 </differences>

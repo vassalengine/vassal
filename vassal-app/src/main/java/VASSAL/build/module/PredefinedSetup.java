@@ -64,7 +64,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
   protected AbstractAction launchAction;
-  private List<String> refresherOtions = new ArrayList<String>();
+  private final List<String> refresherOptions = new ArrayList<>();
 
   public PredefinedSetup() {
     launchAction = new AbstractAction() {
@@ -283,7 +283,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // call the gameRefresher
     //FIXME Add test mode checkbox
-    gameRefresher.execute(refresherOtions, false, true, true,   null);
+    gameRefresher.execute(refresherOptions, null);
 
     // save the refreshed game into a temporary file
     final File tmp = File.createTempFile("vassal", null);

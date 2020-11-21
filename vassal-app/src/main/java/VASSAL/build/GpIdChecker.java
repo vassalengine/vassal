@@ -51,10 +51,10 @@ public class GpIdChecker {
   final Map<String, SlotElement> goodSlots = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
-  private List<String> options = new ArrayList<>();
+  private final <String> options = new ArrayList<>();
 
   public GpIdChecker() {
-    this(null);
+    this((GpIdSupport) null);
   }
 
   public GpIdChecker(GpIdSupport gpIdSupport) {
@@ -63,7 +63,7 @@ public class GpIdChecker {
   }
 
   // This constructor is used by the GameRefresher to refresh a game with extensions possibly loaded
-  public GpIdChecker(boolean useName, List<String> options) {
+  public GpIdChecker(List<String> options) {
     this();
 //    this.useName = useName;
 //    this.useLabelerName = useLabelerName;

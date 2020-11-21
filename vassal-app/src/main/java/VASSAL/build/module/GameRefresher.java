@@ -79,15 +79,15 @@ public final class GameRefresher implements GameComponent {
   private final GpIdSupport gpIdSupport;
   private GpIdChecker  gpIdChecker;
   private RefreshDialog dialog;
-  private boolean testMode;
-  private boolean useLabelerName;
+//  private boolean testMode;
+//  private boolean useLabelerName;
   private int updatedCount;
   private int notFoundCount;
   private final GameModule theModule;
   //private String player;
   private final Chatter chatter;
   private final Command msg;
-  private List<String> options = new ArrayList<>();
+  private final List<String> options = new ArrayList<>();
 
   public GameRefresher(GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
@@ -196,13 +196,13 @@ public final class GameRefresher implements GameComponent {
    * The default execute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
    * to set the pieces list, this method provides an alternative way to specify which pieces should be refreshed.
    * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
-   * @param useName - tell the gpIdChecker to use the piece name
    * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
-  public void execute(List<String> options, boolean testMode,   boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
-    this.testMode = testMode;
-    this.useLabelerName = useLabelerName;
+//  public void execute(List<String> options, boolean testMode,   boolean useName,  boolean useLabelerName, List<GamePiece> pieces) throws IllegalBuildException {
+  public void execute(List<String> options, List<GamePiece> pieces) throws IllegalBuildException {
+    //this.testMode = testMode;
+    //this.useLabelerName = useLabelerName;
     if (!options.isEmpty()) {
       this.options.addAll(options);
     }
@@ -218,7 +218,7 @@ public final class GameRefresher implements GameComponent {
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
      */
-    gpIdChecker = new GpIdChecker(useName, options);
+    gpIdChecker = new GpIdChecker(options);
     for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
@@ -500,7 +500,7 @@ public final class GameRefresher implements GameComponent {
     private JTextArea results;
     private JCheckBox nameCheck;
     private JCheckBox labelerNameCheck;
-    private List<String> options = new ArrayList<String>();
+    private final List<String> options = new ArrayList<>();
 
     RefreshDialog(GameRefresher refresher) {
       this.refresher = refresher;
@@ -568,11 +568,12 @@ public final class GameRefresher implements GameComponent {
     protected void test() {
       setOptions();
       options.add("TestMode");
-      refresher.execute(options, true, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
+      refresher.execute(options, null);
     }
 
     protected void run() {
-      refresher.execute(options, false, nameCheck.isSelected(), labelerNameCheck.isSelected(), null);
+      setOptions();
+      refresher.execute(options, null);
       exit();
     }
 
