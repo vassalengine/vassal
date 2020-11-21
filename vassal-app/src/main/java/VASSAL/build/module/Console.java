@@ -29,6 +29,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * Expandable "Console" to allow entering commands into the Chatter.
@@ -177,7 +178,7 @@ public class Console {
 
 
   public boolean exec(String s, String style, boolean html_allowed) {
-    if (s.charAt(0) != '/') {
+    if (s.isEmpty() || (s.charAt(0) != '/')) {
       return false;
     }
     commandLine = s.substring(1);
@@ -195,20 +196,7 @@ public class Console {
     show(s);
 
     // First get rid of any extra spaces between things
-    final String delims = "[ ]+";
-    final String[] tokens = commandLine.split(delims);
-    final StringBuilder sb = new StringBuilder();
-    boolean first = true;
-    for (final String t : tokens) {
-      if (first) {
-        first = false;
-      }
-      else {
-        sb.append(" ");
-      }
-      sb.append(t);
-    }
-    final String cl = sb.toString(); // Our command line with things separated by no more than one space
+    final String cl = Pattern.compile(" +").matcher(commandLine).replaceAll(" ");
 
     decode = new SequenceEncoder.Decoder(cl, ' ');
 
