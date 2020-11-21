@@ -51,7 +51,7 @@ public class GpIdChecker {
   final Map<String, SlotElement> goodSlots = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
-  private final <String> options = new ArrayList<>();
+  private final List<String> refresherOptions = new ArrayList<>();
 
   public GpIdChecker() {
     this((GpIdSupport) null);
@@ -69,16 +69,16 @@ public class GpIdChecker {
 //    this.useLabelerName = useLabelerName;
     this.extensionsLoaded = true;
     if (!options.isEmpty()) {
-      this.options.addAll(options);
+      this.refresherOptions.addAll(options);
     }
   }
 
   public boolean useLabelerName() {
-    return options.contains("UseLabelerName");
+    return refresherOptions.contains("UseLabelerName");
   }
 
   public boolean useName() {
-    return options.contains("UseName");
+    return refresherOptions.contains("UseName");
   }
 
   /**
