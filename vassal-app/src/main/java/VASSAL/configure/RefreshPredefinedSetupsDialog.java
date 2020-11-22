@@ -27,16 +27,23 @@ import VASSAL.tools.ErrorDialog;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final long serialVersionUID = 1L;
   private JButton refreshButton;
+  private JCheckBox nameCheck;
+  private JCheckBox labelerNameCheck;
+  private JCheckBox testModeOn;
+  private final List<String> options = new ArrayList<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
     super(owner, false);
@@ -70,8 +77,29 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     closeButton.addActionListener(e -> dispose());
     buttonsBox.add(closeButton);
     add(buttonsBox);
+
+    nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
+    add(nameCheck);
+    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+    add(labelerNameCheck);
+    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+    add(labelerNameCheck);
+    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
+    add(testModeOn);
     pack();
     setLocationRelativeTo(getOwner());
+  }
+
+  protected void  setOptions() {
+    if (nameCheck.isSelected()) {
+      options.add("UseName");
+    }
+    if (labelerNameCheck.isSelected()) {
+      options.add("UseLabelerName");
+    }
+    if (testModeOn.isSelected()) {
+      options.add("TestMode");
+    }
   }
 
   private void refreshPredefinedSetups() {
@@ -82,7 +110,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     for (final PredefinedSetup pds : mod.getAllDescendantComponentsOf(PredefinedSetup.class)) {
       if (!pds.isMenu()) {
         try {
-          pds.refresh();
+          pds.refresh(options);
         }
         catch (final IOException e) {
           ErrorDialog.bug(e);

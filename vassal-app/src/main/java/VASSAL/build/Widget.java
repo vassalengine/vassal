@@ -91,12 +91,23 @@ public abstract class Widget extends AbstractConfigurable {
   }
 
   /**
-   * The allowable Configurable components of a Widget are the same
-   * as its parent
+   * Allowable components for a CHILD of this class - default is to
+   * ask our parent for this list. Top-level parents must override
+   * this with the proper child list for their trees.
+   *
+   * @return configure components allowed for children of this class
+   */
+  public Class<?>[] getChildAllowableConfigureComponents() {
+    return parent.getChildAllowableConfigureComponents();
+  }
+
+  /**
+   * The allowable Configurable components of a Widget determined by
+   * its parent's Child-Allowable method.
    */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return parent.getAllowableConfigureComponents();
+    return parent.getChildAllowableConfigureComponents();
   }
 
   @Override

@@ -1,5 +1,6 @@
 3.5.0-beta1 - ???
 
+* 13675: Piece Slots shouldn't be allowed at very top level of Piece Palette
 * 13661: Simplified ZIP archive writing and error reporting
 * 13660: Replaced ComponentSplitter with SplitPane for better splitter
     positioning
@@ -44,17 +45,15 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
-3.4.9 - ???
+3.4.9 - 20 November 2020
 
 * 13655: Grid caching interferes with drawing zone highlighters
-* 13631: NPE in Map.placeAt()
-* 13602: NPE in MassPieceLoader.MassLoaderDialog.load()
-* 13539: Game Refresher resets Labels to editor setting if any of the Text
-    Label attributes (e.g., text color) have changed
 * 13636: AbstractBuildable.getAllDescendantComponentsOf() does not recurse
     properly
+* 13631: NPE in Map.placeAt()
 * 13616: Java reports incorrect amount of RAM on Linux ARM systems
 * 13608: Grids fail to display in grid editor
+* 13602: NPE in MassPieceLoader.MassLoaderDialog.load()
 * 13598: IndexOutOfBoundsException when drawing grids over SVG
 
 3.4.8 - 8 November 2020
