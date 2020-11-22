@@ -128,8 +128,7 @@ public class ZipArchive implements FileArchive {
    * @throws IOException oops
    */
   public ZipArchive(File file, boolean truncate) throws IOException {
-    if (file == null) throw new IllegalArgumentException();
-    this.archiveFile = file;
+    this.archiveFile = Objects.requireNonNull(file);
 
     if (truncate) {
       archiveFile.delete();
