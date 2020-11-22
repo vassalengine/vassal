@@ -9,7 +9,11 @@
 
 [cols=",",]
 |===
-|The Game Piece Palette is a panel which contains Game Pieces that the players may drag to the playing area during a game.
+|The Game Piece Palette is the root of a hierarchy of Game Piece Containers and Game Pieces.
+Game Pieces are always at the end (leaves) of the hierarchy. Game Piece Container can be nodes or leaves of the hierarchy.
+Note that since Vassal version 3.5.0 the topmost node of the Game Piece Palette must be a Game Piece Container.
+
+During a game players may drag to the playing area the Game Pieces contained inside Game Piece Palettes.
 An unlimited supply of each Game Piece is available through the palette.
 If you need to limit the number of pieces available during play, use a <<Deck.adoc#top,Deck>>, an <<SetupStack.adoc#top,At-Start Stack>>, or <<GameModule.adoc#PredefinedSetup,Default Setups>>.
 
@@ -34,10 +38,12 @@ a panel, a list, etc) contains its own scaling factor, that one overrides any fa
 
 The Game Piece Palette is highly configurable, and can contain any combination of tabs, lists, and pull-down menus containing individual Game Pieces.
 For example, the window may contain a tabbed pane with two entries, called "Info" and "Armies", each of which contain a list of pieces.
-Every component in the Toolbar should end with a Single Piece.
+Every component in the Palette should end with one or more Game Pieces.
 Since a typical game has many pieces that differ in only minor ways, you may find it convenient to clone Single Pieces.
 Also, the order of the pieces can be changed by dragging them within the configuration tree.
-|image:images/PieceWindow.png[]
+|
+
+image:images/PieceWindow.png[]
 
 image:images/PaletteExample.png[] +
 |===
@@ -45,43 +51,38 @@ image:images/PaletteExample.png[] +
 '''''
 
 === Sub-Components
+The top level of a Game Piece Palette must contain a Game Piece Container, all levels below can also contain Game Pieces.
 
-Each sub-component (except a Single Piece) of a Game Piece Palette can contain any combination of the other sub-components.
+Each Game Piece Container of a Game Piece Palette can contain any combination of Game Piece Containers and Game Pieces.
 
-==== <<GamePiece.adoc#top,Single Piece>>
-
-A Game Piece that can be dragged onto a playing area.
-
-==== <<MassPieceLoader.adoc#top,Multiple Pieces>>
-
-The Mass Piece Loader allows you to create multiple pieces at once, based on a folder of appropriately named images.
-
-==== Pull-down menu
+==== Game Piece Containers
+[cols=",",]
+|===
+|Pull-down menu
 
 A pull-down menu in which each menu item corresponds to a subcomponent.
 The name of the menu item will be the name of the subcomponent.
-
-==== Scrollable List
+|
+|Scrollable List
 
 A scroll list in which each entry corresponds to a subcomponent.
 The name of the entry will be the name of the subcomponent.
 An image scale can be applied to the images drawn pieces in the list.
-
+|
 image:images/ListWidget.png[]
 
 image:images/ListExample.png[]
 
-==== Tabbed Pane
 
-A panel with tabs, each of which corresponds to a Chart, Panel, or other Tabbed Pane subcomponent.
+| Tabbed Panel
+
+A panel with tabs, each of which corresponds to a Sub Component (or Game Piece).
+
 The label of the tab will be the name of the subcomponent.
+|
+| Panel
 
-==== Panel
-
-[cols=",",]
-|===
-
-|A panel that can contain Single Pieces, Tabbed Panes, or other panels.
+A panel that can contain Game Pieces, Tabbed Panes, or other panels.
 The "Fixed cell size" box allows you to specify a fixed number of columns that the panel will have.
 Otherwise, the subcomponents will appear in a single row, or a single column if the "Vertical layout box is checked.
 An image scale can be applied to the images drawn for pieces shown on the panel.
@@ -91,4 +92,13 @@ image:images/PanelWidget.png[]
 
 image:images/PanelWidget2.png[]
 |===
+
+
+==== Single <<GamePiece.adoc#top, Game Piece>>
+
+A Game Piece that can be dragged onto a playing area. A Game Piece can only be created inside a Game Piece Container.
+
+==== Multiple Game Pieces
+Game Pieces can be added individually inside a Game Piece Palette or the <<MassPieceLoader.adoc#top,Mass Piece Loader>> can be used to create multiple pieces at once, based on a folder of appropriately named images.
+
 
