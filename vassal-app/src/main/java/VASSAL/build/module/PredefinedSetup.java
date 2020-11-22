@@ -265,7 +265,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
 
-  public void refresh() throws IOException, IllegalBuildException {
+  public void refresh(List<String> options) throws IOException, IllegalBuildException {
+    if (!options.isEmpty()) {
+      this.refresherOptions.addAll(options);
+    }
     final GameModule mod = GameModule.getGameModule();
     final GameState gs = mod.getGameState();
     final GameRefresher gameRefresher = new GameRefresher(mod);
@@ -282,7 +285,6 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     gs.loadGameInForeground(fileName, getSavedGameContents());
 
     // call the gameRefresher
-    //FIXME Add test mode checkbox
     gameRefresher.execute(refresherOptions, null);
 
     // save the refreshed game into a temporary file
