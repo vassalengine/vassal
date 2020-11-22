@@ -161,7 +161,7 @@ public class GameState implements CommandEncoder {
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         setup(false);
 
-        Logger log = GameModule.getGameModule().getLogger();
+        final Logger log = GameModule.getGameModule().getLogger();
         if (log instanceof BasicLogger) {
           ((BasicLogger)log).setMultiPlayer(GameModule.getGameModule().getPlayerRoster().isMultiPlayer());
         }
