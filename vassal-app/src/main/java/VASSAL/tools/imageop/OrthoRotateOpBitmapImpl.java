@@ -205,7 +205,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final OrthoRotateOpBitmapImpl op = (OrthoRotateOpBitmapImpl) o;
-    return angle == op.getAngle() && sop.equals(op.sop);
+    return angle == op.angle && sop.equals(op.sop);
   }
 
   @Override
