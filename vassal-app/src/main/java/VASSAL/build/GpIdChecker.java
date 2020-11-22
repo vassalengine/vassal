@@ -19,7 +19,6 @@ package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
-import VASSAL.counters.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -423,7 +422,6 @@ public class GpIdChecker {
             if (d.myGetType().equals(typeToFind)) {
               return d.myGetState();
             }
-<<<<<<< HEAD
             else if (d instanceof Labeler) {
               // Type matching failed. If requested, check name if labeler
               if (gpIdChecker.useLabelerName()) {
@@ -431,8 +429,6 @@ public class GpIdChecker {
               }
             }
 
-=======
->>>>>>> upstream/master
           }
           p = d.getInner();
         }
