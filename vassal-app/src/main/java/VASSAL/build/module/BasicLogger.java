@@ -289,7 +289,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     @Override
     protected void executeCommand() {
-      Logger log = GameModule.getGameModule().getLogger();
+      final Logger log = GameModule.getGameModule().getLogger();
       if (log instanceof BasicLogger) {
         ((BasicLogger) log).setMultiPlayer(state);
       }

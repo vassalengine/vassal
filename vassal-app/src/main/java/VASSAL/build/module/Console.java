@@ -55,9 +55,9 @@ public class Console {
       return false;
     }
     if (s2.length() < min) {
-      return s1.toLowerCase().equals(s2.toLowerCase());
+      return s1.equalsIgnoreCase(s2);
     }
-    return s1.toLowerCase().substring(0, s2.length()).equals(s2.toLowerCase());
+    return s1.substring(0, s2.length()).equalsIgnoreCase(s2);
   }
 
   private String nextString(String def) {

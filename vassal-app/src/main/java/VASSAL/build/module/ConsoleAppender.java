@@ -47,7 +47,7 @@ public class ConsoleAppender extends AppenderBase<ILoggingEvent> {
    */
   @Override
   protected void append(ILoggingEvent event) {
-    GameModule module = GameModule.getGameModule();
+    final GameModule module = GameModule.getGameModule();
     if (module == null) return;
     if (!module.isErrorLogToChat()) {
       return;
