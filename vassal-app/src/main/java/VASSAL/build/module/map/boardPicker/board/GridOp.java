@@ -206,12 +206,11 @@ public class GridOp extends AbstractTiledOpImpl {
     public String toString() {
       return getClass().getName() +
         "[sop=" + sop + //NON-NLS
-        ",scale=" + scale + //NON-NLS
         ",dx0=" + dx0 + //NON-NLS
         ",dy0=" + dy0 + //NON-NLS
         ",dw=" + dw + //NON-NLS
         ",dy=" + dh + //NON-NLS
-        ",scale= " + scale + //NON-NLS
+        ",scale=" + scale + //NON-NLS
         ",reversed=" + reversed + //NON-NLS
         ",hints=" + hints + "]"; //NON-NLS
     }

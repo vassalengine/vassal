@@ -45,6 +45,10 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
+3.4.10 - ???
+
+* 13688: Reversed boards with grids fail to display
+
 3.4.9 - 20 November 2020
 
 * 13655: Grid caching interferes with drawing zone highlighters
