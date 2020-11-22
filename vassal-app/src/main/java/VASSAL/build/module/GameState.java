@@ -110,6 +110,8 @@ public class GameState implements CommandEncoder {
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
 
+  //public GameState() {}
+
   /**
    * Expects to be added to a GameModule.  Adds <code>New</code>,
    * <code>Load</code>, <code>Close</code>, and <code>Save</code>
@@ -748,6 +750,14 @@ public class GameState implements CommandEncoder {
     }
     GameModule.getGameModule().warn(msg);
   }
+
+  public void loadGameInForeground(final String shortName,
+                                   final InputStream in) throws IOException {
+    Command loadCommand = null;
+    loadCommand = decodeSavedGame(in);
+    loadCommand.execute();
+  }
+
 
   public void loadGameInBackground(final File f) {
     try {

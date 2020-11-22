@@ -19,7 +19,6 @@ package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
-import VASSAL.counters.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,8 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
+import VASSAL.counters.Marker;
+import VASSAL.counters.Labeler;
 import VASSAL.i18n.Resources;
 
 /**
@@ -44,14 +45,16 @@ public class GpIdChecker {
 
   protected GpIdSupport gpIdSupport;
   protected int maxId;
-  protected boolean useName = false;
+//  protected boolean useName = false;
+//  protected boolean useLabelerName = false;
   protected boolean extensionsLoaded = false;
   final Map<String, SlotElement> goodSlots = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
+  private final List<String> refresherOptions = new ArrayList<>();
 
   public GpIdChecker() {
-    this(null);
+    this((GpIdSupport) null);
   }
 
   public GpIdChecker(GpIdSupport gpIdSupport) {
@@ -60,10 +63,22 @@ public class GpIdChecker {
   }
 
   // This constructor is used by the GameRefresher to refresh a game with extensions possibly loaded
-  public GpIdChecker(boolean useName) {
+  public GpIdChecker(List<String> options) {
     this();
-    this.useName = useName;
+//    this.useName = useName;
+//    this.useLabelerName = useLabelerName;
     this.extensionsLoaded = true;
+    if (!options.isEmpty()) {
+      this.refresherOptions.addAll(options);
+    }
+  }
+
+  public boolean useLabelerName() {
+    return refresherOptions.contains("UseLabelerName");
+  }
+
+  public boolean useName() {
+    return refresherOptions.contains("UseName");
   }
 
   /**
@@ -138,7 +153,7 @@ public class GpIdChecker {
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
      *  the Extension Id. Remove the Extension Id and just process the numeric part.
      *
-     *  NOTE: If GpIdChecker is being used by the GameRefresher, then there may be
+     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be
      *  extensions loaded, so retain the extension prefix to ensure a correct
      *  unique slot id check.
      */
@@ -209,6 +224,7 @@ public class GpIdChecker {
   /**
    * Locate the SlotElement that matches oldPiece and return a new GamePiece
    * created from that Slot.
+   * Match by ID, if it does not work, match by name if option is ON
    *
    * @param oldPiece Old GamePiece
    * @return Newly created GamePiece
@@ -216,21 +232,21 @@ public class GpIdChecker {
   public GamePiece createUpdatedPiece(GamePiece oldPiece) {
     // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
-    if (gpid != null && gpid.length() > 0) {
+    if (gpid != null && !gpid.isEmpty()) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-        return element.createPiece(oldPiece);
+        return element.createPiece(oldPiece, this);
       }
     }
 
     // Failed to find a slot by gpid, try by matching piece name if option selected
-    if (useName) {
+    if (useName()) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
       for (final SlotElement el : goodSlots.values()) {
         final GamePiece newPiece = el.getPiece();
         final String newPieceName = Decorator.getInnermost(newPiece).getName();
         if (oldPieceName.equals(newPieceName)) {
-          return el.createPiece(oldPiece);
+          return el.createPiece(oldPiece, this);
         }
       }
     }
@@ -250,7 +266,7 @@ public class GpIdChecker {
     }
 
     // Failed to find a slot by gpid, try by matching piece name if option selected
-    if (useName) {
+    if (useName()) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
       for (final SlotElement el : goodSlots.values()) {
         final GamePiece newPiece = el.getPiece();
@@ -280,6 +296,7 @@ public class GpIdChecker {
     private String id;
     private PrototypeDefinition prototype;
     private GamePiece expandedPrototype;
+    private GpIdChecker gpIdChecker;
 
     public SlotElement() {
       slot = null;
@@ -342,13 +359,15 @@ public class GpIdChecker {
     }
 
     /**
-     * Create a new GamePiece based on this Slot Element. Use oldPiece
-     * to copy state information over to the new piece.
+     * Create a new GamePiece based on this Slot Element.
+     * State information cotained in the OldPiece is transferred to
+     * the new piece
      *
      * @param oldPiece Old Piece for state information
      * @return New Piece
      */
-    public GamePiece createPiece(GamePiece oldPiece) {
+    public GamePiece createPiece(GamePiece oldPiece, GpIdChecker gpIdChecker) {
+      this.gpIdChecker =  gpIdChecker;
       GamePiece newPiece = (slot != null) ? slot.getPiece() : marker.createMarker();
       // The following two steps create a complete new GamePiece with all
       // prototypes expanded
@@ -395,7 +414,6 @@ public class GpIdChecker {
      * @return state of located matching Decorator
      */
     protected String findStateFromType(GamePiece oldPiece, String typeToFind, Class<? extends GamePiece> classToFind) {
-
       GamePiece p = oldPiece;
       while (p != null && !(p instanceof BasicPiece)) {
         final Decorator d = (Decorator) Decorator.getDecorator(p, classToFind);
@@ -404,6 +422,13 @@ public class GpIdChecker {
             if (d.myGetType().equals(typeToFind)) {
               return d.myGetState();
             }
+            else if (d instanceof Labeler) {
+              // Type matching failed. If requested, check name if labeler
+              if (gpIdChecker.useLabelerName()) {
+                return d.myGetState();
+              }
+            }
+
           }
           p = d.getInner();
         }

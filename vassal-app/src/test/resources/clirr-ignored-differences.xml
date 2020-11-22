@@ -1080,5 +1080,43 @@
         <differenceType>7013</differenceType>
         <method>*</method>
     </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7005</differenceType>
+        <method>GpIdChecker(boolean)</method>
+        <to>GpIdChecker(java.util.List)</to>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>7005</differenceType>
+        <method>void execute(boolean, boolean)</method>
+        <to>void execute(java.util.List, java.util.List)</to>
+        <justification>no one should have extended this class</justification>
+    </difference>
 
 </differences>
