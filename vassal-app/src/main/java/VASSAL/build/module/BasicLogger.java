@@ -99,6 +99,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected File outputFile;
   protected Action stepAction = new StepAction();
   protected SaveMetaData metadata;
+  private boolean multiPlayer = false;
 
   public BasicLogger() {
     super();
@@ -214,6 +215,14 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void remove(Buildable b) {
   }
 
+  public void setMultiPlayer(boolean multiPlayer) {
+    this.multiPlayer = multiPlayer;
+  }
+
+  public boolean isMultiPlayer() {
+    return multiPlayer;
+  }
+  
   /**
    * Our setup method is called by GameState whenever a game starts or ends.
    * @param startingGame True if a new game starting, false if a game is ending/closing
@@ -268,8 +277,30 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
   @Override
   public Command getRestoreCommand() {
-    return null;
+    return new MultiplayerStateCommand(isMultiPlayer());
   }
+
+  private static class MultiplayerStateCommand extends Command {
+    boolean state;
+
+    MultiplayerStateCommand(boolean state) {
+      this.state = state;
+    }
+
+    @Override
+    protected void executeCommand() {
+      final Logger log = GameModule.getGameModule().getLogger();
+      if (log instanceof BasicLogger) {
+        ((BasicLogger) log).setMultiPlayer(state);
+      }
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
 
   public void enableDrawing(boolean show) {
   }
@@ -315,7 +346,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     final GameModule g = GameModule.getGameModule();
 
-    if ((Boolean) g.getPrefs().getValue(prefName)) {
+    if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName))) {
       final Object[] options = {
         Resources.getString(Resources.YES),
         Resources.getString(Resources.NO),

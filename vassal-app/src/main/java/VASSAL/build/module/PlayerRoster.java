@@ -29,13 +29,13 @@ import java.util.Objects;
 
 import javax.swing.JOptionPane;
 
-import VASSAL.build.AbstractToolbarItem;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -43,6 +43,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.command.Logger;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -336,6 +337,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     else {
       players.add(e);
     }
+
+    if (isMultiPlayer()) {
+      final Logger log = GameModule.getGameModule().getLogger();
+      if (log instanceof BasicLogger) {
+        ((BasicLogger)log).setMultiPlayer(true);
+      }
+    }
   }
 
   public void remove(String playerId) {
@@ -387,6 +395,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       if (players.contains(me)) {
         final PlayerInfo saved = players.get(players.indexOf(me));
         saved.playerName = me.playerName;
+      }
+      if (isMultiPlayer()) {
+        final Logger log = GameModule.getGameModule().getLogger();
+        if (log instanceof BasicLogger) {
+          ((BasicLogger)log).setMultiPlayer(true);
+        }
       }
     }
     else {
@@ -482,6 +496,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
            Resources.getString("PlayerRoster.solo").equals(side) ||
            Resources.getString("PlayerRoster.moderator").equals(side) ||
            Resources.getString("PlayerRoster.referee").equals(side);
+  }
+
+
+  /**
+   * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)
+   */
+  public boolean isMultiPlayer() {
+    if (GameModule.getGameModule().getServer().isConnected()) return true;
+
+    // NB. Intentionally not excluding observers.
+    return players.size() > 1;
   }
 
 

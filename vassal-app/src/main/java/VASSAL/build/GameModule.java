@@ -58,6 +58,7 @@ import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.ChessClockControl;
+import VASSAL.build.module.Console;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
@@ -281,6 +282,11 @@ public class GameModule extends AbstractConfigurable
   private Chatter chat;
 
   /**
+   * The Chat Log Console
+   */
+  private final Console console = new Console();
+  
+  /**
    * Docked PieceWindow (we need to know which one to get our splitters all splatting in the right order)
    */
   private PieceWindow pieceWindow = null;
@@ -343,6 +349,11 @@ public class GameModule extends AbstractConfigurable
   private Long crc = null;
 
   /**
+   * Error Logging to {@link Chatter}?
+   */
+  private static boolean errorLogToChat = false;
+
+  /**
    * @return the top-level frame of the controls window
    * @deprecated use {@link #getPlayerWindow()}
    */
@@ -395,6 +406,27 @@ public class GameModule extends AbstractConfigurable
    */
   public ChatServerControls getServerControls() {
     return serverControls;
+  }
+
+  /**
+   * @return our Console
+   */
+  public Console getConsole() {
+    return console;
+  }
+
+  /**
+   * @return True if errorLog should also be sent to chat log.
+   */
+  public static boolean isErrorLogToChat() {
+    return errorLogToChat;
+  }
+
+  /**
+   * @param errorLogToChat true if errorLog should also be sent to chat log
+   */
+  public static void setErrorLogToChat(boolean errorLogToChat) {
+    GameModule.errorLogToChat = errorLogToChat;
   }
 
   /*
@@ -1103,7 +1135,7 @@ public class GameModule extends AbstractConfigurable
     String s2 = s;
     if (s2.isEmpty() || (QuickColors.getQuickColor(s) == -1)) { // Quick Colors "opt in" HTML
       s2 = s2.replaceAll("<", "&lt;")  // So < symbols in warning messages don't get misinterpreted as HTML //$NON-NLS
-        .replaceAll(">", "&gt;"); //$NON-NLS
+             .replaceAll(">", "&gt;"); //$NON-NLS
     }
     if (chat == null) {
       deferredChat.add(s2);

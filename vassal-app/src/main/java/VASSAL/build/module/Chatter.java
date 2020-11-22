@@ -131,7 +131,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     input = new JTextField(60);
     input.setFocusTraversalKeysEnabled(false);
     input.addActionListener(e -> {
-      send(formatChat(e.getActionCommand()));
+      send(formatChat(e.getActionCommand()), e.getActionCommand());
       input.setText(""); //$NON-NLS-1$
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
@@ -193,7 +193,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    */
   @SuppressWarnings("unused")
   public boolean consoleHook(String s, String style, boolean html_allowed) {
-    return false;
+    return GameModule.getGameModule().getConsole().exec(s, style, html_allowed);
   }
 
 
@@ -267,7 +267,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
     conversationPane.repaint();
 
-    consoleHook(s, style, html_allowed);
+    //consoleHook(s, style, html_allowed);
   }
 
   /**
@@ -526,8 +526,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
   }
 
-
-
+  /**
+   * Checks first for an intercepted console command; otherwise displays the message
+   * @param msg message to display if not a console command
+   * @param console potential console command (without any chat livery added to it)
+   */
+  public void send(String msg, String console) {
+    if (!consoleHook(console, "", false)) {
+      send(msg);
+    }
+  }
+  
   /**
    * Warning message method -- same as send, but accepts messages from static methods. For reporting soft-fail problems in modules.
    */
@@ -554,7 +563,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_ENTER:
         if (!input.getText().isEmpty())
-          send(formatChat(input.getText()));
+          send(formatChat(input.getText()), input.getText());
         input.setText(""); //$NON-NLS-1$
         break;
       case KeyEvent.VK_BACK_SPACE:
