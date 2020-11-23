@@ -110,7 +110,7 @@ public class GameState implements CommandEncoder {
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
-  private boolean gameLoading = true;
+  private boolean gameLoadingInForeground; // Will be set to true by loadGameInForeground to block setup method
 
   //public GameState() {}
 
@@ -315,7 +315,7 @@ public class GameState implements CommandEncoder {
    * on all registered {@link GameComponent} objects.
    */
   public void setup(boolean gameStarting) {
-    if (gameLoading) {
+    if (gameLoadingInForeground) {
       return;
     }
 
@@ -802,11 +802,11 @@ public class GameState implements CommandEncoder {
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
-        gameLoading = true;
+        gameLoadingInForeground = true;
         loadCommand.execute();
       }
       finally {
-        gameLoading = false;
+        gameLoadingInForeground = false;
       }
     }
   }
