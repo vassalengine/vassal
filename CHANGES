@@ -1,5 +1,7 @@
 3.4.10 - ???
 
+* 13720: Tiles in last row, column of boards with colored backgrounds and no
+    image render too large
 * 13688: Reversed boards with grids fail to display
 
 3.4.9 - 20 November 2020
