@@ -109,6 +109,7 @@ public class GameState implements CommandEncoder {
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
+  private boolean gameLoading = true;
 
   //public GameState() {}
 
@@ -300,6 +301,10 @@ public class GameState implements CommandEncoder {
    * on all registered {@link GameComponent} objects.
    */
   public void setup(boolean gameStarting) {
+    if (gameLoading) {
+      return;
+    }
+
     final GameModule g = GameModule.getGameModule();
 
     if (!gameStarting && gameStarted && isModified()) {
@@ -753,9 +758,15 @@ public class GameState implements CommandEncoder {
 
   public void loadGameInForeground(final String shortName,
                                    final InputStream in) throws IOException {
-    Command loadCommand = null;
-    loadCommand = decodeSavedGame(in);
-    loadCommand.execute();
+    Command loadCommand = decodeSavedGame(in);
+    if (loadCommand != null) {
+      try {
+        gameLoading = true;
+        loadCommand.execute();
+      } finally {
+        gameLoading = false;
+      }
+    }
   }
 
 
