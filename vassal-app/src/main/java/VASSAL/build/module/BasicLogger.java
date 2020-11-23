@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -59,10 +60,8 @@ import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
-import VASSAL.tools.io.FastByteArrayOutputStream;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.ObfuscatingOutputStream;
-import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
@@ -384,15 +383,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
 
 // FIXME: Extremely inefficient! Make encode write to an OutputStream
-      final String s = GameModule.getGameModule().encode(log);
-      final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
-      try (OutputStream out = new ObfuscatingOutputStream(ba)) {
-        out.write(s.getBytes(StandardCharsets.UTF_8));
-      }
+      final String logString = GameModule.getGameModule().encode(log);
 
-      try (FileArchive archive = new ZipArchive(outputFile)) {
-        archive.add(GameState.SAVEFILE_ZIP_ENTRY, ba.toInputStream());
-        metadata.save(archive);
+      try (ZipWriter zw = new ZipWriter(outputFile)) {
+        try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
+          out.write(logString.getBytes(StandardCharsets.UTF_8));
+        }
+        metadata.save(zw);
       }
 
       Launcher.getInstance().sendSaveCmd(outputFile);

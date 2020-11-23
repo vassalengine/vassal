@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.metadata;
 
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -24,30 +25,30 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.io.FileArchive;
-
-import javax.swing.JDialog;
-import java.awt.Frame;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
-
+import VASSAL.tools.io.ZipWriter;
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
@@ -178,12 +179,21 @@ public class SaveMetaData extends AbstractMetaData {
     copyModuleMetadata(archive);
   }
 
+  @Override
+  public void save(ZipWriter zw) throws IOException {
+    super.save(zw);
+
+    // Also save a copy of the current module metadata in the save file. Copy
+    // module metadata from the module archive as it will contain full i18n
+    // information.
+    copyModuleMetadata(zw);
+  }
+
   /**
    * Add Elements specific to SaveMetaData
    */
   @Override
   protected void addElements(Document doc, Element root) {
-
   }
 
   /**
