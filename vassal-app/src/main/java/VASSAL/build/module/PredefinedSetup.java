@@ -28,6 +28,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -281,22 +282,21 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     msg.execute();
 
     // get a stream to the saved game in the module file
-    gs.setup(true, true);
+    gs.setupRefresh();
     gs.loadGameInForeground(fileName, getSavedGameContents());
 
     // call the gameRefresher
     gameRefresher.execute(refresherOptions, null);
 
     // save the refreshed game into a temporary file
-    final File tmp = File.createTempFile("vassal", null);
-    tmp.delete();
-    gs.saveGame(tmp);
+    final ZipArchive tmp = ZipArchive.createTmpZipArchive();
+    gs.saveGameRefresh(tmp);
     gs.updateDone();
 
     // write the updated saved game file into the module file
     final ArchiveWriter aw = mod.getArchiveWriter();
     aw.removeFile(fileName);
-    aw.addFile(tmp.getPath(), fileName);
+    aw.addFile(tmp.getFile().getPath(), fileName);
   }
 
 
