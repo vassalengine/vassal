@@ -46,11 +46,13 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
-3.4.10 - ???
+3.4.10 - 23 November 2020
 
 * 13720: Tiles in last row, column of boards with colored backgrounds and no
     image render too large
 * 13688: Reversed boards with grids fail to display
+* 13679: IndexOutOfBoundsException in AbstractTiledOpImpl.getTile() via GridOp
+* 13677: NullPointerException in AbstractTiledOpImpl.getTileOp() via GridOp
 
 3.4.9 - 20 November 2020
 
