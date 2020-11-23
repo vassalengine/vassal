@@ -174,8 +174,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-        setup(false);
+        closeGame();
       }
     };
     // FIXME: setting mnemonic from first letter could cause collisions in
@@ -475,6 +474,13 @@ public class GameState implements CommandEncoder {
     }
 
     return true;
+  }
+
+
+  /** Closes the game. */
+  public void closeGame() {
+    GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+    setup(false);
   }
 
   /** Saves the game to an existing file, or prompts for a new one. */
