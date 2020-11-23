@@ -28,6 +28,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -279,28 +280,22 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(this.NAME) + " ( " + fileName + ")"); //$NON-NLS-1$S
 
     // get a stream to the saved game in the module file
-    gs.setup(true, true);
+    gs.setupRefresh();
     gs.loadGameInForeground(fileName, getSavedGameContents());
 
     // call the gameRefresher
     gameRefresher.execute(refresherOptions, null, null);
 
-    if (!gameRefresher.isTestMode()) {
-      // save the refreshed game into a temporary file
-      final File tmp = File.createTempFile("vassal", null);
-      tmp.delete();
-      gs.saveGame(tmp);
+    // save the refreshed game into a temporary file
+    final File tmp = File.createTempFile("vassal", null);
+    tmp.delete();
+    gs.saveGame(tmp);
+    gs.updateDone();
 
-      gs.updateDone();
-      // write the updated saved game file into the module file
-      final ArchiveWriter aw = mod.getArchiveWriter();
-      aw.removeFile(fileName);
-      aw.addFile(tmp.getPath(), fileName);
-    }
-    else {
-      gs.updateDone();  //not sure it is needed
-      gs.closeGame();
-    }
+    // write the updated saved game file into the module file
+    final ArchiveWriter aw = mod.getArchiveWriter();
+    aw.removeFile(fileName);
+    aw.addFile(tmp.getPath(), fileName);
   }
 
 
