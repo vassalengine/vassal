@@ -89,6 +89,10 @@ public class ZipArchive implements FileArchive {
   private final Lock r = rwl.readLock();
   private final Lock w = rwl.writeLock();
 
+  public static ZipArchive createTmpZipArchive() throws IOException {
+    return new ZipArchive(File.createTempFile("vassal", null), true);
+  }
+
   /**
    * Opens a ZIP archive.
    *

@@ -16,6 +16,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -270,6 +271,19 @@ public class GameState implements CommandEncoder {
   // FIXME: This will become unnecessary when we do model-view separation.
   //
   private volatile boolean gameUpdating = false;
+
+  public void setupRefresh() {
+    this.gameStarting = true;
+    newGame.setEnabled(false);
+    saveGame.setEnabled(true);
+    saveGameAs.setEnabled(true);
+    closeGame.setEnabled(true);
+
+    gameStarted &= this.gameStarting;
+    for (GameComponent gc : gameComponents) {
+      gc.setup(this.gameStarting);
+    }
+  }
 
   /**
    * Start a game for updating (via editor).
@@ -723,6 +737,33 @@ public class GameState implements CommandEncoder {
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
+  public void saveGameRefresh(ZipArchive archive) throws IOException {
+    final SaveMetaData metaData;
+    // FIXME: It is extremely inefficient to produce the save string. It would
+    // be faster to write directly to the output stream instead.
+
+    // store the prompt pref
+    GameModule mod = GameModule.getGameModule();
+    Prefs myPrefs = mod.getPrefs();
+    Boolean oldPrompt = (Boolean)myPrefs.getValue(SaveMetaData.PROMPT_LOG_COMMENT);
+
+    // turn off prompting for the save
+    myPrefs.setValue(SaveMetaData.PROMPT_LOG_COMMENT, false);
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
+
+    final String save = saveString();
+    try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+         BufferedOutputStream bout = new BufferedOutputStream(zout);
+         OutputStream out = new ObfuscatingOutputStream(bout)) {
+      out.write(save.getBytes(StandardCharsets.UTF_8));
+    }
+    archive.close();
+
+    metaData.save(archive);
+    // reset the pref
+    myPrefs.setValue(SaveMetaData.PROMPT_LOG_COMMENT, oldPrompt);
+  }
+
   public void saveGame(File f) throws IOException {
 
     final SaveMetaData metaData;
@@ -763,7 +804,8 @@ public class GameState implements CommandEncoder {
       try {
         gameLoading = true;
         loadCommand.execute();
-      } finally {
+      }
+      finally {
         gameLoading = false;
       }
     }
