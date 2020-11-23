@@ -45,7 +45,7 @@ public class ZipWriter implements Closeable {
   }
 
   public void write(File src, String dst) throws IOException {
-    write(src.toPath(), dst); 
+    write(src.toPath(), dst);
   }
 
   public void write(Path src, String dst) throws IOException {
@@ -73,9 +73,7 @@ public class ZipWriter implements Closeable {
     return new FilterOutputStream(zout) {
       @Override
       public void close() throws IOException {
-        // flush zout, but don't actually close it, since there may be
-        // more entries to write after this
-        zout.flush();
+        // Prevent zout from being closed; there may be entries yet to write
       }
     };
   }
