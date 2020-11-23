@@ -82,8 +82,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     add(nameCheck);
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
     add(labelerNameCheck);
-    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
-    add(labelerNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     add(testModeOn);
     pack();
