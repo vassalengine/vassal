@@ -20,7 +20,12 @@ package VASSAL.build;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;

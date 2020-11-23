@@ -23,7 +23,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -82,8 +87,7 @@ public final class GameRefresher implements GameComponent {
   private int notFoundCount;
   private final GameModule theModule;
   //private String player;
-  private final Chatter chatter;
-  private final Command msg;
+  //private final Chatter chatter;
   private final Set<String> options = new HashSet<>();
 
   public GameRefresher(GpIdSupport gpIdSupport) {
@@ -91,8 +95,8 @@ public final class GameRefresher implements GameComponent {
     theModule = GameModule.getGameModule();
     //player = GlobalOptions.getInstance().getPlayerId();
     //FIXME add messge abt player if in Player mode and not owned are found
-    chatter = theModule.getChatter();
-    msg = new Chatter.DisplayText(chatter, "----------"); //$NON-NLS-1$
+    //chatter = theModule.getChatter();
+    //msg = new Chatter.DisplayText(chatter, "----------"); //$NON-NLS-1$
   }
 
   public void addTo(AbstractConfigurable parent) {
@@ -199,7 +203,7 @@ public final class GameRefresher implements GameComponent {
    */
   public void execute(Set<String> options, List<GamePiece> pieces, Command command) throws IllegalBuildException {
     if (command == null) {
-      command = new Command();
+      command = new NullCommand();
     }
     if (!options.isEmpty()) {
       this.options.addAll(options);
@@ -243,7 +247,7 @@ public final class GameRefresher implements GameComponent {
       processGamePiece(piece, command);
     }
 
-    log(Resources.getString("GameRefresher.run_refresh_counters"));
+    log(Resources.getString("GameRefresher.run_refresh_counters_v2", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
     log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
     log("----------"); //$NON-NLS-1$
@@ -431,22 +435,25 @@ public final class GameRefresher implements GameComponent {
 */
 
     protected void run() {
+      final GameModule g = GameModule.getGameModule();
+      final Command command = new NullCommand();
+      final String player = GlobalOptions.getInstance().getPlayerId();
       setOptions();
       if (refresher.isTestMode()) {
         refresher.log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
       }
-      refresher.execute(options, null);
-      refresher.append(refresher.msg);
+      else {
+        // Test refresh does not need to be in the log.
+        final Command msg = new Chatter.DisplayText(g.getChatter(), Resources.getString("GameRefresher.run_refresh_counters_v2", player, g.getGameVersion()));
+        msg.execute();
+        command.append(msg);
+//FIXME list options in chetter for opponents to see
 
-      // Send the update to other clients
-      refresher.theModule.sendAndLog(refresher.command);
-      //}
-      command.append(msg);
+      }
+      refresher.execute(options, null, command);
 
-      // Send the update to other clients
-      theModule.sendAndLog(command);
-      //}
-
+      // Send the update to other clients (only done in Player mode)
+      g.sendAndLog(command);
       exit();
     }
 

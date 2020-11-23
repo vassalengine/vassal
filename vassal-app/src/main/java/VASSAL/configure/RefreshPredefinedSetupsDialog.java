@@ -123,7 +123,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     final GameModule mod = GameModule.getGameModule();
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
-    List<PredefinedSetup>  modulePds = new ArrayList<>();
+    final List<PredefinedSetup>  modulePds = new ArrayList<>();
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu()) {
         modulePds.add(pds);
