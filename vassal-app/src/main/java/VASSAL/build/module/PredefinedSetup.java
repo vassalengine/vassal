@@ -287,15 +287,14 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     gameRefresher.execute(refresherOptions, null, null);
 
     // save the refreshed game into a temporary file
-    final File tmp = File.createTempFile("vassal", null);
-    tmp.delete();
-    gs.saveGame(tmp);
+    final ZipArchive tmp = ZipArchive.createTmpZipArchive();
+    gs.saveGameRefresh(tmp);
     gs.updateDone();
 
     // write the updated saved game file into the module file
     final ArchiveWriter aw = mod.getArchiveWriter();
     aw.removeFile(fileName);
-    aw.addFile(tmp.getPath(), fileName);
+    aw.addFile(tmp.getFile().getPath(), fileName);
   }
 
 

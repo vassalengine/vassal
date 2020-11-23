@@ -280,7 +280,7 @@ public class GameState implements CommandEncoder {
     closeGame.setEnabled(true);
 
     gameStarted &= this.gameStarting;
-    for (GameComponent gc : gameComponents) {
+    for (final GameComponent gc : gameComponents) {
       gc.setup(this.gameStarting);
     }
   }
@@ -743,9 +743,9 @@ public class GameState implements CommandEncoder {
     // be faster to write directly to the output stream instead.
 
     // store the prompt pref
-    GameModule mod = GameModule.getGameModule();
-    Prefs myPrefs = mod.getPrefs();
-    Boolean oldPrompt = (Boolean)myPrefs.getValue(SaveMetaData.PROMPT_LOG_COMMENT);
+    final GameModule mod = GameModule.getGameModule();
+    final Prefs myPrefs = mod.getPrefs();
+    final Boolean oldPrompt = (Boolean)myPrefs.getValue(SaveMetaData.PROMPT_LOG_COMMENT);
 
     // turn off prompting for the save
     myPrefs.setValue(SaveMetaData.PROMPT_LOG_COMMENT, false);
@@ -799,7 +799,7 @@ public class GameState implements CommandEncoder {
 
   public void loadGameInForeground(final String shortName,
                                    final InputStream in) throws IOException {
-    Command loadCommand = decodeSavedGame(in);
+    final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
         gameLoading = true;
