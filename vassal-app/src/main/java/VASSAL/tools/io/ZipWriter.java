@@ -29,6 +29,12 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * A class for writing ZIP archives.
+ *
+ * @author Joel Uckelman
+ * @since 3.5.0
+ */
 public class ZipWriter implements Closeable {
   private final ZipOutputStream zout;
 
