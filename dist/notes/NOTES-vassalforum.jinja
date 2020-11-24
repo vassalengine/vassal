@@ -1,3 +1,4 @@
+{%- from "common.jinja" import version_feature with context -%}
 [size=200][b]VASSAL {{version}} Released[/b][/size]
 
 The VASSAL Team is happy to announce the release of VASSAL {{version}}.
@@ -6,9 +7,9 @@ The VASSAL Team is happy to announce the release of VASSAL {{version}}.
 
 * Things may be broken which worked previously. If you find a new bug, please report it.
 
-* If you save a module in VASSAL 3.4, you will NOT be able to open it afterwards with VASSAL 3.3 or earlier. We recommend keeping a backup copy of any pre-3.4 modules you plan to modify in 3.4 until you've verified that everything works to your satisfaction.
+* Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.
 
-* Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating for 3.4 in your code.
+* Some modules containing custom drawing code may render incorrectly on HiDPI displays, starting with 3.3. If you are the maintainer of such a module, let us know and we can advise you about what needs updating in your code.
 
 [size=150][b]Download[/b][/size]
 
@@ -18,229 +19,13 @@ The VASSAL Team is happy to announce the release of VASSAL {{version}}.
 [url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe]Windows (32-bit)[/url]
 [url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip]Other[/url]
 
-[size=150][b]Changes since 3.4.9[/b][/size]
+[size=150][b]Changes since 3.4.10[/b][/size]
 
-Bug fixes
-
-* 13720: Tiles in last row, column of boards with colored backgrounds and no image render too large
-* 13688: Reversed boards with grids fail to display
-* 13679: IndexOutOfBoundsException in AbstractTiledOpImpl.getTile() via GridOp
-* 13677: NullPointerException in AbstractTiledOpImpl.getTileOp() via GridOp
-
-[size=150][b]Changes since 3.4.8[/b][/size]
-
-Bug fixes
-
-* 13655: Grid caching interferes with drawing zone highlighters
-* 13636: AbstractBuildable.getAllDescendantComponentsOf() does not recurse properly
-* 13631: NPE in Map.placeAt()
-* 13616: Java reports incorrect amount of RAM on Linux ARM systems
-* 13608: Grids fail to display in grid editor
-* 13602: NPE in MassPieceLoader.MassLoaderDialog.load()
-* 13598: IndexOutOfBoundsException when drawing grids over SVG
-
-[size=150][b]Changes since 3.4.7[/b][/size]
-
-Bug fixes
-
-* 13577: Stacks properly restore their visual 'layer' level when saved/restored
-* 13574: Fix reporting on oldXXXXXX properties in ReportState
-* 13573: Beanshell count function not working with $$ variables in Restrict Commands property match
-* 13567: Put backup in better location when writing to module fails and ensure Editor is not left in a bad state
-* 13560: Don't register mouse listeners from ActionButton.draw()
-* 13449: Inventory window remains open when the game is closed in the Player
-* 13379: Mass Piece Loader - Decrease key now loads correctly
-* 13379: Mass Piece Loader - Layers are no longer loaded Activated
-
-Other improvements
-
-* 13572: Stop converting preferences last written by 3.2.7 or earlier
-* 13563: Hitting Enter in Editor expands or edits nodes
-* 13431: Cache grid and grid numbering painting for better performance
-* 13379: Mass Piece Loader - Base Image can now be loaded into layers
-* 10063: Hitting Enter on Module Manager opens the module
-
-[size=150][b]Changes since 3.4.6[/b][/size]
-
-Bug fixes
-
-* 13547: Don't raise a bug dialog on failure to read an MP3
-* 13546: Change backup Resource directory from temp folder to base folder
-* 13542: Interaction between Move Fixed Distance and Rotate traits has changed between 3.2.17 and 3.4.6
-* 13540: Macs now use Command as modifier key for grid-resizing, setup-stack-moving in Editor
-* 13525: HFS+ stores filenames in NFD, so must check for that variant when loading
-* 13524: Masked card dragged from Player Hand reports differently between 3.2.17 and 3.4.6
-* 13520: Made Command+Click the select/deselect combo for Macs (and Command+Wheel to zoom)
-* 13489: Pieces scaled incorrectly during drags on HiDPI screens on Windows
-
-[size=150][b]Changes since 3.4.5[/b][/size]
-
-Bug fixes
-
-* 13508: NPE in GamePieceOpImpl.getTileIndices()
-* 13505: Dragging a card/piece off the top of a deck should not also band-select
-* 13503: At-Start Stacks and Decks in <Any> board appear in wrong place if map padding specified
-* 13467: Edited modules containing HTML img elements can't be saved on Windows
-* 13456: At-Start Stack using Grid Location uses Location on first board, not chosen board (additional fix for 12576)
-
-[size=150][b]Changes since 3.4.4[/b][/size]
-
-Bug fixes
-
-* 13490: Module Manager "Show Error Log" doesn't
-
-[size=150][b]Changes since 3.4.3[/b][/size]
-
-Bug fixes
-
-* 13486: Backspacing in NamedHotKeyConfigurer will no longer shift focus
-* 13471: Using BeanShell string functions in Calculated Property crashes Editor
-* 13461: Always initialise Deck on New/Load game
-* 13458: Reinstate behavior of floating point expression evaluation
-* 13454: ClassCastException in SetPersistentPropertyCommand.execute()
-* 13426: NegativeArraySizeException when receiving first private message
-
-[size=150][b]Changes since 3.4.2[/b][/size]
-
-Bug fixes
-
-* 13452: Bundle Java 15 with Windows and Mac packages
-* 13442: Add button for toggling password visibility
-* 13441: Multiple scaling or rotation of SVG images failed to compound
-* 13438: NPE in BoardPicker.getSelectedBoardNames() when changing owning Board of an At-Start Stack
-* 13436: Allow Module Managers from different versions to run simultaneously
-* 13435: "Bad Module Data" messages with less-than symbols misinterpreted as HTML when HTML turned on in module
-* 13434: Clarify deprecation messages
-* 13433: OBSCURED_BY_OTHERS property now returns null instead of a value in face down decks when tested using GKCs
-* 13430: Pieces move too fast while "Repositioning stack" in HDPI monitors
-* 13427: Cannot add or edit items when editing an Extension on Linux or Macs
-* 13404: Use better color picker on Linux
-* 13342: Player creates saveGame twice in a row when starting a log file
-* 13307: Background transparency in Text Labels not working
-*  2569: Improved error message for NoSuchElementException in Decorator.mergeState()
-
-[size=150][b]Changes since 3.4.1[/b][/size]
-
-Bug fixes
-
-* 13425: Legacy property match expressions no longer evaluated == or != correctly
-* 13416: Chatter fails to update
-* 13409: Two units in same hex do not stack when hex overlaps two boards
-* 13405: Piece window appears beside main map and chat pane instead of just the chat pane
-* 13398: Fix piece drag so that pieces can be moved a few pixels
-* 13381: Prevent BeanShell from interpreting 1D, 1F, 1L as numbers
-* 13365: Chatter component does not filter out Alt+Key commands
-* 13300: Remove "Preference" option for HTML for Chatter
-* 13279: Pivot was auto-reporting moves when auto-reporting is turned off
-
-[size=150][b]Changes since 3.4.0[/b][/size]
-
-Bug fixes
-
-* 13389: Chatter flickers when updated
-* 13376: NoSuchMethodError due to change of setOldProperties() signature
-* 13374: NPE in ExtensionTree.isEditable()
-* 13373: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
-
-[size=150][b]Changes since 3.3.2[/b][/size]
-
-New features
-
-* 13313: Specify VM options for Player via a file
-* 13275: Ctrl+Mousewheel to zoom
-* 13218: Allow a piece get its context menu click location
-* 13191: Add a "Search" command to the editor for searching the nodes/names/descriptions of a module
-* 13174: Pieces in Piece Palettes (PieceSlots) can be given a scale factor
-* 13172: Undo button can now be assigned a hotkey by module designer
-* 13149: "Band Select" Improvements: immobile pieces don't "eat" band selects, and band-select gets Does-Not-Stack filter
-* 13129: New HTML Chatter with colors, fonts/bold/italic, image tags
-* 12999: Add Beanshell functions to generate Random results
-*  3199: Add separators to menus
-*  1875: Movement Trail Enhancements: add commands to clear, turn on, turn off movement trails
-
-Bug fixes
-
-* 13358: Prevent units in Zones setting OldLocationName incorrectly
-* 13356: Game refresher should not copy marker state
-* 13351: SequenceEncoder.Decoder.copy() should use start offset from parent
-* 13329: Don't create new GPIDs for temporary pieceslots
-* 13319: Multiline HTML labels breaks toolbar button alignment
-* 13302: BasicCommandEncoder.DecoratorFactory and BasicPieceFactory should have remained public
-* 13300: HTML-Enable pref for Chatter doesn't show for pre-3.3.3 modules without GlobalOptions
-* 13291: Fix Beanshell issues with $$ variable processing
-* 13289: Don't print "Saving game" twice when using Save As
-* 13281: Added inadvertently removed throws declaration for Embellishment0.getCurrentImage()
-* 13280: NPE in KeyStrokeListener.keyPressed()
-* 13236: StackOverflowError: Expressions and Formatted Strings can infinite-loop
-* 13234: Rotation gets stuck due to floating point error
-* 13221: Data race in ConcurrentSoftHashMap.SoftValue.equals() and hashCode()
-* 13217: Editor: Prevent pasting a cut ancestor as its own child
-* 13216: Adding regions to Irregular Grid via GUI editor was broken
-* 13205: NPE when trying to display file write failure dialog
-* 13200: NPE in Map.setup() when attempting to dock main map
-* 13199: MapShader using image throws InternalError on Linux
-* 13196: Ctrl+Click toggles rather than only deselects
-* 13178: Game Refresher does not handle Place Markers or Prototypes correctly
-* 13171: SetGlobalProperty makes menuCommands the wrong type of array
-* 13155: Correct Dutch translations
-* 13153: Consistently ask to start logging when loading a game
-* 13146: Custom classes that are children fail to be culled in PropertiesWindow.initialized (resulting in duplicate buildFile entries)
-* 13137: Drag Threshold was effectively 1 pixel except at 100% zoom, making double-click difficult; also added preference for drag threshold adjustment
-* 13134: Some characters in Text Labels render poorly at 8pt on Windows in 3.3+
-* 13123: "Mark When Moved" trait puts blank line in menu, even if Command field left completely empty
-* 13117: Help & HTML Charts scroll unnecessarily slowly with mouse wheel
-* 13076: NPE in FlowView$FlowStrategy.layoutRow()
-* 13060: Area Of Effect generates NPE if activated when piece is not on a Map
-* 13036: Entire contents of a deck can be inadvertently group-selected and moved
-* 13018: Fix incorrect ExpressionConfigurer in SetGlobalProperty config
-* 12980: Set Global Property: Beanshell incorrectly tries to "simplify" expression and generates incorrect result
-* 12972: Return to Location backMap and backPoint are not sent to clients or undone
-* 12970: Setting values of Old... variables are not encoded in a Command
-* 12952: Evalute $..$ strings in Property Match expressions on source pce
-* 12951: Undo of Send to Deck command does not return cards to hand in same state
-* 12948: Trigger action firing multiple Moved Fixed Distance, piece ends up in incorrect position
-* 12935: NPE in MoveReporter.shouldMarkMoved assuming nonnull map
-* 12888: NPE in BooleanConfigurer.setValue
-* 12798: ClassCastException: NullCommand cannot be cast to AddPiece
-* 12648: Setup stack doesn't recover from a piece build failure
-* 12576: At-Start stack attaches to first board listed in module, even if that board wasn't selected by player and is inactive
-* 12554: Undo bug: Do not add the whole Stack to the DragBuffer
-* 12551: Movement Trails: locallyVisible repeatedly "initialized" resulting in buggy trail behavior
-* 12519: GlobalKeyCommand with Matching Properties does not apply 'Fixed number of pieces' to a Deck correctly
-* 11827: NPE in SendToLocation.getSendLocation()
-* 11355: NPE in MassPieceLoader$MyTreeTable.getCellRenderer()
-* 10414: SVG with non-px dimensions throws ImageIOException
-* 10314: NPE in GameRefresher if dialog is closed quickly while test is running
-*  3215: Global Options icons do not update themselves properly
-*  2714: NPE in StackMetrics.merge()
-*  2705: NPE in FreeRotator.mouseDragged if piece was moved off-map
-*  2377: NPE in Decorator.getOutermost() caused by PlaceMarker
-
-Other improvements
-
-* 13371: Render text labels directly at the required size rather than rendering at 100% and scaling
-* 13332: Improved save game write time
-* 13325: Specify encoding for String conversion to and from bytes
-* 13301: Don't rewrite save state when we already have it
-* 13290: Optimized serialization, unserialization
-* 13282: Stop logging debug messages by default
-* 13276: Center on Moves is now a user preference instead of a module setting
-* 13251: Add Module name to Bug summary, extra info to comments
-* 13250: Add implementation of Missing !~ Beanshell operator
-* 13243: Add functionality to methods to be deprecated and removed gracefully
-* 13239: Right-click doesn't pick up whole stack anymore
-* 13229: Performance: Save property map rather than clone pieces as snapshot
-* 13184: CounterDetailViewer can now display overlapping counters
-* 13164: Upgrade Apache Commons libraries: commons-io 2.7, commons-codec 1.14, commons-lang3 3.10
-* 13124: Removed unused deprecated code
-* 13100: Replace Beanshell If function in Expression Builder with inline If ?:
-*  3042: Improved Retire/Resign/Switch Sides button flow
-
-See the [url=http://www.vassalengine.org/wiki/VASSAL_3.4_Release_Notes]Release Notes[/url] for descriptions of the changes in 3.4.
+See the [url=http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes]Release Notes[/url] for descriptions of the changes in {{version_feature}}.
 
 [size=150][b]Minimum Requirements[/b][/size]
 
-VASSAL 3.4 requires Java 11 or later.
+VASSAL {{version_feature}} requires Java 11 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.
 
