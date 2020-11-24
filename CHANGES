@@ -46,6 +46,11 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
+3.4.11 - ???
+
+* 13728: Translucent solid-colored backgrounds of boards are incorrectly
+    drawn opaque
+
 3.4.10 - 23 November 2020
 
 * 13720: Tiles in last row, column of boards with colored backgrounds and no
