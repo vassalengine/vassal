@@ -250,7 +250,7 @@ $(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
 $(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
-	jinja2 -Dversion=$(VNUM) -o $@ $<
+	jinja2 -Dversion=$(VERSION) -o $@ $<
 
 release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
 
