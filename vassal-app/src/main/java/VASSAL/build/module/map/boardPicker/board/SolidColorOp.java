@@ -62,7 +62,9 @@ public class SolidColorOp extends AbstractTiledOpImpl {
     }
 
     // create the destination tile
-    final BufferedImage dst = ImageUtils.createCompatibleImage(dw, dh);
+    final BufferedImage dst = ImageUtils.createCompatibleImage(
+      dw, dh, color.getTransparency() != Color.OPAQUE
+    );
 
     // fill with the color
     final Graphics g = dst.getGraphics();
