@@ -125,7 +125,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
     for (final PredefinedSetup pds : modulePdsAndMenus) {
-      if (!pds.isMenu()) {
+      if (!pds.isMenu() && pds.isUseFile()) {
+        //Exclude scenario folders (isMenu == true)
+        // and exclude any "New game" entries (no predefined setup) (isUseFile == true)
         modulePds.add(pds);
       }
     }
