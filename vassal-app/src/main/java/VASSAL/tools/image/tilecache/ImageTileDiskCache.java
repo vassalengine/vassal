@@ -21,9 +21,10 @@ package VASSAL.tools.image.tilecache;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   /** {@inheritDoc} */
   @Override
   public InputStream getInputStream(String path) throws IOException {
-    return new FileInputStream(cpath + "/" + path);
+    return Files.newInputStream(Path.of(cpath, path));
   }
 
   /** {@inheritDoc} */

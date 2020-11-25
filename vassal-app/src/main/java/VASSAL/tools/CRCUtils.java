@@ -18,9 +18,9 @@
 package VASSAL.tools;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.zip.CRC32;
 
@@ -62,7 +62,7 @@ public class CRCUtils {
    * @throws IOException oops
    */
   private static void buildCRC(File file, CRC32 crc, byte[] buffer) throws IOException {
-    try (InputStream in = new FileInputStream(file)) {
+    try (InputStream in = Files.newInputStream(file.toPath())) {
       buildCRC(in, crc, buffer);
     }
   }

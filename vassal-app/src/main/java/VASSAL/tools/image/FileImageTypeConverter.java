@@ -22,12 +22,11 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -96,7 +95,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
 
     try {
       // write the converted image data to a file
-      try (OutputStream fout = new FileOutputStream(tmp);
+      try (OutputStream fout = Files.newOutputStream(tmp.toPath());
            OutputStream gzout = new GZIPOutputStream(fout);
            OutputStream out = new BufferedOutputStream(gzout)) {
         write(src, out);
@@ -114,7 +113,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
       final BufferedImage dst = new BufferedImage(w, h, type);
 
       // read the converted image data back
-      try (InputStream fin = new FileInputStream(tmp);
+      try (InputStream fin = Files.newInputStream(tmp.toPath());
            InputStream gzin = new GZIPInputStream(fin);
            InputStream in = new BufferedInputStream(gzin)) {
         read(in, dst);

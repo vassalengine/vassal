@@ -20,7 +20,6 @@ package VASSAL.tools.image.tilecache;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -79,7 +78,7 @@ public class ImageToTiles {
     final ImageLoader loader = new ImageIOImageLoader(itc);
 
     BufferedImage src = null;
-    try (InputStream in = new FileInputStream(ipath)) {
+    try (InputStream in = Files.newInputStream(Path.of(ipath))) {
       src = loader.load(
         ipath, in, BufferedImage.TYPE_INT_RGB,
         BufferedImage.TYPE_INT_ARGB_PRE, false

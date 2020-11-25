@@ -1,11 +1,11 @@
 package VASSAL.tools;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
@@ -81,19 +81,16 @@ public class BugUtils {
     return summary;
   }
 
-
 // FIXME: move this somewhere else?
   public static String getErrorLog() {
-    String log = null;
     final File f = Info.getErrorLogPath();
-    try (FileReader r = new FileReader(f, Charset.defaultCharset())) {
-      log = IOUtils.toString(r);
+    try {
+      return Files.readString(f.toPath(),  Charset.defaultCharset());
     }
     catch (IOException e) {
       // Don't bother logging this---if we can't read the errorLog,
       // then we probably can't write to it either.
+      return null;
     }
-
-    return log;
   }
 }

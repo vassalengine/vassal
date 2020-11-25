@@ -21,8 +21,11 @@ package VASSAL.tools.image;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import javax.imageio.ImageIO;
 
 import org.junit.BeforeClass;
@@ -43,7 +46,7 @@ public class ImageIOImageLoaderTest {
 
   private BufferedImage read(ImageLoader loader, String file)
                                                            throws IOException {
-    try (FileInputStream in = new FileInputStream(file)) {
+    try (InputStream in = Files.newInputStream(Path.of(file))) {
       final BufferedImage img = loader.load(
         file, in, BufferedImage.TYPE_INT_RGB,
         BufferedImage.TYPE_INT_ARGB, false
@@ -97,7 +100,7 @@ public class ImageIOImageLoaderTest {
   }
 
   private Dimension size(ImageLoader loader, String file) throws IOException {
-    try (FileInputStream in = new FileInputStream(file)) {
+    try (InputStream in = Files.newInputStream(Path.of(file))) {
       final Dimension d = loader.size(file, in);
       return d;
     }

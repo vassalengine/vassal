@@ -18,12 +18,13 @@
 package VASSAL.tools.io;
 
 import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Random;
 
 /**
@@ -87,7 +88,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   }
 
   public static void main(String[] args) throws IOException {
-    try (InputStream in = args.length > 0 ? new FileInputStream(args[0]) : System.in;
+    try (InputStream in = args.length > 0 ? Files.newInputStream(Path.of(args[0])) : System.in;
          OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(System.out))) {
       in.transferTo(out);
     }

@@ -23,9 +23,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -195,7 +195,7 @@ public class TranslateVassalWindow extends TranslateWindow {
       localeConfig.setValue(locale);
     }
 
-    try (InputStream fin = new FileInputStream(file);
+    try (InputStream fin = Files.newInputStream(file.toPath());
          BufferedInputStream in = new BufferedInputStream(fin)) {
       ((VassalTranslation) target).loadProperties(in);
     }

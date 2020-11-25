@@ -20,9 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -299,7 +297,7 @@ public class ZipArchive implements FileArchive {
       deleteEntryTempFile(old);
 
       return new ZipArchiveOutputStream(
-        new FileOutputStream(e.file), new CRC32(), e.ze
+        Files.newOutputStream(e.file.toPath()), new CRC32(), e.ze
       );
     }
     catch (IOException ex) {
@@ -317,7 +315,7 @@ public class ZipArchive implements FileArchive {
   /** {@inheritDoc} */
   @Override
   public void add(String path, File extPath) throws IOException {
-    try (FileInputStream in = new FileInputStream(extPath)) {
+    try (InputStream in = Files.newInputStream(extPath.toPath())) {
       add(path, in);
     }
   }

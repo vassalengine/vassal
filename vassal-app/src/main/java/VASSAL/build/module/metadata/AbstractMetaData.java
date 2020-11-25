@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -237,7 +238,7 @@ public abstract class AbstractMetaData {
          BufferedInputStream in = new BufferedInputStream(inner)) {
       archive.add(ModuleMetaData.ZIP_ENTRY_NAME, in);
     }
-    catch (final FileNotFoundException e) {
+    catch (final FileNotFoundException | NoSuchFileException e) {
       // No Metadata in source module, create a fresh copy
       new ModuleMetaData(GameModule.getGameModule()).save(archive);
     }
@@ -248,7 +249,7 @@ public abstract class AbstractMetaData {
     try (InputStream in = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME)) {
       zw.write(in, ModuleMetaData.ZIP_ENTRY_NAME);
     }
-    catch (final FileNotFoundException e) {
+    catch (final FileNotFoundException | NoSuchFileException e) {
       // No Metadata in source module, create a fresh copy
       new ModuleMetaData(GameModule.getGameModule()).save(zw);
     }

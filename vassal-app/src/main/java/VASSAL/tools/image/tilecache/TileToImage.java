@@ -20,8 +20,9 @@ package VASSAL.tools.image.tilecache;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 
@@ -46,6 +47,6 @@ public class TileToImage {
 
     final File tfile = new File(args[0]);
     final BufferedImage img = TileUtils.read(tfile);
-    ImageIO.write(img, "PNG", new FileOutputStream(args[1])); //NON-NLS
+    ImageIO.write(img, "PNG", Files.newOutputStream(Path.of(args[1]))); //NON-NLS
   }
 }

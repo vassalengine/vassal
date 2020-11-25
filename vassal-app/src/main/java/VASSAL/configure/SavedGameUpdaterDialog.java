@@ -24,13 +24,12 @@ import java.awt.HeadlessException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -196,7 +195,7 @@ public class SavedGameUpdaterDialog extends JDialog {
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());
 
-      try (OutputStream fout = new FileOutputStream(fc.getSelectedFile());
+      try (OutputStream fout = Files.newOutputStream(fc.getSelectedFile().toPath());
            BufferedOutputStream out = new BufferedOutputStream(fout)) {
         p.store(out, null);
       }
@@ -211,7 +210,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
       oldPieceInfo = new Properties();
 
-      try (InputStream fin = new FileInputStream(fc.getSelectedFile());
+      try (InputStream fin = Files.newInputStream(fc.getSelectedFile().toPath());
            BufferedInputStream in = new BufferedInputStream(fin)) {
         oldPieceInfo.load(in);
 

@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
 
 public class JarArchive extends DataArchive {
   protected String prefix;
@@ -43,7 +44,7 @@ public class JarArchive extends DataArchive {
       try {
         return ext.getURL(fileName);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         // not found in this extension, try the next
       }
     }
@@ -62,7 +63,7 @@ public class JarArchive extends DataArchive {
       try {
         return ext.getInputStream(fileName);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         // not found in this extension, try the next
       }
     }

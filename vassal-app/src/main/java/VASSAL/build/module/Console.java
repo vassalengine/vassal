@@ -22,14 +22,15 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Logger;
 import VASSAL.tools.BugUtils;
-import org.slf4j.LoggerFactory;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.regex.Pattern;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * Expandable "Console" to allow entering commands into the Chatter.
@@ -131,7 +132,7 @@ public class Console {
     else if (matches("wipe", option)) { //NON-NLS
       final File errorLog = Info.getErrorLogPath();
       try {
-        new FileOutputStream(errorLog).close();
+        Files.newOutputStream(errorLog.toPath()).close();
         show("Wiped errorlog"); //NON-NLS
       }
       catch (IOException e) {
