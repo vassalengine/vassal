@@ -64,6 +64,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 
 import javax.swing.JPanel;
@@ -84,7 +85,7 @@ import org.w3c.dom.Element;
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid"; //NON-NLS
   private static final int DEFAULT_SIZE = 64;
-  private static Image noImage;
+  private static final BufferedImage noImage = ImageUtils.createViewableNullImage(DEFAULT_SIZE, DEFAULT_SIZE);
 
   protected GamePiece c;
   protected GamePiece expanded;
@@ -275,9 +276,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   private Image getNullImage() {
-    if (noImage == null) {
-      noImage = ImageUtils.createViewableNullImage(DEFAULT_SIZE, DEFAULT_SIZE);
-    }
     return noImage;
   }
 

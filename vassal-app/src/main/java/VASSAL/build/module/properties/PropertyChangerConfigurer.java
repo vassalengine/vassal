@@ -101,7 +101,7 @@ public class PropertyChangerConfigurer extends Configurer {
         updateControls();
       };
       controls = new JPanel();
-      controls.setLayout(new MigLayout("debug,ins 0,hidemode 3", "[]rel[][]rel[fill,grow][fill,grow]")); // NON-NLS
+      controls.setLayout(new MigLayout("ins 0,hidemode 3", "[]rel[][]rel[fill,grow][fill,grow]")); // NON-NLS
 
       typeLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.type"));
       typeConfig = new TranslatingStringEnumConfigurer(

@@ -177,7 +177,9 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     for (final Board board : possibleBoards) {
       board.setMap(map);
     }
-    getI18nData().setOwningComponent((Translatable) b);
+    if (b instanceof Translatable) {
+      getI18nData().setOwningComponent((Translatable) b);
+    }
     GameModule.getGameModule().getGameState().addGameSetupStep(this);
   }
 

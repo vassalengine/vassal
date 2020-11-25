@@ -48,7 +48,9 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
 
 public class ImageUtils {
-  private ImageUtils() {}
+  private ImageUtils() {
+
+  }
 
   // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
@@ -477,7 +479,7 @@ public class ImageUtils {
    *
    * @return Viewable null image
    */
-  public static Image createViewableNullImage() {
+  public static BufferedImage createViewableNullImage() {
     return createViewableNullImage(64, 64);
   }
 
@@ -492,23 +494,24 @@ public class ImageUtils {
    * @param height   Height of the generated image
    * @return Viewable null image
    */
-  public static Image createViewableNullImage(int minWidth, int height) {
+  public static BufferedImage createViewableNullImage(int minWidth, int height) {
 
     final int FONT_SIZE = 12;
     final Font FONT = new Font(Font.DIALOG, Font.ITALIC, FONT_SIZE);
 
     // Determine the size of the translated string
     final String s = Resources.getString("Editor.ImageUtils.no_image");
-    Image image = new BufferedImage(minWidth, height, BufferedImage.TYPE_4BYTE_ABGR);
+    BufferedImage image = createCompatibleImage(minWidth, height);
     Graphics2D g2d = (Graphics2D) image.getGraphics();
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
     g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
     final int stringWidth = g2d.getFontMetrics().stringWidth(s);
     final int imageWidth = Math.max(minWidth, stringWidth + 20);
+    g2d.dispose();
 
     // Create a new image large enough to hold the string comfortably
-    image = new BufferedImage(imageWidth, height, BufferedImage.TYPE_4BYTE_ABGR);
+    image = createCompatibleImage(imageWidth, height);
     g2d = (Graphics2D) image.getGraphics();
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
     g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
