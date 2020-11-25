@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,9 +48,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
@@ -60,8 +56,6 @@ import VASSAL.tools.concurrent.CountingReadWriteLock;
  * @since 3.2.0
  */
 public class ZipArchive implements FileArchive {
-  private static final Logger logger = LoggerFactory.getLogger(ZipArchive.class);
-
   private final Path archive;
   private ZipFile zipFile;
 
@@ -239,7 +233,7 @@ public class ZipArchive implements FileArchive {
 
       InputStream in = null;
       if (e.file != null) {
-        in = new FileInputStream(e.file);
+        in = Files.newInputStream(e.file.toPath());
       }
       else if (zipFile != null) {
         // NB: Undocumented, but ZipFile.getInputStream can return null!
@@ -438,12 +432,6 @@ public class ZipArchive implements FileArchive {
     );
   }
 
-  private static OutputStream openExisting(Path p) throws IOException {
-    return Files.newOutputStream(
-      p, StandardOpenOption.WRITE
-    );
-  }
-
   private void writeToZip(OutputStream out) throws IOException {
     try (OutputStream bout = new BufferedOutputStream(out);
          ZipOutputStream zout = new ZipOutputStream(bout)) {
@@ -454,48 +442,45 @@ public class ZipArchive implements FileArchive {
   }
 
   private void writeToDisk() throws IOException {
-    if (zipFile == null) {
-      // No existing zipfile so no old entries to copy;
-      // write directly to the destination
+    final boolean zipWasOpen = zipFile != null;
+    if (zipWasOpen) {
+      // Close so we can move the original file
+      zipFile.close();
+      zipFile = null;
+    }
+
+    try {
+      // Move the old file out of the way, if it exists
+      Path bak = null;
+      if (Files.exists(archive)) {
+        bak = archive.resolveSibling(archive.getFileName().toString() + ".bak");
+        Files.move(archive, bak);
+      }
+
+      // Write the file
       try (OutputStream out = openNew(archive)) {
         writeToZip(out);
       }
-    }
-    else {
-      // Destination already exists, must copy old entries;
-      // write to temp file first, then move to destination
-      final File tmpFile = makeTempFileFor(
-        archive.getFileName().toString(), archive.getParent()
-      );
-      try (OutputStream out = openExisting(tmpFile.toPath())) {
-        writeToZip(out);
-      }
-
-      try {
-        // Close so we can overwrite it
-        zipFile.close();
-        zipFile = null;
-
-        // Replace old archive with temp archive
-        Files.move(
-          tmpFile.toPath(), archive,
-          StandardCopyOption.REPLACE_EXISTING
-        );
-      }
-      catch (IOException e) {
-        // Delete the failed temp archive
-        try {
-          Files.delete(tmpFile.toPath());
+      catch (final IOException e) {
+        // Something went wrong whilst writing
+        if (bak == null) {
+          // No original, delete bad file
+          Files.deleteIfExists(archive);
         }
-        catch (IOException de) {
-          logger.error("Failed to delete temp archive " + tmpFile, de);
+        else {
+          // Reinstate original file
+          Files.move(bak, archive);
         }
-
-        // Reopen the original archive
-        zipFile = new ZipFile(archive.toFile());
 
         throw e;
       }
+    }
+    catch (final IOException e) {
+      if (zipWasOpen) {
+        // Reopen the original archive
+        zipFile = new ZipFile(archive.toFile());
+      }
+      throw e;
     }
 
     // Success if we're here, so clean up

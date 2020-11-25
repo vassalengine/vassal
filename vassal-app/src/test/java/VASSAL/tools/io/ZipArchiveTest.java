@@ -43,6 +43,7 @@ public class ZipArchiveTest {
   @After
   public void cleanup() throws IOException {
     Files.deleteIfExists(testArchivePath());
+    Files.deleteIfExists(Path.of(testArchivePath().toString() + ".bak"));
   }
 
   private Path testArchivePath() {
