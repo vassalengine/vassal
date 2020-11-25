@@ -62,7 +62,7 @@ import VASSAL.tools.concurrent.CountingReadWriteLock;
 public class ZipArchive implements FileArchive {
   private static final Logger logger = LoggerFactory.getLogger(ZipArchive.class);
 
-  private final Path archiveFile;
+  private final Path archive;
   private ZipFile zipFile;
 
   private boolean modified = false;
@@ -139,10 +139,10 @@ public class ZipArchive implements FileArchive {
    * @throws IOException oops
    */
   public ZipArchive(Path path, boolean truncate) throws IOException {
-    this.archiveFile = Objects.requireNonNull(path);
+    this.archive = Objects.requireNonNull(path);
 
     if (truncate) {
-      Files.deleteIfExists(archiveFile);
+      Files.deleteIfExists(archive);
     }
   }
 
@@ -194,17 +194,17 @@ public class ZipArchive implements FileArchive {
   /** {@inheritDoc} */
   @Override
   public String getName() {
-    return archiveFile.toString();
+    return archive.toString();
   }
 
   /** {@inheritDoc} */
   @Override
   public File getFile() {
-    return archiveFile.toFile();
+    return archive.toFile();
   }
 
   public Path getPath() {
-    return archiveFile;
+    return archive;
   }
 
   /** {@inheritDoc} */
@@ -457,7 +457,7 @@ public class ZipArchive implements FileArchive {
     if (zipFile == null) {
       // No existing zipfile so no old entries to copy;
       // write directly to the destination
-      try (OutputStream out = openNew(archiveFile)) {
+      try (OutputStream out = openNew(archive)) {
         writeToZip(out);
       }
     }
@@ -465,7 +465,7 @@ public class ZipArchive implements FileArchive {
       // Destination already exists, must copy old entries;
       // write to temp file first, then move to destination
       final File tmpFile = makeTempFileFor(
-        archiveFile.getFileName().toString(), archiveFile.getParent()
+        archive.getFileName().toString(), archive.getParent()
       );
       try (OutputStream out = openExisting(tmpFile.toPath())) {
         writeToZip(out);
@@ -478,7 +478,7 @@ public class ZipArchive implements FileArchive {
 
         // Replace old archive with temp archive
         Files.move(
-          tmpFile.toPath(), archiveFile,
+          tmpFile.toPath(), archive,
           StandardCopyOption.REPLACE_EXISTING
         );
       }
@@ -492,7 +492,7 @@ public class ZipArchive implements FileArchive {
         }
 
         // Reopen the original archive
-        zipFile = new ZipFile(archiveFile.toFile());
+        zipFile = new ZipFile(archive.toFile());
 
         throw e;
       }
@@ -521,7 +521,7 @@ public class ZipArchive implements FileArchive {
     }
 
     // copy unmodified entries into the archive
-    try (InputStream fin = Files.newInputStream(archiveFile);
+    try (InputStream fin = Files.newInputStream(archive);
          InputStream bin = new BufferedInputStream(fin);
          ZipInputStream in = new ZipInputStream(bin)) {
       final byte[] buf = new byte[8192];
@@ -663,8 +663,8 @@ public class ZipArchive implements FileArchive {
   private synchronized void readEntries() throws IOException {
     entries.clear();
 
-    if (Files.exists(archiveFile) && Files.size(archiveFile) > 0) {
-      zipFile = new ZipFile(archiveFile.toFile());
+    if (Files.exists(archive) && Files.size(archive) > 0) {
+      zipFile = new ZipFile(archive.toFile());
       zipFile.stream().forEach(e -> entries.put(e.getName(), new Entry(e, null)));
     }
   }
