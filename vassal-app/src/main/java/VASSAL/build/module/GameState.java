@@ -79,9 +79,8 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.ObfuscatingOutputStream;
-import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
@@ -727,14 +726,12 @@ public class GameState implements CommandEncoder {
     metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
 
     final String save = saveString();
-    try (FileArchive archive = new ZipArchive(f)) {
-      try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
-           BufferedOutputStream bout = new BufferedOutputStream(zout);
-           OutputStream out = new ObfuscatingOutputStream(bout)) {
+
+    try (ZipWriter zw = new ZipWriter(f)) {
+      try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(SAVEFILE_ZIP_ENTRY)))) {
         out.write(save.getBytes(StandardCharsets.UTF_8));
       }
-
-      metaData.save(archive);
+      metaData.save(zw);
     }
 
     Launcher.getInstance().sendSaveCmd(f);

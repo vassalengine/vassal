@@ -61,7 +61,9 @@ public class SolidColorOp extends AbstractTiledOpImpl {
     }
 
     // create the destination tile
-    final BufferedImage dst = ImageUtils.createCompatibleImage(dw, dh);
+    final BufferedImage dst = ImageUtils.createCompatibleImage(
+      dw, dh, color.getTransparency() != Color.OPAQUE
+    );
 
     // fill with the color
     final Graphics g = dst.getGraphics();
@@ -111,8 +113,15 @@ public class SolidColorOp extends AbstractTiledOpImpl {
       color = scop.getColor();
       sop = scop;
 
-      size = new Dimension(scop.getTileWidth(), scop.getTileHeight());
+      final int stw = sop.getTileWidth();
+      final int sth = sop.getTileHeight();
 
+      final int dx0 = tileX * stw;
+      final int dy0 = tileY * sth;
+      final int dw = Math.min(stw, sop.getWidth() - dx0);
+      final int dh = Math.min(sth, sop.getHeight() - dy0);
+
+      size = new Dimension(dw, dh);
       hash = Objects.hash(sop, color, size);
     }
 

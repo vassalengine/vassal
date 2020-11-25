@@ -105,6 +105,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
 
+  private static final Color CLEAR = new Color(0, 0, 0, 0);
+
   /**
    * @return this <code>Board</code>'s {@link Map}.
    * Until a game is started that is using this board, the map will be null.
@@ -362,7 +364,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
     }
     else {
-      op = new SolidColorOp(color == null ? Color.WHITE : color, bounds.width, bounds.height);
+      op = new SolidColorOp(color == null ? CLEAR : color, bounds.width, bounds.height);
     }
 
     if (cacheGrid && grid != null) {

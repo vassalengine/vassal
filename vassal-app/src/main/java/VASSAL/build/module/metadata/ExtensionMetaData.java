@@ -25,8 +25,10 @@ import java.util.zip.ZipFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -35,6 +37,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.io.ZipWriter;
 
 public class ExtensionMetaData extends AbstractMetaData {
   private static final Logger logger =
@@ -103,6 +106,16 @@ public class ExtensionMetaData extends AbstractMetaData {
     // module metadata from the module archive as it will contain full i18n
     // information.
     copyModuleMetadata(archive);
+  }
+
+  @Override
+  public void save(ZipWriter zw) throws IOException {
+    super.save(zw);
+
+    // Also save a copy of the current module metadata in the save file. Copy
+    // module metadata from the module archive as it will contain full i18n
+    // information.
+    copyModuleMetadata(zw);
   }
 
   /**
