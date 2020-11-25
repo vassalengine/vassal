@@ -190,7 +190,7 @@ public class SetGlobalProperty extends DynamicProperty {
     Command comm = new NullCommand();
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
-        MutableProperty prop = null;
+        MutableProperty prop;
         final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
 
         final ArrayList<MutablePropertiesContainer> propertyContainers =
@@ -324,8 +324,7 @@ public class SetGlobalProperty extends DynamicProperty {
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig);
 
-
-      controls.add(keyCommandListConfig.getControls(), "left,grow,span 2"); // NON-NLS
+      controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
 
       numericConfig.addPropertyChangeListener(evt -> {
         final boolean isNumeric = numericConfig.booleanValue();

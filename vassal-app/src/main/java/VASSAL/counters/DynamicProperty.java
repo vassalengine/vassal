@@ -457,6 +457,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       };
       controls = new TraitConfigPanel();
 
+
       nameConfig = new StringConfigurer(m.getKey());
       controls.add("Editor.DynamicProperty.property_name", nameConfig);
 
@@ -478,7 +479,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig, "wrap"); // NON-NLS
 
-      controls.add(keyCommandListConfig.getControls(), "left,grow,span 2"); // NON-NLS
+      controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
 
       numericConfig.addPropertyChangeListener(l);
       numericConfig.fireUpdate();
@@ -641,7 +642,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       controls.add(propChangeConfig.getTypeControls(), "grow"); // NON-NLS
 
       controls.add(propChangeConfig.getChangerLabel());
-      controls.add(propChangeConfig.getChangerControls(), "grow,wrap"); // NON-NLS
+      controls.add(propChangeConfig.getChangerControls(), "growx,aligny center,wrap"); // NON-NLS
       controls.add(propChangeConfig.getValuesControls(), "grow,span 4"); // NON-NLS
     }
   }

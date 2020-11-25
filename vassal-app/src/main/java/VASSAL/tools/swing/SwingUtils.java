@@ -31,7 +31,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.KeyStroke;
@@ -65,7 +65,7 @@ public class SwingUtils {
     );
   }
 
-  public static final Map<?, ?> FONT_HINTS = GraphicsEnvironment.isHeadless() ? new HashMap<String, String>() : (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+  public static final Map<?, ?> FONT_HINTS = GraphicsEnvironment.isHeadless() ? Collections.emptyMap() : (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
   private interface InputClassifier {
     /**
@@ -460,6 +460,9 @@ public class SwingUtils {
    * @param window Window to ensure on screen
    */
   public static void ensureOnScreen(Window window) {
+    if (window == null) {
+      return;
+    }
     final Rectangle screenBounds = getScreenBounds(window);
     window.setMaximumSize(new Dimension(screenBounds.width, screenBounds.height));
     final Dimension windowSize = window.getSize();
@@ -514,7 +517,7 @@ public class SwingUtils {
   /**
    * Repack a dialog or frame and ensure it is fully on the screen
    * Allow it get shorter vertically, but not narrower to keep any
-   * user dragged width changes.
+   * user dragged width changes or field width reformats.
    *
    * @param w Dialog or Frame
    */

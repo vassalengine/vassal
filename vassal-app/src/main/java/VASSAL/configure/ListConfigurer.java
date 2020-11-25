@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.counters.TraitLayout;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
@@ -30,7 +31,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
@@ -41,8 +41,7 @@ import net.miginfocom.swing.MigLayout;
  * @author rkinney
  *
  */
-public abstract class ListConfigurer extends Configurer implements
-    PropertyChangeListener {
+public abstract class ListConfigurer extends Configurer implements PropertyChangeListener {
   protected JPanel controls;
   protected JPanel configControls;
   protected JPanel panel;
@@ -111,10 +110,10 @@ public abstract class ListConfigurer extends Configurer implements
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[]")); // NON-NLS
+      panel = new JPanel(new MigLayout(TraitLayout.STANDARD_GAPY, "[grow,fill]", "[]")); // NON-NLS
+      panel.setBorder(BorderFactory.createEtchedBorder());
       controls = new JPanel(new MigLayout("ins 2", "[grow,fill]")); // NON-NLS
-      final JScrollPane scroll = new JScrollPane(controls);
-      controls.setBorder(BorderFactory.createTitledBorder(getName()));
+
       configControls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow]")); // NON-NLS
 
       final JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
@@ -127,7 +126,7 @@ public abstract class ListConfigurer extends Configurer implements
       addPanel.add(addButton);
       controls.add(addPanel, "grow,wrap"); // NON-NLS
       controls.add(configControls, "grow"); // NON-NLS
-      panel.add(scroll, "grow"); // NON-NLS
+      panel.add(controls, "grow"); // NON-NLS
       updateControls();
     }
     return panel;
@@ -163,15 +162,15 @@ public abstract class ListConfigurer extends Configurer implements
         c.setValue(value);
         c.addPropertyChangeListener(this);
         configurers.add(c);
-        final JPanel b = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[][fill,grow]")); // NON-NLS
+        final JPanel b = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill,grow][]")); // NON-NLS
         final JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
         delButton.addActionListener(e -> {
           getListValue().remove(c.getValue());
           updateControls();
           repack();
         });
-        b.add(delButton, "aligny center"); // NON-NLS
         b.add(c.getControls(), "grow"); // NON-NLS
+        b.add(delButton, "aligny center"); // NON-NLS
         configControls.add(b, "grow,wrap"); // NON-NLS
       }
       resize();
