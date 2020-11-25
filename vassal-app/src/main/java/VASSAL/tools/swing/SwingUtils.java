@@ -31,6 +31,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.KeyStroke;
@@ -64,7 +65,7 @@ public class SwingUtils {
     );
   }
 
-  public static final Map<?, ?> FONT_HINTS = (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+  public static final Map<?, ?> FONT_HINTS = GraphicsEnvironment.isHeadless() ? new HashMap<String, String>() : (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
   private interface InputClassifier {
     /**
