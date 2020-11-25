@@ -130,7 +130,7 @@ public final class GameRefresher implements GameComponent {
   public void log(String message) {
     // ex for dialog msg dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
     // Log to chatter
-    GameModule.getGameModule().warn(message);
+      GameModule.getGameModule().warn(message);
     //msg.append(new Chatter.DisplayText(chatter, message));
     logger.info(message);
   }
@@ -144,16 +144,17 @@ public final class GameRefresher implements GameComponent {
     for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
       if (piece instanceof Deck) {
         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-          pieces.add(0, i.next());
+          final GamePiece iPiece = i.next();
           totalCount++;
+          pieces.add(0, i.next());
         }
       }
       else if (piece instanceof Stack) {
         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           final GamePiece p = i.next();
-          totalCount++;
           if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
             && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
+            totalCount++;
             pieces.add(0, p);
           }
           else {
@@ -169,6 +170,7 @@ public final class GameRefresher implements GameComponent {
       else if (piece.getParent() == null) {
         if (!Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
           && !Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME))) {
+          totalCount++;
           pieces.add(0, piece);
         }
         else {
@@ -180,6 +182,9 @@ public final class GameRefresher implements GameComponent {
           }
         }
       }
+//      else {
+//      All pieces in stacks and decks seem to be returned as pieces with parent so these are duplicates to ignore        //
+//    }
     }
     log(Resources.getString("GameRefresher.get_all_pieces"));
     log(Resources.getString("GameRefresher.counters_total", totalCount));
@@ -247,7 +252,7 @@ public final class GameRefresher implements GameComponent {
       processGamePiece(piece, command);
     }
 
-    log(Resources.getString("GameRefresher.run_refresh_counters_v2", theModule.getGameVersion()));
+    log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
     log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
     log("----------"); //$NON-NLS-1$
