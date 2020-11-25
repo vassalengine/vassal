@@ -18,32 +18,6 @@
  */
 package VASSAL.build.widget;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.AffineTransform;
-import java.util.Collection;
-
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -71,7 +45,34 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
+import java.util.Collection;
+
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * A Component that displays a GamePiece.
@@ -83,6 +84,8 @@ import VASSAL.tools.swing.SwingUtils;
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid"; //NON-NLS
   private static final int DEFAULT_SIZE = 64;
+  private static Image noImage;
+
   protected GamePiece c;
   protected GamePiece expanded;
   protected String pieceDefinition;
@@ -232,8 +235,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     super.addImageNamesRecursively(s);
 
     final GamePiece p = getPiece();
-    if (p != null && (p instanceof ImageSearchTarget)) {
-      ((ImageSearchTarget)p).addImageNamesRecursively(s);
+    if (p instanceof ImageSearchTarget) {
+      ((ImageSearchTarget) p).addImageNamesRecursively(s);
     }
   }
 
@@ -253,16 +256,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     g.setColor(c);
 
     if (getExpandedPiece() == null ||  getExpandedPiece().boundingBox().width == 0) {
-      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-
-      final FontMetrics fm = g.getFontMetrics();
-      g.drawRect(0, 0, size.width - 1, size.height - 1);
-      g.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-      final String s = " " + Resources.getString("Editor.PieceSlot.nil") + " ";
-      g.drawString(s,  //NON-NLS
-        size.width / 2 - fm.stringWidth(s) / 2,  //NON-NLS
-        size.height / 2
-      );
+      // No image, draw a visible placeholder
+      g2d.drawImage(getNullImage(), 0, 0, null);
     }
     else {
       // We apply both our os_scale and our module-specified scale as factors
@@ -279,16 +274,23 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     g2d.setTransform(orig_t);
   }
 
+  private Image getNullImage() {
+    if (noImage == null) {
+      noImage = ImageUtils.createViewableNullImage(DEFAULT_SIZE, DEFAULT_SIZE);
+    }
+    return noImage;
+  }
+
   public Dimension getPreferredSize() {
     // Preferred size is affected by our module-specified scale
-    if (c != null && panel.getGraphics() != null) {
+    if (c != null) {
       final Dimension bound = c.boundingBox().getSize();
-      bound.width = (int) ((double) (bound.width == 0 ? DEFAULT_SIZE : bound.width) * getScale());
-      bound.height = (int) ((double) (bound.height == 0 ? DEFAULT_SIZE : bound.height) * getScale());
+      bound.width = (int) ((double) (bound.width == 0 ? getNullImage().getWidth(null) : bound.width) * getScale());
+      bound.height = (int) ((double) (bound.height == 0 ? getNullImage().getHeight(null) : bound.height) * getScale());
       return bound;
     }
     else {
-      return new Dimension((int) ((double)width * getScale()), (int) ((double)height * getScale()));
+      return new Dimension((int) ((double) getNullImage().getWidth(null) * getScale()), (int) ((double) getNullImage().getHeight(null) * getScale()));
     }
   }
 
@@ -653,4 +655,5 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       return definer;
     }
   }
+
 }

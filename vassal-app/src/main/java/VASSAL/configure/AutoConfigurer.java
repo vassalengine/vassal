@@ -39,6 +39,8 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.swing.SwingUtils;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -130,7 +132,7 @@ public class AutoConfigurer extends Configurer
         GameModule.getGameModule().getArchiveWriter());
     }
     else if (String[].class.isAssignableFrom(type)) {
-      config = new StringArrayConfigurer(key, prompt);
+      config = new StringArrayConfigurer(key, prompt, 3, 12); // Set a reasonable min/max for items displayed before scrolling
     }
     else if (Icon.class.isAssignableFrom(type)) {
       config = new IconConfigurer(key, prompt, null);
@@ -247,8 +249,9 @@ public class AutoConfigurer extends Configurer
         }
       }
       // Only repack the configurer if an item visibility has changed.
+      // And ensure the dialog still fits on the screen
       if (visChanged && p.getTopLevelAncestor() instanceof Window) {
-        ((Window) p.getTopLevelAncestor()).pack();
+        SwingUtils.repack((Window) p.getTopLevelAncestor());
       }
     }
   }

@@ -18,24 +18,6 @@
 package VASSAL.build.module.map;
 
 import VASSAL.build.AbstractToolbarItem;
-import VASSAL.configure.GlobalCommandTargetConfigurer;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.TranslatableStringEnum;
-import VASSAL.configure.TranslatingStringEnumConfigurer;
-import VASSAL.counters.CounterGlobalKeyCommand;
-import VASSAL.counters.GlobalCommandTarget;
-import java.awt.Component;
-import java.awt.Window;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -44,16 +26,22 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BooleanAndPieceFilter;
+import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Embellishment;
 import VASSAL.counters.GlobalCommand;
+import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
@@ -62,7 +50,20 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
+import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -346,10 +347,7 @@ public class MassKeyCommand extends AbstractToolbarItem
 
       final PropertyChangeListener l = evt -> {
         intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-        final Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
-        if (w != null) {
-          w.pack();
-        }
+        SwingUtils.repack(intConfig.getControls());
       };
       final PropertyChangeListener l2 = evt -> setValue(getIntValue());
       typeConfig.addPropertyChangeListener(l);

@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -74,6 +75,7 @@ public class EditPropertiesAction extends AbstractAction {
       });
       openWindows.put(target, w);
       w.setVisible(true);
+      SwingUtils.ensureOnScreen(w);
       if (tree != null) {
         tree.notifyStateChanged(true);
       }

@@ -24,6 +24,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -158,7 +159,7 @@ public class ImageSaver extends AbstractToolbarItem {
     final int l = Resources.getString("Editor.ImageSaver.saving_map_image_as").length() + file.getName().length() + 7;
     dialog.setLabel("N".repeat(Math.max(0, l))); //NON-NLS
 
-    dialog.pack();
+    SwingUtils.repack(dialog);
     dialog.setLabel(Resources.getString("Editor.ImageSaver.saving_map_image_as") + " ");
 
     dialog.setIndeterminate(true);

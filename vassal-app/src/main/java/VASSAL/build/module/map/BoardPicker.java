@@ -30,6 +30,7 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.BoardSlot;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.configure.ComponentConfigPanel;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DoubleConfigurer;
@@ -37,7 +38,6 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
-import VASSAL.counters.TraitConfigPanel;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
@@ -45,6 +45,7 @@ import VASSAL.i18n.Translatable;
 import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -176,9 +177,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     for (final Board board : possibleBoards) {
       board.setMap(map);
     }
-    if (b instanceof Translatable) {
-      getI18nData().setOwningComponent((Translatable) b);
-    }
+    getI18nData().setOwningComponent((Translatable) b);
     GameModule.getGameModule().getGameState().addGameSetupStep(this);
   }
 
@@ -387,7 +386,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     b.add(controls);
     b.add(buttons);
     d.add(b);
-    d.pack();
+    SwingUtils.repack(d);
     d.setLocationRelativeTo(c);
     d.setVisible(true);
     currentBoards = new ArrayList<>(getBoardsFromControls());
@@ -627,8 +626,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
           y = j;
           break;
         }
-        // TODO y>=0 is always true
-        if (x >= 0 && y >= 0) {
+        if (x >= 0) {
           break;
         }
       }
@@ -794,11 +792,11 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   private class Config extends Configurer {
-    private final TraitConfigPanel controls;
+    private final ComponentConfigPanel controls;
 
     public Config() {
       super(null, null);
-      controls = new TraitConfigPanel();
+      controls = new ComponentConfigPanel();
 
 
       final StringConfigurer title = new StringConfigurer(BoardPicker.this.title);

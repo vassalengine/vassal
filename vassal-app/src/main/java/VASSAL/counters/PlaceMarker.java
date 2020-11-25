@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.configure.TranslatingStringEnumConfigurer;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -53,7 +52,8 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentPathDialog;
-import VASSAL.configure.ConfigurerWindow;
+import VASSAL.configure.PropertiesWindow;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -64,6 +64,7 @@ import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ComponentPathBuilder;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -482,7 +483,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
       defineButton.addActionListener(e -> {
         markerSlotPath = null;
-        new ConfigurerWindow(pieceInput.getConfigurer()).setVisible(true);
+        new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class,  p), true, pieceInput, null).setVisible(true);
         adjustVisualiserSize();
       });
       b.add(defineButton);

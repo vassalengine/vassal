@@ -17,26 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.InputEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
@@ -52,6 +32,8 @@ import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.command.SetPersistentPropertyCommand;
+import VASSAL.configure.ImageSelector;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
@@ -61,7 +43,24 @@ import VASSAL.search.AbstractImageFinder;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
-import net.miginfocom.swing.MigLayout;
+
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 
 /**
  * Basic class for representing a physical component of the game. Can be e.g. a counter, a card, or an overlay.
@@ -1035,11 +1034,11 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
    * BasicPiece's type information in the Editor window.
    */
   private static class Ed implements PieceEditor {
-    private JPanel panel;
+    private TraitConfigPanel panel;
     private KeySpecifier cloneKeyInput;
     private KeySpecifier deleteKeyInput;
-    private JTextField pieceName;
-    private ImagePicker picker;
+    private StringConfigurer pieceName;
+    private ImageSelector picker;
     private final String state;
 
     /**
@@ -1054,28 +1053,26 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
      * @param p initializes the editor dialog for the specified BasicPiece
      */
     private void initComponents(BasicPiece p) {
-      panel = new JPanel();
-      panel.setLayout(new MigLayout(TraitLayout.DEFAULT_TRAIT_LAYOUT_CONSTRAINTS, "[fill,grow]unrel[]")); //NON-NLS
-      picker = new ImagePicker();
-      picker.setImageName(p.imageName);
-      panel.add(picker);
+      panel = new TraitConfigPanel();
+
+      pieceName = new StringConfigurer(p.commonName);
+      panel.add("Editor.name_label", pieceName);
+
       cloneKeyInput = new KeySpecifier(p.cloneKey);
-      deleteKeyInput = new KeySpecifier(p.deleteKey);
-      pieceName = new JTextField(20);
-      pieceName.setText(p.commonName);
-      pieceName.setMaximumSize(pieceName.getPreferredSize());
-      final JPanel col = new JPanel(new TraitLayout());
-      col.add(new JLabel(Resources.getString("Editor.name_label")));
-      col.add(pieceName);
       if (p.cloneKey != 0) {
-        col.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
-        col.add(cloneKeyInput);
+        panel.add(new JLabel(Resources.getString("Editor.BasicPiece.to_clone")));
+        panel.add(cloneKeyInput);
       }
+
+      deleteKeyInput = new KeySpecifier(p.deleteKey);
       if (p.deleteKey != 0) {
-        col.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
-        col.add(deleteKeyInput);
+        panel.add(new JLabel(Resources.getString("Editor.BasicPiece.to_delete")));
+        panel.add(deleteKeyInput);
       }
-      panel.add(col);
+
+      picker = new ImageSelector(p.imageName);
+      panel.add("Editor.image_label", picker);
+
     }
 
     /**
@@ -1106,7 +1103,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(cloneKeyInput.getKey(), ';');
-      final String type = se.append(deleteKeyInput.getKey()).append(picker.getImageName()).append(pieceName.getText()).getValue();
+      final String type = se.append(deleteKeyInput.getKey()).append(picker.getValueString()).append(pieceName.getValueString()).getValue();
       return BasicPiece.ID + type;
     }
   }

@@ -17,11 +17,9 @@
  */
 package VASSAL.counters;
 
-import VASSAL.i18n.Resources;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -34,10 +32,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import VASSAL.i18n.Resources;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.filechooser.FileChooser;
@@ -125,10 +123,7 @@ public class ImagePicker extends JPanel
     }
     select.addItemListener(this);
     revalidate();
-    final Window w = SwingUtilities.getWindowAncestor(this);
-    if (w != null) {
-      w.pack();
-    }
+    SwingUtils.repack(this);
     repaint();
   }
 

@@ -18,6 +18,7 @@
 
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractToolbarItem;
 import java.awt.Component;
 
 import javax.swing.JMenuItem;
@@ -41,8 +42,8 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
 
   public MultiActionButton() {
     super();
-    setAttribute(BUTTON_TEXT, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
-    setAttribute(TOOLTIP, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
+    setAttribute(AbstractToolbarItem.BUTTON_TEXT, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
+    setAttribute(AbstractToolbarItem.TOOLTIP, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
     getLaunchButton().putClientProperty(MENU_PROPERTY, null);
   }
 

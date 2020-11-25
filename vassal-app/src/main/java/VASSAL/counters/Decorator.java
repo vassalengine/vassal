@@ -17,19 +17,33 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.module.GameState;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangePiece;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.Configurer;
+import VASSAL.i18n.Localization;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
-import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,24 +51,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import VASSAL.build.BadDataReport;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.PropertyNameSource;
-import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
-import VASSAL.configure.Configurer;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.property.PersistentPropertyContainer;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
@@ -765,19 +763,21 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   /**
-   * Utility method to allow Decorator Editors to repack themselves.
-   * Repack larger, but not smaller.
+   * Utility methods to allow Decorator Editors to repack themselves.
+   * Ensure the resulting dialog fits and is fully visible on the screen
+   *
    * @param c must be one of the Swing components that make up the Decorator's controls.
    */
   public static void repack(Component c) {
-    final Window w = SwingUtilities.getWindowAncestor(c);
-    if (w != null) {
-      w.setMinimumSize(w.getSize());
-      w.pack();
-      w.setMinimumSize(null);
-    }
+    SwingUtils.repack(c);
   }
 
+  /**
+   * Utility methods to allow Decorator Editors to repack themselves.
+   * Ensure the resulting dialog fits and is fully visible on the screen
+   *
+   * @param c must be one of the Decoarator's Configurers
+   */
   public static void repack(Configurer c) {
     repack(c.getControls());
   }
@@ -800,7 +800,6 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   /**
-<<<<<<< HEAD
    * {@link ImageSearchTarget}
    * Adds all images used by this component AND any children to the collection
    * @param s Collection to add image names to

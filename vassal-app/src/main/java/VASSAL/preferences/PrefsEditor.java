@@ -25,6 +25,7 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -52,7 +53,8 @@ import javax.swing.WindowConstants;
 import net.miginfocom.swing.MigLayout;
 
 public class PrefsEditor {
-  private JDialog dialog;
+  private JDialog
+    dialog;
   private final List<Configurer> options = new ArrayList<>();
   private final List<Configurer> extras = new ArrayList<>();
   private boolean iterating = false;
@@ -234,8 +236,9 @@ public class PrefsEditor {
           }
           storeValues();
           dialog.pack();
-          final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+          final Dimension d = SwingUtils.getScreenSize();
           dialog.setLocation(d.width / 2 - dialog.getWidth() / 2, 0);
+          SwingUtils.ensureOnScreen(dialog);
           dialog.setVisible(true);
         }
       };
