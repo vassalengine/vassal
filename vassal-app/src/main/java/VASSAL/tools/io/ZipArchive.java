@@ -430,11 +430,13 @@ public class ZipArchive implements FileArchive {
     );
   }
 
-  private void writeToZip(OutputStream out) throws IOException {
+  private void writeToZip(Path oldArchive, OutputStream out) throws IOException {
     try (OutputStream bout = new BufferedOutputStream(out);
          ZipOutputStream zout = new ZipOutputStream(bout)) {
       zout.setLevel(9);
-      writeOldEntries(zout);
+      if (oldArchive != null) {
+        writeOldEntries(oldArchive, zout);
+      }
       writeNewEntries(zout);
     }
   }
@@ -447,9 +449,9 @@ public class ZipArchive implements FileArchive {
       zipFile = null;
     }
 
+    Path bak = null;
     try {
       // Move the old file out of the way, if it exists
-      Path bak = null;
       if (Files.exists(archive)) {
         bak = archive.resolveSibling(archive.getFileName().toString() + ".bak");
         Files.move(archive, bak);
@@ -457,7 +459,7 @@ public class ZipArchive implements FileArchive {
 
       // Write the file
       try (OutputStream out = openNew(archive)) {
-        writeToZip(out);
+        writeToZip(bak, out);
       }
       catch (final IOException e) {
         // Something went wrong whilst writing
@@ -483,6 +485,10 @@ public class ZipArchive implements FileArchive {
 
     // Success if we're here, so clean up
     writeCleanup();
+
+    if (bak != null) {
+      Files.deleteIfExists(bak);
+    }
   }
 
   private void writeNewEntries(ZipOutputStream zout) throws IOException {
@@ -497,14 +503,9 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private void writeOldEntries(ZipOutputStream zout) throws IOException {
-    if (zipFile == null) {
-      // no old entries
-      return;
-    }
-
+  private void writeOldEntries(Path oldArchive, ZipOutputStream zout) throws IOException {
     // copy unmodified entries into the archive
-    try (InputStream fin = Files.newInputStream(archive);
+    try (InputStream fin = Files.newInputStream(oldArchive);
          InputStream bin = new BufferedInputStream(fin);
          ZipInputStream in = new ZipInputStream(bin)) {
       final byte[] buf = new byte[8192];
