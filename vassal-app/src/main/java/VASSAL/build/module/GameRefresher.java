@@ -434,7 +434,7 @@ public final class GameRefresher implements GameComponent {
       setOptions();
       options.add("TestMode");
       refresher.log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
-      refresher.execute(options, null);
+      refresher.execute(options, null);  
     }
 */
 
