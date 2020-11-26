@@ -295,6 +295,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     final ArchiveWriter aw = mod.getArchiveWriter();
     aw.removeFile(fileName);
     aw.addFile(tmp.getFile().getPath(), fileName);
+    gs.closeGame();
   }
 
 
