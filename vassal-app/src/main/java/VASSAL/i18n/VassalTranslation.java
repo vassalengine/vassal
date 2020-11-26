@@ -21,10 +21,10 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
@@ -107,7 +107,7 @@ public class VassalTranslation extends Translation {
   }
 
   public void saveProperties(File file, Locale locale) throws IOException {
-    try (OutputStream fout = new FileOutputStream(file);
+    try (OutputStream fout = Files.newOutputStream(file.toPath());
          BufferedOutputStream out = new BufferedOutputStream(fout)) {
       localProperties.store(out, locale.getDisplayName());
       dirty = false;

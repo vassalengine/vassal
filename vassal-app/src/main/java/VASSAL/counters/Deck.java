@@ -25,15 +25,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,8 +50,6 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
-import org.apache.commons.io.IOUtils;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -1499,10 +1493,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       comm = comm.append(new AddPiece(p));
     }
 
-    try (Writer fw = new FileWriter(f, StandardCharsets.UTF_8);
-         BufferedWriter out = new BufferedWriter(fw)) {
+    try (Writer w = Files.newBufferedWriter(f.toPath(), StandardCharsets.UTF_8)) {
       gameModule.addCommandEncoder(commandEncoder);
-      out.write(gameModule.encode(comm));
+      w.write(gameModule.encode(comm));
       gameModule.removeCommandEncoder(commandEncoder);
     }
   }
@@ -1537,12 +1530,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command loadDeck(File f) throws IOException {
-    final String ds;
-
-    try (Reader fr = new FileReader(f, StandardCharsets.UTF_8);
-         BufferedReader in = new BufferedReader(fr)) {
-      ds = IOUtils.toString(in);
-    }
+    final String ds = Files.readString(f.toPath(), StandardCharsets.UTF_8);
 
     gameModule.addCommandEncoder(commandEncoder);
     Command c = gameModule.decode(ds);

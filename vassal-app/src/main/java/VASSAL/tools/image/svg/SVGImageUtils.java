@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -95,7 +96,7 @@ public class SVGImageUtils {
     try {
       return getImageSize(getDocument(file, in));
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(file, e);
     }
     catch (DOMException | IOException e) {

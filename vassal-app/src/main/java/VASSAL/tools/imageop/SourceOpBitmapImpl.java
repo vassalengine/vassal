@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.Collections;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       // Don't wrap, just rethrow.
       throw e;
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(name, e);
     }
     catch (IOException e) {
@@ -144,7 +145,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
         // Don't wrap, just rethrow.
         throw e;
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         throw new ImageNotFoundException(name, e);
       }
       catch (IOException e) {

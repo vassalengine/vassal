@@ -31,11 +31,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -645,7 +645,7 @@ public class WizardSupport {
               // file
               processing.add(f);
               try {
-                new SavedGameLoader(controller, settings, new BufferedInputStream(new FileInputStream(f)), POST_LOAD_GAME_WIZARD) {
+                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD) {
                   @Override
                   public void run() {
                     GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.

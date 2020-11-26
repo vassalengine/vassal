@@ -22,12 +22,12 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -758,8 +758,10 @@ public class GameState implements CommandEncoder {
 
   public void loadGameInBackground(final File f) {
     try {
-      loadGameInBackground(f.getName(),
-                           new BufferedInputStream(new FileInputStream(f)));
+      loadGameInBackground(
+        f.getName(),
+        new BufferedInputStream(Files.newInputStream(f.toPath()))
+      );
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
@@ -900,7 +902,7 @@ public class GameState implements CommandEncoder {
    */
   public Command decodeSavedGame(File saveFile) throws IOException {
     return decodeSavedGame(
-      new BufferedInputStream(new FileInputStream(saveFile)));
+      new BufferedInputStream(Files.newInputStream(saveFile.toPath())));
   }
 
   public Command decodeSavedGame(InputStream in) throws IOException {

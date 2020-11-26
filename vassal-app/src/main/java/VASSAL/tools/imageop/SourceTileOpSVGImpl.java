@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Collections;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
       final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1 - x0, y1 - y0);
       return renderer.render(0.0, 1.0, aoi);
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(name, e);
     }
     catch (IOException e) {

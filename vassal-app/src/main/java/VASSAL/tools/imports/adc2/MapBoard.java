@@ -34,7 +34,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
@@ -2272,7 +2271,7 @@ public class MapBoard extends Importer {
    */
   protected void readScannedMapLayoutFile(File f, Graphics2D g) throws IOException {
 
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          InputStream bin = new BufferedInputStream(fin);
          DataInputStream in = new DataInputStream(bin)) {
       // how many image sections
@@ -2723,7 +2722,7 @@ public class MapBoard extends Importer {
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          InputStream bin = new BufferedInputStream(fin);
          DataInputStream in = new DataInputStream(bin)) {
       baseName = stripExtension(f.getName());
@@ -3104,7 +3103,7 @@ public class MapBoard extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          DataInputStream in = new DataInputStream(fin)) {
       return in.readByte() == -3;
     }

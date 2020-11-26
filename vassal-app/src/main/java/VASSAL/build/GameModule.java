@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -500,7 +501,7 @@ public class GameModule extends AbstractConfigurable
         final Document doc = Builder.createDocument(in);
         build(doc.getDocumentElement());
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         throw new IOException(
           Resources.getString("BasicModule.no_buildfile"), //$NON-NLS-1$
           e);

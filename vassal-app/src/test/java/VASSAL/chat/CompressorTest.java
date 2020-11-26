@@ -3,10 +3,12 @@ package VASSAL.chat;
 import java.awt.Frame;
 import java.awt.TextField;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.junit.Ignore;
@@ -46,7 +48,7 @@ public class CompressorTest {
     }
     else {
       final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-      final FileInputStream file = new FileInputStream(args[0]);
+      final InputStream file = Files.newInputStream(Path.of(args[0]));
       try {
         IOUtils.copy(file, byteOut);
       }
@@ -63,8 +65,7 @@ public class CompressorTest {
       final byte[] contents = byteOut.toByteArray();
       if (contents[0] == 'P' && contents[1] == 'K') {
         final byte[] uncompressed = Compressor.decompress(contents);
-        final FileOutputStream out =
-          new FileOutputStream(args[0] + ".uncompressed"); //$NON-NLS-1$
+        final OutputStream out = Files.newOutputStream(Path.of(args[0] + ".uncompressed")); //$NON-NLS-1$
         try {
           out.write(uncompressed);
         }
@@ -86,8 +87,8 @@ public class CompressorTest {
       }
       else {
         final byte[] compressed = Compressor.compress(contents);
-        final FileOutputStream out =
-          new FileOutputStream(args[0] + ".compressed"); //$NON-NLS-1$
+        final OutputStream out =
+          Files.newOutputStream(Path.of(args[0] + ".compressed")); //$NON-NLS-1$
         try {
           out.write(compressed);
         }

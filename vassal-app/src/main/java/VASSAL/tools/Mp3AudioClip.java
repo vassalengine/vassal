@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
@@ -53,7 +54,7 @@ public class Mp3AudioClip implements AudioClip {
         GameModule.getGameModule().getDataArchive().getInputStream(name) :
         url.openStream();
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       ErrorDialog.dataWarning(new BadDataReport(
         Resources.getString(
           "Error.not_found", name != null ? name : url.toString()

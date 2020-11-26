@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -184,7 +185,7 @@ public class Translation extends AbstractConfigurable
            BufferedInputStream in = new BufferedInputStream(inner)) {
         localProperties.load(in);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         // ignore, properties have not been saved yet
         dirty = false;
         return;

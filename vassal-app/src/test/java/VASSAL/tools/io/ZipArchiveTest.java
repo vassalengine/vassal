@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class ZipArchiveTest {
   @After
   public void cleanup() throws IOException {
     Files.deleteIfExists(testArchivePath());
+    Files.deleteIfExists(Path.of(testArchivePath().toString() + ".bak"));
   }
 
   private Path testArchivePath() {
@@ -84,7 +86,7 @@ public class ZipArchiveTest {
       z.getSize(name);
       fail("Expected FileNotFoundException");
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       // expected
     }
 
@@ -92,14 +94,14 @@ public class ZipArchiveTest {
       z.getMTime(name);
       fail("Expected FileNotFoundException");
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       // expected
     }
 
     try (InputStream in = z.getInputStream(name)) {
       fail("Expected FileNotFoundException");
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       // expected
     }
   }

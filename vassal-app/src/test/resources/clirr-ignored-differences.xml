@@ -21,6 +21,13 @@
         <justification>ModuleManagerWindow is never referenced by custom code</justification>
     </difference>
     <difference>
+        <className>VASSAL/launch/ModuleManager</className>
+        <differenceType>7005</differenceType>
+        <method>ModuleManager(java.net.ServerSocket, long, java.io.FileOutputStream, java.nio.channels.FileLock)</method>
+        <to>ModuleManager(java.net.ServerSocket, long, java.nio.channels.FileChannel, java.nio.channels.FileLock)</to>
+        <justification>ModuleManager is never instantiated by custom code</justification>
+    </difference>
+    <difference>
         <className>VASSAL/build/module/PieceWindow</className>
         <differenceType>6006</differenceType>
         <field>idMgr</field>
