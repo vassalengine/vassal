@@ -357,10 +357,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final TreeSet<String> s = new TreeSet<>();
 
     if (archive != null) {
+      // trim the trailing slash
+      final int trimlen = imageDir.length();
+      final String root = imageDir.substring(0, trimlen - 1);
       try {
-//        for (String filename : archive.getFiles(imageDir)) {
-        for (final String filename : archive.getFiles("images")) { //NON-NLS
-          s.add(filename.substring(imageDir.length()));
+        for (final String filename : archive.getFiles(root)) {
+          final String fn = filename.substring(trimlen);
+          // Empty fn is the entry for the root directory; don't return that
+          if (!fn.isEmpty()) {
+            s.add(fn);
+          }
         }
       }
       catch (IOException e) {
