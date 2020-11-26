@@ -18,9 +18,6 @@
 
 package VASSAL.tools.image;
 
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.swing.SwingUtils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -43,8 +40,11 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 import VASSAL.Info;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.swing.SwingUtils;
 
 public class ImageUtils {
   private ImageUtils() {

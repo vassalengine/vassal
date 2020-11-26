@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 
 public class LabelUtils {
   private LabelUtils() {
-
   }
 
   public static final int CENTER = 0;
@@ -314,8 +313,9 @@ public class LabelUtils {
 
     j.paint(gTemp);
 
-    // If no extra padding or border was specified, we can draw the label directly. Otherwise we need an extra
-    // layer of indirection "lest our JLabel wriggle from our grasp"
+    // If no extra padding or border was specified, we can draw the label
+    // directly. Otherwise we need an extra layer of indirection "lest our
+    // JLabel wriggle from our grasp"
     if ((textPad <= 0) && (extraBorder <= 0)) {
       g.drawImage(im, x0, y0, comp);
     }
