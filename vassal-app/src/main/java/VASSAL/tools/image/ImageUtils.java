@@ -487,14 +487,12 @@ public class ImageUtils {
    * @return Viewable null image
    */
   public static BufferedImage createViewableNullImage(int minWidth, int height) {
-
     final int FONT_SIZE = 12;
     final Font FONT = new Font(Font.DIALOG, Font.ITALIC, FONT_SIZE);
 
     // Determine the size of the translated string
     final String s = Resources.getString("Editor.ImageUtils.no_image");
-    BufferedImage image = createCompatibleImage(minWidth, height);
-    Graphics2D g2d = (Graphics2D) image.getGraphics();
+    Graphics2D g2d = (Graphics2D) NULL_IMAGE.getGraphics();
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
     g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
@@ -503,7 +501,7 @@ public class ImageUtils {
     g2d.dispose();
 
     // Create a new image large enough to hold the string comfortably
-    image = createCompatibleImage(imageWidth, height);
+    final BufferedImage image = createCompatibleImage(imageWidth, height);
     g2d = (Graphics2D) image.getGraphics();
     g2d.addRenderingHints(SwingUtils.FONT_HINTS);
     g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
