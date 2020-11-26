@@ -23,12 +23,12 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
@@ -147,7 +147,7 @@ public class ZipUpdater implements Runnable {
       oldZipFile = ozf;
 
       final ZipOutputStream output =
-        new ZipOutputStream(new FileOutputStream(tempFile));
+        new ZipOutputStream(Files.newOutputStream(tempFile.toPath()));
       try {
         for (final String entryName : checkSums.stringPropertyNames()) {
           final long targetSum;
@@ -225,7 +225,7 @@ public class ZipUpdater implements Runnable {
       final String inputArchiveName = oldFile.getName();
 
       try (ZipFile goal = new ZipFile(newFile)) {
-        try (OutputStream fout = new FileOutputStream(updaterFile);
+        try (OutputStream fout = Files.newOutputStream(updaterFile.toPath());
              OutputStream bout = new BufferedOutputStream(fout);
              JarOutputStream out = new JarOutputStream(bout)) {
           for (final ZipEntry entry : IteratorUtils.iterate(goal.entries().asIterator())) {

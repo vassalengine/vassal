@@ -18,13 +18,12 @@
 package VASSAL.build.module.map;
 
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import javax.swing.JOptionPane;
 
@@ -107,8 +106,7 @@ public class TextSaver extends AbstractToolbarItem {
     final File file =  fc.getSelectedFile();
 
     // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
-         BufferedWriter bw = new BufferedWriter(fw);
+    try (Writer bw = Files.newBufferedWriter(file.toPath(), Charset.defaultCharset());
          PrintWriter p = new PrintWriter(bw)) {
       for (final GamePiece gp : map.getPieces()) {
         final String s = gp.getName();

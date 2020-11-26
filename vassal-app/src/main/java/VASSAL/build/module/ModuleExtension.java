@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.UUID;
 
 import javax.swing.AbstractAction;
@@ -143,7 +144,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         throw new ExtensionsLoader.LoadExtensionException(e);
       }
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       logger.error("File {} not found in archive", fileName, e); //NON-NLS
     }
     catch (IOException e) {

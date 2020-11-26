@@ -19,7 +19,6 @@ package VASSAL.launch;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -34,6 +33,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 import javax.swing.SwingUtilities;
 
@@ -163,8 +164,8 @@ public class ModuleManager {
 
         // Note: We purposely keep lout open in the case where we are the
         // server, because closing lout will release the lock.
-        final FileOutputStream lout = new FileOutputStream(lockfile);
-        final FileLock lock = tryLock(lout.getChannel());
+        final FileChannel lout = FileChannel.open(lockfile.toPath(), StandardOpenOption.WRITE);
+        final FileLock lock = tryLock(lout);
 
         if (lock != null) {
           // we have the lock, so we will be the request server
@@ -237,11 +238,11 @@ public class ModuleManager {
 
   private final long key;
 
-  private final FileOutputStream lout;
+  private final FileChannel lout;
   private final FileLock lock;
 
   public ModuleManager(ServerSocket serverSocket, long key,
-                       FileOutputStream lout, FileLock lock)
+                       FileChannel lout, FileLock lock)
                                                            throws IOException {
     if (instance != null) throw new IllegalStateException();
     instance = this;
@@ -254,7 +255,7 @@ public class ModuleManager {
 
     // truncate the errorLog
     final File errorLog = Info.getErrorLogPath();
-    new FileOutputStream(errorLog).close();
+    Files.newOutputStream(errorLog.toPath()).close();
 
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
       new ModuleManagerMacOSXStartUp() : new StartUp();

@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Collections;
 import java.util.List;
 
@@ -119,7 +120,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
 
       return renderer.render(angle, scale);
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(name, e);
     }
     catch (IOException e) {

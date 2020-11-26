@@ -20,16 +20,13 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,9 +46,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.Info;
 import VASSAL.tools.concurrent.CountingReadWriteLock;
 
@@ -60,9 +54,7 @@ import VASSAL.tools.concurrent.CountingReadWriteLock;
  * @since 3.2.0
  */
 public class ZipArchive implements FileArchive {
-  private static final Logger logger = LoggerFactory.getLogger(ZipArchive.class);
-
-  private final File archiveFile;
+  private final Path archive;
   private ZipFile zipFile;
 
   private boolean modified = false;
@@ -117,7 +109,7 @@ public class ZipArchive implements FileArchive {
    * @throws IOException oops
    */
   public ZipArchive(String path, boolean truncate) throws IOException {
-    this(new File(path), truncate);
+    this(Path.of(path), truncate);
   }
 
   /**
@@ -128,10 +120,21 @@ public class ZipArchive implements FileArchive {
    * @throws IOException oops
    */
   public ZipArchive(File file, boolean truncate) throws IOException {
-    this.archiveFile = Objects.requireNonNull(file);
+    this(file.toPath(), truncate);
+  }
+
+  /**
+   * Opens a ZIP archive.
+   *
+   * @param path the name of the archive
+   * @param truncate if <code>true</code>, truncate the archive file on open
+   * @throws IOException oops
+   */
+  public ZipArchive(Path path, boolean truncate) throws IOException {
+    this.archive = Objects.requireNonNull(path);
 
     if (truncate) {
-      archiveFile.delete();
+      Files.deleteIfExists(archive);
     }
   }
 
@@ -143,7 +146,7 @@ public class ZipArchive implements FileArchive {
    * @throws IOException oops
    */
   public ZipArchive(FileArchive src, String dst) throws IOException {
-    this(src, new File(dst));
+    this(src, Path.of(dst));
   }
 
   /**
@@ -154,6 +157,17 @@ public class ZipArchive implements FileArchive {
    * @throws IOException oops
    */
   public ZipArchive(FileArchive src, File dst) throws IOException {
+    this(src, dst.toPath());
+  }
+
+  /**
+   * Copies a ZIP archive.
+   *
+   * @param src the name of the source archive
+   * @param dst the name of the destination archive
+   * @throws IOException oops
+   */
+  public ZipArchive(FileArchive src, Path dst) throws IOException {
     this(dst, true);
 
     final byte[] buf = new byte[8192];
@@ -172,13 +186,17 @@ public class ZipArchive implements FileArchive {
   /** {@inheritDoc} */
   @Override
   public String getName() {
-    return archiveFile.getPath();
+    return archive.toString();
   }
 
   /** {@inheritDoc} */
   @Override
   public File getFile() {
-    return archiveFile;
+    return archive.toFile();
+  }
+
+  public Path getPath() {
+    return archive;
   }
 
   /** {@inheritDoc} */
@@ -213,7 +231,7 @@ public class ZipArchive implements FileArchive {
 
       InputStream in = null;
       if (e.file != null) {
-        in = new FileInputStream(e.file);
+        in = Files.newInputStream(e.file.toPath());
       }
       else if (zipFile != null) {
         // NB: Undocumented, but ZipFile.getInputStream can return null!
@@ -279,7 +297,7 @@ public class ZipArchive implements FileArchive {
       deleteEntryTempFile(old);
 
       return new ZipArchiveOutputStream(
-        new FileOutputStream(e.file), new CRC32(), e.ze
+        Files.newOutputStream(e.file.toPath()), new CRC32(), e.ze
       );
     }
     catch (IOException ex) {
@@ -297,7 +315,7 @@ public class ZipArchive implements FileArchive {
   /** {@inheritDoc} */
   @Override
   public void add(String path, File extPath) throws IOException {
-    try (FileInputStream in = new FileInputStream(extPath)) {
+    try (InputStream in = Files.newInputStream(extPath.toPath())) {
       add(path, in);
     }
   }
@@ -412,68 +430,65 @@ public class ZipArchive implements FileArchive {
     );
   }
 
-  private static OutputStream openExisting(Path p) throws IOException {
-    return Files.newOutputStream(
-      p, StandardOpenOption.WRITE
-    );
-  }
-
-  private void writeToZip(OutputStream out) throws IOException {
+  private void writeToZip(Path oldArchive, OutputStream out) throws IOException {
     try (OutputStream bout = new BufferedOutputStream(out);
          ZipOutputStream zout = new ZipOutputStream(bout)) {
       zout.setLevel(9);
-      writeOldEntries(zout);
+      if (oldArchive != null) {
+        writeOldEntries(oldArchive, zout);
+      }
       writeNewEntries(zout);
     }
   }
 
   private void writeToDisk() throws IOException {
-    if (zipFile == null) {
-      // No existing zipfile so no old entries to copy;
-      // write directly to the destination
-      try (OutputStream out = openNew(archiveFile.toPath())) {
-        writeToZip(out);
-      }
+    final boolean zipWasOpen = zipFile != null;
+    if (zipWasOpen) {
+      // Close so we can move the original file
+      zipFile.close();
+      zipFile = null;
     }
-    else {
-      // Destination already exists, must copy old entries;
-      // write to temp file first, then move to destination
-      final File tmpFile = makeTempFileFor(
-        archiveFile.getName(), archiveFile.toPath().getParent()
-      );
-      try (OutputStream out = openExisting(tmpFile.toPath())) {
-        writeToZip(out);
+
+    Path bak = null;
+    try {
+      // Move the old file out of the way, if it exists
+      if (Files.exists(archive)) {
+        bak = archive.resolveSibling(archive.getFileName().toString() + ".bak");
+        Files.move(archive, bak);
       }
 
-      try {
-        // Close so we can overwrite it
-        zipFile.close();
-        zipFile = null;
-
-        // Replace old archive with temp archive
-        Files.move(
-          tmpFile.toPath(), archiveFile.toPath(),
-          StandardCopyOption.REPLACE_EXISTING
-        );
+      // Write the file
+      try (OutputStream out = openNew(archive)) {
+        writeToZip(bak, out);
       }
-      catch (IOException e) {
-        // Delete the failed temp archive
-        try {
-          Files.delete(tmpFile.toPath());
+      catch (final IOException e) {
+        // Something went wrong whilst writing
+        if (bak == null) {
+          // No original, delete bad file
+          Files.deleteIfExists(archive);
         }
-        catch (IOException de) {
-          logger.error("Failed to delete temp archive " + tmpFile, de);
+        else {
+          // Reinstate original file
+          Files.move(bak, archive);
         }
-
-        // Reopen the original archive
-        zipFile = new ZipFile(archiveFile);
 
         throw e;
       }
     }
+    catch (final IOException e) {
+      if (zipWasOpen) {
+        // Reopen the original archive
+        zipFile = new ZipFile(archive.toFile());
+      }
+      throw e;
+    }
 
     // Success if we're here, so clean up
     writeCleanup();
+
+    if (bak != null) {
+      Files.deleteIfExists(bak);
+    }
   }
 
   private void writeNewEntries(ZipOutputStream zout) throws IOException {
@@ -488,14 +503,9 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  private void writeOldEntries(ZipOutputStream zout) throws IOException {
-    if (zipFile == null) {
-      // no old entries
-      return;
-    }
-
+  private void writeOldEntries(Path oldArchive, ZipOutputStream zout) throws IOException {
     // copy unmodified entries into the archive
-    try (InputStream fin = Files.newInputStream(archiveFile.toPath());
+    try (InputStream fin = Files.newInputStream(oldArchive);
          InputStream bin = new BufferedInputStream(fin);
          ZipInputStream in = new ZipInputStream(bin)) {
       final byte[] buf = new byte[8192];
@@ -637,8 +647,8 @@ public class ZipArchive implements FileArchive {
   private synchronized void readEntries() throws IOException {
     entries.clear();
 
-    if (archiveFile.exists() && archiveFile.length() > 0) {
-      zipFile = new ZipFile(archiveFile);
+    if (Files.exists(archive) && Files.size(archive) > 0) {
+      zipFile = new ZipFile(archive.toFile());
       zipFile.stream().forEach(e -> entries.put(e.getName(), new Entry(e, null)));
     }
   }

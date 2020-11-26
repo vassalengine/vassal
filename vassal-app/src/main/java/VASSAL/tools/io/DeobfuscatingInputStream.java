@@ -17,12 +17,13 @@
  */
 package VASSAL.tools.io;
 
-import java.io.FileInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A {@link FilterInputStream} which converts a file created with
@@ -146,7 +147,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
   public static void main(String[] args) throws IOException {
     try (InputStream in = new DeobfuscatingInputStream(
-      args.length > 0 ? new FileInputStream(args[0]) : System.in)) {
+      args.length > 0 ? Files.newInputStream(Path.of(args[0])) : System.in)) {
       in.transferTo(System.out);
     }
 

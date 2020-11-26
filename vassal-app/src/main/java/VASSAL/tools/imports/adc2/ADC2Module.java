@@ -38,13 +38,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1624,7 +1622,7 @@ public class ADC2Module extends Importer {
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          InputStream bin = new BufferedInputStream(fin);
          DataInputStream in = new DataInputStream(bin)) {
       name = stripExtension(f.getName());
@@ -1737,7 +1735,7 @@ public class ADC2Module extends Importer {
         new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
       if (ipx != null) {
 
-        try (InputStream fin = new FileInputStream(ipx);
+        try (InputStream fin = Files.newInputStream(ipx.toPath());
              InputStream bin = new BufferedInputStream(fin);
              DataInputStream input = new DataInputStream(bin)) {
           try {
@@ -2377,8 +2375,7 @@ public class ADC2Module extends Importer {
             final StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
 
-            try (Reader fr = new FileReader(f, StandardCharsets.US_ASCII);
-                 BufferedReader input = new BufferedReader(fr)) {
+            try (BufferedReader input = Files.newBufferedReader(f.toPath(), StandardCharsets.US_ASCII)) {
               String line;
               do {
                 line = input.readLine();
@@ -2858,7 +2855,7 @@ public class ADC2Module extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          DataInputStream in = new DataInputStream(fin)) {
       final int header = in.readByte();
       return header == -3 || header == -2;

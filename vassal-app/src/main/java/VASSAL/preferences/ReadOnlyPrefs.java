@@ -20,10 +20,10 @@ package VASSAL.preferences;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 
 import VASSAL.Info;
@@ -46,11 +46,11 @@ public class ReadOnlyPrefs {
   }
 
   protected ReadOnlyPrefs(File file) {
-    try (InputStream fin = new FileInputStream(file);
+    try (InputStream fin = Files.newInputStream(file.toPath());
          BufferedInputStream in = new BufferedInputStream(fin)) {
       storedValues.load(in);
     }
-    catch (FileNotFoundException e) {
+    catch (NoSuchFileException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {

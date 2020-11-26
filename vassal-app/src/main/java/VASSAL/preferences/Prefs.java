@@ -20,8 +20,6 @@ package VASSAL.preferences;
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,6 +27,8 @@ import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -196,12 +196,12 @@ public class Prefs implements Closeable {
   }
 
   protected void read() {
-    try (InputStream fin = new FileInputStream(file);
+    try (InputStream fin = Files.newInputStream(file.toPath());
          InputStream in = new BufferedInputStream(fin)) {
       storedValues.clear();
       storedValues.load(in);
     }
-    catch (FileNotFoundException e) {
+    catch (NoSuchFileException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {

@@ -19,9 +19,10 @@
 package VASSAL.tools.image;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A (partial) JPEG decoder.
@@ -106,7 +107,7 @@ class JPEGDecoder {
   }
 
   public static void main(String[] args) throws IOException {
-    try (InputStream fin = new FileInputStream(args[0]);
+    try (InputStream fin = Files.newInputStream(Path.of(args[0]));
          DataInputStream in = new DataInputStream(fin)) {
       if (!JPEGDecoder.decodeSignature(in)) {
         System.out.println("Not a JPEG"); //NON-NLS

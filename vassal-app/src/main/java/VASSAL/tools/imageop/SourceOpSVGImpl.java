@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
 
       return renderer.render();
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(name, e);
     }
     catch (IOException e) {
@@ -120,7 +121,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
         // Don't wrap, just rethrow.
         throw e;
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         throw new ImageNotFoundException(name, e);
       }
       catch (IOException e) {

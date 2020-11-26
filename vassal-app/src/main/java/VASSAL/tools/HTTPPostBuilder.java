@@ -20,14 +20,14 @@ package VASSAL.tools;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Random;
 
 /**
@@ -80,7 +80,7 @@ public class HTTPPostBuilder {
    * @throws IOException in case of failure
    */
   public void setParameter(String name, File file) throws IOException {
-    try (FileInputStream in = new FileInputStream(file)) {
+    try (InputStream in = Files.newInputStream(file.toPath())) {
       setParameter(name, file.getPath(), in);
     }
   }

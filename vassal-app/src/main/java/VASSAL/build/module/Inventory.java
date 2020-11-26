@@ -28,13 +28,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -390,8 +389,7 @@ public class Inventory extends AbstractToolbarItem
   //      mapSeparator, System.getProperty("line.separator"));
 
     // Writing out a text file for the user to do whatever with. Use the native encoding.
-    try (Writer fw = new FileWriter(file, Charset.defaultCharset());
-         BufferedWriter bw = new BufferedWriter(fw);
+    try (Writer bw = Files.newBufferedWriter(file.toPath(), Charset.defaultCharset());
          PrintWriter p = new PrintWriter(bw)) {
       p.print(output);
 

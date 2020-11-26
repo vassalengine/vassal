@@ -30,13 +30,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -490,7 +488,7 @@ public class SymbolSet extends Importer {
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          InputStream bin = new BufferedInputStream(fin);
          DataInputStream in = new DataInputStream(bin)) {
       // if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
@@ -587,8 +585,7 @@ public class SymbolSet extends Importer {
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
 
-      try (Reader fr = new FileReader(sdx, StandardCharsets.US_ASCII);
-           BufferedReader input = new BufferedReader(fr)) {
+      try (BufferedReader input = Files.newBufferedReader(sdx.toPath(), StandardCharsets.US_ASCII)) {
 
         final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
 
@@ -634,7 +631,7 @@ public class SymbolSet extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          DataInputStream in = new DataInputStream(fin)) {
       return in.readUnsignedByte() >= 0xFA;
     }

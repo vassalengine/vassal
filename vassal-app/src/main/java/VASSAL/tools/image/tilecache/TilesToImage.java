@@ -23,8 +23,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,6 +113,6 @@ public class TilesToImage {
     }
 
     // write the cobbled image
-    ImageIO.write(img, "PNG", new FileOutputStream(dpath)); //NON-NLS
+    ImageIO.write(img, "PNG", Files.newOutputStream(Path.of(dpath))); //NON-NLS
   }
 }

@@ -26,11 +26,12 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.PermissionCollection;
@@ -152,12 +153,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     try {
       return getInputStream(imageDir + fileName);
     }
-    catch (FileNotFoundException ignored) {
+    catch (FileNotFoundException | NoSuchFileException ignored) {
     }
     try {
       return getInputStream(imageDir + fileName + ".gif"); //NON-NLS
     }
-    catch (FileNotFoundException ignored) {
+    catch (FileNotFoundException | NoSuchFileException ignored) {
     }
 
     final InputStream in =
@@ -247,7 +248,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       try {
         return ext.getInputStream(fileName);
       }
-      catch (FileNotFoundException ignored) {
+      catch (FileNotFoundException | NoSuchFileException ignored) {
         // not found in this extension, try the next
       }
     }
@@ -295,7 +296,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       try {
         return ext.getURL(fileName);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         // not found in this extension, try the next
       }
     }
@@ -726,7 +727,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         return zip.getInputStream(zip.getEntry(file));
       }
       else {
-        return new FileInputStream(new File(dir, file));
+        return Files.newInputStream(dir.toPath().resolve(file));
       }
     }
     catch (IOException e) {
