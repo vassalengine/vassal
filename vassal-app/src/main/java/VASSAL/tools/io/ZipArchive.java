@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -469,7 +470,7 @@ public class ZipArchive implements FileArchive {
         }
         else {
           // Reinstate original file
-          Files.move(bak, archive);
+          Files.move(bak, archive, StandardCopyOption.REPLACE_EXISTING);
         }
 
         throw e;
