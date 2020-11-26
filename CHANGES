@@ -1,5 +1,7 @@
 3.5.0-beta1 - ???
 
+* 13741: DataArchive.getImageNames() incorrectly returns an empty string if
+    images/ has an entry in the ZIP archive
 * 13706: Console, for entering commands to affect errorlog, properties, etc.
 * 13675: Piece Slots shouldn't be allowed at very top level of Piece Palette
 * 13661: Simplified ZIP archive writing and error reporting
