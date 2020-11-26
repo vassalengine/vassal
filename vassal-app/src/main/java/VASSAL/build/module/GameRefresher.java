@@ -130,7 +130,7 @@ public final class GameRefresher implements GameComponent {
   public void log(String message) {
     // ex for dialog msg dialog.addMessage(Resources.getString("GameRefresher.counters_refreshed_test", updatedCount));
     // Log to chatter
-      GameModule.getGameModule().warn(message);
+    GameModule.getGameModule().warn(message);
     //msg.append(new Chatter.DisplayText(chatter, message));
     logger.info(message);
   }
@@ -144,7 +144,6 @@ public final class GameRefresher implements GameComponent {
     for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
       if (piece instanceof Deck) {
         for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
-          final GamePiece iPiece = i.next();
           totalCount++;
           pieces.add(0, i.next());
         }
