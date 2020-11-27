@@ -552,11 +552,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     @Override
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
-        buildDimensions();
+        synchronized (this) {
+          buildDimensions();
 
-        // ensure that our area is nonempty
-        if (size.width <= 0 || size.height <= 0) {
-          size.width = size.height = 1;
+          // ensure that our area is nonempty
+          if (size.width <= 0 || size.height <= 0) {
+            size.width = size.height = 1;
+          }
         }
       }
     }

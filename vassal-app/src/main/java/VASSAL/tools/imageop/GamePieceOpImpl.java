@@ -100,9 +100,11 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   /** {@inheritDoc} */
   @Override
   protected void fixSize() {
-    size = piece.boundingBox().getSize();
-    if (size.width < 1) size.width = 1;
-    if (size.height < 1) size.height = 1;
+    synchronized (this) {
+      size = piece.boundingBox().getSize();
+      if (size.width < 1) size.width = 1;
+      if (size.height < 1) size.height = 1;
+    }
   }
 
   /**
