@@ -80,6 +80,7 @@ public final class GameRefresher implements GameComponent {
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker  gpIdChecker;
+  private List<GamePiece> pieces;
   private RefreshDialog dialog;
 //  private boolean testMode;
 //  private boolean useLabelerName;
@@ -118,7 +119,6 @@ public final class GameRefresher implements GameComponent {
 
   public boolean isTestMode() {
     return options.contains("TestMode"); //$NON-NLS-1$
-    //return testMode;
   }
 
   public void start() {
@@ -205,7 +205,7 @@ public final class GameRefresher implements GameComponent {
    * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
-  public void execute(Set<String> options, List<GamePiece> pieces, Command command) throws IllegalBuildException {
+  public void execute(Set<String> options, Command command) throws IllegalBuildException {
     if (command == null) {
       command = new NullCommand();
     }
@@ -219,30 +219,30 @@ public final class GameRefresher implements GameComponent {
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
      */
-    gpIdChecker = new GpIdChecker(options);
-    for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
-      gpIdChecker.add(slot);
-    }
+    if (Objects.isNull(gpIdChecker)) { //Only setup gpIdChecker once and keep it in the instance of GameRefresher.
+      gpIdChecker = new GpIdChecker(options);
+      for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+        gpIdChecker.add(slot);
+      }
 
-    // Add any PieceSlots in Prototype Definitions
-    for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
-      pc.getDefinitions().forEach(gpIdChecker::add);
-    }
+      // Add any PieceSlots in Prototype Definitions
+      for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+        pc.getDefinitions().forEach(gpIdChecker::add);
+      }
 
-    if (gpIdChecker.hasErrors()) {
-      // Any errors should have been resolved by the GpId check at startup, so
-      // this error indicates
-      // a bug in GpIdChecker.fixErrors().
-      gpIdChecker = null;
-      throw new IllegalBuildException("GameRefresher.execute: gpIdChecker has errors"); //$NON-NLS-1$
+      if (gpIdChecker.hasErrors()) {
+        // Any errors should have been resolved by the GpId check at startup, so
+        // this error indicates
+        // a bug in GpIdChecker.fixErrors().
+        gpIdChecker = null;
+        throw new IllegalBuildException("GameRefresher.execute: gpIdChecker has errors"); //$NON-NLS-1$
+      }
     }
 
     /*
-     * 2. If we haven't been given a list of pieces, we use the default
+     * 2. Collect the game pieces
      */
-    if (Objects.isNull(pieces)) {
-      pieces = getCurrentGameRefresherPieces();
-    }
+    final List<GamePiece> pieces = getCurrentGameRefresherPieces();
 
     /*
      * 3. Generate the commands to update the pieces
@@ -256,7 +256,6 @@ public final class GameRefresher implements GameComponent {
     log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
     log("----------"); //$NON-NLS-1$
 
-    gpIdChecker = null;
   }
 
   private void processGamePiece(GamePiece piece, Command command) {
@@ -454,7 +453,7 @@ public final class GameRefresher implements GameComponent {
 //FIXME list options in chetter for opponents to see
 
       }
-      refresher.execute(options, null, command);
+      refresher.execute(options, command);
 
       // Send the update to other clients (only done in Player mode)
       g.sendAndLog(command);
