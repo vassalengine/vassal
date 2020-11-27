@@ -229,11 +229,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   private static void buildAlphaModel() {
     alphaModel = new DefaultListModel<>();
-
-    for (final GamePiece piece : alphaMap.values()) {
-      alphaModel.addElement(piece);
-    }
-
+    alphaMap.values().forEach(p -> alphaModel.addElement(p));
   }
 
   /**
