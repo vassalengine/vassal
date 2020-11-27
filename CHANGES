@@ -45,6 +45,7 @@
 *  4779: Comparison operator >= incorrectly documented as =>
 *  1907: Suggest default filename extensions
 *  1868: Method for removing unused images from modules
+*  1826: Aesthetic improvements to dialogs
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
