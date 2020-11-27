@@ -77,14 +77,12 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
-      synchronized (this) {
-        size = sop.getSize();
-
+      final Dimension s = sop.getSize();
+      if (angle == 1 || angle == 3) {
         // transpose dimensions for 90- and 270-degree rotations
-        if (angle == 1 || angle == 3) {
-          size.setSize(size.height, size.width);
-        }
+        s.setSize(s.height, s.width);
       }
+      size = s;
     }
   }
 
