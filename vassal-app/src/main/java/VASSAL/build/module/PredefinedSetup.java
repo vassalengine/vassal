@@ -28,6 +28,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -40,8 +41,9 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -64,7 +66,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
   protected AbstractAction launchAction;
-  private final List<String> refresherOptions = new ArrayList<>();
+  private final Set<String> refresherOptions = new HashSet<>();
 
   public PredefinedSetup() {
     launchAction = new AbstractAction() {
@@ -86,14 +88,14 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   }
 
-  protected void  setRefresherOptions() {
-/*    if (nameCheck.isSelected()) {
+ /*  protected void  setRefresherOptions() {
+   if (nameCheck.isSelected()) {
       refresherOptions.add("useName");
     }
     if (labelerNameCheck.isSelected()) {
       refresherOptions.add("useLabelerName");
-    }*/
-  }
+    }
+  }*/
 
 
   @Override
@@ -265,7 +267,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
 
-  public void refresh(List<String> options) throws IOException, IllegalBuildException {
+  public void refresh(Set<String> options) throws IOException, IllegalBuildException {
     if (!options.isEmpty()) {
       this.refresherOptions.addAll(options);
     }
@@ -274,29 +276,27 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     final GameRefresher gameRefresher = new GameRefresher(mod);
 
     // since we're going to block the GUI, let's give some feedback
-    final Chatter chatter = mod.getChatter();
-    final Command msg = new Chatter.DisplayText(chatter, "----------"); //NON-NLS
-    msg.append(new Chatter.DisplayText(chatter, "Updating Predefined Setup: " + fileName));  //NON-NLS
-    msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
-    msg.execute();
+    gameRefresher.log("----------"); //$NON-NLS-1$
+    gameRefresher.log("Updating Predefined Setup: " + this.getAttributeValueString(this.NAME) + " ( " + fileName + ")"); //$NON-NLS-1$S
 
     // get a stream to the saved game in the module file
-    gs.setup(true, true);
+    gs.setupRefresh();
     gs.loadGameInForeground(fileName, getSavedGameContents());
 
     // call the gameRefresher
-    gameRefresher.execute(refresherOptions, null);
+    gameRefresher.execute(refresherOptions, null, null);
 
     // save the refreshed game into a temporary file
-    final File tmp = File.createTempFile("vassal", null);
-    tmp.delete();
-    gs.saveGame(tmp);
+    final File tmpFile = File.createTempFile("vassal", null);
+    final ZipArchive tmpZip = new ZipArchive(tmpFile);
+    gs.saveGameRefresh(tmpZip);
     gs.updateDone();
 
     // write the updated saved game file into the module file
     final ArchiveWriter aw = mod.getArchiveWriter();
     aw.removeFile(fileName);
-    aw.addFile(tmp.getPath(), fileName);
+    aw.addFile(tmpZip.getFile().getPath(), fileName);
+    gs.closeGame();
   }
 
 

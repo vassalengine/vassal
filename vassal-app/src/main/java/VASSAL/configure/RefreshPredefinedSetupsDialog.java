@@ -23,6 +23,8 @@ import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -35,15 +37,18 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
+  private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
   private JButton refreshButton;
   private JCheckBox nameCheck;
   private JCheckBox labelerNameCheck;
   private JCheckBox testModeOn;
-  private final List<String> options = new ArrayList<>();
+  private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
     super(owner, false);
@@ -82,8 +87,6 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     add(nameCheck);
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
     add(labelerNameCheck);
-    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
-    add(labelerNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     add(testModeOn);
     pack();
@@ -91,6 +94,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   protected void  setOptions() {
+    options.clear();
     if (nameCheck.isSelected()) {
       options.add("UseName");
     }
@@ -102,19 +106,41 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
   }
 
+  public void log(String message) {
+    GameModule.getGameModule().warn(message);
+    logger.info(message);
+  }
+
+  public boolean isTestMode() {
+    return options.contains("TestMode"); //$NON-NLS-1$
+  }
+
   private void refreshPredefinedSetups() {
     refreshButton.setEnabled(false);
-
+    setOptions();
+    if (isTestMode()) {
+      log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
+    }
     final GameModule mod = GameModule.getGameModule();
-    // final List<PredefinedSetup> pdsList = new ArrayList<>();
-    for (final PredefinedSetup pds : mod.getAllDescendantComponentsOf(PredefinedSetup.class)) {
-      if (!pds.isMenu()) {
-        try {
-          pds.refresh(options);
-        }
-        catch (final IOException e) {
-          ErrorDialog.bug(e);
-        }
+    final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
+    final List<PredefinedSetup>  modulePds = new ArrayList<>();
+    for (final PredefinedSetup pds : modulePdsAndMenus) {
+      if (!pds.isMenu() && pds.isUseFile()) {
+        //Exclude scenario folders (isMenu == true)
+        // and exclude any "New game" entries (no predefined setup) (isUseFile == true)
+        modulePds.add(pds);
+      }
+    }
+    log(modulePds.size() + " Predefined setups found");
+    for (final PredefinedSetup pds : modulePds) {
+      log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
+    }
+    for (final PredefinedSetup pds : modulePds) {
+      try {
+        pds.refresh(options);
+      }
+      catch (final IOException e) {
+        ErrorDialog.bug(e);
       }
     }
     refreshButton.setEnabled(true);

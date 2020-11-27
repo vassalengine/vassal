@@ -19,10 +19,13 @@ package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
@@ -45,13 +48,13 @@ public class GpIdChecker {
 
   protected GpIdSupport gpIdSupport;
   protected int maxId;
-//  protected boolean useName = false;
+  //  protected boolean useName = false;
 //  protected boolean useLabelerName = false;
   protected boolean extensionsLoaded = false;
   final Map<String, SlotElement> goodSlots = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
-  private final List<String> refresherOptions = new ArrayList<>();
+  private final Set<String> refresherOptions = new HashSet<>();
 
   public GpIdChecker() {
     this((GpIdSupport) null);
@@ -63,7 +66,7 @@ public class GpIdChecker {
   }
 
   // This constructor is used by the GameRefresher to refresh a game with extensions possibly loaded
-  public GpIdChecker(List<String> options) {
+  public GpIdChecker(Set<String> options) {
     this();
 //    this.useName = useName;
 //    this.useLabelerName = useLabelerName;
