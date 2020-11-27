@@ -581,8 +581,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       result.add("-cp"); //NON-NLS
       result.add(System.getProperty("java.class.path"));
 
-      if (SystemUtils.IS_OS_MAC_OSX) {
-        // set the MacOS X dock parameters
+      if (SystemUtils.IS_OS_MAC) {
+        // set the MacOS dock parameters
 
         // use the module name for the dock if we found a module name
 // FIXME: should "Unnamed module" be localized?

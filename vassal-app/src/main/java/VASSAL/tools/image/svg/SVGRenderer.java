@@ -202,7 +202,7 @@ public class SVGRenderer {
                              String uri,
                              TranscoderOutput output)
                              throws TranscoderException {
-      if (SystemUtils.IS_OS_MAC_OSX) {
+      if (SystemUtils.IS_OS_MAC) {
         final Element g = document.createElementNS(
           SVGDOMImplementation.SVG_NAMESPACE_URI, "g" //NON-NLS
         );

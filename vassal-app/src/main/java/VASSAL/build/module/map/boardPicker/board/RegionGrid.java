@@ -495,7 +495,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       canButton.addActionListener(e -> doCancel());
       buttonPanel.add(canButton);
 
-      final JLabel mess = new JLabel(SystemUtils.IS_OS_MAC_OSX ? Resources.getString("Editor.IrregularGrid.drag_and_drop_mac") : Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
+      final JLabel mess = new JLabel(SystemUtils.IS_OS_MAC ? Resources.getString("Editor.IrregularGrid.drag_and_drop_mac") : Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
       mess.setAlignmentY(CENTER_ALIGNMENT);
       bottomPanel.add(mess);
       bottomPanel.add(buttonPanel);

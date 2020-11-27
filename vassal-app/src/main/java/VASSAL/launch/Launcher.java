@@ -102,7 +102,7 @@ public abstract class Launcher {
 */
 
     // start the error log and setup system properties
-    final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
+    final StartUp start = SystemUtils.IS_OS_MAC ?
       new MacOSXStartUp() : new StartUp();
 
     start.startErrorLog();

@@ -305,7 +305,7 @@ To make them more memorable, when assigning keyboard shortcuts, use key combinat
 Use these guidelines when assigning keyboard shortcuts.
 
 * Avoid using keyboard shortcuts that players could type inadvertently. For example, a single capital letter M would not be a suitable shortcut, nor would Shift-M, because players could easily type either in the Chat window during ordinary conversation. However, Ctrl-M or Ctrl-Shift-M would both be suitable.
-* Be careful about assigning hotkeys to keys that invoke special functions on your computer. Caps Lock, Backspace, Delete, Home, End, Enter/Return, and so on, are not generally suitable for use as hotkeys. Similarly, the Function (F1-F9) keys at the top of a standard keyboard may serve as hotkeys for various Windows or Mac OS X functions, and pressing them could cause unexpected operating system functions to be invoked instead of the desired piece command.
+* Be careful about assigning hotkeys to keys that invoke special functions on your computer. Caps Lock, Backspace, Delete, Home, End, Enter/Return, and so on, are not generally suitable for use as hotkeys. Similarly, the Function (F1-F9) keys at the top of a standard keyboard may serve as hotkeys for various Windows or MacOS functions, and pressing them could cause unexpected operating system functions to be invoked instead of the desired piece command.
 
 _*Modifying Toolbar Buttons*_
 

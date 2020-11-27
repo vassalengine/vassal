@@ -72,7 +72,7 @@ public abstract class FileChooser {
    */
   public static FileChooser createFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
     final FileChooser fc;
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       // Mac has a good native file dialog
       System.setProperty("apple.awt.fileDialogForDirectories", String.valueOf(mode == DIRECTORIES_ONLY));
       fc = new NativeFileChooser(parent, prefs, mode);

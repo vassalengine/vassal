@@ -277,7 +277,7 @@ public class GlobalOptions extends AbstractConfigurable {
       Boolean.FALSE);
     macLegacyConf.addPropertyChangeListener(evt -> setPrefMacLegacy(macLegacyConf.getValueBoolean()));
 
-    if (!FORCE_MAC_LEGACY && SystemUtils.IS_OS_MAC_OSX) {
+    if (!FORCE_MAC_LEGACY && SystemUtils.IS_OS_MAC) {
       // Only need to *display* this preference if we're running on a Mac.
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
