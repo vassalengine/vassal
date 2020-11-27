@@ -82,6 +82,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
         // transpose dimensions for 90- and 270-degree rotations
         s.setSize(s.height, s.width);
       }
+      // assigning to size is atomic
       size = s;
     }
   }

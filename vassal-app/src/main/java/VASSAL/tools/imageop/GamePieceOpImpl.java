@@ -103,6 +103,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     final Dimension s = piece.boundingBox().getSize();
     if (s.width < 1) s.width = 1;
     if (s.height < 1) s.height = 1;
+    // assinging to size is atomic
     size = s;
   }
 
