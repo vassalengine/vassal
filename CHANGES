@@ -1,5 +1,6 @@
 3.5.0-beta2 - ???
 
+* 13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out
 * 13760: Upgrade bundled Java to 15.0.1+9
 
 3.5.0-beta1 - 27 November 2020
