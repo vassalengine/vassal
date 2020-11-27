@@ -45,7 +45,7 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Color;
@@ -54,7 +54,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
@@ -85,7 +84,7 @@ import org.w3c.dom.Element;
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid"; //NON-NLS
   private static final int DEFAULT_SIZE = 64;
-  private static final BufferedImage noImage = ImageUtils.createViewableNullImage(DEFAULT_SIZE, DEFAULT_SIZE);
+  private static final BufferedImage noImage = LabelUtils.noImageBoxImage(DEFAULT_SIZE, DEFAULT_SIZE, 1.0);
 
   protected GamePiece c;
   protected GamePiece expanded;
@@ -258,7 +257,13 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     if (getExpandedPiece() == null ||  getExpandedPiece().boundingBox().width == 0) {
       // No image, draw a visible placeholder
-      g2d.drawImage(getNullImage(), 0, 0, null);
+      final BufferedImage noimg = getNullImage(os_scale);
+      g2d.drawImage(
+        noimg,
+        (size.width - noimg.getWidth()) / 2,
+        (size.height - noimg.getHeight()) / 2,
+        null
+      );
     }
     else {
       // We apply both our os_scale and our module-specified scale as factors
@@ -275,20 +280,28 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     g2d.setTransform(orig_t);
   }
 
-  private Image getNullImage() {
-    return noImage;
+  private BufferedImage getNullImage(double scale) {
+    return scale == 1.0 ? noImage :
+      LabelUtils.noImageBoxImage(
+        (int)(DEFAULT_SIZE * scale),
+        (int)(DEFAULT_SIZE * scale),
+        scale
+      );
   }
 
   public Dimension getPreferredSize() {
     // Preferred size is affected by our module-specified scale
     if (c != null) {
       final Dimension bound = c.boundingBox().getSize();
-      bound.width = (int) ((double) (bound.width == 0 ? getNullImage().getWidth(null) : bound.width) * getScale());
-      bound.height = (int) ((double) (bound.height == 0 ? getNullImage().getHeight(null) : bound.height) * getScale());
+      bound.width = (int) ((bound.width == 0 ? getNullImage(1.0).getWidth() : bound.width) * getScale());
+      bound.height = (int) ((bound.height == 0 ? getNullImage(1.0).getHeight() : bound.height) * getScale());
       return bound;
     }
     else {
-      return new Dimension((int) ((double) getNullImage().getWidth(null) * getScale()), (int) ((double) getNullImage().getHeight(null) * getScale()));
+      return new Dimension(
+        (int) (getNullImage(1.0).getWidth() * getScale()),
+        (int) (getNullImage(1.0).getHeight() * getScale())
+      );
     }
   }
 

@@ -18,12 +18,7 @@
 
 package VASSAL.tools.image;
 
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.swing.SwingUtils;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -38,7 +33,6 @@ import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -46,10 +40,10 @@ import javax.swing.ImageIcon;
 import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
+import VASSAL.tools.ProblemDialog;
 
 public class ImageUtils {
   private ImageUtils() {
-
   }
 
   // FIXME: We should fix this, eventually.
@@ -61,18 +55,12 @@ public class ImageUtils {
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  private static final Map<RenderingHints.Key, Object> defaultHints =
-    new HashMap<>();
-
-  static {
-    // Initialise Image prefs prior to Preferences being read.
-
-    // set up map for creating default RenderingHints
-    defaultHints.put(RenderingHints.KEY_INTERPOLATION,
-                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-    defaultHints.put(RenderingHints.KEY_ANTIALIASING,
-                     RenderingHints.VALUE_ANTIALIAS_ON);
-  }
+  private static final Map<RenderingHints.Key, Object> defaultHints = Map.of(
+    RenderingHints.KEY_INTERPOLATION,
+    RenderingHints.VALUE_INTERPOLATION_BILINEAR,
+    RenderingHints.KEY_ANTIALIASING,
+    RenderingHints.VALUE_ANTIALIAS_ON
+  );
 
   /** @deprecated All scaling is done with the high-quality scaler now. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
@@ -468,62 +456,5 @@ public class ImageUtils {
       }
     }
     return name;
-  }
-
-  /**
-   * Create a viewable representation of a null or empty image to
-   * use as a place holder in Configurers.
-   *
-   * The image will contain the translated text for the key
-   * Editor.ImageUtils.no_image
-   *
-   * @return Viewable null image
-   */
-  public static BufferedImage createViewableNullImage() {
-    return createViewableNullImage(64, 64);
-  }
-
-  /**
-   * Create a viewable representation of a null or empty image to
-   * use as a place holder in Configurers.
-   * *
-   * The image will contain the translated text for the key
-   * Editor.ImageUtils.no_image
-   *
-   * @param minWidth Minimum width for generated the image
-   * @param height   Height of the generated image
-   * @return Viewable null image
-   */
-  public static BufferedImage createViewableNullImage(int minWidth, int height) {
-
-    final int FONT_SIZE = 12;
-    final Font FONT = new Font(Font.DIALOG, Font.ITALIC, FONT_SIZE);
-
-    // Determine the size of the translated string
-    final String s = Resources.getString("Editor.ImageUtils.no_image");
-    BufferedImage image = createCompatibleImage(minWidth, height);
-    Graphics2D g2d = (Graphics2D) image.getGraphics();
-    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-    g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-    g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-    final int stringWidth = g2d.getFontMetrics().stringWidth(s);
-    final int imageWidth = Math.max(minWidth, stringWidth + 20);
-    g2d.dispose();
-
-    // Create a new image large enough to hold the string comfortably
-    image = createCompatibleImage(imageWidth, height);
-    g2d = (Graphics2D) image.getGraphics();
-    g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-    g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-    g2d.setColor(Color.white);
-    g2d.fillRect(0, 0, imageWidth - 1, height - 1);
-    g2d.setColor(Color.black);
-    g2d.drawRect(0, 0, imageWidth - 1, height - 1);
-
-    g2d.drawString(s, imageWidth / 2 - stringWidth / 2 - 1, height / 2 + 4);
-
-    g2d.dispose();
-
-    return image;
   }
 }

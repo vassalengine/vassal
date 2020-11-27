@@ -33,7 +33,7 @@ import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.BorderLayout;
@@ -137,7 +137,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private final Prefs prefs;
 
   // A Configurer to hold the users preferred maximum split size
-  private static final int MINIMUM_SPLIT_SIZE = ImageUtils.createViewableNullImage().getWidth(null);
+  private static final int MINIMUM_SPLIT_SIZE = LabelUtils.noImageBoxImage().getWidth();
   private static final int DEFAULT_MAX_SPLIT = 256;
   private boolean splitDragInProgress = false;
 
@@ -229,11 +229,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   private static void buildAlphaModel() {
     alphaModel = new DefaultListModel<>();
-
-    for (final GamePiece piece : alphaMap.values()) {
-      alphaModel.addElement(piece);
-    }
-
+    alphaMap.values().forEach(p -> alphaModel.addElement(p));
   }
 
   /**
