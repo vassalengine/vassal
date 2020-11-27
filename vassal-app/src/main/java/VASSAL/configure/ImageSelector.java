@@ -20,7 +20,8 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
-import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
+import VASSAL.tools.image.MultiResolutionRenderedImage;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 
@@ -89,7 +90,6 @@ public class ImageSelector extends Configurer implements ItemListener {
   public ImageSelector(String val) {
     this(null, "", val);
   }
-
 
   @Override
   public String getValueString() {
@@ -197,9 +197,12 @@ public class ImageSelector extends Configurer implements ItemListener {
 
   private Icon getNoImageIcon() {
     if (noImage == null) {
-      noImage = new ImageIcon(ImageUtils.createViewableNullImage());
+      noImage = new ImageIcon(new MultiResolutionRenderedImage(
+        DEFAULT_SIZE,
+        DEFAULT_SIZE,
+        LabelUtils::noImageBoxImage
+      ));
     }
     return noImage;
   }
-
 }

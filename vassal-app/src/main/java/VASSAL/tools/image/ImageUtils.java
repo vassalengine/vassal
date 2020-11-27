@@ -18,9 +18,7 @@
 
 package VASSAL.tools.image;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
@@ -40,11 +38,9 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 import VASSAL.Info;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.swing.SwingUtils;
 
 public class ImageUtils {
   private ImageUtils() {
@@ -460,60 +456,5 @@ public class ImageUtils {
       }
     }
     return name;
-  }
-
-  /**
-   * Create a viewable representation of a null or empty image to
-   * use as a place holder in Configurers.
-   *
-   * The image will contain the translated text for the key
-   * Editor.ImageUtils.no_image
-   *
-   * @return Viewable null image
-   */
-  public static BufferedImage createViewableNullImage() {
-    return createViewableNullImage(64, 64);
-  }
-
-  /**
-   * Create a viewable representation of a null or empty image to
-   * use as a place holder in Configurers.
-   * *
-   * The image will contain the translated text for the key
-   * Editor.ImageUtils.no_image
-   *
-   * @param minWidth Minimum width for generated the image
-   * @param height   Height of the generated image
-   * @return Viewable null image
-   */
-  public static BufferedImage createViewableNullImage(int minWidth, int height) {
-    final int FONT_SIZE = 12;
-    final Font FONT = new Font(Font.DIALOG, Font.ITALIC, FONT_SIZE);
-
-    // Determine the size of the translated string
-    final String s = Resources.getString("Editor.ImageUtils.no_image");
-    Graphics2D g2d = (Graphics2D) NULL_IMAGE.getGraphics();
-    final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
-    g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-    g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-    final int stringWidth = g2d.getFontMetrics().stringWidth(s);
-    final int imageWidth = Math.max(minWidth, stringWidth + 20);
-    g2d.dispose();
-
-    // Create a new image large enough to hold the string comfortably
-    final BufferedImage image = createCompatibleImage(imageWidth, height);
-    g2d = (Graphics2D) image.getGraphics();
-    g2d.addRenderingHints(SwingUtils.FONT_HINTS);
-    g2d.setFont(FONT.deriveFont((float)(FONT.getSize() * os_scale)));
-    g2d.setColor(Color.white);
-    g2d.fillRect(0, 0, imageWidth - 1, height - 1);
-    g2d.setColor(Color.black);
-    g2d.drawRect(0, 0, imageWidth - 1, height - 1);
-
-    g2d.drawString(s, imageWidth / 2 - stringWidth / 2 - 1, height / 2 + 4);
-
-    g2d.dispose();
-
-    return image;
   }
 }
