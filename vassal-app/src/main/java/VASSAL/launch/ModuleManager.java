@@ -164,7 +164,7 @@ public class ModuleManager {
 
         // Note: We purposely keep lout open in the case where we are the
         // server, because closing lout will release the lock.
-        final FileChannel lout = FileChannel.open(lockfile.toPath(), StandardOpenOption.WRITE);
+        final FileChannel lout = FileChannel.open(lockfile.toPath(), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
         final FileLock lock = tryLock(lout);
 
         if (lock != null) {
