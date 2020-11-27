@@ -52,7 +52,7 @@ public class MemoryUtilsTest {
     assertEquals(eRAM, MemoryUtils.getPhysicalMemory() >> 10);
   }
 
-// FIXME: how to get RAM on Mac OS X?
+// FIXME: how to get RAM on MacOS?
   @Ignore
   @Test
   public void testGetPhysicalMemoryMacOSX() {

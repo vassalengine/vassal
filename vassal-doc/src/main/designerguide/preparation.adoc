@@ -20,7 +20,7 @@ VASSAL is also an excellent platform on which to playtest new game designs. A ga
 
 *Live and PBEM Games:* One advantage VASSAL has over many Internet board game applications is its support of live play. You can log into the VASSAL server and play opponents in real time. In addition, VASSAL can also be used for Play by Email (PBEM) games. You can even switch between the two for the same game. There are no differences in design between modules played by email and modules played live, although some features may improve game play for one style or the other.
 
-*Platforms Supported:* VASSAL games can be played on Windows, Mac OS X and Linux platforms. Further, because of VASSALʼs Java architecture, players on different platforms can play against one another without regard to platform. If you have a Mac, and a friend runs Windows, you can play any module against one another.
+*Platforms Supported:* VASSAL games can be played on Windows, MacOS and Linux platforms. Further, because of VASSALʼs Java architecture, players on different platforms can play against one another without regard to platform. If you have a Mac, and a friend runs Windows, you can play any module against one another.
 
 *Scoping a Game*
 

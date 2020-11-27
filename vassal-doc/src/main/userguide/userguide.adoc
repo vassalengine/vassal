@@ -37,7 +37,7 @@ Vassal supports many types of games, including war games, hobby games, card game
 You can play live on the Vassal Server or a peer-to-peer connection, play by email, or play offline in hotseat or solitaire modes.
 There are currently several hundred Vassal game modules available for free, and more are being created all the time.
 
-Vassal is supported on Windows, Mac OS X, Linux, and other platforms.
+Vassal is supported on Windows, MacOS, Linux, and other platforms.
 Thanks to Vassal's Java architecture, players on different platforms can play each other without regard to operating system.
 
 Vassal was originally created in 1999 by Rodney Kinney.
@@ -58,19 +58,19 @@ The latest version of Vassal is version {project-version}, released on {docdate}
 Vassal {project-version} is supported on the following platforms:
 
 * _Windows:_ Windows 7, 8 and 10.
-* _Mac OS X:_ Version 10.4 or later (Tiger).
+* _MacOS:_ Version 10.4 or later (Tiger).
 * _Linux:_ Any distribution.
 * _Other platforms_: Vassal {project-version} is supported on any platform which has a suitable version of Java installed. For example, Vassal could be installed on a memory stick and be used on multiple platforms.
 
 ==== Downloading Vassal
 
 You can freely download Vassal {project-version} from the https://github.com/vassalengine/vassal/releases/tag/{project-version}[[.underline]#Vassal GitHub project#] (https://github.com/vassalengine/).
-Vassal installation files are available for Windows, Mac OS X, Linux, as well as other platforms which support Java.
+Vassal installation files are available for Windows, MacOS, Linux, as well as other platforms which support Java.
 Select the correct download for your platform.
 
 * _Windows 32bit:_ VASSAL-{project-version}-windows-32.exe
 * _Windows 64bit:_ VASSAL-{project-version}-windows-64.exe
-* _Mac OS X:_ VASSAL-{project-version}-macosx.dmg
+* _MacOS:_ VASSAL-{project-version}-macos.dmg
 * _Linux:_ VASSAL-{project-version}-linux.tar.bz2
 * _Other platforms:_ VASSAL-{project-version}-other.zip
 
@@ -83,9 +83,9 @@ To install on Windows:
 . Double-click VASSAL-{project-version}-windows.exe.
 . Follow the prompts to install the application.
 
-To install on Mac OS X:
+To install on MacOS:
 
-. Double-click VASSAL-{project-version}-macosx.dmg.
+. Double-click VASSAL-{project-version}-macos.dmg.
 . Drag the Vassal {project-version} icon to your *Applications* folder.
 
 To install on Linux:
@@ -165,7 +165,7 @@ If you are having tearing on maps, and are not running on Windows (or if you hav
 After the first time you run one of these builds, there will be a file called `vassal.vmoptions` in VASSAL's config directory where you can add VM flags for the Player, one per line.
 
 * Linux: `~/.VASSAL/vassal.vmoptions`
-* Mac OS X: `~/Library/Application Support/VASSAL/vassal.vmoptions`
+* MacOS: `~/Library/Application Support/VASSAL/vassal.vmoptions`
 * Windows: `C:\Users\<username>\AppData\Roaming\VASSAL\vassal.vmoptions`
 
 Try these two lines, in order, one at a time:
@@ -223,7 +223,7 @@ image:image2.jpeg[image,width=663,height=149]
 
 *Figure 1: The Module Manager window, showing the Module Library and Server Status panes*
 
-Alternatively,if a module has .vmod as a suffix, on both Windows and Mac OS X, you can double-click a module to launch Vassal.
+Alternatively,if a module has .vmod as a suffix, on both Windows and MacOS, you can double-click a module to launch Vassal.
 
 ==== The Module Manager
 
@@ -487,7 +487,7 @@ You will need to reset it again if you wish to connect to the Vassal Server in t
 To reset your default connection for peer-to-peer,
 
 . Make sure you are disconnected from the Vassal Server.
-. Click *File > Preferences,* and then click *Server* (on Mac OS X, click Application *> Preferences > Server*).
+. Click *File > Preferences,* and then click *Server* (on MacOS, click Application *> Preferences > Server*).
 . Choose *Direct peer-to-peer*, then click *OK*.
 
 ==== Launching a Game
@@ -793,7 +793,7 @@ A selected piece displays a border to spotlight it.
 You can select multiple pieces by holding the mouse button down and dragging a box around the desired pieces with your mouse cursor.
 
 Alternatively, you can select individual pieces from a group by shift-clicking each desired piece with your mouse.
-You can also deselect pieces from a group by holding down the ALT (or, on Mac OS X, the Option key) while clicking on the pieces to be removed from selection.
+You can also deselect pieces from a group by holding down the ALT (or, on MacOS, the Option key) while clicking on the pieces to be removed from selection.
 
 ==== Command Menus
 
@@ -931,7 +931,7 @@ Module Manager Preferences affect the appearance and behavior of the Module Mana
 
 To set your preferences in the Module Manager,
 
-. In the Module Manager, on the *File* menu (or, on Mac OS X, the Application menu), click *Preferences*.
+. In the Module Manager, on the *File* menu (or, on MacOS, the Application menu), click *Preferences*.
 . Set your preferences as desired, and then click *OK*.
 
 ===== General Preferences
@@ -952,7 +952,7 @@ Vassal Player preferences affect the appearance and behavior of the current modu
 To set your preferences in the Vassal Player,
 
 . Open a module in Vassal.
-. On the *File* menu (or, on Mac OS X, the Application menu), click *Preferences*.
+. On the *File* menu (or, on MacOS, the Application menu), click *Preferences*.
 . Set your preferences as desired, and then click *OK*.
 
 ===== General
@@ -1104,7 +1104,7 @@ I downloaded a module, but when I go to run it, it keeps unzipping and the game 
 This may be an issue with the module package.
 A module is actually a ZIP file, a compressed file containing all the necessary components for a particular game.
 Modules generally have the suffix .vmod (for example, game.vmod.) However, some older modules use the suffix .mod or even .zip. +
-*File Associations:* On Windows and Mac OS X with proper file associations, double-clicking on a .vmod file will launch Vassal.
+*File Associations:* On Windows and MacOS with proper file associations, double-clicking on a .vmod file will launch Vassal.
 Consult your system's documentation for instructions on how to set your file associations to associate .vmod files with Vassal.
 * On some systems, the suffix .mod is sometimes associated with MP3 play lists or MPEG files.
 Double-clicking on a .mod file may launch your MP3 player or similar application.
@@ -1113,7 +1113,7 @@ You may simply change a file’s suffix from .mod or .zip to .vmod and then shou
 * To save file size, some large or older modules are packaged inside a ZIP file and use .zip as a suffix.
 If so, you will need to unzip the ZIP file before launch, using a decompression utility like WinZip.
 Inside, you should find the module file, with a suffix of .vmod.
-* On Mac OS X, the Archive Utility may decompress a zipped file and then decompress any zipped files inside the first ZIP file.
+* On MacOS, the Archive Utility may decompress a zipped file and then decompress any zipped files inside the first ZIP file.
 You may wish to use a compression utility like StuffIt Expander when handling ZIP files.
 * If after unzipping, you find a file labeled BuildFile, a folder labeled Images, and a group of associated files, then the ZIP file itself is the module.
 There is no need to unzip it.
