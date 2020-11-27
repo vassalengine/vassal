@@ -1,7 +1,9 @@
-3.5.0-beta1 - ???
+3.5.0-beta1 - 27 November 2020
 
 * 13741: DataArchive.getImageNames() incorrectly returns an empty string if
     images/ has an entry in the ZIP archive
+* 13728: Translucent solid-colored backgrounds of boards are incorrectly
+    drawn opaque
 * 13706: Console, for entering commands to affect errorlog, properties, etc.
 * 13675: Piece Slots shouldn't be allowed at very top level of Piece Palette
 * 13661: Simplified ZIP archive writing and error reporting
@@ -48,11 +50,6 @@
 *  1826: Aesthetic improvements to dialogs
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
-
-3.4.11 - ???
-
-* 13728: Translucent solid-colored backgrounds of boards are incorrectly
-    drawn opaque
 
 3.4.10 - 23 November 2020
 
