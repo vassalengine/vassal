@@ -55,8 +55,8 @@ public class MemoryUtilsTest {
 // FIXME: how to get RAM on MacOS?
   @Ignore
   @Test
-  public void testGetPhysicalMemoryMacOSX() {
-    assumeTrue(SystemUtils.IS_OS_MAC_OSX);
+  public void testGetPhysicalMemoryMacOS() {
+    assumeTrue(SystemUtils.IS_OS_MAC);
   }
 
 // FIXME: how to get RAM on Windows?

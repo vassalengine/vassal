@@ -257,7 +257,7 @@ public class ModuleManager {
     final File errorLog = Info.getErrorLogPath();
     Files.newOutputStream(errorLog.toPath()).close();
 
-    final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
+    final StartUp start = SystemUtils.IS_OS_MAC ?
       new ModuleManagerMacOSXStartUp() : new StartUp();
 
     start.startErrorLog();
@@ -269,7 +269,7 @@ public class ModuleManager {
 
     start.initSystemProperties();
 
-    if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
+    if (SystemUtils.IS_OS_MAC) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
 
     new CustomVmOptions().ensureCustomVmOptionsFileExistsInConfDir();

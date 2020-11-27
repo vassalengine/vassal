@@ -66,7 +66,7 @@ public class Player extends Launcher {
 
   @Override
   protected MenuManager createMenuManager() {
-    return SystemUtils.IS_OS_MAC_OSX ?
+    return SystemUtils.IS_OS_MAC ?
       new MacOSXMenuManager() : new PlayerMenuManager();
   }
 

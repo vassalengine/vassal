@@ -69,7 +69,7 @@ public class StartUp {
 
     try {
       SwingUtilities.invokeAndWait(() -> {
-        if (SystemUtils.IS_OS_MAC_OSX) {
+        if (SystemUtils.IS_OS_MAC) {
           // Bug 2505: JEditorPane.registerEditorKitForContentType()
           // sometimes throws an NPE because the context class loader is
           // null. This is a JDK bug, but we can work around it by setting

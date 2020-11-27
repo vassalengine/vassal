@@ -278,7 +278,7 @@ public class SwingUtils {
   }
 
   private static final InputClassifier INPUT_CLASSIFIER =
-    SystemUtils.IS_OS_MAC_OSX ?
+    SystemUtils.IS_OS_MAC ?
       new MacInputClassifier() : new DefaultInputClassifier();
 
   /**

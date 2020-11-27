@@ -269,7 +269,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
-        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
+        (SystemUtils.IS_OS_MAC ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
         ",gapx 0,hidemode 3";                                     //NON-NLS
       toolBar.setLayout(new MigLayout(constraints));
     }

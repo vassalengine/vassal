@@ -109,7 +109,7 @@ public abstract class EditorWindow extends JFrame {
     final MenuBarProxy mb = mm.getMenuBarProxyFor(this);
 
     // file menu
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       mm.addToSection("Editor.File", mm.addKey("Editor.save"));  //NON-NLS
       mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));  //NON-NLS
     }
@@ -149,7 +149,7 @@ public abstract class EditorWindow extends JFrame {
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
     toolsMenu.add(mm.addKey("Editor.UnusedImages.remove_unused_images"));
 
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       mm.addToSection("Editor.MenuBar", editMenu);  //NON-NLS
       mm.addToSection("Editor.MenuBar", toolsMenu);  //NON-NLS
     }
@@ -159,7 +159,7 @@ public abstract class EditorWindow extends JFrame {
     }
 
     // help menu
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));  //NON-NLS
     }
     else {

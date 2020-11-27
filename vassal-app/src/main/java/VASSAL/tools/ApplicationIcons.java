@@ -47,7 +47,7 @@ public class ApplicationIcons {
   private static final List<BufferedImage> icons;
 
   static {
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       icons = null;
     }
     else {
