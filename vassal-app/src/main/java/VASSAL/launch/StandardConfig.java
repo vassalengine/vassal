@@ -60,7 +60,7 @@ public class StandardConfig implements Config {
     // Set the version, reportable version
     final GitProperties gitProperties = new GitProperties();
     version = gitProperties.getVersion();
-    reportableVersion = version.contains("-") ? version.substring(0, version.indexOf('-')) : version;
+    reportableVersion = version.contains("-") && !version.matches(".*-beta\\d+") ? version.substring(0, version.indexOf('-')) : version;
 
     baseDir = Path.of(System.getProperty("user.dir"));
 
