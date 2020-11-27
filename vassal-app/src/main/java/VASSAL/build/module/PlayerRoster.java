@@ -94,11 +94,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     setTooltipKey(TOOL_TIP);
     setIconKey(BUTTON_ICON);
     setHotKeyKey(BUTTON_KEYSTROKE);
-    retireButton = makeLaunchButton(Resources.getString("PlayerRoster.retire"),
-                                    Resources.getString("PlayerRoster.allow_another"),
-                                    "",
-                                    al
-      );
+    retireButton = makeLaunchButton(
+      Resources.getString("PlayerRoster.allow_another"),
+      Resources.getString("PlayerRoster.retire"),
+      "",
+      al
+    );
     getLaunchButton().setVisible(false);
 
     translatedObserver = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
