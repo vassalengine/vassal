@@ -368,7 +368,9 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   protected static class TraitEditor implements PieceEditor {
     protected TraitConfigPanel panel;
+    protected final JLabel transparencyColorLabel;
     protected ColorConfigurer transparencyColorValue;
+    protected final JLabel transparencyLabel;
     protected IntConfigurer transparencyValue;
     protected IntConfigurer radiusValue;
     protected JLabel radiusValueLabel;
@@ -420,12 +422,14 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       selectShaderLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.map_shading"));
       panel.add(selectShaderLabel, selectShader);
 
+      transparencyColorLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.fill_color"));
       transparencyColorValue = new ColorConfigurer(trait.transparencyColor);
-      panel.add("Editor.AreaOfEffect.fill_color", transparencyColorValue);
+      panel.add(transparencyColorLabel, transparencyColorValue);
 
+      transparencyLabel = new JLabel(Resources.getString("Editor.AreaOfEffect.opacity"));
       transparencyValue = new IntConfigurer((int) (trait.transparencyLevel * 100));
       transparencyValue.setHint("0-100");
-      panel.add("Editor.AreaOfEffect.opacity", transparencyValue);
+      panel.add(transparencyLabel, transparencyValue);
 
       fixedRadius = new BooleanConfigurer(Boolean.valueOf(trait.fixedRadius));
       fixedRadius.addPropertyChangeListener(evt -> updateRangeVisibility());
@@ -460,7 +464,9 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
     protected void updateFillVisibility() {
       final boolean useShader = Boolean.TRUE.equals(useMapShader.getValue());
+      transparencyColorLabel.setVisible(!useShader);
       transparencyColorValue.getControls().setVisible(!useShader);
+      transparencyLabel.setVisible(!useShader);
       transparencyValue.getControls().setVisible(!useShader);
       selectShader.setVisible(useShader);
       selectShaderLabel.setVisible(useShader);

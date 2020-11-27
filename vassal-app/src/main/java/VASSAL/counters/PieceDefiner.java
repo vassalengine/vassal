@@ -33,6 +33,7 @@ import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.BorderLayout;
@@ -45,8 +46,6 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -138,7 +137,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private final Prefs prefs;
 
   // A Configurer to hold the users preferred maximum split size
-  private static final int MINIMUM_SPLIT_SIZE = 64;
+  private static final int MINIMUM_SPLIT_SIZE = LabelUtils.noImageBoxImage().getWidth();
   private static final int DEFAULT_MAX_SPLIT = 256;
   private boolean splitDragInProgress = false;
 
@@ -230,11 +229,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   private static void buildAlphaModel() {
     alphaModel = new DefaultListModel<>();
-
-    for (final GamePiece piece : alphaMap.values()) {
-      alphaModel.addElement(piece);
-    }
-
+    alphaMap.values().forEach(p -> alphaModel.addElement(p));
   }
 
   /**
@@ -319,10 +314,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     }
     slot.setPiece(piece);
 
-    if (piece != null) {
-      // Check the size of the image and re-size image and/or panel if required
-      resizeSlotPanel();
-    }
+    resizeSlotPanel();
 
     controls.revalidate();
     slotPanel.revalidate();
@@ -343,8 +335,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     // Reset the piece to 100% scale to get the actual size.
     final double oldScale = slot.getScale();
     slot.setScale(1.0);
-    final Rectangle bb = slot.getPiece().boundingBox();
-    final Dimension newSlotSize = new Dimension(bb.width, bb.height);
+    final Dimension newSlotSize = slot.getPreferredSize();
     slot.setScale(oldScale);
 
     final int maxSlotWidth = getMaxSplit();
@@ -393,10 +384,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * This method is called from within the constructor to initialize the form.
    */
   private void initComponents() {
-    // Set a maximum size on this panel to prevent the window opening too tall on smaller screens
-    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    maxPanelHeight = (int) screenSize.getHeight() - 150;
-    setMaximumSize(new Dimension((int) screenSize.getWidth() - 100, maxPanelHeight));
+    maxPanelHeight = SwingUtils.getScreenSize().height - 150;
 
     // Main Layout for entire dialog. Just let it fill to max size
     setLayout(new MigLayout("ins 0, fill")); // NON-NLS
@@ -448,6 +436,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     availableList.setCellRenderer(r);
     availableList.addKeyListener(new AvailableListKeyAdapter(this));
+    availableList.setVisibleRowCount(99);
     availableList.addListSelectionListener(evt -> {
       final Object o = availableList.getSelectedValue();
       helpButton.setEnabled(o instanceof EditablePiece && ((EditablePiece) o).getHelpFile() != null);
@@ -477,8 +466,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       importPiece(className);
     });
 
-    availableButtonPanel.add(importButton);
-    availableButtonPanel.add(helpButton);
+    availableButtonPanel.add(importButton, "sg 2"); // NON-NLS
+    availableButtonPanel.add(helpButton, "sg 2"); // NON-NLS
     controls.add(availablePanel, "grow,pushy"); // NON-NLS
 
     // A Panel holding the add and Remove buttons between the two trait lists
@@ -509,7 +498,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     inUseList.setDragEnabled(true);
     inUseList.setDropMode(DropMode.INSERT);
     inUseList.setTransferHandler(transferHandler);
-
+    inUseList.setVisibleRowCount(99);
     inUseList.setModel(inUseModel);
     inUseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     inUseList.setCellRenderer(r);
@@ -552,12 +541,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     final JPanel inUseButtonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     copyButton = new JButton(Resources.getString("Editor.copy") + " (" + getCtrlKeyName('C') + ")");
     copyButton.addActionListener(evt -> doCopy());
-    inUseButtonPanel.add(copyButton);
+    inUseButtonPanel.add(copyButton, "sg 1"); // NON-NLS
 
     pasteButton = new JButton(Resources.getString("Editor.paste") + " (" + getCtrlKeyName('V') + ")");
     pasteButton.setEnabled(clipBoard != null);
     pasteButton.addActionListener(evt -> doPaste());
-    inUseButtonPanel.add(pasteButton);
+    inUseButtonPanel.add(pasteButton, "sg 1"); // NON-NLS
 
     propsButton = new JButton(Resources.getString("Editor.properties"));
     propsButton.addActionListener(evt -> {
@@ -567,7 +556,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
     });
 
-    inUseButtonPanel.add(propsButton);
+    inUseButtonPanel.add(propsButton, "sg 1"); // NON-NLS
 
     controls.add(inUsePanel, "grow"); // NON-NLS
 
@@ -636,7 +625,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     controls.add(noteLabel, "span 3,center"); // NON-NLS
 
-    // Update the Sort Order
+    // Force Alpha Sort order
+    setSorted(true);
     updateSortOrder();
   }
 
@@ -973,15 +963,19 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
-      setLayout(new MigLayout("ins dialog,fill", "[]", "[grow]unrel[]")); //NON-NLS
-      add(ed.getControls(), "growx,aligny top,push,wrap"); //NON-NLS
+      setLayout(new MigLayout("fill", "[grow,fill]", "[align top]rel[align bottom]")); //NON-NLS
 
-      final JPanel buttonBox = new JPanel(new MigLayout());
+      final JPanel scrollPanel = new JPanel(new MigLayout("wrap 1", "[grow,fill]", "[top]rel[bottom]")); // NON-NLS
+      final JScrollPane scroll = new JScrollPane(scrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      scrollPanel.add(ed.getControls(), "growx,aligny top,wrap"); //NON-NLS
+      add(scroll, "growx,wrap"); // NON-NLS
+
+      final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
       JButton b = new JButton(Resources.getString("General.ok"));
       b.addActionListener(evt -> dispose());
 
-      buttonBox.add(b, "split, tag ok"); //NON-NLS
+      buttonBox.add(b, "sg,tag ok"); //NON-NLS
 
       b = new JButton(Resources.getString("General.cancel"));
       b.addActionListener(evt -> {
@@ -989,17 +983,18 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         dispose();
       });
 
-      buttonBox.add(b, "tag cancel"); //NON-NLS
+      buttonBox.add(b, "sg,tag cancel"); //NON-NLS
 
       if (p.getHelpFile() != null) {
         b = new JButton(Resources.getString("General.help"));
         b.addActionListener(evt -> BrowserSupport.openURL(p.getHelpFile().getContents().toString()));
-        buttonBox.add(b, "tag help"); //NON-NLS
+        buttonBox.add(b, "sg,tag help"); //NON-NLS
       }
 
       add(buttonBox, "center"); // NON-NLS-
       pack();
       setLocationRelativeTo(getOwner());
+      SwingUtils.ensureOnScreen(this);
     }
 
     public PieceEditor getEditor() {
