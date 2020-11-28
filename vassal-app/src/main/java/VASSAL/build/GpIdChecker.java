@@ -48,10 +48,9 @@ public class GpIdChecker {
 
   protected GpIdSupport gpIdSupport;
   protected int maxId;
-  //  protected boolean useName = false;
-//  protected boolean useLabelerName = false;
   protected boolean extensionsLoaded = false;
   final Map<String, SlotElement> goodSlots = new HashMap<>();
+  final Map<String, GamePiece> newPiecesBuffer = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
   private final Set<String> refresherOptions = new HashSet<>();
@@ -233,23 +232,35 @@ public class GpIdChecker {
    * @return Newly created GamePiece
    */
   public GamePiece createUpdatedPiece(GamePiece oldPiece) {
-    // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
+    // If the piece was already created, reuse it by finding it in the buffer.
+    GamePiece newPiece = newPiecesBuffer.get(gpid);
+    if (newPiece != null) {
+      copyState(oldPiece, newPiece);
+      return newPiece;
+    }
+    // Find a slot with a matching gpid
     if (gpid != null && !gpid.isEmpty()) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
-        return element.createPiece(oldPiece, this);
+        newPiece =  element.createPiece(oldPiece, this);
+        newPiecesBuffer.put(gpid, newPiece);
+        copyState(oldPiece, newPiece);
+        return newPiece;
       }
     }
 
     // Failed to find a slot by gpid, try by matching piece name if option selected
     if (useName()) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
-      for (final SlotElement el : goodSlots.values()) {
-        final GamePiece newPiece = el.getPiece();
-        final String newPieceName = Decorator.getInnermost(newPiece).getName();
-        if (oldPieceName.equals(newPieceName)) {
-          return el.createPiece(oldPiece, this);
+      for (final SlotElement element : goodSlots.values()) {
+        final GamePiece slotPiece = element.getPiece();
+        final String gpName = Decorator.getInnermost(slotPiece).getName();
+        if (oldPieceName.equals(gpName)) {
+          newPiece = element.createPiece(oldPiece, this);
+          newPiecesBuffer.put(gpName, newPiece);  //Store 'wrong' gpid in buffer. As it was not found it is not in the slotElements
+          copyState(oldPiece, newPiece);
+          return newPiece;
         }
       }
     }
@@ -258,7 +269,7 @@ public class GpIdChecker {
   }
 
 
-  public boolean findUpdatedPiece(GamePiece oldPiece) {
+ /* public boolean findUpdatedPiece(GamePiece oldPiece) {
     // Find a slot with a matching gpid
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
     if (gpid != null && gpid.length() > 0) {
@@ -281,6 +292,68 @@ public class GpIdChecker {
     }
 
     return false;
+  }*/
+  /**
+   * Copy as much state information as possible from the old
+   * piece to the new piece
+   *
+   * @param oldPiece Piece to copy state from
+   * @param newPiece Piece to copy state to
+   */
+
+  protected void copyState(GamePiece oldPiece, GamePiece newPiece) {
+    GamePiece p = newPiece;
+    while (p != null) {
+      if (p instanceof BasicPiece) {
+        p.setState(Decorator.getInnermost(oldPiece).getState());
+        p = null;
+      }
+      else {
+        final Decorator decorator = (Decorator) p;
+        final String type = decorator.myGetType();
+        final String newState = findStateFromType(oldPiece, type, p.getClass());
+        // Do not copy the state of Marker traits, we want to see the new value from the new definition
+        if (newState != null && newState.length() > 0 && !(decorator instanceof Marker)) {
+          decorator.mySetState(newState);
+        }
+        p = decorator.getInner();
+      }
+    }
+  }
+
+
+  /**
+   * Locate a Decorator in the old piece that has the exact same
+   * type as the new Decorator and return it's state
+   *
+   * @param oldPiece Old piece to search
+   * @param typeToFind Type to match
+   * @param classToFind Class to match
+   * @return state of located matching Decorator
+   */
+  protected String findStateFromType(GamePiece oldPiece, String typeToFind, Class<? extends GamePiece> classToFind) {
+    GamePiece p = oldPiece;
+    while (p != null && !(p instanceof BasicPiece)) {
+      final Decorator d = (Decorator) Decorator.getDecorator(p, classToFind);
+      if (d != null) {
+        if (d.getClass().equals(classToFind)) {
+          if (d.myGetType().equals(typeToFind)) {
+            return d.myGetState();
+          }
+          else if (d instanceof Labeler) {
+            // Type matching failed. If requested, check name if labeler
+            if (useLabelerName()) {
+              return d.myGetState();
+            }
+          }
+
+        }
+        p = d.getInner();
+      }
+      else
+        p = null;
+    }
+    return null;
   }
 
 
@@ -363,7 +436,7 @@ public class GpIdChecker {
 
     /**
      * Create a new GamePiece based on this Slot Element.
-     * State information cotained in the OldPiece is transferred to
+     * State information contained in the OldPiece is transferred to
      * the new piece
      *
      * @param oldPiece Old Piece for state information
@@ -375,70 +448,9 @@ public class GpIdChecker {
       // The following two steps create a complete new GamePiece with all
       // prototypes expanded
       newPiece = PieceCloner.getInstance().clonePiece(newPiece);
-      copyState(oldPiece, newPiece);
+      // copyState(oldPiece, newPiece); move up to allow for new piece buffering
       newPiece.setProperty(Properties.PIECE_ID, getGpId());
       return newPiece;
-    }
-
-    /**
-     * Copy as much state information as possible from the old
-     * piece to the new piece
-     *
-     * @param oldPiece Piece to copy state from
-     * @param newPiece Piece to copy state to
-     */
-    protected void copyState(GamePiece oldPiece, GamePiece newPiece) {
-      GamePiece p = newPiece;
-      while (p != null) {
-        if (p instanceof BasicPiece) {
-          p.setState(Decorator.getInnermost(oldPiece).getState());
-          p = null;
-        }
-        else {
-          final Decorator decorator = (Decorator) p;
-          final String type = decorator.myGetType();
-          final String newState = findStateFromType(oldPiece, type, p.getClass());
-          // Do not copy the state of Marker traits, we want to see the new value from the new definition
-          if (newState != null && newState.length() > 0 && !(decorator instanceof Marker)) {
-            decorator.mySetState(newState);
-          }
-          p = decorator.getInner();
-        }
-      }
-    }
-
-    /**
-     * Locate a Decorator in the old piece that has the exact same
-     * type as the new Decorator and return it's state
-     *
-     * @param oldPiece Old piece to search
-     * @param typeToFind Type to match
-     * @param classToFind Class to match
-     * @return state of located matching Decorator
-     */
-    protected String findStateFromType(GamePiece oldPiece, String typeToFind, Class<? extends GamePiece> classToFind) {
-      GamePiece p = oldPiece;
-      while (p != null && !(p instanceof BasicPiece)) {
-        final Decorator d = (Decorator) Decorator.getDecorator(p, classToFind);
-        if (d != null) {
-          if (d.getClass().equals(classToFind)) {
-            if (d.myGetType().equals(typeToFind)) {
-              return d.myGetState();
-            }
-            else if (d instanceof Labeler) {
-              // Type matching failed. If requested, check name if labeler
-              if (gpIdChecker.useLabelerName()) {
-                return d.myGetState();
-              }
-            }
-
-          }
-          p = d.getInner();
-        }
-        else
-          p = null;
-      }
-      return null;
     }
   }
 }
