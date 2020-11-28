@@ -1122,8 +1122,14 @@
         <className>VASSAL/build/module/GameRefresher</className>
         <differenceType>7005</differenceType>
         <method>void execute(boolean, boolean)</method>
-        <to>void execute(java.util.Set, java.util.List, VASSAL.command.Command</to>
+        <to>void execute(java.util.Set, VASSAL.command.Command)</to>
         <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>Not referenced in custom code</justification>
     </difference>
 
 </differences>
