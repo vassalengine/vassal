@@ -506,7 +506,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     @Override
     public BufferedImage eval() throws Exception {
       // fix our size
-      buildDimensions();
+      if (size == null) fixSize();
 
       // draw nothing if our size is zero
       if (size.width <= 0 || size.height <= 0) return ImageUtils.NULL_IMAGE;
@@ -542,25 +542,23 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return im;
     }
 
-    protected JLabel buildDimensions() {
+    protected Dimension buildDimensions() {
       final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
       final FontMetrics fm = g.getFontMetrics(font);
-      size = new Dimension(fm.stringWidth(txt), fm.getHeight());
+      final Dimension s = new Dimension(fm.stringWidth(txt), fm.getHeight());
       g.dispose();
-      return null;
+      return s;
     }
 
     @Override
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
-        synchronized (this) {
-          buildDimensions();
-
-          // ensure that our area is nonempty
-          if (size.width <= 0 || size.height <= 0) {
-            size.width = size.height = 1;
-          }
+        final Dimension s = buildDimensions();
+        // ensure that our area is nonempty
+        if (s.width <= 0 || s.height <= 0) {
+          s.width = s.height = 1;
         }
+        size = s;
       }
     }
 
@@ -589,8 +587,8 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
     @Override
     public BufferedImage eval() throws Exception {
-      // determine whether we are HTML and fix our size
-      final JLabel l = buildDimensions();
+      // fix our size
+      if (size == null) fixSize();
 
       // draw nothing if our size is zero
       if (size.width <= 0 || size.height <= 0) return ImageUtils.NULL_IMAGE;
@@ -615,6 +613,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
       // paint the foreground
       if (fg != null) {
+        final JLabel l = makeLabel();
         l.paint(g);
       }
 
@@ -622,15 +621,18 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       return im;
     }
 
-    @Override
-    protected JLabel buildDimensions() {
+    protected JLabel makeLabel() {
       // Build a JLabel to render HTML
       final JLabel l = new JLabel(txt);
       l.setForeground(fg);
       l.setFont(font);
-      size = l.getPreferredSize();
-      l.setSize(size);
+      l.setSize(l.getPreferredSize());
       return l;
+    }
+
+    @Override
+    protected Dimension buildDimensions() {
+      return makeLabel().getSize();
     }
   }
 
