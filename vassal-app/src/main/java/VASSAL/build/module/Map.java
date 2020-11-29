@@ -782,9 +782,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       splitPane.setResizeWeight(0.0);
       splitPane.hideBottom();
 
-      controlPanel.setMinimumSize(new Dimension(0, 0));
-      layeredPane.setMinimumSize(new Dimension(0, 0));
-
       cppar.add(splitPane, i);
 
       g.addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
@@ -2601,6 +2598,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           if (mainWindowDock != null) {
             splitPane.setDividerSize(5);
           }
+
+          // ensure that the splitter has the full range of motion
+          splitPane.getTopComponent().setMinimumSize(new Dimension(0, 0));
+          splitPane.getBottomComponent().setMinimumSize(new Dimension(0, 0));
         }
 
         if (toolBar.getParent() == null) {
