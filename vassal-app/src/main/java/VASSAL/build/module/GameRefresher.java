@@ -80,7 +80,7 @@ public final class GameRefresher implements GameComponent {
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker  gpIdChecker;
-  private List<GamePiece> pieces;
+//  private List<GamePiece> pieces;
   private RefreshDialog dialog;
 //  private boolean testMode;
 //  private boolean useLabelerName;
