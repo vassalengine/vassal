@@ -47,6 +47,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JButton refreshButton;
   private JCheckBox nameCheck;
   private JCheckBox labelerNameCheck;
+  private JCheckBox layerNameCheck;
   private JCheckBox testModeOn;
   private final Set<String> options = new HashSet<>();
 
@@ -87,6 +88,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     add(nameCheck);
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
     add(labelerNameCheck);
+    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+    add(layerNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     add(testModeOn);
     pack();
@@ -96,13 +99,16 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   protected void  setOptions() {
     options.clear();
     if (nameCheck.isSelected()) {
-      options.add("UseName");
+      options.add("UseName"); //$NON-NLS-1$
     }
     if (labelerNameCheck.isSelected()) {
-      options.add("UseLabelerName");
+      options.add("UseLabelerName"); //$NON-NLS-1$
+    }
+    if (layerNameCheck.isSelected()) {
+      options.add("UseLayerName"); //$NON-NLS-1$
     }
     if (testModeOn.isSelected()) {
-      options.add("TestMode");
+      options.add("TestMode"); //$NON-NLS-1$
     }
   }
 

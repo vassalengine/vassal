@@ -357,6 +357,7 @@ public final class GameRefresher implements GameComponent {
     private JCheckBox nameCheck;
     private JCheckBox testModeOn;
     private JCheckBox labelerNameCheck;
+    private JCheckBox layerNameCheck;
     private final Set<String> options = new HashSet<>();
 
     RefreshDialog(GameRefresher refresher) {
@@ -405,6 +406,8 @@ public final class GameRefresher implements GameComponent {
       add(nameCheck);
       labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
       add(labelerNameCheck);
+      layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+      add(layerNameCheck);
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
       add(testModeOn);
 
@@ -414,13 +417,16 @@ public final class GameRefresher implements GameComponent {
     protected void  setOptions() {
       options.clear();
       if (nameCheck.isSelected()) {
-        options.add("UseName");
+        options.add("UseName"); //$NON-NLS-1$
       }
       if (labelerNameCheck.isSelected()) {
-        options.add("UseLabelerName");
+        options.add("UseLabelerName"); //$NON-NLS-1$
+      }
+      if (layerNameCheck.isSelected()) {
+        options.add("UseLayerName"); //$NON-NLS-1$
       }
       if (testModeOn.isSelected()) {
-        options.add("TestMode");
+        options.add("TestMode"); //$NON-NLS-1$
       }
     }
 

@@ -30,12 +30,13 @@ import java.util.Set;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
+import VASSAL.counters.Embellishment;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Labeler;
+import VASSAL.counters.Marker;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
-import VASSAL.counters.Marker;
-import VASSAL.counters.Labeler;
 import VASSAL.i18n.Resources;
 
 /**
@@ -50,7 +51,6 @@ public class GpIdChecker {
   protected int maxId;
   protected boolean extensionsLoaded = false;
   final Map<String, SlotElement> goodSlots = new HashMap<>();
-  final Map<String, GamePiece> newPiecesBuffer = new HashMap<>();
   final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
   private final Set<String> refresherOptions = new HashSet<>();
@@ -76,11 +76,14 @@ public class GpIdChecker {
   }
 
   public boolean useLabelerName() {
-    return refresherOptions.contains("UseLabelerName");
+    return refresherOptions.contains("UseLabelerName"); //$NON-NLS-1$
+  }
+  public boolean useLayerName() {
+    return refresherOptions.contains("UseLayerName"); //$NON-NLS-1$
   }
 
   public boolean useName() {
-    return refresherOptions.contains("UseName");
+    return refresherOptions.contains("UseName"); //$NON-NLS-1$
   }
 
   /**
@@ -233,18 +236,12 @@ public class GpIdChecker {
    */
   public GamePiece createUpdatedPiece(GamePiece oldPiece) {
     final String gpid = (String) oldPiece.getProperty(Properties.PIECE_ID);
-    // If the piece was already created, reuse it by finding it in the buffer.
-    GamePiece newPiece = newPiecesBuffer.get(gpid);
-    if (newPiece != null) {
-      copyState(oldPiece, newPiece);
-      return newPiece;
-    }
+    GamePiece newPiece;
     // Find a slot with a matching gpid
     if (gpid != null && !gpid.isEmpty()) {
       final SlotElement element = goodSlots.get(gpid);
       if (element != null) {
         newPiece =  element.createPiece(oldPiece, this);
-        newPiecesBuffer.put(gpid, newPiece);
         copyState(oldPiece, newPiece);
         return newPiece;
       }
@@ -258,7 +255,6 @@ public class GpIdChecker {
         final String gpName = Decorator.getInnermost(slotPiece).getName();
         if (oldPieceName.equals(gpName)) {
           newPiece = element.createPiece(oldPiece, this);
-          newPiecesBuffer.put(gpName, newPiece);  //Store 'wrong' gpid in buffer. As it was not found it is not in the slotElements
           copyState(oldPiece, newPiece);
           return newPiece;
         }
@@ -309,14 +305,13 @@ public class GpIdChecker {
         p = null;
       }
       else {
-        final Decorator decorator = (Decorator) p;
-        final String type = decorator.myGetType();
-        final String newState = findStateFromType(oldPiece, type, p.getClass());
+        final Decorator decoratorNew = (Decorator) p;
+        final String newState = findState(oldPiece, p, decoratorNew, p.getClass());
         // Do not copy the state of Marker traits, we want to see the new value from the new definition
-        if (newState != null && newState.length() > 0 && !(decorator instanceof Marker)) {
-          decorator.mySetState(newState);
+        if (newState != null && newState.length() > 0 && !(decoratorNew instanceof Marker)) {
+          decoratorNew.mySetState(newState);
         }
-        p = decorator.getInner();
+        p = decoratorNew.getInner();
       }
     }
   }
@@ -327,12 +322,12 @@ public class GpIdChecker {
    * type as the new Decorator and return it's state
    *
    * @param oldPiece Old piece to search
-   * @param typeToFind Type to match
    * @param classToFind Class to match
    * @return state of located matching Decorator
    */
-  protected String findStateFromType(GamePiece oldPiece, String typeToFind, Class<? extends GamePiece> classToFind) {
+  protected String findState(GamePiece oldPiece, GamePiece pNew, Decorator decoratorNewPc, Class<? extends GamePiece> classToFind) {
     GamePiece p = oldPiece;
+    final String typeToFind = decoratorNewPc.myGetType();
     while (p != null && !(p instanceof BasicPiece)) {
       final Decorator d = (Decorator) Decorator.getDecorator(p, classToFind);
       if (d != null) {
@@ -341,8 +336,17 @@ public class GpIdChecker {
             return d.myGetState();
           }
           else if (d instanceof Labeler) {
-            // Type matching failed. If requested, check name if labeler
             if (useLabelerName()) {
+              final String nameToFind = ((Labeler)decoratorNewPc).getActualDescription();
+              final String name = ((Labeler)p).getActualDescription();
+              if (name.equals(nameToFind))
+                return d.myGetState();
+            }
+          }
+          else if (d instanceof Embellishment) {
+            if (useLayerName()) {
+              final String nameToFind = ((Embellishment)decoratorNewPc).getLayerName();
+              ((Embellishment) d).getLayerName().equals(nameToFind);
               return d.myGetState();
             }
           }
