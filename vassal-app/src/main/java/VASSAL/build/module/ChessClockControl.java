@@ -411,7 +411,7 @@ public class ChessClockControl extends AbstractConfigurable
    */
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChessClock.htm");  //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ChessClock.html");  //$NON-NLS-1$
   }
 
   /**
