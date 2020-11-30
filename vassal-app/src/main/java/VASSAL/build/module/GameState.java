@@ -103,7 +103,7 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
-  protected Action loadGame, saveGame, saveGameAs, newGame, closeGame;
+  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame;
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -115,17 +115,28 @@ public class GameState implements CommandEncoder {
    * entries to the <code>File</code> menu of the controls window
    */
   public void addTo(@SuppressWarnings("unused") GameModule mod) {
-    loadGame = new AbstractAction(Resources.getString("GameState.load_game")) {
+    loadGame = new AbstractAction(Resources.getString("GameState.load_game_new")) {
       private static final long serialVersionUID = 1L;
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        loadGame();
+        loadGame(false);
       }
     };
     // FIXME: setting mnemonic from first letter could cause collisions in
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
+
+    loadGameOld = new AbstractAction(Resources.getString("GameState.load_game_old")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        loadGame(true);
+      }
+    };
+    loadGameOld.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game_old.shortcut").charAt(0));
+    loadGameOld.setEnabled(false);
 
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
@@ -187,7 +198,8 @@ public class GameState implements CommandEncoder {
 
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("GameState.new_game", newGame);
-    mm.addAction("GameState.load_game", loadGame);
+    mm.addAction("GameState.load_game_new", loadGame);
+    mm.addAction("GameState.load_game_old", loadGameOld);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
     mm.addAction("GameState.close_game", closeGame);
@@ -195,6 +207,7 @@ public class GameState implements CommandEncoder {
     saveGame.setEnabled(gameStarting);
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
+    loadGameOld.setEnabled(gameStarting);
   }
 
   /**
@@ -332,14 +345,14 @@ public class GameState implements CommandEncoder {
     closeGame.setEnabled(gameStarting);
 
     if (gameStarting) {
-      loadGame.putValue(Action.NAME,
-        Resources.getString("GameState.load_continuation"));
+      //loadGame.putValue(Action.NAME, Resources.getString("GameState.load_continuation"));
       g.getWizardSupport().showGameSetupWizard();
     }
     else {
-      loadGame.putValue(Action.NAME,
-        Resources.getString("GameState.load_game"));
+      //loadGame.putValue(Action.NAME, Resources.getString("GameState.load_game"));
     }
+
+    loadGameOld.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
     for (final GameComponent gc : gameComponents) {
@@ -372,8 +385,22 @@ public class GameState implements CommandEncoder {
    * sent to {@link GameModule#decode} and translated into a
    * {@link Command}, which is then executed.  The command read from the
    * file should be that returned by {@link #getRestoreCommand}.
+   *
+   * This version for binary compatibility w/ old style.
    */
   public void loadGame() {
+    loadGame(true);
+  }
+
+  /**
+   * Read the game from a savefile.  The contents of the file is
+   * sent to {@link GameModule#decode} and translated into a
+   * {@link Command}, which is then executed.  The command read from the
+   * file should be that returned by {@link #getRestoreCommand}.
+   *
+   * @param continuation if true then do the "old-style" version of load continuation
+   */
+  public void loadGame(boolean continuation) {
     final GameModule g = GameModule.getGameModule();
 
     loadComments = "";
@@ -437,10 +464,14 @@ public class GameState implements CommandEncoder {
         ", created with module version " + saveModuleVersion //NON-NLS
       );
 
-      if (gameStarted) {
+      if (gameStarted && continuation) {
         loadContinuation(f);
       }
       else {
+        if (gameStarted) { //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
+          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+          setup(false);
+        }
         g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
         loadGameInBackground(f);
       }
