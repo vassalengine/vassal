@@ -1208,8 +1208,8 @@ public class ModuleManagerWindow extends JFrame {
     private final Action newExtensionAction =
       new NewExtensionLaunchAction(ModuleManagerWindow.this);
 
-    private final AbstractAction addExtensionAction =
-      new AbstractAction(Resources.getString("ModuleManager.add_extension")) {
+    private final AbstractAction addExtensionAction = new AbstractAction(
+        Resources.getString("ModuleManager.add_extension")) {
 
       private static final long serialVersionUID = 1L;
 
