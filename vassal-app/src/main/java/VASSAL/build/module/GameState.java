@@ -403,6 +403,33 @@ public class GameState implements CommandEncoder {
   public void loadGame(boolean continuation) {
     final GameModule g = GameModule.getGameModule();
 
+    if (gameStarted && continuation) {
+      if (GlobalOptions.getInstance().isWarnOldContinuation()) {
+        final Object[] options = {
+          Resources.getString("GameState.anyway"),
+          Resources.getString("GameState.cancel"),
+          Resources.getString("GameState.dont_prompt_again")
+        };
+
+        final int result = JOptionPane.showOptionDialog(
+          g.getPlayerWindow(),
+          Resources.getString("GameState.old_continuation_warning"),
+          "",
+          JOptionPane.YES_NO_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null,
+          options,
+          options[0]
+        );
+        if (result == JOptionPane.NO_OPTION) {
+          return;
+        }
+        else if (result == 2) { // Turn Preference Off
+          g.getPrefs().setValue(GlobalOptions.OLD_CONTINUATION, Boolean.FALSE);
+        }
+      }
+    }
+
     loadComments = "";
     final FileChooser fc = g.getFileChooser();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
