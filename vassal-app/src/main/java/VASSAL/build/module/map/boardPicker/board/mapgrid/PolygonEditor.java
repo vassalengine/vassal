@@ -368,16 +368,17 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-      if (!SwingUtils.isMainMouseButtonDown(e) || e.getClickCount() == 1) {
-        return;
-      }
-
-      final Triple<Integer, Point, Double> t = nearestSegment(polygon, e.getX(), e.getY());
-      final double d = t.getRight();
-      if (d <= CLICK_THRESHOLD) {
+      if (SwingUtils.isContextMouseButtonDown(e) ||
+          (SwingUtils.isMainMouseButtonDown(e) && e.getClickCount() == 2)) {
+        final Triple<Integer, Point, Double> t = nearestSegment(polygon, e.getX(), e.getY());
         final int ins = t.getLeft() + 1;
-        final Point np = t.getMiddle();
-        insertVertex(polygon, ins, np.x, np.y);
+        if (SwingUtils.isContextMouseButtonDown(e)) {
+          insertVertex(polygon, ins, e.getX(), e.getY());
+        }
+        else {
+          final Point np = t.getMiddle();
+          insertVertex(polygon, ins, np.x, np.y);
+        }
         selected = ins;
         repaint();
       }
