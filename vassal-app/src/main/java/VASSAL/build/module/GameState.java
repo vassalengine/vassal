@@ -421,10 +421,10 @@ public class GameState implements CommandEncoder {
           options,
           options[0]
         );
-        if (result == JOptionPane.NO_OPTION) {
+        if (result == JOptionPane.NO_OPTION) { // Note - this is actually the "Cancel" option. 
           return;
         }
-        else if (result == 2) { // Turn Preference Off
+        else if (result == JOptionPane.CANCEL_OPTION) { // "Don't Prompt Again" option.
           g.getPrefs().setValue(GlobalOptions.OLD_CONTINUATION, Boolean.FALSE);
         }
       }
