@@ -24,8 +24,7 @@ import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertySetter;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ListConfigurer;
+import VASSAL.configure.DynamicKeyCommandListConfigurer;
 import VASSAL.tools.NamedKeyStroke;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
@@ -61,12 +60,7 @@ public class DynamicPropertyTest extends DecoratorTest {
     final DynamicProperty trait2 = new DynamicProperty ();
     trait2.key = "xyzzy";
     trait2.value = "plugh";
-    trait2.keyCommandListConfig = new ListConfigurer (null, "Commands") {
-      @Override
-      protected Configurer buildChildConfigurer() {
-        return new DynamicProperty.DynamicKeyCommandConfigurer (trait2);
-      }
-    };
+    trait2.keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, "Commands", trait2);
     BasicPiece piece = createBasicPiece ();
     trait2.setInner (piece);
     PropertyChanger changer = new PropertySetter ("3", new PropertyChangerConfigurer.Constraints () {

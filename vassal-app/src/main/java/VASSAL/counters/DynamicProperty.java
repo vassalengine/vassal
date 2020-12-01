@@ -32,8 +32,8 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerLayout;
+import VASSAL.configure.DynamicKeyCommandListConfigurer;
 import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
@@ -89,7 +89,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   protected DynamicKeyCommand[] keyCommands;
   protected KeyCommand[] menuCommands;
 
-  protected ListConfigurer keyCommandListConfig;
+  protected DynamicKeyCommandListConfigurer keyCommandListConfig;
 
   public DynamicProperty() {
     this(ID, null);
@@ -97,14 +97,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   public DynamicProperty(String type, GamePiece p) {
     setInner(p);
-    keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
-      @Override
-      protected Configurer buildChildConfigurer() {
-        final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(DynamicProperty.this);
-        c.addPropertyChangeListener(e -> resize());
-        return c;
-      }
-    };
+    keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands"), this);
     mySetType(type);
   }
 
@@ -431,18 +424,11 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected JLabel minLabel;
     protected JLabel maxLabel;
     protected JLabel wrapLabel;
-    protected ListConfigurer keyCommandListConfig;
+    protected DynamicKeyCommandListConfigurer keyCommandListConfig;
     protected TraitConfigPanel controls;
 
     public Ed(final DynamicProperty m) {
-      keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands")) {
-        @Override
-        protected Configurer buildChildConfigurer() {
-          final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
-          c.addPropertyChangeListener(e -> resize());
-          return c;
-        }
-      };
+      keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands"), m);
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
       final PropertyChangeListener l = evt -> {
@@ -517,7 +503,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    * DynamicKeyCommand A class that represents an action to be performed on a
    * Dynamic property
    */
-  protected static class DynamicKeyCommand extends KeyCommand {
+  public static class DynamicKeyCommand extends KeyCommand {
     private static final long serialVersionUID = 1L;
 
     protected PropertyChanger propChanger;
@@ -529,6 +515,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     public PropertyChanger getPropChanger() {
       return propChanger;
+    }
+
+    public void setPropChanger(PropertyChanger propChanger) {
+      this.propChanger = propChanger;
     }
   }
 

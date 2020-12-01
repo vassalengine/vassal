@@ -212,4 +212,5 @@ public abstract class Configurer {
   public void setLabelVisibile(boolean visible) {
 
   }
+
 }

@@ -1088,4 +1088,22 @@
         <method>*</method>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/DynamicProperty</className>
+        <differenceType>6004</differenceType>
+        <field>keyCommandListConfig</field>
+        <from>VASSAL.configure.ListConfigurer</from>
+        <to>VASSAL.configure.DynamicKeyCommandListConfigurer</to>
+        <justification>Required to cleanup dialog. Subclassing highly unlikely.</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/DynamicProperty$Ed</className>
+        <differenceType>6004</differenceType>
+        <field>keyCommandListConfig</field>
+        <from>VASSAL.configure.ListConfigurer</from>
+        <to>VASSAL.configure.DynamicKeyCommandListConfigurer</to>
+        <justification>Required to cleanup dialog. Subclassing highly unlikely.</justification>
+    </difference>
+
 </differences>

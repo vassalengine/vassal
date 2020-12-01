@@ -32,7 +32,7 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
-  protected static final int DEFAULT_LENGHTH = 20;
+  protected static final int DEFAULT_LENGHTH = 16;
 
   /**
    * Base Constructor for StringConfigurer
