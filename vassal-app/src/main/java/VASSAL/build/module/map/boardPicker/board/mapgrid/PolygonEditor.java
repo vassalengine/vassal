@@ -122,20 +122,7 @@ public class PolygonEditor extends JPanel {
   }
 
   private void setupForEdit() {
-    final ModifyPolygon mp = new ModifyPolygon();
-    addMouseListener(mp);
-    addMouseMotionListener(mp);
-
-    getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
-    getActionMap().put(DELETE, new AbstractAction() {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        mp.deleteKeyPressed();
-      }
-    });
-
+    new ModifyPolygon();
     requestFocus();
     repaint();
   }
@@ -355,6 +342,27 @@ public class PolygonEditor extends JPanel {
   }
 
   private class ModifyPolygon extends MouseInputAdapter {
+    public ModifyPolygon() {
+      addMouseListener(this);
+      addMouseMotionListener(this);
+
+      getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
+      getActionMap().put(DELETE, new AbstractAction() {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          deleteKeyPressed();
+        }
+      });
+    }
+
+    private void remove() {
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+      getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+    }
+
     @Override
     public void mouseDragged(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
@@ -437,9 +445,7 @@ public class PolygonEditor extends JPanel {
         if (polygon.npoints < 2) {
           polygon = null;
 
-          removeMouseListener(this);
-          removeMouseMotionListener(this);
-          getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+          remove();
           setupForCreate();
         }
 
@@ -463,6 +469,16 @@ public class PolygonEditor extends JPanel {
   }
 
   private class DefinePicker extends MouseInputAdapter {
+    public DefinePicker() {
+      addMouseListener(this);
+      addMouseMotionListener(this);
+    }
+
+    private void remove() {
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
@@ -473,25 +489,9 @@ public class PolygonEditor extends JPanel {
     @Override
     public void mouseReleased(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        removeMouseListener(this);
-        removeMouseMotionListener(this);
-
-        final DefinePolygon dp = new DefinePolygon();
-        addMouseListener(dp);
-        addMouseMotionListener(dp);
-
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ESCAPE);
-        getActionMap().put(ESCAPE, new AbstractAction() {
-          private static final long serialVersionUID = 1L;
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            dp.escapeKeyPressed();
-          }
-        });
-
+        remove();
+        new DefinePolygon();
         path.add(new Point(path.get(0)));
-
         repaint();
       }
     }
@@ -499,12 +499,8 @@ public class PolygonEditor extends JPanel {
     @Override
     public void mouseDragged(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        removeMouseListener(this);
-        removeMouseMotionListener(this);
-
-        final DefineRectangle dr = new DefineRectangle();
-        addMouseListener(dr);
-        addMouseMotionListener(dr);
+        remove();
+        new DefineRectangle();
 
         final int x = path.get(0).x;
         final int[] xpoints = { x, x, x, x };
@@ -520,6 +516,27 @@ public class PolygonEditor extends JPanel {
   }
 
   private class DefinePolygon extends MouseInputAdapter {
+    public DefinePolygon() {
+      addMouseListener(this);
+      addMouseMotionListener(this);
+
+      getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ESCAPE);
+      getActionMap().put(ESCAPE, new AbstractAction() {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          escapeKeyPressed();
+        }
+      });
+    }
+
+    private void remove() {
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+      getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+    }
+
     @Override
     public void mouseReleased(MouseEvent e) {
       if (!SwingUtils.isMainMouseButtonDown(e) || path.isEmpty()) {
@@ -536,9 +553,7 @@ public class PolygonEditor extends JPanel {
           selected = 0;
           path = null;
 
-          removeMouseListener(this);
-          removeMouseMotionListener(this);
-          getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+          remove();
           setupForEdit();
           return;
         }
@@ -568,15 +583,23 @@ public class PolygonEditor extends JPanel {
     }
 
     public void escapeKeyPressed() {
+      remove();
       path.clear();
-      removeMouseListener(this);
-      removeMouseMotionListener(this);
-      getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
       setupForCreate();
     }
   }
 
   private class DefineRectangle extends MouseInputAdapter {
+    public DefineRectangle() {
+      addMouseListener(this);
+      addMouseMotionListener(this);
+    }
+
+    private void remove() {
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+    }
+
     @Override
     public void mouseDragged(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
@@ -590,9 +613,7 @@ public class PolygonEditor extends JPanel {
     public void mouseReleased(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
         selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
-
-        removeMouseListener(this);
-        removeMouseMotionListener(this);
+        remove();
         setupForEdit();
       }
     }
