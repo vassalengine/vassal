@@ -112,10 +112,7 @@ public class PolygonEditor extends JPanel {
   }
 
   private void setupForCreate() {
-    final DefinePicker dp = new DefinePicker();
-    addMouseListener(dp);
-    addMouseMotionListener(dp);
-
+    new DefinePicker();
     path = new ArrayList<>();
     requestFocus();
     repaint();
