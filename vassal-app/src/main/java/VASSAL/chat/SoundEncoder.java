@@ -18,9 +18,11 @@
 package VASSAL.chat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.SoundConfigurer;
@@ -37,7 +39,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class SoundEncoder implements CommandEncoder {
   public static final String COMMAND_PREFIX = "PLAY\t"; //$NON-NLS-1$
-  private PlayerEncoder playerEncoder;
+  private final PlayerEncoder playerEncoder;
 
   public SoundEncoder(PlayerEncoder p) {
     playerEncoder = p;
@@ -45,29 +47,26 @@ public class SoundEncoder implements CommandEncoder {
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
-      sd.nextToken();
-      final String soundKey = sd.nextToken();
-      final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
-      return new Cmd(soundKey, sender);
-    }
-    else {
+    if (!command.startsWith(COMMAND_PREFIX)) {
       return null;
     }
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
+    sd.nextToken();
+    final String soundKey = sd.nextToken();
+    final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
+    return new Cmd(soundKey, sender);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof Cmd) {
-      Cmd cmd = (Cmd) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(cmd.soundKey);
-      se.append(playerEncoder.playerToString(cmd.getSender()));
-      s = COMMAND_PREFIX + se.getValue();
+    if (!(c instanceof Cmd)) {
+      return null;
     }
-    return s;
+    final Cmd cmd = (Cmd) c;
+    final SequenceEncoder se = new SequenceEncoder('\t');
+    se.append(cmd.soundKey);
+    se.append(playerEncoder.playerToString(cmd.getSender()));
+    return COMMAND_PREFIX + se.getValue();
   }
 
   public static class Cmd extends Command {
@@ -76,11 +75,11 @@ public class SoundEncoder implements CommandEncoder {
     private static long lastTime = System.currentTimeMillis();
     private static Player lastSender;
     private static int sendCount;
-    private static ArrayList<Player> banned = new ArrayList<>();
+    private static final List<Player> banned = new ArrayList<>();
     private static boolean updating = false;
 
-    private String soundKey;
-    private Player sender;
+    private final String soundKey;
+    private final Player sender;
 
     public Cmd(String soundKey, Player player) {
       this.soundKey = soundKey;
@@ -102,27 +101,29 @@ public class SoundEncoder implements CommandEncoder {
       updating = true;
       lastTime = now;
       final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption(soundKey);
-      if (c != null) {
-        c.play();
-      }
-      if (sender.equals(lastSender)) {
-        if (sendCount++ >= TOO_MANY) {
-          if (JOptionPane.YES_OPTION ==
-            JOptionPane.showConfirmDialog
-            (null,
-             Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
-             null,
-             JOptionPane.YES_NO_OPTION)) {
-            banned.add(sender);
-          }
-          else {
-            sendCount = 1;
+      if (!GlobalOptions.getInstance().isSoundWakeupMute()) {
+        if (c != null) {
+          c.play();
+        }
+        if (sender.equals(lastSender)) {
+          if (sendCount++ >= TOO_MANY) {
+            if (JOptionPane.YES_OPTION ==
+              JOptionPane.showConfirmDialog(
+                null,
+                Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
+                null,
+                JOptionPane.YES_NO_OPTION)) {
+              banned.add(sender);
+            }
+            else {
+              sendCount = 1;
+            }
           }
         }
-      }
-      else {
-        lastSender = sender;
-        sendCount = 1;
+        else {
+          lastSender = sender;
+          sendCount = 1;
+        }
       }
       updating = false;
     }

@@ -18,8 +18,6 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +31,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.Resources;
 
 /**
  * Container for definitions of Generic Color Definitions
@@ -51,7 +50,7 @@ public class ColorManager extends AbstractConfigurable {
   public static final Color DEFAULT_COLOR = Color.WHITE;
   public static final String SELECT_COLOR = "Select...";
 
-  protected static Color[] standardColors = new Color[] {
+  protected static Color[] standardColors = {
     Color.WHITE,
     Color.GRAY,
     Color.BLACK,
@@ -68,21 +67,38 @@ public class ColorManager extends AbstractConfigurable {
     Color.DARK_GRAY,
   };
 
-  protected static String[] standardColorNames = new String[] {
-    "WHITE",
-    "GRAY",
-    "BLACK",
-    "CLEAR",
-    "RED",
-    "GREEN",
-    "BLUE",
-    "ORANGE",
-    "PINK",
-    "CYAN",
-    "MAGENTA",
-    "YELLOW",
-    "LIGHT GRAY",
-    "DARK GRAY"
+  protected static String[] standardColorNames = {
+    "WHITE",      // NON-NLS
+    "GRAY",       // NON-NLS
+    "BLACK",      // NON-NLS
+    "CLEAR",      // NON-NLS
+    "RED",        // NON-NLS
+    "GREEN",      // NON-NLS
+    "BLUE",       // NON-NLS
+    "ORANGE",     // NON-NLS
+    "PINK",       // NON-NLS
+    "CYAN",       // NON-NLS
+    "MAGENTA",    // NON-NLS
+    "YELLOW",     // NON-NLS
+    "LIGHT GRAY", // NON-NLS
+    "DARK GRAY"   // NON-NLS
+  };
+
+  protected static String[] standardColorKeys = {
+    "Editor.ColorManager.white",
+    "Editor.ColorManager.gray",
+    "Editor.ColorManager.black",
+    "Editor.ColorManager.clear",
+    "Editor.ColorManager.red",
+    "Editor.ColorManager.green",
+    "Editor.ColorManager.blue",
+    "Editor.ColorManager.orange",
+    "Editor.ColorManager.pink",
+    "Editor.ColorManager.cyan",
+    "Editor.ColorManager.magenta",
+    "Editor.ColorManager.yellow",
+    "Editor.ColorManager.light_gray",
+    "Editor.ColorManager.dark_gray"
   };
 
   protected static String getStandardColorName(Color c) {
@@ -127,7 +143,7 @@ public class ColorManager extends AbstractConfigurable {
     }
 
     ColorSwatch swatch = null;
-    for (ColorSwatch cs : userColors.values()) {
+    for (final ColorSwatch cs : userColors.values()) {
       if (color.equals(cs.getColor())) {
         swatch = cs;
         break;
@@ -189,23 +205,20 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Named Colors";
+    return Resources.getString("Editor.ColorManager.component_type");
   }
 
   @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof ColorSwatch) {
-      ColorSwatch def = (ColorSwatch) b;
+      final ColorSwatch def = (ColorSwatch) b;
       userColors.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            userColors.remove(evt.getOldValue());
-            userColors.put((String) evt.getNewValue(),
-                           (ColorSwatch) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          userColors.remove(evt.getOldValue());
+          userColors.put((String) evt.getNewValue(),
+                         (ColorSwatch) evt.getSource());
         }
       });
     }
@@ -221,7 +234,7 @@ public class ColorManager extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm", "NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.html", "NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -230,28 +243,42 @@ public class ColorManager extends AbstractConfigurable {
 
   public Color getColorByName(String colorName) {
 
-    ColorSwatch gcolor = getColorSwatch(colorName);
+    final ColorSwatch gcolor = getColorSwatch(colorName);
     if (gcolor != null) {
-      Color color = gcolor.getColor();
-      //if (color != null) {
-      return color;
-      //}
+      return gcolor.getColor();
     }
     return DEFAULT_COLOR;
   }
 
   public String[] getColorNames() {
-    ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    final ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(a.size() + standardColors.length);
 
-    for (ColorSwatch cs : a) {
+    for (final ColorSwatch cs : a) {
       names.add(cs.getConfigureName());
     }
 
     names.addAll(Arrays.asList(standardColorNames));
+    return names.toArray(new String[0]);
+  }
+
+  public String[] getColorDisplayNames() {
+    final ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    Collections.sort(a);
+
+    final ArrayList<String> names =
+      new ArrayList<>(a.size() + standardColors.length);
+
+    for (final ColorSwatch cs : a) {
+      names.add(cs.getConfigureName());
+    }
+
+    for (final String key : standardColorKeys) {
+      names.add(Resources.getString(key));
+    }
     return names.toArray(new String[0]);
   }
 }

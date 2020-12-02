@@ -38,10 +38,6 @@ public class ScriptContainer extends AbstractConfigurable {
     return instance;
   }
 
-  public ScriptContainer() {
-
-  }
-
   @Override
   public String[] getAttributeDescriptions() {
     return new String[0];
@@ -95,7 +91,7 @@ public class ScriptContainer extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Script.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Script.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -104,7 +100,7 @@ public class ScriptContainer extends AbstractConfigurable {
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData data = super.getI18nData();
+    final ComponentI18nData data = super.getI18nData();
     data.setAllAttributesUntranslatable();
     return data;
   }

@@ -1,39 +1,23 @@
 package VASSAL.chat.peer2peer;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Date;
-
 import VASSAL.chat.ChatServerConnection;
-import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 
+import java.beans.PropertyChangeEvent;
+import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class TextClient {
-  private boolean reportRooms = true;
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
   public TextClient(ChatServerConnection client) {
     this.client = client;
-    client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        availableRoomsChanged(evt);
-      }
-    });
-    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        incomingMessageReceived(evt);
-      }
-    });
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        statusReceived(evt);
-      }
-    });
+    client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this::availableRoomsChanged);
+    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, this::incomingMessageReceived);
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, this::statusReceived);
     client.setConnected(true);
   }
 
@@ -46,32 +30,31 @@ public class TextClient {
   }
 
   private void incomingMessageReceived(PropertyChangeEvent evt) {
-    String msg = (String) evt.getNewValue();
+    final String msg = (String) evt.getNewValue();
     if (msg.startsWith("CHAT")) { //$NON-NLS-1$
       System.out.println(msg.substring(4));
     }
   }
 
   private void availableRoomsChanged(PropertyChangeEvent evt) {
-    if (reportRooms) {
-      System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
-      System.out.print(report((Room[]) evt.getNewValue()));
-    }
+    System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
+    System.out.print(report((Room[]) evt.getNewValue()));
   }
 
   public static String report(Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (Room room : r) {
-      buffer.append(room.getName() + ": "); //$NON-NLS-1$
-
-      Player[] p = (Player[]) room.getPlayerList().toArray();
-      for (int j = 0; j < p.length; ++j) {
-        buffer.append(p[j]);
-        if (j < p.length - 1) {
-          buffer.append(", "); //$NON-NLS-1$
-        }
-      }
-      buffer.append("\n"); //$NON-NLS-1$
+    for (final Room room : r) {
+      buffer
+        .append(room.getName())
+        .append(": ") //$NON-NLS-1$
+        .append(
+          room
+            .getPlayerList()
+            .stream()
+            .map(Objects::toString)
+            .collect(Collectors.joining(", ")) //$NON-NLS-1$
+        )
+        .append('\n'); //$NON-NLS-1$
     }
     return buffer.toString();
   }
@@ -118,7 +101,7 @@ public class TextClient {
     };
     CommandEncoder encoder = new Encoder();
     if (poolType.startsWith("hier")) {
-      clientConnection = new SocketNodeClient(encoder, info, host, port, msgSvr, welcomer);
+      clientConnection = new NodeClient(encoder, info, host, port, msgSvr, welcomer);
     }
     else {
       PeerPool pool;
@@ -131,7 +114,7 @@ public class TextClient {
       else {
         pool = new BrokeredPeerPool(info, host, port);
       }
-      clientConnection = new P2PClient(encoder, msgSvr, welcomer, pool);
+      clientConnection = new P2PClient(encoder, welcomer, pool);
       if (pool instanceof BrokeredPeerPool) {
         final BrokeredPeerPool reportStatus = (BrokeredPeerPool) pool;
         final ChatServerConnection c = clientConnection;
@@ -205,8 +188,10 @@ public class TextClient {
     };
     new Thread(r).start();
   }
-*/  public static class ShowText extends Command {
-    private String msg;
+*/
+
+  public static class ShowText extends Command {
+    private final String msg;
 
     public ShowText(String msg) {
       this.msg = msg;
@@ -228,22 +213,23 @@ public class TextClient {
   }
 
   public static class Encoder implements CommandEncoder {
+
+    private static final String SERIALIZATION_PREFIX = "CHAT"; //$NON-NLS-1$
+
     @Override
     public Command decode(String command) {
-      Command c = null;
-      if (command.startsWith("CHAT")) { //$NON-NLS-1$
-        c = new ShowText(command.substring(4));
+      if (!command.startsWith(SERIALIZATION_PREFIX)) {
+        return null;
       }
-      return c;
+      return new ShowText(command.substring(SERIALIZATION_PREFIX.length()));
     }
 
     @Override
     public String encode(Command c) {
-      String s = null;
-      if (c instanceof ShowText) {
-        return "CHAT" + ((ShowText)c).getMessage(); //$NON-NLS-1$
+      if (!(c instanceof ShowText)) {
+        return null;
       }
-      return s;
+      return SERIALIZATION_PREFIX + ((ShowText)c).getMessage();
     }
 
 

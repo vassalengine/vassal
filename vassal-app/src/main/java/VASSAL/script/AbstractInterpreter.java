@@ -33,15 +33,11 @@ import bsh.UtilEvalError;
 
 public abstract class AbstractInterpreter extends Interpreter {
 
-  protected static final String THIS = "_interp";
-  protected static final String SOURCE = "_source";
+  protected static final String THIS = "_interp"; //NON-NLS
+  protected static final String SOURCE = "_source"; //NON-NLS
   private static final long serialVersionUID = 1L;
 
   protected NameSpace myNameSpace;
-
-  public AbstractInterpreter() {
-    super();
-  }
 
   /**
    * Set a variable and handle exceptions
@@ -109,7 +105,7 @@ public abstract class AbstractInterpreter extends Interpreter {
   /**
    * Alert(message) Display a message in a dialog box/
    *
-   * @param message
+   * @param message message to display
    */
   public Object alert(String message) {
     JOptionPane.showMessageDialog(null, message);
@@ -150,7 +146,7 @@ public abstract class AbstractInterpreter extends Interpreter {
    */
   public VASSAL.script.proxy.Map findMap(String mapName) {
     Map map = null;
-    for (Map m : GameModule.getGameModule().getAllDescendantComponentsOf(
+    for (final Map m : GameModule.getGameModule().getAllDescendantComponentsOf(
         Map.class)) {
       if (m.getMapName().equals(mapName) && isAccessible(m)) {
         map = m;
@@ -169,7 +165,7 @@ public abstract class AbstractInterpreter extends Interpreter {
    */
   protected boolean isAccessible(Map m) {
     if (m instanceof PrivateMap) {
-      String mySide = PlayerRoster.getMySide();
+      final String mySide = PlayerRoster.getMySide();
       if (mySide == null) {
         return true;
       }

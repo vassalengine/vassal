@@ -21,8 +21,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.KeyStroke;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
@@ -47,7 +45,7 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
 
   @Override
   public void addTo(Buildable parent) {
-    Map map = (Map) parent;
+    final Map map = (Map) parent;
     map.getView().addKeyListener(this);
   }
 
@@ -90,9 +88,8 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
     final int c = e.getKeyCode();
     // Don't pass modifier keys alone to counters
     final boolean onlyModifierKeys = (c == KeyEvent.VK_SHIFT || c == KeyEvent.VK_CONTROL || c == KeyEvent.VK_ALT || c == KeyEvent.VK_META);
-    if (!e.isConsumed() && !onlyModifierKeys) { 
-      Command comm = KeyBuffer.getBuffer().keyCommand
-          (SwingUtils.getKeyStrokeForEvent(e));
+    if (!e.isConsumed() && !onlyModifierKeys) {
+      final Command comm = KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
       if (comm != null && !comm.isNull()) {
         GameModule.getGameModule().sendAndLog(comm);
         e.consume();

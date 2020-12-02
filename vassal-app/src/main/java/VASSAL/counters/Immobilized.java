@@ -17,6 +17,13 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -24,16 +31,9 @@ import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.KeyStroke;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * Decorator that filters events to prevent a GamePiece from
@@ -46,15 +46,15 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class Immobilized extends Decorator implements EditablePiece {
 
-  public static final String ID = "immob;";
+  public static final String ID = "immob;"; // NON-NLS
   protected boolean shiftToSelect = false;
   protected boolean altToSelect = false;
   protected boolean ignoreGrid = false;
   protected boolean neverSelect = false;
   protected boolean neverMove = false;
   protected boolean moveIfSelected = false;
-  protected boolean neverBandSelect = false; 
-  protected boolean altToBandSelect = false; 
+  protected boolean neverBandSelect = false;
+  protected boolean altToBandSelect = false;
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
   protected EventFilter bandselectFilter;
@@ -66,8 +66,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char SHIFT_SELECT = 'i';
   protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
-  protected static final char NEVER_BAND_SELECT = 'Z'; 
-  protected static final char ALT_BAND_SELECT = 'A';   
+  protected static final char NEVER_BAND_SELECT = 'Z';
+  protected static final char ALT_BAND_SELECT = 'A';
 
   public class UseShift implements EventFilter {
     @Override
@@ -90,12 +90,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 
-  protected static EventFilter NEVER = new EventFilter() {
-    @Override
-    public boolean rejectEvent(InputEvent evt) {
-      return true;
-    }
-  };
+  protected static final EventFilter NEVER = evt -> true;
 
   public Immobilized() {
     this(Immobilized.ID, null);
@@ -122,10 +117,10 @@ public class Immobilized extends Decorator implements EditablePiece {
     moveIfSelected = false;
     neverBandSelect = false;
     altToBandSelect = false;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    String selectionOptions = st.nextToken("");
-    String movementOptions = st.nextToken("");
+    final String selectionOptions = st.nextToken("");
+    final String movementOptions = st.nextToken("");
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
@@ -183,7 +178,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       moveFilter = null;
     }
-    
+
     if (neverBandSelect) {
       bandselectFilter = NEVER;
     }
@@ -302,7 +297,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (altToBandSelect) {
       buffer.append(ALT_BAND_SELECT);
     }
-    
+
     buffer.append(';');
     if (neverMove) {
       buffer.append(NEVER_MOVE);
@@ -327,12 +322,12 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return "Does not stack";
+    return Resources.getString("Editor.Immobilized.trait_description");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("NonStacking.htm");
+    return HelpFile.getReferenceManualPage("NonStacking.html"); // NON-NLS
   }
 
   @Override
@@ -345,83 +340,111 @@ public class Immobilized extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.TERRAIN);
     l.add(Properties.IGNORE_GRID);
     l.add(Properties.NON_MOVABLE);
     return l;
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Immobilized)) return false;
+    final Immobilized c = (Immobilized) o;
+
+    if (! Objects.equals(shiftToSelect, c.shiftToSelect)) return false;
+    if (! Objects.equals(altToSelect, c.altToSelect)) return false;
+    if (! Objects.equals(neverSelect, c.neverSelect)) return false;
+    if (! Objects.equals(ignoreGrid, c.ignoreGrid)) return false;
+    if (! Objects.equals(neverMove, c.neverMove)) return false;
+    if (! Objects.equals(moveIfSelected, c.moveIfSelected)) return false;
+    if (! Objects.equals(neverBandSelect, c.neverBandSelect)) return false;
+
+    return Objects.equals(altToBandSelect, c.altToBandSelect);
+  }
+
   private static class Ed implements PieceEditor {
-    private JComboBox<String> selectionOption;
-    private JComboBox<String> movementOption;
-    private JComboBox<String> bandSelectOption;
-    private JCheckBox ignoreGridBox;
-    private Box controls;
+    private final TranslatingStringEnumConfigurer selectionOption;
+    private final TranslatingStringEnumConfigurer movementOption;
+    private final TranslatingStringEnumConfigurer bandSelectOption;
+    private final BooleanConfigurer ignoreGridBox;
+    private final TraitConfigPanel controls;
+
+    private static final String NORMAL = "normally"; // NON-NLS
+    private static final String SHIFT = "when shift-key down"; // NON-NLS
+    private static final String ALT = "when alt-key down"; // NON-NLS
+    private static final String NEVER = "never"; // NON-NLS
+    private static final String SELECTED = "only if selected"; // NON-NLS
+
+    private static final String[] SELECT_OPTIONS = { NORMAL, SHIFT, ALT, NEVER}; // NON-NLS
+
+    private static final String[] SELECT_KEYS = {
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.when_shift_key_down",
+      "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.never"
+    };
+
+    private static final String[] BAND_SELECT_OPTIONS = { NORMAL, ALT, NEVER}; // NON-NLS
+
+    private static final String[] BAND_SELECT_KEYS = {
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.never"
+    };
+
+    private static final String[] MOVE_OPTIONS = { NORMAL, SELECTED, NEVER }; // NON-NLS
+
+    private static final String[] MOVE_KEYS = {
+      "Editor.Immobilized.normally",
+      "Editor.Immobilized.only_if_selected",
+      "Editor.Immobilized.never"
+    };
 
     public Ed(Immobilized p) {
-      selectionOption = new JComboBox<>();
-      selectionOption.addItem("normally");
-      selectionOption.addItem("when shift-key down");
-      selectionOption.addItem("when alt-key down");
-      selectionOption.addItem("never");
+      controls = new TraitConfigPanel();
+
+      selectionOption = new TranslatingStringEnumConfigurer(SELECT_OPTIONS, SELECT_KEYS);
       if (p.neverSelect) {
-        selectionOption.setSelectedIndex(3);
+        selectionOption.setValue(NEVER);
       }
       else if (p.altToSelect) {
-        selectionOption.setSelectedIndex(2);
+        selectionOption.setValue(ALT);
       }
       else if (p.shiftToSelect) {
-        selectionOption.setSelectedIndex(1);
+        selectionOption.setValue(SHIFT);
       }
       else {
-        selectionOption.setSelectedIndex(0);
+        selectionOption.setValue(NORMAL);
       }
-      ignoreGridBox = new JCheckBox("Ignore map grid when moving?");
-      ignoreGridBox.setSelected(p.ignoreGrid);
-      controls = Box.createVerticalBox();
-      Box b = Box.createHorizontalBox();
-      b.add(new JLabel("Select piece:  "));
-      b.add(selectionOption);
-      controls.add(b);
+      controls.add("Editor.Immobilized.select_piece", selectionOption);
 
-      bandSelectOption = new JComboBox<>();
-      bandSelectOption.addItem("normally");
-      bandSelectOption.addItem("when alt-key down");
-      bandSelectOption.addItem("never");
+      bandSelectOption = new TranslatingStringEnumConfigurer(BAND_SELECT_OPTIONS, BAND_SELECT_KEYS);
       if (p.neverBandSelect) {
-        bandSelectOption.setSelectedIndex(2);
+        bandSelectOption.setValue(NEVER);
       }
       else if (p.altToBandSelect) {
-        bandSelectOption.setSelectedIndex(1);
+        bandSelectOption.setValue(ALT);
       }
       else {
-        bandSelectOption.setSelectedIndex(0);
-      }      
+        bandSelectOption.setValue(NORMAL);
+      }
+      controls.add("Editor.Immobilized.band_select_piece", bandSelectOption);
 
-      b = Box.createHorizontalBox();
-      b.add(new JLabel("Band-Select piece:  "));
-      b.add(bandSelectOption);
-      controls.add(b);
-            
-      movementOption = new JComboBox<>();
-      movementOption.addItem("normally");
-      movementOption.addItem("only if selected");
-      movementOption.addItem("never");
+      movementOption = new TranslatingStringEnumConfigurer(MOVE_OPTIONS, MOVE_KEYS);
       if (p.neverMove) {
-        movementOption.setSelectedIndex(2);
+        movementOption.setValue(NEVER);
       }
       else if (p.moveIfSelected) {
-        movementOption.setSelectedIndex(1);
+        movementOption.setValue(SELECTED);
       }
       else {
-        movementOption.setSelectedIndex(0);
+        movementOption.setValue(NORMAL);
       }
-      b = Box.createHorizontalBox();
-      b.add(new JLabel("Move piece:  "));
-      b.add(movementOption);
-      controls.add(b);
-      controls.add(ignoreGridBox);
+      controls.add("Editor.Immobilized.move_piece", movementOption);
+
+      ignoreGridBox = new BooleanConfigurer(p.ignoreGrid);
+      controls.add("Editor.Immobilized.ignore_map_grid_when_moving", ignoreGridBox);
     }
 
     @Override
@@ -432,36 +455,36 @@ public class Immobilized extends Decorator implements EditablePiece {
     @Override
     public String getType() {
       String s = ID;
-      switch (selectionOption.getSelectedIndex()) {
-      case 1:
+      switch (selectionOption.getValueString()) {
+      case SHIFT:
         s += SHIFT_SELECT;
         break;
-      case 2:
+      case ALT:
         s += ALT_SELECT;
         break;
-      case 3:
+      case NEVER:
         s += NEVER_SELECT;
       }
-      if (ignoreGridBox.isSelected()) {
+      if (ignoreGridBox.getValueBoolean()) {
         s += IGNORE_GRID;
       }
-      switch (bandSelectOption.getSelectedIndex()) {
-      case 1:
+      switch (bandSelectOption.getValueString()) {
+      case ALT:
         s += ALT_BAND_SELECT;
         break;
-      case 2:
+      case NEVER:
         s += NEVER_BAND_SELECT;
         break;
       }
       s += ';';
-      switch (movementOption.getSelectedIndex()) {
-      case 0:
+      switch (movementOption.getValueString()) {
+      case NORMAL:
         s += MOVE_NORMAL;
         break;
-      case 1:
+      case SELECTED:
         s += MOVE_SELECTED;
         break;
-      case 2:
+      case NEVER:
         s += NEVER_MOVE;
         break;
       }

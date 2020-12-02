@@ -19,13 +19,14 @@ public class SetPersistentPropertyCommand extends Command {
 
   public SetPersistentPropertyCommand(String id, Object key, Object oldValue, Object newValue) {
     setKey(key);
-    setOldValue (oldValue);
-    setNewValue (newValue);
-    setId (id);
+    setOldValue(oldValue);
+    setNewValue(newValue);
+    setId(id);
   }
 
+  @Override
   protected void executeCommand() {
-    GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
+    final GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (target != null) {
       // Not all GamePieces will have persistent Properties
       if (target instanceof PersistentPropertyContainer) {
@@ -34,8 +35,9 @@ public class SetPersistentPropertyCommand extends Command {
     }
   }
 
+  @Override
   protected Command myUndoCommand() {
-    return new SetPersistentPropertyCommand (id, key, newValue, oldValue);
+    return new SetPersistentPropertyCommand(id, key, newValue, oldValue);
   }
 
   @Override

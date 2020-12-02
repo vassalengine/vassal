@@ -32,7 +32,7 @@ public class BundleHelper {
   private static final Logger logger =
     LoggerFactory.getLogger(BundleHelper.class);
 
-  private ResourceBundle bundle;
+  private final ResourceBundle bundle;
 
   public BundleHelper(ResourceBundle bundle) {
     this.bundle = bundle;
@@ -43,7 +43,7 @@ public class BundleHelper {
       return bundle.getString(id);
     }
     catch (ClassCastException | MissingResourceException e) {
-      logger.warn("No Translation: " + id);
+      logger.warn("No Translation: " + id); //NON-NLS
     }
 
     // fallback: return the key
@@ -55,7 +55,7 @@ public class BundleHelper {
       return String.format(getString(id), args);
     }
     catch (IllegalFormatException e) {
-      logger.error("Illegal Message Format: " + id);
+      logger.error("Illegal Message Format: " + id); //NON-NLS
     }
 
     // fallback: return the key

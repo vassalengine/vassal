@@ -31,7 +31,7 @@ import VASSAL.tools.swing.SwingUtils;
 public class HotkeySpecifier extends JTextField implements KeyListener {
   private static final long serialVersionUID = 1L;
 
-  private int key;
+  private final int key;
   private KeyStroke stroke;
 
   public HotkeySpecifier() {
@@ -85,15 +85,14 @@ public class HotkeySpecifier extends JTextField implements KeyListener {
   }
 
   public static KeyStroke getStrokeForString(String s) {
-    int index = s.indexOf(',');
-    return KeyStroke.getKeyStroke
-      (Integer.parseInt(s.substring(0, index)),
-       Integer.parseInt(s.substring(index + 1)));
-
+    final int index = s.indexOf(',');
+    return KeyStroke.getKeyStroke(
+      Integer.parseInt(s.substring(0, index)),
+      Integer.parseInt(s.substring(index + 1))
+    );
   }
 
   public static String getStringForStroke(KeyStroke stroke) {
     return stroke.getKeyCode() + "," + stroke.getModifiers();
   }
-
 }

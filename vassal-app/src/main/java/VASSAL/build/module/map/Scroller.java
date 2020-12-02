@@ -38,10 +38,10 @@ public class Scroller extends AbstractBuildable implements KeyListener {
    * The attribute name for whether to use arrow keys
    * instead of number keypad.  Should be one of ALWAYS, NEVER, or PROMPT
    */
-  public static final String USE_ARROWS = "useArrows";
-  public static final String ALWAYS = "always";
-  public static final String NEVER = "never";
-  public static final String PROMPT = "prompt";
+  public static final String USE_ARROWS = "useArrows"; //NON-NLS
+  public static final String ALWAYS = "always"; //NON-NLS
+  public static final String NEVER = "never"; //NON-NLS
+  public static final String PROMPT = "prompt"; //NON-NLS
 
   protected String usingArrows = PROMPT;
 
@@ -105,30 +105,76 @@ public class Scroller extends AbstractBuildable implements KeyListener {
   public void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
 
-    int dx;
-    int dy;
+    final int dx;
+    final int dy;
 
     if (Boolean.TRUE.equals(
           GameModule.getGameModule().getPrefs().getValue(USE_ARROWS))) {
       switch (e.getKeyCode()) {
-      case KeyEvent.VK_UP:    dx =  0; dy = -1; break;
-      case KeyEvent.VK_DOWN:  dx =  0; dy =  1; break;
-      case KeyEvent.VK_RIGHT: dx =  1; dy =  0; break;
-      case KeyEvent.VK_LEFT:  dx = -1; dy =  0; break;
-      default: return;
+      case KeyEvent.VK_UP:
+        dx =  0;
+        dy = -1;
+        break;
+      case KeyEvent.VK_DOWN:
+        dx =  0;
+        dy =  1;
+        break;
+      case KeyEvent.VK_RIGHT:
+        dx =  1;
+        dy =  0;
+        break;
+      case KeyEvent.VK_LEFT:
+        dx = -1;
+        dy =  0;
+        break;
+      default:
+        return;
       }
     }
     else {
       switch (e.getKeyCode()) {
-      case KeyEvent.VK_NUMPAD1: dx = -1; dy =  1; noEcho = '1'; break;
-      case KeyEvent.VK_NUMPAD2: dx =  0; dy =  1; noEcho = '2'; break;
-      case KeyEvent.VK_NUMPAD3: dx =  1; dy =  1; noEcho = '3'; break;
-      case KeyEvent.VK_NUMPAD4: dx = -1; dy =  0; noEcho = '4'; break;
-      case KeyEvent.VK_NUMPAD6: dx =  1; dy =  0; noEcho = '6'; break;
-      case KeyEvent.VK_NUMPAD7: dx = -1; dy = -1; noEcho = '7'; break;
-      case KeyEvent.VK_NUMPAD8: dx =  0; dy = -1; noEcho = '8'; break;
-      case KeyEvent.VK_NUMPAD9: dx =  1; dy = -1; noEcho = '9'; break;
-      default: return;
+      case KeyEvent.VK_NUMPAD1:
+        dx = -1;
+        dy =  1;
+        noEcho = '1';
+        break;
+      case KeyEvent.VK_NUMPAD2:
+        dx =  0;
+        dy =  1;
+        noEcho = '2';
+        break;
+      case KeyEvent.VK_NUMPAD3:
+        dx =  1;
+        dy =  1;
+        noEcho = '3';
+        break;
+      case KeyEvent.VK_NUMPAD4:
+        dx = -1;
+        dy =  0;
+        noEcho = '4';
+        break;
+      case KeyEvent.VK_NUMPAD6:
+        dx =  1;
+        dy =  0;
+        noEcho = '6';
+        break;
+      case KeyEvent.VK_NUMPAD7:
+        dx = -1;
+        dy = -1;
+        noEcho = '7';
+        break;
+      case KeyEvent.VK_NUMPAD8:
+        dx =  0;
+        dy = -1;
+        noEcho = '8';
+        break;
+      case KeyEvent.VK_NUMPAD9:
+        dx =  1;
+        dy = -1;
+        noEcho = '9';
+        break;
+      default:
+        return;
       }
     }
 

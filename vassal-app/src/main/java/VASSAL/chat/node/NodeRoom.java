@@ -60,7 +60,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
   }
 
   public Properties getInfo() {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     if (owner != null) {
       p.setProperty(OWNER, owner);
     }
@@ -77,8 +77,8 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
    * Set the members to be the list of players currently in the room
    */
   public void setMembersToCurrentPlayers() {
-    List<Player> l = getPlayerList();
-    NodePlayer[] p = l.toArray(new NodePlayer[0]);
+    final List<Player> l = getPlayerList();
+    final NodePlayer[] p = l.toArray(new NodePlayer[0]);
     members = new String[p.length];
     for (int i = 0; i < p.length; i++) {
       members[i] = p[i].getId();

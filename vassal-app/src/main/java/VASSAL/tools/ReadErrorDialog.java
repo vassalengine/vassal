@@ -21,6 +21,7 @@ package VASSAL.tools;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 
 /**
  * Utility class for reporting an IOException reading from the local system or a resource bundled with the VASSAL engine
@@ -36,12 +37,13 @@ public class ReadErrorDialog {
    * @param filename the file which was being read
    */
   public static void error(Throwable t, IOException e, String filename) {
-    if (e instanceof FileNotFoundException) {
+    if (e instanceof FileNotFoundException ||
+        e instanceof NoSuchFileException) {
       // file is missing
       WarningDialog.showDisableable(
         t,
         (Object) (e.getClass().getName() + "@" + filename),
-        "Error.file_not_found",
+        "Error.file_not_found", //NON-NLS
         filename
       );
     }
@@ -50,7 +52,7 @@ public class ReadErrorDialog {
       ErrorDialog.showDisableable(
         t,
         (Object) (e.getClass().getName() + "@" + filename),
-        "Error.file_read_error",
+        "Error.file_read_error", //NON-NLSf
         filename
       );
     }
@@ -86,9 +88,9 @@ public class ReadErrorDialog {
       null,
       e,
       e.getClass().getName() + "@" + filename,
-      "Unable to Read File",
-      "Unable to Read File",
-      "VASSAL was unable to read the file '" + filename + "'."
+      "Unable to Read File", //NON-NLS
+      "Unable to Read File", //NON-NLS
+      "VASSAL was unable to read the file '" + filename + "'." //NON-NLS
     );
   }
 

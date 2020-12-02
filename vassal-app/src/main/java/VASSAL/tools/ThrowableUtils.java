@@ -107,7 +107,7 @@ public class ThrowableUtils {
     catch (Throwable ignore) {
       // If anything happens here, we're screwed anyway, as we're already
       // calling this during error handling. Just log it and soldier on.
-      logger.warn("ignored", ignore);
+      logger.warn("ignored", ignore);  //NON-NLS
     }
 
     if (toThrow != null) throw toThrow;

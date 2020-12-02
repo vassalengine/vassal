@@ -50,15 +50,15 @@ public class FormattedString implements Loopable {
 
   protected Map<String, String> props = new HashMap<>();
   protected PropertySource defaultProperties;
-  
+
   @Override
-  public String getComponentTypeName() {    
-    return "FormattedString";
+  public String getComponentTypeName() {
+    return Resources.getString("Editor.FormattedString.component_type");
   }
 
   @Override
   public String getComponentName() {
-    return "FormattedString";
+    return Resources.getString("Editor.FormattedString.component_type");
   }
 
 
@@ -97,8 +97,7 @@ public class FormattedString implements Loopable {
   }
 
   /**
-   * Return the resulting string after substituting properties
-   * @return
+   * @return the resulting string after substituting properties
    */
   public String getText() {
     return getText(defaultProperties, false);
@@ -113,8 +112,8 @@ public class FormattedString implements Loopable {
    * Also, if any property keys match a property in the given GamePiece,
    * substitute the value of that property
    * @see GamePiece#getProperty
-   * @param ps
-   * @return
+   * @param ps property source
+   * @return Return the resulting string after substituting properties
    */
   public String getText(PropertySource ps) {
     return getText(ps, false);
@@ -126,9 +125,9 @@ public class FormattedString implements Loopable {
    * substitute the value of that property. If the resulting string is
    * empty, then the default is returned.
    * @see GamePiece#getProperty
-   * @param ps
+   * @param ps Property source
    * @param def the default if the result is otherwise empty
-   * @return
+   * @return Return the resulting string after substituting properties
    */
   public String getText(PropertySource ps, String def) {
     String s = getText(ps, false);
@@ -163,7 +162,7 @@ public class FormattedString implements Loopable {
       }
     }
     catch (RecursionLimitException e) {
-      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
       return "";
     }
     finally {
@@ -208,7 +207,7 @@ public class FormattedString implements Loopable {
    *  description[format]=value
    *
    * Use format 1 if the generated value is the same as the format
-   * Use format 2 if the formated contains an expression that has been expanded.
+   * Use format 2 if the formatted contains an expression that has been expanded.
    *
    * @param format Formatted String
    * @param description Description of the String
@@ -248,14 +247,11 @@ public class FormattedString implements Loopable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    FormattedString other = (FormattedString) obj;
+    final FormattedString other = (FormattedString) obj;
     if (formatString == null) {
-      if (other.formatString != null)
-        return false;
+      return other.formatString == null;
     }
-    else if (!formatString.equals(other.formatString))
-      return false;
-    return true;
+    else return formatString.equals(other.formatString);
   }
 
 }

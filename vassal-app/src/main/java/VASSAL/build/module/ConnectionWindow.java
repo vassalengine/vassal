@@ -25,9 +25,6 @@ import VASSAL.build.Buildable;
  */
 
 public class ConnectionWindow extends AbstractBuildable {
-  public ConnectionWindow() {
-  }
-
   @Override
   public void addTo(Buildable b) {
   }

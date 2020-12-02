@@ -1,16 +1,17 @@
 package VASSAL.tools;
 
-import VASSAL.build.GameModule;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.IOUtils;
 
 import VASSAL.Info;
-import VASSAL.tools.io.IOUtils;
-import java.util.stream.Stream;
+import VASSAL.build.GameModule;
 
 public class BugUtils {
 
@@ -20,12 +21,12 @@ public class BugUtils {
                                    Throwable t) throws IOException {
     final HTTPPostBuilder pb = new HTTPPostBuilder();
 
-    final String url = "http://www.vassalengine.org/util/bug.php";
-    pb.setParameter("version", Info.getReportableVersion());
-    pb.setParameter("email", email);
-    pb.setParameter("summary", getSummary(t));
-    pb.setParameter("description", getDescription(description, errorLog));
-    pb.setParameter("log", Info.getErrorLogPath().getName(), errorLog);
+    final String url = "http://www.vassalengine.org/util/bug.php"; //NON-NLS
+    pb.setParameter("version", Info.getReportableVersion()); //NON-NLS
+    pb.setParameter("email", email); //NON-NLS
+    pb.setParameter("summary", getSummary(t)); //NON-NLS
+    pb.setParameter("description", getDescription(description, errorLog)); //NON-NLS
+    pb.setParameter("log", Info.getErrorLogPath().getName(), errorLog); //NON-NLS
 
     try (InputStream in = pb.post(url)) {
       final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
@@ -33,7 +34,7 @@ public class BugUtils {
       // script should return zero on success, otherwise it failed
       try {
         if (Integer.parseInt(result) != 0) {
-          throw new NumberFormatException("Bad result: " + result);
+          throw new NumberFormatException("Bad result: " + result); //NON-NLS
         }
       }
       catch (NumberFormatException e) {
@@ -45,13 +46,13 @@ public class BugUtils {
   private static String getDescription(String description, String errorLog) {
     return
       description + "\n\n" +
-      GameModule.getGameModule().getGameName() + " v" + GameModule.getGameModule().getGameVersion() + " " + Info.getVersion() + "\n\n" +
+      GameModule.getGameModule().getGameName() + " v" + GameModule.getGameModule().getGameVersion() + " " + Info.getVersion() + "\n\n" + //NON-NLS
       getStackTraceSummary(errorLog);
   }
 
   private static String getStackTraceSummary(String errorLog) {
     final StringBuilder summary = new StringBuilder();
-    final Stream<String> log = errorLog.substring(errorLog.lastIndexOf("ERROR VASSAL.tools.ErrorDialog")).lines();
+    final Stream<String> log = errorLog.substring(errorLog.lastIndexOf("ERROR VASSAL.tools.ErrorDialog")).lines(); //NON-NLS
     log.skip(1).limit(5).forEach(l -> summary.append(l.replace('\t', ' ')).append('\n'));
     return summary.toString();
   }
@@ -59,7 +60,7 @@ public class BugUtils {
   private static String getSummary(Throwable t) {
     String summary = "[" + GameModule.getGameModule().getGameName() + "] ";
     if (t == null) {
-      summary += "Automated Bug Report";
+      summary += "Automated Bug Report"; //NON-NLS
     }
     else {
       final String tc = t.getClass().getName();
@@ -80,19 +81,16 @@ public class BugUtils {
     return summary;
   }
 
-
 // FIXME: move this somewhere else?
   public static String getErrorLog() {
-    String log = null;
     final File f = Info.getErrorLogPath();
-    try (FileReader r = new FileReader(f, Charset.defaultCharset())) {
-      log = IOUtils.toString(r);
+    try {
+      return Files.readString(f.toPath(),  Charset.defaultCharset());
     }
     catch (IOException e) {
       // Don't bother logging this---if we can't read the errorLog,
       // then we probably can't write to it either.
+      return null;
     }
-
-    return log;
   }
 }

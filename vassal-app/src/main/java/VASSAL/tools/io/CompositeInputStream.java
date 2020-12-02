@@ -23,6 +23,7 @@ import java.io.SequenceInputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * An {@link InputStream} which concatenates other <code>InputStreams</code>.
@@ -39,7 +40,7 @@ import java.util.List;
  */
 public class CompositeInputStream extends InputStream {
 
-  protected final LinkedList<InputStream> queue;
+  protected final Queue<InputStream> queue;
 
   protected InputStream in;
 
@@ -75,7 +76,7 @@ public class CompositeInputStream extends InputStream {
   @Override
   public int available() throws IOException {
     int bytes = in != null ? in.available() : 0;
-    for (InputStream ch : queue) {
+    for (final InputStream ch : queue) {
       bytes += Math.max(ch.available(), 0);
     }
     return bytes;

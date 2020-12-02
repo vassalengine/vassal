@@ -25,9 +25,9 @@ import java.util.Date;
  *
  */
 public class Message {
-  private String sender;
-  private String text;
-  private Date creationTime;
+  private final String sender;
+  private final String text;
+  private final Date creationTime;
 
   public Message(String sender, String text) {
     this(sender, text, new Date());

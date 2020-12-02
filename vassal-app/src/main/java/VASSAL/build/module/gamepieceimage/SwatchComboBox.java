@@ -24,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -37,13 +39,22 @@ import VASSAL.tools.image.ImageUtils;
 public class SwatchComboBox extends JComboBox<String> {
   private static final long serialVersionUID = 1L;
 
+  private static final Map<String, String> colorMap = new HashMap<>();
+
   public SwatchComboBox() {
-    String[] s = ColorManager.getColorManager().getColorNames();
-    for (String value : s) {
+    final String[] s = ColorManager.getColorManager().getColorNames();
+    for (final String value : s) {
       addItem(value);
     }
-    SwatchRenderer renderer = new SwatchRenderer();
+    final SwatchRenderer renderer = new SwatchRenderer();
     setRenderer(renderer);
+
+    if (colorMap.isEmpty()) {
+      final String[] displayNames =  ColorManager.getColorManager().getColorDisplayNames();
+      for (int i = 0; i < s.length; i++) {
+        colorMap.put(s[i], displayNames[i]);
+      }
+    }
   }
 
   public SwatchComboBox(ItemListener l) {
@@ -74,7 +85,7 @@ public class SwatchComboBox extends JComboBox<String> {
     public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected,
         boolean cellHasFocus) {
 
-      ColorSwatch swatch = ColorManager.getColorManager().getColorSwatch(value);
+      final ColorSwatch swatch = ColorManager.getColorManager().getColorSwatch(value);
 
       if (isSelected) {
         setBackground(list.getSelectionBackground());
@@ -96,14 +107,14 @@ public class SwatchComboBox extends JComboBox<String> {
       g.dispose();
 
       setIcon(new ImageIcon(img));
-      setText(value);
+      setText(colorMap.get(value));
       setFont(list.getFont());
 
       return this;
     }
   }
 
-  class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
+  public class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
     private static final long serialVersionUID = 1L;
 
     public SwatchTableRenderer() {
@@ -122,7 +133,7 @@ public class SwatchComboBox extends JComboBox<String> {
         boolean isSelected, boolean hasFocus,
         int row, int column) {
 
-      ColorSwatch swatch = (ColorSwatch) value;
+      final ColorSwatch swatch = (ColorSwatch) value;
 
       if (isSelected) {
         setBackground(table.getSelectionBackground());

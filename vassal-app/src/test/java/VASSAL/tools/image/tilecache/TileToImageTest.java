@@ -19,10 +19,12 @@
 package VASSAL.tools.image.tilecache;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import VASSAL.tools.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 
 import org.junit.After;
 import org.junit.Test;
@@ -42,8 +44,8 @@ public class TileToImageTest {
 
     TileToImage.main(new String[] { tile, out_actual });
 
-    try (FileInputStream expected = new FileInputStream(out_expected);
-         FileInputStream actual = new FileInputStream(out_actual)) {
+    try (InputStream expected = Files.newInputStream(Path.of(out_expected));
+         InputStream actual = Files.newInputStream(Path.of(out_actual))) {
       assertTrue(IOUtils.contentEquals(expected, actual));
     }
   }

@@ -21,8 +21,9 @@ package VASSAL.build.module.documentation;
  * Interface for specifying the owning Window of an online Help dialog
  * @deprecated To be replaced
  */
+@FunctionalInterface
 @Deprecated(since = "2020-08-06")
 public interface HelpWindowExtension {
   @Deprecated(since = "2020-08-06")
-  public void setBaseWindow(HelpWindow w);
+  void setBaseWindow(HelpWindow w);
 }

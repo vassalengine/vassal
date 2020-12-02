@@ -26,11 +26,12 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.PermissionCollection;
@@ -60,7 +61,6 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
 
 /**
@@ -78,13 +78,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   protected SortedSet<String> localImages = null;
 
-  public static final String IMAGE_DIR = "images/";
+  public static final String IMAGE_DIR = "images/"; //NON-NLS
   protected String imageDir = IMAGE_DIR;
 
-  public static final String SOUND_DIR = "sounds/";
+  public static final String SOUND_DIR = "sounds/"; //NON-NLS
   protected String soundDir = SOUND_DIR;
 
-  public static final String ICON_DIR = "icons/";
+  public static final String ICON_DIR = "icons/"; //NON-NLS
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
@@ -102,7 +102,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   @Override
   public String getName() {
-    return archive == null ? "data archive" : archive.getName();
+    return archive == null ? "data archive" : archive.getName(); //NON-NLS
   }
 
   public FileArchive getArchive() {
@@ -117,7 +117,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String path = soundDir + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      if (name.toLowerCase().endsWith(".mp3")) {
+      if (name.toLowerCase().endsWith(".mp3")) { //NON-NLS
         clip = new Mp3AudioClip(path);
       }
       else {
@@ -147,22 +147,22 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (fileName.startsWith("/")) {
       final InputStream in = getClass().getResourceAsStream(fileName);
       if (in != null) return in;
-      throw new FileNotFoundException("Resource not found: " + fileName);
+      throw new FileNotFoundException("Resource not found: " + fileName); //NON-NLS
     }
 
     try {
       return getInputStream(imageDir + fileName);
     }
-    catch (FileNotFoundException ignored) {
+    catch (FileNotFoundException | NoSuchFileException ignored) {
     }
     try {
-      return getInputStream(imageDir + fileName + ".gif");
+      return getInputStream(imageDir + fileName + ".gif"); //NON-NLS
     }
-    catch (FileNotFoundException ignored) {
+    catch (FileNotFoundException | NoSuchFileException ignored) {
     }
 
     final InputStream in =
-      getClass().getResourceAsStream("/" + imageDir + fileName + ".gif");
+      getClass().getResourceAsStream("/" + imageDir + fileName + ".gif"); //NON-NLS
     if (in != null) return in;
 
     throw new FileNotFoundException(
@@ -185,7 +185,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       if (in != null) {
         return in;
       }
-      throw new FileNotFoundException("Resource not found: " + fileName);
+      throw new FileNotFoundException("Resource not found: " + fileName); //NON-NLS
     }
 
     // Look in this archive and its extensions
@@ -216,13 +216,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     // Maybe it's an extensionless GIF? Aauugh!
-    in = getInputStreamImpl(fileName + ".gif");
+    in = getInputStreamImpl(fileName + ".gif"); //NON-NLS
     if (in != null) {
       return in;
     }
 
     // Maybe it's an extensionless GIF resource. Aauugh!
-    in = getClass().getResourceAsStream("/" + fileName + ".gif");
+    in = getClass().getResourceAsStream("/" + fileName + ".gif"); //NON-NLS
     if (in != null) {
       return in;
     }
@@ -244,11 +244,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     // we don't have it, try our extensions
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getInputStream(fileName);
       }
-      catch (FileNotFoundException ignored) {
+      catch (FileNotFoundException | NoSuchFileException ignored) {
         // not found in this extension, try the next
       }
     }
@@ -292,11 +292,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return new URL(getURL(), fileName);
     }
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       try {
         return ext.getURL(fileName);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         // not found in this extension, try the next
       }
     }
@@ -349,7 +349,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (localImages == null) localImages = getLocalImageNames();
     s.addAll(localImages);
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       ext.getImageNamesRecursively(s);
     }
   }
@@ -358,10 +358,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final TreeSet<String> s = new TreeSet<>();
 
     if (archive != null) {
+      // trim the trailing slash
+      final int trimlen = imageDir.length();
+      final String root = imageDir.substring(0, trimlen - 1);
       try {
-//        for (String filename : archive.getFiles(imageDir)) {
-        for (String filename : archive.getFiles("images")) {
-          s.add(filename.substring(imageDir.length()));
+        for (final String filename : archive.getFiles(root)) {
+          final String fn = filename.substring(trimlen);
+          // Empty fn is the entry for the root directory; don't return that
+          if (!fn.isEmpty()) {
+            s.add(fn);
+          }
         }
       }
       catch (IOException e) {
@@ -392,7 +398,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public ArchiveWriter getWriter() {
     if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
 
-    for (DataArchive ext : extensions) {
+    for (final DataArchive ext : extensions) {
       final ArchiveWriter writer = ext.getWriter();
       if (writer != null) return writer;
     }
@@ -439,10 +445,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
     final String slashname = name.replace('.', '/');
-    byte[] data;
+    final byte[] data;
 
-    try (InputStream stream = getInputStream(slashname + ".class")) {
-      data = IOUtils.toByteArray(stream);
+    try (InputStream stream = getInputStream(slashname + ".class")) { //NON-NLS
+      data = stream.readAllBytes();
     }
     catch (IOException e) {
       throw new ClassNotFoundException("Unable to load class " + name, e);
@@ -516,7 +522,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Dimension getImageSize(String name) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    if (name.toLowerCase().endsWith(".svg")) {
+    if (name.toLowerCase().endsWith(".svg")) { //NON-NLS
       return SVGImageUtils.getImageSize(name, getImageInputStream(name));
     }
     else {
@@ -536,7 +542,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public BufferedImage getImage(String name) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    if (name.toLowerCase().endsWith(".svg")) {
+    if (name.toLowerCase().endsWith(".svg")) { //NON-NLS
       return new SVGRenderer(getURL(name),
                              getImageInputStream(name)).render();
     }
@@ -682,8 +688,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return getImage(getFileStream(dir, zip, file));
     }
     else if ((new File(dir, file)).exists()) {
-      return Toolkit.getDefaultToolkit().getImage
-          (dir.getPath() + File.separatorChar + file);
+      return Toolkit.getDefaultToolkit().getImage(
+        dir.getPath() + File.separatorChar + file
+      );
     }
     else {
       throw new IOException("Image " + file + " not found in " + dir
@@ -720,7 +727,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         return zip.getInputStream(zip.getEntry(file));
       }
       else {
-        return new FileInputStream(new File(dir, file));
+        return Files.newInputStream(dir.toPath().resolve(file));
       }
     }
     catch (IOException e) {
@@ -750,17 +757,17 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public String getArchiveURL() {
     ProblemDialog.showDeprecated("2020-08-06");
-    return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
+    return archive != null ? "jar:file://" + archive.getName() + "!/" : ""; //NON-NLS
   }
 
   /**
    * Read all available bytes from the given InputStream.
-   * @deprecated Use {@link IOUtils#toByteArray(InputStream)} instead.
+   * @deprecated Use {@link InputStream.readAllBytes()} instead.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static byte[] getBytes(InputStream in) throws IOException {
     ProblemDialog.showDeprecated("2020-08-06");
-    return IOUtils.toByteArray(in);
+    return in.readAllBytes();
   }
 
   /**
@@ -786,7 +793,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Rectangle getImageBounds(Image im) {
     ProblemDialog.showDeprecated("2020-08-06");
-    ImageIcon icon = new ImageIcon(im);
+    final ImageIcon icon = new ImageIcon(im);
     return new Rectangle(-icon.getIconWidth() / 2, -icon.getIconHeight() / 2,
                           icon.getIconWidth(), icon.getIconHeight());
   }
@@ -797,13 +804,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image improvedScaling(Image img, int width, int height) {
     ProblemDialog.showDeprecated("2020-08-06");
-    ImageFilter filter;
+    final ImageFilter filter;
 
     filter = new ImprovedAveragingScaleFilter(img.getWidth(null),
                                               img.getHeight(null),
                                               width, height);
 
-    ImageProducer prod;
+    final ImageProducer prod;
     prod = new FilteredImageSource(img.getSource(), filter);
     return Toolkit.getDefaultToolkit().createImage(prod);
   }

@@ -22,9 +22,9 @@ import VASSAL.i18n.ComponentI18nData;
 
 public abstract class AbstractScript extends AbstractConfigurable {
 
-  public static final String NAME = "name";
-  public static final String DESC = "desc";
-  public static final String SCRIPT = "script";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String DESC = "desc"; //NON-NLS
+  public static final String SCRIPT = "script"; //NON-NLS
 
   private String description = "";
   private String script = "";
@@ -49,7 +49,7 @@ public abstract class AbstractScript extends AbstractConfigurable {
 
   @Override
   public ComponentI18nData getI18nData() {
-    ComponentI18nData data = super.getI18nData();
+    final ComponentI18nData data = super.getI18nData();
     data.setAllAttributesUntranslatable();
     return data;
   }
@@ -103,8 +103,5 @@ public abstract class AbstractScript extends AbstractConfigurable {
     else if (SCRIPT.equals(key)) {
       setScript((String) value);
     }
-    return;
   }
-
-
 }

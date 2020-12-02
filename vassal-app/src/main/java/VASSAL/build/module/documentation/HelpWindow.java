@@ -33,7 +33,7 @@ import VASSAL.tools.swing.HTMLWindowHelper;
 public class HelpWindow extends JFrame implements HyperlinkListener {
   private static final long serialVersionUID = 1L;
 
-  private HTMLWindowHelper helper = new HTMLWindowHelper();
+  private final HTMLWindowHelper helper = new HTMLWindowHelper();
 
   public HelpWindow(String title, URL contents) {
     super(title);
@@ -43,6 +43,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
   }
 
   @Deprecated
+  @Override
   public void hyperlinkUpdate(HyperlinkEvent e) {
     helper.hyperlinkUpdate(e);
   }

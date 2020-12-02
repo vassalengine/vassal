@@ -28,14 +28,15 @@ package VASSAL.script.expression;
 import javax.swing.JDialog;
 
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 
 public class IntBuilder extends StrBuilder {
   private static final long serialVersionUID = 1L;
 
   public IntBuilder(StringConfigurer c, JDialog parent) {
-    super(parent, "Number Builder", true);
+    super(parent, Resources.getString("Editor.IntBuilder.component_type"), true);
     target = c;
-    build("Number");
+    build(Resources.getString("Editor.IntBuilder.object_type"));
   }
 
 

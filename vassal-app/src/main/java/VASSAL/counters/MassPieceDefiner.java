@@ -39,10 +39,10 @@ public class MassPieceDefiner extends PieceDefiner {
     init(top);
     if (!definers.isEmpty()) {
       setPiece(definers.get(0).slot.getPiece());
-      List<Class<? extends GamePiece>> template = getTemplate();
+      final List<Class<? extends GamePiece>> template = getTemplate();
 
       for (int i = 0; i < definers.size(); ++i) {
-        GamePiece p = definers.get(i).definer.getPiece();
+        final GamePiece p = definers.get(i).definer.getPiece();
         if (!matchesTemplate(p, template)) {
           definers.remove(i--);
         }
@@ -52,19 +52,19 @@ public class MassPieceDefiner extends PieceDefiner {
 
   private void init(Configurable c) {
     if (c instanceof PieceSlot) {
-      PieceDefiner def = new Def();
+      final PieceDefiner def = new Def();
       def.setPiece(((PieceSlot) c).getPiece());
       definers.add(new Entry((PieceSlot) c, def));
     }
-    Configurable[] child = c.getConfigureComponents();
-    for (Configurable configurable : child) {
+    final Configurable[] child = c.getConfigureComponents();
+    for (final Configurable configurable : child) {
       init(configurable);
     }
   }
 
   private List<Class<? extends GamePiece>> getTemplate() {
     GamePiece p = definers.get(0).definer.getPiece();
-    ArrayList<Class<? extends GamePiece>> types = new ArrayList<>();
+    final ArrayList<Class<? extends GamePiece>> types = new ArrayList<>();
     while (p instanceof Decorator) {
       types.add(p.getClass());
       p = ((Decorator) p).piece;
@@ -75,20 +75,20 @@ public class MassPieceDefiner extends PieceDefiner {
 
   private boolean matchesTemplate(GamePiece p,
                                   List<Class<? extends GamePiece>> template) {
-    Iterator<Class<? extends GamePiece>> i = template.iterator();
+    final Iterator<Class<? extends GamePiece>> i = template.iterator();
     while (p instanceof Decorator && i.hasNext()) {
       if (p.getClass() != i.next()) {
         return false;
       }
       p = ((Decorator) p).piece;
     }
-    return i.hasNext() ? p.getClass() == i.next() && !i.hasNext() : false;
+    return i.hasNext() && p.getClass() == i.next() && !i.hasNext();
   }
 
   @Override
   protected void addTrait(Decorator c) {
     super.addTrait(c);
-    for (Entry e : definers) {
+    for (final Entry e : definers) {
       e.definer.addTrait(c);
     }
   }
@@ -96,7 +96,7 @@ public class MassPieceDefiner extends PieceDefiner {
   @Override
   protected void removeTrait(int index) {
     super.removeTrait(index);
-    for (Entry e : definers) {
+    for (final Entry e : definers) {
       e.definer.removeTrait(index);
     }
   }
@@ -104,7 +104,7 @@ public class MassPieceDefiner extends PieceDefiner {
   @Override
   protected void moveDecoratorUp(int index) {
     super.moveDecoratorUp(index);
-    for (Entry e : definers) {
+    for (final Entry e : definers) {
       e.definer.moveDecoratorUp(index);
     }
   }
@@ -112,7 +112,7 @@ public class MassPieceDefiner extends PieceDefiner {
   @Override
   protected void moveDecoratorDown(int index) {
     super.moveDecoratorDown(index);
-    for (Entry e : definers) {
+    for (final Entry e : definers) {
       e.definer.moveDecoratorDown(index);
     }
   }
@@ -120,29 +120,29 @@ public class MassPieceDefiner extends PieceDefiner {
   @Override
   protected void paste() {
     super.paste();
-    for (Entry e : definers) {
+    for (final Entry e : definers) {
       e.definer.paste();
     }
   }
 
   @Override
   protected boolean edit(int index) {
-    boolean result = super.edit(index);
-    for (Entry e : definers) {
+    final boolean result = super.edit(index);
+    for (final Entry e : definers) {
       e.definer.edit(index);
     }
     return result;
   }
 
   public void save() {
-    for (Entry e : definers) {
+    for (final Entry e : definers) {
       e.slot.setPiece(e.definer.getPiece());
     }
   }
 
   private static class Entry {
-    private PieceSlot slot;
-    private PieceDefiner definer;
+    private final PieceSlot slot;
+    private final PieceDefiner definer;
 
     private Entry(PieceSlot slot, PieceDefiner definer) {
       this.slot = slot;
@@ -155,12 +155,12 @@ public class MassPieceDefiner extends PieceDefiner {
 
     @Override
     protected boolean edit(int index) {
-      Object o = MassPieceDefiner.this.inUseModel.elementAt(index);
+      final Object o = MassPieceDefiner.this.inUseModel.elementAt(index);
       if (!(o instanceof EditablePiece)) {
         return false;
       }
-      PieceEditor template = ((EditablePiece) o).getEditor();
-      EditablePiece myPiece = (EditablePiece) this.inUseModel.elementAt(index);
+      final PieceEditor template = ((EditablePiece) o).getEditor();
+      final EditablePiece myPiece = (EditablePiece) this.inUseModel.elementAt(index);
       myPiece.mySetType(template.getType());
       if (myPiece instanceof Decorator) {
         ((Decorator) myPiece).mySetState(template.getState());

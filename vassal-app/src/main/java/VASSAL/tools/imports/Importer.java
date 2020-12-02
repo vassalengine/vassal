@@ -64,11 +64,11 @@ public abstract class Importer {
     final List<LayeredPieceCollection> l =
       map.getComponentsOf(LayeredPieceCollection.class);
 
-    LayeredPieceCollection collection;
-    if (l.size() == 0) {
+    final LayeredPieceCollection collection;
+    if (l.isEmpty()) {
       collection = new LayeredPieceCollection();
       insertComponent(collection, map);
-      collection.setAttribute(LayeredPieceCollection.PROPERTY_NAME, "Layer");
+      collection.setAttribute(LayeredPieceCollection.PROPERTY_NAME, "Layer"); //NON-NLS
     }
     else {
       assert (l.size() == 1);
@@ -82,7 +82,7 @@ public abstract class Importer {
    * The archive is written in <code>writeToArchive</code>.
    *
    * @param f            The base file to be imported.
-   * @throws IOException
+   * @throws IOException oops
    */
   protected void load(File f) throws IOException {
     this.file = f;
@@ -92,18 +92,18 @@ public abstract class Importer {
    * Create the VASSAL module based on the classes created by <code>load</code>. This should not be called directly
    * but rather <code>importFile</code>.
    *
-   * @throws IOException
+   * @throws IOException oops
    */
   public abstract void writeToArchive() throws IOException;
 
   /**
    * Two methods are needed to import a file. <code>Importer.importFile</code> initializes the game module
-   * and calls <code>load</code> which must be overridden by descendents.
+   * and calls <code>load</code> which must be overridden by descendants.
    *
    * @param action       <code>ImportAction</code> which creates the <code>Importer</code>. This is needed for
    *                     file dialogs that may be called by <code>Importer</code> methods.
    * @param f            The base file to be imported.
-   * @throws IOException
+   * @throws IOException oops
    */
   public void importFile(ImportAction action, File f) throws IOException {
     this.action = action;
@@ -160,7 +160,7 @@ public abstract class Importer {
       if (ch >= 0x20 && ch <= 0x7e)
         sb.append(ch);
       else if (ch != 0)
-        sb.append(" ");
+        sb.append(' ');
       else
         break;
     }
@@ -197,7 +197,7 @@ public abstract class Importer {
   }
 
   public static String getUniqueImageFileName(String s) {
-    return getUniqueImageFileName(s, ".png");
+    return getUniqueImageFileName(s, ".png"); //NON-NLS
   }
 
   /**
@@ -235,10 +235,10 @@ public abstract class Importer {
 
   /**
    * Determine whether the file is valid for the given importer.
-   * @param f
+   * @param f File
    * @return <code>true</code> if <code>f</code> is a valid file for this type.
-   * @throws FileNotFoundException
-   * @throws IOException
+   * @throws FileNotFoundException oops
+   * @throws IOException oops
    */
   public abstract boolean isValidImportFile(File f) throws IOException;
 }

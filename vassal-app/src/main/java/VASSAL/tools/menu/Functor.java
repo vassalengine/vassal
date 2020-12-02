@@ -22,6 +22,7 @@ package VASSAL.tools.menu;
  * @author Joel Uckelman
  * @since 3.1.0
  */
+@FunctionalInterface
 interface Functor<T> {
-  public void apply(T peer);
+  void apply(T peer);
 }

@@ -27,8 +27,8 @@ import VASSAL.i18n.Resources;
  *
  */
 public class SynchCommand extends Command {
-  private Player recipient;
-  private ChatServerConnection client;
+  private final Player recipient;
+  private final ChatServerConnection client;
 
   public SynchCommand(Player p, ChatServerConnection client) {
     recipient = p;
@@ -43,7 +43,7 @@ public class SynchCommand extends Command {
   protected void executeCommand() {
     if (recipient != null) {
       GameModule.getGameModule().warn(Resources.getString("Server.sending_game_info", recipient.getName())); //$NON-NLS-1$
-      Command synch = GameModule.getGameModule().getGameState().getRestoreCommand();
+      final Command synch = GameModule.getGameModule().getGameState().getRestoreCommand();
       if (synch != null) {
         client.sendTo(recipient, synch);
       }

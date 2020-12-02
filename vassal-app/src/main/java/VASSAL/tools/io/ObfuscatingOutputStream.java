@@ -18,12 +18,13 @@
 package VASSAL.tools.io;
 
 import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Random;
 
 /**
@@ -34,7 +35,7 @@ import java.util.Random;
  * @since 3.2.0
  */
 public class ObfuscatingOutputStream extends FilterOutputStream {
-  public static final String HEADER = "!VCSK";
+  public static final String HEADER = "!VCSK"; //NON-NLS
   private static final Random rand = new Random();
 
   private final byte key;
@@ -42,7 +43,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
 
   /**
    * @param out the stream to wrap
-   * @throws IOException
+   * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
     this(out, (byte) rand.nextInt(256));
@@ -51,7 +52,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   /**
    * @param out the stream to wrap
    * @param key the byte to use as the key
-   * @throws IOException
+   * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out, byte key)
                                                           throws IOException {
@@ -87,9 +88,9 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   }
 
   public static void main(String[] args) throws IOException {
-    try (InputStream in = args.length > 0 ? new FileInputStream(args[0]) : System.in;
+    try (InputStream in = args.length > 0 ? Files.newInputStream(Path.of(args[0])) : System.in;
          OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(System.out))) {
-      IOUtils.copy(in, out);
+      in.transferTo(out);
     }
 
     System.exit(0);

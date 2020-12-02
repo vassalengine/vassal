@@ -1,0 +1,65 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Basic Piece*#
+
+'''''
+
+=== Basic Piece
+
+[width="100%",cols="50%,50%",]
+|===
+|The simplest game piece consists of an image and a name.
+
+Type a *Name* into the field at right - this name will be used whenever the piece is mentioned in a message.
+
+Add a new *Image* for the piece by double-clicking on the box to the left, or select an image that has already been added from the drop-down menu.
+
+For a quick method of generating simple piece images from scratch, see <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>>.
+
+To give a piece more complex behaviors, you can add more Traits to it in the <<GamePiece.adoc#top,Piece Definer>> dialog.
+For example you could omit or remove the image from the Basic Piece and instead add a <<Layer.adoc#top,Layer>> trait to allow the piece to use multiple images.
+
+ + a|
+image:images/BasicPiece.png[]
+
+The image is optional, but you should always give each Basic Piece a name.
+
+|===
+
+'''''
+
+The following <<Properties.adoc#top,Properties>> are defined in a Basic Piece, meaning that any trait in the piece can refer to them:
+
+* _BasicName_ contains the name of Basic Piece trait, as specified in the properties
+* _PieceName_ contains the full name of the piece, including any additional strings added by e.g.
+<<Layer.adoc#top,Layer>> or <<Label.adoc#top,Text Label>> traits
+* _PlayerSide_ contains the side of the current player, as specified in the <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>>
+* _LocationName_ contains the name of the current location, as determined by the local grid.
+If the piece is in a <<ZonedGrid.adoc#top,Zone>> in a Multi-Zone Grid, then whether _LocationName_ returns the name of the _Zone_ or a _Region_ within the Zone's grid depends on the configuration of the <<ZonedGrid.adoc#top,Zone>>. +
+* _CurrentMap_ contains the name of the current <<Map.adoc#top,Map Window>> +
+* _CurrentBoard_ contains the name of the current <<Board.adoc#top,Board>>
+* _CurrentZone_ contains the name of the current <<ZonedGrid.adoc#top,Zone>>
+* _CurrentX_ contains the current map X coordinate
+* _CurrentY_ contains the current map Y coordinate
+* _DeckName_ contains the name of the <<Deck.adoc#top,Deck>> if the piece is currently stacked in one.
+* _DeckPosition_ contains the position of a piece within a <<Deck.adoc#top,Deck>> (top = 1) if the piece is currently stacked in one, or 0 otherwise.
+* _Selected_ contains _true_ when the piece has been selected with the mouse
+* _PieceId_ contains a string that uniquely defines the source of the piece.
+All pieces sourced from the same <<PieceWindow.adoc#top,Game Piece Palette>> slot will have the same PieceId string.
+
+The following <<Properties.adoc#top,Properties>> are defined after a piece is moved, either manually by drag-and-drop movement or by a <<SendToLocation.adoc#top,Send To Location>> trait:
+
+* _OldLocationName_ contains the name of the previous location, as determined by the local grid +
+* _OldMap_ contains the name of the previous <<Map.adoc#top,Map Window>> +
+* _OldBoard_ contains the name of the previous <<Board.adoc#top,Board>>
+* _OldZone_ contains the name of the previous <<ZonedGrid.adoc#top,Zone>>
+* _OldX_ contains the previous map X coordinate
+* _OldY_ contains the previous map Y coordinate
+
+The following <<Properties.adoc#top,Properties>> are defined after the player has selected something from the piece's right-click context menu:
+
+* _ClickedX_ contains the X location on current map where right-click took place.
+
+* _ClickedY_ contains the Y location on current map where right-click took place.
+

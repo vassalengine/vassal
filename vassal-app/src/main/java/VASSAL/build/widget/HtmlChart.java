@@ -20,8 +20,6 @@ package VASSAL.build.widget;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedInputStream;
@@ -29,6 +27,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -44,17 +43,19 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 
+import org.apache.commons.io.IOUtils;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
@@ -67,24 +68,21 @@ import VASSAL.tools.swing.DataArchiveHTMLEditorKit;
  * of its own
  */
 public class HtmlChart extends Widget implements MouseListener {
-  public static final String NAME = "chartName";
-  public static final String FILE = "fileName";
+  public static final String NAME = "chartName"; //NON-NLS
+  public static final String FILE = "fileName"; //NON-NLS
 
   private String fileName;
   private JScrollPane scroller;
   private JEditorPane htmlWin;
 
-  public HtmlChart() {
-  }
-
   private boolean isURL() {
-    return htmlWin.getDocument().getProperty("stream") != null;
+    return htmlWin.getDocument().getProperty("stream") != null; //NON-NLS
   }
 
   private void setText(String text) {
     htmlWin.setText(text);
     // ensure hyperlink engine knows we are no longer at the last URL
-    htmlWin.getDocument().putProperty("stream", null);
+    htmlWin.getDocument().putProperty("stream", null); //NON-NLS
     htmlWin.revalidate();
   }
 
@@ -101,8 +99,8 @@ public class HtmlChart extends Widget implements MouseListener {
          InputStream in = new BufferedInputStream(inner)) {
       s = IOUtils.toString(in, StandardCharsets.UTF_8);
     }
-    catch (IOException e) {
-      ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
+    catch (final IOException e) {
+      ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e)); //NON-NLS
     }
 
     return s;
@@ -133,7 +131,7 @@ public class HtmlChart extends Widget implements MouseListener {
       scroller.getViewport().setAlignmentY(0.0F);
 
       final Font f = new JLabel().getFont();
-      FontMetrics fm = htmlWin.getFontMetrics(f);
+      final FontMetrics fm = htmlWin.getFontMetrics(f);
       scroller.getVerticalScrollBar().setUnitIncrement(fm.getHeight() * 3); //BR// Mousewheel scrolls 3 lines of default JLabel font height
     }
     return scroller;
@@ -148,7 +146,7 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   public static String getConfigureTypeName() {
-    return "HTML Chart";
+    return Resources.getString("Editor.HTMLChart.component_type");
   }
 
   @Override
@@ -157,7 +155,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm", "HtmlChart");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "HtmlChart"); //NON-NLS
   }
 
   @Override
@@ -196,7 +194,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "HTML File:  "};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.HTMLChart.html_file")};
   }
 
   @Override
@@ -218,15 +216,10 @@ public class HtmlChart extends Widget implements MouseListener {
   protected void maybePopup(MouseEvent event) {
     if (event.isPopupTrigger()) {
       final JPopupMenu popup = new JPopupMenu();
-      final JMenuItem item = new JMenuItem("Return to default page");
+      final JMenuItem item = new JMenuItem(Resources.getString("Editor.HTMLChart.return_to_default_page"));
 
-      item.addActionListener(new ActionListener() {
-        // Return to default page
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setFile(fileName);
-        }
-      });
+      // Return to default page
+      item.addActionListener(e -> setFile(fileName));
 
       popup.add(item);
       if (event.getComponent().isShowing()) {
@@ -266,7 +259,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
       final String desc = event.getDescription();
       if ((!isURL() && desc.indexOf('/') < 0) || event.getURL() == null) {
-        final int hash = desc.lastIndexOf("#");
+        final int hash = desc.lastIndexOf('#');
         if (hash < 0) {
           // no anchor
           setFile(desc);
@@ -285,12 +278,22 @@ public class HtmlChart extends Widget implements MouseListener {
         try {
           htmlWin.setPage(event.getURL());
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
           ReadErrorDialog.error(ex, event.getURL().toString());
         }
         htmlWin.revalidate();
       }
     }
+  }
+
+  /**
+   * Find all of our image references and register them
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(new File(fileName));
+    h.addImageNames(s);
   }
 
   /**
@@ -312,15 +315,11 @@ public class HtmlChart extends Widget implements MouseListener {
     }
 
     public static class XTMLFactory extends HTMLFactory implements ViewFactory {
-      public XTMLFactory() {
-        super();
-      }
-
       @Override
-      public View create(javax.swing.text.Element element) {
+      public View create(Element element) {
         final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
 
-        if (kind instanceof HTML.Tag && element.getName().equals("img")) {
+        if (kind != null && element.getName().equals("img")) {  //NON-NLS
           final String imageName = (String) element.getAttributes().getAttribute(HTML.Attribute.SRC);
           if (!imageName.contains("/")) {
             return new ImageComponentView(element);
@@ -340,8 +339,7 @@ public class HtmlChart extends Widget implements MouseListener {
           super(e);
           imageName = (String) e.getAttributes()
                                 .getAttribute(HTML.Attribute.SRC);
-          srcOp = imageName == null || imageName.trim().length() == 0
-                ? null : Op.load(imageName);
+          srcOp = (imageName == null || imageName.isBlank()) ? null : Op.load(imageName);
         }
 
         @Override

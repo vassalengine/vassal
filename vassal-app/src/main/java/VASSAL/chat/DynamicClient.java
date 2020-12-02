@@ -31,27 +31,15 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 
 /**
- * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
- * every time the user attempts to connect
+ * Refreshes every time the user attempts to connect
  *
  * @author rkinney
  *
  */
 public class DynamicClient extends HybridClient {
-
-  public static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$
-  public static final String JABBER_URL = "http://www.vassalengine.org/util/getJabberServerImpl"; //$NON-NLS-1$
-
   private static final Logger log = LoggerFactory.getLogger(DynamicClient.class);
 
   private boolean connecting;
-
-  public DynamicClient() {
-  }
-
-  @Deprecated(since = "2020-08-16", forRemoval = true)
-  public DynamicClient(String serverConfigURL) {
-  }
 
   protected ChatServerConnection buildDelegate() throws IOException {
     final Properties p = ServerAddressBook.getInstance().getCurrentServerProperties();
@@ -75,11 +63,11 @@ public class DynamicClient extends HybridClient {
               setDelegate(get());
               DynamicClient.super.setConnected(connect);
             }
-            catch (InterruptedException e) {
-              log.error("Error while connecting: interrupted", e);
+            catch (final InterruptedException e) {
+              log.error("Error while connecting: interrupted", e); //NON-NLS
             }
-            catch (ExecutionException ex) {
-              Throwable e = ex.getCause();
+            catch (final ExecutionException ex) {
+              final Throwable e = ex.getCause();
               fireStatus(Resources.getString("Server.bad_address3")); //$NON-NLS-1$
               ErrorDialog.showDetails(e, ThrowableUtils.getStackTrace(e), "Error.network_communication_error"); //$NON-NLS-1$
               e.printStackTrace();
@@ -95,17 +83,10 @@ public class DynamicClient extends HybridClient {
         try {
           setDelegate(buildDelegate());
         }
-        catch (IOException ex) {
-          log.error("Error while connecting", ex);
+        catch (final IOException ex) {
+          log.error("Error while connecting", ex); //NON-NLS
         }
       }
     }
-  }
-
-  /**
-   * @deprecated method does nothing and will be removed
-   */
-  @Deprecated
-  public void setOverrides(Properties override) {
   }
 }

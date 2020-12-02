@@ -29,9 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -40,6 +39,9 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.swing.SwingUtils;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for configuring Configurable components
@@ -53,42 +55,41 @@ public class AutoConfigurer extends Configurer
   protected AutoConfigurable target;
   protected List<Configurer> configurers = new ArrayList<>();
   protected Map<String, VisibilityCondition> conditions;
+  protected Map<String, JLabel> labels = new HashMap<>();
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());
 
     target = c;
     setValue(target);
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(final PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setName((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setName((String) evt.getNewValue());
       }
     });
 
     p = new JPanel();
-    p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+    p.setLayout(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ", hidemode 3", "[align right]rel[fill,grow]")); // NON-NLS
 
-    String[] name = c.getAttributeNames();
-    String[] prompt = c.getAttributeDescriptions();
-    Class<?>[] type = c.getAttributeTypes();
+    final String[] name = c.getAttributeNames();
+    final String[] prompt = c.getAttributeDescriptions();
+    final Class<?>[] type = c.getAttributeTypes();
 
-    int n = Math.min(name.length, Math.min(prompt.length, type.length));
+    final int n = Math.min(name.length, Math.min(prompt.length, type.length));
     for (int i = 0; i < n; ++i) {
       if (type[i] == null) {
         continue;
       }
-      Configurer config;
-      config = createConfigurer(type[i], name[i], prompt[i], target);
+      final Configurer config;
+      config = createConfigurer(type[i], name[i], "", target);
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
-        Box box = Box.createHorizontalBox();
-        box.add(config.getControls());
-        box.add(Box.createHorizontalGlue());
-        p.add(box);
+        final JLabel label = new JLabel(prompt[i]);
+        label.setLabelFor(config.getControls());
+        labels.put(name[i], label);
+        p.add(label);
+        p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
       }
       setVisibility(name[i], c.getAttributeVisibility(name[i]));
@@ -131,13 +132,29 @@ public class AutoConfigurer extends Configurer
         GameModule.getGameModule().getArchiveWriter());
     }
     else if (String[].class.isAssignableFrom(type)) {
-      config = new StringArrayConfigurer(key, prompt);
+      config = new StringArrayConfigurer(key, prompt, 3, 12); // Set a reasonable min/max for items displayed before scrolling
     }
     else if (Icon.class.isAssignableFrom(type)) {
       config = new IconConfigurer(key, prompt, null);
     }
     else if (PropertyExpression.class.isAssignableFrom(type)) {
       config = new PropertyExpressionConfigurer(key, prompt);
+    }
+    else if (TranslatableStringEnum.class.isAssignableFrom(type)) {
+      TranslatableStringEnum se = null;
+      try {
+        se = (TranslatableStringEnum) type.getConstructor().newInstance();
+      }
+      catch (Throwable t) {
+        ReflectionUtils.handleNewInstanceFailure(t, type);
+        config = new StringConfigurer(key, prompt);
+      }
+
+      if (se != null) {
+        final String[] validValues = se.getValidValues(target);
+        final String[] i18nKeys = se.getI18nKeys(target);
+        config = new TranslatingStringEnumConfigurer(key, prompt, validValues, i18nKeys, se.isDisplayNames());
+      }
     }
     else if (StringEnum.class.isAssignableFrom(type)) {
       StringEnum se = null;
@@ -174,9 +191,9 @@ public class AutoConfigurer extends Configurer
   }
 
   public void reset() {
-    String[] s = target.getAttributeNames();
-    for (String item : s) {
-      Configurer config = getConfigurer(item);
+    final String[] s = target.getAttributeNames();
+    for (final String item : s) {
+      final Configurer config = getConfigurer(item);
       if (config != null) {
         config.setValue(target.getAttributeValueString(item));
       }
@@ -218,24 +235,29 @@ public class AutoConfigurer extends Configurer
   protected void checkVisibility() {
     boolean visChanged = false;
     if (conditions != null) {
-      for (Configurer c : configurers) {
-        VisibilityCondition cond = conditions.get(c.getKey());
+      for (final Configurer c : configurers) {
+        final VisibilityCondition cond = conditions.get(c.getKey());
         if (cond != null) {
           if (c.getControls().isVisible() != cond.shouldBeVisible()) {
             visChanged = true;
             c.getControls().setVisible(cond.shouldBeVisible());
+            final JLabel label = labels.get(c.getKey());
+            if (label != null) {
+              label.setVisible(cond.shouldBeVisible());
+            }
           }
         }
       }
-      // Only repack the configurer if an item visiblity has changed.
+      // Only repack the configurer if an item visibility has changed.
+      // And ensure the dialog still fits on the screen
       if (visChanged && p.getTopLevelAncestor() instanceof Window) {
-        ((Window) p.getTopLevelAncestor()).pack();
+        SwingUtils.repack((Window) p.getTopLevelAncestor());
       }
     }
   }
 
   public Configurer getConfigurer(String attribute) {
-    for (Configurer c : configurers) {
+    for (final Configurer c : configurers) {
       if (attribute.equals(c.getKey())) {
         return c;
       }

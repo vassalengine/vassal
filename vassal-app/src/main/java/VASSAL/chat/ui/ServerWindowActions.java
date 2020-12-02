@@ -28,7 +28,7 @@ import VASSAL.chat.Room;
  *
  */
 
-/** Interface for user interaction with {@link org.vassalengine.module.ServerWindow} */
+/** Interface for user interaction with {org.vassalengine.module.ServerWindow} */
 public interface ServerWindowActions extends CurrentRoomActions {
   JPopupMenu buildPopupForRoom(Room r, JTree tree);
   void doubleClickRoom(Room r, JTree tree);

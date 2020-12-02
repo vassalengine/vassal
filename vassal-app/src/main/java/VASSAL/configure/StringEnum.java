@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -15,14 +14,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 24, 2002
- * Time: 10:11:51 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.configure;
 
 import VASSAL.build.AutoConfigurable;
@@ -33,7 +24,5 @@ import VASSAL.build.AutoConfigurable;
  * The AutoConfigurable object should return a sub-class of StringEnum with a no-arg constructor
  */
 public abstract class StringEnum {
-  public StringEnum() {
-  }
   public abstract String[] getValidValues(AutoConfigurable target);
 }

@@ -18,10 +18,6 @@ public class SelectionHighlighters extends AbstractConfigurable {
   protected Map map;
   protected List<SelectionHighlighter> highlighters = new ArrayList<>();
 
-  public SelectionHighlighters() {
-    super();
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.AddedSelectionHighlights.component_type"); //$NON-NLS-1$
   }
@@ -63,14 +59,14 @@ public class SelectionHighlighters extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     map = (Map) parent;
-    for (SelectionHighlighter highlighter : highlighters) {
+    for (final SelectionHighlighter highlighter : highlighters) {
       addToMap(highlighter);
     }
   }
 
   @Override
   public void removeFrom(Buildable parent) {
-    for (SelectionHighlighter highlighter : highlighters) {
+    for (final SelectionHighlighter highlighter : highlighters) {
       removeFromMap(highlighter);
     }
   }

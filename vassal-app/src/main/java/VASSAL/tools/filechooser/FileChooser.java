@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.configure.DirectoryConfigurer;
@@ -70,17 +71,18 @@ public abstract class FileChooser {
    *          A FileConfigure that stores the preferred starting directory of the FileChooser in preferences
    */
   public static FileChooser createFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
-    FileChooser fc;
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    final FileChooser fc;
+    if (SystemUtils.IS_OS_MAC) {
       // Mac has a good native file dialog
+      System.setProperty("apple.awt.fileDialogForDirectories", String.valueOf(mode == DIRECTORIES_ONLY));
       fc = new NativeFileChooser(parent, prefs, mode);
     }
-    else if (mode == FILES_ONLY && SystemUtils.IS_OS_WINDOWS) {
-      // Window has a good native file dialog, but it doesn't support selecting directories
+    else if (mode == FILES_ONLY) {
+      // Windows/Linux have a good native file dialog, but it doesn't support selecting directories
       fc = new NativeFileChooser(parent, prefs, mode);
     }
     else {
-      // Linux's native dialog is inferior to Swing's
+      // Use Swing's dialog for selecting directories on non-Macs
       fc = new SwingFileChooser(parent, prefs, mode);
     }
     return fc;
@@ -118,10 +120,10 @@ public abstract class FileChooser {
    * Selects <tt>filename.sav</tt> if <tt>filename.foo</tt> is selected.
    */
   public void selectDotSavFile() {
-    File file = getSelectedFile();
+    final File file = getSelectedFile();
     if (file != null) {
       String name = file.getPath();
-      int index = name.lastIndexOf('.');
+      final int index = name.lastIndexOf('.');
       if (index > 0) {
         name = name.substring(0, index) + ".vsav";
         setSelectedFile(new File(name));
@@ -210,7 +212,7 @@ public abstract class FileChooser {
 
     @Override
     public int showOpenDialog(Component parent) {
-      int value = fc.showOpenDialog(parent);
+      final int value = fc.showOpenDialog(parent);
       updateDirectoryPreference();
       return value;
     }
@@ -220,8 +222,10 @@ public abstract class FileChooser {
       int value = fc.showSaveDialog(parent);
       if (value == APPROVE_OPTION
           && getSelectedFile().exists()
-          && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(parent, "Overwrite " + getSelectedFile().getName() + "?", "File Exists",
-              JOptionPane.YES_NO_OPTION)) {
+          && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(parent,
+                                                                    Resources.getString("Editor.FileChooser.overwrite", getSelectedFile().getName()),
+                                                                    Resources.getString("Editor.FileChooser.exists"),
+                                                                    JOptionPane.YES_NO_OPTION)) {
         value = CANCEL_OPTION;
       }
       updateDirectoryPreference();
@@ -230,7 +234,7 @@ public abstract class FileChooser {
 
     @Override
     public FileFilter getFileFilter() {
-      javax.swing.filechooser.FileFilter ff = fc.getFileFilter();
+      final javax.swing.filechooser.FileFilter ff = fc.getFileFilter();
       return ff instanceof FileFilter ? (FileFilter) ff : null;
     }
 
@@ -367,8 +371,6 @@ public abstract class FileChooser {
     public int showOpenDialog(Component parent) {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.LOAD);
-      System.setProperty("apple.awt.fileDialogForDirectories",
-                         String.valueOf(mode == DIRECTORIES_ONLY));
       fd.setVisible(true);
 
       final int value;

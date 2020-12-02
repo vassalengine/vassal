@@ -57,7 +57,7 @@ public class DefaultMultiEventListenerSupport
     listeners.putIfAbsent(c, new CopyOnWriteArrayList<>());
 
     // add the listener to the list for every supertype of c
-    for (Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
+    for (final Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (c.isAssignableFrom(other)) {
         e.getValue().add(l);
@@ -69,7 +69,7 @@ public class DefaultMultiEventListenerSupport
   @Override
   public <T> void removeEventListener(Class<T> c, EventListener<? super T> l) {
     // add the listener to the list for every supertype of c
-    for (Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
+    for (final Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (c.isAssignableFrom(other)) {
         e.getValue().remove(l);
@@ -81,7 +81,7 @@ public class DefaultMultiEventListenerSupport
   @Override
   public boolean hasEventListeners(Class<?> c) {
     // check for listeners for every supertype of c
-    for (Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
+    for (final Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (other.isAssignableFrom(c)) {
         if (!e.getValue().isEmpty()) {
@@ -100,7 +100,7 @@ public class DefaultMultiEventListenerSupport
     final List<EventListener<? super T>> list = new ArrayList<>();
 
     // make a list of all listeners for every supertype of c
-    for (Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
+    for (final Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (other.isAssignableFrom(c)) {
         list.addAll((List) e.getValue());
@@ -119,7 +119,7 @@ public class DefaultMultiEventListenerSupport
     List<EventListener<?>> list = listeners.get(c);
     if (list == null) list = registerType(c);
 
-    for (EventListener l : list) {
+    for (final EventListener l : list) {
       l.receive(src, c.cast(event));
     }
   }
@@ -131,7 +131,7 @@ public class DefaultMultiEventListenerSupport
     final Set<EventListener<?>> lset = new HashSet<>();
 
     // make a set of all listeners for every supertype of c
-    for (Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
+    for (final Map.Entry<Class<?>, List<EventListener<?>>> e : listeners.entrySet()) {
       final Class<?> other = e.getKey();
       if (other.isAssignableFrom(c)) {
         lset.addAll(e.getValue());

@@ -19,6 +19,7 @@ package VASSAL.chat.node;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Properties;
 
 import VASSAL.tools.SequenceEncoder;
@@ -30,10 +31,10 @@ import VASSAL.tools.SequenceEncoder;
  * {@link #getInfo} returns an encoded {@link java.util.Properties} object with real name, profile, etc.
  */
 public class PlayerNode extends Node implements SocketWatcher {
-  private SocketHandler input;
+  private final SocketHandler input;
   protected String id;
   protected String info;
-  private AsynchronousServerNode server;
+  private final AsynchronousServerNode server;
   private static ConnectionLimiter connLimiter = new ConnectionLimiter();
 
   public PlayerNode(Socket socket, AsynchronousServerNode server) throws IOException {
@@ -62,20 +63,19 @@ public class PlayerNode extends Node implements SocketWatcher {
   @Override
   public String getInfo() {
     final String ip = input.getInetAddress().getHostAddress();
-    return info + (ip.length() > 0 ? "|ip=" + ip : "");
+    return info + (ip.length() > 0 ? "|ip=" + ip : ""); //NON-NLS
   }
 
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof PlayerNode)) return false;
 
     final PlayerNode player = (PlayerNode) o;
-
-    if (!id.equals(player.id)) return false;
-
-    return true;
+    return Objects.equals(id, player.id);
   }
 
+  @Override
   public int hashCode() {
     return id.hashCode();
   }
@@ -99,7 +99,7 @@ public class PlayerNode extends Node implements SocketWatcher {
       final String joinRoomName = sd.nextToken("");
       final Node room = server.getModule(this).getDescendant(joinRoomName);
       if (room != null) {
-        final boolean locked = "true".equals(room.getInfoProperty(NodeRoom.LOCKED));
+        final boolean locked = "true".equals(room.getInfoProperty(NodeRoom.LOCKED)); //NON-NLS
         if (locked && room.getChildren().length > 0) {
           final String owner = room.getInfoProperty(NodeRoom.OWNER);
           if (info.length < 2 || !owner.equals(info[1])) {
@@ -120,8 +120,8 @@ public class PlayerNode extends Node implements SocketWatcher {
       server.kick(this, info[0]);
     }
     else if ((p = Protocol.decodeRoomsInfo(line)) != null) {
-      for (String roomName : p.stringPropertyNames()) {
-        Node target = server.getModule(this).getDescendant(roomName);
+      for (final String roomName : p.stringPropertyNames()) {
+        final Node target = server.getModule(this).getDescendant(roomName);
         if (target != null) {
           target.setInfo(p.getProperty(roomName));
           server.updateInfo(target);

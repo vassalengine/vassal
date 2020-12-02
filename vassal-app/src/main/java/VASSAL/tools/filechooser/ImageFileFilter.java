@@ -17,6 +17,7 @@
  */
 package VASSAL.tools.filechooser;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 
 /**
@@ -28,6 +29,6 @@ import VASSAL.tools.image.ImageUtils;
 public class ImageFileFilter extends ExtensionFileFilter {
 
   public ImageFileFilter() {
-    super("Image files", ImageUtils.IMAGE_SUFFIXES);
+    super(Resources.getString("Editor.FileFilter.image"), ImageUtils.IMAGE_SUFFIXES);
   }
 }

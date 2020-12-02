@@ -21,10 +21,10 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
@@ -43,19 +43,19 @@ public class VassalTranslation extends Translation {
   protected Properties baseValues = new Properties();
 
   public VassalTranslation() {
-    setConfigureName("VASSAL");
+    setConfigureName(Resources.VASSAL);
 
-    try (InputStream is = getClass().getResourceAsStream("VASSAL.properties")) {
+    try (InputStream is = getClass().getResourceAsStream(Resources.BASE_BUNDLE)) {
       if (is == null) {
         throw new FileNotFoundException("VASSAL.properties not found");
       }
-      
+
       try (BufferedInputStream in = new BufferedInputStream(is)) {
         baseValues.load(in);
       }
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, "VASSAL.properties");
+      ReadErrorDialog.error(e, Resources.BASE_BUNDLE);
     }
   }
 
@@ -66,7 +66,7 @@ public class VassalTranslation extends Translation {
 
   @Override
   protected String getDescription() {
-    return "VASSAL";
+    return Resources.VASSAL;
   }
 
   public void clearProperties() {
@@ -107,7 +107,7 @@ public class VassalTranslation extends Translation {
   }
 
   public void saveProperties(File file, Locale locale) throws IOException {
-    try (OutputStream fout = new FileOutputStream(file);
+    try (OutputStream fout = Files.newOutputStream(file.toPath());
          BufferedOutputStream out = new BufferedOutputStream(fout)) {
       localProperties.store(out, locale.getDisplayName());
       dirty = false;

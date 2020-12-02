@@ -16,13 +16,13 @@ A complete programming tutorial, which presumes a level of Java programming skil
 
 *Module File Structure*
 
-A module (.vmod) file is simply an archive file using ZIP compression. It can be easily decompressed using any application that handles ZIP files, including WinZip or the Mac OS X Archive Utility, to view or extract the files inside. If you need to have a look at a file inside a module, simply unzip the module.
+A module (.vmod) file is simply an archive file using ZIP compression. It can be easily decompressed using any application that handles ZIP files, including WinZip or the MacOS Archive Utility, to view or extract the files inside. If you need to have a look at a file inside a module, simply unzip the module.
 
 _For some utilities, you may need to change the file extension from .vmod to .zip in order to be able to unzip it. You can change it back to .vmod when the process completes. Make sure that your operating system is set up to display file extensions._
 
 Because a module file is itself a ZIP file, when you packaging or publishing a module, do not zip the module file. For one thing, the savings due to compression is minimal. In addition, compressing a ZIP file can cause confusion when unzipping, as some ZIP utilities may unzip the base ZIP file and any included ZIP files, leaving only the component files behind.
 
-Extension (.vmdx) files are also ZIP files, like module files.
+Extension (.vext) files are also ZIP files, like module files.
 
 *File Components*
 

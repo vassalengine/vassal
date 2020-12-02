@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.litesoft.p2pchat.PeerInfo;
 
@@ -18,11 +19,11 @@ import VASSAL.command.Command;
 // TODO: throw this away or make it a JUnit test
 public class EchoClient implements Runnable, PropertyChangeListener {
   public static final String NAME = "EchoBot"; //$NON-NLS-1$
-  private static Random rng = new Random();
-  private int changeRoom;
-  private int numRooms;
-  private FileWriter log;
-  private ChatServerConnection client;
+  private static final Random rng = new Random();
+  private final int changeRoom;
+  private final int numRooms;
+  private final FileWriter log;
+  private final ChatServerConnection client;
 
   public EchoClient(ChatServerConnection client, int changeRoom, int numRooms, FileWriter log) {
     this.client = client;
@@ -30,11 +31,8 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     this.numRooms = numRooms;
     this.log = log;
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this);
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getNewValue()); //$NON-NLS-1$
-      }
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, evt -> {
+      System.err.println(evt.getNewValue()); //$NON-NLS-1$
     });
     client.setConnected(true);
     client.setRoom(new SimpleRoom("Room0")); //$NON-NLS-1$
@@ -42,12 +40,12 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   }
 
   public synchronized void showCHAT(PeerInfo pPeerInfo, String msg) {
-    Player sender = new P2PPlayer(pPeerInfo);
+    final Player sender = new P2PPlayer(pPeerInfo);
     if (!sender.getName().startsWith(NAME)
       && msg.startsWith("CHAT")) { //$NON-NLS-1$
       msg = "<" + client.getUserInfo().getName() //$NON-NLS-1$
         + msg.substring(msg.indexOf("> -")); //$NON-NLS-1$
-      Command c = new Chatter.DisplayText(null, msg);
+      final Command c = new Chatter.DisplayText(null, msg);
       client.sendTo(sender, c);
     }
   }
@@ -56,13 +54,13 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   public void run() {
     while (true) {
       try {
-        int nextSleep = Math.round(rng.nextFloat() * 2 * changeRoom * 1000);
+        final int nextSleep = Math.round(rng.nextFloat() * 2 * changeRoom * 1000);
         Thread.sleep(nextSleep);
       }
       catch (InterruptedException e) {
       }
 
-      String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
+      final String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       client.setRoom(new SimpleRoom(newRoom));
     }
   }
@@ -85,16 +83,17 @@ public class EchoClient implements Runnable, PropertyChangeListener {
 
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (VASSAL.chat.Room room : r) {
-      buffer.append(room.getName() + ": "); //$NON-NLS-1$
-      Player[] l = (Player[]) room.getPlayerList().toArray();
-      for (int j = 0; j < l.length; ++j) {
-        buffer.append(l[j]);
-        if (j < l.length - 1) {
-          buffer.append(", "); //$NON-NLS-1$
-        }
-      }
-      buffer.append("\n"); //$NON-NLS-1$
+    for (final VASSAL.chat.Room room : r) {
+      buffer
+        .append(room.getName())
+        .append(": ") //$NON-NLS-1$
+        .append(
+          room
+            .getPlayerList()
+            .stream()
+            .map(Object::toString)
+            .collect(Collectors.joining(", "))) //$NON-NLS-1$
+        .append('\n');
     }
     return buffer.toString();
   }
@@ -145,10 +144,10 @@ public class EchoClient implements Runnable, PropertyChangeListener {
         Thread.sleep((int) (wait * 1000 * rng.nextFloat()));
         ChatServerConnection client = null;
         if (poolType.startsWith("hier")) {
-          client = new SocketNodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
+          client = new NodeClient(new TextClient.Encoder(), info, host, port, msgSvr, welcomer);
         }
         else {
-          client = new P2PClient(new TextClient.Encoder(), msgSvr, welcomer, pool);
+          client = new P2PClient(new TextClient.Encoder(), welcomer, pool);
         }
         client.setUserInfo(new SimplePlayer(userName));
         new EchoClient(client, wait, nRooms,

@@ -18,7 +18,6 @@
  */
 package VASSAL.chat.peer2peer;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -44,8 +43,6 @@ import VASSAL.chat.SimpleStatus;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
-import VASSAL.chat.messageboard.Message;
-import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.RoomInteractionControlsInitializer;
@@ -61,29 +58,27 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private SimplePlayer me;
   private PendingPeerManager ppm;
   protected ActivePeerManager peerMgr;
-  private PeerPool pool;
-  private MessageBoard msgSvr;
-  private WelcomeMessageServer welcomeMessageServer;
-  private RoomManager roomMgr;
-  private RoomTracker tracker;
-  private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
-  private CommandEncoder encoder;
+  private final PeerPool pool;
+  private final WelcomeMessageServer welcomeMessageServer;
+  private final RoomManager roomMgr;
+  private final RoomTracker tracker;
+  private final PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  private final CommandEncoder encoder;
   private boolean connected = false;
   private ServerStatus svrStatus;
-  private RoomInteractionControlsInitializer roomControls;
-  private SimpleStatusControlsInitializer playerStatusControls;
-  private SoundEncoder soundEncoder;
-  private SynchEncoder synchEncoder;
-  private PropertyChangeListener nameChangeListener;
-  private Properties params;
+  private final RoomInteractionControlsInitializer roomControls;
+  private final SimpleStatusControlsInitializer playerStatusControls;
+  private final SoundEncoder soundEncoder;
+  private final SynchEncoder synchEncoder;
+  private final PropertyChangeListener nameChangeListener;
+  private final Properties params;
 
-  public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
-    this(encoder, msgSvr, welcomeMessageServer, pool, new Properties());
+  public P2PClient(CommandEncoder encoder, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
+    this(encoder, welcomeMessageServer, pool, new Properties());
   }
 
-  public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool, Properties param) {
+  public P2PClient(CommandEncoder encoder, WelcomeMessageServer welcomeMessageServer, PeerPool pool, Properties param) {
     this.encoder = encoder;
-    this.msgSvr = msgSvr;
     this.welcomeMessageServer = welcomeMessageServer;
     this.pool = pool;
     this.params = param;
@@ -99,13 +94,10 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     synchEncoder = new SynchEncoder(this, this);
     soundEncoder = new SoundEncoder(this);
-    nameChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        SimplePlayer p = (SimplePlayer) getUserInfo();
-        p.setName((String) evt.getNewValue());
-        setUserInfo(p);
-      }
+    nameChangeListener = evt -> {
+      final SimplePlayer p = (SimplePlayer) getUserInfo();
+      p.setName((String) evt.getNewValue());
+      setUserInfo(p);
     };
   }
 
@@ -129,7 +121,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     if (isConnected()) {
       final Room myRoom = getRoom();
       final Player[] pl = myRoom.getPlayerList().toArray(new Player[0]);
-      for (Player p : pl) {
+      for (final Player p : pl) {
         if (!p.equals(me)) {
           final ActivePeer peer =
             peerMgr.getPeerListenerByID(((P2PPlayer) p).getInfo().getID());
@@ -160,7 +152,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       if (isConnected()) {
         peerMgr.sendToAllNAME();
         propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(((P2PPlayer) me).getInfo()));
-        Room newRoom = getRoom();
+        final Room newRoom = getRoom();
         propSupport.firePropertyChange(ROOM, null, newRoom);
       }
     }
@@ -197,16 +189,16 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public void setConnected(boolean connect) {
     if (connect) {
       try {
-        Integer port;
+        int port;
         try {
-          port = Integer.valueOf(params.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
+          port = Integer.parseInt(params.getProperty(P2PClientFactory.P2P_LISTEN_PORT));
         }
         catch (NumberFormatException ex) {
           port = 5050;
         }
-        MyInfo info = new MyInfo(null, port);
+        final MyInfo info = new MyInfo(null, port);
         info.setNetworkPw(params.getProperty(P2PClientFactory.P2P_SERVER_PW));
-        P2PPlayer p = new P2PPlayer(info);
+        final P2PPlayer p = new P2PPlayer(info);
         p.updateStatus();
         p.setName(me.getName());
         p.setRoom(roomMgr.getDefaultRoom().getName());
@@ -256,18 +248,6 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     return connected;
   }
 
-  public Message[] getMessages() {
-    return msgSvr.getMessages();
-  }
-
-  public void postMessage(String msg) {
-    msgSvr.postMessage(msg);
-  }
-
-  public MessageBoard getMessageServer() {
-    return msgSvr;
-  }
-
   public ServerStatus getStatusServer() {
     return svrStatus;
   }
@@ -283,7 +263,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   @Override
-  public void addPropertyChangeListener(String propertyName, java.beans.PropertyChangeListener l) {
+  public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
   }
 
@@ -307,7 +287,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
 
   @Override
   public synchronized void showStreamsFailed(PeerInfo pPeerInfo) {
-    P2PPlayer p = new P2PPlayer(pPeerInfo);
+    final P2PPlayer p = new P2PPlayer(pPeerInfo);
     propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_lost", p.getName())); //$NON-NLS-1$
   }
 
@@ -340,9 +320,9 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   public synchronized void showNAME(PeerInfo pPeerInfo) {
     tracker.init(getRoom());
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
-    Room myRoom = getRoom();
+    final Room myRoom = getRoom();
     propSupport.firePropertyChange(ROOM, null, myRoom);
-    tracker.finalize(myRoom);
+    tracker.finalizeRoom(myRoom);
   }
 
   @Override
@@ -350,8 +330,10 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     // We have received a connection request
     final Chatter chatter = GameModule.getGameModule().getChatter();
     final ActivePeer peer = peerMgr.getPeerListenerByInfo(pPeerInfo);
-    Properties props;
-    String name, ip, details;
+    final Properties props;
+    final String name;
+    final String ip;
+    String details;
     try {
       props = new PropertiesEncoder(pPeerInfo.getChatName()).getProperties();
       name = props.getProperty(SimpleStatus.NAME);

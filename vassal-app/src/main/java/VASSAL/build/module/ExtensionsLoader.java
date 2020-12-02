@@ -17,12 +17,11 @@
  */
 package VASSAL.build.module;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipException;
 
@@ -47,14 +46,14 @@ public class ExtensionsLoader implements CommandEncoder {
   public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<>();
-  protected HashMap<String, String> loadedIds = new HashMap<>();
+  protected Map<String, String> loadedIds = new HashMap<>();
 
   protected ExtensionsManager extMgr;
   protected ExtensionsManager globalExtMgr;
 
   public void addTo(GameModule mod) {
     extMgr = new ExtensionsManager(mod);
-    globalExtMgr = new ExtensionsManager("ext");
+    globalExtMgr = new ExtensionsManager("ext"); //NON-NLS
     mod.addCommandEncoder(this);
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
       final DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
@@ -64,24 +63,21 @@ public class ExtensionsLoader implements CommandEncoder {
       if (config.getFileValue() == null) {
         config.setValue(extMgr.getExtensionsDirectory(false).getAbsoluteFile());
       }
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          extMgr.setExtensionsDirectory((File) evt.getNewValue());
-          addExtensions();
-        }
+      config.addPropertyChangeListener(evt -> {
+        extMgr.setExtensionsDirectory((File) evt.getNewValue());
+        addExtensions();
       });
     }
     addExtensions();
   }
 
   protected void addExtensions() {
-    for (File ext : globalExtMgr.getActiveExtensions()) {
+    for (final File ext : globalExtMgr.getActiveExtensions()) {
       if (!addExtension(ext)) {
         globalExtMgr.setActive(ext, false);
       }
     }
-    for (File ext : extMgr.getActiveExtensions()) {
+    for (final File ext : extMgr.getActiveExtensions()) {
       if (!addExtension(ext)) {
         GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.deactivating_extension", ext.getName()));
         extMgr.setActive(ext, false);
@@ -90,8 +86,8 @@ public class ExtensionsLoader implements CommandEncoder {
   }
 
   protected boolean addExtension(File extension) {
-    logger.info("Loading extension " + extension);
-    String extname = extension.getPath();
+    logger.info("Loading extension " + extension); //NON-NLS
+    final String extname = extension.getPath();
     boolean success = loadedExtensions.contains(extname);
     if (!success) {
       try {
@@ -101,7 +97,7 @@ public class ExtensionsLoader implements CommandEncoder {
         final String id = ext.getExtensionId();
         String idMsg = "";
         if (id.length() > 0) {
-          for (String loadedId : loadedIds.keySet()) {
+          for (final String loadedId : loadedIds.keySet()) {
             if (loadedId.equals(id)) {
               idMsg = Resources.getString("ExtensionsLoader.id_conflict", extension.getName(), id, loadedIds.get(id));
             }
@@ -154,24 +150,24 @@ public class ExtensionsLoader implements CommandEncoder {
 
   @Override
   public Command decode(String command) {
-    Command c = null;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
-      c = new ModuleExtension.RegCmd(st.nextToken(), st.nextToken());
+    if (!command.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return c;
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command.substring(COMMAND_PREFIX.length()), '\t');
+    return new ModuleExtension.RegCmd(st.nextToken(), st.nextToken());
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof ModuleExtension.RegCmd) {
-      ModuleExtension.RegCmd cmd = (ModuleExtension.RegCmd) c;
-      SequenceEncoder se = new SequenceEncoder('\t');
-      se.append(cmd.getName()).append(cmd.getVersion());
-      s = COMMAND_PREFIX + se.getValue();
+    if (!(c instanceof ModuleExtension.RegCmd)) {
+      return null;
     }
-    return s;
+    final ModuleExtension.RegCmd cmd = (ModuleExtension.RegCmd) c;
+    final SequenceEncoder se = new SequenceEncoder('\t');
+    se
+      .append(cmd.getName())
+      .append(cmd.getVersion());
+    return COMMAND_PREFIX + se.getValue();
   }
 
   public static class LoadExtensionException extends RuntimeException {

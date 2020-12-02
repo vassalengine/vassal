@@ -42,7 +42,7 @@ public class ConditionalCommand extends Command {
 
   @Override
   protected void executeCommand() {
-    for (Condition condition : conditions) {
+    for (final Condition condition : conditions) {
       if (!condition.isSatisfied()) {
         return;
       }
@@ -83,8 +83,8 @@ public class ConditionalCommand extends Command {
       this.allowed = allowed;
     }
 
-    @Deprecated
-    public Eq(String property, Vector<String> allowed) {
+    @Deprecated (since = "2020-10-26", forRemoval = true)
+    public Eq(String property, Vector<String> allowed) { //NOPMD
       this.property = property;
       this.allowed = allowed;
     }
@@ -106,7 +106,7 @@ public class ConditionalCommand extends Command {
 
     @Override
     public boolean isSatisfied() {
-      String propertyValue =
+      final String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
       return allowed.contains(propertyValue);
     }
@@ -149,7 +149,7 @@ public class ConditionalCommand extends Command {
 // FIXME: what versions are being compared here?
     @Override
     public boolean isSatisfied() {
-      String propertyValue =
+      final String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
       return VersionUtils.compareVersions(propertyValue, value) < 0;
     }
@@ -175,7 +175,7 @@ public class ConditionalCommand extends Command {
 // FIXME: what versions are being compared here?
     @Override
     public boolean isSatisfied() {
-      String propertyValue =
+      final String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
       return VersionUtils.compareVersions(propertyValue, value) > 0;
     }

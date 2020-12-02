@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
+import java.util.Collection;
 
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -28,6 +29,7 @@ import javax.swing.JScrollPane;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.imageop.Op;
@@ -41,35 +43,21 @@ import VASSAL.tools.imageop.SourceOp;
  * children of its own.
  */
 public class Chart extends Widget {
-  public static final String NAME = "chartName";
-  public static final String FILE = "fileName";
+  public static final String NAME = "chartName"; //NON-NLS
+  public static final String FILE = "fileName"; //NON-NLS
   private Component chart;
   private String fileName;
   private SourceOp srcOp;
   private JLabel label;
 
-  public Chart() {
-  }
-
   @Override
   public Component getComponent() {
     if (chart == null) {
       label = new JLabel();
-      srcOp = fileName == null || fileName.trim().length() == 0
-            ? null : Op.load(fileName);
+      srcOp = (fileName == null || fileName.isBlank()) ? null : Op.load(fileName);
       if (srcOp != null) {
         label.setIcon(new OpIcon(srcOp));
       }
-/*
-      try {
-        Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
-        ImageIcon icon = image == null ? null : new ImageIcon(image);
-        label.setIcon(icon);
-      }
-      catch (IOException ex) {
-        label.setText("Image " + fileName + " not found");
-      }
-*/
       final Dimension d = label.getPreferredSize();
       if (d.width > 300 || d.height > 300) {
         final JScrollPane scroll = new AdjustableSpeedScrollPane(label);
@@ -98,7 +86,7 @@ public class Chart extends Widget {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm", "Chart");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "Chart"); //NON-NLS
   }
 
   @Override
@@ -112,18 +100,7 @@ public class Chart extends Widget {
       }
       fileName = (String) val;
       if (label != null) {
-/*
-        try {
-          Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
-          ImageIcon icon = image == null ? null : new ImageIcon(image);
-          label.setIcon(icon);
-          label.revalidate();
-        }
-        catch (IOException ex) {
-        }
-*/
-        srcOp = fileName == null || fileName.trim().length() == 0
-              ? null : Op.load(fileName);
+        srcOp = (fileName == null || fileName.isBlank()) ? null : Op.load(fileName);
         if (srcOp != null) {
           label.setIcon(new OpIcon(srcOp));
           label.revalidate();
@@ -132,15 +109,6 @@ public class Chart extends Widget {
     }
   }
 
-  /*
-   * public Configurer[] getAttributeConfigurers() { Configurer config[] = new Configurer[2]; config[0] = new
-   * StringConfigurer(NAME,"Name"); config[0].setValue(getConfigureName()); listenTo(config[0]);
-   *
-   * config[1] = new ImageConfigurer (FILE,"Image", GameModule.getGameModule().getArchiveWriter());
-   * config[1].setValue(fileName); listenTo(config[1]);
-   *
-   * return config; }
-   */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[0];
@@ -167,7 +135,7 @@ public class Chart extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Image:  "};
+    return new String[]{Resources.getString("Editor.name_label"), Resources.getString("Editor.image_label")};
   }
 
   @Override
@@ -187,6 +155,11 @@ public class Chart extends Widget {
   }
 
   public static String getConfigureTypeName() {
-    return "Chart";
+    return Resources.getString("Editor.Chart.component_type");
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (fileName != null) s.add(fileName);
   }
 }

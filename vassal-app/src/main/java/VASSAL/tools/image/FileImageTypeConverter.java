@@ -22,16 +22,14 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Reference;
 
@@ -49,7 +47,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
   /**
    * Create a converter.
    *
-   * @param tmp the temporary file to use as a cache
+   * @param tfactory the temporary file to use as a cache
    */
   public FileImageTypeConverter(TemporaryFileFactory tfactory) {
     if (tfactory == null) throw new IllegalArgumentException();
@@ -87,7 +85,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
     // we can't create images of TYPE_CUSTOM
     if (type == BufferedImage.TYPE_CUSTOM) throw new IllegalArgumentException();
 
-    File tmp = null;
+    final File tmp;
     try {
       tmp = tfactory.create();
     }
@@ -97,7 +95,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
 
     try {
       // write the converted image data to a file
-      try (OutputStream fout = new FileOutputStream(tmp);
+      try (OutputStream fout = Files.newOutputStream(tmp.toPath());
            OutputStream gzout = new GZIPOutputStream(fout);
            OutputStream out = new BufferedOutputStream(gzout)) {
         write(src, out);
@@ -115,7 +113,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
       final BufferedImage dst = new BufferedImage(w, h, type);
 
       // read the converted image data back
-      try (InputStream fin = new FileInputStream(tmp);
+      try (InputStream fin = Files.newInputStream(tmp.toPath());
            InputStream gzin = new GZIPInputStream(fin);
            InputStream in = new BufferedInputStream(gzin)) {
         read(in, dst);
@@ -164,7 +162,7 @@ public class FileImageTypeConverter implements ImageTypeConverter {
 
     for (int y = 0; y < h; ++y) {
       // read the row from the stream
-      IOUtils.read(in, bytes);
+      in.readNBytes(bytes, 0, bytes.length);
 
       // convert the bytes to an int[]
       bb.asIntBuffer().get(row);

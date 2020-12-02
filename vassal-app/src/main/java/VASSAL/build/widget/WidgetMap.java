@@ -1,6 +1,5 @@
 package VASSAL.build.widget;
 
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import VASSAL.build.module.Map;
@@ -9,10 +8,6 @@ import VASSAL.configure.VisibilityCondition;
 import java.util.List;
 
 public class WidgetMap extends Map {
-  public WidgetMap() {
-    super();
-  }
-
   /*
    * Minimal setup - remove all docking and toolbar setup
    */
@@ -43,21 +38,11 @@ public class WidgetMap extends Map {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (List.of(USE_LAUNCH_BUTTON, BUTTON_NAME, ICON, HOTKEY).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return false;
-        }
-      };
+      return () -> false;
     }
     else {
       return super.getAttributeVisibility(name);
     }
-  }
-
-  @Override
-  public JComponent getView() {
-    return super.getView();
   }
 
   /*

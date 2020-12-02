@@ -45,10 +45,10 @@ public class AudioClipConfigurer extends FileConfigurer {
   @Override
   protected FileChooser initFileChooser() {
     if (resourceDirPref == null) {
-      resourceDirPref = new DirectoryConfigurer("audioDir", null);
+      resourceDirPref = new DirectoryConfigurer("audioDir", null); //NON-NLS
       GameModule.getGameModule().getPrefs().addOption(null, resourceDirPref);
     }
-    FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getPlayerWindow(), resourceDirPref);
+    final FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getPlayerWindow(), resourceDirPref);
     fc.setFileFilter(new AudioFileFilter());
     return fc;
   }

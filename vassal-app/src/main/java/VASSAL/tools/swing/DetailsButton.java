@@ -155,7 +155,7 @@ public class DetailsButton extends JButton {
   }
 
   protected void fixSize(Container c) {
-    for (Component comp : c.getComponents()) {
+    for (final Component comp : c.getComponents()) {
       if (comp != expander && comp instanceof Container) {
         final Container con = (Container) comp;
 
@@ -174,77 +174,71 @@ public class DetailsButton extends JButton {
   }
 
   public static void main(String[] args) {
-    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."; //NON-NLS
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final JTextArea a = new JTextArea(loremIpsum, 25, 80);
-        a.setLineWrap(true);
-        a.setWrapStyleWord(true);
+    SwingUtilities.invokeLater(() -> {
+      final JTextArea a = new JTextArea(loremIpsum, 25, 80);
+      a.setLineWrap(true);
+      a.setWrapStyleWord(true);
 
-        final JScrollPane sp1 = new JScrollPane(a);
+      final JScrollPane sp1 = new JScrollPane(a);
 
-        final JTextArea b = new JTextArea(loremIpsum, 25, 80);
-        b.setLineWrap(true);
-        b.setWrapStyleWord(true);
+      final JTextArea b = new JTextArea(loremIpsum, 25, 80);
+      b.setLineWrap(true);
+      b.setWrapStyleWord(true);
 
-        final JScrollPane sp2 = new JScrollPane(b);
+      final JScrollPane sp2 = new JScrollPane(b);
 
-        final DetailsButton db = new DetailsButton("Show", "Hide", sp2);
-        db.setBuddy(sp1);
+      final DetailsButton db = new DetailsButton("Show", "Hide", sp2); //NON-NLS
+      db.setBuddy(sp1);
 
-        final JPanel contents = new JPanel();
-        contents.setLayout(new MigLayout("hidemode 3", "", "[]unrel[]rel[]"));
-        contents.add(sp1, "cell 0 0, grow, push");
-        contents.add(db, "cell 0 1");
-        contents.add(sp2, "cell 0 2, grow, push");
+      final JPanel contents = new JPanel();
+      contents.setLayout(new MigLayout("hidemode 3", "", "[]unrel[]rel[]")); //NON-NLS
+      contents.add(sp1, "cell 0 0, grow, push"); //NON-NLS
+      contents.add(db, "cell 0 1"); //NON-NLS
+      contents.add(sp2, "cell 0 2, grow, push"); //NON-NLS
 
-        final JDialog d = new JDialog();
-        d.add(contents);
-        d.setResizable(true);
-        d.setLocationRelativeTo(null);
-        d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        d.pack();
-        d.setVisible(true);
-      }
+      final JDialog d = new JDialog();
+      d.add(contents);
+      d.setResizable(true);
+      d.setLocationRelativeTo(null);
+      d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      d.pack();
+      d.setVisible(true);
     });
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final JLabel a = new JLabel("This is an expanding pane.");
+    SwingUtilities.invokeLater(() -> {
+      final JLabel a = new JLabel("This is an expanding pane."); //NON-NLS
 
-        final JTextArea b = new JTextArea(loremIpsum, 25, 80);
-        b.setLineWrap(true);
-        b.setWrapStyleWord(true);
+      final JTextArea b = new JTextArea(loremIpsum, 25, 80);
+      b.setLineWrap(true);
+      b.setWrapStyleWord(true);
 
-        final JScrollPane sp = new JScrollPane(b);
+      final JScrollPane sp = new JScrollPane(b);
 
-        final DetailsButton db = new DetailsButton("Show", "Hide", sp);
-        db.setBuddy(a);
+      final DetailsButton db = new DetailsButton("Show", "Hide", sp); //NON-NLS
+      db.setBuddy(a);
 
-        final JPanel contents = new JPanel();
-        contents.setLayout(
-          new MigLayout("hidemode 3", "", "[]unrel[]rel[]unrel[]"));
-        contents.add(a, "cell 0 0, growx, pushx");
-        contents.add(db, "cell 0 1");
-        contents.add(sp, "cell 0 2, grow, push");
-        contents.add(new JCheckBox("Disable?"), "cell 0 3");
+      final JPanel contents = new JPanel();
+      contents.setLayout(
+        new MigLayout("hidemode 3", "", "[]unrel[]rel[]unrel[]")); //NON-NLS
+      contents.add(a, "cell 0 0, growx, pushx"); //NON-NLS
+      contents.add(db, "cell 0 1"); //NON-NLS
+      contents.add(sp, "cell 0 2, grow, push"); //NON-NLS
+      contents.add(new JCheckBox("Disable?"), "cell 0 3"); //NON-NLS
 
-        final JDialog d = new JOptionPane(
-          contents,
-          JOptionPane.ERROR_MESSAGE,
-          JOptionPane.DEFAULT_OPTION
-        ).createDialog(null, "Test");
+      final JDialog d = new JOptionPane(
+        contents,
+        JOptionPane.ERROR_MESSAGE,
+        JOptionPane.DEFAULT_OPTION
+      ).createDialog(null, "Test"); //NON-NLS
 
-        d.setModal(true);
-        d.setResizable(true);
-        d.setLocationRelativeTo(null);
-        d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        d.pack();
-        d.setVisible(true);
-      }
+      d.setModal(true);
+      d.setResizable(true);
+      d.setLocationRelativeTo(null);
+      d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      d.pack();
+      d.setVisible(true);
     });
   }
 }

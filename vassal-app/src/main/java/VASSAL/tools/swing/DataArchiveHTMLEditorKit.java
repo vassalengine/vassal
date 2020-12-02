@@ -1,7 +1,6 @@
 package VASSAL.tools.swing;
 
 import java.net.URL;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,7 +51,7 @@ public class DataArchiveHTMLEditorKit extends HTMLEditorKit {
       final String src = (String) getElement().getAttributes().getAttribute(HTML.Attribute.SRC);
 
       URL url = null;
-      Path out = Info.getTempDir().toPath().resolve(src);
+      final Path out = Info.getTempDir().toPath().resolve(src);
 
       try {
         if (!Files.exists(out)) {

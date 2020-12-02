@@ -22,7 +22,7 @@ import VASSAL.tools.ErrorDialog;
 /**
  * Handles uncaught exceptions. None of the methods in this class are
  * intended to be called in our code, but must be public in order to be
- * accessible to {@link Thread} and {@link EventDispatchThread}.
+ * accessible to {@link Thread} and {link EventDispatchThread}.
  *
  * @author Joel Uckelman
  * @since 3.1.0
@@ -37,8 +37,6 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     System.getProperties().put("sun.awt.exception.handler", //$NON-NLS-1$
                                ExceptionHandler.class.getName());
   }
-
-  public ExceptionHandler() {}
 
   /**
    * Handles uncaught exceptions.

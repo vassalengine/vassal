@@ -33,6 +33,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -78,12 +79,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * A Board is a piece of a Map.
    * A Map can cantain a set of boards layed out in a rectangular grid.
    */
-  public static final String NAME = "name";
-  public static final String IMAGE = "image";
-  public static final String WIDTH = "width";
-  public static final String HEIGHT = "height";
-  public static final String COLOR = "color";
-  public static final String REVERSIBLE = "reversible";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String IMAGE = "image"; //NON-NLS
+  public static final String WIDTH = "width"; //NON-NLS
+  public static final String HEIGHT = "height"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String REVERSIBLE = "reversible"; //NON-NLS
 
   protected Point pos = new Point(0, 0);
   protected Rectangle boundaries = new Rectangle(0, 0, 500, 500);
@@ -98,16 +99,13 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   protected boolean cacheGrid = true;
 
-  @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";
+  @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";  //NON-NLS
   @Deprecated(since = "2020-08-06", forRemoval = true) protected Image boardImage;
 
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
 
   private static final Color CLEAR = new Color(0, 0, 0, 0);
-
-  public Board() {
-  }
 
   /**
    * @return this <code>Board</code>'s {@link Map}.
@@ -231,7 +229,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
       imageFile = (String) val;
 
-      if (imageFile == null || imageFile.trim().length() == 0) {
+      if (imageFile == null || imageFile.isBlank()) {
         boardImageOp = null;
       }
       else {
@@ -240,9 +238,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
         boolean tiled = false;
         try {
-          tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);
+          tiled = ts.tileExists("images/" + imageFile, 0, 0, 1.0);  //NON-NLS
         }
-        catch (ImageIOException e) {
+        catch (final ImageIOException e) {
           // ignore, not tiled
         }
 
@@ -320,16 +318,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
     try {
       g.drawImage(fim.get(), tx, ty, obs);
     }
-    catch (CancellationException e) {
+    catch (final CancellationException e) {
       // FIXME: bug until we permit cancellation
       ErrorDialog.bug(e);
     }
-    catch (InterruptedException e) {
+    catch (final InterruptedException e) {
       // This happens if taking a snapshot of the map is cancelled.
-
       // FIXME: Can we handle this in ImageSaver instead?
     }
-    catch (ExecutionException e) {
+    catch (final ExecutionException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
   }
@@ -527,7 +524,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       final ImageOp sop = Op.scale(boardImageOp, zoom);
       return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
     }
-    catch (CancellationException | ExecutionException | InterruptedException e) {
+    catch (final CancellationException | ExecutionException | InterruptedException e) {
       ErrorDialog.bug(e);
     }
     return null;
@@ -612,7 +609,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public Board copy() {
-    Board b = new Board();
+    final Board b = new Board();
     b.build(getBuildElement(Builder.createNewDocument()));
     return b;
   }
@@ -709,7 +706,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Board.htm");
+    return HelpFile.getReferenceManualPage("Board.html"); //NON-NLS
   }
 
   /**
@@ -773,7 +770,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     @Override
     public void setup(boolean gameStarting) {
       if (gameStarted && !gameStarting) {
-        for (Board board : toClean) {
+        for (final Board board : toClean) {
           board.cleanUp();
         }
         toClean.clear();
@@ -790,5 +787,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
     this.magnification = magnification;
     fixedBoundaries = false;
     bounds();
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageFile != null) s.add(imageFile);
   }
 }

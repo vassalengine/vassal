@@ -18,29 +18,25 @@
 
 package VASSAL.tools;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.LayoutStyle;
-
 import VASSAL.build.GameModule;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 
-// FXIME: Would be better if this didn't set the username and password
+import java.awt.Color;
+import java.awt.Frame;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+// FIXME: Would be better if this didn't set the username and password
 // directly, but instead had a static method for returning them.
 // FIXME: Could be made prettier if it didn't use Configurers, or if
 // we made Configurers prettier.
@@ -54,143 +50,99 @@ public class UsernameAndPasswordDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   public UsernameAndPasswordDialog(Frame parent) {
-    super(parent, "Set Your Username and Password", true);
+    super(parent, Resources.getString("Editor.UsernameAndPasswordDialog.choose_your_weapons"), true);
     setLocationRelativeTo(parent);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-    final StringConfigurer nameConfig = new StringConfigurer(null,
-      Resources.getString("WizardSupport.RealName")); //$NON-NLS-1$
-    final StringConfigurer pwd = new PasswordConfigurer(null,
-      Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
-    final StringConfigurer pwd2 = new PasswordConfigurer(null,
-      Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
+    setLayout(new MigLayout("ins panel,gapy 4,wrap 2", "[right]rel[fill,grow]")); // NON-NLS
 
-    final Component nc = nameConfig.getControls();
-    final Component p1 = pwd.getControls();
-    final Component p2 = pwd2.getControls();
+    add(new JLabel(Resources.getString("WizardSupport.RealName")));
+    final StringConfigurer nameConfig = new StringConfigurer("");
+    add(nameConfig.getControls());
 
-    final JLabel note =
-      new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+    add(new JLabel(Resources.getString("WizardSupport.Password")));
+    final StringConfigurer pwd = new PasswordConfigurer(null, "");
+    add(pwd.getControls());
 
-    final JLabel error = new JLabel(Resources.getString(
-      "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
+    add(new JLabel(Resources.getString("WizardSupport.ConfirmPassword")));
+    final StringConfigurer pwd2 = new PasswordConfigurer(null, "");
+    add(pwd2.getControls());
+
+    final JLabel note = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+    add(note, "span 2,center"); // NON-NLS
+
+    final JLabel error = new JLabel(Resources.getString("WizardSupport.EnterNameAndPassword"));
+    add(error, "span 2,center"); // NON-NLS
 
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.setEnabled(false);
-    ok.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final Prefs p = GameModule.getGameModule().getPrefs();
+    ok.addActionListener(e -> {
+      final Prefs p = GameModule.getGameModule().getPrefs();
 
-        p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
-        p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
+      p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
+      p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
-        try {
-          p.write();
-        }
-        catch (IOException ex) {
-          WriteErrorDialog.error(ex, p.getFile());
-        }
-
-        UsernameAndPasswordDialog.this.dispose();
+      try {
+        p.write();
       }
+      catch (IOException ex) {
+        WriteErrorDialog.error(ex, p.getFile());
+      }
+
+      dispose();
     });
 
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        UsernameAndPasswordDialog.this.dispose();
-      }
-    });
+    cancel.addActionListener(e -> dispose());
 
-    final JPanel panel = new JPanel();
-
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
-
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
-        .addComponent(nc)
-        .addComponent(p1)
-        .addComponent(p2)
-        .addComponent(note)
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(error)
-          .addGap(0, 0, Integer.MAX_VALUE))
-        .addGroup(layout.createSequentialGroup()
-          .addGap(0, 0, Integer.MAX_VALUE)
-          .addComponent(ok)
-          .addComponent(cancel)));
-
-    layout.setVerticalGroup(
-      layout.createSequentialGroup()
-        .addComponent(nc)
-        .addComponent(p1)
-        .addComponent(p2)
-        .addComponent(note)
-        .addComponent(error)
-        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED,
-                         GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
-        .addGroup(
-          layout.createParallelGroup(GroupLayout.Alignment.BASELINE, false)
-            .addComponent(ok)
-            .addComponent(cancel)));
-
-    layout.linkSize(ok, cancel);
-
-    add(panel);
+    final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push")); // NON-NLS
+    buttonPanel.add(ok);
+    buttonPanel.add(cancel);
+    add(buttonPanel, "span 2,center"); // NON-NLS
 
     pack();
     setMinimumSize(getSize());
 
     // This listener handles validating the input, updating the error
     // message, and enabling the Ok button.
-    final PropertyChangeListener pl = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (nameConfig.getValue() == null ||
-            "".equals(nameConfig.getValue())) { //$NON-NLS-1$
-          if (pwd.getValue() == null || "".equals(pwd.getValue())) {
-            error.setText(Resources.getString(
-              "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
-          }
-          else {
-            error.setText(Resources.getString(
-              "WizardSupport.EnterYourName")); //$NON-NLS-1$
-          }
-          error.setForeground(Color.black);
-          ok.setEnabled(false);
-        }
-        else if (pwd.getValue() == null ||
-                 "".equals(pwd.getValue())) { //$NON-NLS-1$
+    final PropertyChangeListener pl = evt -> {
+      if (nameConfig.getValue() == null ||
+          "".equals(nameConfig.getValue())) { //$NON-NLS-1$
+        if (pwd.getValue() == null || "".equals(pwd.getValue())) {
           error.setText(Resources.getString(
-            "WizardSupport.EnterYourPassword")); //$NON-NLS-1$
-          error.setForeground(Color.black);
-          ok.setEnabled(false);
-        }
-        else if (pwd2.getValue() == null ||
-                 "".equals(pwd2.getValue())) { //$NON-NLS-1$
-          error.setText("Please confirm your password");
-          error.setForeground(Color.black);
-          ok.setEnabled(false);
-        }
-        else if (!pwd.getValue().equals(pwd2.getValue())) {
-          error.setText(Resources.getString(
-            "WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
-          error.setForeground(Color.red);
-          ok.setEnabled(false);
+            "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
         }
         else {
-          // everything is ok
-          error.setText("");  //$NON-NLS-1$
-          error.setForeground(Color.black);
-          ok.setEnabled(true);
+          error.setText(Resources.getString(
+            "WizardSupport.EnterYourName")); //$NON-NLS-1$
         }
+        error.setForeground(Color.black);
+        ok.setEnabled(false);
+      }
+      else if (pwd.getValue() == null ||
+               "".equals(pwd.getValue())) { //$NON-NLS-1$
+        error.setText(Resources.getString(
+          "WizardSupport.EnterYourPassword")); //$NON-NLS-1$
+        error.setForeground(Color.black);
+        ok.setEnabled(false);
+      }
+      else if (pwd2.getValue() == null ||
+               "".equals(pwd2.getValue())) { //$NON-NLS-1$
+        error.setText(Resources.getString("Editor.UsernameAndPasswordDialog.turn_your_key_sir"));
+        error.setForeground(Color.black);
+        ok.setEnabled(false);
+      }
+      else if (!pwd.getValue().equals(pwd2.getValue())) {
+        error.setText(Resources.getString(
+          "WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
+        error.setForeground(Color.red);
+        ok.setEnabled(false);
+      }
+      else {
+        // everything is ok
+        error.setText("");  //$NON-NLS-1$
+        error.setForeground(Color.black);
+        ok.setEnabled(true);
       }
     };
 

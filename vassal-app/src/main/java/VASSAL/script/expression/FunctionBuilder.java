@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2008-2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -34,6 +33,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
+
+import VASSAL.i18n.Resources;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
@@ -53,54 +54,54 @@ public class FunctionBuilder extends JDialog {
   protected BeanShellExpressionConfigurer result;
 
   public FunctionBuilder(StringConfigurer c, JDialog parent, String function, String desc, String[] parmDesc, EditablePiece piece, String[] hints, BeanShellExpressionConfigurer.Option[] options, String selectedText) {
-    super(parent, "Function Builder - " + function, true);
+    super(parent, Resources.getString("Editor.FunctionBuilder.component_type") + " - " + function, true);
     target = c;
     targetPiece = piece;
     save = target.getValueString();
     this.function = function;
-    setLayout(new MigLayout("fillx,ins 0"));
+    setLayout(new MigLayout("fillx,ins 0")); //NON-NLS
 
-    JPanel p = new JPanel(new MigLayout("fillx", "[]rel[grow]"));
+    final JPanel p = new JPanel(new MigLayout("fillx", "[]rel[grow]")); //NON-NLS
 
-    p.add(new JLabel(desc), "span 2,align center,wrap,growx");
+    p.add(new JLabel(desc), "span 2,align center,wrap,growx"); //NON-NLS
     for (int i = 0; i < parmDesc.length; i++) {
       final BeanShellExpressionConfigurer config = new BeanShellExpressionConfigurer(null, "", "", targetPiece, options[i], this);
       if (i == 0 && isStringFunction() && selectedText != null) {
         config.setValue(selectedText);
       }
       configs.add(config);
-      p.add(new JLabel(parmDesc[i] + ":"), "align right");
-      p.add(config.getControls(), "align right,growx, wrap");
+      p.add(new JLabel(parmDesc[i] + ":"), "align right"); //NON-NLS
+      p.add(config.getControls(), "align right,growx, wrap"); //NON-NLS
     }
 
     result = new BeanShellExpressionConfigurer(null, "", "", null, BeanShellExpressionConfigurer.Option.NONE, true);
-    p.add(new JLabel("Result:"), "align right");
-    p.add(result.getControls(), "align right,growx, wrap");
+    p.add(new JLabel(Resources.getString("Editor.FunctionBuilder.result")), "align right"); //NON-NLS
+    p.add(result.getControls(), "align right,growx, wrap"); //NON-NLS
 
     if (hints != null && hints.length > 0) {
-      final JPanel hintPanel = new JPanel(new MigLayout("ins 5"));
+      final JPanel hintPanel = new JPanel(new MigLayout("ins 5")); //NON-NLS
       hintPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-      for (String hint : hints) {
-        hintPanel.add(new JLabel(hint), "wrap");
+      for (final String hint : hints) {
+        hintPanel.add(new JLabel(hint), "wrap"); //NON-NLS
       }
-      p.add(hintPanel, "span 2,growx,wrap");
+      p.add(hintPanel, "span 2,growx,wrap"); //NON-NLS
     }
 
-    JPanel buttonBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push"));
-    JButton okButton = ButtonFactory.getOkButton();
+    final JPanel buttonBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push")); //NON-NLS
+    final JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
-    JButton cancelButton = ButtonFactory.getCancelButton();
+    final JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
-    JButton helpButton = ButtonFactory.getHelpButton();
-    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
+    final JButton helpButton = ButtonFactory.getHelpButton();
+    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.html").getContents().toString())); //NON-NLS
     buttonBox.add(helpButton);
 
-    p.add(buttonBox, "span 2,align center,growx,wrap");
-    add(p, "growx");
+    p.add(buttonBox, "span 2,align center,growx,wrap"); //NON-NLS
+    add(p, "growx"); //NON-NLS
 
     pack();
     setLocationRelativeTo(getParent());
@@ -141,26 +142,26 @@ public class FunctionBuilder extends JDialog {
   }
 
   private String getFunctionBody(boolean skipFirstArgument) {
-    StringBuilder result;
-    result = new StringBuilder(function + "(");
+    final StringBuilder result;
+    result = new StringBuilder(function).append('(');
     boolean first = true;
     for (int i = skipFirstArgument ? 1 : 0; i < configs.size(); i++) {
-      BeanShellExpressionConfigurer fec = configs.get(i);
+      final BeanShellExpressionConfigurer fec = configs.get(i);
       if (!first) {
-        result.append(",");
+        result.append(',');
       }
       result.append(fec.getOption() == BeanShellExpressionConfigurer.Option.PME ? escape(fec.getValueString()) : fec.getValueString());
       first = false;
     }
-    result.append(")");
+    result.append(')');
     return result.toString();
   }
 
-  private String escape (String expr) {
+  private String escape(String expr) {
     return "\"{" + expr.replace("\"", "\\\"") + "}\"";
   }
 
-  private String getExpr (Configurer c) {
+  private String getExpr(Configurer c) {
     final Expression e = Expression.createExpression("{" + c.getValueString() + "}");
     final boolean isAtomic = (e instanceof IntExpression) || (e instanceof StringExpression);
     return (isAtomic ? "" : "(") + c.getValueString() + (isAtomic ? "" : ")");

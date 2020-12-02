@@ -50,7 +50,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
@@ -77,6 +76,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
@@ -109,7 +109,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   protected State state;
 
   // the default zoom levels are powers of 1.6
-  protected static final double[] defaultZoomLevels = new double[] {
+  protected static final double[] defaultZoomLevels = {
     1.0 / 1.6 / 1.6,
     1.0 / 1.6,
     1.0,
@@ -151,7 +151,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levels = new double[l.size()];
 
       int i = 0;
-      for (Double d : l) levels[i++] = d;
+      for (final Double d : l) levels[i++] = d;
       Arrays.sort(levels);
 
       cur = this.initial = initial;
@@ -233,7 +233,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     public List<Double> getLevels() {
       final ArrayList<Double> l = new ArrayList<>(levels.length);
-      for (double d : levels) l.add(d);
+      for (final double d : levels) l.add(d);
       return l;
     }
   }
@@ -241,13 +241,13 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   public Zoomer() {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
 
-    ActionListener zoomIn = e -> zoomIn();
+    final ActionListener zoomIn = e -> zoomIn();
 
-    ActionListener zoomOut = e -> zoomOut();
+    final ActionListener zoomOut = e -> zoomOut();
 
     zoomMenu = new ZoomMenu();
 
-    ActionListener zoomPick = e -> {
+    final ActionListener zoomPick = e -> {
       if (zoomPickButton.isShowing()) {
         zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
       }
@@ -546,7 +546,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           Double.parseDouble(s[0]) / Double.parseDouble(s[1]) :
           Double.parseDouble(s[0]);
       }
-      catch (NumberFormatException ex) {
+      catch (final NumberFormatException ex) {
         // should not happen, text already validated
         ErrorDialog.bug(ex);
       }
@@ -555,7 +555,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     /**
      * Add a level to the level list. This method expects that the
-     * intput has already been validated.
+     * input has already been validated.
      */
     protected void addLevel() {
       // get the initial scale level
@@ -674,7 +674,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
 
       if ((e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) && SwingUtils.isSelectionToggle(e)) {
-        int units = e.getUnitsToScroll();
+        final int units = e.getUnitsToScroll();
 
         if ((units < 0) && state.hasHigherLevel()) {
           zoomIn();
@@ -686,11 +686,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       map.getComponent().getParent().dispatchEvent(e); // So that the scrollbars can still find our event.
     };
-       
+
     map.getComponent().addMouseWheelListener(listener);
   }
-  
-  
+
+
   @Override
   public String getAttributeValueString(String key) {
     if (ZOOM_START.equals(key)) {
@@ -764,7 +764,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       if (val != null) {
         // dump into a set to remove duplicates
         final HashSet<Double> levels = new HashSet<>();
-        for (String s : (String[]) val) {
+        for (final String s : (String[]) val) {
           levels.add(Double.valueOf(s));
         }
 
@@ -837,7 +837,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     map.getToolBar().remove(zoomInButton);
     map.getToolBar().remove(zoomPickButton);
     map.getToolBar().remove(zoomOutButton);
-    
+
     if (listener != null) {
       map.getComponent().removeMouseWheelListener(listener);
       listener = null;
@@ -896,7 +896,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("Map.html", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -991,7 +991,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         setZoomLevel(Integer.parseInt(a.getActionCommand()));
         return;
       }
-      catch (NumberFormatException ignored) {
+      catch (final NumberFormatException ignored) {
       }
 
       final String cmd = a.getActionCommand();
@@ -1289,6 +1289,70 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       ratioNumeratorSpinner.addChangeListener(this);
       ratioDenominatorSpinner.addChangeListener(this);
+    }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurables string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(IN_BUTTON_TEXT), getAttributeValueString(IN_TOOLTIP),
+                   getAttributeValueString(OUT_BUTTON_TEXT), getAttributeValueString(OUT_TOOLTIP),
+                   getAttributeValueString(PICK_BUTTON_TEXT), getAttributeValueString(PICK_TOOLTIP));
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_IN)),
+                         NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_OUT)),
+                         NamedHotKeyConfigurer.decode(getAttributeValueString(ZOOM_PICK)));
+  }
+
+  /**
+   * Add our icons to the list of referenced images
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final String [] iconAttr = { PICK_ICON_NAME, IN_ICON_NAME, OUT_ICON_NAME };
+    for (final String i : iconAttr) {
+      final String f = getAttributeValueString(i);
+      if (f != null) {
+        s.add(f);
+      }
     }
   }
 }

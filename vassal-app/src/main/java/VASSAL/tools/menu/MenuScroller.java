@@ -473,7 +473,7 @@ public class MenuScroller {
         menu.add(menuItems[i]);
       }
 
-      JComponent parent = (JComponent) upItem.getParent();
+      final JComponent parent = (JComponent) upItem.getParent();
       parent.revalidate();
       parent.repaint();
     }
@@ -512,7 +512,7 @@ public class MenuScroller {
 
     private void restoreMenuItems() {
       menu.removeAll();
-      for (Component component : menuItems) {
+      for (final Component component : menuItems) {
         menu.add(component);
       }
     }
@@ -572,8 +572,8 @@ public class MenuScroller {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
-      Dimension size = c.getSize();
-      Graphics g2 = g.create(size.width / 2 - 5, size.height / 2 - 5, 10, 10);
+      final Dimension size = c.getSize();
+      final Graphics g2 = g.create(size.width / 2 - 5, size.height / 2 - 5, 10, 10);
       g2.setColor(Color.GRAY);
       g2.drawPolygon(xPoints, yPoints, 3);
       if (c.isEnabled()) {

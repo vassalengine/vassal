@@ -41,14 +41,14 @@ public class EventLog extends AbstractBuildable
 
   @Override
   public void addTo(Buildable b) {
-    GameModule mod = GameModule.getGameModule();
+    final GameModule mod = GameModule.getGameModule();
     mod.addCommandEncoder(this);
     mod.getGameState().addGameComponent(this);
     mod.getPrefs().addOption(new StringConfigurer(EVENT_LIST, null));
     myEvents = new ArrayList<>();
     savedEvents = new ArrayList<>();
 
-    for (Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
+    for (final Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
       myEvents.add(e);
   }
 
@@ -70,22 +70,18 @@ public class EventLog extends AbstractBuildable
 
   @Override
   public Command decode(String s) {
-    if (s.startsWith(EVENT_LIST)) {
-      return new StoreEvents(this, s.substring(EVENT_LIST.length()));
-    }
-    else {
+    if (!s.startsWith(EVENT_LIST)) {
       return null;
     }
+    return new StoreEvents(this, s.substring(EVENT_LIST.length()));
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof StoreEvents) {
-      return EVENT_LIST + ((StoreEvents) c).getEvents();
-    }
-    else {
+    if (!(c instanceof StoreEvents)) {
       return null;
     }
+    return EVENT_LIST + ((StoreEvents) c).getEvents();
   }
 
   @Override
@@ -134,11 +130,11 @@ public class EventLog extends AbstractBuildable
   /** @deprecated Use {@link #decodedEvents(String)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static Enumeration<Event> decodeEvents(String s) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    ArrayList<Event> l = new ArrayList<>();
-    SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
+    final ArrayList<Event> l = new ArrayList<>();
+    final SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
     while (se.hasMoreTokens()) {
-      SequenceEncoder.Decoder sub =
+      final SequenceEncoder.Decoder sub =
         new SequenceEncoder.Decoder(se.nextToken(), ',');
       l.add(new Event(Long.parseLong(sub.nextToken()),
                       sub.nextToken(), sub.nextToken()));
@@ -154,7 +150,7 @@ public class EventLog extends AbstractBuildable
    */
   public static String encodedEvents(Iterable<Event> events) {
     final SequenceEncoder se = new SequenceEncoder('|');
-    for (Event e : events) {
+    for (final Event e : events) {
       final SequenceEncoder sub = new SequenceEncoder(',');
       sub.append(e.getTime())
          .append(e.getUser())
@@ -167,7 +163,7 @@ public class EventLog extends AbstractBuildable
   /** @deprecated Use {@link #encodedEvents(Iterable)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String encodeEvents(Enumeration<?> e) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     final SequenceEncoder se = new SequenceEncoder('|');
     while (e.hasMoreElements()) {
       final Event evt = (Event) e.nextElement();
@@ -220,7 +216,7 @@ public class EventLog extends AbstractBuildable
     @Override
     public void executeCommand() {
       log.clearSaved();
-      for (Event e : decodedEvents(events)) log.store(e);
+      for (final Event e : decodedEvents(events)) log.store(e);
     }
 
     @Override

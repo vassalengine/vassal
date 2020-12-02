@@ -28,24 +28,14 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 
 public class Symbol {
 
-  protected static final String NATO = "NATO Unit Symbols";
-  protected static final String[] SYMBOL_SETS = new String[] { NATO };
-
-  //  public static void draw(Graphics g, Rectangle r, Color fg, Color bg, String
-  // symbolSet, String symbolName) {
-  //
-  //    if (symbolSet.equals(NATO_SIZE_SET)) {
-  //
-  //    }
-  //    else if (symbolSet.equals(NATO_UNIT_SET)) {
-  //      NatoUnitSymbolSet.draw(g, r, fg, bg, symbolName);
-  //    }
-  //
-  //  }
+  protected static final String NATO = "NATO Unit Symbols"; //NON-NLS (no, really!)
+  protected static final String[] SYMBOL_SETS = { NATO };
+  protected static final String[] SYMBOL_SETS_DESC = { "Editor.Symbol.NATO" };
 
   protected String symbolSetName;
   protected String symbolName1;
@@ -60,80 +50,46 @@ public class Symbol {
   }
 
   public void draw(Graphics g, Rectangle bounds, Color fg, Color bg, Color sz, float lineWidth) {
-
     if (symbolSetName.equals(NATO)) {
       NatoUnitSymbolSet.draw(symbolName1, symbolName2, g, bounds, fg, bg, sz, lineWidth, symbolSize);
     }
   }
 
   public static class NatoUnitSymbolSet {
-
-    protected static final String SZ_NONE = "None";
-    protected static final String SZ_INSTALLATION = "Installation";
-    protected static final String SZ_TEAM = "Team";
-    protected static final String SZ_SQUAD = "Squad";
-    protected static final String SZ_SECTION = "Section";
-    protected static final String SZ_PLATOON = "Platoon";
-    protected static final String SZ_ECHELON = "Echelon";
-    protected static final String SZ_COMPANY = "Company";
-    protected static final String SZ_BATTALION = "Battalion";
-    protected static final String SZ_REGIMENT = "Regiment";
-    protected static final String SZ_BRIGADE = "Brigade";
-    protected static final String SZ_DIVISION = "Division";
-    protected static final String SZ_CORPS = "Corps";
-    protected static final String SZ_ARMY = "Army";
-    protected static final String SZ_ARMY_GROUP = "Army Group";
+    protected static final String SZ_NONE = "None"; //NON-NLS
+    protected static final String SZ_INSTALLATION = "Installation"; //NON-NLS
+    protected static final String SZ_TEAM = "Team"; //NON-NLS
+    protected static final String SZ_SQUAD = "Squad"; //NON-NLS
+    protected static final String SZ_SECTION = "Section"; //NON-NLS
+    protected static final String SZ_PLATOON = "Platoon"; //NON-NLS
+    protected static final String SZ_ECHELON = "Echelon"; //NON-NLS
+    protected static final String SZ_COMPANY = "Company"; //NON-NLS
+    protected static final String SZ_BATTALION = "Battalion"; //NON-NLS
+    protected static final String SZ_REGIMENT = "Regiment"; //NON-NLS
+    protected static final String SZ_BRIGADE = "Brigade"; //NON-NLS
+    protected static final String SZ_DIVISION = "Division"; //NON-NLS
+    protected static final String SZ_CORPS = "Corps"; //NON-NLS
+    protected static final String SZ_ARMY = "Army"; //NON-NLS
+    protected static final String SZ_ARMY_GROUP = "Army Group"; //NON-NLS //NON-NLS
     protected static final String SZ_REGION = "Region";
 
-    protected static final String NONE = "None";
-    protected static final String AIRBORNE = "Airborne";
-    protected static final String AIR_DEFENCE = "Air Defence";
-    protected static final String AIR_FORCE = "Air Force";
-    //    protected static final String AIR_MOBILE = "Air Mobile";
-    //    protected static final String AMPHIBIOUS = "Amphibious";
-    protected static final String ANTI_TANK = "Anti Tank";
-    protected static final String ARMORED = "Armored";
-    protected static final String ARMY_AVIATION = "Army Aviation";
-    protected static final String ARTILLERY = "Artillery";
-    //    protected static final String BRIDGING = "Bridging";
-    //    protected static final String COMBAT_SERVICE_SUPPORT = "";
-    protected static final String COMMANDO = "Commando";
-    //    protected static final String ELECTRONIC_RANGING = "";
-    //    protected static final String ELECTRONIC_WARFARE = "";
-    protected static final String ENGINEERS = "Engineers";
-    protected static final String GLIDER = "Glider-Borne";
-    protected static final String GUERILLA = "Guerilla";
-    //    protected static final String HEADQUARTERS_SUPPORT = "";
-    protected static final String INFANTRY = "Infantry";
-    //    protected static final String LABOR_RESOURCES = "";
-    //    protected static final String MAINTENANCE = "";
-    protected static final String MARINES = "Marines";
-    //    protected static final String METEOROLOGICAL = "";
-    //    protected static final String MILITARY_CIVIL = "";
-    //    protected static final String MP = "";
-    //    protected static final String MISSILE = "";
-    protected static final String MOUNTAIN = "Mountain";
-    protected static final String NAVY = "";
-    //    protected static final String NBC = "";
-    //    protected static final String ORDNANCE = "";
-    //    protected static final String PARACHUTE = "";
-    //    protected static final String PAY_FINANCE = "";
-    //    protected static final String PERSONNEL = "";
-    //    protected static final String PIPELINE = "";
-    //    protected static final String POSTAL = "";
-    //    protected static final String PSYCH = "";
-    //    protected static final String QUARTERMASTER = "";
-    protected static final String RECON = "Cavalry/Recon";
-
-    //    protected static final String REPLACEMENT = "";
-    //    protected static final String SERVICE = "";
-    //    protected static final String SIGNAL = "";
-    //    protected static final String SOUND_RANGING = "";
-    //    protected static final String SUPPLY = "";
-    //    protected static final String TRANSPORT = "";
-    //    protected static final String TOPO = "";
-    //    protected static final String UNMANNED_AIR = "";
-    //    protected static final String VET = "";
+    protected static final String NONE = "None"; //NON-NLS
+    protected static final String AIRBORNE = "Airborne"; //NON-NLS
+    protected static final String AIR_DEFENCE = "Air Defence"; //NON-NLS
+    protected static final String AIR_FORCE = "Air Force"; //NON-NLS
+    protected static final String ANTI_TANK = "Anti Tank"; //NON-NLS
+    protected static final String ARMORED = "Armored"; //NON-NLS
+    protected static final String ARMY_AVIATION = "Army Aviation"; //NON-NLS
+    protected static final String ARTILLERY = "Artillery"; //NON-NLS
+    protected static final String COMMANDO = "Commando"; //NON-NLS
+    protected static final String ENGINEERS = "Engineers"; //NON-NLS
+    protected static final String GLIDER = "Glider-Borne"; //NON-NLS
+    protected static final String GUERILLA = "Guerrilla"; //NON-NLS
+    protected static final String INFANTRY = "Infantry"; //NON-NLS
+    protected static final String MARINES = "Marines"; //NON-NLS
+    protected static final String MOUNTAIN = "Mountain"; //NON-NLS
+    protected static final String NAVY = ""; //NON-NLS
+    protected static final String RECON = "Cavalry/Recon"; //NON-NLS
 
     protected static final String INSTALLATION_SYMBOL = "m"; //$NON-NLS-1$
     protected static final String TEAM_SYMBOL = "o"; //$NON-NLS-1$
@@ -157,13 +113,35 @@ public class Symbol {
         COMMANDO,
         GLIDER,
         GUERILLA,
-        //MARINES,
         MOUNTAIN,
         NAVY
       };
     }
 
+    protected static String[] getSymbolDisplayNames() {
+      return new String[] {
+        "Editor.Symbol.none",
+        "Editor.Symbol.infantry",
+        "Editor.Symbol.cavalry_recon",
+        "Editor.Symbol.armored",
+        "Editor.Symbol.artillery",
+        "Editor.Symbol.engineers",
+        "Editor.Symbol.airborne",
+        "Editor.Symbol.air_defense",
+        "Editor.Symbol.air_force",
+        "Editor.Symbol.anti_tank",
+        "Editor.Symbol.army_aviation",
+        "Editor.Symbol.commando",
+        "Editor.Symbol.glider_borne",
+        "Editor.Symbol.guerrilla",
+        "Editor.Symbol.mountain",
+        "Editor.Symbol.navy"
+      };
+    }
+
+
     protected static String[] sizeNames;
+    protected static String[] sizeDisplayNames;
 
     protected static String[] getSymbolSizes() {
       if (sizeNames == null) {
@@ -175,8 +153,19 @@ public class Symbol {
       return sizeNames;
     }
 
+    protected static String[] getSymbolSizeDisplayNames() {
+      if (sizeDisplayNames == null) {
+        sizeDisplayNames = new String[SIZES.length];
+        for (int i = 0; i < SIZES.length; i++) {
+          sizeDisplayNames[i] = SIZES[i].getDisplayName();
+        }
+      }
+      return sizeDisplayNames;
+    }
+
+
     protected static SizeOption findSize(String name) {
-      for (SizeOption size : SIZES) {
+      for (final SizeOption size : SIZES) {
         if (name.equals(size.getName())) {
           return size;
         }
@@ -184,23 +173,33 @@ public class Symbol {
       return SIZES[0];
     }
 
-    protected static final SizeOption[] SIZES = new SizeOption[] {
-      new SizeOption(SZ_NONE, 0, ""), //$NON-NLS-1$
-      new SizeOption(SZ_INSTALLATION, 1, INSTALLATION_SYMBOL),
-      new SizeOption(SZ_TEAM, 1, TEAM_SYMBOL),
-      new SizeOption(SZ_SQUAD, 1, SQUAD_SYMBOL),
-      new SizeOption(SZ_SECTION, 2, SQUAD_SYMBOL),
-      new SizeOption(SZ_PLATOON, 3, SQUAD_SYMBOL),
-      new SizeOption(SZ_ECHELON, 4, SQUAD_SYMBOL),
-      new SizeOption(SZ_COMPANY, 1, COMPANY_SYMBOL),
-      new SizeOption(SZ_BATTALION, 2, COMPANY_SYMBOL),
-      new SizeOption(SZ_REGIMENT, 3, COMPANY_SYMBOL),
-      new SizeOption(SZ_BRIGADE, 1, BRIGADE_SYMBOL),
-      new SizeOption(SZ_DIVISION, 2, BRIGADE_SYMBOL),
-      new SizeOption(SZ_CORPS, 3, BRIGADE_SYMBOL),
-      new SizeOption(SZ_ARMY, 4, BRIGADE_SYMBOL),
-      new SizeOption(SZ_ARMY_GROUP, 5, BRIGADE_SYMBOL),
-      new SizeOption(SZ_REGION, 6, BRIGADE_SYMBOL)
+
+    protected static SizeOption findSizeByDisplayName(String displayName) {
+      for (final SizeOption size : SIZES) {
+        if (displayName.equals(size.getDisplayName())) {
+          return size;
+        }
+      }
+      return SIZES[0];
+    }
+
+
+    public static final SizeOption[] SIZES = {
+      new SizeOption(SZ_NONE, Resources.getString("Editor.Symbol.Size.none"), 0, ""), //$NON-NLS-1$
+      new SizeOption(SZ_INSTALLATION, Resources.getString("Editor.Symbol.Size.installation"), 1, INSTALLATION_SYMBOL),
+      new SizeOption(SZ_TEAM, Resources.getString("Editor.Symbol.Size.team"), 1, TEAM_SYMBOL),
+      new SizeOption(SZ_SQUAD, Resources.getString("Editor.Symbol.Size.squad"), 1, SQUAD_SYMBOL),
+      new SizeOption(SZ_SECTION, Resources.getString("Editor.Symbol.Size.platoon"), 3, SQUAD_SYMBOL),
+      new SizeOption(SZ_ECHELON, Resources.getString("Editor.Symbol.Size.echelon"), 4, SQUAD_SYMBOL),
+      new SizeOption(SZ_COMPANY, Resources.getString("Editor.Symbol.Size.company"), 1, COMPANY_SYMBOL),
+      new SizeOption(SZ_BATTALION, Resources.getString("Editor.Symbol.Size.battalion"), 2, COMPANY_SYMBOL),
+      new SizeOption(SZ_REGIMENT, Resources.getString("Editor.Symbol.Size.regiment"), 3, COMPANY_SYMBOL),
+      new SizeOption(SZ_BRIGADE, Resources.getString("Editor.Symbol.Size.brigade"), 1, BRIGADE_SYMBOL),
+      new SizeOption(SZ_DIVISION, Resources.getString("Editor.Symbol.Size.division"), 2, BRIGADE_SYMBOL),
+      new SizeOption(SZ_CORPS, Resources.getString("Editor.Symbol.Size.corps"), 3, BRIGADE_SYMBOL),
+      new SizeOption(SZ_ARMY, Resources.getString("Editor.Symbol.Size.army"), 4, BRIGADE_SYMBOL),
+      new SizeOption(SZ_ARMY_GROUP, Resources.getString("Editor.Symbol.Size.army_group"), 5, BRIGADE_SYMBOL),
+      new SizeOption(SZ_REGION, Resources.getString("Editor.Symbol.Size.region"), 6, BRIGADE_SYMBOL)
     };
 
     protected static void draw(String name1, String name2, Graphics g, Rectangle bounds, Color fg, Color bg,
@@ -212,8 +211,8 @@ public class Symbol {
       }
 
       g.setColor(fg);
-      BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-      Graphics2D g2 = ((Graphics2D) g);
+      final BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+      final Graphics2D g2 = ((Graphics2D) g);
       g2.setStroke(stroke);
       //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -228,27 +227,26 @@ public class Symbol {
     }
 
     protected static void draw(Graphics g, float lineWidth, String name, Rectangle bounds, boolean drawLow) {
-
-      Graphics2D g2 = (Graphics2D) g;
-      BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-      g2.setStroke(stroke);
-
-      int x_left = bounds.x;
-      int x_center = bounds.x + bounds.width / 2 + 1;
-      int x_right = bounds.x + bounds.width;
-
-      int y_top = bounds.y;
-      int y_center = bounds.y + bounds.height / 2;
-      int y_bottom = bounds.y + bounds.height;
-
       if (name.equals(NONE) || name.equals(MARINES)) {
         return;
       }
 
+      final Graphics2D g2 = (Graphics2D) g;
+      final BasicStroke stroke = new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+      g2.setStroke(stroke);
+
+      final int x_left = bounds.x;
+      final int x_center = bounds.x + bounds.width / 2 + 1;
+      final int x_right = bounds.x + bounds.width;
+
+      final int y_top = bounds.y;
+      final int y_center = bounds.y + bounds.height / 2;
+      final int y_bottom = bounds.y + bounds.height;
+
       switch (name) {
       case AIRBORNE: {
-        int x1 = x_center - bounds.width / 4;
-        int y1 = y_top + bounds.height * 4 / 5 + 1;
+        final int x1 = x_center - bounds.width / 4;
+        final int y1 = y_top + bounds.height * 4 / 5 + 1;
         g2.draw(new Arc2D.Double(x1, y1, bounds.width / 4, bounds.height / 4, 0,
           180, Arc2D.OPEN));
         g2.draw(new Arc2D.Double(x_center, y1, bounds.width / 4, bounds.height / 4, 0,
@@ -263,9 +261,9 @@ public class Symbol {
         break;
 
       case AIR_FORCE: {
-        int xoff1 = (int) (bounds.width * 0.15);
-        int xoff2 = (int) (bounds.width * 0.2);
-        int yoff = (int) (bounds.height * 0.35);
+        final int xoff1 = (int) (bounds.width * 0.15);
+        final int xoff2 = (int) (bounds.width * 0.2);
+        final int yoff = (int) (bounds.height * 0.35);
         g.drawLine(x_center - xoff2, y_top + yoff, x_center + xoff2, y_bottom - yoff);
         g.drawLine(x_center + xoff2, y_top + yoff, x_center - xoff2, y_bottom - yoff);
         g2.draw(new Arc2D.Double(x_center - xoff2 - xoff1, y_top + yoff, xoff1 * 2, bounds.height - (2 * yoff), 90, 180,
@@ -282,9 +280,9 @@ public class Symbol {
         break;
 
       case ARMORED: {
-        int yoff = (int) (bounds.height * .25);
-        int xoff1 = (int) (bounds.width * .15);
-        int xoff2 = (int) (bounds.width * .20);
+        final int yoff = (int) (bounds.height * .25);
+        final int xoff1 = (int) (bounds.width * .15);
+        final int xoff2 = (int) (bounds.width * .20);
         g.drawLine(x_left + xoff1 + xoff2, y_top + yoff, x_right - xoff1 - xoff2, y_top + yoff);
         g.drawLine(x_left + xoff1 + xoff2, y_bottom - yoff, x_right - xoff1 - xoff2, y_bottom - yoff);
         g2.draw(
@@ -296,9 +294,9 @@ public class Symbol {
       }
 
       case ARMY_AVIATION: {
-        int xoff = (int) (bounds.height * 0.25);
-        int yoff = (int) (bounds.height * 0.33);
-        GeneralPath p = new GeneralPath();
+        final int xoff = (int) (bounds.height * 0.25);
+        final int yoff = (int) (bounds.height * 0.33);
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_left + xoff, y_top + yoff);
         p.lineTo(x_right - yoff, y_bottom - yoff);
         p.lineTo(x_right - yoff, y_top + yoff);
@@ -309,8 +307,8 @@ public class Symbol {
       }
 
       case ARTILLERY: {
-        int radius = bounds.height / 5;
-        int yoff = (drawLow ? (int) (bounds.height * .2) : 0);
+        final int radius = bounds.height / 5;
+        final int yoff = (drawLow ? (int) (bounds.height * .2) : 0);
         g.fillOval(x_center - radius, y_center - radius + yoff, radius * 2, radius * 2);
         break;
       }
@@ -318,10 +316,10 @@ public class Symbol {
       case COMMANDO: {
         g.drawLine(x_left, y_top, x_right, y_bottom);
         g.drawLine(x_left, y_bottom, x_right, y_top);
-        int x1 = (int) (bounds.width / 2.5);
-        int y1 = (int) (bounds.height / 2.5);
+        final int x1 = (int) (bounds.width / 2.5);
+        final int y1 = (int) (bounds.height / 2.5);
 
-        GeneralPath p = new GeneralPath();
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
         p.lineTo(x_left + x1, y_top);
         p.lineTo(x_left + x1, y_top + y1);
@@ -336,17 +334,17 @@ public class Symbol {
       }
 
       case ENGINEERS: {
-        BasicStroke oldStroke = (BasicStroke) g2.getStroke();
-        BasicStroke estroke =
+        final BasicStroke oldStroke = (BasicStroke) g2.getStroke();
+        final BasicStroke estroke =
           new BasicStroke(oldStroke.getLineWidth() * 1.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
         g2.setStroke(estroke);
-        int yh = (int) (bounds.height * 0.2);
-        int y1 = drawLow ? y_bottom - yh - 1 : y_top + (bounds.height - yh) / 2;
-        int y2 = y1 + yh;
-        int x1 = x_center - bounds.width / 5;
-        int x2 = x_center + bounds.width / 5;
+        final int yh = (int) (bounds.height * 0.2);
+        final int y1 = drawLow ? y_bottom - yh - 1 : y_top + (bounds.height - yh) / 2;
+        final int y2 = y1 + yh;
+        final int x1 = x_center - bounds.width / 5;
+        final int x2 = x_center + bounds.width / 5;
 
-        GeneralPath p = new GeneralPath();
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x1, y2);
         p.lineTo(x1, y1);
         p.lineTo(x2, y1);
@@ -362,7 +360,7 @@ public class Symbol {
         break;
       case GUERILLA: {
 
-        GeneralPath p = new GeneralPath();
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_left, y_top);
         p.lineTo(x_right, y_bottom);
         p.lineTo(x_right, y_top);
@@ -379,8 +377,8 @@ public class Symbol {
 
         break;
       case MOUNTAIN: {
-        int x_off = bounds.width / 6;
-        GeneralPath p = new GeneralPath();
+        final int x_off = bounds.width / 6;
+        final GeneralPath p = new GeneralPath();
         p.moveTo(x_center, y_center);
         p.lineTo(x_center + x_off, y_bottom);
         p.lineTo(x_center - x_off, y_bottom);
@@ -389,10 +387,10 @@ public class Symbol {
         break;
       }
       case NAVY: {
-        int yoff1 = (int) (bounds.height * 0.20);
-        int yoff2 = (int) (bounds.height * 0.15);
-        int xoff1 = (int) (bounds.width * 0.15);
-        int xoff2 = (int) (bounds.width * 0.30);
+        final int yoff1 = (int) (bounds.height * 0.20);
+        final int yoff2 = (int) (bounds.height * 0.15);
+        final int xoff1 = (int) (bounds.width * 0.15);
+        final int xoff2 = (int) (bounds.width * 0.30);
         g.drawLine(x_center, y_top + yoff1, x_center, y_bottom - yoff1);
         g.drawLine(x_center - xoff1, y_top + yoff1 + yoff2, x_center + xoff1, y_top + yoff1 + yoff2);
         g2.draw(new Arc2D.Double(x_center - xoff2, y_top + yoff1, xoff2 * 2, bounds.height - (2 * yoff1), 225, 90,
@@ -405,12 +403,11 @@ public class Symbol {
       default:
         // do nothing
       }
-
     }
 
     /**
      *
-     * @param g       Grahics
+     * @param g       Graphics
      * @param size    Name of size symbol
      * @param bounds  Size of the unit symbol
      */
@@ -420,36 +417,35 @@ public class Symbol {
         return;
       }
 
-      SizeOption option = findSize(size);
-      String type = option.getType();
-      int count = option.getCount();
+      final SizeOption option = findSize(size);
+      final String type = option.getType();
+      final int count = option.getCount();
 
-      int sym_w;
-      int sym_h = bounds.height / 3;
+      final int sym_w;
+      final int sym_h = bounds.height / 3;
       if (count <= 4) {
         sym_w = bounds.width / 5;
       }
       else {
         sym_w = bounds.width / 7;
       }
-      int gap = bounds.width / 15;
+      final int gap = bounds.width / 15;
 
-      BufferedImage bi = buildSizeImage(g, count, type, sym_w, sym_h, gap);
+      final BufferedImage bi = buildSizeImage(g, count, type, sym_w, sym_h, gap);
 
-      int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
-      int ypos = bounds.y - sym_h - 1;
+      final int xpos = bounds.x + (bounds.width / 2) - (bi.getWidth() / 2) + gap; // + (gap/2) - (bi.getWidth()/2);
+      final int ypos = bounds.y - sym_h - 1;
       g.drawImage(bi, xpos, ypos, null);
-
     }
 
     public static BufferedImage buildSizeImage(String size, int sym_w, int sym_h, int gap) {
 
-      SizeOption option = findSize(size);
-      String type = option.getType();
-      int count = option.getCount();
+      final SizeOption option = findSize(size);
+      final String type = option.getType();
+      final int count = option.getCount();
 
-      BufferedImage bi = createImage(count, sym_w, sym_h, gap);
-      Graphics2D g = bi.createGraphics();
+      final BufferedImage bi = createImage(count, sym_w, sym_h, gap);
+      final Graphics2D g = bi.createGraphics();
       g.setBackground(null);
       g.setColor(Color.BLACK);
       return buildSizeImage(g, count, type, sym_w, sym_h, gap);
@@ -463,8 +459,8 @@ public class Symbol {
 
     public static BufferedImage buildSizeImage(Graphics g, int count, String type, int sym_w, int sym_h, int gap) {
 
-      Graphics2D g2 = (Graphics2D) g;
-      BufferedImage bi;
+      final Graphics2D g2 = (Graphics2D) g;
+      final BufferedImage bi;
 
       if (type.equals(INSTALLATION_SYMBOL)) {
         bi = createImage(count, sym_w * 3, sym_h, gap);
@@ -472,7 +468,7 @@ public class Symbol {
       else {
         bi = createImage(count, sym_w, sym_h, gap);
       }
-      Graphics2D big = bi.createGraphics();
+      final Graphics2D big = bi.createGraphics();
       big.setColor(g2.getColor());
       big.setBackground(null);
 
@@ -483,12 +479,12 @@ public class Symbol {
       int x_pos = 0;
       for (int i = 0; i < count; i++) {
         if (type.equals(TEAM_SYMBOL)) {
-          int radius = sym_w / 2;
+          final int radius = sym_w / 2;
           big.drawOval(x_pos, sym_h / 3, radius * 2, radius * 2);
           big.drawLine(x_pos, sym_h, x_pos + sym_w, 0);
         }
         else if (type.equals(SQUAD_SYMBOL)) {
-          int radius = sym_w / 2;
+          final int radius = sym_w / 2;
           big.fillOval(x_pos, sym_h / 3, radius * 2, radius * 2);
         }
         else if (type.equals(COMPANY_SYMBOL)) {
@@ -510,19 +506,25 @@ public class Symbol {
     }
   }
 
-  private static class SizeOption {
+  public static class SizeOption {
     String name;
+    String displayName;
     String type;
     int count;
 
-    public SizeOption (String n, int c, String t) {
+    public SizeOption(String n, String d, int c, String t) {
       name = n;
+      displayName = d;
       type = t;
       count = c;
     }
 
     public String getName() {
       return name;
+    }
+
+    public String getDisplayName() {
+      return displayName;
     }
 
     public String getType() {

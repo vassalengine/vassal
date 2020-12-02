@@ -26,10 +26,10 @@ import VASSAL.command.Command;
  *
  */
 public class ChangePropertyCommand extends Command {
-  private MutableProperty property;
-  private String propertyName;
-  private String newValue;
-  private String oldValue;
+  private final MutableProperty property;
+  private final String propertyName;
+  private final String newValue;
+  private final String oldValue;
 
   public ChangePropertyCommand(MutableProperty property, String propertyName, String oldValue, String newValue) {
     super();

@@ -30,6 +30,7 @@ import VASSAL.tools.lang.Callback;
  * @since 3.2.0
  * @author Joel Uckelman
  */
+@FunctionalInterface
 public interface TileSlicer {
   /**
    * Slices an image into tiles.
@@ -42,7 +43,7 @@ public interface TileSlicer {
    * @param exec the executor in which to run tasks
    * @param progress a callback for indicating progress
    */
-  public void slice(
+  void slice(
     BufferedImage src,
     String iname,
     String tpath,

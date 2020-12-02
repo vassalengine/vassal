@@ -47,9 +47,9 @@ public class AboutVASSALAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent evt) {
-    final String name = "/images/Splash.png";
+    final String name = "/images/Splash.png"; //NON-NLS
 
-    BufferedImage img = null;
+    BufferedImage img;
     try {
       img = ImageUtils.getImage(name, getClass().getResourceAsStream(name));
     }

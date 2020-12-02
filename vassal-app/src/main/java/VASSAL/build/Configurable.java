@@ -17,8 +17,11 @@
  */
 package VASSAL.build;
 
+import java.beans.PropertyChangeListener;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigureTree;
 import VASSAL.i18n.Translatable;
 
 /**
@@ -36,48 +39,48 @@ public interface Configurable extends Translatable {
   /**
    * Remove this component from its parent
    */
-  public void removeFrom(Buildable parent);
-
+  void removeFrom(Buildable parent);
 
   /**
    * Remove a child component
    */
-  public void remove(Buildable child);
+  void remove(Buildable child);
 
   /**
    * The name of this Configurable Object
    */
-  public String getConfigureName();
+  String getConfigureName();
 
   /**
-   * @return a HelpFilte describing how to use and configure
-   * this component
+   * @return a HelpFile describing how to use and configure    * this component
    */
-  public HelpFile getHelpFile();
+  HelpFile getHelpFile();
 
   /**
    * @return an array of Configurer objects representing
    * the Configurable children of this Configurable object
    */
-  public Configurable[] getConfigureComponents();
+  Configurable[] getConfigureComponents();
 
   /**
-   * Return a {@link Configurer} object which can be used to set the
+   * @return a {@link Configurer} object which can be used to set the
    * attributes of this object
    */
-  public Configurer getConfigurer();
+  Configurer getConfigurer();
 
   /**
-   * Return a list of valid sub-component Classes.  If a Class
+   * @return a list of valid sub-component Classes.  If a Class
    * appears in this list, then instances of that class may be added
-   * to this component from the Configuration Window.
+   * to this component from the Editor's {@link ConfigureTree} window by
+   * right-clicking on the component and selecting the appropriate "Add"
+   * option.
    */
-  public Class[] getAllowableConfigureComponents();
+  Class[] getAllowableConfigureComponents();
 
   /**
    * Add a PropertyChangeListener.  A PropertyChangeEvent should be fired
    * with property name {@link #NAME_PROPERTY} when the value returned from
    * {@link #getConfigureName} has changed
    */
-  public void addPropertyChangeListener(java.beans.PropertyChangeListener l);
+  void addPropertyChangeListener(PropertyChangeListener l);
 }

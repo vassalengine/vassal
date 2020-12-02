@@ -17,6 +17,10 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -27,6 +31,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -36,10 +41,10 @@ import javax.swing.JLabel;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -52,16 +57,12 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.ImageOp;
@@ -72,7 +73,7 @@ import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
  * ...
  */
 // TODO Expose result as property
-public class SpecialDiceButton extends AbstractConfigurable implements CommandEncoder, UniqueIdManager.Identifyable {
+public class SpecialDiceButton extends AbstractToolbarItem implements CommandEncoder, UniqueIdManager.Identifyable {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDiceButton.class);
 
@@ -83,7 +84,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected boolean reportResultAsText = true;
   protected boolean reportResultInWindow = false;
   protected boolean reportResultInButton = false;
-  private final LaunchButton launch;
   protected String id;
   protected String sMapName;
   protected JDialog dialog; // Dialog to show results graphical
@@ -96,10 +96,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this); //$NON-NLS-1$
 
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String RESULT_CHATTER = "resultChatter"; //$NON-NLS-1$
   public static final String CHAT_RESULT_FORMAT = "format"; //$NON-NLS-1$
   public static final String RESULT_N = "result#"; //$NON-NLS-1$
@@ -111,22 +107,27 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public static final String WINDOW_Y = "windowY"; //$NON-NLS-1$
   public static final String BACKGROUND_COLOR = "backgroundColor"; //$NON-NLS-1$
   public static final String DICE_SET = "diceSet"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String NONE = "<none>"; //$NON-NLS-1$
+  public static final String NONE = "&lt;none&gt;"; //$NON-NLS-1$
   private static final int[] EMPTY = new int[0];
+
+  // These five identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
 
   public SpecialDiceButton() {
     dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
-    dialog.setLayout(new MigLayout("ins 0"));
+    dialog.setLayout(new MigLayout("ins 0")); //NON-NLS
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
     final ActionListener rollAction = e -> DR();
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
+
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
+    makeLaunchButton(desc, desc, "/images/die.gif", rollAction); //NON-NLS
     setAttribute(NAME, desc);
-    setAttribute(BUTTON_TEXT, desc);
-    launch.setAttribute(TOOLTIP, desc);
   }
 
   public static String getConfigureTypeName() {
@@ -147,9 +148,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return " ***  <" //$NON-NLS-1$
-        + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
+    return " ***  &lt;" //$NON-NLS-1$
+        + GlobalOptions.getInstance().getPlayerId() + "&gt;"; //$NON-NLS-1$
   }
 
   /**
@@ -159,7 +160,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected void DR() {
     final int[] results = new int[dice.size()];
     int i = 0;
-    for (SpecialDie sd : dice) {
+    for (final SpecialDie sd : dice) {
       final int faceCount = sd.getFaceCount();
       results[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
@@ -238,12 +239,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[]{
-      NAME,
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY,
+    return ArrayUtils.addAll(
+      super.getAttributeNames(),
       RESULT_CHATTER,
       CHAT_RESULT_FORMAT,
       RESULT_WINDOW,
@@ -252,36 +249,28 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       WINDOW_X,
       WINDOW_Y,
       BACKGROUND_COLOR
-    };
+    );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.NAME_LABEL),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(
+      super.getAttributeDescriptions(),
       Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
       Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
       Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.width"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.height"), //$NON-NLS-1$
-      Resources.getString("Editor.SpecialDiceButton.background") //$NON-NLS-1$
-    };
+      Resources.getString("Editor.width"), //$NON-NLS-1$
+      Resources.getString("Editor.height"), //$NON-NLS-1$
+      Resources.getString("Editor.background_color") //$NON-NLS-1$
+    );
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
+    return ArrayUtils.addAll(
+      super.getAttributeTypes(),
       Boolean.class,
       ReportFormatConfig.class,
       Boolean.class,
@@ -290,9 +279,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       Integer.class,
       Integer.class,
       Color.class
-    };
+    );
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -407,7 +397,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     if (NAME.equals(key)) {
       setConfigureName((String) o);
       property.setPropertyName(getConfigureName() + "_result"); //$NON-NLS-1$
-      launch.setToolTipText((String) o);
+      getLaunchButton().setToolTipText((String) o);
     }
     else if (RESULT_CHATTER.equals(key)) {
       reportResultAsText = getBoolVal(o);
@@ -452,16 +442,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       launch.setAttribute(key, o);
     }
     else {
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
   }
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (RESULT_CHATTER.equals(key)) {
+    if (RESULT_CHATTER.equals(key)) {
       return String.valueOf(reportResultAsText);
     }
     else if (CHAT_RESULT_FORMAT.equals(key)) {
@@ -489,7 +476,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -500,7 +487,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SpecialDiceButton.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("SpecialDiceButton.html"); //$NON-NLS-1$
   }
 
   /**
@@ -515,7 +502,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return ""; //$NON-NLS-1$
     }
     final SequenceEncoder se = new SequenceEncoder(',');
-    for (int value : ia) {
+    for (final int value : ia) {
       se.append(String.valueOf(value));
     }
     return se.getValue();
@@ -550,23 +537,21 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   @Override
   public List<String> getPropertyNames() {
     final ArrayList<String> l = new ArrayList<>();
-    l.add(getConfigureName() + "_result");
+    l.add(getConfigureName() + "_result"); //NON-NLS
     return l;
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof ShowResults) {
-      final ShowResults c2 = (ShowResults) c;
-      final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
-      for (int i = 0; i < c2.rolls.length; ++i) {
-        se.append(c2.rolls[i] + ""); //$NON-NLS-1$
-      }
-      return SHOW_RESULTS_COMMAND + se.getValue();
-    }
-    else {
+    if (!(c instanceof ShowResults)) {
       return null;
     }
+    final ShowResults c2 = (ShowResults) c;
+    final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
+    for (int i = 0; i < c2.rolls.length; ++i) {
+      se.append(Integer.toString(c2.rolls[i])); //$NON-NLS-1$
+    }
+    return SHOW_RESULTS_COMMAND + se.getValue();
   }
 
   @Override
@@ -581,21 +566,19 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       st = new SequenceEncoder.Decoder(s, '\t');
       st.nextToken();
     }
-    if (st != null) {
-      final ArrayList<String> l = new ArrayList<>();
-      while (st.hasMoreTokens()) {
-        l.add(st.nextToken());
-      }
-      final int[] results = new int[l.size()];
-      int i = 0;
-      for (String n : l) {
-        results[i++] = Integer.parseInt(n);
-      }
-      return new ShowResults(this, results);
-    }
-    else {
+    if (st == null) {
       return null;
     }
+    final List<String> l = new ArrayList<>();
+    while (st.hasMoreTokens()) {
+      l.add(st.nextToken());
+    }
+    final int[] results = new int[l.size()];
+    int i = 0;
+    for (final String n : l) {
+      results[i++] = Integer.parseInt(n);
+    }
+    return new ShowResults(this, results);
   }
   /**
    * Command for displaying the results of a roll of the dice
@@ -636,9 +619,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       icons = new Icon[results.length];
       if (results.length > dice.size()) {
         logger.warn(
-          "Special Die Button (" + getConfigureName() +
-          "): more results (" + results.length + ") requested than dice (" +
-          dice.size() + ")"
+          "Special Die Button (" + getConfigureName() + //NON-NLS
+          "): more results (" + results.length + ") requested than dice (" + //NON-NLS
+          dice.size() + ")" //NON-NLS
         );
       }
       for (int i = 0; i < results.length; ++i) {
@@ -661,7 +644,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         g.fillRect(x, y, width, height);
       }
       int offset = 0;
-      for (Icon icon : icons) {
+      for (final Icon icon : icons) {
         if (icon != null) {
           icon.paintIcon(c, g, x + offset, y);
           offset += icon.getIconWidth();
@@ -678,5 +661,25 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     public int getIconHeight() {
       return height;
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(windowTitleResultFormat, chatResultFormat);
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(chatResultFormat);
+    h.addImageNames(s);
   }
 }

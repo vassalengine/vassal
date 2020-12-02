@@ -48,7 +48,7 @@ public class SideAccess implements PieceAccess {
 
   @Override
   public boolean currentPlayerCanModify(String ownerId) {
-    String currentPlayerId = getCurrentPlayerId();
+    final String currentPlayerId = getCurrentPlayerId();
     return currentPlayerId != null && (ownerId == null || ownerId.equals(currentPlayerId));
   }
 

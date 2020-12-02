@@ -37,11 +37,23 @@ import javax.swing.JList;
 import javax.swing.UIManager;
 
 import VASSAL.Info;
-import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 
 public class Resources {
+
+  // Note that the String VASSAL should NEVER be translated.
+  // FIXME Replace raw "VASSAL" string with Resources.VASSAL in other code
+  public static final String VASSAL = "General.VASSAL"; //$NON-NLS-1$
+
+  protected static final String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL"; //$NON-NLS-1$
+  protected static final String EDITOR_BUNDLE = "VASSAL.i18n.Editor"; //$NON-NLS-1$
+
+  protected static final String BASE_BUNDLE = ".properties"; //$NON-NLS-1$
+  protected static final String EN_BUNDLE = "_en.properties"; //$NON-NLS-1$
+
   private static Resources instance;
 /*
    * Translation of VASSAL is handled by standard Java I18N tools.
@@ -53,10 +65,10 @@ public class Resources {
    */
   protected BundleHelper vassalBundle;
   protected BundleHelper editorBundle;
-  private VassalPropertyClassLoader bundleLoader = new VassalPropertyClassLoader();
+  private final VassalPropertyClassLoader bundleLoader = new VassalPropertyClassLoader();
 
   /** Preferences key for the user's Locale */
-  public static final String LOCALE_PREF_KEY = "Locale";
+  public static final String LOCALE_PREF_KEY = "Locale"; //$NON-NLS-1$
 
   // Note: The Locale ctor takes the lower-case two-letter ISO language code.
   protected final List<Locale> supportedLocales =
@@ -65,14 +77,14 @@ public class Resources {
       Locale.GERMAN,
       Locale.FRENCH,
       Locale.ITALIAN,
-      new Locale("es"), // Spanish
+      new Locale("es"), // Spanish //$NON-NLS-1$
       Locale.JAPANESE,
-      new Locale("nl")  // Dutch
+      new Locale("nl")  // Dutch //$NON-NLS-1$
     )
     );
 
   protected Locale locale = Locale.getDefault();
-  protected static String DATE_FORMAT = "{0,date}";
+  protected static final String DATE_FORMAT = "{0,date}"; //$NON-NLS-1$
 
   private Resources() {
     init();
@@ -90,7 +102,7 @@ public class Resources {
   private void init() {
     Locale myLocale = Locale.getDefault();
 
-    ResourceBundle rb = ResourceBundle.getBundle("VASSAL.i18n.VASSAL", myLocale, bundleLoader);
+    final ResourceBundle rb = ResourceBundle.getBundle(VASSAL_BUNDLE, myLocale, bundleLoader); //$NON-NLS-1$
 
     // If the user has a resource bundle for their default language on their
     // local machine, add it to the list of supported locales
@@ -99,7 +111,7 @@ public class Resources {
     }
 
     final ArrayList<String> languages = new ArrayList<>();
-    for (Locale l : supportedLocales) {
+    for (final Locale l : supportedLocales) {
       languages.add(l.getLanguage());
     }
 
@@ -121,14 +133,14 @@ public class Resources {
         languages.toArray(new String[0])) {
       @Override
       public Component getControls() {
-        if (box == null) {
+        if (getBox() == null) {
           final Component c = super.getControls();
-          box.setRenderer(new DefaultListCellRenderer() {
+          getBox().setRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-              JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+              final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
               l.setText(new Locale((String) value).getDisplayLanguage());
               return l;
             }
@@ -142,7 +154,7 @@ public class Resources {
     };
 
     localeConfig.setValue(locale.getLanguage());
-    p.addOption(getInstanceString("Prefs.general_tab"), localeConfig);
+    p.addOption(getInstanceString("Prefs.general_tab"), localeConfig); //$NON-NLS-1$
 
 /*
     new PreferencesEditor() {
@@ -170,10 +182,10 @@ public class Resources {
     l = new Locale(l.getLanguage());
     if (!supportedLocales.contains(l)) {
       supportedLocales.add(0, l);
-      StringEnumConfigurer config = (StringEnumConfigurer) Prefs
+      final StringEnumConfigurer config = (StringEnumConfigurer) Prefs
           .getGlobalPrefs().getOption(LOCALE_PREF_KEY);
       if (config != null) {
-        ArrayList<String> valid = new ArrayList<>(Arrays
+        final ArrayList<String> valid = new ArrayList<>(Arrays
           .asList(config.getValidValues()));
         valid.add(0, l.getLanguage());
         config.setValidValues(valid.toArray(new String[0]));
@@ -205,7 +217,7 @@ public class Resources {
    *
    * Resources.getString(Resources.VASSAL)
    */
-  public static final String VASSAL = "General.VASSAL"; //$NON-NLS-1$
+  // FIXME Locate all usages of the raw strings and replace with the constants.
   public static final String ADD = "General.add"; //$NON-NLS-1$
   public static final String REMOVE = "General.remove"; //$NON-NLS-1$
   public static final String INSERT = "General.insert"; //$NON-NLS-1$
@@ -245,15 +257,38 @@ public class Resources {
   public static final String COLOR_LABEL = "Editor.color_label"; //$NON-NLS-1$
   public static final String NAME_LABEL = "Editor.name_label"; //$NON-NLS-1$
   public static final String DESCRIPTION = "Editor.description_label"; //$NON-NLS-1$
+  public static final String REPORT_FORMAT_LABEL = "Editor.report_format"; //$NON-NLS-1$
+  public static final String COMMAND_NAME_LABEL = "Editor.command_name"; //$NON-NLS-1$
+  public static final String KEYBOARD_COMMAND_LABEL = "Editor.keyboard_command"; //$NON-NLS-1$
+  public static final String NAME_FORMAT_LABEL = "Editor.name_format"; //$NON-NLS-1$
+  public static final String MENU_COMMAND_LABEL = "Editor.menu_command"; //$NON-NLS-1$
+  public static final String HORIZONTAL_OFFSET_LABEL = "Editor.horizontal_offset"; //$NON-NLS-1$
+  public static final String VERTICAL_OFFSET_LABEL = "Editor.vertical_offset"; //$NON-NLS-1$
+  public static final String VALUE_LABEL = "Editor.value"; //$NON-NLS-1$
+
   /**
-   * Localize a user interface String.
+   * getString
    *
-   * @param id
-   *          String Id
-   * @return Localized result
+   * Return a translated string for the specified key, using the current language bundles
+   *
+   * @param id Key of string to translate
+   * @return Translated String
    */
   public static String getString(String id) {
     return getInstance().getInstanceString(id);
+  }
+
+  /**
+   * getString
+   *
+   * Return a translated string for the specified key, using the current language bundles
+   *
+   * @param id Key of string to translate
+   * @param params Additional parameters that need to be inserted into the string
+   * @return Translated String
+   */
+  public static String getString(String id, Object... params) {
+    return getInstance().getBundleForKey(id).getString(id, params);
   }
 
   private String getInstanceString(String id) {
@@ -266,14 +301,14 @@ public class Resources {
 
   protected BundleHelper getEditorBundle() {
     if (editorBundle == null) {
-      editorBundle = new BundleHelper(ResourceBundle.getBundle("VASSAL.i18n.Editor", locale, bundleLoader));
+      editorBundle = new BundleHelper(ResourceBundle.getBundle(EDITOR_BUNDLE, locale, bundleLoader)); //$NON-NLS-1$
     }
     return editorBundle;
   }
 
   protected BundleHelper getVassalBundle() {
     if (vassalBundle == null) {
-      vassalBundle = new BundleHelper(ResourceBundle.getBundle("VASSAL.i18n.VASSAL", locale, bundleLoader));
+      vassalBundle = new BundleHelper(ResourceBundle.getBundle(VASSAL_BUNDLE, locale, bundleLoader)); //$NON-NLS-1$
     }
     return vassalBundle;
   }
@@ -284,9 +319,11 @@ public class Resources {
    * @param id
    *          String id
    * @return Localized result
+   * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getVassalString(String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getInstance().getVassalBundle().getString(id);
   }
 
@@ -296,9 +333,11 @@ public class Resources {
    * @param id
    *          String Id
    * @return Localized Result
+   * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getEditorString(String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     return getInstance().getEditorBundle().getString(id);
   }
 
@@ -310,15 +349,17 @@ public class Resources {
    * @param id
    *          String Id
    * @return Localized result
+   * @deprecated Use {@link #getString(String, Object...)} Instead
    */
-  @Deprecated
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getString(ResourceBundle bundle, String id) {
+    ProblemDialog.showDeprecated("2020-08-06");
     String s = null;
     try {
       s = bundle.getString(id);
     }
     catch (Exception ex) {
-      System.err.println("No Translation: " + id);
+      System.err.println("No Translation: " + id); //$NON-NLS-1$
     }
     // 2. Worst case, return the key
     if (s == null) {
@@ -326,13 +367,6 @@ public class Resources {
     }
     return s;
   }
-
-  public static String getString(String id, Object... params) {
-    return getInstance().getBundleForKey(id).getString(id, params);
-  }
-
-  protected static final String BASE_BUNDLE = "VASSAL.properties";
-  protected static final String EN_BUNDLE = "VASSAL_en.properties";
 
   /**
    * Custom Class Loader for loading VASSAL property files.
@@ -348,7 +382,7 @@ public class Resources {
       // If no English translation of Vassal is available (as will usually be the case),
       // drop back to the Base bundle.
       if (url == null && name.endsWith(EN_BUNDLE)) {
-        url = getAResource(name.substring(0, name.lastIndexOf('/') + 1) + BASE_BUNDLE);
+        url = getAResource(name.substring(0, name.lastIndexOf(EN_BUNDLE)) + BASE_BUNDLE);
       }
 
       return url;

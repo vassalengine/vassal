@@ -18,8 +18,10 @@
 package VASSAL.build.module;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import VASSAL.search.HTMLImageFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +40,8 @@ public class SpecialDie extends AbstractConfigurable {
   private static final Logger logger =
     LoggerFactory.getLogger(SpecialDie.class);
 
-  private List<SpecialDieFace> dieFaceList = new ArrayList<>();
-  private FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
+  private final List<SpecialDieFace> dieFaceList = new ArrayList<>();
+  private final FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String FORMAT = "format"; //$NON-NLS-1$
@@ -110,7 +112,7 @@ public class SpecialDie extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -140,12 +142,12 @@ public class SpecialDie extends AbstractConfigurable {
     if  (face < 0 || face >= faceCount)  {
       format.setProperty(RESULT, "undefined"); //$NON-NLS-1$
       format.setProperty(NUMERICAL_VALUE, "0"); //$NON-NLS-1$
-      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face); //NON-NLS
     }
     else {
       final SpecialDieFace aFace = dieFaceList.get(face);
       format.setProperty(RESULT, aFace.getTextValue());
-      format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
+      format.setProperty(NUMERICAL_VALUE, Integer.toString(aFace.getIntValue()));
     }
     return format.getLocalizedText();
   }
@@ -154,7 +156,7 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face); //NON-NLS
       return 0;
     }
     else {
@@ -166,11 +168,30 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face); //NON-NLS
       return ""; //$NON-NLS-1$
     }
     else {
       return dieFaceList.get(face).getImageName();
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(format.getFormat());
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(format.getFormat());
+    h.addImageNames(s);
   }
 }

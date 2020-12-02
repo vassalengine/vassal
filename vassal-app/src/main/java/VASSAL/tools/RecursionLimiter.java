@@ -40,26 +40,26 @@ public class RecursionLimiter {
 
   /**
    * Report an Infinite Loop
-   * @param e
+   * @param e exception
    */
   public static void infiniteLoop(RecursionLimitException e) {
     reporting = true;
     ErrorDialog.showDetails(
       e,
       ThrowableUtils.getStackTrace(e),
-      "Error.infinite_loop",
+      "Error.infinite_loop", //NON-NLS
       e.getComponentTypeName(),
       e.getComponentName()
     );
     reporting = false;
   }
-  
+
   public static boolean isReportingInfiniteLoop() {
     return reporting;
   }
 
   public interface Loopable {
-    public String getComponentTypeName();
-    public String getComponentName();
+    String getComponentTypeName();
+    String getComponentName();
   }
 }

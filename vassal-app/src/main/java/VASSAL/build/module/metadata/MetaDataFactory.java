@@ -69,7 +69,10 @@ public class MetaDataFactory {
       // Check if it has a buildFile
       ZipEntry buildFileEntry = zip.getEntry(GameModule.BUILDFILE);
       if (buildFileEntry == null) {
-        return null;
+        buildFileEntry = zip.getEntry(GameModule.BUILDFILE_OLD);
+        if (buildFileEntry == null) {
+          return null;
+        }
       }
 
       // It's either a module or an Extension, check for existence of metadata
@@ -99,11 +102,11 @@ public class MetaDataFactory {
         }
       }
     }
-    catch (ZipException e) {
+    catch (final ZipException e) {
       // It is not a Zip file, check for an Importable file
       return ImportAction.buildMetaData(file);
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       logger.error("", e);
     }
 

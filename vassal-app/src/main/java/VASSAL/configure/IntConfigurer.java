@@ -32,9 +32,13 @@ public class IntConfigurer extends StringConfigurer {
     }
   }
 
+  public IntConfigurer(Integer val) {
+    this (null, "", val);
+  }
+
   @Override
   public void setValue(String s) {
-    Integer i = null;
+    Integer i;
     try {
       i = Integer.valueOf(s);
     }
@@ -66,5 +70,11 @@ public class IntConfigurer extends StringConfigurer {
   @Override
   public String getValueString() {
     return value == null ? null : value.toString();
+  }
+
+  @Override
+  // Suppress stretching
+  protected String getGrowthConstraint() {
+    return "grow 0"; // NON-NLS
   }
 }

@@ -21,6 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 public class ShapeItemInstance extends ItemInstance {
@@ -39,7 +40,6 @@ public class ShapeItemInstance extends ItemInstance {
     decode(code);
   }
 
-
   public ShapeItemInstance(String name, String type, String location) {
     super(name, type, location);
     setFgColor(ColorSwatch.getClear());
@@ -47,7 +47,7 @@ public class ShapeItemInstance extends ItemInstance {
 
   @Override
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
     se.append(getName());
     se.append(getLocation());
@@ -57,7 +57,7 @@ public class ShapeItemInstance extends ItemInstance {
   }
 
   public void decode(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     setType(sd.nextToken("")); //$NON-NLS-1$
     setName(sd.nextToken("")); //$NON-NLS-1$
     setLocation(sd.nextToken("")); //$NON-NLS-1$
@@ -76,8 +76,8 @@ public class ShapeItemInstance extends ItemInstance {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Foreground Color:  ",
-      "Border Color:  "
+      Resources.getString("Editor.foreground_color"),
+      Resources.getString("Editor.border_color")
     };
   }
 
@@ -143,5 +143,4 @@ public class ShapeItemInstance extends ItemInstance {
       return new ColorSwatchConfigurer(key, name, ((ItemInstance) c).getFgColor());
     }
   }
-
 }

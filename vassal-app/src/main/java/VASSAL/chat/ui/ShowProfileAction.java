@@ -21,7 +21,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 
@@ -35,10 +34,10 @@ import VASSAL.i18n.Resources;
 public class ShowProfileAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private SimplePlayer p;
-  private java.awt.Frame f;
+  private final SimplePlayer p;
+  private final Frame f;
 
-  public ShowProfileAction(SimplePlayer p, java.awt.Frame f) {
+  public ShowProfileAction(SimplePlayer p, Frame f) {
     super(Resources.getString("Chat.show_profile")); //$NON-NLS-1$
     this.p = p;
     this.f = f;
@@ -50,12 +49,9 @@ public class ShowProfileAction extends AbstractAction {
   }
 
   public static PlayerActionFactory factory() {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        return new ShowProfileAction(p,
-          (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree));
-      }
-    };
+    return (SimplePlayer p, JTree tree) -> new ShowProfileAction(
+      p,
+      (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree)
+    );
   }
 }

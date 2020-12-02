@@ -29,6 +29,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 import VASSAL.tools.ToolBarComponent;
 
@@ -39,9 +40,9 @@ import VASSAL.tools.ToolBarComponent;
  *
  */
 public class GlobalProperties extends AbstractConfigurable implements MutablePropertiesContainer, ToolBarComponent, PropertySource {
-  private TemporaryToolBar tempToolbar = new TemporaryToolBar();
+  private final TemporaryToolBar tempToolbar = new TemporaryToolBar();
   private PropertySource propertySource;
-  private Map<String, MutableProperty> initialValues = new HashMap<>();
+  private final Map<String, MutableProperty> initialValues = new HashMap<>();
   private MutablePropertiesContainer parent;
 
   @Override
@@ -65,7 +66,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   }
 
   public static String getConfigureTypeName() {
-    return "Global Properties";
+    return Resources.getString("Editor.GlobalProperties.component_type");
   }
 
   @Override
@@ -83,7 +84,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.htm");
+    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS
   }
 
   @Override
@@ -95,7 +96,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public void addTo(Buildable parent) {
     this.parent = (MutablePropertiesContainer) parent;
 
-    for (Map.Entry<String, MutableProperty> e : initialValues.entrySet()) {
+    for (final Map.Entry<String, MutableProperty> e : initialValues.entrySet()) {
       this.parent.addMutableProperty(e.getKey(), e.getValue());
     }
 
@@ -143,7 +144,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   @Override
   public GlobalProperty getMutableProperty(String name) {
     GlobalProperty property = null;
-    for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
+    for (final GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
       if (prop.getConfigureName().equals(name)) {
         property = prop;
       }
@@ -173,8 +174,8 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
-    for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
+    final ArrayList<String> l = new ArrayList<>();
+    for (final GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
       l.add(prop.getConfigureName());
     }
     return l;

@@ -17,7 +17,35 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractBuildable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GameSetupStep;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.BoardSlot;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.configure.ComponentConfigPanel;
+import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.DoubleConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Localization;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.Translatable;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.SequenceEncoder;
+
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -51,32 +79,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import VASSAL.build.AbstractBuildable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GameSetupStep;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.BoardSlot;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.configure.ConfigureTree;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.DoubleConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.ValidationReport;
-import VASSAL.configure.ValidityChecker;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.Translatable;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * This class is responsible for maintaining the {@link Board}s on a {@link Map}. As a {@link CommandEncoder}, it
@@ -143,7 +145,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     multipleButtons.add(clearButton);
     setAllowMultiple(allowMultiple);
     controls.add(BorderLayout.NORTH, statusLabel);
-    JPanel pp = new JPanel();
+    final JPanel pp = new JPanel();
     pp.add(toolbar);
     controls.add(BorderLayout.WEST, pp);
     slotScroll = new JScrollPane(slotPanel);
@@ -172,7 +174,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   public void addTo(Buildable b) {
     map = (Map) b;
     map.setBoardPicker(this);
-    for (Board board : possibleBoards) {
+    for (final Board board : possibleBoards) {
       board.setMap(map);
     }
     if (b instanceof Translatable) {
@@ -184,16 +186,16 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   @Override
   public void build(Element e) {
     if (e == null) {
-      Board b = new Board();
+      final Board b = new Board();
       b.build(null);
       b.addTo(this);
     }
     else {
-      NodeList l = e.getElementsByTagName(SETUP);
+      final NodeList l = e.getElementsByTagName(SETUP);
       if (l.getLength() > 0) {
-        Element setupEl = (Element) l.item(0);
+        final Element setupEl = (Element) l.item(0);
         defaultSetup = Builder.getText(setupEl);
-        Node nextSibling = setupEl.getNextSibling();
+        final Node nextSibling = setupEl.getNextSibling();
         e.removeChild(setupEl);
         Builder.build(e, this);
         e.insertBefore(setupEl, nextSibling);
@@ -254,8 +256,8 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (possibleBoards.isEmpty()) {
       report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
     }
-    HashSet<String> names = new HashSet<>();
-    for (Board b : possibleBoards) {
+    final HashSet<String> names = new HashSet<>();
+    for (final Board b : possibleBoards) {
       if (names.contains(b.getName())) {
         report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
       }
@@ -271,7 +273,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     String s = defaultSetup;
     if (defaultSetup == null || defaultSetup.length() == 0) {
       if (possibleBoards.size() == 1) {
-        Board b = possibleBoards.get(0);
+        final Board b = possibleBoards.get(0);
         if (!"true".equals(b.getAttributeValueString(Board.REVERSIBLE))) { //$NON-NLS-1$
           s = encode(new SetBoards(this, Collections.singletonList(b)));
         }
@@ -349,13 +351,13 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
   public void setBoards(Collection<Board> c) {
     reset();
-    for (Board b : c) {
+    for (final Board b : c) {
       if (b.relativePosition().x > nx - 1)
         addColumn();
       if (b.relativePosition().y > ny - 1)
         addRow();
     }
-    for (Board b : c) {
+    for (final Board b : c) {
       getSlot(b.relativePosition().x + nx * b.relativePosition().y).setBoard(b);
     }
   }
@@ -363,7 +365,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setBoards(Enumeration<Board> bdEnum) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     setBoards(Collections.list(bdEnum));
   }
 
@@ -376,7 +378,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.addActionListener(e -> {
       final List<Board> l = getBoardsFromControls();
-      defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
+      defaultSetup = l.isEmpty() ? null : encode(new SetBoards(this, l));
       d.dispose();
     });
     buttons.add(ok);
@@ -386,7 +388,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     b.add(controls);
     b.add(buttons);
     d.add(b);
-    d.pack();
+    SwingUtils.repack(d);
     d.setLocationRelativeTo(c);
     d.setVisible(true);
     currentBoards = new ArrayList<>(getBoardsFromControls());
@@ -419,7 +421,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<Board> getCurrentBoards() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return Collections.enumeration(getSelectedBoards());
   }
 
@@ -428,7 +430,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   public String[] getAllowableBoardNames() {
     final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
-    for (Board b : possibleBoards) {
+    for (final Board b : possibleBoards) {
       s.add(b.getName());
     }
     return s.toArray(new String[0]);
@@ -436,7 +438,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
   public String[] getAllowableLocalizedBoardNames() {
     final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
-    for (Board b : possibleBoards) {
+    for (final Board b : possibleBoards) {
       s.add(b.getLocalizedName());
     }
     return s.toArray(new String[0]);
@@ -454,7 +456,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   protected Board getBoard(String boardName, boolean localized) {
-    for (Board b : possibleBoards) {
+    for (final Board b : possibleBoards) {
       final String checkName = localized ? b.getLocalizedName() : b.getName();
       if (checkName.equals(boardName)) {
         return b;
@@ -523,7 +525,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   protected JButton addButton(String s, int index) {
-    JButton b = new JButton(s);
+    final JButton b = new JButton(s);
     b.addActionListener(this);
     toolbar.add(b, null, index);
     return b;
@@ -567,8 +569,8 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @deprecated Use {@link #getBoardsFromControls()}.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Vector<Board> pickBoards() {
-    ProblemDialog.showDeprecated("2020-08-06");
+  public Vector<Board> pickBoards() { //NOPMD
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return new Vector<>(getBoardsFromControls());
   }
 
@@ -578,14 +580,14 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @return List of Boards
    */
   public List<Board> getBoardsFromControls() {
-    ArrayList<Board> boardList = new ArrayList<>();
+    final ArrayList<Board> boardList = new ArrayList<>();
     if (toolbar != null) {
       // Adjust the bounds of each board according to its relative position
       for (int i = 0; i < nx; ++i) {
         for (int j = 0; j < ny; ++j) {
-          BoardSlot slot = getSlot(i + nx * j);
+          final BoardSlot slot = getSlot(i + nx * j);
           if (slot != null) {
-            Board b = slot.getBoard();
+            final Board b = slot.getBoard();
             if (b != null) {
               b.relativePosition().move(i, j);
               boardList.add(b);
@@ -626,8 +628,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
           y = j;
           break;
         }
-        // TODO y>=0 is always true
-        if (x >= 0 && y >= 0) {
+        if (x >= 0) {
           break;
         }
       }
@@ -637,7 +638,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (x < 0 || x >= nx || y < 0 || y >= ny) {
       return null;
     }
-    int index = x + y * nx;
+    final int index = x + y * nx;
     if (index < 0 || index >= nx * ny) {
       return null;
     }
@@ -672,7 +673,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   public void setAllowMultiple(boolean val) {
     allowMultiple = val;
     if (multipleButtons != null) {
-      for (JButton b : multipleButtons) {
+      for (final JButton b : multipleButtons) {
         b.setVisible(allowMultiple);
       }
     }
@@ -692,11 +693,11 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       el.setAttribute(MAX_COLUMNS, String.valueOf(maxColumns));
     }
     if (defaultSetup != null) {
-      Element setupEl = doc.createElement(SETUP);
+      final Element setupEl = doc.createElement(SETUP);
       setupEl.appendChild(doc.createTextNode(defaultSetup));
       el.appendChild(setupEl);
     }
-    for (Board b : possibleBoards) {
+    for (final Board b : possibleBoards) {
       el.appendChild(b.getBuildElement(doc));
     }
     return el;
@@ -704,60 +705,60 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(map.getId() + ID) ||
-        command.startsWith(map.getConfigureName() + ID)) {
-      ArrayList<Board> bds = new ArrayList<>();
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-      st.nextToken();
-      while (st.hasMoreTokens()) {
-        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
-        String name = st2.nextToken();
-        boolean reversed = false;
-        if (st2.hasMoreTokens()) {
-          reversed = "rev".equals(st2.nextToken()); //$NON-NLS-1$
-        }
-        Point p = new Point(st.nextInt(0), st.nextInt(0));
-        Board b = getBoard(name);
-        if (b != null) {
-          if (bds.contains(b)) {
-            b = b.copy();
-          }
-          b.setReversed(reversed);
-          b.relativePosition().move(p.x, p.y);
-          bds.add(b);
-        }
-      }
-      return new SetBoards(this, bds);
-    }
-    else {
+    if (!command.startsWith(map.getId() + ID) &&
+      !command.startsWith(map.getConfigureName() + ID)) {
       return null;
     }
+
+    final List<Board> bds = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    st.nextToken();
+    while (st.hasMoreTokens()) {
+      final SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
+      final String name = st2.nextToken();
+      boolean reversed = false;
+      if (st2.hasMoreTokens()) {
+        reversed = "rev".equals(st2.nextToken()); //$NON-NLS-1$
+      }
+      final Point p = new Point(st.nextInt(0), st.nextInt(0));
+      Board b = getBoard(name);
+      if (b != null) {
+        if (bds.contains(b)) {
+          b = b.copy();
+        }
+        b.setReversed(reversed);
+        b.relativePosition().move(p.x, p.y);
+        bds.add(b);
+      }
+    }
+    return new SetBoards(this, bds);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof SetBoards && map != null && ((SetBoards) c).target == this) {
-      final SequenceEncoder se =
-        new SequenceEncoder(map.getIdentifier() + ID, '\t');
-      final List<Board> bds = ((SetBoards) c).boards;
-      if (bds != null) {
-        for (Board b : bds) {
-          if (b.getName() != null) {
-            final SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
-            if (b.isReversed()) {
-              se2.append("rev"); //$NON-NLS-1$
-            }
-            se.append(se2.getValue())
-              .append(b.relativePosition().x)
-              .append(b.relativePosition().y);
-          }
-        }
-      }
-      return se.getValue();
-    }
-    else {
+    if (!(c instanceof SetBoards) || map == null || ((SetBoards) c).target != this) {
       return null;
     }
+
+    final SequenceEncoder se =
+      new SequenceEncoder(map.getIdentifier() + ID, '\t');
+    final List<Board> bds = ((SetBoards) c).boards;
+    if (bds == null) {
+      return se.getValue();
+    }
+
+    for (final Board b : bds) {
+      if (b.getName() != null) {
+        final SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
+        if (b.isReversed()) {
+          se2.append("rev"); //$NON-NLS-1$
+        }
+        se.append(se2.getValue())
+          .append(b.relativePosition().x)
+          .append(b.relativePosition().y);
+      }
+    }
+    return se.getValue();
   }
 
   public static class SetBoards extends Command {
@@ -771,8 +772,8 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
     /** @deprecated Use {@link #SetBoards(BoardPicker,List)}. */
     @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetBoards(BoardPicker target, Vector<Board> boards) {
-      ProblemDialog.showDeprecated("2020-08-06");
+    public SetBoards(BoardPicker target, Vector<Board> boards) { //NOPMD
+      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.target = target;
       this.boards = boards;
     }
@@ -793,50 +794,56 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   }
 
   private class Config extends Configurer {
-    private final JPanel controls;
+    private final ComponentConfigPanel controls;
 
     public Config() {
       super(null, null);
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      StringConfigurer title = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.dialog_title"), BoardPicker.this.title); //$NON-NLS-1$
+      controls = new ComponentConfigPanel();
+
+
+      final StringConfigurer title = new StringConfigurer(BoardPicker.this.title);
       title.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           BoardPicker.this.title = (String) evt.getNewValue();
         }
       });
-      controls.add(title.getControls());
-      StringConfigurer prompt = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.board_prompt"), BoardPicker.this.boardPrompt); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.dialog_title", title);
+
+      final StringConfigurer prompt = new StringConfigurer(BoardPicker.this.boardPrompt);
       prompt.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           BoardPicker.this.boardPrompt = (String) evt.getNewValue();
         }
       });
-      controls.add(prompt.getControls());
-      DoubleConfigurer scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), slotScale); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.board_prompt", prompt);
+
+      final DoubleConfigurer scale = new DoubleConfigurer(slotScale);
       scale.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           slotScale = (Double) evt.getNewValue();
         }
       });
-      controls.add(scale.getControls());
-      IntConfigurer width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), psize.width); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.cell_scale_factor", scale);
+
+      final IntConfigurer width = new IntConfigurer(psize.width);
       width.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           psize.width = (Integer) evt.getNewValue();
         }
       });
-      controls.add(width.getControls());
-      IntConfigurer height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), psize.height); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.cell_width", width);
+
+      final IntConfigurer height = new IntConfigurer(psize.height);
       height.addPropertyChangeListener(evt -> {
         if (evt.getNewValue() != null) {
           psize.height = (Integer) evt.getNewValue();
         }
       });
-      controls.add(height.getControls());
-      JButton selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
+      controls.add("Editor.BoardPicker.cell_height", height);
+
+      final JButton selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
       selectButton.addActionListener(e -> selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null));
-      controls.add(selectButton);
+      controls.add(selectButton, "skip 1,grow 0"); // NON-NLS
     }
 
     @Override
@@ -900,7 +907,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void pack() {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   @Override  // PG-2011-09-24

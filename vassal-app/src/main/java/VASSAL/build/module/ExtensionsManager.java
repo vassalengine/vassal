@@ -48,12 +48,9 @@ public class ExtensionsManager {
    * file. Currently we disallow any files that are hidden or "files" that
    * are directories.
    */
-  private final FilenameFilter filter = new FilenameFilter() {
-    @Override
-    public boolean accept(File dir, String name) {
-      final File fileCandidate = new File(dir, name);
-      return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
-    }
+  private final FilenameFilter filter = (dir, name) -> {
+    final File fileCandidate = new File(dir, name);
+    return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
   };
 
   public ExtensionsManager(File moduleFile) {
@@ -61,7 +58,7 @@ public class ExtensionsManager {
   }
 
   public ExtensionsManager(GameModule module) {
-    this.moduleFile = new File(GameModule.getGameModule().getDataArchive().getName());
+    this.moduleFile = new File(module.getDataArchive().getName());
   }
 
   /**
@@ -75,11 +72,11 @@ public class ExtensionsManager {
     if (extensionsDir == null && moduleFile != null) {
       File dir;
       String dirName = moduleFile.getPath();
-      int index = dirName.lastIndexOf('.');
+      final int index = dirName.lastIndexOf('.');
       if (index > 0) {
         dirName = dirName.substring(0, index);
       }
-      dir = new File(dirName + "_ext");
+      dir = new File(dirName + "_ext"); //NON-NLS
       if (mustExist) {
         dir = ensureExists(dir);
       }
@@ -106,11 +103,11 @@ public class ExtensionsManager {
    */
   protected File ensureExists(File dir) {
     if (dir.exists() && !dir.isDirectory()) {
-      WriteErrorDialog.error(new IOException(dir + "is not a directory"), dir);
+      WriteErrorDialog.error(new IOException(dir + "is not a directory"), dir); //NON-NLS
       return null;
     }
     else if (!dir.exists() && !dir.mkdirs()) {
-      WriteErrorDialog.error(new IOException("Could not create " + dir), dir);
+      WriteErrorDialog.error(new IOException("Could not create " + dir), dir); //NON-NLS
       return null;
     }
     return dir;
@@ -118,11 +115,11 @@ public class ExtensionsManager {
 
   public File getInactiveExtensionsDirectory(boolean mustExist) {
     if (inactiveDir == null) {
-      File extDir = getExtensionsDirectory(mustExist);
+      final File extDir = getExtensionsDirectory(mustExist);
       if (extDir == null) {
         return null;
       }
-      inactiveDir = new File(extDir, "inactive");
+      inactiveDir = new File(extDir, "inactive"); //NON-NLS
       if (mustExist) {
         inactiveDir = ensureExists(inactiveDir);
         if (inactiveDir == null) {
@@ -137,7 +134,7 @@ public class ExtensionsManager {
   }
 
   public File setActive(File extension, boolean active) {
-    File newExt;
+    final File newExt;
     if (active) {
       final File extensionsDirectory = getExtensionsDirectory(true);
       if (extensionsDirectory == null) {
@@ -159,12 +156,12 @@ public class ExtensionsManager {
   private List<File> getExtensions(File dir) {
     final List<File> extensions = new ArrayList<>(0);
     if (dir != null && dir.exists()) {
-      File[] files = dir.listFiles(filter);
+      final File[] files = dir.listFiles(filter);
       if (files == null) {
         ReadErrorDialog.error(new IOException(), dir);
       }
       else {
-        for (File file : files) {
+        for (final File file : files) {
           final AbstractMetaData metadata = MetaDataFactory.buildMetaData(file);
           if (metadata instanceof ExtensionMetaData) {
             extensions.add(file);
@@ -185,7 +182,7 @@ public class ExtensionsManager {
   }
 
   public boolean isExtensionActive(File extension) {
-    for (File f : getActiveExtensions()) {
+    for (final File f : getActiveExtensions()) {
       if (f.getName().equals(extension.getName())) {
         return true;
       }

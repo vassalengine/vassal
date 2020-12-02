@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
  * task, {@link #doLater}, for the Event Handler thread to execute
  * This is basically a simple version of Sun's SwingWorker class.
  *
- * @deprecated Use {@link SwingWorker} now that we ship the JAR for it.
+ * @deprecated Use {link SwingWorker} now that we ship the JAR for it.
  */
 @Deprecated
 public abstract class BackgroundTask {
@@ -34,27 +34,19 @@ public abstract class BackgroundTask {
   public abstract void doLater();
 
   public Thread start() {
-    final Runnable later = new Runnable() {
-      @Override
-      public void run() {
-          doLater();
+    final Runnable later = this::doLater;
+    final Runnable first = () -> {
+      try {
+        doFirst();
+      }
+      catch (Throwable t) {
+        t.printStackTrace();
+      }
+      finally {
+        SwingUtilities.invokeLater(later);
       }
     };
-    Runnable first = new Runnable() {
-      @Override
-      public void run() {
-        try {
-            doFirst();
-        }
-        catch (Throwable t) {
-            t.printStackTrace();
-        }
-        finally {
-            SwingUtilities.invokeLater(later);
-        }
-      }
-    };
-    Thread t = new Thread(first);
+    final Thread t = new Thread(first);
     t.start();
     return t;
   }

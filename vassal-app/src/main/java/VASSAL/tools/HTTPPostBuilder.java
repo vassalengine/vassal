@@ -20,17 +20,15 @@ package VASSAL.tools;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Random;
-
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Builds HTTP POST requests conveniently.
@@ -48,7 +46,7 @@ public class HTTPPostBuilder {
 
   private static final String endl = "\r\n";
 
-  private static Random rng = new Random();
+  private static final Random rng = new Random();
 
   private static String randomString() {
     return Long.toString(rng.nextLong(), Character.MAX_RADIX);
@@ -65,7 +63,7 @@ public class HTTPPostBuilder {
     bw.append("--")
       .append(boundary)
       .append(endl)
-      .append("Content-Disposition: form-data; name=\"")
+      .append("Content-Disposition: form-data; name=\"") //NON-NLS
       .append(name)
       .append('"')
       .append(endl)
@@ -82,7 +80,7 @@ public class HTTPPostBuilder {
    * @throws IOException in case of failure
    */
   public void setParameter(String name, File file) throws IOException {
-    try (FileInputStream in = new FileInputStream(file)) {
+    try (InputStream in = Files.newInputStream(file.toPath())) {
       setParameter(name, file.getPath(), in);
     }
   }
@@ -101,7 +99,7 @@ public class HTTPPostBuilder {
     writeCommonFileHeaders(name, filename);
 
     final String type = HttpURLConnection.guessContentTypeFromName(filename);
-    bw.append(type == null ? "application/octet-stream" : type)
+    bw.append(type == null ? "application/octet-stream" : type) //NON-NLS
       .append(endl)
       .append(endl);
 
@@ -109,7 +107,7 @@ public class HTTPPostBuilder {
     bw.flush();
 
     // write the file to the byte buffer
-    IOUtils.copy(in, bytes);
+    in.transferTo(bytes);
 
     bw.append(endl);
   }
@@ -128,7 +126,7 @@ public class HTTPPostBuilder {
     writeCommonFileHeaders(name, filename);
 
     // write out the contents at UTF-8
-    bw.append("text/plain; charset=\"UTF-8\"")
+    bw.append("text/plain; charset=\"UTF-8\"") //NON-NLS
       .append(endl)
       .append(endl)
       .append(contents)
@@ -140,12 +138,12 @@ public class HTTPPostBuilder {
     bw.append("--")
       .append(boundary)
       .append(endl)
-      .append("Content-Disposition: form-data; name=\"")
+      .append("Content-Disposition: form-data; name=\"") //NON-NLS
       .append(name)
-      .append("\"; filename=\"")
+      .append("\"; filename=\"") //NON-NLS
       .append(filename)
       .append(endl)
-      .append("Content-Type: ");
+      .append("Content-Type: "); //NON-NLS
   }
 
   private void writeEnd() throws IOException {
@@ -178,7 +176,7 @@ public class HTTPPostBuilder {
 
     final HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
-    http.setRequestMethod("POST");
+    http.setRequestMethod("POST"); //NON-NLS
     http.setDoInput(true);
     http.setDoOutput(true);
     http.setUseCaches(false);

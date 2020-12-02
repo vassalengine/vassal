@@ -39,7 +39,7 @@ public class DeobfuscatingInputStreamTest {
       new DeobfuscatingInputStream(
         new ByteArrayInputStream(expected));
 
-    final byte[] result = IOUtils.toByteArray(in);
+    final byte[] result = in.readAllBytes();
     in.close();
 
     assertArrayEquals(expected, result);
@@ -55,7 +55,7 @@ public class DeobfuscatingInputStreamTest {
       new DeobfuscatingInputStream(
         new ByteArrayInputStream(b));
 
-    final byte[] result = IOUtils.toByteArray(in);
+    final byte[] result = in.readAllBytes();
     in.close();
 
     assertArrayEquals(expected, result);
@@ -71,7 +71,7 @@ public class DeobfuscatingInputStreamTest {
       new DeobfuscatingInputStream(
         new ByteArrayInputStream(b));
 
-    final byte[] result = IOUtils.toByteArray(in);
+    final byte[] result = in.readAllBytes();
     in.close();
 
     assertArrayEquals(expected, result);

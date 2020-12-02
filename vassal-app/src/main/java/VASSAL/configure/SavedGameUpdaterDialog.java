@@ -21,18 +21,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -51,6 +48,7 @@ import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
@@ -59,17 +57,20 @@ public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
   private DefaultListModel<File> savedGamesModel;
-  private SavedGameUpdater updater = new SavedGameUpdater();
+  private final SavedGameUpdater updater = new SavedGameUpdater();
   private Properties oldPieceInfo;
-  private JFileChooser fc;
-  private static final String VERSION_KEY = "moduleVerion";
-  private static final String MODULE_NAME_KEY = "moduleName";
+  private final JFileChooser fc;
+
+  //FIXME Is it really supposed to be moduleVerion[sic] below? Is it okay to "fix" it?
+  private static final String VERSION_KEY = "moduleVerion"; //NON-NLS
+
+  private static final String MODULE_NAME_KEY = "moduleName"; //NON-NLS
   private JButton updateButton;
   private JTextField versionField;
 
   public SavedGameUpdaterDialog(Frame owner) throws HeadlessException {
     super(owner, false);
-    setTitle("Update Saved Games");
+    setTitle(Resources.getString("Editor.SavedGameUpdaterDialog.title"));
     initComponents();
     fc = new JFileChooser();
     fc.setCurrentDirectory(GameModule.getGameModule().getFileChooser().getCurrentDirectory());
@@ -77,43 +78,28 @@ public class SavedGameUpdaterDialog extends JDialog {
 
   private void initComponents() {
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    Box versionBox = Box.createHorizontalBox();
-    versionBox.add(new JLabel("Module version of saved games:  "));
+    final Box versionBox = Box.createHorizontalBox();
+    versionBox.add(new JLabel(Resources.getString("Editor.SavedGameUpdaterDialog.module_version")));
     versionField = new JTextField(8);
     versionField.setEditable(false);
     versionField.setMaximumSize(new Dimension(versionField.getMaximumSize().width, versionField.getPreferredSize().height));
     versionBox.add(versionField);
-    JButton importButton = new JButton("Import GamePiece info");
-    importButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        importPieceInfo();
-      }
-    });
+    final JButton importButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.import_gamepiece"));
+    importButton.addActionListener(e -> importPieceInfo());
     versionBox.add(importButton);
     add(versionBox);
-    JButton exportButton = new JButton("Export GamePiece info");
-    exportButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        exportPieceInfo();
-      }
-    });
-    Box importExportBox = Box.createHorizontalBox();
+    final JButton exportButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.export_gamepiece"));
+    exportButton.addActionListener(e -> exportPieceInfo());
+    final Box importExportBox = Box.createHorizontalBox();
     importExportBox.add(importButton);
     importExportBox.add(exportButton);
     add(importExportBox);
 
-    Box savedGamesBox = Box.createHorizontalBox();
-    Box left = Box.createVerticalBox();
-    left.add(new JLabel("Saved Games:"));
-    JButton chooseGamesButton = new JButton("Choose");
-    chooseGamesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        chooseSavedGames();
-      }
-    });
+    final Box savedGamesBox = Box.createHorizontalBox();
+    final Box left = Box.createVerticalBox();
+    left.add(new JLabel(Resources.getString("Editor.SavedGameUpdaterDialog.saved_games")));
+    final JButton chooseGamesButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.choose"));
+    chooseGamesButton.addActionListener(e -> chooseSavedGames());
     left.add(chooseGamesButton);
     savedGamesBox.add(left);
     savedGamesModel = new DefaultListModel<>();
@@ -137,23 +123,18 @@ public class SavedGameUpdaterDialog extends JDialog {
     savedGamesBox.add(new ScrollPane(savedGamesList));
     add(savedGamesBox);
 
-    Box buttonsBox = Box.createHorizontalBox();
-    updateButton = new JButton("Update games");
-    updateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        updateGames();
-      }
-    });
+    final Box buttonsBox = Box.createHorizontalBox();
+    updateButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.update_games"));
+    updateButton.addActionListener(e -> updateGames());
     updateButton.setEnabled(false);
     buttonsBox.add(updateButton);
-    JButton helpButton = new JButton("Help");
+    final JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
 
     HelpFile hf = null;
     try {
       hf = new HelpFile(null, new File(
         new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
-        "SavedGameUpdater.htm"));
+        "SavedGameUpdater.html"));
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);
@@ -161,13 +142,8 @@ public class SavedGameUpdaterDialog extends JDialog {
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     buttonsBox.add(helpButton);
-    JButton closeButton = new JButton("Close");
-    closeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
+    final JButton closeButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.close"));
+    closeButton.addActionListener(e -> dispose());
     buttonsBox.add(closeButton);
     add(buttonsBox);
     pack();
@@ -176,33 +152,25 @@ public class SavedGameUpdaterDialog extends JDialog {
 
   private void updateGames() {
     updateButton.setEnabled(false);
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        for (int i = 0, n = savedGamesModel.size(); i < n; ++i) {
+    final Runnable runnable = () -> {
+      for (int i = 0, n = savedGamesModel.size(); i < n; ++i) {
+        try {
+          final File savedGame = savedGamesModel.getElementAt(i);
+          updater.updateSavedGame(oldPieceInfo, savedGame);
+          GameModule.getGameModule().warn(Resources.getString("Editor.SavedGameUpdaterDialog.updated_message", savedGame.getName(), versionField.getText(), GameModule.getGameModule().getGameVersion()));
+        }
+        // FIXME: review error message
+        catch (final IOException e) {
+          final Runnable showError = () -> showErrorMessage(e, Resources.getString("Editor.SavedGameUpdaterDialog.fail"), Resources.getString("Editor.SavedGameUpdaterDialog.unable"));
           try {
-            File savedGame = savedGamesModel.getElementAt(i);
-            updater.updateSavedGame(oldPieceInfo, savedGame);
-            GameModule.getGameModule().warn("Updated " + savedGame.getName() + " from version " + versionField.getText() + " to " + GameModule.getGameModule().getGameVersion());
+            SwingUtilities.invokeAndWait(showError);
           }
           // FIXME: review error message
-          catch (final IOException e) {
-            Runnable showError = new Runnable() {
-              @Override
-              public void run() {
-                showErrorMessage(e, "Update failed", "Unable to save file");
-              }
-            };
-            try {
-              SwingUtilities.invokeAndWait(showError);
-            }
-            // FIXME: review error message
-            catch (InterruptedException | InvocationTargetException e1) {
-            }
+          catch (InterruptedException | InvocationTargetException e1) {
           }
         }
-        updateButton.setEnabled(true);
       }
+      updateButton.setEnabled(true);
     };
     new Thread(runnable).start();
   }
@@ -210,10 +178,10 @@ public class SavedGameUpdaterDialog extends JDialog {
   private void chooseSavedGames() {
     fc.setMultiSelectionEnabled(true);
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
-      File[] selectedFiles = fc.getSelectedFiles();
+      final File[] selectedFiles = fc.getSelectedFiles();
       if (selectedFiles != null) {
         savedGamesModel.clear();
-        for (File selectedFile : selectedFiles) {
+        for (final File selectedFile : selectedFiles) {
           savedGamesModel.addElement(selectedFile);
         }
       }
@@ -227,12 +195,12 @@ public class SavedGameUpdaterDialog extends JDialog {
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());
 
-      try (OutputStream fout = new FileOutputStream(fc.getSelectedFile());
+      try (OutputStream fout = Files.newOutputStream(fc.getSelectedFile().toPath());
            BufferedOutputStream out = new BufferedOutputStream(fout)) {
         p.store(out, null);
       }
       catch (IOException e) {
-        showErrorMessage(e, "Export failed", "Unable to write info");
+        showErrorMessage(e, Resources.getString("Editor.SavedGameUpdaterDialog.ex_fail"), Resources.getString("Editor.SavedGameUpdaterDialog.ex_unable"));
       }
     }
   }
@@ -242,19 +210,19 @@ public class SavedGameUpdaterDialog extends JDialog {
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
       oldPieceInfo = new Properties();
 
-      try (InputStream fin = new FileInputStream(fc.getSelectedFile());
+      try (InputStream fin = Files.newInputStream(fc.getSelectedFile().toPath());
            BufferedInputStream in = new BufferedInputStream(fin)) {
         oldPieceInfo.load(in);
 
-        String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
-        String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
+        final String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
+        final String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
         if (!GameModule.getGameModule().getGameName().equals(moduleName)) {
-          showErrorMessage(null, "Import failed", "Imported info is from the wrong module:  " + moduleName);
+          showErrorMessage(null, Resources.getString("Editor.SavedGameUpdaterDialog.im_fail"), Resources.getString("Editor.SavedGameUpdaterDialog.im_wrong", moduleName));
           oldPieceInfo = null;
           versionField.setText(null);
         }
         else if (GameModule.getGameModule().getGameVersion().equals(moduleVersion)) {
-          showErrorMessage(null, "Import failed", "Imported info is from the current version, " + moduleVersion + ".\nLoad the older version in the editor and export the GamePiece info,\nThen load this module again and import the older version's info");
+          showErrorMessage(null, Resources.getString("Editor.SavedGameUpdaterDialog.im_fail"), Resources.getString("Editor.SavedGameUpdaterDialog.im_current", moduleVersion));
           oldPieceInfo = null;
           versionField.setText(null);
         }
@@ -264,11 +232,11 @@ public class SavedGameUpdaterDialog extends JDialog {
       }
       // FIXME: review error message
       catch (IOException e) {
-        showErrorMessage(e, "Import failed", "Unable to import info");
+        showErrorMessage(e, Resources.getString("Editor.SavedGameUpdaterDialog.im_fail"), Resources.getString("Editor.SavedGameUpdaterDialog.im_unable"));
         oldPieceInfo = null;
       }
       catch (IllegalArgumentException e) { // catches malformed input files
-        showErrorMessage(e, "Import failed", "Malformed input file");
+        showErrorMessage(e, Resources.getString("Editor.SavedGameUpdaterDialog.im_fail"), Resources.getString("Editor.SavedGameUpdaterDialog.im_malformed"));
         oldPieceInfo = null;
       }
     }

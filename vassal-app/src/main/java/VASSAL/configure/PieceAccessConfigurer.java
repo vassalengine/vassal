@@ -17,37 +17,39 @@
  */
 package VASSAL.configure;
 
-import java.awt.Component;
-import java.awt.Window;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import VASSAL.counters.PieceAccess;
 import VASSAL.counters.PlayerAccess;
 import VASSAL.counters.SideAccess;
 import VASSAL.counters.SpecifiedSideAccess;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.swing.JPanel;
+
 public class PieceAccessConfigurer extends Configurer {
-  protected static String PLAYER = "player:";
-  protected static String SIDE = "side:";
-  protected static String SIDES = "sides:";
+  protected static final String PLAYER = "player:"; // NON-NLS
+  protected static final String SIDE = "side:"; // NON-NLS
+  protected static final String SIDES = "sides:"; // NON-NLS
   protected JPanel controls;
-  protected String[] prompts = new String[] {"Any player", "Any side", "Any of the specified sides"};
-  protected JComboBox<String> selectType;
+  protected String[] prompts = {"Any Player", "Any side", "Any of the specified sides"}; // NON-NLS
+  protected String[] promptKeys = {
+    "Editor.PieceAccessConfigurer.any_player",
+    "Editor.PieceAccessConfigurer.any_side",
+    "Editor.PieceAccessConfigurer.any_specified"
+  };
+  protected TranslatingStringEnumConfigurer selectType;
   protected StringArrayConfigurer sideConfig;
 
   public PieceAccessConfigurer(String key, String name, PieceAccess value) {
     super(key, name, value);
+  }
+
+  public PieceAccessConfigurer(PieceAccess value) {
+    this(null, "", value);
   }
 
   @Override
@@ -55,8 +57,6 @@ public class PieceAccessConfigurer extends Configurer {
     super.setValue(o);
     updateControls();
   }
-
-
 
   @Override
   public String getValueString() {
@@ -71,26 +71,19 @@ public class PieceAccessConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      Box box = Box.createHorizontalBox();
-      box.add(new JLabel(getName()));
-      selectType = new JComboBox<>(getPrompts());
-      selectType.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          updateValue();
-          sideConfig.getControls().setVisible(getValue() instanceof SpecifiedSideAccess);
-          if (controls.getTopLevelAncestor() instanceof Window) {
-            ((Window)controls.getTopLevelAncestor()).pack();
-          }
-        }
+      controls = new ConfigurerPanel(getName(), "[fill,grow]", "[][fill,grow]"); // NON-NLS
+
+      selectType = new TranslatingStringEnumConfigurer(prompts, promptKeys);
+      selectType.addPropertyChangeListener(e -> {
+        updateValue();
+        sideConfig.getControls().setVisible(getValue() instanceof SpecifiedSideAccess);
+        repack();
       });
-      box.add(selectType);
-      controls.add(box);
-      sideConfig = new StringArrayConfigurer(null, null);
+      controls.add(selectType.getControls(), "wrap"); // NON-NLS;
+
+      sideConfig = new StringArrayConfigurer(2, 4);
       sideConfig.addPropertyChangeListener(evt -> updateValue());
-      controls.add(sideConfig.getControls());
+      controls.add(sideConfig.getControls(), "growx,wrap"); // NON-NLS
       updateControls();
     }
     return controls;
@@ -98,10 +91,10 @@ public class PieceAccessConfigurer extends Configurer {
 
   protected void updateValue() {
     noUpdate = true;
-    if (prompts[1].equals(selectType.getSelectedItem())) {
+    if (prompts[1].equals(selectType.getValueString())) {
       setValue(SideAccess.getInstance());
     }
-    else if (prompts[2].equals(selectType.getSelectedItem())) {
+    else if (prompts[2].equals(selectType.getValueString())) {
       setValue(new SpecifiedSideAccess(Arrays.asList(sideConfig.getStringArray())));
     }
     else {
@@ -114,14 +107,14 @@ public class PieceAccessConfigurer extends Configurer {
     if (!noUpdate && controls != null) {
       sideConfig.getControls().setVisible(getValue() instanceof SpecifiedSideAccess);
       if (getValue() instanceof SideAccess) {
-        selectType.setSelectedIndex(1);
+        selectType.setValue(prompts[1]);
       }
       else if (getValue() instanceof SpecifiedSideAccess) {
         sideConfig.setValue(((SpecifiedSideAccess) getPieceAccess()).getSides().toArray(new String[0]));
-        selectType.setSelectedIndex(2);
+        selectType.setValue(prompts[2]);
       }
       else {
-        selectType.setSelectedIndex(0);
+        selectType.setValue(prompts[0]);
       }
     }
   }
@@ -139,9 +132,9 @@ public class PieceAccessConfigurer extends Configurer {
       return SideAccess.getInstance();
     }
     else if (s != null && s.startsWith(SIDES)) {
-      SequenceEncoder.Decoder sd =
+      final SequenceEncoder.Decoder sd =
         new SequenceEncoder.Decoder(s.substring(SIDES.length()), ':');
-      ArrayList<String> l = new ArrayList<>();
+      final ArrayList<String> l = new ArrayList<>();
       while (sd.hasMoreTokens()) {
         l.add(sd.nextToken());
       }
@@ -158,8 +151,8 @@ public class PieceAccessConfigurer extends Configurer {
       s = SIDE;
     }
     else if (p instanceof SpecifiedSideAccess) {
-      SequenceEncoder se = new SequenceEncoder(':');
-      for (String side : ((SpecifiedSideAccess)p).getSides()) se.append(side);
+      final SequenceEncoder se = new SequenceEncoder(':');
+      for (final String side : ((SpecifiedSideAccess)p).getSides()) se.append(side);
       s = se.getValue() == null ? SIDES : SIDES + se.getValue();
     }
     else if (p instanceof PlayerAccess) {
@@ -168,10 +161,11 @@ public class PieceAccessConfigurer extends Configurer {
     return s;
   }
 
+  /**
+   * @deprecated no replacement
+   */
+  @Deprecated(since = "2020-08-05", forRemoval = true)
   public void setPrompts(String[] prompts) {
-    this.prompts = prompts;
-    if (selectType != null) {
-      selectType.setModel(new DefaultComboBoxModel<>(prompts));
-    }
+    ProblemDialog.showDeprecated("2020-08-05");
   }
 }

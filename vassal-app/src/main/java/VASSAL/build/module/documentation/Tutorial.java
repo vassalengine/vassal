@@ -55,7 +55,7 @@ public class Tutorial extends AbstractConfigurable {
   public static final String PROMPT_MESSAGE = "promptMessage"; //$NON-NLS-1$
   public static final String WELCOME_MESSAGE = "welcomeMessage"; //$NON-NLS-1$
   private String fileName;
-  private Action launch;
+  private final Action launch;
   private boolean launchOnFirstStartup;
   private String welcomeMessage = Resources.getString("Tutorial.instructions"); //$NON-NLS-1$
   private String promptMessage = Resources.getString("Tutorial.load_tutorial"); //$NON-NLS-1$
@@ -68,7 +68,7 @@ public class Tutorial extends AbstractConfigurable {
       @Override
       public void actionPerformed(ActionEvent e) {
         launch();
-      };
+      }
     };
   }
 
@@ -118,11 +118,11 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Menu Text", //$NON-NLS-1$
-      "Logfile",   //$NON-NLS-1$
-      "Launch automatically on first startup",  //$NON-NLS-1$
-      "Auto-launch confirm message",  //$NON-NLS-1$
-      "Welcome message"  //$NON-NLS-1$
+      Resources.getString("Editor.menu_command"),
+      Resources.getString("Editor.Tutorial.logfile"),
+      Resources.getString("Editor.Tutorial.launch_automatically_on_first_startup"),
+      Resources.getString("Editor.Tutorial.auto_launch_confirm_message"),
+      Resources.getString("Editor.Tutorial.welcome_message")
     };
   }
 
@@ -151,12 +151,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (name.equals(PROMPT_MESSAGE)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return launchOnFirstStartup;
-        }
-      };
+      return () -> launchOnFirstStartup;
     }
     return null;
   }
@@ -214,7 +209,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem); //NON-NLS
 
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
     hasViewedTutorial = new BooleanConfigurer(key, null, Boolean.FALSE);
@@ -225,7 +220,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public void removeFrom(Buildable parent) {
     MenuManager.getInstance()
-               .removeFromSection("Documentation.Module", launchItem);
+               .removeFromSection("Documentation.Module", launchItem); //NON-NLS
   }
 
   @Override
@@ -235,13 +230,12 @@ public class Tutorial extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm", "Tutorial"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("HelpMenu.html", "Tutorial"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
-   * Get the Command representing this tutorial logfile.  Executing the command loads the tutorial
-   * @return
-   * @throws IOException
+   * @return the Command representing this tutorial logfile.  Executing the command loads the tutorial
+   * @throws IOException oops
    */
   public Command getTutorialCommand() throws IOException {
     return GameModule.getGameModule().getGameState().decodeSavedGame(getTutorialContents());
@@ -249,7 +243,7 @@ public class Tutorial extends AbstractConfigurable {
 
   public InputStream getTutorialContents() throws IOException {
     if (fileName == null) {
-      throw new FileNotFoundException("Tutorial has null filename");
+      throw new FileNotFoundException("Tutorial has null filename"); //NON-NLS
     }
     return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }

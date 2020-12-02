@@ -19,7 +19,7 @@ public class CustomVmOptions {
 
   private static final Logger log = LoggerFactory.getLogger(CustomVmOptions.class);
 
-  private static final String VM_OPTIONS_FILE_NAME = "vassal.vmoptions";
+  private static final String VM_OPTIONS_FILE_NAME = "vassal.vmoptions"; //NON-NLS
 
   public void ensureCustomVmOptionsFileExistsInConfDir() {
     final File confDir = Info.getConfDir();
@@ -30,16 +30,16 @@ public class CustomVmOptions {
   }
 
   private void createInitialVmOptionsFile(File confDir) {
-    ClassLoader classLoader = getClass().getClassLoader();
+    final ClassLoader classLoader = getClass().getClassLoader();
     try (InputStream is = classLoader.getResourceAsStream(VM_OPTIONS_FILE_NAME)) {
       if (is == null) {
-        log.error("Template for custom VM options " + VM_OPTIONS_FILE_NAME + " not found in the Vassal distribution");
+        log.error("Template for custom VM options " + VM_OPTIONS_FILE_NAME + " not found in the Vassal distribution"); //NON-NLS
         return;
       }
       Files.copy(is, Path.of(confDir.getAbsolutePath(), VM_OPTIONS_FILE_NAME));
     }
     catch (IOException e) {
-      log.error("Unable to copy " + VM_OPTIONS_FILE_NAME + " to " + confDir.getAbsolutePath(), e);
+      log.error("Unable to copy " + VM_OPTIONS_FILE_NAME + " to " + confDir.getAbsolutePath(), e); //NON-NLS
     }
   }
 
@@ -56,7 +56,7 @@ public class CustomVmOptions {
         .collect(Collectors.toList());
     }
     catch (IOException e) {
-      log.error("Unable to read " + VM_OPTIONS_FILE_NAME, e);
+      log.error("Unable to read " + VM_OPTIONS_FILE_NAME, e); //NON-NLS
       return Collections.emptyList();
     }
   }

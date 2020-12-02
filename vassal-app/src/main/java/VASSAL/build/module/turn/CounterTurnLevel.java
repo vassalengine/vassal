@@ -19,9 +19,7 @@
 package VASSAL.build.module.turn;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -40,16 +38,7 @@ public class CounterTurnLevel extends TurnLevel {
   protected boolean loop = false;
   protected int loopLimit = -1;
 
-  private final VisibilityCondition loopCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return loop;
-    }
-  };
-
-  public CounterTurnLevel() {
-    super();
-  }
+  private final VisibilityCondition loopCond = () -> loop;
 
   /*
    *  Reset counter to initial state
@@ -76,7 +65,7 @@ public class CounterTurnLevel extends TurnLevel {
    */
   @Override
   protected String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(current);
     se.append(currentSubLevel);
     se.append(loop);
@@ -92,7 +81,7 @@ public class CounterTurnLevel extends TurnLevel {
    */
   @Override
   protected void setState(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
     currentSubLevel = sd.nextInt(0);  // Change to 0 as default due to issue 3500
     loop = sd.nextBoolean(false);
@@ -144,7 +133,7 @@ public class CounterTurnLevel extends TurnLevel {
     super.retreat();
 
     // If no sub-levels, or they rolled over, retreat this level
-    int oldCurrent = current;
+    final int oldCurrent = current;
     if (getTurnLevelCount() == 0 || (getTurnLevelCount() > 0 && hasSubLevelRolledOver())) {
       current -= incr;
       if (loop && oldCurrent <= start) {
@@ -159,12 +148,9 @@ public class CounterTurnLevel extends TurnLevel {
   protected Component getSetControl() {
 
     final IntConfigurer config = new IntConfigurer("", " " + getConfigureName() + ":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    config.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        current = (Integer) ((IntConfigurer) e.getSource()).getValue();
-        myValue.setPropertyValue(getValueString());
-      }
+    config.addPropertyChangeListener(e -> {
+      current = (Integer) ((IntConfigurer) e.getSource()).getValue();
+      myValue.setPropertyValue(getValueString());
     });
 
     return config.getControls();
@@ -174,10 +160,10 @@ public class CounterTurnLevel extends TurnLevel {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       super.getAttributeDescriptions(),
-      "Start Value:  ",
-      "Increment By:  ",
-      "Loop?",
-      "Maximum value:  "
+        Resources.getString("Editor.CounterTurnLevel.start_value"),
+        Resources.getString("Editor.CounterTurnLevel.increment_by"),
+        Resources.getString("Editor.CounterTurnLevel.loop"),
+        Resources.getString("Editor.CounterTurnLevel.maximum_value")
     );
   }
 
@@ -241,28 +227,28 @@ public class CounterTurnLevel extends TurnLevel {
   @Override
   public String getAttributeValueString(String key) {
     if (START.equals(key)) {
-      return start + ""; //$NON-NLS-1$
+      return Integer.toString(start);
     }
     else if (INCR.equals(key)) {
-      return incr + ""; //$NON-NLS-1$
+      return Integer.toString(incr);
     }
     else if (LOOP.equals(key)) {
-      return loop + ""; //$NON-NLS-1$
+      return Boolean.toString(loop);
     }
     else if (LOOP_LIMIT.equals(key)) {
-      return loopLimit + ""; //$NON-NLS-1$
+      return Integer.toString(loopLimit);
     }
     else
       return super.getAttributeValueString(key);
   }
 
   public static String getConfigureTypeName() {
-    return "Counter";
+    return Resources.getString("Editor.CounterTurnLevel.component_type");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm", "Counter"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("TurnTracker.html", "Counter"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -274,5 +260,4 @@ public class CounterTurnLevel extends TurnLevel {
       return null;
     }
   }
-
 }

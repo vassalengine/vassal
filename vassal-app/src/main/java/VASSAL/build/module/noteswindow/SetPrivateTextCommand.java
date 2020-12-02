@@ -24,8 +24,8 @@ import VASSAL.command.Command;
  * When executed, adds a {@link PrivateText} to a specified set.
  */
 public class SetPrivateTextCommand extends Command {
-  private Interface i;
-  private PrivateText text;
+  private final Interface i;
+  private final PrivateText text;
 
   public SetPrivateTextCommand(Interface i, PrivateText text) {
     this.i = i;
@@ -46,6 +46,7 @@ public class SetPrivateTextCommand extends Command {
     return null;
   }
 
+  @FunctionalInterface
   public interface Interface {
     void addPrivateText(PrivateText p);
   }

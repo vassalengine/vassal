@@ -19,8 +19,7 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
+
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -33,20 +32,37 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
-  protected static int DEFAULT_LENGHTH = 12;
+  protected static final int DEFAULT_LENGHTH = 20;
+
+  /**
+   * Base Constructor for StringConfigurer
+   *
+   * @param key Configurer Key - Not used for new-style configs
+   * @param name Configurer Name (label)
+   * @param val Initial Configurer value
+   * @param length Configurer length
+   * @param hint Hint text
+   */
+  public StringConfigurer(String key, String name, int length, String hint, String val) {
+    super(key, name, val);
+    this.length = length > 0 ? length : DEFAULT_LENGHTH;
+    this.hint = hint;
+  }
+
+  public StringConfigurer(String key, String name, String val) {
+    this(key, name, DEFAULT_LENGHTH, "", val);
+  }
+
+  public StringConfigurer(String key, String name, int length) {
+    this (key, name, length, "", "");
+  }
 
   public StringConfigurer(String key, String name) {
     this(key, name, "");
   }
 
-  public StringConfigurer(String key, String name, String val) {
-    super(key, name, val);
-    length = DEFAULT_LENGHTH;
-  }
-
-  public StringConfigurer(String key, String name, int length) {
-    this (key, name);
-    this.length = length > 0 ? length : DEFAULT_LENGHTH;
+  public StringConfigurer(String val) {
+    this (null, "", val);
   }
 
   @Override
@@ -62,19 +78,22 @@ public class StringConfigurer extends Configurer {
     setValue((Object) s);
   }
 
+  protected String getGrowthConstraint() {
+    return "growx"; // NON-NLS
+  }
+
   @Override
   public Component getControls() {
     if (p == null) {
-      p = new JPanel();
-      p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      p.add(new JLabel(getName()));
+      p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS
+
       nameField = buildTextField();
       nameField.setMaximumSize(new Dimension(
         nameField.getMaximumSize().width,
         nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
-      p.add(nameField);
+      p.add(nameField, getGrowthConstraint()); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -100,7 +119,13 @@ public class StringConfigurer extends Configurer {
   }
 
   protected JTextField buildTextField() {
+    return new HintTextField(length, hint);
+  }
 
-    return new JTextField(length);
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
   }
 }

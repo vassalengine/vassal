@@ -17,44 +17,57 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.event.InputEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.KeyStroke;
-
-import org.apache.commons.lang3.StringUtils;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.EnumeratedPropertyPrompt;
+import VASSAL.build.module.properties.IncrementProperty;
 import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertyPrompt;
+import VASSAL.build.module.properties.PropertySetter;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerLayout;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.event.InputEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
- * Trait that contains a property accessible via getProperty() and updateable
+ * Trait that contains a property accessible via getProperty() and updatable
  * dynamically via key commands
  *
  * @author rkinney
@@ -62,9 +75,9 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class DynamicProperty extends Decorator implements TranslatablePiece, PropertyPrompt.DialogParent, PropertyChangerConfigurer.Constraints {
 
-  public static final String ID = "PROP;";
+  public static final String ID = "PROP;"; // NON-NLS
 
-  protected String value;
+  protected String value = "";
 
   protected String key;
   protected boolean numeric;
@@ -84,10 +97,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   public DynamicProperty(String type, GamePiece p) {
     setInner(p);
-    keyCommandListConfig = new ListConfigurer(null, "Commands") {
+    keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
       @Override
       protected Configurer buildChildConfigurer() {
-        return new DynamicKeyCommandConfigurer(DynamicProperty.this);
+        final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(DynamicProperty.this);
+        c.addPropertyChangeListener(e -> resize());
+        return c;
       }
     };
     mySetType(type);
@@ -100,8 +115,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = keyCommandListConfig.getListValue().toArray(
-      new DynamicKeyCommand[0]);
+    keyCommands = keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[0]);
 
     menuCommands = Arrays.stream(keyCommands).filter(
       kc -> !StringUtils.isEmpty(kc.getName())
@@ -109,7 +123,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   protected void decodeConstraints(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     numeric = sd.nextBoolean(false);
     minValue = sd.nextInt(0);
     maxValue = sd.nextInt(100);
@@ -121,7 +135,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   @Override
-  public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
@@ -192,8 +206,8 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   public void setValue(String value) {
-    Stack parent = getParent();
-    Map map = getMap();
+    final Stack parent = getParent();
+    final Map map = getMap();
 
     value = formatValue(value);
 
@@ -202,9 +216,9 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     // No need to re-insert pieces in Decks, it causes problems if they are NO_STACK
     if (map != null && ! (getParent() instanceof Deck)) {
 
-      GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece outer = Decorator.getOutermost(this);
       if (parent == null) {
-        Point pos = getPosition();
+        final Point pos = getPosition();
         map.removePiece(outer);
         this.value = value;
         map.placeOrMerge(outer, pos);
@@ -215,7 +229,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
           other = parent.getPieceAbove(outer);
         }
         if (other == null) {
-          Point pos = parent.getPosition();
+          final Point pos = parent.getPosition();
           map.removePiece(parent);
           this.value = value;
           map.placeOrMerge(parent, pos);
@@ -255,7 +269,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     final ChangeTracker tracker = new ChangeTracker(this);
-    for (DynamicKeyCommand dkc : keyCommands) {
+    for (final DynamicKeyCommand dkc : keyCommands) {
       if (dkc.matches(stroke)) {
         setValue(dkc.propChanger.getNewValue(value));
       }
@@ -266,16 +280,82 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public String getDescription() {
-    String s = "Dynamic Property";
-    if (getKey() != null && getKey().length() > 0) {
-      s += " - " + getKey();
-    }
-    return s;
+    return buildDescription("Editor.DynamicProperty.trait_description", getKey());
   }
 
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("DynamicProperty.htm");
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.stream(keyCommands).map(KeyCommand::getNamedKeyStroke).collect(Collectors.toList());
+  }
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> l = new ArrayList<>();
+    l.add(value); // We'll treat the at-start value of the property as a quasi-expression
+
+    for (final DynamicKeyCommand dkc : keyCommands) {
+      final PropertyChanger propChanger = dkc.getPropChanger();
+      if (propChanger == null) {
+        continue;
+      }
+
+      if (propChanger instanceof IncrementProperty) {
+        l.add(((IncrementProperty)propChanger).getIncrement());
+      }
+      else if (propChanger instanceof PropertySetter) {
+        l.add(((PropertySetter)propChanger).getRawValue());
+      }
+      else if (propChanger instanceof PropertyPrompt) {
+        final PropertyPrompt pp = (PropertyPrompt)propChanger;
+        l.add(pp.getPrompt());
+        if (pp instanceof EnumeratedPropertyPrompt) {
+          final Expression[] ve = ((EnumeratedPropertyPrompt) pp).getValueExpressions();
+          for (final Expression e : ve) {
+            if (e == null) {
+              continue;
+            }
+            l.add(e.getExpression());
+          }
+        }
+      }
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    final List<String> l = new ArrayList<>();
+    for (final DynamicKeyCommand dkc : keyCommands) {
+      if (StringUtils.isEmpty(dkc.getName())) {
+        continue;
+      }
+      l.add(dkc.getName());
+    }
+    return l;
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Collections.singletonList(key);
+  }
+
+
+  @Override
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("DynamicProperty.html"); // NON-NLS
   }
 
   @Override
@@ -303,7 +383,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(key);
     return l;
   }
@@ -325,10 +405,20 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     for (int i = 0; i < menuCommands.length; i++) {
       commandNames[i] = menuCommands[i].getName();
-      commandDescs[i] = "Property " + key + ": Menu Command " + i;
+      commandDescs[i] = Resources.getString("Editor.DynamicProperty.command_description", key, i);
     }
 
     return getI18nData(commandNames, commandDescs);
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof DynamicProperty)) return false;
+    final DynamicProperty c = (DynamicProperty) o;
+    if (! Objects.equals(encodeConstraints(), c.encodeConstraints())) return false;
+    if (! Objects.equals(keyCommandListConfig.getValueString(), keyCommandListConfig.getValueString())) return false;
+    if (! Objects.equals(key, c.key)) return false;
+    return Objects.equals(value, c.value);
   }
 
   protected static class Ed implements PieceEditor {
@@ -338,45 +428,58 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected IntConfigurer minConfig;
     protected IntConfigurer maxConfig;
     protected BooleanConfigurer wrapConfig;
+    protected JLabel minLabel;
+    protected JLabel maxLabel;
+    protected JLabel wrapLabel;
     protected ListConfigurer keyCommandListConfig;
-    protected Box controls;
+    protected TraitConfigPanel controls;
 
     public Ed(final DynamicProperty m) {
-      keyCommandListConfig = new ListConfigurer(null, "Key Commands") {
+      keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands")) {
         @Override
         protected Configurer buildChildConfigurer() {
-          return new DynamicKeyCommandConfigurer(m);
+          final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
+          c.addPropertyChangeListener(e -> resize());
+          return c;
         }
       };
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          boolean isNumeric = numericConfig.booleanValue();
-          minConfig.getControls().setVisible(isNumeric);
-          maxConfig.getControls().setVisible(isNumeric);
-          wrapConfig.getControls().setVisible(isNumeric);
-          keyCommandListConfig.repack();
-        }
+      final PropertyChangeListener l = evt -> {
+        final boolean isNumeric = numericConfig.booleanValue();
+        minConfig.getControls().setVisible(isNumeric);
+        minLabel.setVisible(isNumeric);
+        maxConfig.getControls().setVisible(isNumeric);
+        maxLabel.setVisible(isNumeric);
+        wrapConfig.getControls().setVisible(isNumeric);
+        wrapLabel.setVisible(isNumeric);
+        repack(keyCommandListConfig);
       };
-      controls = Box.createVerticalBox();
-      nameConfig = new StringConfigurer(null, "Name:  ", m.getKey());
-      controls.add(nameConfig.getControls());
-      initialValueConfig = new StringConfigurer(null, "Value:  ", m.getValue());
-      controls.add(initialValueConfig.getControls());
-      numericConfig =
-        new BooleanConfigurer(null, "Is numeric:  ", m.isNumeric());
-      controls.add(numericConfig.getControls());
-      minConfig =
-        new IntConfigurer(null, "Minimum value:  ", m.getMinimumValue());
-      controls.add(minConfig.getControls());
-      maxConfig =
-        new IntConfigurer(null, "Maximum value:  ", m.getMaximumValue());
-      controls.add(maxConfig.getControls());
-      wrapConfig = new BooleanConfigurer(null, "Wrap?", m.isWrap());
-      controls.add(wrapConfig.getControls());
-      controls.add(keyCommandListConfig.getControls());
+      controls = new TraitConfigPanel();
+
+
+      nameConfig = new StringConfigurer(m.getKey());
+      controls.add("Editor.DynamicProperty.property_name", nameConfig);
+
+      initialValueConfig = new StringConfigurer(m.getValue());
+      controls.add("Editor.DynamicProperty.initial_value", initialValueConfig);
+
+      numericConfig = new BooleanConfigurer(m.isNumeric());
+      controls.add("Editor.DynamicProperty.is_numeric", numericConfig);
+
+      minLabel = new JLabel(Resources.getString("Editor.DynamicProperty.minimum_value"));
+      minConfig = new IntConfigurer(m.getMinimumValue());
+      controls.add(minLabel, minConfig);
+
+      maxLabel = new JLabel(Resources.getString("Editor.DynamicProperty.maximum_value"));
+      maxConfig = new IntConfigurer(m.getMaximumValue());
+      controls.add(maxLabel, maxConfig);
+
+      wrapLabel = new JLabel(Resources.getString("Editor.DynamicProperty.wrap"));
+      wrapConfig = new BooleanConfigurer(m.isWrap());
+      controls.add(wrapLabel, wrapConfig, "wrap"); // NON-NLS
+
+      controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
 
       numericConfig.addPropertyChangeListener(l);
       numericConfig.fireUpdate();
@@ -423,6 +526,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       super(name, key, target, i18nPiece);
       this.propChanger = propChanger;
     }
+
+    public PropertyChanger getPropChanger() {
+      return propChanger;
+    }
   }
 
   /**
@@ -433,36 +540,57 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected final NamedHotKeyConfigurer keyConfig;
     protected PropertyChangerConfigurer propChangeConfig;
     protected StringConfigurer commandConfig;
-
-    protected Box controls = null;
+    protected JPanel controls;
     protected DynamicProperty target;
 
     public DynamicKeyCommandConfigurer(DynamicProperty target) {
-      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK), Decorator.getOutermost(target), target,
-          new PropertyPrompt(target, "Change value of " + target.getKey())));
-      commandConfig = new StringConfigurer(null, " Menu Command:  ", "Change value");
-      keyConfig = new NamedHotKeyConfigurer(null, " Key Command:  ", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
-      propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
-      propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
+      super(target.getKey(), target.getKey(),
+        new DynamicKeyCommand(
+          Resources.getString("Editor.DynamicProperty.change_value"),
+          NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK),
+          Decorator.getOutermost(target),
+          target,
+          new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
 
-      PropertyChangeListener pl = e -> updateValue();
-      commandConfig.addPropertyChangeListener(pl);
-      keyConfig.addPropertyChangeListener(pl);
-      propChangeConfig.addPropertyChangeListener(pl);
+      commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
+      keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+      propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
+      propChangeConfig.setValue(new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey())));
+
+      commandConfig.addPropertyChangeListener(e -> updateValue());
+      keyConfig.addPropertyChangeListener(e -> updateValue());
+      propChangeConfig.addPropertyChangeListener(e -> {
+        updateValue();
+        repack(commandConfig.getControls());
+      });
       this.target = target;
     }
 
     @Override
     public String getValueString() {
-      SequenceEncoder se = new SequenceEncoder(':');
+      final SequenceEncoder se = new SequenceEncoder(':');
       se.append(commandConfig.getValueString()).append(keyConfig.getValueString()).append(propChangeConfig.getValueString());
       return se.getValue();
+    }
+
+    /**
+     * Freeze the Configurer from issuing PropertyChange Events.
+     * Ensure the subsidiary Configurers are quiet also.
+     *
+     * @param val true to freeze
+     */
+    @Override
+    public void setFrozen(boolean val) {
+      super.setFrozen(val);
+      commandConfig.setFrozen(val);
+      keyConfig.setFrozen(val);
+      propChangeConfig.setFrozen(val);
     }
 
     @Override
     public void setValue(Object value) {
       if (!noUpdate && value instanceof DynamicKeyCommand && commandConfig != null) {
-        DynamicKeyCommand dkc = (DynamicKeyCommand) value;
+        final DynamicKeyCommand dkc = (DynamicKeyCommand) value;
         commandConfig.setValue(dkc.getName());
         keyConfig.setValue(dkc.getNamedKeyStroke());
         propChangeConfig.setValue(dkc.propChanger);
@@ -476,7 +604,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     @Override
     public void setValue(String s) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s == null ? "" : s, ':');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s == null ? "" : s, ':');
       commandConfig.setValue(sd.nextToken(""));
       keyConfig.setValue(sd.nextNamedKeyStroke(null));
       propChangeConfig.setValue(sd.nextToken(""));
@@ -498,10 +626,24 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
 
     protected void buildControls() {
-      controls = Box.createHorizontalBox();
-      controls.add(commandConfig.getControls());
-      controls.add(keyConfig.getControls());
-      controls.add(propChangeConfig.getControls());
+      controls = new JPanel(new MigLayout("ins panel," + ConfigurerLayout.STANDARD_GAPY + ",hidemode 3", "[]rel[][]rel[]")); // NON-NLS
+      controls.setBorder(BorderFactory.createEtchedBorder());
+      JLabel label = new JLabel(Resources.getString("Editor.menu_command"));
+      label.setLabelFor(commandConfig.getControls());
+      controls.add(label);
+      controls.add(commandConfig.getControls(), "grow"); // NON-NLS
+
+      label = new JLabel(Resources.getString("Editor.keyboard_command"));
+      label.setLabelFor(keyConfig.getControls());
+      controls.add(label);
+      controls.add(keyConfig.getControls(), "grow,wrap"); // NON-NLS
+
+      controls.add(propChangeConfig.getTypeLabel());
+      controls.add(propChangeConfig.getTypeControls(), "grow"); // NON-NLS
+
+      controls.add(propChangeConfig.getChangerLabel());
+      controls.add(propChangeConfig.getChangerControls(), "growx,aligny center,wrap"); // NON-NLS
+      controls.add(propChangeConfig.getValuesControls(), "grow,span 4"); // NON-NLS
     }
   }
 }

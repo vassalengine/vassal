@@ -17,21 +17,14 @@
  */
 package VASSAL.tools;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import VASSAL.Info;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.swing.DetailsButton;
+import VASSAL.tools.swing.FlowLabel;
+import VASSAL.tools.version.VersionUtils;
+import net.miginfocom.swing.MigLayout;
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXHeader;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -44,19 +37,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.swing.SwingWorker;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.jdesktop.swingx.JXBusyLabel;
-import org.jdesktop.swingx.JXHeader;
-
-import VASSAL.Info;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.swing.DetailsButton;
-import VASSAL.tools.swing.FlowLabel;
-import VASSAL.tools.version.VersionUtils;
+import javax.swing.Timer;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @since 3.1.0
@@ -65,8 +61,8 @@ import VASSAL.tools.version.VersionUtils;
 public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private Throwable thrown;
-  private String errorLog;
+  private final Throwable thrown;
+  private final String errorLog;
 
   private JPanel contents;
   private CardLayout deck;
@@ -91,7 +87,7 @@ public class BugDialog extends JDialog {
     final JXHeader header = new JXHeader(
       Resources.getString("BugDialog.heading"),
       Resources.getString("BugDialog.message"),
-      new ImageIcon(BugDialog.class.getResource("/icons/48x48/bug.png"))
+      new ImageIcon(BugDialog.class.getResource("/icons/48x48/bug.png"))  //NON-NLS
     );
 
     //
@@ -126,12 +122,12 @@ public class BugDialog extends JDialog {
     contents = new JPanel(deck);
     contents.setBorder(BorderFactory.createEmptyBorder(12, 12, 0, 12));
 
-    contents.add(buildVersionCheckPanel(),     "versionCheckPanel");
-    contents.add(buildCurrentVersionPanel(),   "currentVersionPanel");
-    contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel");
-    contents.add(buildOldVersionPanel(),       "oldVersionPanel");
-    contents.add(buildConnectionFailedPanel(), "connectionFailedPanel");
-    contents.add(buildEmergencySavePanel(),    "emergencySavePanel");
+    contents.add(buildVersionCheckPanel(),     "versionCheckPanel");  //NON-NLS
+    contents.add(buildCurrentVersionPanel(),   "currentVersionPanel"); //NON-NLS
+    contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel"); //NON-NLS
+    contents.add(buildOldVersionPanel(),       "oldVersionPanel"); //NON-NLS
+    contents.add(buildConnectionFailedPanel(), "connectionFailedPanel"); //NON-NLS
+    contents.add(buildEmergencySavePanel(),    "emergencySavePanel"); //NON-NLS
 
     return contents;
   }
@@ -140,12 +136,12 @@ public class BugDialog extends JDialog {
     button_deck = new CardLayout();
     buttons = new JPanel(button_deck);
 
-    buttons.add(buildVersionCheckButtons(),     "versionCheckButtons");
-    buttons.add(buildCurrentVersionButtons(),   "currentVersionButtons");
-    buttons.add(buildSendingBugReportButtons(), "sendingBugReportButtons");
-    buttons.add(buildOldVersionButtons(),       "oldVersionButtons");
-    buttons.add(buildConnectionFailedButtons(), "connectionFailedButtons");
-    buttons.add(buildEmergencySaveButtons(),    "emergencySaveButtons");
+    buttons.add(buildVersionCheckButtons(),     "versionCheckButtons"); //NON-NLS
+    buttons.add(buildCurrentVersionButtons(),   "currentVersionButtons"); //NON-NLS
+    buttons.add(buildSendingBugReportButtons(), "sendingBugReportButtons"); //NON-NLS
+    buttons.add(buildOldVersionButtons(),       "oldVersionButtons"); //NON-NLS
+    buttons.add(buildConnectionFailedButtons(), "connectionFailedButtons"); //NON-NLS
+    buttons.add(buildEmergencySaveButtons(),    "emergencySaveButtons"); //NON-NLS
 
     return buttons;
   }
@@ -158,9 +154,9 @@ public class BugDialog extends JDialog {
       new FlowLabel(Resources.getString("BugDialog.collecting_details"));
 
     final JPanel panel = new JPanel(
-      new MigLayout("", "", "[]push[]push"));
-    panel.add(label, "cell 0 0, growx, pushx");
-    panel.add(spinner, "cell 0 1, align center");
+      new MigLayout("", "", "[]push[]push"));  //NON-NLS
+    panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS
+    panel.add(spinner, "cell 0 1, align center"); //NON-NLS
 
     return panel;
   }
@@ -178,8 +174,8 @@ public class BugDialog extends JDialog {
     );
 
 // FIXME: tags don't push buttons to ends?
-    final JPanel panel = new JPanel(new MigLayout("align right"));
-    panel.add(cancelButton, "tag cancel");
+    final JPanel panel = new JPanel(new MigLayout("align right")); //NON-NLS
+    panel.add(cancelButton, "tag cancel"); //NON-NLS
 
     return panel;
   }
@@ -216,14 +212,14 @@ public class BugDialog extends JDialog {
     detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
-      "hidemode 3", "", "[]unrel[]rel[]unrel[]unrel[]rel[]"));
-    panel.add(label, "cell 0 0, growx, pushx");
-    panel.add(descriptionLabel, "cell 0 1");
-    panel.add(descriptionScroll, "cell 0 2, grow, push");
-    panel.add(emailLabel, "cell 0 3");
-    panel.add(emailField, "cell 0 3, growx, pushx");
-    panel.add(detailsButton, "cell 0 4");
-    panel.add(detailsScroll, "cell 0 5, grow, push");
+      "hidemode 3", "", "[]unrel[]rel[]unrel[]unrel[]rel[]")); //NON-NLS
+    panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS
+    panel.add(descriptionLabel, "cell 0 1"); //NON-NLS
+    panel.add(descriptionScroll, "cell 0 2, grow, push"); //NON-NLS
+    panel.add(emailLabel, "cell 0 3"); //NON-NLS
+    panel.add(emailField, "cell 0 3, growx, pushx"); //NON-NLS
+    panel.add(detailsButton, "cell 0 4"); //NON-NLS
+    panel.add(detailsScroll, "cell 0 5, grow, push"); //NON-NLS
 
     return panel;
   }
@@ -251,9 +247,9 @@ public class BugDialog extends JDialog {
       }
     );
 
-    final JPanel panel = new JPanel(new MigLayout("align right"));
-    panel.add(sendButton, "tag ok");
-    panel.add(dontSendButton, "tag cancel");
+    final JPanel panel = new JPanel(new MigLayout("align right")); //NON-NLS
+    panel.add(sendButton, "tag ok"); //NON-NLS
+    panel.add(dontSendButton, "tag cancel"); //NON-NLS
 
     return panel;
   }
@@ -280,10 +276,10 @@ public class BugDialog extends JDialog {
     detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
-      "hidemode 3", "", "[]unrel[]rel[]"));
-    panel.add(label, "cell 0 0, growx, pushx");
-    panel.add(detailsButton, "cell 0 1");
-    panel.add(detailsScroll, "cell 0 2, grow, push");
+      "hidemode 3", "", "[]unrel[]rel[]")); //NON-NLS
+    panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS
+    panel.add(detailsButton, "cell 0 1"); //NON-NLS
+    panel.add(detailsScroll, "cell 0 2, grow, push"); //NON-NLS
 
     return panel;
   }
@@ -300,8 +296,8 @@ public class BugDialog extends JDialog {
       }
     );
 
-    final JPanel panel = new JPanel(new MigLayout("align right"));
-    panel.add(okButton, "tag ok");
+    final JPanel panel = new JPanel(new MigLayout("align right")); //NON-NLS
+    panel.add(okButton, "tag ok"); //NON-NLS
 
     return panel;
   }
@@ -323,10 +319,10 @@ public class BugDialog extends JDialog {
     detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
-      "hidemode 3", "", "[]unrel[]rel[]"));
-    panel.add(label, "cell 0 0, growx, pushx");
-    panel.add(detailsButton, "cell 0 1");
-    panel.add(detailsScroll, "cell 0 2, grow, push");
+      "hidemode 3", "", "[]unrel[]rel[]")); //NON-NLS
+    panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS
+    panel.add(detailsButton, "cell 0 1"); //NON-NLS
+    panel.add(detailsScroll, "cell 0 2, grow, push");  //NON-NLS
 
     return panel;
   }
@@ -343,8 +339,8 @@ public class BugDialog extends JDialog {
       }
     );
 
-    final JPanel panel = new JPanel(new MigLayout("align right"));
-    panel.add(okButton, "tag ok");
+    final JPanel panel = new JPanel(new MigLayout("align right")); //NON-NLS
+    panel.add(okButton, "tag ok"); //NON-NLS
 
     return panel;
   }
@@ -353,8 +349,8 @@ public class BugDialog extends JDialog {
     final FlowLabel label =
       new FlowLabel(Resources.getString("BugDialog.how_to_proceed"));
 
-    final JPanel panel = new JPanel(new MigLayout("", "", "[]push"));
-    panel.add(label, "cell 0 0, growx, pushx");
+    final JPanel panel = new JPanel(new MigLayout("", "", "[]push")); //NON-NLS
+    panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS
 
     return panel;
   }
@@ -394,8 +390,8 @@ public class BugDialog extends JDialog {
       }
     );
 
-    final JPanel panel = new JPanel(new MigLayout("align right"));
-    panel.add(okButton, "tag ok");
+    final JPanel panel = new JPanel(new MigLayout("align right")); //NON-NLS
+    panel.add(okButton, "tag ok"); //NON-NLS
 
     return panel;
   }
@@ -454,12 +450,7 @@ public class BugDialog extends JDialog {
       // Wait 3 seconds before counting down the latch to ensure
       // that the user has sufficient time to read the message on
       // the first pane.
-      timer = new Timer(2000, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          latch.countDown();
-        }
-      });
+      timer = new Timer(2000, e -> latch.countDown());
       timer.start();
 
       // Make the request to the server and wait for the latch.
@@ -496,9 +487,9 @@ public class BugDialog extends JDialog {
       new FlowLabel(Resources.getString("BugDialog.sending_bug_report"));
 
     final JPanel panel = new JPanel(
-      new MigLayout("", "", "[]push[]push"));
-    panel.add(label, "cell 0 0, growx, pushx");
-    panel.add(spinner, "cell 0 1, align center");
+      new MigLayout("", "", "[]push[]push")); //NON-NLS
+    panel.add(label, "cell 0 0, growx, pushx"); //NON-NLS
+    panel.add(spinner, "cell 0 1, align center"); //NON-NLS
 
     return panel;
   }
@@ -515,8 +506,8 @@ public class BugDialog extends JDialog {
       }
     );
 
-    final JPanel panel = new JPanel(new MigLayout("align right"));
-    panel.add(cancelButton, "tag cancel");
+    final JPanel panel = new JPanel(new MigLayout("align right")); //NON-NLS
+    panel.add(cancelButton, "tag cancel"); //NON-NLS
 
     return panel;
   }
@@ -533,12 +524,7 @@ public class BugDialog extends JDialog {
       // Wait 3 seconds before counting down the latch to ensure
       // that the user has sufficient time to read the message on
       // the first pane.
-      timer = new Timer(2000, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          latch.countDown();
-        }
-      });
+      timer = new Timer(2000, e -> latch.countDown());
       timer.start();
 
       // Make the request to the server and wait for the latch.
@@ -574,9 +560,9 @@ public class BugDialog extends JDialog {
 // FIXME: add a page thanking the user for his bug report and providing
 // a link to it at SF.
 
+/*
   private void emergencySave() {
 // FIXME: GameModule and GameState need save methods which take a filename
-/*
     final GameModule mod = GameModule.getGameModule();
     if (mod != null) mod.save(false);
 
@@ -584,16 +570,13 @@ public class BugDialog extends JDialog {
     if (state != null && state.isModified()) {
       state.saveGame();
     }
-*/
   }
+*/
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final BugDialog bd = new BugDialog(null, null);
-        bd.setVisible(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      final BugDialog bd = new BugDialog(null, null);
+      bd.setVisible(true);
     });
   }
 }

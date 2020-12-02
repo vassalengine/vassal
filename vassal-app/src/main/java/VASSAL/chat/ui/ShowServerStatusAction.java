@@ -19,7 +19,6 @@ package VASSAL.chat.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -39,6 +38,7 @@ import VASSAL.chat.messageboard.MessageBoardControls;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Description?
@@ -73,7 +73,7 @@ public class ShowServerStatusAction extends AbstractAction {
   private static class Window extends JFrame implements PropertyChangeListener {
     private static final long serialVersionUID = 1L;
 
-    private ServerStatusView view;
+    private final ServerStatusView view;
     private MessageBoardControls messageMgr;
 
     public Window(ServerStatus status, boolean includeMessageControls) {
@@ -93,7 +93,7 @@ public class ShowServerStatusAction extends AbstractAction {
       }
       pack();
       setSize(Math.max(getSize().width, 400), Math.max(getSize().height, 300));
-      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      final Dimension d = SwingUtils.getScreenSize();
       setLocation(d.width / 2 - getSize().width / 2,
                   d.height / 2 - getSize().height / 2);
     }
@@ -111,7 +111,6 @@ public class ShowServerStatusAction extends AbstractAction {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
       MessageBoard server = null;
-      String name = null;
       if (evt.getNewValue() instanceof ServerStatus.ModuleSummary) {
         final String moduleName = ((ServerStatus.ModuleSummary) evt.getNewValue()).getModuleName();
         server = new HttpMessageServer(new PeerPoolInfo() {
@@ -127,7 +126,7 @@ public class ShowServerStatusAction extends AbstractAction {
         });
       }
       if (messageMgr != null) {
-        messageMgr.setServer(server, name);
+        messageMgr.setServer(server, null);
       }
     }
   }

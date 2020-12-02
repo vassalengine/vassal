@@ -25,17 +25,17 @@ import VASSAL.i18n.Resources;
  */
 public class LoopControl {
 
-  // Limit number of loops before throwing a RecusionLimitException
+  // Limit number of loops before throwing a RecursionLimitException
   public static final int LOOP_LIMIT = 500;
 
   // Loop Types - saved in buildfile
   public static final String LOOP_COUNTED = "counted"; //$NON-NLS-1$
   public static final String LOOP_WHILE = "while"; //$NON-NLS-1$
   public static final String LOOP_UNTIL = "until"; //$NON-NLS-1$
-  public static final String[] LOOP_TYPES = new String[] { LOOP_COUNTED, LOOP_UNTIL, LOOP_WHILE };
+  public static final String[] LOOP_TYPES = { LOOP_COUNTED, LOOP_UNTIL, LOOP_WHILE };
 
   // Localized description of loop types
-  public static final String[] LOOP_TYPE_DESCS = new String[] {
+  public static final String[] LOOP_TYPE_DESCS = {
       Resources.getString("Editor.LoopControl.repeat_fixed"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.repeat_until"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.repeat_while") }; //$NON-NLS-1$
@@ -57,7 +57,7 @@ public class LoopControl {
   }
 
   /**
-   * Convert a localized desciption of a loop type back to a raw type
+   * Convert a localized description of a loop type back to a raw type
    *
    * @param desc
    *          localized description of loop type

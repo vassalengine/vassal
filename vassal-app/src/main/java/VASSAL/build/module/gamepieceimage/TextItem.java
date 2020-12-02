@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -29,13 +30,13 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 
@@ -53,8 +54,8 @@ public class TextItem extends Item {
   protected static final String TOP = "top"; //$NON-NLS-1$
   protected static final String BOTTOM = "bottom"; //$NON-NLS-1$
 
-  public static final String SRC_VARIABLE = "Specified in individual images"; //$NON-NLS-1$
-  public static final String SRC_FIXED = "Fixed for this layout"; //$NON-NLS-1$
+  public static final String SRC_VARIABLE = "Specified in individual images"; // NON-NLS - No really!
+  public static final String SRC_FIXED = "Fixed for this layout";  // NON-NLS - No really!
 
   protected static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
   protected static final String LABEL = "label"; //$NON-NLS-1$
@@ -93,9 +94,9 @@ public class TextItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Font style:  ",
-      "Text is:  ",
-      "Text:  "
+      Resources.getString("Editor.TextItem.font_style"),
+      Resources.getString("Editor.TextItem.text_option"),
+      Resources.getString("Editor.TextItem.text")
     );
   }
 
@@ -103,24 +104,18 @@ public class TextItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[] {
-        FontStyleConfig.class,
-        TextSource.class,
-        String.class
-      }
-    );
+      FontStyleConfig.class,
+      TextSource.class,
+      String.class);
   }
 
   @Override
   public String[] getAttributeNames() {
     return ArrayUtils.insert(
       2, super.getAttributeNames(),
-      new String[] {
-        FONT,
-        SOURCE,
-        TEXT
-      }
-    );
+      FONT,
+      SOURCE,
+      TEXT);
   }
 
   public static class FontStyleConfig implements ConfigurerFactory {
@@ -158,7 +153,7 @@ public class TextItem extends Item {
       return fontStyleName;
     }
     else if (SOURCE.equals(key)) {
-      return textSource + ""; //$NON-NLS-1$
+      return textSource;
     }
     else if (TEXT.equals(key)) {
       return text;
@@ -178,43 +173,32 @@ public class TextItem extends Item {
     }
   }
 
-  private VisibilityCondition fixedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return textSource.equals(SRC_FIXED);
-    }
-  };
+  private final VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
 
-    TextItemInstance ti = null;
+    TextItemInstance ti;
 
-    FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
-    Font f = fs.getFont();
-
-    if (defn != null) {
-      ti = defn.getTextInstance(name);
-    }
-    else {
+    if (defn == null) {
       defn = new GamePieceImage(getLayout());
-      ti = defn.getTextInstance(name);
     }
+    ti = defn.getTextInstance(name);
 
     if (ti == null) {
       ti = new TextItemInstance();
     }
 
-    Color fg = ti.getFgColor().getColor();
-    Color bg = ti.getBgColor().getColor();
+    final Color fg = ti.getFgColor().getColor();
+    final Color bg = ti.getBgColor().getColor();
     if (fg == null && bg == null) {
       return;
     }
 
-    boolean outline = ti.isOutline();
-    Color ol = ti.getOutlineColor().getColor();
+    final boolean outline = ti.isOutline();
+    final Color ol = ti.getOutlineColor().getColor();
 
-    String compass = GamePieceLayout.getCompassPoint(getLocation());
+    final String compass = GamePieceLayout.getCompassPoint(getLocation());
     int hAlign = AL_CENTER;
     switch (compass.charAt(compass.length() - 1)) {
     case 'W':
@@ -232,7 +216,7 @@ public class TextItem extends Item {
       vAlign = AL_BOTTOM;
     }
 
-    Point origin = layout.getPosition(this);
+    final Point origin = layout.getPosition(this);
     String s = null;
     if (textSource.equals(SRC_FIXED)) {
       s = text;
@@ -247,18 +231,21 @@ public class TextItem extends Item {
       }
     }
 
-    Graphics2D g2d = ((Graphics2D) g);
+    final Graphics2D g2d = ((Graphics2D) g);
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
       RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
 
     AffineTransform saveXForm = null;
     if (getRotation() != 0) {
       saveXForm = g2d.getTransform();
-      AffineTransform newXForm =
+      final AffineTransform newXForm =
         AffineTransform.getRotateInstance(Math.toRadians(getRotation()), getLayout().getVisualizerWidth() / 2,
           getLayout().getVisualizerHeight() / 2);
       g2d.transform(newXForm);
     }
+
+    final FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
+    final Font f = fs.getFont();
 
     drawLabel(g, s, origin.x, origin.y, f, hAlign, vAlign, fg, bg, null, outline, ol);
     if (saveXForm != null) {
@@ -273,7 +260,7 @@ public class TextItem extends Item {
 
   @Override
   public String getDisplayName() {
-    return "Label";
+    return Resources.getString("Editor.TextItem.component_type");
   }
 
   @Override
@@ -283,13 +270,13 @@ public class TextItem extends Item {
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    TextItem item = new TextItem(l);
+    final TextItem item = new TextItem(l);
     decode(item, s);
     return item;
   }
 
   public static void decode(TextItem item, String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 
     sd.nextToken();
     item.fontStyleName = sd.nextToken(FontManager.DEFAULT);
@@ -309,7 +296,7 @@ public class TextItem extends Item {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
 
     se1.append(fontStyleName == null ? "" : fontStyleName); //$NON-NLS-1$
     se1.append(textSource);
@@ -320,7 +307,7 @@ public class TextItem extends Item {
     se1.append(lockKey);
     se1.append(lockable);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
 
     return se2.getValue();
@@ -334,10 +321,18 @@ public class TextItem extends Item {
     return textSource.equals(SRC_FIXED);
   }
 
-  public static class TextSource extends StringEnum {
+  public static class TextSource extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.TextItem.specified_in_individual_images",
+        "Editor.TextItem.fixed_for_this_layout"
+      };
     }
   }
 
@@ -350,9 +345,9 @@ public class TextItem extends Item {
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor, boolean outline, Color outlineColor) {
     g.setFont(f);
-    int buffer = g.getFontMetrics().getLeading();
-    int width = g.getFontMetrics().stringWidth(text) + 2 * buffer;
-    int height = g.getFontMetrics().getHeight();
+    final int buffer = g.getFontMetrics().getLeading();
+    final int width = g.getFontMetrics().stringWidth(text) + 2 * buffer;
+    final int height = g.getFontMetrics().getHeight();
     int x0 = x;
     int y0 = y;
     switch (hAlign) {
@@ -381,8 +376,8 @@ public class TextItem extends Item {
       g.drawRect(x0, y0, width, height);
     }
 
-    int y1 = y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent();
-    int x1 = x0 + buffer;
+    final int y1 = y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent();
+    final int x1 = x0 + buffer;
     if (outline && outlineColor != null) {
       g.setColor(outlineColor);
       g.drawString(text, x1 - 1, y1 - 1);

@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +36,6 @@ import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.UnitProcessor;
-import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
 import org.apache.batik.dom.GenericDOMImplementation;
@@ -72,7 +72,7 @@ public class SVGImageUtils {
 
   public static SVGDocument getDocument(String file, InputStream in) throws IOException {
     try (in) {
-      // We synchronize on FACTORY becuase it does internal caching
+      // We synchronize on FACTORY because it does internal caching
       // of the Documents it produces. This ensures that a Document is
       // being modified on one thread only.
       synchronized (FACTORY) {
@@ -96,7 +96,7 @@ public class SVGImageUtils {
     try {
       return getImageSize(getDocument(file, in));
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(file, e);
     }
     catch (DOMException | IOException e) {
@@ -106,18 +106,12 @@ public class SVGImageUtils {
 
   public static Dimension getImageSize(SVGDocument doc) throws IOException {
     final SVGSVGElement root = doc.getRootElement();
-    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
-    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
-    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
-
     final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
     final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
 
-    float w = -1.0f;
-    float h = -1.0f;
-    float[] vb = null;
-
     // try to parse the width
+    float w = -1.0f;
+    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
     if (!ws.isEmpty()) {
       try {
         w = UnitProcessor.svgHorizontalLengthToUserSpace(ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx);
@@ -129,6 +123,8 @@ public class SVGImageUtils {
     }
 
     // try to parse the height
+    float h = -1.0f;
+    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
     if (!hs.isEmpty()) {
       try {
         h = UnitProcessor.svgVerticalLengthToUserSpace(hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx);
@@ -140,6 +136,8 @@ public class SVGImageUtils {
     }
 
     // try to parse the viewBox
+    float[] vb = null;
+    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
     if (!vbs.isEmpty()) {
       try {
         vb = ViewBox.parseViewBoxAttribute(root, vbs, bctx);
@@ -220,7 +218,6 @@ public class SVGImageUtils {
   protected static List<String> getExternalReferences(
                           String path, List<String> known) throws IOException {
 
-    final HashSet<String> follow = new HashSet<>();
     final URL here = new URL("file", null, new File(path).getCanonicalPath());
 
     Document doc = null;
@@ -233,13 +230,14 @@ public class SVGImageUtils {
       throw new IOException(e);
     }
 
-    final NodeList usenodes = doc.getElementsByTagName("use");
+    final HashSet<String> follow = new HashSet<>();
+    final NodeList usenodes = doc.getElementsByTagName("use"); //NON-NLS
     for (int i = 0; i < usenodes.getLength(); ++i) {
       final Element e = (Element) usenodes.item(i);
       final URL url = new URL(new URL(e.getBaseURI()),
                               XLinkSupport.getXLinkHref(e));
       // balk (for now) unless file is available on our filesystem
-      if (url.getProtocol().equals("file")) {
+      if (url.getProtocol().equals("file")) { //NON-NLS
         final String refpath = url.getPath();
         if (!known.contains(refpath)) {
           follow.add(refpath);
@@ -252,7 +250,7 @@ public class SVGImageUtils {
       }
     }
 
-    for (String s : follow) {
+    for (final String s : follow) {
       known.addAll(getExternalReferences(s, known));
     }
 
@@ -299,7 +297,7 @@ public class SVGImageUtils {
     }
 
     // relativize the xlink:href attribute if there is one
-    if (e.hasAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, "href")) {
+    if (e.hasAttributeNS(XLinkSupport.XLINK_NAMESPACE_URI, "href")) { //NON-NLS
       try {
         final URL url = new URL(new URL(e.getBaseURI()),
                                 XLinkSupport.getXLinkHref(e));
@@ -314,6 +312,6 @@ public class SVGImageUtils {
     }
 
     // remove xml:base attribute if there is one
-    e.removeAttributeNS(XMLSupport.XML_NAMESPACE_URI, "base");
+    e.removeAttributeNS(XMLSupport.XML_NAMESPACE_URI, "base"); //NON-NLS
   }
 }

@@ -51,6 +51,6 @@ public class SimpleIPCMessage implements IPCMessage {
 
   @Override
   public String toString() {
-    return getClass().getName() + "[id=" + id + ",inReplyTo=" + inReplyTo + "]";
+    return getClass().getName() + "[id=" + id + ",inReplyTo=" + inReplyTo + "]"; //NON-NLS
   }
 }

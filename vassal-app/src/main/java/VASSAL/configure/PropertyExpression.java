@@ -60,11 +60,15 @@ public class PropertyExpression implements PieceFilter {
     return getFilter(source).accept(piece);
   }
 
+  @Override
+  public int hashCode() {
+    return getExpression().hashCode();
+  }
+
+  @Override
   public boolean equals(Object o) {
-    if (o instanceof PropertyExpression) {
-      return getExpression().equals(((PropertyExpression) o).getExpression());
-    }
-    return false;
+    return o instanceof PropertyExpression &&
+           getExpression().equals(((PropertyExpression) o).getExpression());
   }
 
   /**
@@ -81,9 +85,9 @@ public class PropertyExpression implements PieceFilter {
     }
     catch (ExpressionException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
     }
-    return "true".equals(result);
+    return "true".equals(result); //NON-NLS
   }
 
 }

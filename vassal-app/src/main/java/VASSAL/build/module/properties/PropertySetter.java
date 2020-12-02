@@ -23,13 +23,11 @@ import VASSAL.tools.FormattedString;
 /**
  * Provides a fixed value
  * The value can be specified as a FormattedString property and evaluated at runtime
- *
  * @author rkinney
- *
  */
 public class PropertySetter implements PropertyChanger {
   private String newValue;
-  private Constraints propSource;
+  private final Constraints propSource;
   private FormattedString format;
 
   public PropertySetter(String newValue, Constraints propSource) {

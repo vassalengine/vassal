@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * Configurer for specifing key masks (CTRL, SHIFT, CTRL-ALT, etc.)
+ * Configurer for specifying key masks (CTRL, SHIFT, CTRL-ALT, etc.)
  */
 public class KeyModifiersConfigurer extends Configurer implements KeyListener {
   private JPanel controls;
@@ -54,7 +54,7 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
 
   @Override
   public String getValueString() {
-    Object val = getValue();
+    final Object val = getValue();
     return val != null ? val.toString() : "0";
   }
 

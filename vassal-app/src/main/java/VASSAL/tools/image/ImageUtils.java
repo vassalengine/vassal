@@ -18,7 +18,6 @@
 
 package VASSAL.tools.image;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -31,11 +30,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -43,9 +40,11 @@ import javax.swing.ImageIcon;
 import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
+import VASSAL.tools.ProblemDialog;
 
 public class ImageUtils {
-  private ImageUtils() {}
+  private ImageUtils() {
+  }
 
   // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
@@ -56,18 +55,12 @@ public class ImageUtils {
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  private static final Map<RenderingHints.Key, Object> defaultHints =
-    new HashMap<>();
-
-  static {
-    // Initialise Image prefs prior to Preferences being read.
-
-    // set up map for creating default RenderingHints
-    defaultHints.put(RenderingHints.KEY_INTERPOLATION,
-                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-    defaultHints.put(RenderingHints.KEY_ANTIALIASING,
-                     RenderingHints.VALUE_ANTIALIAS_ON);
-  }
+  private static final Map<RenderingHints.Key, Object> defaultHints = Map.of(
+    RenderingHints.KEY_INTERPOLATION,
+    RenderingHints.VALUE_INTERPOLATION_BILINEAR,
+    RenderingHints.KEY_ANTIALIASING,
+    RenderingHints.VALUE_ANTIALIAS_ON
+  );
 
   /** @deprecated All scaling is done with the high-quality scaler now. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
@@ -243,7 +236,7 @@ public class ImageUtils {
     return getImageSize("", in);
   }
 
-  private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();
+  private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();  //NON-NLS
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));
@@ -349,8 +342,8 @@ public class ImageUtils {
   protected static final int compatTranslImageType;
 
   static {
-    BufferedImage oimg;
-    BufferedImage timg;
+    final BufferedImage oimg;
+    final BufferedImage timg;
 
     if (isHeadless()) {
       oimg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
@@ -436,18 +429,18 @@ public class ImageUtils {
    * What Image suffixes does Vassal know about?
    * Used by the MassPieceLoader to identify candidate images.
    */
-  public static final String GIF_SUFFIX = ".gif";
-  public static final String PNG_SUFFIX = ".png";
-  public static final String SVG_SUFFIX = ".svg";
-  public static final String JPG_SUFFIX = ".jpg";
-  public static final String JPEG_SUFFIX = ".jpeg";
+  public static final String GIF_SUFFIX = ".gif"; //NON-NLS
+  public static final String PNG_SUFFIX = ".png"; //NON-NLS
+  public static final String SVG_SUFFIX = ".svg"; //NON-NLS
+  public static final String JPG_SUFFIX = ".jpg"; //NON-NLS
+  public static final String JPEG_SUFFIX = ".jpeg"; //NON-NLS
   public static final String[] IMAGE_SUFFIXES = {
     GIF_SUFFIX, PNG_SUFFIX, SVG_SUFFIX, JPG_SUFFIX, JPEG_SUFFIX
   };
 
   public static boolean hasImageSuffix(String name) {
     final String s = name.toLowerCase();
-    for (String suffix : IMAGE_SUFFIXES) {
+    for (final String suffix : IMAGE_SUFFIXES) {
       if (s.endsWith(suffix)) {
         return true;
       }
@@ -457,7 +450,7 @@ public class ImageUtils {
 
   public static String stripImageSuffix(String name) {
     final String s = name.toLowerCase();
-    for (String suffix : IMAGE_SUFFIXES) {
+    for (final String suffix : IMAGE_SUFFIXES) {
       if (s.endsWith(suffix)) {
         return name.substring(0, name.length() - suffix.length());
       }

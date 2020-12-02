@@ -34,7 +34,7 @@ public abstract class SaveAction extends AbstractAction {
   protected String parentType = "";
 
   public SaveAction() {
-    final URL iconURL = getClass().getResource("/images/Save16.gif");
+    final URL iconURL = getClass().getResource("/images/Save16.gif"); //NON-NLS
     if (iconURL != null) {
       putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
     }

@@ -17,30 +17,31 @@
  */
 package VASSAL.configure;
 
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.launch.BasicModule;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+
+import VASSAL.tools.swing.SwingUtils;
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Window for editing properties of a {@link Configurable} object
@@ -62,7 +63,7 @@ public class PropertiesWindow extends JDialog {
     originalState = target.getBuildElement(Builder.createNewDocument());
     Node child = originalState.getFirstChild();
     while (child != null) {
-      Node nextChild = child.getNextSibling();
+      final Node nextChild = child.getNextSibling();
       if (Node.ELEMENT_NODE == child.getNodeType()) {
         // Cull Buildables from the state.
         try {
@@ -81,51 +82,49 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new MigLayout("ins panel,wrap 1", "[grow,fill]", "[align top,grow][]")); // NON-NLS
     configurer = target.getConfigurer();
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setTitle((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setTitle((String) evt.getNewValue());
       }
     });
-    add(configurer.getControls());
 
     setTitle(ConfigureTree.getConfigureName(target));
 
-    final Box buttonBox = Box.createHorizontalBox();
-    final JButton okButton = new JButton("Ok");
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
-    buttonBox.add(okButton);
+    final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+    final JButton okButton = new JButton(Resources.getString("General.ok"));
+    okButton.addActionListener(e -> save());
+    buttonBox.add(okButton, "sg,tag ok"); // NON-NLS
 
-    final JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
-    buttonBox.add(cancelButton);
+    final JButton cancelButton = new JButton(Resources.getString("General.cancel"));
+    cancelButton.addActionListener(e -> cancel());
+    buttonBox.add(cancelButton, "sg,tag cancel"); // NON-NLS
 
     if (target.getHelpFile() != null) {
-      final Action helpAction =
-        new ShowHelpAction(target.getHelpFile().getContents(), null);
+      final Action helpAction = new ShowHelpAction(target.getHelpFile().getContents(), null);
       final JButton helpButton = new JButton(helpAction);
-      buttonBox.add(helpButton);
-      pack();
+      buttonBox.add(helpButton, "sg,tag help"); // NON-NLS
     }
 
-    add(buttonBox);
+    // The PieceDefiner handles its own scrolling internally, don't add another set of scrollbars
+    if (target instanceof PieceSlot || target instanceof PrototypeDefinition) {
+      add(configurer.getControls(), "grow"); // NON-NLS
+    }
+    else {
+      final JPanel scrollPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow,fill]")); // NON-NLS
+      final JScrollPane scroll = new JScrollPane(scrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      scrollPanel.add(configurer.getControls());
+      add(scroll);
+    }
+
+    add(buttonBox, "growy 0"); // NON-NLS
+
     pack();
     setLocationRelativeTo(getParent());
+    SwingUtils.ensureOnScreen(this);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent we) {
@@ -135,10 +134,10 @@ public class PropertiesWindow extends JDialog {
   }
 
   public void cancel() {
-    if (target instanceof BasicModule) { // Modules we don't want to do the full scary rebuild, just put the text fields back.
-      target.setAttribute(GameModule.MODULE_NAME,    originalState.getAttribute(BasicModule.MODULE_NAME));
-      target.setAttribute(GameModule.MODULE_VERSION, originalState.getAttribute(BasicModule.MODULE_VERSION));
-      target.setAttribute(GameModule.DESCRIPTION,    originalState.getAttribute(BasicModule.DESCRIPTION));
+    if (target instanceof GameModule) { // Modules we don't want to do the full scary rebuild, just put the text fields back.
+      target.setAttribute(GameModule.MODULE_NAME,    originalState.getAttribute(GameModule.MODULE_NAME));
+      target.setAttribute(GameModule.MODULE_VERSION, originalState.getAttribute(GameModule.MODULE_VERSION));
+      target.setAttribute(GameModule.DESCRIPTION,    originalState.getAttribute(GameModule.DESCRIPTION));
     }
     else {
       target.build(originalState);

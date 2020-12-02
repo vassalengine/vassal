@@ -16,9 +16,6 @@
  * at http://www.opensource.org.
  */
 
-/**
- * Class tht implements a names Font Swatch
- */
 
 package VASSAL.build.module.gamepieceimage;
 
@@ -30,7 +27,11 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.i18n.Resources;
 
+/**
+ * Class that implements a names Font Swatch
+ */
 public class FontStyle extends AbstractConfigurable {
 
   protected static final String NAME = "name"; //$NON-NLS-1$
@@ -61,8 +62,8 @@ public class FontStyle extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Style Name:  ",
-      "Font Style:  "
+      Resources.getString("Editor.FontStyle.style_name"),
+      Resources.getString("Editor.FontStyle.font_style")
     };
   }
 
@@ -119,7 +120,7 @@ public class FontStyle extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm", "FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.html", "FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
@@ -128,7 +129,7 @@ public class FontStyle extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Font Style";
+    return Resources.getString("Editor.FontStyle.component_type");
   }
 
   @Override

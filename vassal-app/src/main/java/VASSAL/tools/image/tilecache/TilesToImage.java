@@ -23,8 +23,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,17 +67,12 @@ public class TilesToImage {
     // and columns, as well as the width of the last column and the height
     // of the last row
     final File bdir = new File(base).getParentFile();
-    final FileFilter filter = new FileFilter() {
-      @Override
-      public boolean accept(File pathname) {
-        return pathname.getPath().startsWith(base);
-      }
-    };
+    final FileFilter filter = pathname -> pathname.getPath().startsWith(base);
 
     final Pattern p  = Pattern.compile(base + "\\((\\d+),(\\d+)\\)@1:");
     int max_row = 0;
     int max_col = 0;
-    for (File f : bdir.listFiles(filter)) {
+    for (final File f : bdir.listFiles(filter)) {
       final Matcher m = p.matcher(f.getPath());
       if (m.lookingAt()) {
         final int c = Integer.parseInt(m.group(1));
@@ -117,6 +113,6 @@ public class TilesToImage {
     }
 
     // write the cobbled image
-    ImageIO.write(img, "PNG", new FileOutputStream(dpath));
+    ImageIO.write(img, "PNG", Files.newOutputStream(Path.of(dpath))); //NON-NLS
   }
 }

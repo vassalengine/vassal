@@ -67,15 +67,15 @@ public final class GameRefresher implements GameComponent {
   private static final Logger logger = LoggerFactory.getLogger(GameRefresher.class);
 
   private Action refreshAction;
-  protected GpIdSupport gpIdSupport;
-  protected GpIdChecker gpIdChecker;
-  protected int updatedCount;
-  protected int notFoundCount;
-  protected int notOwnedCount;
-  protected RefreshDialog dialog;
-  protected boolean testMode;
+  private final GpIdSupport gpIdSupport;
+  private GpIdChecker gpIdChecker;
+  private int updatedCount;
+  private int notFoundCount;
+  private int notOwnedCount;
+  private RefreshDialog dialog;
+  private boolean testMode;
 
-  public GameRefresher(GpIdSupport gpIdSupport) {
+  public GameRefresher(final GpIdSupport gpIdSupport) {
     this.gpIdSupport = gpIdSupport;
   }
 
@@ -118,12 +118,12 @@ public final class GameRefresher implements GameComponent {
      * PieceSlots and PlaceMarker's in the module.
      */
     gpIdChecker = new GpIdChecker(useName);
-    for (PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+    for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
       gpIdChecker.add(slot);
     }
 
     // Add any PieceSlots in Prototype Definitions
-    for (PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
+    for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
       pc.getDefinitions().forEach(gpIdChecker::add);
     }
 
@@ -142,14 +142,14 @@ public final class GameRefresher implements GameComponent {
     final Command command = new NullCommand();
     final ArrayList<GamePiece> pieces = new ArrayList<>();
 
-    for (GamePiece piece : theModule.getGameState().getAllPieces()) {
+    for (final GamePiece piece : theModule.getGameState().getAllPieces()) {
       if (piece instanceof Deck) {
-        for (Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           pieces.add(0, i.next());
         }
       }
       else if (piece instanceof Stack) {
-        for (Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
+        for (final Iterator<GamePiece> i = ((Stack) piece).getPiecesInVisibleOrderIterator(); i.hasNext();) {
           final GamePiece p = i.next();
           if (!Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))
               && !Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
@@ -174,7 +174,7 @@ public final class GameRefresher implements GameComponent {
     /*
      * 3. Generate the commands to update the pieces
      */
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       if (isTestMode()) {
         testGamePiece(piece);
       }
@@ -197,7 +197,7 @@ public final class GameRefresher implements GameComponent {
     else {
       final String player = GlobalOptions.getInstance().getPlayerId();
       final Chatter chatter = theModule.getChatter();
-      final Command msg = new Chatter.DisplayText(chatter, "----------");
+      final Command msg = new Chatter.DisplayText(chatter, "----------"); //NON-NLS
       msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.run_refresh_counters", player)));
       msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_refreshed", player, updatedCount)));
 
@@ -208,7 +208,7 @@ public final class GameRefresher implements GameComponent {
       if (notFoundCount > 0) {
         msg.append(new Chatter.DisplayText(chatter, Resources.getString("GameRefresher.counters_not_found", player, notFoundCount)));
       }
-      msg.append(new Chatter.DisplayText(chatter, "----------"));
+      msg.append(new Chatter.DisplayText(chatter, "----------")); //NON-NLS
       msg.execute();
       command.append(msg);
 
@@ -223,12 +223,12 @@ public final class GameRefresher implements GameComponent {
 
     final Map map = piece.getMap();
     if (map == null) {
-      logger.error("Can't refresh piece " + piece.getName() + ": No Map");
+      logger.error("Can't refresh piece " + piece.getName() + ": No Map"); //NON-NLS
       return;
     }
 
     final Point pos = piece.getPosition();
-    GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
+    final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
 
     final Stack oldStack = piece.getParent();
     final int oldPos = oldStack == null ? 0 : oldStack.indexOf(piece);
@@ -236,7 +236,7 @@ public final class GameRefresher implements GameComponent {
     // Remove the old Piece if different
     if (piece.equals(newPiece)) {
       notFoundCount++;
-      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
+      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
     }
     else {
       updatedCount++;
@@ -271,7 +271,7 @@ public final class GameRefresher implements GameComponent {
 
     final Map map = piece.getMap();
     if (map == null) {
-      logger.error("Can't refresh piece " + piece.getName() + ": No Map");
+      logger.error("Can't refresh piece " + piece.getName() + ": No Map"); //NON-NLS
       return;
     }
 
@@ -280,7 +280,7 @@ public final class GameRefresher implements GameComponent {
     }
     else {
       notFoundCount++;
-      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot");
+      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
     }
   }
 
@@ -303,7 +303,7 @@ public final class GameRefresher implements GameComponent {
     private JTextArea results;
     private JCheckBox nameCheck;
 
-    RefreshDialog (GameRefresher refresher) {
+    RefreshDialog(GameRefresher refresher) {
       this.refresher = refresher;
       setTitle(Resources.getString("GameRefresher.refresh_counters"));
       setModal(true);
@@ -318,7 +318,7 @@ public final class GameRefresher implements GameComponent {
           exit();
         }
       });
-      setLayout(new MigLayout("wrap 1", "[center]"));
+      setLayout(new MigLayout("wrap 1", "[center]")); //NON-NLS
 
       final JPanel buttonPanel = new JPanel(new MigLayout());
 
@@ -353,17 +353,17 @@ public final class GameRefresher implements GameComponent {
 
     protected void test() {
       results.setText(Resources.getString("GameRefresher.refresh_counters_test"));
-      refresher.execute (true, nameCheck.isSelected());
+      refresher.execute(true, nameCheck.isSelected());
     }
 
     protected void run() {
       results.setText("");
-      refresher.execute (false, nameCheck.isSelected());
+      refresher.execute(false, nameCheck.isSelected());
       exit();
     }
 
     public void addMessage(String mess) {
-      results.setText(results.getText() + "\n" + mess);
+      results.setText(results.getText() + "\n" + mess); //NON-NLS
     }
   }
 }

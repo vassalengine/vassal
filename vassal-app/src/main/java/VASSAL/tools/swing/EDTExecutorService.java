@@ -20,6 +20,7 @@ package VASSAL.tools.swing;
 import java.awt.EventQueue;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -58,7 +59,7 @@ public class EDTExecutorService extends AbstractExecutorService {
       return false;
     }
     catch (CancellationException | ExecutionException e) {
-      // Should not happen, the poision pill is never cancelled / runs no code
+      // Should not happen, the poison pill is never cancelled / runs no code
       throw new IllegalStateException(e);
     }
     finally {
@@ -139,8 +140,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   /** {@inheritDoc} */
   @Override
   public void execute(Runnable r) {
-    if (r == null) throw new NullPointerException();
-
+    Objects.requireNonNull(r);
     lock.lock();
     try {
       if (shutdown.get()) throw new RejectedExecutionException();
@@ -152,7 +152,7 @@ public class EDTExecutorService extends AbstractExecutorService {
     }
   }
 
-  // The poision pill task used for shutting down the ExecutorService
+  // The poison pill task used for shutting down the ExecutorService
   protected final EDTRunnableFuture<Void> poison_pill =
     new EDTRunnableFuture<>() {
       @Override

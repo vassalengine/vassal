@@ -74,19 +74,19 @@ public class DetailsDialog {
 
     // build the contents panel
     final JPanel panel = new JPanel();
-    panel.setLayout(new MigLayout("hidemode 3", "",
-      key != null ? "[]unrel[]unrel[]rel[]unrel[]" : "[]unrel[]unrel[]rel[]"));
+    panel.setLayout(new MigLayout("hidemode 3", "", //NON-NLS
+      key != null ? "[]unrel[]unrel[]rel[]unrel[]" : "[]unrel[]unrel[]rel[]")); //NON-NLS
 
-    panel.add(headerLabel, "cell 0 0, growx, pushx");
-    panel.add(messageLabel, "cell 0 1, growx, pushx");
-    panel.add(detailsButton, "cell 0 2");
-    panel.add(detailsScroll, "cell 0 3, grow, push");
+    panel.add(headerLabel, "cell 0 0, growx, pushx"); //NON-NLS
+    panel.add(messageLabel, "cell 0 1, growx, pushx"); //NON-NLS
+    panel.add(detailsButton, "cell 0 2"); //NON-NLS
+    panel.add(detailsScroll, "cell 0 3, grow, push"); //NON-NLS
 
     final JCheckBox disableCheck;
 
     if (key != null) {
       disableCheck = new JCheckBox(disableText);
-      panel.add(disableCheck, "cell 0 4");
+      panel.add(disableCheck, "cell 0 4"); //NON-NLS
     }
     else {
       disableCheck = null;
@@ -113,37 +113,34 @@ public class DetailsDialog {
   }
 
   public static void main(String[] args) {
-    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."; //NON-NLS
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        DetailsDialog.showDialog(
-          null,
-          "Test",
-          "Test Header",
-          loremIpsum,
-          loremIpsum,
-          "Don't show this dialog again",
-          "Show Details",
-          "Hide Details",
-          JOptionPane.WARNING_MESSAGE,
-          true
-        );
+    SwingUtilities.invokeLater(() -> {
+      DetailsDialog.showDialog(
+        null,
+        "Test", //NON-NLS
+        "Test Header", //NON-NLS
+        loremIpsum,
+        loremIpsum,
+        "Don't show this dialog again", //NON-NLS
+        "Show Details", //NON-NLS
+        "Hide Details", //NON-NLS
+        JOptionPane.WARNING_MESSAGE,
+        true
+      );
 
-        DetailsDialog.showDialog(
-          null,
-          "Test",
-          "Test Header",
-          loremIpsum,
-          loremIpsum,
-          "Don't show this dialog again",
-          "Show Details",
-          "Hide Details",
-          JOptionPane.ERROR_MESSAGE,
-          null
-        );
-      }
+      DetailsDialog.showDialog(
+        null,
+        "Test", //NON-NLS
+        "Test Header", //NON-NLS
+        loremIpsum,
+        loremIpsum,
+        "Don't show this dialog again", //NON-NLS
+        "Show Details", //NON-NLS
+        "Hide Details", //NON-NLS
+        JOptionPane.ERROR_MESSAGE,
+        null
+      );
     });
   }
 }

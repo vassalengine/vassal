@@ -37,7 +37,7 @@ java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 2
    cc.png is a 3100x2500 32-bit image.
 
    RGBA PRE RGB
-  32000               original version, not comitted
+  32000               original version, not committed
    1261         r32   precalculate xcontrib, ycontrib; large work[]
    1171         r33   precalculate ycontrib only, single-column work[]
     848         r34   check for constant-color areas
@@ -268,7 +268,7 @@ public final class GeneralFilter {
    * tile.
    *
    * @param dst the destination rectangle
-   * @param src the soure image
+   * @param src the source image
    * @param filter the filter to apply
    * @throws ClassCastException if <code>src</code> does not store its data
    * in a {@link DataBufferInt}
@@ -372,7 +372,7 @@ public final class GeneralFilter {
     int sw,
     int sh,
     int src_type,
-    int srcWidth,   // width of full soruce
+    int srcWidth,   // width of full source
     int srcHeight,  // height of full source
     int[] dst_data,
     int dx0,
@@ -540,10 +540,9 @@ public final class GeneralFilter {
     final int[] src,
     final int[] work) {
 
-    final CList c = xcontrib;
-    final int max = c.n;
+    final int max = xcontrib.n;
 
-    final int base = sx0 + c.pixel + sy0 * stride;
+    final int base = sx0 + xcontrib.pixel + sy0 * stride;
 
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
@@ -560,7 +559,7 @@ public final class GeneralFilter {
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
-        if (c.weight[j] == 0.0f) continue;
+        if (xcontrib.weight[j] == 0.0f) continue;
         if (src[pos + j] != pel) {
           bPelDelta = true;
           break;
@@ -570,7 +569,7 @@ public final class GeneralFilter {
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
-          final float w = c.weight[j];
+          final float w = xcontrib.weight[j];
           final int sd = src[pos + j];
 
           s_a += ((sd >>> 24) & 0xff) * w;
@@ -602,10 +601,9 @@ public final class GeneralFilter {
     final int[] src,
     final int[] work) {
 
-    final CList c = xcontrib;
-    final int max = c.n;
+    final int max = xcontrib.n;
 
-    final int base = sx0 + c.pixel + sy0 * stride;
+    final int base = sx0 + xcontrib.pixel + sy0 * stride;
 
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
@@ -621,7 +619,7 @@ public final class GeneralFilter {
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
-        if (c.weight[j] == 0.0f) continue;
+        if (xcontrib.weight[j] == 0.0f) continue;
         if (src[pos + j] != pel) {
           bPelDelta = true;
           break;
@@ -631,7 +629,7 @@ public final class GeneralFilter {
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
-          final float w = c.weight[j];
+          final float w = xcontrib.weight[j];
           final int sd = src[pos + j];
 
           s_r += ((sd >>> 16) & 0xff) * w;

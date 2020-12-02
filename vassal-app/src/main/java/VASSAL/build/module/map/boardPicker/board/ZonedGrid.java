@@ -142,7 +142,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ZonedGrid.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -177,7 +177,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
         scaleTransform = AffineTransform.getScaleInstance(scale, scale);
         scaledZones = null;
 
-        for (Zone zone : zones) {
+        for (final Zone zone : zones) {
           if (!zone.isUseParentGrid()) {
             if (scaledZones == null) {
               scaledZones = new Area(
@@ -209,10 +209,10 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
       /*
        * Clip out the area covered by the Zones not using the background grid and draw it.
        */
-      Graphics2D g2d = (Graphics2D) g;
-      Shape oldClip = g2d.getClip();
+      final Graphics2D g2d = (Graphics2D) g;
+      final Shape oldClip = g2d.getClip();
       if (translatedZones != null && oldClip != null) {
-        Area clipArea = new Area(oldClip);
+        final Area clipArea = new Area(oldClip);
         clipArea.subtract(translatedZones);
         g2d.setClip(clipArea);
       }
@@ -223,7 +223,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     /*
      * Draw each Zone
      */
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       zone.draw(g, bounds, visibleRect, scale, reversed);
     }
   }
@@ -235,14 +235,14 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public Point getLocation(String location) throws BadCoords {
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       try {
-        Point p = zone.getLocation(location);
+        final Point p = zone.getLocation(location);
         if (p != null && zone.contains(p)) {
           return p;
         }
       }
-      catch (BadCoords bc) {
+      catch (final BadCoords bc) {
       }
     }
     if (background != null)
@@ -259,7 +259,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   @Override
   public String locationName(Point p) {
     String name = null;
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       if (zone.contains(p)) {
         name = zone.locationName(p);
         break;
@@ -275,7 +275,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   @Override
   public String localizedLocationName(Point p) {
     String name = null;
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       if (zone.contains(p)) {
         name = zone.localizedLocationName(p);
         break;
@@ -291,8 +291,8 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   @Override
   public int range(Point p1, Point p2) {
     MapGrid grid = background;
-    Zone z1 = findZone(p1);
-    Zone z2 = findZone(p2);
+    final Zone z1 = findZone(p1);
+    final Zone z2 = findZone(p2);
     if (z1 == z2
       && z1 != null
       && z1.getGrid() != null) {
@@ -304,7 +304,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   @Override
   public Area getGridShape(Point center, int range) {
     Area a = null;
-    Zone z = findZone(center);
+    final Zone z = findZone(center);
     if (z != null
       && z.getGrid() instanceof GeometricGrid) {
       a = ((GeometricGrid)z.getGrid()).getGridShape(center, range);
@@ -320,7 +320,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public Zone findZone(Point p) {
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       if (zone.contains(p)) {
         return zone;
       }
@@ -329,7 +329,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public Zone findZone(String name) {
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       if (zone.getName().equals(name)) {
         return zone;
       }
@@ -340,7 +340,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   @Override
   public Point snapTo(Point p) {
     Point snap = null;
-    Zone z = findZone(p);
+    final Zone z = findZone(p);
     if (z != null) {
       snap = z.snapTo(p);
     }
@@ -352,7 +352,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public boolean isLocationRestricted(Point p) {
-    for (Zone zone : zones) {
+    for (final Zone zone : zones) {
       if (zone.contains(p)) {
         return zone.getGrid() != null && zone.getGrid().isLocationRestricted(p);
       }

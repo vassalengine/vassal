@@ -16,11 +16,11 @@
  */
 package VASSAL.configure.password;
 
+import VASSAL.configure.Configurer;
+
+import java.awt.Component;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.Component;
-
-import VASSAL.configure.Configurer;
 
 public class ToggleablePasswordConfigurer extends Configurer {
 
@@ -71,5 +71,10 @@ public class ToggleablePasswordConfigurer extends Configurer {
   @Override
   public Component getControls() {
     return panel.getPanel();
+  }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    panel.setLabeLVisible(visible);
   }
 }

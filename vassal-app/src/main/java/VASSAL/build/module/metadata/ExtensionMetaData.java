@@ -25,8 +25,10 @@ import java.util.zip.ZipFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -35,16 +37,17 @@ import org.xml.sax.helpers.DefaultHandler;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.io.ZipWriter;
 
 public class ExtensionMetaData extends AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(ExtensionMetaData.class);
 
-  public static final String ZIP_ENTRY_NAME = "extensiondata";
+  public static final String ZIP_ENTRY_NAME = "extensiondata"; //NON-NLS
   public static final String DATA_VERSION = "1";
 
-  protected static final String UNIVERSAL_ELEMENT = "universal";
-  protected static final String UNIVERSAL_ATTR = "anyModule";
+  protected static final String UNIVERSAL_ELEMENT = "universal"; //NON-NLS
+  protected static final String UNIVERSAL_ATTR = "anyModule"; //NON-NLS
 
   protected ModuleMetaData moduleData;
   protected boolean universal;
@@ -105,6 +108,16 @@ public class ExtensionMetaData extends AbstractMetaData {
     copyModuleMetadata(archive);
   }
 
+  @Override
+  public void save(ZipWriter zw) throws IOException {
+    super.save(zw);
+
+    // Also save a copy of the current module metadata in the save file. Copy
+    // module metadata from the module archive as it will contain full i18n
+    // information.
+    copyModuleMetadata(zw);
+  }
+
   /**
    * Add elements specific to an ExtensionMetaData
    *
@@ -132,11 +145,11 @@ public class ExtensionMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile.
-      DefaultHandler handler = null;
+      final DefaultHandler handler;
 
       ZipEntry data = zip.getEntry(getZipEntryName());
       if (data == null) {
-        data = zip.getEntry(GameModule.BUILDFILE);
+        data = zip.getEntry(GameModule.BUILDFILE_OLD);
         handler = new ExtensionBuildFileXMLHandler();
       }
       else {
@@ -160,14 +173,15 @@ public class ExtensionMetaData extends AbstractMetaData {
       // module metadata file
       final ModuleMetaData buildFileModuleData = moduleData;
       moduleData = new ModuleMetaData(zip);
+      //FIXME this looks like "something wrong is happening" - checking null right after we assign it?
       if (moduleData == null) {
         moduleData = buildFileModuleData;
       }
     }
-    catch (SAXEndException e) {
+    catch (final SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
-    catch (IOException | SAXException e) {
+    catch (final IOException | SAXException e) {
       logger.error("", e);
     }
   }
@@ -181,7 +195,7 @@ public class ExtensionMetaData extends AbstractMetaData {
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
       if (UNIVERSAL_ELEMENT.equals(qName)) {
-        universal = "true".equals(accumulator.toString().trim());
+        universal = "true".equals(accumulator.toString().trim()); //NON-NLS
       }
       else {
         super.endElement(uri, localName, qName);
@@ -206,7 +220,7 @@ public class ExtensionMetaData extends AbstractMetaData {
         setVersion(getAttr(attrs, VERSION_ATTR));
         setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
         setDescription(getAttr(attrs, DESCRIPTION_ATTR));
-        universal = "true".equals(getAttr(attrs, UNIVERSAL_ATTR));
+        universal = "true".equals(getAttr(attrs, UNIVERSAL_ATTR)); //NON-NLS
         // Build a basic module metadata in case this is an older extension
         // with no metadata from the originating module
         final String moduleName = getAttr(attrs, MODULE_NAME_ATTR);
@@ -216,5 +230,4 @@ public class ExtensionMetaData extends AbstractMetaData {
       }
     }
   }
-
 }

@@ -31,7 +31,7 @@ public class P2PPlayer extends SimplePlayer {
   private static final String ID = "id"; //$NON-NLS-1$
   private static final String ROOM = "room"; //$NON-NLS-1$
 
-  private PeerInfo info;
+  private final PeerInfo info;
   private Properties props;
 
   public P2PPlayer(PeerInfo info) {
@@ -110,9 +110,15 @@ public class P2PPlayer extends SimplePlayer {
     setProps();
   }
 
+  @Override
+  public int hashCode() {
+    return getId() == null ? info.hashCode() : getId().hashCode();
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o instanceof P2PPlayer) {
-      P2PPlayer p = (P2PPlayer) o;
+      final P2PPlayer p = (P2PPlayer) o;
       return getId() == null ? info.equals(p.info) : getId().equals(p.getId());
     }
     else {

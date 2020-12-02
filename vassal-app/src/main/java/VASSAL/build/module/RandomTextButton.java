@@ -17,10 +17,10 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import VASSAL.build.BadDataReport;
@@ -33,8 +33,8 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.LaunchButton;
 
 /**
  * @author Michael Blumoehr
@@ -53,47 +53,44 @@ public class RandomTextButton extends DiceButton {
 
   public RandomTextButton() {
     super();
-    ActionListener ranAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (promptAlways) {
-          promptAlways = false; // Show the usu
-          // Remove label, hotkey, and prompt controls
-          AutoConfigurer ac = (AutoConfigurer) getConfigurer();
-          ConfigurerWindow w = new ConfigurerWindow(ac, true);
-          ac.getConfigurer(NAME).getControls().setVisible(false);
-          ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
-          ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
-          ac.getConfigurer(ICON).getControls().setVisible(false);
-          ac.getConfigurer(HOTKEY).getControls().setVisible(false);
-          ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
-          ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(false);
-          ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(false);
-          ac.getConfigurer(FACES).getControls().setVisible(false);
-          ac.getConfigurer(NUMERIC).getControls().setVisible(false);
-          w.pack();
-          w.setVisible(true);
-          ac.getConfigurer(NAME).getControls().setVisible(true);
-          ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
-          ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
-          ac.getConfigurer(ICON).getControls().setVisible(true);
-          ac.getConfigurer(HOTKEY).getControls().setVisible(true);
-          ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
-          ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(true);
-          ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(true);
-          ac.getConfigurer(FACES).getControls().setVisible(true);
-          ac.getConfigurer(NUMERIC).getControls().setVisible(true);
-          if (! w.isCancelled()) {
-            DR();
-          }
-          promptAlways = true;
-        }
-        else {
+    final ActionListener ranAction = e -> {
+      if (promptAlways) {
+        promptAlways = false; // Show the usu
+        // Remove label, hotkey, and prompt controls
+        final AutoConfigurer ac = (AutoConfigurer) getConfigurer();
+        final ConfigurerWindow w = new ConfigurerWindow(ac, true);
+        ac.getConfigurer(NAME).getControls().setVisible(false);
+        ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
+        ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
+        ac.getConfigurer(ICON).getControls().setVisible(false);
+        ac.getConfigurer(HOTKEY).getControls().setVisible(false);
+        ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
+        ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(false);
+        ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(false);
+        ac.getConfigurer(FACES).getControls().setVisible(false);
+        ac.getConfigurer(NUMERIC).getControls().setVisible(false);
+        w.pack();
+        w.setVisible(true);
+        ac.getConfigurer(NAME).getControls().setVisible(true);
+        ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
+        ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
+        ac.getConfigurer(ICON).getControls().setVisible(true);
+        ac.getConfigurer(HOTKEY).getControls().setVisible(true);
+        ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
+        ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(true);
+        ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(true);
+        ac.getConfigurer(FACES).getControls().setVisible(true);
+        ac.getConfigurer(NUMERIC).getControls().setVisible(true);
+        if (! w.isCancelled()) {
           DR();
         }
+        promptAlways = true;
+      }
+      else {
+        DR();
       }
     };
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, ranAction);
+    makeLaunchButton("", "", "", ranAction);
     setAttributeTranslatable(FACES, true);
   }
 
@@ -140,12 +137,12 @@ public class RandomTextButton extends DiceButton {
           }
           else {
             ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Dice.random_text_too_few_faces", name), String.valueOf(roll)));
-            result.append("0");
+            result.append('0');
           }
         else
           result.append(roll);
         if (i < nDice - 1)
-          result.append(","); //$NON-NLS-1$
+          result.append(',');
       }
     }
 
@@ -153,23 +150,17 @@ public class RandomTextButton extends DiceButton {
     if (reportTotal && isNumeric)
       result.append(total);
 
-    String report = formatResult(result.toString());
-    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
+    final String report = formatResult(result.toString());
+    final Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), report);
     c.execute();
     c.append(property.setPropertyValue(result.toString()));
     GameModule.getGameModule().sendAndLog(c);
-
   }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (List.of(REPORT_TOTAL, PLUS, ADD_TO_TOTAL).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return isNumeric;
-        }
-      };
+      return () -> isNumeric;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -188,7 +179,7 @@ public class RandomTextButton extends DiceButton {
    */
   @Override
   public String[] getAttributeNames() {
-    ArrayList<String> l =
+    final ArrayList<String> l =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(N_SIDES);
     l.add(FACES);
@@ -198,9 +189,9 @@ public class RandomTextButton extends DiceButton {
 
   @Override
   public String[] getAttributeDescriptions() {
-    ArrayList<String> l =
+    final ArrayList<String> l =
       new ArrayList<>(Arrays.asList(super.getAttributeDescriptions()));
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(Resources.getString("Editor.RandomTextButton.faces")); //$NON-NLS-1$
@@ -210,14 +201,14 @@ public class RandomTextButton extends DiceButton {
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    ArrayList<Class<?>> l =
+    final ArrayList<Class<?>> l =
       new ArrayList<>(Arrays.asList(super.getAttributeTypes()));
-    ArrayList<String> names =
+    final ArrayList<String> names =
       new ArrayList<>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
     l.add(Boolean.class);
-    return l.toArray(new Class<?>[names.size()]);
+    return l.toArray(new Class<?>[0]);
   }
 
   @Override
@@ -252,8 +243,28 @@ public class RandomTextButton extends DiceButton {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "RandomTextButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "RandomTextButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return new ArrayList<>(Arrays.asList(m_faces));
+  }
 
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    for (final String f : m_faces) {
+      h = new HTMLImageFinder(f);
+      h.addImageNames(s);
+    }
+  }
 }

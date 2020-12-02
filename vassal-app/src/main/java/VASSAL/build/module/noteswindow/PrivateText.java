@@ -22,8 +22,8 @@ package VASSAL.build.module.noteswindow;
  * A text message with an owner
  */
 public class PrivateText {
-  private String owner;
-  private String text;
+  private final String owner;
+  private final String text;
 
   public PrivateText(String owner, String text) {
     this.owner = owner;
@@ -43,17 +43,16 @@ public class PrivateText {
    * @param o
    * @return
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof PrivateText)) return false;
 
     final PrivateText privateText = (PrivateText) o;
-
-    if (!owner.equals(privateText.owner)) return false;
-
-    return true;
+    return owner.equals(privateText.owner);
   }
 
+  @Override
   public int hashCode() {
     return owner.hashCode();
   }

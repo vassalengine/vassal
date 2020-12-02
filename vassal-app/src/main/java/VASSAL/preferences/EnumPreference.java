@@ -17,9 +17,7 @@
  */
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.configure.Configurer;
@@ -31,14 +29,14 @@ import VASSAL.configure.StringEnumConfigurer;
  */
 public class EnumPreference extends BasicPreference {
 
-  public static final String LIST = "list";
+  public static final String LIST = "list"; //NON-NLS
 
   protected String defaultValue = "";
   protected String[] options = new String[0];
   protected StringEnumConfigurer config;
 
   public static String getConfigureTypeName() {
-    return "Drop-down List Preference";
+    return Resources.getString("Editor.EnumPreference.component_type");
   }
 
   @Override
@@ -68,7 +66,7 @@ public class EnumPreference extends BasicPreference {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.add(
       super.getAttributeDescriptions(),
-      "List Values:  "
+      Resources.getString("Editor.EnumPreference.list_values")
     );
   }
 
@@ -109,14 +107,8 @@ public class EnumPreference extends BasicPreference {
     if (config == null) {
       config = new StringEnumConfigurer(getVariableName(), getDescription(), options);
       config.setValue(defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }
-      });
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }
-
 }

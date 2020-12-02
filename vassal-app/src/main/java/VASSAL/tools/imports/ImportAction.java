@@ -31,7 +31,6 @@ import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.ImportMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
 import VASSAL.preferences.Prefs;
@@ -47,15 +46,11 @@ import VASSAL.tools.imports.adc2.SymbolSet;
 
 /**
  * Action for importing foreign modules into VASSAL.
+ * To add more capabilities, see the static fields DESCRIPTIONS, EXTENSIONS, and IMPORTERS.
  *
  * @author Michael Kiefte
  * @since 3.1.0
  */
-
-/*
- * To add more capabilities, see the static fields DESCRIPTIONS, EXTENSIONS, and IMPORTERS.
- */
-
 public final class ImportAction extends EditModuleAction {
 
   private static final long serialVersionUID = 1L;
@@ -125,7 +120,7 @@ public final class ImportAction extends EditModuleAction {
       }
     }
 
-    for (int index : indices) {
+    for (final int index : indices) {
       try {
         if (((Importer) (IMPORTERS[index].getDeclaredConstructor().newInstance())).isValidImportFile(f)) {
           return IMPORTERS[index];
@@ -153,7 +148,7 @@ public final class ImportAction extends EditModuleAction {
     }
 
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-      File f = fc.getSelectedFile();
+      final File f = fc.getSelectedFile();
       if (f != null && f.exists()) {
         loadModule(f);
         actionCancelled = false;
@@ -168,7 +163,7 @@ public final class ImportAction extends EditModuleAction {
       throw new FileFormatException("Unrecognized file format");
     }
 
-    final GameModule module = new BasicModule(new ArchiveWriter(null, ".vmod"));
+    final GameModule module = new GameModule(new ArchiveWriter((String) null, ".vmod")); //NON-NLS
     GameModule.init(module);
 
     final Importer imp;
@@ -279,7 +274,7 @@ public final class ImportAction extends EditModuleAction {
     if (parent != null) {
       final File[] peers = parent.listFiles();
       if (peers != null) {
-        for (File p : peers) {
+        for (final File p : peers) {
           if (p.getName().equalsIgnoreCase(name))
             return p;
         }
@@ -290,7 +285,7 @@ public final class ImportAction extends EditModuleAction {
     if (base != null) {
       final File[] peers = base.getParentFile().listFiles();
       if (peers != null) {
-        for (File p : peers) {
+        for (final File p : peers) {
           if (p.getName().equalsIgnoreCase(name))
             return p;
         }
@@ -299,10 +294,8 @@ public final class ImportAction extends EditModuleAction {
 
     // no luck so far.  Ask the user.
     if (queryIfNotFound) {
-// FIXME: I18N!
-      JOptionPane.showMessageDialog(comp, "Unable to locate file:\n"
-          + f.getPath() + "\nPlease locate it in the following dialog.",
-          "File Warning", JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(comp, Resources.getString("Editor.ImportAction.unable", f.getPath()),
+          Resources.getString("Editor.ImportAction.warning"), JOptionPane.WARNING_MESSAGE);
 
       if (fc == null) {
         fc = getFileChooser(comp);

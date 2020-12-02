@@ -2,6 +2,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
 
+import VASSAL.i18n.Resources;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
@@ -115,7 +116,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Image Definitions"; //$NON-NLS-1$
+    return Resources.getString("Editor.GamePieceImageDefinitions.component_type"); //$NON-NLS-1$
   }
 
   @Override
@@ -148,7 +149,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -160,5 +161,4 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
     return definitions.getGenericDefn(defnName);
 
   }
-
 }

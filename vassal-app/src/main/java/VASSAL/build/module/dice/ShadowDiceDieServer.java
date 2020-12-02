@@ -37,7 +37,10 @@ public class ShadowDiceDieServer extends DieServer {
     final String HASH = "%23";
 //      final String PLUS = "%2B";
 
-    String desc, s, pEmail = "", sEmail = "";
+    final String desc;
+    String s;
+    String pEmail = "";
+    String sEmail = "";
 
     if (getUseEmail()) {
       pEmail = extractEmail(getPrimaryEmail());
@@ -50,17 +53,17 @@ public class ShadowDiceDieServer extends DieServer {
     s += "&sbj=" + desc;
     s += "&msg=" + ROLL_MARKER + CRLF + desc + CRLF;
 
-    int mLen = toss.getMaxDescLength();
+    final int mLen = toss.getMaxDescLength();
 
-    DieRoll[] rolls = toss.getDieRolls();
-    for (DieRoll roll : rolls) {
+    final DieRoll[] rolls = toss.getDieRolls();
+    for (final DieRoll roll : rolls) {
       s += hexify(roll.getDescription());
       for (int j = 0; j < mLen - roll.getDescription().length(); j++) {
         s += ' ';
       }
       s += ' ' + HASH;
-      int nd = roll.getNumDice();
-      int ns = roll.getNumSides();
+      final int nd = roll.getNumDice();
+      final int ns = roll.getNumSides();
       for (int j = 0; j < nd; j++) {
         s += LSQUARE + "1d" + ns + RSQUARE;
       }
@@ -84,13 +87,13 @@ public class ShadowDiceDieServer extends DieServer {
     final StringBuilder b = new StringBuilder();
 
     for (int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
+      final char c = s.charAt(i);
 
       if (c == '#') {
         b.append('.');
       }
       else if (hexyChars.indexOf(c) >= 0) {
-        b.append("%" + Integer.toHexString(c).toUpperCase());
+        b.append('%').append(Integer.toHexString(c).toUpperCase());
       }
       else {
         b.append(c);
@@ -102,7 +105,7 @@ public class ShadowDiceDieServer extends DieServer {
   @Override
   public void parseInternetRollString(RollSet rollSet, Vector<String> results) {
 
-    Enumeration<String> e = results.elements();
+    final Enumeration<String> e = results.elements();
 
     // Initialise and search for start line
     String line =  e.nextElement();
@@ -113,18 +116,18 @@ public class ShadowDiceDieServer extends DieServer {
     line = e.nextElement();
 
     // And process the results, 1 per roll in the multiroll
-    DieRoll[] rolls = rollSet.getDieRolls();
+    final DieRoll[] rolls = rollSet.getDieRolls();
     for (int i = 0; i < rolls.length; i++) {
 
       line = e.nextElement();
 
-      int firsthash = line.indexOf('#') - 1;
-      StringTokenizer st = new StringTokenizer(line.substring(firsthash), " ");
+      final int firsthash = line.indexOf('#') - 1;
+      final StringTokenizer st = new StringTokenizer(line.substring(firsthash), " ");
 
       for (int j = 0; j < rollSet.dieRolls[i].getNumDice(); j++) {
         st.nextToken();
-        String result = st.nextToken();
-        int res = Integer.parseInt(result);
+        final String result = st.nextToken();
+        final int res = Integer.parseInt(result);
         rollSet.dieRolls[i].setResult(j, res);
       }
     }

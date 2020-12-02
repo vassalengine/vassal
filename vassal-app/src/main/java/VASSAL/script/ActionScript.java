@@ -21,8 +21,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.StringReader;
 
 import javax.swing.Box;
@@ -49,14 +47,10 @@ import VASSAL.tools.UniqueIdManager;
 public class ActionScript extends AbstractScript
    implements UniqueIdManager.Identifyable, ValidityChecker {
 
-  private static UniqueIdManager idMgr = new UniqueIdManager("Action-");
+  private static final UniqueIdManager idMgr = new UniqueIdManager("Action-"); //NON-NLS
 
   public static String getConfigureTypeName() {
     return "Action Script";
-  }
-
-  public ActionScript() {
-    super();
   }
 
   public String evaluate(PropertySource target) {
@@ -74,7 +68,7 @@ public class ActionScript extends AbstractScript
   }
 
   protected String buildHeaderLine() {
-    return "void " + getConfigureName() + "() {";
+    return "void " + getConfigureName() + "() {"; //NON-NLS
   }
 
   public String getFullScript() {
@@ -94,7 +88,7 @@ public class ActionScript extends AbstractScript
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Script.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Script.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -130,12 +124,9 @@ public class ActionScript extends AbstractScript
       super(null, s.getConfigureName());
       script = s;
       setValue(script);
-      script.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(final PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            setName((String) evt.getNewValue());
-          }
+      script.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          setName((String) evt.getNewValue());
         }
       });
 
@@ -144,38 +135,25 @@ public class ActionScript extends AbstractScript
       panel.setPreferredSize(new Dimension(800, 600));
 
       nameConfig = new JavaNameConfigurer(NAME, "Name:  ", script.getConfigureName());
-      nameConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(NAME, e.getNewValue());
-          updateHeader();
-        }
+      nameConfig.addPropertyChangeListener(e -> {
+        script.setAttribute(NAME, e.getNewValue());
+        updateHeader();
       });
 
       descConfig = new StringConfigurer(DESC, "Description:  ", script.getDescription());
-      descConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(DESC, e.getNewValue());
-        }
-      });
+      descConfig.addPropertyChangeListener(e -> script.setAttribute(DESC, e.getNewValue()));
 
       headerLine.setText(buildHeaderLine());
 
       scriptConfig = new TextConfigurer(SCRIPT, "Script:  ", script.getScript());
-      scriptConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(SCRIPT, e.getNewValue());
-        }
-      });
+      scriptConfig.addPropertyChangeListener(e -> script.setAttribute(SCRIPT, e.getNewValue()));
 
       panel.add(nameConfig.getControls());
       panel.add(descConfig.getControls());
       panel.add(headerLine);
       panel.add(scriptConfig.getControls());
 
-      Box compileBox = Box.createHorizontalBox();
+      final Box compileBox = Box.createHorizontalBox();
       compileButton = new JButton("Compile");
       compileButton.addActionListener(this);
       compileBox.add(compileButton);
@@ -204,7 +182,7 @@ public class ActionScript extends AbstractScript
 
     @Override
     public void setValue(String s) {
-      throw new RuntimeException ("Can't set ScriptConfigurable from String");
+      throw new RuntimeException("Can't set ScriptConfigurable from String");
     }
 
     /**
@@ -212,7 +190,7 @@ public class ActionScript extends AbstractScript
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-      CompileResult r = script.compile();
+      final CompileResult r = script.compile();
       if (r.isSuccess()) {
         error.setText("");
       }

@@ -23,12 +23,12 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
@@ -41,8 +41,6 @@ import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Automatically builds a .jar file that will update a Zip archive.
@@ -60,10 +58,10 @@ public class ZipUpdater implements Runnable {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipUpdater.class);
 
-  public static final String CHECKSUM_RESOURCE = "checksums";
-  public static final String TARGET_ARCHIVE = "target";
-  public static final String UPDATED_ARCHIVE_NAME = "finalName";
-  public static final String ENTRIES_DIR = "entries/";
+  public static final String CHECKSUM_RESOURCE = "checksums"; //NON-NLS
+  public static final String TARGET_ARCHIVE = "target"; //NON-NLS
+  public static final String UPDATED_ARCHIVE_NAME = "finalName"; //NON-NLS
+  public static final String ENTRIES_DIR = "entries/"; //NON-NLS
   private File oldFile;
   private ZipFile oldZipFile;
   private Properties checkSums;
@@ -80,7 +78,7 @@ public class ZipUpdater implements Runnable {
     if (entry != null) {
       crc = entry.getCrc();
       if (crc < 0) {
-        CRC32 checksum = new CRC32();
+        final CRC32 checksum = new CRC32();
 
         try (InputStream in = file.getInputStream(entry)) {
           final byte[] buffer = new byte[1024];
@@ -109,8 +107,7 @@ public class ZipUpdater implements Runnable {
       }
 
       try (BufferedInputStream in = new BufferedInputStream(newContents)) {
-        long cs = writeEntry(in, output, newEntry);
-        return cs;
+        return writeEntry(in, output, newEntry);
       }
     }
   }
@@ -119,7 +116,7 @@ public class ZipUpdater implements Runnable {
   private long writeEntry(InputStream zis, ZipOutputStream output, ZipEntry newEntry) throws IOException {
     // FIXME: is there a better way to do this, so that the whole input
     // stream isn't in memory at once?
-    final byte[] contents = IOUtils.toByteArray(zis);
+    final byte[] contents = zis.readAllBytes();
     final CRC32 checksum = new CRC32();
     checksum.update(contents);
     if (newEntry.getMethod() == ZipEntry.STORED) {
@@ -150,10 +147,10 @@ public class ZipUpdater implements Runnable {
       oldZipFile = ozf;
 
       final ZipOutputStream output =
-        new ZipOutputStream(new FileOutputStream(tempFile));
+        new ZipOutputStream(Files.newOutputStream(tempFile.toPath()));
       try {
-        for (String entryName : checkSums.stringPropertyNames()) {
-          long targetSum;
+        for (final String entryName : checkSums.stringPropertyNames()) {
+          final long targetSum;
           try {
             targetSum =
               Long.parseLong(checkSums.getProperty(entryName, "<none>"));
@@ -189,10 +186,10 @@ public class ZipUpdater implements Runnable {
     }
 
     if (destination.getName().equals(oldFile.getName())) {
-      String updatedName = destination.getName();
-      int index = updatedName.lastIndexOf('.');
-      String backup = index < 0 || index == updatedName.length() - 1
-          ? updatedName + "Backup" : updatedName.substring(0, index) + "Backup" + updatedName.substring(index);
+      final String updatedName = destination.getName();
+      final int index = updatedName.lastIndexOf('.');
+      final String backup = index < 0 || index == updatedName.length() - 1
+          ? updatedName + "Backup" : updatedName.substring(0, index) + "Backup" + updatedName.substring(index);  //NON-NLS
       if (!oldFile.renameTo(new File(backup))) {
         throw new IOException("Unable to create backup file " + backup + ".\nUpdated file is in " + tempFile.getPath());
       }
@@ -204,9 +201,9 @@ public class ZipUpdater implements Runnable {
   }
 
   public void createUpdater(File newFile) throws IOException {
-    String inputArchiveName = oldFile.getName();
-    int index = inputArchiveName.indexOf('.');
-    String jarName;
+    final String inputArchiveName = oldFile.getName();
+    final int index = inputArchiveName.indexOf('.');
+    final String jarName;
     if (index >= 0) {
       jarName = "update" + inputArchiveName.substring(0, index) + ".jar";
     }
@@ -217,7 +214,7 @@ public class ZipUpdater implements Runnable {
   }
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
-    if (!updaterFile.getName().endsWith(".jar")) {
+    if (!updaterFile.getName().endsWith(".jar")) { //NON-NLS
       final String newName = updaterFile.getName().replace('.', '_') + ".jar";
       updaterFile = new File(updaterFile.getParentFile(), newName);
     }
@@ -228,10 +225,10 @@ public class ZipUpdater implements Runnable {
       final String inputArchiveName = oldFile.getName();
 
       try (ZipFile goal = new ZipFile(newFile)) {
-        try (OutputStream fout = new FileOutputStream(updaterFile);
+        try (OutputStream fout = Files.newOutputStream(updaterFile.toPath());
              OutputStream bout = new BufferedOutputStream(fout);
              JarOutputStream out = new JarOutputStream(bout)) {
-          for (ZipEntry entry : IteratorUtils.iterate(goal.entries().asIterator())) {
+          for (final ZipEntry entry : IteratorUtils.iterate(goal.entries().asIterator())) {
             final long goalCrc = getCrc(goal, entry);
             final long inputCrc =
               getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()));
@@ -245,14 +242,13 @@ public class ZipUpdater implements Runnable {
                 writeEntry(gis, out, outputEntry);
               }
             }
-            checkSums.put(entry.getName(), goalCrc + "");
+            checkSums.put(entry.getName(), Long.toString(goalCrc));
           }
 
-          final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF");
+          final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //NON-NLS
           manifestEntry.setMethod(ZipEntry.DEFLATED);
           final StringBuilder buffer = new StringBuilder();
-          buffer.append("Manifest-Version: 1.0\n")
-                .append("Main-Class: VASSAL.tools.ZipUpdater\n");
+          buffer.append("Manifest-Version: 1.0\nMain-Class: VASSAL.tools.ZipUpdater\n"); //NON-NLS
           writeEntry(
             new ByteArrayInputStream(buffer.toString().getBytes(StandardCharsets.UTF_8)),
             out,
@@ -282,7 +278,7 @@ public class ZipUpdater implements Runnable {
             sumEntry);
 
           final String className =
-            getClass().getName().replace('.', '/') + ".class";
+            getClass().getName().replace('.', '/') + ".class"; //NON-NLS
           final ZipEntry classEntry = new ZipEntry(className);
           classEntry.setMethod(ZipEntry.DEFLATED);
 
@@ -310,17 +306,17 @@ public class ZipUpdater implements Runnable {
 
   @Override
   public void run() {
-    JOptionPane.showMessageDialog(null, "Unable to update " + fileName + ".\n" + error.getMessage(), "Update failed", JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(null, "Unable to update " + fileName + ".\n" + error.getMessage(), "Update failed", JOptionPane.ERROR_MESSAGE); //NON-NLS
     System.exit(0);
   }
 
   public static void main(String[] args) {
-    String oldArchiveName = "<unknown>";
+    String oldArchiveName = "<unknown>";  //NON-NLS
     try {
       if (args.length > 1) {
         oldArchiveName = args[0];
-        String goal = args[1];
-        ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
+        final String goal = args[1];
+        final ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
         updater.createUpdater(new File(goal));
       }
       else {

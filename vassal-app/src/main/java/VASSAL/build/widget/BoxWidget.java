@@ -35,12 +35,13 @@ import javax.swing.JPanel;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
+import VASSAL.i18n.Resources;
 
 /**
  * A Widget that corresponds to a panel with a {@link JComboBox} above
  * a {@link JPanel} with a {@link CardLayout} layout.
  * Adding a Widget to a BoxWidget adds the child Widget's component
- * to the JPanel and add's the child's name
+ * to the JPanel and adds the child's name
  * (via {@link Configurable#getConfigureName}) to the JComboBox.  Changing
  * the selection of the JComboBox shows the corresponding child's component
  */
@@ -48,26 +49,23 @@ public class BoxWidget extends Widget
     implements ItemListener, PropertyChangeListener {
   private JPanel panel;
   private JComboBox<Widget> box;
-  private DefaultComboBoxModel<Widget> widgets = new DefaultComboBoxModel<>();
-  private CardLayout layout = new CardLayout();
-  private JPanel multiPanel = new JPanel();
-  private List<Widget> built = new ArrayList<>();
-  private Dimension size = new Dimension();
+  private final DefaultComboBoxModel<Widget> widgets = new DefaultComboBoxModel<>();
+  private final CardLayout layout = new CardLayout();
+  private final JPanel multiPanel = new JPanel();
+  private final List<Widget> built = new ArrayList<>();
+  private final Dimension size = new Dimension();
 
-  private Map<Object, String> keys = new HashMap<>();
+  private final Map<Object, String> keys = new HashMap<>();
   private int count = 0;
 
-  public BoxWidget() {
-  }
-
   public static String getConfigureTypeName() {
-    return "Pull-down Menu";
+    return Resources.getString("Editor.BoxWidget.component_type");
   }
 
   @Override
   public void add(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       widgets.addElement(w);
       w.addPropertyChangeListener(this);
       //      w.setAllowableConfigureComponents(getAllowableConfigureComponents());
@@ -98,7 +96,7 @@ public class BoxWidget extends Widget
   public java.awt.Component getComponent() {
     if (panel == null) {
       rebuild();
-      box = new JComboBox<Widget>();
+      box = new JComboBox<>();
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       multiPanel.setLayout(layout);
@@ -128,7 +126,7 @@ public class BoxWidget extends Widget
   @Override
   public void itemStateChanged(ItemEvent e) {
     if (box.getSelectedItem() != null) {
-      Widget w = (Widget) box.getSelectedItem();
+      final Widget w = (Widget) box.getSelectedItem();
       if (!built.contains(w)) {
         multiPanel.add(getKey(w), w.getComponent());
         built.add(w);
@@ -148,7 +146,7 @@ public class BoxWidget extends Widget
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  "};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override

@@ -17,6 +17,17 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.ExpressionBuilder;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,15 +35,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-
-import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.EditablePiece;
-import VASSAL.counters.GamePiece;
-import VASSAL.script.expression.ExpressionBuilder;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
 
 /**
  * A standard Formatted String configurer that has an additional
@@ -54,6 +56,10 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     setValue(s);
   }
 
+  public FormattedExpressionConfigurer(String s) {
+    this(null, "", s);
+  }
+
   public FormattedExpressionConfigurer(String key, String name, FormattedString s) {
     this(key, name, s.getFormat());
   }
@@ -62,11 +68,19 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     this(key, name, s, (GamePiece) p);
   }
 
+  public FormattedExpressionConfigurer(String s, Constraints p) {
+    this(null, "", s, p);
+  }
+
   public FormattedExpressionConfigurer(String key, String name, String s, Constraints p) {
     this(key, name, s);
     if (p instanceof GamePiece) {
       storePiece((GamePiece) p);
     }
+  }
+
+  public FormattedExpressionConfigurer(String s, GamePiece p) {
+    this(null, "", s, p);
   }
 
   public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {
@@ -88,7 +102,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     final JPanel p = (JPanel) super.getControls();
     if (button == null) {
       button = buildButton();
@@ -120,9 +134,9 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     public ExpressionButton(Configurer config, int size, EditablePiece piece) {
       this.config = config;
       this.piece = piece;
-      setIcon(IconFactory.getIcon("calculator", IconFamily.XSMALL));
+      setIcon(IconFactory.getIcon("calculator", IconFamily.XSMALL)); //NON-NLS
       setSize(size);
-      setToolTipText("Expression Builder");
+      setToolTipText(Resources.getString("Editor.FormattedExpressionConfigurer.expression_builder"));
       addActionListener(this);
     }
 

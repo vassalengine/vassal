@@ -51,15 +51,15 @@ public class HandMetrics extends StackMetrics {
 
   @Override
   protected void nextPosition(Point currentPos, Rectangle currentBounds, Point nextPos, Rectangle nextBounds, int dx, int dy) {
-    int x = currentPos.x + currentBounds.width + dx;
-    int y = currentPos.y;
+    final int x = currentPos.x + currentBounds.width + dx;
+    final int y = currentPos.y;
     nextBounds.setLocation(x, y);
     nextPos.setLocation(x, y);
   }
 
   @Override
   public Command merge(GamePiece fixed, GamePiece moving) {
-    Command c =  super.merge(fixed, moving);
+    final Command c =  super.merge(fixed, moving);
     map.getView().revalidate();
     return c;
   }

@@ -12,17 +12,16 @@ import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
-import VASSAL.chat.messageboard.MessageBoard;
 
 // TODO: throw this away or make it a JUnit test
 public class ClientTest extends P2PClient implements Runnable, PropertyChangeListener {
   private static Random rng = new Random();
-  private int changeRoom;
-  private int numRooms;
-  private FileWriter log;
+  private final int changeRoom;
+  private final int numRooms;
+  private final FileWriter log;
 
-  public ClientTest(PeerPool pool, MessageBoard msgSvr, WelcomeMessageServer welcomer, int changeRoom, int numRooms, FileWriter log) {
-    super(new TextClient.Encoder(), msgSvr, welcomer, pool);
+  public ClientTest(PeerPool pool, WelcomeMessageServer welcomer, int changeRoom, int numRooms, FileWriter log) {
+    super(new TextClient.Encoder(), welcomer, pool);
     this.changeRoom = changeRoom;
     this.numRooms = numRooms;
     this.log = log;
@@ -40,7 +39,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
       catch (InterruptedException e) {
       }
 
-      String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
+      final String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       setRoom(new SimpleRoom(newRoom));
     }
   }
@@ -60,16 +59,16 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
 
   public static String report(VASSAL.chat.Room[] r) {
     final StringBuilder buffer = new StringBuilder();
-    for (VASSAL.chat.Room room : r) {
-      buffer.append(room.getName() + ": "); //$NON-NLS-1$
-      List<Player> l = room.getPlayerList();
+    for (final VASSAL.chat.Room room : r) {
+      buffer.append(room.getName()).append(": "); //$NON-NLS-1$
+      final List<Player> l = room.getPlayerList();
       for (int j = 0; j < l.size(); ++j) {
         buffer.append(l.get(j));
         if (j < l.size() - 1) {
           buffer.append(", "); //$NON-NLS-1$
         }
       }
-      buffer.append("\n"); //$NON-NLS-1$
+      buffer.append('\n');
     }
     return buffer.toString();
   }
@@ -112,7 +111,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
         }
       };
       PeerPool pool = new DirectPeerPool();
-      new ClientTest(pool, msgSvr, welcomer, wait, nRooms, new FileWriter("Log" + i));
+      new ClientTest(pool, welcomer, wait, nRooms, new FileWriter("Log" + i));
     }
   }
 */

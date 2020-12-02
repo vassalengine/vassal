@@ -25,7 +25,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -53,19 +52,18 @@ public class PolygonEditor extends JPanel {
 
   public PolygonEditor(Polygon p) {
     polygon = p;
-    // reset(); // too much of this happening
   }
 
   protected void reset() {
-    MouseListener[] ml = getMouseListeners();
+    final MouseListener[] ml = getMouseListeners();
 
     // get rid of all the mouse listeners floating around
-    for (MouseListener i: ml)
+    for (final MouseListener i: ml)
       removeMouseListener(i);
 
-    MouseMotionListener[] mml = getMouseMotionListeners();
+    final MouseMotionListener[] mml = getMouseMotionListeners();
 
-    for (MouseMotionListener i: mml)
+    for (final MouseMotionListener i: mml)
       removeMouseMotionListener(i);
 
     if (polygon == null || polygon.npoints == 0) {
@@ -93,26 +91,23 @@ public class PolygonEditor extends JPanel {
   }
 
   private void setupForCreate() {
-    DefineRectangle dr = new DefineRectangle();
+    final DefineRectangle dr = new DefineRectangle();
     addMouseListener(dr);
   }
 
   private void setupForEdit() {
-    ModifyPolygon mp = new ModifyPolygon();
+    final ModifyPolygon mp = new ModifyPolygon();
     addMouseListener(mp);
     addMouseMotionListener(mp);
-    ActionListener l = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (selected >= 0) {
-          for (int i = selected; i < polygon.npoints - 1; ++i) {
-            polygon.xpoints[i] = polygon.xpoints[i + 1];
-            polygon.ypoints[i] = polygon.ypoints[i + 1];
-          }
-          polygon.npoints--;
-          selected = -1;
-          repaint();
+    final ActionListener l = e -> {
+      if (selected >= 0) {
+        for (int i = selected; i < polygon.npoints - 1; ++i) {
+          polygon.xpoints[i] = polygon.xpoints[i + 1];
+          polygon.ypoints[i] = polygon.ypoints[i + 1];
         }
+        polygon.npoints--;
+        selected = -1;
+        repaint();
       }
     };
     registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), WHEN_IN_FOCUSED_WINDOW);
@@ -123,7 +118,7 @@ public class PolygonEditor extends JPanel {
   }
 
   public void center(Point p) {
-    Rectangle r = this.getVisibleRect();
+    final Rectangle r = this.getVisibleRect();
     if (r.width == 0) {
       r.width = 600;
       r.height = 600;
@@ -137,20 +132,20 @@ public class PolygonEditor extends JPanel {
 
   public static void reset(Polygon p, String path) {
     p.reset();
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(path, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(path, ';');
     while (sd.hasMoreTokens()) {
-      String s = sd.nextToken();
-      SequenceEncoder.Decoder pd = new SequenceEncoder.Decoder(s, ',');
+      final String s = sd.nextToken();
+      final SequenceEncoder.Decoder pd = new SequenceEncoder.Decoder(s, ',');
       if (pd.hasMoreTokens()) {
         try {
-          int x = Integer.parseInt(pd.nextToken().trim());
+          final int x = Integer.parseInt(pd.nextToken().trim());
           if (pd.hasMoreTokens()) {
-            int y = Integer.parseInt(pd.nextToken().trim());
+            final int y = Integer.parseInt(pd.nextToken().trim());
             p.addPoint(x, y);
           }
         }
         // FIXME: review error message
-        catch (NumberFormatException e) {
+        catch (final NumberFormatException e) {
         }
       }
     }
@@ -184,8 +179,8 @@ public class PolygonEditor extends JPanel {
 
     if (selected >= 0 && selected < polygon.xpoints.length) {
       g2d.setColor(Color.red);
-      int x = polygon.xpoints[selected];
-      int y = polygon.ypoints[selected];
+      final int x = polygon.xpoints[selected];
+      final int y = polygon.ypoints[selected];
       g2d.fillOval(x - 10, y - 10, 20, 20);
     }
 
@@ -235,13 +230,14 @@ public class PolygonEditor extends JPanel {
       double minDist = Float.MAX_VALUE;
       boolean isVertex = false;
 
-      int x0 = e.getX();
-      int y0 = e.getY();
+      final int x0 = e.getX();
+      final int y0 = e.getY();
 
       for (int i = 0; i < polygon.npoints; ++i) {
-        int x1 = polygon.xpoints[i];
-        int y1 = polygon.ypoints[i];
-        int x2, y2;
+        final int x1 = polygon.xpoints[i];
+        final int y1 = polygon.ypoints[i];
+        final int x2;
+        final int y2;
         if (i == polygon.npoints - 1) {
           x2 = polygon.xpoints[0];
           y2 = polygon.ypoints[0];
@@ -251,12 +247,12 @@ public class PolygonEditor extends JPanel {
           y2 = polygon.ypoints[i + 1];
         }
 
-        if (y2 == y1 && x2 == x1) // two verteces on top of each other: skip
+        if (y2 == y1 && x2 == x1) // two vertices on top of each other: skip
           continue;
 
-        double d = Point2D.distance(x1, y1, x2, y2); // segment length
-        double comp = ((x2 - x1) * (x0 - x1) + (y2 - y1) * (y0 - y1)) / d; // component of projection of selection on segment
-        double dist; // orthogonal distance to segment
+        final double d = Point2D.distance(x1, y1, x2, y2); // segment length
+        final double comp = ((x2 - x1) * (x0 - x1) + (y2 - y1) * (y0 - y1)) / d; // component of projection of selection on segment
+        final double dist; // orthogonal distance to segment
 
         if (comp <= 0.0) { // too far out beyond first vertex: just move that vertex if it's closest
           dist = Point2D.distance(x1, y1, x0, y0);
@@ -266,7 +262,7 @@ public class PolygonEditor extends JPanel {
             selected = i;
           }
         }
-        else if (comp >= d) { // too far out beyond second vertex: just move that vertex: just move that virtex if it's closest
+        else if (comp >= d) { // too far out beyond second vertex: just move that vertex: just move that vertex if it's closest
           dist = Point2D.distance(x0, y0, x2, y2);
           if (dist < minDist) {
             isVertex = true;
@@ -308,7 +304,7 @@ public class PolygonEditor extends JPanel {
 
         // move an existing vertex
         for (int i = 0; i < polygon.npoints; ++i) {
-          double dist = Point2D.distance(
+          final double dist = Point2D.distance(
             polygon.xpoints[i], polygon.ypoints[i], e.getX(), e.getY()
           );
           if (dist < minDist) {
@@ -322,7 +318,7 @@ public class PolygonEditor extends JPanel {
     }
 
     public void scrollAtEdge(Point evtPt, int dist) {
-      Point p = new Point(
+      final Point p = new Point(
         evtPt.x - myScroll.getViewport().getViewPosition().x,
         evtPt.y - myScroll.getViewport().getViewPosition().y
       );
@@ -382,7 +378,7 @@ public class PolygonEditor extends JPanel {
   }
 
   public static void main(String[] args) {
-    JFrame f = new JFrame();
+    final JFrame f = new JFrame();
     f.add(new PolygonEditor(null));
     f.setSize(500, 500);
     f.addWindowListener(new WindowAdapter() {

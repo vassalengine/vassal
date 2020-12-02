@@ -22,6 +22,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 public class TextItemInstance extends ItemInstance {
@@ -72,8 +73,8 @@ public class TextItemInstance extends ItemInstance {
   }
 
   public boolean isOutline() {
-    TextItem item = (TextItem) getItem();
-    return (item == null) ? false : item.isOutline();
+    final TextItem item = (TextItem) getItem();
+    return item != null && item.isOutline();
   }
 
   public ColorSwatch getOutlineColor() {
@@ -86,7 +87,7 @@ public class TextItemInstance extends ItemInstance {
 
   @Override
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getType());
     se.append(getName());
     se.append(getLocation());
@@ -98,7 +99,7 @@ public class TextItemInstance extends ItemInstance {
   }
 
   public void decode(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     setType(sd.nextToken("")); //$NON-NLS-1$
     setName(sd.nextToken("")); //$NON-NLS-1$
     setLocation(sd.nextToken("")); //$NON-NLS-1$
@@ -111,10 +112,10 @@ public class TextItemInstance extends ItemInstance {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Value:  ",
-      "Foreground Color:  ",
-      "Background Color:  ",
-      "Outline Color:  "
+      Resources.getString("Editor.TextItemInstance.value"),
+      Resources.getString("Editor.foreground_color"),
+      Resources.getString("Editor.background_color"),
+      Resources.getString("Editor.TextItemInstance.outline_color")
     };
   }
 
@@ -192,24 +193,14 @@ public class TextItemInstance extends ItemInstance {
       return valueCond;
     }
     else if (OUTLINE_COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return isOutline();
-        }
-      };
+      return this::isOutline;
     }
     else {
       return super.getAttributeVisibility(name);
     }
   }
 
-  private VisibilityCondition valueCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !((TextItem) getItem()).isFixed();
-    }
-  };
+  private final VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
     @Override
@@ -231,5 +222,4 @@ public class TextItemInstance extends ItemInstance {
       return new ColorSwatchConfigurer(key, name, ((TextItemInstance) c).getOutlineColor());
     }
   }
-
 }

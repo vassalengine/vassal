@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import VASSAL.build.module.documentation.BrowserPDFFile;
 import org.w3c.dom.Element;
 
 import VASSAL.Info;
@@ -43,9 +44,6 @@ import VASSAL.tools.menu.MenuManager;
  * Represents the <code>Help</code> menu of the controls window
  */
 public class Documentation extends AbstractConfigurable {
-  public Documentation() {
-  }
-
   public JMenu getHelpMenu() {
     final JMenuBar mb = MenuManager.getInstance().getMenuBarFor(
       GameModule.getGameModule().getPlayerWindow());
@@ -108,10 +106,11 @@ public class Documentation extends AbstractConfigurable {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
+      BrowserPDFFile.class,
       BrowserHelpFile.class,
+      HelpFile.class,
       AboutScreen.class,
       Tutorial.class,
-      HelpFile.class
     };
   }
 
@@ -130,7 +129,7 @@ public class Documentation extends AbstractConfigurable {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm")); //$NON-NLS-1$
+      return new HelpFile(null, new File(dir, "HelpMenu.html")); //$NON-NLS-1$
     }
     catch (MalformedURLException ex) {
       ErrorDialog.bug(ex);

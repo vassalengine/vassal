@@ -31,7 +31,7 @@ public abstract class AbstractProxy<T extends JComponent>
   protected void forEachPeer(Functor<T> functor) {
     processQueue();
 
-    for (WeakReference<T> ref : peers) {
+    for (final WeakReference<T> ref : peers) {
       final T peer = ref.get();
       if (peer != null) {
         functor.apply(peer);
@@ -51,13 +51,10 @@ public abstract class AbstractProxy<T extends JComponent>
     this.parent = parent;
 
     if (parent == null) {
-      forEachPeer(new Functor<>() {
-        @Override
-        public void apply(T peer) {
-          final Container par = peer.getParent();
-          if (par != null) {
-            par.remove(peer);
-          }
+      forEachPeer(peer -> {
+        final Container par = peer.getParent();
+        if (par != null) {
+          par.remove(peer);
         }
       });
     }

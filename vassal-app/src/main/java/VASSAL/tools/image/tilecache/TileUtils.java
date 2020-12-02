@@ -25,15 +25,14 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -42,7 +41,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * A class for reading and writing image tiles.
@@ -81,11 +79,11 @@ public class TileUtils {
    * @throws ImageNotFoundException if the file isn't found
    */
   public static BufferedImage read(File src) throws ImageIOException {
-    try (InputStream fin = new FileInputStream(src);
+    try (InputStream fin = Files.newInputStream(src.toPath());
          InputStream in = new BufferedInputStream(fin)) {
       return read(in);
     }
-    catch (FileNotFoundException e) {
+    catch (NoSuchFileException e) {
       throw new ImageNotFoundException(src, e);
     }
     catch (IOException e) {
@@ -119,12 +117,12 @@ public class TileUtils {
     final int type = bb.getInt();
 
     // read the image data
-    final byte[] cdata = IOUtils.toByteArray(in);
+    final byte[] cdata = in.readAllBytes();
 
     // decompress the image data
     try (InputStream bin = new ByteArrayInputStream(cdata);
          InputStream zin = new GZIPInputStream(bin)) {
-      bb = ByteBuffer.wrap(IOUtils.toByteArray(zin));
+      bb = ByteBuffer.wrap(zin.readAllBytes());
     }
 
     // build the image
@@ -159,7 +157,7 @@ public class TileUtils {
   static byte[] readHeader(InputStream in) throws IOException {
     // read the header
     final byte[] header = new byte[18];
-    if (IOUtils.read(in, header) != header.length) {
+    if (in.readNBytes(header, 0, header.length) != header.length) {
       throw new IOException("header too short!");
     }
 
@@ -174,7 +172,7 @@ public class TileUtils {
    * @throws IOException if the byte array is not the tile signature
    */
   static void checkSignature(byte[] sig) throws IOException {
-    if (!Arrays.equals(sig, "VASSAL".getBytes(StandardCharsets.UTF_8))) {
+    if (!Arrays.equals(sig, "VASSAL".getBytes(StandardCharsets.UTF_8))) { //NON-NLS
       throw new IOException(
         "bad signature: got \"" + new String(sig, StandardCharsets.UTF_8) +
         "\", expected \"VASSAL\""
@@ -205,12 +203,11 @@ public class TileUtils {
    * @throws ImageNotFoundException if the file isn't found
    */
   public static Dimension size(File src) throws ImageIOException {
-    try (InputStream in = new FileInputStream(src)) {
+    try (InputStream in = Files.newInputStream(src.toPath())) {
       // NB: We don't buffer here because we're reading only 18 bytes.
-      final Dimension d = size(in);
-      return d;
+      return size(in);
     }
-    catch (FileNotFoundException e) {
+    catch (NoSuchFileException e) {
       throw new ImageNotFoundException(src, e);
     }
     catch (IOException e) {
@@ -227,7 +224,7 @@ public class TileUtils {
    * @throws IOException if the read fails
    */
   public static Dimension size(InputStream in) throws IOException {
-    ByteBuffer bb;
+    final ByteBuffer bb;
 
     // read the header
     final byte[] header = readHeader(in);
@@ -265,7 +262,7 @@ public class TileUtils {
    */
   public static void write(BufferedImage tile, File dst)
                                                       throws ImageIOException {
-    try (OutputStream fout = new FileOutputStream(dst);
+    try (OutputStream fout = Files.newOutputStream(dst.toPath());
          OutputStream out = new BufferedOutputStream(fout)) {
       write(tile, out);
     }
@@ -289,7 +286,7 @@ public class TileUtils {
     // write the header
     bb = ByteBuffer.allocate(18);
 
-    bb.put("VASSAL".getBytes(StandardCharsets.UTF_8))
+    bb.put("VASSAL".getBytes(StandardCharsets.UTF_8)) //NON-NLS
       .putInt(tile.getWidth())
       .putInt(tile.getHeight())
       .putInt(tile.getType());

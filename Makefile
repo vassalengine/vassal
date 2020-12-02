@@ -47,11 +47,11 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.4.11
+VNUM:=3.5.0
 
-#MAVEN_VERSION:=$(VNUM)-SNAPSHOT
+MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 #MAVEN_VERSION:=$(VNUM)-beta1
-MAVEN_VERSION:=$(VNUM)
+#MAVEN_VERSION:=$(VNUM)
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
 
@@ -64,7 +64,7 @@ ifeq ($(shell git describe --tags), $(MAVEN_VERSION))
 else ifeq ($(GITBRANCH), master)
   # we are somewhere else on master
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
-else ifeq ($(GITBRANCH), release-$(VNUM))
+else ifeq ($(patsubst release-%,release,$(GITBRANCH)), release)
   # we are on a release branch
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
@@ -124,44 +124,44 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 #	Then put the 16x16, 24x24, 32x32, 48x48, and 256x256 into the GIMP as layers
 #	and save as an ICO file.
 
-#$(DISTDIR)/macosx/VASSAL.icns:
+#$(DISTDIR)/macos/VASSAL.icns:
 #	for i in 48 128 256 512 ; do \
 #		rsvg -w $$i -h $$i -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-$$i.png ; \
 #	done
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
 #
-# Mac OS X
+# MacOS
 #
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/mac_x64
+$(TMPDIR)/VASSAL-$(VERSION)-macos/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/mac_x64
 	mkdir -p $@/Contents/{MacOS,Resources}
-	cp $(DISTDIR)/macosx/{PkgInfo,Info.plist} $@/Contents
+	cp $(DISTDIR)/macos/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
-	cp $(DISTDIR)/macosx/VASSAL.sh $@/Contents/MacOS
+	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
 	$(JLINK) --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
-	cp $(DISTDIR)/macosx/VASSAL.icns $@/Contents/Resources
+	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx/VASSAL.app
+$(TMPDIR)/VASSAL-$(VERSION)-macos: $(TMPDIR)/VASSAL-$(VERSION)-macos/VASSAL.app
 	ln -s /Applications $@/Applications
-	cp $(DISTDIR)/macosx/.DS_Store $@
+	cp $(DISTDIR)/macos/.DS_Store $@
 	mkdir -p $@/.background
-	cp $(DISTDIR)/macosx/background.png $@/.background
+	cp $(DISTDIR)/macos/background.png $@/.background
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/bin/{java,keytool}
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/lib/jspawnhelper
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx
+$(TMPDIR)/VASSAL-$(VERSION)-macos-uncompressed.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macos
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macosx-uncompressed.dmg
+$(TMPDIR)/VASSAL-$(VERSION)-macos.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macos-uncompressed.dmg
 	$(DMG) $< $@
 
 #
@@ -238,23 +238,23 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
-release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
+release-macos: $(TMPDIR)/VASSAL-$(VERSION)-macos.dmg
 
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
 $(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
-	jinja2 -Dversion=$(VNUM) -o $@ $<
+	jinja2 -Dversion=$(VERSION) -o $@ $<
 
 release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
 
-release: clean release-other release-linux release-windows release-macosx release-sha256
+release: clean release-other release-linux release-windows release-macos release-sha256
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
@@ -262,7 +262,7 @@ clean-release:
 post-release: version-set
 
 upload:
-	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macosx.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
+	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macos.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
 
 vassal-app/target/$(JARNAME)-javadoc.jar: $(LIBDIR)/Vengine.jar
 
@@ -275,4 +275,4 @@ clean-javadoc:
 clean: clean-release
 	$(MVN) clean
 
-.PHONY: compile test clean release release-linux release-macosx release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set
+.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set

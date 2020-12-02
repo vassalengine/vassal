@@ -28,7 +28,7 @@ import java.util.Properties;
  */
 public abstract class ChatServerFactory {
   public static final String TYPE_KEY = "type"; //$NON-NLS-1$
-  private static Map<String, ChatServerFactory> factories =
+  private static final Map<String, ChatServerFactory> factories =
     new HashMap<>();
 
   public abstract ChatServerConnection buildServer(Properties param);
@@ -38,8 +38,8 @@ public abstract class ChatServerFactory {
   }
 
   public static ChatServerConnection build(Properties param) {
-    String type = param.getProperty(TYPE_KEY);
-    ChatServerFactory factory = factories.get(type);
+    final String type = param.getProperty(TYPE_KEY);
+    final ChatServerFactory factory = factories.get(type);
     return factory.buildServer(param);
   }
 }

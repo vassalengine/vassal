@@ -25,9 +25,9 @@ import java.net.Socket;
  * Kills the runtime if unable to establish new connection
  */
 public class LockWatcher extends Thread {
-  private long delay;
-  private long timeout;
-  private int port;
+  private final long delay;
+  private final long timeout;
+  private final int port;
 
   /**
    *
@@ -47,7 +47,7 @@ public class LockWatcher extends Thread {
         sleep(delay);
         pingServer();
       }
-      catch (InterruptedException e) {
+      catch (final InterruptedException e) {
         break;
       }
     }
@@ -57,7 +57,7 @@ public class LockWatcher extends Thread {
     try {
       final Socket s = new Socket("localhost", port); //$NON-NLS-1$
       final Thread t = new Thread(new Timeout());
-      SocketWatcher watcher = new SocketWatcher() {
+      final SocketWatcher watcher = new SocketWatcher() {
         @Override
         public void handleMessage(String msg) {
           t.interrupt();
@@ -68,20 +68,20 @@ public class LockWatcher extends Thread {
           System.err.println("Server closed socket"); //$NON-NLS-1$
         }
       };
-      SocketHandler sender = new SocketHandler(s, watcher);
+      final SocketHandler sender = new SocketHandler(s, watcher);
       sender.start();
       t.start();
       sender.writeLine(Protocol.encodeRegisterCommand("pinger", "ping/Main", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       try {
         t.join();
       }
-      catch (InterruptedException e) {
+      catch (final InterruptedException e) {
       }
 
       sender.close();
     }
     // FIXME: review error message
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
   }
@@ -95,7 +95,7 @@ public class LockWatcher extends Thread {
         System.exit(0);
       }
       // FIXME: review error message
-      catch (InterruptedException e) {
+      catch (final InterruptedException e) {
         System.err.println("Ping"); //$NON-NLS-1$
         // Interrupt means response received from server
       }

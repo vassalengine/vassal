@@ -17,11 +17,9 @@
  */
 package VASSAL.preferences;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * A whole number Module Preference.
@@ -32,7 +30,7 @@ public class IntegerPreference extends BasicPreference {
   protected IntConfigurer config;
 
   public static String getConfigureTypeName() {
-    return "Whole Number Preference";
+    return Resources.getString("Editor.IntegerPreference.component_type");
   }
 
   @Override
@@ -59,12 +57,7 @@ public class IntegerPreference extends BasicPreference {
     if (config == null) {
       config =
         new IntConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }
-      });
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

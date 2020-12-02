@@ -14,7 +14,7 @@ import org.litesoft.p2pchat.PendingPeerManager;
 import org.litesoft.p2pchat.UserDialog;
 
 public class UnitTest implements UserDialog {
-  private String id;
+  private final String id;
 
   public UnitTest(String id) {
     this.id = id;
@@ -57,14 +57,14 @@ public class UnitTest implements UserDialog {
   }
 
   private static void testPeerManagers() throws InterruptedException, IOException {
-    UserDialog serverDialog = new UnitTest("Server"); //$NON-NLS-1$
-    PendingPeerManager serverPpm = new PendingPeerManager(serverDialog);
+    final UserDialog serverDialog = new UnitTest("Server"); //$NON-NLS-1$
+    final PendingPeerManager serverPpm = new PendingPeerManager(serverDialog);
     new AcceptPeerThread(5555, serverPpm).start();
 
-    UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
-    PendingPeerManager ppm = new PendingPeerManager(d);
-    ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client", 5556), d, ppm); //$NON-NLS-1$
-    PeerInfo info = new PeerInfo("Server", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
+    final UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
+    final PendingPeerManager ppm = new PendingPeerManager(d);
+    final ActivePeerManager apm = new ActivePeerManager(new MyInfo("Client", 5556), d, ppm); //$NON-NLS-1$
+    final PeerInfo info = new PeerInfo("Server", "localhost", 5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("Server"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(5000);
@@ -108,37 +108,34 @@ public class UnitTest implements UserDialog {
                                                   throws InterruptedException {
     final Object lock = new Object();
 
-    final Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        try {
-          ServerSocket server;
-          synchronized (lock) {
-            server = new ServerSocket(port);
-            lock.notifyAll();
-          }
+    final Runnable runnable = () -> {
+      try {
+        final ServerSocket server;
+        synchronized (lock) {
+          server = new ServerSocket(port);
+          lock.notifyAll();
+        }
 
-          final Socket s = server.accept();
-          PeerReader reader = null;
-          try {
-            reader = new PeerReader(s.getInputStream());
-            while (true) {
-              final String msg = reader.readLine();
-              System.err.println(msg == null ? "" : msg); //$NON-NLS-1$
-              if (msg == null) {
-                break;
-              }
+        final Socket s = server.accept();
+        PeerReader reader = null;
+        try {
+          reader = new PeerReader(s.getInputStream());
+          while (true) {
+            final String msg = reader.readLine();
+            System.err.println(msg == null ? "" : msg); //$NON-NLS-1$
+            if (msg == null) {
+              break;
             }
-            System.err.println("Done"); //$NON-NLS-1$
-            reader.close();
           }
-          finally {
-            if (reader != null) reader.close();
-          }
+          System.err.println("Done"); //$NON-NLS-1$
+          reader.close();
         }
-        catch (IOException e) {
-          e.printStackTrace();
+        finally {
+          if (reader != null) reader.close();
         }
+      }
+      catch (IOException e) {
+        e.printStackTrace();
       }
     };
 
@@ -201,6 +198,7 @@ public class UnitTest implements UserDialog {
     System.err.println(this + "Hello " + pPeerInfo); //$NON-NLS-1$
   }
 
+  @Override
   public String toString() {
     return id + ": "; //$NON-NLS-1$
   }

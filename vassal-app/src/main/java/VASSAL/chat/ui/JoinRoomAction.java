@@ -20,8 +20,6 @@ package VASSAL.chat.ui;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JTree;
 
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Room;
@@ -33,8 +31,8 @@ import VASSAL.i18n.Resources;
 public class JoinRoomAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Room r;
-  private ChatServerConnection client;
+  private final Room r;
+  private final ChatServerConnection client;
 
   public JoinRoomAction(Room r, ChatServerConnection client) {
     super(Resources.getString("Chat.join_room")); //$NON-NLS-1$
@@ -49,11 +47,6 @@ public class JoinRoomAction extends AbstractAction {
   }
 
   public static RoomActionFactory factory(final ChatServerConnection chatClient) {
-    return new RoomActionFactory() {
-      @Override
-      public Action getAction(Room p, JTree tree) {
-        return new JoinRoomAction(p, chatClient);
-      }
-    };
+    return (p, tree) -> new JoinRoomAction(p, chatClient);
   }
 }

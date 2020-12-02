@@ -18,6 +18,8 @@
 
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Window;
@@ -40,9 +42,9 @@ import javax.swing.SwingUtilities;
  */
 public class TableConfigurer extends Configurer implements ActionListener  {
 
-  public static final String ADD_ACTION = "Add";
-  public static final String DEL_ACTION = "Remove";
-  public static final String INS_ACTION = "Insert";
+  public static final String ADD_ACTION = Resources.getString("Editor.TableConfigurer.add");
+  public static final String DEL_ACTION = Resources.getString("Editor.TableConfigurer.remove");
+  public static final String INS_ACTION = Resources.getString("Editor.TableConfigurer.insert");
 
   protected Box controls;
   protected JPanel contents = null;
@@ -101,22 +103,23 @@ public class TableConfigurer extends Configurer implements ActionListener  {
 
     updateContents();
 
-    Box buttonBox = Box.createHorizontalBox();
-    JButton addButton = new JButton(ADD_ACTION);
+    final Box buttonBox = Box.createHorizontalBox();
+    final JButton addButton = new JButton(ADD_ACTION);
     addButton.addActionListener(this);
     buttonBox.add(addButton);
-    JButton delButton = new JButton(DEL_ACTION);
+    final JButton delButton = new JButton(DEL_ACTION);
     delButton.addActionListener(this);
     buttonBox.add(delButton);
-    JButton insButton = new JButton(INS_ACTION);
+    final JButton insButton = new JButton(INS_ACTION);
     insButton.addActionListener(this);
     buttonBox.add(insButton);
     controls.add(buttonBox);
     repack();
   }
 
+  @Override
   protected void repack() {
-    Window w = SwingUtilities.getWindowAncestor(controls);
+    final Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
       w.pack();
     }
@@ -131,13 +134,13 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     contents.setBorder(BorderFactory.createEtchedBorder());
     contents.setLayout(new GridLayout(0, 5));
 
-    for (Column item : columns) {
+    for (final Column item : columns) {
       contents.add(new JLabel(item.getName()));
     }
 
     if (columns[0].getRowCount() > 0) {
       for (int row = 0; row < columns[0].getRowCount(); row++) {
-        for (Column column : columns) {
+        for (final Column column : columns) {
           contents.add(column.getControls(row));
         }
       }
@@ -149,7 +152,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    String action = e.getActionCommand();
+    final String action = e.getActionCommand();
 
     if (action.equals(ADD_ACTION)) {
       Arrays
@@ -186,7 +189,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     }
 
     public void addRow() {
-      Configurer c = AutoConfigurer.createConfigurer(type, null, "", null);
+      final Configurer c = AutoConfigurer.createConfigurer(type, null, "", null);
       configurers.add(c);
     }
 

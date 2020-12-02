@@ -20,12 +20,8 @@ package VASSAL.configure;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -33,17 +29,26 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
 
+import net.miginfocom.swing.MigLayout;
+
 public class IconConfigurer extends Configurer {
   private JPanel controls;
   private String imageName;
-  private String defaultImage;
+  private final String defaultImage;
   private Icon icon;
+  private JPanel holdingPanel;
+  private final JLabel iconLabel = new JLabel();
+
+  public IconConfigurer(String defaultImage) {
+    this(null, "", defaultImage);
+  }
 
   public IconConfigurer(String key, String name, String defaultImage) {
     super(key, name);
@@ -53,6 +58,13 @@ public class IconConfigurer extends Configurer {
   @Override
   public String getValueString() {
     return imageName;
+  }
+
+
+  @Override
+  public void setValue(Object o) {
+    super.setValue(o);
+    setSize();
   }
 
   @Override
@@ -66,7 +78,7 @@ public class IconConfigurer extends Configurer {
         icon = new ImageIcon(new OwningOpMultiResolutionImage(sop));
       }
     }
-
+    iconLabel.setIcon(icon);
     setValue((Object) imageName);
   }
 
@@ -77,47 +89,41 @@ public class IconConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
-      controls.add(new JLabel(getName()));
-      final JPanel p = new JPanel() {
-        private static final long serialVersionUID = 1L;
+      controls = new ConfigurerPanel(getName(), "[]rel[]rel[]", "[]rel[]rel[]rel[]", "[fill,grow]"); // NON-NLS
+      iconLabel.setIcon(icon);
 
-        @Override
-        public void paint(Graphics g) {
-          g.clearRect(0, 0, getSize().width, getSize().height);
-          final Icon i = getIconValue();
-          if (i != null) {
-            i.paintIcon(this, g,
-                        getSize().width / 2 - i.getIconWidth() / 2,
-                        getSize().height / 2 - i.getIconHeight() / 2);
-          }
-        }
-      };
-      p.setPreferredSize(new Dimension(32, 32));
-      controls.add(p);
-      final JButton reset = new JButton("Select");
-      reset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectImage();
-          p.repaint();
-        }
-      });
-      controls.add(reset);
+      holdingPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS
+      holdingPanel.add(iconLabel, "grow"); // NON-NLS
+      controls.add(holdingPanel); // NON-NLS
+
+      final JButton reset = new JButton(Resources.getString("Editor.select"));
+      reset.addActionListener(e -> selectImage());
+      controls.add(reset, "aligny center, growy 0"); // NON-NLS
       if (defaultImage != null) {
-        final JButton useDefault = new JButton("Default");
-        useDefault.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            setValue(defaultImage);
-            p.repaint();
-          }
-        });
-        controls.add(useDefault);
+        final JButton useDefault = new JButton(Resources.getString("Editor.default"));
+        useDefault.addActionListener(e -> setValue(defaultImage));
+        controls.add(useDefault, "aligny center, growy 0"); // NON-NLS
       }
     }
     return controls;
+  }
+
+  private static final int MAX_ICON_DISPLAY_SIZE = 128;
+
+  private void setSize() {
+    if (holdingPanel != null) {
+      if (icon == null) {
+        holdingPanel.setPreferredSize(new Dimension(32, 32));
+        holdingPanel.setMinimumSize(new Dimension(32, 32));
+      }
+      else {
+        holdingPanel.setPreferredSize(new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+        holdingPanel.setMinimumSize(new Dimension(Math.min(icon.getIconWidth(), MAX_ICON_DISPLAY_SIZE), Math.min(icon.getIconHeight(), MAX_ICON_DISPLAY_SIZE)));
+        holdingPanel.setMaximumSize(new Dimension(MAX_ICON_DISPLAY_SIZE, MAX_ICON_DISPLAY_SIZE));
+      }
+      repack();
+      holdingPanel.repaint();
+    }
   }
 
   private void selectImage() {

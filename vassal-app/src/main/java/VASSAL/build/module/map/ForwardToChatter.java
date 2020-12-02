@@ -21,8 +21,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.KeyStroke;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
@@ -42,7 +40,7 @@ public class ForwardToChatter implements Buildable, KeyListener {
 
   @Override
   public void addTo(Buildable parent) {
-    Map map = (Map) parent;
+    final Map map = (Map) parent;
     map.getView().addKeyListener(this);
   }
 

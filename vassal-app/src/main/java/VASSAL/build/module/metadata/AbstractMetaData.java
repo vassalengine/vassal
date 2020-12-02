@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -47,7 +48,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.Info;
 import VASSAL.build.Configurable;
@@ -58,6 +58,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.ZipWriter;
 
 /**
  *
@@ -71,30 +72,30 @@ public abstract class AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(AbstractMetaData.class);
 
-  protected static final String TRUE = "true";
-  protected static final String FALSE = "false";
+  protected static final String TRUE = "true"; //NON-NLS
+  protected static final String FALSE = "false"; //NON-NLS
 
-  protected static final String NAME_ATTR = "name";
-  protected static final String VERSION_ATTR = "version";
-  protected static final String VASSAL_VERSION_ATTR = "vassalVersion";
-  protected static final String DESCRIPTION_ATTR = "description";
-  protected static final String EXTENSION_ATTR = "extension";
-  protected static final String MODULE_NAME_ATTR = "moduleName";
-  protected static final String MODULE_VERSION_ATTR = "moduleVersion";
-  protected static final String LANG_ATTR = "lang";
+  protected static final String NAME_ATTR = "name"; //NON-NLS
+  protected static final String VERSION_ATTR = "version"; //NON-NLS
+  protected static final String VASSAL_VERSION_ATTR = "vassalVersion"; //NON-NLS
+  protected static final String DESCRIPTION_ATTR = "description"; //NON-NLS
+  protected static final String EXTENSION_ATTR = "extension"; //NON-NLS
+  protected static final String MODULE_NAME_ATTR = "moduleName"; //NON-NLS
+  protected static final String MODULE_VERSION_ATTR = "moduleVersion"; //NON-NLS
+  protected static final String LANG_ATTR = "lang"; //NON-NLS
 
-  protected static final String ROOT_ELEMENT = "data";
-  protected static final String VERSION_ELEMENT = "version";
-  protected static final String VASSAL_VERSION_ELEMENT = "VassalVersion";
-  protected static final String MODULE_NAME_ELEMENT = "moduleName";
-  protected static final String MODULE_VERSION_ELEMENT = "moduleVersion";
-  protected static final String DESCRIPTION_ELEMENT = "description";
-  protected static final String NAME_ELEMENT = "name";
-  protected static final String DATE_SAVED_ELEMENT = "dateSaved";
+  protected static final String ROOT_ELEMENT = "data"; //NON-NLS
+  protected static final String VERSION_ELEMENT = "version"; //NON-NLS
+  protected static final String VASSAL_VERSION_ELEMENT = "VassalVersion"; //NON-NLS
+  protected static final String MODULE_NAME_ELEMENT = "moduleName"; //NON-NLS
+  protected static final String MODULE_VERSION_ELEMENT = "moduleVersion"; //NON-NLS
+  protected static final String DESCRIPTION_ELEMENT = "description"; //NON-NLS
+  protected static final String NAME_ELEMENT = "name"; //NON-NLS
+  protected static final String DATE_SAVED_ELEMENT = "dateSaved"; //NON-NLS
 
-  protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule";
-  protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule";
-  protected static final String BUILDFILE_EXTENSION_ELEMENT = "VASSAL.build.module.ModuleExtension";
+  protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule"; //NON-NLS
+  protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule"; //NON-NLS
+  protected static final String BUILDFILE_EXTENSION_ELEMENT = "VASSAL.build.module.ModuleExtension"; //NON-NLS
 
   protected String version;
   protected String vassalVersion;
@@ -143,8 +144,8 @@ public abstract class AbstractMetaData {
   }
 
   protected void save(OutputStream out) throws IOException {
-    Document doc = null;
-    Element e = null;
+    final Document doc;
+    Element e;
     try {
       doc = DocumentBuilderFactory.newInstance()
                                   .newDocumentBuilder()
@@ -177,7 +178,7 @@ public abstract class AbstractMetaData {
 
       addElements(doc, root);
     }
-    catch (ParserConfigurationException ex) {
+    catch (final ParserConfigurationException ex) {
       ErrorDialog.bug(ex);
       throw new IOException(ex);
     }
@@ -185,16 +186,16 @@ public abstract class AbstractMetaData {
     try {
       final Transformer xformer =
         TransformerFactory.newInstance().newTransformer();
-      xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      xformer.setOutputProperty(OutputKeys.INDENT, "yes"); //NON-NLS
       xformer.setOutputProperty(
-        "{http://xml.apache.org/xslt}indent-amount", "2");
+        "{http://xml.apache.org/xslt}indent-amount", "2"); //NON-NLS
       xformer.transform(new DOMSource(doc), new StreamResult(out));
     }
-    catch (TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
+    catch (final TransformerConfigurationException | TransformerFactoryConfigurationError ex) {
       ErrorDialog.bug(ex);
       throw new IOException(ex);
     }
-    catch (TransformerException ex) {
+    catch (final TransformerException ex) {
       throw new IOException(ex);
     }
   }
@@ -214,12 +215,18 @@ public abstract class AbstractMetaData {
     archive.addFile(getZipEntryName(), out.toInputStream());
   }
 
+  public void save(ZipWriter zw) throws IOException {
+    try (OutputStream out = zw.write(getZipEntryName())) {
+      save(out);
+    }
+  }
+
   /**
-   * Copy the Module metatdata from the current module into the specified
+   * Copy the Module metadata from the current module into the specified
    * archive.
    *
    * @param archive Archive to copy into
-   * @throws IOException
+   * @throws IOException exception
    */
   public void copyModuleMetadata(ArchiveWriter archive) throws IOException {
     copyModuleMetadata(archive.getArchive());
@@ -231,14 +238,25 @@ public abstract class AbstractMetaData {
          BufferedInputStream in = new BufferedInputStream(inner)) {
       archive.add(ModuleMetaData.ZIP_ENTRY_NAME, in);
     }
-    catch (FileNotFoundException e) {
-      // No Metatdata in source module, create a fresh copy
+    catch (final FileNotFoundException | NoSuchFileException e) {
+      // No Metadata in source module, create a fresh copy
       new ModuleMetaData(GameModule.getGameModule()).save(archive);
     }
   }
 
+  public void copyModuleMetadata(ZipWriter zw) throws IOException {
+    final DataArchive mda = GameModule.getGameModule().getDataArchive();
+    try (InputStream in = mda.getInputStream(ModuleMetaData.ZIP_ENTRY_NAME)) {
+      zw.write(in, ModuleMetaData.ZIP_ENTRY_NAME);
+    }
+    catch (final FileNotFoundException | NoSuchFileException e) {
+      // No Metadata in source module, create a fresh copy
+      new ModuleMetaData(GameModule.getGameModule()).save(zw);
+    }
+  }
+
   /**
-   * Return the Entry name for the metatdata file
+   * Return the Entry name for the metadata file
    *
    * @return Zip Entry name
    */
@@ -274,10 +292,10 @@ public abstract class AbstractMetaData {
   static class Attribute {
     protected String attributeName;
     protected String value;
-    protected HashMap<String, String> translations = new HashMap<>();
+    protected Map<String, String> translations = new HashMap<>();
 
     /**
-     * Build Attribute class based on atrribute value and translations
+     * Build Attribute class based on attribute value and translations
      * available in the current module
      *
      * @param target Target configurable
@@ -290,12 +308,12 @@ public abstract class AbstractMetaData {
       if (key.length() > 0) key += ".";
       key += attributeName;
 
-      for (Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {
+      for (final Translation t : GameModule.getGameModule().getAllDescendantComponentsOf(Translation.class)) {
         addTranslation(t.getLanguageCode(), t.translate(key));
       }
     }
 
-    public Attribute (String attributeName, String value) {
+    public Attribute(String attributeName, String value) {
       this.attributeName = attributeName;
       this.value = value;
     }
@@ -322,8 +340,8 @@ public abstract class AbstractMetaData {
      * @return translated value
      */
     public String getLocalizedValue() {
-      String lang = Locale.getDefault().getLanguage();
-      String tx = translations.get(lang);
+      final String lang = Locale.getDefault().getLanguage();
+      final String tx = translations.get(lang);
       return tx == null ? getValue() : tx;
     }
 
@@ -340,13 +358,13 @@ public abstract class AbstractMetaData {
         return;
       }
 
-      Element e = null;
+      Element e;
 
       e = doc.createElement(prefix);
       e.appendChild(doc.createTextNode(value));
       root.appendChild(e);
 
-      for (Map.Entry<String, String> en : translations.entrySet()) {
+      for (final Map.Entry<String, String> en : translations.entrySet()) {
         e = doc.createElement(prefix);
         e.setAttribute(LANG_ATTR, en.getValue());
         e.appendChild(doc.createTextNode(en.getKey()));
@@ -361,20 +379,21 @@ public abstract class AbstractMetaData {
    * All uses of this parser <i>must</i> be wrapped in a block synchronized
    * on the parser itself.
    */
-  protected static XMLReader parser;
+  protected static final XMLReader parser = createParser();
 
 // FIXME: Synchronizing on the parser will cause very bad performance if
 // multiple threads are trying to read metadata simultaneously. We should
 // build a mechanism by which we keep a pool of parsers, and allocate a
 // new one only when there is not an unused one available in the pool.
-  static {
+  private static XMLReader createParser() {
     try {
-      parser = SAXParserFactory.newDefaultInstance().newSAXParser().getXMLReader();
+      return SAXParserFactory.newDefaultInstance().newSAXParser().getXMLReader();
     }
-    catch (SAXException | ParserConfigurationException e) {
+    catch (final SAXException | ParserConfigurationException e) {
       // This should never happen.
       ErrorDialog.bug(e);
     }
+    return null;
   }
 
   /*************************************************************************
@@ -404,7 +423,7 @@ public abstract class AbstractMetaData {
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
 
-      String value = accumulator.toString().trim();
+      final String value = accumulator.toString().trim();
 
       if (VERSION_ELEMENT.equals(qName)) {
         setVersion(value);

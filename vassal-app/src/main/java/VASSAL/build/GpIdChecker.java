@@ -22,6 +22,8 @@ import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.counters.Marker;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
@@ -30,6 +32,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
+import VASSAL.i18n.Resources;
 
 /**
  * Build a cross-reference of all GpId-able elements in a module or ModuleExtension,
@@ -43,8 +46,8 @@ public class GpIdChecker {
   protected int maxId;
   protected boolean useName = false;
   protected boolean extensionsLoaded = false;
-  final HashMap<String, SlotElement> goodSlots = new HashMap<>();
-  final ArrayList<SlotElement> errorSlots = new ArrayList<>();
+  final Map<String, SlotElement> goodSlots = new HashMap<>();
+  final List<SlotElement> errorSlots = new ArrayList<>();
   private Chatter chatter;
 
   public GpIdChecker() {
@@ -98,7 +101,7 @@ public class GpIdChecker {
 
     if (gp instanceof PlaceMarker) {
       final PlaceMarker pm = (PlaceMarker) gp;
-      testGpId (pm.getGpId(), new SlotElement(pm));
+      testGpId(pm.getGpId(), new SlotElement(pm));
     }
 
     checkTrait(((Decorator) gp).getInner());
@@ -112,7 +115,7 @@ public class GpIdChecker {
 
     if (gp instanceof PlaceMarker) {
       final PlaceMarker pm = (PlaceMarker) gp;
-      testGpId (pm.getGpId(), new SlotElement(pm, prototype, definition));
+      testGpId(pm.getGpId(), new SlotElement(pm, prototype, definition));
     }
 
     checkTrait(((Decorator) gp).getInner(), prototype, definition);
@@ -135,13 +138,13 @@ public class GpIdChecker {
      *  If this has been called from a ModuleExtension, the GpId is prefixed with
      *  the Extension Id. Remove the Extension Id and just process the numeric part.
      *
-     *  NOTE: If GpIdChecker is being used by the GameRefesher, then there may be
+     *  NOTE: If GpIdChecker is being used by the GameRefresher, then there may be
      *  extensions loaded, so retain the extension prefix to ensure a correct
      *  unique slot id check.
      */
     if (! extensionsLoaded) {
-      if (id.contains(":")) {
-        id = id.split(":")[1];
+      if (id.contains(":")) {             //NON-NLS
+        id = id.split(":")[1];      //NON-NLS
       }
     }
 
@@ -175,14 +178,14 @@ public class GpIdChecker {
    * @return Error count
    */
   public boolean hasErrors() {
-    return errorSlots.size() > 0;
+    return !errorSlots.isEmpty();
   }
 
-  private void chat (String text) {
+  private void chat(String text) {
     if (chatter == null) {
       chatter = GameModule.getGameModule().getChatter();
     }
-    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- " + text);
+    final Chatter.DisplayText mess = new Chatter.DisplayText(chatter, "- " + text); //NON-NLS
     mess.execute();
   }
 
@@ -193,13 +196,13 @@ public class GpIdChecker {
    */
   public void fixErrors() {
     if (maxId >= gpIdSupport.getNextGpId()) {
-      chat("Next GPID updated from " + gpIdSupport.getNextGpId() + "  to " + (maxId + 1));
+      chat(Resources.getString("GpIdChecker.next_gpid_updated", gpIdSupport.getNextGpId(), (maxId + 1)));
       gpIdSupport.setNextGpId(maxId + 1);
     }
-    for (SlotElement slotElement : errorSlots) {
+    for (final SlotElement slotElement : errorSlots) {
       final String before = slotElement.getGpId();
       slotElement.updateGpId();
-      chat(slotElement.toString() + " GPID updated from " + before + " to " + slotElement.getGpId());
+      chat(Resources.getString("GpIdChecker.piece_gpid_updated", slotElement.toString(), before, slotElement.getGpId()));
     }
   }
 
@@ -223,7 +226,7 @@ public class GpIdChecker {
     // Failed to find a slot by gpid, try by matching piece name if option selected
     if (useName) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
-      for (SlotElement el : goodSlots.values()) {
+      for (final SlotElement el : goodSlots.values()) {
         final GamePiece newPiece = el.getPiece();
         final String newPieceName = Decorator.getInnermost(newPiece).getName();
         if (oldPieceName.equals(newPieceName)) {
@@ -249,7 +252,7 @@ public class GpIdChecker {
     // Failed to find a slot by gpid, try by matching piece name if option selected
     if (useName) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
-      for (SlotElement el : goodSlots.values()) {
+      for (final SlotElement el : goodSlots.values()) {
         final GamePiece newPiece = el.getPiece();
         final String newPieceName = Decorator.getInnermost(newPiece).getName();
         if (oldPieceName.equals(newPieceName)) {
@@ -311,7 +314,7 @@ public class GpIdChecker {
 
     @Override
     public String toString() {
-      return marker == null ? "PieceSlot " + slot.getConfigureName() : "Place/Replace trait " + marker.getDescription();
+      return marker == null ? Resources.getString("GpIdChecker.piece_slot", slot.getConfigureName()) : Resources.getString("GpIdChecker.place_replace_trait", marker.getDescription());
     }
 
     public void updateGpId() {

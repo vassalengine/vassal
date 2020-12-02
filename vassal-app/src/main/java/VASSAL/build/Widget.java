@@ -33,9 +33,9 @@ import VASSAL.i18n.Localization;
  * AWT component of the child to the component of the parent
  */
 public abstract class Widget extends AbstractConfigurable {
-  public static final String NAME = "entryName";
-  public static final String WIDTH = "width";
-  public static final String HEIGHT = "height";
+  public static final String NAME = "entryName"; //NON-NLS
+  public static final String WIDTH = "width";    //NON-NLS
+  public static final String HEIGHT = "height";  //NON-NLS
   protected Element buildElement;
 
   protected Widget parent;
@@ -64,9 +64,9 @@ public abstract class Widget extends AbstractConfigurable {
   public void build(Element el) {
     buildElement = el;
     if (el != null) {
-      NamedNodeMap n = el.getAttributes();
+      final NamedNodeMap n = el.getAttributes();
       for (int i = 0; i < n.getLength(); ++i) {
-        Attr att = (Attr) n.item(i);
+        final Attr att = (Attr) n.item(i);
         setAttribute(att.getName(), att.getValue());
         Localization.getInstance().saveTranslatableAttribute(this, att.getName(), att.getValue());
       }
@@ -91,12 +91,23 @@ public abstract class Widget extends AbstractConfigurable {
   }
 
   /**
-   * The allowable Configurable components of a Widget are the same
-   * as its parent
+   * Allowable components for a CHILD of this class - default is to
+   * ask our parent for this list. Top-level parents must override
+   * this with the proper child list for their trees.
+   *
+   * @return configure components allowed for children of this class
+   */
+  public Class<?>[] getChildAllowableConfigureComponents() {
+    return parent.getChildAllowableConfigureComponents();
+  }
+
+  /**
+   * The allowable Configurable components of a Widget determined by
+   * its parent's Child-Allowable method.
    */
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return parent.getAllowableConfigureComponents();
+    return parent.getChildAllowableConfigureComponents();
   }
 
   @Override

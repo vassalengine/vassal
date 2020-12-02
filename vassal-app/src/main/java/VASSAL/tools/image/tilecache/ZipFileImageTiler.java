@@ -24,7 +24,6 @@ import static VASSAL.tools.image.tilecache.ZipFileImageTilerState.TILING_FINISHE
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -66,19 +65,14 @@ public class ZipFileImageTiler {
 
   public static void main(String[] args) {
     try {
-      logger.info("Starting");
+      logger.info("Starting"); //NON-NLS
 
       // Oh we have no heads, we have no HEADS!
       System.setProperty("java.awt.headless", "true");
 
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
-        new Thread.UncaughtExceptionHandler() {
-          @Override
-          public void uncaughtException(Thread thread, Throwable thrown) {
-            logger.error(thread.getName(), thrown);
-          }
-        });
+        (thread, thrown) -> logger.error(thread.getName(), thrown));
 
       // Parse the arguments
       final String zpath = args[0];
@@ -95,7 +89,7 @@ public class ZipFileImageTiler {
         }
       }
       catch (IOException e) {
-        logger.error("Error while reading image paths from stdin", e);
+        logger.error("Error while reading image paths from stdin", e); //NON-NLS
       }
 
       final String[] ipaths = pl.toArray(new String[0]);
@@ -110,7 +104,7 @@ public class ZipFileImageTiler {
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
-      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile();
+      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile(); //NON-NLS
 
       final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
       final ImageLoader loader = new ImageIOImageLoader(itc);
@@ -130,7 +124,7 @@ public class ZipFileImageTiler {
       }
     }
     finally {
-      logger.info("Exiting");
+      logger.info("Exiting"); //NON-NLS
     }
   }
 
@@ -148,16 +142,16 @@ public class ZipFileImageTiler {
                                     String[] ipaths, ExecutorService exec, ImageLoader loader,
                                     TileSlicer slicer) {
 
-    final int port = Integer.parseInt(portProp);
     final InetAddress lo;
     try {
       lo = InetAddress.getByName(null);
     }
     catch (UnknownHostException e) {
-      logger.error("Could not determine local IP address", e);
+      logger.error("Could not determine local IP address", e); //NON-NLS
       return;
     }
 
+    final int port = Integer.parseInt(portProp);
     try (Socket sock = new Socket(lo, port)) {
       sock.shutdownInput();
 
@@ -165,37 +159,28 @@ public class ZipFileImageTiler {
         loader, slicer);
     }
     catch (IOException e) {
-      logger.error("Error while setting up socket", e);
+      logger.error("Error while setting up socket", e); //NON-NLS
     }
   }
 
   private static void writeToOutputStream(OutputStream os, String zpath, FileArchiveImageTiler tiler, String tpath, int tw, int th, String[] ipaths, ExecutorService exec,
                                           ImageLoader loader, TileSlicer slicer) {
 
-    try (final DataOutputStream out = new DataOutputStream(os)) {
-      final Callback<String> imageL = new Callback<>() {
-        @Override
-        public void receive(String ipath) throws IOException {
-          out.writeByte(STARTING_IMAGE);
-          out.writeUTF(ipath);
-          out.flush();
-        }
+    try (DataOutputStream out = new DataOutputStream(os)) {
+      final Callback<String> imageL = ipath -> {
+        out.writeByte(STARTING_IMAGE);
+        out.writeUTF(ipath);
+        out.flush();
       };
 
-      final Callback<Void> tileL = new Callback<>() {
-        @Override
-        public void receive(Void obj) throws IOException {
-          out.writeByte(TILE_WRITTEN);
-          out.flush();
-        }
+      final Callback<Void> tileL = obj -> {
+        out.writeByte(TILE_WRITTEN);
+        out.flush();
       };
 
-      final Callback<Void> doneL = new Callback<>() {
-        @Override
-        public void receive(Void obj) throws IOException {
-          out.writeByte(TILING_FINISHED);
-          out.flush();
-        }
+      final Callback<Void> doneL = obj -> {
+        out.writeByte(TILING_FINISHED);
+        out.flush();
       };
 
       try (FileArchive fa = new ZipArchive(zpath)) {
@@ -210,7 +195,7 @@ public class ZipFileImageTiler {
       }
     }
     catch (IOException e) {
-      logger.error("Error while writing to outputstream {}", os, e);
+      logger.error("Error while writing to outputstream {}", os, e); //NON-NLS
     }
   }
 

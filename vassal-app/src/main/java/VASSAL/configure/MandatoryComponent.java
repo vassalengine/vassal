@@ -25,8 +25,8 @@ import VASSAL.build.Buildable;
  * exist within a target component
  */
 public class MandatoryComponent implements ValidityChecker {
-  private Class<?> requiredChildClass;
-  private AbstractConfigurable target;
+  private final Class<?> requiredChildClass;
+  private final AbstractConfigurable target;
 
   public MandatoryComponent(AbstractConfigurable target,
                             Class<?> requiredChildClass) {
@@ -40,7 +40,7 @@ public class MandatoryComponent implements ValidityChecker {
         target.getComponentsOf(requiredChildClass).isEmpty()) {
       report.addWarning(
         ConfigureTree.getConfigureName(target) +
-        " must contain at least one " +
+        " must contain at least one " + //NON-NLS
         ConfigureTree.getConfigureName(requiredChildClass));
     }
   }

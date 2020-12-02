@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.List;
@@ -28,12 +29,11 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- *
  * The base portion of a Counter Layout component.  Contains the draw() method, but may override specific values from an associated (via the name attribute) {@link ItemInstance}
  */
 public abstract class Item extends AbstractConfigurable {
@@ -74,13 +74,13 @@ public abstract class Item extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Name:  ",
-      "Location:  ",
-      "Advanced Options",
-      "X Offset:  ",
-      "Y Offset:  ",
-      "Rotation (Degrees):  ",
-      "Anti-alias?"
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.Item.location"),
+      Resources.getString("Editor.Item.advanced_options"),
+      Resources.getString("Editor.x_offset"),
+      Resources.getString("Editor.y_offset"),
+      Resources.getString("Editor.Item.rotation_degrees"),
+      Resources.getString("Editor.Item.anti_alias")
     };
   }
 
@@ -104,10 +104,15 @@ public abstract class Item extends AbstractConfigurable {
     }
   }
 
-  public static class LocationConfig extends StringEnum {
+  public static class LocationConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return GamePieceLayout.LOCATIONS;
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return GamePieceLayout.LOCATION_I18N_KEYS;
     }
   }
 
@@ -163,22 +168,22 @@ public abstract class Item extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (LOCATION.equals(key)) {
-      return location + ""; //$NON-NLS-1$
+      return location;
     }
     else if (X_OFFSET.equals(key)) {
-      return xoffset + ""; //$NON-NLS-1$
+      return Integer.toString(xoffset);
     }
     else if (Y_OFFSET.equals(key)) {
-      return yoffset + ""; //$NON-NLS-1$
+      return Integer.toString(yoffset);
     }
     else if (ADVANCED.equals(key)) {
-      return advanced + ""; //$NON-NLS-1$
+      return Boolean.toString(advanced);
     }
     else if (ROTATION.equals(key)) {
-      return rotation + ""; //$NON-NLS-1$
+      return Integer.toString(rotation);
     }
     else if (ANTIALIAS.equals(key)) {
-      return antialias + ""; //$NON-NLS-1$
+      return Boolean.toString(antialias);
     }
     else
       return null;
@@ -214,12 +219,7 @@ public abstract class Item extends AbstractConfigurable {
     setAllAttributesUntranslatable();
   }
 
-  private VisibilityCondition advancedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return advanced;
-    }
-  };
+  private final VisibilityCondition advancedCond = () -> advanced;
 
 
   /**
@@ -231,6 +231,10 @@ public abstract class Item extends AbstractConfigurable {
 
   public String getDisplayName() {
     return getType();
+  }
+
+  public String getDisplayLocation() {
+    return GamePieceLayout.getDisplayLocation(location);
   }
 
   public String getLocation() {
@@ -258,11 +262,11 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public static Item decode(GamePieceLayout layout, String s) {
-    SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, '|');
-    String t1 = sd1.nextToken(""); //$NON-NLS-1$
-    String t2 = sd1.nextToken(""); //$NON-NLS-1$
+    final SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, '|');
+    final String t1 = sd1.nextToken(""); //$NON-NLS-1$
+    final String t2 = sd1.nextToken(""); //$NON-NLS-1$
 
-    Item item;
+    final Item item;
 
     if (t1.startsWith(SymbolItem.TYPE)) {
       item = SymbolItem.decode(layout, t1);
@@ -282,7 +286,7 @@ public abstract class Item extends AbstractConfigurable {
     else
       return null;
 
-    SequenceEncoder.Decoder sd2 = new SequenceEncoder.Decoder(t2, ';');
+    final SequenceEncoder.Decoder sd2 = new SequenceEncoder.Decoder(t2, ';');
     item.setConfigureName(sd2.nextToken());
     item.location = sd2.nextToken();
     item.xoffset = sd2.nextInt(0);
@@ -294,7 +298,7 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getConfigureName());
     se.append(location);
     se.append(xoffset);
@@ -303,5 +307,4 @@ public abstract class Item extends AbstractConfigurable {
     se.append(antialias);
     return se.getValue();
   }
-
 }

@@ -1,12 +1,14 @@
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import java.util.Objects;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -42,14 +44,14 @@ import VASSAL.tools.SequenceEncoder;
  * This trait adds a command that creates a duplicate of the selected Gamepiece
  */
 public class Clone extends Decorator implements TranslatablePiece {
-  public static final String ID = "clone;";
+  public static final String ID = "clone;"; // NON-NLS
   protected KeyCommand[] command;
   protected String commandName;
   protected NamedKeyStroke key;
   protected KeyCommand cloneCommand;
 
   public Clone() {
-    this(ID + "Clone;C", null);
+    this(ID + Resources.getString("Editor.Clone.clone") + ";C", null); // NON-NLS
   }
 
   public Clone(String type, GamePiece inner) {
@@ -60,7 +62,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   @Override
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken();
     key = st.nextNamedKeyStroke('C');
     command = null;
@@ -68,7 +70,7 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName).append(key);
     return ID + se.getValue();
   }
@@ -101,8 +103,8 @@ public class Clone extends Decorator implements TranslatablePiece {
     Command c = null;
     myGetKeyCommands();
     if (cloneCommand.matches(stroke)) {
-      GamePiece outer = Decorator.getOutermost(this);
-      GamePiece newPiece = ((AddPiece) GameModule.getGameModule().decode(GameModule.getGameModule().encode(new AddPiece(outer)))).getTarget();
+      final GamePiece outer = Decorator.getOutermost(this);
+      final GamePiece newPiece = ((AddPiece) GameModule.getGameModule().decode(GameModule.getGameModule().encode(new AddPiece(outer)))).getTarget();
       newPiece.setId(null);
       GameModule.getGameModule().getGameState().addPiece(newPiece);
       newPiece.setState(outer.getState());
@@ -147,33 +149,57 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return "Clone";
+    return Resources.getString("Editor.Clone.trait_description");
   }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(key);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(commandName);
+  }
+
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePiece.htm", "Clone");
+    return HelpFile.getReferenceManualPage("GamePiece.html", "Clone"); // NON-NLS
   }
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(commandName, "Clone command");
+    return getI18nData(commandName, Resources.getString("Editor.Clone.clone_command_description"));
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Clone)) return false;
+    final Clone c = (Clone) o;
+    if (! Objects.equals(commandName, c.commandName)) return false;
+    return Objects.equals(key, c.key);
   }
 
   public static class Ed implements PieceEditor {
-    private StringConfigurer nameInput;
-    private NamedHotKeyConfigurer keyInput;
-    private JPanel controls;
+    private final StringConfigurer nameInput;
+    private final NamedHotKeyConfigurer keyInput;
+    private final TraitConfigPanel controls;
 
     public Ed(Clone p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
-      controls.add(nameInput.getControls());
+      nameInput = new StringConfigurer(p.commandName);
+      controls.add("Editor.menu_command", nameInput);
 
-      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
-      controls.add(keyInput.getControls());
+      keyInput = new NamedHotKeyConfigurer(p.key);
+      controls.add("Editor.keyboard_command", keyInput);
 
     }
 
@@ -184,7 +210,7 @@ public class Clone extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString()).append(keyInput.getValueString());
       return ID + se.getValue();
     }

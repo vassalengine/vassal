@@ -104,8 +104,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public boolean containsKey(Object key) {
-    if (key == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
 
     processQueue();
     return map.containsKey(key);
@@ -114,8 +113,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V get(Object key) {
-    if (key == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
 
     final SoftValue<K, V> sv = map.get(key);
     if (sv != null) {
@@ -133,10 +131,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V put(K key, V value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     final SoftValue<K, V> oldSV =
@@ -147,8 +143,7 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V remove(Object key) {
-    if (key == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
 
     processQueue();
     final SoftValue<K, V> oldSV = map.remove(key);
@@ -198,27 +193,27 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
 
     @Override
     public V setValue(V value) {
-      V oldValue = this.value;
+      final V oldValue = this.value;
       this.value = value;
       return oldValue;
     }
 
+    @Override
     public boolean equals(Object o) {
       if (!(o instanceof Map.Entry)) return false;
-      Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
-      return eq(key, e.getKey()) && eq(value, e.getValue());
+      final Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+      return Objects.equals(key, e.getKey()) &&
+             Objects.equals(value, e.getValue());
     }
 
+    @Override
     public int hashCode() {
       return Objects.hashCode(key) ^ Objects.hashCode(value);
     }
 
+    @Override
     public String toString() {
       return key + "=" + value;
-    }
-
-    private static boolean eq(Object o1, Object o2) {
-      return o1 == null ? o2 == null : o1.equals(o2);
     }
   }
 
@@ -273,10 +268,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V putIfAbsent(K key, V value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     final SoftValue<K, V> oldSV =
@@ -287,10 +280,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public boolean remove(Object key, Object value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     return map.remove(key, new SoftValue<>(key, value, null));
@@ -299,12 +290,9 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public boolean replace(K key, V oldValue, V newValue) {
-    if (key == null)
-      throw new NullPointerException();
-    if (oldValue == null)
-      throw new NullPointerException();
-    if (newValue == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(oldValue);
+    Objects.requireNonNull(newValue);
 
     processQueue();
     return map.replace(key,
@@ -315,10 +303,8 @@ public class ConcurrentSoftHashMap<K, V> extends AbstractMap<K, V>
   /** {@inheritDoc} */
   @Override
   public V replace(K key, V value) {
-    if (key == null)
-      throw new NullPointerException();
-    if (value == null)
-      throw new NullPointerException();
+    Objects.requireNonNull(key);
+    Objects.requireNonNull(value);
 
     processQueue();
     final SoftValue<K, V> oldSV =

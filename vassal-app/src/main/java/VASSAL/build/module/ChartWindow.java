@@ -20,6 +20,9 @@ package VASSAL.build.module;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -40,6 +43,7 @@ import VASSAL.build.widget.TabWidget;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.KeyStrokeSource;
@@ -64,13 +68,13 @@ public class ChartWindow extends Widget {
 
   public ChartWindow() {
     root = new JPanel();
-    ActionListener al = new ActionListener() {
+    final ActionListener al = new ActionListener() {
       boolean initialized;
 
       @Override
       public void actionPerformed(ActionEvent e) {
         if (!initialized) {
-          String key = PositionOption.key + id;
+          final String key = PositionOption.key + id;
           GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
           initialized = true;
         }
@@ -99,7 +103,7 @@ public class ChartWindow extends Widget {
     }
     root = frame.getContentPane();
     frame.setTitle(launch.getAttributeValueString(DEPRECATED_NAME));
-    int count = GameModule.getGameModule().getComponentsOf(ChartWindow.class).size();
+    final int count = GameModule.getGameModule().getComponentsOf(ChartWindow.class).size();
     id = "ChartWindow" + count; //$NON-NLS-1$
   }
 
@@ -155,7 +159,7 @@ public class ChartWindow extends Widget {
   }
 
   @Override
-  public Class<?>[] getAllowableConfigureComponents() {
+  public Class<?>[] getChildAllowableConfigureComponents() {
     return new Class<?>[]{
       Chart.class,
       HtmlChart.class,
@@ -165,6 +169,11 @@ public class ChartWindow extends Widget {
       ListWidget.class,
       MapWidget.class
     };
+  }
+
+  @Override
+  public Class<?>[] getAllowableConfigureComponents() {
+    return getChildAllowableConfigureComponents();
   }
 
   @Override
@@ -223,6 +232,37 @@ public class ChartWindow extends Widget {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ChartWindow.html"); //$NON-NLS-1$
+  }
+
+
+  /**
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(getAttributeValueString(BUTTON_TEXT), getAttributeValueString(TOOLTIP));
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+  /**
+   * Classes extending {@link VASSAL.build.AbstractBuildable} should override this method in order to add
+   * the names of any image files they use to the collection. For "find unused images" and "search".
+   *
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final String string = launch.getAttributeValueString(launch.getIconAttribute());
+    if (string != null) { // Launch buttons sometimes have null icon attributes - yay
+      s.add(string);
+    }
   }
 }

@@ -17,6 +17,20 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PieceAccessConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -27,36 +41,21 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PieceAccessConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 public class Hideable extends Decorator implements TranslatablePiece {
 
-  public static final String ID = "hide;";
-  public static final String HIDDEN_BY = "hiddenBy";
-  public static final String TRANSPARENCY = "transparency";
+  public static final String ID = "hide;"; // NON-NLS
+  public static final String HIDDEN_BY = "hiddenBy"; // NON-NLS
+  public static final String TRANSPARENCY = "transparency"; // NON-NLS
 
   protected String hiddenBy;
   protected NamedKeyStroke hideKey;
-  protected String command = "Invisible";
+  protected String command = Resources.getString("Editor.Hideable.default_command");
   protected PieceAccess access = PlayerAccess.getInstance();
 
   protected float transparency = 0.3f;
@@ -90,8 +89,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return String.valueOf(invisibleToOthers()) +
-             invisibleToMe() + piece.getProperty(key);
+      return Boolean.toString(invisibleToOthers()) + invisibleToMe() + piece.getProperty(key);
     }
     else {
       return super.getLocalizedProperty(key);
@@ -110,8 +108,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return String.valueOf(invisibleToOthers()) +
-        invisibleToMe() + piece.getProperty(key);
+      return Boolean.toString(invisibleToOthers()) + invisibleToMe() + piece.getProperty(key);
     }
     else {
       return super.getProperty(key);
@@ -119,7 +116,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   }
 
   public Hideable() {
-    this(ID + "I", null);
+    this(ID + "I", null); // NON-NLS
   }
 
   public Hideable(String type, GamePiece p) {
@@ -129,10 +126,10 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     hideKey = st.nextNamedKeyStroke('I');
-    command = st.nextToken("Invisible");
+    command = st.nextToken(Resources.getString("Editor.Hideable.default_command"));
     bgColor = st.nextColor(null);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
     transparency = st.hasMoreTokens() ? (float) st.nextDouble(0.3) : 0.3f;
@@ -141,7 +138,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetState(String in) {
-    hiddenBy = "null".equals(in) ? null : in;
+    hiddenBy = "null".equals(in) ? null : in; // NON-NLS
   }
 
   @Override
@@ -157,7 +154,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public String myGetState() {
-    return hiddenBy == null ? "null" : hiddenBy;
+    return hiddenBy == null ? "null" : hiddenBy; // NON-NLS
   }
 
   public boolean invisibleToMe() {
@@ -247,7 +244,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     if (hideCommand.matches(stroke)) {
-      ChangeTracker tracker = new ChangeTracker(this);
+      final ChangeTracker tracker = new ChangeTracker(this);
       if (invisibleToOthers()) {
         hiddenBy = null;
       }
@@ -261,12 +258,12 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return "Invisible";
+    return Resources.getString("Editor.Hideable.trait_description");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Hideable.htm");
+    return HelpFile.getReferenceManualPage("Hideable.html"); // NON-NLS
   }
 
   @Override
@@ -278,7 +275,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
    * If true, then all hidden pieces are considered invisible to all players.
    * Used to temporarily draw pieces as they appear to other players
    *
-   * @param allHidden
+   * @param allHidden true if all pieces should be considered hidden
    * @deprecated
    */
   @Deprecated
@@ -293,7 +290,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(command, "Hide command");
+    return getI18nData(command, Resources.getString("Editor.Hideable.hide_command"));
   }
 
   /**
@@ -301,57 +298,63 @@ public class Hideable extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
+    final ArrayList<String> l = new ArrayList<>();
     l.add(Properties.INVISIBLE_TO_OTHERS);
     return l;
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Hideable)) return false;
+    final Hideable c = (Hideable) o;
+
+    if (! Objects.equals(hideKey, c.hideKey)) return false;
+    if (! Objects.equals(command, c.command)) return false;
+    if (! Objects.equals(bgColor, c.bgColor)) return false;
+    if (! Objects.equals(PieceAccessConfigurer.encode(access), PieceAccessConfigurer.encode(c.access))) return false;
+    if (! Objects.equals(transparency, c.transparency)) return false;
+
+    return Objects.equals(hiddenBy, c.hiddenBy);
+  }
+
   protected static class Ed implements PieceEditor {
     protected NamedHotKeyConfigurer hideKeyInput;
-    protected JTextField hideCommandInput;
+    protected StringConfigurer hideCommandInput;
     protected ColorConfigurer colorConfig;
     protected IntConfigurer transpConfig;
     protected PieceAccessConfigurer accessConfig;
-    protected JPanel controls;
+    protected TraitConfigPanel controls;
 
     public Ed(Hideable p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      hideKeyInput = new NamedHotKeyConfigurer(null, "Keyboard command:  ", p.hideKey);
-      controls.add(hideKeyInput.getControls());
+      hideKeyInput = new NamedHotKeyConfigurer(p.hideKey);
+      controls.add("Editor.keyboard_command", hideKeyInput);
 
-      Box b = Box.createHorizontalBox();
-      hideCommandInput = new JTextField(16);
-      hideCommandInput.setMaximumSize(hideCommandInput.getPreferredSize());
-      hideCommandInput.setText(p.command);
-      b.add(new JLabel("Menu Text:  "));
-      b.add(hideCommandInput);
-      controls.add(b);
+      hideCommandInput = new StringConfigurer(p.command);
+      controls.add("Editor.menu_command", hideCommandInput);
 
-      colorConfig = new ColorConfigurer(null, "Background color:  ", p.bgColor);
-      controls.add(colorConfig.getControls());
+      colorConfig = new ColorConfigurer(p.bgColor);
+      controls.add("Editor.Hideable.background_color", colorConfig);
 
-      transpConfig = new IntConfigurer(null, "Transparency (%):  ", (int) (p.transparency * 100));
-      controls.add(transpConfig.getControls());
+      transpConfig = new IntConfigurer((int) (p.transparency * 100));
+      controls.add("Editor.Hideable.transparency", transpConfig);
 
-      accessConfig = new PieceAccessConfigurer(null, "Can by hidden by:  ", p.access);
-      controls.add(accessConfig.getControls());
+      accessConfig = new PieceAccessConfigurer(p.access);
+      controls.add("Editor.Hideable.can_be_hidden_by", accessConfig);
     }
 
     @Override
     public String getState() {
-      return "null";
+      return "null"; // NON-NLS
     }
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(hideKeyInput.getValueString())
-        .append(hideCommandInput.getText())
-        .append(
-          colorConfig.getValue() == null ? "" : colorConfig.getValueString()
-        )
+        .append(hideCommandInput.getValueString())
+        .append(colorConfig.getValue() == null ? "" : colorConfig.getValueString())
         .append(accessConfig.getValueString())
         .append(transpConfig.getIntValue(30) / 100.0f);
       return ID + se.getValue();
@@ -363,4 +366,19 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(hideKey);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(command);
+  }
 }

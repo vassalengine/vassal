@@ -68,19 +68,19 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   }
 
   public void allowSome(String preferencesPrompt) {
-    Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
+    final Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
     GameModule.getGameModule().getPrefs().addOption(c);
     c.addPropertyChangeListener(evt -> {
       if (Boolean.TRUE.equals(evt.getNewValue())) {
         ObscurableOptions.getInstance().allow(GameModule.getUserId());
-        String side = PlayerRoster.getMySide();
+        final String side = PlayerRoster.getMySide();
         if (side != null) {
           ObscurableOptions.getInstance().allow(side);
         }
       }
       else {
         ObscurableOptions.getInstance().disallow(GameModule.getUserId());
-        String side = PlayerRoster.getMySide();
+        final String side = PlayerRoster.getMySide();
         if (side != null) {
           ObscurableOptions.getInstance().disallow(side);
         }
@@ -98,12 +98,12 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   /**
    * Set the text accompanying the "Allow opponent to unmask" control in the Preferences
+   * No longer required with new Configurers. Caused double-up label in config display.
+   * @deprecated No replacement
    */
+  @Deprecated (since = "2020-10-27", forRemoval = true)
   public void setPrompt(String preferencesPrompt) {
-    Configurer c = GameModule.getGameModule().getPrefs().getOption(PREFS_KEY);
-    if (c != null) {
-      c.setName(preferencesPrompt);
-    }
+    ProblemDialog.showDeprecated("2020-10-27");
   }
 
   public void allowAll() {
@@ -126,38 +126,31 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   @Override
   public Command decode(String command) {
-    if (command.startsWith(COMMAND_ID)) {
-      command = command.substring(COMMAND_ID.length());
-      ArrayList<String> l = new ArrayList<>();
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
-      while (st.hasMoreTokens()) {
-        l.add(st.nextToken());
-      }
-      return new SetAllowed(l);
-    }
-    else {
+    if (!command.startsWith(COMMAND_ID)) {
       return null;
     }
+
+    command = command.substring(COMMAND_ID.length());
+    final List<String> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
+    while (st.hasMoreTokens()) {
+      l.add(st.nextToken());
+    }
+    return new SetAllowed(l);
   }
 
   @Override
   public String encode(Command c) {
-    if (c instanceof SetAllowed) {
-      List<String> l = ((SetAllowed) c).getAllowedIds();
-      if (l.isEmpty()) {
-        return COMMAND_ID;
-      }
-      else {
-        SequenceEncoder se = new SequenceEncoder('\t');
-        for (String s : l) {
-          se.append(s);
-        }
-        return COMMAND_ID + se.getValue();
-      }
-    }
-    else {
+    if (!(c instanceof SetAllowed)) {
       return null;
     }
+
+    final List<String> l = ((SetAllowed) c).getAllowedIds();
+    final SequenceEncoder se = new SequenceEncoder('\t');
+    for (final String s : l) {
+      se.append(s);
+    }
+    return COMMAND_ID + se.getValue();
   }
 
   /**
@@ -173,7 +166,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
       se.append(override);
     }
     se.append(allowed.size());
-    for (String who : allowed) {
+    for (final String who : allowed) {
       se.append(who);
     }
 
@@ -186,17 +179,17 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    */
   public void decodeOptions(String s) {
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
-    String setting = sd.nextToken("");
+    String setting = sd.nextToken(""); //NON-NLS
     if (setting.length() == 0) {
       override = null;
     }
     else {
-      override = setting.equals("true");
+      override = setting.equals("true"); //NON-NLS
     }
     final int count = sd.nextInt(0);
     allowed.clear();
     for (int i = 0; i < count; i++) {
-      setting = sd.nextToken("");
+      setting = sd.nextToken(""); //NON-NLS
       if (setting.length() > 0) {
         allowed.add(setting);
       }
@@ -236,8 +229,8 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
     /** @deprecated Use {@link #SetAllowed(List)} instead. */
     @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetAllowed(Vector<String> allowed) {
-      ProblemDialog.showDeprecated("2020-08-06");
+    public SetAllowed(Vector<String> allowed) { //NOPMD
+      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.allowed = allowed;
     }
 

@@ -26,6 +26,7 @@ import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.SavedGameUpdaterDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.MenuManager;
+import org.apache.commons.lang3.StringUtils;
 
 public class ModuleEditorWindow extends EditorWindow {
   private static final long serialVersionUID = 1L;
@@ -36,6 +37,9 @@ public class ModuleEditorWindow extends EditorWindow {
     super();
     tree = new ConfigureTree(mod, helpWindow, this);
     treeStateChanged(false);
+
+    setModuleName(mod.getDataArchive().getArchive().getFile().getName());
+
     scrollPane.setViewportView(tree);
 
     final MenuManager mm = MenuManager.getInstance();
@@ -45,7 +49,7 @@ public class ModuleEditorWindow extends EditorWindow {
     mm.addAction("Editor.ModuleEditor.reference_manual", tree.getHelpAction());
 
     updateSavedGame = new AbstractAction(Resources.getString(
-                          "Editor.ModuleEditor.update_saved")) { //$NON-NLS-1$
+      "Editor.ModuleEditor.update_saved")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -67,54 +71,33 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   public String getEditorType() {
-    return "Module";
+    return Resources.getString("Editor.ModuleEditor.component_type");
   }
 
-/*
-  protected void populateFileMenu(JMenu menu) {
-    addSaveMenuItem(menu);
-    addSaveAsMenuItem(menu);
-    menu.addSeparator();
-    addQuitMenuItem(menu);
+  @Override
+  public void updateWindowTitle() {
+    String title = Resources.getString("Editor.ModuleEditor.editor_name");
+
+    if (!StringUtils.isEmpty(moduleName)) {
+      title = title + " - " + moduleName;
+    }
+
+    setTitle(title);
   }
-
-  protected void populateToolsMenu(JMenu menu) {
-    addUpdaterMenuItem(menu);
-
-    updateSavedGame = menu.add(Resources
-        .getString("Editor.ModuleEditor.update_saved")); //$NON-NLS-1$
-    updateSavedGame.setEnabled(false);
-    updateSavedGame.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        new SavedGameUpdaterDialog(ModuleEditorWindow.this).setVisible(true);
-      }
-    });
-
-    addMenuItem(MenuKey.UPDATE_SAVED, updateSavedGame);
-
-    menu.addSeparator();
-
-    addTranslateMenuItem(menu);
-  }
-*/
 
   @Override
   protected void save() {
-    ModuleEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        GameModule.getGameModule().save();
-      }
+    saver(() -> {
+      GameModule.getGameModule().save();
+      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
   }
 
   @Override
   protected void saveAs() {
-    ModuleEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        GameModule.getGameModule().saveAs();
-      }
+    saver(() -> {
+      GameModule.getGameModule().saveAs();
+      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
     });
   }
 }

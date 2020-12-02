@@ -26,10 +26,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 
@@ -42,15 +43,14 @@ public class ShapeItem extends Item {
   protected static final String SHAPE = "shape"; //$NON-NLS-1$
   protected static final String BEVEL = "bevel"; //$NON-NLS-1$
 
-  protected static final String RECT = "Rectangle";
-  protected static final String RRECT = "Rounded Rectangle";
-  protected static final String OVAL = "Oval";
+  protected static final String RECT = "Rectangle"; //NON-NLS
+  protected static final String RRECT = "Rounded Rectangle"; //NON-NLS
+  protected static final String OVAL = "Oval"; //NON-NLS
 
   protected int height = 30;
   protected int width = 40;
   protected int bevel = 5;
   protected String shape = RECT;
-
 
   public ShapeItem() {
     super();
@@ -69,10 +69,10 @@ public class ShapeItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Width:  ",
-      "Height:  ",
-      "Shape:  ",
-      "Bevel:  "
+      Resources.getString("Editor.width"),
+      Resources.getString("Editor.height"),
+      Resources.getString("Editor.ShapeItem.shape"),
+      Resources.getString("Editor.ShapeItem.bevel")
     );
   }
 
@@ -80,13 +80,10 @@ public class ShapeItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[] {
-        Integer.class,
-        Integer.class,
-        ShapeConfig.class,
-        Integer.class
-      }
-    );
+      Integer.class,
+      Integer.class,
+      ShapeConfig.class,
+      Integer.class);
   }
 
   @Override
@@ -100,12 +97,19 @@ public class ShapeItem extends Item {
     );
   }
 
-  public static class ShapeConfig extends StringEnum {
+  public static class ShapeConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] { RECT, RRECT, OVAL };
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] { "Editor.ShapeItem.rectangle",
+                            "Editor.ShapeItem.rounded_rectangle",
+                            "Editor.ShapeItem.oval" }; }
   }
+
   @Override
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
@@ -175,19 +179,9 @@ public class ShapeItem extends Item {
     }
   }
 
-  private VisibilityCondition falseCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return false;
-    }
-  };
+  private final VisibilityCondition falseCond = () -> false;
 
-  private VisibilityCondition bevelCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return shape.equals(RRECT);
-    }
-  };
+  private final VisibilityCondition bevelCond = () -> shape.equals(RRECT);
 
   public int getWidth() {
     return width;
@@ -208,11 +202,11 @@ public class ShapeItem extends Item {
       si = new ShapeItemInstance();
     }
 
-    Color fg = si.getFgColor().getColor();
-    Color bg = si.getBorderColor().getColor();
+    final Color fg = si.getFgColor().getColor();
+    final Color bg = si.getBorderColor().getColor();
 
-    Point origin = layout.getPosition(this);
-    Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
+    final Point origin = layout.getPosition(this);
+    final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
     if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -255,7 +249,7 @@ public class ShapeItem extends Item {
 
   @Override
   public String getDisplayName() {
-    return "Shape";
+    return Resources.getString("Editor.ShapeItem.component_type");
   }
 
   @Override
@@ -266,9 +260,9 @@ public class ShapeItem extends Item {
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 
-    ShapeItem item = new ShapeItem(l);
+    final ShapeItem item = new ShapeItem(l);
 
     sd.nextToken();
     item.width = sd.nextInt(30);
@@ -282,18 +276,16 @@ public class ShapeItem extends Item {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 
     se1.append(width);
     se1.append(height);
     se1.append(shape);
     se1.append(bevel);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
 
     return se2.getValue();
   }
-
-
 }

@@ -24,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,8 +37,15 @@ import VASSAL.tools.image.ImageUtils;
 
 public class SizeConfigurer extends StringEnumConfigurer {
 
+  private static final Map<String, String> symbolMap = new HashMap<>();
+
   public SizeConfigurer(String key, String name) {
     super(key, name, Symbol.NatoUnitSymbolSet.getSymbolSizes());
+    if (symbolMap.isEmpty()) {
+      for (final Symbol.SizeOption size : Symbol.NatoUnitSymbolSet.SIZES) {
+        symbolMap.put(size.getName(), size.getDisplayName());
+      }
+    }
   }
 
   @Override
@@ -48,11 +57,11 @@ public class SizeConfigurer extends StringEnumConfigurer {
     private static final long serialVersionUID = 1L;
 
     public SizeComboBox() {
-      String[] s = Symbol.NatoUnitSymbolSet.getSymbolSizes();
-      for (String item : s) {
+      final String[] s = Symbol.NatoUnitSymbolSet.getSymbolSizes();
+      for (final String item : s) {
         addItem(item);
       }
-      SizeRenderer renderer = new SizeRenderer();
+      final SizeRenderer renderer = new SizeRenderer();
       setRenderer(renderer);
     }
 
@@ -109,12 +118,12 @@ public class SizeConfigurer extends StringEnumConfigurer {
 
         final BufferedImage simg = Symbol.NatoUnitSymbolSet.buildSizeImage(
           (String) value, sample_w, sample_h, sample_g);
-        int x = (w / 2) - (simg.getWidth() / 2);
+        final int x = (w / 2) - (simg.getWidth() / 2);
         g.drawImage(simg, x, 0, null);
         g.dispose();
 
         setIcon(new ImageIcon(img));
-        setText((String) value);
+        setText(symbolMap.get(value));
         this.setHorizontalTextPosition(SwingConstants.LEFT);
         this.setHorizontalAlignment(SwingConstants.RIGHT);
         setFont(list.getFont());

@@ -20,7 +20,6 @@ package VASSAL.chat.ui;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
@@ -45,8 +44,8 @@ public class SynchAction extends AbstractAction {
   private static Room lastRoom;
   private static long lastSync = System.currentTimeMillis();
 
-  private Player p;
-  private ChatServerConnection client;
+  private final Player p;
+  private final ChatServerConnection client;
   private Room targetRoom;
 
   public SynchAction(Player p, ChatServerConnection client) {
@@ -56,7 +55,7 @@ public class SynchAction extends AbstractAction {
 
     // Find which room our target player is in
     targetRoom = null;
-    for (Room room : client.getAvailableRooms()) {
+    for (final Room room : client.getAvailableRooms()) {
       if (room.getPlayerList().contains(p)) {
         targetRoom = room;
       }
@@ -82,6 +81,7 @@ public class SynchAction extends AbstractAction {
     if (isEnabled()) {
       final long now = System.currentTimeMillis();
       if (! targetRoom.equals(lastRoom) || (now - lastSync) > TOO_SOON) {
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
         GameModule.getGameModule().getGameState().setup(false);
         client.sendTo(p, new SynchCommand(client.getUserInfo(), client));
         lastSync = now;
@@ -90,17 +90,13 @@ public class SynchAction extends AbstractAction {
     }
   }
 
-
   public static PlayerActionFactory factory(final ChatServerConnection client) {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        final Room r = client.getRoom();
-        if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
-          return null;
-        }
-        return new SynchAction(p, client);
+    return (SimplePlayer p, JTree tree) -> {
+      final Room r = client.getRoom();
+      if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
+        return null;
       }
+      return new SynchAction(p, client);
     };
   }
 }

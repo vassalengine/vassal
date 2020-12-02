@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import VASSAL.i18n.Resources;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BeanShellExpressionConfigurer;
@@ -48,13 +49,13 @@ public class ExpressionBuilder extends JDialog {
   }
 
   public ExpressionBuilder(Configurer c, JDialog parent, EditablePiece piece) {
-    super(parent, "Expression Builder", true);
+    super(parent, Resources.getString("Editor.ExpressionBuilder.component_type"), true);
     target = c;
     pieceTarget = piece;
     save = target.getValueString();
-    JPanel p = new JPanel(new MigLayout("wrap 1,fill"));
+    final JPanel p = new JPanel(new MigLayout("wrap 1,fill")); //NON-NLS
 
-    String value = target.getValueString();
+    final String value = target.getValueString();
 
     if (value.startsWith("{") && value.endsWith("}")) {
       setExpression(value.substring(1, value.length() - 1));
@@ -63,22 +64,22 @@ public class ExpressionBuilder extends JDialog {
       setExpression(convert(value));
     }
 
-    p.add(expression.getControls(), "growx");
+    p.add(expression.getControls(), "growx"); //NON-NLS
 
-    JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
-    JButton okButton = ButtonFactory.getOkButton();
+    final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]")); //NON-NLS
+    final JButton okButton = ButtonFactory.getOkButton();
     okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
-    JButton cancelButton = ButtonFactory.getCancelButton();
+    final JButton cancelButton = ButtonFactory.getCancelButton();
     cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
-    JButton helpButton = ButtonFactory.getHelpButton();
-    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
+    final JButton helpButton = ButtonFactory.getHelpButton();
+    helpButton.addActionListener(e -> BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.html").getContents().toString())); //NON-NLS
     buttonBox.add(helpButton);
 
-    p.add(buttonBox, "align center");
+    p.add(buttonBox, "align center"); //NON-NLS
     add(p);
 
     pack();
@@ -122,7 +123,7 @@ public class ExpressionBuilder extends JDialog {
 
   public void setExpression(String value) {
     if (expression == null) {
-      String prompt = target.getName().length() == 0 ? "Expression:  " : target.getName();
+      final String prompt = target.getName().length() == 0 ? Resources.getString("Editor.ExpressionBuilder.expression") : target.getName();
       expression = new BeanShellExpressionConfigurer(null, prompt, value, pieceTarget);
     }
     expression.setValue(value);

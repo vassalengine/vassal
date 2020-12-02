@@ -25,6 +25,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -81,9 +82,9 @@ public class PrivateMap extends Map {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.addAll(
       new String[]{
-        "Belongs to side",                //$NON-NLS-1$
-        "Visible to all players?",        //$NON-NLS-1$
-        "Use same boards as this map:  "  //$NON-NLS-1$
+        Resources.getString("Editor.PrivateMap.belongs_to_one_side"),
+        Resources.getString("Editor.PrivateMap.visible_to_all_player"),
+        Resources.getString("Editor.PrivateMap.use_same_boards_as_this_map")
       },
       super.getAttributeDescriptions()
     );
@@ -116,7 +117,7 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      for (Map m : Map.getMapList()) {
+      for (final Map m : Map.getMapList()) {
         if (m.getMapName().equals(value)) {
           surrogate = m;
           break;
@@ -206,7 +207,7 @@ public class PrivateMap extends Map {
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
     }
-    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+    getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   @Override
@@ -218,7 +219,7 @@ public class PrivateMap extends Map {
    * @see PlayerRoster
    */
   public boolean isAccessibleTo(String playerSide) {
-    for (String owner : owners) {
+    for (final String owner : owners) {
       if (owner.equals(playerSide)) {
         return true;
       }
@@ -239,7 +240,7 @@ public class PrivateMap extends Map {
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
     }
-    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
+    getLaunchButton().setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   @Override
@@ -253,8 +254,9 @@ public class PrivateMap extends Map {
 
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
+  @Override
   public void setBoards(Enumeration<Board> boardList) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     if (surrogate != null) {
       boardList = surrogate.getAllBoards();
       edgeBuffer = surrogate.getEdgeBuffer();
@@ -268,7 +270,7 @@ public class PrivateMap extends Map {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PrivateWindow.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("PrivateWindow.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -341,13 +343,13 @@ public class PrivateMap extends Map {
      * Disable all keyboard and mouse listeners on this component
      */
     protected void disableListeners() {
-      for (KeyListener l : keyListeners) {
+      for (final KeyListener l : keyListeners) {
         removeKeyListener(l);
       }
-      for (MouseListener l : mouseListeners) {
+      for (final MouseListener l : mouseListeners) {
         removeMouseListener(l);
       }
-      for (MouseMotionListener l : mouseMotionListeners) {
+      for (final MouseMotionListener l : mouseMotionListeners) {
         removeMouseMotionListener(l);
       }
       super.setDropTarget(null);
@@ -358,17 +360,27 @@ public class PrivateMap extends Map {
      * Enable all keyboard and mouse listeners on this component
      */
     protected void enableListeners() {
-      for (KeyListener l : keyListeners) {
+      for (final KeyListener l : keyListeners) {
         super.addKeyListener(l);
       }
-      for (MouseListener l : mouseListeners) {
+      for (final MouseListener l : mouseListeners) {
         super.addMouseListener(l);
       }
-      for (MouseMotionListener l : mouseMotionListeners) {
+      for (final MouseMotionListener l : mouseMotionListeners) {
         super.addMouseMotionListener(l);
       }
       super.setDropTarget(dropTarget);
       listenersActive = true;
     }
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(owners);
   }
 }

@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.configure.TranslatableStringEnum;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +37,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.StringEnum;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 
@@ -48,15 +49,15 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected static final String BORDER = "border"; //$NON-NLS-1$
   protected static final String ITEMS = "layout"; //$NON-NLS-1$
 
-  protected static final String N = "Top";
-  protected static final String S = "Bottom";
-  protected static final String E = "Right";
-  protected static final String W = "Left";
-  protected static final String NE = "Top Right";
-  protected static final String NW = "Top Left";
-  protected static final String SE = "Bottom Right";
-  protected static final String SW = "Bottom Left";
-  protected static final String CENTER = "Center";
+  protected static final String N = "Top"; //NON-NLS
+  protected static final String S = "Bottom"; //NON-NLS
+  protected static final String E = "Right"; //NON-NLS
+  protected static final String W = "Left"; //NON-NLS
+  protected static final String NE = "Top Right"; //NON-NLS
+  protected static final String NW = "Top Left"; //NON-NLS
+  protected static final String SE = "Bottom Right"; //NON-NLS
+  protected static final String SW = "Bottom Left"; //NON-NLS
+  protected static final String CENTER = "Center"; //NON-NLS
 
   protected static final int POS_L = 15;
   protected static final int POS_R = 85;
@@ -64,25 +65,46 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected static final int POS_B = 85;
   protected static final int POS_C = 50;
 
-  protected static final String BORDER_PLAIN = "Plain";
-  protected static final String BORDER_FANCY = "Fancy";
-  protected static final String BORDER_3D = "3D";
-  protected static final String BORDER_NONE = "None";
+  protected static final String BORDER_PLAIN = "Plain"; //NON-NLS
+  protected static final String BORDER_FANCY = "Fancy"; //NON-NLS
+  protected static final String BORDER_3D = "3D"; //NON-NLS
+  protected static final String BORDER_NONE = "None"; //NON-NLS
 
-  public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
-  public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
-  public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
-  protected static Map<String, String> compass = new HashMap<>();
+  public static final String[] LOCATIONS = {CENTER, N, S, E, W, NE, NW, SE, SW};
+  public static final String[] LOCATION_I18N_KEYS = {
+    "Editor.center",
+    "Editor.top",
+    "Editor.bottom",
+    "Editor.right",
+    "Editor.left",
+    "Editor.top_right",
+    "Editor.top_left",
+    "Editor.bottom_right",
+    "Editor.bottom_left"
+  };
+
+  public static String getDisplayLocation(String location) {
+    for (int i = 0; i < LOCATIONS.length; i++) {
+      if (LOCATIONS[i].equals(location)) {
+        return Resources.getString(LOCATION_I18N_KEYS[i]);
+      }
+    }
+    return location;
+  }
+
+  public static final int[] X_POS = {POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
+  public static final int[] Y_POS = {POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
+  protected static final Map<String, String> compass = new HashMap<>();
   static {
-    compass.put(N, "N");
-    compass.put(S, "S");
-    compass.put(E, "E");
-    compass.put(W, "W");
-    compass.put(NE, "NE");
-    compass.put(NW, "NW");
-    compass.put(SE, "SE");
-    compass.put(SW, "SW");
-    compass.put(CENTER, "CENTER");
+    compass.put(N, "N"); //NON-NLS
+    compass.put(S, "S"); //NON-NLS
+    compass.put(E, "E"); //NON-NLS
+    compass.put(W, "W"); //NON-NLS
+    compass.put(NE, "NE"); //NON-NLS
+    compass.put(NW, "NW"); //NON-NLS
+    compass.put(SE, "SE"); //NON-NLS
+    compass.put(SW, "SW"); //NON-NLS
+    compass.put(CENTER, "CENTER"); //NON-NLS
   }
 
   public static String getCompassPoint(String location) {
@@ -92,7 +114,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public Point getPosition(Item item) {
     final String s = getCompassPoint(item.getLocation());
 
-    int x, y;
+    final int x;
+    final int y;
     final Dimension d = item.getSize();
     switch (s.charAt(s.length() - 1)) {
     case 'E':
@@ -134,10 +157,10 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Counter Width:  ",
-      "Counter Height:  ",
-      "Border Style:  ",
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.GamePieceLayout.counter_width"),
+      Resources.getString("Editor.GamePieceLayout.counter_height"),
+      Resources.getString("Editor.GamePieceLayout.counter_style"),
       ""  //$NON-NLS-1$
     };
   }
@@ -170,10 +193,20 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     }
   }
 
-  public static class BorderConfig extends StringEnum {
+  public static class BorderConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{BORDER_PLAIN, BORDER_FANCY, BORDER_3D, BORDER_NONE};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.GamePieceLayout.plain_border",
+        "Editor.GamePieceLayout.fancy_border",
+        "Editor.GamePieceLayout.3D_border",
+        "Editor.GamePieceLayout.no_border"
+      };
     }
   }
 
@@ -219,13 +252,13 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       return getConfigureName();
     }
     else if (WIDTH.equals(key)) {
-      return getLayoutWidth() + ""; //$NON-NLS-1$
+      return Integer.toString(getLayoutWidth());
     }
     else if (HEIGHT.equals(key)) {
-      return getLayoutHeight() + ""; //$NON-NLS-1$
+      return Integer.toString(getLayoutHeight());
     }
     else if (BORDER.equals(key)) {
-      return border + ""; //$NON-NLS-1$
+      return border;
     }
     else if (ITEMS.equals(key)) {
       return encodeItemList();
@@ -241,7 +274,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("GamePieceLayouts.html"); //$NON-NLS-1$
   }
 
   @Override
@@ -255,7 +288,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layout"; //$NON-NLS-1$
+    return Resources.getString("Editor.GamePieceLayout.component_type"); //$NON-NLS-1$
   }
 
   public void setWidth(int width) {
@@ -291,7 +324,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected Item getItem(String name) {
-    for (Item item : items) {
+    for (final Item item : items) {
       if (item.getConfigureName().equals(name)) {
         return item;
       }
@@ -308,19 +341,9 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public void moveItem(int from, int to) {
-    Item temp = items.get(to);
+    final Item temp = items.get(to);
     items.set(to, items.get(from));
     items.set(from, temp);
-  }
-
-  @Override
-  public void add(Buildable b) {
-    super.add(b);
-  }
-
-  @Override
-  public void remove(Buildable b) {
-    super.remove(b);
   }
 
   @Override
@@ -340,7 +363,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     final Graphics2D g = image.createGraphics();
 
     // Fill in the sample Background color
-    Color bgColor = defn.getBgColor().getColor();
+    final Color bgColor = defn.getBgColor().getColor();
     g.setColor(bgColor);
 
     if (getBorder().equals(BORDER_3D)) {
@@ -351,15 +374,15 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
       // Add Border
       if (getBorder().equals(BORDER_PLAIN) || getBorder().equals(BORDER_FANCY)) {
-        Color bg = bgColor == null ? Color.WHITE : bgColor;
+        final Color bg = bgColor == null ? Color.WHITE : bgColor;
         g.setColor(defn.getBorderColor().getColor());
         g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.drawRect(0, 0, width - 1, height - 1);
         if (getBorder().equals(BORDER_FANCY)) {
-          Color lt = new Color(bg.getRed()   / 2,
+          final Color lt = new Color(bg.getRed()   / 2,
                                bg.getGreen() / 2,
                                bg.getBlue()  / 2);
-          Color dk = new Color(bg.getRed()   + (255 - bg.getRed())   / 2,
+          final Color dk = new Color(bg.getRed()   + (255 - bg.getRed())   / 2,
                                bg.getGreen() + (255 - bg.getGreen()) / 2,
                                bg.getBlue()  + (255 - bg.getBlue())  / 2);
           g.setColor(dk);
@@ -373,7 +396,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     }
 
     // layer each item over the top
-    for (Item item : items) {
+    for (final Item item : items) {
       if (item != null) {
         item.draw(g, defn);
       }
@@ -390,7 +413,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected void invalidate() {
-    for (GamePieceImage i : getComponentsOf(GamePieceImage.class)) {
+    for (final GamePieceImage i : getComponentsOf(GamePieceImage.class)) {
       i.rebuildVisualizerImage();
     }
   }
@@ -398,9 +421,9 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected void decodeItemList(String string) {
     items.clear();
     if (string.length() > 0) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(string, ',');
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(string, ',');
       while (sd.hasMoreTokens()) {
-        Item item = Item.decode(this, sd.nextToken());
+        final Item item = Item.decode(this, sd.nextToken());
         addItem(item);
       }
     }
@@ -408,12 +431,12 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected String encodeItemList() {
-    String[] list = new String[getItemCount()];
+    final String[] list = new String[getItemCount()];
     int i = 0;
-    for (Item item : items) {
+    for (final Item item : items) {
       list[i++] = item.encode();
     }
-    SequenceEncoder se = new SequenceEncoder('#');
+    final SequenceEncoder se = new SequenceEncoder('#');
     se.append(list);
     return se.getValue();
   }
@@ -439,9 +462,9 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    for (Buildable b : getBuildables()) {
+    for (final Buildable b : getBuildables()) {
       if (b instanceof GamePieceImage) {
-        GamePieceImage gpi = (GamePieceImage) b;
+        final GamePieceImage gpi = (GamePieceImage) b;
         if (gpi.getConfigureName().equals(defnName)) {
           return gpi;
         }

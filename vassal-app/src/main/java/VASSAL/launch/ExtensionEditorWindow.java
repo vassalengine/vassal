@@ -23,8 +23,10 @@ import javax.swing.JDialog;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.configure.ExtensionTree;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.menu.MenuManager;
+import org.apache.commons.lang3.StringUtils;
 
 public class ExtensionEditorWindow extends EditorWindow {
 
@@ -34,6 +36,9 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   public ExtensionEditorWindow(GameModule mod, ModuleExtension ext) {
     super();
+
+    setExtensionName(ext.getDataArchive().getArchive().getFile().getName());
+    setModuleName(mod.getDataArchive().getArchive().getFile().getName());
 
     extension = ext;
     tree = new ExtensionTree(mod, helpWindow, ext, this);
@@ -61,50 +66,46 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   public String getEditorType() {
-    return "Extension";
+    return Resources.getString("Editor.ExtensionEditor.component_type");
   }
 
-/*
-  protected void populateFileMenu(JMenu menu) {
-    addSaveMenuItem(menu);
-    addSaveAsMenuItem(menu);
-    menu.addSeparator();
-    addQuitMenuItem(menu);
+  @Override
+  public void updateWindowTitle() {
+    String title = Resources.getString("Editor.ExtensionEditor.editor_name");
+
+    if (!StringUtils.isEmpty(extensionName)) {
+      title = title + " - " + extensionName; //NON-NLS
+      if (!StringUtils.isEmpty(moduleName)) {
+        title = title + Resources.getString("Editor.ExtensionEditor.extends_what_module", moduleName);
+      }
+    }
+
+    setTitle(title);
   }
 
-  protected void populateToolsMenu(JMenu menu) {
-    addUpdaterMenuItem(menu);
-    menu.addSeparator();
-    addTranslateMenuItem(menu);
-  }
-*/
 
   @Override
   protected void save() {
-    ExtensionEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          extension.save();
-        }
-        catch (IOException e) {
-          WriteErrorDialog.error(e, extension.getDataArchive().getName());
-        }
+    saver(() -> {
+      try {
+        extension.save();
+        setExtensionName(extension.getDataArchive().getName());
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
       }
     });
   }
 
   @Override
   protected void saveAs() {
-    ExtensionEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          extension.saveAs();
-        }
-        catch (IOException e) {
-          WriteErrorDialog.error(e, extension.getDataArchive().getName());
-        }
+    saver(() -> {
+      try {
+        extension.saveAs();
+        setExtensionName(extension.getDataArchive().getName());
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
       }
     });
   }

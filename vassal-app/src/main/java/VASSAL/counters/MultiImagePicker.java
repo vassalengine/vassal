@@ -27,14 +27,17 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import javax.swing.event.ListSelectionListener;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
+
+import net.miginfocom.swing.MigLayout;
 
 public class MultiImagePicker extends JPanel {
   private static final long serialVersionUID = 1L;
@@ -45,7 +48,7 @@ public class MultiImagePicker extends JPanel {
   protected JPanel multiPanel = new JPanel();
 
   public MultiImagePicker() {
-    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    setLayout(new MigLayout("ins 0", "[grow][]", "[grow]")); // NON-NLS
 
     imageList = new JList<>(imageListElements);
     imageList.addListSelectionListener(e -> showSelected());
@@ -57,14 +60,14 @@ public class MultiImagePicker extends JPanel {
         }
       }
     });
-    imageList.setVisibleRowCount(4);
-    imageList.setPrototypeCellValue("Image 999");
+    //imageList.setVisibleRowCount(4);
+    imageList.setPrototypeCellValue("Image 999"); // NON-NLS
     imageList.setMinimumSize(imageList.getPreferredSize());
 
     multiPanel.setLayout(cl);
 
-    add(multiPanel);
-    JScrollPane scroll = new ScrollPane(imageList);
+    add(multiPanel, "grow"); // NON-NLS
+    final JScrollPane scroll = new ScrollPane(imageList);
     scroll.getViewport().setMinimumSize(imageList.getPreferredSize());
     add(scroll);
 
@@ -82,9 +85,9 @@ public class MultiImagePicker extends JPanel {
   }
 
   public void addEntry() {
-    String entry = "Image " + (imageListElements.size() + 1);
+    final String entry = Resources.getString("Editor.MultiImagePicker.image", (imageListElements.size() + 1));
     imageListElements.addElement(entry);
-    ImagePicker pick = new ImagePicker();
+    final ImagePicker pick = new ImagePicker();
     multiPanel.add(entry, pick);
     imageList.setSelectedIndex(imageListElements.size() - 1);
     cl.show(multiPanel, imageList.getSelectedValue());
@@ -141,7 +144,7 @@ public class MultiImagePicker extends JPanel {
   }
 
   public void swap(int index1, int index2) {
-    Component[] components = new Component[imageListElements.size()];
+    final Component[] components = new Component[imageListElements.size()];
     for (int i = 0; i < imageListElements.size(); i++) {
       components[i] = multiPanel.getComponent(i);
     }
@@ -150,7 +153,7 @@ public class MultiImagePicker extends JPanel {
     multiPanel.setLayout(cl);
 
     for (int i = 0; i < imageListElements.size(); i++) {
-      Component c;
+      final Component c;
       if (i == index1) {
         c = components[index2];
       }
@@ -160,7 +163,7 @@ public class MultiImagePicker extends JPanel {
       else {
         c = components[i];
       }
-      multiPanel.add(c, "Image " + (i + 1));
+      multiPanel.add(c, Resources.getString("Editor.MultiImagePicker.image", (i + 1)));
     }
 
     imageList.setSelectedIndex(index2);

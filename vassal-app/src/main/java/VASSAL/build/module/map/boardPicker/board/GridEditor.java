@@ -26,8 +26,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -83,7 +81,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     setTitle(Resources.getString("Editor.ModuleEditor.edit", grid.getGridName())); //$NON-NLS-1$
     setModal(true);
     this.grid = grid;
-    GridContainer container = grid.getContainer();
+    final GridContainer container = grid.getContainer();
     if (container != null) {
       board = container.getBoard();
     }
@@ -127,72 +125,51 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     scroll.setPreferredSize(new Dimension(800, 600));
     add(scroll, BorderLayout.CENTER);
 
-    Box textPanel = Box.createVerticalBox();
+    final Box textPanel = Box.createVerticalBox();
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.arrow_keys"))); //$NON-NLS-1$
-    textPanel.add(new JLabel(SystemUtils.IS_OS_MAC_OSX ? Resources.getString("Editor.GridEditor.command_arrow_keys") : Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
+    textPanel.add(new JLabel(SystemUtils.IS_OS_MAC ? Resources.getString("Editor.GridEditor.command_arrow_keys") : Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.shift_key"))); //$NON-NLS-1$
 
-    JPanel buttonPanel = new JPanel();
+    final JPanel buttonPanel = new JPanel();
 
     okButton = new JButton(OK);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-        setVisible(false);
+    okButton.addActionListener(e -> {
+      cancelSetMode();
+      setVisible(false);
 /*
-        GameModule.getGameModule()
-                  .getDataArchive().clearTransformedImageCache();
+      GameModule.getGameModule()
+                .getDataArchive().clearTransformedImageCache();
 */
-      }
     });
     buttonPanel.add(okButton);
 
-    JButton canButton = new JButton(CANCEL);
-    canButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    final JButton canButton = new JButton(CANCEL);
+    canButton.addActionListener(e -> cancel());
     buttonPanel.add(canButton);
 
     setButton = new JButton(SET);
-    setButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        startSetMode();
-      }
-    });
+    setButton.addActionListener(e -> startSetMode());
     setButton.setRequestFocusEnabled(false);
     buttonPanel.add(setButton);
 
     canSetButton = new JButton(CANCEL_SET);
-    canSetButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-      }
-    });
+    canSetButton.addActionListener(e -> cancelSetMode());
     canSetButton.setVisible(false);
     canSetButton.setRequestFocusEnabled(false);
     buttonPanel.add(canSetButton);
 
 
     numberingButton = new JButton(NUMBERING);
-    numberingButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
-        repaint();
-      }
+    numberingButton.addActionListener(e -> {
+      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
+      repaint();
     });
     numberingButton.setEnabled(grid.getGridNumbering() != null);
     numberingButton.setVisible(true);
     numberingButton.setRequestFocusEnabled(false);
     buttonPanel.add(numberingButton);
 
-    Box controlPanel = Box.createVerticalBox();
+    final Box controlPanel = Box.createVerticalBox();
     controlPanel.add(textPanel);
     controlPanel.add(buttonPanel);
 
@@ -244,7 +221,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       return;
     }
 
-    boolean sideways = grid.isSideways();
+    final boolean sideways = grid.isSideways();
 
     switch (e.getKeyCode()) {
     case KeyEvent.VK_UP:
@@ -383,7 +360,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     if (e.isShiftDown()) {
       delta *= FAST;
     }
-    Point p = grid.getOrigin();
+    final Point p = grid.getOrigin();
     setNewOrigin(new Point(p.x + delta, p.y));
   }
 
@@ -392,7 +369,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     if (e.isShiftDown()) {
       delta *= FAST;
     }
-    Point p = grid.getOrigin();
+    final Point p = grid.getOrigin();
     setNewOrigin(new Point(p.x, p.y + delta));
   }
 
@@ -414,8 +391,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   protected void setNewOrigin(Point p) {
 
-    int width = (int) Math.round(grid.getDx());
-    int height = (int) Math.round(grid.getDy());
+    final int width = (int) Math.round(grid.getDx());
+    final int height = (int) Math.round(grid.getDy());
 
     if (p.x < (-width)) {
       p.x += width;
@@ -538,23 +515,23 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    * by RegularGridEditor
    */
   public interface EditableGrid {
-    public double getDx();
-    public double getDy();
-    public Point getOrigin();
+    double getDx();
+    double getDy();
+    Point getOrigin();
 
-    public void setDx(double dx);
-    public void setDy(double dy);
-    public void setOrigin(Point p);
+    void setDx(double dx);
+    void setDy(double dy);
+    void setOrigin(Point p);
 
-    public boolean isSideways();
-    public void setSideways(boolean sideways);
+    boolean isSideways();
+    void setSideways(boolean sideways);
 
-    public GridContainer getContainer();
-    public GridNumbering getGridNumbering();
+    GridContainer getContainer();
+    GridNumbering getGridNumbering();
 
-    public boolean isVisible();
-    public void setVisible(boolean b);
+    boolean isVisible();
+    void setVisible(boolean b);
 
-    public String getGridName();
+    String getGridName();
   }
 }

@@ -54,8 +54,8 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
     return new PieceFinder.PieceInStack() {
       @Override
       public Object visitDeck(Deck d) {
-        Point pos = d.getPosition();
-        Point p = new Point(pt.x - pos.x, pt.y - pos.y);
+        final Point pos = d.getPosition();
+        final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
         return d.getShape().contains(p) ? d : null;
       }
     };
@@ -82,7 +82,7 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
       GamePiece found = map.findPiece(e.getPoint(), finder);
 
       if (found != null) {
-        EventFilter filter = (EventFilter) found.getProperty(Properties.SELECT_EVENT_FILTER);
+        final EventFilter filter = (EventFilter) found.getProperty(Properties.SELECT_EVENT_FILTER);
         if (filter != null
             && filter.rejectEvent(e)) {
           found = null;
@@ -90,7 +90,7 @@ public class MapCenterer extends AbstractBuildable implements MouseListener {
       }
 
       if (found == null) {
-        Map.View m = (Map.View) e.getSource();
+        final Map.View m = (Map.View) e.getSource();
         m.getMap().centerAt(e.getPoint());
       }
     }

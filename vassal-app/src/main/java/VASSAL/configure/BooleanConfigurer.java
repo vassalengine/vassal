@@ -17,22 +17,64 @@
  */
 package VASSAL.configure;
 
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
 /**
  * Configurer for Boolean values
  */
 public class BooleanConfigurer extends Configurer {
-  private javax.swing.JCheckBox box;
+  protected JPanel p;
+  private JCheckBox box;
 
+  /**
+   * Create an old-style configurer with inbuilt label
+   *
+   * @param key Configurer key
+   * @param name Label text
+   * @param val Initial value
+   */
   public BooleanConfigurer(String key, String name, Boolean val) {
     super(key, name, val);
   }
 
+  /**
+   * Create an old-style configurer with inbuilt label
+   *
+   * @param key Configurer key
+   * @param name Label text
+   * @param val Initial value
+   */
   public BooleanConfigurer(String key, String name, boolean val) {
     super(key, name, val ? Boolean.TRUE : Boolean.FALSE);
   }
 
+  /**
+   * Create an old-style configurer with inbuilt label
+   *
+   * @param key Configurer key
+   * @param name Label text
+   */
   public BooleanConfigurer(String key, String name) {
     this(key, name, Boolean.FALSE);
+  }
+
+  /**
+   * Create a new-style labeless configurer
+   *
+   * @param val Initial value
+   */
+  public BooleanConfigurer(Boolean val) {
+    this(null, "", val);
+  }
+
+  /**
+   * Create a new-style labeless configurer
+   *
+   * @param val Initial value
+   */
+  public BooleanConfigurer(boolean val) {
+    this(null, "", val);
   }
 
   @Override
@@ -67,20 +109,26 @@ public class BooleanConfigurer extends Configurer {
 
   @Override
   public java.awt.Component getControls() {
-    if (box == null) {
-      box = new javax.swing.JCheckBox(getName());
+    if (p == null) {
+      p = new ConfigurerPanel(getName(), "[]0[0]", "[][][]"); // NON-NLS
+
+      box = new JCheckBox();
       box.setSelected(booleanValue());
-      box.addItemListener(new java.awt.event.ItemListener() {
-        @Override
-        public void itemStateChanged(java.awt.event.ItemEvent e) {
-          setValue(box.isSelected());
-        }
-      });
+      box.addItemListener(e -> setValue(box.isSelected()));
+      p.add(box);
     }
-    return box;
+
+    return p;
   }
 
   public Boolean booleanValue() {
     return (Boolean) value;
+  }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    if (p instanceof ConfigurerPanel) {
+      ((ConfigurerPanel) p).setLabelVisibility(visible);
+    }
   }
 }

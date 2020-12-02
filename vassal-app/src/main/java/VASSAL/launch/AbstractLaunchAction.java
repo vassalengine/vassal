@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
@@ -73,6 +72,7 @@ import VASSAL.tools.ipc.IPCMessage;
 import VASSAL.tools.ipc.IPCMessenger;
 import VASSAL.tools.ipc.SimpleIPCMessage;
 import VASSAL.tools.lang.MemoryUtils;
+import VASSAL.i18n.Resources;
 
 /**
  *
@@ -92,9 +92,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   // memory-related constants
   //
   protected static final int PHYS_MEMORY;
-  protected static final int DEFAULT_INITIAL_HEAP = 256;
   protected static final int DEFAULT_MAXIMUM_HEAP = 512;
-  protected static final int FAILSAFE_INITIAL_HEAP = 64;
   protected static final int FAILSAFE_MAXIMUM_HEAP = 128;
 
   static {
@@ -160,7 +158,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     // must synchronize when iterating over a Collections.synchronizedList()
     synchronized (children) {
-      for (IPCMessenger ipc : children) {
+      for (final IPCMessenger ipc : children) {
         try {
           futures.add(ipc.send(new Launcher.CloseRequest()));
         }
@@ -172,10 +170,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     // FIXME: not working!
-    for (Future<IPCMessage> f : futures) {
+    for (final Future<IPCMessage> f : futures) {
       try {
         if (f.get() instanceof Launcher.CloseReject) {
-          System.out.println("rejected!");
+          System.out.println("rejected!"); //NON-NLS
           return false;
         }
       }
@@ -211,11 +209,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if (lr.module.exists()) {
           final AbstractMetaData metadata =
             MetaDataFactory.buildMetaData(lr.module);
-          if (metadata == null || ! (metadata instanceof ModuleMetaData)) {
+          if (!(metadata instanceof ModuleMetaData)) {
             ErrorDialog.show(
-              "Error.invalid_vassal_module", lr.module.getAbsolutePath());
+              "Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
             logger.error(
-              "-- Load of {} failed: Not a Vassal module",
+              "-- Load of {} failed: Not a Vassal module", //NON-NLS
               lr.module.getAbsolutePath()
             );
             lr.module = null;
@@ -224,7 +222,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         else {
           lr.module = null;
         }
-// FIXME: do something to warn about nonexistant file
+// FIXME: do something to warn about nonexistent file
 //        FileNotFoundDialog.warning(window, lr.module);
       }
     }
@@ -254,7 +252,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 // FIXME: this should be in an abstract method and farmed out to subclasses
       // send some basic information to the log
       if (lr.module != null) {
-        logger.info("Loading module file {}", lr.module.getAbsolutePath());
+        logger.info("Loading module file {}", lr.module.getAbsolutePath()); //NON-NLS
 
         // slice tiles for module
         final String aname = lr.module.getAbsolutePath();
@@ -282,7 +280,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         // slice tiles for extensions
         final ExtensionsManager mgr = new ExtensionsManager(lr.module);
-        for (File ext : mgr.getActiveExtensions()) {
+        for (final File ext : mgr.getActiveExtensions()) {
           final TilingHandler eth = new TilingHandler(
             ext.getAbsolutePath(),
             cdir,
@@ -302,20 +300,20 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 
       if (lr.game != null) {
-        logger.info("Loading game file {}", lr.game.getAbsolutePath());
+        logger.info("Loading game file {}", lr.game.getAbsolutePath()); //NON-NLS
       }
 
       if (lr.importFile != null) {
         logger.info(
-          "Importing module file {}",
+          "Importing module file {}", //NON-NLS
           lr.importFile.getAbsolutePath()
         );
       }
 // end FIXME
 
-      // set default heap sizes
-      int initialHeap = DEFAULT_INITIAL_HEAP;
+      // set default heap size
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
+      int initialHeap = DEFAULT_MAXIMUM_HEAP;
 
       String moduleName = null;
 
@@ -327,7 +325,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         if (data == null) {
           ErrorDialog.show(
-            "Error.invalid_vassal_file", lr.module.getAbsolutePath());
+            "Error.invalid_vassal_file", lr.module.getAbsolutePath()); //NON-NLS
           ModuleManagerWindow.getInstance().setWaitCursor(false);
           return null;
         }
@@ -336,14 +334,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
-          logger.info("Loading module {}", moduleName);
+          logger.info("Loading module {}", moduleName); //NON-NLS
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
-
-          // read initial heap size
-          initialHeap = getHeapSize(
-            p, GlobalOptions.INITIAL_HEAP, DEFAULT_INITIAL_HEAP);
 
           // read maximum heap size
           maximumHeap = getHeapSize(
@@ -352,10 +346,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       else if (lr.importFile != null) {
         final Prefs p = Prefs.getGlobalPrefs();
-
-        // read initial heap size
-        initialHeap = getHeapSize(
-          p, GlobalOptions.INITIAL_HEAP, DEFAULT_INITIAL_HEAP);
 
         // read maximum heap size
         maximumHeap = getHeapSize(
@@ -369,47 +359,25 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       //
 
 // FIXME: The heap size messages are too nonspecific. They should
-// differientiate between loading a module and importing a module,
+// differentiate between loading a module and importing a module,
 // since the heap sizes are set in different places for those two
 // actions.
       // maximum heap must fit in physical RAM
       if (maximumHeap > PHYS_MEMORY) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+        initialHeap = maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
         FutureUtils.wait(WarningDialog.show(
-          "Warning.maximum_heap_too_large",
+          "Warning.maximum_heap_too_large", //NON-NLS
           FAILSAFE_MAXIMUM_HEAP
         ));
       }
       // maximum heap must be at least the failsafe size
       else if (maximumHeap < FAILSAFE_MAXIMUM_HEAP) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+        initialHeap = maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
         FutureUtils.wait(WarningDialog.show(
-          "Warning.maximum_heap_too_small",
+          "Warning.maximum_heap_too_small", //NON-NLS
           FAILSAFE_MAXIMUM_HEAP
-        ));
-      }
-      // initial heap must be at least the failsafe size
-      else if (initialHeap < FAILSAFE_INITIAL_HEAP) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
-
-        FutureUtils.wait(WarningDialog.show(
-          "Warning.initial_heap_too_small",
-          FAILSAFE_INITIAL_HEAP
-        ));
-      }
-      // initial heap must be less than or equal to maximum heap
-      else if (initialHeap > maximumHeap) {
-        initialHeap = FAILSAFE_INITIAL_HEAP;
-        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
-
-        FutureUtils.wait(WarningDialog.show(
-          "Warning.initial_heap_too_large",
-          FAILSAFE_INITIAL_HEAP
         ));
       }
 
@@ -421,12 +389,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final String[] args = argumentList.toArray(new String[0]);
 
       // try to start a child process with the given heap sizes
-      args[1] = "-Xms" + initialHeap + "M";
-      args[2] = "-Xmx" + maximumHeap + "M";
-
+      args[1] = "-Xms" + initialHeap + "M"; //NON-NLS
+      args[2] = "-Xmx" + maximumHeap + "M"; //NON-NLS
 
       ProcessWrapper proc = new ProcessLauncher().launch(args);
-
       try {
         proc.future.get(1000L, TimeUnit.MILLISECONDS);
       }
@@ -443,8 +409,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // if launch failed, use conservative heap sizes
       if (proc.future.isDone()) {
-        args[1] = "-Xms" + FAILSAFE_INITIAL_HEAP + "M";
-        args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M";
+        args[1] = "-Xms" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
+        args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
         proc = new ProcessLauncher().launch(args);
 
         try {
@@ -462,7 +428,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
         else {
           FutureUtils.wait(WarningDialog.show(
-            "Warning.maximum_heap_too_large",
+            "Warning.maximum_heap_too_large", //NON-NLS
             FAILSAFE_MAXIMUM_HEAP
           ));
         }
@@ -556,7 +522,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           ErrorDialog.showDetails(
             e,
             ThrowableUtils.getStackTrace(e),
-            "Error.socket_error"
+            "Error.socket_error" //NON-NLS
           );
         }
         else {
@@ -569,7 +535,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             clientSocket.close();
           }
           catch (IOException e) {
-            logger.error("Error while closing clientSocket", e);
+            logger.error("Error while closing clientSocket", e); //NON-NLS
           }
         }
 
@@ -578,7 +544,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             serverSocket.close();
           }
           catch (IOException e) {
-            logger.error("Error while closing serverSocket", e);
+            logger.error("Error while closing serverSocket", e); //NON-NLS
           }
         }
         children.remove(ipc);
@@ -596,46 +562,46 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       result.addAll(new CustomVmOptions().getCustomVmOptions());
 
-      result.add("-DVASSAL.id=" + id);  // instance id
-      result.add("-DVASSAL.port=" + port); // MM socket port
+      result.add("-DVASSAL.id=" + id);  // instance id //NON-NLS
+      result.add("-DVASSAL.port=" + port); // MM socket port //NON-NLS
 
       // pass on the user's home, if it's set
       final String userHome = System.getProperty("user.home");
-      if (userHome != null) result.add("-Duser.home=" + userHome);
+      if (userHome != null) result.add("-Duser.home=" + userHome); //NON-NLS
 
       // pass on the user's working dir, if it's set
       final String userDir = System.getProperty("user.dir");
-      if (userDir != null) result.add("-Duser.dir=" + userDir);
+      if (userDir != null) result.add("-Duser.dir=" + userDir); //NON-NLS
 
       // pass on VASSAL's home dir, if it's set
       final String vHome = System.getProperty("VASSAL.home");
-      if (vHome != null) result.add("-DVASSAL.home=" + vHome);
+      if (vHome != null) result.add("-DVASSAL.home=" + vHome); //NON-NLS
 
       // set the classpath
-      result.add("-cp");
+      result.add("-cp"); //NON-NLS
       result.add(System.getProperty("java.class.path"));
 
-      if (SystemUtils.IS_OS_MAC_OSX) {
-        // set the MacOS X dock parameters
+      if (SystemUtils.IS_OS_MAC) {
+        // set the MacOS dock parameters
 
         // use the module name for the dock if we found a module name
 // FIXME: should "Unnamed module" be localized?
         final String d_name = moduleName != null && moduleName.length() > 0
-          ? moduleName : "Unnamed module";
+          ? moduleName : Resources.getString("Editor.AbstractLaunchAction.unnamed_module"); //NON-NLS
 
         // get the path to the app icon
         final String d_icon = new File(Info.getBaseDir(),
           "Contents/Resources/VASSAL.icns").getAbsolutePath();
 
-        result.add("-Xdock:name=" + d_name);
-        result.add("-Xdock:icon=" + d_icon);
+        result.add("-Xdock:name=" + d_name); //NON-NLS
+        result.add("-Xdock:icon=" + d_icon); //NON-NLS
       }
       else if (SystemUtils.IS_OS_WINDOWS) {
         // Disable the 2D to Direct3D pipeline?
         final Boolean disableD3d =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
         if (Boolean.TRUE.equals(disableD3d)) {
-          result.add("-Dsun.java2d.d3d=false");
+          result.add("-Dsun.java2d.d3d=false"); //NON-NLS
         }
       }
 
@@ -717,13 +683,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                                  implements EventListener<NotifyOpenModuleOk> {
     @Override
     public void receive(Object src, final NotifyOpenModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
-          mmw.addModule(msg.lr.module);
-          mmw.setWaitCursor(false);
-        }
+      SwingUtilities.invokeLater(() -> {
+        final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+        mmw.addModule(msg.lr.module);
+        mmw.setWaitCursor(false);
       });
     }
   }
@@ -732,12 +695,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                                  implements EventListener<NotifyNewModuleOk> {
     @Override
     public void receive(Object src, NotifyNewModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
     }
   }
 
@@ -745,12 +703,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                                implements EventListener<NotifyImportModuleOk> {
     @Override
     public void receive(Object src, NotifyImportModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
     }
   }
 
@@ -758,17 +711,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                              implements EventListener<NotifyOpenModuleFailed> {
     @Override
     public void receive(Object src, NotifyOpenModuleFailed msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
 
       ErrorDialog.showDetails(
         msg.thrown,
         ThrowableUtils.getStackTrace(msg.thrown),
-        "Error.module_load_failed",
+        "Error.module_load_failed", //NON-NLS
         msg.thrown.getMessage()
       );
     }
@@ -778,12 +726,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
                                    implements EventListener<NotifySaveFileOk> {
     @Override
     public void receive(Object rc, final NotifySaveFileOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().update(msg.file);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().update(msg.file));
     }
   }
 }

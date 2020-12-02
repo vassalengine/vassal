@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import VASSAL.i18n.Resources;
 import org.w3c.dom.Element;
 
 import VASSAL.build.Buildable;
@@ -33,18 +34,18 @@ public class MapWidget extends Widget {
   }
 
   public static String getConfigureTypeName() {
-    return "Map";
+    return Resources.getString("Editor.MapWidget.component_type");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChartWindow.htm", "Map");
+    return HelpFile.getReferenceManualPage("ChartWindow.html", "Map"); //NON-NLS
   }
 
   @Override
   public void build(Element e) {
     if (e == null) {
-      WidgetMap map = new WidgetMap();
+      final WidgetMap map = new WidgetMap();
       map.build(null);
       map.addTo(this);
       add(map);
@@ -67,7 +68,7 @@ public class MapWidget extends Widget {
     if (tab == null && parent instanceof TabWidget) {
       tab = (JTabbedPane) ((TabWidget) parent).getComponent();
       if (tab.getClientProperty(TabSwitcher.class) == null) {
-        TabSwitcher switcher = new TabSwitcher(tab);
+        final TabSwitcher switcher = new TabSwitcher(tab);
         tab.putClientProperty(TabSwitcher.class, switcher);
         tab.setDropTarget(new DropTarget(tab, DnDConstants.ACTION_MOVE, switcher));
       }
@@ -109,7 +110,7 @@ public class MapWidget extends Widget {
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  "};
+    return new String[]{Resources.getString("Editor.name_label")};
   }
 
   @Override
@@ -151,8 +152,8 @@ public class MapWidget extends Widget {
     @Override
     public void dragOver(DropTargetDragEvent e) {
       if (tab != null) {
-        Point p = e.getLocation();
-        int tabNumber = tab.getUI().tabForCoordinate(tab, p.x, p.y);
+        final Point p = e.getLocation();
+        final int tabNumber = tab.getUI().tabForCoordinate(tab, p.x, p.y);
         if (tabNumber >= 0 && tabNumber != tab.getSelectedIndex()) {
           tab.setSelectedIndex(tabNumber);
           tab.repaint();

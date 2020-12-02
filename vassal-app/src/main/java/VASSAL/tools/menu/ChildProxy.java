@@ -25,9 +25,9 @@ import javax.swing.JComponent;
  * @since 3.1.0
  */
 public interface ChildProxy<T extends JComponent> {
-  public ParentProxy getParent();
+  ParentProxy getParent();
 
-  public void setParent(ParentProxy parent);
+  void setParent(ParentProxy parent);
 
-  public T createPeer();
+  T createPeer();
 }

@@ -45,6 +45,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ModuleUpdaterDialog;
+import VASSAL.configure.RemoveUnusedImagesDialog;
 import VASSAL.configure.SaveAction;
 import VASSAL.configure.SaveAsAction;
 import VASSAL.configure.ShowHelpAction;
@@ -75,7 +76,10 @@ public abstract class EditorWindow extends JFrame {
   protected final HelpWindow helpWindow = new HelpWindow(Resources.getString("Editor.ModuleEditor.reference_manual"), //$NON-NLS-1$
       null);
 
-  protected ConfigureTree tree;
+  protected ConfigureTree tree;        // The Configure Tree we are editing
+
+  protected String moduleName = "";    // Current module file if any
+  protected String extensionName = ""; // Current extension file if any
 
   public abstract String getEditorType();
 
@@ -84,7 +88,7 @@ public abstract class EditorWindow extends JFrame {
   protected final JScrollPane scrollPane;
 
   protected EditorWindow() {
-    setTitle("VASSAL " + getEditorType() + " Editor");
+    updateWindowTitle();
     setLayout(new BorderLayout());
 
     ApplicationIcons.setFor(this);
@@ -105,10 +109,10 @@ public abstract class EditorWindow extends JFrame {
     final MenuBarProxy mb = mm.getMenuBarProxyFor(this);
 
     // file menu
-    if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Editor.File", mm.addKey("Editor.save"));
-      mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));
-    } 
+    if (SystemUtils.IS_OS_MAC) {
+      mm.addToSection("Editor.File", mm.addKey("Editor.save"));  //NON-NLS
+      mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));  //NON-NLS
+    }
     else {
       final MenuProxy fileMenu = new MenuProxy(Resources.getString("General.file"));
 
@@ -134,29 +138,30 @@ public abstract class EditorWindow extends JFrame {
     editMenu.addSeparator();
     editMenu.add(mm.addKey("Editor.search"));
     editMenu.addSeparator();
-    editMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
+    editMenu.add(mm.addKey("Editor.properties"));
     editMenu.add(mm.addKey("Editor.ModuleEditor.translate"));
 
     // tools menu
     final MenuProxy toolsMenu = new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
-    toolsMenu.add(mm.addKey("create_module_updater"));
+    toolsMenu.add(mm.addKey("create_module_updater"));  //NON-NLS
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
+    toolsMenu.add(mm.addKey("Editor.UnusedImages.remove_unused_images"));
 
-    if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Editor.MenuBar", editMenu);
-      mm.addToSection("Editor.MenuBar", toolsMenu);
-    } 
+    if (SystemUtils.IS_OS_MAC) {
+      mm.addToSection("Editor.MenuBar", editMenu);  //NON-NLS
+      mm.addToSection("Editor.MenuBar", toolsMenu);  //NON-NLS
+    }
     else {
       mb.add(editMenu);
       mb.add(toolsMenu);
     }
 
     // help menu
-    if (SystemUtils.IS_OS_MAC_OSX) {
-      mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));
-    } 
+    if (SystemUtils.IS_OS_MAC) {
+      mm.addToSection("Documentation.VASSAL", mm.addKey("Editor.ModuleEditor.reference_manual"));  //NON-NLS
+    }
     else {
       final MenuProxy helpMenu = new MenuProxy(Resources.getString("General.help"));
 
@@ -164,7 +169,7 @@ public abstract class EditorWindow extends JFrame {
       // some languages
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
-      //BR// So here I "think"  I'm just adding my happy little help entries. 
+      //BR// So here I "think"  I'm just adding my happy little help entries.
       helpMenu.add(mm.addKey("Editor.ModuleEditor.table_of_contents"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.using_the_editor"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.designer_guide"));
@@ -175,7 +180,7 @@ public abstract class EditorWindow extends JFrame {
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("Editor.ModuleEditor.game_pieces_and_traits"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.expressions"));
-      helpMenu.add(mm.addKey("Editor.ModuleEditor.prop_er_ties"));
+      helpMenu.add(mm.addKey("Editor.properties"));
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
       mb.add(helpMenu);
@@ -226,20 +231,29 @@ public abstract class EditorWindow extends JFrame {
       }
     };
     createUpdater.setEnabled(false);
-    mm.addAction("create_module_updater", createUpdater);
-    
+    mm.addAction("create_module_updater", createUpdater);  //NON-NLS
+
+    mm.addAction("Editor.UnusedImages.remove_unused_images", new AbstractAction("Remove Unused Images") {  //NON-NLS
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        new RemoveUnusedImagesDialog(EditorWindow.this).setVisible(true);
+      }
+    });
+
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/index.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.table_of_contents", new ShowHelpAction("Editor.ModuleEditor.table_of_contents", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/editor.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.using_the_editor", new ShowHelpAction("Editor.ModuleEditor.using_the_editor", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -248,71 +262,66 @@ public abstract class EditorWindow extends JFrame {
       final URL url = new File(Documentation.getDocumentationBaseDir(), "designerguide/designerguide.pdf").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.designer_guide", new ShowHelpAction("Editor.ModuleEditor.designer_guide", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
-
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GameModule.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.module_components", new ShowHelpAction("Editor.ModuleEditor.module_components", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
+
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Map.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.map_components", new ShowHelpAction("Editor.ModuleEditor.map_components", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
+
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.htm").toURI().toURL();
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Toolbar.html").toURI().toURL();
       mm.addAction("Editor.ModuleEditor.toolbar_help", new ShowHelpAction("Editor.ModuleEditor.toolbar_help", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
 
-
-    
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.htm").toURI()
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/GamePiece.html").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.game_pieces_and_traits", new ShowHelpAction("Editor.ModuleEditor.game_pieces_and_traits", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
-    
+
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.htm").toURI()
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Expression.html").toURI()
           .toURL();
       mm.addAction("Editor.ModuleEditor.expressions", new ShowHelpAction("Editor.ModuleEditor.expressions", url, null));
-    } 
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    
-    
+
     try {
-      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.htm").toURI()
+      final URL url = new File(Documentation.getDocumentationBaseDir(), "ReferenceManual/Properties.html").toURI()
           .toURL();
-      
-      //BR// I dunno why this different pattern was used here. But "thangs warn't right" in general (this was the buggiest entry in the 3.2.17 version of this, and the gif thing had no noticeable effect) so I've just made it work like the others.      
-      
+
+      //BR// I dunno why this different pattern was used here. But "thangs warn't right" in general (this was the buggiest entry in the 3.2.17 version of this, and the gif thing had no noticeable effect) so I've just made it work like the others.
+
       //final ShowHelpAction helpAction = new ShowHelpAction(url,
       //    helpWindow.getClass().getResource("/images/Help16.gif"));
-      //helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$      
+      //helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
       //toolBar.add(helpAction);
-      
-      mm.addAction("Editor.ModuleEditor.prop_er_ties", new ShowHelpAction("Editor.ModuleEditor.prop_er_ties", url, null));
-    } 
+
+      mm.addAction("Editor.properties", new ShowHelpAction("Editor.properties", url, null));
+    }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
@@ -332,8 +341,43 @@ public abstract class EditorWindow extends JFrame {
     pack();
   }
 
+  /**
+   * @param name Filename to check
+   * @return true if this is a "temporary file" (according to the temp-file-making scheme of {@link VASSAL.tools.io.ZipArchive})
+   */
+  boolean isTempFile(String name) {
+    return name == null ||
+           name.isEmpty() ||
+           ("tmp".equals(name.substring(0, 3)) && name.contains(".zip"));  //NON-NLS
+  }
+
+  void setModuleName(String name) {
+    if (isTempFile(name)) {
+      moduleName = Resources.getString("Editor.ModuleEditor.creating_new_module");
+    }
+    else {
+      moduleName = name;
+    }
+    updateWindowTitle();
+  }
+
+  void setExtensionName(String name) {
+    if (isTempFile(name)) {
+      extensionName = Resources.getString("Editor.ExtensionEditor.creating_new_extension");
+    }
+    else {
+      extensionName = name;
+    }
+
+    extensionName = name;
+    updateWindowTitle();
+  }
+
+  void updateWindowTitle() {
+  }
+
   protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
-    for (ChildProxy<?> c : mb.getChildren()) {
+    for (final ChildProxy<?> c : mb.getChildren()) {
       if (c instanceof MenuProxy) {
         final MenuProxy m = (MenuProxy) c;
         if (name.equals(m.getText()))
@@ -359,7 +403,7 @@ public abstract class EditorWindow extends JFrame {
     GameModule.getGameModule().validate(GameModule.getGameModule(), report);
     if (report.getWarnings().size() == 0) {
       save.run();
-    } 
+    }
     else {
       new ValidationReportDialog(report, new ValidationReportDialog.CallBack() {
         @Override

@@ -39,7 +39,7 @@ The main utility for building modules is the Module Editor, an easy -to-use tool
 
 You install the Module Editor when you install VASSAL, along with the VASSAL Player, the Module Manager, the Extension Editor, and other tools. Youʼll be using the Module Editor in conjunction with the Module Manager. For complete VASSAL installation instructions and directions on how to use the Module Manager, consult the _VASSAL_ _Userʼs Guide._
 
-The Module Editor looks and operates the same on all platforms: Windows, Mac OS X, Linux, and all other platforms.
+The Module Editor looks and operates the same on all platforms: Windows, MacOS, Linux, and all other platforms.
 
 _*Launching the Module Editor*_
 

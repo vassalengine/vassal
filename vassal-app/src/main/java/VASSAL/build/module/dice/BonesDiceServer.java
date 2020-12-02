@@ -50,18 +50,18 @@ public class BonesDiceServer extends DieServer {
 
   @Override
   public String[] buildInternetRollString(RollSet toss) {
-    DieRoll[] rolls = toss.getDieRolls();
-    StringBuilder query = new StringBuilder("req=");
+    final DieRoll[] rolls = toss.getDieRolls();
+    final StringBuilder query = new StringBuilder("req=");
 
     // format is "{{ xdy + n }}"
-    for (DieRoll roll : rolls) {
+    for (final DieRoll roll : rolls) {
       query.append("{{")
            .append(roll.getNumDice())
-           .append("D")
+           .append('D')
            .append(roll.getNumSides());
 
       if (roll.getPlus() != 0) {
-        query.append("+").append(roll.getPlus());
+        query.append('+').append(roll.getPlus());
       }
 
       query.append("}}\n");
@@ -110,7 +110,7 @@ public class BonesDiceServer extends DieServer {
     final URL url = new URL(rollString[0]);
     final HttpURLConnection connection =
       (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod("GET");
+    connection.setRequestMethod("GET"); //NON-NLS
     connection.connect();
 
     try (BufferedReader in = new BufferedReader(

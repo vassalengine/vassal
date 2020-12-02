@@ -7,23 +7,21 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
+
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import VASSAL.Info;
-import VASSAL.tools.io.IOUtils;
-
 
 public class VersionUtils {
   protected VersionUtils() {}
 
-  private static final String baseURL = "http://www.vassalengine.org/util/";
+  private static final String baseURL = "http://www.vassalengine.org/util/"; //NON-NLS
 
-  private static final String currentRelease = "current-release";
-  private static final String currentBeta = "current-beta";
-  private static final String bugCheck = "check-version-bug.php?version=";
-
+  private static final String currentRelease = "current-release"; //NON-NLS
+  private static final String currentBeta = "current-beta"; //NON-NLS
 
   private static String release = null;
   private static String beta = null;
@@ -57,7 +55,7 @@ public class VersionUtils {
    *
    * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from
-   * the parseable parts of the two <code>String</code>s.
+   * the parsable parts of the two <code>String</code>s.
    */
   public static int compareVersions(String v0, String v1) {
     final ComparableVersion comparableVersion0 = new ComparableVersion(v0);
@@ -105,6 +103,6 @@ public class VersionUtils {
   }
 
   public static void main(String[] args) throws IOException {
-    System.out.println(Info.getVersion() + " is current? " + isCurrent(Info.getVersion()));
+    System.out.println(Info.getVersion() + " is current? " + isCurrent(Info.getVersion())); //NON-NLS
   }
 }

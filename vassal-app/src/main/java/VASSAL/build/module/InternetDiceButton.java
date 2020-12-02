@@ -45,10 +45,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   /** Report format variale */
   public static final String DETAILS = "rollDetails"; //$NON-NLS-1$
 
-  public InternetDiceButton() {
-    super();
-  }
-
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.InternetDiceButton.component_type"); //$NON-NLS-1$
   }
@@ -121,24 +117,24 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
 
   @Override
   public Command decode(String command) {
-    Command comm = null;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      comm = new SetSecondaryEmail(command.substring(COMMAND_PREFIX.length()));
+    if (!command.startsWith(COMMAND_PREFIX)) {
+      return null;
     }
-    return comm;
+
+    return new SetSecondaryEmail(command.substring(COMMAND_PREFIX.length()));
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
-    if (c instanceof SetSecondaryEmail) {
-      s = COMMAND_PREFIX + ((SetSecondaryEmail) c).msg;
+    if (!(c instanceof SetSecondaryEmail)) {
+      return null;
     }
-    return s;
+
+    return COMMAND_PREFIX + ((SetSecondaryEmail) c).msg;
   }
 
   private static class SetSecondaryEmail extends Command {
-    private String msg;
+    private final String msg;
 
     private SetSecondaryEmail(String s) {
       msg = s;
@@ -157,6 +153,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "InternetDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "InternetDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

@@ -16,6 +16,8 @@
  * at http://www.opensource.org.
  */
 
+// TODO - This was never implemented
+
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;

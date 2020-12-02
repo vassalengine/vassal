@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
 import java.util.Collections;
 import java.util.List;
 
@@ -110,14 +111,13 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public BufferedImage eval() throws ImageIOException {
     try (InputStream in = getInputStream()) {
-      final BufferedImage img = ImageUtils.getImage(name, in);
-      return img;
+      return ImageUtils.getImage(name, in);
     }
     catch (ImageIOException e) {
       // Don't wrap, just rethrow.
       throw e;
     }
-    catch (FileNotFoundException e) {
+    catch (FileNotFoundException | NoSuchFileException e) {
       throw new ImageNotFoundException(name, e);
     }
     catch (IOException e) {
@@ -139,14 +139,13 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   protected Dimension getImageSize() {
     try {
       try (InputStream in = getInputStream()) {
-        final Dimension d = ImageUtils.getImageSize(name, in);
-        return d;
+        return ImageUtils.getImageSize(name, in);
       }
       catch (ImageIOException e) {
         // Don't wrap, just rethrow.
         throw e;
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         throw new ImageNotFoundException(name, e);
       }
       catch (IOException e) {
@@ -194,6 +193,6 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return getClass().getName() + "[name=" + name + "]";
+    return getClass().getName() + "[name=" + name + "]";  //NON-NLS
   }
 }

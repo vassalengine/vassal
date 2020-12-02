@@ -17,23 +17,8 @@
  */
 package VASSAL.configure;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AudioClip;
 import VASSAL.tools.AudioSystemClip;
 import VASSAL.tools.Mp3AudioClip;
@@ -42,18 +27,30 @@ import VASSAL.tools.URLUtils;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
 
+import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.swing.JButton;
+import javax.swing.JTextField;
+
 /**
  * Configurer for specifying a Clip. This class is intended to allow
  * players to override a default sound with their own sound file on their
  * local file system.
  */
 public class SoundConfigurer extends Configurer {
-  public static final String DEFAULT = "default";
-  private String defaultResource;
+  public static final String DEFAULT = "default"; //NON-NLS
+  private final String defaultResource;
   private String clipName;
-  private JPanel controls;
+  private ConfigurerPanel controls;
   private JTextField textField;
-  private AudioClipFactory clipFactory;
+  private final AudioClipFactory clipFactory;
+
+  //FIXME this needs some i18n scheme and preferably the display version should be [disabled] while leaving file version alone.
   private static final String NO_VALUE = "<disabled>";
 
   public SoundConfigurer(String key, String name, String defaultResource) {
@@ -66,40 +63,21 @@ public class SoundConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
-      controls.add(new JLabel(name));
-      JButton b = new JButton("Play");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          play();
-        }
-      });
+      controls = new ConfigurerPanel(getName(), "[]rel[]rel[]rel[grow,fill]", "[]rel[]rel[]rel[]rel[grow,fill]"); // NON-NLS
+
+      JButton b = new JButton(Resources.getString("Editor.SoundConfigurer.play"));
+      b.addActionListener(e -> play());
       controls.add(b);
-      b = new JButton("Default");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue(DEFAULT);
-        }
-      });
+      b = new JButton(Resources.getString("Editor.SoundConfigurer.default"));
+      b.addActionListener(e -> setValue(DEFAULT));
       controls.add(b);
-      b = new JButton("Select");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          chooseClip();
-        }
-      });
+      b = new JButton(Resources.getString("Editor.SoundConfigurer.select"));
+      b.addActionListener(e -> chooseClip());
       controls.add(b);
-      textField = new JTextField();
-      textField.setMaximumSize(
-        new Dimension(textField.getMaximumSize().width,
-                      textField.getPreferredSize().height));
+      textField = new JTextField(20);
       textField.setEditable(false);
       textField.setText(DEFAULT.equals(clipName) ? defaultResource : clipName);
-      controls.add(textField);
+      controls.add(textField, "growx"); // NON-NLS
     }
     return controls;
   }
@@ -120,7 +98,7 @@ public class SoundConfigurer extends Configurer {
     }
     URL url = null;
     if (DEFAULT.equals(s)) {
-      url = getClass().getResource("/images/" + defaultResource);
+      url = getClass().getResource("/images/" + defaultResource); //NON-NLS
       clipName = s;
     }
     else if (NO_VALUE.equals(s)) {
@@ -155,24 +133,22 @@ public class SoundConfigurer extends Configurer {
     }
   }
 
+  @FunctionalInterface
   protected interface AudioClipFactory {
-    public AudioClip getAudioClip(URL url) throws IOException;
+    AudioClip getAudioClip(URL url) throws IOException;
   }
 
   protected AudioClipFactory createAudioClipFactory() {
-    return new AudioClipFactory() {
-      @Override
-      public AudioClip getAudioClip(URL url) {
-        if (url.toString().toLowerCase().endsWith(".mp3")) {
-          return new Mp3AudioClip(url);
+    return url -> {
+      if (url.toString().toLowerCase().endsWith(".mp3")) { //NON-NLS
+        return new Mp3AudioClip(url);
+      }
+      else {
+        try (InputStream in = url.openStream()) {
+          return new AudioSystemClip(in);
         }
-        else {
-          try (InputStream in = url.openStream()) {
-            return new AudioSystemClip(in);
-          }
-          catch (IOException e) {
-            return null;
-          }
+        catch (IOException e) {
+          return null;
         }
       }
     };
@@ -193,8 +169,13 @@ public class SoundConfigurer extends Configurer {
       setValue(NO_VALUE);
     }
     else {
-      File f = fc.getSelectedFile();
+      final File f = fc.getSelectedFile();
       setValue(f.getName());
     }
+  }
+
+  @Override
+  public void setLabelVisibile(boolean visible) {
+    controls.setLabelVisibility(visible);
   }
 }

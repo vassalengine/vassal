@@ -66,7 +66,7 @@ public class Player extends Launcher {
 
   @Override
   protected MenuManager createMenuManager() {
-    return SystemUtils.IS_OS_MAC_OSX ?
+    return SystemUtils.IS_OS_MAC ?
       new MacOSXMenuManager() : new PlayerMenuManager();
   }
 
@@ -76,7 +76,7 @@ public class Player extends Launcher {
       GameModule.init(createModule(createDataArchive()));
 
       if (lr.autoext != null) {
-        for (String ext : lr.autoext) {
+        for (final String ext : lr.autoext) {
           createExtension(ext).build();
         }
       }
@@ -92,6 +92,7 @@ public class Player extends Launcher {
       final GameModule m = GameModule.getGameModule();
       if (lr.game != null) {
         m.getPlayerWindow().setVisible(true);
+        m.setGameFile(lr.game.getName(), GameModule.GameFileMode.LOADED_GAME);
         m.getGameState().loadGameInBackground(lr.game);
       }
       else {
@@ -109,7 +110,7 @@ public class Player extends Launcher {
         ErrorDialog.showDetails(
           e,
           ThrowableUtils.getStackTrace(e),
-          "Error.socket_error"
+          "Error.socket_error" //NON-NLS
         );
       }
     }
@@ -133,7 +134,7 @@ public class Player extends Launcher {
   }
 
   protected GameModule createModule(DataArchive archive) {
-    return new BasicModule(archive);
+    return new GameModule(archive);
   }
 
   /**
@@ -189,16 +190,16 @@ public class Player extends Launcher {
       if (data instanceof ModuleMetaData) {
         final ModuleMetaData md = (ModuleMetaData) data;
         if (VersionUtils.compareVersions(md.getVassalVersion(), "3.4") < 0) {
-          if ("VASL".equals(md.getName())) {
+          if ("VASL".equals(md.getName())) { //NON-NLS
             ErrorDialog.show(
-              "Error.VASL_too_old",
+              "Error.VASL_too_old", //NON-NLS
               Info.getVersion()
             );
             return;
           }
-          else if ("VSQL".equals(md.getName())) {
+          else if ("VSQL".equals(md.getName())) { //NON-NLS
             ErrorDialog.show(
-              "Error.VSQL_too_old",
+              "Error.VSQL_too_old", //NON-NLS
               Info.getVersion()
             );
             return;
@@ -246,7 +247,7 @@ public class Player extends Launcher {
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data != null && Info.isModuleTooNew(data.getVassalVersion())) {
         ErrorDialog.show(
-          "Error.module_too_new",
+          "Error.module_too_new", //NON-NLS
           lr.module.getPath(),
           data.getVassalVersion(),
           Info.getVersion()

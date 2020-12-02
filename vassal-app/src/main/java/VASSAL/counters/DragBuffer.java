@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -33,6 +32,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import VASSAL.build.module.Map;
+import VASSAL.tools.ProblemDialog;
 
 public class DragBuffer {
   private static final DragBuffer THE_BUFFER = new DragBuffer();
@@ -43,7 +43,9 @@ public class DragBuffer {
   private MouseListener dropHandler;
   private Map dragFromMap;
 
-  private DragBuffer() { }
+  private DragBuffer() {
+
+  }
 
   public static DragBuffer getBuffer() {
     return THE_BUFFER;
@@ -54,7 +56,7 @@ public class DragBuffer {
         !pieces.contains(p) &&
         !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED_MOVEMENT))) {
       if (p instanceof Stack) {
-        for (GamePiece gamePiece : ((Stack) p).asList()) {
+        for (final GamePiece gamePiece : ((Stack) p).asList()) {
           if (Boolean.TRUE.equals(
                 gamePiece.getProperty(Properties.RESTRICTED_MOVEMENT))) {
             return;
@@ -86,7 +88,7 @@ public class DragBuffer {
       @Override
       public void mouseReleased(MouseEvent e) {
         e.getComponent().setCursor(null);
-        Component source = (Component) e.getSource();
+        final Component source = (Component) e.getSource();
 
         e.translatePoint(source.getLocationOnScreen().x,
                          source.getLocationOnScreen().y);
@@ -107,7 +109,7 @@ public class DragBuffer {
     c.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseEntered(MouseEvent e) {
-        Component source = (Component) e.getSource();
+        final Component source = (Component) e.getSource();
         if (source.isShowing()) {
           if (lastRelease != null) {
             e.translatePoint(source.getLocationOnScreen().x,
@@ -144,9 +146,9 @@ public class DragBuffer {
    * @return true if the DragBuffer contains all members of Stack s
    * @param s Stack to test.
    */
-  public boolean containsAllMembers (Stack s) {
-    List<GamePiece> members = s.asList();
-    for (GamePiece p : members) {
+  public boolean containsAllMembers(Stack s) {
+    final List<GamePiece> members = s.asList();
+    for (final GamePiece p : members) {
       if (!contains(p)) {
         return false;
       }
@@ -172,7 +174,7 @@ public class DragBuffer {
 
   public String contents() {
     String s = "";
-    for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
+    for (final Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
       s = s.concat(i.next().getName());
       if (i.hasNext())
         s = s.concat(",");
@@ -181,14 +183,14 @@ public class DragBuffer {
   }
 
   public static void main(String[] args) {
-    JFrame f1 = new JFrame();
+    final JFrame f1 = new JFrame();
     f1.setSize(200, 200);
     f1.setVisible(true);
-    JFrame f2 = new JFrame();
+    final JFrame f2 = new JFrame();
     f2.setSize(200, 200);
     f2.setLocation(200, 0);
     f2.setVisible(true);
-    MouseListener l = new MouseAdapter() {
+    final MouseListener l = new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent evt) {
         evt.translatePoint(((JFrame) evt.getSource()).getLocationOnScreen().x, ((JFrame) evt.getSource()).getLocationOnScreen().y);

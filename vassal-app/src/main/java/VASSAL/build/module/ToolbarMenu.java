@@ -18,8 +18,6 @@
 package VASSAL.build.module;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.beans.PropertyChangeEvent;
@@ -31,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractButton;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -39,7 +36,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
@@ -47,8 +44,8 @@ import VASSAL.command.Command;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ToolBarComponent;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Takes buttons from the toolbar of a Map or the main module and places
@@ -57,16 +54,19 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  *
  */
-public class ToolbarMenu extends AbstractConfigurable
+public class ToolbarMenu extends AbstractToolbarItem
                          implements ContainerListener,
                                     PropertyChangeListener,
                                     GameComponent {
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String BUTTON_ICON = "icon"; //$NON-NLS-1$
-  public static final String BUTTON_HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String DESCRIPTION = "description"; //NON-NLS //non-standard legacy name key different from AbstractToolbarItem
+
+  // These four items here for clirr purposes
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_ICON = "icon"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_HOTKEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+
   public static final String MENU_ITEMS = "menuItems"; //$NON-NLS-1$
-  public static final String DESCRIPTION = "description"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
   public static final String HIDDEN_BY_TOOLBAR = "hidden"; //$NON-NLS-1$
@@ -79,55 +79,36 @@ public class ToolbarMenu extends AbstractConfigurable
   protected Runnable menuBuilder;
 
   public ToolbarMenu() {
-    launch = new LaunchButton(Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    setNameKey(DESCRIPTION); // We have a legacy name key that's different from the standard AbstractToolbarItem name key
+    launch = makeLaunchButton(Resources.getString("Editor.ToolbarMenu.tooltip_text"),
+                              Resources.getString(Resources.MENU), "", e -> launch());
     menu = new JPopupMenu();
-    launch.putClientProperty(MENU_PROPERTY, menu);
-    launch.setToolTipText("Display Menu Options");
+    getLaunchButton().putClientProperty(MENU_PROPERTY, menu);
     GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   public void launch() {
-    menu.show(launch, 0, 0);
+    menu.show(getLaunchButton(), 0, 0);
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[] {
-        Resources.getString(Resources.DESCRIPTION),
-        Resources.getString(Resources.BUTTON_TEXT),
-        Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString("Editor.ToolbarMenu.menu_entries")}; //$NON-NLS-1$
+    return ArrayUtils.addAll(super.getAttributeDescriptions(),
+                             Resources.getString("Editor.ToolbarMenu.menu_entries")); //$NON-NLS-1$
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      String.class,
-      Icon.class,
-      NamedKeyStroke.class,
-      String[].class
-    };
+    return ArrayUtils.addAll(super.getAttributeTypes(),
+                             String[].class
+    );
   }
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {
-      DESCRIPTION,
-      BUTTON_TEXT,
-      TOOLTIP,
-      BUTTON_ICON,
-      BUTTON_HOTKEY,
+    return ArrayUtils.addAll(super.getAttributeNames(),
       MENU_ITEMS
-    };
+    );
   }
 
   @Override
@@ -136,11 +117,8 @@ public class ToolbarMenu extends AbstractConfigurable
       return StringArrayConfigurer.arrayToString(
         menuItems.toArray(new String[0]));
     }
-    else if (DESCRIPTION.equals(key)) {
-      return getConfigureName();
-    }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -155,14 +133,8 @@ public class ToolbarMenu extends AbstractConfigurable
         scheduleBuildMenu();
       }
     }
-    else if (BUTTON_TEXT.equals(key)) {
-      launch.setAttribute(key, value);
-    }
-    else if (DESCRIPTION.equals(key)) {
-      setConfigureName((String) value);
-    }
     else {
-      launch.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
@@ -171,7 +143,7 @@ public class ToolbarMenu extends AbstractConfigurable
     if (parent instanceof ToolBarComponent) {
       toolbar = ((ToolBarComponent) parent).getToolBar();
     }
-    toolbar.add(launch);
+    toolbar.add(getLaunchButton());
     toolbar.addContainerListener(this);
     scheduleBuildMenu();
   }
@@ -183,7 +155,7 @@ public class ToolbarMenu extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ToolbarMenu.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ToolbarMenu.html"); //$NON-NLS-1$
   }
 
   public static String getConfigureTypeName() {
@@ -192,23 +164,24 @@ public class ToolbarMenu extends AbstractConfigurable
 
   @Override
   public void removeFrom(Buildable parent) {
-    toolbar.remove(launch);
+    toolbar.remove(getLaunchButton());
     toolbar.removeContainerListener(this);
   }
 
   protected void buildMenu() {
-    for (AbstractButton b : buttonsToMenuMap.keySet()) {
+    for (final AbstractButton b : buttonsToMenuMap.keySet()) {
       b.removePropertyChangeListener(this);
       b.setVisible(true);
       b.putClientProperty(HIDDEN_BY_TOOLBAR, null);
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
-    HashMap<String, JButton> nameToButton = new HashMap<>();
+    final HashMap<String, JButton> nameToButton = new HashMap<>();
     if (toolbar != null) {
-      for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
+      final int n = toolbar.getComponentCount();
+      for (int i = 0; i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {
-          JButton b = ((JButton) toolbar.getComponentAtIndex(i));
+          final JButton b = ((JButton) toolbar.getComponentAtIndex(i));
           String text =
             (String) b.getClientProperty(LaunchButton.UNTRANSLATED_TEXT);
           if (text == null) {
@@ -219,10 +192,10 @@ public class ToolbarMenu extends AbstractConfigurable
       }
     }
 
-    for (String item : menuItems) {
+    for (final String item : menuItems) {
       final JButton b = nameToButton.get(item);
       if (b != null) {
-        Object property = b.getClientProperty(MENU_PROPERTY);
+        final Object property = b.getClientProperty(MENU_PROPERTY);
         b.addPropertyChangeListener(this);
         b.setVisible(false);
         b.putClientProperty(HIDDEN_BY_TOOLBAR, Boolean.TRUE);
@@ -230,20 +203,15 @@ public class ToolbarMenu extends AbstractConfigurable
         if (property instanceof JPopupMenu) {
           // This button corresponds to another ToolbarMenu button.
           // Turn it into a submenu.
-          JPopupMenu toolbarMenu = (JPopupMenu) property;
+          final JPopupMenu toolbarMenu = (JPopupMenu) property;
           toolbarMenu.addContainerListener(this);
-          JMenu subMenu = new JMenu(b.getText());
-          Component[] items = toolbarMenu.getComponents();
-          for (Component component : items) {
+          final JMenu subMenu = new JMenu(b.getText());
+          final Component[] items = toolbarMenu.getComponents();
+          for (final Component component : items) {
             final JMenuItem otherItem = (JMenuItem) component;
-            JMenuItem myItem =
+            final JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
-            myItem.addActionListener(new ActionListener() {
-              @Override
-              public void actionPerformed(ActionEvent e) {
-                otherItem.doClick();
-              }
-            });
+            myItem.addActionListener(e -> otherItem.doClick());
             subMenu.add(myItem);
             buttonsToMenuMap.put(otherItem, myItem);
           }
@@ -251,14 +219,9 @@ public class ToolbarMenu extends AbstractConfigurable
           menu.add(subMenu);
         }
         else {
-          JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
+          final JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
           mi.setEnabled(b.isEnabled());
-          mi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              b.doClick();
-            }
-          });
+          mi.addActionListener(e -> b.doClick());
           buttonsToMenuMap.put(b, mi);
           menu.add(mi);
         }
@@ -268,12 +231,9 @@ public class ToolbarMenu extends AbstractConfigurable
 
   protected void scheduleBuildMenu() {
     if (menuBuilder == null) {
-      menuBuilder = new Runnable() {
-        @Override
-        public void run() {
-          buildMenu();
-          menuBuilder = null;
-        }
+      menuBuilder = () -> {
+        buildMenu();
+        menuBuilder = null;
       };
       SwingUtilities.invokeLater(menuBuilder);
     }
@@ -291,8 +251,8 @@ public class ToolbarMenu extends AbstractConfigurable
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    JButton b = (JButton) evt.getSource();
-    JMenuItem mi = buttonsToMenuMap.get(b);
+    final JButton b = (JButton) evt.getSource();
+    final JMenuItem mi = buttonsToMenuMap.get(b);
     if (mi != null) {
       if (AbstractButton.TEXT_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
         scheduleBuildMenu();
@@ -317,4 +277,14 @@ public class ToolbarMenu extends AbstractConfigurable
     return null;
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    final List<String> l = new ArrayList<>(super.getMenuTextList());
+    l.addAll(menuItems);
+    return l;
+  }
 }

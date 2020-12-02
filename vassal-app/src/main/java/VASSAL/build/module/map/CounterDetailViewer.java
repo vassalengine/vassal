@@ -37,6 +37,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -60,10 +62,12 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.ColoredBorder;
@@ -76,7 +80,9 @@ import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
@@ -90,47 +96,57 @@ import VASSAL.tools.swing.SwingUtils;
  */
 public class CounterDetailViewer extends AbstractConfigurable implements Drawable, DragSourceMotionListener, MouseMotionListener, MouseListener, KeyListener {
 
-  public static final String LATEST_VERSION = "2";
-  public static final String USE_KEYBOARD = "ShowCounterDetails";
-  public static final String PREFERRED_DELAY = "PreferredDelay";
+  public static final String LATEST_VERSION = "2";                //NON-NLS
+  public static final String USE_KEYBOARD = "ShowCounterDetails"; //NON-NLS
+  public static final String PREFERRED_DELAY = "PreferredDelay";  //NON-NLS
 
-  public static final String DELAY = "delay";
+  public static final String DELAY = "delay"; //NON-NLS
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static final String ALWAYS_SHOW_LOC = "alwaysshowloc";
-  public static final String DRAW_PIECES = "showgraph";
-  public static final String GRAPH_SINGLE_DEPRECATED = "showgraphsingle";
-  public static final String MINIMUM_DISPLAYABLE = "minDisplayPieces";
-  public static final String HOTKEY = "hotkey";
+  public static final String ALWAYS_SHOW_LOC = "alwaysshowloc"; //NON-NLS
+  public static final String DRAW_PIECES = "showgraph"; //NON-NLS
+  public static final String GRAPH_SINGLE_DEPRECATED = "showgraphsingle"; //NON-NLS
+  public static final String MINIMUM_DISPLAYABLE = "minDisplayPieces"; //NON-NLS
+  public static final String HOTKEY = "hotkey"; //NON-NLS
 
-  public static final String SHOW_TEXT = "showtext";
-  public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle";
-  public static final String ZOOM_LEVEL = "zoomlevel";
-  public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom";
-  public static final String BORDER_WIDTH = "borderWidth";
-  public static final String SHOW_NOSTACK = "showNoStack";
-  public static final String SHOW_MOVE_SELECTED = "showMoveSelectde";
-  public static final String SHOW_NON_MOVABLE = "showNonMovable";
-  public static final String SHOW_DECK = "showDeck";
-  public static final String SHOW_OVERLAP = "showOverlap";
-  public static final String UNROTATE_PIECES = "unrotatePieces";
-  public static final String DISPLAY = "display";
-  public static final String LAYER_LIST = "layerList";
-  public static final String SUMMARY_REPORT_FORMAT = "summaryReportFormat";
-  public static final String COUNTER_REPORT_FORMAT = "counterReportFormat";
-  public static final String EMPTY_HEX_REPORT_FORMAT = "emptyHexReportForma";
-  public static final String VERSION = "version";
-  public static final String FG_COLOR = "fgColor";
-  public static final String BG_COLOR = "bgColor";
-  public static final String FONT_SIZE = "fontSize";
-  public static final String PROPERTY_FILTER = "propertyFilter";
+  public static final String DESCRIPTION = "description"; //NON-NLS
+  public static final String CENTER_TEXT = "centerText"; //NON-NLS
+  public static final String CENTER_ALL  = "centerAll"; //NON-NLS
+  public static final String COMBINE_COUNTER_SUMMARY = "combineCounterSummary"; //NON-NLS
+  public static final String VERTICAL_OFFSET = "verticalOffset"; //NON-NLS
+  public static final String VERTICAL_TOP_TEXT = "verticalTopText"; //NON-NLS
+  public static final String STRETCH_WIDTH_SUMMARY = "stretchWidthSummary"; //NON-NLS
+  public static final String SHOW_TEXT = "showtext"; //NON-NLS
+  public static final String ENABLE_HTML = "enableHTML"; //NON-NLS
+  public static final String SHOW_TEXT_SINGLE_DEPRECATED = "showtextsingle"; //NON-NLS
+  public static final String ZOOM_LEVEL = "zoomlevel"; //NON-NLS
+  public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom"; //NON-NLS
+  public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
+  public static final String SHOW_NOSTACK = "showNoStack"; //NON-NLS
+  public static final String SHOW_MOVE_SELECTED = "showMoveSelectde"; //NON-NLS
+  public static final String SHOW_NON_MOVABLE = "showNonMovable"; //NON-NLS
+  public static final String SHOW_DECK = "showDeck"; //NON-NLS
+  public static final String SHOW_DECK_DEPTH = "showDeckDepth"; //NON-NLS
+  public static final String SHOW_OVERLAP = "showOverlap"; //NON-NLS
+  public static final String UNROTATE_PIECES = "unrotatePieces"; //NON-NLS
+  public static final String DISPLAY = "display"; //NON-NLS
+  public static final String LAYER_LIST = "layerList"; //NON-NLS
+  public static final String SUMMARY_REPORT_FORMAT = "summaryReportFormat"; //NON-NLS
+  public static final String COUNTER_REPORT_FORMAT = "counterReportFormat"; //NON-NLS
+  public static final String EMPTY_HEX_REPORT_FORMAT = "emptyHexReportForma"; //NON-NLS
+  public static final String VERSION = "version"; //NON-NLS
+  public static final String FG_COLOR = "fgColor"; //NON-NLS
+  public static final String BG_COLOR = "bgColor"; //NON-NLS
+  public static final String FONT_SIZE = "fontSize"; //NON-NLS
+  public static final String EXTRA_TEXT_PADDING = "extraTextPadding"; //NON-NLS
+  public static final String PROPERTY_FILTER = "propertyFilter"; //NON-NLS
 
-  public static final String TOP_LAYER = "from top-most layer only";
-  public static final String ALL_LAYERS = "from all layers";
-  public static final String INC_LAYERS = "from listed layers only";
-  public static final String EXC_LAYERS = "from layers other than those listed";
-  public static final String FILTER = "by using a property filter";
+  public static final String TOP_LAYER = "from top-most layer only";             //NON-NLS (yes, really)
+  public static final String ALL_LAYERS = "from all layers";                     //NON-NLS (yes, really)
+  public static final String INC_LAYERS = "from listed layers only";             //NON-NLS (yes, really)
+  public static final String EXC_LAYERS = "from layers other than those listed"; //NON-NLS (yes, really)
+  public static final String FILTER = "by using a property filter";              //NON-NLS (yes, really)
 
-  public static final String SUM = "sum(propertyName)";
+  public static final String SUM = "sum(propertyName)"; //NON-NLS
 
   protected KeyStroke hotkey =
     KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK);
@@ -142,6 +158,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean textVisible = false;
   protected MouseEvent currentMousePosition;
 
+  protected String desc = ""; //NON-NLS
   protected int minimumDisplayablePieces = 2;
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected boolean alwaysShowLoc = false;
@@ -149,28 +166,38 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean drawSingleDeprecated = false;
   protected boolean showText = false;
   protected boolean showTextSingleDeprecated = false;
+  protected boolean enableHTML = false;
+  protected boolean centerAll  = false;
+  protected boolean centerText = false;
+  protected boolean combineCounterSummary = false;
+  protected int verticalOffset = 0;
+  protected int verticalTopText = 5;
+  protected boolean stretchWidthSummary = false;
   protected boolean unrotatePieces = false;
   protected boolean showDeck = false;
+  protected static int showDeckDepth = 1;
   protected boolean showOverlap = false;
   protected double zoomLevel = 1.0;
   protected double graphicsZoomLevel = 1.0;
   protected int borderWidth = 0;
+  protected int extraTextPadding = 0;
   protected boolean showNoStack = false;
   protected boolean showMoveSelected = false;
   protected boolean showNonMovable = false;
   protected String displayWhat = TOP_LAYER;
   protected String[] displayLayers = new String[0];
-  protected FormattedString summaryReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$");
-  protected FormattedString counterReportFormat = new FormattedString("");
-  protected FormattedString emptyHexReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$");
-  protected String version = "";
+  protected FormattedString summaryReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$"); //NON-NLS
+  protected FormattedString counterReportFormat = new FormattedString(""); //NON-NLS
+  protected FormattedString emptyHexReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$"); //NON-NLS
+  protected String version = ""; //NON-NLS
   protected Color fgColor = Color.black;
   protected Color bgColor;
   protected int fontSize = 9;
-  protected Font font = new Font("Dialog", Font.PLAIN, fontSize);
+  protected Font font = new Font("Dialog", Font.PLAIN, fontSize); //NON-NLS
   protected PropertyExpression propertyFilter = new PropertyExpression();
 
   protected Rectangle bounds = new Rectangle();
+  protected Rectangle lastPieceBounds = new Rectangle();
   protected boolean mouseInView = true;
   protected List<GamePiece> displayablePieces = null;
 
@@ -193,7 +220,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     view = map.getView();
     validator = new SingleChildInstance(map, getClass());
     map.addDrawComponent(this);
-    String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")";
+    final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
         new BooleanConfigurer(USE_KEYBOARD, Resources.getString("CounterDetailViewer.use_prompt", keyDesc), Boolean.FALSE));
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
@@ -250,7 +277,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    */
   @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
   protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, PieceIterator pi) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     final ArrayList<GamePiece> a = new ArrayList<>();
     while (pi.hasMoreElements()) {
       a.add(pi.nextPiece());
@@ -280,13 +307,24 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     visibleRect.width *= os_scale;
     visibleRect.height *= os_scale;
 
+    final int origX = dbounds.x;
+
+    // Account for edges of window, stuff like that
     dbounds.x = Math.min(dbounds.x, visibleRect.x + visibleRect.width - dbounds.width);
-    if (dbounds.x < visibleRect.x)
-      dbounds.x = visibleRect.x;
+    dbounds.x = Math.max(dbounds.x, visibleRect.x);
     dbounds.y = Math.min(dbounds.y, visibleRect.y + visibleRect.height - dbounds.height) - (isTextUnderCounters() ? 15 : 0);
-    int minY = visibleRect.y + (textVisible ? g.getFontMetrics().getHeight() + 6 : 0);
-    if (dbounds.y < minY)
-      dbounds.y = minY;
+    dbounds.y = Math.max(dbounds.y, visibleRect.y + (textVisible ? g.getFontMetrics().getHeight() + 6 : 0));
+
+    // If desired to center over the mouse location
+    if (centerAll) {
+      dbounds.x -= Math.max(0, dbounds.width / 2 - Math.abs(origX - dbounds.x)); // account for how much we were impacted by edge of window
+    }
+
+    // Save this box for possible centering of text box later. This is our "actual combined viewer box" for the pieces.
+    lastPieceBounds.x = dbounds.x;
+    lastPieceBounds.y = dbounds.y;
+    lastPieceBounds.width = dbounds.width;
+    lastPieceBounds.height = dbounds.height;
 
     if (bgColor != null) {
       g.setColor(bgColor);
@@ -299,15 +337,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g.drawRect(dbounds.x - 2, dbounds.y - 2, dbounds.width + 3, dbounds.height + 3);
     }
 
-    Shape oldClip = g.getClip();
+    final Shape oldClip = g.getClip();
 
     Object owner = null;
     int borderOffset = borderWidth;
-    double graphicsZoom = graphicsZoomLevel;
-    for (GamePiece piece : pieces) {
+    final double graphicsZoom = graphicsZoomLevel;
+    boolean anyUnderText = false;
+    for (final GamePiece piece : pieces) {
       // Draw the next piece
       // pt is the location of the left edge of the piece
-      Rectangle pieceBounds = getBounds(piece);
+      final Rectangle pieceBounds = getBounds(piece);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
       g.setClip(dbounds.x - 3, dbounds.y - 3, dbounds.width + 5, dbounds.height + 5);
       final Stack parent = piece.getParent();
@@ -324,17 +363,31 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         comp,
         graphicsZoom * os_scale
       );
-
       if (parent instanceof Deck) piece.setProperty(Properties.OBSCURED_BY, owner);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
       g.setClip(oldClip);
 
+      // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
-        String text = counterReportFormat.getLocalizedText(piece);
+        final String text = counterReportFormat.getLocalizedText(piece);
+        int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
         if (text.length() > 0) {
-          int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale);
-          int y = dbounds.y + dbounds.height + 10;
-          drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER);
+          // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
+          if (combineCounterSummary && stretchWidthSummary) {
+            if (!anyUnderText) {
+              drawLabel(g, new Point(lastPieceBounds.x - 1, y), " ", LabelUtils.CENTER, LabelUtils.CENTER,
+                lastPieceBounds.width + 2,
+                lastPieceBounds.width + 2,
+                1,
+                false);
+            }
+            y -= 1; // Because the text just looks better in the combine-o-rama box this way.
+          }
+
+          // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
+          final int x = dbounds.x  - (int) (pieceBounds.x * graphicsZoom * os_scale)  + (int) (borderOffset * os_scale) + (int)(borderWidth * os_scale);
+          drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
+          anyUnderText = true;
         }
       }
 
@@ -350,7 +403,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces) {
-    for (GamePiece piece : pieces) {
+    for (final GamePiece piece : pieces) {
       final Dimension pieceBounds = getBounds(piece).getSize();
       bounds.width += (int) Math.round(pieceBounds.width * graphicsZoomLevel) + borderWidth;
       bounds.height = Math.max(bounds.height, (int) Math.round(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
@@ -358,11 +411,19 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     bounds.width += borderWidth;
     bounds.y -= bounds.height;
+
+    // So text-under-counters won't draw directly on top of mouse position.
+    if (isTextUnderCounters()) {
+      bounds.y -= (fontSize + 2 + extraTextPadding * 2);
+    }
+
+    // User-specified additional offset
+    bounds.y -= verticalOffset;
   }
 
   protected Rectangle getBounds(GamePiece piece) {
     if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
-    Rectangle pieceBounds = piece.getShape().getBounds();
+    final Rectangle pieceBounds = piece.getShape().getBounds();
     if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
     return pieceBounds;
   }
@@ -376,7 +437,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    */
   @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
   protected void drawText(Graphics g, Point pt, JComponent comp, PieceIterator pi) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     final ArrayList<GamePiece> a = new ArrayList<>();
     while (pi.hasMoreElements()) {
       a.add(pi.nextPiece());
@@ -384,64 +445,103 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     drawText(g, pt, comp, a);
   }
 
-  protected void drawText(Graphics g, @SuppressWarnings("unused") Point pt, @SuppressWarnings("unused") JComponent comp, List<GamePiece> pieces) {
-    /*
-     * Label with the location If the counter viewer is being displayed, then
-     * place the location name just above the left hand end of the counters. If
-     * no counter viewer (i.e. single piece or expanded stack), then place the
-     * location name above the centre of the first piece in the stack.
-     */
+  /**
+   * Label with the location If the counter viewer is being displayed, then
+   * place the location name just above the left hand end of the counters. If
+   * no counter viewer (i.e. single piece or expanded stack), then place the
+   * location name above the centre of the first piece in the stack.
+   * @param g - graphics element
+   * @param pt - UNUSED IN THESE LATTER DAYS
+   * @param comp - UNUSED IN THESE LATTER DAYS
+   * @param pieces - UNUSED IN THESE LATTER DAYS
+   */
+  protected void drawText(Graphics g, @SuppressWarnings("unused") Point pt, @SuppressWarnings("unused") JComponent comp, @SuppressWarnings("unused")List<GamePiece> pieces) {
     final Graphics2D g2d = (Graphics2D) g;
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
-    String report;
-    int x = (int)((bounds.x - bounds.width) * os_scale);
-    int y = (int)((bounds.y - 5) * os_scale);
-    String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
+    final String report;
+    int x;
+    int y = (int)((bounds.y - verticalTopText) * os_scale);
+
+    final String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.isEmpty()) {
-      Point mapPt = map.componentToMap(currentMousePosition.getPoint());
-      Point snapPt = map.snapTo(mapPt);
-      String locationName = map.localizedLocationName(snapPt);
+      x = (int)((bounds.x - bounds.width) * os_scale);
+      y = (int)((bounds.y - verticalTopText) * os_scale);
+      final Point mapPt = map.componentToMap(currentMousePosition.getPoint());
+      final Point snapPt = map.snapTo(mapPt);
+      final String locationName = map.localizedLocationName(snapPt);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
-      Board b = map.findBoard(snapPt);
-      String boardName = (b == null) ? "" : b.getLocalizedName();
+      final Board b = map.findBoard(snapPt);
+      final String boardName = (b == null) ? "" : b.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_BOARD, boardName);
-      Zone z = map.findZone(snapPt);
-      String zone = (z == null) ? "" : z.getLocalizedName();
+      final Zone z = map.findZone(snapPt);
+      final String zone = (z == null) ? "" : z.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
       report = emptyHexReportFormat.getLocalizedText();
-      x -= g.getFontMetrics().stringWidth(report) / 2;
+      if (report.length() > 0) {
+        if (centerAll) {
+          x -= g.getFontMetrics().stringWidth(report) / 2;
+        }
+        drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
+      }
     }
     else {
-      GamePiece topPiece = displayablePieces.get(0);
-      String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
+      final GamePiece topPiece = displayablePieces.get(0);
+      final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
-      x += borderWidth * os_scale * pieces.size() + 2;
-    }
-
-    if (report.length() > 0) {
-      drawLabel(g, new Point(x, y), report, LabelUtils.RIGHT, LabelUtils.BOTTOM);
+      if (report.length() > 0) {
+        x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
+        drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
+                  lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
+                  stretchWidthSummary ? lastPieceBounds.width + 2 : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
+                  stretchWidthSummary ? 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
+                  false);
+      }
     }
   }
 
   /**
-   * @deprecated Use {{@link #drawLabel(Graphics, Point, String)}}
+   * @deprecated Use {{@link #drawLabel(Graphics, Point, String, int, int)}}
    */
   @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
   protected void drawLabel(Graphics g, Point pt, String label) {
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     drawLabel(g, pt, label, LabelUtils.RIGHT, LabelUtils.BOTTOM);
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
+    drawLabel(g, pt, label, hAlign, vAlign, 0, 0, 0, false);
+  }
+
+  /**
+   * Next, we go to this intermediate method, which deals with a couple of things (like deciding whether we're drawing in
+   * HTML mode or not) and then calls the LabelUtils to do the Hard Work.
+   * @param g our graphics object
+   * @param pt Point for drawing label, based on hAlign/Valign. (but if objectWidth > 0 then the "x" part identifies the left part of our master object)
+   * @param label Text we shall draw
+   * @param hAlign Horizontal alignment (left, right, center)
+   * @param vAlign Vertical alignment (top, bottom, center)
+   * @param objectWidth 0 for default, or optional width of master object we are to draw text label within
+   * @param minWidth 0 for default, or minimum width of text label
+   * @param extraBorder 0 for default, or number of extra pixels of border (expands size of label drawn)
+   * @param skipBox If true, ONLY draws the text, with no box or background (for filling in existing combine-o-rama boxes)
+   */
+  protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox) {
     if (label != null) {
-      Color labelFgColor = fgColor == null ? Color.black : fgColor;
-      Graphics2D g2d = (Graphics2D) g;
+      final Color labelFgColor = fgColor == null ? Color.black : fgColor;
+      final Graphics2D g2d = (Graphics2D) g;
+      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
+      // If HTML is enabled in the checkbox, OR the text has an explicit <html> tag surrounding it, we use HTML.
+      if ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))) { //NON-NLS
+        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, (skipBox ? null : bgColor), (skipBox ? null : labelFgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder);
+      }
+      else {
+        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, (skipBox ? null : bgColor), (skipBox ? null : labelFgColor), objectWidth, extraTextPadding, minWidth, extraBorder);
+      }
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }
@@ -457,9 +557,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * space - Depends on setting of
      */
 
-    double zoom = getZoom();
+    final double zoom = getZoom();
     if (displayablePieces.size() < minimumDisplayablePieces) {
-      if (displayablePieces.size() > 0) {
+      if (!displayablePieces.isEmpty()) {
         graphicsVisible = zoom < zoomLevel;
         textVisible = zoom < zoomLevel && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
       }
@@ -484,11 +584,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * on selection criteria setup in config.
    */
   protected List<GamePiece> getDisplayablePieces() {
-    GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
+    final GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
-    Visitor visitor = new Visitor(new Filter(), map,
+    final Visitor visitor = new Visitor(new Filter(), map,
       map.componentToMap(currentMousePosition.getPoint()), showOverlap);
-    DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+    final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
      * Process pieces from the top down to make it easier to check for top layer
@@ -565,7 +665,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
-          for (String displayLayer : displayLayers) {
+          for (final String displayLayer : displayLayers) {
             if (layerName.equals(displayLayer)) {
               return true;
             }
@@ -574,7 +674,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Exclude pieces from named layers.
         else if (displayWhat.equals(EXC_LAYERS)) {
-          for (String displayLayer : displayLayers) {
+          for (final String displayLayer : displayLayers) {
             if (layerName.equals(displayLayer)) {
               return false;
             }
@@ -605,7 +705,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     @Deprecated(since = "2020-08-06", forRemoval = true)
     public Visitor(Filter filter, Map map, Point pt) {
       this(filter, map, pt, false);
-      ProblemDialog.showDeprecated("2020-08-06");
+      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     }
 
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
@@ -620,24 +720,33 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     @Override
     public Object visitDeck(Deck d) {
+      //CC// Display top n pieces of the deck instead of top piece
+
       if (foundPieceAt == null) {
-        GamePiece top = d.topPiece();
-        if (top != null &&
-            !Boolean.TRUE.equals(top.getProperty(Properties.OBSCURED_TO_ME))) {
-          Rectangle r = (Rectangle) d.getShape();
-          r.x += d.getPosition().x;
-          r.y += d.getPosition().y;
-          if (r.contains(pt)) {
-            apply(top);
+        // Get the top piece in deck
+        GamePiece p = d.topPiece();
+
+        int shownPieces = 0;
+        while (p != null && shownPieces < showDeckDepth) {
+          if (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
+            final Rectangle r = (Rectangle) d.getShape();
+            r.x += d.getPosition().x;
+            r.y += d.getPosition().y;
+            if (r.contains(pt)) {
+              apply(p);
+              shownPieces++;
+            }
           }
+          p = d.getPieceBeneath(p);
         }
+
       }
       return null;
     }
 
     @Override
     public Object visitStack(Stack s) {
-      boolean addContents = foundPieceAt == null ?
+      final boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
         s.asList().forEach(this::apply);
@@ -659,8 +768,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * passed pieces from the top down.
      */
     protected void apply(GamePiece p) {
-      int layer;
-      String layerName;
+      final int layer;
+      final String layerName;
 
       layer = collection.getLayerForPiece(p);
       layerName = collection.getLayerNameForPiece(p);
@@ -813,17 +922,26 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public String[] getAttributeNames() {
     return new String[] {
       VERSION,
+      DESCRIPTION,
       DELAY,
       HOTKEY,
       BG_COLOR,
       FG_COLOR,
       MINIMUM_DISPLAYABLE,
       ZOOM_LEVEL,
+      CENTER_ALL,
       DRAW_PIECES,
       DRAW_PIECES_AT_ZOOM,
       GRAPH_SINGLE_DEPRECATED,
       BORDER_WIDTH,
+      VERTICAL_OFFSET,
       SHOW_TEXT,
+      ENABLE_HTML,
+      CENTER_TEXT,
+      STRETCH_WIDTH_SUMMARY,
+      COMBINE_COUNTER_SUMMARY,
+      EXTRA_TEXT_PADDING,
+      VERTICAL_TOP_TEXT,
       SHOW_TEXT_SINGLE_DEPRECATED,
       FONT_SIZE,
       SUMMARY_REPORT_FORMAT,
@@ -837,6 +955,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       SHOW_NON_MOVABLE,
       UNROTATE_PIECES,
       SHOW_DECK,
+      SHOW_DECK_DEPTH,
       SHOW_OVERLAP,
     };
   }
@@ -844,38 +963,50 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-       Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
-       Resources.getString("Editor.MouseOverStackViewer.recommend_delay"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_graphics_obselete"), //$NON-NLS-1$ Obsolete
-       Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
-       Resources.getString("Editor.MouseOverStackViewer.font_size"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_below"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.text_empty"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.include_pieces"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.listed_layers"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.piece_filter"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.top_deck"), //$NON-NLS-1$
-       Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
-      };
+      Resources.getString("Editor.MouseOverStackViewer.version"), //$NON-NLS-1$ not displayed
+      Resources.getString("Editor.description_label"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.recommend_delay"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.keyboard_shortcut"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.bg_color"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.text_color"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_zoom"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.center_all"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.draw_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.draw_zoom"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_graphics_obselete"), //$NON-NLS-1$ Obsolete
+      Resources.getString("Editor.MouseOverStackViewer.piece_gap"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.vertical_offset"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.enable_html"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.center_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.stretch_width_summary"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.combine_counter_summary"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.extra_text_padding"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.vertical_top_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.display_text_obsolete"), //$NON-NLS-1$ Obsolete
+      Resources.getString("Editor.font_size"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.summary_text"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.text_below"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.text_empty"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.include_pieces"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.listed_layers"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.piece_filter"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.non_stacking"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.move_selected"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.non_moveable"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.unrotated_state"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.show_deck"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.show_deck_depth"), //$NON-NLS-1$
+      Resources.getString("Editor.MouseOverStackViewer.show_overlap"), //$NON-NLS-1$
+    };
+
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
+      String.class,
       String.class,
       Integer.class,
       KeyStroke.class,
@@ -884,10 +1015,18 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       MinConfig.class,
       Double.class,
       Boolean.class,
+      Boolean.class,
       Double.class,
       Boolean.class,
       Integer.class,
+      Integer.class,
       Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
       Boolean.class,
       Integer.class,
       ReportFormatConfig.class,
@@ -901,21 +1040,32 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       Boolean.class,
       Boolean.class,
       Boolean.class,
+      Integer.class,
       Boolean.class,
     };
   }
 
-  public static class DisplayConfig extends StringEnum {
+  public static class DisplayConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[] {TOP_LAYER, ALL_LAYERS, INC_LAYERS, EXC_LAYERS, FILTER};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] { "Editor.CounterDetailViewer.top_layer",
+                            "Editor.CounterDetailViewer.all_layers",
+                            "Editor.CounterDetailViewer.inc_layers",
+                            "Editor.CounterDetailViewer.exc_layers",
+                            "Editor.CounterDetailViewer.filter"
+      };
     }
   }
 
   public static class MinConfig extends StringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[] {"0", "1", "2"};
+      return new String[] {"0", "1", "2"}; //NON-NLS
     }
   }
 
@@ -955,7 +1105,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "StackViewer");
+    return HelpFile.getReferenceManualPage("Map.html", "StackViewer"); //NON-NLS
   }
 
   @Override
@@ -974,6 +1124,73 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         delay = (Integer) value;
       }
     }
+    else if (DESCRIPTION.equals(name)) {
+      desc = (String)value;
+    }
+    else if (ENABLE_HTML.equals(name)) {
+      if (value instanceof String) {
+        enableHTML = "true".equals(value); //NON-NLS
+      }
+      else {
+        enableHTML = (Boolean) value;
+      }
+    }
+    else if (CENTER_TEXT.equals(name)) {
+      if (value instanceof String) {
+        centerText = "true".equals(value); //NON-NLS
+      }
+      else {
+        centerText = (Boolean) value;
+      }
+    }
+    else if (CENTER_ALL.equals(name)) {
+      if (value instanceof String) {
+        centerAll = "true".equals(value); //NON-NLS
+      }
+      else {
+        centerAll = (Boolean) value;
+      }
+    }
+    else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
+      if (value instanceof String) {
+        combineCounterSummary = "true".equals(value); //NON-NLS
+      }
+      else {
+        combineCounterSummary = (Boolean) value;
+      }
+    }
+    else if (EXTRA_TEXT_PADDING.equals(name)) {
+      if (value instanceof String) {
+        extraTextPadding = Integer.parseInt((String)value);
+      }
+      else {
+        extraTextPadding = (Integer) value;
+      }
+    }
+    else if (VERTICAL_OFFSET.equals(name)) {
+      if (value instanceof String) {
+        verticalOffset = Integer.parseInt((String)value);
+      }
+      else {
+        verticalOffset = (Integer) value;
+      }
+    }
+    else if (VERTICAL_TOP_TEXT.equals(name)) {
+      if (value instanceof String) {
+        verticalTopText = Integer.parseInt((String)value);
+      }
+      else {
+        verticalTopText = (Integer) value;
+      }
+    }
+    else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
+      if (value instanceof Boolean) {
+        stretchWidthSummary = (Boolean) value;
+      }
+      else if (value instanceof String) {
+        stretchWidthSummary = "true".equals(value); //NON-NLS
+      }
+    }
     else if (HOTKEY.equals(name)) {
       if (value instanceof String) {
         hotkey = HotKeyConfigurer.decode((String)value);
@@ -987,7 +1204,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         drawPieces = (Boolean) value;
       }
       else if (value instanceof String) {
-        drawPieces = "true".equals(value);
+        drawPieces = "true".equals(value); //NON-NLS
       }
     }
     else if (GRAPH_SINGLE_DEPRECATED.equals(name)) {
@@ -995,7 +1212,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         drawSingleDeprecated = (Boolean) value;
       }
       else if (value instanceof String) {
-        drawSingleDeprecated = "true".equals(value);
+        drawSingleDeprecated = "true".equals(value); //NON-NLS
       }
     }
     else if (SHOW_TEXT.equals(name)) {
@@ -1003,16 +1220,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showText = (Boolean) value;
       }
       else if (value instanceof String) {
-        showText = "true".equals(value);
+        showText = "true".equals(value); //NON-NLS
       }
-
     }
     else if (SHOW_TEXT_SINGLE_DEPRECATED.equals(name)) {
       if (value instanceof Boolean) {
         showTextSingleDeprecated = (Boolean) value;
       }
       else if (value instanceof String) {
-        showTextSingleDeprecated = "true".equals(value);
+        showTextSingleDeprecated = "true".equals(value); //NON-NLS
       }
     }
     else if (ZOOM_LEVEL.equals(name)) {
@@ -1038,7 +1254,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showNoStack = (Boolean) value;
       }
       else if (value instanceof String) {
-        showNoStack = "true".equals(value);
+        showNoStack = "true".equals(value); //NON-NLS
       }
     }
     else if (SHOW_MOVE_SELECTED.equals(name)) {
@@ -1046,7 +1262,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showMoveSelected = (Boolean) value;
       }
       else if (value instanceof String) {
-        showMoveSelected = "true".equals(value);
+        showMoveSelected = "true".equals(value); //NON-NLS
       }
     }
     else if (SHOW_NON_MOVABLE.equals(name)) {
@@ -1054,7 +1270,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showNonMovable = (Boolean) value;
       }
       else if (value instanceof String) {
-        showNonMovable = "true".equals(value);
+        showNonMovable = "true".equals(value); //NON-NLS
       }
     }
     else if (SHOW_DECK.equals(name)) {
@@ -1062,15 +1278,21 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showDeck = (Boolean) value;
       }
       else if (value instanceof String) {
-        showDeck = "true".equals(value);
+        showDeck = "true".equals(value); //NON-NLS
       }
+    }
+    else if (SHOW_DECK_DEPTH.equals(name)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      showDeckDepth = (Integer) value;
     }
     else if (SHOW_OVERLAP.equals(name)) {
       if (value instanceof Boolean) {
         showOverlap = (Boolean) value;
       }
       else if (value instanceof String) {
-        showOverlap = "true".equals(value);
+        showOverlap = "true".equals(value); //NON-NLS
       }
     }
     else if (UNROTATE_PIECES.equals(name)) {
@@ -1078,7 +1300,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         unrotatePieces = (Boolean) value;
       }
       else if (value instanceof String) {
-        unrotatePieces = "true".equals(value);
+        unrotatePieces = "true".equals(value); //NON-NLS
       }
     }
     else if (DISPLAY.equals(name)) {
@@ -1141,6 +1363,33 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (DELAY.equals(name)) {
       return String.valueOf(delay);
     }
+    else if (DESCRIPTION.equals(name)) {
+      return desc;
+    }
+    else if (ENABLE_HTML.equals(name)) {
+      return String.valueOf(enableHTML);
+    }
+    else if (CENTER_TEXT.equals(name)) {
+      return String.valueOf(centerText);
+    }
+    else if (CENTER_ALL.equals(name)) {
+      return String.valueOf(centerAll);
+    }
+    else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
+      return String.valueOf(combineCounterSummary);
+    }
+    else if (EXTRA_TEXT_PADDING.equals(name)) {
+      return String.valueOf(extraTextPadding);
+    }
+    else if (VERTICAL_OFFSET.equals(name)) {
+      return String.valueOf(verticalOffset);
+    }
+    else if (VERTICAL_TOP_TEXT.equals(name)) {
+      return String.valueOf(verticalTopText);
+    }
+    else if (STRETCH_WIDTH_SUMMARY.equals(name)) {
+      return String.valueOf(stretchWidthSummary);
+    }
     else if (HOTKEY.equals(name)) {
       return HotKeyConfigurer.encode(hotkey);
     }
@@ -1176,6 +1425,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (SHOW_DECK.equals(name)) {
       return String.valueOf(showDeck);
+    }
+    else if (SHOW_DECK_DEPTH.equals(name)) {
+      return String.valueOf(showDeckDepth);
     }
     else if (SHOW_OVERLAP.equals(name)) {
       return String.valueOf(showOverlap);
@@ -1220,19 +1472,27 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return null;
   }
 
+  @Override
+  public String getConfigureName() {
+    return desc; //$NON-NLS-1$
+  }
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.MouseOverStackViewer.component_type"); //$NON-NLS-1$
   }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name)) {
+    if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name) || VERTICAL_OFFSET.equals(name) || SHOW_DECK_DEPTH.equals(name)) {
       return () -> drawPieces;
     }
-    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT).contains(name)) {
+    else if (List.of(FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, ENABLE_HTML, CENTER_TEXT, EXTRA_TEXT_PADDING, VERTICAL_TOP_TEXT, STRETCH_WIDTH_SUMMARY).contains(name)) {
       return () -> showText;
     }
-    else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY).contains(name)) {
+    else if (COMBINE_COUNTER_SUMMARY.equals(name)) {
+      return () -> showText && stretchWidthSummary;
+    }
+    else if (List.of(DRAW_PIECES, SHOW_TEXT, SHOW_NOSTACK, SHOW_DECK, DISPLAY, DESCRIPTION, CENTER_ALL).contains(name)) {
       return () -> true;
     }
     else if (LAYER_LIST.equals(name)) {
@@ -1255,5 +1515,49 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return () -> false;
     }
     return null;
+  }
+
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurables string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(propertyFilter.getExpression());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(summaryReportFormat.getFormat(), counterReportFormat.getFormat(), emptyHexReportFormat.getFormat());
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(NamedHotKeyConfigurer.decode(getAttributeValueString(HOTKEY)));
+  }
+
+
+  /**
+   * In case our labels refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    HTMLImageFinder h;
+    h = new HTMLImageFinder(summaryReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(counterReportFormat.getFormat());
+    h.addImageNames(s);
+    h = new HTMLImageFinder(emptyHexReportFormat.getFormat());
+    h.addImageNames(s);
   }
 }

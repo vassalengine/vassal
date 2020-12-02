@@ -48,13 +48,12 @@ public abstract class MenuManager {
 
   public abstract MenuBarProxy getMenuBarProxyFor(JFrame fc);
 
-  private Map<String, List<MenuItemProxy>> actionLocations =
-    new HashMap<>();
+  private final Map<String, List<MenuItemProxy>> actionLocations = new HashMap<>();
 
-  private Map<String, MenuMarker> markers = new HashMap<>();
+  private final Map<String, MenuMarker> markers = new HashMap<>();
 
   public MenuItemProxy addKey(String key) {
-    List<MenuItemProxy> items = actionLocations.computeIfAbsent(key, k -> new ArrayList<>());
+    final List<MenuItemProxy> items = actionLocations.computeIfAbsent(key, k -> new ArrayList<>());
 
     final MenuItemProxy item = new MenuItemProxy();
     items.add(item);
@@ -68,7 +67,7 @@ public abstract class MenuManager {
   public void addAction(String key, Action a) {
     final List<MenuItemProxy> items = actionLocations.get(key);
     if (items != null) {
-      for (MenuItemProxy i : items) {
+      for (final MenuItemProxy i : items) {
         i.setAction(a);
       }
     }
@@ -89,8 +88,8 @@ public abstract class MenuManager {
   }
 
   public void addToSection(String key, ChildProxy<?> item) {
-    final MenuMarker start = getMarker(key + ".start");
-    final MenuMarker end = getMarker(key + ".end");
+    final MenuMarker start = getMarker(key + ".start"); //NON-NLS
+    final MenuMarker end = getMarker(key + ".end"); //NON-NLS
     final ParentProxy parent = end.getParent();
 
     final int startPos = parent.getIndex(start);
@@ -116,8 +115,8 @@ public abstract class MenuManager {
   }
 
   public void removeFromSection(String key, ChildProxy<?> item) {
-    final MenuMarker start = getMarker(key + ".start");
-    final MenuMarker end = getMarker(key + ".end");
+    final MenuMarker start = getMarker(key + ".start"); //NON-NLS
+    final MenuMarker end = getMarker(key + ".end"); //NON-NLS
     final ParentProxy parent = end.getParent();
 
     // remove the item
@@ -156,6 +155,7 @@ public abstract class MenuManager {
 
   private boolean visibleItemBefore(ChildProxy<?> child) {
     final ParentProxy parent = child.getParent();
+    //FIXME - loop executes zero or billions of times!
     for (int i = parent.getIndex(child) - 1; i >= 0; i++) {
       final ChildProxy<?> c = parent.getChild(i);
       if (!(c instanceof MenuMarker)) return true;

@@ -17,25 +17,23 @@
  */
 package VASSAL.configure;
 
-import java.awt.BorderLayout;
+import VASSAL.counters.TraitLayout;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
-import VASSAL.tools.SequenceEncoder;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Configures a variable-length list of objects
@@ -43,10 +41,9 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  *
  */
-public abstract class ListConfigurer extends Configurer implements
-    PropertyChangeListener {
-  protected Box controls;
-  protected Box configControls;
+public abstract class ListConfigurer extends Configurer implements PropertyChangeListener {
+  protected JPanel controls;
+  protected JPanel configControls;
   protected JPanel panel;
   protected Dimension fixedSize;
   protected List<Configurer> configurers = new ArrayList<>();
@@ -64,10 +61,12 @@ public abstract class ListConfigurer extends Configurer implements
     if (getListValue().isEmpty()) {
       return "";
     }
-    Configurer c = buildChildConfigurer();
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (Object value : getListValue()) {
+    final Configurer c = buildChildConfigurer();
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final Object value : getListValue()) {
+      c.setFrozen(true); // Prevent subsidiary Configurers from firing PropertyChange Events
       c.setValue(value);
+      c.setFrozen(false);
       se.append(c.getValueString());
     }
     return se.getValue();
@@ -77,8 +76,8 @@ public abstract class ListConfigurer extends Configurer implements
   public void setValue(String s) {
     getListValue().clear();
     if (s.length() > 0) {
-      Configurer c = buildChildConfigurer();
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+      final Configurer c = buildChildConfigurer();
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
       while (sd.hasMoreTokens()) {
         c.setValue(sd.nextToken());
         getListValue().add(c.getValue());
@@ -89,8 +88,8 @@ public abstract class ListConfigurer extends Configurer implements
 
   protected void updateValue() {
     noUpdate = true;
-    ArrayList<Object> newArray = new ArrayList<>();
-    for (Configurer c : configurers) {
+    final ArrayList<Object> newArray = new ArrayList<>();
+    for (final Configurer c : configurers) {
       newArray.add(c.getValue());
     }
     setValue(newArray);
@@ -111,24 +110,23 @@ public abstract class ListConfigurer extends Configurer implements
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new BorderLayout());
-      controls = Box.createVerticalBox();
-      final JScrollPane scroll = new JScrollPane(controls);
-      controls.setBorder(BorderFactory.createTitledBorder(getName()));
-      configControls = Box.createVerticalBox();
+      panel = new JPanel(new MigLayout(TraitLayout.STANDARD_GAPY, "[grow,fill]", "[]")); // NON-NLS
+      panel.setBorder(BorderFactory.createEtchedBorder());
+      controls = new JPanel(new MigLayout("ins 2", "[grow,fill]")); // NON-NLS
 
-      JButton addButton = new JButton("New");
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Configurer c = buildChildConfigurer();
-          getListValue().add(c.getValue());
-          updateControls();
-        }
+      configControls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow]")); // NON-NLS
+
+      final JButton addButton = new JButton(Resources.getString("Editor.ListConfigurer.new"));
+      addButton.addActionListener(e -> {
+        final Configurer c = buildChildConfigurer();
+        getListValue().add(c.getValue());
+        updateControls();
       });
-      controls.add(addButton);
-      controls.add(configControls);
-      panel.add(scroll, BorderLayout.CENTER);
+      final JPanel addPanel = new JPanel(new MigLayout("ins 0", "push[]push")); // NON-NLS
+      addPanel.add(addButton);
+      controls.add(addPanel, "grow,wrap"); // NON-NLS
+      controls.add(configControls, "grow"); // NON-NLS
+      panel.add(controls, "grow"); // NON-NLS
       updateControls();
     }
     return panel;
@@ -142,7 +140,7 @@ public abstract class ListConfigurer extends Configurer implements
   /**
    * The objects in the list are specified by the Configurer returned here
    *
-   * @return
+   * @return objects in the list
    */
   protected abstract Configurer buildChildConfigurer();
 
@@ -153,55 +151,57 @@ public abstract class ListConfigurer extends Configurer implements
 
   protected void updateControls() {
     if (controls != null) {
-      for (Configurer c : configurers) {
+      for (final Configurer c : configurers) {
         c.removePropertyChangeListener(this);
       }
       configurers.clear();
       configControls.removeAll();
 
-      for (Object value : getListValue()) {
+      for (final Object value : getListValue()) {
         final Configurer c = buildChildConfigurer();
         c.setValue(value);
         c.addPropertyChangeListener(this);
         configurers.add(c);
-        final Box b = Box.createHorizontalBox();
-        JButton delButton = new JButton("Remove");
-        delButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            getListValue().remove(c.getValue());
-            updateControls();
-            repack();
-          }
+        final JPanel b = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill,grow][]")); // NON-NLS
+        final JButton delButton = new JButton(Resources.getString("Editor.ListConfigurer.remove"));
+        delButton.addActionListener(e -> {
+          getListValue().remove(c.getValue());
+          updateControls();
+          repack();
         });
-        b.add(delButton);
-        b.add(c.getControls());
-        configControls.add(b);
-        if (configurers.size() > 5) {
-          if (fixedSize == null) {
-            fixedSize = new Dimension(
-                panel.getPreferredSize().width + 20, 210);
-          }
-          panel.setPreferredSize(fixedSize);
-        }
-        else {
-          panel.setPreferredSize(null);
-        }
+        b.add(c.getControls(), "grow"); // NON-NLS
+        b.add(delButton, "aligny center"); // NON-NLS
+        configControls.add(b, "grow,wrap"); // NON-NLS
       }
+      resize();
+    }
+  }
+
+  /**
+   * Resize the overall Configurer to only show Scroll bars if getting close to full screen height
+   */
+  public void resize() {
+    if (controls != null) {
+      final Dimension s = controls.getPreferredSize();
+      final int t = (Integer) UIManager.get("ScrollBar.width");
+      panel.setPreferredSize(
+        new Dimension(
+          s.width + t + 2,
+          Math.min(controls.getPreferredSize().height + 5, (int) getScreenSize().getHeight() - 300)
+        )
+      );
       repack();
     }
   }
 
+  @Override
   public void repack() {
-    Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      w.pack();
-    }
+    repack(panel);
   }
 
   @Override
   public int hashCode() {
-    String valueString = getValueString();
+    final String valueString = getValueString();
     final int prime = 31;
     int result = 1;
     result = prime * result
@@ -217,15 +217,12 @@ public abstract class ListConfigurer extends Configurer implements
       return false;
     if (getClass() != obj.getClass())
       return false;
-    ListConfigurer other = (ListConfigurer) obj;
-    String valueString = getValueString();
-    String otherValueString = other.getValueString();
+    final ListConfigurer other = (ListConfigurer) obj;
+    final String valueString = getValueString();
+    final String otherValueString = other.getValueString();
     if (valueString == null) {
-      if (otherValueString != null)
-        return false;
+      return otherValueString == null;
     }
-    else if (!valueString.equals(otherValueString))
-      return false;
-    return true;
+    else return valueString.equals(otherValueString);
   }
 }

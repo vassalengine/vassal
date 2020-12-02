@@ -18,6 +18,7 @@
 
 package VASSAL.launch;
 
+import VASSAL.build.GameModule;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
@@ -48,14 +49,14 @@ public class LaunchRequest implements Serializable {
 
   enum Mode {
 
-    MANAGE("manage"),
-    LOAD("load"),
-    EDIT("edit"),
-    IMPORT("import"),
-    NEW("new"),
-    EDIT_EXT("edit-extension"),
-    NEW_EXT("new-extension"),
-    TRANSLATE("translate");
+    MANAGE("manage"), //NON-NLS
+    LOAD("load"), //NON-NLS
+    EDIT("edit"), //NON-NLS
+    IMPORT("import"), //NON-NLS
+    NEW("new"), //NON-NLS
+    EDIT_EXT("edit-extension"), //NON-NLS
+    NEW_EXT("new-extension"), //NON-NLS
+    TRANSLATE("translate"); //NON-NLS
 
     private final String prettyName;
 
@@ -128,12 +129,12 @@ public class LaunchRequest implements Serializable {
 
     args.add("--" + mode);
 
-    if (builtInModule) args.add("--auto");
+    if (builtInModule) args.add("--auto"); //NON-NLS
 
-    if (port >= 0) args.add("--port=" + port);
+    if (port >= 0) args.add("--port=" + port); //NON-NLS
 
     if (autoext != null) {
-      final StringBuilder sb = new StringBuilder("--auto-extensions=");
+      final StringBuilder sb = new StringBuilder("--auto-extensions="); //NON-NLS
 
       final Iterator<String> i = autoext.iterator();
       sb.append(i.next());
@@ -159,36 +160,50 @@ public class LaunchRequest implements Serializable {
     return args.toArray(new String[0]);
   }
 
-  // FIXME: translate this somehow?
-  private static final String help =
-    "Usage:\n" +
-      "  VASSAL -e [option]... module\n" +
-      "  VASSAL -i [option]... module\n" +
-      "  VASSAL -l [option]... module|save|log...\n" +
-      "  VASSAL -n [option]...\n" +
-      "  VASSAL -m\n" +
-      "  VASSAL -h\n" +
-      "  VASSAL --edit-extension [option]... module|extension...\n" +
-      "  VASSAL --new-extension [option]...\n" +
+  /**
+   * @return Usage string
+   */
+  private static String helpMeSpock() {
+    /*
+      NB: Resources has a configurer, which means that calling its methods
+      initializes the Swing graphics subsystem. The init method of StartUp
+      must be called before that if we're going to have a Swing GUI, as it
+      sets some system properties we require. Thus, the help string cannot
+      be a static member of LaunchRequest if any of it is translated, as
+      that would trigger the initialization of Swing before we've called
+      StartUp.initSystemProperties(). You have been warned. :)
+    */
+    return Resources.getString("LaunchRequest.usage") + ":\n" +
+      "  VASSAL -c\n" + //NON-NLS
+      "  VASSAL -e [option]... module\n" + //NON-NLS
+      "  VASSAL -i [option]... module\n" + //NON-NLS
+      "  VASSAL -l [option]... module|save|log...\n" + //NON-NLS
+      "  VASSAL -n [option]...\n" + //NON-NLS
+      "  VASSAL -m\n" + //NON-NLS
+      "  VASSAL -h\n" + //NON-NLS
+      "  VASSAL --edit-extension [option]... module|extension...\n" + //NON-NLS
+      "  VASSAL --new-extension [option]...\n" + //NON-NLS
       "\n" +
-      "Options:\n" +
-      "  -a, --auto          TODO\n" +
-      "  -e, --edit          Edit a module\n" +
-      "  -h, --help          Display this help and exit\n" +
-      "  -i, --import        Import a non-VASSAL module\n" +
-      "  -l, --load          Load a module and saved game or log\n" +
-      "  -m, --manage        Use the module manager\n" +
-      "  -n, --new           Create a new module\n" +
-      "  -s, --standalone    Run in standalone mode\n" +
-      "  --auto-extensions   TODO\n" +
-      "  --edit-extension    Edit a module extension\n" +
-      "  --new-extension     Create a new module extension\n" +
-      "  --port              Set port for manager to listen on\n" +
-      "  --version           Display version information and exit\n" +
-      "  --                  Terminate the list of options\n" +
+      Resources.getString("LaunchRequest.options") + ":\n" +
+      "  -a, --auto          TODO\n" + //NON-NLS
+      "  -c, --chatlog       " + Resources.getString("LaunchRequest.chatlog") + "\n" + //NON-NLS
+      "  -e, --edit          " + Resources.getString("LaunchRequest.edit") + "\n" + //NON-NLS
+      "  -h, --help          " + Resources.getString("LaunchRequest.help") + "\n" + //NON-NLS
+      "  -i, --import        " + Resources.getString("LaunchRequest.import") + "\n" + //NON-NLS
+      "  -l, --load          " + Resources.getString("LaunchRequest.load") + "\n" + //NON-NLS
+      "  -m, --manage        " + Resources.getString("LaunchRequest.manage") + "\n" + //NON-NLS
+      "  -n, --new           " + Resources.getString("LaunchRequest.new") + "\n" + //NON-NLS
+      "  -s, --standalone    " + Resources.getString("LaunchRequest.standalone") + "\n" + //NON-NLS
+      "  --auto-extensions   TODO\n" + //NON-NLS
+      "  --edit-extension    " + Resources.getString("LaunchRequest.extension") + "\n" + //NON-NLS
+      "  --new-extension     " + Resources.getString("LaunchRequest.new_extension") + "\n" + //NON-NLS
+      "  --port              " + Resources.getString("LaunchRequest.port") + "\n" + //NON-NLS
+      "  --version           " + Resources.getString("LaunchRequest.version") + "\n" + //NON-NLS
+      "  --                  " + Resources.getString("LaunchRequest.terminate") + "\n" + //NON-NLS
       "\n" +
-      "VASSAL defaults to '-m' if no options are given.\n" +
+      Resources.getString("LaunchRequest.default") + "\n" +
       "\n";
+  }
 
   /**
    * Parse an argument array to a <code>LaunchRequest</code>.
@@ -208,24 +223,25 @@ public class LaunchRequest implements Serializable {
     final int VERSION = 6;
     final int TRANSLATE = 7;
 
-    final LongOpt[] longOpts = new LongOpt[]{
-      new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'),
-      new LongOpt("edit",       LongOpt.NO_ARGUMENT, null, 'e'),
-      new LongOpt("help",       LongOpt.NO_ARGUMENT, null, 'h'),
-      new LongOpt("import",     LongOpt.NO_ARGUMENT, null, 'i'),
-      new LongOpt("load",       LongOpt.NO_ARGUMENT, null, 'l'),
-      new LongOpt("manage",     LongOpt.NO_ARGUMENT, null, 'm'),
-      new LongOpt("new",        LongOpt.NO_ARGUMENT, null, 'n'),
-      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, 's'),
-      new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT),
-      new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT),
-      new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT),
-      new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT),
-      new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION),
-      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE)
+    final LongOpt[] longOpts = {
+      new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
+      new LongOpt("chatlog",    LongOpt.NO_ARGUMENT, null, 'c'), //NON-NLS
+      new LongOpt("edit",       LongOpt.NO_ARGUMENT, null, 'e'), //NON-NLS
+      new LongOpt("help",       LongOpt.NO_ARGUMENT, null, 'h'), //NON-NLS
+      new LongOpt("import",     LongOpt.NO_ARGUMENT, null, 'i'), //NON-NLS
+      new LongOpt("load",       LongOpt.NO_ARGUMENT, null, 'l'), //NON-NLS
+      new LongOpt("manage",     LongOpt.NO_ARGUMENT, null, 'm'), //NON-NLS
+      new LongOpt("new",        LongOpt.NO_ARGUMENT, null, 'n'), //NON-NLS
+      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, 's'), //NON-NLS
+      new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT), //NON-NLS
+      new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT), //NON-NLS
+      new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT), //NON-NLS
+      new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT), //NON-NLS
+      new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION), //NON-NLS
+      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE) //NON-NLS
     };
 
-    final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts);
+    final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts); //NON-NLS
     g.setOpterr(false);
 
     int c;
@@ -233,7 +249,7 @@ public class LaunchRequest implements Serializable {
       switch (c) {
       case AUTO_EXT:
         if (lr.autoext == null) lr.autoext = new ArrayList<>();
-        for (String ext : g.getOptarg().split(",")) {
+        for (final String ext : g.getOptarg().split(",")) {
           lr.autoext.add(ext.replace("_", " "));
         }
         break;
@@ -256,7 +272,7 @@ public class LaunchRequest implements Serializable {
         }
         break;
       case VERSION:
-        System.err.println("VASSAL " + Info.getVersion());
+        System.err.println("VASSAL " + Info.getVersion()); //NON-NLS
         System.exit(0);
         break;
       case TRANSLATE:
@@ -265,11 +281,14 @@ public class LaunchRequest implements Serializable {
       case 'a':
         lr.builtInModule = true;
         break;
+      case 'c':
+        GameModule.setErrorLogToChat(true);
+        break;
       case 'e':
         setMode(lr, Mode.EDIT);
         break;
       case 'h':
-        System.err.print(help);
+        System.err.print(helpMeSpock());
         System.exit(0);
         break;
       case 'i':
@@ -323,7 +342,7 @@ public class LaunchRequest implements Serializable {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
-            die("LaunchRequest.only_one", "module");
+            die("LaunchRequest.only_one", "module"); //NON-NLS
           lr.module = file;
         }
         else if (data instanceof ExtensionMetaData) {
@@ -332,7 +351,7 @@ public class LaunchRequest implements Serializable {
         }
         else if (data instanceof SaveMetaData) {
           if (lr.game != null)
-            die("LaunchRequest.only_one", "saved game or log");
+            die("LaunchRequest.only_one", "saved game or log"); //NON-NLS
           lr.game = file;
         }
         else {
@@ -374,7 +393,7 @@ public class LaunchRequest implements Serializable {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
-            die("LaunchRequest.only_one", "module");
+            die("LaunchRequest.only_one", "module"); //NON-NLS
           lr.module = file;
         }
         else if (data instanceof ExtensionMetaData) {
@@ -406,7 +425,7 @@ public class LaunchRequest implements Serializable {
     // other consistency checks
     if (lr.builtInModule) {
       if (lr.mode != Mode.LOAD) {
-        die("LaunchRequest.only_in_mode", "--auto", Mode.LOAD.toString());
+        die("LaunchRequest.only_in_mode", "--auto", Mode.LOAD.toString()); //NON-NLS
       }
 
       if (lr.module != null) {
@@ -417,7 +436,7 @@ public class LaunchRequest implements Serializable {
     if (lr.autoext != null) {
       if (lr.mode != Mode.LOAD) {
         die("LaunchRequest.only_in_mode",
-            "--auto-extensions", Mode.LOAD.toString());
+            "--auto-extensions", Mode.LOAD.toString()); //NON-NLS
       }
 
       if (lr.module != null) {
@@ -430,7 +449,7 @@ public class LaunchRequest implements Serializable {
 
   protected static void setMode(LaunchRequest lr, Mode mode)
                                                 throws LaunchRequestException {
-    if (lr.mode != null) die("LaunchRequest.only_one", "mode");
+    if (lr.mode != null) die("LaunchRequest.only_one", "mode"); //NON-NLS
     lr.mode = mode;
   }
 

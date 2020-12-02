@@ -19,6 +19,7 @@ package VASSAL.command;
 
 import VASSAL.tools.ProblemDialog;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import VASSAL.tools.ErrorDialog;
@@ -45,11 +46,8 @@ import VASSAL.build.module.GameComponent;
  * compound commands this way, each {@link CommandEncoder} need only handle single (not compound) commands.
  */
 public abstract class Command {
-  private LinkedList<Command> seq = new LinkedList<>();
+  private List<Command> seq = new LinkedList<>();
   private Command undo;
-
-  public Command() {
-  }
 
   public Command[] getSubCommands() {
     return seq.toArray(new Command[0]);
@@ -66,12 +64,12 @@ public abstract class Command {
     catch (Throwable t) {
       handleFailure(t);
 
-      final LinkedList<Command> oldSeq = seq;
+      final List<Command> oldSeq = seq;
       stripSubCommands();
       seq = oldSeq;
     }
 
-    for (Command cmd : seq) {
+    for (final Command cmd : seq) {
       try {
         cmd.execute();
       }
@@ -145,7 +143,7 @@ public abstract class Command {
    * @return True if this command has no sub-commands
    */
   protected boolean isAtomic() {
-    for (Command c : seq) {
+    for (final Command c : seq) {
       if (!c.isNull()) {
         return false;
       }
@@ -153,12 +151,13 @@ public abstract class Command {
     return true;
   }
 
+  @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
     final String details = getDetails();
-    if (details != null) sb.append("[").append(details).append("]");
+    if (details != null) sb.append('[').append(details).append(']');
 
-    for (Command c : seq) sb.append("+").append(c);
+    for (final Command c : seq) sb.append('+').append(c);
 
     return sb.toString();
   }
@@ -189,7 +188,7 @@ public abstract class Command {
   public Command getUndoCommand() {
     if (undo == null) {
       undo = new NullCommand();
-      for (ListIterator<Command> i = seq.listIterator(seq.size());
+      for (final ListIterator<Command> i = seq.listIterator(seq.size());
            i.hasPrevious(); ) {
         undo = undo.append(i.previous().getUndoCommand());
       }

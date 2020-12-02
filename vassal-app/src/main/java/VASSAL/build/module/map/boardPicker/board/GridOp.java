@@ -27,12 +27,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.AbstractTiledOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 
 public class GridOp extends AbstractTiledOpImpl {
+  private static Logger logger = LoggerFactory.getLogger(GridOp.class);
+
   protected final ImageOp sop;
   protected final MapGrid grid;
   protected final double scale;
@@ -91,17 +96,24 @@ public class GridOp extends AbstractTiledOpImpl {
     final int tw = sop.getTileWidth();
     final int th = sop.getTileHeight();
 
-    // match the transparency of the first tile
-    final BufferedImage dst = ImageUtils.createCompatibleImage(
-      w, h,
-      sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
-    );
+    BufferedImage dst;
+    try {
+      // match the transparency of the first tile
+      dst = ImageUtils.createCompatibleImage(
+        w, h,
+        sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
+      );
+    }
+    catch (NullPointerException | IndexOutOfBoundsException e) {
+      logger.warn("{}, {}, {}, {}, {}", visible, sop, tw, th, tiles);
+      throw e;
+    }
 
     // paint the source onto the destination
     final Graphics2D g = (Graphics2D) dst.getGraphics();
     g.setRenderingHints(hints);
 
-    for (Point tile : tiles) {
+    for (final Point tile : tiles) {
       g.drawImage(sop.getTile(tile, null), tile.x * tw - x0, tile.y * th - y0, null);
     }
 

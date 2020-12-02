@@ -29,13 +29,8 @@ import VASSAL.chat.Room;
  * Tracks players entering/exiting a room
  */
 public class RoomTracker {
-  private List<Player> joinedPlayers;
-  private List<Player> leftPlayers;
-
-  public RoomTracker() {
-    joinedPlayers = new ArrayList<>();
-    leftPlayers = new ArrayList<>();
-  }
+  private final List<Player> joinedPlayers = new ArrayList<>();
+  private final List<Player> leftPlayers = new ArrayList<>();
 
   public void init(Room r) {
     joinedPlayers.clear();
@@ -43,8 +38,8 @@ public class RoomTracker {
     leftPlayers.addAll(r.getPlayerList());
   }
 
-  public void finalize(Room r) {
-    for (Player p : r.getPlayerList()) {
+  public void finalizeRoom(Room r) {
+    for (final Player p : r.getPlayerList()) {
       if (!leftPlayers.contains(p)) {
         joinedPlayers.add(p);
       }

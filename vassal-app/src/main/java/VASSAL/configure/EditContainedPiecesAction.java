@@ -23,6 +23,7 @@ import javax.swing.AbstractAction;
 
 import VASSAL.build.Configurable;
 import VASSAL.counters.MassPieceDefiner;
+import VASSAL.i18n.Resources;
 
 /**
  * Action to edit all {@link VASSAL.counters.GamePiece}'s within a given component
@@ -30,17 +31,17 @@ import VASSAL.counters.MassPieceDefiner;
 public class EditContainedPiecesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Configurable target;
+  private final Configurable target;
 
   public EditContainedPiecesAction(Configurable target) {
-    super("Edit All Contained Pieces");
+    super(Resources.getString("Editor.EditContainedPiecesAction.what_it_does"));
     this.target = target;
   }
 
   @Override
   public void actionPerformed(ActionEvent evt) {
     final MassPieceDefiner mass = new MassPieceDefiner(target);
-    Configurer c = new Configurer("", "") {
+    final Configurer c = new Configurer("", "") {
       @Override
       public void setValue(String s) {
       }

@@ -18,16 +18,17 @@
 
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -42,10 +43,6 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.SequenceEncoder;
-
 /**
  * A Configurer that returns an array of Strings
  */
@@ -55,9 +52,31 @@ public class StringArrayConfigurer extends Configurer {
   protected DefaultListModel<String> model;
   private static final String[] EMPTY = new String[0];
   protected JTextField textField;
+  protected int minRows = 3;
+  protected int maxRows = 3;
 
   public StringArrayConfigurer(String key, String name, Object val) {
     super(key, name, val);
+  }
+
+  public StringArrayConfigurer(Object val) {
+    this(null, "", val);
+  }
+
+  public StringArrayConfigurer(Object val, int minRows, int maxRows) {
+    this(null, "", val);
+    this.minRows = minRows;
+    this.maxRows = maxRows;
+  }
+
+  public StringArrayConfigurer(String key, String name, int minRows, int maxRows) {
+    this(key, name);
+    this.minRows = minRows;
+    this.maxRows = maxRows;
+  }
+
+  public StringArrayConfigurer(int minRows, int maxRows) {
+    this(null, "", minRows, maxRows);
   }
 
   public StringArrayConfigurer(String key, String name) {
@@ -84,49 +103,48 @@ public class StringArrayConfigurer extends Configurer {
     if (panel == null) {
       panel = new JPanel();
       panel.setBorder(new TitledBorder(name));
-      panel.setLayout(new MigLayout("fill"));
+      panel.setLayout(new MigLayout("fill")); //NON-NLS
 
-      Box buttonBox = Box.createHorizontalBox();
-      Box leftBox = Box.createVerticalBox();
+      final JPanel buttonBox =  new JPanel(new MigLayout("ins 0", "push[][][]push")); // NON-NLS
+      final JPanel leftBox = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_INSERTS_GAPY, "[fill,grow]")); // NON-NLS
 
       model = new DefaultListModel<>();
       updateModel();
 
       list = new JList<>(model);
-      list.setPrototypeCellValue("MMMMMMMM");
-      list.setVisibleRowCount(2);
+      list.setBackground(Color.white);
+      list.setPrototypeCellValue("MMMMMMMM"); //NON-NLS
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-      JButton addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String s = getTextValue();
-          addValue(s);
-          setTextValue("");
-        }
+      final JButton addButton = new JButton(Resources.getString(Resources.ADD));
+      addButton.addActionListener(e -> {
+        final String s = getTextValue();
+        addValue(s);
+        setTextValue("");
+        updateViewable(list.getModel().getSize());
       });
       buttonBox.add(addButton);
 
-      JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
-      removeButton.addActionListener(e -> list.getSelectedValuesList().forEach(this::removeValue));
+      final JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
+      removeButton.addActionListener(e -> {
+        list.getSelectedValuesList().forEach(this::removeValue);
+        updateViewable(list.getModel().getSize());
+      });
       buttonBox.add(removeButton);
 
-      JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
-      ActionListener insertAction = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          if (value == null) {
-            addValue(getTextValue());
-          }
-          else {
-            int pos = list.getSelectedIndex();
-            if (pos < 0) pos = list.getModel().getSize();
-            setValue(ArrayUtils.insert(pos, (String[]) value, getTextValue()));
-            setTextValue("");
-            list.setSelectedIndex(pos + 1);
-          }
+      final JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
+      final ActionListener insertAction = e -> {
+        if (value == null) {
+          addValue(getTextValue());
         }
+        else {
+          int pos = list.getSelectedIndex();
+          if (pos < 0) pos = list.getModel().getSize();
+          setValue(ArrayUtils.insert(pos, (String[]) value, getTextValue()));
+          setTextValue("");
+          list.setSelectedIndex(pos + 1);
+        }
+        updateViewable(list.getModel().getSize() + 1);
       };
       insertButton.addActionListener(insertAction);
       buttonBox.add(insertButton);
@@ -134,16 +152,25 @@ public class StringArrayConfigurer extends Configurer {
       final Component textComponent = getTextComponent();
       addTextActionListener(insertAction);
 
-      leftBox.add(textComponent);
-      leftBox.add(buttonBox);
+      leftBox.add(textComponent, "growx,wrap"); // NON-NLS
+      leftBox.add(buttonBox, "growx"); // NON-NLS
 
-      JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      final JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+      pane.setBackground(Color.white);
       pane.setLeftComponent(leftBox);
       pane.setRightComponent(new ScrollPane(list));
 
-      panel.add(pane, "grow");
+      panel.add(pane, "grow"); //NON-NLS
+      updateViewable(list.getModel().getSize());
     }
     return panel;
+  }
+
+  public void updateViewable(int rows) {
+    list.setVisibleRowCount(Math.max(minRows, Math.min(rows, maxRows)));
+    if (rows <= maxRows) {
+      repack(panel);
+    }
   }
 
   protected Component getTextComponent() {
@@ -184,8 +211,8 @@ public class StringArrayConfigurer extends Configurer {
     if (s == null || s.length == 0) {
       return "";
     }
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String item : s) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String item : s) {
       se.append(item != null ? item : "");
     }
     return se.getValue();
@@ -202,7 +229,7 @@ public class StringArrayConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    String[] val = stringToArray(s);
+    final String[] val = stringToArray(s);
     setValue(val);
   }
 
@@ -211,8 +238,8 @@ public class StringArrayConfigurer extends Configurer {
         || s.length() == 0) {
       return EMPTY;
     }
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    List<String> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -222,8 +249,8 @@ public class StringArrayConfigurer extends Configurer {
   protected void updateModel() {
     if (model != null) {
       model.removeAllElements();
-      String[] s = getStringArray();
-      for (String item : s) {
+      final String[] s = getStringArray();
+      for (final String item : s) {
         model.addElement(item);
       }
     }
@@ -231,15 +258,10 @@ public class StringArrayConfigurer extends Configurer {
 
   // TODO move test code to a manual unit test annotated with @Ignore
   public static void main(String[] args) {
-    JFrame f = new JFrame();
-    final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  ");
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(c.getName() + " = " + c.getValueString());
-      }
-    });
-    c.setValue("Rack,Shack,Benny");
+    final JFrame f = new JFrame();
+    final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  "); //NON-NLS
+    c.addPropertyChangeListener(evt -> System.err.println(c.getName() + " = " + c.getValueString()));
+    c.setValue("Rack,Shack,Benny"); //NON-NLS
     f.add(c.getControls());
     f.pack();
     f.setVisible(true);

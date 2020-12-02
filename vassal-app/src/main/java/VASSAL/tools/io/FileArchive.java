@@ -36,122 +36,122 @@ public interface FileArchive extends Closeable {
    *
    * @return the path as a <code>String</code>
    */
-  public String getName();
+  String getName();
 
   /**
    * Gets the path to the archive file.
    *
    * @return the path as a <code>File</code>
    */
-  public File getFile();
+  File getFile();
 
   /**
    * Gets an {@link InputStream} to read from the given file.
    *
    * @param path the path to the file in the archive
    * @return an <code>InputStream</code> containing the requested file
-   * @throws IOException
+   * @throws IOException oops
    */
-  public InputStream getInputStream(String path) throws IOException;
+  InputStream getInputStream(String path) throws IOException;
 
   /**
    * Gets an {@link OutputStream} to write to the given file.
    *
    * @param path the path to the file in the archive
    * @return an <code>OutputStream</code> for the requested file
-   * @throws IOException
+   * @throws IOException oops
    */
-  public OutputStream getOutputStream(String path) throws IOException;
+  OutputStream getOutputStream(String path) throws IOException;
 
   /**
    * Adds a file to the archive.
    *
    * @param path the internal path of the file to be added
    * @param extPath the external path of the file to be added
-   * @throws IOException
+   * @throws IOException oops
    */
-  public void add(String path, String extPath) throws IOException;
+  void add(String path, String extPath) throws IOException;
 
   /**
    * Adds a file to the archive.
    *
    * @param path the internal path of the file to be added
    * @param extPath the external path to the file to be added
-   * @throws IOException
+   * @throws IOException oops
    */
-  public void add(String path, File extPath) throws IOException;
+  void add(String path, File extPath) throws IOException;
 
   /**
    * Adds the contents of a byte array to the archive.
    *
    * @param path the internal path of the file to be added
    * @param bytes the bytes to be added
-   * @throws IOException
+   * @throws IOException oops
    */
-  public void add(String path, byte[] bytes) throws IOException;
+  void add(String path, byte[] bytes) throws IOException;
 
   /**
    * Adds the contents of an {@link InputStream} to the archive.
    *
    * @param path the internal path of the file to be added
-   * @param bytes the <code>InputStream</code> to read from
-   * @throws IOException
+   * @param in the <code>InputStream</code> to read from
+   * @throws IOException oops
    */
-  public void add(String path, InputStream in) throws IOException;
+  void add(String path, InputStream in) throws IOException;
 
   /**
    * Removes a file from the archive.
    *
    * @param path the path to the file in the archive
    * @return <code>true</code> if the file existed in the archive
-   * @throws IOException
+   * @throws IOException oops
    */
-  public boolean remove(String path) throws IOException;
+  boolean remove(String path) throws IOException;
 
   /**
    * Reverts the archive to its last saved state.
    *
-   * @throws IOException
+   * @throws IOException oops
    */
-  public void revert() throws IOException;
+  void revert() throws IOException;
 
   /**
    * Forces all changes to the archive to disk.
    *
-   * @throws IOExcetpion
+   * @throws IOException oops
    */
-  public void flush() throws IOException;
+  void flush() throws IOException;
 
   /**
    * Closes the archive, writing all changes to disk.
    *
-   * @throws IOException
+   * @throws IOException oops
    */
   @Override
-  public void close() throws IOException;
+  void close() throws IOException;
 
   /**
    * Queries whether a file exists in the archive.
    *
    * @param path the path to the file in the archive
    * @return <code>true</code> if the file exists in the archive
-   * @throws IOException
+   * @throws IOException oops
    */
-  public boolean contains(String path) throws IOException;
+  boolean contains(String path) throws IOException;
 
   /**
    * Queries whether the archive is closed.
    *
    * @return <code>true</code> if the archive is closed
    */
-  public boolean isClosed();
+  boolean isClosed();
 
   /**
    * Queries whether the archive has unsaved modifications.
    *
    * @return <code>true</code> if the archive is modified
    */
-  public boolean isModified();
+  boolean isModified();
 
   /**
    * Gets the size of a file in the archive, in bytes.
@@ -159,9 +159,9 @@ public interface FileArchive extends Closeable {
    * @param path the path to the file in the archive
    * @return the size of the file, in bytes
    * @throws FileNotFoundException if <code>path</code> is not in the archive
-   * @throws IOException
+   * @throws IOException oops
    */
-  public long getSize(String path) throws IOException;
+  long getSize(String path) throws IOException;
 
   /**
    * Gets the modification time of a file in the archive, in milliseconds
@@ -170,17 +170,17 @@ public interface FileArchive extends Closeable {
    * @param path the path to the file in the archive
    * @return the mtime of the file
    * @throws FileNotFoundException if <code>path</code> is not in the archive
-   * @throws IOException
+   * @throws IOException oops
    */
-  public long getMTime(String path) throws IOException;
+  long getMTime(String path) throws IOException;
 
   /**
    * Gets the list of files in the archive.
    *
    * @return the list of files in the archive
-   * @throws IOException
+   * @throws IOException oops
    */
-  public List<String> getFiles() throws IOException;
+  List<String> getFiles() throws IOException;
 
   /**
    * Gets the list of files under a given directory of the archive.
@@ -188,7 +188,7 @@ public interface FileArchive extends Closeable {
    * @param root the directory
    * @return the list of files under the given directory
    * @throws FileNotFoundException if <code>root</code> is not in the archive
-   * @throws IOException
+   * @throws IOException oops
    */
-  public List<String> getFiles(String root) throws IOException;
+  List<String> getFiles(String root) throws IOException;
 }

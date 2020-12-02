@@ -22,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -33,10 +34,10 @@ import VASSAL.tools.menu.MenuManager;
  * Manages {@link PrivateChatter} instances
  */
 public class PrivateChatManager {
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
 
-  private List<Entry> chatters;
-  private List<Player> banned;
+  private final List<Entry> chatters;
+  private final List<Player> banned;
 
   public PrivateChatManager(ChatServerConnection client) {
     chatters = new ArrayList<>();
@@ -49,7 +50,7 @@ public class PrivateChatManager {
       return null;
     }
     PrivateChatter chat = null;
-    int index = chatters.indexOf(new Entry(sender, null));
+    final int index = chatters.indexOf(new Entry(sender, null));
     if (index >= 0) {
       chat = chatters.get(index).chatter;
     }
@@ -77,34 +78,32 @@ public class PrivateChatManager {
 
   private void promptToBan(Player p) {
     if (JOptionPane.YES_OPTION ==
-      JOptionPane.showConfirmDialog
-      (null,
-       Resources.getString("Chat.ignore_messages", p.getName()), //$NON-NLS-1$
-       null,
-       JOptionPane.YES_NO_OPTION)) {
+      JOptionPane.showConfirmDialog(
+        null,
+        Resources.getString("Chat.ignore_messages", p.getName()), //$NON-NLS-1$
+        null,
+        JOptionPane.YES_NO_OPTION)) {
       banned.add(p);
     }
   }
 
   private static class Entry {
-    private Player player;
-    private PrivateChatter chatter;
+    private final Player player;
+    private final PrivateChatter chatter;
 
     private Entry(Player p, PrivateChatter chat) {
-      if (p == null) {
-        throw new NullPointerException();
-      }
-      player = p;
+      player = Objects.requireNonNull(p);
       chatter = chat;
     }
 
+    @Override
+    public int hashCode() {
+      return player.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
-      if (o instanceof Entry) {
-        return player.equals(((Entry) o).player);
-      }
-      else {
-        return false;
-      }
+      return o instanceof Entry && player.equals(((Entry) o).player);
     }
   }
 }

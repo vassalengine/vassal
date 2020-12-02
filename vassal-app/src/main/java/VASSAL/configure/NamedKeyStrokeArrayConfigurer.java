@@ -17,31 +17,26 @@
  */
 package VASSAL.configure;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-
+import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
 /**
- * Configures an array of {@link NamedKeyStrokes}
+ * Configures an array of {link NamedKeyStrokes}
  */
 public class NamedKeyStrokeArrayConfigurer extends Configurer {
-  private List<NamedHotKeyConfigurer> configs = new ArrayList<>();
-  private Box controls;
+  private final List<NamedHotKeyConfigurer> configs = new ArrayList<>();
+  private JPanel controls;
   private JPanel panel;
 
   public NamedKeyStrokeArrayConfigurer(String key, String name) {
@@ -52,52 +47,46 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     super(key, name, val);
   }
 
+  public NamedKeyStrokeArrayConfigurer(String key, String name, List<NamedKeyStroke> val) {
+    this(key, name, val.toArray(new NamedKeyStroke[0]));
+  }
+
+  public NamedKeyStrokeArrayConfigurer(NamedKeyStroke[] val) {
+    this(null, "", val);
+  }
+
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new BorderLayout());
-      controls = Box.createVerticalBox();
-      final JScrollPane scroll = new JScrollPane(controls);
-      Box b = Box.createHorizontalBox();
-      controls.add(b);
-      JLabel l = new JLabel(getName());
-      b.add(l);
-      JButton button = new JButton("Add");
-      b.add(button);
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          addKey(null);
-        }
-      });
+      panel = new ConfigurerPanel(getName(), "[grow,fill]rel[]", "[]rel[grow,fill]rel[]"); // NON-NLS
 
-      panel.add(scroll, BorderLayout.CENTER);
+      controls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_GAPY, "[grow,fill]")); // NON-NLS
+      controls.setBorder(BorderFactory.createEtchedBorder());
+      panel.add(controls, "grow"); // NON-NLS
 
-      NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
-      if (keyStrokes != null) {
-        for (NamedKeyStroke keyStroke : keyStrokes) {
+      final NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
+      if (keyStrokes == null || keyStrokes.length == 0) {
+        addKey(null);
+      }
+      else {
+        for (final NamedKeyStroke keyStroke : keyStrokes) {
           addKey(keyStroke);
         }
       }
-      addKey(null);
+
+      final JButton button = new JButton(Resources.getString("Editor.add"));
+      button.addActionListener(e -> addKey(null));
+      panel.add(button, "aligny top"); // NON-NLS
     }
     return panel;
   }
 
   private void addKey(NamedKeyStroke keyStroke) {
-    NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
+    final NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
     configs.add(config);
-    controls.add(config.getControls());
-    if (configs.size() > 5) {
-      panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, 150));
-    }
-    else {
-      panel.setPreferredSize(null);
-    }
-    Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      w.pack();
-    }
+    controls.add(config.getControls(), "grow,wrap"); // NON-NLS
+
+    repack(controls);
   }
 
   @Override
@@ -135,9 +124,9 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   }
 
   public NamedKeyStroke[] getKeyStrokes() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    for (NamedHotKeyConfigurer hotKeyConfigurer : configs) {
-      NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
+    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    for (final NamedHotKeyConfigurer hotKeyConfigurer : configs) {
+      final NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
       if (value != null) {
         l.add(value);
       }
@@ -149,11 +138,11 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     if (s == null) {
       return null;
     }
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final ArrayList<NamedKeyStroke> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();
-      if (token != "") {
+      if (!token.isEmpty()) {
         l.add(NamedHotKeyConfigurer.decode(token));
       }
     }
@@ -164,8 +153,8 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     if (keys == null) {
       return null;
     }
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (NamedKeyStroke key : keys) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final NamedKeyStroke key : keys) {
       if (!key.isNull()) {
         se.append(NamedHotKeyConfigurer.encode(key));
       }

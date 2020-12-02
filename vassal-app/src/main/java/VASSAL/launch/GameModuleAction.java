@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import VASSAL.build.GameModule;
 
 /**
- * Utility base class for {@link GameModule}-related actions, with auxilliary
+ * Utility base class for {@link GameModule}-related actions, with auxiliary
  * actions and error reporting.
  *
  * @author rodneykinney
@@ -82,17 +82,17 @@ public abstract class GameModuleAction extends AbstractAction {
   }
 
   /**
-   * Add an auxilliary action to be performed after the core action. For example, closing a window after a module has
+   * Add an auxiliary action to be performed after the core action. For example, closing a window after a module has
    * been loaded
    *
-   * @param r
+   * @param r action
    */
   public void addAction(Runnable r) {
     actions.add(r);
   }
 
   protected void runActions() {
-    for (Runnable r : actions) {
+    for (final Runnable r : actions) {
       r.run();
     }
   }

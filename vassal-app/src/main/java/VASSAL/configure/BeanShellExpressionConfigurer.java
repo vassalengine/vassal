@@ -17,9 +17,9 @@
  */
 package VASSAL.configure;
 
-import VASSAL.script.expression.FunctionBuilder;
+import bsh.BeanShellExpressionValidator;
+
 import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -35,12 +35,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import net.miginfocom.swing.MigLayout;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
-import bsh.BeanShellExpressionValidator;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * A Configurer for Java Expressions
@@ -63,15 +64,33 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected JButton extraDetails;
   protected Icon up;
   protected Icon down;
-  protected StringConfigurer errorMessage;
-  protected JLabel variables;
-  protected JLabel methods;
+  protected StringConfigurer errorMessage = new StringConfigurer("");
+  protected JLabel variables = new JLabel();
+  protected JLabel methods = new JLabel();
   protected EditablePiece target;
   protected Option option;
   protected String selectedText;
   protected boolean displayOnly;
   protected FunctionBuilder builder;
 
+  /**
+   * Create an unlabeled BeanShellConfigurer with an initial value and target piece
+   *
+   * @param val Initial expression
+   * @param piece Target Piece
+   */
+  public BeanShellExpressionConfigurer(String val, GamePiece piece) {
+    this(null, "", val, piece);
+  }
+
+  /**
+   * Create a labeled BeanShellConfigurer with an initial value and target piece
+   *
+   * @param key Configurer Key
+   * @param name Label
+   * @param val Initial expression
+   * @param piece Target Piece
+   */
   public BeanShellExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     this(key, name, val, piece, Option.NONE);
   }
@@ -96,9 +115,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       target = null;
     }
     strip();
-    up = IconFactory.getIcon("go-up", IconFamily.XSMALL);
-    down = IconFactory.getIcon("go-down", IconFamily.XSMALL);
-    extraDetails = new JButton("Insert");
+    up = IconFactory.getIcon("go-up", IconFamily.XSMALL);   //NON-NLS
+    down = IconFactory.getIcon("go-down", IconFamily.XSMALL); //NON-NLS
+    extraDetails = new JButton(Resources.getString("Editor.BeanShell.insert"));
     extraDetails.addActionListener(e -> {
       setSelectedText(nameField.getSelectedText());
       doPopup();
@@ -134,14 +153,17 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   }
 
   @Override
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
-      expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]"));
-      expressionPanel.add(new JLabel(getName()));
+      // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
+      expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]"); // NON-NLS
+
+      final JPanel panel = new JPanel(new MigLayout("ins 0,hidemode 3", "[fill,grow]2[]2[]")); // NON-NLS
+
       validator = new Validator();
       nameField = new JTextField(30);
       nameField.setText(getValueString());
-      expressionPanel.add(nameField, "growx");
+      panel.add(nameField, "growx"); //NON-NLS
       nameField.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent evt) {
@@ -152,8 +174,9 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           updateParentBuilder();
         }
       });
-      expressionPanel.add(validator);
-      expressionPanel.add(extraDetails, "wrap");
+      panel.add(validator);
+      panel.add(extraDetails);
+      expressionPanel.add(panel, "grow"); // NON-NLS
 
       nameField.setEditable(! isDisplayOnly());
       extraDetails.setVisible(! isDisplayOnly());
@@ -163,10 +186,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       detailPanel = new JPanel();
       detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
 
-      errorMessage = new StringConfigurer(null, "Error Message:  ", "");
+      errorMessage = new StringConfigurer(null, "Error Message:  ", "");  //NON-NLS
       errorMessage.getControls().setEnabled(false);
-      variables = new JLabel("Vassal Properties:  ");
-      methods = new JLabel("Methods:  ");
+      variables.setText("Vassal Properties:  ");  //NON-NLS
+      methods.setText("Methods:  ");  //NON-NLS
 
       detailPanel.add(errorMessage.getControls());
       detailPanel.add(variables);
@@ -199,19 +222,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     popup.show(extraDetails, 0, 0);
   }
 
-  protected void repack() {
-    final Window w = SwingUtilities.getWindowAncestor(p);
-    if (w != null) {
-      w.pack();
-    }
-  }
-
   /**
    * Insert a property name into the expression
    * @param name property name
    */
   protected void insertPropertyName(String name) {
-    insertName (cleanName(name));
+    insertName(cleanName(name));
   }
 
   protected void insertName(String name) {
@@ -228,7 +244,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       }
     }
 
-    String news = work.substring(0, pos) + name + work.substring(pos);
+    final String news = work.substring(0, pos) + name + work.substring(pos);
     nameField.setText(news);
     nameField.setCaretPosition(pos + name.length());
 
@@ -259,19 +275,19 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
         valid = Character.isJavaIdentifierPart(c);
       }
     }
-    return valid ? name : "GetProperty(\"" + name + "\")";
+    return valid ? name : "GetProperty(\"" + name + "\")";  //NON-NLS
   }
 
   protected void setDetails(String error, List<String> v, List<String> m) {
     errorMessage.setValue(error);
-    String s = "Vassal Properties:  " + (v == null ? "" : v.toString());
+    String s = "Vassal Properties:  " + (v == null ? "" : v.toString());  //NON-NLS
     variables.setText(s);
-    s = "Methods:  " + (m == null ? "" : m.toString());
+    s = "Methods:  " + (m == null ? "" : m.toString()); //NON-NLS
     methods.setText(s);
   }
 
   protected void setDetails() {
-    setDetails ("", null, null);
+    setDetails("", null, null);
   }
 
   public String getSelectedText() {
@@ -310,10 +326,10 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     private static final long serialVersionUID = 1L;
 
     public Validator() {
-      cross = IconFactory.getIcon("no", IconFamily.XSMALL);
-      tick = IconFactory.getIcon("yes", IconFamily.XSMALL);
+      cross = IconFactory.getIcon("no", IconFamily.XSMALL);  //NON-NLS
+      tick = IconFactory.getIcon("yes", IconFamily.XSMALL); //NON-NLS
 
-      BufferedImage image = new BufferedImage(cross.getIconWidth(), cross.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+      final BufferedImage image = new BufferedImage(cross.getIconWidth(), cross.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
       none = new ImageIcon(image);
 
       setStatus(UNKNOWN);
@@ -362,7 +378,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           setDetails();
         }
         else {
-          BeanShellExpressionValidator v = new BeanShellExpressionValidator(getValueString());
+          final BeanShellExpressionValidator v = new BeanShellExpressionValidator(getValueString());
           if (v.isValid()) {
             validator.setStatus(VALID);
           }

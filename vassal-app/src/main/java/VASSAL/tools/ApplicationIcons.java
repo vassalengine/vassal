@@ -36,7 +36,7 @@ import VASSAL.tools.image.ImageUtils;
 
 public class ApplicationIcons {
 
-  public static final String VASSAL_ICON_LARGE = "VASSAL-256x256.png";
+  public static final String VASSAL_ICON_LARGE = "VASSAL-256x256.png"; //NON-NLS
 
   private ApplicationIcons() {}
 
@@ -47,7 +47,7 @@ public class ApplicationIcons {
   private static final List<BufferedImage> icons;
 
   static {
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       icons = null;
     }
     else {
@@ -57,7 +57,7 @@ public class ApplicationIcons {
         if (SystemUtils.IS_OS_WINDOWS) {
           // Windows uses 24x24 instead of 22x22
           final BufferedImage src =
-            ImageUtils.getImageResource("/icons/22x22/VASSAL.png");
+            ImageUtils.getImageResource("/icons/22x22/VASSAL.png"); //NON-NLS
           final BufferedImage dst =
             ImageUtils.createCompatibleTranslucentImage(24, 24);
           final Graphics2D g = dst.createGraphics();
@@ -65,20 +65,20 @@ public class ApplicationIcons {
           g.dispose();
 
           l = Arrays.asList(
-            ImageUtils.getImageResource("/icons/16x16/VASSAL.png"),
+            ImageUtils.getImageResource("/icons/16x16/VASSAL.png"), //NON-NLS
             dst,  // 24x24
-            ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/48x48/VASSAL.png"),
-            ImageUtils.getImageResource("/images/" + VASSAL_ICON_LARGE)
+            ImageUtils.getImageResource("/icons/32x32/VASSAL.png"), //NON-NLS
+            ImageUtils.getImageResource("/icons/48x48/VASSAL.png"), //NON-NLS
+            ImageUtils.getImageResource("/images/" + VASSAL_ICON_LARGE) //NON-NLS
           );
         }
         else {
           // load the standard Tango sizes
           l = Arrays.asList(
-            ImageUtils.getImageResource("/icons/16x16/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/22x22/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/48x48/VASSAL.png")
+            ImageUtils.getImageResource("/icons/16x16/VASSAL.png"), //NON-NLS
+            ImageUtils.getImageResource("/icons/22x22/VASSAL.png"), //NON-NLS
+            ImageUtils.getImageResource("/icons/32x32/VASSAL.png"), //NON-NLS
+            ImageUtils.getImageResource("/icons/48x48/VASSAL.png") //NON-NLS
           );
         }
       }

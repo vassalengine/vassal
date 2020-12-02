@@ -202,11 +202,11 @@ public class SVGRenderer {
                              String uri,
                              TranscoderOutput output)
                              throws TranscoderException {
-      if (SystemUtils.IS_OS_MAC_OSX) {
+      if (SystemUtils.IS_OS_MAC) {
         final Element g = document.createElementNS(
-          SVGDOMImplementation.SVG_NAMESPACE_URI, "g"
+          SVGDOMImplementation.SVG_NAMESPACE_URI, "g" //NON-NLS
         );
-        g.setAttributeNS(null, "transform", "rotate(0.000001)");
+        g.setAttributeNS(null, "transform", "rotate(0.000001)"); //NON-NLS
 
         // interpose this <g> element between <svg> and its children
         final Element svg = document.getDocumentElement();
@@ -222,8 +222,8 @@ public class SVGRenderer {
       super.transcode(document, uri, output);
 
        // prepare the image to be painted
-      int w = (int)(width + 0.5);
-      int h = (int)(height + 0.5);
+      final int w = (int)(width + 0.5);
+      final int h = (int)(height + 0.5);
 
       // paint the SVG document using the bridge package
       // create the appropriate renderer
@@ -267,10 +267,10 @@ public class SVGRenderer {
       g2d.dispose();
       rend = null; // We're done with it...
 
-      writeImage(dest, output);
+      writeImage(dest);
     }
 
-    private void writeImage(BufferedImage image, TranscoderOutput output) {
+    private void writeImage(BufferedImage image) {
       this.image = image;
     }
 

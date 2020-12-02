@@ -24,7 +24,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -88,19 +87,14 @@ public class FirstTimeDialog extends JDialog {
       new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
     final JButton help = new JButton(Resources.getString(Resources.HELP));
 
-    final ActionListener closer = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-        FirstTimeDialog.this.dispose();
-      }
-    };
+    final ActionListener closer = evt -> dispose();
 
     tour.addActionListener(closer);
     jump.addActionListener(closer);
 
     try {
       final File readme =
-        new File (Documentation.getDocumentationBaseDir(), "README.html");
+        new File(Documentation.getDocumentationBaseDir(), "README.html");
       help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
     }
     catch (MalformedURLException e) {
@@ -122,20 +116,17 @@ public class FirstTimeDialog extends JDialog {
     });
 
     langbox.setSelectedItem(Resources.getLocale());
-    langbox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        Resources.setLocale((Locale) langbox.getSelectedItem());
+    langbox.addActionListener(e -> {
+      Resources.setLocale((Locale) langbox.getSelectedItem());
 
-        // update the text for the new locale
-        welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
-        tour.setText(Resources.getString("Main.tour"));  //$NON-NLS-1$
-        jump.setText(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
-        help.setText(Resources.getString(Resources.HELP));
-        lang.setText(Resources.getString("Prefs.language") + ":");
-        FirstTimeDialog.this.pack();
-        // langbox picks up the new locale automatically from getDisplayName()
-      }
+      // update the text for the new locale
+      welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
+      tour.setText(Resources.getString("Main.tour"));  //$NON-NLS-1$
+      jump.setText(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
+      help.setText(Resources.getString(Resources.HELP));
+      lang.setText(Resources.getString("Prefs.language") + ":");
+      pack();
+      // langbox picks up the new locale automatically from getDisplayName()
     });
 
     final JPanel panel = new JPanel();
@@ -185,7 +176,7 @@ public class FirstTimeDialog extends JDialog {
     // load the splash image
     BufferedImage img = null;
     try {
-      img = ImageUtils.getImageResource("/images/Splash.png");
+      img = ImageUtils.getImageResource("/images/Splash.png"); //NON-NLS
     }
     catch (ImageIOException e) {
       logger.error("", e);
@@ -201,21 +192,20 @@ public class FirstTimeDialog extends JDialog {
         Math.max(screen.height - dsize.height, 0)
       );
 
-      if (remainder.width == 0 || remainder.height == 0) {
-        // no room for the image, do nothing
-      }
-      else if (remainder.width >= img.getWidth() &&
-               remainder.height >= img.getHeight()) {
-        // the whole image fits, use it as-is
-        about.setIcon(new ImageIcon(img));
-      }
-      else {
-        // downscale the image to fit
-        final double scale = Math.min(
-          remainder.width  / (double) img.getWidth(),
-          remainder.height / (double) img.getHeight()
-        );
-        about.setIcon(new ImageIcon(ImageUtils.transform(img, scale, 0.0)));;
+      if (remainder.width > 0 && remainder.height > 0) {
+        if (remainder.width >= img.getWidth() &&
+            remainder.height >= img.getHeight()) {
+          // the whole image fits, use it as-is
+          about.setIcon(new ImageIcon(img));
+        }
+        else {
+          // downscale the image to fit
+          final double scale = Math.min(
+            remainder.width  / (double) img.getWidth(),
+            remainder.height / (double) img.getHeight()
+          );
+          about.setIcon(new ImageIcon(ImageUtils.transform(img, scale, 0.0)));
+        }
       }
 
       pack();

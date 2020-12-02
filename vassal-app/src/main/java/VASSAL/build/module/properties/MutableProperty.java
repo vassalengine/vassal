@@ -41,17 +41,17 @@ public interface MutableProperty {
 
   MutablePropertiesContainer getParent();
 
-  public class Util {
+  class Util {
     /**
      * Look for a {@link MutableProperty} in the list of {@link MutablePropertiesContainer}. Return the first one
      * found, searching the lists in order. The list may contain null references, which are skipped
      *
-     * @param propertyContainers
-     * @return
+     * @param propertyContainers list of containers
+     * @return first property found
      */
     public static MutableProperty findMutableProperty(String propertyName, List<MutablePropertiesContainer> propertyContainers) {
       MutableProperty p = null;
-      for (MutablePropertiesContainer c : propertyContainers) {
+      for (final MutablePropertiesContainer c : propertyContainers) {
         p = (c == null ? null : c.getMutableProperty(propertyName));
         if (p != null) {
           break;
@@ -60,32 +60,30 @@ public interface MutableProperty {
       return p;
     }
   }
+
   /**
    * Simple implementation of {@link MutableProperty} Support dynamic changing of the property name, provided that
    * the {@link #addTo(MutablePropertiesContainer)} method is used to register this property with a properties
    * container.
    *
    * @author rkinney
-   *
    */
-  public class Impl implements MutableProperty {
-    private PropertyChangeSupport propSupport;
+  class Impl implements MutableProperty {
+    private final PropertyChangeSupport propSupport;
     private String value = "";
     private String propertyName;
     private MutablePropertiesContainer parent;
 
     // Maintain a static list of all Global Properties known to module
-    private static List<Impl> allProperties = new ArrayList<>();
+    private static final List<Impl> allProperties = new ArrayList<>();
     public static List<Impl> getAllProperties() {
       return allProperties;
     }
 
     /**
-     *
-     * @param source
-     *          will be the source of any {@link PropertyChangeEvent} fired by this object
+     * @param source will be the source of any {@link PropertyChangeEvent} fired by this object
      */
-    public Impl(String propertyName, Object source) {
+    public Impl(String propertyName, Object source) { //NOPMD
       this.propertyName = propertyName;
       propSupport = new PropertyChangeSupport(this);
     }
@@ -144,8 +142,8 @@ public interface MutableProperty {
       if (newValue == null) {
         newValue = "";
       }
-      String oldValue = value;
-      Command c = getChangeCommand(value, newValue);
+      final String oldValue = value;
+      final Command c = getChangeCommand(value, newValue);
       value = newValue;
       propSupport.firePropertyChange(propertyName, oldValue, newValue);
       return c;

@@ -17,7 +17,24 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.DoubleConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -34,33 +51,15 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
-import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+import java.util.Objects;
 
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.DoubleConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.image.LabelUtils;
+import javax.swing.KeyStroke;
 
 /**
  * Displays a movement trail indicating where a piece has been moved
@@ -91,10 +90,11 @@ public class Footprint extends MovementMarkable {
   protected Color fillColor;                   // Color of Trail circle fill
   protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
   protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
+  protected String description;                // Description for this movement trail
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
-  protected static final String DEFAULT_MENU_COMMAND = "Movement Trail";
+  protected static final String DEFAULT_MENU_COMMAND = Resources.getString("Editor.Footprint.movement_trail");
   protected static final Boolean DEFAULT_INITIALLY_VISIBLE = Boolean.FALSE;
   protected static final Boolean DEFAULT_GLOBALLY_VISIBLE = Boolean.FALSE;
   protected static final int DEFAULT_CIRCLE_RADIUS = 10;
@@ -163,7 +163,7 @@ public class Footprint extends MovementMarkable {
       .append(startMapId)
       .append(pointList.size());
 
-    for (Point p : pointList) {
+    for (final Point p : pointList) {
       se.append(p.x + "," + p.y);
     }
 
@@ -171,7 +171,7 @@ public class Footprint extends MovementMarkable {
   }
 
   /**
-   * Type is the character command that toggles footprint visiblity
+   * Type is the character command that toggles footprint visibility
    */
   @Override
   public void mySetType(String type) {
@@ -193,6 +193,7 @@ public class Footprint extends MovementMarkable {
     trailKeyOn = st.nextNamedKeyStroke(null);
     trailKeyOff = st.nextNamedKeyStroke(null);
     trailKeyClear = st.nextNamedKeyStroke(null);
+    description = st.nextToken("");
 
     commands = null;
     showTrailCommand = null;
@@ -208,7 +209,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(trailKey)
       .append(menuCommand)
       .append(initiallyVisible)
@@ -223,8 +224,25 @@ public class Footprint extends MovementMarkable {
       .append(lineWidth)
       .append(trailKeyOn)
       .append(trailKeyOff)
-      .append(trailKeyClear);
+      .append(trailKeyClear)
+      .append(description);
     return ID + se.getValue();
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Arrays.asList(trailKey, trailKeyOn, trailKeyOff, trailKeyClear);
+  }
+
+  /**
+   * @return a list of any Menu Text strings referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return List.of(menuCommand);
   }
 
   @Override
@@ -299,7 +317,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("MovementTrail.htm"); //$NON-NLS-1$//
+    return HelpFile.getReferenceManualPage("MovementTrail.html"); //$NON-NLS-1$//
   }
 
   /**
@@ -320,7 +338,7 @@ public class Footprint extends MovementMarkable {
 
   @Override
   public String getDescription() {
-    return "Movement trail";
+    return buildDescription("Editor.Footprint.trait_description", description);
   }
 
 // FIXME: This method is inefficient.
@@ -470,7 +488,7 @@ public class Footprint extends MovementMarkable {
         drawPoint(g, p, zoom, elementCount);
 
         // Is there an Icon to draw in the circle?
-        Image image = getTrailImage(elementCount);
+        final Image image = getTrailImage(elementCount);
         x1 = (int)((p.x - circleRadius) * zoom);
         y1 = (int)((p.y - circleRadius) * zoom);
         if (selected && image != null) {
@@ -478,7 +496,7 @@ public class Footprint extends MovementMarkable {
             g.drawImage(image, x1, y1, obs);
           }
           else {
-            Image scaled =
+            final Image scaled =
               ImageUtils.transform((BufferedImage) image, zoom, 0.0);
             g.drawImage(scaled, x1, y1, obs);
           }
@@ -533,7 +551,7 @@ public class Footprint extends MovementMarkable {
     double lastSqrt = -1;
     int lastDistSq = -1;
 
-    int distSq = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    final int distSq = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
     if (distSq != lastDistSq) {
       lastDistSq = distSq;
       lastSqrt = Math.sqrt(distSq);
@@ -716,8 +734,35 @@ public class Footprint extends MovementMarkable {
   @Override
   public PieceI18nData getI18nData() {
     final PieceI18nData data = super.getI18nData();
-    data.add(menuCommand, "Show Movement Trail command");
+    data.add(menuCommand, Resources.getString("Editor.Footprint.show_movement_trail_command"));
     return data;
+  }
+
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Footprint)) return false;
+    final Footprint c = (Footprint) o;
+
+    if (! Objects.equals(trailKey, c.trailKey)) return false;
+    if (! Objects.equals(menuCommand, c.menuCommand)) return false;
+    if (! Objects.equals(initiallyVisible, c.initiallyVisible)) return false;
+    if (! Objects.equals(globallyVisible, c.globallyVisible)) return false;
+    if (! Objects.equals(circleRadius, c.circleRadius)) return false;
+    if (! Objects.equals(fillColor, c.fillColor)) return false;
+    if (! Objects.equals(lineColor, c.lineColor)) return false;
+    if (! Objects.equals(selectedTransparency, c.selectedTransparency)) return false;
+    if (! Objects.equals(unSelectedTransparency, c.unSelectedTransparency)) return false;
+    if (! Objects.equals(edgePointBuffer, c.edgePointBuffer)) return false;
+    if (! Objects.equals(edgeDisplayBuffer, c.edgeDisplayBuffer)) return false;
+    if (! Objects.equals(lineWidth, c.lineWidth)) return false;
+    if (! Objects.equals(trailKeyOn, c.trailKeyOn)) return false;
+    if (! Objects.equals(trailKeyOff, c.trailKeyOff)) return false;
+    if (! Objects.equals(trailKeyClear, c.trailKeyClear)) return false;
+    if (! Objects.equals(description, c.description)) return false;
+
+    if (! Objects.equals(globalVisibility, c.globalVisibility)) return false;
+    if (! Objects.equals(startMapId, c.startMapId)) return false;
+    return Objects.equals(pointList, c.pointList);
   }
 
   /**
@@ -726,11 +771,12 @@ public class Footprint extends MovementMarkable {
    * Point Limit
    */
   protected static class Ed implements PieceEditor {
+    private final StringConfigurer desc;
     private final NamedHotKeyConfigurer trailKeyInput;
     private final NamedHotKeyConfigurer trailKeyOn;
     private final NamedHotKeyConfigurer trailKeyOff;
     private final NamedHotKeyConfigurer trailKeyClear;
-    private final JPanel controls;
+    private final TraitConfigPanel controls;
     private final StringConfigurer mc;
     private final BooleanConfigurer iv;
     private final BooleanConfigurer gv;
@@ -744,73 +790,65 @@ public class Footprint extends MovementMarkable {
     private final DoubleConfigurer lw;
 
     public Ed(Footprint p) {
-      controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      controls = new TraitConfigPanel();
 
-      Box b;
-      trailKeyInput = new NamedHotKeyConfigurer(null, "Key Command:  ", p.trailKey);
-      controls.add(trailKeyInput.getControls());
+      desc = new StringConfigurer(p.description);
+      controls.add("Editor.description_label", desc);
 
-      mc = new StringConfigurer(null, "Menu Command:  ", p.menuCommand);
-      controls.add(mc.getControls());
+      mc = new StringConfigurer(p.menuCommand);
+      controls.add("Editor.menu_command", mc);
+
+      trailKeyInput = new NamedHotKeyConfigurer(p.trailKey);
+      controls.add("Editor.keyboard_command", trailKeyInput);
 
       // Trail forcing commands
-      trailKeyOn = new NamedHotKeyConfigurer(null, "TURN ON Key Command:  ", p.trailKeyOn);
-      controls.add(trailKeyOn.getControls());
-      trailKeyOff = new NamedHotKeyConfigurer(null, "TURN OFF Key Command:  ", p.trailKeyOff);
-      controls.add(trailKeyOff.getControls());
-      trailKeyClear = new NamedHotKeyConfigurer(null, "CLEAR TRAIL Key Command:  ", p.trailKeyClear);
-      controls.add(trailKeyClear.getControls());
+      trailKeyOn = new NamedHotKeyConfigurer(p.trailKeyOn);
+      controls.add("Editor.Footprint.turn_on_key_command", trailKeyOn);
+      trailKeyOff = new NamedHotKeyConfigurer(p.trailKeyOff);
+      controls.add("Editor.Footprint.turn_off_key_command", trailKeyOff);
+      trailKeyClear = new NamedHotKeyConfigurer(p.trailKeyClear);
+      controls.add("Editor.Footprint.clear_trail_key_command", trailKeyClear);
 
-      iv = new BooleanConfigurer(null, "Trails start visible?",
-                                 Boolean.valueOf(p.initiallyVisible));
-      controls.add(iv.getControls());
+      iv = new BooleanConfigurer(p.initiallyVisible);
+      controls.add("Editor.Footprint.trails_start_visible", iv);
 
-      gv = new BooleanConfigurer(null, "Trails are visible to all players?",
-                                 Boolean.valueOf(p.globallyVisible));
-      controls.add(gv.getControls());
+      gv = new BooleanConfigurer(p.globallyVisible);
+      controls.add("Editor.Footprint.trails_are_visible_to_all_players", gv);
 
-      cr = new IntConfigurer(null, "Circle Radius:  ", p.circleRadius);
-      controls.add(cr.getControls());
+      cr = new IntConfigurer(p.circleRadius);
+      controls.add("Editor.Footprint.circle_radius", cr);
 
-      fc = new ColorConfigurer(null, "Circle Fill Color:  ", p.fillColor);
-      controls.add(fc.getControls());
+      fc = new ColorConfigurer(p.fillColor);
+      controls.add("Editor.Footprint.circle_fill_color", fc);
 
-      lc = new ColorConfigurer(null, "Line Color:  ", p.lineColor);
-      controls.add(lc.getControls());
+      lc = new ColorConfigurer(p.lineColor);
+      controls.add("Editor.Footprint.line_color", lc);
 
-      lw = new DoubleConfigurer(null, "Line thickness:  ", p.lineWidth);
-      controls.add(lw.getControls());
+      lw = new DoubleConfigurer(p.lineWidth);
+      controls.add("Editor.Footprint.line_thickness", lw);
 
-      st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100):  ", p.selectedTransparency);
-      controls.add(st.getControls());
+      st = new IntConfigurer(p.selectedTransparency);
+      controls.add("Editor.Footprint.selected_transparency", st);
 
-      ut = new IntConfigurer(null, "Unselected Unit Trail Transparency (0-100):  ", p.unSelectedTransparency);
-      controls.add(ut.getControls());
+      ut = new IntConfigurer(p.unSelectedTransparency);
+      controls.add("Editor.Footprint.unselected_transparency", ut);
 
-      b = Box.createHorizontalBox();
-      pb = new IntConfigurer(null, "Display Trail Points Off-map for ", p.edgePointBuffer);
-      b.add(pb.getControls());
-      b.add(new JLabel("pixels"));
-      controls.add(b);
+      pb = new IntConfigurer(p.edgePointBuffer);
+      controls.add("Editor.Footprint.display_trail_points_off_map", pb);
 
-      b = Box.createHorizontalBox();
-      db = new IntConfigurer(null, "Display Trails Off-map for  ", p.edgeDisplayBuffer);
-      b.add(db.getControls());
-      b.add(new JLabel("pixels"));
-      controls.add(b);
+      db = new IntConfigurer(p.edgeDisplayBuffer);
+      controls.add("Editor.Footprint.display_trails_off_map", db);
     }
 
     @Override
     public String getState() {
-      return String.valueOf(gv.booleanValue().booleanValue());
+      return gv.booleanValue() + ";;0";
     }
 
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(ID)
-        .append(trailKeyInput.getValueString())
+      se.append(trailKeyInput.getValueString())
         .append(mc.getValueString())
         .append(iv.getValueString())
         .append(gv.getValueString())
@@ -824,8 +862,9 @@ public class Footprint extends MovementMarkable {
         .append(lw.getValueString())
         .append(trailKeyOn.getValueString())
         .append(trailKeyOff.getValueString())
-        .append(trailKeyClear.getValueString());
-      return se.getValue();
+        .append(trailKeyClear.getValueString())
+        .append(desc.getValueString());
+      return ID + se.getValue();
     }
 
     @Override

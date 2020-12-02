@@ -60,7 +60,7 @@ public abstract class ItemInstance extends AbstractConfigurable {
 
   protected void setItem() {
     if (defn != null) {
-      GamePieceLayout layout = defn.getLayout();
+      final GamePieceLayout layout = defn.getLayout();
       if (layout != null) {
         item = layout.getItem(name);
       }
@@ -125,6 +125,10 @@ public abstract class ItemInstance extends AbstractConfigurable {
 
   public String getLocation() {
     return location;
+  }
+
+  public String getDisplayLocation() {
+    return GamePieceLayout.getDisplayLocation(location);
   }
 
   public void setBgColor(ColorSwatch bgColor) {
@@ -197,5 +201,4 @@ public abstract class ItemInstance extends AbstractConfigurable {
   public String formatName(String name) {
     return name;
   }
-
 }

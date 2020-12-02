@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -30,7 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -47,7 +46,6 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
 
 /**
  * This is a {@link GameComponent} that allows players to type and
@@ -55,8 +53,15 @@ import VASSAL.tools.NamedKeyStroke;
  * notes, and each player has a set of private notes visible only to
  * him
  */
-public class NotesWindow extends AbstractConfigurable
+public class NotesWindow extends AbstractToolbarItem
     implements GameComponent, CommandEncoder {
+
+  public static final String BUTTON_TEXT = "buttonText"; //NON-NLS // non-standard legacy difference from AbstractToolbarItem
+
+  // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
 
   protected JDialog frame;
   protected LaunchButton launch;
@@ -67,11 +72,6 @@ public class NotesWindow extends AbstractConfigurable
   protected static final String SCENARIO_NOTE_COMMAND_PREFIX = "NOTES\t"; //$NON-NLS-1$
   protected static final String PUBLIC_NOTE_COMMAND_PREFIX = "PNOTES\t"; //$NON-NLS-1$
 
-  public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
-  public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-
   protected String lastSavedScenarioNotes;
   protected String lastSavedPublicNotes;
 
@@ -80,18 +80,26 @@ public class NotesWindow extends AbstractConfigurable
     secretNotes = new SecretNotesController();
     frame = new NotesDialog();
     frame.setTitle(Resources.getString("Notes.notes")); //$NON-NLS-1$
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        captureState();
-        frame.setVisible(!frame.isShowing());
-      }
+    final ActionListener al = e -> {
+      captureState();
+      frame.setVisible(!frame.isShowing());
     };
-    launch = new LaunchButton(Resources.getString("Notes.notes"), TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al); //$NON-NLS-1$
-    launch.setAttribute(ICON, "/images/notes.gif"); //$NON-NLS-1$
-    launch.setToolTipText(Resources.getString("Notes.notes")); //$NON-NLS-1$
+    setNameKey("");                // No description or name configured
+    setButtonTextKey(BUTTON_TEXT); // Legacy different button text key
+    launch = makeLaunchButton(Resources.getString("Notes.notes"),
+                              Resources.getString("Notes.notes"),
+                             "/images/notes.gif", //NON-NLS
+                              al);
     frame.pack();
     setup(false);
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
+  public static class IconConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new IconConfigurer(key, name, ((NotesWindow) c).launch.getAttributeValueString(ICON));
+    }
   }
 
   /**
@@ -116,7 +124,7 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   protected void save() {
-    Command c = new NullCommand();
+    final Command c = new NullCommand();
     if (!lastSavedScenarioNotes.equals(scenarioNotes.getValue())) {
       c.append(new SetScenarioNote(scenarioNotes.getValueString()));
     }
@@ -151,7 +159,7 @@ public class NotesWindow extends AbstractConfigurable
 
       scenarioNotes = new TextConfigurer(null, null);
       publicNotes = new TextConfigurer(null, null);
-      JTabbedPane tab = new JTabbedPane();
+      final JTabbedPane tab = new JTabbedPane();
       add(tab);
 
       Box b = Box.createVerticalBox();
@@ -168,23 +176,17 @@ public class NotesWindow extends AbstractConfigurable
 
       tab.addTab(Resources.getString("Notes.delayed"), secretNotes.getControls()); //$NON-NLS-1$
 
-      JPanel p = new JPanel();
-      JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
+      final JPanel p = new JPanel();
+      final JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       p.add(saveButton);
-      saveButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          save();
-          setVisible(false);
-        }
+      saveButton.addActionListener(e -> {
+        save();
+        setVisible(false);
       });
-      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
-      cancelButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-          setVisible(false);
-        }
+      final JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+      cancelButton.addActionListener(e -> {
+        cancel();
+        setVisible(false);
       });
       p.add(cancelButton);
       add(p);
@@ -194,86 +196,53 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
-  @Override
-  public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, TOOLTIP, ICON, HOT_KEY};
+    return HelpFile.getReferenceManualPage("GameModule.html", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   @Override
   public void setAttribute(String name, Object value) {
-    launch.setAttribute(name, value);
+    getLaunchButton().setAttribute(name, value);
   }
 
   @Override
   public String getAttributeValueString(String name) {
-    return launch.getAttributeValueString(name);
+    return getLaunchButton().getAttributeValueString(name);
   }
 
   @Override
   public String encode(Command c) {
-    String s = null;
     if (c instanceof SetScenarioNote) {
-      s = SCENARIO_NOTE_COMMAND_PREFIX + ((SetScenarioNote) c).msg;
+      return SCENARIO_NOTE_COMMAND_PREFIX + ((SetScenarioNote) c).msg;
     }
-    else if (c instanceof SetPublicNote) {
-      s = PUBLIC_NOTE_COMMAND_PREFIX + ((SetPublicNote) c).msg;
+
+    if (c instanceof SetPublicNote) {
+      return PUBLIC_NOTE_COMMAND_PREFIX + ((SetPublicNote) c).msg;
     }
-    else {
-      s = privateNotes.encode(c);
-      if (s == null) {
-        s = secretNotes.encode(c);
-      }
+
+    String s = privateNotes.encode(c);
+    if (s == null) {
+      s = secretNotes.encode(c);
     }
     return s;
   }
 
   @Override
   public Command decode(String command) {
-    Command comm;
     if (command.startsWith(SCENARIO_NOTE_COMMAND_PREFIX)) {
-      comm = new SetScenarioNote(command.substring(SCENARIO_NOTE_COMMAND_PREFIX.length()));
+      return new SetScenarioNote(command.substring(SCENARIO_NOTE_COMMAND_PREFIX.length()));
     }
-    else if (command.startsWith(PUBLIC_NOTE_COMMAND_PREFIX)) {
-      comm = new SetPublicNote(command.substring(PUBLIC_NOTE_COMMAND_PREFIX.length()));
+
+    if (command.startsWith(PUBLIC_NOTE_COMMAND_PREFIX)) {
+      return new SetPublicNote(command.substring(PUBLIC_NOTE_COMMAND_PREFIX.length()));
     }
-    else {
-      comm = privateNotes.decode(command);
-      if (comm == null) {
-        comm = secretNotes.decode(command);
-      }
+
+    Command comm = privateNotes.decode(command);
+    if (comm == null) {
+      comm = secretNotes.decode(command);
     }
     return comm;
   }
 
-  @Override
-  public String[] getAttributeDescriptions() {
-    return new String[] {
-        Resources.getString(Resources.BUTTON_TEXT),
-          Resources.getString(Resources.TOOLTIP_TEXT),
-            Resources.getString(Resources.BUTTON_ICON),
-            Resources.getString(Resources.HOTKEY_LABEL)
-    };
-  }
-
-  @Override
-  public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class
-    };
-  }
-
-  public static class IconConfig implements ConfigurerFactory {
-    @Override
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, ((NotesWindow) c).launch.getAttributeValueString(ICON));
-    }
-  }
 
   @Override
   public Configurable[] getConfigureComponents() {
@@ -295,8 +264,8 @@ public class NotesWindow extends AbstractConfigurable
    * notes */
   @Override
   public void addTo(Buildable b) {
-    GameModule.getGameModule().getToolBar().add(launch);
-    launch.setAlignmentY(0.0F);
+    super.addTo(b);
+    getLaunchButton().setAlignmentY(0.0F);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().addCommandEncoder(privateNotes);
@@ -307,7 +276,7 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getToolBar().remove(launch);
+    super.removeFrom(b);
     GameModule.getGameModule().removeCommandEncoder(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     GameModule.getGameModule().removeCommandEncoder(privateNotes);
@@ -318,7 +287,7 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public void setup(boolean show) {
-    launch.setEnabled(show);
+    getLaunchButton().setEnabled(show);
     if (!show) {
       scenarioNotes.setValue(""); //$NON-NLS-1$
       publicNotes.setValue(""); //$NON-NLS-1$
@@ -327,7 +296,7 @@ public class NotesWindow extends AbstractConfigurable
 
   @Override
   public Command getRestoreCommand() {
-    Command c = new SetScenarioNote(scenarioNotes.getValueString());
+    final Command c = new SetScenarioNote(scenarioNotes.getValueString());
     c.append(new SetPublicNote(publicNotes.getValueString()));
     c.append(privateNotes.getRestoreCommand());
     c.append(secretNotes.getRestoreCommand());

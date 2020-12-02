@@ -25,9 +25,9 @@ import java.util.concurrent.ExecutionException;
  * An <code>OpObserver</code> is notified when its {@link Op} completes..
  *
  * <p>Objects implementing <code>OpObserver</code> are intended to
- * be passed as an argument to {@link Op.get(Key,OpObserver)} or
- * {@link Op.getFuture(Key,OpObserver)} which which call back to
- * {@link #imageOpChange} on completion.</p>
+ * be passed as an argument to {link Op.get(Key,OpObserver)} or
+ * {link Op.getFuture(Key,OpObserver)} which which call back to
+ * {link #imageOpChange} on completion.</p>
  *
  * @author Joel Uckelman
  * @since 3.1.0
@@ -40,7 +40,7 @@ public interface OpObserver<V> {
    * @param op the successfully completed <code>Op</code>
    * @param val the value of the <code>Op</code>
    */
-  public void succeeded(Op<V> op, V val);
+  void succeeded(Op<V> op, V val);
 
   /**
    * Callback which is run when the observed <code>Op</code> is cancelled.
@@ -49,7 +49,7 @@ public interface OpObserver<V> {
    * @param e the <code>CancellationException</code> thrown when the
    *  <code>Op</code> was cancelled
    */
-  public void cancelled(Op<V> op, CancellationException e);
+  void cancelled(Op<V> op, CancellationException e);
 
   /**
    * Callback which is run when the observed <code>Op</code> is interrupted.
@@ -58,7 +58,7 @@ public interface OpObserver<V> {
    * @param e the <code>InterruptedException</code> thrown when the
    *  <code>Op</code> was interrupted
    */
-  public void interrupted(Op<V> op, InterruptedException e);
+  void interrupted(Op<V> op, InterruptedException e);
 
   /**
    * Callback which is run when the observed <code>Op</code> fails.
@@ -67,5 +67,5 @@ public interface OpObserver<V> {
    * @param e the <code>ExecutionException</code> thrown when the
    *  <code>Op</code> failed
    */
-  public void failed(Op<V> op, ExecutionException e);
+  void failed(Op<V> op, ExecutionException e);
 }

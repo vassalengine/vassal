@@ -18,6 +18,9 @@
 
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -36,13 +39,13 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -56,13 +59,11 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.image.ImageUtils;
@@ -75,23 +76,24 @@ import VASSAL.tools.imageop.Op;
  *
  * @author Brent Easton
  */
-public class MapShader extends AbstractConfigurable implements GameComponent, Drawable, UniqueIdManager.Identifyable {
+public class MapShader extends AbstractToolbarItem implements GameComponent, Drawable, UniqueIdManager.Identifyable {
 
-  public static final String NAME = "name";
-  public static final String ALWAYS_ON = "alwaysOn";
-  public static final String STARTS_ON = "startsOn";
-  public static final String HOT_KEY = "hotkey";
-  public static final String ICON = "icon";
-  public static final String BUTTON_TEXT = "buttonText";
-  public static final String TOOLTIP = "tooltip";
-  public static final String BOARDS = "boards";
-  public static final String BOARD_LIST = "boardList";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String HOT_KEY = "hotkey"; //NON-NLS
+  public static final String BUTTON_TEXT = "buttonText"; //NON-NLS
+  public static final String ICON = "icon"; //NON-NLS
+  public static final String TOOLTIP = "tooltip"; //NON-NLS
 
-  public static final String ALL_BOARDS = "Yes";
-  public static final String EXC_BOARDS = "No, exclude Boards in list";
-  public static final String INC_BOARDS = "No, only shade Boards in List";
+  public static final String ALWAYS_ON = "alwaysOn"; //NON-NLS
+  public static final String STARTS_ON = "startsOn"; //NON-NLS
+  public static final String BOARDS = "boards"; //NON-NLS
+  public static final String BOARD_LIST = "boardList"; //NON-NLS
 
-  protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader");
+  public static final String ALL_BOARDS = "Yes"; //NON-NLS (really)
+  public static final String EXC_BOARDS = "No, exclude Boards in list"; //NON-NLS (really)
+  public static final String INC_BOARDS = "No, only shade Boards in List"; //NON-NLS (really)
+
+  protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader"); //NON-NLS
 
   protected LaunchButton launch;
   protected boolean alwaysOn = false;
@@ -105,27 +107,26 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   protected Area boardClip = null;
 
+  public static final String TYPE = "type"; //NON-NLS
+  public static final String DRAW_OVER = "drawOver"; //NON-NLS
+  public static final String PATTERN = "pattern"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String IMAGE = "image"; //NON-NLS
+  public static final String SCALE_IMAGE = "scaleImage"; //NON-NLS
+  public static final String OPACITY = "opacity"; //NON-NLS
+  public static final String BORDER = "border"; //NON-NLS
+  public static final String BORDER_COLOR = "borderColor"; //NON-NLS
+  public static final String BORDER_WIDTH = "borderWidth"; //NON-NLS
+  public static final String BORDER_OPACITY = "borderOpacity"; //NON-NLS
 
-  public static final String TYPE = "type";
-  public static final String DRAW_OVER = "drawOver";
-  public static final String PATTERN = "pattern";
-  public static final String COLOR = "color";
-  public static final String IMAGE = "image";
-  public static final String SCALE_IMAGE = "scaleImage";
-  public static final String OPACITY = "opacity";
-  public static final String BORDER = "border";
-  public static final String BORDER_COLOR = "borderColor";
-  public static final String BORDER_WIDTH = "borderWidth";
-  public static final String BORDER_OPACITY = "borderOpacity";
+  public static final String BG_TYPE = "Background"; //NON-NLS (really)
+  public static final String FG_TYPE = "Foreground"; //NON-NLS (really)
 
-  public static final String BG_TYPE = "Background";
-  public static final String FG_TYPE = "Foreground";
-
-  public static final String TYPE_25_PERCENT = "25%";
-  public static final String TYPE_50_PERCENT = "50%";
-  public static final String TYPE_75_PERCENT = "75%";
-  public static final String TYPE_SOLID = "100% (Solid)";
-  public static final String TYPE_IMAGE = "Custom Image";
+  public static final String TYPE_25_PERCENT = "25%"; //NON-NLS (really)
+  public static final String TYPE_50_PERCENT = "50%"; //NON-NLS (really)
+  public static final String TYPE_75_PERCENT = "75%"; //NON-NLS (really)
+  public static final String TYPE_SOLID = "100% (Solid)"; //NON-NLS (really)
+  public static final String TYPE_IMAGE = "Custom Image"; //NON-NLS (really)
 
   protected String imageName;
   protected Color color = Color.BLACK;
@@ -150,12 +151,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected BasicStroke stroke = null;
 
   public MapShader() {
-    launch = new LaunchButton(
-      "Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, e -> toggleShading()
-    );
-    launch.setEnabled(false);
+    setButtonTextKey(BUTTON_TEXT);
+    launch = makeLaunchButton("", Resources.getString("Editor.MapShader.shade"), "", e -> toggleShading());
+    getLaunchButton().setEnabled(false);
     setLaunchButtonVisibility();
-    setConfigureName("Shading");
+    setConfigureName(Resources.getString("Editor.MapShader.configure_name"));
     reset();
   }
 
@@ -244,13 +244,13 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   protected void checkPiece(Area area, GamePiece piece) {
     if (piece instanceof Stack) {
-      Stack s = (Stack) piece;
+      final Stack s = (Stack) piece;
       s.asList().forEach(gamePiece -> checkPiece(area, gamePiece));
     }
     else {
-      ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
+      final ShadedPiece shaded = (ShadedPiece) Decorator.getDecorator(piece, ShadedPiece.class);
       if (shaded != null) {
-        Area shape = shaded.getArea(this);
+        final Area shape = shaded.getArea(this);
         if (shape != null) {
           if (type.equals(FG_TYPE)) {
             area.add(shape);
@@ -520,27 +520,46 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       Resources.getString("Editor.MapShader.shade_top"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.pattern"), //$NON-NLS-1$
       Resources.getString(Resources.COLOR_LABEL),
-      Resources.getString("Editor.MapShader.image"), //$NON-NLS-1$
+      Resources.getString("Editor.image_label"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.scale"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.opacity"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.border"), //$NON-NLS-1$
-      Resources.getString("Editor.MapShader.border_color"), //$NON-NLS-1$
+      Resources.getString("Editor.border_color"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.border_width"), //$NON-NLS-1$
       Resources.getString("Editor.MapShader.border_opacity"), //$NON-NLS-1$
     };
   }
 
-  public static class TypePrompt extends StringEnum {
+  public static class TypePrompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{FG_TYPE, BG_TYPE};
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.MapShader.foreground",
+        "Editor.MapShader.background"
+      };
+    }
   }
 
-  public static class PatternPrompt extends StringEnum {
+  public static class PatternPrompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{TYPE_25_PERCENT, TYPE_50_PERCENT, TYPE_75_PERCENT, TYPE_SOLID, TYPE_IMAGE};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.MapShader.p25",
+        "Editor.MapShader.p50",
+        "Editor.MapShader.p75",
+        "Editor.MapShader.solid",
+        "Editor.MapShader.image"
+      };
     }
   }
 
@@ -549,10 +568,19 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     return new Class<?>[0];
   }
 
-  public static class BoardPrompt extends StringEnum {
+  public static class BoardPrompt extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALL_BOARDS, EXC_BOARDS, INC_BOARDS};
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.MapShader.all_boards",
+        "Editor.MapShader.exc_boards",
+        "Editor.MapShader.inc_boards"
+      };
     }
   }
 
@@ -592,8 +620,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected void buildBoardClip() {
     if (boardClip == null) {
       boardClip = new Area();
-      for (Board b : map.getBoards()) {
-        String boardName = b.getName();
+      for (final Board b : map.getBoards()) {
+        final String boardName = b.getName();
         boolean doShade = false;
         switch (boardSelection) {
         case ALL_BOARDS:
@@ -619,7 +647,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public void setLaunchButtonVisibility() {
-    launch.setVisible(!isAlwaysOn());
+    getLaunchButton().setVisible(!isAlwaysOn());
   }
 
   /*
@@ -629,7 +657,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    */
   @Override
   public void setup(boolean gameStarting) {
-    launch.setEnabled(gameStarting);
+    getLaunchButton().setEnabled(gameStarting);
     if (!gameStarting) {
       boardClip = null;
     }
@@ -640,6 +668,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     return null;
   }
 
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -657,8 +686,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
-      if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, value);
+      if (super.getAttributeValueString(TOOLTIP) == null) {
+        super.setAttribute(TOOLTIP, value);
       }
     }
     else if (ALWAYS_ON.equals(key)) {
@@ -766,14 +795,14 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       buildBorderComposite();
     }
     else {
-      launch.setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
   @Override
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return getConfigureName() + "";
+      return getConfigureName();
     }
     else if (ALWAYS_ON.equals(key)) {
       return String.valueOf(isAlwaysOn());
@@ -782,19 +811,19 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return String.valueOf(isStartsOn());
     }
     else if (BOARDS.equals(key)) {
-      return boardSelection + "";
+      return boardSelection;
     }
     else if (BOARD_LIST.equals(key)) {
       return StringArrayConfigurer.arrayToString(boardList);
     }
     else if (TYPE.equals(key)) {
-      return type + "";
+      return type;
     }
     else if (DRAW_OVER.equals(key)) {
       return String.valueOf(drawOver);
     }
     else if (PATTERN.equals(key)) {
-      return pattern + "";
+      return pattern;
     }
     else if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(color);
@@ -812,16 +841,16 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return ColorConfigurer.colorToString(borderColor);
     }
     else if (BORDER_WIDTH.equals(key)) {
-      return borderWidth + "";
+      return Integer.toString(borderWidth);
     }
     else if (OPACITY.equals(key)) {
-      return opacity + "";
+      return Integer.toString(opacity);
     }
     else if (BORDER_OPACITY.equals(key)) {
-      return borderOpacity + "";
+      return Integer.toString(borderOpacity);
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -850,6 +879,11 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
+  }
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.MapShader.component_type"); //$NON-NLS-1$
   }
@@ -864,7 +898,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "MapShading");
+    return HelpFile.getReferenceManualPage("Map.html", "MapShading"); //NON-NLS
   }
 
   @Override
@@ -892,6 +926,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   /**
    * Pieces that contribute to shading must implement this interface
    */
+  @FunctionalInterface
   public interface ShadedPiece {
     /**
      * Returns the Area to add to (or subtract from) the area drawn by the MapShader's.
@@ -900,5 +935,14 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
      * @return the Area contributed by the piece
      */
     Area getArea(MapShader shader);
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(boardList);
   }
 }

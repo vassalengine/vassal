@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -49,7 +50,7 @@ public class Translation extends AbstractConfigurable
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Locale:  "};
+    return new String[]{Resources.getString("Editor.Translation.locale")};
   }
 
   @Override
@@ -152,7 +153,7 @@ public class Translation extends AbstractConfigurable
   /**
    * Return true if this translation has unsaved modifications
    *
-   * @return true if undaved changes
+   * @return true if unsaved changes
    */
   public boolean isDirty() {
     return dirty;
@@ -161,8 +162,8 @@ public class Translation extends AbstractConfigurable
   /**
    * Return the translation for the supplied key
    *
-   * @param s
-   * @return
+   * @param key key
+   * @return translation
    */
   public String translate(String key) {
     return getProperties().getProperty(key);
@@ -170,8 +171,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Load properties from the bundle file in the module/extension
-   * @throws IOException
-   *
+   * @throws IOException oops
    */
   protected void loadProperties() throws IOException {
     if (localProperties == null) {
@@ -185,7 +185,7 @@ public class Translation extends AbstractConfigurable
            BufferedInputStream in = new BufferedInputStream(inner)) {
         localProperties.load(in);
       }
-      catch (FileNotFoundException e) {
+      catch (FileNotFoundException | NoSuchFileException e) {
         // ignore, properties have not been saved yet
         dirty = false;
         return;
@@ -205,8 +205,7 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Reload the properties from the module/extension
-   * @throws IOException
-   *
+   * @throws IOException oops
    */
   public void reloadProperties() throws IOException {
     localProperties = new Properties();
@@ -215,12 +214,11 @@ public class Translation extends AbstractConfigurable
 
   /**
    * Save the properties back to the module/extension
-   * @throws IOException
-   *
+   * @throws IOException oops
    */
   protected void saveProperties() throws IOException {
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    getProperties().store(out, "Module translation");
+    getProperties().store(out, Resources.getString("Editor.Translation.module_translation"));
 
     final ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
     if (writer != null) {

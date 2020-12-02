@@ -17,16 +17,15 @@
  */
 package VASSAL.build.module;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutableProperty;
@@ -46,6 +45,7 @@ import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.LoopControl;
@@ -53,18 +53,14 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * This component places a button into the controls window toolbar.
  * Pressing the button displays a message, plays a sound and/or sends hotkeys */
-public class DoActionButton extends AbstractConfigurable
+public class DoActionButton extends AbstractToolbarItem
                             implements RecursionLimiter.Loopable {
 
-  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
-  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
-  public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String DO_REPORT = "doReport"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
   public static final String DO_SOUND = "doSound"; //$NON-NLS-1$
@@ -82,6 +78,13 @@ public class DoActionButton extends AbstractConfigurable
   public static final String INDEX_PROPERTY = "indexProperty"; //$NON-NLS-1$
   public static final String INDEX_START = "indexStart"; //$NON-NLS-1$
   public static final String INDEX_STEP = "indexStep"; //$NON-NLS-1$
+
+  // These 5 items are identical to those in AbstractToolItem and exist only for "clirr purposes"
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
 
   protected LaunchButton launch;
   protected boolean doReport = false;
@@ -108,24 +111,19 @@ public class DoActionButton extends AbstractConfigurable
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
-    ActionListener rollAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          doActions();
-        }
-        catch (RecursionLimitException ex) {
-          RecursionLimiter.infiniteLoop(ex);
-        }
+    final ActionListener rollAction = e -> {
+      try {
+        doActions();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
       }
     };
 
-    final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
-    launch = new LaunchButton(
-      description, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, description);
-    setAttribute(TOOLTIP, description);
-    launch.setAttribute(BUTTON_TEXT, description);
+    launch = makeLaunchButton(getConfigureTypeName(),
+                              getConfigureTypeName(),
+                       "",
+                              rollAction);
   }
 
   public static String getConfigureTypeName() {
@@ -134,12 +132,7 @@ public class DoActionButton extends AbstractConfigurable
 
   @Override
   public String[] getAttributeNames() {
-    return new String[]{
-      NAME,
-      BUTTON_TEXT,
-      TOOLTIP,
-      ICON,
-      HOTKEY,
+    return ArrayUtils.addAll(super.getAttributeNames(),
       DO_REPORT,
       REPORT_FORMAT,
       DO_SOUND,
@@ -157,17 +150,12 @@ public class DoActionButton extends AbstractConfigurable
       INDEX_PROPERTY,
       INDEX_START,
       INDEX_STEP
-    };
+    );
   }
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{
-      Resources.getString(Resources.DESCRIPTION),
-      Resources.getString(Resources.BUTTON_TEXT),
-      Resources.getString(Resources.TOOLTIP_TEXT),
-      Resources.getString(Resources.BUTTON_ICON),
-      Resources.getString(Resources.HOTKEY_LABEL),
+    return ArrayUtils.addAll(super.getAttributeDescriptions(),
       Resources.getString("Editor.DoAction.display_message"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
       Resources.getString("Editor.DoAction.play_sound"), //$NON-NLS-1$
@@ -185,9 +173,34 @@ public class DoActionButton extends AbstractConfigurable
       Resources.getString("Editor.LoopControl.index_name"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.index_start"), //$NON-NLS-1$
       Resources.getString("Editor.LoopControl.index_step") //$NON-NLS-1$
-    };
+    );
   }
 
+  @Override
+  @SuppressWarnings("unchecked")
+  public Class<?>[] getAttributeTypes() {
+    return ArrayUtils.addAll(super.getAttributeTypes(),
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      SoundConfig.class,
+      Boolean.class,
+      HotkeyConfig.class,
+      Boolean.class,
+      LoopConfig.class,
+      LoopCountConfig.class,
+      PropertyExpression.class,
+      PropertyExpression.class,
+      NamedKeyStroke.class,
+      NamedKeyStroke.class,
+      Boolean.class,
+      String.class,
+      Integer.class,
+      Integer.class
+    );
+  }
+
+  @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -217,7 +230,6 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   public static class NamedHotkeyListConfigurer extends ListConfigurer {
-
     public NamedHotkeyListConfigurer(String key, String name, List<NamedKeyStroke> list) {
       super(key, name, list);
     }
@@ -226,7 +238,6 @@ public class DoActionButton extends AbstractConfigurable
     protected Configurer buildChildConfigurer() {
       return new NamedHotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
     }
-
   }
 
   public static class LoopConfig implements ConfigurerFactory {
@@ -259,53 +270,11 @@ public class DoActionButton extends AbstractConfigurable
     }
   }
 
-  @Override
-  public Class<?>[] getAttributeTypes() {
-    return new Class<?>[]{
-      String.class,
-      String.class,
-      String.class,
-      IconConfig.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      ReportFormatConfig.class,
-      Boolean.class,
-      SoundConfig.class,
-      Boolean.class,
-      HotkeyConfig.class,
-      Boolean.class,
-      LoopConfig.class,
-      LoopCountConfig.class,
-      PropertyExpression.class,
-      PropertyExpression.class,
-      NamedKeyStroke.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      String.class,
-      Integer.class,
-      Integer.class
-    };
-  }
-
-  @Override
-  public void addTo(Buildable parent) {
-    GameModule.getGameModule().getToolBar().add(getComponent());
-  }
-
-  /**
-   * The component to be added to the control window toolbar
-   */
-  protected Component getComponent() {
-    return launch;
-  }
 
   @Override
   @SuppressWarnings("unchecked")
   public void setAttribute(String key, Object o) {
-    if (NAME.equals(key)) {
-      setConfigureName((String) o);
-    }
-    else if (DO_REPORT.equals(key)) {
+    if (DO_REPORT.equals(key)) {
       if (o instanceof String) {
         o = Boolean.valueOf((String) o);
       }
@@ -394,16 +363,13 @@ public class DoActionButton extends AbstractConfigurable
       indexStep = (Integer) o;
     }
     else {
-      launch.setAttribute(key, o);
+      super.setAttribute(key, o);
     }
   }
 
   @Override
   public String getAttributeValueString(String key) {
-    if (NAME.equals(key)) {
-      return getConfigureName();
-    }
-    else if (DO_REPORT.equals(key)) {
+    if (DO_REPORT.equals(key)) {
       return String.valueOf(doReport);
     }
     else if (REPORT_FORMAT.equals(key)) {
@@ -455,75 +421,35 @@ public class DoActionButton extends AbstractConfigurable
       return String.valueOf(indexStep);
     }
     else {
-      return launch.getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doReport;
-        }
-      };
+      return () -> doReport;
     }
     else if (SOUND_CLIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doSound;
-        }
-      };
+      return () -> doSound;
     }
     else if (HOTKEYS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doHotkey;
-        }
-      };
+      return () -> doHotkey;
     }
     else if (LOOP_COUNT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
-        }
-      };
+      return () -> doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
     }
     else if (WHILE_EXPRESSION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_WHILE.equals(loopType);
-        }
-      };
+      return () -> doLoop && LoopControl.LOOP_WHILE.equals(loopType);
     }
     else if (UNTIL_EXPRESSION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
-        }
-      };
+      return () -> doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
     }
     else if (List.of(LOOP_TYPE, PRE_LOOP_HOTKEY, POST_LOOP_HOTKEY, INDEX).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop;
-        }
-      };
+      return () -> doLoop;
     }
     else if (List.of(INDEX_PROPERTY, INDEX_START, INDEX_STEP).contains(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && hasIndex;
-        }
-      };
+      return () -> doLoop && hasIndex;
     }
     else {
       return null;
@@ -532,7 +458,7 @@ public class DoActionButton extends AbstractConfigurable
 
   protected String encodeHotkeys() {
     final SequenceEncoder se = new SequenceEncoder(',');
-    for (NamedKeyStroke key : hotkeys) {
+    for (final NamedKeyStroke key : hotkeys) {
       se.append(NamedHotKeyConfigurer.encode(key));
     }
 
@@ -541,10 +467,10 @@ public class DoActionButton extends AbstractConfigurable
   }
 
   protected List<NamedKeyStroke> decodeHotkeys(String s) {
-    List<NamedKeyStroke> list = new ArrayList<>();
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final List<NamedKeyStroke> list = new ArrayList<>();
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     while (sd.hasMoreTokens()) {
-      NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
+      final NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
       list.add(key);
     }
     return list;
@@ -555,15 +481,10 @@ public class DoActionButton extends AbstractConfigurable
     return new Class<?>[0];
   }
 
-  @Override
-  public void removeFrom(Buildable b) {
-    GameModule.getGameModule().getToolBar().remove(getComponent());
-    GameModule.getGameModule().getToolBar().revalidate();
-  }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("DoActionButton.htm"); //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("DoActionButton.html"); //$NON-NLS-1$
   }
 
   /**
@@ -589,7 +510,6 @@ public class DoActionButton extends AbstractConfigurable
   protected void doActions() throws RecursionLimitException {
     final Command c = new NullCommand();
     final GameModule mod = GameModule.getGameModule();
-    RecursionLimitException loopException = null;
 
     // Non looping case
     if (! doLoop) {
@@ -611,6 +531,8 @@ public class DoActionButton extends AbstractConfigurable
     if (LoopControl.LOOP_COUNTED.equals(loopType)) {
       loopCountLimit = loopCount.getTextAsInt(mod, Resources.getString("Editor.LoopControl.loop_count"), this); //$NON-NLS-1$
     }
+
+    RecursionLimitException loopException = null;
 
     for (;;) {
 
@@ -670,16 +592,14 @@ public class DoActionButton extends AbstractConfigurable
     if (loopException != null) {
       throw loopException;
     }
-
-    return;
   }
 
   /**
    * Execute the set of actions that make up this button and
    * return the set of Commands generated.
    *
-   * @param command
-   * @throws RecursionLimitException
+   * @param command command to execute
+   * @throws RecursionLimitException recursion protection
    */
   protected void executeActions(Command command) throws RecursionLimitException {
     final GameModule mod = GameModule.getGameModule();
@@ -707,7 +627,7 @@ public class DoActionButton extends AbstractConfigurable
       // Send the hotkeys. Individual hotkeys have already executed
       // the commands they generated.
       if (doHotkey) {
-        for (NamedKeyStroke key : hotkeys) {
+        for (final NamedKeyStroke key : hotkeys) {
           mod.fireKeyStroke(key);
         }
       }
@@ -727,7 +647,7 @@ public class DoActionButton extends AbstractConfigurable
   protected void doHotKey(Command c, NamedKeyStroke key) {
     if (!key.isNull()) {
       final GameModule mod = GameModule.getGameModule();
-      boolean loggingPaused = mod.pauseLogging();
+      final boolean loggingPaused = mod.pauseLogging();
       try {
         mod.fireKeyStroke(key);
       }
@@ -737,7 +657,6 @@ public class DoActionButton extends AbstractConfigurable
         }
       }
     }
-    return;
   }
 
   // Implement Loopable
@@ -766,5 +685,59 @@ public class DoActionButton extends AbstractConfigurable
     }
   }
 
+  /**
+   * @return a list of the Configurables string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> l = new ArrayList<>();
+    if (doLoop) {
+      if (LoopControl.LOOP_WHILE.equals(loopType)) {
+        l.add(whileExpression.getExpression());
+      }
+      else if (LoopControl.LOOP_UNTIL.equals(loopType)) {
+        l.add(untilExpression.getExpression());
+      }
+      else if (LoopControl.LOOP_COUNTED.equals(loopType)) {
+        l.add(loopCount.getFormat());
+      }
+    }
+    return l;
+  }
 
+  /**
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(reportFormat.getFormat());
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(indexProperty);
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    Collections.addAll(l, preLoopKey, postLoopKey);
+    return l;
+  }
+
+  /**
+   * In case reports use HTML and  refer to any image files
+   * @param s Collection to add image names to
+   */
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
+    h.addImageNames(s);
+  }
 }

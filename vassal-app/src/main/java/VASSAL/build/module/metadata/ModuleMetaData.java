@@ -49,7 +49,7 @@ public class ModuleMetaData extends AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(ModuleMetaData.class);
 
-  public static final String ZIP_ENTRY_NAME = "moduledata";
+  public static final String ZIP_ENTRY_NAME = "moduledata"; //NON-NLS
   public static final String DATA_VERSION = "1";
 
   protected Attribute nameAttr;
@@ -116,11 +116,11 @@ public class ModuleMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile
-      DefaultHandler handler = null;
+      final DefaultHandler handler;
 
       ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
       if (data == null) {
-        data = zip.getEntry(GameModule.BUILDFILE);
+        data = zip.getEntry(GameModule.BUILDFILE_OLD);
         if (data == null) return;
 
         handler = new ModuleBuildFileXMLHandler();
@@ -140,10 +140,10 @@ public class ModuleMetaData extends AbstractMetaData {
         }
       }
     }
-    catch (SAXEndException e) {
+    catch (final SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
-    catch (IOException | SAXException e) {
+    catch (final IOException | SAXException e) {
       logger.error("", e);
     }
   }
@@ -185,7 +185,7 @@ public class ModuleMetaData extends AbstractMetaData {
       // handle element attributes we care about
       if (BUILDFILE_MODULE_ELEMENT1.equals(qName) ||
           BUILDFILE_MODULE_ELEMENT2.equals(qName)) {
-        nameAttr = new Attribute (NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
+        nameAttr = new Attribute(NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
         setVersion(getAttr(attrs, VERSION_ATTR));
         setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
         setDescription(getAttr(attrs, DESCRIPTION_ATTR));

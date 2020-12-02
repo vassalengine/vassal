@@ -54,6 +54,10 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     this.propertySource = propertySource;
   }
 
+  public Expression[] getValueExpressions() {
+    return valueExpressions;
+  }
+
   @Override
   public String getNewValue(String oldValue) {
     final String[] finalValues = new String[valueExpressions.length];
@@ -67,7 +71,7 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
           value = valueExpressions[i].evaluate(propertySource.getPropertySource());
         }
       }
-      catch (ExpressionException e) {
+      catch (final ExpressionException e) {
         value = valueExpressions[i].getExpression();
       }
       finalValues[i] = value;

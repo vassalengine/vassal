@@ -20,7 +20,6 @@ package VASSAL.build.module.map.boardPicker.board.mapgrid;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Point;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.regex.Matcher;
@@ -38,7 +37,9 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -67,26 +68,26 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   protected String locationFormat = "$" + GRID_LOCATION + "$";
   protected FormattedString format = new FormattedString();
 
-  public static final String FIRST = "first";
-  public static final String SEP = "sep";
-  public static final String H_TYPE = "hType";
-  public static final String V_TYPE = "vType";
-  public static final String H_LEADING = "hLeading";
-  public static final String V_LEADING = "vLeading";
-  public static final String H_OFF = "hOff";
-  public static final String V_OFF = "vOff";
-  public static final String V_DESCEND = "vDescend";
-  public static final String H_DESCEND = "hDescend";
-  public static final String FONT_SIZE = "fontSize";
-  public static final String COLOR = "color";
-  public static final String VISIBLE = "visible";
-  public static final String ROTATE_TEXT = "rotateText";
-  public static final String H_DRAW_OFF = "hDrawOff";
-  public static final String V_DRAW_OFF = "vDrawOff";
-  public static final String LOCATION_FORMAT = "locationFormat";
-  public static final String GRID_LOCATION = "gridLocation";
-  public static final String ROW = "row";
-  public static final String COLUMN = "column";
+  public static final String FIRST = "first"; //NON-NLS
+  public static final String SEP = "sep"; //NON-NLS
+  public static final String H_TYPE = "hType"; //NON-NLS
+  public static final String V_TYPE = "vType"; //NON-NLS
+  public static final String H_LEADING = "hLeading"; //NON-NLS
+  public static final String V_LEADING = "vLeading"; //NON-NLS
+  public static final String H_OFF = "hOff"; //NON-NLS
+  public static final String V_OFF = "vOff"; //NON-NLS
+  public static final String V_DESCEND = "vDescend"; //NON-NLS
+  public static final String H_DESCEND = "hDescend"; //NON-NLS
+  public static final String FONT_SIZE = "fontSize"; //NON-NLS
+  public static final String COLOR = "color"; //NON-NLS
+  public static final String VISIBLE = "visible"; //NON-NLS
+  public static final String ROTATE_TEXT = "rotateText"; //NON-NLS
+  public static final String H_DRAW_OFF = "hDrawOff"; //NON-NLS
+  public static final String V_DRAW_OFF = "vDrawOff"; //NON-NLS
+  public static final String LOCATION_FORMAT = "locationFormat"; //NON-NLS
+  public static final String GRID_LOCATION = "gridLocation"; //NON-NLS
+  public static final String ROW = "row"; //NON-NLS
+  public static final String COLUMN = "column"; //NON-NLS
 
   @Override
   public String getAttributeValueString(String key) {
@@ -281,36 +282,54 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public String[] getAttributeDescriptions() {
-    return new String[]{"Order:  ",
-                        "Separator:  ",
-                        "Horizontal numbering:  ",
-                        "Leading zeros in horizontal:  ",
-                        "Starting number in horizontal:  ",
-                        "Horizontal numbering descending?",
-                        "Vertical numbering:  ",
-                        "Leading zeros in vertical:  ",
-                        "Starting number in vertical:  ",
-                        "Vertical numbering descending?",
-                        "Location format:  ",
-                        "Draw Numbering?",
-                        "Font size:  ",
-                        "Color:  ",
-                        "Rotate text (Degrees):  ",
-                        "Text X offset:  ",
-                        "Text Y offset:  "};
+    return new String[]{
+      Resources.getString("Editor.RegularGridNumbering.order"),
+      Resources.getString("Editor.RegularGridNumbering.separator"),
+      Resources.getString("Editor.RegularGridNumbering.horizontal_numbering"),
+      Resources.getString("Editor.RegularGridNumbering.leading_zeros_in_horizontal"),
+      Resources.getString("Editor.RegularGridNumbering.starting_number_in_horizontal"),
+      Resources.getString("Editor.RegularGridNumbering.horizontal_numbering_descending"),
+      Resources.getString("Editor.RegularGridNumbering.vertical_numbering"),
+      Resources.getString("Editor.RegularGridNumbering.leading_zeros_in_vertical"),
+      Resources.getString("Editor.RegularGridNumbering.starting_number_in_vertical"),
+      Resources.getString("Editor.RegularGridNumbering.vertical_numbering_descending"),
+      Resources.getString("Editor.RegularGridNumbering.location_format"),
+      Resources.getString("Editor.RegularGridNumbering.draw_numbering"),
+      Resources.getString("Editor.RegularGridNumbering.font_size"),
+      Resources.getString("Editor.color_label"),
+      Resources.getString("Editor.RegularGridNumbering.rotate_text_degrees"),
+      Resources.getString("Editor.RegularGridNumbering.text_x_offset"),
+      Resources.getString("Editor.RegularGridNumbering.text_y_offset")
+    };
   }
 
-  public static class F extends StringEnum {
+  public static class F extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{"Horizontal first", "Vertical first"};
+      return new String[]{"Horizontal first", "Vertical first"}; //NON-NLS (really)
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.RegularGridNumbering.horizontal_first",
+        "Editor.RegularGridNumbering.vertical_first",
+      };
     }
   }
 
-  public static class T extends StringEnum {
+  public static class T extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{"Numerical", "Alphabetic"};
+      return new String[]{"Numerical", "Alphabetic"}; //NON-NLS
+    }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return new String[] {
+        "Editor.RegularGridNumbering.numerical",
+        "Editor.RegularGridNumbering.alphabetic",
+      };
     }
   }
 
@@ -360,29 +379,13 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT_SIZE.equals(name)
         || COLOR.equals(name)) {
-      VisibilityCondition cond = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return visible;
-        }
-      };
-      return cond;
+      return () -> visible;
     }
     else if (H_LEADING.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return hType == 'N';
-        }
-      };
+      return () -> hType == 'N';
     }
     else if (V_LEADING.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return vType == 'N';
-        }
-      };
+      return () -> vType == 'N';
     }
     else {
       return super.getAttributeVisibility(name);
@@ -391,45 +394,38 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public Configurer getConfigurer() {
-    AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
-    String[] s = getAttributeNames();
-    for (String value : s) {
-      c.getConfigurer(value).addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          visualizer.repaint();
-        }
-      });
+    final AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
+    final String[] s = getAttributeNames();
+    for (final String value : s) {
+      c.getConfigurer(value).addPropertyChangeListener(evt -> visualizer.repaint());
     }
     ((Container) c.getControls()).add(getGridVisualizer());
     return c;
   }
 
   public static String getConfigureTypeName() {
-    return "Grid Numbering";
+    return Resources.getString("Editor.RegularGridNumbering.component_type");
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GridNumbering.htm");
+    return HelpFile.getReferenceManualPage("GridNumbering.html"); //NON-NLS
   }
 
   protected String getName(int row, int column) {
-    String rowName = getName(row + vOff, vType, vLeading);
-    String colName = getName(column + hOff, hType, hLeading);
-    switch (first) {
-    case 'H':
+    final String rowName = getName(row + vOff, vType, vLeading);
+    final String colName = getName(column + hOff, hType, hLeading);
+    if (first == 'H') {
       return colName + sep + rowName;
-    default:
-      return rowName + sep + colName;
     }
+    return rowName + sep + colName;
   }
 
   // This appears to be the most efficient way to accomplish this without
   // using groups. It also helps when there is no separator between alphabetic
   // coordinates (as long as both coordinates don't use the same letter).
   // AAFF is not ambiguous, but AAAA is.  Coordinates like 04AB will fail.
-  static final String ALPHABETIC_MATCH = "-?(?:A+|B+|C+|D+|E+|F+|G+|H+|I+|J+|K+|L+|M+|N+|O+|P+|Q+|R+|S+|T+|U+|V+|W+|X+|Y+|Z+)";
+  static final String ALPHABETIC_MATCH = "-?(?:A+|B+|C+|D+|E+|F+|G+|H+|I+|J+|K+|L+|M+|N+|O+|P+|Q+|R+|S+|T+|U+|V+|W+|X+|Y+|Z+)"; //NON-NLS
 
   protected String getMatchingPattern(char type, int leading) {
     if (type == 'A')
@@ -441,14 +437,14 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   @Override
   public Point getLocation(String location) throws BadCoords {
 
-    SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
+    final SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
     boolean isProperty = true;
     final StringBuilder regex = new StringBuilder();
     int colGroup = 0;
     int rowGroup = 0;
     int groupCount = 0;
     while (se.hasMoreTokens()) {
-      String token = se.nextToken();
+      final String token = se.nextToken();
       isProperty = !isProperty;
       if (token.length() > 0) {
         if (!isProperty || !se.hasMoreTokens()) {
@@ -485,18 +481,18 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     if (regex.length() == 0 || colGroup == 0 || rowGroup == 0)
       throw new BadCoords();
 
-    Pattern pattern = Pattern.compile(regex.toString());
-    Matcher matcher = pattern.matcher(location);
+    final Pattern pattern = Pattern.compile(regex.toString());
+    final Matcher matcher = pattern.matcher(location);
     if (!matcher.matches()) {
 // FIXME: rename to BadCoordsException
       throw new BadCoords();
     }
     assert (matcher.groupCount() == groupCount && groupCount >= 2);
 
-    String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
-    String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
-    int row = parseName(rowName, vType);
-    int col = parseName(colName, hType);
+    final String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
+    final String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
+    final int row = parseName(rowName, vType);
+    final int col = parseName(colName, hType);
 
     return getCenterPoint(col - hOff, row - vOff);
   }
@@ -505,8 +501,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   @Override
   public String locationName(Point pt) {
-    int row = getRow(pt);
-    int col = getColumn(pt);
+    final int row = getRow(pt);
+    final int col = getColumn(pt);
     format.setFormat(locationFormat);
     format.setProperty(GRID_LOCATION, getName(row, col));
     format.setProperty(ROW, getName(row + vOff, vType, vLeading));
@@ -519,12 +515,12 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     return locationName(pt);
   }
 
-  public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //NON-NLS
 
   protected int parseName(String name, char type) {
     int value = 0;
-    switch (type) {
-    case 'A': // Alphabetic
+
+    if (type == 'A') { // Alphabetic
       int index = 0;
       boolean negative = false;
       if (name.startsWith("-")) {
@@ -540,8 +536,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
       }
       if (negative)
         value *= -1;
-      break;
-    default: // Numeric
+    }
+    else { // Numeric
       value = Integer.parseInt(name);
     }
 
@@ -551,19 +547,18 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   protected String getName(int rowOrColumn, char type, int leading) {
     String val = rowOrColumn < 0 ? "-" : "";
     rowOrColumn = Math.abs(rowOrColumn);
-    switch (type) {
-    case 'A': // Alphabetic
+
+    if (type == 'A') { // Alphabetic
       do {
         val += ALPHABET.charAt(rowOrColumn % 26);
         rowOrColumn -= 26;
       } while (rowOrColumn >= 0);
       return val;
-    default: // Numeric
-      while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {
-        val += "0";
-      }
-      return val + rowOrColumn;
     }
+    while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {
+      val += "0"; // Numeric
+    }
+    return val + rowOrColumn;
   }
 
   /*
@@ -575,7 +570,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   }
 
   public Point offsetLabelCenter(int x, int y, double zoom) {
-    Point n = new Point(x, y);
+    final Point n = new Point(x, y);
     switch (rotateTextDegrees) {
     case 0:
       break;

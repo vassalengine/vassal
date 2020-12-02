@@ -25,20 +25,17 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,11 +56,13 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
+import net.miginfocom.swing.MigLayout;
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardBranchController;
@@ -81,13 +80,13 @@ import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandFilter;
 import VASSAL.command.NullCommand;
+import VASSAL.counters.TraitConfigPanel;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FileConfigurer;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
@@ -119,15 +118,12 @@ public class WizardSupport {
   protected List<PredefinedSetup> setups = new ArrayList<>();
   protected Tutorial tutorial;
 
-  public WizardSupport() {
-  }
-
   /**
    * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline.
    *
    * Only adds setups that are not menus.
    *
-   * @param setup
+   * @param setup Predefined Setup
    */
   public void addPredefinedSetup(PredefinedSetup setup) {
     if (!setup.isMenu()) {
@@ -142,7 +138,7 @@ public class WizardSupport {
   /**
    * Specify a {@link Tutorial} that the user may load from the {@link InitialWelcomeSteps}
    *
-   * @param tutorial
+   * @param tutorial Tutorial
    */
   public void setTutorial(Tutorial tutorial) {
     this.tutorial = tutorial;
@@ -153,7 +149,6 @@ public class WizardSupport {
    *
    */
   public void showWelcomeWizard() {
-
     final GameModule g = GameModule.getGameModule();
     final WizardBranchController c = createWelcomeWizard();
     final Wizard welcomeWizard = c.createWizard();
@@ -162,7 +157,7 @@ public class WizardSupport {
 
     Action help = null;
     try {
-      help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
+      help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);  //NON-NLS
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
@@ -175,8 +170,7 @@ public class WizardSupport {
       final Map m = (Map) result;
       final Object action = m.get(ACTION_KEY);
       if (PLAY_ONLINE_ACTION.equals(action)) {
-        final ChatServerControls controls =
-          ((BasicModule) g).getServerControls();
+        final ChatServerControls controls = g.getServerControls();
         g.getPlayerWindow().setVisible(true);
         controls.toggleVisible();
 
@@ -199,7 +193,7 @@ public class WizardSupport {
   }
 
   protected BranchingWizard createWelcomeWizard() {
-    InitialWelcomeSteps info = createInitialWelcomeSteps();
+    final InitialWelcomeSteps info = createInitialWelcomeSteps();
     info.setTutorial(tutorial);
     return new BranchingWizard(info, POST_INITIAL_STEPS_WIZARD);
   }
@@ -219,7 +213,7 @@ public class WizardSupport {
    * Show a wizard that prompts the user to specify information for unfinished {@link GameSetupStep}s
    */
   public void showGameSetupWizard() {
-    GameSetupPanels panels = GameSetupPanels.newInstance();
+    final GameSetupPanels panels = GameSetupPanels.newInstance();
     if (panels != null) {
       WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width + 400, logoSize.height));
     }
@@ -239,9 +233,9 @@ public class WizardSupport {
 
   /**
    * Returns true if user has supplied a real name for current GameModule.
-   * 
+   *
    * Test's whether GameModule.REAL_NAME is non-empty and not "newbie"
-   * 
+   *
    * @return <code>true</code> if user supplied a real name
    */
   private boolean isRealName() {
@@ -249,7 +243,7 @@ public class WizardSupport {
     return name != null && !name.isBlank() && !name.equals(Resources.getString("Prefs.newbie"));
   }
 
-  
+
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one
@@ -269,7 +263,7 @@ public class WizardSupport {
 
     @Override
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
-      JComponent c;
+      final JComponent c;
       if (NAME_STEP.equals(id)) {
         c = getNameControls(controller, settings);
       }
@@ -285,8 +279,8 @@ public class WizardSupport {
 
     private JComponent getActionControls(WizardController controller, final Map<String, Object> settings) {
       if (actionControls == null) {
-        Box box = Box.createVerticalBox();
-        ButtonGroup group = new ButtonGroup();
+        final Box box = Box.createVerticalBox();
+        final ButtonGroup group = new ButtonGroup();
         JRadioButton tutorialButton = null;
         if (tutorial != null && tutorial.isFirstRun()) {
           tutorialButton = createTutorialButton(controller, settings);
@@ -302,18 +296,10 @@ public class WizardSupport {
         if (tutorialButton != null) {
           // Select tutorial button by default, but not until wizard is built.  Bug #2286742
           final JRadioButton clickOnMe = tutorialButton;
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              clickOnMe.doClick();
-            }
-          });
-          tutorialButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-              if (e.getStateChange() == ItemEvent.DESELECTED) {
-                tutorial.markAsViewed();
-              }
+          SwingUtilities.invokeLater(clickOnMe::doClick);
+          tutorialButton.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+              tutorial.markAsViewed();
             }
           });
         }
@@ -326,79 +312,63 @@ public class WizardSupport {
           Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
         final JCheckBox show = new JCheckBox(wizardConf.getName());
         show.setSelected(wizardConf.booleanValue());
-        show.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            wizardConf.setValue(show.isSelected());
-          }
-        });
+        show.addActionListener(e -> wizardConf.setValue(show.isSelected()));
         box.add(show);
       }
       return actionControls;
     }
 
     private JRadioButton createTutorialButton(final WizardController controller, final Map<String, Object> settings) {
-      JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
-          try {
-            new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
-          }
-          catch (IOException e1) {
-            logger.error("", e1);
-            controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
-          }
+      final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
+      b.addActionListener(e -> {
+        controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
+        try {
+          new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
+        }
+        catch (IOException e1) {
+          logger.error("", e1);
+          controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
         }
       });
       return b;
     }
 
     private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map<String, Object> settings) {
-      JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
-          Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
-          settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-          controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
-          controller.setProblem(null);
-        }
+      final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
+      b.addActionListener(e -> {
+        settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
+        final Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
+        settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
+        controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
+        controller.setProblem(null);
       });
       return b;
     }
 
     private JRadioButton createPlayOnlineButton(final WizardController controller, final Map<String, Object> settings) {
-      JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
-          controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-          controller.setProblem(null);
-        }
+      final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
+      b.addActionListener(e -> {
+        settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
+        controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+        controller.setProblem(null);
       });
       return b;
     }
 
     private JRadioButton createPlayOfflineButton(final WizardController controller, final Map<String, Object> settings) {
-      JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().getGameState().setup(false);
-          settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
-          final WizardPanelProvider panels = createPlayOfflinePanels();
-          if (panels == null) {
-            controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-          }
-          else {
-            Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
-            settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-            controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
-          }
+      final JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
+      b.addActionListener(e -> {
+        GameModule.getGameModule().getGameState().setup(false);
+        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode. NEW_GAME);
+        settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
+        final WizardPanelProvider panels = createPlayOfflinePanels();
+        if (panels == null) {
+          controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+        }
+        else {
+          final Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
+          settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
+          controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
         }
       });
       return b;
@@ -411,58 +381,52 @@ public class WizardSupport {
 
     protected JComponent getNameControls(final WizardController controller, final Map<String, Object> settings) {
       if (nameControls == null) {
-        Box box = Box.createVerticalBox();
-        box.add(Box.createVerticalGlue());
+        final TraitConfigPanel box = new TraitConfigPanel(); // NON-NLS
         controller.setProblem(Resources.getString("WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
-        final StringConfigurer nameConfig = new StringConfigurer(null, Resources.getString("WizardSupport.RealName")); //$NON-NLS-1$
-        final StringConfigurer pwd = new PasswordConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
-        final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
-        PropertyChangeListener pl = new PropertyChangeListener() {
-          @Override
-          public void propertyChange(PropertyChangeEvent evt) {
-            settings.put(GameModule.REAL_NAME, nameConfig.getValue());
-            settings.put(GameModule.SECRET_NAME, pwd.getValue());
-            if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
-              controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
-            }
-            else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
-              controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
-            }
-            else if (!pwd.getValue().equals(pwd2.getValue())) {
-              controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
-            }
-            else {
-              final Prefs p = GameModule.getGameModule().getPrefs();
+        final StringConfigurer nameConfig = new StringConfigurer(null, ""); //$NON-NLS-1$
+        final StringConfigurer pwd = new PasswordConfigurer(null, ""); //$NON-NLS-1$
+        final StringConfigurer pwd2 = new PasswordConfigurer(null, ""); //$NON-NLS-1$
+        final PropertyChangeListener pl = evt -> {
+          settings.put(GameModule.REAL_NAME, nameConfig.getValue());
+          settings.put(GameModule.SECRET_NAME, pwd.getValue());
+          if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
+            controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
+          }
+          else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
+            controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
+          }
+          else if (!pwd.getValue().equals(pwd2.getValue())) {
+            controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
+          }
+          else {
+            final Prefs p = GameModule.getGameModule().getPrefs();
 
-              p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
+            p.getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
 
-              p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
+            p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
-              try {
-                p.save();
-                controller.setProblem(null);
+            try {
+              p.save();
+              controller.setProblem(null);
+            }
+            // FIXME: review error message
+            catch (IOException e) {
+              String msg = e.getMessage();
+              if (msg == null) {
+                msg = Resources.getString("Prefs.unable_to_save");
               }
-              // FIXME: review error message
-              catch (IOException e) {
-                String msg = e.getMessage();
-                if (msg == null) {
-                  msg = Resources.getString("Prefs.unable_to_save");
-                }
-                controller.setProblem(msg);
-              }
+              controller.setProblem(msg);
             }
           }
         };
         nameConfig.addPropertyChangeListener(pl);
         pwd.addPropertyChangeListener(pl);
         pwd2.addPropertyChangeListener(pl);
-        box.add(nameConfig.getControls());
-        box.add(pwd.getControls());
-        box.add(pwd2.getControls());
-        JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
-        l.setAlignmentX(Box.CENTER_ALIGNMENT);
-        box.add(l);
-        box.add(Box.createVerticalGlue());
+        box.add("WizardSupport.RealName", nameConfig);
+        box.add("WizardSupport.Password", pwd);
+        box.add("WizardSupport.ConfirmPassword", pwd2);
+        final JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+        box.add(l, "span 2,center"); // NON-NLS
         nameControls = box;
       }
       return nameControls;
@@ -490,29 +454,25 @@ public class WizardSupport {
 
     @Override
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
-      DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>(new Vector<>(setups));
+      final DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>(new Vector<>(setups));
       comboBoxModel.insertElementAt(description, 0);
       final JComboBox<Object> setupSelection = new JComboBox<>(comboBoxModel);
       setupSelection.setSelectedIndex(0);
-      setupSelection.addActionListener(new ActionListener() {
-        @Override
-        @SuppressWarnings("unchecked")
-        public void actionPerformed(ActionEvent e) {
-          if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
-            PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
-            if (setup.isUseFile() && setup.getFileName() != null) {
-              loadSetup(setup, controller, settings);
-            }
-            else {
-              final GameSetupPanels panels = GameSetupPanels.newInstance();
-              settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
-              controller.setProblem(null);
-              controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
-            }
+      setupSelection.addActionListener(e -> {
+        if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
+          final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
+          if (setup.isUseFile() && setup.getFileName() != null) {
+            loadSetup(setup, controller, settings);
           }
           else {
-            controller.setProblem(description);
+            final GameSetupPanels panels = GameSetupPanels.newInstance();
+            settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+            controller.setProblem(null);
+            controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
           }
+        }
+        else {
+          controller.setProblem(description);
         }
       });
       setupSelection.setMaximumSize(new Dimension(setupSelection.getMaximumSize().width, setupSelection.getPreferredSize().height));
@@ -530,10 +490,8 @@ public class WizardSupport {
           return c;
         }
       });
-      Box box = Box.createVerticalBox();
-      box.add(Box.createVerticalGlue());
-      box.add(setupSelection);
-      box.add(Box.createVerticalGlue());
+      final JPanel box = new JPanel(new MigLayout("ins 0", "[grow,fill]")); // NON-NLS
+      box.add(setupSelection, "grow"); // NON-NLS
       controller.setProblem(description);
       return box;
     }
@@ -553,7 +511,7 @@ public class WizardSupport {
    * Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key
    */
   public static class BranchingWizard extends WizardBranchController {
-    private String wizardKey;
+    private final String wizardKey;
 
     public BranchingWizard(WizardPanelProvider base, String key) {
       super(base);
@@ -567,8 +525,8 @@ public class WizardSupport {
 
     @Override
     protected Wizard getWizardForStep(String step, Map settings) {
-      Wizard w = null;
-      Object next = settings.get(wizardKey);
+      final Wizard w;
+      final Object next = settings.get(wizardKey);
       if (next instanceof Wizard) {
         w = (Wizard) next;
       }
@@ -587,11 +545,11 @@ public class WizardSupport {
    *
    */
   public static class SavedGameLoader extends Thread {
-    private WizardController controller;
-    private Map<String, Object> settings;
+    private final WizardController controller;
+    private final Map<String, Object> settings;
     // FIXME: this is a bad design---when can we safely close this stream?!
-    private InputStream in;
-    private String wizardKey;
+    private final InputStream in;
+    private final String wizardKey;
 
     public SavedGameLoader(WizardController controller, Map<String, Object> settings, InputStream in, String wizardKey) {
       super();
@@ -605,7 +563,7 @@ public class WizardSupport {
     public void run() {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$
-        Command setupCommand = loadSavedGame();
+        final Command setupCommand = loadSavedGame();
         setupCommand.execute();
         controller.setProblem(null);
         final GameSetupPanels panels = GameSetupPanels.newInstance();
@@ -646,7 +604,7 @@ public class WizardSupport {
 
     @Override
     protected Command loadSavedGame() throws IOException {
-      String msg = tutorial.getWelcomeMessage();
+      final String msg = tutorial.getWelcomeMessage();
       Command c = msg == null ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
       c = c.append(super.loadSavedGame());
       return c;
@@ -687,9 +645,10 @@ public class WizardSupport {
               // file
               processing.add(f);
               try {
-                new SavedGameLoader(controller, settings, new BufferedInputStream(new FileInputStream(f)), POST_LOAD_GAME_WIZARD) {
+                new SavedGameLoader(controller, settings, new BufferedInputStream(Files.newInputStream(f.toPath())), POST_LOAD_GAME_WIZARD) {
                   @Override
                   public void run() {
+                    GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
                     super.run();
                     processing.remove(f);
                   }
@@ -732,7 +691,7 @@ public class WizardSupport {
       final BufferedImage img =
         ImageUtils.createCompatibleTranslucentImage(logoSize.width,
                                                     logoSize.height);
-      Graphics2D g = img.createGraphics();
+      final Graphics2D g = img.createGraphics();
       g.setColor(Color.white);
       g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
@@ -749,8 +708,8 @@ public class WizardSupport {
    * @author rkinney
    */
   public static class GameSetupPanels extends WizardPanelProvider implements WizardResultProducer {
-    private WizardPage[] pages;
-    private List<GameSetupStep> setupSteps;
+    private final WizardPage[] pages;
+    private final List<GameSetupStep> setupSteps;
 
     private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List<GameSetupStep> setupSteps) {
       super(steps, descriptions);
@@ -762,17 +721,18 @@ public class WizardSupport {
       GameSetupPanels panels = null;
       final ArrayList<SetupStepPage> pages = new ArrayList<>();
       final ArrayList<GameSetupStep> setupSteps = new ArrayList<>();
-      for (Iterator<GameSetupStep> i = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); i.hasNext();) {
+      for (final Iterator<GameSetupStep> i = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); i.hasNext();) {
         final GameSetupStep step = i.next();
         setupSteps.add(step);
         final SetupStepPage page = new SetupStepPage(step);
         pages.add(page);
       }
       if (!pages.isEmpty()) {
-        WizardPage[] wizardPages = pages.toArray(new WizardPage[0]);
-        String[] steps = new String[setupSteps.size()];
-        String[] desc = new String[setupSteps.size()];
-        for (int i = 0, n = setupSteps.size(); i < n; i++) {
+        final WizardPage[] wizardPages = pages.toArray(new WizardPage[0]);
+        final String[] steps = new String[setupSteps.size()];
+        final String[] desc = new String[setupSteps.size()];
+        final int n = setupSteps.size();
+        for (int i = 0; i < n; i++) {
           steps[i] = String.valueOf(i);
           desc[i] = setupSteps.get(i).getStepTitle();
         }
@@ -783,20 +743,21 @@ public class WizardSupport {
 
     @Override
     protected JComponent createPanel(WizardController controller, String id, Map settings) {
-      int index = indexOfStep(id);
+      final int index = indexOfStep(id);
       controller.setForwardNavigationMode(index == pages.length - 1 ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
       return pages[index];
     }
 
     @Override
     public boolean cancel(Map settings) {
+      GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
       GameModule.getGameModule().getGameState().setup(false);
       return true;
     }
 
     @Override
     public Object finish(Map wizardData) throws WizardException {
-      for (GameSetupStep step : setupSteps) {
+      for (final GameSetupStep step : setupSteps) {
         step.finish();
       }
       return wizardData;

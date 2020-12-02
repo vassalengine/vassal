@@ -18,7 +18,6 @@
 package VASSAL.chat.ui;
 
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 
@@ -37,7 +36,7 @@ import VASSAL.i18n.Resources;
 public class BasicChatControlsInitializer implements ChatControlsInitializer {
   private Action connectAction;
   private Action disconnectAction;
-  private ChatServerConnection client;
+  private final ChatServerConnection client;
   private JButton connectButton;
   private JButton disconnectButton;
   private PropertyChangeListener connectionListener;
@@ -49,7 +48,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
 
   @Override
   public void initializeControls(final ChatServerControls controls) {
-    JToolBar toolbar = controls.getToolbar();
+    final JToolBar toolbar = controls.getToolbar();
 
     connectAction = new AbstractAction(
                           Resources.getString("Chat.connect")) {  //$NON-NLS-1$
@@ -90,23 +89,15 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     connectButton = toolbar.add(connectAction);
     disconnectButton = toolbar.add(disconnectAction);
 
-    connectionListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(final PropertyChangeEvent evt) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            boolean connected = Boolean.TRUE.equals(evt.getNewValue());
-            connectAction.setEnabled(!connected);
-            disconnectAction.setEnabled(connected);
-            if (!connected) {
-              controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
-              controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
-            }
-          }
-        });
+    connectionListener = evt -> SwingUtilities.invokeLater(() -> {
+      final boolean connected = Boolean.TRUE.equals(evt.getNewValue());
+      connectAction.setEnabled(!connected);
+      disconnectAction.setEnabled(connected);
+      if (!connected) {
+        controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
+        controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
       }
-    };
+    });
 
     client.addPropertyChangeListener(
       ServerConnection.CONNECTED, connectionListener);

@@ -18,6 +18,8 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.build.AutoConfigurable;
+import VASSAL.configure.StringEnum;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -28,13 +30,13 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
-import VASSAL.build.AutoConfigurable;
-import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
@@ -46,8 +48,8 @@ public class ImageItem extends Item {
 
   public static final String TYPE = "Image"; //$NON-NLS-1$
 
-  public static final String SRC_VARIABLE = "Specified in individual images";
-  public static final String SRC_FIXED = "Fixed for this layout";
+  public static final String SRC_VARIABLE = "Specified in individual images"; // NON-NLS - Yes really!
+  public static final String SRC_FIXED = "Fixed for this layout"; // NON-NLS - Yes really!
 
   protected static final String IMAGE = "image"; //$NON-NLS-1$
   public static final String SOURCE = "source"; //$NON-NLS-1$
@@ -75,8 +77,8 @@ public class ImageItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Image:  ",
-      "Image is:  "
+      Resources.getString("Editor.image_label"),
+      Resources.getString("Editor.ImageItem.image_option")
     );
   }
 
@@ -85,7 +87,7 @@ public class ImageItem extends Item {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
       Image.class,
-      TextSource.class);
+      TextItem.TextSource.class);
   }
 
   @Override
@@ -160,10 +162,11 @@ public class ImageItem extends Item {
       return new String[] { SRC_VARIABLE, SRC_FIXED };
     }
   }
+
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
     loadImage(defn);
-    Point origin = layout.getPosition(this);
+    final Point origin = layout.getPosition(this);
 
     if (isAntialias()) {
       ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -188,6 +191,11 @@ public class ImageItem extends Item {
   }
 
   @Override
+  public String getDisplayName() {
+    return Resources.getString("Editor.ImageItem.component_type");
+  }
+
+  @Override
   public Dimension getSize() {
     return imageBounds.getSize();
   }
@@ -205,7 +213,7 @@ public class ImageItem extends Item {
       Ii = new ImageItemInstance();
     }
 
-    String iName;
+    final String iName;
     if (imageSource.equals(SRC_FIXED)) {
       iName = imageName;
     }
@@ -213,22 +221,11 @@ public class ImageItem extends Item {
       iName = Ii.getImageName();
     }
 
-//    image = null;
-
     if (iName != null) {
-      if (iName.trim().length() == 0) {
+      if (iName.isBlank()) {
         srcOp = BaseOp.op;
       }
       else {
-/*
-      try {
-        image = GameModule.getGameModule().getDataArchive().getCachedImage(iName);
-//        imageBounds = DataArchive.getImageBounds(image);
-        imageBounds = ImageUtils.getBounds((BufferedImage) image);
-      }
-      catch (IOException e) {
-      }
-*/
         srcOp = Op.load(iName);
       }
       imageBounds = ImageUtils.getBounds(srcOp.getSize());
@@ -239,7 +236,9 @@ public class ImageItem extends Item {
   }
 
   protected static final class BaseOp extends AbstractTileOpImpl {
-    private BaseOp() { }
+    private BaseOp() {
+
+    }
 
     private static final BaseOp op = new BaseOp();
 
@@ -305,5 +304,10 @@ public class ImageItem extends Item {
     se2.append(super.encode());
 
     return se2.getValue();
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (imageName != null) s.add(imageName);
   }
 }

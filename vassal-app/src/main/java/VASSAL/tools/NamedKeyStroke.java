@@ -70,7 +70,7 @@ public class NamedKeyStroke {
   /**
    * Is there a name associated with this KeyStroke? No name means
    * it is a standard KeyStroke.
-   * @return
+   * @return True if a name associated with this Keystroke
    */
   public boolean isNamed() {
     return ! (name == null || name.length() == 0);
@@ -81,7 +81,7 @@ public class NamedKeyStroke {
   }
 
   public boolean isNull() {
-    return (stroke == null && name == null) || (stroke != null & stroke.getKeyCode() == 0 && stroke.getModifiers() == 0);
+    return (stroke == null && name == null) || (stroke != null && stroke.getKeyCode() == 0 && stroke.getModifiers() == 0);
   }
 
   /**
@@ -102,10 +102,12 @@ public class NamedKeyStroke {
         return getKeyStroke().equals(((NamedKeyStroke) o).getKeyStroke());
       }
     }
+    // checking for parameter being a completely unrelated class to this class
+    // deliberate misuse of equals()
     else if (o instanceof KeyStroke) {
       final KeyStroke a = getKeyStroke();
       if (a == null) {
-        return o == null;
+        return false;
       }
       return a.equals(o);
     }

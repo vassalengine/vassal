@@ -29,11 +29,8 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,34 +46,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.HexGrid;
-import VASSAL.build.module.map.boardPicker.board.MapGrid;
-import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
-import VASSAL.build.module.map.boardPicker.board.RegionGrid;
-import VASSAL.build.module.map.boardPicker.board.SquareGrid;
-import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
-import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
-import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.build.module.properties.ZoneProperty;
-import VASSAL.command.Command;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.swing.SwingUtils;
+import net.miginfocom.swing.MigLayout;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -110,13 +80,13 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
-  public static final String NAME = "name";
-  public static final String PATH = "path";
-  public static final String USE_PARENT_GRID = "useParentGrid";
-  public static final String LOCATION_FORMAT = "locationFormat";
-  public static final String GRID_LOCATION = "gridLocation";
-  public static final String USE_HIGHLIGHT = "useHighlight";
-  public static final String HIGHLIGHT_PROPERTY = "highlightProperty";
+  public static final String NAME = "name"; //NON-NLS
+  public static final String PATH = "path"; //NON-NLS
+  public static final String USE_PARENT_GRID = "useParentGrid"; //NON-NLS
+  public static final String LOCATION_FORMAT = "locationFormat"; //NON-NLS
+  public static final String GRID_LOCATION = "gridLocation"; //NON-NLS
+  public static final String USE_HIGHLIGHT = "useHighlight"; //NON-NLS
+  public static final String HIGHLIGHT_PROPERTY = "highlightProperty"; //NON-NLS
   protected static final Dimension DEFAULT_SIZE = new Dimension(600, 600);
   protected String locationFormat = "$" + NAME + "$";
   protected FormattedString format = new FormattedString();
@@ -126,12 +96,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   protected boolean useParentGrid;
   protected PropertyChangeListener globalPropertyListener;
   protected MutablePropertiesContainer propsContainer = new Impl();
-  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-      repaint();
-    }
-  };
+  protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   /*
    * Cache as much as possible to minimise the number of Affine Transformations that need to be performed.
    */
@@ -178,12 +143,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Location Format:  ",
-      "Shape",
-      "Use board's grid?",
-      "Use Highlighting?",
-      "Highlight Property:  "
+      Resources.getString("Editor.name_label"),
+      Resources.getString("Editor.Zone.location_format"),
+      Resources.getString("Editor.Zone.shape"),
+      Resources.getString("Editor.Zone.use_boards_grid"),
+      Resources.getString("Editor.Zone.use_highlighting"),
+      Resources.getString("Editor.Zone.highlight_property")
     };
   }
 
@@ -234,11 +199,11 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public static String getConfigureTypeName() {
-    return "Zone";
+    return Resources.getString("Editor.Zone.component_type");
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return null;
   }
 
@@ -279,10 +244,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       locationFormat = (String) val;
     }
     else if (USE_PARENT_GRID.equals(key)) {
-      useParentGrid = "true".equals(val) || Boolean.TRUE.equals(val);
+      useParentGrid = "true".equals(val) || Boolean.TRUE.equals(val); //NON-NLS
     }
     else if (USE_HIGHLIGHT.equals(key)) {
-      useHighlight = "true".equals(val) || Boolean.TRUE.equals(val);
+      useHighlight = "true".equals(val) || Boolean.TRUE.equals(val); //NON-NLS
     }
     else if (HIGHLIGHT_PROPERTY.equals(key)) {
       highlightPropertyName = (String) val;
@@ -292,12 +257,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (HIGHLIGHT_PROPERTY.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return useHighlight;
-        }
-      };
+      return () -> useHighlight;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -339,7 +299,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     int groupCount = 0;
 
     while (se.hasMoreTokens()) {
-      String token = se.nextToken();
+      final String token = se.nextToken();
       isProperty = !isProperty;
 
       if (token.length() > 0) {
@@ -367,9 +327,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
     assert (matcher.groupCount() == groupCount);
 
-    Point p = null;
+    final Point p;
     if (groupCount > 0) {
-      String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
+      final String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));
       p = getGrid().getLocation(locationName);
       if (p == null || !contains(p)) {
         throw new BadCoords();
@@ -388,16 +348,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       p.x /= myPolygon.npoints;
       p.y /= myPolygon.npoints;
 
-      if (contains(p)) {
-        return p;
-      }
-      else {
+      if (!contains(p)) {
         // concave polygon
         // default to the first point
         p.x = myPolygon.xpoints[0];
         p.y = myPolygon.ypoints[0];
-        return p;
       }
+      return p;
     }
   }
 
@@ -447,7 +404,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   @Override
   public void removeGrid(MapGrid grid) {
     if (this.grid == grid) {
-      grid = null;
+      this.grid = null;
     }
   }
 
@@ -557,7 +514,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   @Override
   public Object getProperty(Object key) {
-    Object value = null;
+    final Object value;
     final MutableProperty p =
       propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
@@ -584,12 +541,12 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   /**
-   * Implement PropertNameSource - expose names of my ZoneProperties
+   * Implement PropertyNameSource - expose names of my ZoneProperties
    */
   @Override
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<>();
-    for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
+    final List<String> l = new ArrayList<>();
+    for (final ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
       l.add(zp.getConfigureName());
     }
     return l;
@@ -621,12 +578,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
             .findMutableProperty(highlightPropertyName, Arrays.asList(new MutablePropertiesContainer[]{this, getMap(), GameModule.getGameModule()}));
         if (highlightProperty != null) {
           if (highlightPropertyChangeListener == null) {
-            highlightPropertyChangeListener = new PropertyChangeListener() {
-              @Override
-              public void propertyChange(PropertyChangeEvent e) {
-                setHighlighter((String) e.getNewValue());
-              }
-            };
+            highlightPropertyChangeListener = e -> setHighlighter((String) e.getNewValue());
           }
           highlightProperty.addMutablePropertyChangeListener(highlightPropertyChangeListener);
           setHighlighter(highlightProperty.getPropertyValue());
@@ -655,23 +607,21 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return null;
   }
   public static class Editor extends Configurer {
+    private final JPanel buttonPanel;
     private final JButton button;
     private final PolygonEditor editor;
     private Board board;
     private final JDialog frame;
     protected AdjustableSpeedScrollPane scroll;
     protected Polygon savePoly;
-    protected final JLabel warning = new JLabel("Zone has not been defined");
+    protected final JLabel warning = new JLabel(Resources.getString("Editor.Zone.zone_has_not_been_defined"));
 
     public Editor(final Zone zone) {
       super(PATH, null);
-      button = new JButton("Define Shape");
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          init(zone);
-        }
-      });
+      buttonPanel = new JPanel(new MigLayout("ins 0")); // NON-NLS
+      button = new JButton(Resources.getString("Editor.Zone.define_shape"));
+      buttonPanel.add(button);
+      button.addActionListener(e -> init(zone));
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
@@ -704,35 +654,32 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
       labels.setLayout(new GridLayout(3, 2));
-      labels.add(new JLabel("Drag to create initial shape"));
-      labels.add(new JLabel("Right-click to add point"));
-      labels.add(new JLabel("Left-click to move points"));
-      labels.add(new JLabel("DEL to remove point"));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.drag_to_create_initial_shape")));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.right_click_to_add_point")));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.left_drag_to_move_points")));
+      labels.add(new JLabel(Resources.getString("Editor.Zone.del_to_remove_points")));
       warning.setForeground(Color.red);
       warning.setVisible(false);
       labels.add(warning);
       labels.setAlignmentX(0.0f);
       frame.add(labels);
 
-      final JButton direct = new JButton("Set Coordinates directly");
-      direct.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String newShape = JOptionPane.showInputDialog(frame, "Enter x,y coordinates of polygon vertices,\nseparated by spaces", PolygonEditor
-              .polygonToString(editor.getPolygon()).replace(';', ' '));
-          if (newShape != null) {
-            final StringBuilder buffer = new StringBuilder();
-            final StringTokenizer st = new StringTokenizer(newShape);
-            while (st.hasMoreTokens()) {
-              buffer.append(st.nextToken());
-              if (st.hasMoreTokens()) {
-                buffer.append(';');
-              }
+      final JButton direct = new JButton(Resources.getString("Editor.Zone.set_coordinates_directly"));
+      direct.addActionListener(e -> {
+        String newShape = JOptionPane.showInputDialog(frame, Resources.getString("Editor.Zone.enter_points_instructions"), PolygonEditor
+            .polygonToString(editor.getPolygon()).replace(';', ' '));
+        if (newShape != null) {
+          final StringBuilder buffer = new StringBuilder();
+          final StringTokenizer st = new StringTokenizer(newShape);
+          while (st.hasMoreTokens()) {
+            buffer.append(st.nextToken());
+            if (st.hasMoreTokens()) {
+              buffer.append(';');
             }
-            newShape = buffer.toString();
-            PolygonEditor.reset(editor.getPolygon(), newShape);
-            editor.repaint();
           }
+          newShape = buffer.toString();
+          PolygonEditor.reset(editor.getPolygon(), newShape);
+          editor.repaint();
         }
       });
       direct.setAlignmentX(0.0f);
@@ -743,23 +690,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.add(scroll);
       final JPanel buttonPanel = new JPanel();
 
-      final JButton closeButton = new JButton("Ok");
-      closeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue((Object) getValueString());
-          frame.setVisible(false);
-        }
+      final JButton closeButton = new JButton(Resources.getString("General.ok"));
+      closeButton.addActionListener(e -> {
+        setValue((Object) getValueString());
+        frame.setVisible(false);
       });
 
-      final JButton canButton = new JButton("Cancel");
-      canButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          editor.setPolygon(savePoly);
-          setValue((Object) getValueString());
-          frame.setVisible(false);
-        }
+      final JButton canButton = new JButton(Resources.getString("General.cancel"));
+      canButton.addActionListener(e -> {
+        editor.setPolygon(savePoly);
+        setValue((Object) getValueString());
+        frame.setVisible(false);
       });
 
       buttonPanel.add(closeButton);
@@ -786,7 +727,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     @Override
     public Component getControls() {
-      return button;
+      return buttonPanel;
     }
 
     @Override
@@ -798,5 +739,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     public void setValue(String s) {
       PolygonEditor.reset(editor.getPolygon(), s);
     }
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(locationFormat);
   }
 }

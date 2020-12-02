@@ -17,16 +17,16 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.documentation.HelpFile;
@@ -38,10 +38,10 @@ import VASSAL.tools.SequenceEncoder;
  * A generic Decorator that retains in its state the value of a property.
  * That is, if {@link #setProperty(Object,Object)} is invoked with a key
  * that is one of {@link #getKeys()}, the <code>String</code> value of that
- * property will be reflected in the {@link #myGetState(String)} method.
+ * property will be reflected in the #myGetState() method.
  */
 public class Marker extends Decorator implements EditablePiece {
-  public static final String ID = "mark;";
+  public static final String ID = "mark;"; // NON-NLS
 
   protected String[] keys;
   protected String[] values;
@@ -62,8 +62,8 @@ public class Marker extends Decorator implements EditablePiece {
   @Override
   public void mySetType(String s) {
     s = s.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList<String> l = new ArrayList<>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final ArrayList<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -125,8 +125,8 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public String myGetState() {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String value : values) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String value : values) {
       se.append(value);
     }
     return se.getValue();
@@ -134,7 +134,7 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public void mySetState(String state) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ',');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ',');
     int i = 0;
     while (st.hasMoreTokens() && i < values.length) {
       values[i++] = st.nextToken();
@@ -143,8 +143,8 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(',');
-    for (String key : keys) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final String key : keys) {
       se.append(key);
     }
     return ID + se.getValue();
@@ -163,17 +163,17 @@ public class Marker extends Decorator implements EditablePiece {
   @Override
   public String getDescription() {
     if (keys != null
-        && keys.length > 0 && keys[0].length() > 0
-        && values.length > 0 && values[0].length() > 0) {
-      return "Marker - " + keys[0] + " = " + values[0];
+      && keys.length > 0 && keys[0].length() > 0
+      && values.length > 0 && values[0].length() > 0) {
+      return Resources.getString("Editor.Marker.trait_description") + " - " + keys[0] + " = " + values[0];
     }
     else
-      return "Marker";
+      return Resources.getString("Editor.Marker.trait_description");
   }
 
   @Override
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PropertyMarker.htm");
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("PropertyMarker.html"); // NON-NLS
   }
 
   @Override
@@ -186,35 +186,42 @@ public class Marker extends Decorator implements EditablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
-    for (String key : keys) {
-      l.add(key);
-    }
+    final ArrayList<String> l = new ArrayList<>();
+    Collections.addAll(l, keys);
     return l;
   }
 
+  @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof Marker)) return false;
+    final Marker c = (Marker) o;
+    if (!Arrays.equals(keys, c.keys)) return false;
+    return Arrays.equals(values, c.values);
+  }
+
   private static class Ed implements PieceEditor {
-    private StringConfigurer propName;
-    private StringConfigurer propValue;
-    private JPanel panel;
+    private final StringConfigurer propName;
+    private final StringConfigurer propValue;
+    private final TraitConfigPanel panel;
 
     private Ed(Marker m) {
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      SequenceEncoder seKeys = new SequenceEncoder(',');
+      panel = new TraitConfigPanel();
+
+      final SequenceEncoder seKeys = new SequenceEncoder(',');
       for (int i = 0; i < m.keys.length; ++i) {
         seKeys.append(m.keys[i]);
       }
 
-      SequenceEncoder seValues = new SequenceEncoder(',');
+      final SequenceEncoder seValues = new SequenceEncoder(',');
       for (int i = 0; i < m.values.length; ++i) {
         seValues.append(m.values[i]);
       }
 
-      propName = new StringConfigurer(null, "Property name:  ", m.keys.length == 0 ? "" : seKeys.getValue());
-      propValue = new StringConfigurer(null, "Property value:  ", m.values.length == 0 ? "" : seValues.getValue());
-      panel.add(propName.getControls());
-      panel.add(propValue.getControls());
+      propName = new StringConfigurer(m.keys.length == 0 ? "" : seKeys.getValue());
+      panel.add("Editor.Marker.property_name", propName);
+
+      propValue = new StringConfigurer(m.values.length == 0 ? "" : seValues.getValue());
+      panel.add("Editor.Marker.property_value", propValue);
     }
 
     @Override
@@ -231,5 +238,22 @@ public class Marker extends Decorator implements EditablePiece {
     public String getType() {
       return Marker.ID + propName.getValueString();
     }
+  }
+
+
+  /**
+   * @return a list of the Decorator's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return Arrays.asList(values);
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return Arrays.asList(values);
   }
 }

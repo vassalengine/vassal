@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -74,19 +75,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     menu = new MenuProxy();
 
-    showFile = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return !isMenu && useFile;
-      }
-    };
+    showFile = () -> !isMenu && useFile;
 
-    showUseFile = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return !isMenu;
-      }
-    };
+    showUseFile = () -> !isMenu;
   }
 
   @Override
@@ -179,17 +170,18 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public void launch() {
+    final GameModule g = GameModule.getGameModule();
     if (useFile && fileName != null) {
       try {
-        GameModule.getGameModule()
-                  .getGameState()
-                  .loadGameInBackground(fileName, getSavedGameContents());
+        g.getGameState().loadGameInBackground(fileName, getSavedGameContents());
+        g.setGameFile(fileName, GameModule.GameFileMode.LOADED_GAME);
       }
       catch (IOException e) {
         ErrorDialog.dataWarning(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"), fileName, e)); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     else {
+      g.setGameFile(fileName, GameModule.GameFileMode.NEW_GAME);
       GameModule.getGameModule().getGameState().setup(false);
       GameModule.getGameModule().getGameState().setup(true);
     }
@@ -259,7 +251,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("GameModule.html", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public boolean isMenu() {
@@ -286,9 +278,18 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   @Override
   public String toString() {
-    return "PredefinedSetup{" +
-      "name='" + name + '\'' +
-      ", menu='" + isMenu + '\'' +
+    return "PredefinedSetup{" + //NON-NLS
+      "name='" + name + '\'' + //NON-NLS
+      ", menu='" + isMenu + '\'' + //NON-NLS
       '}';
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurables string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    return List.of(name);
   }
 }

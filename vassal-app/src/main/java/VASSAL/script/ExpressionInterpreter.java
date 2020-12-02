@@ -97,18 +97,17 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
   // Maintain a cache of all generated Interpreters. All Expressions
   // with the same Expression use the same Interpreter.
-  protected static HashMap<String, ExpressionInterpreter> cache = new HashMap<>();
+  protected static final java.util.Map<String, ExpressionInterpreter> cache = new HashMap<>();
 
-
+  @Override
   public String getComponentTypeName() {
-    return "ExpressionInterpreter";
+    return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
 
-
+  @Override
   public String getComponentName() {
-    return "ExpressionInterpreter";
+    return Resources.getString("Editor.ExpressionInterpreter.component_type");
   }
-
 
   public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
     final String e = expr == null ? "" : strip(expr);
@@ -171,7 +170,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (expression.length() > 0) {
       try {
         final StringBuilder argList = new StringBuilder();
-        for (String variable : stringVariables) {
+        for (final String variable : stringVariables) {
           if (argList.length() > 0) {
             argList.append(',');
           }
@@ -203,7 +202,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     getNameSpace().importClass("VASSAL.script.ExpressionInterpreter");
 
     // Read the Expression initialisation script into the top level namespace
-    URL ini = getClass().getResource(INIT_SCRIPT);
+    final URL ini = getClass().getResource(INIT_SCRIPT);
     logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // NON-NLS
 
     try (InputStream is = ini.openStream();
@@ -261,13 +260,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
       // Bind each undeclared variable with the value of the
       // corresponding Vassal property. Allow for old-style $variable$ references
-      for (String var : variables) {
+      for (final String var : variables) {
         String name = var;
         if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
           name = name.substring(1, name.length() - 1);
         }
-        Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
-        String value = prop == null ? "" : prop.toString();
+        final Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
+        final String value = prop == null ? "" : prop.toString();
         if (value == null) {
           setVar(var, "");
         }
@@ -297,7 +296,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
 
       final StringBuilder argList = new StringBuilder();
-      for (String var : stringVariables) {
+      for (final String var : stringVariables) {
         if (argList.length() > 0) {
           argList.append(',');
         }
@@ -324,7 +323,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     catch (RecursionLimitException e) {
       result = "";
-      ErrorDialog.dataWarning (new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
+      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
     }
     finally {
       RecursionLimiter.endExecution();
@@ -420,9 +419,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumStack(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
-      Stack s = ((GamePiece) ps).getParent();
+      final Stack s = ((GamePiece) ps).getParent();
       if (s != null) {
-        for (GamePiece gamePiece : s.asList()) {
+        for (final GamePiece gamePiece : s.asList()) {
           try {
             result +=
               Integer.parseInt(gamePiece.getProperty(property).toString());
@@ -451,16 +450,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   public Object sumLocation(String property, PropertySource ps) {
     int result = 0;
     if (ps instanceof GamePiece) {
-      GamePiece p = (GamePiece) ps;
-      Map m = p.getMap();
+      final GamePiece p = (GamePiece) ps;
+      final Map m = p.getMap();
       if (m != null) {
-        String here = m.locationName(p.getPosition());
-        GamePiece[] pieces = m.getPieces();
-        for (GamePiece piece : pieces) {
+        final String here = m.locationName(p.getPosition());
+        final GamePiece[] pieces = m.getPieces();
+        for (final GamePiece piece : pieces) {
           if (here.equals(m.locationName(piece.getPosition()))) {
             if (piece instanceof Stack) {
-              Stack s = (Stack) piece;
-              for (GamePiece gamePiece : s.asList()) {
+              final Stack s = (Stack) piece;
+              for (final GamePiece gamePiece : s.asList()) {
                 try {
                   result += Integer.parseInt(gamePiece.getProperty(property).toString());
                 }
@@ -522,8 +521,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : "");
-      final String data = "Data=[" + value.toString() + "].";
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String data = "Data=[" + value.toString() + "]."; //NON-NLS
       ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
     return result;
@@ -542,7 +541,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
    */
   public Object sum(Object source, Object propertyName, Object propertyMatch) {
-    return sum (source, propertyName, propertyMatch, null);
+    return sum(source, propertyName, propertyMatch, null);
   }
 
   public Object sum(Object source, Object propertyName, Object propertyMatch, Object mapName) {
@@ -557,10 +556,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    for (Map map : getMapList(mapName, sourcePiece)) {
-      for (GamePiece piece : map.getAllPieces()) {
+    for (final Map map : getMapList(mapName, sourcePiece)) {
+      for (final GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
-          for (GamePiece p : ((Stack) piece).asList()) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
             result += getIntPropertyValue(p, filter, (String) propertyName);
           }
         }
@@ -573,7 +572,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return result;
   }
 
-  private int getIntPropertyValue (GamePiece piece, PieceFilter filter, String propertyName) {
+  private int getIntPropertyValue(GamePiece piece, PieceFilter filter, String propertyName) {
     if (filter == null || filter.accept(piece)) {
       try {
         return Integer.parseInt((String) piece.getProperty(propertyName));
@@ -590,8 +589,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object count(Object source, Object propertyMatch, Object mapName) {
-    int result = 0;
-
     if (! (source instanceof GamePiece)) return 0;
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
@@ -600,10 +597,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
-    for (Map map : getMapList(mapName, sourcePiece)) {
-      for (GamePiece piece : map.getAllPieces()) {
+    int result = 0;
+    for (final Map map : getMapList(mapName, sourcePiece)) {
+      for (final GamePiece piece : map.getAllPieces()) {
         if (piece instanceof Stack) {
-          for (GamePiece p : ((Stack) piece).asList()) {
+          for (final GamePiece p : ((Stack) piece).asList()) {
             if (filter == null || filter.accept(p)) {
               result++;
             }
@@ -637,7 +635,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
       // Otherwise, search all maps for the one we want
       else {
-        for (Map map : Map.getMapList()) {
+        for (final Map map : Map.getMapList()) {
           if (map.getMapName().equals(mapName)) {
             maps.add(map);
             break;
@@ -649,7 +647,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Map findVassalMap(String mapName) {
-    for (Map map : Map.getMapList()) {
+    for (final Map map : Map.getMapList()) {
       if (map.getMapName().equals(mapName)) {
         return map;
       }
@@ -675,7 +673,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final StringBuilder propertyName = new StringBuilder();
 
     for (int i = 0; i < expression.length(); i++) {
-      char c = expression.charAt(i);
+      final char c = expression.charAt(i);
 
       switch (state) {
       //

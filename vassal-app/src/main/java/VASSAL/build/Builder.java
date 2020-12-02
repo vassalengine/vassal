@@ -50,15 +50,19 @@ import VASSAL.tools.ThrowableUtils;
 /**
  * This class holds static convenience methods for building {@link Buildable} objects.
  */
-public abstract class Builder {
+public class Builder {
 
   private static final Logger logger = LoggerFactory.getLogger(Builder.class);
 
+  private Builder() {
+    // Helper class - not to be instantiated alone.
+  }
+
   /**
-   * General building algorithm.  For each subelement of the build
+   * General building algorithm.  For each sub-element of the build
    * Element, this method creates an instance of the class (which
    * must implement Buildable) whose name matches the XML element
-   * tag name, builds that instance with the subelement, and adds it
+   * tag name, builds that instance with the sub-element, and adds it
    * to the parent Buildable
    *
    * This algorithm calls a component's {@link Buildable#build} method
@@ -83,7 +87,7 @@ public abstract class Builder {
           ErrorDialog.bug(ex);
         }
         catch (RuntimeException | Error ex) {
-          logger.error("Error building " + child.getNodeName());
+          logger.error("Error building " + child.getNodeName()); //NON-NLS
           throw ex;
         }
       }
@@ -124,7 +128,7 @@ public abstract class Builder {
           t instanceof SecurityException ||
           t instanceof ExceptionInInitializerError ||
           t instanceof LinkageError) {
-        // one of the standard classloading problems occured
+        // one of the standard classloading problems occurred
         throw new IllegalBuildException("failed to load class " + name, t);
       }
       else if (t instanceof Error) {
@@ -149,10 +153,7 @@ public abstract class Builder {
   public static Document createDocument(InputStream in)
                                         throws IOException {
     try (in) {
-      final Document doc = DocumentBuilderFactory.newInstance()
-                                                 .newDocumentBuilder()
-                                                 .parse(in);
-      return doc;
+      return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
     }
     catch (ParserConfigurationException e) {
       ErrorDialog.bug(e);
@@ -238,23 +239,23 @@ public abstract class Builder {
   }
 
   public static void main(String[] args) {
-    Document doc = createNewDocument();
-    Element e = doc.createElement("test"); //$NON-NLS-1$
-    Element e1 = doc.createElement("sub1"); //$NON-NLS-1$
+    final Document doc = createNewDocument();
+    final Element e = doc.createElement("test"); //$NON-NLS-1$
+    final Element e1 = doc.createElement("sub1"); //$NON-NLS-1$
     e.appendChild(e1);
-    Element e2 = doc.createElement("sub2"); //$NON-NLS-1$
+    final Element e2 = doc.createElement("sub2"); //$NON-NLS-1$
     e2.setAttribute("one", "1"); //$NON-NLS-1$ //$NON-NLS-2$
     e2.setAttribute("two", "2"); //$NON-NLS-1$ //$NON-NLS-2$
     e.appendChild(e2);
-    Element e3 = doc.createElement("sub3"); //$NON-NLS-1$
-    Element e4 = doc.createElement("sub4"); //$NON-NLS-1$
+    final Element e3 = doc.createElement("sub3"); //$NON-NLS-1$
+    final Element e4 = doc.createElement("sub4"); //$NON-NLS-1$
     e4.appendChild(doc.createTextNode("4 > 2")); //$NON-NLS-1$
     e3.appendChild(e4);
     e.appendChild(e3);
     doc.appendChild(e);
     System.err.println(toString(doc));
     System.err.println("StringBuilder"); //$NON-NLS-1$
-    StringBuilder buf = new StringBuilder(300000);
+    final StringBuilder buf = new StringBuilder(300000);
     for (int i = 0; i < 500000; ++i) {
       buf.append("  "); //$NON-NLS-1$
       if (i % 10000 == 0) {

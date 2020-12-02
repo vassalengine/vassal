@@ -21,7 +21,9 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.List;
 
+import java.util.Objects;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.module.PrototypeDefinition;
@@ -46,7 +48,7 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class UsePrototype extends Decorator implements EditablePiece, Loopable {
-  public static final String ID = "prototype;";
+  public static final String ID = "prototype;"; // NON-NLS
   private String prototypeName;
   private String lastCachedPrototype;
   private GamePiece prototype;
@@ -64,28 +66,28 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return prototypeName != null && prototypeName.length() > 0 ? "Prototype - " + prototypeName : "Prototype";
+    return buildDescription("Editor.UsePrototype.trait_description", prototypeName);
   }
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("UsePrototype.htm");
+    return HelpFile.getReferenceManualPage("UsePrototype.html"); // NON-NLS
   }
 
   @Override
   public void mySetType(String type) {
     this.type = type;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
     prototypeName = st.nextToken("");
     if (st.hasMoreTokens()) {
       final java.util.Properties p = new java.util.Properties();
-      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), ',');
+      final SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), ',');
       while (st2.hasMoreTokens()) {
-        SequenceEncoder.Decoder st3 = new SequenceEncoder.Decoder(st2.nextToken(), '=');
+        final SequenceEncoder.Decoder st3 = new SequenceEncoder.Decoder(st2.nextToken(), '=');
         if (st3.hasMoreTokens()) {
-          String key = st3.nextToken();
+          final String key = st3.nextToken();
           if (st3.hasMoreTokens()) {
-            String value = st3.nextToken();
+            final String value = st3.nextToken();
             p.setProperty(key, value);
           }
         }
@@ -220,19 +222,32 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   }
 
   @Override
+  public boolean testEquals(Object o) {
+    if (! (o instanceof UsePrototype)) return false;
+    final UsePrototype c = (UsePrototype) o;
+    return Objects.equals(prototypeName, c.prototypeName);
+  }
+
+  @Override
   public PieceEditor getEditor() {
     return new Editor(this);
   }
+
   public static class Editor implements PieceEditor {
-    private StringConfigurer nameConfig;
+    private final TraitConfigPanel controls;
+    private final StringConfigurer nameConfig;
 
     public Editor(UsePrototype up) {
-      nameConfig = new StringConfigurer(null, "Prototype name:  ", up.type.substring(ID.length()));
+      controls = new TraitConfigPanel();
+
+      nameConfig = new StringConfigurer(up.type.substring(ID.length()));
+      controls.add("Editor.UsePrototype.prototype_name", nameConfig);
+
     }
 
     @Override
     public Component getControls() {
-      return nameConfig.getControls();
+      return controls;
     }
 
     @Override
@@ -255,5 +270,13 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   @Override
   public String getComponentTypeName() {
     return getDescription();
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the Decorator, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return List.of(prototypeName);
   }
 }

@@ -41,8 +41,8 @@ public class SimpleStatus implements PlayerStatus {
   public static final String LOOKING = "looking"; //$NON-NLS-1$
   public static final String NAME = "name"; //$NON-NLS-1$
 
-  private boolean looking;
-  private boolean away;
+  private final boolean looking;
+  private final boolean away;
   private String profile;
   private String client;
   private String ip;
@@ -128,7 +128,7 @@ public class SimpleStatus implements PlayerStatus {
     try {
       ip = InetAddress.getLocalHost().getHostAddress();
     }
-    catch (UnknownHostException e) {
+    catch (final UnknownHostException e) {
     }
     moduleVersion = g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)");  //$NON-NLS-1$ //$NON-NLS-2$
     crc = Long.toHexString(g.getCrc());

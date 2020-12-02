@@ -28,19 +28,19 @@ import java.util.Map;
  */
 public interface ServerStatus {
   /** Return the current connections to the server */
-  public ModuleSummary[] getStatus();
+  ModuleSummary[] getStatus();
 
-  public String[] getSupportedTimeRanges();
+  String[] getSupportedTimeRanges();
 
   /**
    * @return the connections to the server within <code>time</code>
    * milliseconds of the current time
    */
-  public ModuleSummary[] getHistory(String timeRange);
+  ModuleSummary[] getHistory(String timeRange);
 
-  public class ModuleSummary {
+  class ModuleSummary {
     private String moduleName;
-    private Map<String, Room> rooms = new HashMap<>();
+    private final Map<String, Room> rooms = new HashMap<>();
 
     public ModuleSummary(String moduleName) {
       this.moduleName = moduleName;
@@ -48,7 +48,7 @@ public interface ServerStatus {
 
     public ModuleSummary(String moduleName, Room[] rooms) {
       this (moduleName);
-      for (Room r : rooms) {
+      for (final Room r : rooms) {
         this.rooms.put(r.getName(), r);
       }
     }
@@ -74,14 +74,15 @@ public interface ServerStatus {
     }
 
     public int numPlayers() {
-      Room[] roomsArray = getRooms();
+      final Room[] roomsArray = getRooms();
       int n = 0;
-      for (Room room : roomsArray) {
+      for (final Room room : roomsArray) {
         n += ((SimpleRoom) room).numPlayers();
       }
       return n;
     }
 
+    @Override
     public String toString() {
       return moduleName;
     }

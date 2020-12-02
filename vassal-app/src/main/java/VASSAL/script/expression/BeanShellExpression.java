@@ -35,7 +35,7 @@ public class BeanShellExpression extends Expression {
 
   protected ExpressionInterpreter interpreter;
 
-  public BeanShellExpression (String s) {
+  public BeanShellExpression(String s) {
     setExpression("{" + s + "}");
   }
 
@@ -95,7 +95,7 @@ public class BeanShellExpression extends Expression {
         result = evaluate(piece);
       }
       catch (ExpressionException e) {
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e));
+        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
       }
       return BeanShell.TRUE.equals(result);
     };
@@ -107,7 +107,7 @@ public class BeanShellExpression extends Expression {
    * @param prop Property name
    * @return beanshell equivalent
    */
-  public static String convertProperty (String prop) {
+  public static String convertProperty(String prop) {
     // Null Expression
     if (prop == null || prop.length() == 0) {
       return "";
@@ -171,7 +171,7 @@ public class BeanShellExpression extends Expression {
    * @return Expression
    */
   public static Expression createExpression(String s, boolean dontCreateStringExpressions) {
-    String expr;
+    final String expr;
     final String t = s.trim();
 
     if (t.startsWith("{") && t.endsWith("}")) {
@@ -181,7 +181,7 @@ public class BeanShellExpression extends Expression {
       expr = t;
     }
 
-    if (expr.trim().length() == 0) {
+    if (expr.isBlank()) {
       return new NullExpression();
     }
 
@@ -203,10 +203,5 @@ public class BeanShellExpression extends Expression {
     // Return a generalised Beanshell expression
     return new BeanShellExpression(expr);
 
-  }
-
-  @Override
-  public boolean equals(Object bse) {
-    return super.equals(bse);
   }
 }

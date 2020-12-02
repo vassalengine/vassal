@@ -33,10 +33,10 @@ public class Op {
 
   public static SourceOp load(String name) {
     if (!name.startsWith("/")) {
-      name = "images/" + name;
+      name = "images/" + name; //NON-NLS
     }
 
-    if (name.endsWith(".svg")) {
+    if (name.endsWith(".svg")) { //NON-NLS
       return new SourceOpSVGImpl(name);
     }
     else {
@@ -50,10 +50,10 @@ public class Op {
 
   public static SourceOp loadLarge(String name) {
     if (!name.startsWith("/")) {
-      name = "images/" + name;
+      name = "images/" + name; //NON-NLS
     }
 
-    if (name.endsWith(".svg")) {
+    if (name.endsWith(".svg")) { //NON-NLS
       return new SourceOpSVGImpl(name);
     }
     else {
@@ -135,7 +135,7 @@ public class Op {
       }
       else if (c instanceof ImageNotFoundException) {
         ErrorDialog.dataWarning(new BadDataReport(
-          "Image not found",
+          "Image not found", //NON-NLS
           ((ImageNotFoundException) c).getFile().getName(),
           null
         ));
@@ -143,7 +143,7 @@ public class Op {
       }
       else if (c instanceof UnrecognizedImageTypeException) {
         ErrorDialog.dataWarning(new BadDataReport(
-          "Unrecognized image type",
+          "Unrecognized image type", //NON-NLS
           ((UnrecognizedImageTypeException) c).getFile().getName(),
           c
         ));
@@ -151,7 +151,7 @@ public class Op {
       }
       else if (c instanceof ImageIOException) {
         ErrorDialog.dataWarning(new BadDataReport(
-          "Error reading image",
+          "Error reading image", //NON-NLS
           ((ImageIOException) c).getFile().getName(),
           c
         ));

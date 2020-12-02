@@ -20,7 +20,6 @@ package VASSAL.chat.ui;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
@@ -36,9 +35,8 @@ import VASSAL.i18n.Resources;
 public class KickAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private SimplePlayer kickee;
-  private LockableChatServerConnection client;
-
+  private final SimplePlayer kickee;
+  private final LockableChatServerConnection client;
 
   public KickAction(LockableChatServerConnection client, SimplePlayer target) {
     super(Resources.getString("Chat.kick")); //$NON-NLS-1$
@@ -56,15 +54,12 @@ public class KickAction extends AbstractAction {
   }
 
   public static PlayerActionFactory factory(final LockableChatServerConnection client) {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        final Room r = client.getRoom();
-        if (r instanceof LockableRoom && !((LockableRoom) r).isLocked()) {
-          return null;
-        }
-        return new KickAction(client, p);
+    return (SimplePlayer p, JTree tree) -> {
+      final Room r = client.getRoom();
+      if (r instanceof LockableRoom && !((LockableRoom) r).isLocked()) {
+        return null;
       }
+      return new KickAction(client, p);
     };
   }
 }

@@ -1,0 +1,22 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> <<GamePiece.adoc#top,Game Piece>># [.small]#> *Sub-Menu*#
+
+'''''
+
+=== Sub-Menu
+
+This trait allows you to cluster menu items associated with other traits into a sub-menu of the game piece's right-click context menu.
+Provide a name for the menu and the exact menu text of the menu items that should be moved to the sub-menu.
+Sub-menus may contain other sub-menus to any nesting level.
+
+*Menu name:*  The name of the sub menu that will appear in the right-click context menu.
+
+*Sub-commands:*  The exact menu text of each trait that will be collected into this sub-menu.
+
+_EXAMPLE:_  If a game piece has three separate layer traits with corresponding activate commands _Entrench_, _Fortify_, and _Blockade_, then those menu items can be gathered under a single sub-menu named _Defense_ by creating a Sub-Menu trait with menu name "Defense" and sub-commands "Entrench", "Fortify" and "Blockade".
+
+image:images/SubMenu.png[]
+
+*SEE ALSO:*  <<MenuSeparator.adoc#top,Menu Separator>>

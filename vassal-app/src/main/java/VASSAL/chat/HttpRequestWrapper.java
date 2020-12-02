@@ -36,7 +36,7 @@ import java.util.Properties;
  * Performs Get and Post operations to a given URL
  */
 public class HttpRequestWrapper {
-  private String baseURL;
+  private final String baseURL;
 
   public HttpRequestWrapper(String baseURL) {
     this.baseURL = baseURL;
@@ -69,9 +69,9 @@ public class HttpRequestWrapper {
     url = baseURL + url;
     if (props != null) {
       url += "?"; //$NON-NLS-1$
-      for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
-        String key = (String) e.nextElement();
-        String value = props.getProperty(key);
+      for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
+        final String key = (String) e.nextElement();
+        final String value = props.getProperty(key);
         url += key + "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (e.hasMoreElements()) {
           url += "&"; //$NON-NLS-1$
@@ -83,7 +83,7 @@ public class HttpRequestWrapper {
     conn.setUseCaches(false);
     try (InputStream in = conn.getInputStream()) {
       return readLines(in);
-    } 
+    }
   }
 
   public List<String> doPost(Properties p) throws IOException {
@@ -95,9 +95,9 @@ public class HttpRequestWrapper {
     url = baseURL + url;
     String content = ""; //$NON-NLS-1$
     if (props != null) {
-      for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
-        String key = (String) e.nextElement();
-        String value = props.getProperty(key);
+      for (final Enumeration<?> e = props.keys(); e.hasMoreElements();) {
+        final String key = (String) e.nextElement();
+        final String value = props.getProperty(key);
         content += key + "=" + URLEncoder.encode(value, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (e.hasMoreElements()) {
           content += "&"; //$NON-NLS-1$
@@ -118,6 +118,6 @@ public class HttpRequestWrapper {
 
     try (InputStream in = conn.getInputStream()) {
       return readLines(in);
-    } 
+    }
   }
 }

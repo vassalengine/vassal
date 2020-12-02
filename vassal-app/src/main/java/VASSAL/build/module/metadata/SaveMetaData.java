@@ -17,29 +17,43 @@
  */
 package VASSAL.build.module.metadata;
 
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.swing.JOptionPane;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.ZipWriter;
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
- * about the module this savegame was created with are saved in a
- * seperate moduledata file in the saved game zip.
+ * about the module this saved game was created with are saved in a
+ * separate module data file in the saved game zip.
  *
  * @author Brent Easton
  * @since 3.1.0
@@ -49,28 +63,78 @@ public class SaveMetaData extends AbstractMetaData {
   private static final Logger logger =
     LoggerFactory.getLogger(SaveMetaData.class);
 
-  public static final String ZIP_ENTRY_NAME = "savedata";
+  public static final String ZIP_ENTRY_NAME = "savedata"; //NON-NLS
   public static final String DATA_VERSION = "1";
-  public static final String PROMPT_LOG_COMMENT = "promptLogComment";
+  public static final String PROMPT_LOG_COMMENT = "promptLogComment"; //NON-NLS
 
   protected ModuleMetaData moduleData;
 
   public SaveMetaData() {
     super();
 
-    String comments = "";
     if ((Boolean)GameModule.getGameModule().getPrefs().getValue(PROMPT_LOG_COMMENT)) {
-      comments = (String) JOptionPane.showInputDialog(
-        GameModule.getGameModule().getPlayerWindow(),
-        Resources.getString("BasicLogger.enter_comments"),
-        Resources.getString("BasicLogger.log_file_comments"),
-        JOptionPane.PLAIN_MESSAGE,
-        null,
-        null,
-        ""
-      );
+      final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, GameModule.getGameModule().getPlayerWindow()), true);
+      d.setTitle(Resources.getString("BasicLogger.log_file_comments"));
 
-      setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+      final JLabel desc = new JLabel("<html><body><p style='width: 400px;'>" + Resources.getString("BasicLogger.enter_comments") + "</p></body></html>");  //NON-NLS
+
+      final JLabel commentLabel = new JLabel(Resources.getString("BasicLogger.log_file_comments"));
+      final JTextField commentField = new JTextField("", 32);
+      commentLabel.setLabelFor(commentField);
+
+      final JCheckBox stopBox = new JCheckBox(Resources.getString("Editor.SaveMetaData.dont_ask_again"), false);
+
+      final JButton okay = new JButton(Resources.getString("General.ok"));
+      okay.addActionListener(e -> {
+        if (stopBox.isSelected()) {
+          GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
+        }
+        final String comments = commentField.getText();
+        setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+        d.dispose();
+      });
+
+      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+      cancel.addActionListener(e1 -> {
+        if (stopBox.isSelected()) {
+          GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
+        }
+        d.dispose();
+      });
+
+      d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
+
+      // top row
+      d.add(desc, "align left, wrap"); //$NON-NLS-1$//
+
+      // comment row
+      d.add(commentLabel, "align right, gapx rel"); //$NON-NLS-1$//
+      d.add(commentField, "pushx, growx, wrap"); //$NON-NLS-1$//
+
+      // options row
+      d.add(stopBox, "align center, gapx unrel, span"); //$NON-NLS-1$//
+
+      // buttons row
+      d.add(okay, "tag ok, split"); //$NON-NLS-1$//
+      d.add(cancel, "tag cancel"); //$NON-NLS-1$//
+
+      d.getRootPane().setDefaultButton(okay); // Enter key activates search
+
+      // Esc Key cancels
+      final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+      final int w = JComponent.WHEN_IN_FOCUSED_WINDOW;
+      d.getRootPane().registerKeyboardAction(ee -> {
+        if (stopBox.isSelected()) {
+          GameModule.getGameModule().getPrefs().setValue(PROMPT_LOG_COMMENT, false);
+        }
+        d.dispose();
+      }, k, w);
+
+      commentField.requestFocus(); // Start w/ focus in search string field
+
+      d.pack();
+      d.setLocationRelativeTo(d.getParent());
+      d.setVisible(true);
     }
   }
 
@@ -115,17 +179,26 @@ public class SaveMetaData extends AbstractMetaData {
     copyModuleMetadata(archive);
   }
 
+  @Override
+  public void save(ZipWriter zw) throws IOException {
+    super.save(zw);
+
+    // Also save a copy of the current module metadata in the save file. Copy
+    // module metadata from the module archive as it will contain full i18n
+    // information.
+    copyModuleMetadata(zw);
+  }
+
   /**
    * Add Elements specific to SaveMetaData
    */
   @Override
   protected void addElements(Document doc, Element root) {
-    return;
   }
 
   /**
    * Read and validate a Saved Game/Log file.
-   * Check that it has a Zip Entry named savedgame.
+   * Check that it has a Zip Entry named saved game.
    * If it has a metadata file, read and parse it.
    *
    * Closes the {@link ZipFile}
@@ -157,7 +230,7 @@ public class SaveMetaData extends AbstractMetaData {
       // read the matching Module data
       moduleData = new ModuleMetaData(zip);
     }
-    catch (IOException | SAXException e) {
+    catch (final IOException | SAXException e) {
       logger.error("", e);
     }
   }

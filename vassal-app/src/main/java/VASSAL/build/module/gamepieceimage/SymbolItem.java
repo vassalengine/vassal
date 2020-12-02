@@ -26,10 +26,11 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.ArrayUtils;
 
 import VASSAL.build.AutoConfigurable;
-import VASSAL.configure.StringEnum;
 import VASSAL.tools.SequenceEncoder;
 
 public class SymbolItem extends Item {
@@ -65,10 +66,10 @@ public class SymbolItem extends Item {
   public String[] getAttributeDescriptions() {
     return ArrayUtils.insert(
       2, super.getAttributeDescriptions(),
-      "Symbol Set:  ",
-      "Width:  ",
-      "Height:  ",
-      "Line Width:  "
+      Resources.getString("Editor.SymbolItem.symbol_set"),
+      Resources.getString("Editor.width"),
+      Resources.getString("Editor.height"),
+      Resources.getString("Editor.SymbolItem.line_width")
     );
   }
 
@@ -76,13 +77,10 @@ public class SymbolItem extends Item {
   public Class<?>[] getAttributeTypes() {
     return ArrayUtils.insert(
       2, super.getAttributeTypes(),
-      new Class<?>[]{
-        SetConfig.class,
-        Integer.class,
-        Integer.class,
-        Double.class
-      }
-    );
+      SetConfig.class,
+      Integer.class,
+      Integer.class,
+      Double.class);
   }
 
   @Override
@@ -96,12 +94,19 @@ public class SymbolItem extends Item {
     );
   }
 
-  public static class SetConfig extends StringEnum {
+  public static class SetConfig extends TranslatableStringEnum {
     @Override
     public String[] getValidValues(AutoConfigurable target) {
       return Symbol.SYMBOL_SETS;
     }
+
+    @Override
+    public String[] getI18nKeys(AutoConfigurable target) {
+      return Symbol.SYMBOL_SETS_DESC;
+    }
   }
+
+
   @Override
   public void setAttribute(String key, Object o) {
     switch (key) {
@@ -151,15 +156,10 @@ public class SymbolItem extends Item {
     else if (LINE_WIDTH.equals(key)) {
       return String.valueOf(lineWidth);
     }
-    else
+    else {
       return super.getAttributeValueString(key);
-
+    }
   }
-
-//  public void addTo(Buildable parent) {
-//    super.addTo(parent);
-//
-//  }
 
   public int getWidth() {
     return width;
@@ -171,12 +171,11 @@ public class SymbolItem extends Item {
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
-
     SymbolItemInstance si = null;
     if (defn != null) {
       si = defn.getSymbolInstance(getConfigureName());
     }
-    Symbol symbol = null;
+    final Symbol symbol;
     if (si == null) {
       symbol = new Symbol(Symbol.NATO, Symbol.NatoUnitSymbolSet.INFANTRY, Symbol.NatoUnitSymbolSet.NONE, Symbol.NatoUnitSymbolSet.SZ_DIVISION);
       si = new SymbolItemInstance();
@@ -185,12 +184,12 @@ public class SymbolItem extends Item {
       symbol = new Symbol(Symbol.NATO, si.getSymbol1(), si.getSymbol2(), si.getSize());
     }
 
-    Point origin = layout.getPosition(this);
-    Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
+    final Point origin = layout.getPosition(this);
+    final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
     if (getRotation() != 0) {
-      Graphics2D g2d = (Graphics2D) g;
-      AffineTransform newXForm =
+      final Graphics2D g2d = (Graphics2D) g;
+      final AffineTransform newXForm =
           AffineTransform.getRotateInstance(Math.toRadians(getRotation()), layout.getPosition(this).x, layout.getPosition(this).y);
       g2d.transform(newXForm);
     }
@@ -212,15 +211,20 @@ public class SymbolItem extends Item {
   }
 
   @Override
+  public String getDisplayName() {
+    return Resources.getString("Editor.SymbolItem.component_type");
+  }
+
+  @Override
   public Dimension getSize() {
     return new Dimension(getWidth(), getHeight());
   }
 
   public static Item decode(GamePieceLayout l, String s) {
 
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
 
-    SymbolItem item = new SymbolItem(l);
+    final SymbolItem item = new SymbolItem(l);
 
     sd.nextToken();
     item.width = sd.nextInt(54);
@@ -233,16 +237,15 @@ public class SymbolItem extends Item {
   @Override
   public String encode() {
 
-    SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
 
     se1.append(width);
     se1.append(height);
     se1.append(lineWidth);
 
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
 
     return se2.getValue();
   }
-
 }

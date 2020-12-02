@@ -17,10 +17,18 @@
  */
 package VASSAL.build.module.map;
 
+
+
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
+import VASSAL.counters.CounterGlobalKeyCommand;
+import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -28,7 +36,9 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GlobalCommand;
@@ -40,8 +50,20 @@ import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This version of {@link MassKeyCommand} is added directly to a
- * {@link VASSAL.build.GameModule} and applies to all maps
+ * This version of {@link MassKeyCommand} is added to a {@link DrawPile} (which holds a {@link Deck})
+ * and applies to pieces/cards currently in the deck.
+ *
+ * The "Global Key Command" functionality, as the term is used in Vassal Modules, is spread out over several classes internally:
+ * {@link GlobalCommand} - primary functionality for sending commands to multiple pieces based on matching parameters
+ * {@link VASSAL.build.module.GlobalKeyCommand}         - Global Key Commands from a Module window
+ * {@link VASSAL.build.module.StartupGlobalKeyCommand}  - Global Key Commands from a Module "At Startup"
+ * {@link VASSAL.build.module.map.MassKeyCommand}       - Global Key Commands from a specific Map window
+ * {@link VASSAL.build.module.map.DeckGlobalKeyCommand} - Global Key Commands from a Deck
+ * {@link CounterGlobalKeyCommand}                      - Global Key Commands from a Game Piece
+ *
+ * Other important classes:
+ * {@link GlobalCommandTarget}           - "Fast Match" parameters
+ * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
 public class DeckGlobalKeyCommand extends MassKeyCommand {
 
@@ -63,6 +85,14 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
+  }
+
+  /**
+   * @return Our type of Global Key Command (overrides the one from Mass Key Command). Affects what configurer options are shown. In particular no "Fast Match" parameters are shown for Deck GKCs.
+   */
+  @Override
+  public GlobalCommandTarget.GKCtype getGKCtype() {
+    return GlobalCommandTarget.GKCtype.DECK;
   }
 
   @Override
@@ -116,31 +146,36 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
 
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder('|');
+    final SequenceEncoder se = new SequenceEncoder('|');
     se.append(getConfigureName())
       .append(getAttributeValueString(KEY_COMMAND))
       .append(getAttributeValueString(PROPERTIES_FILTER))
       .append(getAttributeValueString(DECK_COUNT))
       .append(getAttributeValueString(REPORT_FORMAT))
-      .append(getLocalizedConfigureName());
+      .append(getLocalizedConfigureName())
+      .append(getAttributeValueString(TARGET));
     return se.getValue();
   }
 
   public void decode(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
     setConfigureName(sd.nextToken(""));
     setAttribute(KEY_COMMAND, sd.nextNamedKeyStroke('A'));
     setAttribute(PROPERTIES_FILTER, sd.nextToken(null));
     setAttribute(DECK_COUNT, sd.nextInt(0));
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
+    setAttribute(TARGET, sd.nextToken(""));
   }
 
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      Resources.getString(Resources.NAME_LABEL),
-      Resources.getString("Editor.DeckGlobalKeyCommand.command"), //$NON-NLS-1$
+      Resources.getString(Resources.MENU_COMMAND_LABEL),
+      Resources.getString("Editor.GlobalKeyCommand.global_key_command"), //$NON-NLS-1$
+
+      Resources.getString("Editor.GlobalKeyCommand.pre_select"), // Fast Match parameters (not displayed)
+
       Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
       Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
@@ -150,8 +185,11 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   @Override
   public String[] getAttributeNames() {
     return new String[]{
-      NAME,
+      AbstractToolbarItem.NAME,
       KEY_COMMAND,
+
+      TARGET,             // Fast Match parameters (disabled for this variant)
+
       PROPERTIES_FILTER,
       DECK_COUNT,
       REPORT_FORMAT
@@ -164,17 +202,30 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     return new Class<?>[]{
       String.class,
       NamedKeyStroke.class,
+
+      GlobalCommandTarget.class,  // Fast Match parameters (disabled for this variant)
+
       PropertyExpression.class,
       DeckPolicyConfig2.class,
       ReportFormatConfig.class
     };
   }
 
+  @Override
+  public VisibilityCondition getAttributeVisibility(String key) {
+    if (key.equals(TARGET)) {
+      return () -> false; // No fast match for Deck Global Key Commands
+    }
+    return () -> true;
+  }
+
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {
     public DeckPolicyConfig2() {
       super();
-      typeConfig.setValidValues(new String[]{ALL, FIXED});
-      prompt.setText("Affects:  ");
+      typeConfig.setValidValues(new String[]{ALL, FIXED}, new String[] {
+        "Editor.GlobalKeyCommand.all_pieces",
+        "Editor.GlobalKeyCommand.fixed_number_of_pieces"
+      });
     }
   }
 
@@ -185,7 +236,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
 
     public Command apply(Deck d, PieceFilter filter) {
-      String reportText = reportFormat.getText(source);
+      final String reportText = reportFormat.getText(source);
       Command c;
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);
@@ -194,8 +245,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       else {
         c = new NullCommand();
       }
-      Visitor visitor = new Visitor(c, filter, keyStroke);
-      DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+
+      final Visitor visitor = new Visitor(c, filter, keyStroke);
+      final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       dispatcher.accept(d);
       visitor.getTracker().repaint();
@@ -205,4 +257,36 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
   }
 
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurables string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> l = new ArrayList<>(super.getExpressionList());
+    l.add(propertiesFilter.getExpression());
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    final List<String> l = new ArrayList<>(super.getFormattedStringList());
+    l.add(reportFormat.getFormat());
+    return l;
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    final List<NamedKeyStroke> l = new ArrayList<>(super.getNamedKeyStrokeList());
+    l.add(NamedHotKeyConfigurer.decode(getAttributeValueString(KEY_COMMAND)));
+    return l;
+  }
 }

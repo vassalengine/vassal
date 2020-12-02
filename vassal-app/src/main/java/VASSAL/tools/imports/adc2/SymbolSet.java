@@ -30,13 +30,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -164,12 +162,12 @@ public class SymbolSet extends Importer {
       // else
       maskIndex = header == OLD_SYMBOL_SET_FORMAT ? in.readUnsignedByte() : ADC2Utils.readBase250Word(in);
       for (int i = 0; i < 3; ++i) {
-        int x1 = in.readInt();
-        int y1 = in.readInt();
-        int x2 = in.readInt();
-        int y2 = in.readInt();
-        int width = x2 - x1 + 1;
-        int height = y2 - y1 + 1;
+        final int x1 = in.readInt();
+        final int y1 = in.readInt();
+        final int x2 = in.readInt();
+        final int y2 = in.readInt();
+        final int width = x2 - x1 + 1;
+        final int height = y2 - y1 + 1;
         if (readAllZoomLevels)
           mapBoardSymbolSize[i] = height; // or width--they should be square
         if (i == zoomLevel)
@@ -196,7 +194,7 @@ public class SymbolSet extends Importer {
      */
     boolean isTransparent() {
       if (transparent == null) {
-        BufferedImage image = getImage();
+        final BufferedImage image = getImage();
         transparent = true;
         search:
           for (int i = 0; i < image.getWidth(); ++i) {
@@ -343,12 +341,12 @@ public class SymbolSet extends Importer {
    * @param suffix   single character suffix
    */
   BufferedImage loadSymbolImage(String filename, char suffix, boolean queryIfNotFound) throws IOException {
-    String fn;
+    final String fn;
     if (suffix == '\0')
       fn = filename + (zoomLevel + 1) + ".bmp";
     else
       fn = filename + '-' + suffix + (zoomLevel + 1) + ".bmp";
-    File f = action.getCaseInsensitiveFile(new File(fn), null, queryIfNotFound, new BMPFileFilter());
+    final File f = action.getCaseInsensitiveFile(new File(fn), null, queryIfNotFound, new BMPFileFilter());
     if (f == null && queryIfNotFound) {
       throw new FileNotFoundException("Missing bitmap file: " + fn);
     }
@@ -372,8 +370,8 @@ public class SymbolSet extends Importer {
   Dimension readDimension(DataInputStream in) throws IOException {
     Dimension d = null;
     for (int i = 0; i < 3; ++i) {
-      int width = in.readInt();
-      int height = in.readInt();
+      final int width = in.readInt();
+      final int height = in.readInt();
       if (zoomLevel == i)
         d = new Dimension(width, height);
     }
@@ -409,8 +407,8 @@ public class SymbolSet extends Importer {
   public Dimension getMaxSize(Dimension max) {
     if (max == null)
       max = new Dimension(0, 0);
-    for (SymbolData piece : gamePieceData) {
-      BufferedImage im = piece.getImage();
+    for (final SymbolData piece : gamePieceData) {
+      final BufferedImage im = piece.getImage();
       if (im.getWidth() > max.width)
         max.width = im.getWidth();
       if (im.getHeight() > max.height)
@@ -430,7 +428,7 @@ public class SymbolSet extends Importer {
     final HashMap<Dimension, Integer> histogram =
       new HashMap<>();
 
-    for (SymbolData piece : gamePieceData) {
+    for (final SymbolData piece : gamePieceData) {
       final BufferedImage im = piece.getImage();
       final Dimension d = new Dimension(im.getWidth(), im.getHeight());
       final Integer i = histogram.get(d);
@@ -439,7 +437,7 @@ public class SymbolSet extends Importer {
 
     int max = 0;
     final Dimension maxDim = new Dimension(0, 0);
-    for (Map.Entry<Dimension, Integer> e : histogram.entrySet()) {
+    for (final Map.Entry<Dimension, Integer> e : histogram.entrySet()) {
       final Dimension d = e.getKey();
       final int n = e.getValue();
 
@@ -490,7 +488,7 @@ public class SymbolSet extends Importer {
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          InputStream bin = new BufferedInputStream(fin);
          DataInputStream in = new DataInputStream(bin)) {
       // if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
@@ -503,28 +501,28 @@ public class SymbolSet extends Importer {
       // comletely overridden by the map file
       /* int orientation = */ in.readByte(); // 1=vertical; 2=horizontal; 3=grid
 
-      int mapStyle = in.readByte(); // 0=grid; all other values=hex
+      final int mapStyle = in.readByte(); // 0=grid; all other values=hex
       symbolShape = mapStyle == 1 ? Shape.HEX : Shape.SQUARE;
 
-      int symSetVersion = in.readByte(); // 1=version 1
+      final int symSetVersion = in.readByte(); // 1=version 1
       ignoreMask = symSetVersion != 0;
       if (isCardSet)
         ignoreMask = true;
 
       // bitmap dimensions are completely ignored
-      int nMapBoardSymbols = ADC2Utils.readBase250Word(in);
+      final int nMapBoardSymbols = ADC2Utils.readBase250Word(in);
       mapBoardData = new SymbolData[nMapBoardSymbols];
       /* terrainBitmapDims = */ readDimension(in);
 
-      int nGamePieceSymbols = ADC2Utils.readBase250Word(in);
+      final int nGamePieceSymbols = ADC2Utils.readBase250Word(in);
       gamePieceData = new SymbolData[nGamePieceSymbols];
       /* unitBitmapDims = */ readDimension(in);
 
-      int nMasks = ADC2Utils.readBase250Word(in);
+      final int nMasks = ADC2Utils.readBase250Word(in);
       /* maskBitmapDims = */ readDimension(in);
       maskData = new SymbolData[nMasks];
 
-      String baseName = stripExtension(f.getPath());
+      final String baseName = stripExtension(f.getPath());
 
       // load images
       BufferedImage mapBoardImages = null;
@@ -543,7 +541,7 @@ public class SymbolSet extends Importer {
         }
       }
 
-      BufferedImage gamePieceImages;
+      final BufferedImage gamePieceImages;
       if (isCardSet) {
         gamePieceImages = loadSymbolImage(baseName);
       }
@@ -587,8 +585,7 @@ public class SymbolSet extends Importer {
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
 
-      try (Reader fr = new FileReader(sdx, StandardCharsets.US_ASCII);
-           BufferedReader input = new BufferedReader(fr)) {
+      try (BufferedReader input = Files.newBufferedReader(sdx.toPath(), StandardCharsets.US_ASCII)) {
 
         final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
 
@@ -599,7 +596,7 @@ public class SymbolSet extends Importer {
           }
           for (int i = 0; i < pieces.length; ++i) {
             line = input.readLine();
-            int idx = Integer.parseInt(line);
+            final int idx = Integer.parseInt(line);
             pieces[i] = gamePieceData[idx - 1];
           }
         }
@@ -625,7 +622,7 @@ public class SymbolSet extends Importer {
    */
   @Override
   public void writeToArchive() throws IOException {
-    for (SymbolData piece : gamePieceData)
+    for (final SymbolData piece : gamePieceData)
       piece.writeToArchive();
     // for testing purposes only
 //    for (SymbolData terrain : mapBoardData)
@@ -634,7 +631,7 @@ public class SymbolSet extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
+    try (InputStream fin = Files.newInputStream(f.toPath());
          DataInputStream in = new DataInputStream(fin)) {
       return in.readUnsignedByte() >= 0xFA;
     }

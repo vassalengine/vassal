@@ -21,11 +21,6 @@ import VASSAL.build.module.Plugin;
 import VASSAL.counters.CalculatedProperty;
 
 public class BshPlugin extends Plugin {
-
-  public BshPlugin() {
-    super();
-  }
-
   @Override
   public void init() {
     registerGamePiece(new CalculatedProperty());

@@ -19,9 +19,10 @@
 package VASSAL.tools.image;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A (partial) JPEG decoder.
@@ -76,7 +77,7 @@ class JPEGDecoder {
       throw new IOException("initial byte of chunk must be FF");
     }
 
-    byte[] data;
+    final byte[] data;
 
     if (type == TEM || (RST0 <= type && type <= EOI)) {
       // These chunks have no data
@@ -88,7 +89,7 @@ class JPEGDecoder {
       in.readFully(data);
     }
 
-    // NB: This will blow up after reaching an SOS, due to it being follwed
+    // NB: This will blow up after reaching an SOS, due to it being followed
     // by raw data instead of another chunk. If we want to find the next
     // chunk after an SOS, we have to scan for FF xx, where xx != 00.
 
@@ -106,18 +107,16 @@ class JPEGDecoder {
   }
 
   public static void main(String[] args) throws IOException {
-    try (InputStream fin = new FileInputStream(args[0]);
+    try (InputStream fin = Files.newInputStream(Path.of(args[0]));
          DataInputStream in = new DataInputStream(fin)) {
       if (!JPEGDecoder.decodeSignature(in)) {
-        System.out.println("Not a JPEG");
+        System.out.println("Not a JPEG"); //NON-NLS
       }
 
       Chunk ch;
       do {
         ch = JPEGDecoder.decodeChunk(in);
-        System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length);
-
-
+        System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length); //NON-NLS
       } while (ch.type != JPEGDecoder.EOI);
     }
   }

@@ -29,7 +29,7 @@ import VASSAL.build.module.Map;
  * added pieces belonged.
  */
 public class BoundsTracker {
-  private Set<Map> maps;
+  private final Set<Map> maps;
 
   public BoundsTracker() {
     maps = new HashSet<>();
@@ -46,7 +46,7 @@ public class BoundsTracker {
   }
 
   public void repaint() {
-    for (Map m : maps) {
+    for (final Map m : maps) {
       m.repaint();
     }
   }

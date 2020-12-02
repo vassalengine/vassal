@@ -35,7 +35,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
 
   @Override
   protected void addLockRoomAction(JPopupMenu popup, Room target) {
-    NodeClient c = getNodeClient();
+    final NodeClient c = getNodeClient();
     if (c != null) {
       popup.add(new LockRoomAction((NodeRoom) target, c));
     }
@@ -56,13 +56,13 @@ public class LockableNodeRoomControls extends LockableRoomControls {
   @Override
   protected void createRoom(String name) {
     Room existing = null;
-    Room[] rooms = client.getAvailableRooms();
+    final Room[] rooms = client.getAvailableRooms();
     for (int i = 0; existing == null && i < rooms.length; i++) {
       if (rooms[i].getName().equals(name)) {
         existing = rooms[i];
       }
     }
-    NodeClient nodeClient = getNodeClient();
+    final NodeClient nodeClient = getNodeClient();
     if (existing instanceof NodeRoom) {
       // Join existing room if it is not locked
       if (!((NodeRoom) existing).isLocked()) {
@@ -72,7 +72,7 @@ public class LockableNodeRoomControls extends LockableRoomControls {
     else if (existing == null
         && nodeClient != null) {
       // If running hierarchical server, create new room and set myself as the owner
-      NodeRoom room = new NodeRoom(name);
+      final NodeRoom room = new NodeRoom(name);
       room.setOwner(nodeClient.getMyInfo().getId());
       client.setRoom(room);
       nodeClient.sendRoomInfo(room);
@@ -86,8 +86,8 @@ public class LockableNodeRoomControls extends LockableRoomControls {
   class LockRoomAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
-    private NodeClient client;
-    private NodeRoom target;
+    private final NodeClient client;
+    private final NodeRoom target;
 
     public LockRoomAction(NodeRoom target, NodeClient client) {
       super(target.isLocked() ? Resources.getString("Chat.unlock_room")

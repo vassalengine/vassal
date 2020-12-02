@@ -24,6 +24,8 @@
 ;!define VERSION "3.1.0-svn3025"
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
+Unicode True
+
 !define SRCDIR "${TMPDIR}/VASSAL-${VERSION}"
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 !define VNAME "VASSAL (${VERSION})"

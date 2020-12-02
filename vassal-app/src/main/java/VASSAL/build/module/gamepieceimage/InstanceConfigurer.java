@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,8 +37,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
 import VASSAL.configure.Configurer;
@@ -82,8 +81,8 @@ public class InstanceConfigurer extends Configurer {
   /** @deprecated Use {@link #getValueList()} instead. */
   @SuppressWarnings("unchecked")
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  public ArrayList<ItemInstance> getValueArrayList() {
-    ProblemDialog.showDeprecated("2020-08-06");
+  public ArrayList<ItemInstance> getValueArrayList() { //NOPMD
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     return (ArrayList<ItemInstance>) getValue();
   }
 
@@ -118,16 +117,15 @@ public class InstanceConfigurer extends Configurer {
 
       symbolPanel = new SymbolPanel();
       panel.add(symbolPanel);
-
     }
 
     return panel;
   }
 
   public static String PropertiesToString(List<ItemInstance> props) {
-    String[] p = new String[props.size()];
+    final String[] p = new String[props.size()];
     int i = 0;
-    for (ItemInstance prop : props) {
+    for (final ItemInstance prop : props) {
       p[i++] = prop.encode();
     }
     return StringArrayConfigurer.arrayToString(p);
@@ -135,9 +133,9 @@ public class InstanceConfigurer extends Configurer {
 
   public static List<ItemInstance> StringToProperties(String s,
                                                       GamePieceImage defn) {
-    ArrayList<ItemInstance> props = new ArrayList<>();
-    String[] p = StringArrayConfigurer.stringToArray(s);
-    for (String item : p) {
+    final ArrayList<ItemInstance> props = new ArrayList<>();
+    final String[] p = StringArrayConfigurer.stringToArray(s);
+    for (final String item : p) {
       if (item.startsWith(SymbolItem.TYPE)) {
         props.add(new SymbolItemInstance(item, defn));
       }
@@ -188,8 +186,8 @@ public class InstanceConfigurer extends Configurer {
       mainPanel.setBorder(BorderFactory.createLineBorder(Color.black));
       mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-      Box box = Box.createHorizontalBox();
-      box.add(new JLabel("Items"));
+      final Box box = Box.createHorizontalBox();
+      box.add(new JLabel(Resources.getString("Editor.InstanceConfigurer.items")));
       mainPanel.add(box);
 
       model = new SymbolTableModel();
@@ -198,16 +196,16 @@ public class InstanceConfigurer extends Configurer {
       if (getValueList() != null && getValueList().size() > 0) {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
-      ListSelectionModel rowSM = table.getSelectionModel();
+      final ListSelectionModel rowSM = table.getSelectionModel();
       rowSM.addListSelectionListener(e -> {
         if (e.getValueIsAdjusting()) return;
 
-        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        final ListSelectionModel lsm = (ListSelectionModel) e.getSource();
         if (lsm.isSelectionEmpty()) {
           showItem(NO_CURRENT_ITEM);
         }
         else {
-          int selectedRow = lsm.getMinSelectionIndex();
+          final int selectedRow = lsm.getMinSelectionIndex();
           showItem(selectedRow);
         }
       });
@@ -233,7 +231,7 @@ public class InstanceConfigurer extends Configurer {
         currentDetail = NO_CURRENT_ITEM;
       }
 
-      int count = getValueList().size();
+      final int count = getValueList().size();
 
       if (itemNo != NO_CURRENT_ITEM && count > 0 && itemNo < count) {
         final ItemInstance instance = getValueList().get(itemNo);
@@ -252,10 +250,8 @@ public class InstanceConfigurer extends Configurer {
     }
 
     public void reshow() {
-
       repack();
       detailPanel.repaint();
-
     }
 
     public void refresh() {
@@ -265,7 +261,7 @@ public class InstanceConfigurer extends Configurer {
 
     protected void repack() {
 
-      Window w = SwingUtilities.getWindowAncestor(panel);
+      final Window w = SwingUtilities.getWindowAncestor(panel);
       if (w != null) {
         w.pack();
       }
@@ -274,7 +270,11 @@ public class InstanceConfigurer extends Configurer {
     class SymbolTableModel extends AbstractTableModel {
       private static final long serialVersionUID = 1L;
 
-      private final String[] columnNames = new String[] { "Name", "Type", "Position" };
+      private final String[] columnNames = {
+        Resources.getString("Editor.name_label"),
+        Resources.getString("Editor.InstanceConfigurer.type"),
+        Resources.getString("Editor.InstanceConfigurer.position")
+      };
 
       @Override
       public int getColumnCount() {
@@ -300,7 +300,7 @@ public class InstanceConfigurer extends Configurer {
           return getValueList().get(row).getItem().getDisplayName();
         }
         else if (col == LOC_COL) {
-          return getValueList().get(row).getLocation();
+          return getValueList().get(row).getDisplayLocation();
         }
         else
           return null;
@@ -318,15 +318,10 @@ public class InstanceConfigurer extends Configurer {
 
       @Override
       public void setValueAt(Object value, int row, int col) {
-        // TODO delete commented code or reactivate
-//        fireTableCellUpdated(row, col);
-//        visualizer.rebuild();
-      }
 
+      }
     }
   }
-
-
 
   public void rebuildViz() {
     if (visualizer != null) {
@@ -334,14 +329,14 @@ public class InstanceConfigurer extends Configurer {
     }
   }
 
+  @Override
   public void repack() {
     if (panel != null) {
-      Window w = SwingUtilities.getWindowAncestor(panel);
+      final Window w = SwingUtilities.getWindowAncestor(panel);
       if (w != null) {
         w.pack();
       }
     }
     rebuildViz();
   }
-
 }

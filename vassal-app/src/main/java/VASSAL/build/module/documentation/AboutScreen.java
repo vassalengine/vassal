@@ -22,6 +22,8 @@ import VASSAL.tools.image.ImageUtils;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.List;
+import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -33,7 +35,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.menu.MenuManager;
@@ -74,7 +75,7 @@ public class AboutScreen extends AbstractConfigurable {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public AboutScreen(Image i) {
     this();
-    ProblemDialog.showDeprecated("2020-08-06");
+    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
     this.op = Op.load(ImageUtils.toBufferedImage(i));
   }
 
@@ -84,23 +85,26 @@ public class AboutScreen extends AbstractConfigurable {
     final GameModule g = GameModule.getGameModule();
     if (g == null) return;
 
-    final StringBuilder sb = new StringBuilder("<html><center>");
+    final StringBuilder sb = new StringBuilder("<html><center>"); //NON-NLS
 
     sb.append(
       Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         g.getLocalizedGameName(), g.getGameVersion()));
 
-    for (ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
-      sb.append("<br/>").append(
+    for (final ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
+      sb.append("<br/>").append(//NON-NLS
         Resources.getString("AboutScreen.extension_version",  //$NON-NLS-1$
           ext.getName(), ext.getVersion()));
     }
 
-    sb.append("<br/>").append(
-      Resources.getString("AboutScreen.vassal_version",  //$NON-NLS-1$
-        Info.getVersion()));
-
-    sb.append("</center></html>");
+    sb.append("<br/>") //NON-NLS
+      .append(
+        Resources.getString(
+          "AboutScreen.vassal_version",  //$NON-NLS-1$
+          Info.getVersion()
+        )
+      )
+      .append("</center></html>"); //NON-NLS
 
     final AboutWindow w =
       new AboutWindow(g.getPlayerWindow(), op.getImage(), sb.toString());
@@ -109,15 +113,15 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "About Screen";
+    return Resources.getString("Editor.AboutScreen.component_type");
   }
 
   /**
    * The attributes of an AboutScreen are:
    *
    * <code>TITLE</code> the text of the menu entry in the Help menu
-   * <code>FILE</code> the name of an image file in the {@link
-   * DataArchive}.  The image is displayed when the menu item is
+   * <code>FILE</code> the name of an image file in the @link
+   * DataArchive.  The image is displayed when the menu item is
    * selected
    */
   @Override
@@ -131,8 +135,8 @@ public class AboutScreen extends AbstractConfigurable {
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Menu Entry:  ", //$NON-NLS-1$
-      "Image:  " //$NON-NLS-1$
+      Resources.getString("Editor.menu_command"),
+      Resources.getString("Editor.AboutScreen.image")
     };
   }
 
@@ -218,6 +222,20 @@ public class AboutScreen extends AbstractConfigurable {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
+    return HelpFile.getReferenceManualPage("HelpMenu.html", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of any Message Format strings referenced in the Configurable, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return List.of(title);
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (fileName != null) s.add(fileName);
   }
 }
