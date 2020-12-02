@@ -437,9 +437,7 @@ public class PolygonEditor extends JPanel {
         deleteVertex(polygon, selected);
         selected = -1;
 
-        // It's not possible to add a point when there's no segment to click
-        // so remove the whole polygon
-        if (polygon.npoints < 2) {
+        if (polygon.npoints == 0) {
           polygon = null;
 
           remove();
