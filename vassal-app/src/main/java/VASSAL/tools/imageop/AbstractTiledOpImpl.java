@@ -53,14 +53,18 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    * {@link #getNumYTiles}, and all other tile methods.
    */
   protected void fixTileSize() {
-    if (size == null) fixSize();
+    synchronized (this) {
+      if (size == null) fixSize();
 
-    tileSize = DEFAULT_TILE_SIZE;
-
-    numXTiles = (int) Math.ceil((double)size.width / tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height / tileSize.height);
-
-    tiles = new ImageOp[numXTiles * numYTiles];
+      if (tileSize == null) {
+        // We do not touch tileSize until last here, as the check for
+        // whether fileTileSize() will run is on the nullity of tileSize.
+        numXTiles = (int) Math.ceil((double)size.width / DEFAULT_TILE_SIZE.width);
+        numYTiles = (int) Math.ceil((double)size.height / DEFAULT_TILE_SIZE.height);
+        tiles = new ImageOp[numXTiles * numYTiles];
+        tileSize = DEFAULT_TILE_SIZE;
+      }
+    }
   }
 
   /** {@inheritDoc} */

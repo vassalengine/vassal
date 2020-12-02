@@ -1,5 +1,7 @@
 3.5.0-beta2 - ???
 
+* 13781: Bad parameter in Editor.UniqueIdManager.more_than_one message
+* 13755: Chess clock help file is misnamed
 * 13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out
 * 13760: Upgrade bundled Java to 15.0.1+9
 
@@ -56,18 +58,18 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
-3.4.11 - ???
+3.4.11 - 29 November 2020
 
 * 13728: Translucent solid-colored backgrounds of boards are incorrectly
     drawn opaque
+* 13679: IndexOutOfBoundsException in AbstractTiledOpImpl.getTile() via GridOp
+* 13677: NullPointerException in AbstractTiledOpImpl.getTileOp() via GridOp
 
 3.4.10 - 23 November 2020
 
 * 13720: Tiles in last row, column of boards with colored backgrounds and no
     image render too large
 * 13688: Reversed boards with grids fail to display
-* 13679: IndexOutOfBoundsException in AbstractTiledOpImpl.getTile() via GridOp
-* 13677: NullPointerException in AbstractTiledOpImpl.getTileOp() via GridOp
 
 3.4.9 - 20 November 2020
 

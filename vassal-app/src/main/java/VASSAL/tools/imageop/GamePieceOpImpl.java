@@ -18,6 +18,7 @@
 
 package VASSAL.tools.imageop;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -100,9 +101,11 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   /** {@inheritDoc} */
   @Override
   protected void fixSize() {
-    size = piece.boundingBox().getSize();
-    if (size.width < 1) size.width = 1;
-    if (size.height < 1) size.height = 1;
+    final Dimension s = piece.boundingBox().getSize();
+    if (s.width < 1) s.width = 1;
+    if (s.height < 1) s.height = 1;
+    // assinging to size is atomic
+    size = s;
   }
 
   /**
