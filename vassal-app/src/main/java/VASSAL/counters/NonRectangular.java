@@ -50,7 +50,6 @@ import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -161,7 +160,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           }
         }
         sh = new Area(path);
-        cache.put(spec, new ImmutablePair<>(imageName, sh));
+        cache.put(spec, Pair.of(imageName, sh));
       }
     }
 
