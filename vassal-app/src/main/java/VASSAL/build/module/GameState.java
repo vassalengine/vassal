@@ -345,11 +345,7 @@ public class GameState implements CommandEncoder {
     closeGame.setEnabled(gameStarting);
 
     if (gameStarting) {
-      //loadGame.putValue(Action.NAME, Resources.getString("GameState.load_continuation"));
       g.getWizardSupport().showGameSetupWizard();
-    }
-    else {
-      //loadGame.putValue(Action.NAME, Resources.getString("GameState.load_game"));
     }
 
     loadGameOld.setEnabled(gameStarting);
