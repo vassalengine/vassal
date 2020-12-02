@@ -62,6 +62,7 @@ public class ImageSelector extends Configurer implements ItemListener {
   private JComboBox<String> select;
   private Icon noImage;
   private JLabel imageViewer;
+  private String imageName;
   private final JLabel imageScale = new JLabel();
   private final OpIcon icon = new OpIcon();
   private final int maxWidth;
@@ -91,6 +92,10 @@ public class ImageSelector extends Configurer implements ItemListener {
     this(null, "", val);
   }
 
+  public ImageSelector() {
+    this (null, "", "", DEFAULT_SIZE, DEFAULT_SIZE);
+  }
+
   @Override
   public String getValueString() {
     return (String) value;
@@ -100,10 +105,12 @@ public class ImageSelector extends Configurer implements ItemListener {
   public void setValue(String s) {
 
     if (s == null || s.isBlank() || s.equals(NO_IMAGE)) {
+      setImageName("");
       imageViewer.setIcon(getNoImageIcon());
       imageViewer.setPreferredSize(new Dimension(DEFAULT_SIZE, DEFAULT_SIZE));
     }
     else {
+      setImageName(s);
       icon.setOp(Op.load(s));
 
       // Is the image too large?
@@ -204,5 +211,13 @@ public class ImageSelector extends Configurer implements ItemListener {
       ));
     }
     return noImage;
+  }
+
+  public String getImageName() {
+    return imageName;
+  }
+
+  private void setImageName(String imageName) {
+    this.imageName = imageName;
   }
 }
