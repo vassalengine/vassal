@@ -17,9 +17,7 @@
 
 package VASSAL.counters;
 
-import VASSAL.tools.NamedKeyStroke;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.KeyStroke;
 import org.junit.Test;
 
 public class NonRectangularTest extends DecoratorTest {
@@ -34,7 +32,7 @@ public class NonRectangularTest extends DecoratorTest {
 
     // Set a Command and Named KeyStroke
     trait = new NonRectangular();
-    trait.mySetType("nonRect;m,-3,-9,l,-3,-8,l,-4,-8,l,-4,-7,l,-5,-7,l,-5,-6,l,-6,-6,l,-6,-5,l,-7,-5,l,-7,-4,l,-8,-4,l,-8,-3,l,-8,-2,l,-8,-1,l,-8,0,l,-8,1,l,-8,2,l,-9,2,l,-9,3,l,-9,4,l,-9,5,l,-8,5,l,-8,6,l,-7,6,l,-7,7,l,-5,7,l,-5,8,l,-5,9,l,-2,9,l,-2,10,l,3,10,l,3,9,l,4,9,l,4,8,l,5,8,l,5,7,l,6,7,l,6,6,l,7,6,l,7,5,l,8,5,l,8,4,l,9,4,l,9,3,l,9,2,l,9,1,l,9,0,l,9,-1,l,9,-2,l,9,-3,l,9,-4,l,9,-5,l,7,-5,l,7,-6,l,6,-6,l,6,-7,l,4,-7,l,4,-8,l,2,-8,l,2,-9,c"); // NON-NLS
+    trait.mySetType("nonRect;ntest.png,m,-3,-9,l,-3,-8,l,-4,-8,l,-4,-7,l,-5,-7,l,-5,-6,l,-6,-6,l,-6,-5,l,-7,-5,l,-7,-4,l,-8,-4,l,-8,-3,l,-8,-2,l,-8,-1,l,-8,0,l,-8,1,l,-8,2,l,-9,2,l,-9,3,l,-9,4,l,-9,5,l,-8,5,l,-8,6,l,-7,6,l,-7,7,l,-5,7,l,-5,8,l,-5,9,l,-2,9,l,-2,10,l,3,10,l,3,9,l,4,9,l,4,8,l,5,8,l,5,7,l,6,7,l,6,6,l,7,6,l,7,5,l,8,5,l,8,4,l,9,4,l,9,3,l,9,2,l,9,1,l,9,0,l,9,-1,l,9,-2,l,9,-3,l,9,-4,l,9,-5,l,7,-5,l,7,-6,l,6,-6,l,6,-7,l,4,-7,l,4,-8,l,2,-8,l,2,-9,c"); // NON-NLS
     serializeTest("Complex trait", trait); // NON-NLS
 
   }

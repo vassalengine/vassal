@@ -17,6 +17,13 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.ImageSelector;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.imageop.Op;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -26,12 +33,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Window;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -39,14 +47,6 @@ import java.util.StringTokenizer;
 
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.Op;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -58,9 +58,11 @@ import net.miginfocom.swing.MigLayout;
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;"; // NON-NLS
   private static final Map<String, Shape> shapeCache = new HashMap<>();
+  private static final Map<String, String> nameCache = new HashMap<>();
 
   private String type;
   private Shape shape;
+  private String imageName = "";
 
   public NonRectangular() {
     this(ID, null);
@@ -142,27 +144,39 @@ public class NonRectangular extends Decorator implements EditablePiece {
             break;
           case 'm':
             path.moveTo(Integer.parseInt(st.nextToken()),
-                        Integer.parseInt(st.nextToken()));
+              Integer.parseInt(st.nextToken()));
             break;
           case 'l':
             path.lineTo(Integer.parseInt(st.nextToken()),
-                        Integer.parseInt(st.nextToken()));
+              Integer.parseInt(st.nextToken()));
+            break;
+          // Note the image name is stored as a single token so older clients will ignore it.
+          case 'n':
+            imageName = token.length() > 1 ? token.substring(1) : "";
             break;
           }
         }
         sh = new Area(path);
         shapeCache.put(spec, sh);
+        nameCache.put(spec, imageName);
       }
+    }
+    else {
+      imageName = nameCache.get(spec);
     }
 
     return sh;
   }
 
   @Override
+  public void addLocalImageNames(Collection<String> s) {
+    Collections.addAll(s, imageName);
+  }
+
+  @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("NonRectangular.html"); // NON-NLS
   }
-
 
   @Override
   public boolean testEquals(Object o) {
@@ -179,6 +193,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
   private class Ed implements PieceEditor {
     private Shape shape;
     private final JPanel controls;
+    private final ImageSelector picker;
 
     private Ed(NonRectangular p) {
       shape = p.shape;
@@ -210,19 +225,22 @@ public class NonRectangular extends Decorator implements EditablePiece {
       };
       controls.add(shapePanel, "grow"); // NON-NLS
 
-      final ImagePicker picker = new ImagePicker() {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void setImageName(String name) {
-          super.setImageName(name);
-
-          final Image img = Op.load(name).getImage();
-          if (img != null) setShapeFromImage(img);
+      picker = new ImageSelector(p.imageName);
+      picker.addPropertyChangeListener(e -> {
+        final String imageName = picker.getImageName();
+        if (imageName == null || imageName.isEmpty()) {
+          shape = null;
+          controls.revalidate();
+          repack(controls);
         }
-      };
-      picker.setBorder(new TitledBorder(Resources.getString("Editor.NonRectangular.use_image_shape")));
-      controls.add(picker);
+        else {
+          final Image img = Op.load(picker.getImageName()).getImage();
+          if (img != null)
+            setShapeFromImage(img);
+        }
+      });
+
+      controls.add(picker.getControls());
     }
 
     public void setShapeFromImage(Image im) {
@@ -259,8 +277,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
       shape = AffineTransform.getTranslateInstance(-w / 2, -h / 2)
                              .createTransformedShape(outline);
 
-      final  Window wd = SwingUtilities.getWindowAncestor(controls);
-      if (wd != null) wd.pack();
+      repack(controls);
 
       controls.getTopLevelAncestor().setCursor(null);
     }
@@ -276,6 +293,11 @@ public class NonRectangular extends Decorator implements EditablePiece {
       if (shape != null) {
         final PathIterator it = shape.getPathIterator(new AffineTransform());
         final float[] pts = new float[6];
+
+        buffer.append("n"); // NON-NLS Store the imageName in a form that will be ignored by older clients.
+        buffer.append(picker.getImageName());
+        buffer.append(",");
+
         while (!it.isDone()) {
           switch (it.currentSegment(pts)) {
           case PathIterator.SEG_MOVETO:
