@@ -171,4 +171,8 @@ public class DynamicKeyCommandConfigurer extends Configurer {
   public Component getValuesControls() {
     return propChangeConfig.getValuesControls();
   }
+
+  public boolean isEnumType() {
+    return propChangeConfig.isEnumType();
+  }
 }

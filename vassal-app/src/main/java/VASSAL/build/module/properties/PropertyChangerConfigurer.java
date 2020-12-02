@@ -97,8 +97,11 @@ public class PropertyChangerConfigurer extends Configurer {
   public Component getControls() {
     if (controls == null) {
       final PropertyChangeListener l = evt -> {
+        // Do not remove either of these calls to updateValue(). Both are required for correct operation
+        // and screen repacking.
         updateValue();
         updateControls();
+        updateValue();
       };
       controls = new JPanel();
       controls.setLayout(new MigLayout("ins 0,hidemode 3", "[]rel[][]rel[fill,grow][fill,grow]")); // NON-NLS
@@ -122,16 +125,19 @@ public class PropertyChangerConfigurer extends Configurer {
 
       valueLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.new_value"));
       valueConfig = new FormattedExpressionConfigurer("", constraints);
+      valueConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.plain_hint"));
       valueLabel.setLabelFor(valueConfig.getControls());
       valueConfig.addPropertyChangeListener(l);
 
       promptLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.prompt"));
       promptConfig = new StringConfigurer("");
+      promptConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.prompt_hint"));
       promptLabel.setLabelFor(promptConfig.getControls());
       promptConfig.addPropertyChangeListener(l);
 
       incrLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.increment_by"));
       incrConfig = new FormattedExpressionConfigurer("", constraints);
+      incrConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.increment_hint"));
       incrLabel.setLabelFor(incrConfig.getControls());
       incrConfig.addPropertyChangeListener(l);
 
@@ -271,6 +277,10 @@ public class PropertyChangerConfigurer extends Configurer {
       }
     }
     return se.getValue();
+  }
+
+  public boolean isEnumType() {
+    return typeToCode.get(getPropertyChanger().getClass()) == ENUM_CODE;
   }
 
   public PropertyChanger getPropertyChanger() {

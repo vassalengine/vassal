@@ -21,12 +21,10 @@ import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.TraitLayout;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
-
-import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
+
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   // The number of Components added to the header of the Controls panel
   private static final int HEADER_COMPONENT_COUNT = 4;
 
-  private static final int ICON_SIZE = IconFamily.XSMALL;
+  private static final int CONTROLLER_ICON_SIZE = IconFamily.XSMALL;
 
   private JPanel controls;
   private JPanel configControls;
@@ -139,7 +137,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
       configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow,fill]rel[grow,fill]rel[]rel[grow,fill]rel[]", "[center]")); // NON-NLS
 
-      initialAddButton = new NoInsetButton("add", IconFamily.SMALL); // NON-NLS
+      initialAddButton = new NoInsetButton("add", CONTROLLER_ICON_SIZE, "Editor.ConfigurableListEntryController.add_first_tip"); // NON-NLS
       initialAddButton.addActionListener(e -> {
         addEntry();
       });
@@ -211,7 +209,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     configControls.add(c.getCommandControls(), "growx"); // NON-NLS
     configControls.add(c.getKeyControls(), "growx"); // NON-NLS
     configControls.add(c.getTypeControls(), "growx 0"); // NON-NLS
-    configControls.add(c.getChangerControls(), "growx"); // NON-NLS
+    configControls.add(entry.getPromptPanel(), "growx"); // NON-NLS
     configControls.add(entry.getButtons(), "growx 0,wrap"); // NON-NLS
     configControls.add(c.getValuesControls(), "span 4,grow,wrap"); // NON-NLS
 
@@ -228,7 +226,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     configControls.add(c.getCommandControls(), "growx", controlPos++); // NON-NLS
     configControls.add(c.getKeyControls(), "growx", controlPos++); // NON-NLS
     configControls.add(c.getTypeControls(), "growx 0", controlPos++); // NON-NLS
-    configControls.add(c.getChangerControls(), "growx", controlPos++); // NON-NLS
+    configControls.add(entry.getPromptPanel(), "growx", controlPos++); // NON-NLS
     configControls.add(entry.getButtons(), "growx 0,wrap", controlPos++); // NON-NLS
     configControls.add(c.getValuesControls(), "span 4,grow,wrap", controlPos); // NON-NLS
 
@@ -244,7 +242,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     configControls.remove(c.getKeyControls());
     configControls.remove(c.getTypeControls());
     configControls.remove(c.getChangerControls());
-    configControls.remove(entry.getButtons());
+    configControls.remove(entry.getPromptPanel());
     configControls.remove(c.getValuesControls());
 
   }
@@ -267,6 +265,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     for (int i = 0; i < entries.size(); i++) {
       entries.get(i).setTop(i == 0);
       entries.get(i).setBottom(i >= (entries.size() - 1));
+      entries.get(i).updateVisibility();
     }
 
     configControls.revalidate();
@@ -421,45 +420,47 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     else return valueString.equals(otherValueString);
   }
 
-  private static class DKCEntry {
+  private static class DKCEntry implements ConfigurableListEntry {
 
     // The number of Components added to the Controls panel for each Entry
     private static final int COMPONENT_COUNT = 6;
 
     private final DynamicKeyCommandConfigurer configurer;
     private DynamicKeyCommandListConfigurer listConfig;
-    private final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "[]rel[]rel[]rel[]")); // NON-NLS
-    private final JButton upButton = new NoInsetButton("go-up", ICON_SIZE); // NON-NLS
-    private final JButton dnButton = new NoInsetButton("go-down", ICON_SIZE); // NON-NLS
+    private final ConfigurableListEntryController controller;
+    private final NoInsetButton showHideValuesButton;
+    private final JPanel promptPanel;
 
     public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value) {
       setListConfig(listConfig);
       configurer = new DynamicKeyCommandConfigurer(listConfig.getTarget());
 
       configurer.setValue(value);
+      configurer.getValuesControls().setVisible(false);
       configurer.addPropertyChangeListener(listConfig);
+      configurer.addPropertyChangeListener(e -> updateVisibility());
 
-      upButton.addActionListener(e -> getListConfig().moveUp(this));
-      buttonPanel.add(upButton);
+      controller = new ConfigurableListEntryController(this, CONTROLLER_ICON_SIZE);
 
-      dnButton.addActionListener(e -> getListConfig().moveDown(this));
-      buttonPanel.add(dnButton);
+      showHideValuesButton = new NoInsetButton("edit-find", CONTROLLER_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
+      showHideValuesButton.setVisible(false);
+      showHideValuesButton.addActionListener(e -> showHideValues());
 
-      final JButton addButton = new NoInsetButton("add", ICON_SIZE); // NON-NLS
-      addButton.addActionListener(e -> getListConfig().addEntry(this));
-      buttonPanel.add(addButton);
-
-      final JButton delButton = new NoInsetButton("remove", ICON_SIZE); // NON-NLS
-      delButton.addActionListener(e -> getListConfig().removeEntry(this));
-      buttonPanel.add(delButton);
+      promptPanel = new JPanel(new MigLayout("ins 0,hidemode 3", "[grow,fill]2[]")); // NON-NLS
+      promptPanel.add(configurer.getChangerControls(), "growx,aligny center"); // NON-NLS
+      promptPanel.add(showHideValuesButton, "aligny center"); // NON-NLS
     }
 
     public DKCEntry(DynamicKeyCommandListConfigurer listConfig) {
       this(listConfig, null);
     }
 
+    public JPanel getPromptPanel() {
+      return promptPanel;
+    }
+
     public JPanel getButtons() {
-      return buttonPanel;
+      return controller;
     }
 
     public DynamicKeyCommandConfigurer getConfigurer() {
@@ -475,11 +476,11 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     }
 
     public void setTop(boolean isTop) {
-      upButton.setEnabled(!isTop);
+      controller.setCanMoveUp(!isTop);
     }
 
     public void setBottom(boolean isBottom) {
-      dnButton.setEnabled(!isBottom);
+      controller.setCanMoveDown(!isBottom);
     }
 
     public void setPropertyChangeListener(PropertyChangeListener l) {
@@ -498,24 +499,61 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       configurer.getChangerControls().setPreferredSize(e.getConfigurer().getChangerControls().getPreferredSize());
       configurer.getValuesControls().setPreferredSize(e.getConfigurer().getValuesControls().getPreferredSize());
     }
-  }
 
-  private static class NoInsetButton extends JButton {
-    private static final long serialVersionUID = 1L;
-    final Insets NO_INSETS = new Insets(0, 0, 0, 0);
-    final Font ITALIC = new Font(Font.DIALOG, Font.ITALIC, 12);
-
-    public NoInsetButton(String icon, int size) {
-      this(icon, size, null);
+    private void showHideValues() {
+      configurer.getValuesControls().setVisible(!configurer.getValuesControls().isVisible());
+      getListConfig().repack();
     }
 
-    public NoInsetButton(String icon, int size, String toolTipKey) {
-      super(IconFactory.getIcon(icon, size));
-      setFont(ITALIC);
-      setMargin(NO_INSETS);
-      if (toolTipKey != null && !toolTipKey.isEmpty()) {
-        setToolTipText(Resources.getString(toolTipKey));
+    public JButton getShowHideValuesButton() {
+      return showHideValuesButton;
+    }
+
+    public void updateVisibility() {
+      showHideValuesButton.setVisible(configurer.isEnumType());
+      if (!configurer.isEnumType()) {
+        configurer.getValuesControls().setVisible(false);
       }
+      getListConfig().repack();
+    }
+
+    // ConfigurableListEntry implementation
+    @Override
+    public void moveUp() {
+      getListConfig().moveUp(this);
+    }
+
+    @Override
+    public void moveDown() {
+      getListConfig().moveDown(this);
+    }
+
+    // Not implemented by this class
+    @Override
+    public void moveTop() {
+
+    }
+
+    // Not implemented by this class
+    @Override
+    public void moveBottom() {
+
+    }
+
+    @Override
+    public void addEntry() {
+      getListConfig().addEntry(this);
+    }
+
+    @Override
+    public void deleteEntry() {
+      getListConfig().removeEntry(this);
+    }
+
+    // Not implemented by this class
+    @Override
+    public void edit() {
+
     }
   }
 }
