@@ -50,4 +50,20 @@
         <to>VASSAL.configure.DynamicKeyCommandListConfigurer</to>
         <justification>Required to cleanup dialog. Subclassing highly unlikely.</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/counters/Labeler$HTMLLabelOp</className>
+        <differenceType>7006</differenceType>
+        <method>javax.swing.JLabel buildDimensions()</method>
+        <to>java.awt.Dimension</to>
+        <justification>Clean up.</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/Labeler$LabelOp</className>
+        <differenceType>7006</differenceType>
+        <method>javax.swing.JLabel buildDimensions()</method>
+        <to>java.awt.Dimension</to>
+        <justification>Clean up.</justification>
+    </difference>
 </differences>
