@@ -1,5 +1,6 @@
 3.5.0-beta2 - ???
 
+* 13786: NPE when Enter hit in Editor component tree with no node selected
 * 13783: Non-rectangular trait should remember name of image that created it
 * 13781: Bad parameter in Editor.UniqueIdManager.more_than_one message
 * 13755: Chess clock help file is misnamed
