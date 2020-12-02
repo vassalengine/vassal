@@ -50,6 +50,9 @@ import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * A trait for assigning an arbitrary shape to a {@link GamePiece}
  *
@@ -57,8 +60,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;"; // NON-NLS
-  private static final Map<String, Shape> shapeCache = new HashMap<>();
-  private static final Map<String, String> nameCache = new HashMap<>();
+  private static final Map<String, Pair<String, Shape>> cache = new HashMap<>();
 
   private String type;
   private Shape shape;
@@ -130,7 +132,9 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   private Shape buildPath(String spec) {
-    Shape sh = shapeCache.get(spec);
+    final Pair<String, Shape> p = cache.get(spec);
+    Shape sh = p == null ?  null : p.getRight();
+    imageName = p == null ? "" : p.getLeft();
 
     if (sh == null) {
       final GeneralPath path = new GeneralPath();
@@ -157,12 +161,8 @@ public class NonRectangular extends Decorator implements EditablePiece {
           }
         }
         sh = new Area(path);
-        shapeCache.put(spec, sh);
-        nameCache.put(spec, imageName);
+        cache.put(spec, new ImmutablePair<>(imageName, sh));
       }
-    }
-    else {
-      imageName = nameCache.get(spec);
     }
 
     return sh;
@@ -273,8 +273,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
         }
       }
 
-// FIXME: should be 2.0 to avoid integer arithemtic?
-      shape = AffineTransform.getTranslateInstance(-w / 2, -h / 2)
+      shape = AffineTransform.getTranslateInstance(-w / 2.0, -h / 2.0)
                              .createTransformedShape(outline);
 
       repack(controls);
