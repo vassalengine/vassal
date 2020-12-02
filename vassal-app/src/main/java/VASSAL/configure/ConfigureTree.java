@@ -279,6 +279,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       public void actionPerformed(ActionEvent ae) {
         // Do something meaningful when Enter key pressed
         final TreePath path = getSelectionPath();
+        if (path == null) { //BR// Apparently this can happen.
+          return;
+        }
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
         if (isExpanded(path) || (node.getChildCount() == 0)) {
           final Configurable target = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
