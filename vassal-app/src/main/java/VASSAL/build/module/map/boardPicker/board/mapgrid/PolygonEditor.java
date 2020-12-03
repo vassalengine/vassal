@@ -440,7 +440,14 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
+      if (polygon != null && polygon.npoints == 4 &&
+          SwingUtils.isMainMouseButtonDown(e)) {
+        if ((Math.abs(polygon.xpoints[0] - polygon.xpoints[2]) +
+             Math.abs(polygon.ypoints[0] - polygon.ypoints[2])) < 20) {
+          polygon.xpoints[1] = polygon.xpoints[2] = polygon.xpoints[0] + 25;
+          polygon.ypoints[2] = polygon.ypoints[3] = polygon.ypoints[0] + 25;
+        }
+
         remove();
         selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
         setupForEdit();
