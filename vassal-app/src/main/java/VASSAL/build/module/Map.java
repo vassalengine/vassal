@@ -1892,7 +1892,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
   public boolean isPiecesVisible() {
-    return !hideCounters && pieceOpacity != 0;
+    return !hideCounters && pieceOpacity != 0.0;
   }
 
   public float getPieceOpacity() {
