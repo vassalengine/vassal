@@ -38,7 +38,7 @@ public class HideableTest extends DecoratorTest {
     trait.command = "testCommand"; // NON-NLS
     trait.hideKey = new NamedKeyStroke("xyzzy"); // NON-NLS
     trait.bgColor = Color.blue;
-    trait.transparency = 42;
+    trait.transparency = 0.42f;
     trait.access = new PlayerAccess();
 
     trait.hiddenBy = "me";
@@ -49,7 +49,7 @@ public class HideableTest extends DecoratorTest {
     trait.command = "testCommand"; // NON-NLS
     trait.hideKey = new NamedKeyStroke("xyzzy"); // NON-NLS
     trait.bgColor = Color.blue;
-    trait.transparency = 42;
+    trait.transparency = 0.42f;
     trait.access = new SideAccess();
 
     trait.hiddenBy = "me";
@@ -59,11 +59,10 @@ public class HideableTest extends DecoratorTest {
     trait.command = "testCommand"; // NON-NLS
     trait.hideKey = new NamedKeyStroke("xyzzy"); // NON-NLS
     trait.bgColor = Color.blue;
-    trait.transparency = 42;
+    trait.transparency = 0.42f;
     trait.access = new SpecifiedSideAccess(Arrays.asList("A", "B"));
 
     trait.hiddenBy = "me";
     serializeTest("SpecifiedSide Access", trait); // NON-NLS
-
   }
 }

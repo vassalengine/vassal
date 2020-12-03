@@ -2437,7 +2437,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return true if {@link GamePiece}s should be drawn when painting the map
    */
   public boolean isPiecesVisible() {
-    return !hideCounters && pieceOpacity != 0;
+    return !hideCounters && pieceOpacity != 0.0;
   }
 
   /**
