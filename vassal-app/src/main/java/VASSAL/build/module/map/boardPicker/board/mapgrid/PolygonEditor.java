@@ -414,11 +414,18 @@ public class PolygonEditor extends JPanel {
 
     @Override
     public void mousePressed(MouseEvent e) {
-      if ((polygon == null || polygon.npoints == 0) &&
-          SwingUtils.isMainMouseButtonDown(e)) {
-        resetPolygon(e.getX(), e.getY(), 4);
-        addMouseMotionListener(this);
-        repaint();
+      if (polygon == null || polygon.npoints == 0) {
+        if (SwingUtils.isMainMouseButtonDown(e)) {
+          resetPolygon(e.getX(), e.getY(), 4);
+          addMouseMotionListener(this);
+          repaint();
+        }
+        else if (SwingUtils.isContextMouseButtonDown(e)) {
+          remove();
+          resetPolygon(e.getX(), e.getY(), 1);
+          selected = 0;
+          setupForEdit();
+        }
       }
     }
 
@@ -436,17 +443,6 @@ public class PolygonEditor extends JPanel {
       if (SwingUtils.isMainMouseButtonDown(e)) {
         remove();
         selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
-        setupForEdit();
-      }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if ((polygon == null || polygon.npoints == 0) &&
-          SwingUtils.isContextMouseButtonDown(e)) {
-        remove();
-        resetPolygon(e.getX(), e.getY(), 1);
-        selected = 0;
         setupForEdit();
       }
     }
