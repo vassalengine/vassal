@@ -132,6 +132,39 @@ public class PolygonEditor extends JPanel {
     scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
   }
 
+  public void scrollAtEdge(Point p, int dist) {
+    p = new Point(
+      p.x - myScroll.getViewport().getViewPosition().x,
+      p.y - myScroll.getViewport().getViewPosition().y
+    );
+    int dx = 0, dy = 0;
+
+    if (p.x < dist && p.x >= 0) {
+      dx = -1;
+    }
+
+    if (p.x >= myScroll.getViewport().getSize().width - dist &&
+        p.x < myScroll.getViewport().getSize().width) {
+      dx = 1;
+    }
+
+    if (p.y < dist && p.y >= 0) {
+      dy = -1;
+    }
+
+    if (p.y >= myScroll.getViewport().getSize().height - dist &&
+        p.y < myScroll.getViewport().getSize().height) {
+      dy = 1;
+    }
+
+    if (dx != 0 || dy != 0) {
+      Rectangle r = new Rectangle(myScroll.getViewport().getViewRect());
+      r.translate(2 * dist * dx, 2 * dist * dy);
+      r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
+      scrollRectToVisible(r);
+    }
+  }
+
   public static void reset(Polygon p, String pathStr) {
     p.reset();
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(pathStr, ';');
@@ -327,63 +360,20 @@ public class PolygonEditor extends JPanel {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-      if (SwingUtils.isContextMouseButtonDown(e) ||
-          (SwingUtils.isMainMouseButtonDown(e) && e.getClickCount() == 2)) {
-        final Triple<Integer, Point, Double> t = nearestSegment(polygon, e.getX(), e.getY());
-        final int ins = t.getLeft() + 1;
-        if (SwingUtils.isContextMouseButtonDown(e)) {
-          insertVertex(polygon, ins, e.getX(), e.getY());
-        }
-        else {
-          final Point np = t.getMiddle();
-          insertVertex(polygon, ins, np.x, np.y);
-        }
-        selected = ins;
+    public void mousePressed(MouseEvent e) {
+      if (SwingUtils.isMainMouseButtonDown(e)) {
+        // On left button press, select nearest vertex within the threshold.
+        final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
+        final double d = n.getRight();
+        selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
         repaint();
       }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-      if (!SwingUtils.isMainMouseButtonDown(e)) {
-        return;
-      }
-
-      // On left button press, select nearest vertex within the threshold.
-      final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
-      final double d = n.getRight();
-      selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
-
-      repaint();
-    }
-
-    public void scrollAtEdge(Point evtPt, int dist) {
-      final Point p = new Point(
-        evtPt.x - myScroll.getViewport().getViewPosition().x,
-        evtPt.y - myScroll.getViewport().getViewPosition().y
-      );
-      int dx = 0, dy = 0;
-      if (p.x < dist && p.x >= 0) {
-        dx = -1;
-      }
-      if (p.x >= myScroll.getViewport().getSize().width - dist
-          && p.x < myScroll.getViewport().getSize().width) {
-        dx = 1;
-      }
-      if (p.y < dist && p.y >= 0) {
-        dy = -1;
-      }
-      if (p.y >= myScroll.getViewport().getSize().height - dist
-          && p.y < myScroll.getViewport().getSize().height) {
-        dy = 1;
-      }
-
-      if (dx != 0 || dy != 0) {
-        Rectangle r = new Rectangle(myScroll.getViewport().getViewRect());
-        r.translate(2 * dist * dx, 2 * dist * dy);
-        r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
-        scrollRectToVisible(r);
+      else if (SwingUtils.isContextMouseButtonDown(e)) {
+        // On right button press, create a new vertex.
+        final int ins = nearestSegment(polygon, e.getX(), e.getY()).getLeft() + 1;
+        insertVertex(polygon, ins, e.getX(), e.getY());
+        selected = ins;
+        repaint();
       }
     }
 
@@ -393,8 +383,8 @@ public class PolygonEditor extends JPanel {
         selected = -1;
 
         if (polygon.npoints == 0) {
+          // Back to create mode if all points are gone.
           polygon = null;
-
           remove();
           setupForCreate();
         }
