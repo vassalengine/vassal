@@ -338,7 +338,7 @@ public class GpIdChecker {
           else if (d instanceof Labeler) {
             if (useLabelerName()) {
               final String nameToFind = ((Labeler)decoratorNewPc).getActualDescription();
-              final String name = ((Labeler)p).getActualDescription();
+              final String name = ((Labeler)d).getActualDescription();
               if (name.equals(nameToFind))
                 return d.myGetState();
             }
