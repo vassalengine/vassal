@@ -1,14 +1,15 @@
 3.5.0-beta2 - ???
 
-* 13738: IllegalArgumentException because Invisible trait permitted alpha
-    values outside [0,1]
 * 13786: NPE when Enter hit in Editor component tree with no node selected
 * 13783: Non-rectangular trait should remember name of image that created it
+* 13782: Suffix/Prefix fields in Layer trait are not displayed correctly
 * 13781: Bad parameter in Editor.UniqueIdManager.more_than_one message
 * 13777: Improved workflow of zone editor
 * 13755: Chess clock help file is misnamed
 * 13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out
 * 13760: Upgrade bundled Java to 15.0.1+9
+* 13738: IllegalArgumentException because Invisible trait permitted alpha
+    values outside [0,1]
 
 3.5.0-beta1 - 27 November 2020
 
