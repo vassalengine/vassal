@@ -33,8 +33,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
@@ -57,12 +56,9 @@ public class PolygonEditor extends JPanel {
   private Polygon polygon;
   private int selected = -1;
 
-  private List<Point> path;
-
   protected JScrollPane myScroll;
 
   private static final String DELETE = "Delete";
-  private static final String ESCAPE = "Escape";
 
   private static final int POINT_RADIUS = 10;
   private static final int CLICK_THRESHOLD = 10;
@@ -112,8 +108,7 @@ public class PolygonEditor extends JPanel {
   }
 
   private void setupForCreate() {
-    new DefinePicker();
-    path = new ArrayList<>();
+    new DefineRectangle();
     requestFocus();
     repaint();
   }
@@ -175,8 +170,7 @@ public class PolygonEditor extends JPanel {
   public void paint(Graphics g) {
     paintBackground(g);
 
-    if ((polygon == null || polygon.npoints == 0) &&
-        (path == null || path.isEmpty())) {
+    if (polygon == null || polygon.npoints == 0) {
       return;
     }
 
@@ -191,70 +185,31 @@ public class PolygonEditor extends JPanel {
     final int r = POINT_RADIUS;
     final int d = 2 * r;
 
-    if (polygon != null && polygon.npoints > 0) {
-      // fill the zone
-      g2d.setColor(Color.WHITE);
-      g2d.fill(polygon);
+    // fill the zone
+    g2d.setColor(Color.WHITE);
+    g2d.fill(polygon);
 
-      // draw the vertex markers
-      g2d.setColor(Color.BLACK);
-      for (int i = 0; i < polygon.npoints; ++i) {
-        final int x = polygon.xpoints[i];
-        final int y = polygon.ypoints[i];
-        g2d.drawOval(x - r, y - r, d, d);
-      }
-
-      // draw the selected vertex
-      if (selected >= 0 && selected < polygon.xpoints.length) {
-        g2d.setColor(Color.RED);
-        final int x = polygon.xpoints[selected];
-        final int y = polygon.ypoints[selected];
-        g2d.fillOval(x - r, y - r, d, d);
-      }
-
-      // draw the zone
-      g2d.setComposite(AlphaComposite.SrcAtop);
-      g2d.setColor(Color.BLACK);
-      g2d.setStroke(new BasicStroke(2.0F));
-      g2d.drawPolygon(polygon);
+    // draw the vertex markers
+    g2d.setColor(Color.BLACK);
+    for (int i = 0; i < polygon.npoints; ++i) {
+      final int x = polygon.xpoints[i];
+      final int y = polygon.ypoints[i];
+      g2d.drawOval(x - r, y - r, d, d);
     }
-    else if (path != null && !path.isEmpty()) {
-      final int ps = path.size();
-      Point p1, p2;
 
-      // draw the vertex markers
-      g2d.setColor(Color.BLACK);
-      for (int i = 0; i < ps; ++i) {
-        p1 = path.get(i);
-        g2d.drawOval(p1.x - r, p1.y - r, d, d);
-      }
-
-      // highlight the initial vertex if the active vertex overlaps it
-      p1 = path.get(0);
-      p2 = path.get(ps - 1);
-      final double dp = Point2D.distance(p1.x, p1.y, p2.x, p2.y);
-      if (dp <= 2 * CLICK_THRESHOLD) {
-        g2d.setColor(Color.YELLOW);
-        g2d.fillOval(p1.x - r, p1.y - r, d, d);
-      }
-
-      // draw the active vertex
+    // draw the selected vertex
+    if (selected >= 0 && selected < polygon.xpoints.length) {
       g2d.setColor(Color.RED);
-      p1 = path.get(ps - 1);
-      g2d.fillOval(p1.x - r, p1.y - r, d, d);
-
-      // draw the path
-      p1 = path.get(0);
-      g2d.setComposite(AlphaComposite.SrcAtop);
-      g2d.setColor(Color.BLACK);
-      g2d.setStroke(new BasicStroke(2.0F));
-
-      for (int i = 1; i < ps; ++i) {
-        p2 = path.get(i);
-        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
-        p1 = p2;
-      }
+      final int x = polygon.xpoints[selected];
+      final int y = polygon.ypoints[selected];
+      g2d.fillOval(x - r, y - r, d, d);
     }
+
+    // draw the zone
+    g2d.setComposite(AlphaComposite.SrcAtop);
+    g2d.setColor(Color.BLACK);
+    g2d.setStroke(new BasicStroke(2.0F));
+    g2d.drawPolygon(polygon);
   }
 
   protected void paintBackground(Graphics g) {
@@ -449,150 +404,32 @@ public class PolygonEditor extends JPanel {
     }
   }
 
-  private static Polygon pathToPolygon(List<Point> pl) {
-    final int ps = pl.size();
-    final int[] xpoints = new int[ps];
-    final int[] ypoints = new int[ps];
-
-    for (int i = 0; i < ps; ++i) {
-      final Point p = pl.get(i);
-      xpoints[i] = p.x;
-      ypoints[i] = p.y;
-    }
-
-    return new Polygon(xpoints, ypoints, ps);
-  }
-
-  private class DefinePicker extends MouseInputAdapter {
-    public DefinePicker() {
+  private class DefineRectangle extends MouseInputAdapter {
+    public DefineRectangle() {
       addMouseListener(this);
-      addMouseMotionListener(this);
     }
 
     private void remove() {
       removeMouseListener(this);
       removeMouseMotionListener(this);
+    }
+
+    private void resetPolygon(int x, int y, int n) {
+      final int[] xpoints = new int[n];
+      Arrays.fill(xpoints, x);
+      final int[] ypoints = new int[n];
+      Arrays.fill(ypoints, y);
+      polygon = new Polygon(xpoints, ypoints, n);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        path.add(new Point(e.getPoint()));
-      }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        remove();
-        new DefinePolygon();
-        path.add(new Point(path.get(0)));
+      if ((polygon == null || polygon.npoints == 0) &&
+          SwingUtils.isMainMouseButtonDown(e)) {
+        resetPolygon(e.getX(), e.getY(), 4);
+        addMouseMotionListener(this);
         repaint();
       }
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        remove();
-        new DefineRectangle();
-
-        final int x = path.get(0).x;
-        final int[] xpoints = { x, x, x, x };
-
-        final int y = path.get(0).y;
-        final int[] ypoints = { y, y, y, y };
-
-        polygon = new Polygon(xpoints, ypoints, 4);
-
-        repaint();
-      }
-    }
-  }
-
-  private class DefinePolygon extends MouseInputAdapter {
-    public DefinePolygon() {
-      addMouseListener(this);
-      addMouseMotionListener(this);
-
-      getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ESCAPE);
-      getActionMap().put(ESCAPE, new AbstractAction() {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          escapeKeyPressed();
-        }
-      });
-    }
-
-    private void remove() {
-      removeMouseListener(this);
-      removeMouseMotionListener(this);
-      getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      if (!SwingUtils.isMainMouseButtonDown(e) || path.isEmpty()) {
-        return;
-      }
-
-      if (path.size() > 2) {
-        final Point beg = path.get(0);
-        final double d = Point2D.distance(e.getX(), e.getY(), beg.x, beg.y);
-        if (d <= CLICK_THRESHOLD) {
-          path.remove(path.size() - 1);
-
-          polygon = pathToPolygon(path);
-          selected = 0;
-          path = null;
-
-          remove();
-          setupForEdit();
-          return;
-        }
-      }
-
-      path.add(new Point(e.getPoint()));
-      repaint();
-    }
-
-    private void moveEndpoint(Point p) {
-      if (!path.isEmpty()) {
-        path.get(path.size() - 1).setLocation(p);
-        repaint();
-      }
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        moveEndpoint(e.getPoint());
-      }
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-      moveEndpoint(e.getPoint());
-    }
-
-    public void escapeKeyPressed() {
-      remove();
-      path.clear();
-      setupForCreate();
-    }
-  }
-
-  private class DefineRectangle extends MouseInputAdapter {
-    public DefineRectangle() {
-      addMouseListener(this);
-      addMouseMotionListener(this);
-    }
-
-    private void remove() {
-      removeMouseListener(this);
-      removeMouseMotionListener(this);
     }
 
     @Override
@@ -607,8 +444,19 @@ public class PolygonEditor extends JPanel {
     @Override
     public void mouseReleased(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
         remove();
+        selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
+        setupForEdit();
+      }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      if ((polygon == null || polygon.npoints == 0) &&
+          SwingUtils.isContextMouseButtonDown(e)) {
+        remove();
+        resetPolygon(e.getX(), e.getY(), 1);
+        selected = 0;
         setupForEdit();
       }
     }
