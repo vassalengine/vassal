@@ -5,6 +5,7 @@
 * 13782: Suffix/Prefix fields in Layer trait are not displayed correctly
 * 13781: Bad parameter in Editor.UniqueIdManager.more_than_one message
 * 13777: Improved workflow of zone editor
+* 13771: NPE after cutting/pasting piece palettes in Editor
 * 13755: Chess clock help file is misnamed
 * 13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out
 * 13760: Upgrade bundled Java to 15.0.1+9
