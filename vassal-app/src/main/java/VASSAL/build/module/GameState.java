@@ -49,7 +49,6 @@ import javax.swing.SwingWorker;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.commons.lang3.StringUtils;
 
 import org.slf4j.LoggerFactory;
@@ -127,6 +126,7 @@ public class GameState implements CommandEncoder {
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
+    // TODO: remove Load Continuation from File menu as of 3.6
     loadGameOld = new AbstractAction(Resources.getString("GameState.load_continuation")) {
       private static final long serialVersionUID = 1L;
 
@@ -136,7 +136,7 @@ public class GameState implements CommandEncoder {
           JOptionPane.INFORMATION_MESSAGE,
           GameModule.getGameModule().getPlayerWindow(),
           null,
-          Resources.getString("GameState.old_continuation_title",
+          Resources.getString("GameState.old_continuation_title"),
           Resources.getString("GameState.old_continuation_heading"),
           Resources.getString("GameState.old_continuation_warning")
         );
