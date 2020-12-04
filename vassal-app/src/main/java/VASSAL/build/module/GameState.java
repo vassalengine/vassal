@@ -103,7 +103,7 @@ public class GameState implements CommandEncoder {
   protected Map<String, GamePiece> pieces = new HashMap<>();
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
-  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame;
+  protected Action loadGame, loadGameOld, saveGame, saveGameAs, newGame, closeGame, loadContinuation;
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -127,7 +127,33 @@ public class GameState implements CommandEncoder {
     // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
-    loadGameOld = new AbstractAction(Resources.getString("GameState.load_game_old")) {
+    loadGameOld = new AbstractAction(Resources.getString("GameState.load_continuation")) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        ProblemDialog.show(
+          JOptionPane.INFORMATION_MESSAGE,
+          GameModule.getGameModule().getPlayerWindow(),
+          null,
+          "Load Continuation Has Moved",
+          "Load Continuation Has Moved",
+          Resources.getString("GameState.old_continuation_warning")
+        );
+/*
+        JOptionPane.showMessageDialog(
+          GameModule.getGameModule().getPlayerWindow(),
+          Resources.getString("GameState.old_continuation_warning"),
+          "Load Continuation Has Moved",
+          JOptionPane.INFORMATION_MESSAGE
+        );
+*/
+      }
+    };
+    loadGameOld.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_continuation.shortcut").charAt(0));
+    loadGameOld.setEnabled(false);
+
+    loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -135,8 +161,7 @@ public class GameState implements CommandEncoder {
         loadGame(true);
       }
     };
-    loadGameOld.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game_old.shortcut").charAt(0));
-    loadGameOld.setEnabled(false);
+    loadContinuation.setEnabled(false);
 
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
@@ -200,6 +225,7 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.new_game", newGame);
     mm.addAction("GameState.load_game_new", loadGame);
     mm.addAction("GameState.load_game_old", loadGameOld);
+    mm.addAction("GameState.load_continuation", loadContinuation);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.save_game_as", saveGameAs);
     mm.addAction("GameState.close_game", closeGame);
@@ -208,6 +234,7 @@ public class GameState implements CommandEncoder {
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
     loadGameOld.setEnabled(gameStarting);
+    loadContinuation.setEnabled(gameStarting);
   }
 
   /**
@@ -349,6 +376,7 @@ public class GameState implements CommandEncoder {
     }
 
     loadGameOld.setEnabled(gameStarting);
+    loadContinuation.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
     for (final GameComponent gc : gameComponents) {
