@@ -85,7 +85,8 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addMarker("PredefinedSetup.end"));  //NON-NLS
 
     fileMenu.add(mm.addKey("GameState.new_game"));
-    fileMenu.add(mm.addKey("GameState.load_game"));
+    fileMenu.add(mm.addKey("GameState.load_game_new"));
+    fileMenu.add(mm.addKey("GameState.load_game_old"));
     fileMenu.add(mm.addKey("GameState.save_game"));
     fileMenu.add(mm.addKey("GameState.save_game_as"));
     fileMenu.add(mm.addKey("GameState.close_game"));
@@ -134,6 +135,7 @@ public class PlayerWindow extends JFrame {
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
+    toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
