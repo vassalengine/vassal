@@ -136,18 +136,10 @@ public class GameState implements CommandEncoder {
           JOptionPane.INFORMATION_MESSAGE,
           GameModule.getGameModule().getPlayerWindow(),
           null,
-          "Load Continuation Has Moved",
-          "Load Continuation Has Moved",
+          Resources.getString("GameState.old_continuation_title",
+          Resources.getString("GameState.old_continuation_heading"),
           Resources.getString("GameState.old_continuation_warning")
         );
-/*
-        JOptionPane.showMessageDialog(
-          GameModule.getGameModule().getPlayerWindow(),
-          Resources.getString("GameState.old_continuation_warning"),
-          "Load Continuation Has Moved",
-          JOptionPane.INFORMATION_MESSAGE
-        );
-*/
       }
     };
     loadGameOld.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_continuation.shortcut").charAt(0));
