@@ -152,18 +152,18 @@ public final class Info {
     return SwingUtils.getScreenBounds(c);
   }
 
-  /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead */
+  /** @deprecated Use {@link SystemUtils#IS_OS_MAC} instead */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static boolean isMacOSX() {
     ProblemDialog.showDeprecated("2020-08-06");
-    return SystemUtils.IS_OS_MAC_OSX;
+    return SystemUtils.IS_OS_MAC;
   }
 
-  /** @deprecated Use {@link SystemUtils#IS_OS_MAC_OSX} instead. */
+  /** @deprecated Use {@link SystemUtils#IS_OS_MAC} instead. */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static boolean isMacOsX() {
     ProblemDialog.showDeprecated("2020-08-06");
-    return SystemUtils.IS_OS_MAC_OSX;
+    return SystemUtils.IS_OS_MAC;
   }
 
   /** @deprecated Use {@link SystemUtils#IS_OS_WINDOWS} instead */

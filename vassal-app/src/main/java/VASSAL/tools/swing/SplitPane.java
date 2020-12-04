@@ -24,113 +24,115 @@ public class SplitPane extends JSplitPane {
   }
 
   public void setLeftVisible(boolean vis) {
-    setComponentVisible(getLeftComponent(), vis);
+    setComponentVisible(leftComponent, vis);
   }
 
   public void setRightVisible(boolean vis) {
-    setComponentVisible(getRightComponent(), vis);
+    setComponentVisible(rightComponent, vis);
   }
 
   public void setTopVisible(boolean vis) {
-    setComponentVisible(getTopComponent(), vis);
+    setComponentVisible(leftComponent, vis);
   }
 
   public void setBottomVisible(boolean vis) {
-    setComponentVisible(getBottomComponent(), vis);
+    setComponentVisible(rightComponent, vis);
   }
 
   private void setComponentVisible(Component c, boolean vis) {
-    if (c.isVisible() != vis) {
+    if (c != null && c.isVisible() != vis) {
       toggleComponent(c);
     }
   }
 
   public boolean isLeftVisible() {
-    return getLeftComponent().isVisible();
+    return leftComponent != null && leftComponent.isVisible();
   }
 
   public boolean isRightVisible() {
-    return getRightComponent().isVisible();
+    return rightComponent != null && rightComponent.isVisible();
   }
 
   public boolean isTopVisible() {
-    return getTopComponent().isVisible();
+    return leftComponent != null && leftComponent.isVisible();
   }
 
   public boolean isBottomVisible() {
-    return getBottomComponent().isVisible();
+    return rightComponent != null && rightComponent.isVisible();
   }
 
   public void showLeft() {
-    showComponent(getLeftComponent());
+    showComponent(leftComponent);
   }
 
   public void showRight() {
-    showComponent(getRightComponent());
+    showComponent(rightComponent);
   }
 
   public void showTop() {
-    showComponent(getTopComponent());
+    showComponent(leftComponent);
   }
 
   public void showBottom() {
-    showComponent(getBottomComponent());
+    showComponent(rightComponent);
   }
 
   private void showComponent(Component c) {
-    if (!c.isVisible()) {
+    if (c != null && !c.isVisible()) {
       toggleComponent(c);
     }
   }
 
   public void hideLeft() {
-    hideComponent(getLeftComponent());
+    hideComponent(leftComponent);
   }
 
   public void hideRight() {
-    hideComponent(getRightComponent());
+    hideComponent(rightComponent);
   }
 
   public void hideTop() {
-    hideComponent(getTopComponent());
+    hideComponent(leftComponent);
   }
 
   public void hideBottom() {
-    hideComponent(getBottomComponent());
+    hideComponent(rightComponent);
   }
 
   private void hideComponent(Component c) {
-    if (c.isVisible()) {
+    if (c != null && c.isVisible()) {
       toggleComponent(c);
     }
   }
 
   public void toggleLeft() {
-    toggleComponent(getLeftComponent());
+    toggleComponent(leftComponent);
   }
 
   public void toggleRight() {
-    toggleComponent(getRightComponent());
+    toggleComponent(rightComponent);
   }
 
   public void toggleTop() {
-    toggleComponent(getTopComponent());
+    toggleComponent(leftComponent);
   }
 
   public void toggleBottom() {
-    toggleComponent(getBottomComponent());
+    toggleComponent(rightComponent);
   }
 
   private void toggleComponent(Component c) {
-    c.setVisible(!c.isVisible());
+    if (c != null) {
+      c.setVisible(!c.isVisible());
 
-    int tmp = getDividerSize();
-    setDividerSize(prevDividerSize);
-    prevDividerSize = tmp;
+      int tmp = getDividerSize();
+      setDividerSize(prevDividerSize);
+      prevDividerSize = tmp;
 
-    tmp = getDividerLocation();
-    setDividerLocation(prevDividerLocation);
-    prevDividerLocation = tmp;
+      tmp = getDividerLocation();
+      setDividerLocation(prevDividerLocation);
+      prevDividerLocation = tmp;
+    }
   }
 
   public static void main(String[] args) throws Exception {

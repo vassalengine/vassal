@@ -1,7 +1,23 @@
-3.5.0-beta1 - ???
+3.5.0-beta2 - ???
+
+* 13786: NPE when Enter hit in Editor component tree with no node selected
+* 13783: Non-rectangular trait should remember name of image that created it
+* 13782: Suffix/Prefix fields in Layer trait are not displayed correctly
+* 13781: Bad parameter in Editor.UniqueIdManager.more_than_one message
+* 13777: Improved workflow of zone editor
+* 13771: NPE after cutting/pasting piece palettes in Editor
+* 13755: Chess clock help file is misnamed
+* 13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out
+* 13760: Upgrade bundled Java to 15.0.1+9
+* 13738: IllegalArgumentException because Invisible trait permitted alpha
+    values outside [0,1]
+
+3.5.0-beta1 - 27 November 2020
 
 * 13741: DataArchive.getImageNames() incorrectly returns an empty string if
     images/ has an entry in the ZIP archive
+* 13728: Translucent solid-colored backgrounds of boards are incorrectly
+    drawn opaque
 * 13706: Console, for entering commands to affect errorlog, properties, etc.
 * 13675: Piece Slots shouldn't be allowed at very top level of Piece Palette
 * 13661: Simplified ZIP archive writing and error reporting
@@ -45,21 +61,22 @@
 *  4779: Comparison operator >= incorrectly documented as =>
 *  1907: Suggest default filename extensions
 *  1868: Method for removing unused images from modules
+*  1826: Aesthetic improvements to dialogs
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
-3.4.11 - ???
+3.4.11 - 29 November 2020
 
 * 13728: Translucent solid-colored backgrounds of boards are incorrectly
     drawn opaque
+* 13679: IndexOutOfBoundsException in AbstractTiledOpImpl.getTile() via GridOp
+* 13677: NullPointerException in AbstractTiledOpImpl.getTileOp() via GridOp
 
 3.4.10 - 23 November 2020
 
 * 13720: Tiles in last row, column of boards with colored backgrounds and no
     image render too large
 * 13688: Reversed boards with grids fail to display
-* 13679: IndexOutOfBoundsException in AbstractTiledOpImpl.getTile() via GridOp
-* 13677: NullPointerException in AbstractTiledOpImpl.getTileOp() via GridOp
 
 3.4.9 - 20 November 2020
 

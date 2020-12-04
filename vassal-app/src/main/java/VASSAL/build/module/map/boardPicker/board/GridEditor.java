@@ -127,7 +127,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     final Box textPanel = Box.createVerticalBox();
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.arrow_keys"))); //$NON-NLS-1$
-    textPanel.add(new JLabel(SystemUtils.IS_OS_MAC_OSX ? Resources.getString("Editor.GridEditor.command_arrow_keys") : Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
+    textPanel.add(new JLabel(SystemUtils.IS_OS_MAC ? Resources.getString("Editor.GridEditor.command_arrow_keys") : Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
     textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.shift_key"))); //$NON-NLS-1$
 
     final JPanel buttonPanel = new JPanel();

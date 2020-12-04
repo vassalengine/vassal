@@ -6,7 +6,7 @@
 DMGDIR=dist/dmg
 L4JDIR=dist/launch4j
 
-JDKVER=15
+JDKVER=jdk-15.0.1+9
 JDKDIR=dist/jdks
 
 #
@@ -18,7 +18,7 @@ pushd "$JDKDIR"
 for i in mac,x64 windows,x64 windows,x32 ; do
   IFS=',' read os arch <<<"$i"
 
-  real_url=$(curl -s -w '%{redirect_url}' -X GET "https://api.adoptopenjdk.net/v3/binary/latest/${JDKVER}/ga/${os}/${arch}/jdk/hotspot/normal/adoptopenjdk?project=jdk")
+  real_url=$(curl -s -w '%{redirect_url}' -X GET "https://api.adoptopenjdk.net/v3/binary/version/${JDKVER}/${os}/${arch}/jdk/hotspot/normal/adoptopenjdk?project=jdk")
 
   real_filename=${real_url##*/}
   if [ ! -f "$real_filename" ]; then

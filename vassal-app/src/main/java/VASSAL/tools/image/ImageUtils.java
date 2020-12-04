@@ -18,7 +18,6 @@
 
 package VASSAL.tools.image;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -34,7 +33,6 @@ import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -42,9 +40,11 @@ import javax.swing.ImageIcon;
 import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
+import VASSAL.tools.ProblemDialog;
 
 public class ImageUtils {
-  private ImageUtils() {}
+  private ImageUtils() {
+  }
 
   // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
@@ -55,18 +55,12 @@ public class ImageUtils {
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  private static final Map<RenderingHints.Key, Object> defaultHints =
-    new HashMap<>();
-
-  static {
-    // Initialise Image prefs prior to Preferences being read.
-
-    // set up map for creating default RenderingHints
-    defaultHints.put(RenderingHints.KEY_INTERPOLATION,
-                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-    defaultHints.put(RenderingHints.KEY_ANTIALIASING,
-                     RenderingHints.VALUE_ANTIALIAS_ON);
-  }
+  private static final Map<RenderingHints.Key, Object> defaultHints = Map.of(
+    RenderingHints.KEY_INTERPOLATION,
+    RenderingHints.VALUE_INTERPOLATION_BILINEAR,
+    RenderingHints.KEY_ANTIALIASING,
+    RenderingHints.VALUE_ANTIALIAS_ON
+  );
 
   /** @deprecated All scaling is done with the high-quality scaler now. */
   @Deprecated(since = "2020-08-06", forRemoval = true)

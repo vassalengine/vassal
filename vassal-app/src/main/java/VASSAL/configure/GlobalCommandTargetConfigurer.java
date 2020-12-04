@@ -20,15 +20,15 @@ package VASSAL.configure;
 import VASSAL.counters.GlobalCommandTarget;
 
 import java.awt.Component;
-import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import VASSAL.i18n.Resources;
+import VASSAL.counters.TraitLayout;
+
 import net.miginfocom.swing.MigLayout;
 
 public class GlobalCommandTargetConfigurer extends Configurer {
@@ -95,7 +95,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel(new MigLayout("hidemode 3, ins 1, gapy 1", "[]rel[]rel[fill,grow]")); // NON-NLS
+      controls = new JPanel(new MigLayout("hidemode 3," + TraitLayout.STANDARD_GAPY, "[]rel[]rel[fill,grow]")); // NON-NLS
       final GlobalCommandTarget target = getTarget();
 
       fastMatchLocationConfig = new BooleanConfigurer(target.isFastMatchLocation());
@@ -263,13 +263,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
   @Override
   public void repack() {
-    final Window w = SwingUtilities.getWindowAncestor(controls);
-    if (w != null) {
-      // Don't let pack make dialog smaller.
-      w.setMinimumSize(w.getSize());
-      w.pack();
-      w.setMinimumSize(null);
-    }
+    repack(controls);
   }
 
   /**

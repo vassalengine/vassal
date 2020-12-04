@@ -52,11 +52,11 @@ public class MemoryUtilsTest {
     assertEquals(eRAM, MemoryUtils.getPhysicalMemory() >> 10);
   }
 
-// FIXME: how to get RAM on Mac OS X?
+// FIXME: how to get RAM on MacOS?
   @Ignore
   @Test
-  public void testGetPhysicalMemoryMacOSX() {
-    assumeTrue(SystemUtils.IS_OS_MAC_OSX);
+  public void testGetPhysicalMemoryMacOS() {
+    assumeTrue(SystemUtils.IS_OS_MAC);
   }
 
 // FIXME: how to get RAM on Windows?

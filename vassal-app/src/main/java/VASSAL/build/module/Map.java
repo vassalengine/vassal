@@ -269,7 +269,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     theMap.addMouseListener(this);
     if (shouldDockIntoMainWindow()) {
       final String constraints =
-        (SystemUtils.IS_OS_MAC_OSX ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
+        (SystemUtils.IS_OS_MAC ? "ins 1 0 1 0" : "ins 0") +   //NON-NLS
         ",gapx 0,hidemode 3";                                     //NON-NLS
       toolBar.setLayout(new MigLayout(constraints));
     }
@@ -781,9 +781,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       splitPane = new SplitPane(SplitPane.VERTICAL_SPLIT, controlPanel, layeredPane);
       splitPane.setResizeWeight(0.0);
       splitPane.hideBottom();
-
-      controlPanel.setMinimumSize(new Dimension(0, 0));
-      layeredPane.setMinimumSize(new Dimension(0, 0));
 
       cppar.add(splitPane, i);
 
@@ -2440,7 +2437,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @return true if {@link GamePiece}s should be drawn when painting the map
    */
   public boolean isPiecesVisible() {
-    return !hideCounters && pieceOpacity != 0;
+    return !hideCounters && pieceOpacity != 0.0;
   }
 
   /**
@@ -2601,6 +2598,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           if (mainWindowDock != null) {
             splitPane.setDividerSize(5);
           }
+
+          // ensure that the splitter has the full range of motion
+          splitPane.getTopComponent().setMinimumSize(new Dimension(0, 0));
+          splitPane.getBottomComponent().setMinimumSize(new Dimension(0, 0));
         }
 
         if (toolBar.getParent() == null) {

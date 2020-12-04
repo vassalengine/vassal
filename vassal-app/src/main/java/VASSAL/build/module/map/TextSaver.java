@@ -59,9 +59,12 @@ public class TextSaver extends AbstractToolbarItem {
 
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT);
-    makeLaunchButton(Resources.getString("Editor.TextSaver.save_tooltip"),
-                     Resources.getString("Editor.TextSaver.save_text"),
-                     "", al);
+    launch = makeLaunchButton(
+      Resources.getString("Editor.TextSaver.save_tooltip"),
+      Resources.getString("Editor.TextSaver.save_text"),
+      "",
+      al
+    );
   }
 
   @Deprecated(since = "2020-10-01", forRemoval = true)

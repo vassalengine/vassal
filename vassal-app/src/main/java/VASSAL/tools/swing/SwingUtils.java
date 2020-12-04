@@ -16,23 +16,26 @@
  */
 package VASSAL.tools.swing;
 
+import VASSAL.build.module.GlobalOptions;
+
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.GraphicsConfiguration;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
-import VASSAL.build.module.GlobalOptions;
 
 import org.apache.commons.lang3.SystemUtils;
 
@@ -62,7 +65,7 @@ public class SwingUtils {
     );
   }
 
-  public static final Map<?, ?> FONT_HINTS = (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
+  public static final Map<?, ?> FONT_HINTS = GraphicsEnvironment.isHeadless() ? Collections.emptyMap() : (Map<?, ?>) Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints");
 
   private interface InputClassifier {
     /**
@@ -275,7 +278,7 @@ public class SwingUtils {
   }
 
   private static final InputClassifier INPUT_CLASSIFIER =
-    SystemUtils.IS_OS_MAC_OSX ?
+    SystemUtils.IS_OS_MAC ?
       new MacInputClassifier() : new DefaultInputClassifier();
 
   /**
@@ -391,13 +394,11 @@ public class SwingUtils {
    * taskbar)
    */
   public static Rectangle getScreenBounds(Component c) {
-    final Rectangle bounds =
-      new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-    final GraphicsConfiguration config = c.getGraphicsConfiguration();
-    final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
+    final Rectangle bounds = new Rectangle(getScreenSize());
+    final Insets insets = getScreenInsets(c);
     bounds.translate(insets.left, insets.top);
     bounds.setSize(bounds.width - insets.left - insets.right,
-                   bounds.height - insets.top - insets.bottom);
+      bounds.height - insets.top - insets.bottom);
     return bounds;
   }
 
@@ -411,5 +412,123 @@ public class SwingUtils {
       }
     }
     return -1;
+  }
+
+  /**
+   * Return the current screen size, or a dummy screen size if operating in headless mode.
+   *
+   * In a perfect world, no gui code would ever run in headless mode, but some tests
+   * can force some parts of the gui to try and initialise which can cause the tests to
+   * fail when running on Travis Ci.
+   *
+   * @return Screen size
+   */
+  public static Dimension getScreenSize() {
+    if (GraphicsEnvironment.isHeadless()) {
+      return new Dimension(1920, 1280);
+    }
+    else {
+      return Toolkit.getDefaultToolkit().getScreenSize();
+    }
+  }
+
+  /**
+   * Return the current screen insets, or dummy screen insets if operating in headless mode.
+   *
+   * In a perfect world, no gui code would ever run in headless mode, but some tests
+   * can force some parts of the gui to try and initialise which can cause the tests to
+   * fail when running on Travis Ci.
+   *
+   * @return Screen size
+   */
+  public static Insets getScreenInsets(Component c) {
+    if (GraphicsEnvironment.isHeadless()) {
+      return new Insets(0, 0, 0, 0);
+    }
+    else {
+      return Toolkit.getDefaultToolkit().getScreenInsets(c.getGraphicsConfiguration());
+    }
+  }
+
+  /**
+   * Ensure the supplied Window is on the screen.
+   *
+   * 1. If either dimension is > available screen size, set the maximum size to the screen size
+   * 2. If the bottom of the window is off the screen, slide it up until it is on the screen.
+   * 3. If the right hand side of the window is off the screen, slide it left until it is on the screen.
+   *
+   * @param window Window to ensure on screen
+   */
+  public static void ensureOnScreen(Window window) {
+    if (window == null) {
+      return;
+    }
+    final Rectangle screenBounds = getScreenBounds(window);
+    window.setMaximumSize(new Dimension(screenBounds.width, screenBounds.height));
+    final Dimension windowSize = window.getSize();
+
+    // If window is too large in either Dimension, force it smaller
+    if (windowSize.width > screenBounds.width || windowSize.height > screenBounds.height) {
+      windowSize.width = Math.min(screenBounds.width, windowSize.width);
+      windowSize.height = Math.min(screenBounds.height, windowSize.height);
+      window.setSize(windowSize);
+    }
+
+    // Determine actual size and position of new (possibly) smaller window
+    final Rectangle bounds = new Rectangle(window.getX(), window.getY(), windowSize.width, windowSize.height);
+
+    // Extends off top of visible screen? Slide down.
+    if (bounds.y < screenBounds.y) {
+      bounds.y = screenBounds.y;
+    }
+
+    // Extends off bottom of visible screen? Slide up.
+    if (bounds.y + bounds.height > screenBounds.y + screenBounds.height) {
+      bounds.y = screenBounds.y + screenBounds.height - bounds.height;
+    }
+
+    // Extends off left of visible screen? Slide right.
+    if (bounds.x < screenBounds.x) {
+      bounds.x = screenBounds.x;
+    }
+
+    // Extends off right of visible screen? Slight left.
+    if (bounds.x + bounds.width > screenBounds.x + screenBounds.width) {
+      bounds.x = screenBounds.x + screenBounds.width - bounds.width;
+    }
+
+    // Adjust the position
+    window.setLocation(bounds.x, bounds.y);
+
+  }
+
+  /**
+   * Repack the dialog containing component c and ensure it is fully on the screen
+   *
+   * @param c Component contained in Dialog
+   */
+  public static void repack(Component c) {
+    if (c != null) {
+      repack(SwingUtilities.getWindowAncestor(c));
+    }
+  }
+
+
+  /**
+   * Repack a dialog or frame and ensure it is fully on the screen
+   * Allow it get shorter vertically, but not narrower to keep any
+   * user dragged width changes or field width reformats.
+   *
+   * @param w Dialog or Frame
+   */
+  public static void repack(Window w) {
+    if (w != null) {
+      final Dimension min = w.getSize();
+      min.height = 1;
+      w.setMinimumSize(min);
+      w.pack();
+      w.setMinimumSize(null);
+      SwingUtils.ensureOnScreen(w);
+    }
   }
 }

@@ -22,6 +22,7 @@ import VASSAL.build.module.ObscurableOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.configure.ImageSelector;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -648,7 +649,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private final ImagePicker picker;
+    private final ImageSelector picker;
     private final NamedHotKeyConfigurer obscureKeyInput;
     private final StringConfigurer obscureCommandInput, maskNameInput;
     private final TranslatingStringEnumConfigurer displayOption;
@@ -663,7 +664,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       "Editor.Obscurable.use_image"
     };
     private final char[] optionChars = {BACKGROUND, PEEK, INSET, IMAGE};
-    private final ImagePicker imagePicker;
+    private final ImageSelector imagePicker;
     private final PieceAccessConfigurer accessConfig;
     private final JPanel showDisplayOption;
     private final JLabel peekKeyLabel;
@@ -681,12 +682,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       accessConfig = new PieceAccessConfigurer(p.access);
       controls.add("Editor.Obscurable.can_be_masked_by", accessConfig);
 
-      final JLabel imageLabel = new JLabel(Resources.getString("Editor.Obscurable.view_when_masked"));
-      picker = new ImagePicker();
-      imageLabel.setLabelFor(picker);
-      picker.setImageName(p.imageName);
-      controls.add(imageLabel);
-      controls.add(picker, "wrap"); // NON-NLS
+      picker = new ImageSelector(p.imageName, 512, 512);
+      controls.add("Editor.Obscurable.view_when_masked", picker);
 
       maskNameInput = new StringConfigurer(p.maskName);
       controls.add("Editor.Obscurable.name_when_masked", maskNameInput);
@@ -744,10 +741,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
       displayPanel.add(showDisplayOption);
 
-      imagePicker = new ImagePicker();
-      imagePicker.setImageName(p.obscuredToOthersImage);
-      imagePicker.setVisible(p.displayStyle == IMAGE);
-      displayPanel.add(imagePicker);
+      imagePicker = new ImageSelector(p.obscuredToOthersImage, 512, 512);
+      imagePicker.getControls().setVisible(p.displayStyle == IMAGE);
+      displayPanel.add(imagePicker.getControls());
 
       controls.add(displayPanel, "wrap"); // NON-NLS
 
@@ -770,7 +766,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
         peekCommandLabel.setVisible(optionNames[1].equals(evt.getNewValue()));
         peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
-        imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
+        imagePicker.getControls().setVisible(optionNames[3].equals(evt.getNewValue()));
         showDisplayOption.setVisible(!optionNames[3].equals(evt.getNewValue()));
         repack(controls);
       });
@@ -785,7 +781,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(obscureKeyInput.getValueString())
-          .append(picker.getImageName())
+          .append(picker.getValueString())
           .append(obscureCommandInput.getValueString());
       char optionChar = INSET;
       for (int i = 0; i < optionNames.length; ++i) {
@@ -805,7 +801,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         }
         break;
       case IMAGE:
-        se.append(optionChar + imagePicker.getImageName());
+        se.append(optionChar + imagePicker.getValueString());
         break;
       default:
         se.append(optionChar);

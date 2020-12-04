@@ -17,6 +17,29 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.Logger;
+import VASSAL.configure.ComponentConfigPanel;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.Localization;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -34,29 +57,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
-
-import VASSAL.build.AbstractToolbarItem;
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.command.Logger;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
-import VASSAL.counters.TraitConfigPanel;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.DataArchive;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * Maintains a list of players involved in the current game
@@ -625,11 +625,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     private final StringConfigurer textConfig;
     private final StringConfigurer tooltipConfig;
     private final NamedHotKeyConfigurer keyConfig;
-    private final TraitConfigPanel controls;
+    private final ComponentConfigPanel controls;
 
     private Con() {
       super(null, null);
-      controls = new TraitConfigPanel();
+      controls = new ComponentConfigPanel();
 
       sidesConfig = new StringArrayConfigurer(sides.toArray(new String[0]), 4, 8); //$NON-NLS-1$
       sidesConfig.addPropertyChangeListener(evt -> {

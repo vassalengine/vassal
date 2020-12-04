@@ -17,15 +17,12 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
-import javax.swing.SwingUtilities;
 
 /**
  * A property editor class.  Wraps an Object value and provides
@@ -153,25 +150,19 @@ public abstract class Configurer {
   }
 
   /**
-   * Repack the current configurer larger, but not smaller
+   * Repack the current configurer
    */
   protected void repack() {
     repack(getControls());
   }
 
   /**
-   * Repack a dialog or window larger, but not smaller
+   * Repack a dialog or window
    */
   protected void repack(Component controls) {
-    if (controls != null) {
-      final Window w = SwingUtilities.getWindowAncestor(controls);
-      if (w != null) {
-        w.setMinimumSize(w.getSize());
-        w.pack();
-        w.setMinimumSize(null);
-      }
-    }
+    SwingUtils.repack(controls);
   }
+
 
   /**
    * Return the current screen size for use by List type configurers to allow them to take up
@@ -182,12 +173,7 @@ public abstract class Configurer {
    * @return Screen Size.
    */
   protected Dimension getScreenSize() {
-    if (GraphicsEnvironment.isHeadless()) {
-      return new Dimension(1920, 1280);
-    }
-    else {
-      return Toolkit.getDefaultToolkit().getScreenSize();
-    }
+    return SwingUtils.getScreenSize();
   }
 
   /**

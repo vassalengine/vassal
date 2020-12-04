@@ -17,10 +17,18 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -28,19 +36,12 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 
 /**
  * Window for editing properties of a {@link Configurable} object
@@ -81,42 +82,49 @@ public class PropertiesWindow extends JDialog {
       child = nextChild;
     }
 
-    setLayout(new MigLayout("ins panel,wrap 1", "[grow,fill]", "[grow][align top]")); // NON-NLS
+    setLayout(new MigLayout("ins panel,wrap 1", "[grow,fill]", "[align top,grow][]")); // NON-NLS
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(evt -> {
       if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
         setTitle((String) evt.getNewValue());
       }
     });
-    add(configurer.getControls(), "grow"); // NON-NLS
 
     setTitle(ConfigureTree.getConfigureName(target));
 
     final JPanel buttonBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     final JButton okButton = new JButton(Resources.getString("General.ok"));
     okButton.addActionListener(e -> save());
-    buttonBox.add(okButton);
+    buttonBox.add(okButton, "sg,tag ok"); // NON-NLS
 
     final JButton cancelButton = new JButton(Resources.getString("General.cancel"));
     cancelButton.addActionListener(e -> cancel());
-    buttonBox.add(cancelButton);
+    buttonBox.add(cancelButton, "sg,tag cancel"); // NON-NLS
 
     if (target.getHelpFile() != null) {
-      final Action helpAction =
-        new ShowHelpAction(target.getHelpFile().getContents(), null);
+      final Action helpAction = new ShowHelpAction(target.getHelpFile().getContents(), null);
       final JButton helpButton = new JButton(helpAction);
-      buttonBox.add(helpButton);
-      pack();
+      buttonBox.add(helpButton, "sg,tag help"); // NON-NLS
+    }
+
+    // The PieceDefiner handles its own scrolling internally, don't add another set of scrollbars
+    if (target instanceof PieceSlot || target instanceof PrototypeDefinition) {
+      add(configurer.getControls(), "grow"); // NON-NLS
+    }
+    else {
+      final JPanel scrollPanel = new JPanel(new MigLayout("ins 0,wrap 1", "[grow,fill]")); // NON-NLS
+      final JScrollPane scroll = new JScrollPane(scrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      scrollPanel.add(configurer.getControls());
+      add(scroll);
     }
 
     add(buttonBox, "growy 0"); // NON-NLS
+
     pack();
     setLocationRelativeTo(getParent());
-    // The PieceDefiner is now very large, ensure it is opened at the top of the usable screen
-    if (target instanceof PieceSlot || target instanceof PrototypeDefinition) {
-      setLocation(getLocation().x + 50, Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration()).top);
-    }
+    SwingUtils.ensureOnScreen(this);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent we) {

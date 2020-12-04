@@ -60,16 +60,16 @@ public class StandardConfig implements Config {
     // Set the version, reportable version
     final GitProperties gitProperties = new GitProperties();
     version = gitProperties.getVersion();
-    reportableVersion = version.contains("-") ? version.substring(0, version.indexOf('-')) : version;
+    reportableVersion = version.contains("-") && !version.matches(".*-beta\\d+") ? version.substring(0, version.indexOf('-')) : version;
 
     baseDir = Path.of(System.getProperty("user.dir"));
 
     docDir = baseDir.resolve(
-      SystemUtils.IS_OS_MAC_OSX ? "Contents/Resources/doc" : "doc"
+      SystemUtils.IS_OS_MAC ? "Contents/Resources/doc" : "doc"
     );
 
     // Set up the config dir and ensure it exists
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC) {
       confDir = Path.of(System.getProperty("user.home"), "Library/Application Support/VASSAL"); //NON-NLS
     }
     else if (SystemUtils.IS_OS_WINDOWS) {

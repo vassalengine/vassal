@@ -229,7 +229,7 @@ public class ModuleManagerWindow extends JFrame {
     fileMenu.add(mm.addKey("Main.import_module"));
     fileMenu.addSeparator();
 
-    if (!SystemUtils.IS_OS_MAC_OSX) {
+    if (!SystemUtils.IS_OS_MAC) {
       fileMenu.add(mm.addKey("Prefs.edit_preferences"));
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("General.quit"));
@@ -307,7 +307,7 @@ public class ModuleManagerWindow extends JFrame {
     helpMenu.add(mm.addKey("UpdateCheckAction.update_check"));
     helpMenu.add(mm.addKey("Help.error_log"));
 
-    if (!SystemUtils.IS_OS_MAC_OSX) {
+    if (!SystemUtils.IS_OS_MAC) {
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
@@ -1208,8 +1208,8 @@ public class ModuleManagerWindow extends JFrame {
     private final Action newExtensionAction =
       new NewExtensionLaunchAction(ModuleManagerWindow.this);
 
-    private final AbstractAction addExtensionAction =
-      new AbstractAction(Resources.getString("ModuleManager.add_extension")) {
+    private final AbstractAction addExtensionAction = new AbstractAction(
+        Resources.getString("ModuleManager.add_extension")) {
 
       private static final long serialVersionUID = 1L;
 

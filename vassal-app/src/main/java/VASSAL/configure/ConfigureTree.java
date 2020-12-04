@@ -279,6 +279,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       public void actionPerformed(ActionEvent ae) {
         // Do something meaningful when Enter key pressed
         final TreePath path = getSelectionPath();
+        if (path == null) { //BR// Apparently this can happen.
+          return;
+        }
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
         if (isExpanded(path) || (node.getChildCount() == 0)) {
           final Configurable target = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
@@ -464,7 +467,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           });
           d.add(box);
           d.add(ok);
-          d.pack();
+          SwingUtils.repack(d);
           d.setLocationRelativeTo(d.getParent());
           d.setVisible(true);
         }
@@ -1597,7 +1600,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         advanced.addChangeListener(l -> {
           visSetter.accept(advanced.isSelected());
-          configureTree.getSearchDialog().pack();
+          SwingUtils.repack(configureTree.getSearchDialog());
         });
 
         visSetter.accept(advanced.isSelected());
@@ -1688,7 +1691,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       search.requestFocus(); // Start w/ focus in search string field
 
       if (!d.isVisible()) {
-        d.pack();
+        SwingUtils.repack(d);
         d.setLocationRelativeTo(d.getParent());
         d.setVisible(true);
       }

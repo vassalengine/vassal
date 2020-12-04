@@ -1192,7 +1192,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       upDownPanel.add(Box.createVerticalGlue());
       controls.add(upDownPanel, "wrap"); // NON-NLS
 
-      levelNameInput.addPropertyChangeListener(ev -> changeLevelName());
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.level_name")));
       controls.add(levelNameInput.getControls(), "growx"); // NON-NLS
 

@@ -443,6 +443,20 @@
         <justification>should have been final in the first place</justification>
     </difference>
     <difference>
+        <className>VASSAL/counters/Labeler$LabelOp</className>
+        <differenceType>7006</differenceType>
+        <method>javax.swing.JLabel buildDimensions()</method>
+        <to>java.awt.Dimension</to>
+        <justification>totally broken as-is</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler$HTMLLabelOp</className>
+        <differenceType>7006</differenceType>
+        <method>javax.swing.JLabel buildDimensions()</method>
+        <to>java.awt.Dimension</to>
+        <justification>totally broken as-is</justification>
+    </difference>
+    <difference>
         <className>VASSAL/i18n/LocaleConfigurer</className>
         <differenceType>6006</differenceType>
         <field>countries</field>

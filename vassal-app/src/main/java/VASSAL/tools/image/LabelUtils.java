@@ -14,7 +14,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
 package VASSAL.tools.image;
 
 import java.awt.Color;
@@ -26,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.QuickColors;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 
 public class LabelUtils {
   private LabelUtils() {
-
   }
 
   public static final int CENTER = 0;
@@ -175,7 +174,6 @@ public class LabelUtils {
       y0 + textPad + extraBorder + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
 
-
   /**
    * Draw an HTML-compliant text label with appropriate alignment & foreground/background color, plus a border box, and extra configuration parameters.
    * Supports "Quick Colors".
@@ -314,8 +312,9 @@ public class LabelUtils {
 
     j.paint(gTemp);
 
-    // If no extra padding or border was specified, we can draw the label directly. Otherwise we need an extra
-    // layer of indirection "lest our JLabel wriggle from our grasp"
+    // If no extra padding or border was specified, we can draw the label
+    // directly. Otherwise we need an extra layer of indirection "lest our
+    // JLabel wriggle from our grasp"
     if ((textPad <= 0) && (extraBorder <= 0)) {
       g.drawImage(im, x0, y0, comp);
     }
@@ -333,5 +332,71 @@ public class LabelUtils {
       gTemp2.drawImage(im, textPad + extraBorder, textPad + extraBorder, null);
       g.drawImage(im2, x0, y0, comp);
     }
+  }
+
+  public static int labelWidth(Font font, String s) {
+    final Graphics2D g = (Graphics2D) ImageUtils.NULL_IMAGE.getGraphics();
+    g.addRenderingHints(SwingUtils.FONT_HINTS);
+    g.setFont(font);
+    final int stringWidth = g.getFontMetrics().stringWidth(s);
+    g.dispose();
+    return stringWidth;
+  }
+
+  public static void drawLabelBox(Graphics2D g, Font font, String s, int imageWidth, int stringWidth, int height) {
+    g.addRenderingHints(SwingUtils.FONT_HINTS);
+    g.setFont(font);
+    g.setColor(Color.WHITE);
+    g.fillRect(0, 0, imageWidth - 1, height - 1);
+    g.setColor(Color.BLACK);
+    g.drawRect(0, 0, imageWidth - 1, height - 1);
+    g.drawString(s, (imageWidth - stringWidth) / 2 - 1, height / 2 + 4);
+  }
+
+  public static BufferedImage labelBoxImage(Font font, String s, int minWidth, int height) {
+    final int stringWidth = labelWidth(font, s);
+    final int imageWidth = Math.max(minWidth, stringWidth + 20);
+
+    // Create a new image large enough to hold the string comfortably
+    final BufferedImage image = ImageUtils.createCompatibleImage(imageWidth, height);
+    final Graphics2D g = (Graphics2D) image.getGraphics();
+    drawLabelBox(g, font, s, imageWidth, stringWidth, height);
+    g.dispose();
+
+    return image;
+  }
+
+  /**
+   * Create a viewable representation of a null or empty image to
+   * use as a place holder in Configurers.
+   * *
+   * The image will contain the translated text for the key
+   * Editor.ImageUtils.no_image
+   *
+   * @param w Minimum width for generated the image
+   * @param h Height of the generated image
+   * @param scale Scale factor for font
+   * @return Viewable null image
+   */
+  public static BufferedImage noImageBoxImage(int w, int h, double scale) {
+    return LabelUtils.labelBoxImage(
+      new Font(Font.DIALOG, Font.ITALIC, 12).deriveFont((float)(12 * scale)),
+      Resources.getString("Editor.ImageUtils.no_image"),
+      w,
+      h
+    );
+  }
+
+ /**
+  * Create a viewable representation of a null or empty image to
+  * use as a place holder in Configurers.
+  *
+  * The image will contain the translated text for the key
+  * Editor.ImageUtils.no_image
+  *
+  * @return Viewable null image
+  */
+  public static BufferedImage noImageBoxImage() {
+    return noImageBoxImage(64, 64, 1.0);
   }
 }

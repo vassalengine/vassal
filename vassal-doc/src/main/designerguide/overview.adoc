@@ -5,7 +5,7 @@ VASSAL supports many types of games, including war games, hobby games, card game
 You can play opponents live on the VASSAL Server or a peer -to-peer connection, play by email, play by forum, or play offline in hot seat or solitaire modes.
 There are several hundred VASSAL game modules available for free, and more are being created all the time.
 
-VASSAL is supported on Windows, Mac OS X, Linux, and other platforms.
+VASSAL is supported on Windows, MacOS, Linux, and other platforms.
 Thanks to VASSAL'S Java architecture, players on different platforms can play each other without regard to operating system.
 
 VASSAL was originally created in 1999 by Rodney Kinney.
