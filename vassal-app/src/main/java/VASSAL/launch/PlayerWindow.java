@@ -135,6 +135,7 @@ public class PlayerWindow extends JFrame {
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
     toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
+    toolsMenu.add(mm.addKey("GameState.load_continuation"));
 
     try {
       final URL url = new File(Documentation.getDocumentationBaseDir(),
