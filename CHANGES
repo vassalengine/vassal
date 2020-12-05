@@ -13,6 +13,8 @@
 * 13760: Upgrade bundled Java to 15.0.1+9
 * 13738: IllegalArgumentException because Invisible trait permitted alpha
     values outside [0,1]
+*  4324: Antialiasing RenderingHints not set properly for drawing game
+    components
 
 3.5.0-beta1 - 27 November 2020
 
