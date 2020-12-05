@@ -24,11 +24,13 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1245,6 +1247,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       if (maxTicks <= 0) {
         return;
       }
+
+      ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                        RenderingHints.VALUE_ANTIALIAS_ON);
 
       // preferred width is 10
       // min width before resize is 6

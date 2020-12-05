@@ -24,7 +24,6 @@ import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -454,8 +453,6 @@ public class Flare extends AbstractConfigurable
     // draw a circle around the selected point
     g2d.setColor(color);
     g2d.setStroke(new BasicStroke((float)(STROKE * os_scale)));
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
     g2d.drawOval(
             (int)(p.x - diameter / 2.0),
             (int)(p.y - diameter / 2.0),

@@ -35,7 +35,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
@@ -791,8 +790,6 @@ public class HexGrid extends AbstractConfigurable
     }
 
     final Graphics2D g2d = (Graphics2D) g;
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
     g2d.setColor(color);
 
     float x1, y1, x2, y2, x3, y3, x4, y4;

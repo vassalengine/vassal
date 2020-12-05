@@ -30,6 +30,7 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -519,6 +520,11 @@ public class GlobalMap implements AutoConfigurable,
     @Override
     protected void paintComponent(Graphics g) {
       final Graphics2D g2d = (Graphics2D) g;
+
+      g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
       // HDPI: We may get a transform where scale != 1. This means we

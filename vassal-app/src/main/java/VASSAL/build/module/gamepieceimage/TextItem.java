@@ -232,8 +232,12 @@ public class TextItem extends Item {
     }
 
     final Graphics2D g2d = ((Graphics2D) g);
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, isAntialias() ?
-      RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
+    final Object aa = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+    g2d.setRenderingHint(
+        RenderingHints.KEY_ANTIALIASING,
+        isAntialias() ? RenderingHints.VALUE_ANTIALIAS_ON :
+                        RenderingHints.VALUE_ANTIALIAS_OFF
+    );
 
     AffineTransform saveXForm = null;
     if (getRotation() != 0) {
@@ -248,9 +252,11 @@ public class TextItem extends Item {
     final Font f = fs.getFont();
 
     drawLabel(g, s, origin.x, origin.y, f, hAlign, vAlign, fg, bg, null, outline, ol);
+
     if (saveXForm != null) {
       g2d.setTransform(saveXForm);
     }
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa);
   }
 
   @Override

@@ -47,7 +47,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
@@ -434,8 +433,6 @@ public class Footprint extends MovementMarkable {
 
     g2d.setComposite(
       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
 
     final float thickness = Math.max(1.0f, (float)(zoom * lineWidth));
     g2d.setStroke(new BasicStroke(thickness));

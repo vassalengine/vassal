@@ -139,7 +139,6 @@ public class Symbol {
       };
     }
 
-
     protected static String[] sizeNames;
     protected static String[] sizeDisplayNames;
 
@@ -163,7 +162,6 @@ public class Symbol {
       return sizeDisplayNames;
     }
 
-
     protected static SizeOption findSize(String name) {
       for (final SizeOption size : SIZES) {
         if (name.equals(size.getName())) {
@@ -173,7 +171,6 @@ public class Symbol {
       return SIZES[0];
     }
 
-
     protected static SizeOption findSizeByDisplayName(String displayName) {
       for (final SizeOption size : SIZES) {
         if (displayName.equals(size.getDisplayName())) {
@@ -182,7 +179,6 @@ public class Symbol {
       }
       return SIZES[0];
     }
-
 
     public static final SizeOption[] SIZES = {
       new SizeOption(SZ_NONE, Resources.getString("Editor.Symbol.Size.none"), 0, ""), //$NON-NLS-1$

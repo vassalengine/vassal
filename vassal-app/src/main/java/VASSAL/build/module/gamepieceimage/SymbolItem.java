@@ -187,22 +187,24 @@ public class SymbolItem extends Item {
     final Point origin = layout.getPosition(this);
     final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
+    final Graphics2D g2d = (Graphics2D) g;
+
     if (getRotation() != 0) {
-      final Graphics2D g2d = (Graphics2D) g;
       final AffineTransform newXForm =
           AffineTransform.getRotateInstance(Math.toRadians(getRotation()), layout.getPosition(this).x, layout.getPosition(this).y);
       g2d.transform(newXForm);
     }
 
-    if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    }
-    else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-    }
+    final Object aa = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+    g2d.setRenderingHint(
+        RenderingHints.KEY_ANTIALIASING,
+        isAntialias() ? RenderingHints.VALUE_ANTIALIAS_ON :
+                        RenderingHints.VALUE_ANTIALIAS_OFF
+    );
 
     symbol.draw(g, r, si.getFgColor().getColor(), si.getBgColor().getColor(), si.getSizeColor().getColor(), (float) lineWidth);
 
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa);
   }
 
   @Override

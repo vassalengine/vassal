@@ -26,6 +26,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -467,6 +468,11 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     public void paint(Graphics g) {
       if (board != null) {
         final Graphics2D g2d = (Graphics2D) g;
+
+        g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_ON);
+
         final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
         final AffineTransform orig_t = g2d.getTransform();
         g2d.setTransform(SwingUtils.descaleTransform(orig_t));
