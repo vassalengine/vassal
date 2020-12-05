@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
@@ -73,12 +74,14 @@ import javax.swing.WindowConstants;
 
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.GlobalPrefs;
+
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.SystemUtils;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
+
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractBuildable;
@@ -3595,6 +3598,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       final Graphics2D g2d = (Graphics2D) g;
 
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
 
       final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 

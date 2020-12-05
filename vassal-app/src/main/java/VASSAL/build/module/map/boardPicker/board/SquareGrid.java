@@ -29,7 +29,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
@@ -516,9 +515,6 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
 
     final Graphics2D g2d = (Graphics2D) g;
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                         RenderingHints.VALUE_ANTIALIAS_ON);
-
     final Rectangle region = bounds.intersection(visibleRect);
 
     final Shape oldClip = g2d.getClip();
