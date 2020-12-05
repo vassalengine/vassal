@@ -24,6 +24,7 @@ import VASSAL.counters.GamePiece;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
 
 public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
 
@@ -63,6 +64,7 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
   @Override
   protected Component getTextComponent() {
     if (config == null) {
+      super.getTextComponent(); // Initialise any superclass
       config = new FormattedExpressionConfigurer("", target);
     }
     return config.getControls();
@@ -81,5 +83,26 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
   @Override
   protected void addTextActionListener(ActionListener a) {
 
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    getControls();
+    config.setHighlighted(highlighted);
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    config.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    config.removeFocusListener(listener);
   }
 }

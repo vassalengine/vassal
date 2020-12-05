@@ -59,14 +59,13 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   private JPanel panel;
   private final List<ConfigurableListEntry> entries = new ArrayList<>();
   private DynamicProperty target;
-  private final ConfigurableListController controller;
+  private ConfigurableListController controller;
   private int selectedEntryIndex = -1;
   private JPanel emptyPanel;
 
   public DynamicKeyCommandListConfigurer(String key, String name, DynamicProperty target) {
     super(key, name);
     setTarget(target);
-    controller = new ConfigurableListController(this, CONTROLLER_ICON_SIZE);
   }
 
   public DynamicProperty getTarget() {
@@ -150,10 +149,14 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
   @Override
   public JPanel getListController() {
+    if (controller == null) {
+      controller = new ConfigurableListController(this, CONTROLLER_ICON_SIZE);
+    }
     return controller;
   }
 
   private void updateListController() {
+    getListController();
     controller.setCanMoveUp(getSelectedIndex() > 0);
     controller.setCanMoveDown(getSelectedIndex() < entries.size() - 1);
   }
