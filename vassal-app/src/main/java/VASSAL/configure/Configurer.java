@@ -19,8 +19,10 @@ package VASSAL.configure;
 
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -52,6 +54,9 @@ public abstract class Configurer {
   protected boolean frozen = false;
   /** A Hint to be displayed in an empty field */
   protected String hint = "";
+  /** The current highlight status of the Configurer */
+  private boolean highlighted = false;
+  public static final Color HIGHLIGHT_COLOR = new Color(255, 230, 230);
 
   public Configurer(String key, String name) {
     this(key, name, null);
@@ -213,4 +218,41 @@ public abstract class Configurer {
 
   }
 
+  /**
+   * Set the highlighted status of this configurer.
+   * It is up to individual Configurers to over-ride this method and implement a suitable visual highlighting scheme
+   * Note: Cannot make this abstract as it will break custom code.
+   *
+   * @param highlighted New Highlighted status
+   */
+  public void setHighlighted(boolean highlighted) {
+    this.highlighted = highlighted;
+  }
+
+  /**
+   * Return the current highlighted status
+   *
+   * @return Highlight status
+   */
+  public boolean isHighlighted() {
+    return highlighted;
+  }
+
+  /**
+   * Add a FocusListener to the Swing Components that make up this Configurer.
+   *
+   * @param listener Focus Listener
+   */
+  public void addFocusListener(FocusListener listener) {
+
+  }
+
+  /**
+   * Remove a FocusListener from the Swing Components that make up this Configurer.
+   *
+   * @param listener Focus Listener
+   */
+  public void removeFocusListener(FocusListener listener) {
+
+  }
 }

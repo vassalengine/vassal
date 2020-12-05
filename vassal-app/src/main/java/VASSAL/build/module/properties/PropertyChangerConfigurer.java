@@ -27,6 +27,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -312,5 +313,35 @@ public class PropertyChangerConfigurer extends Configurer {
   }
 
   public interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    typeConfig.setHighlighted(highlighted);
+    incrConfig.setHighlighted(highlighted);
+    valueConfig.setHighlighted(highlighted);
+    promptConfig.setHighlighted(highlighted);
+    validValuesConfig.setHighlighted(highlighted);
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    typeConfig.addFocusListener(listener);
+    incrConfig.addFocusListener(listener);
+    valueConfig.addFocusListener(listener);
+    promptConfig.addFocusListener(listener);
+    validValuesConfig.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    typeConfig.removeFocusListener(listener);
+    incrConfig.removeFocusListener(listener);
+    valueConfig.removeFocusListener(listener);
+    promptConfig.removeFocusListener(listener);
+    validValuesConfig.removeFocusListener(listener);
   }
 }

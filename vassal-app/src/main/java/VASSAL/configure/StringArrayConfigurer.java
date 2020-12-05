@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -254,6 +255,30 @@ public class StringArrayConfigurer extends Configurer {
         model.addElement(item);
       }
     }
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    getControls();
+    list.setBackground(highlighted ? HIGHLIGHT_COLOR : Color.white);
+    textField.setBackground(highlighted ? HIGHLIGHT_COLOR : Color.white);
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    list.addFocusListener(listener);
+    textField.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    list.removeFocusListener(listener);
+    textField.removeFocusListener(listener);
   }
 
   // TODO move test code to a manual unit test annotated with @Ignore

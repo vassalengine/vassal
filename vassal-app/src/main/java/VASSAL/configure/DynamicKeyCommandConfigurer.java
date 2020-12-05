@@ -26,6 +26,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 
 import javax.swing.BorderFactory;
@@ -174,5 +175,29 @@ public class DynamicKeyCommandConfigurer extends Configurer {
 
   public boolean isEnumType() {
     return propChangeConfig.isEnumType();
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    commandConfig.setHighlighted(highlighted);
+    keyConfig.setHighlighted(highlighted);
+    propChangeConfig.setHighlighted(highlighted);
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    commandConfig.addFocusListener(listener);
+    keyConfig.addFocusListener(listener);
+    propChangeConfig.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    commandConfig.removeFocusListener(listener);
+    keyConfig.removeFocusListener(listener);
+    propChangeConfig.removeFocusListener(listener);
   }
 }

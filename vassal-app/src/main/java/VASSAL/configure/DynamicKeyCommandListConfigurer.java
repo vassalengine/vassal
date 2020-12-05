@@ -24,7 +24,10 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.icon.IconFamily;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -40,33 +43,30 @@ import net.miginfocom.swing.MigLayout;
 /**
  * A customise ListConfigurer for Lists of DynamicKeyCommands
  * Use a tabular layout format to reduce screen real estate requirements
+ *
  */
-public class DynamicKeyCommandListConfigurer extends Configurer implements PropertyChangeListener {
+public class DynamicKeyCommandListConfigurer extends Configurer implements PropertyChangeListener, ConfigurableList {
 
   // The number of Components added to the header of the Controls panel
   private static final int HEADER_COMPONENT_COUNT = 4;
+  // The number of Components added to the Controls panel for each Entry
+  private static final int COMPONENT_COUNT = 6;
 
   private static final int CONTROLLER_ICON_SIZE = IconFamily.XSMALL;
 
   private JPanel controls;
   private JPanel configControls;
   private JPanel panel;
-  private final List<DKCEntry> entries = new ArrayList<>();
+  private final List<ConfigurableListEntry> entries = new ArrayList<>();
   private DynamicProperty target;
-  private JButton initialAddButton;
-
-
-  public DynamicKeyCommandListConfigurer(String key, String name) {
-    super(key, name);
-  }
-
-  public DynamicKeyCommandListConfigurer(String key, String name, List<?> val) {
-    super(key, name, val);
-  }
+  private final ConfigurableListController controller;
+  private int selectedEntryIndex = -1;
+  private JPanel emptyPanel;
 
   public DynamicKeyCommandListConfigurer(String key, String name, DynamicProperty target) {
     super(key, name);
     setTarget(target);
+    controller = new ConfigurableListController(this, CONTROLLER_ICON_SIZE);
   }
 
   public DynamicProperty getTarget() {
@@ -110,7 +110,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   protected void updateValue() {
     noUpdate = true;
     final ArrayList<Object> newArray = new ArrayList<>();
-    for (final DKCEntry entry : entries) {
+    for (final ConfigurableListEntry entry : entries) {
       newArray.add(entry.getConfigurer().getValue());
     }
     setValue(newArray);
@@ -131,23 +131,37 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new MigLayout(TraitLayout.STANDARD_GAPY, "[grow,fill]", "[]")); // NON-NLS
+      panel = new JPanel(new MigLayout(TraitLayout.STANDARD_GAPY, "[grow,fill]", "[grow,fill]")); // NON-NLS
       panel.setBorder(BorderFactory.createEtchedBorder());
-      controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]")); // NON-NLS
+      controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow,fill]rel[grow,fill]rel[]rel[grow,fill]rel[]", "[center]")); // NON-NLS
+      configControls = new JPanel(new MigLayout("hidemode 3," + ConfigurerLayout.STANDARD_INSERTS_GAPY, "[grow,fill]rel[grow,fill]rel[]rel[grow,fill]rel[]", "[grow,fill,center]")); // NON-NLS
 
-      initialAddButton = new NoInsetButton("add", CONTROLLER_ICON_SIZE, "Editor.ConfigurableListEntryController.add_first_tip"); // NON-NLS
-      initialAddButton.addActionListener(e -> {
-        addEntry();
-      });
-
-      controls.add(initialAddButton, "growx 0,alignx center,wrap"); // NON-NLS
-      controls.add(configControls, "grow"); // NON-NLS
+      emptyPanel = new JPanel();
+      emptyPanel.setMinimumSize(new Dimension(20, 20));
+      controls.add(emptyPanel, "grow,push"); // NON-NLS
+      controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS
+
       rebuildControls();
     }
     return panel;
+  }
+
+  @Override
+  public JPanel getListController() {
+    return controller;
+  }
+
+  private void updateListController() {
+    controller.setCanMoveUp(getSelectedIndex() > 0);
+    controller.setCanMoveDown(getSelectedIndex() < entries.size() - 1);
+  }
+
+  @Override
+  public void selectEntry(ConfigurableListEntry entry) {
+    setSelectedIndex(entries.indexOf(entry));
+    updateControls();
   }
 
   @SuppressWarnings("unchecked")
@@ -177,8 +191,8 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   protected void rebuildControls() {
     if (controls != null) {
       // Remove any existing Listeners
-      for (final DKCEntry entry : entries) {
-        entry.removePropertyChangeListener(this);
+      for (final ConfigurableListEntry entry : entries) {
+        entry.getConfigurer().removePropertyChangeListener(this);
       }
 
       // Remove all entries and Controls
@@ -190,7 +204,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
       // Create a new set of entries and add the controls
       for (final Object value : getListValue()) {
-        final DKCEntry entry = new DKCEntry(this, value);
+        final DKCEntry entry = new DKCEntry(this, value, CONTROLLER_ICON_SIZE);
         entries.add(entry);
         appendConfigControls(entry);
       }
@@ -198,6 +212,15 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       updateControls();
       repack();
     }
+  }
+
+  private void setSelectedIndex(int index) {
+    selectedEntryIndex = index;
+    updateListController();
+  }
+
+  private int getSelectedIndex() {
+    return selectedEntryIndex;
   }
 
   /**
@@ -210,7 +233,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     configControls.add(c.getKeyControls(), "growx"); // NON-NLS
     configControls.add(c.getTypeControls(), "growx 0"); // NON-NLS
     configControls.add(entry.getPromptPanel(), "growx"); // NON-NLS
-    configControls.add(entry.getButtons(), "growx 0,wrap"); // NON-NLS
+    configControls.add(entry.getRemoveButton(), "growx 0,wrap"); // NON-NLS
     configControls.add(c.getValuesControls(), "span 4,grow,wrap"); // NON-NLS
 
   }
@@ -227,7 +250,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     configControls.add(c.getKeyControls(), "growx", controlPos++); // NON-NLS
     configControls.add(c.getTypeControls(), "growx 0", controlPos++); // NON-NLS
     configControls.add(entry.getPromptPanel(), "growx", controlPos++); // NON-NLS
-    configControls.add(entry.getButtons(), "growx 0,wrap", controlPos++); // NON-NLS
+    configControls.add(entry.getRemoveButton(), "growx 0,wrap", controlPos++); // NON-NLS
     configControls.add(c.getValuesControls(), "span 4,grow,wrap", controlPos); // NON-NLS
 
   }
@@ -241,8 +264,8 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     configControls.remove(c.getCommandControls());
     configControls.remove(c.getKeyControls());
     configControls.remove(c.getTypeControls());
-    configControls.remove(c.getChangerControls());
     configControls.remove(entry.getPromptPanel());
+    configControls.remove(entry.getRemoveButton());
     configControls.remove(c.getValuesControls());
 
   }
@@ -251,7 +274,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
    * Find the position of the first control for the specified list Entry
    */
   private int listPosToControlsPos(int listPos) {
-    return HEADER_COMPONENT_COUNT + listPos * DKCEntry.COMPONENT_COUNT;
+    return HEADER_COMPONENT_COUNT + listPos * COMPONENT_COUNT;
   }
 
   /**
@@ -260,12 +283,11 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   private void updateControls() {
 
     configControls.setVisible(getListValue().size() > 0);
-    initialAddButton.setVisible(getListValue().size() == 0);
+    emptyPanel.setVisible(getListValue().size() == 0);
 
     for (int i = 0; i < entries.size(); i++) {
-      entries.get(i).setTop(i == 0);
-      entries.get(i).setBottom(i >= (entries.size() - 1));
       entries.get(i).updateVisibility();
+      entries.get(i).setHighlighted(i == getSelectedIndex());
     }
 
     configControls.revalidate();
@@ -295,9 +317,14 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
   }
 
-  // An Entry has had its Up button clicked
-  private void moveUp(DKCEntry entry) {
-    final int listPos = entries.indexOf(entry);
+  // Move currentl selected entry up
+  public void moveEntryUp() {
+    if (getSelectedIndex() < 0) {
+      return;
+    }
+
+    final int listPos = getSelectedIndex();
+    final DKCEntry entry = (DKCEntry) entries.get(listPos);
 
     // Remove the Configurer controls from their current position and re-insert one position up
     removeConfigControls(entry);
@@ -308,16 +335,22 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     entries.add(listPos - 1, entry);
 
     // Remove the item in the value list from its current position on the list and re-insert one position up
-    getListValue().remove(listPos);
-    getListValue().add(listPos - 1, entry.getConfigurer());
+    updateValue();
+
+    setSelectedIndex(listPos - 1);
 
     updateControls();
 
   }
 
-  // An Entry has had its Down button clicked
-  private void moveDown(DKCEntry entry) {
-    final int listPos = entries.indexOf(entry);
+  // Move currently selected entry down
+  public void moveEntryDown() {
+    if (getSelectedIndex() < 0) {
+      return;
+    }
+
+    final int listPos = getSelectedIndex();
+    final DKCEntry entry = (DKCEntry) entries.get(listPos);
 
     // Remove the Configurer controls from their current position and re-insert one position down
     removeConfigControls(entry);
@@ -327,64 +360,55 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     entries.remove(entry);
     entries.add(listPos + 1, entry);
 
-    // Remove the item in the value list from its current position on the list and re-insert one position down
-    getListValue().remove(listPos);
-    getListValue().add(listPos + 1, entry.getConfigurer());
+    // Move the selection down 1 to follow the moved entry
+    setSelectedIndex(getSelectedIndex() + 1);
 
+    updateValue();
     updateControls();
   }
 
-  // Add the first entry
-  private void addEntry() {
-    final DKCEntry entry = new DKCEntry(this);
-    entries.add(entry);
-    getListValue().add(entry.getConfigurer());
-    appendConfigControls(entry);
-    updateControls();
-    repack();
-  }
+  /**
+   * Add a new entry after the currently selected entry, or at the end if none selected
+   */
+  @Override
+  public void addEntry() {
 
-  // An Entry has had its Add button clicked
-  private void addEntry(DKCEntry entry) {
-
-    // Find the position of the entry that was clicked. The new entry will be created below it.
-    final int pos = entries.indexOf(entry);
+    // Find the position of currently selected entry. The new entry will be created below it.
+    final int pos = getSelectedIndex();
 
     // Create a new empty entry
-    final DKCEntry newEntry = new DKCEntry(this);
+    final DKCEntry newEntry = new DKCEntry(this, CONTROLLER_ICON_SIZE);
 
     // Insert the new entry into the list at the appropriate place
-    if (pos < entries.size() - 1) {
-      entries.add(pos + 1, newEntry);
+    if (entries.size() == 0 || getSelectedIndex() < 0) {
+      entries.add(newEntry);
+      updateValue();
+      appendConfigControls(newEntry);
+
     }
     else {
-      entries.add(newEntry);
-    }
-
-    // Insert the Configurer components into the configsPanel at the appropriate place.
-    // Rebuilding the entire panel for every insert causes unsightly flashing.
-    if (pos < entries.size()) {
-      // Ensure the inserted components respect the existing preferred size
-      newEntry.adjustPreferredSize(entries.get(0));
+      entries.add(pos + 1, newEntry);
+      updateValue();
+      newEntry.adjustPreferredSize((DKCEntry) entries.get(0)); // Ensure the inserted components respect the existing preferred size
       insertConfigControls(newEntry, pos + 1);
     }
-    else {
-      appendConfigControls(newEntry);
-    }
+
+    setSelectedIndex(pos + 1);
 
     updateControls();
 
   }
 
   // An Entry has had its Remove button clicked
-  private void removeEntry(DKCEntry entry) {
+  @Override
+  public void deleteEntry(ConfigurableListEntry entry) {
     final int listPos = entries.indexOf(entry);
     final int componentPos = listPosToControlsPos(listPos);
-    for (int i = 0; i < DKCEntry.COMPONENT_COUNT; i++) {
+    for (int i = 0; i < COMPONENT_COUNT; i++) {
       configControls.remove(componentPos);
     }
     entries.remove(entry);
-    getListValue().remove(listPos);
+    updateValue();
     updateControls();
   }
 
@@ -420,18 +444,30 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     else return valueString.equals(otherValueString);
   }
 
-  private static class DKCEntry implements ConfigurableListEntry {
+  @Override
+  public void moveEntryTop() {
 
-    // The number of Components added to the Controls panel for each Entry
-    private static final int COMPONENT_COUNT = 6;
+  }
+
+  @Override
+  public void moveEntryBottom() {
+
+  }
+
+  @Override
+  public void editEntry() {
+
+  }
+
+  private static class DKCEntry implements ConfigurableListEntry {
 
     private final DynamicKeyCommandConfigurer configurer;
     private DynamicKeyCommandListConfigurer listConfig;
-    private final ConfigurableListEntryController controller;
     private final NoInsetButton showHideValuesButton;
     private final JPanel promptPanel;
+    private final JButton removeButton;
 
-    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value) {
+    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value, int iconSize) {
       setListConfig(listConfig);
       configurer = new DynamicKeyCommandConfigurer(listConfig.getTarget());
 
@@ -440,8 +476,6 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       configurer.addPropertyChangeListener(listConfig);
       configurer.addPropertyChangeListener(e -> updateVisibility());
 
-      controller = new ConfigurableListEntryController(this, CONTROLLER_ICON_SIZE);
-
       showHideValuesButton = new NoInsetButton("edit-find", CONTROLLER_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
       showHideValuesButton.setVisible(false);
       showHideValuesButton.addActionListener(e -> showHideValues());
@@ -449,18 +483,40 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       promptPanel = new JPanel(new MigLayout("ins 0,hidemode 3", "[grow,fill]2[]")); // NON-NLS
       promptPanel.add(configurer.getChangerControls(), "growx,aligny center"); // NON-NLS
       promptPanel.add(showHideValuesButton, "aligny center"); // NON-NLS
+
+      removeButton = new NoInsetButton("no", iconSize, "Editor.ConfigurableListEntryController.remove_button_tip"); // NON-NLS
+      removeButton.addActionListener(e -> getListConfig().deleteEntry(this));
+
+      final FocusListener fl = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            DKCEntry.this.focusGained();
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+
+        }
+      };
+
+      configurer.addFocusListener(fl);
     }
 
-    public DKCEntry(DynamicKeyCommandListConfigurer listConfig) {
-      this(listConfig, null);
+    private void focusGained() {
+      listConfig.selectEntry(this);
+    }
+
+    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, int iconSize) {
+      this(listConfig, null, iconSize);
     }
 
     public JPanel getPromptPanel() {
       return promptPanel;
     }
 
-    public JPanel getButtons() {
-      return controller;
+    @Override
+    public JButton getRemoveButton() {
+      return removeButton;
     }
 
     public DynamicKeyCommandConfigurer getConfigurer() {
@@ -473,14 +529,6 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
     public void setListConfig(DynamicKeyCommandListConfigurer listConfig) {
       this.listConfig = listConfig;
-    }
-
-    public void setTop(boolean isTop) {
-      controller.setCanMoveUp(!isTop);
-    }
-
-    public void setBottom(boolean isBottom) {
-      controller.setCanMoveDown(!isBottom);
     }
 
     public void setPropertyChangeListener(PropertyChangeListener l) {
@@ -509,6 +557,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       return showHideValuesButton;
     }
 
+    @Override
     public void updateVisibility() {
       showHideValuesButton.setVisible(configurer.isEnumType());
       if (!configurer.isEnumType()) {
@@ -517,43 +566,10 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       getListConfig().repack();
     }
 
-    // ConfigurableListEntry implementation
     @Override
-    public void moveUp() {
-      getListConfig().moveUp(this);
+    public void setHighlighted(boolean highlighted) {
+      configurer.setHighlighted(highlighted);
     }
 
-    @Override
-    public void moveDown() {
-      getListConfig().moveDown(this);
-    }
-
-    // Not implemented by this class
-    @Override
-    public void moveTop() {
-
-    }
-
-    // Not implemented by this class
-    @Override
-    public void moveBottom() {
-
-    }
-
-    @Override
-    public void addEntry() {
-      getListConfig().addEntry(this);
-    }
-
-    @Override
-    public void deleteEntry() {
-      getListConfig().removeEntry(this);
-    }
-
-    // Not implemented by this class
-    @Override
-    public void edit() {
-
-    }
   }
 }

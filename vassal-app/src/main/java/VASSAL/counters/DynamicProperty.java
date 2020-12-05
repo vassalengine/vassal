@@ -465,7 +465,11 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig, "wrap"); // NON-NLS
 
-      controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
+      final JPanel controllerPanel = new JPanel(new MigLayout("ins 0," + TraitLayout.STANDARD_GAPY, "[grow]")); // NON-NLS
+      controllerPanel.add(new JLabel(Resources.getString("Editor.DynamicProperty.key_commands")), "align right,wrap"); // NON-NLS
+      controllerPanel.add(keyCommandListConfig.getListController(), "align center"); // NON-NLS
+      controls.add(controllerPanel);
+      controls.add(keyCommandListConfig.getControls());
 
       numericConfig.addPropertyChangeListener(l);
       numericConfig.fireUpdate();

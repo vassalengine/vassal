@@ -44,8 +44,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -315,7 +317,11 @@ public class SetGlobalProperty extends DynamicProperty {
       wrapConfig = new BooleanConfigurer(m.isWrap());
       controls.add(wrapLabel, wrapConfig);
 
-      controls.add("Editor.DynamicProperty.key_commands", keyCommandListConfig);
+      final JPanel controllerPanel = new JPanel(new MigLayout("ins 0," + TraitLayout.STANDARD_GAPY, "[grow]")); // NON-NLS
+      controllerPanel.add(new JLabel(Resources.getString("Editor.DynamicProperty.key_commands")), "align right,wrap"); // NON-NLS
+      controllerPanel.add(keyCommandListConfig.getListController(), "align center"); // NON-NLS
+      controls.add(controllerPanel);
+      controls.add(keyCommandListConfig.getControls());
 
       numericConfig.addPropertyChangeListener(evt -> {
         final boolean isNumeric = numericConfig.booleanValue();

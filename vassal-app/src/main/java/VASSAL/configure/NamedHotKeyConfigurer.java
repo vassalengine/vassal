@@ -23,6 +23,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.FocusEvent;
@@ -62,7 +63,6 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private JPanel controls;
   private String lastValue;
   private JButton undoButton;
-
 
   public static String getFancyString(NamedKeyStroke k) {
     String s = getString(k);
@@ -272,6 +272,28 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       s += "," + stroke.getName();
     }
     return s;
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    keyStroke.setBackground(highlighted ? HIGHLIGHT_COLOR : Color.white);
+    keyName.setBackground(highlighted ? HIGHLIGHT_COLOR : Color.white);
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    keyStroke.addFocusListener(listener);
+    keyName.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    keyStroke.removeFocusListener(listener);
+    keyName.removeFocusListener(listener);
+
   }
 
   private class KeyStrokeAdapter extends KeyAdapter {

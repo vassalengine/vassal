@@ -16,17 +16,20 @@
  */
 package VASSAL.configure;
 
-import javax.swing.JButton;
+import javax.swing.JPanel;
 
 /**
  * An interface to be implemented by Configurers that manage variable sized lists.
- * Each Configurable List entry maintains all info about a particular list entry
- *
- * See also {@link ConfigurableList}, {@link ConfigurableListController}
+ * See also {@link ConfigurableListEntry}, {@link ConfigurableListController}
  */
-public interface ConfigurableListEntry {
-  JButton getRemoveButton();
-  Configurer getConfigurer();
-  void updateVisibility();
-  void setHighlighted(boolean b);
+public interface ConfigurableList {
+  void moveEntryUp();
+  void moveEntryDown();
+  void moveEntryTop();
+  void moveEntryBottom();
+  void addEntry();
+  void deleteEntry(ConfigurableListEntry entry);
+  void editEntry();
+  JPanel getListController();
+  void selectEntry(ConfigurableListEntry entry);
 }

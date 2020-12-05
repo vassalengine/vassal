@@ -18,6 +18,7 @@ import VASSAL.i18n.Resources;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.FocusListener;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -406,5 +407,19 @@ public class TranslatingStringEnumConfigurer extends Configurer {
     if (panel instanceof ConfigurerPanel) {
       ((ConfigurerPanel) panel).setLabelVisibility(visible);
     }
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    box.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    box.removeFocusListener(listener);
   }
 }
