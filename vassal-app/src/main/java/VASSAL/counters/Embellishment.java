@@ -663,8 +663,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       // random layers
       if (rndKey != null && rndKey.equals(stroke)) {
-        int val;
-        val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
+        final int val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
       }
     }
