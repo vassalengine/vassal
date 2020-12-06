@@ -29,6 +29,9 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import org.w3c.dom.Element;
 
@@ -155,67 +158,54 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
    * the background grid that they cover. Cache as much of the work as
    * possible to prevent bogging down with large numbers of zones.
    */
-  protected Area scaledZones = null;
-  protected Area translatedZones = null;
-  protected AffineTransform scaleTransform;
-  protected AffineTransform translateTransform;
-  protected double lastScale = 0.0;
-  protected int lastX = -1;
-  protected int lastY = -1;
+  protected final java.util.Map<Pair<Point, Double>, Area> clipCache = new ConcurrentHashMap<>();
+
+  protected Area makeUnscaledUntranslatedClipArea() {
+    // construct unscaled area
+    final Area a = new Area();
+    for (Zone zone : zones) {
+      if (!zone.isUseParentGrid()) {
+        a.add(new Area(zone.getShape()));
+      }
+    }
+
+    return a.isEmpty() ? null : a;
+  }
+
+  protected Area makeClipArea(Pair<Point, Double> k) {
+    final Area a = makeUnscaledUntranslatedClipArea();
+    if (a != null) {
+      // scale the clip area and move it to the anchor point for the board
+      final Point p = k.getLeft();
+      final double s = k.getRight();
+
+      final AffineTransform t = AffineTransform.getScaleInstance(s, s);
+      t.translate(p.x, p.y);
+      a.transform(t);
+    }
+
+    return a;
+  }
 
   @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    /*
-     * Skip clipping if there is no background grid, or it isn't visible
-     */
+    // Draw the background grid if there is a visible one
     if (background != null && background.isVisible()) {
-      /*
-       * Calculate and cache scaled shape consisting of all zones that do not
-       * use the parent grid. (There may be none!)
-       */
-      if (lastScale != scale || scaleTransform == null) {
-        scaleTransform = AffineTransform.getScaleInstance(scale, scale);
-        scaledZones = null;
-
-        for (Zone zone : zones) {
-          if (!zone.isUseParentGrid()) {
-            if (scaledZones == null) {
-              scaledZones = new Area(
-                scaleTransform.createTransformedShape(zone.getShape()));
-            }
-            else {
-              scaledZones.add(new Area(
-                scaleTransform.createTransformedShape(zone.getShape())));
-            }
-          }
-        }
-        lastScale = scale;
-        translateTransform = null;  // Force translatedZones to be regenerated
-      }
-
-      /*
-       * Translate and cache the combined zone shape
-       */
-      if (lastX != bounds.x || lastY != bounds.y || translateTransform == null) {
-        translateTransform = AffineTransform.getTranslateInstance(bounds.x, bounds.y);
-        translatedZones = null;
-        if (scaledZones != null) {
-          translatedZones = new Area(translateTransform.createTransformedShape(scaledZones));
-        }
-        lastX = bounds.x;
-        lastY = bounds.y;
-      }
-
-      /*
-       * Clip out the area covered by the Zones not using the background grid and draw it.
-       */
+      // Clip out the area covered by Zones not using the background grid
       Graphics2D g2d = (Graphics2D) g;
-      Shape oldClip = g2d.getClip();
-      if (translatedZones != null && oldClip != null) {
-        Area clipArea = new Area(oldClip);
-        clipArea.subtract(translatedZones);
-        g2d.setClip(clipArea);
+      final Shape oldClip = g2d.getClip();
+      if (oldClip != null) {
+        final Area translatedZones = clipCache.computeIfAbsent(
+          Pair.of(bounds.getLocation(), scale), this::makeClipArea
+        );
+
+        if (translatedZones != null) {
+          final Area clipArea = new Area(oldClip);
+          clipArea.subtract(translatedZones);
+          g2d.setClip(clipArea);
+        }
       }
+      // Draw the clipped background grid
       background.draw(g, bounds, visibleRect, scale, reversed);
       g2d.setClip(oldClip);
     }
