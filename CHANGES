@@ -4,6 +4,7 @@
 * 13760: Upgrade bundled Java to 15.0.1+9
 * 13738: IllegalArgumentException because Invisible trait permitted alpha
     values outside [0,1]
+* 13614: NPE in ZonedGrid due to thread-unsafe caching of Zone clipping
 
 3.4.11 - 29 November 2020
 
