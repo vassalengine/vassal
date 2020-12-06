@@ -192,7 +192,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     // Draw the background grid if there is a visible one
     if (background != null && background.isVisible()) {
       // Clip out the area covered by Zones not using the background grid
-      Graphics2D g2d = (Graphics2D) g;
+      final Graphics2D g2d = (Graphics2D) g;
       final Shape oldClip = g2d.getClip();
       if (oldClip != null) {
         final Area translatedZones = clipCache.computeIfAbsent(
