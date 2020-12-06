@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2004-2020 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,7 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -33,12 +33,19 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.util.Arrays;
 
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.MouseInputAdapter;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
@@ -48,23 +55,33 @@ public class PolygonEditor extends JPanel {
 
   private Polygon polygon;
   private int selected = -1;
+
   protected JScrollPane myScroll;
+
+  private static final String DELETE = "Delete";
+
+  private static final int POINT_RADIUS = 10;
+  private static final int CLICK_THRESHOLD = 10;
 
   public PolygonEditor(Polygon p) {
     polygon = p;
   }
 
   protected void reset() {
+    // clear all the listeners
     final MouseListener[] ml = getMouseListeners();
-
-    // get rid of all the mouse listeners floating around
-    for (final MouseListener i: ml)
+    for (final MouseListener i: ml) {
       removeMouseListener(i);
+    }
 
     final MouseMotionListener[] mml = getMouseMotionListeners();
-
-    for (final MouseMotionListener i: mml)
+    for (final MouseMotionListener i: mml) {
       removeMouseMotionListener(i);
+    }
+
+    final InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+    im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+    im.remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
 
     if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
@@ -91,29 +108,14 @@ public class PolygonEditor extends JPanel {
   }
 
   private void setupForCreate() {
-    final DefineRectangle dr = new DefineRectangle();
-    addMouseListener(dr);
+    new DefineRectangle();
+    requestFocus();
+    repaint();
   }
 
   private void setupForEdit() {
-    final ModifyPolygon mp = new ModifyPolygon();
-    addMouseListener(mp);
-    addMouseMotionListener(mp);
-    final ActionListener l = e -> {
-      if (selected >= 0) {
-        for (int i = selected; i < polygon.npoints - 1; ++i) {
-          polygon.xpoints[i] = polygon.xpoints[i + 1];
-          polygon.ypoints[i] = polygon.ypoints[i + 1];
-        }
-        polygon.npoints--;
-        selected = -1;
-        repaint();
-      }
-    };
-    registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), WHEN_IN_FOCUSED_WINDOW);
-    registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), WHEN_IN_FOCUSED_WINDOW);
+    new ModifyPolygon();
     requestFocus();
-    selected = 2;
     repaint();
   }
 
@@ -130,9 +132,42 @@ public class PolygonEditor extends JPanel {
     scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
   }
 
-  public static void reset(Polygon p, String path) {
+  public void scrollAtEdge(Point p, int dist) {
+    p = new Point(
+      p.x - myScroll.getViewport().getViewPosition().x,
+      p.y - myScroll.getViewport().getViewPosition().y
+    );
+    int dx = 0, dy = 0;
+
+    if (p.x < dist && p.x >= 0) {
+      dx = -1;
+    }
+
+    if (p.x >= myScroll.getViewport().getSize().width - dist &&
+        p.x < myScroll.getViewport().getSize().width) {
+      dx = 1;
+    }
+
+    if (p.y < dist && p.y >= 0) {
+      dy = -1;
+    }
+
+    if (p.y >= myScroll.getViewport().getSize().height - dist &&
+        p.y < myScroll.getViewport().getSize().height) {
+      dy = 1;
+    }
+
+    if (dx != 0 || dy != 0) {
+      Rectangle r = new Rectangle(myScroll.getViewport().getViewRect());
+      r.translate(2 * dist * dx, 2 * dist * dy);
+      r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
+      scrollRectToVisible(r);
+    }
+  }
+
+  public static void reset(Polygon p, String pathStr) {
     p.reset();
-    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(path, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(pathStr, ';');
     while (sd.hasMoreTokens()) {
       final String s = sd.nextToken();
       final SequenceEncoder.Decoder pd = new SequenceEncoder.Decoder(s, ',');
@@ -152,14 +187,16 @@ public class PolygonEditor extends JPanel {
   }
 
   public static String polygonToString(Polygon p) {
-    final StringBuilder s = new StringBuilder();
-    for (int i = 0; i < p.npoints; i++) {
-      s.append(Math.round(p.xpoints[i])).append(',').append(Math.round(p.ypoints[i]));
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < p.npoints; ++i) {
+      sb.append(Math.round(p.xpoints[i]))
+        .append(',')
+        .append(Math.round(p.ypoints[i]));
       if (i < (p.npoints - 1)) {
-        s.append(';');
+        sb.append(';');
       }
     }
-    return s.toString();
+    return sb.toString();
   }
 
   @Override
@@ -171,21 +208,38 @@ public class PolygonEditor extends JPanel {
     }
 
     final Graphics2D g2d = (Graphics2D) g;
+    g2d.addRenderingHints(SwingUtils.FONT_HINTS);
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
 
-    g2d.setColor(Color.white);
-    g2d.setComposite(
-      AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+
+    final int r = POINT_RADIUS;
+    final int d = 2 * r;
+
+    // fill the zone
+    g2d.setColor(Color.WHITE);
     g2d.fill(polygon);
 
-    if (selected >= 0 && selected < polygon.xpoints.length) {
-      g2d.setColor(Color.red);
-      final int x = polygon.xpoints[selected];
-      final int y = polygon.ypoints[selected];
-      g2d.fillOval(x - 10, y - 10, 20, 20);
+    // draw the vertex markers
+    g2d.setColor(Color.BLACK);
+    for (int i = 0; i < polygon.npoints; ++i) {
+      final int x = polygon.xpoints[i];
+      final int y = polygon.ypoints[i];
+      g2d.drawOval(x - r, y - r, d, d);
     }
 
+    // draw the selected vertex
+    if (selected >= 0 && selected < polygon.xpoints.length) {
+      g2d.setColor(Color.RED);
+      final int x = polygon.xpoints[selected];
+      final int y = polygon.ypoints[selected];
+      g2d.fillOval(x - r, y - r, d, d);
+    }
+
+    // draw the zone
     g2d.setComposite(AlphaComposite.SrcAtop);
-    g2d.setColor(Color.black);
+    g2d.setColor(Color.BLACK);
     g2d.setStroke(new BasicStroke(2.0F));
     g2d.drawPolygon(polygon);
   }
@@ -194,184 +248,207 @@ public class PolygonEditor extends JPanel {
     super.paint(g);
   }
 
+  protected static Pair<Integer, Double> nearestVertex(Polygon p, int x, int y) {
+    int idx = -1;
+    double minDist = Double.MAX_VALUE;
+
+    for (int i = 0; i < p.npoints; ++i) {
+      final int x1 = p.xpoints[i];
+      final int y1 = p.ypoints[i];
+
+      final double d = Point2D.distance(x, y, x1, y1);
+      if (d < minDist) {
+        minDist = d;
+        idx = i;
+      }
+    }
+
+    return Pair.of(idx, minDist);
+  }
+
+  protected static Triple<Integer, Point, Double> nearestSegment(Polygon p, int x, int y) {
+    int idx = -1;
+    int min_x = 0;
+    int min_y = 0;
+    double minDist = Double.MAX_VALUE;
+
+    for (int i = 0; i < p.npoints; ++i) {
+      final int j = (i + 1) % p.npoints;
+
+      final int x1 = p.xpoints[i];
+      final int y1 = p.ypoints[i];
+
+      final int x2 = p.xpoints[j];
+      final int y2 = p.ypoints[j];
+
+      final int px = x2 - x1;
+      final int py = y2 - y1;
+
+      final int norm = px * px + py * py;
+
+      double u = ((x - x1) * px + (y - y1) * py) / (double) norm;
+      u = u > 1.0 ? 1.0 : (u < 0.0 ? 0.0 : u);
+
+      // x3,y3 is the point nearest to x,y on x1,y1 - x2,y2
+      final int x3 = (int) Math.round(x1 + u * px);
+      final int y3 = (int) Math.round(y1 + u * py);
+
+      final double d = Point2D.distance(x, y, x3, y3);
+      if (d < minDist) {
+        minDist = d;
+        min_x = x3;
+        min_y = y3;
+        idx = i;
+      }
+    }
+
+    return Triple.of(idx, new Point(min_x, min_y), minDist);
+  }
+
+  protected static void deleteVertex(Polygon p, int i) {
+    p.xpoints = ArrayUtils.remove(p.xpoints, i);
+    p.ypoints = ArrayUtils.remove(p.ypoints, i);
+    --p.npoints;
+    p.invalidate();
+  }
+
+  protected static void insertVertex(Polygon p, int i, int x, int y) {
+    p.xpoints = ArrayUtils.insert(i, p.xpoints, x);
+    p.ypoints = ArrayUtils.insert(i, p.ypoints, y);
+    ++p.npoints;
+    p.invalidate();
+  }
+
+  protected static void moveVertex(Polygon p, int i, int x, int y) {
+    p.xpoints[i] = x;
+    p.ypoints[i] = y;
+    p.invalidate();
+  }
+
   private class ModifyPolygon extends MouseInputAdapter {
+    public ModifyPolygon() {
+      addMouseListener(this);
+      addMouseMotionListener(this);
+
+      getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), DELETE);
+      getActionMap().put(DELETE, new AbstractAction() {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          deleteKeyPressed();
+        }
+      });
+    }
+
+    private void remove() {
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+      getInputMap(WHEN_IN_FOCUSED_WINDOW).remove(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+    }
+
     @Override
     public void mouseDragged(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        moveSelectedPoint(e);
+        if (selected >= 0 && selected < polygon.xpoints.length) {
+          moveVertex(polygon, selected, e.getX(), e.getY());
+        }
         scrollAtEdge(e.getPoint(), 15);
         repaint();
       }
     }
 
-    private void moveSelectedPoint(MouseEvent e) {
-      if (selected >= 0 && selected < polygon.xpoints.length) {
-        polygon.xpoints[selected] = e.getX();
-        polygon.ypoints[selected] = e.getY();
-      }
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        moveSelectedPoint(e);
-        repaint();
-      }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if (!SwingUtils.isContextMouseButtonDown(e)) {
-        return;
-      }
-
-      // find closest segment/vertex
-      selected = -1;
-      double minDist = Float.MAX_VALUE;
-      boolean isVertex = false;
-
-      final int x0 = e.getX();
-      final int y0 = e.getY();
-
-      for (int i = 0; i < polygon.npoints; ++i) {
-        final int x1 = polygon.xpoints[i];
-        final int y1 = polygon.ypoints[i];
-        final int x2;
-        final int y2;
-        if (i == polygon.npoints - 1) {
-          x2 = polygon.xpoints[0];
-          y2 = polygon.ypoints[0];
-        }
-        else {
-          x2 = polygon.xpoints[i + 1];
-          y2 = polygon.ypoints[i + 1];
-        }
-
-        if (y2 == y1 && x2 == x1) // two vertices on top of each other: skip
-          continue;
-
-        final double d = Point2D.distance(x1, y1, x2, y2); // segment length
-        final double comp = ((x2 - x1) * (x0 - x1) + (y2 - y1) * (y0 - y1)) / d; // component of projection of selection on segment
-        final double dist; // orthogonal distance to segment
-
-        if (comp <= 0.0) { // too far out beyond first vertex: just move that vertex if it's closest
-          dist = Point2D.distance(x1, y1, x0, y0);
-          if (dist < minDist) {
-            isVertex = true;
-            minDist = dist;
-            selected = i;
-          }
-        }
-        else if (comp >= d) { // too far out beyond second vertex: just move that vertex: just move that vertex if it's closest
-          dist = Point2D.distance(x0, y0, x2, y2);
-          if (dist < minDist) {
-            isVertex = true;
-            minDist = dist;
-            selected = i + 1;
-          }
-        }
-        else { // calculate orthogonal distance to segment
-          dist = Math.abs((y2 - y1) * e.getX() - (x2 - x1) * e.getY() + x2 * y1 - y2 * x1) /
-            Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
-          if (dist < minDist) {
-            isVertex = false;
-            minDist = dist;
-            selected = i + 1;
-          }
-        }
-      }
-
-      if (!isVertex) { // insert a point near segment
-        polygon.addPoint(e.getX(), e.getY());
-        if (selected >= 0) {
-          for (int i = polygon.npoints - 1; i > selected; --i) {
-            polygon.xpoints[i] = polygon.xpoints[i - 1];
-            polygon.ypoints[i] = polygon.ypoints[i - 1];
-          }
-          polygon.xpoints[selected] = e.getX();
-          polygon.ypoints[selected] = e.getY();
-        }
-      }
-
-      repaint();
-    }
-
     @Override
     public void mousePressed(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        selected = -1;
-        double minDist = Float.MAX_VALUE;
-
-        // move an existing vertex
-        for (int i = 0; i < polygon.npoints; ++i) {
-          final double dist = Point2D.distance(
-            polygon.xpoints[i], polygon.ypoints[i], e.getX(), e.getY()
-          );
-          if (dist < minDist) {
-            minDist = dist;
-            selected = i;
-          }
-        }
-
+        // On left button press, select nearest vertex within the threshold.
+        final Pair<Integer, Double> n = nearestVertex(polygon, e.getX(), e.getY());
+        final double d = n.getRight();
+        selected = d <= CLICK_THRESHOLD ? n.getLeft() : -1;
+        repaint();
+      }
+      else if (SwingUtils.isContextMouseButtonDown(e)) {
+        // On right button press, create a new vertex.
+        final int ins = nearestSegment(polygon, e.getX(), e.getY()).getLeft() + 1;
+        insertVertex(polygon, ins, e.getX(), e.getY());
+        selected = ins;
         repaint();
       }
     }
 
-    public void scrollAtEdge(Point evtPt, int dist) {
-      final Point p = new Point(
-        evtPt.x - myScroll.getViewport().getViewPosition().x,
-        evtPt.y - myScroll.getViewport().getViewPosition().y
-      );
-      int dx = 0, dy = 0;
-      if (p.x < dist && p.x >= 0)
-        dx = -1;
-      if (p.x >= myScroll.getViewport().getSize().width - dist
-          && p.x < myScroll.getViewport().getSize().width)
-        dx = 1;
-      if (p.y < dist && p.y >= 0)
-        dy = -1;
-      if (p.y >= myScroll.getViewport().getSize().height - dist
-          && p.y < myScroll.getViewport().getSize().height)
-        dy = 1;
+    public void deleteKeyPressed() {
+      if (selected >= 0) {
+        deleteVertex(polygon, selected);
+        selected = -1;
 
-      if (dx != 0 || dy != 0) {
-        Rectangle r = new Rectangle(myScroll.getViewport().getViewRect());
-        r.translate(2 * dist * dx, 2 * dist * dy);
-        r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
-        scrollRectToVisible(r);
+        if (polygon.npoints == 0) {
+          // Back to create mode if all points are gone.
+          polygon = null;
+          remove();
+          setupForCreate();
+        }
+
+        repaint();
       }
     }
   }
 
   private class DefineRectangle extends MouseInputAdapter {
+    public DefineRectangle() {
+      addMouseListener(this);
+    }
+
+    private void remove() {
+      removeMouseListener(this);
+      removeMouseMotionListener(this);
+    }
+
+    private void resetPolygon(int x, int y, int n) {
+      final int[] xpoints = new int[n];
+      Arrays.fill(xpoints, x);
+      final int[] ypoints = new int[n];
+      Arrays.fill(ypoints, y);
+      polygon = new Polygon(xpoints, ypoints, n);
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        polygon = new Polygon();
-        polygon.addPoint(e.getX(), e.getY());
-        polygon.addPoint(e.getX(), e.getY());
-        polygon.addPoint(e.getX(), e.getY());
-        polygon.addPoint(e.getX(), e.getY());
-        addMouseMotionListener(this);
+      if (polygon == null || polygon.npoints == 0) {
+        if (SwingUtils.isMainMouseButtonDown(e)) {
+          resetPolygon(e.getX(), e.getY(), 4);
+          addMouseMotionListener(this);
+          repaint();
+        }
+        else if (SwingUtils.isContextMouseButtonDown(e)) {
+          remove();
+          resetPolygon(e.getX(), e.getY(), 1);
+          selected = 0;
+          setupForEdit();
+        }
       }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
       if (SwingUtils.isMainMouseButtonDown(e)) {
-        polygon.xpoints[1] = e.getX();
-        polygon.xpoints[2] = e.getX();
-        polygon.ypoints[2] = e.getY();
-        polygon.ypoints[3] = e.getY();
+        polygon.xpoints[1] = polygon.xpoints[2] = e.getX();
+        polygon.ypoints[2] = polygon.ypoints[3] = e.getY();
         repaint();
       }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      if (SwingUtils.isMainMouseButtonDown(e)) {
-        removeMouseListener(this);
-        removeMouseMotionListener(this);
+      if (polygon != null && polygon.npoints == 4 &&
+          SwingUtils.isMainMouseButtonDown(e)) {
+        if ((Math.abs(polygon.xpoints[0] - polygon.xpoints[2]) +
+             Math.abs(polygon.ypoints[0] - polygon.ypoints[2])) < 20) {
+          polygon.xpoints[1] = polygon.xpoints[2] = polygon.xpoints[0] + 25;
+          polygon.ypoints[2] = polygon.ypoints[3] = polygon.ypoints[0] + 25;
+        }
+
+        remove();
+        selected = nearestVertex(polygon, e.getX(), e.getY()).getLeft();
         setupForEdit();
       }
     }

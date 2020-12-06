@@ -55,6 +55,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -245,6 +246,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     final AffineTransform orig_t = g2d.getTransform();
     g2d.setTransform(SwingUtils.descaleTransform(orig_t));
+
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
 
     final Dimension size = panel.getSize();
     size.width *= os_scale;

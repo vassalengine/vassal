@@ -132,7 +132,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     command = st.nextToken(Resources.getString("Editor.Hideable.default_command"));
     bgColor = st.nextColor(null);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
-    transparency = st.hasMoreTokens() ? (float) st.nextDouble(0.3) : 0.3f;
+    transparency = Math.max(0.0f, Math.min(1.0f, st.hasMoreTokens() ? (float) st.nextDouble(0.3) : 0.3f));
     commands = null;
   }
 
@@ -351,12 +351,14 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
     @Override
     public String getType() {
+      final float transp = Math.max(0.0f, Math.min(1.0f, transpConfig.getIntValue(30) / 100.0f));
+
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(hideKeyInput.getValueString())
         .append(hideCommandInput.getValueString())
         .append(colorConfig.getValue() == null ? "" : colorConfig.getValueString())
         .append(accessConfig.getValueString())
-        .append(transpConfig.getIntValue(30) / 100.0f);
+        .append(transp);
       return ID + se.getValue();
     }
 

@@ -52,6 +52,14 @@
     </difference>
 
     <difference>
+        <className>VASSAL/counters/Labeler$LabelOp</className>
+        <differenceType>7006</differenceType>
+        <method>javax.swing.JLabel buildDimensions()</method>
+        <to>java.awt.Dimension</to>
+        <justification>totally broken as-is</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/counters/Labeler$HTMLLabelOp</className>
         <differenceType>7006</differenceType>
         <method>javax.swing.JLabel buildDimensions()</method>
@@ -60,10 +68,51 @@
     </difference>
 
     <difference>
-        <className>VASSAL/counters/Labeler$LabelOp</className>
-        <differenceType>7006</differenceType>
-        <method>javax.swing.JLabel buildDimensions()</method>
-        <to>java.awt.Dimension</to>
-        <justification>Clean up.</justification>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>lastScale</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>lastX</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>lastY</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
+    </difference>
+    
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>scaleTransform</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
+    </difference>
+    
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>scaledZones</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
+    </difference>
+    
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>translateTransform</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/board/ZonedGrid</className>
+        <differenceType>6001</differenceType>
+        <field>translatedZones</field>
+        <justification>Drawing no longer uses old cache members, so anything which sets them can't possibly work anymoer anyway</justification>
     </difference>
 </differences>

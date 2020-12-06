@@ -106,6 +106,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
+  public static final String OLD_CONTINUATION = "oldContinuation"; //NON-NLS
 
   // Sound Tab preferences
   public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
@@ -149,6 +150,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private boolean soundWakeupMute = false;   // Separate Mute for the "wakeup" sound
   private boolean useSingleWindow;           // If true, first map should dock to the main module window (along with the Chatter)
   private boolean useClassicMoveFixedDistance = false; // Compatibility preference for move-fixed distance
+  private boolean warnOldContinuation = true; // Warn when using old-style Load Continuation (compatibility)
 
   /************************************************************
    * Custom preferences
@@ -282,6 +284,14 @@ public class GlobalOptions extends AbstractConfigurable {
       prefs.addOption(Resources.getString("Prefs.compatibility_tab"), macLegacyConf);
     }
 
+    final BooleanConfigurer oldContinuationConf = new BooleanConfigurer(
+      OLD_CONTINUATION,
+      Resources.getString("GlobalOptions.old_continuation"),
+      Boolean.TRUE
+    );
+    oldContinuationConf.addPropertyChangeListener(evt -> setWarnOldContinuation(oldContinuationConf.getValueBoolean()));
+    prefs.addOption(Resources.getString("Prefs.compatibility_tab"), oldContinuationConf);
+
     ////////////////
     // SOUNDS TAB //
     ////////////////
@@ -334,6 +344,17 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @return the Mac Legacy compatibility preference */
   public boolean getPrefMacLegacy() {
     return macLegacy;
+  }
+
+
+  /** @param b sets the warnOldContinuation compatibility preference */
+  public void setWarnOldContinuation(boolean b) {
+    warnOldContinuation = b;
+  }
+
+  /** @return the warnOldContinuation compatibility preference */
+  public boolean isWarnOldContinuation() {
+    return warnOldContinuation;
   }
 
   /** @param b sets the global sound mute preference */

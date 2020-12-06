@@ -208,12 +208,13 @@ public class ShapeItem extends Item {
     final Point origin = layout.getPosition(this);
     final Rectangle r = new Rectangle(origin.x, origin.y, getWidth(), getHeight());
 
-    if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    }
-    else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-    }
+    final Graphics2D g2d = (Graphics2D) g;
+    final Object aa = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+    g2d.setRenderingHint(
+        RenderingHints.KEY_ANTIALIASING,
+        isAntialias() ? RenderingHints.VALUE_ANTIALIAS_ON :
+                        RenderingHints.VALUE_ANTIALIAS_OFF
+    );
 
     if (fg != null) {
       g.setColor(fg);
@@ -240,6 +241,8 @@ public class ShapeItem extends Item {
         g.drawOval(r.x, r.y, r.width, r.height);
       }
     }
+
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa);
   }
 
   @Override

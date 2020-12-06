@@ -166,21 +166,24 @@ public class ImageItem extends Item {
   @Override
   public void draw(Graphics g, GamePieceImage defn) {
     loadImage(defn);
-    final Point origin = layout.getPosition(this);
-
-    if (isAntialias()) {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                        RenderingHints.VALUE_ANTIALIAS_ON);
-    }
-    else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                        RenderingHints.VALUE_ANTIALIAS_OFF);
-    }
 
     if (srcOp != null) {
       final BufferedImage img = srcOp.getImage();
       if (img != null) {
+
+        final Graphics2D g2d = (Graphics2D) g;
+        final Object aa = g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+
+        g2d.setRenderingHint(
+          RenderingHints.KEY_ANTIALIASING,
+          isAntialias() ? RenderingHints.VALUE_ANTIALIAS_ON :
+                          RenderingHints.VALUE_ANTIALIAS_OFF
+        );
+
+        final Point origin = layout.getPosition(this);
         g.drawImage(img, origin.x, origin.y, null);
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa);
       }
     }
   }

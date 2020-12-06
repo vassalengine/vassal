@@ -23,10 +23,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JTextField;
+
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A class extending a JTextField that can display a 'ghost' text prompt
@@ -72,7 +73,8 @@ public class HintTextField extends JTextField implements FocusListener {
     super.paint(g);
     if (getText().isEmpty() && focusCheck() && hint != null && ! hint.isEmpty()) {
       final int h = getHeight();
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+      ((Graphics2D) g).addRenderingHints(SwingUtils.FONT_HINTS);
       final Insets ins = getInsets();
       final FontMetrics fm = g.getFontMetrics();
       if (hintColor == null) {

@@ -26,7 +26,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
@@ -108,8 +107,6 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
       g2d.setComposite(AlphaComposite.getInstance(
         AlphaComposite.SRC_OVER, opacity / 100.0f));
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
 
       if (COVERAGE_FULL.equals(coverage)) {
         g2d.fill(s);
