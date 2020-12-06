@@ -1,3 +1,8 @@
+3.4.12 - ???
+
+* 13738: IllegalArgumentException because Invisible trait permitted alpha
+    values outside [0,1]
+
 3.4.11 - 29 November 2020
 
 * 13728: Translucent solid-colored backgrounds of boards are incorrectly
