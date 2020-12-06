@@ -792,19 +792,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
       checkPropertyLevel();
-      if (value > 0) {
-        return imageName[Math.abs(value) - 1];
-      }
-      else
-        return "";
+      return value > 0 ? imageName[value - 1] : "";
     }
     else if (key.equals(name + NAME)) {
       checkPropertyLevel();
-      if (value > 0) {
-        return strip(commonName[Math.abs(value) - 1]);
-      }
-      else
-        return "";
+      return value > 0 ? strip(commonName[value - 1]) : "";
     }
     else if (key.equals(name + LEVEL)) {
       checkPropertyLevel();
@@ -834,13 +826,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return getProperty(key);
     }
     else if (key.equals(name + NAME)) {
-
       checkPropertyLevel();
-      if (value > 0) {
-        return strip(getLocalizedCommonName(Math.abs(value) - 1));
-      }
-      else
-        return "";
+      return value > 0 ? strip(getLocalizedCommonName(value - 1)) : "";
     }
     return super.getLocalizedProperty(key);
   }
