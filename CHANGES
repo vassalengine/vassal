@@ -1,5 +1,6 @@
 3.4.12 - ???
 
+* 13786: NPE when Enter hit in Editor component tree with no node selected
 * 13738: IllegalArgumentException because Invisible trait permitted alpha
     values outside [0,1]
 
