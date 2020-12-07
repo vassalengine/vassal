@@ -5,6 +5,7 @@
 * 13738: IllegalArgumentException because Invisible trait permitted alpha
     values outside [0,1]
 * 13614: NPE in ZonedGrid due to thread-unsafe caching of Zone clipping
+* 13571: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
 
 3.4.11 - 29 November 2020
 
