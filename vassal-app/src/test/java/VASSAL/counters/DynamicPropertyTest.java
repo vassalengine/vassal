@@ -107,9 +107,9 @@ public class DynamicPropertyTest extends DecoratorTest {
     DynamicProperty.DynamicKeyCommand command = new DynamicProperty.DynamicKeyCommand("test", new NamedKeyStroke ("plover"), piece, piece, changer);
     List<DynamicProperty.DynamicKeyCommand> commands = new ArrayList<> ();
     commands.add(command);
-    trait2.keyCommandListConfig.setValue (commands);
     trait2.keyCommands = commands.toArray(new DynamicProperty.DynamicKeyCommand[0]);
-    serializeTest("Key Command", trait2); // NON-NLS
+    trait2.keyCommandListConfig.getListValue().addAll(commands);
+    serializeTest("Key Command", trait2, true); // NON-NLS
   }
 
   @Test

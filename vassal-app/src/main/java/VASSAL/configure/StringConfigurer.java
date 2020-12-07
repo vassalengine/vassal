@@ -134,18 +134,21 @@ public class StringConfigurer extends Configurer {
   @Override
   public void setHighlighted(boolean highlighted) {
     super.setHighlighted(highlighted);
+    getControls();
     nameField.setBackground(highlighted ? HIGHLIGHT_COLOR : Color.white);
   }
 
   @Override
   public void addFocusListener(FocusListener listener) {
     super.addFocusListener(listener);
+    getControls();
     nameField.addFocusListener(listener);
   }
 
   @Override
   public void removeFocusListener(FocusListener listener) {
     super.removeFocusListener(listener);
+    getControls();
     nameField.removeFocusListener(listener);
   }
 }

@@ -30,6 +30,7 @@ import java.awt.Component;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JLabel;
@@ -87,6 +88,7 @@ public class PropertyChangerConfigurer extends Configurer {
   protected StringArrayConfigurer validValuesConfig;
   protected JPanel changerLabelControls;
   protected JPanel changerControls;
+  private List<Configurer> subConfigurers;
 
   public PropertyChangerConfigurer(String key, String name, Constraints constraints) {
     super(key, name);
@@ -160,6 +162,8 @@ public class PropertyChangerConfigurer extends Configurer {
       changerControls.add(incrConfig.getControls(), "growx,aligny center"); // NON-NLS
       controls.add(changerControls, "grow"); // NON-NLS
       controls.add(validValuesConfig.getControls(), "grow"); // NON-NLS
+
+      subConfigurers = List.of(typeConfig, incrConfig, valueConfig, promptConfig, validValuesConfig);
 
       updateControls();
     }
@@ -318,30 +322,21 @@ public class PropertyChangerConfigurer extends Configurer {
   @Override
   public void setHighlighted(boolean highlighted) {
     super.setHighlighted(highlighted);
-    typeConfig.setHighlighted(highlighted);
-    incrConfig.setHighlighted(highlighted);
-    valueConfig.setHighlighted(highlighted);
-    promptConfig.setHighlighted(highlighted);
-    validValuesConfig.setHighlighted(highlighted);
+    getControls();
+    subConfigurers.forEach(c -> c.setHighlighted(highlighted));
   }
 
   @Override
   public void addFocusListener(FocusListener listener) {
     super.addFocusListener(listener);
-    typeConfig.addFocusListener(listener);
-    incrConfig.addFocusListener(listener);
-    valueConfig.addFocusListener(listener);
-    promptConfig.addFocusListener(listener);
-    validValuesConfig.addFocusListener(listener);
+    getControls();
+    subConfigurers.forEach(c -> c.addFocusListener(listener));
   }
 
   @Override
   public void removeFocusListener(FocusListener listener) {
     super.removeFocusListener(listener);
-    typeConfig.removeFocusListener(listener);
-    incrConfig.removeFocusListener(listener);
-    valueConfig.removeFocusListener(listener);
-    promptConfig.removeFocusListener(listener);
-    validValuesConfig.removeFocusListener(listener);
+    getControls();
+    subConfigurers.forEach(c -> c.removeFocusListener(listener));
   }
 }

@@ -42,6 +42,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -429,8 +430,8 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     public Ed(final DynamicProperty m) {
       keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands"), m);
-      keyCommandListConfig.setValue(
-        new ArrayList<>(Arrays.asList(m.keyCommands)));
+      keyCommandListConfig.setValue(new ArrayList<>(Arrays.asList(m.keyCommands)));
+
       final PropertyChangeListener l = evt -> {
         final boolean isNumeric = numericConfig.booleanValue();
         minConfig.getControls().setVisible(isNumeric);
@@ -441,9 +442,8 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
         wrapLabel.setVisible(isNumeric);
         repack(keyCommandListConfig);
       };
+
       controls = new TraitConfigPanel();
-
-
       nameConfig = new StringConfigurer(m.getKey());
       controls.add("Editor.DynamicProperty.property_name", nameConfig);
 
@@ -529,7 +529,9 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   /**
    *
    * Configure a single Dynamic Key Command line
+   * @deprecated Use {@link VASSAL.configure.DynamicKeyCommandConfigurer}
    */
+  @Deprecated(since = "2020-12-06", forRemoval = true)
   protected static class DynamicKeyCommandConfigurer extends Configurer {
     protected final NamedHotKeyConfigurer keyConfig;
     protected PropertyChangerConfigurer propChangeConfig;
@@ -546,6 +548,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
           target,
           new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
 
+      ProblemDialog.showDeprecated("2020-12-06");
       commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
       keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);

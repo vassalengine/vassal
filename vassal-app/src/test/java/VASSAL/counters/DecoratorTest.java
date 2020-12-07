@@ -52,6 +52,10 @@ public class DecoratorTest {
    *                       but one will be added if it does not.
    */
   public void serializeTest(String test, Decorator referenceTrait) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    serializeTest(test, referenceTrait, false);
+  }
+
+  public void serializeTest(String test, Decorator referenceTrait, boolean skipEditorTest) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
 
     // Create a dummy image to return from mocks
     BufferedImage dummyImage = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
@@ -97,7 +101,10 @@ public class DecoratorTest {
           commandEncoderTest(test, referenceTrait);
 
           // Test the serialization used in the internal editor matches the standard serialization
-          editorTest(test, referenceTrait);
+          // Some Trait (DynamicProperty) are too complex to be able drive this way.
+          if (!skipEditorTest) {
+            editorTest(test, referenceTrait);
+          }
         }
       }
     }

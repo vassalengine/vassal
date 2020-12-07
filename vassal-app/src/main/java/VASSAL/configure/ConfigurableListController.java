@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * A small panel of buttons for controlling the entries in a Configurable list
+ * A small panel of buttons for controlling the entries in a Configurablelist
  *
  * See also {@link ConfigurableList}, {@link ConfigurableListEntry}, {@link ConfigurableListController}
  */

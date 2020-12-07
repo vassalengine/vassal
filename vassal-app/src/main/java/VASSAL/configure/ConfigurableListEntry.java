@@ -22,11 +22,35 @@ import javax.swing.JButton;
  * An interface to be implemented by Configurers that manage variable sized lists.
  * Each Configurable List entry maintains all info about a particular list entry
  *
- * See also {@link ConfigurableList}, {@link ConfigurableListController}
+ * See also {@link ConfigurableList}, {@link ConfigurableListController}, {@link AbstractConfigurableListEntry}
  */
 public interface ConfigurableListEntry {
+  /**
+   * Return the Remove button associated with this entry
+   * @return Remove Button
+   */
   JButton getRemoveButton();
+
+  /**
+   * Return the Configurer associated with this entry
+   * @return Entry Configurer
+   */
   Configurer getConfigurer();
+
+  /**
+   * Update the visibility of sub-items of this Entry
+   */
   void updateVisibility();
+
+  /**
+   * Set the Highlight status of this enytry
+   *
+   * @param b Highlight status
+   */
   void setHighlighted(boolean b);
+
+  /**
+   * This Entry has gained the focus
+   */
+  void focusGained();
 }
