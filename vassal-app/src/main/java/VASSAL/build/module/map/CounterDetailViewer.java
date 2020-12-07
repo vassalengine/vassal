@@ -560,7 +560,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double zoom = getZoom();
     if (displayablePieces.size() < minimumDisplayablePieces) {
       if (!displayablePieces.isEmpty()) {
-        graphicsVisible = zoom < zoomLevel;
+        graphicsVisible = (zoom < zoomLevel) && drawPieces;
         textVisible = zoom < zoomLevel && (summaryReportFormat.getFormat().length() > 0 || counterReportFormat.getFormat().length() > 0);
       }
       else {
