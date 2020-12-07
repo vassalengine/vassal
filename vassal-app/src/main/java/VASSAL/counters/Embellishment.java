@@ -156,8 +156,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return value > 0;
   }
 
-  public void setActive(boolean val) {
-    value = val ? Math.abs(value) : -Math.abs(value);
+  public void setActive(boolean act) {
+    value = Math.abs(value) * (act ? 1 : -1);
   }
 
   public int getValue() {
@@ -202,14 +202,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       xOff = st.nextInt(0);
       yOff = st.nextInt(0);
 
-      imageName = st.nextStringArray(0);
+      // There must be at least one layer; the sequence language can't
+      // distinguish an array containing a single empty string from a
+      // zero-length array, so we set the minimum size to 1.
+      imageName = st.nextStringArray(1);
       commonName = st.nextStringArray(imageName.length);
-      if (commonName.length == 1 && imageName.length == 0) {
-        // This happens if imageName contains a single empty string, since
-        // the sequence language can't distinguish that from a zero-length
-        // array.
-        imageName = new String[]{""};
-      }
 
       loopLevels = st.nextBoolean(true);
       name = st.nextToken("");
@@ -557,7 +554,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     String val = "";
     try {
-
       val = followPropertyExpression.evaluate(Decorator.getOutermost(this));
       if (val == null || val.length() == 0) val = String.valueOf(firstLevelValue);
 
@@ -637,7 +633,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     final ChangeTracker tracker = new ChangeTracker(this);
 
     if (activateKeyStroke.equals(stroke) && nValues > 0 && !alwaysActive) {
-      value = - value;
+      value = -value;
     }
 
     if (!followProperty) {
@@ -663,8 +659,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       // random layers
       if (rndKey != null && rndKey.equals(stroke)) {
-        int val;
-        val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
+        final int val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
       }
     }
@@ -792,19 +787,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
       checkPropertyLevel();
-      if (value > 0) {
-        return imageName[Math.abs(value) - 1];
-      }
-      else
-        return "";
+      return value > 0 ? imageName[value - 1] : "";
     }
     else if (key.equals(name + NAME)) {
       checkPropertyLevel();
-      if (value > 0) {
-        return strip(commonName[Math.abs(value) - 1]);
-      }
-      else
-        return "";
+      return value > 0 ? strip(commonName[value - 1]) : "";
     }
     else if (key.equals(name + LEVEL)) {
       checkPropertyLevel();
@@ -834,13 +821,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return getProperty(key);
     }
     else if (key.equals(name + NAME)) {
-
       checkPropertyLevel();
-      if (value > 0) {
-        return strip(getLocalizedCommonName(Math.abs(value) - 1));
-      }
-      else
-        return "";
+      return value > 0 ? strip(getLocalizedCommonName(value - 1)) : "";
     }
     return super.getLocalizedProperty(key);
   }
