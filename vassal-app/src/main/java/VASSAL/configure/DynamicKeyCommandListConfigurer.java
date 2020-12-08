@@ -21,7 +21,6 @@ import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.TraitLayout;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.icon.IconFamily;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -53,8 +52,6 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   private static final int HEADER_COMPONENT_COUNT = 4;
   // The number of Components added to the Controls panel for each Entry
   private static final int COMPONENT_COUNT = 6;
-
-  private static final int CONTROLLER_ICON_SIZE = IconFamily.XSMALL;
 
   private JPanel controls;
   private JPanel configControls;
@@ -154,7 +151,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
   @Override
   public JPanel getListController() {
     if (controller == null) {
-      controller = new ConfigurableListController(this, CONTROLLER_ICON_SIZE);
+      controller = new ConfigurableListController(this);
     }
     return controller;
   }
@@ -200,7 +197,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
       // Create a new set of entries and add the controls
       for (final Object value : getListValue()) {
-        final DKCEntry entry = new DKCEntry(this, value, CONTROLLER_ICON_SIZE);
+        final DKCEntry entry = new DKCEntry(this, value);
         entry.addPropertyChangeListener(this);
         entries.add(entry);
         appendConfigControls(entry);
@@ -383,7 +380,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     final int pos = getSelectedEntryIndex();
 
     // Create a new empty entry
-    final DKCEntry newEntry = new DKCEntry(this, CONTROLLER_ICON_SIZE);
+    final DKCEntry newEntry = new DKCEntry(this);
 
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
@@ -458,6 +455,14 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
     private NoInsetButton showHideValuesButton;
     private final JPanel promptPanel;
 
+    public DKCEntry(DynamicKeyCommandListConfigurer listConfig) {
+      this(listConfig, null);
+    }
+
+    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value) {
+      this(listConfig, value, ConfigurableList.DEFAULT_ICON_SIZE);
+    }
+
     public DKCEntry(DynamicKeyCommandListConfigurer listConfig, Object value, int iconSize) {
       super(listConfig, value, iconSize);
       this.listConfig = listConfig;
@@ -490,10 +495,6 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
       listConfig.selectEntry(this);
     }
 
-    public DKCEntry(DynamicKeyCommandListConfigurer listConfig, int iconSize) {
-      this(listConfig, null, iconSize);
-    }
-
     public JPanel getPromptPanel() {
       return promptPanel;
     }
@@ -514,7 +515,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Prope
 
     public JButton getShowHideValuesButton() {
       if (showHideValuesButton == null) {
-        showHideValuesButton = new NoInsetButton("edit-find", CONTROLLER_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
+        showHideValuesButton = new NoInsetButton("edit-find", ConfigurableList.DEFAULT_ICON_SIZE, "Editor.PropertyChangeConfigurer.showHide_hint"); // NON-NLS
         showHideValuesButton.setVisible(false);
         showHideValuesButton.addActionListener(e -> showHideValues());
       }

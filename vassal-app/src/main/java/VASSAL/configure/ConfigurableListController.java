@@ -32,6 +32,10 @@ public class ConfigurableListController extends JPanel {
   private final JButton upButton;
   private final JButton dnButton;
 
+  public ConfigurableListController(final ConfigurableList list) {
+    this(list, ConfigurableList.DEFAULT_ICON_SIZE);
+  }
+
   public ConfigurableListController(final ConfigurableList list, final int iconSize) {
     super(new MigLayout("ins 0", "[]rel[]rel[]")); // NON-NLS
 

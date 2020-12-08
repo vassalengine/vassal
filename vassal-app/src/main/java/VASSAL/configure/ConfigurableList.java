@@ -16,6 +16,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.tools.icon.IconFamily;
 import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 
@@ -24,6 +25,12 @@ import javax.swing.JComponent;
  * See also {@link ConfigurableListEntry}, {@link ConfigurableListController}
  */
 public interface ConfigurableList extends PropertyChangeListener {
+
+  /**
+   * The Defauly Icon Size to use for all Configurable List related button icons
+   */
+  int DEFAULT_ICON_SIZE = IconFamily.XSMALL;
+
   /**
    * Move the currently selected list entry up one position
    * The moved entry should retain the selection

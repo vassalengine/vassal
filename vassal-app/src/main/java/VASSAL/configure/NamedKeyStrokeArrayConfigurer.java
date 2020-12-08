@@ -22,11 +22,13 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
@@ -34,10 +36,11 @@ import net.miginfocom.swing.MigLayout;
 /**
  * Configures an array of {link NamedKeyStrokes}
  */
-public class NamedKeyStrokeArrayConfigurer extends Configurer {
+public class NamedKeyStrokeArrayConfigurer extends Configurer implements ConfigurableList {
   private final List<NamedHotKeyConfigurer> configs = new ArrayList<>();
   private JPanel controls;
   private JPanel panel;
+  private int selectedEntryIndex = -1;
 
   public NamedKeyStrokeArrayConfigurer(String key, String name) {
     super(key, name);
@@ -160,5 +163,79 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
       }
     }
     return se.getValue() != null ? se.getValue() : "";
+  }
+
+  @Override
+  public void moveEntryUp() {
+
+  }
+
+  @Override
+  public void moveEntryDown() {
+
+  }
+
+  @Override
+  public void addEntry() {
+
+  }
+
+  @Override
+  public void deleteEntry(ConfigurableListEntry entry) {
+
+  }
+
+  @Override
+  public JComponent getListController() {
+    return null;
+  }
+
+  @Override
+  public void selectEntry(ConfigurableListEntry entry) {
+
+  }
+
+  @Override
+  public void repack() {
+
+  }
+
+  @Override
+  public void setSelectedEntryIndex(int index) {
+    selectedEntryIndex = index;
+  }
+
+  @Override
+  public int getSelectedEntryIndex() {
+    return selectedEntryIndex;
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+  }
+
+  static class NKSEntry extends AbstractConfigurableListEntry {
+
+    /**
+     * Build a new List Entry
+     *
+     * @param parentConfig Parent List
+     * @param value        Initial value for entry
+     * @param iconSize     Icon size for the Remove button
+     */
+    public NKSEntry(ConfigurableList parentConfig, Object value, int iconSize) {
+      super(parentConfig, value, iconSize);
+    }
+
+    @Override
+    public Configurer buildChildConfigurer(Object value) {
+      return null;
+    }
+
+    @Override
+    public void setHighlighted(boolean b) {
+
+    }
   }
 }
