@@ -69,4 +69,16 @@ public interface ConfigurableList extends PropertyChangeListener {
    * Repack the Configurer
    */
   void repack();
+
+  /**
+   * Set the currently selected entry
+   * @param index Index of currently selected entry
+   */
+  void setSelectedEntryIndex(int index);
+
+  /**
+   * Return the index of the currently selected entry
+   * @return currently selected entry index
+   */
+  int getSelectedEntryIndex();
 }

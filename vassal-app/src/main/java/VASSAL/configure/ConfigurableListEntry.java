@@ -16,6 +16,7 @@
  */
 package VASSAL.configure;
 
+import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 
 /**
@@ -53,4 +54,20 @@ public interface ConfigurableListEntry {
    * This Entry has gained the focus
    */
   void focusGained();
+
+  /**
+   * Add a Property Change Listener to the Configurer for this Entru
+   * @param l Listener
+   */
+  default void addPropertyChangeListener(PropertyChangeListener l) {
+    getConfigurer().addPropertyChangeListener(l);
+  }
+
+  /**
+   * Remove a Property Change Listener from the Configurer for this Entru
+   * @param l Listener
+   */
+  default void removePropertyChangeListener(PropertyChangeListener l) {
+    getConfigurer().removePropertyChangeListener(l);
+  }
 }

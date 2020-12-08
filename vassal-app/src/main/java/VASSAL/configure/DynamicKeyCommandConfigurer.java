@@ -52,6 +52,7 @@ public class DynamicKeyCommandConfigurer extends Configurer {
         new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
 
     commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
+    commandConfig.setHint(Resources.getString("Editor.menu_command"));
     keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
     propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
     propChangeConfig.setValue(new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey())));

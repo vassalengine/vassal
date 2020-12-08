@@ -281,9 +281,11 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(m.description);
+      descConfig.setHint(Resources.getString("Editor.description_hint"));
       controls.add("Editor.description_label", descConfig);
 
       nameConfig = new FormattedExpressionConfigurer(m.getKey(), (EditablePiece) m);
+      nameConfig.setHint(Resources.getString("Editor.SetGlobalProperty.global_property_name_hint"));
       controls.add("Editor.SetGlobalProperty.global_property_name", nameConfig);
 
       final String[] levelKeys = {

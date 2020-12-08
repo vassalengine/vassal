@@ -109,7 +109,7 @@ public class DynamicPropertyTest extends DecoratorTest {
     commands.add(command);
     trait2.keyCommands = commands.toArray(new DynamicProperty.DynamicKeyCommand[0]);
     trait2.keyCommandListConfig.getListValue().addAll(commands);
-    serializeTest("Key Command", trait2, true); // NON-NLS
+    serializeTest("Key Command", trait2); // NON-NLS
   }
 
   @Test

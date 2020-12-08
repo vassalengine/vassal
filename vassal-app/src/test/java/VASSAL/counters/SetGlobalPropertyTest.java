@@ -98,7 +98,7 @@ public class SetGlobalPropertyTest extends DecoratorTest {
     trait.keyCommandListConfig.setValue (commands);
     trait.keyCommands = commands.toArray(new DynamicProperty.DynamicKeyCommand[0]);
 
-    serializeTest("Complex trait", trait, true); // NON-NLS
+    serializeTest("Complex trait", trait); // NON-NLS
 
   }
 }

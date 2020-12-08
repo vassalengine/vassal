@@ -2,6 +2,7 @@ package VASSAL.configure;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+
 import javax.swing.JButton;
 
 /**
@@ -75,7 +76,6 @@ public abstract class AbstractConfigurableListEntry implements ConfigurableListE
   public Configurer getConfigurer() {
     if (configurer == null) {
       configurer = buildChildConfigurer(savedValue);
-      configurer.addPropertyChangeListener(parent);
       configurer.addPropertyChangeListener(e -> updateVisibility());
 
       final FocusListener fl = new FocusListener() {
@@ -112,11 +112,12 @@ public abstract class AbstractConfigurableListEntry implements ConfigurableListE
   }
 
   /**
-   * Set the Highlited status of fields in this entry.
+   * Set the Highlighted status of fields in this entry.
    * Used to highlight the currently selected entry.
    *
    * @param b Highlight status
    */
   @Override
   public abstract void setHighlighted(boolean b);
+
 }

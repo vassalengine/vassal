@@ -445,9 +445,11 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
       controls = new TraitConfigPanel();
       nameConfig = new StringConfigurer(m.getKey());
+      nameConfig.setHint(Resources.getString("Editor.DynamicProperty.property_name_hint"));
       controls.add("Editor.DynamicProperty.property_name", nameConfig);
 
       initialValueConfig = new StringConfigurer(m.getValue());
+      initialValueConfig.setHint(Resources.getString("Editor.DynamicProperty.initial_value_hint"));
       controls.add("Editor.DynamicProperty.initial_value", initialValueConfig);
 
       numericConfig = new BooleanConfigurer(m.isNumeric());
