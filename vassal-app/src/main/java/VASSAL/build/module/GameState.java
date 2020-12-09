@@ -381,10 +381,15 @@ public class GameState implements CommandEncoder {
 
     if (gameStarted) {
       if (gameStarting) {
+        // If we're starting a new session, prompt to create a new logfile.
+        // But NOT if we're starting a session by *replaying* a logfile -- in that case we'd get the reminder at the
+        // end of the logfile.
         SwingUtilities.invokeLater(() -> {
           final Logger logger = GameModule.getGameModule().getLogger();
           if (logger instanceof BasicLogger) {
-            ((BasicLogger)logger).queryNewLogFile(true);
+            if (!((BasicLogger)logger).isReplaying()) {
+              ((BasicLogger) logger).queryNewLogFile(true);
+            }
           }
         });
       }
