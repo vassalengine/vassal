@@ -238,6 +238,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     return outputFile != null;
   }
 
+  /** @return true if we're currently replaying a VLOG file, that has unexecuted "step forwards" remaining */
+  public boolean isReplaying() {
+    return nextInput < logInput.size();
+  }
+
   @Override
   public Command getRestoreCommand() {
     return null;
