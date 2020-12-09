@@ -353,7 +353,9 @@ public class GameState implements CommandEncoder {
         SwingUtilities.invokeLater(() -> {
           Logger logger = GameModule.getGameModule().getLogger();
           if (logger instanceof BasicLogger) {
-            ((BasicLogger)logger).queryNewLogFile(true);
+            if (!((BasicLogger)logger).isReplaying()) {
+              ((BasicLogger) logger).queryNewLogFile(true);
+            }
           }
         });
       }
