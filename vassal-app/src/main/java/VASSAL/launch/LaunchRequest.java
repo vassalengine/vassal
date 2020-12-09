@@ -77,8 +77,6 @@ public class LaunchRequest implements Serializable {
   public File extension;
   public File importFile;
 
-  public boolean standalone = false;
-
   public boolean builtInModule;
   public List<String> autoext;
 
@@ -112,7 +110,6 @@ public class LaunchRequest implements Serializable {
     this.game = lr.game;
     this.extension = lr.extension;
     this.importFile = lr.importFile;
-    this.standalone = lr.standalone;
 
     this.builtInModule = lr.builtInModule;
 
@@ -193,7 +190,6 @@ public class LaunchRequest implements Serializable {
       "  -l, --load          " + Resources.getString("LaunchRequest.load") + "\n" + //NON-NLS
       "  -m, --manage        " + Resources.getString("LaunchRequest.manage") + "\n" + //NON-NLS
       "  -n, --new           " + Resources.getString("LaunchRequest.new") + "\n" + //NON-NLS
-      "  -s, --standalone    " + Resources.getString("LaunchRequest.standalone") + "\n" + //NON-NLS
       "  --auto-extensions   TODO\n" + //NON-NLS
       "  --edit-extension    " + Resources.getString("LaunchRequest.extension") + "\n" + //NON-NLS
       "  --new-extension     " + Resources.getString("LaunchRequest.new_extension") + "\n" + //NON-NLS
@@ -232,7 +228,6 @@ public class LaunchRequest implements Serializable {
       new LongOpt("load",       LongOpt.NO_ARGUMENT, null, 'l'), //NON-NLS
       new LongOpt("manage",     LongOpt.NO_ARGUMENT, null, 'm'), //NON-NLS
       new LongOpt("new",        LongOpt.NO_ARGUMENT, null, 'n'), //NON-NLS
-      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, 's'), //NON-NLS
       new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT), //NON-NLS
       new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT), //NON-NLS
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT), //NON-NLS
@@ -302,9 +297,6 @@ public class LaunchRequest implements Serializable {
         break;
       case 'n':
         setMode(lr, Mode.NEW);
-        break;
-      case 's':
-        lr.standalone = true;
         break;
       case ':':
         die("LaunchRequest.missing_argument", args[g.getOptind() - 1]);
