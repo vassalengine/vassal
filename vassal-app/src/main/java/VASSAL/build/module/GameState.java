@@ -69,7 +69,6 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.Launcher;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -810,8 +809,6 @@ public class GameState implements CommandEncoder {
       }
       metaData.save(zw);
     }
-
-    Launcher.getInstance().sendSaveCmd(f);
 
     lastSave = save;
     final String msg;

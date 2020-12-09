@@ -183,8 +183,6 @@ public class ModuleManagerWindow extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (!AbstractLaunchAction.shutDown()) return;
-
         final Prefs gp = Prefs.getGlobalPrefs();
         try {
           gp.close();
@@ -846,7 +844,6 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
 
-
     private void createKeyBindings(JTable table) {
       table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
       table.getActionMap().put("Enter", new AbstractAction() {
@@ -1409,13 +1406,18 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public JPopupMenu buildPopup(int row) {
+      final boolean tooNew = Info.isModuleTooNew(metadata.getVassalVersion());
+
       final JPopupMenu m = new JPopupMenu();
+
       final Action playAction = new Player.LaunchAction(ModuleManagerWindow.this, file);
-      playAction.setEnabled(!Info.isModuleTooNew(metadata.getVassalVersion()));
+      playAction.setEnabled(playAction.isEnabled() && !tooNew);
       m.add(playAction);
+
       final Action editAction = new Editor.ListLaunchAction(ModuleManagerWindow.this, file);
-      editAction.setEnabled(!Info.isModuleTooNew(metadata.getVassalVersion()));
+      editAction.setEnabled(editAction.isEnabled() && !tooNew);
       m.add(editAction);
+
       m.add(new AbstractAction(Resources.getString("General.remove")) {
         private static final long serialVersionUID = 1L;
 

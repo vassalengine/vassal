@@ -23,8 +23,6 @@ public interface Config {
 
   String getReportableVersion();
 
-  int getInstanceID();
-
   Path getBaseDir();
 
   Path getDocDir();

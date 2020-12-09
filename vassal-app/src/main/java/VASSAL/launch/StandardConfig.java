@@ -34,29 +34,10 @@ public class StandardConfig implements Config {
   private final Path errorLogPath;
   private final Path javaBinPath;
 
-  private final int instanceID;
-
   private final String version;
   private final String reportableVersion;
 
   public StandardConfig() throws IOException {
-    // Set the instance id from the system properties.
-    final String idstr = System.getProperty("VASSAL.id");
-    if (idstr == null) {
-      instanceID = 0;
-    }
-    else {
-      int id;
-      try {
-        id = Integer.parseInt(idstr);
-      }
-      catch (NumberFormatException e) {
-        id = -1;
-      }
-
-      instanceID = id;
-    }
-
     // Set the version, reportable version
     final GitProperties gitProperties = new GitProperties();
     version = gitProperties.getVersion();
@@ -99,11 +80,6 @@ public class StandardConfig implements Config {
   @Override
   public String getReportableVersion() {
     return reportableVersion;
-  }
-
-  @Override
-  public int getInstanceID() {
-    return instanceID;
   }
 
   @Override

@@ -39,11 +39,9 @@ import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
-import VASSAL.tools.ipc.IPCMessage;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -70,48 +68,26 @@ public class Editor extends Launcher {
 
   @Override
   protected void launch() throws IOException {
-    IPCMessage msg = null;
-
     switch (lr.mode) {
     case EDIT:
       new EditModuleAction(lr.module).loadModule(lr.module);
-      msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case IMPORT:
       new ImportAction(null).loadModule(lr.importFile);
-      msg = new AbstractLaunchAction.NotifyImportModuleOk(lr);
       break;
     case NEW:
       new CreateModuleAction(null).performAction(null);
-      msg = new AbstractLaunchAction.NotifyNewModuleOk(lr);
       break;
     case EDIT_EXT:
       GameModule.init(new GameModule(new DataArchive(lr.module.getPath())));
       GameModule.getGameModule().getPlayerWindow().setVisible(true);
       new EditExtensionAction(lr.extension).performAction(null);
-      msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case NEW_EXT:
       GameModule.init(new GameModule(new DataArchive(lr.module.getPath())));
       final JFrame f = GameModule.getGameModule().getPlayerWindow();
       f.setVisible(true);
       new NewExtensionAction(f).performAction(null);
-      msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
-    }
-
-    if (ipc != null) {
-      try {
-        ipc.send(msg);
-      }
-      catch (IOException e) {
-        // This is not fatal, since we've successfully opened the module,
-        // but possibly this means that the Module Manager has died.
-        ErrorDialog.showDetails(
-          e,
-          ThrowableUtils.getStackTrace(e),
-          "Error.socket_error" //NON-NLS
-        );
-      }
     }
   }
 
@@ -205,6 +181,8 @@ public class Editor extends Launcher {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+      if (editing.contains(lr.module) || using.containsKey(lr.module)) return;
+
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data != null) {
         final String vv = data.getVassalVersion();
@@ -252,9 +230,7 @@ public class Editor extends Launcher {
       }
 
       // register that this module is being edited
-      if (editing.contains(lr.module) || using.containsKey(lr.module)) return;
       editing.add(lr.module);
-
       super.actionPerformed(e);
     }
 
