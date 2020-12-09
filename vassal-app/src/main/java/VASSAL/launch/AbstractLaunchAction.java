@@ -360,7 +360,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
       }
 
-      ModuleManagerWindow.getInstance().setWaitCursor(false);
+      final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      mmw.addModule(lr.module);
+      mmw.setWaitCursor(false);
 
       try {
         proc.future.get();

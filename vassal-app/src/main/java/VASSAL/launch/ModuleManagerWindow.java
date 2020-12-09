@@ -653,9 +653,9 @@ public class ModuleManagerWindow extends JFrame {
   public void update(File f) {
     final AbstractMetaData data = MetaDataFactory.buildMetaData(f);
 
-    // Module.
-    // If we already have this module added, just refresh it, otherwise add it in.
     if (data instanceof ModuleMetaData) {
+      // Module.
+      // If we already have this module, refresh it, otherwise add it.
       final MyTreeNode moduleNode = rootNode.findNode(f);
       if (moduleNode == null) {
         addModule(f);
@@ -664,11 +664,10 @@ public class ModuleManagerWindow extends JFrame {
         moduleNode.refresh();
       }
     }
-
-    // Extension.
-    // Check to see if it has been saved into one of the extension directories
-    // for any module we already know of. Refresh the module
     else if (data instanceof ExtensionMetaData) {
+      // Extension.
+      // Check if it has been saved into one of the extension directories
+      // for any module we already know of. Refresh the module
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final ModuleInfo moduleInfo = (ModuleInfo) moduleNode.getNodeInfo();
@@ -680,11 +679,10 @@ public class ModuleManagerWindow extends JFrame {
         }
       }
     }
-
-    // Save Game or Log file.
-    // If the parent of the save file is already recorded as a Game Folder,
-    // pass the file off to the Game Folder to handle. Otherwise, ignore it.
     else if (data instanceof SaveMetaData) {
+      // Save Game or Log file.
+      // If the parent of the save file is already recorded as a Game Folder,
+      // pass the file off to the Game Folder to handle. Otherwise, ignore it.
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final MyTreeNode folderNode = moduleNode.findNode(f.getParentFile());
