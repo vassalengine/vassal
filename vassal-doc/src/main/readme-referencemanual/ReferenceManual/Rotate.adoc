@@ -44,8 +44,7 @@ image:images/Rotate2.png
 
 ==== Properties
 
-A Can Rotate trait defines a number of <<Properties.adoc#top,Properties>>.  In the name of the properties, <name> is the name specified in the properties above.
+A Can Rotate trait defines a number of <<Properties.adoc#top,Properties>>.  In the name of the properties, <name> is the "Description" name specified in the above fields. To avoid trouble, do not insert spaces or other special characters in "Description" field if you plan to use these properties.
 
-* _<name>_Facing_ returns the current facing, if the number of facings is fixed.
-* _<name>_Degrees_ returns the current rotation angle, if arbitrary rotations are allowed.
-
+* _<name>_Facing_ returns the current facing if the number of facings is fixed. The value is an integer that ranges from 1 (the original, un-rotated state) to the the number of allowed facings. For example, if the number of facings is 4, then this property returns a value from 1 to 4.
+* _<name>_Degrees_ returns the current rotation angle if arbitrary rotations are allowed.
