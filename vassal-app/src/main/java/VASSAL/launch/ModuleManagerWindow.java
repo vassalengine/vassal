@@ -1854,9 +1854,8 @@ public class ModuleManagerWindow extends JFrame {
       lr.module = getSelectedModule();
 
       // register that this module is being used
-      if (editing.contains(lr.module)) return;
-      Integer count = using.get(lr.module);
-      using.put(lr.module, count == null ? 1 : ++count);
+      if (isEditing(lr.module)) return;
+      incrementUsed(lr.module);
 
       super.actionPerformed(e);
     }
@@ -1869,9 +1868,7 @@ public class ModuleManagerWindow extends JFrame {
           super.done();
 
           // reduce the using count
-          Integer count = using.get(lr.module);
-          if (count == 1) using.remove(lr.module);
-          else using.put(lr.module, --count);
+          decrementUsed(lr.module);
         }
       };
     }
@@ -1889,23 +1886,19 @@ public class ModuleManagerWindow extends JFrame {
         new LaunchRequest(LaunchRequest.Mode.EDIT_EXT, module, extension)
       );
 
-      setEnabled(!using.containsKey(module) &&
-                 !editing.contains(module) &&
-                 !editing.contains(extension) &&
-                 !using.containsKey(extension));
+      setEnabled(!isInUse(module) && !isInUse(extension));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       // check that neither this module nor this extension is being edited
-      if (editing.contains(lr.module) || editing.contains(lr.extension)) return;
+      if (isInUse(lr.module) || isInUse(lr.extension)) return;
 
       // register that this module is being used
-      Integer count = using.get(lr.module);
-      using.put(lr.module, count == null ? 1 : ++count);
+      incrementUsed(lr.module);
 
       // register that this extension is being edited
-      editing.add(lr.extension);
+      markEditing(lr.module);
 
       super.actionPerformed(e);
       setEnabled(false);
@@ -1924,12 +1917,10 @@ public class ModuleManagerWindow extends JFrame {
           super.done();
 
           // reduce the using count for module
-          Integer count = using.get(lr.module);
-          if (count == 1) using.remove(lr.module);
-          else using.put(lr.module, --count);
+          decrementUsed(lr.module);
 
-          // reduce that this extension is done being edited
-          editing.remove(lr.extension);
+          // register that this extension is done being edited
+          unmarkEditing(lr.extension);
           setEnabled(true);
         }
       };

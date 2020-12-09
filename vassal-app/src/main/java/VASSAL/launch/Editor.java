@@ -176,12 +176,12 @@ public class Editor extends Launcher {
         Editor.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.EDIT, module)
       );
-      setEnabled(!editing.contains(module) && !using.containsKey(module));
+      setEnabled(!isInUse(module));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (editing.contains(lr.module) || using.containsKey(lr.module)) return;
+      if (isInUse(lr.module)) return;
 
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data != null) {
@@ -230,7 +230,7 @@ public class Editor extends Launcher {
       }
 
       // register that this module is being edited
-      editing.add(lr.module);
+      markEditing(lr.module);
       super.actionPerformed(e);
     }
 
@@ -242,7 +242,7 @@ public class Editor extends Launcher {
           super.done();
 
           // register that this module is no longer being edited
-          editing.remove(lr.module);
+          unmarkEditing(lr.module);
           setEnabled(true);
         }
       };

@@ -26,10 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -95,8 +93,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected final String entryPoint;
   protected final LaunchRequest lr;
 
-  protected static final Set<File> editing =
-    Collections.synchronizedSet(new HashSet<>());
   protected static final Map<File, Integer> using =
     Collections.synchronizedMap(new HashMap<>());
 
@@ -122,7 +118,23 @@ public abstract class AbstractLaunchAction extends AbstractAction {
    * @return <code>true</code> iff the file is being edited
    */
   public static boolean isEditing(File file) {
-    return editing.contains(file);
+    return Integer.valueOf(-1).equals(using.get(file));
+  }
+
+  protected static void incrementUsed(File file) {
+    using.merge(file, 1, Integer::sum);
+  }
+
+  protected static void decrementUsed(File file) {
+    using.merge(file, 0, (v, n) -> v == 1 ? null : v - 1);
+  }
+
+  protected static void markEditing(File file) {
+    using.put(file, -1);
+  }
+
+  protected static void unmarkEditing(File file) {
+    using.remove(file);
   }
 
   /** {@inheritDoc} */

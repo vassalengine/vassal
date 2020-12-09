@@ -157,19 +157,19 @@ public class Player extends Launcher {
         Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module)
       );
-      setEnabled(!editing.contains(module));
+      setEnabled(!isEditing(module));
     }
 
     public LaunchAction(ModuleManagerWindow mm, File module, File saveGame) {
       super(Resources.getString("General.open"), mm, Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module, saveGame)
       );
-      setEnabled(!editing.contains(module));
+      setEnabled(!isEditing(module));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (editing.contains(lr.module)) return;
+      if (isEditing(lr.module)) return;
 
       // don't permit loading of VASL saved before 3.4
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
@@ -194,7 +194,7 @@ public class Player extends Launcher {
       }
 
       // increase the using count
-      using.merge(lr.module, 1, Integer::sum);
+      incrementUsed(lr.module);
       super.actionPerformed(e);
     }
 
@@ -206,7 +206,7 @@ public class Player extends Launcher {
           super.done();
 
           // reduce the using count
-          using.merge(lr.module, 0, (v, n) -> v == 1 ? null : v - 1);
+          decrementUsed(lr.module);
         }
       };
     }
