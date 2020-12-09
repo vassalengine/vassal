@@ -1,5 +1,6 @@
 3.5.0-beta2 - ???
 
+* 13808: Don't prompt to create new logfile before current one is done
 * 13792: Combined save and log loading; Load Continuation moved from File to
     Tools menu
 * 13783: Non-rectangular trait should remember name of image that created it
