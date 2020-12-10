@@ -373,7 +373,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 
       final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
-      mmw.addModule(lr.module);
+      if (lr.module != null) {
+        mmw.addModule(lr.module);
+      }
       mmw.setWaitCursor(false);
 
       try {
