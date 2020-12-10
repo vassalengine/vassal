@@ -360,6 +360,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box = new TraitConfigPanel();
 
       descInput = new StringConfigurer(piece.description);
+      descInput.setHintKey("Editor.description_hint");
       box.add("Editor.description_label", descInput);
 
       keys = new NamedKeyStrokeArrayConfigurer(piece.keys);
@@ -399,6 +400,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       cycleFormat.getControls().setVisible(cycle.getValueBoolean());
       cycleLabel.setVisible(cycle.getValueBoolean());
       cycleDownKeys.getControls().setVisible(cycle.getValueBoolean());
+      cycleDownKeys.getListController().setVisible(cycle.getValueBoolean());
       cycleDownLabel.setVisible(cycle.getValueBoolean());
       repack(box);
     }
