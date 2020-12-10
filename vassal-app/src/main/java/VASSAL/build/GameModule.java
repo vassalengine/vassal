@@ -1814,11 +1814,11 @@ public class GameModule extends AbstractConfigurable
 
       lastSavedConfiguration = save;
 
-      GameModule.getGameModule().warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
+      warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
     }
     catch (IOException e) {
       WriteErrorDialog.showError(
-        GameModule.getGameModule().getPlayerWindow(),
+        getPlayerWindow(),
         e,
         writer.getArchive().getFile(),
         "Error.new_file_write_error"

@@ -1686,7 +1686,6 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public void refresh() {
-
       // Remove any files that no longer exist
       for (int i = getTreeNode().getChildCount() - 1; i >= 0; i--) {
         final MyTreeNode fileNode = getTreeNode().getChild(i);

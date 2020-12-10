@@ -88,16 +88,18 @@ public class ModuleEditorWindow extends EditorWindow {
   @Override
   protected void save() {
     saver(() -> {
-      GameModule.getGameModule().save();
-      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
+      final GameModule g = GameModule.getGameModule();
+      g.save();
+      setModuleName(g.getArchiveWriter().getArchive().getFile().getName());
     });
   }
 
   @Override
   protected void saveAs() {
     saver(() -> {
-      GameModule.getGameModule().saveAs();
-      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
+      final GameModule g = GameModule.getGameModule();
+      g.saveAs();
+      setModuleName(g.getArchiveWriter().getArchive().getFile().getName());
     });
   }
 }
