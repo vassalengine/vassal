@@ -234,6 +234,7 @@ public class DoActionButton extends AbstractToolbarItem
   /**
    * @deprecated not replaced
    */
+  @Deprecated (since = "2020-10-21", forRemoval = true)
   public static class NamedHotkeyListConfigurer extends ListConfigurer {
     public NamedHotkeyListConfigurer(String key, String name, List<NamedKeyStroke> list) {
       super(key, name, list);
