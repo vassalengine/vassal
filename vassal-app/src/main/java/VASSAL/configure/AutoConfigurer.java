@@ -17,6 +17,14 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.counters.TraitLayout;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
@@ -30,16 +38,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.swing.SwingUtils;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -55,7 +57,7 @@ public class AutoConfigurer extends Configurer
   protected AutoConfigurable target;
   protected List<Configurer> configurers = new ArrayList<>();
   protected Map<String, VisibilityCondition> conditions;
-  protected Map<String, JLabel> labels = new HashMap<>();
+  protected Map<String, JComponent> labels = new HashMap<>();
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());
@@ -85,10 +87,25 @@ public class AutoConfigurer extends Configurer
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
+
         final JLabel label = new JLabel(prompt[i]);
-        label.setLabelFor(config.getControls());
-        labels.put(name[i], label);
-        p.add(label);
+        JComponent displayLabel;
+
+        // Include List Controller for ConfigurableList Configurers
+        if (config instanceof ConfigurableList) {
+          final JPanel controllerPanel = new JPanel(new MigLayout("hidemode 3,ins 0," + TraitLayout.STANDARD_GAPY, "[grow]")); // NON-NLS
+          controllerPanel.add(label, "align right,wrap"); // NON-NLS
+          controllerPanel.add(((ConfigurableList) config).getListController(), "align right"); // NON-NLS
+          label.setLabelFor(config.getControls());
+          displayLabel = controllerPanel;
+        }
+        else {
+          label.setLabelFor(config.getControls());
+          displayLabel = label;
+        }
+
+        labels.put(name[i], displayLabel);
+        p.add(displayLabel);
         p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
       }
@@ -241,7 +258,7 @@ public class AutoConfigurer extends Configurer
           if (c.getControls().isVisible() != cond.shouldBeVisible()) {
             visChanged = true;
             c.getControls().setVisible(cond.shouldBeVisible());
-            final JLabel label = labels.get(c.getKey());
+            final JComponent label = labels.get(c.getKey());
             if (label != null) {
               label.setVisible(cond.shouldBeVisible());
             }

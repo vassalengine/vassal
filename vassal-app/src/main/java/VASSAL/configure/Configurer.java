@@ -17,10 +17,13 @@
  */
 package VASSAL.configure;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.SwingUtils;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -52,6 +55,10 @@ public abstract class Configurer {
   protected boolean frozen = false;
   /** A Hint to be displayed in an empty field */
   protected String hint = "";
+  /** The current highlight status of the Configurer */
+  private boolean highlighted = false;
+  /** Default Highlight Color for Configurable Lists */
+  public static final Color LIST_ENTRY_HIGHLIGHT_COLOR = new Color(255, 230, 230);
 
   public Configurer(String key, String name) {
     this(key, name, null);
@@ -195,6 +202,14 @@ public abstract class Configurer {
   }
 
   /**
+   * Set the Hint String via a I18n key
+   * @param hintKey I18n key for the hint
+   */
+  public void setHintKey(String hintKey) {
+    this.hint = Resources.getString(hintKey);
+  }
+
+  /**
    * Show/Hide the internal label maintained by this Configurer. It is up
    * to individual Configurers to track and hide the label (if they can).
    *
@@ -210,6 +225,44 @@ public abstract class Configurer {
    * @param visible Hide label if true
    */
   public void setLabelVisibile(boolean visible) {
+
+  }
+
+  /**
+   * Set the highlighted status of this configurer.
+   * It is up to individual Configurers to over-ride this method and implement a suitable visual highlighting scheme
+   * Note: Cannot make this abstract as it will break custom code.
+   *
+   * @param highlighted New Highlighted status
+   */
+  public void setHighlighted(boolean highlighted) {
+    this.highlighted = highlighted;
+  }
+
+  /**
+   * Return the current highlighted status
+   *
+   * @return Highlight status
+   */
+  public boolean isHighlighted() {
+    return highlighted;
+  }
+
+  /**
+   * Add a FocusListener to the Swing Components that make up this Configurer.
+   *
+   * @param listener Focus Listener
+   */
+  public void addFocusListener(FocusListener listener) {
+
+  }
+
+  /**
+   * Remove a FocusListener from the Swing Components that make up this Configurer.
+   *
+   * @param listener Focus Listener
+   */
+  public void removeFocusListener(FocusListener listener) {
 
   }
 }

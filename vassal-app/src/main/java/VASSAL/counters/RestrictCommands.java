@@ -25,7 +25,6 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -174,7 +173,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription(Resources.getString("Editor.RestrictCommands.trait_description", name));
+    return buildDescription("Editor.RestrictCommands.trait_description", name);
   }
 
   @Override
@@ -231,12 +230,14 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       box = new TraitConfigPanel();
 
       name = new StringConfigurer(piece.name);
+      name.setHintKey("Editor.description_hint");
       box.add("Editor.description_label", name);
 
       actionOption = new TranslatingStringEnumConfigurer(new String[] { HIDE, DISABLE }, restrictionKeys, piece.action);
       box.add("Editor.RestrictCommands.restriction", actionOption);
 
       propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, Decorator.getOutermost(piece));
+      propertyMatch.setHintKey("Editor.property_match_hint");
       box.add("Editor.RestrictCommands.restrict_when_properties_match", propertyMatch);
 
       watchKeys = new NamedKeyStrokeArrayConfigurer(piece.watchKeys);

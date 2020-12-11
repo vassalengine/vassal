@@ -17,7 +17,7 @@
  */
 package VASSAL.configure;
 
-import VASSAL.i18n.Resources;
+import VASSAL.counters.TraitLayout;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
@@ -26,18 +26,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 /**
  * Configures an array of {link NamedKeyStrokes}
  */
-public class NamedKeyStrokeArrayConfigurer extends Configurer {
-  private final List<NamedHotKeyConfigurer> configs = new ArrayList<>();
+public class NamedKeyStrokeArrayConfigurer extends Configurer implements ConfigurableList {
   private JPanel controls;
   private JPanel panel;
+  private int selectedEntryIndex = -1;
+  private final List<NKSAEntry> entries = new ArrayList<>();
+  private ConfigurableListController controller;
 
   public NamedKeyStrokeArrayConfigurer(String key, String name) {
     super(key, name);
@@ -55,38 +59,60 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
     this(null, "", val);
   }
 
+  public NamedKeyStroke[] getNameKeyStrokeArrayValue() {
+    return (NamedKeyStroke[]) getValue();
+  }
+
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new ConfigurerPanel(getName(), "[grow,fill]rel[]", "[]rel[grow,fill]rel[]"); // NON-NLS
+      panel = new JPanel(new MigLayout("ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill]", "[grow,fill]")); // NON-NLS
 
-      controls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_GAPY, "[grow,fill]")); // NON-NLS
+      controls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
+      controls.setMinimumSize(ConfigurableList.EMPTY_LIST_PANEL_SIZE);
       panel.add(controls, "grow"); // NON-NLS
 
-      final NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
-      if (keyStrokes == null || keyStrokes.length == 0) {
-        addKey(null);
-      }
-      else {
-        for (final NamedKeyStroke keyStroke : keyStrokes) {
-          addKey(keyStroke);
-        }
-      }
+      rebuildControls();
 
-      final JButton button = new JButton(Resources.getString("Editor.add"));
-      button.addActionListener(e -> addKey(null));
-      panel.add(button, "aligny top"); // NON-NLS
     }
     return panel;
   }
 
-  private void addKey(NamedKeyStroke keyStroke) {
-    final NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
-    configs.add(config);
-    controls.add(config.getControls(), "grow,wrap"); // NON-NLS
+  /**
+   * Rebuild controls from scratch
+   */
+  private void rebuildControls() {
+    entries.clear();
+    controls.removeAll();
 
-    repack(controls);
+    final NamedKeyStroke[] keys = getNameKeyStrokeArrayValue();
+
+    for (final NamedKeyStroke key : keys) {
+      final NKSAEntry entry = new NKSAEntry(this, key);
+      controls.add(entry.getConfigurer().getControls());
+      controls.add(entry.getRemoveButton(), "growx 0,wrap"); // NON-NLS
+      entries.add(entry); // NON-NLS
+    }
+
+    updateControls();
+    repack();
+  }
+
+  /**
+   * Refresh visible state of controls without rebuilding
+   */
+  private void updateControls() {
+    int i = 0;
+    for (final NKSAEntry entry : entries) {
+      entry.setHighlighted(i++ == getSelectedEntryIndex());
+    }
+    getListController();
+    controller.setCanMoveUp(getSelectedEntryIndex() > 0);
+    controller.setCanMoveDown(getSelectedEntryIndex() >= 0 && getSelectedEntryIndex() < entries.size() - 1);
+
+    controls.repaint();
+
   }
 
   @Override
@@ -101,32 +127,24 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
 
   @Override
   public void setValue(Object o) {
-    super.setValue(o);
+    super.setValue(ArrayUtils.clone((NamedKeyStroke[]) o));
     if (controls != null) {
-      NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) o;
-      if (keyStrokes == null) {
-        keyStrokes = new NamedKeyStroke[0];
-      }
+      rebuildControls();
+    }
+  }
 
-      for (int i = 0; i < keyStrokes.length; ++i) {
-        if (i > configs.size()) {
-          addKey(keyStrokes[i]);
-        }
-        else {
-          configs.get(i).setValue(keyStrokes[i]);
-        }
-      }
-
-      for (int i = keyStrokes.length; i < configs.size(); ++i) {
-        configs.get(i).setValue(null);
-      }
+  private void setKeyValue(int pos, NamedKeyStroke stroke) {
+    final NamedKeyStroke[] oldValue = ArrayUtils.clone(getNameKeyStrokeArrayValue());
+    getNameKeyStrokeArrayValue()[pos] = stroke;
+    if (!frozen) {
+      changeSupport.firePropertyChange(key, oldValue, getNameKeyStrokeArrayValue());
     }
   }
 
   public NamedKeyStroke[] getKeyStrokes() {
     final ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    for (final NamedHotKeyConfigurer hotKeyConfigurer : configs) {
-      final NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
+    for (final NKSAEntry entry : entries) {
+      final NamedKeyStroke value = (NamedKeyStroke)  entry.getConfigurer().getValue();
       if (value != null) {
         l.add(value);
       }
@@ -160,5 +178,147 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
       }
     }
     return se.getValue() != null ? se.getValue() : "";
+  }
+
+  @Override
+  public void moveEntryUp() {
+    if (getSelectedEntryIndex() < 0) {
+      return;
+    }
+
+    final int pos = getSelectedEntryIndex();
+    NamedKeyStroke[] keys = getValue() == null ? new NamedKeyStroke[0] : getNameKeyStrokeArrayValue();
+    final NamedKeyStroke moving = keys[pos];
+
+    keys = ArrayUtils.remove(keys, pos);
+    keys = ArrayUtils.insert(pos - 1, keys, moving);
+    setValue(keys);
+
+    setSelectedEntryIndex(pos - 1);
+
+    rebuildControls();
+  }
+
+  @Override
+  public void moveEntryDown() {
+    if (getSelectedEntryIndex() < 0) {
+      return;
+    }
+
+    final int pos = getSelectedEntryIndex();
+    NamedKeyStroke[] keys = getValue() == null ? new NamedKeyStroke[0] : getNameKeyStrokeArrayValue();
+    final NamedKeyStroke moving = keys[pos];
+
+    keys = ArrayUtils.remove(keys, pos);
+    keys = ArrayUtils.insert(pos + 1, keys, moving);
+    setValue(keys);
+
+    setSelectedEntryIndex(pos + 1);
+
+    rebuildControls();
+  }
+
+  @Override
+  public void addEntry() {
+
+    final int pos = getSelectedEntryIndex();
+    final NamedKeyStroke[] keys = getValue() == null ? new NamedKeyStroke[0] : getNameKeyStrokeArrayValue();
+
+    // Insert the new entry into the list at the appropriate place
+    if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
+      setValue(ArrayUtils.add(keys, new NamedKeyStroke()));
+      setSelectedEntryIndex(getNameKeyStrokeArrayValue().length - 1);
+    }
+    else {
+      setValue(ArrayUtils.insert(pos + 1, keys, new NamedKeyStroke()));
+      setSelectedEntryIndex(pos + 1);
+    }
+
+    rebuildControls();
+
+  }
+
+  @Override
+  public void deleteEntry(ConfigurableListEntry entry) {
+
+    final int pos = entries.indexOf(entry);
+    final NamedKeyStroke[] keys = getValue() == null ? new NamedKeyStroke[0] : getNameKeyStrokeArrayValue();
+
+    setValue(ArrayUtils.remove(keys, pos));
+    setSelectedEntryIndex(Math.min(pos, entries.size() - 1));
+
+    if (selectedEntryIndex >= 0) {
+      entries.get(selectedEntryIndex).requestFocus();
+    }
+
+  }
+
+  @Override
+  public JComponent getListController() {
+    if (controller == null) {
+      controller = new ConfigurableListController(this);
+    }
+    return controller;
+  }
+
+  @Override
+  public void selectEntry(ConfigurableListEntry entry) {
+    setSelectedEntryIndex(entry == null ? -1 : entries.indexOf(entry));
+    updateControls();
+  }
+
+  @Override
+  public void repack() {
+    repack(panel);
+  }
+
+  @Override
+  public void setSelectedEntryIndex(int index) {
+    selectedEntryIndex = Math.min(index, entries.size() - 1);
+  }
+
+  @Override
+  public int getSelectedEntryIndex() {
+    return selectedEntryIndex;
+  }
+
+  /** A List entry has had it's value changed. */
+  @Override
+  public void entryChanged(ConfigurableListEntry entry) {
+    setKeyValue(entries.indexOf(entry), (NamedKeyStroke) entry.getConfigurer().getValue());
+  }
+
+  static class NKSAEntry extends AbstractConfigurableListEntry {
+
+    /**
+     * Build a new List Entry
+     *
+     * @param parentConfig Parent List
+     * @param value        Initial value for entry
+     */
+    public NKSAEntry(ConfigurableList parentConfig, Object value) {
+      super(parentConfig, value);
+    }
+
+    public NKSAEntry(ConfigurableList parentConfig) {
+      this(parentConfig, null);
+    }
+
+    @Override
+    public Configurer buildChildConfigurer(Object value) {
+      final Configurer c = new NamedHotKeyConfigurer();
+      c.setValue(value);
+      return c;
+    }
+
+    @Override
+    public void setHighlighted(boolean b) {
+      getConfigurer().setHighlighted(b);
+    }
+
+    @Override
+    public void requestFocus() {
+      getConfigurer().getControls().requestFocus();
+    }
   }
 }
