@@ -99,8 +99,14 @@ public final class LaunchRequestHandler implements Runnable {
       return "not yet implemented";   // FIXME
     case NEW_EXT:
       return "not yet implemented";   // FIXME
-    case UPDATE:
+    case UPDATE_MOD:
       window.updateRequest(lr.module);
+      break;
+    case UPDATE_EXT:
+      window.updateRequest(lr.extension);
+      break;
+    case UPDATE_GAME:
+      window.updateRequest(lr.game);
       break;
     default:
       return "unrecognized mode";     // FIXME
