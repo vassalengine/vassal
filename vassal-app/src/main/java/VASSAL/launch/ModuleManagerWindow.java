@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2000-2009 by Brent Easton, Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2020 by Brent Easton, Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -64,6 +63,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
@@ -643,6 +643,10 @@ public class ModuleManagerWindow extends JFrame {
     // FIXME: How to set alignment of individual header components?
     tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
+  }
+
+  public void updateRequest(File f) {
+    SwingUtilities.invokeLater(() -> update(f));
   }
 
   /**

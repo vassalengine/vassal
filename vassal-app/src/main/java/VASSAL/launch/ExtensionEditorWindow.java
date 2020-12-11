@@ -20,13 +20,15 @@ import java.io.IOException;
 
 import javax.swing.JDialog;
 
+import org.apache.commons.lang3.StringUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.configure.ExtensionTree;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.menu.MenuManager;
-import org.apache.commons.lang3.StringUtils;
 
 public class ExtensionEditorWindow extends EditorWindow {
 
@@ -87,12 +89,14 @@ public class ExtensionEditorWindow extends EditorWindow {
   @Override
   protected void save() {
     saver(() -> {
+      final DataArchive da = extension.getDataArchive();
       try {
         extension.save();
-        setExtensionName(extension.getDataArchive().getName());
+        setExtensionName(da.getName());
+        ModuleManagerUpdateHelper.sendUpdate(da.getArchive().getFile());
       }
       catch (IOException e) {
-        WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
+        WriteErrorDialog.error(e, da.getArchive().getFile().getName());
       }
     });
   }
@@ -100,12 +104,14 @@ public class ExtensionEditorWindow extends EditorWindow {
   @Override
   protected void saveAs() {
     saver(() -> {
+      final DataArchive da = extension.getDataArchive();
       try {
         extension.saveAs();
-        setExtensionName(extension.getDataArchive().getName());
+        setExtensionName(da.getName());
+        ModuleManagerUpdateHelper.sendUpdate(da.getArchive().getFile());
       }
       catch (IOException e) {
-        WriteErrorDialog.error(e, extension.getDataArchive().getArchive().getFile().getName());
+        WriteErrorDialog.error(e, da.getArchive().getFile().getName());
       }
     });
   }

@@ -170,6 +170,13 @@ public class ModuleManager {
         if (lock != null) {
           // we have the lock, so we will be the request server
 
+          if (lr.mode == LaunchRequest.Mode.UPDATE) {
+            // don't start a new Module Manager for update requests; these
+            // are intended to be relayed to a Module Manager which is already
+            // running
+            return;
+          }
+
           // bind to an available port on the loopback device
           final ServerSocket serverSocket =
             new ServerSocket(0, 0, InetAddress.getByName(null));

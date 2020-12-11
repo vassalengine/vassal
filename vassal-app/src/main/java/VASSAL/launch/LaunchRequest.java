@@ -56,7 +56,8 @@ public class LaunchRequest implements Serializable {
     NEW("new"), //NON-NLS
     EDIT_EXT("edit-extension"), //NON-NLS
     NEW_EXT("new-extension"), //NON-NLS
-    TRANSLATE("translate"); //NON-NLS
+    TRANSLATE("translate"), //NON-NLS
+    UPDATE("update"); //NON-NLS
 
     private final String prettyName;
 
@@ -218,6 +219,7 @@ public class LaunchRequest implements Serializable {
     final int PORT = 5;
     final int VERSION = 6;
     final int TRANSLATE = 7;
+    final int UPDATE = 8;
 
     final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
@@ -233,7 +235,8 @@ public class LaunchRequest implements Serializable {
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT), //NON-NLS
       new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT), //NON-NLS
       new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION), //NON-NLS
-      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE) //NON-NLS
+      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE), //NON-NLS
+      new LongOpt("update", LongOpt.NO_ARGUMENT, null, UPDATE) //NON-NLS
     };
 
     final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts); //NON-NLS
@@ -272,6 +275,9 @@ public class LaunchRequest implements Serializable {
         break;
       case TRANSLATE:
         setMode(lr, Mode.TRANSLATE);
+        break;
+      case UPDATE:
+        setMode(lr, Mode.UPDATE);
         break;
       case 'a':
         lr.builtInModule = true;
@@ -407,6 +413,14 @@ public class LaunchRequest implements Serializable {
       break;
     case NEW:
     case TRANSLATE:
+      break;
+    case UPDATE:
+      if (i < args.length) {
+        lr.module = new File(args[i++]);
+      }
+      else {
+        die("LaunchRequest.missing_module");
+      }
       break;
     }
 
