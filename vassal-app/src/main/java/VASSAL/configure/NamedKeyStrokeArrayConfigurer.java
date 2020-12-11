@@ -107,6 +107,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     for (final NKSAEntry entry : entries) {
       entry.setHighlighted(i++ == getSelectedEntryIndex());
     }
+    getListController();
     controller.setCanMoveUp(getSelectedEntryIndex() > 0);
     controller.setCanMoveDown(getSelectedEntryIndex() >= 0 && getSelectedEntryIndex() < entries.size() - 1);
 
