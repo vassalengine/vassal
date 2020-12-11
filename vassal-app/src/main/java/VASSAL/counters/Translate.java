@@ -426,21 +426,19 @@ public class Translate extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer key;
     private final TraitConfigPanel controls;
     private final BooleanConfigurer moveStack;
+    @Deprecated (since = "2020-12-11", forRemoval = true)
     protected BooleanConfigurer advancedInput;
     protected FormattedExpressionConfigurer xIndexInput;
     protected FormattedExpressionConfigurer xOffsetInput;
     protected FormattedExpressionConfigurer yIndexInput;
     protected FormattedExpressionConfigurer yOffsetInput;
     protected StringConfigurer descInput;
-    private final JLabel xLabel;
-    private final JPanel xControls;
-    private final JLabel yLabel;
-    private final JPanel yControls;
 
     public Editor(Translate t) {
       controls = new TraitConfigPanel();
 
       descInput = new StringConfigurer(t.description);
+      descInput.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descInput);
 
       name = new StringConfigurer(t.commandName);
@@ -459,12 +457,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       moveStack = new BooleanConfigurer(Boolean.valueOf(t.moveStack));
       controls.add("Editor.MoveFixedDistance.move_entire_stack", moveStack);
 
-      advancedInput = new BooleanConfigurer(false);
-      advancedInput.addPropertyChangeListener(e -> updateAdvancedVisibility());
-      controls.add("Editor.MoveFixedDistance.advanced_options", advancedInput);
-
-      xLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"));
-      xControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
+      JLabel xLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"));
+      JPanel xControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
       xLabel.setLabelFor(xControls);
       xIndexInput = new FormattedExpressionConfigurer(t.xIndex.getFormat(), t);
       xControls.add(xIndexInput.getControls(), "grow"); // NON-NLS
@@ -477,8 +471,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(xLabel);
       controls.add(xControls, "grow,wrap"); // NON-NLS
 
-      yLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"));
-      yControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
+      JLabel yLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"));
+      JPanel yControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
       yLabel.setLabelFor(yControls);
       yIndexInput = new FormattedExpressionConfigurer(t.yIndex.getFormat(), t);
       yControls.add(yIndexInput.getControls());
@@ -491,16 +485,6 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(yLabel);
       controls.add(yControls, "grow,wrap"); // NON-NLS
 
-      updateAdvancedVisibility();
-    }
-
-    private void updateAdvancedVisibility() {
-      final boolean visible = advancedInput.booleanValue();
-      xLabel.setVisible(visible);
-      xControls.setVisible(visible);
-      yLabel.setVisible(visible);
-      yControls.setVisible(visible);
-      repack(controls);
     }
 
     @Override

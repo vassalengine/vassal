@@ -552,7 +552,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     protected FormattedStringConfigurer xInput;
     protected JLabel yInputLabel;
     protected FormattedStringConfigurer yInput;
+    @Deprecated (since = "2020-12-11", forRemoval = true)
     protected JLabel advancedLabel;
+    @Deprecated (since = "2020-12-11", forRemoval = true)
     protected BooleanConfigurer advancedInput;
     protected JLabel xAdvancedLabel;
     protected JLabel yAdvancedLabel;
@@ -583,6 +585,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls = new TraitConfigPanel();
 
       descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descInput);
 
       nameInput = new StringConfigurer(p.commandName);
@@ -611,6 +614,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       mapControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
       final JPanel mapPanel = new JPanel(new MigLayout("ins 0", "[grow]", "push[]push")); // NON-NLS
       mapIdInput = new FormattedExpressionConfigurer(p.mapId.getFormat(), p);
+      mapIdInput.setHintKey("Editor.SendToLocation.map_hint");
       mapPanel.add(mapIdInput.getControls(), "grow"); // NON-NLS
       mapControls.add(mapPanel, "grow"); // NON-NLS
       JButton select = new JButton(Resources.getString("Editor.select"));
@@ -624,6 +628,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       boardLabel = new JLabel(Resources.getString("Editor.SendToLocation.board"));
       boardControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[]")); // NON-NLS
       boardNameInput = new FormattedExpressionConfigurer(p.boardName.getFormat(), p);
+      boardNameInput.setHintKey("Editor.SendToLocation.board_hint");
       final JPanel boardPanel = new JPanel(new MigLayout("ins 0", "[grow]", "push[]push")); // NON-NLS
       boardPanel.add(boardNameInput.getControls(), "grow"); // NON-NLS
       boardControls.add(boardPanel, "grow"); // NON-NLS
@@ -645,24 +650,23 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       zoneLabel = new JLabel(Resources.getString("Editor.SendToLocation.zone_name"));
       zoneInput = new FormattedExpressionConfigurer(p.zone.getFormat(), p);
+      zoneInput.setHintKey("Editor.SendToLocation.zone_hint");
       controls.add(zoneLabel, zoneInput);
 
       regionLabel = new JLabel(Resources.getString("Editor.SendToLocation.region_name"));
       regionInput = new FormattedExpressionConfigurer(p.region.getFormat(), p);
+      regionInput.setHintKey("Editor.SendToLocation.region_hint");
       controls.add(regionLabel, regionInput);
 
       propertyLabel = new JLabel(Resources.getString("Editor.property_match_label"));
       propertyInput = new PropertyExpressionConfigurer(p.propertyFilter);
+      propertyInput.setHintKey("Editor.property_match_hint");
       controls.add(propertyLabel, propertyInput);
 
       gridLabel = new JLabel(Resources.getString("Editor.SendToLocation.grid_location"));
       gridLocationInput = new StringConfigurer(p.gridLocation.getFormat());
+      gridLocationInput.setHintKey("Editor.SendToLocation.grid_location_hint");
       controls.add(gridLabel, gridLocationInput);
-
-      advancedLabel = new JLabel(Resources.getString("Editor.SendToLocation.advanced_options"));
-      advancedInput = new BooleanConfigurer(false);
-      advancedInput.addPropertyChangeListener(arg0 -> updateVisibility());
-      controls.add(advancedLabel, advancedInput);
 
       xAdvancedLabel = new JLabel(Resources.getString("Editor.SendToLocation.additional_x_offset"));
       advancedControls = new JPanel(new MigLayout("ins 0", "[grow,fill]rel[]rel[grow,fill]")); // NON-NLS
@@ -686,15 +690,6 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
 
     private void updateVisibility() {
-
-      advancedInput.getControls().setVisible(!newDestInput.getValue().equals(DEST_GRIDLOCATION));
-      advancedLabel.setVisible(!newDestInput.getValue().equals(DEST_GRIDLOCATION));
-
-      final boolean advancedVisible = advancedInput.booleanValue() && advancedInput.getControls().isVisible();
-      advancedControls.setVisible(advancedVisible);
-      xAdvancedLabel.setVisible(advancedVisible);
-      yAdvancedControls.setVisible(advancedVisible);
-      yAdvancedLabel.setVisible(advancedVisible);
 
       final String destOption = newDestInput.getValueString();
 
