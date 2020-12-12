@@ -42,25 +42,22 @@ public class LogEntry implements Serializable {
   public static final int SYSTEM = 5;
 
   public final long timestamp;
-  public final int pid;
   public final int type;
   public final String message;
   public final String trace;
   public final boolean wait;
 
-  public LogEntry(int pid, int type, Throwable thrown,
-                  String message, boolean wait) {
-    this(System.currentTimeMillis(), pid, type, thrown, message, wait);
+  public LogEntry(int type, Throwable thrown, String message, boolean wait) {
+    this(System.currentTimeMillis(), type, thrown, message, wait);
   }
 
-  public LogEntry(long timestamp, int pid, int type,
+  public LogEntry(long timestamp, int type,
                   Throwable thrown, String message, boolean wait) {
 
     if (thrown == null && message == null)
       throw new IllegalArgumentException();
 
     this.timestamp = timestamp;
-    this.pid = pid;
     this.type = type;
     this.message = message;
     this.trace = thrown != null ? ThrowableUtils.getStackTrace(thrown) : null;
@@ -75,9 +72,7 @@ public class LogEntry implements Serializable {
       new SimpleDateFormat("dd MMM yyyy HH:mm:ss.SSS", Locale.ENGLISH);
     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-    sb.append(dateFormat.format(timestamp))
-      .append(' ')
-      .append(pid);
+    sb.append(dateFormat.format(timestamp));
 
     if (message != null) {
       sb.append(' ').append(message);

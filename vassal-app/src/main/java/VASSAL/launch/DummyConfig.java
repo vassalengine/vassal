@@ -30,11 +30,6 @@ public class DummyConfig implements Config {
   }
 
   @Override
-  public int getInstanceID() {
-    return -1;
-  }
-
-  @Override
   public Path getBaseDir() {
     return getTempDir();
   }

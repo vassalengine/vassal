@@ -53,7 +53,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.Launcher;
+import VASSAL.launch.ModuleManagerUpdateHelper;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
@@ -392,10 +392,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         metadata.save(zw);
       }
 
-      Launcher.getInstance().sendSaveCmd(outputFile);
-
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
+      ModuleManagerUpdateHelper.sendUpdate(outputFile);
     }
 
     endLogAction.setEnabled(false);

@@ -1,8 +1,9 @@
 <configuration>
-  <contextName>${VASSAL.id:-0}</contextName>
-
   <property resource="git.properties" />
   <property name="LOG_FILE" value="errorLog-${git.version}" />
+
+  <conversionRule conversionWord="pid"
+                  converterClass="VASSAL.tools.logging.ProcessIDConverter" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <if condition='property("os.name").toLowerCase().startsWith("windows")'>
@@ -21,7 +22,7 @@
       </else>
     </if>
     <encoder>
-      <pattern>%date [%contextName-%thread] %-5level %logger - %msg%n</pattern>
+      <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
     </encoder>
     <prudent>true</prudent>
   </appender>
@@ -30,7 +31,7 @@
   <!--
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%date [%contextName-%thread] %-5level %logger - %msg%n</pattern>
+      <pattern>%date [%thread] %-5level %logger - %msg%n</pattern>
     </encoder>
     <prudent>true</prudent>
   </appender>

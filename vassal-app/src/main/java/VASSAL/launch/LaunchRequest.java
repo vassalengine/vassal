@@ -56,7 +56,10 @@ public class LaunchRequest implements Serializable {
     NEW("new"), //NON-NLS
     EDIT_EXT("edit-extension"), //NON-NLS
     NEW_EXT("new-extension"), //NON-NLS
-    TRANSLATE("translate"); //NON-NLS
+    TRANSLATE("translate"), //NON-NLS
+    UPDATE_MOD("update-module"), //NON-NLS
+    UPDATE_EXT("update-extension"), //NON-NLS
+    UPDATE_GAME("update-game"); //NON-NLS
 
     private final String prettyName;
 
@@ -68,7 +71,6 @@ public class LaunchRequest implements Serializable {
     public String toString() {
       return prettyName;
     }
-
   }
 
   public Mode mode;
@@ -76,8 +78,6 @@ public class LaunchRequest implements Serializable {
   public File game;
   public File extension;
   public File importFile;
-
-  public boolean standalone = false;
 
   public boolean builtInModule;
   public List<String> autoext;
@@ -112,7 +112,6 @@ public class LaunchRequest implements Serializable {
     this.game = lr.game;
     this.extension = lr.extension;
     this.importFile = lr.importFile;
-    this.standalone = lr.standalone;
 
     this.builtInModule = lr.builtInModule;
 
@@ -193,7 +192,6 @@ public class LaunchRequest implements Serializable {
       "  -l, --load          " + Resources.getString("LaunchRequest.load") + "\n" + //NON-NLS
       "  -m, --manage        " + Resources.getString("LaunchRequest.manage") + "\n" + //NON-NLS
       "  -n, --new           " + Resources.getString("LaunchRequest.new") + "\n" + //NON-NLS
-      "  -s, --standalone    " + Resources.getString("LaunchRequest.standalone") + "\n" + //NON-NLS
       "  --auto-extensions   TODO\n" + //NON-NLS
       "  --edit-extension    " + Resources.getString("LaunchRequest.extension") + "\n" + //NON-NLS
       "  --new-extension     " + Resources.getString("LaunchRequest.new_extension") + "\n" + //NON-NLS
@@ -222,6 +220,9 @@ public class LaunchRequest implements Serializable {
     final int PORT = 5;
     final int VERSION = 6;
     final int TRANSLATE = 7;
+    final int UPDATE_MOD = 8;
+    final int UPDATE_EXT = 9;
+    final int UPDATE_GAME = 10;
 
     final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
@@ -232,13 +233,15 @@ public class LaunchRequest implements Serializable {
       new LongOpt("load",       LongOpt.NO_ARGUMENT, null, 'l'), //NON-NLS
       new LongOpt("manage",     LongOpt.NO_ARGUMENT, null, 'm'), //NON-NLS
       new LongOpt("new",        LongOpt.NO_ARGUMENT, null, 'n'), //NON-NLS
-      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, 's'), //NON-NLS
       new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT), //NON-NLS
       new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT), //NON-NLS
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT), //NON-NLS
       new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT), //NON-NLS
       new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION), //NON-NLS
-      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE) //NON-NLS
+      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE), //NON-NLS
+      new LongOpt("update-module", LongOpt.NO_ARGUMENT, null, UPDATE_MOD), //NON-NLS
+      new LongOpt("update-extension", LongOpt.NO_ARGUMENT, null, UPDATE_EXT), //NON-NLS
+      new LongOpt("update-game", LongOpt.NO_ARGUMENT, null, UPDATE_GAME) //NON-NLS
     };
 
     final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts); //NON-NLS
@@ -278,6 +281,15 @@ public class LaunchRequest implements Serializable {
       case TRANSLATE:
         setMode(lr, Mode.TRANSLATE);
         break;
+      case UPDATE_MOD:
+        setMode(lr, Mode.UPDATE_MOD);
+        break;
+      case UPDATE_EXT:
+        setMode(lr, Mode.UPDATE_EXT);
+        break;
+      case UPDATE_GAME:
+        setMode(lr, Mode.UPDATE_GAME);
+        break;
       case 'a':
         lr.builtInModule = true;
         break;
@@ -302,9 +314,6 @@ public class LaunchRequest implements Serializable {
         break;
       case 'n':
         setMode(lr, Mode.NEW);
-        break;
-      case 's':
-        lr.standalone = true;
         break;
       case ':':
         die("LaunchRequest.missing_argument", args[g.getOptind() - 1]);
@@ -415,6 +424,30 @@ public class LaunchRequest implements Serializable {
       break;
     case NEW:
     case TRANSLATE:
+      break;
+    case UPDATE_MOD:
+      if (i < args.length) {
+        lr.module = new File(args[i++]);
+      }
+      else {
+        die("LaunchRequest.missing_module");
+      }
+      break;
+    case UPDATE_EXT:
+      if (i < args.length) {
+        lr.extension = new File(args[i++]);
+      }
+      else {
+        die("LaunchRequest.missing_module");
+      }
+      break;
+    case UPDATE_GAME:
+      if (i < args.length) {
+        lr.game = new File(args[i++]);
+      }
+      else {
+        die("LaunchRequest.missing_module");
+      }
       break;
     }
 

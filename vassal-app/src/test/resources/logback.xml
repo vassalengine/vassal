@@ -1,5 +1,6 @@
 <configuration>
-  <contextName>${VASSAL.id:-0}</contextName>
+  <conversionRule conversionWord="pid"
+                  converterClass="VASSAL.tools.logging.ProcessIDConverter" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <if condition='property("os.name").toLowerCase().startsWith("windows")'>
@@ -18,7 +19,7 @@
       </else>
     </if>
     <encoder>
-      <pattern>%date [%contextName-%thread] %-5level %logger - %msg%n</pattern>
+      <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
     </encoder>
     <prudent>true</prudent>
   </appender>
