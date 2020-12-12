@@ -523,9 +523,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       box = new TraitConfigPanel();
 
       name = new StringConfigurer(piece.name);
+      name.setHintKey("Editor.description_hint");
       box.add("Editor.description_label", name);
 
       propertyMatch = new PropertyExpressionConfigurer(piece.propertyMatch, Decorator.getOutermost(piece));
+      propertyMatch.setHintKey("Editor.TriggerAction.property_match_hint");
       box.add("Editor.TriggerAction.trigger_when_properties", propertyMatch);
 
       command = new StringConfigurer(piece.command);
@@ -552,14 +554,17 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
       loopCountLabel = new JLabel(Resources.getString("Editor.LoopControl.loop_how_many"));
       loopCountConfig = new FormattedExpressionConfigurer(piece.loopCount.getFormat(), piece);
+      loopCountConfig.setHintKey("Editor.LoopControl.loop_how_many_hint");
       box.add(loopCountLabel, loopCountConfig);
 
       whileLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_continues"));
       whileExpressionConfig = new PropertyExpressionConfigurer(piece.whileExpression);
+      whileExpressionConfig.setHintKey("Editor.property_match_hint");
       box.add(whileLabel, whileExpressionConfig);
 
       untilLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_ends"));
       untilExpressionConfig = new PropertyExpressionConfigurer(piece.untilExpression);
+      untilExpressionConfig.setHintKey("Editor.property_match_hint");
       box.add(untilLabel, untilExpressionConfig);
 
       preLabel = new JLabel(Resources.getString("Editor.TriggerAction.keystroke_before"));
@@ -577,6 +582,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
       indexPropertyLabel = new JLabel(Resources.getString("Editor.LoopControl.index_name"));
       indexPropertyConfig = new StringConfigurer(piece.indexProperty);
+      indexPropertyConfig.setHintKey("Editor.LoopControl.index_name_hint");
       box.add(indexPropertyLabel, indexPropertyConfig);
 
       indexStartLabel = new JLabel(Resources.getString("Editor.LoopControl.index_start"));

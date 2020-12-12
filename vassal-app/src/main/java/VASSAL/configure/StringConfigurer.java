@@ -17,9 +17,11 @@
  */
 package VASSAL.configure;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import java.awt.event.FocusListener;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -127,5 +129,26 @@ public class StringConfigurer extends Configurer {
     if (p instanceof ConfigurerPanel) {
       ((ConfigurerPanel) p).setLabelVisibility(visible);
     }
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    getControls();
+    nameField.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    nameField.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    nameField.removeFocusListener(listener);
   }
 }

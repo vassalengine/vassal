@@ -17,9 +17,11 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -225,10 +227,14 @@ public class DoActionButton extends AbstractToolbarItem
   public static class HotkeyConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new NamedHotkeyListConfigurer(key, name, ((DoActionButton) c).hotkeys);
+      return new NamedKeyStrokeArrayConfigurer(key, name, ((DoActionButton) c).hotkeys);
     }
   }
 
+  /**
+   * @deprecated not replaced
+   */
+  @Deprecated (since = "2020-10-21", forRemoval = true)
   public static class NamedHotkeyListConfigurer extends ListConfigurer {
     public NamedHotkeyListConfigurer(String key, String name, List<NamedKeyStroke> list) {
       super(key, name, list);
@@ -304,6 +310,9 @@ public class DoActionButton extends AbstractToolbarItem
     else if (HOTKEYS.equals(key)) {
       if (o instanceof String) {
         o = decodeHotkeys((String) o);
+      }
+      else if (o instanceof NamedKeyStroke[]) {
+        o = Arrays.asList((NamedKeyStroke[]) o);
       }
       hotkeys = (List<NamedKeyStroke>) o;
     }
