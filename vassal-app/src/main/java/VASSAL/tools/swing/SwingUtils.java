@@ -499,7 +499,6 @@ public class SwingUtils {
 
     // Adjust the position
     window.setLocation(bounds.x, bounds.y);
-
   }
 
   /**
@@ -512,7 +511,6 @@ public class SwingUtils {
       repack(SwingUtilities.getWindowAncestor(c));
     }
   }
-
 
   /**
    * Repack a dialog or frame and ensure it is fully on the screen
@@ -527,7 +525,7 @@ public class SwingUtils {
       min.height = 1;
       w.setMinimumSize(min);
       w.pack();
-      w.setMinimumSize(null);
+      w.setMinimumSize(new Dimension(0, 0));
       SwingUtils.ensureOnScreen(w);
     }
   }
