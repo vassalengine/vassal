@@ -407,6 +407,7 @@ public class ZipArchive implements FileArchive {
   private File makeTempFileFor(String path) throws IOException {
     final String base = FilenameUtils.getBaseName(path) + "_";
     final String ext = extensionOf(path);
+    Files.createDirectories(Info.getTempDir().toPath());
     return Files.createTempFile(Info.getTempDir().toPath(), base, ext).toFile();
   }
 
