@@ -27,10 +27,9 @@ import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.Configurer;
+import VASSAL.configure.DynamicKeyCommandListConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
@@ -265,7 +264,7 @@ public class SetGlobalProperty extends DynamicProperty {
     protected IntConfigurer maxConfig;
     protected JLabel wrapLabel;
     protected BooleanConfigurer wrapConfig;
-    protected ListConfigurer keyCommandListConfig;
+    protected DynamicKeyCommandListConfigurer keyCommandListConfig;
     protected TranslatingStringEnumConfigurer levelConfig;
     protected FormattedExpressionConfigurer searchNameConfig;
     protected String mapText = Resources.getString("Editor.SetGlobalProperty.name_of_map");
@@ -274,16 +273,8 @@ public class SetGlobalProperty extends DynamicProperty {
     protected TraitConfigPanel controls;
 
     public Ed(final SetGlobalProperty m) {
-      keyCommandListConfig = new ListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands")) {
-        @Override
-        protected Configurer buildChildConfigurer() {
-          final DynamicKeyCommandConfigurer c = new DynamicKeyCommandConfigurer(m);
-          c.addPropertyChangeListener(e -> resize());
-          return c;
-        }
-      };
-      keyCommandListConfig.setValue(
-        new ArrayList<>(Arrays.asList(m.keyCommands)));
+      keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands"), m);
+      keyCommandListConfig.setValue(new ArrayList<>(Arrays.asList(m.keyCommands)));
 
       controls = new TraitConfigPanel();
 

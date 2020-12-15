@@ -384,7 +384,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add(formatLabel, format);
 
       cycleLabel = new JLabel(Resources.getString("Editor.ReportState.message_formats"));
-      cycleFormat = new StringArrayConfigurer(piece.cycleReportFormat, 3, 6);
+      cycleFormat = new StringArrayConfigurer(piece.cycleReportFormat);
       box.add(cycleLabel, cycleFormat);
 
       cycleDownLabel = new JLabel(Resources.getString("Editor.ReportState.report_previous"));
@@ -398,6 +398,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       format.getControls().setVisible(!cycle.getValueBoolean());
       formatLabel.setVisible(!cycle.getValueBoolean());
       cycleFormat.getControls().setVisible(cycle.getValueBoolean());
+      cycleFormat.getListController().setVisible(cycle.getValueBoolean());
       cycleLabel.setVisible(cycle.getValueBoolean());
       cycleDownKeys.getControls().setVisible(cycle.getValueBoolean());
       cycleDownKeys.getListController().setVisible(cycle.getValueBoolean());

@@ -27,8 +27,10 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JLabel;
@@ -79,6 +81,7 @@ public class PropertyChangerConfigurer extends Configurer {
   protected TranslatingStringEnumConfigurer typeConfig;
   protected JLabel valueLabel;
   protected FormattedExpressionConfigurer valueConfig;
+  private JPanel valueControlsPanel;
   protected JLabel promptLabel;
   protected StringConfigurer promptConfig;
   protected JLabel incrLabel;
@@ -86,6 +89,7 @@ public class PropertyChangerConfigurer extends Configurer {
   protected StringArrayConfigurer validValuesConfig;
   protected JPanel changerLabelControls;
   protected JPanel changerControls;
+  private List<Configurer> subConfigurers;
 
   public PropertyChangerConfigurer(String key, String name, Constraints constraints) {
     super(key, name);
@@ -97,8 +101,11 @@ public class PropertyChangerConfigurer extends Configurer {
   public Component getControls() {
     if (controls == null) {
       final PropertyChangeListener l = evt -> {
+        // Do not remove either of these calls to updateValue(). Both are required for correct operation
+        // and screen repacking.
         updateValue();
         updateControls();
+        updateValue();
       };
       controls = new JPanel();
       controls.setLayout(new MigLayout("ins 0,hidemode 3", "[]rel[][]rel[fill,grow][fill,grow]")); // NON-NLS
@@ -116,43 +123,54 @@ public class PropertyChangerConfigurer extends Configurer {
           "Editor.PropertyChangeConfigurer.increment_type",
           "Editor.PropertyChangeConfigurer.prompt_type",
           "Editor.PropertyChangeConfigurer.select_type",
-          });
+        });
       typeConfig.addPropertyChangeListener(l);
       typeLabel.setLabelFor(typeConfig.getControls());
 
       valueLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.new_value"));
       valueConfig = new FormattedExpressionConfigurer("", constraints);
+      valueConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.plain_hint"));
       valueLabel.setLabelFor(valueConfig.getControls());
       valueConfig.addPropertyChangeListener(l);
 
       promptLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.prompt"));
       promptConfig = new StringConfigurer("");
+      promptConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.prompt_hint"));
       promptLabel.setLabelFor(promptConfig.getControls());
       promptConfig.addPropertyChangeListener(l);
 
       incrLabel = new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.increment_by"));
       incrConfig = new FormattedExpressionConfigurer("", constraints);
+      incrConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.increment_hint"));
       incrLabel.setLabelFor(incrConfig.getControls());
       incrConfig.addPropertyChangeListener(l);
 
-      validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints, 2, 4);
+      validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints);
+      validValuesConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.valid_values_hint"));
       validValuesConfig.addPropertyChangeListener(l);
+
+      valueControlsPanel = new JPanel(new MigLayout("ins 0,hidemode 3", "[]rel[grow,fill]rel[]")); // NON-NLS
+      valueControlsPanel.add(new JLabel(Resources.getString("Editor.PropertyChangeConfigurer.values"))); // NON-NLS
+      valueControlsPanel.add(validValuesConfig.getControls(), "grow"); // NON-NLS
+      valueControlsPanel.add(validValuesConfig.getListController(), "aligny center"); // NON-NLS
 
       controls.add(typeLabel, "aligny center"); // NON-NLS
       controls.add(typeConfig.getControls(), "aligny center"); // NON-NLS
 
-      changerLabelControls = new JPanel(new MigLayout("ins 0,hidemode 3")); // NON-NLS
-      changerLabelControls.add(valueLabel);
-      changerLabelControls.add(promptLabel);
-      changerLabelControls.add(incrLabel);
-      controls.add(changerLabelControls);
+      changerLabelControls = new JPanel(new MigLayout("ins 0,hidemode 3", "[]", "[]")); // NON-NLS
+      changerLabelControls.add(valueLabel, "aligny center"); // NON-NLS
+      changerLabelControls.add(promptLabel, "aligny center"); // NON-NLS
+      changerLabelControls.add(incrLabel, "aligny center"); // NON-NLS
+      controls.add(changerLabelControls, "aligny center"); // NON-NLS
 
       changerControls = new JPanel(new MigLayout("ins 0,hidemode 3", "[fill,grow]")); // NON-NLS
       changerControls.add(valueConfig.getControls(), "growx,aligny center"); // NON-NLS
       changerControls.add(promptConfig.getControls(), "growx,aligny center"); // NON-NLS
       changerControls.add(incrConfig.getControls(), "growx,aligny center"); // NON-NLS
-      controls.add(changerControls, "grow"); // NON-NLS
-      controls.add(validValuesConfig.getControls(), "grow"); // NON-NLS
+      controls.add(changerControls, "aligny center,growx"); // NON-NLS
+      controls.add(valueControlsPanel, "aligny center,growx"); // NON-NLS
+
+      subConfigurers = List.of(typeConfig, incrConfig, valueConfig, promptConfig, validValuesConfig);
 
       updateControls();
     }
@@ -181,7 +199,7 @@ public class PropertyChangerConfigurer extends Configurer {
 
   public Component getValuesControls() {
     getControls();
-    return validValuesConfig.getControls();
+    return valueControlsPanel;
   }
 
   protected void updateControls() {
@@ -190,7 +208,7 @@ public class PropertyChangerConfigurer extends Configurer {
     if (pc instanceof PropertySetter) {
       valueConfig.setValue(((PropertySetter) pc).getRawValue());
       valueConfig.getControls().setVisible(true);
-      valueLabel.setVisible(true);
+      valueControlsPanel.setVisible(true);
     }
     else {
       valueConfig.getControls().setVisible(false);
@@ -216,10 +234,10 @@ public class PropertyChangerConfigurer extends Configurer {
     }
     if (pc instanceof EnumeratedPropertyPrompt) {
       validValuesConfig.setValue(((EnumeratedPropertyPrompt) pc).getValidValues());
-      validValuesConfig.getControls().setVisible(true);
+      valueControlsPanel.setVisible(true);
     }
     else {
-      validValuesConfig.getControls().setVisible(false);
+      valueControlsPanel.setVisible(false);
     }
     repack();
   }
@@ -273,6 +291,10 @@ public class PropertyChangerConfigurer extends Configurer {
     return se.getValue();
   }
 
+  public boolean isEnumType() {
+    return typeToCode.get(getPropertyChanger().getClass()) == ENUM_CODE;
+  }
+
   public PropertyChanger getPropertyChanger() {
     return (PropertyChanger) getValue();
   }
@@ -302,5 +324,26 @@ public class PropertyChangerConfigurer extends Configurer {
   }
 
   public interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
+  }
+
+  @Override
+  public void setHighlighted(boolean highlighted) {
+    super.setHighlighted(highlighted);
+    getControls();
+    subConfigurers.forEach(c -> c.setHighlighted(highlighted));
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    subConfigurers.forEach(c -> c.addFocusListener(listener));
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    subConfigurers.forEach(c -> c.removeFocusListener(listener));
   }
 }
