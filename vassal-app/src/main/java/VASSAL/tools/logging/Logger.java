@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
@@ -15,12 +14,10 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
 package VASSAL.tools.logging;
 
 import java.util.concurrent.Future;
 
-import VASSAL.Info;
 import VASSAL.tools.concurrent.SimpleFuture;
 
 /**
@@ -38,8 +35,6 @@ public class Logger {
   public static final int BUG =     LogEntry.BUG;
   public static final int DEBUG =   LogEntry.DEBUG;
   public static final int SYSTEM =  LogEntry.SYSTEM;
-
-  private static final int pid = Info.getInstanceID();
 
   public static void log(String message) {
     log(null, message, MESSAGE);
@@ -62,7 +57,7 @@ public class Logger {
   }
 
   public static void log(Throwable thrown, String message, int type) {
-    enqueue(new LogEntry(pid, type, thrown, message, false));
+    enqueue(new LogEntry(type, thrown, message, false));
   }
 
   public static Future<?> logAndWait(String message) {
@@ -87,7 +82,7 @@ public class Logger {
 
   public static Future<?> logAndWait(Throwable thrown,
                                      String message, int type) {
-    return enqueue(new LogEntry(pid, type, thrown, message, true));
+    return enqueue(new LogEntry(type, thrown, message, true));
   }
 
   public static Future<?> enqueue(final LogEntry entry) {

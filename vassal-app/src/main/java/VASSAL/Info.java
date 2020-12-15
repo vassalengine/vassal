@@ -108,14 +108,6 @@ public final class Info {
   }
 
   /**
-   * Returns the instance id for this process. The instance id will be
-   * be unique across the Module Manager and its children.
-   */
-  public static int getInstanceID() {
-    return CONFIG.getInstanceID();
-  }
-
-  /**
    * Returns the directory where VASSAL is installed.
    *
    * @return a {@link File} representing the directory

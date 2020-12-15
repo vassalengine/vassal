@@ -108,4 +108,234 @@
         <to>VASSAL.configure.DynamicKeyCommandListConfigurer</to>
         <justification>Config cleanup.</justification>
     </difference>
+
+    <!-- Removal of MM <-> Player/Editor IPC -->
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>int getInstanceID()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6001</differenceType>
+        <field>children</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6001</differenceType>
+        <field>editing</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6001</differenceType>
+        <field>nextId</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>7002</differenceType>
+        <method>boolean shutDown()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction</className>
+        <differenceType>6001</differenceType>
+        <field>nextId</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$LaunchRequestMessage</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$LaunchTask</className>
+        <differenceType>6001</differenceType>
+        <field>clientSocket</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$LaunchTask</className>
+        <differenceType>6001</differenceType>
+        <field>id</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$LaunchTask</className>
+        <differenceType>6001</differenceType>
+        <field>ipc</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$LaunchTask</className>
+        <differenceType>6001</differenceType>
+        <field>serverSocket</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyImportModuleOk</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyImportModuleOkListener</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyNewModuleOk</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyNewModuleOkListener</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyOpenModuleOk</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyOpenModuleOkListener</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyOpenModuleFailed</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifyOpenModuleFailedListener</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifySaveFileOk</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/AbstractLaunchAction$NotifySaveFileOkListener</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Config</className>
+        <differenceType>7002</differenceType>
+        <method>int getInstanceID()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/DummyConfig</className>
+        <differenceType>7002</differenceType>
+        <method>int getInstanceID()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/LaunchRequest</className>
+        <differenceType>6001</differenceType>
+        <field>standalone</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher</className>
+        <differenceType>6001</differenceType>
+        <field>ipc</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher</className>
+        <differenceType>7002</differenceType>
+        <method>void sendSaveCmd(java.io.File)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher$CloseAccept</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher$CloseReject</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher$CloseRequest</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher$CloseRequestListener</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/Launcher$StartedNotice</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/StandardConfig</className>
+        <differenceType>7002</differenceType>
+        <method>int getInstanceID()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>6001</differenceType>
+        <field>pid</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/TilingHandler</className>
+        <differenceType>7004</differenceType>
+        <method>TilingHandler(java.lang.String, java.io.File, java.awt.Dimension, int, int)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ipc/IPCMessage</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ipc/IPCMessageDispatcher</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ipc/IPCMessenger</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ipc/SimpleIPCMessage</className>
+        <differenceType>8001</differenceType>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/logging/LogEntry</className>
+        <differenceType>6001</differenceType>
+        <field>pid</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/logging/LogEntry</className>
+        <differenceType>7005</differenceType>
+        <method>LogEntry(int, int, java.lang.Throwable, java.lang.String, boolean)</method>
+        <to>LogEntry(long, int, java.lang.Throwable, java.lang.String, boolean)</to>
+        <justification>Nothing external should use this</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/logging/LogEntry</className>
+        <differenceType>7004</differenceType>
+        <method>LogEntry(long, int, int, java.lang.Throwable, java.lang.String, boolean)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
 </differences>

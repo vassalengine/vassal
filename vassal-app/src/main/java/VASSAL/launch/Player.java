@@ -42,7 +42,6 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.JarArchive;
-import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -97,21 +96,6 @@ public class Player extends Launcher {
       }
       else {
         showWizardOrPlayerWindow(m);
-      }
-    }
-
-    if (ipc != null) {
-      try {
-        ipc.send(new AbstractLaunchAction.NotifyOpenModuleOk(lr));
-      }
-      catch (IOException e) {
-        // This is not fatal, since we've successfully opened the module,
-        // but possibly this means that the Module Manager has died.
-        ErrorDialog.showDetails(
-          e,
-          ThrowableUtils.getStackTrace(e),
-          "Error.socket_error" //NON-NLS
-        );
       }
     }
   }
@@ -173,18 +157,20 @@ public class Player extends Launcher {
         Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module)
       );
-      setEnabled(!editing.contains(module));
+      setEnabled(!isEditing(module));
     }
 
     public LaunchAction(ModuleManagerWindow mm, File module, File saveGame) {
       super(Resources.getString("General.open"), mm, Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module, saveGame)
       );
-      setEnabled(!editing.contains(module));
+      setEnabled(!isEditing(module));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+      if (isEditing(lr.module)) return;
+
       // don't permit loading of VASL saved before 3.4
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
       if (data instanceof ModuleMetaData) {
@@ -207,11 +193,8 @@ public class Player extends Launcher {
         }
       }
 
-      // register that this module is being used
-      if (editing.contains(lr.module)) return;
-      Integer count = using.get(lr.module);
-      using.put(lr.module, count == null ? 1 : ++count);
-
+      // increase the using count
+      incrementUsed(lr.module);
       super.actionPerformed(e);
     }
 
@@ -223,9 +206,7 @@ public class Player extends Launcher {
           super.done();
 
           // reduce the using count
-          Integer count = using.get(lr.module);
-          if (count == 1) using.remove(lr.module);
-          else using.put(lr.module, --count);
+          decrementUsed(lr.module);
         }
       };
     }

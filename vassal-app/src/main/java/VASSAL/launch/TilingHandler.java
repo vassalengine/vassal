@@ -74,7 +74,6 @@ public class TilingHandler {
   protected final File cdir;
   protected final Dimension tdim;
   protected final int maxheap_limit;
-  protected final int pid;
 
   /**
    * Creates a {@code TilingHandler}.
@@ -82,15 +81,12 @@ public class TilingHandler {
    * @param aname the path to the ZIP archive
    * @param cdir the tile cache directory
    * @param tdim the tile size
-   * @param pid the id of the child process
    */
-  public TilingHandler(String aname, File cdir,
-                       Dimension tdim, int mhlim, int pid) {
+  public TilingHandler(String aname, File cdir, Dimension tdim, int mhlim) {
     this.aname = aname;
     this.cdir = cdir;
     this.tdim = tdim;
     this.maxheap_limit = mhlim;
-    this.pid = pid;
   }
 
   protected boolean isFresh(FileArchive archive,
@@ -174,7 +170,6 @@ public class TilingHandler {
       "-classpath", //NON-NLS
       System.getProperty("java.class.path"),
       "-Xmx" + maxheap + "M", //NON-NLS
-      "-DVASSAL.id=" + pid, //NON-NLS
       "-Duser.home=" + System.getProperty("user.home"), //NON-NLS
       "-DVASSAL.port=" + port, //NON-NLS
       "VASSAL.tools.image.tilecache.ZipFileImageTiler",

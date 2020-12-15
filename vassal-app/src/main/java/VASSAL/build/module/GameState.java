@@ -69,7 +69,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.Launcher;
+import VASSAL.launch.ModuleManagerUpdateHelper;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -795,7 +795,6 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-
     final SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
     // FIXME: It is extremely inefficient to produce the save string. It would
@@ -811,8 +810,6 @@ public class GameState implements CommandEncoder {
       metaData.save(zw);
     }
 
-    Launcher.getInstance().sendSaveCmd(f);
-
     lastSave = save;
     final String msg;
     final String saveComments = metaData.getLocalizedDescription();
@@ -823,6 +820,7 @@ public class GameState implements CommandEncoder {
       msg = Resources.getString("GameState.game_saved"); //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
+    ModuleManagerUpdateHelper.sendUpdate(f);
   }
 
   public void loadGameInBackground(final File f) {

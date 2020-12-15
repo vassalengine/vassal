@@ -233,12 +233,12 @@ include::{rootdir}Makefile[lines=258]
 === Player
 
 Main class: `VASSAL.launch.Player` +
-VM arguments: `--standalone /path/to/module/VassalModule.vmod`
+VM arguments: `/path/to/module/VassalModule.vmod`
 
 === Editor
 
 Main class: `VASSAL.launch.Editor` +
-VM arguments: `--standalone --edit /path/to/module/VassalModule.vmod`
+VM arguments: `--edit /path/to/module/VassalModule.vmod`
 
 === Additional parameters
 

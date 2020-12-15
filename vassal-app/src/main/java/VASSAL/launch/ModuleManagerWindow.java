@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2000-2009 by Brent Easton, Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2020 by Brent Easton, Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -64,6 +63,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
@@ -183,8 +183,6 @@ public class ModuleManagerWindow extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (!AbstractLaunchAction.shutDown()) return;
-
         final Prefs gp = Prefs.getGlobalPrefs();
         try {
           gp.close();
@@ -647,6 +645,10 @@ public class ModuleManagerWindow extends JFrame {
 
   }
 
+  public void updateRequest(File f) {
+    SwingUtilities.invokeLater(() -> update(f));
+  }
+
   /**
    * A File has been saved or created by the Player or the Editor. Update
    * the display as necessary.
@@ -655,9 +657,9 @@ public class ModuleManagerWindow extends JFrame {
   public void update(File f) {
     final AbstractMetaData data = MetaDataFactory.buildMetaData(f);
 
-    // Module.
-    // If we already have this module added, just refresh it, otherwise add it in.
     if (data instanceof ModuleMetaData) {
+      // Module.
+      // If we already have this module, refresh it, otherwise add it.
       final MyTreeNode moduleNode = rootNode.findNode(f);
       if (moduleNode == null) {
         addModule(f);
@@ -666,11 +668,10 @@ public class ModuleManagerWindow extends JFrame {
         moduleNode.refresh();
       }
     }
-
-    // Extension.
-    // Check to see if it has been saved into one of the extension directories
-    // for any module we already know of. Refresh the module
     else if (data instanceof ExtensionMetaData) {
+      // Extension.
+      // Check if it has been saved into one of the extension directories
+      // for any module we already know of. Refresh the module
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final ModuleInfo moduleInfo = (ModuleInfo) moduleNode.getNodeInfo();
@@ -682,11 +683,10 @@ public class ModuleManagerWindow extends JFrame {
         }
       }
     }
-
-    // Save Game or Log file.
-    // If the parent of the save file is already recorded as a Game Folder,
-    // pass the file off to the Game Folder to handle. Otherwise, ignore it.
     else if (data instanceof SaveMetaData) {
+      // Save Game or Log file.
+      // If the parent of the save file is already recorded as a Game Folder,
+      // pass the file off to the Game Folder to handle. Otherwise, ignore it.
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final MyTreeNode folderNode = moduleNode.findNode(f.getParentFile());
@@ -845,7 +845,6 @@ public class ModuleManagerWindow extends JFrame {
         expandRow(row);
       }
     }
-
 
     private void createKeyBindings(JTable table) {
       table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Enter");
@@ -1409,13 +1408,18 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public JPopupMenu buildPopup(int row) {
+      final boolean tooNew = Info.isModuleTooNew(metadata.getVassalVersion());
+
       final JPopupMenu m = new JPopupMenu();
+
       final Action playAction = new Player.LaunchAction(ModuleManagerWindow.this, file);
-      playAction.setEnabled(!Info.isModuleTooNew(metadata.getVassalVersion()));
+      playAction.setEnabled(playAction.isEnabled() && !tooNew);
       m.add(playAction);
+
       final Action editAction = new Editor.ListLaunchAction(ModuleManagerWindow.this, file);
-      editAction.setEnabled(!Info.isModuleTooNew(metadata.getVassalVersion()));
+      editAction.setEnabled(editAction.isEnabled() && !tooNew);
       m.add(editAction);
+
       m.add(new AbstractAction(Resources.getString("General.remove")) {
         private static final long serialVersionUID = 1L;
 
@@ -1686,7 +1690,6 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public void refresh() {
-
       // Remove any files that no longer exist
       for (int i = getTreeNode().getChildCount() - 1; i >= 0; i--) {
         final MyTreeNode fileNode = getTreeNode().getChild(i);
@@ -1854,9 +1857,8 @@ public class ModuleManagerWindow extends JFrame {
       lr.module = getSelectedModule();
 
       // register that this module is being used
-      if (editing.contains(lr.module)) return;
-      Integer count = using.get(lr.module);
-      using.put(lr.module, count == null ? 1 : ++count);
+      if (isEditing(lr.module)) return;
+      incrementUsed(lr.module);
 
       super.actionPerformed(e);
     }
@@ -1869,9 +1871,7 @@ public class ModuleManagerWindow extends JFrame {
           super.done();
 
           // reduce the using count
-          Integer count = using.get(lr.module);
-          if (count == 1) using.remove(lr.module);
-          else using.put(lr.module, --count);
+          decrementUsed(lr.module);
         }
       };
     }
@@ -1889,23 +1889,19 @@ public class ModuleManagerWindow extends JFrame {
         new LaunchRequest(LaunchRequest.Mode.EDIT_EXT, module, extension)
       );
 
-      setEnabled(!using.containsKey(module) &&
-                 !editing.contains(module) &&
-                 !editing.contains(extension) &&
-                 !using.containsKey(extension));
+      setEnabled(!isInUse(module) && !isInUse(extension));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       // check that neither this module nor this extension is being edited
-      if (editing.contains(lr.module) || editing.contains(lr.extension)) return;
+      if (isInUse(lr.module) || isInUse(lr.extension)) return;
 
       // register that this module is being used
-      Integer count = using.get(lr.module);
-      using.put(lr.module, count == null ? 1 : ++count);
+      incrementUsed(lr.module);
 
       // register that this extension is being edited
-      editing.add(lr.extension);
+      markEditing(lr.module);
 
       super.actionPerformed(e);
       setEnabled(false);
@@ -1924,12 +1920,10 @@ public class ModuleManagerWindow extends JFrame {
           super.done();
 
           // reduce the using count for module
-          Integer count = using.get(lr.module);
-          if (count == 1) using.remove(lr.module);
-          else using.put(lr.module, --count);
+          decrementUsed(lr.module);
 
-          // reduce that this extension is done being edited
-          editing.remove(lr.extension);
+          // register that this extension is done being edited
+          unmarkEditing(lr.extension);
           setEnabled(true);
         }
       };

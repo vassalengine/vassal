@@ -22,27 +22,19 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipFile;
 
 import javax.swing.AbstractAction;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -60,17 +52,12 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.concurrent.FutureUtils;
-import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
-import VASSAL.tools.ipc.IPCMessage;
-import VASSAL.tools.ipc.IPCMessenger;
-import VASSAL.tools.ipc.SimpleIPCMessage;
 import VASSAL.tools.lang.MemoryUtils;
 import VASSAL.i18n.Resources;
 
@@ -106,20 +93,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected final String entryPoint;
   protected final LaunchRequest lr;
 
-  protected static final Set<File> editing =
-    Collections.synchronizedSet(new HashSet<>());
   protected static final Map<File, Integer> using =
     Collections.synchronizedMap(new HashMap<>());
-
-/*
-  protected static final List<ObjectOutputStream> children =
-    Collections.synchronizedList(new ArrayList<ObjectOutputStream>());
-*/
-
-  protected static final List<IPCMessenger> children =
-    Collections.synchronizedList(new ArrayList<>());
-
-  protected static final AtomicInteger nextId = new AtomicInteger(1);
 
   public AbstractLaunchAction(String name, Window window,
                               String entryPoint, LaunchRequest lr) {
@@ -143,46 +118,23 @@ public abstract class AbstractLaunchAction extends AbstractAction {
    * @return <code>true</code> iff the file is being edited
    */
   public static boolean isEditing(File file) {
-    return editing.contains(file);
+    return Integer.valueOf(-1).equals(using.get(file));
   }
 
-  /**
-   * Ask child processes to close.
-   *
-   * @return <code>true</code> iff all child processes will terminate
-   */
-  public static boolean shutDown() {
-    ModuleManagerWindow.getInstance().toBack();
+  protected static void incrementUsed(File file) {
+    using.merge(file, 1, Integer::sum);
+  }
 
-    final List<Future<IPCMessage>> futures = new ArrayList<>();
+  protected static void decrementUsed(File file) {
+    using.merge(file, 0, (v, n) -> v == 1 ? null : v - 1);
+  }
 
-    // must synchronize when iterating over a Collections.synchronizedList()
-    synchronized (children) {
-      for (final IPCMessenger ipc : children) {
-        try {
-          futures.add(ipc.send(new Launcher.CloseRequest()));
-        }
-        catch (IOException e) {
-          // FIXME
-          e.printStackTrace();
-        }
-      }
-    }
+  protected static void markEditing(File file) {
+    using.put(file, -1);
+  }
 
-    // FIXME: not working!
-    for (final Future<IPCMessage> f : futures) {
-      try {
-        if (f.get() instanceof Launcher.CloseReject) {
-          System.out.println("rejected!"); //NON-NLS
-          return false;
-        }
-      }
-      catch (ExecutionException | InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-
-    return true;
+  protected static void unmarkEditing(File file) {
+    using.remove(file);
   }
 
   /** {@inheritDoc} */
@@ -235,16 +187,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   protected class LaunchTask extends SwingWorker<Void, Void> {
-    protected final int id = nextId.getAndIncrement();
-
     // lr might be modified before the task is over, keep a local copy
     protected final LaunchRequest lr =
       new LaunchRequest(AbstractLaunchAction.this.lr);
-
-    protected ServerSocket serverSocket = null;
-    protected Socket clientSocket = null;
-
-    protected IPCMessenger ipc = null;
 
     @Override
     public Void doInBackground() throws InterruptedException,
@@ -266,8 +211,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           aname,
           cdir,
           new Dimension(256, 256),
-          PHYS_MEMORY,
-          nextId.getAndIncrement()
+          PHYS_MEMORY
         );
 
         try {
@@ -285,8 +229,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             ext.getAbsolutePath(),
             cdir,
             new Dimension(256, 256),
-            PHYS_MEMORY,
-            nextId.getAndIncrement()
+            PHYS_MEMORY
           );
 
           try {
@@ -326,7 +269,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if (data == null) {
           ErrorDialog.show(
             "Error.invalid_vassal_file", lr.module.getAbsolutePath()); //NON-NLS
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
           return null;
         }
 
@@ -381,10 +323,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         ));
       }
 
-      // create a socket for communicating which the child process
-      final InetAddress lo = InetAddress.getByName(null);
-      serverSocket = new ServerSocket(0, 0, lo);
-
       final List<String> argumentList = buildArgumentList(moduleName);
       final String[] args = argumentList.toArray(new String[0]);
 
@@ -434,39 +372,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
       }
 
-      clientSocket = serverSocket.accept();
-      ipc = new IPCMessenger(clientSocket);
+      final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+      if (lr.module != null) {
+        mmw.addModule(lr.module);
+      }
+      mmw.setWaitCursor(false);
 
-      ipc.addEventListener(
-        NotifyOpenModuleOk.class,
-        new NotifyOpenModuleOkListener()
-      );
-
-      ipc.addEventListener(
-        NotifyNewModuleOk.class,
-        new NotifyNewModuleOkListener()
-      );
-
-      ipc.addEventListener(
-        NotifyImportModuleOk.class,
-        new NotifyImportModuleOkListener()
-      );
-
-      ipc.addEventListener(
-        NotifyOpenModuleFailed.class,
-        new NotifyOpenModuleFailedListener()
-      );
-
-      ipc.addEventListener(
-        NotifySaveFileOk.class,
-        new NotifySaveFileOkListener()
-      );
-
-      ipc.start();
-
-      children.add(ipc);
-
-      // block until the process ends
       try {
         proc.future.get();
       }
@@ -510,60 +421,23 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       catch (CancellationException e) {
         // this means that loading was cancelled
-        ModuleManagerWindow.getInstance().setWaitCursor(false);
       }
-      catch (InterruptedException e) {
+      catch (ExecutionException | InterruptedException e) {
         ErrorDialog.bug(e);
       }
-      catch (ExecutionException e) {
-        // determine what kind of exception occurred
-        final Throwable c = e.getCause();
-        if (c instanceof IOException) {
-          ErrorDialog.showDetails(
-            e,
-            ThrowableUtils.getStackTrace(e),
-            "Error.socket_error" //NON-NLS
-          );
-        }
-        else {
-          ErrorDialog.bug(e);
-        }
-      }
       finally {
-        if (clientSocket != null) {
-          try {
-            clientSocket.close();
-          }
-          catch (IOException e) {
-            logger.error("Error while closing clientSocket", e); //NON-NLS
-          }
-        }
-
-        if (serverSocket != null) {
-          try {
-            serverSocket.close();
-          }
-          catch (IOException e) {
-            logger.error("Error while closing serverSocket", e); //NON-NLS
-          }
-        }
-        children.remove(ipc);
+        ModuleManagerWindow.getInstance().setWaitCursor(false);
       }
     }
 
     private List<String> buildArgumentList(String moduleName) {
       final List<String> result = new ArrayList<>();
 
-      final int port = serverSocket.getLocalPort();
-
       result.add(Info.getJavaBinPath().getAbsolutePath());
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
 
       result.addAll(new CustomVmOptions().getCustomVmOptions());
-
-      result.add("-DVASSAL.id=" + id);  // instance id //NON-NLS
-      result.add("-DVASSAL.port=" + port); // MM socket port //NON-NLS
 
       // pass on the user's home, if it's set
       final String userHome = System.getProperty("user.home");
@@ -606,127 +480,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 
       result.add(entryPoint);
-
       result.addAll(Arrays.asList(lr.toArgs()));
-
       return result;
-    }
-
-  }
-
-
-  //
-  // Commands
-  //
-
-  protected abstract static class LaunchRequestMessage
-                                                     extends SimpleIPCMessage {
-    private static final long serialVersionUID = 1L;
-
-    protected final LaunchRequest lr;
-
-    public LaunchRequestMessage(LaunchRequest lr) {
-      this.lr = lr;
-    }
-  }
-
-  public static class NotifyOpenModuleOk extends LaunchRequestMessage {
-    private static final long serialVersionUID = 1L;
-
-    public NotifyOpenModuleOk(LaunchRequest lr) {
-      super(lr);
-    }
-  }
-
-  public static class NotifyNewModuleOk extends LaunchRequestMessage {
-    private static final long serialVersionUID = 1L;
-
-    public NotifyNewModuleOk(LaunchRequest lr) {
-      super(lr);
-    }
-  }
-
-  public static class NotifyImportModuleOk extends LaunchRequestMessage {
-    private static final long serialVersionUID = 1L;
-
-    public NotifyImportModuleOk(LaunchRequest lr) {
-      super(lr);
-    }
-  }
-
-  public static class NotifyOpenModuleFailed extends LaunchRequestMessage {
-    private static final long serialVersionUID = 1L;
-
-    public final Throwable thrown;
-
-    public NotifyOpenModuleFailed(LaunchRequest lr, Throwable thrown) {
-      super(lr);
-      this.thrown = thrown;
-    }
-  }
-
-  public static class NotifySaveFileOk extends SimpleIPCMessage {
-    private static final long serialVersionUID = 1L;
-
-    public final File file;
-
-    public NotifySaveFileOk(File file) {
-      this.file = file;
-    }
-  }
-
-  //
-  // Listeners
-  //
-
-  protected static class NotifyOpenModuleOkListener
-                                 implements EventListener<NotifyOpenModuleOk> {
-    @Override
-    public void receive(Object src, final NotifyOpenModuleOk msg) {
-      SwingUtilities.invokeLater(() -> {
-        final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
-        mmw.addModule(msg.lr.module);
-        mmw.setWaitCursor(false);
-      });
-    }
-  }
-
-  protected static class NotifyNewModuleOkListener
-                                 implements EventListener<NotifyNewModuleOk> {
-    @Override
-    public void receive(Object src, NotifyNewModuleOk msg) {
-      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
-    }
-  }
-
-  protected static class NotifyImportModuleOkListener
-                               implements EventListener<NotifyImportModuleOk> {
-    @Override
-    public void receive(Object src, NotifyImportModuleOk msg) {
-      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
-    }
-  }
-
-  protected static class NotifyOpenModuleFailedListener
-                             implements EventListener<NotifyOpenModuleFailed> {
-    @Override
-    public void receive(Object src, NotifyOpenModuleFailed msg) {
-      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
-
-      ErrorDialog.showDetails(
-        msg.thrown,
-        ThrowableUtils.getStackTrace(msg.thrown),
-        "Error.module_load_failed", //NON-NLS
-        msg.thrown.getMessage()
-      );
-    }
-  }
-
-  protected static class NotifySaveFileOkListener
-                                   implements EventListener<NotifySaveFileOk> {
-    @Override
-    public void receive(Object rc, final NotifySaveFileOk msg) {
-      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().update(msg.file));
     }
   }
 }

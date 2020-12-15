@@ -17,16 +17,18 @@
 package VASSAL.launch;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+
+import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.SavedGameUpdaterDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.MenuManager;
-import org.apache.commons.lang3.StringUtils;
 
 public class ModuleEditorWindow extends EditorWindow {
   private static final long serialVersionUID = 1L;
@@ -88,16 +90,22 @@ public class ModuleEditorWindow extends EditorWindow {
   @Override
   protected void save() {
     saver(() -> {
-      GameModule.getGameModule().save();
-      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
+      final GameModule g = GameModule.getGameModule();
+      g.save();
+      final File f = g.getArchiveWriter().getArchive().getFile();
+      setModuleName(f.getName());
+      ModuleManagerUpdateHelper.sendUpdate(f);
     });
   }
 
   @Override
   protected void saveAs() {
     saver(() -> {
-      GameModule.getGameModule().saveAs();
-      setModuleName(GameModule.getGameModule().getArchiveWriter().getArchive().getFile().getName());
+      final GameModule g = GameModule.getGameModule();
+      g.saveAs();
+      final File f = g.getArchiveWriter().getArchive().getFile();
+      setModuleName(f.getName());
+      ModuleManagerUpdateHelper.sendUpdate(f);
     });
   }
 }

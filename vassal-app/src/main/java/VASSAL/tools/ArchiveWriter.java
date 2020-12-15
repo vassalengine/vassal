@@ -29,7 +29,6 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.svg.SVGImageUtils;
@@ -299,11 +298,6 @@ public class ArchiveWriter extends DataArchive {
   protected void write(FileArchive fa, boolean notifyModuleManager)
                                                            throws IOException {
     fa.flush();
-
-    // FIXME: use a listener here?
-    if (notifyModuleManager) {
-      Launcher.getInstance().sendSaveCmd(fa.getFile());
-    }
   }
 
   /**
