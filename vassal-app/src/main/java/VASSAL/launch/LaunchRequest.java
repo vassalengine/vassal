@@ -223,6 +223,7 @@ public class LaunchRequest implements Serializable {
     final int UPDATE_MOD = 8;
     final int UPDATE_EXT = 9;
     final int UPDATE_GAME = 10;
+    final int STANDALONE = 11;
 
     final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
@@ -241,7 +242,8 @@ public class LaunchRequest implements Serializable {
       new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE), //NON-NLS
       new LongOpt("update-module", LongOpt.NO_ARGUMENT, null, UPDATE_MOD), //NON-NLS
       new LongOpt("update-extension", LongOpt.NO_ARGUMENT, null, UPDATE_EXT), //NON-NLS
-      new LongOpt("update-game", LongOpt.NO_ARGUMENT, null, UPDATE_GAME) //NON-NLS
+      new LongOpt("update-game", LongOpt.NO_ARGUMENT, null, UPDATE_GAME), //NON-NLS
+      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE) //NON-NLS
     };
 
     final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts); //NON-NLS
@@ -289,6 +291,9 @@ public class LaunchRequest implements Serializable {
         break;
       case UPDATE_GAME:
         setMode(lr, Mode.UPDATE_GAME);
+        break;
+      case STANDALONE:
+        // does nothing
         break;
       case 'a':
         lr.builtInModule = true;
