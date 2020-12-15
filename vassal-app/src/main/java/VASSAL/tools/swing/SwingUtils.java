@@ -527,7 +527,7 @@ public class SwingUtils {
       min.height = 1;
       w.setMinimumSize(min);
       w.pack();
-      w.setMinimumSize(null);
+      w.setMinimumSize(new Dimension(0, 0));
       SwingUtils.ensureOnScreen(w);
     }
   }

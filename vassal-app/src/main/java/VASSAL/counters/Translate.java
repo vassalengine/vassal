@@ -457,8 +457,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       moveStack = new BooleanConfigurer(Boolean.valueOf(t.moveStack));
       controls.add("Editor.MoveFixedDistance.move_entire_stack", moveStack);
 
-      JLabel xLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"));
-      JPanel xControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
+      final JLabel xLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"));
+      final JPanel xControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
       xLabel.setLabelFor(xControls);
       xIndexInput = new FormattedExpressionConfigurer(t.xIndex.getFormat(), t);
       xControls.add(xIndexInput.getControls(), "grow"); // NON-NLS
@@ -471,8 +471,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(xLabel);
       controls.add(xControls, "grow,wrap"); // NON-NLS
 
-      JLabel yLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"));
-      JPanel yControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
+      final JLabel yLabel = new JLabel(Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"));
+      final JPanel yControls = new JPanel(new MigLayout("ins 0", "[fill,grow]rel[]rel[fill,grow]")); // NON-NLS
       yLabel.setLabelFor(yControls);
       yIndexInput = new FormattedExpressionConfigurer(t.yIndex.getFormat(), t);
       yControls.add(yIndexInput.getControls());

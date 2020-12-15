@@ -605,7 +605,7 @@ public class GameModule extends AbstractConfigurable
     ChatServerFactory.register("jabber", oncf); //NON-NLS
 
     server = new DynamicClient();
-    final AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "Server", (HybridClient) server); //NON-NLS
+    final AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerSelected", "", (HybridClient) server); //NON-NLS
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
@@ -675,7 +675,7 @@ public class GameModule extends AbstractConfigurable
       final int w = (pw > 0) ? pw : screen.width;
 
       // Before we have a map, we use 1/3 of height
-      frame.setSize(w, h/3);
+      frame.setSize(w, h / 3);
     }
     else {
       final String key = "BoundsOfGameModule"; //$NON-NLS-1$
@@ -1197,7 +1197,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * Allows a PieceWindow that wants to be our docked PieceWindow to register itself.
    *
-   * @param p PieceWindow to be our docked one
+   * @param pieceWindow PieceWindow to be our docked one
    */
   public void setPieceWindow(PieceWindow pieceWindow) {
     this.pieceWindow = pieceWindow;

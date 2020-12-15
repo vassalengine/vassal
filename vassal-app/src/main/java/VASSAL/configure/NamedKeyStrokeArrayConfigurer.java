@@ -70,7 +70,6 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
 
       controls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
-      controls.setMinimumSize(ConfigurableList.EMPTY_LIST_PANEL_SIZE);
       panel.add(controls, "grow"); // NON-NLS
 
       rebuildControls();
