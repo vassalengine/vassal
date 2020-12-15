@@ -70,22 +70,6 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
     this(null, "", val);
   }
 
-  public StringArrayConfigurer(Object val, int minRows, int maxRows) {
-    this(null, "", val);
-    this.minRows = minRows;
-    this.maxRows = maxRows;
-  }
-
-  public StringArrayConfigurer(String key, String name, int minRows, int maxRows) {
-    this(key, name);
-    this.minRows = minRows;
-    this.maxRows = maxRows;
-  }
-
-  public StringArrayConfigurer(int minRows, int maxRows) {
-    this(null, "", minRows, maxRows);
-  }
-
   public StringArrayConfigurer(String key, String name) {
     super(key, name);
   }

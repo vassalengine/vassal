@@ -40,12 +40,6 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
     this(null, "", c);
   }
 
-  public FormattedStringArrayConfigurer(String key, String name, Constraints c, int minRows, int maxRows) {
-    super(key, name, minRows, maxRows);
-    if (c instanceof GamePiece) {
-      target = (GamePiece) c;
-    }
-  }
   public FormattedStringArrayConfigurer(String key, String name, Constraints c) {
     super(key, name);
     if (c instanceof GamePiece) {

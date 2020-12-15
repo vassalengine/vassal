@@ -235,7 +235,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
       box = new TraitConfigPanel();
 
-      config = new StringArrayConfigurer(r.side, 3, 6);
+      config = new StringArrayConfigurer(r.side);
       box.add("Editor.Restricted.belongs_to_side", config);
 
       byPlayer = new BooleanConfigurer(r.restrictByPlayer);

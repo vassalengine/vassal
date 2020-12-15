@@ -109,6 +109,34 @@
         <justification>Config cleanup.</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/configure/StringArrayConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>StringArrayConfigurer(java.lang.Object, int, int)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/StringArrayConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>StringArrayConfigurer(java.lang.String, java.lang.String, int, int)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/StringArrayConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>StringArrayConfigurer(int, int)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/configure/FormattedStringArrayConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>FormattedStringArrayConfigurer(java.lang.String, java.lang.String, VASSAL.build.module.properties.PropertyChangerConfigurer$Constraints, int, int)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
     <!-- Removal of MM <-> Player/Editor IPC -->
     <difference>
         <className>VASSAL/Info</className>

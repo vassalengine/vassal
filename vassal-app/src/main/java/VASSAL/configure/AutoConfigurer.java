@@ -149,7 +149,7 @@ public class AutoConfigurer extends Configurer
         GameModule.getGameModule().getArchiveWriter());
     }
     else if (String[].class.isAssignableFrom(type)) {
-      config = new StringArrayConfigurer(key, prompt, 3, 12); // Set a reasonable min/max for items displayed before scrolling
+      config = new StringArrayConfigurer(key, prompt); // Set a reasonable min/max for items displayed before scrolling
     }
     else if (Icon.class.isAssignableFrom(type)) {
       config = new IconConfigurer(key, prompt, null);
