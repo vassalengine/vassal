@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.command.ChangeTracker;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -240,8 +241,13 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Set the Old... properties
     Command c = putOldProperties(this);
 
-    // Move the piece
+    // Mark the piece moved
     final GamePiece outer = Decorator.getOutermost(gp);
+    final ChangeTracker comm = new ChangeTracker(outer);
+    outer.setProperty(Properties.MOVED, Boolean.TRUE);
+    c = c.append(comm.getChangeCommand());
+
+    // Move the piece
     c = c.append(map.placeOrMerge(outer, dest));
 
     // Apply after Move Key
