@@ -16,5 +16,6 @@ public class VersionUtilsTest {
     assertEquals("3.4", VersionUtils.truncateToMinorVersion("3.4.0"));
     assertEquals("3.9", VersionUtils.truncateToMinorVersion("3.9"));
     assertEquals("3.0", VersionUtils.truncateToMinorVersion("3.0.27"));
+    assertEquals("3.5", VersionUtils.truncateToMinorVersion("3.5.0-SNAPSHOT-deadbeef"));
   }
 }
