@@ -18,7 +18,7 @@
 package VASSAL.configure;
 
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
-import VASSAL.build.module.properties.PropertyPrompt;
+import VASSAL.build.module.properties.PropertySetter;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.DynamicProperty;
 import VASSAL.i18n.Resources;
@@ -27,7 +27,6 @@ import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
 import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -45,17 +44,17 @@ public class DynamicKeyCommandConfigurer extends Configurer {
   public DynamicKeyCommandConfigurer(DynamicProperty target) {
     super(target.getKey(), target.getKey(),
       new DynamicProperty.DynamicKeyCommand(
-        Resources.getString("Editor.DynamicProperty.change_value"),
-        NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK),
+        "",
+        new NamedKeyStroke(),
         Decorator.getOutermost(target),
         target,
-        new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
+        new PropertySetter("", target)));
 
-    commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
+    commandConfig = new StringConfigurer("");
     commandConfig.setHint(Resources.getString("Editor.menu_command"));
-    keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+    keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.NULL_KEYSTROKE);
     propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
-    propChangeConfig.setValue(new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey())));
+    propChangeConfig.setValue(new PropertySetter("", target));
 
     commandConfig.addPropertyChangeListener(e -> updateValue());
     keyConfig.addPropertyChangeListener(e -> updateValue());
