@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
@@ -379,6 +380,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         final ChangeTracker tracker = new ChangeTracker(this);
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
+
+        // Mark moved and generate movement trail if compatibility pref turned on
+        if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
+          outer.setProperty(Properties.MOVED, Boolean.TRUE);
+        }
+
         c = tracker.getChangeCommand();
         c = c.append(putOldProperties(this));
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
@@ -402,6 +409,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       final ChangeTracker tracker = new ChangeTracker(this);
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
+
+      // Mark moved and generate movement trail if compatibility pref turned on
+      if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
+        outer.setProperty(Properties.MOVED, Boolean.TRUE);
+      }
+
       c = tracker.getChangeCommand();
 
       if (backMap != null && backPoint != null) {
@@ -589,12 +602,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add("Editor.description_label", descInput);
 
       nameInput = new StringConfigurer(p.commandName);
+      nameInput.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
       controls.add("Editor.keyboard_command", keyInput);
 
       backNameInput = new StringConfigurer(p.backCommandName);
+      backNameInput.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.SendToLocation.send_back_command_name", backNameInput);
 
       backKeyInput = new NamedHotKeyConfigurer(p.backKey);

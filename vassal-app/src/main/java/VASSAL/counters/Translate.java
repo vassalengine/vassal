@@ -448,6 +448,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add("Editor.description_label", descInput);
 
       name = new StringConfigurer(t.commandName);
+      name.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", name);
 
       key = new NamedHotKeyConfigurer(t.keyCommand);

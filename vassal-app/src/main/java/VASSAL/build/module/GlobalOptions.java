@@ -107,6 +107,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String CLASSIC_MFD = "classicMfd"; //$NON-NLS-1$
   public static final String MAC_LEGACY = "macLegacy"; //$NON-NLS-1$
   public static final String OLD_CONTINUATION = "oldContinuation"; //NON-NLS
+  public static final String SEND_TO_LOCATION_MOVEMENT_TRAILS = "stlMovementTrails"; //NON-NLS
 
   // Sound Tab preferences
   public static final String SOUND_GLOBAL_MUTE = "soundGlobalMute"; //NON-NLS
@@ -291,6 +292,15 @@ public class GlobalOptions extends AbstractConfigurable {
     );
     oldContinuationConf.addPropertyChangeListener(evt -> setWarnOldContinuation(oldContinuationConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.compatibility_tab"), oldContinuationConf);
+
+    // Send to Location to generate movement trails. Note the default is TRUE which is a change from existing (broken) behaviour
+    // Affected module owners will need to turn this preference off.
+    final BooleanConfigurer sendToLocationMovementTrails = new BooleanConfigurer(
+      SEND_TO_LOCATION_MOVEMENT_TRAILS,
+      Resources.getString("GlobalOptions.send_to_location_movement_trails"),
+      Boolean.TRUE
+    );
+    prefs.addOption(Resources.getString("Prefs.compatibility_tab"), sendToLocationMovementTrails);
 
     ////////////////
     // SOUNDS TAB //
