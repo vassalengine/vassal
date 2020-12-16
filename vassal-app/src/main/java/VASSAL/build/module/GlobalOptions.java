@@ -293,6 +293,8 @@ public class GlobalOptions extends AbstractConfigurable {
     oldContinuationConf.addPropertyChangeListener(evt -> setWarnOldContinuation(oldContinuationConf.getValueBoolean()));
     prefs.addOption(Resources.getString("Prefs.compatibility_tab"), oldContinuationConf);
 
+    // Send to Location to generate movement trails. Note the default is TRUE which is a change from existing (broken) behaviour
+    // Affected module owners will need to turn this preference off.
     final BooleanConfigurer sendToLocationMovementTrails = new BooleanConfigurer(
       SEND_TO_LOCATION_MOVEMENT_TRAILS,
       Resources.getString("GlobalOptions.send_to_location_movement_trails"),

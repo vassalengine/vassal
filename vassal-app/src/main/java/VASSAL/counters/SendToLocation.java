@@ -382,7 +382,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         setProperty(BACK_POINT, getPosition());
 
         // Mark moved and generate movement trail if compatibility pref turned on
-        if (Boolean.TRUE == GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS)) {
+        if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
           outer.setProperty(Properties.MOVED, Boolean.TRUE);
         }
 
@@ -411,7 +411,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       setProperty(BACK_POINT, null);
 
       // Mark moved and generate movement trail if compatibility pref turned on
-      if (Boolean.TRUE == GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS)) {
+      if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
         outer.setProperty(Properties.MOVED, Boolean.TRUE);
       }
 
