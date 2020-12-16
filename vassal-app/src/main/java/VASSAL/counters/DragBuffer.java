@@ -144,7 +144,7 @@ public class DragBuffer {
    * @return true if the DragBuffer contains all members of Stack s
    * @param s Stack to test.
    */
-  public boolean containsAllMembers (Stack s) {
+  public boolean containsAllMembers(Stack s) {
     List<GamePiece> members = s.asList();
     for (GamePiece p : members) {
       if (!contains(p)) {

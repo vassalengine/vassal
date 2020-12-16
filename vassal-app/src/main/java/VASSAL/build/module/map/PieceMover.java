@@ -1061,7 +1061,10 @@ public class PieceMover extends AbstractBuildable
         if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
           stackCount++;
           final StackMetrics sm = getStackMetrics(nextPiece);
-          r.translate(sm.unexSepX * stackCount, -sm.unexSepY * stackCount);
+          r.translate(
+            (int) Math.round(sm.unexSepX * stackCount * zoom),
+            (int) Math.round(-sm.unexSepY * stackCount * zoom)
+          );
         }
 
         boundingBox.add(r);
@@ -1096,8 +1099,8 @@ public class PieceMover extends AbstractBuildable
           if (pos.equals(lastPos)) {
             stackCount++;
             final StackMetrics sm = getStackMetrics(piece);
-            offset.x = sm.unexSepX * stackCount;
-            offset.y = sm.unexSepY * stackCount;
+            offset.x = (int) Math.round(sm.unexSepX * stackCount * zoom);
+            offset.y = (int) Math.round(sm.unexSepY * stackCount * zoom);
           }
           else {
             stackCount = 0;
