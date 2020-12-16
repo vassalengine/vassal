@@ -394,7 +394,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
-      ModuleManagerUpdateHelper.sendUpdate(outputFile);
+      ModuleManagerUpdateHelper.sendGameUpdate(outputFile);
     }
 
     endLogAction.setEnabled(false);

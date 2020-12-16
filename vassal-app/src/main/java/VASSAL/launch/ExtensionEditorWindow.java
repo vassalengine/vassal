@@ -93,7 +93,7 @@ public class ExtensionEditorWindow extends EditorWindow {
       try {
         extension.save();
         setExtensionName(da.getName());
-        ModuleManagerUpdateHelper.sendUpdate(da.getArchive().getFile());
+        ModuleManagerUpdateHelper.sendExtensionUpdate(da.getArchive().getFile());
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, da.getArchive().getFile().getName());
@@ -108,7 +108,7 @@ public class ExtensionEditorWindow extends EditorWindow {
       try {
         extension.saveAs();
         setExtensionName(da.getName());
-        ModuleManagerUpdateHelper.sendUpdate(da.getArchive().getFile());
+        ModuleManagerUpdateHelper.sendExtensionUpdate(da.getArchive().getFile());
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, da.getArchive().getFile().getName());

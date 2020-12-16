@@ -820,7 +820,7 @@ public class GameState implements CommandEncoder {
       msg = Resources.getString("GameState.game_saved"); //$NON-NLS-1$
     }
     GameModule.getGameModule().warn(msg);
-    ModuleManagerUpdateHelper.sendUpdate(f);
+    ModuleManagerUpdateHelper.sendGameUpdate(f);
   }
 
   public void loadGameInBackground(final File f) {

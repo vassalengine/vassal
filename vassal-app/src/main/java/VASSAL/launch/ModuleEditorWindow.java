@@ -94,7 +94,7 @@ public class ModuleEditorWindow extends EditorWindow {
       g.save();
       final File f = g.getArchiveWriter().getArchive().getFile();
       setModuleName(f.getName());
-      ModuleManagerUpdateHelper.sendUpdate(f);
+      ModuleManagerUpdateHelper.sendModuleUpdate(f);
     });
   }
 
@@ -105,7 +105,7 @@ public class ModuleEditorWindow extends EditorWindow {
       g.saveAs();
       final File f = g.getArchiveWriter().getArchive().getFile();
       setModuleName(f.getName());
-      ModuleManagerUpdateHelper.sendUpdate(f);
+      ModuleManagerUpdateHelper.sendModuleUpdate(f);
     });
   }
 }

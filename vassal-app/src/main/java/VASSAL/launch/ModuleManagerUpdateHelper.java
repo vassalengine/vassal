@@ -33,7 +33,7 @@ public class ModuleManagerUpdateHelper {
 
   private ModuleManagerUpdateHelper() {}
 
-  public static void sendUpdate(File f) {
+  private static void sendUpdate(File f, String type) {
     try {
       new ProcessLauncher().launch(
         Info.getJavaBinPath().getAbsolutePath(),
@@ -41,12 +41,24 @@ public class ModuleManagerUpdateHelper {
         System.getProperty("java.class.path"),
         "-Duser.dir=" + System.getProperty("user.dir"), //NON-NLS
         "VASSAL.launch.ModuleManager",
-        "--update",
+        "--update-" + type,
         f.toString()
       );
     }
     catch (IOException e) {
       logger.error("Failed to notify Module Manager of update", e);
     }
+  }
+
+  public static void sendModuleUpdate(File f) {
+    sendUpdate(f, "module");
+  }
+
+  public static void sendExtensionUpdate(File f) {
+    sendUpdate(f, "extension");
+  }
+
+  public static void sendGameUpdate(File f) {
+    sendUpdate(f, "game");
   }
 }
