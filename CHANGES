@@ -1,6 +1,7 @@
 3.5.0-beta2 - ???
 
 * 13823: Map/Module Global Key Command Description not being saved
+* 13821: SendToLocation does not create Movement Trail points
 * 13813: Simplified communication between Module Manager, Player, Editor
 * 13792: Combined save and log loading; Load Continuation moved from File to
     Tools menu
