@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -42,6 +41,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
@@ -49,6 +49,7 @@ import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -235,8 +236,13 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Set the Old... properties
     Command c = putOldProperties(this);
 
-    // Move the piece
+    // Mark the piece moved
     final GamePiece outer = Decorator.getOutermost(gp);
+    final ChangeTracker comm = new ChangeTracker(outer);
+    outer.setProperty(Properties.MOVED, Boolean.TRUE);
+    c = c.append(comm.getChangeCommand());
+
+    // Move the piece
     c = c.append(map.placeOrMerge(outer, dest));
 
     // Apply after Move Key
