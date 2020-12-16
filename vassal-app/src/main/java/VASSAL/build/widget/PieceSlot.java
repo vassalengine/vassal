@@ -295,7 +295,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public Dimension getPreferredSize() {
     // Preferred size is affected by our module-specified scale
-    if (c != null) {
+    if (c != null && panel.getGraphics() != null) {
       final Dimension bound = c.boundingBox().getSize();
       bound.width = (int) ((bound.width == 0 ? getNullImage(1.0).getWidth() : bound.width) * getScale());
       bound.height = (int) ((bound.height == 0 ? getNullImage(1.0).getHeight() : bound.height) * getScale());
