@@ -459,7 +459,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       return target.encode();
     }
     else {
-      return getLaunchButton().getAttributeValueString(key);
+      return super.getAttributeValueString(key);
     }
   }
 
@@ -599,7 +599,7 @@ public class MassKeyCommand extends AbstractToolbarItem
       }
     }
     else {
-      getLaunchButton().setAttribute(key, value);
+      super.setAttribute(key, value);
     }
   }
 
