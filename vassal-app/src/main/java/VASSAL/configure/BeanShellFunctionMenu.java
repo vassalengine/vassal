@@ -323,7 +323,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
       final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();
-      maxScrollItems = (int) (0.94 * SwingUtils.getScreenBounds(configurer.getControls()).height / itemSize.height);
+      maxScrollItems = (int) (0.98 * SwingUtils.getScreenBounds(configurer.getControls()).height / itemSize.height);
     }
     return maxScrollItems;
 
