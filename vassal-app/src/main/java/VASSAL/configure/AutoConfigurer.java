@@ -87,26 +87,20 @@ public class AutoConfigurer extends Configurer
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
-
         final JLabel label = new JLabel(prompt[i]);
-        JComponent displayLabel;
-
+        label.setLabelFor(config.getControls());
+        labels.put(name[i], label);
+        p.add(label);
         // Include List Controller for ConfigurableList Configurers
         if (config instanceof ConfigurableList) {
-          final JPanel controllerPanel = new JPanel(new MigLayout("hidemode 3,ins 0," + TraitLayout.STANDARD_GAPY, "[grow]")); // NON-NLS
-          controllerPanel.add(label, "align right,wrap"); // NON-NLS
-          controllerPanel.add(((ConfigurableList) config).getListController(), "align right"); // NON-NLS
-          label.setLabelFor(config.getControls());
-          displayLabel = controllerPanel;
+          final JPanel controllerPanel = new JPanel(new MigLayout("hidemode 3,ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill]rel[]")); // NON-NLS
+          controllerPanel.add(config.getControls(), "grow"); // NON-NLS
+          controllerPanel.add(((ConfigurableList) config).getListController(), "aligny center"); // NON-NLS
+          p.add(controllerPanel, "wrap,grow"); // NON-NLS
         }
         else {
-          label.setLabelFor(config.getControls());
-          displayLabel = label;
+          p.add(config.getControls(), "wrap,grow"); // NON-NLS
         }
-
-        labels.put(name[i], displayLabel);
-        p.add(displayLabel);
-        p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
       }
       setVisibility(name[i], c.getAttributeVisibility(name[i]));
@@ -149,7 +143,7 @@ public class AutoConfigurer extends Configurer
         GameModule.getGameModule().getArchiveWriter());
     }
     else if (String[].class.isAssignableFrom(type)) {
-      config = new StringArrayConfigurer(key, prompt, 3, 12); // Set a reasonable min/max for items displayed before scrolling
+      config = new StringArrayConfigurer(key, prompt); // Set a reasonable min/max for items displayed before scrolling
     }
     else if (Icon.class.isAssignableFrom(type)) {
       config = new IconConfigurer(key, prompt, null);

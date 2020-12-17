@@ -161,7 +161,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
       nameConfig = new StringConfigurer(p.getMenuName());
       panel.add("Editor.SubMenu.menu_name", nameConfig);
 
-      commandsConfig = new StringArrayConfigurer(p.getSubcommands(), 4, 20);
+      commandsConfig = new StringArrayConfigurer(p.getSubcommands());
       panel.add("Editor.SubMenu.sub_commands", commandsConfig);
     }
 

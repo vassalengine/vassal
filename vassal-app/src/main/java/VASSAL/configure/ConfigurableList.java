@@ -17,7 +17,6 @@
 package VASSAL.configure;
 
 import VASSAL.tools.icon.IconFamily;
-import java.awt.Dimension;
 import javax.swing.JComponent;
 
 /**
@@ -30,11 +29,6 @@ public interface ConfigurableList {
    * The Default Icon Size to use for all Configurable List related button icons
    */
   int DEFAULT_ICON_SIZE = IconFamily.XSMALL;
-
-  /**
-   * A nice looking size for the empty List Configurer Box.
-   */
-  Dimension EMPTY_LIST_PANEL_SIZE = new Dimension(100, 48);
 
   /**
    * Move the currently selected list entry up one position

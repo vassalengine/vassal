@@ -22,8 +22,6 @@ package VASSAL.configure;
 import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
 import VASSAL.counters.GamePiece;
 
-import java.awt.Component;
-import java.awt.event.ActionListener;
 
 public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
 
@@ -42,12 +40,6 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
     this(null, "", c);
   }
 
-  public FormattedStringArrayConfigurer(String key, String name, Constraints c, int minRows, int maxRows) {
-    super(key, name, minRows, maxRows);
-    if (c instanceof GamePiece) {
-      target = (GamePiece) c;
-    }
-  }
   public FormattedStringArrayConfigurer(String key, String name, Constraints c) {
     super(key, name);
     if (c instanceof GamePiece) {
@@ -61,25 +53,9 @@ public class FormattedStringArrayConfigurer extends StringArrayConfigurer {
   }
 
   @Override
-  protected Component getTextComponent() {
-    if (config == null) {
-      config = new FormattedExpressionConfigurer("", target);
-    }
-    return config.getControls();
-  }
-
-  @Override
-  protected String getTextValue() {
-    return config.getValueString();
-  }
-
-  @Override
-  protected void setTextValue(String s) {
-    config.setValue(s);
-  }
-
-  @Override
-  protected void addTextActionListener(ActionListener a) {
-
+  public Configurer buildChildConfigurer(Object value) {
+    final FormattedExpressionConfigurer s = new FormattedExpressionConfigurer((String) value, target);
+    s.setHint(getHint());
+    return s;
   }
 }

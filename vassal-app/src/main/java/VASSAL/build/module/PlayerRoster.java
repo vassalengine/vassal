@@ -631,7 +631,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       super(null, null);
       controls = new ComponentConfigPanel();
 
-      sidesConfig = new StringArrayConfigurer(sides.toArray(new String[0]), 4, 8); //$NON-NLS-1$
+      sidesConfig = new StringArrayConfigurer(sides.toArray(new String[0])); //$NON-NLS-1$
       sidesConfig.addPropertyChangeListener(evt -> {
         sides.clear();
         sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
