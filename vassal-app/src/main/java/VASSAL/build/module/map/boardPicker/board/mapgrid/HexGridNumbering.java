@@ -384,7 +384,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     return ny;
   }
 
-  protected int getRawRow(Point p) {
+  public int getRawRow(Point p) {
     p = new Point(p);
     grid.rotateIfSideways(p);
     Point origin = grid.getOrigin();
