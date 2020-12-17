@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import VASSAL.Info;
@@ -161,6 +162,7 @@ public class ExtensionsManager {
         ReadErrorDialog.error(new IOException(), dir);
       }
       else {
+        Arrays.sort(files);
         for (final File file : files) {
           final AbstractMetaData metadata = MetaDataFactory.buildMetaData(file);
           if (metadata instanceof ExtensionMetaData) {
