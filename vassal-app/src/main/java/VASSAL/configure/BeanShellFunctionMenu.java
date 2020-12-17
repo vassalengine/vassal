@@ -19,10 +19,12 @@ import VASSAL.script.expression.FunctionBuilder;
 import VASSAL.script.expression.IntBuilder;
 import VASSAL.script.expression.StrBuilder;
 import VASSAL.tools.menu.MenuScroller;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -68,6 +70,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     final JMenu globalsMenu = new JMenu("Global Property");
     buildGlobalMenu(globalsMenu, GameModule.getGameModule(), true);
+    MenuScroller.setScrollerFor(globalsMenu, getMaxScrollItems(), 100);
     propertyMenu.add(globalsMenu);
 
     final JMenu vassalMenu = new JMenu("Vassal Property");
@@ -320,7 +323,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected int getMaxScrollItems() {
     if (maxScrollItems == 0) {
       final Dimension itemSize = (new JMenuItem("Testing")).getPreferredSize();
-      maxScrollItems = (int) (0.8 * Toolkit.getDefaultToolkit().getScreenSize().height / itemSize.height);
+      maxScrollItems = (int) (0.94 * SwingUtils.getScreenBounds(configurer.getControls()).height / itemSize.height);
     }
     return maxScrollItems;
 
