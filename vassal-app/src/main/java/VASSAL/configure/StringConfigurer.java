@@ -40,9 +40,6 @@ public class StringConfigurer extends Configurer {
   protected int length;
   protected static final int DEFAULT_LENGHTH = 20;
 
-  private JLayer<JTextField> layer;
-  private LayerUI<JTextField> layerUI;
-
   /**
    * Base Constructor for StringConfigurer
    *
@@ -103,8 +100,8 @@ public class StringConfigurer extends Configurer {
       ));
       nameField.setText(getValueString());
 
-      layerUI = new ConfigLayerUI();
-      layer = new JLayer<>(nameField, layerUI);
+      LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
+      JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);
       p.add(layer, getGrowthConstraint()); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
@@ -146,6 +143,7 @@ public class StringConfigurer extends Configurer {
     super.setHighlighted(highlighted);
     getControls();
     nameField.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+    nameField.repaint();
   }
 
   @Override
@@ -162,17 +160,24 @@ public class StringConfigurer extends Configurer {
     nameField.removeFocusListener(listener);
   }
 
+  // Use JLayer to outline the field in Red as the Unix LaF ignores TextField background colours
   private static class ConfigLayerUI extends LayerUI<JTextField> {
+
+    private final Configurer parent;
+
+    public ConfigLayerUI(Configurer parent) {
+      this.parent = parent;
+    }
 
     @Override
     public void paint (Graphics g, JComponent c) {
       super.paint(g, c);
-      Component cc = ((JLayer) c).getView();
-      Dimension d = cc.getSize();
-
-      g.setColor(Color.red);
-      g.drawRect(0, 0, d.width - 1, d.height - 1);
-      Dimension ds = cc.getSize();
+      final Component cc = ((JLayer) c).getView();
+      if (parent.isHighlighted()) {
+        final Dimension d = cc.getSize();
+        g.setColor(Color.red);
+        g.drawRect(0, 0, d.width - 2, d.height - 2);
+      }
     }
   }
 }
