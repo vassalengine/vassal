@@ -140,7 +140,7 @@ public class ExtensionMetaData extends AbstractMetaData {
 
         //BR// Check the 3.5+ buildfile format
         if (data == null) {
-          data = zip.getEntry("buildFile.XML");
+          data = zip.getEntry("buildFile.xml);
         }
 
         handler = new ExtensionBuildFileXMLHandler();

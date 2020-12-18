@@ -123,7 +123,7 @@ public class ModuleMetaData extends AbstractMetaData {
         data = zip.getEntry(GameModule.BUILDFILE);
         if (data == null) {
           //BR// Check the 3.5+ buildfile format
-          data = zip.getEntry("buildFile.XML");
+          data = zip.getEntry("buildFile.xml");
           if (data == null) {
             return;
           }

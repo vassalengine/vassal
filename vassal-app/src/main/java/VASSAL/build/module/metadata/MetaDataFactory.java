@@ -70,7 +70,7 @@ public class MetaDataFactory {
       ZipEntry buildFileEntry = zip.getEntry(GameModule.BUILDFILE);
       if (buildFileEntry == null) {
         //BR// Check the 3.5+ buildfile format
-        buildFileEntry = zip.getEntry("buildFile.XML");
+        buildFileEntry = zip.getEntry("buildFile.xml");
         if (buildFileEntry == null) {
           return null;
         }
