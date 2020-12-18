@@ -69,7 +69,11 @@ public class MetaDataFactory {
       // Check if it has a buildFile
       ZipEntry buildFileEntry = zip.getEntry(GameModule.BUILDFILE);
       if (buildFileEntry == null) {
-        return null;
+        //BR// Check the 3.5+ buildfile format
+        buildFileEntry = zip.getEntry("buildFile.xml");
+        if (buildFileEntry == null) {
+          return null;
+        }
       }
 
       // It's either a module or an Extension, check for existence of metadata

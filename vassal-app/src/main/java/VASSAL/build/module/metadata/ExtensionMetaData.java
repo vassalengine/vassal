@@ -137,6 +137,12 @@ public class ExtensionMetaData extends AbstractMetaData {
       ZipEntry data = zip.getEntry(getZipEntryName());
       if (data == null) {
         data = zip.getEntry(GameModule.BUILDFILE);
+
+        //BR// Check the 3.5+ buildfile format
+        if (data == null) {
+          data = zip.getEntry("buildFile.xml");
+        }
+
         handler = new ExtensionBuildFileXMLHandler();
       }
       else {
