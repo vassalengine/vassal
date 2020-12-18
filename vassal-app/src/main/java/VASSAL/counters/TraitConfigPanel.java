@@ -18,15 +18,12 @@
 
 package VASSAL.counters;
 
-import VASSAL.configure.ConfigurableList;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-
 
 /**
  * A standardised Panel for use by Trait configurers

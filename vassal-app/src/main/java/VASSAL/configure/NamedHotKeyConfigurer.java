@@ -315,6 +315,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 
   // Use JLayer to outline the fields in Red as the Unix LaF ignores TextField background colours
   private static class ConfigLayerUI extends LayerUI<JTextField> {
+    private static final long serialVersionUID = 1L;
 
     private final Configurer parent;
 
@@ -323,7 +324,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     }
 
     @Override
-    public void paint (Graphics g, JComponent c) {
+    public void paint(Graphics g, JComponent c) {
       super.paint(g, c);
       final Component cc = ((JLayer) c).getView();
       if (parent.isHighlighted()) {
