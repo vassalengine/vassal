@@ -38,7 +38,7 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
-  protected static final int DEFAULT_LENGHTH = 20;
+  protected static final int DEFAULT_LENGHTH = 16;
 
   /**
    * Base Constructor for StringConfigurer
@@ -100,8 +100,8 @@ public class StringConfigurer extends Configurer {
       ));
       nameField.setText(getValueString());
 
-      LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
-      JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);
+      final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
+      final JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);
       p.add(layer, getGrowthConstraint()); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
