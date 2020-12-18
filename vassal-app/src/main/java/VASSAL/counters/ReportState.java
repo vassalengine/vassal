@@ -398,10 +398,8 @@ public class ReportState extends Decorator implements TranslatablePiece {
       format.getControls().setVisible(!cycle.getValueBoolean());
       formatLabel.setVisible(!cycle.getValueBoolean());
       cycleFormat.getControls().setVisible(cycle.getValueBoolean());
-      cycleFormat.getListController().setVisible(cycle.getValueBoolean());
       cycleLabel.setVisible(cycle.getValueBoolean());
       cycleDownKeys.getControls().setVisible(cycle.getValueBoolean());
-      cycleDownKeys.getListController().setVisible(cycle.getValueBoolean());
       cycleDownLabel.setVisible(cycle.getValueBoolean());
       repack(box);
     }

@@ -66,11 +66,12 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new MigLayout("ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill]", "[grow,fill]")); // NON-NLS
+      panel = new JPanel(new MigLayout("ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
 
       controls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
       panel.add(controls, "grow"); // NON-NLS
+      panel.add(getListController(), "growy 0,aligny center"); // NON-NLS
 
       rebuildControls();
 

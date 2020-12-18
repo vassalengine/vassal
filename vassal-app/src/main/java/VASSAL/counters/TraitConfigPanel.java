@@ -97,22 +97,13 @@ public class TraitConfigPanel extends JPanel {
 
   /**
    * Add a Configurer and its label with additional MigLayout constraints to this panel.
-   * For ConfigurableList Controllers, split the cell and add the List Controller to the right of the controls
    *
    * @param label Label
    * @param c Configurer
    * @param configureConstraints Miglayout Constraints
    */
   public void add(JLabel label, Configurer c, String configureConstraints) {
-    if (c instanceof ConfigurableList) {
-      label.setLabelFor(c.getControls());
-      add(label, "align right"); // NON-NLS
-      add(c.getControls(), "grow,split 2"); // NON-NLS
-      add(((ConfigurableList) c).getListController());
-    }
-    else {
-      add(label, c.getControls(), configureConstraints);
-    }
+    add(label, c.getControls(), configureConstraints);
   }
 
   /**
