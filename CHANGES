@@ -9,6 +9,7 @@
 * 13808: Don't prompt to create new logfile before current one is done
 * 13807: SendToLocation does not check outer traits when evaluating expression
 * 13805: CounterDetailViewer incorrectly displayed non-stacking pieces
+* 13795: "too new" version check should apply to all Module Manager items
 * 13786: NPE when Enter hit in Editor component tree with no node selected
 * 13760: Upgrade bundled Java to 15.0.1+9
 * 13738: IllegalArgumentException because Invisible trait permitted alpha
