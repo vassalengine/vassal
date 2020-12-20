@@ -3,6 +3,7 @@
 * 13829: HexGridNumbering.getRawRow() is now public
 * 13827: Ensure that extensions are loaded in alphabetical order
 * 13826: Restore scrolling in drop-down menus in BeanShell expression builder
+* 13825: "Module from older version" check is too strict
 * 13820: Ensure temp directory hasn't been deleted before trying to write to it
 * 13819: Move Fixed Distance no longer updating Movement Trail
 * 13808: Don't prompt to create new logfile before current one is done

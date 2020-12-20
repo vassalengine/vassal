@@ -176,11 +176,17 @@ public final class Info {
   }
 
   public static boolean isModuleTooNew(String version) {
-    return VersionUtils.compareVersions(version, VersionUtils.nextMinorVersion(getVersion())) >= 0;
+    return VersionUtils.compareVersions(
+      VersionUtils.truncateToMinorVersion(version),
+      VersionUtils.nextMinorVersion(getVersion())
+    ) >= 0;
   }
 
   public static boolean hasOldFormat(String version) {
-    return VersionUtils.compareVersions(version, VersionUtils.truncateToMinorVersion(getVersion())) < 0;
+    return VersionUtils.compareVersions(
+      VersionUtils.truncateToMinorVersion(version),
+      VersionUtils.truncateToMinorVersion(getVersion())
+    ) < 0;
   }
 
   /**
