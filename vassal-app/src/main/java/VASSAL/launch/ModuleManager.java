@@ -90,6 +90,7 @@ public class ModuleManager {
     catch (IOException e) {
 // FIXME: should be a dialog...
       System.err.println("VASSAL: " + e.getMessage());
+      e.printStackTrace();
       System.exit(1);
     }
 
@@ -107,6 +108,7 @@ public class ModuleManager {
     catch (LaunchRequestException e) {
 // FIXME: should be a dialog...
       System.err.println("VASSAL: " + e.getMessage());
+      e.printStackTrace();
       System.exit(1);
     }
 
