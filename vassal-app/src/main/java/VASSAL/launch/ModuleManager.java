@@ -226,7 +226,7 @@ public class ModuleManager {
       }
     }
     catch (UnknownHostException e) {
-      logger.error("Unable to open socket for loopback device", e);
+      logger.error("VASSAL: Unable to open socket for loopback device", e);
       System.exit(1);
     }
     catch (IOException e) {
