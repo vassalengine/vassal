@@ -98,7 +98,8 @@ public class ModuleManager {
     }
     catch (IOException e) {
 // FIXME: should be a dialog...
-      System.err.println("VASSAL: " + e.getMessage());  //NON-NLS
+      System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
+      e.printStackTrace();
       System.exit(1);
     }
 
@@ -116,6 +117,7 @@ public class ModuleManager {
     catch (LaunchRequestException e) {
 // FIXME: should be a dialog...
       System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
+      e.printStackTrace();
       System.exit(1);
     }
 
@@ -229,7 +231,7 @@ public class ModuleManager {
       }
     }
     catch (UnknownHostException e) {
-      logger.error("Unable to open socket for loopback device", e); //NON-NLS
+      logger.error("VASSAL: Unable to open socket for loopback device", e); //NON-NLS
       System.exit(1);
     }
     catch (IOException e) {

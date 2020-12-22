@@ -1431,10 +1431,18 @@ public class ModuleManagerWindow extends JFrame {
       });
 
       m.addSeparator();
+
       m.add(addFolderAction);
+      addFolderAction.setEnabled(!tooNew);
+
       m.addSeparator();
+
       m.add(newExtensionAction);
+      newExtensionAction.setEnabled(!tooNew);
+
       m.add(addExtensionAction);
+      addExtensionAction.setEnabled(!tooNew);
+
       return m;
     }
 
@@ -1580,13 +1588,21 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public JPopupMenu buildPopup(int row) {
       final JPopupMenu m = new JPopupMenu();
-      m.add(new ActivateExtensionAction(Resources.getString(isActive() ?
-            "ModuleManager.deactivate" : "ModuleManager.activate")));
+
+      final boolean tooNew = Info.isModuleTooNew(metadata.getVassalVersion());
+
+      final Action activateAction = new ActivateExtensionAction(
+        Resources.getString(isActive() ?
+        "ModuleManager.deactivate" : "ModuleManager.activate")
+      );
+      activateAction.setEnabled(!tooNew);
+      m.add(activateAction);
 
       final Action editAction = new EditExtensionLaunchAction(
           ModuleManagerWindow.this, getFile(), getSelectedModule());
-      editAction.setEnabled(!Info.isModuleTooNew(metadata.getVassalVersion()));
+      editAction.setEnabled(!tooNew);
       m.add(editAction);
+
       return m;
     }
 
@@ -1658,17 +1674,24 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public JPopupMenu buildPopup(int row) {
+      final boolean tooNew = Info.isModuleTooNew(moduleInfo.getVassalVersion());
+
       final JPopupMenu m = new JPopupMenu();
-      m.add(new AbstractAction(Resources.getString("General.refresh")) {
+
+      final Action refreshAction = new AbstractAction(Resources.getString("General.refresh")) {
         private static final long serialVersionUID = 1L;
 
         @Override
         public void actionPerformed(ActionEvent e) {
           refresh();
         }
-      });
+      };
+
+      refreshAction.setEnabled(!tooNew);
+      m.add(refreshAction);
       m.addSeparator();
-      m.add(new AbstractAction(Resources.getString("General.remove")) {
+
+      final Action removeAction = new AbstractAction(Resources.getString("General.remove")) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -1679,7 +1702,10 @@ public class ModuleManagerWindow extends JFrame {
           moduleInfo.removeFolder(getFile());
           updateModuleList();
         }
-      });
+      };
+
+      removeAction.setEnabled(!tooNew);
+      m.add(removeAction);
 
       return m;
     }
@@ -1780,9 +1806,14 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public JPopupMenu buildPopup(int row) {
+      final boolean tooNew = Info.isModuleTooNew(metadata.getVassalVersion());
+
       final JPopupMenu m = new JPopupMenu();
-      m.add(new Player.LaunchAction(
-        ModuleManagerWindow.this, getModuleFile(), file));
+      final Action launchAction = new Player.LaunchAction(
+        ModuleManagerWindow.this, getModuleFile(), file
+      );
+      launchAction.setEnabled(!tooNew);
+      m.add(launchAction);
       return m;
     }
 
