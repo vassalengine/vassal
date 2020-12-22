@@ -1,5 +1,6 @@
 3.4.12 - ???
 
+* 13850: Piece rotation fails to apply over masking
 * 13845: Don't display empty items in context menus
 * 13836: "too new" version check should compare minor version only
 * 13829: HexGridNumbering.getRawRow() is now public
