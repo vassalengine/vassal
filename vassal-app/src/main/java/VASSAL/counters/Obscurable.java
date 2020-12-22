@@ -242,8 +242,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public void setProperty(Object key, Object val) {
     if (ID.equals(key)) {
-      if (val instanceof String
-          || val == null) {
+      if (val instanceof String || val == null) {
         obscuredBy = (String) val;
         if ("null".equals(obscuredBy)) { //$NON-NLS-1$//
           obscuredBy = null;
@@ -282,7 +281,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       return obscuredBy;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-      return myGetState() + isPeeking() + piece.getProperty(key);
+      return myGetState() + isPeeking() + getProperty(Properties.SELECTED) + piece.getProperty(key);
     }
     // FIXME: Access to Obscured properties
     // If piece is obscured to me, then mask any properties returned by
