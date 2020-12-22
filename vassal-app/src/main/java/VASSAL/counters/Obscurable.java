@@ -240,8 +240,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public void setProperty(Object key, Object val) {
     if (ID.equals(key)) {
-      if (val instanceof String
-          || val == null) {
+      if (val instanceof String || val == null) {
         obscuredBy = (String) val;
         if ("null".equals(obscuredBy)) { //$NON-NLS-1$//
           obscuredBy = null;
