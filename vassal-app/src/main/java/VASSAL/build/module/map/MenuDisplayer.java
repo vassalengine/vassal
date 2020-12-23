@@ -169,7 +169,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             }
           }
           else {
-            strokes.add(((stroke != null) && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
+            strokes.add((stroke != null && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
             item = makeMenuItem(keyCommand);
             commands.add(item);
           }
@@ -212,13 +212,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       // }
 
       for (JMenuItem item : commands) {
-        if ((item.getText() != null) && MenuSeparator.SEPARATOR_NAME.equals(item.getText())) {
+        final String text = item.getText();
+        if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
           popup.addSeparator();
         } 
-        else {
-          if (!StringUtils.isEmpty(item.getText())) {
-            popup.add(item);
-          }
+        else if (!StringUtils.isEmpty(text)) {
+          popup.add(item);
         }
       }
     }
