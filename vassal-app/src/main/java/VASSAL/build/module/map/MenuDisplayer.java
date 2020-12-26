@@ -117,7 +117,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     
     return item;
   }
-  
 
   public static JPopupMenu createPopup(GamePiece target) {
     return createPopup(target, false);
