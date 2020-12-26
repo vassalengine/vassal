@@ -53,7 +53,7 @@ public class KeyCommand extends AbstractAction {
   }
 
   public KeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
-    super(key == null ? name : name + "  " + NamedHotKeyConfigurer.getString(key));
+    super(makeMenuText(key, name));
     this.target = target;
     this.name = name;
     this.stroke = key;
@@ -147,13 +147,11 @@ public class KeyCommand extends AbstractAction {
     }
   }
   
-  
   // Returns true if this command exists simply to produce a menu separator
   public boolean isMenuSeparator() {
     return (name != null) && MenuSeparator.SEPARATOR_NAME.equals(name);
   }  
 
-  
   /**
    * The human-readable text that will appear in the right-click menu, translated to the user's Locale
    * @return
@@ -172,10 +170,13 @@ public class KeyCommand extends AbstractAction {
           localizedName = Localization.getInstance().translate(key, name);
         }
       }
-      localizedMenuText = stroke == null ? localizedName : localizedName + "  " + NamedHotKeyConfigurer.getString(stroke);
+      localizedMenuText = makeMenuText(stroke, localizedName);
     }
     return localizedMenuText;
   }
+
+  private static String makeMenuText(KeyStroke ks, String text) {
+    return ks != null && text != null && !text.isBlank() ?
+      text + "  " + NamedHotKeyConfigurer.getString(ks) : text;
+  }
 }
-
-

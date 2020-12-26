@@ -33,7 +33,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -117,7 +116,6 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
     
     return item;
   }
-  
 
   public static JPopupMenu createPopup(GamePiece target) {
     return createPopup(target, false);
@@ -169,7 +167,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             }
           }
           else {
-            strokes.add(((stroke != null) && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
+            strokes.add((stroke != null && !keyCommand.isMenuSeparator()) ? stroke : KeyStroke.getKeyStroke('\0'));
             item = makeMenuItem(keyCommand);
             commands.add(item);
           }
@@ -212,13 +210,12 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       // }
 
       for (JMenuItem item : commands) {
-        if ((item.getText() != null) && MenuSeparator.SEPARATOR_NAME.equals(item.getText())) {
+        final String text = item.getText();
+        if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
           popup.addSeparator();
         } 
-        else {
-          if (!StringUtils.isEmpty(item.getText())) {
-            popup.add(item);
-          }
+        else if (text != null && !text.isBlank()) {
+          popup.add(item);
         }
       }
     }
