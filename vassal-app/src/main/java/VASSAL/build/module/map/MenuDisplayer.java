@@ -33,7 +33,6 @@ import javax.swing.KeyStroke;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -215,7 +214,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         if (MenuSeparator.SEPARATOR_NAME.equals(text)) {
           popup.addSeparator();
         } 
-        else if (!StringUtils.isEmpty(text)) {
+        else if (text != null && !text.isBlank()) {
           popup.add(item);
         }
       }
