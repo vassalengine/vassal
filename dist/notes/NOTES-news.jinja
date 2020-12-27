@@ -18,6 +18,33 @@ The VASSAL Team is happy to announce the release of VASSAL {{version}}.
   <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
 </ul>
 
+<h2>Changes since 3.4.11</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>13850: Piece rotation fails to apply over masking</li>
+<li>13845: Don't display empty items in context menus</li>
+<li>13836: "too new" version check should compare minor version only</li>
+<li>13827: Ensure that extensions are loaded in alphabetical order</li>
+<li>13826: Restore scrolling in drop-down menus in BeanShell expression builder</li>
+<li>13825: "Module from older version" check is too strict</li>
+<li>13820: Ensure temp directory hasn't been deleted before trying to write to it</li>
+<li>13819: Move Fixed Distance no longer updating Movement Trail</li>
+<li>13808: Don't prompt to create new logfile before current one is done</li>
+<li>13807: SendToLocation does not check outer traits when evaluating expression</li>
+<li>13805: CounterDetailViewer incorrectly displayed non-stacking pieces</li>
+<li>13795: "too new" version check should apply to all Module Manager items</li>
+<li>13786: NPE when Enter hit in Editor component tree with no node selected</li>
+<li>13738: IllegalArgumentException because Invisible trait permitted alpha values outside [0,1]</li>
+<li>13614: NPE in ZonedGrid due to thread-unsafe caching of Zone clipping</li>
+<li>13571: ArrayIndexOutOfBoundsException in Embellishment.getProperty()</li>
+<li>13446: Pieces in a stack have the wrong offset while dragging</li>
+</ul>
+<h3>Other improvements</h3>
+<ul>
+<li>13829: HexGridNumbering.getRawRow() is now public</li>
+<li>13760: Upgrade bundled Java to 15.0.1+9</li>
+</ul>
+
 <h2>Changes since 3.4.10</h2>
 <h3>Bug fixes</h3>
 <ul>
