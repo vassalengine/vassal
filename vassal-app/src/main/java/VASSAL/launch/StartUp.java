@@ -18,6 +18,8 @@
 
 package VASSAL.launch;
 
+import java.awt.AWTError;
+import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
@@ -66,6 +68,21 @@ public class StartUp {
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    // A bad .accessibility.properties file (on Windows) can cause Swing to
+    // throw an AWTError. Some screen readers will install this without
+    // installing a proper Java Accessibility Bridge to make use of it. This
+    // is a rare, but perplexing error for the user so we give some specific
+    // advice about how to deal with it in the error message.
+    try {
+      Toolkit.getDefaultToolkit();
+    }
+    catch (AWTError e) {
+      ErrorDialog.show(
+        e,
+        "Error.assistive_technology_not_found"
+      );
+    }
 
     try {
       SwingUtilities.invokeAndWait(() -> {

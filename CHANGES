@@ -69,6 +69,10 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
+3.4.13 - ???
+
+* 13285: Show useful message on AWTError due to bad Java Access Bridge install
+
 3.4.12 - 27 December 2020
 
 * 13850: Piece rotation fails to apply over masking
