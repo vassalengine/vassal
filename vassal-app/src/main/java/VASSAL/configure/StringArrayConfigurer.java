@@ -94,11 +94,12 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new MigLayout("hidemode 3,ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill]", "[grow,fill]")); // NON-NLS
+      panel = new JPanel(new MigLayout("hidemode 3,ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
 
       controls = new JPanel(new MigLayout(ConfigurerLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
       panel.add(controls, "grow"); // NON-NLS
+      panel.add(getListController(), "growy 0,aligny center"); // NON-NLS
 
       rebuildControls();
     }

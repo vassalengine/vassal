@@ -251,7 +251,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
   @Override
   public Component getControls() {
     if (panel == null) {
-      panel = new JPanel(new MigLayout(TraitLayout.STANDARD_GAPY, "[grow,fill]", "[grow,fill]")); // NON-NLS
+      panel = new JPanel(new MigLayout(TraitLayout.STANDARD_GAPY, "[grow,fill][]")); // NON-NLS
       panel.setBorder(BorderFactory.createEtchedBorder());
 
       controls = new JPanel(new MigLayout("hidemode 3,ins 2", "[grow,fill]", "[grow,fill]")); // NON-NLS
@@ -260,6 +260,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
 
       controls.add(configControls, "grow, aligny center"); // NON-NLS
       panel.add(controls, "grow"); // NON-NLS
+      panel.add(getListController(), "growy 0,aligny center"); // NON-NLS
 
       rebuildControls();
     }

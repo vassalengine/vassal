@@ -26,15 +26,20 @@ import VASSAL.tools.imageop.OpIcon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JLayer;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.plaf.LayerUI;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -58,8 +63,8 @@ import net.miginfocom.swing.MigLayout;
 public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private static final String STROKE_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.keystroke");
   private static final String NAME_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.command");
-  private final HintTextField keyStroke = new HintTextField(16, STROKE_HINT);
-  private final HintTextField keyName = new HintTextField(16, NAME_HINT);
+  private final HintTextField keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, STROKE_HINT);
+  private final HintTextField keyName = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, NAME_HINT);
   private JPanel controls;
   private String lastValue;
   private JButton undoButton;
@@ -182,9 +187,15 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       keyName.addFocusListener(this);
 
       final JPanel panel = new JPanel(new MigLayout("ins 0", "[fill,grow]0[]0[fill,grow]0[]")); // NON-NLS
-      panel.add(keyName, "grow"); // NON-NLS
+
+      final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
+      final JLayer<JTextField> nameLayer = new JLayer<>(keyName, layerUI);
+      panel.add(nameLayer, "grow"); // NON-NLS
+
       panel.add(new JLabel("-")); // NON-NLS
-      panel.add(keyStroke, "grow"); // NON-NLS
+
+      final JLayer<JTextField> keyLayer = new JLayer<>(keyStroke, layerUI);
+      panel.add(keyLayer, "grow"); // NON-NLS
 
       undoButton = new JButton(new OpIcon(Op.load("Undo16.gif"))); // NON-NLS
       final int size = (int) keyName.getPreferredSize().getHeight();
@@ -283,6 +294,8 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     super.setHighlighted(highlighted);
     keyStroke.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
     keyName.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+    keyStroke.repaint();
+    keyName.repaint();
   }
 
   @Override
@@ -298,6 +311,28 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     keyStroke.removeFocusListener(listener);
     keyName.removeFocusListener(listener);
 
+  }
+
+  // Use JLayer to outline the fields in Red as the Unix LaF ignores TextField background colours
+  private static class ConfigLayerUI extends LayerUI<JTextField> {
+    private static final long serialVersionUID = 1L;
+
+    private final Configurer parent;
+
+    public ConfigLayerUI(Configurer parent) {
+      this.parent = parent;
+    }
+
+    @Override
+    public void paint(Graphics g, JComponent c) {
+      super.paint(g, c);
+      final Component cc = ((JLayer) c).getView();
+      if (parent.isHighlighted()) {
+        final Dimension d = cc.getSize();
+        g.setColor(Color.red);
+        g.drawRect(0, 0, d.width - 2, d.height - 2);
+      }
+    }
   }
 
   private class KeyStrokeAdapter extends KeyAdapter {
@@ -350,4 +385,6 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       super.replace(fb, 0, keyStroke.getText().length(), text, attrs);
     }
   }
+
+
 }

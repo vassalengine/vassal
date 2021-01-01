@@ -20,7 +20,6 @@ package VASSAL.configure;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.counters.TraitLayout;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.swing.SwingUtils;
@@ -91,16 +90,7 @@ public class AutoConfigurer extends Configurer
         label.setLabelFor(config.getControls());
         labels.put(name[i], label);
         p.add(label);
-        // Include List Controller for ConfigurableList Configurers
-        if (config instanceof ConfigurableList) {
-          final JPanel controllerPanel = new JPanel(new MigLayout("hidemode 3,ins 0," + TraitLayout.STANDARD_GAPY, "[grow,fill]rel[]")); // NON-NLS
-          controllerPanel.add(config.getControls(), "grow"); // NON-NLS
-          controllerPanel.add(((ConfigurableList) config).getListController(), "aligny center"); // NON-NLS
-          p.add(controllerPanel, "wrap,grow"); // NON-NLS
-        }
-        else {
-          p.add(config.getControls(), "wrap,grow"); // NON-NLS
-        }
+        p.add(config.getControls(), "wrap,grow"); // NON-NLS
         configurers.add(config);
       }
       setVisibility(name[i], c.getAttributeVisibility(name[i]));
@@ -143,7 +133,7 @@ public class AutoConfigurer extends Configurer
         GameModule.getGameModule().getArchiveWriter());
     }
     else if (String[].class.isAssignableFrom(type)) {
-      config = new StringArrayConfigurer(key, prompt); // Set a reasonable min/max for items displayed before scrolling
+      config = new StringArrayConfigurer(key, prompt);
     }
     else if (Icon.class.isAssignableFrom(type)) {
       config = new IconConfigurer(key, prompt, null);

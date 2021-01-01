@@ -21,11 +21,15 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import java.awt.Graphics;
 import java.awt.event.FocusListener;
+import javax.swing.JComponent;
+import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.LayerUI;
 
 /**
  * A Configurer for String values
@@ -34,7 +38,7 @@ public class StringConfigurer extends Configurer {
   protected JPanel p;
   protected JTextField nameField;
   protected int length;
-  protected static final int DEFAULT_LENGHTH = 20;
+  protected static final int DEFAULT_LENGHTH = 16;
 
   /**
    * Base Constructor for StringConfigurer
@@ -95,7 +99,10 @@ public class StringConfigurer extends Configurer {
         nameField.getPreferredSize().height
       ));
       nameField.setText(getValueString());
-      p.add(nameField, getGrowthConstraint()); // NON-NLS
+
+      final LayerUI<JTextField> layerUI = new ConfigLayerUI(this);
+      final JLayer<JTextField> layer = new JLayer<>(nameField, layerUI);
+      p.add(layer, getGrowthConstraint()); // NON-NLS
       nameField.getDocument().addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -136,6 +143,7 @@ public class StringConfigurer extends Configurer {
     super.setHighlighted(highlighted);
     getControls();
     nameField.setBackground(highlighted ? LIST_ENTRY_HIGHLIGHT_COLOR : Color.white);
+    nameField.repaint();
   }
 
   @Override
@@ -150,5 +158,26 @@ public class StringConfigurer extends Configurer {
     super.removeFocusListener(listener);
     getControls();
     nameField.removeFocusListener(listener);
+  }
+
+  // Use JLayer to outline the field in Red as the Unix LaF ignores TextField background colours
+  private static class ConfigLayerUI extends LayerUI<JTextField> {
+    private static final long serialVersionUID = 1L;
+    private final Configurer parent;
+
+    public ConfigLayerUI(Configurer parent) {
+      this.parent = parent;
+    }
+
+    @Override
+    public void paint(Graphics g, JComponent c) {
+      super.paint(g, c);
+      final Component cc = ((JLayer) c).getView();
+      if (parent.isHighlighted()) {
+        final Dimension d = cc.getSize();
+        g.setColor(Color.red);
+        g.drawRect(0, 0, d.width - 2, d.height - 2);
+      }
+    }
   }
 }
