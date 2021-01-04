@@ -1141,8 +1141,11 @@ public class MassPieceLoader {
       while (names.length > multiPanel.getComponentCount()) {
         addEntry();
       }
+
       for (int i = 0; i < names.length; ++i) {
-        ((Entry) multiPanel.getComponent(i)).setImageName(names[i]);
+        if (names[i] != null) {
+          ((Entry) multiPanel.getComponent(i)).setImageName(names[i]);
+        }
       }
     }
   }

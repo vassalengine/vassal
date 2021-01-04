@@ -71,6 +71,7 @@
 
 3.4.13 - ???
 
+* 13861: NPE in MassPieceLoader when adding Layer to piece template
 * 13285: Show useful message on AWTError due to bad Java Access Bridge install
 
 3.4.12 - 27 December 2020
