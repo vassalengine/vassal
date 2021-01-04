@@ -147,6 +147,7 @@ public abstract class EditorWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("create_module_updater"));  //NON-NLS
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
+    toolsMenu.add(mm.addKey("Editor.ModuleEditor.refresh_predefined"));
     toolsMenu.add(mm.addKey("Editor.UnusedImages.remove_unused_images"));
 
     if (SystemUtils.IS_OS_MAC) {

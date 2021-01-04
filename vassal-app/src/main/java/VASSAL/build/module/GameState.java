@@ -16,6 +16,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -80,6 +81,7 @@ import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipWriter;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
@@ -107,6 +109,9 @@ public class GameState implements CommandEncoder {
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
+  private boolean gameLoadingInForeground; // Will be set to true by loadGameInForeground to block setup method
+
+  //public GameState() {}
 
   /**
    * Expects to be added to a GameModule.  Adds <code>New</code>,
@@ -205,8 +210,7 @@ public class GameState implements CommandEncoder {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-        setup(false);
+        closeGame();
       }
     };
     // FIXME: setting mnemonic from first letter could cause collisions in
@@ -306,6 +310,19 @@ public class GameState implements CommandEncoder {
   //
   private volatile boolean gameUpdating = false;
 
+  public void setupRefresh() {
+    this.gameStarting = true;
+    newGame.setEnabled(false);
+    saveGame.setEnabled(true);
+    saveGameAs.setEnabled(true);
+    closeGame.setEnabled(true);
+
+    gameStarted &= this.gameStarting;
+    for (final GameComponent gc : gameComponents) {
+      gc.setup(this.gameStarting);
+    }
+  }
+
   /**
    * Start a game for updating (via editor).
    * <em>NOTE: This method is not for use in custom code.</em>
@@ -336,6 +353,10 @@ public class GameState implements CommandEncoder {
    * on all registered {@link GameComponent} objects.
    */
   public void setup(boolean gameStarting) {
+    if (gameLoadingInForeground) {
+      return;
+    }
+
     final GameModule g = GameModule.getGameModule();
 
     if (!gameStarting && gameStarted && isModified()) {
@@ -557,6 +578,13 @@ public class GameState implements CommandEncoder {
     }
 
     return true;
+  }
+
+
+  /** Closes the game. */
+  public void closeGame() {
+    GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+    setup(false);
   }
 
   /** Saves the game to an existing file, or prompts for a new one. */
@@ -794,6 +822,33 @@ public class GameState implements CommandEncoder {
   public static final String BEGIN_SAVE = "begin_save";  //$NON-NLS-1$
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
+  public void saveGameRefresh(ZipArchive archive) throws IOException {
+    final SaveMetaData metaData;
+    // FIXME: It is extremely inefficient to produce the save string. It would
+    // be faster to write directly to the output stream instead.
+
+    // store the prompt pref
+    final GameModule mod = GameModule.getGameModule();
+    final Prefs myPrefs = mod.getPrefs();
+    final Boolean oldPrompt = (Boolean)myPrefs.getValue(SaveMetaData.PROMPT_LOG_COMMENT);
+
+    // turn off prompting for the save
+    myPrefs.setValue(SaveMetaData.PROMPT_LOG_COMMENT, false);
+    metaData = new SaveMetaData(); // this also potentially prompts for save file comments, so do *before* possibly long save file write
+
+    final String save = saveString();
+    try (OutputStream zout = archive.getOutputStream(SAVEFILE_ZIP_ENTRY);
+         BufferedOutputStream bout = new BufferedOutputStream(zout);
+         OutputStream out = new ObfuscatingOutputStream(bout)) {
+      out.write(save.getBytes(StandardCharsets.UTF_8));
+    }
+    archive.close();
+
+    metaData.save(archive);
+    // reset the pref
+    myPrefs.setValue(SaveMetaData.PROMPT_LOG_COMMENT, oldPrompt);
+  }
+
   public void saveGame(File f) throws IOException {
     final SaveMetaData metaData;
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game") + ": " + f.getName());  //$NON-NLS-1$
@@ -822,6 +877,21 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().warn(msg);
     ModuleManagerUpdateHelper.sendGameUpdate(f);
   }
+
+  public void loadGameInForeground(final String shortName,
+                                   final InputStream in) throws IOException {
+    final Command loadCommand = decodeSavedGame(in);
+    if (loadCommand != null) {
+      try {
+        gameLoadingInForeground = true;
+        loadCommand.execute();
+      }
+      finally {
+        gameLoadingInForeground = false;
+      }
+    }
+  }
+
 
   public void loadGameInBackground(final File f) {
     try {
