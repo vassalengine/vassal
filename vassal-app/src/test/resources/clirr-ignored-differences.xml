@@ -365,5 +365,104 @@
         <method>LogEntry(long, int, int, java.lang.Throwable, java.lang.String, boolean)</method>
         <justification>Nothing external should use this</justification>
     </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>7004</differenceType>
+        <method>**</method>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>6001</differenceType>
+        <field>*</field>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7005</differenceType>
+        <method>GpIdChecker(boolean)</method>
+        <to>GpIdChecker(java.util.Set)</to>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameRefresher</className>
+        <differenceType>7005</differenceType>
+        <method>void execute(boolean, boolean)</method>
+        <to>void execute(java.util.Set, VASSAL.command.Command)</to>
+        <justification>no one should have extended this class</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GpIdChecker</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>Not referenced in custom code</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/swing/SwingUtils</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/LabelUtils</className>
+        <differenceType>7002</differenceType>
+        <method>*</method>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/NamedKeyStrokeArrayConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>NamedKeyStrokeArrayConfigurer(java.lang.String, java.lang.String, java.util.List)</method>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/MultiResolutionRenderedImage$Renderer</className>
+        <differenceType>8001</differenceType>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/MultiResolutionRenderedImage</className>
+        <differenceType>8001</differenceType>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ComponentConfigPanel</className>
+        <differenceType>8001</differenceType>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ComponentLayout</className>
+        <differenceType>8001</differenceType>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ImageSelector</className>
+        <differenceType>8001</differenceType>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/AreaOfEffect$TraitEditor</className>
+        <differenceType>6001</differenceType>
+        <field>transparencyColorLabel</field>
+        <justification>Removed</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/AreaOfEffect$TraitEditor</className>
+        <differenceType>6001</differenceType>
+        <field>transparencyLabel</field>
+        <justification>Removed</justification>
+    </difference>
 
 </differences>
