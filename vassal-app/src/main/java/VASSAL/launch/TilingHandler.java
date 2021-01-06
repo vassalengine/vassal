@@ -75,6 +75,11 @@ public class TilingHandler {
   protected final Dimension tdim;
   protected final int maxheap_limit;
 
+  // Needed for VASL. Remove sometime after VASL 6.6.2
+  @Deprecated
+  @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
+  protected final int pid = 42;
+
   /**
    * Creates a {@code TilingHandler}.
    *
@@ -87,6 +92,17 @@ public class TilingHandler {
     this.cdir = cdir;
     this.tdim = tdim;
     this.maxheap_limit = mhlim;
+  }
+
+  /**
+   * @deprecated Retained for VASL compatibility. Remove sometime after
+   * VASL 6.6.2.
+   */
+  @Deprecated
+  @SuppressWarnings("PMD.UnusedFormalParameter")
+  public TilingHandler(String aname, File cdir,
+                       Dimension tdim, int mhlim, int pid) {
+    this(aname, cdir, tdim, mhlim);
   }
 
   protected boolean isFresh(FileArchive archive,
