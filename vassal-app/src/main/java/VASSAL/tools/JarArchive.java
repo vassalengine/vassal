@@ -81,7 +81,8 @@ public class JarArchive extends DataArchive {
   }
 
   /** @deprecated Use {@link #getInputStream(String)} instead. */
-  @Deprecated
+  @SuppressWarnings("removal")
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   @Override
   public InputStream getFileStream(String fileName) throws IOException {
     return getInputStream(fileName);

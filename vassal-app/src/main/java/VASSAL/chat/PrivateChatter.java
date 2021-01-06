@@ -37,8 +37,9 @@ public class PrivateChatter extends Chatter {
   }
 
   /** @deprecated Use {@link GlobalOptions#getInstance()#getPlayerId} */
-  @Override
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-08-06", forRemoval = true)
+  @Override
   public String getHandle() {
     ProblemDialog.showDeprecated("2020-08-06");
     return GlobalOptions.getInstance().getPlayerId();

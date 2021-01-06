@@ -5,14 +5,16 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.io.IOUtils;
-import org.jsoup.Jsoup;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+
+import org.apache.commons.io.IOUtils;
+import org.jsoup.Jsoup;
 
 /**
  * Parses image tags out of an HTML file or string. Used to add the image filenames to a list, e.g. of images used.

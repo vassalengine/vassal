@@ -55,7 +55,6 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
-import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
@@ -81,8 +80,9 @@ public class ChatServerControls extends AbstractBuildable {
   protected JButton configServerButton;
   protected String configServerText;
 
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-11-15", forRemoval = true)
-  protected ComponentSplitter.SplitPane splitter;
+  protected VASSAL.tools.ComponentSplitter.SplitPane splitter;
 
   protected SplitPane splitPane;
 

@@ -11,10 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.apache.commons.io.IOUtils;
+
 import org.junit.Ignore;
 import org.junit.Test;
-
-import VASSAL.tools.io.IOUtils;
 
 public class CompressorTest {
 

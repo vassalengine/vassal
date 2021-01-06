@@ -714,8 +714,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * @deprecated Board images are removed automatically now, when under
    * memory pressure.
    */
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  @SuppressWarnings("all")
   public void cleanUp() {
     ProblemDialog.showDeprecated("2020-08-06");
     if (imageFile != null) {
