@@ -111,6 +111,7 @@ public class MapBoard extends Importer {
       this.switchable = switchable;
     }
 
+    @SuppressWarnings("removal")
     void writeToArchive() throws IOException {
       // write piece
       final Rectangle r = writeImageToArchive();
@@ -2859,6 +2860,7 @@ public class MapBoard extends Importer {
     return p;
   }
 
+  @SuppressWarnings("removal")
   @Override
   public void writeToArchive() throws IOException {
 
@@ -3069,6 +3071,7 @@ public class MapBoard extends Importer {
     return board;
   }
 
+  @SuppressWarnings("removal")
   private ToolbarMenu getToolbarMenu() {
     final List<ToolbarMenu> list = getMainMap().getComponentsOf(ToolbarMenu.class);
     ToolbarMenu menu = null;

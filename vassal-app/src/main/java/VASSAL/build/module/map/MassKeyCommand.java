@@ -101,6 +101,8 @@ public class MassKeyCommand extends AbstractToolbarItem
   public static final String CHECK_VALUE = "propValue"; // NON-NLS
   public static final String SINGLE_MAP = "singleMap"; // NON-NLS
 
+  // TODO: When these are removed, look for all of the "removal" warning
+  // suppressions we added for them, and remove those.
   // These 3 identical to AbstractToolbarItem and here for clirr purposes only
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; // NON-NLS
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS

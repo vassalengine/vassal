@@ -41,6 +41,7 @@ import java.util.List;
  *
  */
 public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameComponent {
+  @SuppressWarnings("removal")
   public StartupGlobalKeyCommand() {
     super();
     /* These four fields pertaining to the physical representation of the
@@ -68,6 +69,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
     return HelpFile.getReferenceManualPage("Map.html", "StartupGlobalKeyCommand"); //NON-NLS
   }
 
+  @SuppressWarnings("removal")
   @Override
   public VisibilityCondition getAttributeVisibility(String key) {
     if (List.of(BUTTON_TEXT, TOOLTIP, ICON, HOTKEY).contains(key)) {

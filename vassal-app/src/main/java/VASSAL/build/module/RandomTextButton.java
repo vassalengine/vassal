@@ -51,6 +51,7 @@ public class RandomTextButton extends DiceButton {
   public static final String FACES = "faces"; //$NON-NLS-1$
   public static final String NUMERIC = "numeric"; //$NON-NLS-1$
 
+  @SuppressWarnings("removal")
   public RandomTextButton() {
     super();
     final ActionListener ranAction = e -> {

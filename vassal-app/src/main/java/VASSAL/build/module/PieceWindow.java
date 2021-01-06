@@ -49,7 +49,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
-import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
@@ -79,8 +78,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   protected String tooltip = ""; //$NON-NLS-1$
   protected double scale;
 
+  @SuppressWarnings({"deprecation", "removal"})
   @Deprecated(since = "2020-11-15", forRemoval = true)
-  protected ComponentSplitter.SplitPane mainWindowDock;
+  protected VASSAL.tools.ComponentSplitter.SplitPane mainWindowDock;
 
   protected SplitPane splitPane;
 

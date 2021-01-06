@@ -73,6 +73,7 @@ public final class Info {
    * @deprecated If you need the minor version number, get it from
    * a {@link VersionTokenizer}.
    */
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static String getMinorVersion() {
     ProblemDialog.showDeprecated("2020-08-06");

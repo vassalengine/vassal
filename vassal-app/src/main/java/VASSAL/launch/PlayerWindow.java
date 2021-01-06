@@ -192,6 +192,7 @@ public class PlayerWindow extends JFrame {
    * @return the {@link ComponentSplitter.SplitPane} containing the two components
    *
    */
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-07-28", forRemoval = true)
   public ComponentSplitter.SplitPane splitControlPanel(Component newComponent, int hideablePosition, boolean resize) {
     int index = -1;

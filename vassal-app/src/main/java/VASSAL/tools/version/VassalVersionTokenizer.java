@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
  * @author Joel Uckelman
  * @see VersionFormatException
  */
+@SuppressWarnings("removal")
 @Deprecated(since = "2020-08-28", forRemoval = true)
 public class VassalVersionTokenizer implements VersionTokenizer {
   protected String v;

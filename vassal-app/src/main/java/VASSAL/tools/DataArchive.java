@@ -801,6 +801,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /**
    * @deprecated Don't use this. We've switched to Lanczos scaling.
    */
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Image improvedScaling(Image img, int width, int height) {
     ProblemDialog.showDeprecated("2020-08-06");

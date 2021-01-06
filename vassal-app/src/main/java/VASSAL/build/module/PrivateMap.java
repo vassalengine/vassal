@@ -253,6 +253,7 @@ public class PrivateMap extends Map {
   }
 
   /** @deprecated Use {@link #setBoards(Collection)} instead. */
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-08-06", forRemoval = true)
   @Override
   public void setBoards(Enumeration<Board> boardList) {

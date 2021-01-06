@@ -173,7 +173,6 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -220,8 +219,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected JLayeredPane layeredPane = new JLayeredPane();
   protected JScrollPane scroll;
 
+  @SuppressWarnings("removal")
   @Deprecated(since = "2020-11-05", forRemoval = true)
-  protected ComponentSplitter.SplitPane mainWindowDock;
+  protected VASSAL.tools.ComponentSplitter.SplitPane mainWindowDock;
 
   protected SplitPane splitPane;
 

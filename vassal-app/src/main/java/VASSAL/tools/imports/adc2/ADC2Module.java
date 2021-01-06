@@ -2299,6 +2299,7 @@ public class ADC2Module extends Importer {
 //  }
   }
 
+  @SuppressWarnings("removal")
   private void configureStatusFlagButtons() throws IOException {
     String imageName;
     MassKeyCommand command;
@@ -2424,6 +2425,7 @@ public class ADC2Module extends Importer {
     // TODO: set current turn
   }
 
+  @SuppressWarnings("removal")
   protected void configureDiceRoller(GameModule gameModule) {
     final DiceButton dice = new DiceButton();
     insertComponent(dice, gameModule);
@@ -2659,6 +2661,7 @@ public class ADC2Module extends Importer {
     }
   }
 
+  @SuppressWarnings("removal")
   protected void writeToolbarMenuToArchive(GameModule gameModule) {
     final int nHands = forcePools.count(HandPool.class);
     if (nHands == 0)
