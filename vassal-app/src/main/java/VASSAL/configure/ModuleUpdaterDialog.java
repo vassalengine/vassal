@@ -36,9 +36,11 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ZipUpdater;
 import VASSAL.tools.filechooser.FileChooser;
 
+@Deprecated(since = "2020-08-05", forRemoval = true)
 public class ModuleUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("removal")
   public ModuleUpdaterDialog(Frame owner) throws HeadlessException {
     super(owner, false);
     setTitle(Resources.getString("Editor.ModuleUpdaterDialog.title"));

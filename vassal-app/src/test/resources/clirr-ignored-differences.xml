@@ -3,7 +3,6 @@
         documentation at https://www.mojohaus.org/clirr-maven-plugin/examples/ignored-differences.html
     -->
 
-
     <difference>  
         <!-- It is okay to add classes to the set of superclasses -->
         <className>**</className>
@@ -135,6 +134,13 @@
         <differenceType>7002</differenceType>
         <method>FormattedStringArrayConfigurer(java.lang.String, java.lang.String, VASSAL.build.module.properties.PropertyChangerConfigurer$Constraints, int, int)</method>
         <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/launch/EditorWindow</className>
+        <differenceType>6001</differenceType>
+        <field>createUpdater</field>
+        <justification>Northing external should use this</justification>
     </difference>
 
     <!-- Removal of MM <-> Player/Editor IPC -->

@@ -44,7 +44,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
-import VASSAL.configure.ModuleUpdaterDialog;
 import VASSAL.configure.RemoveUnusedImagesDialog;
 import VASSAL.configure.SaveAction;
 import VASSAL.configure.SaveAsAction;
@@ -71,7 +70,6 @@ public abstract class EditorWindow extends JFrame {
   protected SaveAction saveAction;
   protected SaveAsAction saveAsAction;
   protected JMenuItem componentHelpItem;
-  protected Action createUpdater;
 
   protected final HelpWindow helpWindow = new HelpWindow(Resources.getString("Editor.ModuleEditor.reference_manual"), //$NON-NLS-1$
       null);
@@ -222,17 +220,6 @@ public abstract class EditorWindow extends JFrame {
     mm.addAction("General.quit", new ShutDownAction());
 // FXIME: mnemonics should be language-dependant
 //    mm.getAction("General.quit").setMnemonic('Q');
-
-    createUpdater = new AbstractAction("Create " + getEditorType() + " updater") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        new ModuleUpdaterDialog(EditorWindow.this).setVisible(true);
-      }
-    };
-    createUpdater.setEnabled(false);
-    mm.addAction("create_module_updater", createUpdater);  //NON-NLS
 
     mm.addAction("Editor.UnusedImages.remove_unused_images", new AbstractAction("Remove Unused Images") {  //NON-NLS
       private static final long serialVersionUID = 1L;

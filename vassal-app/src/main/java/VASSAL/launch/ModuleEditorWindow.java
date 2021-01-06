@@ -76,7 +76,6 @@ public class ModuleEditorWindow extends EditorWindow {
 
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
-    createUpdater.setEnabled(true);
     updateSavedGame.setEnabled(true);
     refreshPredefinedSetups.setEnabled(true);
 
