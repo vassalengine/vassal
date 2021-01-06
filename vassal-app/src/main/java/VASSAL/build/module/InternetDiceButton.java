@@ -73,6 +73,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   /**
    * Ask the die manager to do our roll!
    */
+  @SuppressWarnings("removal")
   @Override
   protected void DR() {
     reportFormat.setProperty(NAME, getLocalizedConfigureName());
