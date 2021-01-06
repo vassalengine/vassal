@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.DefaultListModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -126,26 +122,7 @@ public class DieManager extends AbstractConfigurable {
     GameModule.getGameModule().getPrefs().addOption(DIE_MANAGER, multiroll);
 
     setSemailValues();
-
-    final DefaultListModel<String> m = abook.getModel();
-    final ListDataListener ldl = new ListDataListener() {
-
-      @Override
-      public void contentsChanged(final ListDataEvent arg0) {
-        setSemailValues();
-      }
-
-      @Override
-      public void intervalAdded(final ListDataEvent arg0) {
-        setSemailValues();
-      }
-
-      @Override
-      public void intervalRemoved(final ListDataEvent arg0) {
-        setSemailValues();
-      }
-    };
-    m.addListDataListener(ldl);
+    abook.addPropertyChangeListener(e -> setSemailValues());
   }
 
   public void setSemailValues() {
