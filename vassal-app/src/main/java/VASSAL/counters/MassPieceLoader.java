@@ -599,6 +599,7 @@ public class MassPieceLoader {
     protected boolean cancelled = false;
 
     public DefineDialog(JDialog owner) {
+      super(owner);
       setModal(true);
       setVisible(false);
       setTitle(Resources.getString("Editor.MassPieceLoader.multiple_piece_template"));

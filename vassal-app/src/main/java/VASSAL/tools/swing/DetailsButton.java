@@ -18,6 +18,8 @@
 
 package VASSAL.tools.swing;
 
+import VASSAL.build.GameModule;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -198,7 +200,7 @@ public class DetailsButton extends JButton {
       contents.add(db, "cell 0 1"); //NON-NLS
       contents.add(sp2, "cell 0 2, grow, push"); //NON-NLS
 
-      final JDialog d = new JDialog();
+      final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow());
       d.add(contents);
       d.setResizable(true);
       d.setLocationRelativeTo(null);

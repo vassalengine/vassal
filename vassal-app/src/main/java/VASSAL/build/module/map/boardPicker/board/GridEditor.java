@@ -44,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
@@ -51,6 +52,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.swing.SwingUtils;
+
 import org.apache.commons.lang3.SystemUtils;
 
 public abstract class GridEditor extends JDialog implements MouseListener, KeyListener {
@@ -78,7 +80,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   protected Point saveOrigin;
 
   public GridEditor(EditableGrid grid) {
-    super();
+    super(GameModule.getGameModule().getPlayerWindow());
     setTitle(Resources.getString("Editor.ModuleEditor.edit", grid.getGridName())); //$NON-NLS-1$
     setModal(true);
     this.grid = grid;
@@ -211,7 +213,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     setButton.setVisible(false);
     view.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     grid.setVisible(false);
-    JOptionPane.showMessageDialog(null,
+    JOptionPane.showMessageDialog(view,
         Resources.getString("Editor.GridEditor.click_on_3")); //$NON-NLS-1$
     repaint();
   }
@@ -425,7 +427,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   }
 
   protected void reportShapeError() {
-    JOptionPane.showMessageDialog(null,
+    JOptionPane.showMessageDialog(view,
         Resources.getString("Editor.GridEditor.does_not_look", grid.getGridName()), //$NON-NLS-1$
         Resources.getString("Editor.GridEditor.grid_shape_error"), //$NON-NLS-1$
         JOptionPane.ERROR_MESSAGE);

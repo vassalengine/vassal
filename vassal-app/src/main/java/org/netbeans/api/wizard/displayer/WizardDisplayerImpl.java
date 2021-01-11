@@ -14,6 +14,8 @@
 
 package org.netbeans.api.wizard.displayer;
 
+import VASSAL.build.GameModule;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -74,6 +76,10 @@ import org.netbeans.spi.wizard.WizardPanel;
  *  Place the instructions panel and page controls within a Split Pane
  *  Constrain the size of the dialog to fit within the screen boundaries
  * @author Rodney Kinney
+ *
+ * NOTE:
+ * This class now references back to Vassal to find a default Dialog owner (GameModule.getPlayerWindow() in case the Wizard
+ * code can't find a suitable one. 
  */
 public class WizardDisplayerImpl extends WizardDisplayer
 {
@@ -277,7 +283,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
         }
         else
         {
-            dlg = new JDialog();
+            dlg = new JDialog(GameModule.getGameModule().getPlayerWindow());
         }
         return dlg;
     }

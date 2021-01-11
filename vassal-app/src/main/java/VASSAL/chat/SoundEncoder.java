@@ -17,11 +17,7 @@
  */
 package VASSAL.chat;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JOptionPane;
-
+import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -29,6 +25,11 @@ import VASSAL.configure.SoundConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.SequenceEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
 
 /**
  * Encodes commands that play sounds
@@ -109,7 +110,7 @@ public class SoundEncoder implements CommandEncoder {
           if (sendCount++ >= TOO_MANY) {
             if (JOptionPane.YES_OPTION ==
               JOptionPane.showConfirmDialog(
-                null,
+                GameModule.getGameModule().getPlayerWindow(),
                 Resources.getString("Chat.ignore_wakeups", sender.getName()), //$NON-NLS-1$
                 null,
                 JOptionPane.YES_NO_OPTION)) {

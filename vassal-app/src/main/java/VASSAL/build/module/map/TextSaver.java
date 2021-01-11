@@ -89,7 +89,7 @@ public class TextSaver extends AbstractToolbarItem {
   }
 
   public void apply() {
-    switch (JOptionPane.showConfirmDialog(null, Resources.getString("Editor.TextSaver.by_opponents"), "", JOptionPane.YES_NO_OPTION)) {
+    switch (JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.TextSaver.by_opponents"), "", JOptionPane.YES_NO_OPTION)) {
     case JOptionPane.NO_OPTION:
       writeMapAsText();
       break;

@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import java.awt.Color;
@@ -723,7 +724,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     if (menuKeyCommand.matches(stroke)) {
       ChangeTracker tracker = new ChangeTracker(this);
       final String s = (String) JOptionPane.showInputDialog(
-        getMap() == null ? null : getMap().getView().getTopLevelAncestor(),
+        getMap() == null ? GameModule.getGameModule().getPlayerWindow() : getMap().getView().getTopLevelAncestor(),
         menuKeyCommand.getName(),
         null,
         JOptionPane.QUESTION_MESSAGE,

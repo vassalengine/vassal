@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 
 import java.awt.event.WindowAdapter;
@@ -24,7 +25,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
@@ -45,7 +45,7 @@ public class ConfigurerWindow extends JDialog {
   }
 
   public ConfigurerWindow(final Configurer c, boolean modal) {
-    super((JFrame) null, modal);
+    super(GameModule.getGameModule().getPlayerWindow(), modal);
 
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {

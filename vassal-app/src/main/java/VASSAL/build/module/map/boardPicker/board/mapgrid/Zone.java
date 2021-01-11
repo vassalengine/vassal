@@ -20,7 +20,6 @@ package VASSAL.build.module.map.boardPicker.board.mapgrid;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -650,7 +649,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           warning.setVisible(editor != null && (editor.getPolygon() == null || editor.getPolygon().npoints == 0));
         }
       };
-      frame = new JDialog((Frame) null, zone.getConfigureName(), true);
+      frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), zone.getConfigureName(), true);
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
       labels.setLayout(new GridLayout(3, 2));

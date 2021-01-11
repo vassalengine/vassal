@@ -105,7 +105,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   protected boolean singleRoll;
 
   protected MultiRoll() {
-
+    super(GameModule.getGameModule().getPlayerWindow());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {

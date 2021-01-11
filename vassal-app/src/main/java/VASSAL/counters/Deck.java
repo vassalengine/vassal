@@ -1296,7 +1296,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void promptForDragCount() {
     while (true) {
-      final String s = JOptionPane.showInputDialog(
+      final String s = JOptionPane.showInputDialog(GameModule.getGameModule().getPlayerWindow(),
         Resources.getString("Deck.enter_the_number")); //$NON-NLS-1$
       if (s != null) {
         try {
