@@ -42,6 +42,7 @@ public class HideableTest extends DecoratorTest {
     trait.access = new PlayerAccess();
 
     trait.hiddenBy = "me";
+    trait.description = "plover";
     serializeTest("Player Access", trait); // NON-NLS
 
     // Set a Command and Named KeyStroke
@@ -53,6 +54,7 @@ public class HideableTest extends DecoratorTest {
     trait.access = new SideAccess();
 
     trait.hiddenBy = "me";
+    trait.description = "plover";
     serializeTest("Side Access", trait); // NON-NLS
 
     trait = new Hideable();
@@ -63,6 +65,7 @@ public class HideableTest extends DecoratorTest {
     trait.access = new SpecifiedSideAccess(Arrays.asList("A", "B"));
 
     trait.hiddenBy = "me";
+    trait.description = "plover";
     serializeTest("SpecifiedSide Access", trait); // NON-NLS
   }
 }

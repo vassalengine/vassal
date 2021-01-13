@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -59,6 +57,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   protected KeyCommand command;
   protected KeyCommand[] commands;
   protected FormattedString format = new FormattedString();
+  protected String description = "";
 
   public PlaySound() {
     this(ID, null);
@@ -84,7 +83,8 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     se.append(format.getFormat())
       .append(menuText)
       .append(stroke)
-      .append(sendToOthers);
+      .append(sendToOthers)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -148,7 +148,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.PlaySound.trait_description", format.getFormat());
+    return buildDescription("Editor.PlaySound.trait_description", format.getFormat(), description);
   }
 
   @Override
@@ -159,6 +159,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     menuText = st.nextToken(Resources.getString("Editor.PlaySound.default_command"));
     stroke = st.nextNamedKeyStroke('P');
     sendToOthers = st.nextBoolean(false);
+    description = st.nextToken("");
     commands = null;
   }
 
@@ -182,21 +183,27 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer keyConfig;
     private final AudioClipConfigurer soundConfig;
     private final BooleanConfigurer sendConfig;
-    private final JPanel panel;
+    private final TraitConfigPanel panel;
+    private final StringConfigurer descConfig;
 
     public Ed(PlaySound p) {
-      menuConfig = new StringConfigurer(null, Resources.getString("Editor.menu_command") + ":  ", p.menuText);
-      keyConfig = new NamedHotKeyConfigurer(null, Resources.getString("Editor.keyboard_command") + ":  ", p.stroke);
-      soundConfig = new AudioClipConfigurer(null, Resources.getString("Editor.PlaySound.sound_clip") + ":  ", GameModule.getGameModule().getArchiveWriter());
+      descConfig = new StringConfigurer(p.description);
+      descConfig.setHintKey("Editor.description_hint");
+      menuConfig = new StringConfigurer(p.menuText);
+      menuConfig.setHintKey("Editor.menu_command_hint");
+      keyConfig = new NamedHotKeyConfigurer(p.stroke);
+      soundConfig = new AudioClipConfigurer(null, "", GameModule.getGameModule().getArchiveWriter());
       soundConfig.setValue(p.format.getFormat());
       soundConfig.setEditable(true);
-      sendConfig = new BooleanConfigurer(null, Resources.getString("Editor.PlaySound.other_players"), p.sendToOthers);
-      panel = new JPanel();
-      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      panel.add(menuConfig.getControls());
-      panel.add(keyConfig.getControls());
-      panel.add(soundConfig.getControls());
-      panel.add(sendConfig.getControls());
+      sendConfig = new BooleanConfigurer(p.sendToOthers);
+
+      panel = new TraitConfigPanel();
+
+      panel.add("Editor.description_label", descConfig);
+      panel.add("Editor.menu_command", menuConfig);
+      panel.add("Editor.keyboard_command", keyConfig);
+      panel.add("Editor.PlaySound.sound_clip", soundConfig);
+      panel.add("Editor.PlaySound.other_players", sendConfig);
     }
 
     @Override
@@ -207,7 +214,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(soundConfig.getValueString()).append(menuConfig.getValueString()).append(keyConfig.getValueString()).append(sendConfig.getValueString());
+      se.append(soundConfig.getValueString()).append(menuConfig.getValueString()).append(keyConfig.getValueString()).append(sendConfig.getValueString()).append(descConfig.getValueString());
       return ID + se.getValue();
     }
 

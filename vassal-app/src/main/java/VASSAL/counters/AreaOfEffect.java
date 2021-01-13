@@ -392,6 +392,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       panel = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(trait.description);
+      descConfig.setHintKey("Editor.description_hint");
       panel.add("Editor.description_label", descConfig);
 
       useMapShader = new BooleanConfigurer(trait.mapShaderName != null);

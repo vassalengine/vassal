@@ -790,9 +790,11 @@ public class Footprint extends MovementMarkable {
       controls = new TraitConfigPanel();
 
       desc = new StringConfigurer(p.description);
+      desc.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", desc);
 
       mc = new StringConfigurer(p.menuCommand);
+      mc.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", mc);
 
       trailKeyInput = new NamedHotKeyConfigurer(p.trailKey);

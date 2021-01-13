@@ -328,9 +328,11 @@ public class CounterGlobalKeyCommand extends Decorator
       controls = traitPanel;
 
       descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
       traitPanel.add("Editor.description_label", descInput);
 
       nameInput = new StringConfigurer(p.commandName);
+      nameInput.setHintKey("Editor.menu_command_hint");
       traitPanel.add("Editor.menu_command", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
@@ -363,6 +365,7 @@ public class CounterGlobalKeyCommand extends Decorator
       traitPanel.add(rangeLabel, range);
 
       rangeProperty = new StringConfigurer(p.rangeProperty);
+      rangeProperty.setHintKey("Editor.GlobalKeyCommand.range_property_hint");
       rangePropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.range_property"));
       traitPanel.add(rangePropertyLabel, rangeProperty);
 

@@ -531,6 +531,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       box.add("Editor.TriggerAction.trigger_when_properties", propertyMatch);
 
       command = new StringConfigurer(piece.command);
+      command.setHintKey("Editor.menu_command_hint");
       box.add("Editor.menu_command", command);
 
       key = new NamedHotKeyConfigurer(piece.key);
@@ -559,12 +560,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
       whileLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_continues"));
       whileExpressionConfig = new PropertyExpressionConfigurer(piece.whileExpression);
-      whileExpressionConfig.setHintKey("Editor.property_match_hint");
       box.add(whileLabel, whileExpressionConfig);
 
       untilLabel = new JLabel(Resources.getString("Editor.TriggerAction.looping_ends"));
       untilExpressionConfig = new PropertyExpressionConfigurer(piece.untilExpression);
-      untilExpressionConfig.setHintKey("Editor.property_match_hint");
       box.add(untilLabel, untilExpressionConfig);
 
       preLabel = new JLabel(Resources.getString("Editor.TriggerAction.keystroke_before"));

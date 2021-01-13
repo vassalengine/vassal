@@ -86,6 +86,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commandsWithoutPeek;
   protected KeyCommand hide;
   protected KeyCommand peek;
+  protected String description = "";
 
   public Obscurable() {
     this(ID + "M;", null); //$NON-NLS-1$//
@@ -143,6 +144,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     maskName = st.nextToken(maskName);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
     peekCommand = st.nextToken(DEFAULT_PEEK_COMMAND);
+    description = st.nextToken("");
     commandsWithPeek = null;
     hide = null;
     peek = null;
@@ -170,6 +172,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     se.append(maskName);
     se.append(PieceAccessConfigurer.encode(access));
     se.append(peekCommand);
+    se.append(description);
     return ID + se.getValue();
   }
 
@@ -563,7 +566,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Obscurable.trait_description");
+    return buildDescription("Editor.Obscurable.trait_description", description);
   }
 
   @Override
@@ -668,15 +671,20 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     private final JPanel showDisplayOption;
     private final JLabel peekKeyLabel;
     private final JLabel peekCommandLabel;
+    private final StringConfigurer descInput;
 
     public Ed(Obscurable p) {
 
+      descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
+      controls.add("Editor.description_label", descInput);
 
       obscureCommandInput = new StringConfigurer(p.hideCommand);
-      controls.add("Editor.Obscurable.mask_menu_command", obscureCommandInput);
+      obscureCommandInput.setHintKey("Editor.menu_command_hint");
+      controls.add("Editor.menu_command", obscureCommandInput);
 
       obscureKeyInput = new NamedHotKeyConfigurer(p.keyCommand);
-      controls.add("Editor.Obscurable.mask_keyboard_command", obscureKeyInput);
+      controls.add("Editor.keyboard_command", obscureKeyInput);
 
       accessConfig = new PieceAccessConfigurer(p.access);
       controls.add("Editor.Obscurable.can_be_masked_by", accessConfig);
@@ -685,6 +693,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       controls.add("Editor.Obscurable.view_when_masked", picker);
 
       maskNameInput = new StringConfigurer(p.maskName);
+      maskNameInput.setHintKey("Editor.Obscurable.name_when_masked_hint");
       controls.add("Editor.Obscurable.name_when_masked", maskNameInput);
 
       final JPanel displayPanel = new JPanel(new MigLayout("ins 0,hidemode 3", "[][][]")); // NON-NLS
@@ -754,6 +763,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
       peekCommandLabel = new JLabel(Resources.getString("Editor.Obscurable.peek_menu_command"));
       peekCommandInput = new StringConfigurer(p.peekCommand);
+      peekCommandInput.setHintKey("Editor.menu_command_hint");
       peekCommandLabel.setVisible(p.displayStyle == PEEK);
       peekCommandInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekCommandLabel, peekCommandInput);
@@ -808,6 +818,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       se.append(maskNameInput.getValueString());
       se.append(accessConfig.getValueString());
       se.append(peekCommandInput.getValueString());
+      se.append(descInput.getValueString());
       return ID + se.getValue();
     }
 

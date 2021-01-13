@@ -147,6 +147,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected NamedKeyStroke increaseKeyStroke;
   protected NamedKeyStroke decreaseKeyStroke;
 
+  protected String description = "";
+
   public Embellishment() {
     this(ID + Resources.getString("Editor.Embellishment.activate"), null);
   }
@@ -230,6 +232,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateKeyStroke = st.nextNamedKeyStroke();
       increaseKeyStroke = st.nextNamedKeyStroke();
       decreaseKeyStroke = st.nextNamedKeyStroke();
+
+      description = st.nextToken("");
 
       // Conversion?
       if (version == BASE_VERSION) {
@@ -468,7 +472,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       .append(alwaysActive)
       .append(activateKeyStroke)
       .append(increaseKeyStroke)
-      .append(decreaseKeyStroke);
+      .append(decreaseKeyStroke)
+      .append(description);
 
     return ID + se.getValue();
   }
@@ -1037,6 +1042,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final JLabel levelLabel;
     private final IntConfigurer firstLevelConfig;
     private final StringConfigurer nameConfig;
+    private final StringConfigurer descConfig;
 
     private final JButton up;
     private final JButton down;
@@ -1065,7 +1071,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls = new JPanel();
       controls.setLayout(new MigLayout("hidemode 2,fillx," + ConfigurerLayout.STANDARD_GAPY, "[grow 0]rel[]rel[]rel[grow 0]")); // NON-NLS
 
+      descConfig = new StringConfigurer(e.description);
+      descConfig.setHintKey("Editor.description_hint");
+      controls.add(new JLabel(Resources.getString("Editor.description_label")));
+      controls.add(descConfig.getControls(), "span 3,wrap,growx"); // NON-NLS
+
       nameConfig = new StringConfigurer(e.getName());
+      nameConfig.setHintKey("Editor.trait_name_hint");
       controls.add(new JLabel(Resources.getString("Editor.name_label")));
       controls.add(nameConfig.getControls(), "span 3,wrap,growx"); // NON-NLS
 
@@ -1128,24 +1140,28 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       activateLabel = new JLabel(Resources.getString("Editor.Embellishment.activate_layer"));
       controls.add(activateLabel);
       activateCommand = new StringConfigurer(e.activateCommand);
+      activateCommand.setHintKey("Editor.menu_command_hint");
       controls.add(activateCommand.getControls(), "grow 1"); // NON-NLS
       controls.add(activateConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       increaseLabel = new JLabel(Resources.getString("Editor.Embellishment.increase_level"));
       controls.add(increaseLabel);
       upCommand = new StringConfigurer(e.upCommand);
+      upCommand.setHintKey("Editor.menu_command_hint");
       controls.add(upCommand.getControls(), "grow 1"); // NON-NLS
       controls.add(increaseConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       decreaseLabel = new JLabel(Resources.getString("Editor.Embellishment.decrease_level"));
       controls.add(decreaseLabel);
       downCommand = new StringConfigurer(e.downCommand);
+      downCommand.setHintKey("Editor.menu_command_hint");
       controls.add(downCommand.getControls(), "grow 1"); // NON-NLS
       controls.add(decreaseConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
       resetLabel = new JLabel(Resources.getString("Editor.Embellishment.reset_to_level"));
       controls.add(resetLabel);
       resetCommand = new StringConfigurer(e.resetCommand);
+      resetCommand.setHintKey("Editor.menu_command_hint");
       controls.add(resetCommand.getControls(), "grow 1"); // NON-NLS
       controls.add(resetConfig.getControls(), "grow 2,wrap"); // NON-NLS
       controls.add(resetLevelLabel);
@@ -1154,6 +1170,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       rndLabel = new JLabel(Resources.getString("Editor.Embellishment.randomize"));
       controls.add(rndLabel);
       rndCommand = new StringConfigurer(e.rndText);
+      rndCommand.setHintKey("Editor.menu_command_hint");
       controls.add(rndCommand.getControls(), "grow 1"); // NON-NLS
       controls.add(rndKeyConfig.getControls(), "grow 2,wrap"); // NON-NLS
 
@@ -1175,6 +1192,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(upDownPanel, "wrap"); // NON-NLS
 
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.level_name")));
+      levelNameInput.setHintKey("Editor.Embellishment.level_name_hint");
       controls.add(levelNameInput.getControls(), "growx"); // NON-NLS
 
       box = Box.createHorizontalBox();
@@ -1415,7 +1433,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(alwaysActiveConfig.getValueString())
         .append(activateConfig.getValueString())
         .append(increaseConfig.getValueString())
-        .append(decreaseConfig.getValueString());
+        .append(decreaseConfig.getValueString())
+        .append(descConfig.getValueString());
 
       return ID + se.getValue();
 

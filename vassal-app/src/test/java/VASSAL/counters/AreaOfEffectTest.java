@@ -40,6 +40,7 @@ public class AreaOfEffectTest extends DecoratorTest {
     trait.radius = 3;
     trait.alwaysActive = true;
     trait.fixedRadius = true;
+    trait.description = "plover";
     serializeTest("Always active, no map shader, fixed radius", trait); // NON-NLS
 
     // Always active, map shader, variable radius
@@ -51,6 +52,7 @@ public class AreaOfEffectTest extends DecoratorTest {
     trait.alwaysActive = true;
     trait.fixedRadius = false;
     trait.radiusMarker = "xyzzy"; // NON-NLS
+    trait.description = "plover";
     serializeTest("Always active, map shader, variable radius", trait); // NON-NLS
 
     // NameKeyStroke, no map shader, fixed radius
@@ -62,6 +64,7 @@ public class AreaOfEffectTest extends DecoratorTest {
     trait.activateCommand = "Activate"; // NON-NLS
     trait.activateKey = new NamedKeyStroke("xyzzy"); // NON-NLS
     trait.fixedRadius = true;
+    trait.description = "plover";
     serializeTest("NamedKeystroke, no map shader, fixed radius", trait); // NON-NLS
 
     // KeyStroke, no map shader, fixed radius
@@ -73,6 +76,7 @@ public class AreaOfEffectTest extends DecoratorTest {
     trait.activateCommand = "Activate"; // NON-NLS
     trait.activateKey = new NamedKeyStroke(KeyStroke.getKeyStroke(65, 0));
     trait.fixedRadius = true;
+    trait.description = "plover";
     serializeTest("KeyStroke, no map shader, fixed radius", trait); // NON-NLS
   }
 }

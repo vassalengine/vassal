@@ -48,7 +48,7 @@ public class LabelerTest extends DecoratorTest {
 
     // Try with a real type and state
     final Labeler t2 = new Labeler();
-    t2.mySetType("label;76,130;Change Label;13;51,204,255;255,0,51;c;4;l;4;t;r;$pieceName$ ($label$);DialogInput;3;90;TextLabel2;A Label"); // NON-NLS
+    t2.mySetType("label;76,130;Change Label;13;51,204,255;255,0,51;c;4;l;4;t;r;$pieceName$ ($label$);DialogInput;3;90;TextLabel2;A Label;description"); // NON-NLS
     t2.setInner(createBasicPiece());
     t2.setLabel("Label Text"); // NON-NLS // Sets the label text which is the only state field
     serializeTest("Complex Label", t2); // NON-NLS

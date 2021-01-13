@@ -26,7 +26,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.i18n.Resources;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -48,6 +48,7 @@ public class Restricted extends Decorator implements EditablePiece {
   private String owningPlayer = "";
   private boolean restrictMovement = true;
   private static PlayerRoster.SideChangeListener handleRetirement;
+  private String description = "";
 
   public Restricted() {
     this(ID, null);
@@ -64,7 +65,11 @@ public class Restricted extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Restricted.trait_description");
+    return buildDescription("Editor.Restricted.trait_description", description);
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override
@@ -79,6 +84,7 @@ public class Restricted extends Decorator implements EditablePiece {
     side = st.nextStringArray(0);
     restrictByPlayer = st.nextBoolean(false);
     restrictMovement = st.nextBoolean(true);
+    description = st.nextToken("");
   }
 
   @Override
@@ -186,7 +192,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
   @Override
   public String myGetType() {
-    return ID + new SequenceEncoder(';').append(side).append(restrictByPlayer).append(restrictMovement).getValue();
+    return ID + new SequenceEncoder(';').append(side).append(restrictByPlayer).append(restrictMovement).append(description).getValue();
   }
 
   @Override
@@ -230,12 +236,18 @@ public class Restricted extends Decorator implements EditablePiece {
     private final StringArrayConfigurer config;
     private final BooleanConfigurer movementConfig;
     private final TraitConfigPanel box;
+    private final StringConfigurer descInput;
 
     public Ed(Restricted r) {
 
       box = new TraitConfigPanel();
 
+      descInput = new StringConfigurer(r.description);
+      descInput.setHintKey("Editor.description_hint");
+      box.add("Editor.description_label", descInput);
+
       config = new StringArrayConfigurer(r.side);
+      config.setHintKey("Editor.PieceAccessConfigurer.side_hint");
       box.add("Editor.Restricted.belongs_to_side", config);
 
       byPlayer = new BooleanConfigurer(r.restrictByPlayer);
@@ -257,7 +269,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
     @Override
     public String getType() {
-      return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).append(movementConfig.booleanValue()).getValue();
+      return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).append(movementConfig.booleanValue()).append(descInput.getValueString()).getValue();
     }
   }
   /**

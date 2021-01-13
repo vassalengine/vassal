@@ -55,6 +55,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   protected String name = "";
   protected Expression expression;
+  protected String description = "";
 
   public CalculatedProperty() {
     this(ID, null);
@@ -94,7 +95,8 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
-      .append(getExpression());
+      .append(getExpression())
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -114,7 +116,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.CalculatedProperty.trait_description", name);
+    return buildDescription("Editor.CalculatedProperty.trait_description", name, description);
   }
 
   @Override
@@ -128,6 +130,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     st.nextToken();
     name = st.nextToken("");
     expression = BeanShellExpression.createExpression(st.nextToken(""), true);
+    description = st.nextToken("");
   }
 
   protected String getExpression() {
@@ -232,10 +235,15 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     protected BeanShellExpressionConfigurer expressionConfig;
     protected StringConfigurer defaultValueConfig;
     protected TraitConfigPanel box;
+    private final StringConfigurer descConfig;
 
     public Ed(CalculatedProperty piece) {
 
       box = new TraitConfigPanel();
+
+      descConfig = new StringConfigurer(piece.description);
+      descConfig.setHintKey("Editor.description_hint");
+      box.add("Editor.description_label", descConfig);
 
       nameConfig = new StringConfigurer(piece.name);
       box.add("Editor.CalculatedProperty.property_name", nameConfig);
@@ -258,7 +266,9 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(nameConfig.getValueString()).append(expressionConfig.getValueString());
+      se.append(nameConfig.getValueString())
+        .append(expressionConfig.getValueString())
+        .append(descConfig.getValueString());
       return ID + se.getValue();
     }
   }

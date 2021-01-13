@@ -59,6 +59,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   protected KeyCommand launch;
   protected JTable table;
   protected JDialog frame;
+  protected String description = "";
 
   public TableInfo() {
     this(ID + "2;2;" + Resources.getString("Editor.TableInfo.default_command") + ";S", null); // NON-NLS
@@ -85,6 +86,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     nCols = st.nextInt(2);
     command = st.nextToken(Resources.getString("Editor.TableInfo.default_command"));
     launchKey = st.nextNamedKeyStroke(null);
+    description = st.nextToken("");
     frame = null;
     table = null;
   }
@@ -152,7 +154,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(nRows).append(nCols).append(command).append(launchKey);
+    se.append(nRows).append(nCols).append(command).append(launchKey).append(description);
     return ID + se.getValue();
   }
 
@@ -204,7 +206,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.TableInfo.trait_description");
+    return buildDescription("Editor.TableInfo.trait_description", description);
   }
 
   @Override
@@ -241,12 +243,18 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     private final StringConfigurer commandConfig;
     private final NamedHotKeyConfigurer keyConfig;
     private final TraitConfigPanel panel;
+    private final StringConfigurer descInput;
 
     public Ed(TableInfo p) {
 
       panel = new TraitConfigPanel();
 
+      descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
+      panel.add("Editor.description_label", descInput);
+
       commandConfig = new StringConfigurer(p.command);
+      commandConfig.setHintKey("Editor.menu_command_hint");
       panel.add("Editor.menu_command", commandConfig);
 
       keyConfig = new NamedHotKeyConfigurer(p.launchKey);
@@ -270,7 +278,8 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       se.append(rowConfig.getValueString())
         .append(colConfig.getValueString())
         .append(commandConfig.getValueString())
-        .append(keyConfig.getValueString());
+        .append(keyConfig.getValueString())
+        .append(descInput.getValueString());
       return ID + se.getValue();
     }
 

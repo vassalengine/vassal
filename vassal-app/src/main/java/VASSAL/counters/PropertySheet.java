@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.HintTextField;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -140,6 +141,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   protected Map<String, Object> properties = new HashMap<>();
   protected List<JComponent> m_fields;
 
+  protected String description = "";
 
   static final char TYPE_DELIMITOR = ';';
   static final char DEF_DELIMITOR = '~';
@@ -193,6 +195,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     final String green = st.hasMoreTokens() ? st.nextToken() : "";
     final String blue = st.hasMoreTokens() ? st.nextToken() : "";
     final String launchKeyStrokeToken = st.nextToken("");
+    description = st.nextToken("");
 
     backgroundColor = red.equals("") ? null : new Color(atoi(red), atoi(green), atoi(blue));
     frame = null;
@@ -258,7 +261,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       .append(red)
       .append(green)
       .append(blue)
-      .append(launchKeyStroke);
+      .append(launchKeyStroke)
+      .append(description);
 
     return ID + se.getValue();
   }
@@ -612,7 +616,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.PropertySheet.trait_description");
+    return buildDescription("Editor.PropertySheet.trait_description", description);
   }
 
   @Override
@@ -646,9 +650,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       c.gridx = 0;
       c.weightx = 0.0;
       c.fill = GridBagConstraints.NONE;
-      add(new JLabel(Resources.getString("Editor.keyboard_command") + ":  "), c);
+      c.anchor = GridBagConstraints.EAST;
+      add(new JLabel(Resources.getString("Editor.keyboard_command")), c);
 
       ++c.gridx;
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.anchor = GridBagConstraints.WEST;
       final NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, "", value);
       final Component field = config.getControls();
       add(field, c);
@@ -656,16 +663,21 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       return config;
     }
 
-    public JTextField addStringCtrl(String name, String value) {
+
+    public JTextField addStringCtrl(String name, String value, String hintKey) {
       ++c.gridy;
       c.gridx = 0;
       c.weightx = 0.0;
-      c.fill = GridBagConstraints.HORIZONTAL;
+      c.fill = GridBagConstraints.NONE;
+      c.anchor = GridBagConstraints.EAST;
       add(new JLabel(name), c);
 
       c.weightx = 1.0;
-      final JTextField field = new JTextField(value);
+      final HintTextField field = new HintTextField(value);
+      field.setHint(Resources.getString(hintKey));
       ++c.gridx;
+      c.anchor = GridBagConstraints.WEST;
+      c.fill = GridBagConstraints.HORIZONTAL;
       add(field, c);
       return field;
     }
@@ -675,6 +687,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       c.gridx = 0;
       c.weightx = 0.0;
       c.fill = GridBagConstraints.NONE;
+      c.anchor = GridBagConstraints.EAST;
       add(new JLabel(name), c);
 
       c.weightx = 0.0;
@@ -698,6 +711,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
       });
       ++c.gridx;
+      c.anchor = GridBagConstraints.WEST;
       add(button, c);
       return button;
     }
@@ -895,6 +909,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   private static class Ed implements PieceEditor {
     private final PropertyPanel m_panel;
+    private final JTextField descCtrl;
     private final JTextField menuNameCtrl;
     private final NamedHotKeyConfigurer keyStrokeConfig;
     private final JButton colorCtrl;
@@ -906,13 +921,14 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     public Ed(PropertySheet propertySheet) {
       m_panel = new PropertyPanel();
-      menuNameCtrl = m_panel.addStringCtrl(Resources.getString("Editor.menu_command") + ":  ", propertySheet.menuName);
+      descCtrl = m_panel.addStringCtrl(Resources.getString("Editor.description_label"), propertySheet.menuName, "Editor.description_hint");
+      menuNameCtrl = m_panel.addStringCtrl(Resources.getString("Editor.menu_command"), propertySheet.menuName, "Editor.menu_command_hint");
       keyStrokeConfig = m_panel.addKeyStrokeConfig(propertySheet.launchKeyStroke);
-      commitCtrl = m_panel.addComboBox(Resources.getString("Editor.PropertySheet.commit_on") + ":  ", COMMIT_VALUES, propertySheet.commitStyle);
-      colorCtrl = m_panel.addColorCtrl(Resources.getString("Editor.PropertySheet.background_color") + ":  ", propertySheet.backgroundColor);
+      commitCtrl = m_panel.addComboBox(Resources.getString("Editor.PropertySheet.commit_on"), COMMIT_VALUES, propertySheet.commitStyle);
+      colorCtrl = m_panel.addColorCtrl(Resources.getString("Editor.PropertySheet.background_color"), propertySheet.backgroundColor);
       final DefaultTableModel dataModel = new DefaultTableModel(getTableData(propertySheet.m_definition), COLUMN_NAMES);
       AddCreateRow(dataModel);
-      propertyTable = m_panel.addTableCtrl(Resources.getString("Editor.PropertySheet.properties") + ":  ", dataModel, DEFAULT_ROW);
+      propertyTable = m_panel.addTableCtrl(Resources.getString("Editor.PropertySheet.properties"), dataModel, DEFAULT_ROW);
 
       final DefaultCellEditor typePicklist = new DefaultCellEditor(new JComboBox(TYPE_VALUES));
       propertyTable.getColumnModel().getColumn(1).setCellEditor(typePicklist);
@@ -996,7 +1012,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         .append(red)
         .append(green)
         .append(blue)
-        .append(keyStrokeConfig.getValueString());
+        .append(keyStrokeConfig.getValueString())
+        .append(descCtrl.getText());
 
       return ID + typeEncoder.getValue();
     }

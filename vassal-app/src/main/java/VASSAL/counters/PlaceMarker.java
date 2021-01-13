@@ -465,9 +465,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(piece.description);
+      descConfig.setHintKey("Editor.description_hint");
       p.add("Editor.description_label", descConfig);
 
       commandInput = new StringConfigurer(piece.command.getName());
+      commandInput.setHintKey("Editor.menu_command_hint");
       p.add("Editor.menu_command", commandInput);
 
       keyInput = new NamedHotKeyConfigurer(piece.key);

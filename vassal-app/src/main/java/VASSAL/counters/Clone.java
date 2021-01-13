@@ -49,6 +49,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   protected String commandName;
   protected NamedKeyStroke key;
   protected KeyCommand cloneCommand;
+  protected String description = "";
 
   public Clone() {
     this(ID + Resources.getString("Editor.Clone.clone") + ";C", null); // NON-NLS
@@ -65,13 +66,14 @@ public class Clone extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken();
     key = st.nextNamedKeyStroke('C');
+    description = st.nextToken("");
     command = null;
   }
 
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(commandName).append(key);
+    se.append(commandName).append(key).append(description);
     return ID + se.getValue();
   }
 
@@ -149,7 +151,7 @@ public class Clone extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Clone.trait_description");
+    return buildDescription("Editor.Clone.trait_description", description);
   }
 
   /**
@@ -191,11 +193,17 @@ public class Clone extends Decorator implements TranslatablePiece {
     private final StringConfigurer nameInput;
     private final NamedHotKeyConfigurer keyInput;
     private final TraitConfigPanel controls;
+    private final StringConfigurer descInput;
 
     public Ed(Clone p) {
       controls = new TraitConfigPanel();
 
+      descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
+      controls.add("Editor.description_label", descInput);
+
       nameInput = new StringConfigurer(p.commandName);
+      nameInput.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
@@ -211,7 +219,7 @@ public class Clone extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(nameInput.getValueString()).append(keyInput.getValueString());
+      se.append(nameInput.getValueString()).append(keyInput.getValueString()).append(descInput.getValueString());
       return ID + se.getValue();
     }
 

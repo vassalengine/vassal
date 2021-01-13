@@ -199,6 +199,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       box = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(p.description);
+      descConfig.setHintKey("Editor.description_hint");
       box.add("Editor.description_label", descConfig);
 
       strokeConfig = new NamedHotKeyConfigurer(p.stroke);

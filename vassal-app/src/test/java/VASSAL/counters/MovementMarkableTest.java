@@ -47,6 +47,7 @@ public class MovementMarkableTest extends DecoratorTest {
     // Set a Command and Named KeyStroke
     trait = createTrait("markmoved;Undo16.gif;1;2;xyzzy;" + NamedHotKeyConfigurer.encode(new NamedKeyStroke("plugh"))); // NON-NLS
     trait.setMoved(true);
+    trait.setDescription("plover");
     serializeTest("Complex trait", trait); // NON-NLS
   }
 

@@ -268,7 +268,9 @@ public class SetGlobalProperty extends DynamicProperty {
     protected TranslatingStringEnumConfigurer levelConfig;
     protected FormattedExpressionConfigurer searchNameConfig;
     protected String mapText = Resources.getString("Editor.SetGlobalProperty.name_of_map");
+    private final String mapHint = Resources.getString("Editor.GlobalKeyCommand.map_name_hint");
     protected String zoneText = Resources.getString("Editor.SetGlobalProperty.name_of_zone");
+    private final String zoneHint = Resources.getString("Editor.GlobalKeyCommand.zone_name_hint");
     protected JLabel searchLabel;
     protected TraitConfigPanel controls;
 
@@ -279,9 +281,11 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(m.description);
+      descConfig.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descConfig);
 
       nameConfig = new FormattedExpressionConfigurer(m.getKey(), (EditablePiece) m);
+      nameConfig.setHintKey("Editor.SetGlobalProperty.global_property_name_hint");
       controls.add("Editor.SetGlobalProperty.global_property_name", nameConfig);
 
       final String[] levelKeys = {
@@ -336,9 +340,11 @@ public class SetGlobalProperty extends DynamicProperty {
       switch (levelConfig.getValueString()) {
       case NAMED_MAP :
         searchLabel.setText(mapText);
+        searchNameConfig.updateHint(mapHint);
         break;
       case NAMED_ZONE :
         searchLabel.setText(zoneText);
+        searchNameConfig.updateHint(zoneHint);
         break;
       }
       searchLabel.setVisible(!levelConfig.getValueString().equals(CURRENT_ZONE));

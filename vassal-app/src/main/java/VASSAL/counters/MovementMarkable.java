@@ -62,6 +62,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private NamedKeyStroke key;
   private final IconConfigurer movedIcon = new IconConfigurer("/images/moved.gif"); // NON-NLS
   private boolean hasMoved = false;
+  private String description;
 
   public MovementMarkable() {
     this(ID + "moved.gif;0;0", null); // NON-NLS
@@ -89,6 +90,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     yOffset = st.nextInt(0);
     command = st.nextToken(Resources.getString("Editor.MovementMarkable.default_command"));
     key = st.nextNamedKeyStroke('M');
+    description = st.nextToken("");
   }
 
   @Override
@@ -104,7 +106,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key);
+    se.append(movedIcon.getValueString()).append(xOffset).append(yOffset).append(command).append(key).append(description);
     return ID + se.getValue();
   }
 
@@ -173,7 +175,11 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.MovementMarkable.trait_description");
+    return buildDescription("Editor.MovementMarkable.trait_description", description);
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override
@@ -241,12 +247,18 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     private final StringConfigurer command;
     private final NamedHotKeyConfigurer key;
     private final TraitConfigPanel box;
+    private final StringConfigurer descInput;
 
     private Ed(MovementMarkable p) {
 
       box = new TraitConfigPanel();
 
+      descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
+      box.add("Editor.description_label", descInput);
+
       command = new StringConfigurer(p.command);
+      command.setHintKey("Editor.menu_command_hint");
       box.add("Editor.menu_command", command);
 
       key = new NamedHotKeyConfigurer(p.key);
@@ -285,7 +297,8 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
           .append(xOff.getValueString())
           .append(yOff.getValueString())
           .append(command.getValueString())
-          .append(key.getValueString());
+          .append(key.getValueString())
+          .append(descInput.getValueString());
       return ID + se.getValue();
     }
 
