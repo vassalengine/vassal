@@ -2611,7 +2611,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
           g.getToolBar().addSeparator();
           g.getToolBar().add(toolBar);
         }
-        toolBar.setVisible(true);
       }
       else {
         if (SwingUtilities.getWindowAncestor(theMap) == null) {
@@ -2678,12 +2677,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
             window.setSize(w, h/3);
           }
         }
-        toolBar.setVisible(false);
       }
       else if (theMap.getTopLevelAncestor() != null) {
         theMap.getTopLevelAncestor().setVisible(false);
       }
     }
+
+    toolBar.setVisible(show);
     getLaunchButton().setEnabled(show);
     getLaunchButton().setVisible(useLaunchButton);
   }
