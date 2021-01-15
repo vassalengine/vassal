@@ -95,7 +95,7 @@ public class DiceButton extends AbstractToolbarItem {
         final DiceButton delegate = new DiceButton() {
           @Override
           protected void initLaunchButton() {
-            launch = new LaunchButton(null, AbstractToolbarItem.BUTTON_TEXT, AbstractToolbarItem.HOTKEY, null);
+            launch = makeLaunchButton("", AbstractToolbarItem.BUTTON_TEXT, "", null);
           }
         };
 
