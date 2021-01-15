@@ -1,3 +1,7 @@
+3.5.0-beta3 - ???
+
+13810: Find all parentless Dialogs and JOptionPanes and give them a parent
+
 3.5.0-beta2 - 4 January 2021
 
 * 13825: "Module from older version" check is too strict
