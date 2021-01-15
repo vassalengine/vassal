@@ -51,7 +51,7 @@ public class DynamicKeyCommandConfigurer extends Configurer {
         new PropertySetter("", target)));
 
     commandConfig = new StringConfigurer("");
-    commandConfig.setHint(Resources.getString("Editor.menu_command"));
+    commandConfig.setHint(Resources.getString("Editor.menu_command_hint"));
     keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.NULL_KEYSTROKE);
     propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
     propChangeConfig.setValue(new PropertySetter("", target));

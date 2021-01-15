@@ -131,7 +131,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   protected int rotateDegrees;
   protected String propertyName;
   protected KeyCommand menuKeyCommand;
-  protected String description;
+  protected String description = "";
 
   private Point position = null; // Label position cache
 
@@ -745,7 +745,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.TextLabel.component_type") + (description.length() > 0 ? (" - " + description) : "");
+    return buildDescription("Editor.TextLabel.component_type", description);
   }
 
   @Override
@@ -819,16 +819,20 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       controls = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(l.description);
+      descConfig.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descConfig);
 
       initialValue = new StringConfigurer(l.label);
+      initialValue.setHintKey("Editor.TextLabel.label_text_hint");
       controls.add("Editor.TextLabel.label_text", initialValue);
 
       format = new FormattedStringConfigurer(new String[]{PIECE_NAME, LABEL});
       format.setValue(l.nameFormat.getFormat()); // NON-NLS
+      format.setHintKey("Editor.TextLabel.name_format_hint");
       controls.add("Editor.TextLabel.name_format", format); //NON-NLS
 
       command = new StringConfigurer(l.menuCommand);
+      command.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", command);
 
       labelKeyInput = new NamedHotKeyConfigurer(l.labelKey);
@@ -925,6 +929,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       controls.add("Editor.TextLabel.rotate_text_degrees", rotate);
 
       propertyNameConfig = new StringConfigurer(l.propertyName);
+      propertyNameConfig.setHintKey("Editor.TextLabel.property_name_hint");
       controls.add("Editor.property_name", propertyNameConfig);
     }
 

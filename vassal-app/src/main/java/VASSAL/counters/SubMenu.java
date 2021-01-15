@@ -44,6 +44,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   private KeyCommandSubMenu keyCommandSubMenu;
   private final KeyCommand[] keyCommands = new KeyCommand[1];
   private static final String DEFAULT_MENU_NAME = Resources.getString("Editor.SubMenu.default_menu_name");
+  private String description = "";
 
   public SubMenu() {
     this(ID + Resources.getString("Editor.SubMenu.default_menu_name") + ";", null);
@@ -56,7 +57,11 @@ public class SubMenu extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.SubMenu.trait_description", DEFAULT_MENU_NAME.equals(subMenu) ? null : subMenu);
+    return buildDescription("Editor.SubMenu.trait_description", DEFAULT_MENU_NAME.equals(subMenu) ? "" : subMenu, description);
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override
@@ -76,6 +81,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     subMenu = st.nextToken();
     keyCommandSubMenu = new KeyCommandSubMenu(subMenu, this, this);
     keyCommandSubMenu.setCommands(StringArrayConfigurer.stringToArray(st.nextToken()));
+    description = st.nextToken("");
 
     keyCommands[0] = keyCommandSubMenu;
   }
@@ -94,7 +100,8 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMenuName())
-      .append(StringArrayConfigurer.arrayToString(getSubcommands()));
+      .append(StringArrayConfigurer.arrayToString(getSubcommands()))
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -156,12 +163,20 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     private final StringConfigurer nameConfig;
     private final StringArrayConfigurer commandsConfig;
     private final TraitConfigPanel panel = new TraitConfigPanel();
+    private final StringConfigurer descConfig;
 
     public Editor(SubMenu p) {
+
+      descConfig = new StringConfigurer(p.description);
+      descConfig.setHintKey("Editor.description_hint");
+      panel.add("Editor.description_label", descConfig);
+
       nameConfig = new StringConfigurer(p.getMenuName());
+      nameConfig.setHintKey("Editor.menu_command_hint");
       panel.add("Editor.SubMenu.menu_name", nameConfig);
 
       commandsConfig = new StringArrayConfigurer(p.getSubcommands());
+      commandsConfig.setHintKey("Editor.menu_command_hint");
       panel.add("Editor.SubMenu.sub_commands", commandsConfig);
     }
 
@@ -178,7 +193,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     @Override
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(nameConfig.getValueString()).append(commandsConfig.getValueString());
+      se.append(nameConfig.getValueString()).append(commandsConfig.getValueString()).append(descConfig.getValueString());
       return ID + se.getValue();
     }
   }

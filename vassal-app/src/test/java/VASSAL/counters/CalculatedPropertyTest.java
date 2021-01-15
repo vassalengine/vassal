@@ -41,6 +41,7 @@ public class CalculatedPropertyTest extends DecoratorTest {
     trait = new CalculatedProperty();
     trait.name = "testCommand"; // NON-NLS
     trait.expression = Expression.createExpression("{x * 2}"); // NON-NLS
+    trait.description = "plover";
     serializeTest("Expression", trait); // NON-NLS
 
   }

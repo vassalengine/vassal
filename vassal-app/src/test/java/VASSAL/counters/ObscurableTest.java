@@ -49,6 +49,7 @@ public class ObscurableTest extends DecoratorTest {
     trait.maskName = "masked";
     trait.access = PieceAccessConfigurer.decode("side:");
     trait.peekCommand = "peeking";
+    trait.description = "plover";
     serializeTest("Peek Style", trait); // NON-NLS
 
     // Image Style
@@ -61,6 +62,7 @@ public class ObscurableTest extends DecoratorTest {
     trait.maskName = "masked";
     trait.access = PieceAccessConfigurer.decode("side:");
     trait.peekCommand = "peeking";
+    trait.description = "plover";
     serializeTest("Image Style", trait); // NON-NLS
 
     // Inset Style
@@ -71,6 +73,7 @@ public class ObscurableTest extends DecoratorTest {
     trait.displayStyle = 'I';
     trait.maskName = "masked";
     trait.access = PieceAccessConfigurer.decode("side:");
+    trait.description = "plover";
     serializeTest("Inset Style", trait); // NON-NLS
   }
 

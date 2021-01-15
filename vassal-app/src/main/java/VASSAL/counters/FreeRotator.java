@@ -95,6 +95,7 @@ public class FreeRotator extends Decorator
   protected NamedKeyStroke rotateCCWKey;
   protected String rotateCCWText = Resources.getString("Editor.FreeRotator.default_rotate_ccw_command");
   protected String name = Resources.getString("Editor.FreeRotator.default_trait_name");
+  protected String description = "";
 
   // for Random Rotate
   protected KeyCommand rotateRNDCommand;
@@ -270,6 +271,7 @@ public class FreeRotator extends Decorator
     rotateRNDText = st.nextToken("");
     // end for random rotation
     name = st.nextToken("");
+    description = st.nextToken("");
 
     commands = null;
   }
@@ -372,6 +374,7 @@ public class FreeRotator extends Decorator
       .append(rotateRNDText);
     // end for random rotation
     se.append(name);
+    se.append(description);
     return ID + se.getValue();
   }
 
@@ -677,7 +680,7 @@ public class FreeRotator extends Decorator
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.FreeRotator.trait_description", name);
+    return buildDescription("Editor.FreeRotator.trait_description", name, description);
   }
 
   @Override
@@ -751,6 +754,7 @@ public class FreeRotator extends Decorator
     private final JLabel ccwLabel;
     private final NamedHotKeyConfigurer rndKeyConfig;
     private final StringConfigurer nameConfig;
+    private final StringConfigurer descConfig;
     private final JLabel anyLabel;
 
     private final StringConfigurer anyCommand;
@@ -768,8 +772,13 @@ public class FreeRotator extends Decorator
           TraitLayout.STANDARD_INSETS + "," + TraitLayout.STANDARD_GAPY + ",hidemode 3,wrap 3", // NON-NLS
           "[right]rel[fill,grow 1]rel[fill,grow 2]")); // NON-NLS
 
+      descConfig = new StringConfigurer(p.description);
+      descConfig.setHintKey("Editor.description_hint");
+      panel.add("Editor.description_label", descConfig, "span 2,wrap"); // NON-NLS
+
       nameConfig = new StringConfigurer(p.name);
-      panel.add("Editor.description_label", nameConfig, "span 2,wrap"); // NON-NLS
+      nameConfig.setHintKey("Editor.trait_name_hint");
+      panel.add("Editor.FreeRotator.name", nameConfig, "span 2,wrap"); // NON-NLS
 
       anyConfig = new BooleanConfigurer(p.validAngles.length == 1);
       panel.add("Editor.FreeRotator.allow_arbitrary_rotations", anyConfig, "wrap"); // NON-NLS
@@ -790,6 +799,7 @@ public class FreeRotator extends Decorator
       cwLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_clockwise"));
       panel.add(cwLabel);
       cwCommand = new StringConfigurer(p.rotateCWText);
+      cwCommand.setHintKey("Editor.menu_command_hint");
       panel.add(cwCommand.getControls());
       cwKeyConfig = new NamedHotKeyConfigurer(p.rotateCWKey);
       panel.add(cwKeyConfig.getControls(), "wrap"); // NON-NLS
@@ -797,6 +807,7 @@ public class FreeRotator extends Decorator
       ccwLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_counter_clockwise"));
       panel.add(ccwLabel);
       ccwCommand = new StringConfigurer(p.rotateCCWText);
+      ccwCommand.setHintKey("Editor.menu_command_hint");
       panel.add(ccwCommand.getControls());
       ccwKeyConfig = new NamedHotKeyConfigurer(p.rotateCCWKey);
       panel.add(ccwKeyConfig.getControls(), "wrap"); // NON-NLS
@@ -804,6 +815,7 @@ public class FreeRotator extends Decorator
       anyLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate"));
       panel.add(anyLabel);
       anyCommand = new StringConfigurer(p.setAngleText);
+      anyCommand.setHintKey("Editor.menu_command_hint");
       panel.add(anyCommand.getControls());
       anyKeyConfig = new NamedHotKeyConfigurer(p.setAngleKey);
       panel.add(anyKeyConfig.getControls(), "wrap"); // NON-NLS
@@ -811,6 +823,7 @@ public class FreeRotator extends Decorator
       final JLabel rndLabel = new JLabel(Resources.getString("Editor.FreeRotator.rotate_randomly"));
       panel.add(rndLabel);
       rndCommand = new StringConfigurer(p.rotateRNDText);
+      rndCommand.setHintKey("Editor.menu_command_hint");
       panel.add(rndCommand.getControls());
       rndKeyConfig = new NamedHotKeyConfigurer(p.rotateRNDKey);
       panel.add(rndKeyConfig.getControls(), "wrap"); // NON-NLS
@@ -864,6 +877,7 @@ public class FreeRotator extends Decorator
       se.append(rndKeyConfig.getValueString())
         .append(rndCommand.getValueString() == null ? "" : rndCommand.getValueString().trim());
       se.append(nameConfig.getValueString());
+      se.append(descConfig.getValueString());
       return ID + se.getValue();
     }
 

@@ -43,6 +43,7 @@ public class FreeRotatorTest extends DecoratorTest {
     trait.rotateRNDText = "rotateRND";
     trait.name = "xyzzy";
     trait.angleIndex = 2;
+    trait.description = "plover";
     serializeTest("Fixed Rotations", trait); // NON-NLS
 
     // Free Rotation test
@@ -52,6 +53,7 @@ public class FreeRotatorTest extends DecoratorTest {
     trait.setAngleText = "setAngle";
     trait.rotateRNDText = "rotateRND";
     trait.name = "xyzzy";
+    trait.description = "plover";
     serializeTest("Fixed Rotations", trait); // NON-NLS
 
   }

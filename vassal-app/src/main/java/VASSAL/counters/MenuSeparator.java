@@ -149,7 +149,8 @@ public class MenuSeparator extends Decorator implements TranslatablePiece {
       controls = new TraitConfigPanel();
 
       descInput = new StringConfigurer(p.desc);
-      controls.add("Editor.MenuSeparator.separator_description", descInput);
+      descInput.setHintKey("Editor.description_hint");
+      controls.add("Editor.description_label", descInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);
       controls.add("Editor.MenuSeparator.if_hidden", keyInput);

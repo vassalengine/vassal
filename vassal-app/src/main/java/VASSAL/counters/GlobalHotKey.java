@@ -164,9 +164,11 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
       controls = new TraitConfigPanel();
 
       descConfig = new StringConfigurer(k.description);
+      descConfig.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descConfig);
 
       commandConfig = new StringConfigurer(k.commandName);
+      commandConfig.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", commandConfig);
 
       commandKeyConfig = new NamedHotKeyConfigurer(k.commandKey);

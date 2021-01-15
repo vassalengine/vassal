@@ -42,6 +42,7 @@ public class RestrictedTest extends DecoratorTest {
 
     trait.mySetType(Restricted.ID + "side1,side2;true;true");
     trait.mySetState("A-player");
+    trait.setDescription("plover");
     serializeTest("Complex trait", trait); // NON-NLS
 
   }

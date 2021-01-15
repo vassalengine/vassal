@@ -200,9 +200,11 @@ public class Deselect extends Decorator implements TranslatablePiece {
       controls = new TraitConfigPanel();
 
       descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descInput);
 
       nameInput = new StringConfigurer(p.commandName);
+      nameInput.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", nameInput);
 
       keyInput = new NamedHotKeyConfigurer(p.key);

@@ -33,6 +33,7 @@ public class SubMenuTest extends DecoratorTest {
     // Complex trait
     trait = new SubMenu();
     trait.mySetType(SubMenu.ID + ";xyzzy;abc,def,ghi"); // NON-NLS
+    trait.setDescription("plover");
     serializeTest("Complex trait", trait); // NON-NLS
 
   }

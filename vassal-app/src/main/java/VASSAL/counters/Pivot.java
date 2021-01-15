@@ -270,9 +270,11 @@ public class Pivot extends Decorator implements TranslatablePiece {
       controls = new TraitConfigPanel();
 
       desc = new StringConfigurer(p.description);
+      desc.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", desc);
 
       command = new StringConfigurer(p.command);
+      command.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", command);
 
       key = new NamedHotKeyConfigurer(p.key);

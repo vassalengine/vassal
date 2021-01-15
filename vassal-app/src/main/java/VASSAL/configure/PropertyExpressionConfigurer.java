@@ -57,6 +57,7 @@ public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer 
 
   public PropertyExpressionConfigurer(String key, String name, String val, GamePiece piece) {
     super(key, name, val, piece);
+    setHintKey("Editor.property_match_hint");
   }
 
   @Override

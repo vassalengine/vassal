@@ -63,6 +63,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   protected KeyCommand[] commands;
   protected KeyCommand hideCommand;
+  protected String description = "";
 
   @Override
   public void setProperty(Object key, Object val) {
@@ -133,6 +134,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     bgColor = st.nextColor(null);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
     transparency = Math.max(0.0f, Math.min(1.0f, st.hasMoreTokens() ? (float) st.nextDouble(0.3) : 0.3f));
+    description = st.nextToken("");
     commands = null;
   }
 
@@ -148,7 +150,8 @@ public class Hideable extends Decorator implements TranslatablePiece {
       .append(command)
       .append(bgColor)
       .append(PieceAccessConfigurer.encode(access))
-      .append(transparency);
+      .append(transparency)
+       .append(description);
     return ID + se.getValue();
   }
 
@@ -258,7 +261,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return Resources.getString("Editor.Hideable.trait_description");
+    return buildDescription("Editor.Hideable.trait_description", description);
   }
 
   @Override
@@ -324,15 +327,21 @@ public class Hideable extends Decorator implements TranslatablePiece {
     protected IntConfigurer transpConfig;
     protected PieceAccessConfigurer accessConfig;
     protected TraitConfigPanel controls;
+    private final StringConfigurer descInput;
 
     public Ed(Hideable p) {
       controls = new TraitConfigPanel();
 
-      hideKeyInput = new NamedHotKeyConfigurer(p.hideKey);
-      controls.add("Editor.keyboard_command", hideKeyInput);
+      descInput = new StringConfigurer(p.description);
+      descInput.setHintKey("Editor.description_hint");
+      controls.add("Editor.description_label", descInput);
 
       hideCommandInput = new StringConfigurer(p.command);
+      hideCommandInput.setHintKey("Editor.menu_command_hint");
       controls.add("Editor.menu_command", hideCommandInput);
+
+      hideKeyInput = new NamedHotKeyConfigurer(p.hideKey);
+      controls.add("Editor.keyboard_command", hideKeyInput);
 
       colorConfig = new ColorConfigurer(p.bgColor);
       controls.add("Editor.Hideable.background_color", colorConfig);
@@ -358,7 +367,8 @@ public class Hideable extends Decorator implements TranslatablePiece {
         .append(hideCommandInput.getValueString())
         .append(colorConfig.getValue() == null ? "" : colorConfig.getValueString())
         .append(accessConfig.getValueString())
-        .append(transp);
+        .append(transp)
+        .append(descInput.getValueString());
       return ID + se.getValue();
     }
 

@@ -840,11 +840,33 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    * @return Combined description
    */
   protected String buildDescription(String i18nKey, String description) {
-    return buildDescription(i18nKey) + ((description == null || description.isEmpty()) ? "" : (" - " + description));
+    return buildDescription(i18nKey, "", description);
   }
 
   protected String buildDescription(String i18nKey) {
     return Resources.getString(i18nKey);
+  }
+
+  /**
+   * Build a description of a trait of the form
+   * Type - value - Description
+   *
+   * @param i18nKey Translation key for trait type description
+   * @param value Optional value to include in the description
+   * @param description Optional additional description
+   * @return Combined description
+   */
+  protected String buildDescription(String i18nKey, String value, String description) {
+    final StringBuilder desc = new StringBuilder(buildDescription(i18nKey));
+    if (value != null && ! value.isBlank()) {
+      desc.append(" - ");
+      desc.append(value);
+    }
+    if (description != null && ! description.isBlank()) {
+      desc.append(" - ");
+      desc.append(description);
+    }
+    return desc.toString();
   }
 
   /**

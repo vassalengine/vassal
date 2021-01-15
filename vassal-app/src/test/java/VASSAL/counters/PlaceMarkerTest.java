@@ -51,6 +51,7 @@ public class PlaceMarkerTest extends DecoratorTest {
     trait.description = "desc";
     trait.placement = PlaceMarker.STACK_TOP;
     trait.above = true;
+    trait.description = "plover2";
     serializeTest("NamedKeyStroke", trait); // NON-NLS
 
 

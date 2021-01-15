@@ -91,6 +91,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   protected KeyCommand[] menuCommands;
 
   protected DynamicKeyCommandListConfigurer keyCommandListConfig;
+  protected String description = "";
 
   public DynamicProperty() {
     this(ID, null);
@@ -110,6 +111,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
     keyCommands = keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[0]);
+    description = sd.nextToken("");
 
     menuCommands = Arrays.stream(keyCommands).filter(
       kc -> !StringUtils.isEmpty(kc.getName())
@@ -252,6 +254,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     se.append(key);
     se.append(encodeConstraints());
     se.append(keyCommandListConfig.getValueString());
+    se.append(description);
     return ID + se.getValue();
   }
 
@@ -274,7 +277,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.DynamicProperty.trait_description", getKey());
+    return buildDescription("Editor.DynamicProperty.trait_description", getKey(), description);
   }
 
 
@@ -427,6 +430,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected JLabel wrapLabel;
     protected DynamicKeyCommandListConfigurer keyCommandListConfig;
     protected TraitConfigPanel controls;
+    private final StringConfigurer descConfig;
 
     public Ed(final DynamicProperty m) {
       keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.key_commands"), m);
@@ -444,6 +448,11 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       };
 
       controls = new TraitConfigPanel();
+
+      descConfig = new StringConfigurer(m.description);
+      descConfig.setHintKey("Editor.description_hint");
+      controls.add("Editor.description_label", descConfig);
+
       nameConfig = new StringConfigurer(m.getKey());
       nameConfig.setHint(Resources.getString("Editor.DynamicProperty.property_name_hint"));
       controls.add("Editor.DynamicProperty.property_name", nameConfig);
@@ -492,6 +501,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       se.append(nameConfig.getValueString());
       se.append(encodeConstraints());
       se.append(keyCommandListConfig.getValueString());
+      se.append(descConfig.getValueString());
       return ID + se.getValue();
     }
 

@@ -37,6 +37,7 @@ public class ReturnToDeckTest extends DecoratorTest {
     trait.returnKey = new NamedKeyStroke("xyzzy");
     trait.deckId = "aDeck";
     trait.selectDeckPrompt = "prompt";
+    trait.description = "plover";
     serializeTest("Complex trait", trait); // NON-NLS
 
   }

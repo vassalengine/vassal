@@ -131,6 +131,11 @@ public class StringConfigurer extends Configurer {
     return new HintTextField(length, hint);
   }
 
+  public void updateHint(String hint) {
+    setHint(hint);
+    ((HintTextField) nameField).setHint(hint);
+  }
+
   @Override
   public void setLabelVisibile(boolean visible) {
     if (p instanceof ConfigurerPanel) {

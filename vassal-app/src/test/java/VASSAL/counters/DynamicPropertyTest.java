@@ -46,6 +46,7 @@ public class DynamicPropertyTest extends DecoratorTest {
     trait = new DynamicProperty ();
     trait.key = "xyzzy";
     trait.value = "plugh";
+    trait.description = "Plover";
     serializeTest("Simple Property", trait); // NON-NLS
 
     trait = new DynamicProperty ();
@@ -55,11 +56,13 @@ public class DynamicPropertyTest extends DecoratorTest {
     trait.minValue = 5;
     trait.maxValue = 100;
     trait.wrap = true;
+    trait.description = "Plover";
     serializeTest("Constraints", trait); // NON-NLS
 
     final DynamicProperty trait2 = new DynamicProperty ();
     trait2.key = "xyzzy";
     trait2.value = "plugh";
+    trait2.description = "Plover";
     trait2.keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, "Commands", trait2);
     BasicPiece piece = createBasicPiece ();
     trait2.setInner (piece);

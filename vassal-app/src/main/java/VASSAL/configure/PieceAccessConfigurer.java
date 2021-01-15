@@ -82,6 +82,7 @@ public class PieceAccessConfigurer extends Configurer {
       controls.add(selectType.getControls(), "wrap"); // NON-NLS;
 
       sideConfig = new StringArrayConfigurer("", null);
+      sideConfig.setHintKey("Editor.PieceAccessConfigurer.side_hint");
       sideConfig.addPropertyChangeListener(evt -> updateValue());
       controls.add(sideConfig.getControls(), "growx,wrap"); // NON-NLS
       updateControls();

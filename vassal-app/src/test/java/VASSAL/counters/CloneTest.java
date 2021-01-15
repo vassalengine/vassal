@@ -36,12 +36,14 @@ public class CloneTest extends DecoratorTest {
     trait = new Clone();
     trait.commandName = "testCommand"; // NON-NLS
     trait.key = new NamedKeyStroke("xyzzy"); // NON-NLS
+    trait.description = "plover";
     serializeTest("NamedKeyStroke", trait); // NON-NLS
 
     // Set a command name and standard KeyStroke
     trait = new Clone();
     trait.commandName = "testCommand"; // NON-NLS
     trait.key = new NamedKeyStroke(KeyStroke.getKeyStroke(65, 0));
+    trait.description = "plover";
     serializeTest("KeyStroke", trait); // NON-NLS
   }
 }

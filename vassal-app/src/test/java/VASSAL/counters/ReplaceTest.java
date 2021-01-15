@@ -51,6 +51,7 @@ public class ReplaceTest extends DecoratorTest {
     trait.description = "desc";
     trait.placement = Replace.STACK_TOP;
     trait.above = true;
+    trait.description = "plover2";
     serializeTest("NamedKeyStroke", trait); // NON-NLS
 
 
