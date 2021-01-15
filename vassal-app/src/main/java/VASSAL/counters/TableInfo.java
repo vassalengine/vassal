@@ -169,7 +169,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     if (launch.matches(stroke)) {
       if (frame == null) {
-        frame = new JDialog((java.awt.Frame) null, false);
+        frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), false);
         table = new JTable(nRows, nCols);
         setValues(values);
         table.setTableHeader(null);

@@ -17,6 +17,26 @@
 
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.GpIdChecker;
+import VASSAL.build.GpIdSupport;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.ChangePiece;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.command.RemovePiece;
+import VASSAL.counters.Deck;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -39,31 +59,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangePiece;
-import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
-import VASSAL.command.RemovePiece;
-import VASSAL.counters.Deck;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Properties;
-import VASSAL.counters.Stack;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.build.IllegalBuildException;
 import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.GpIdChecker;
-import VASSAL.build.GpIdSupport;
-import VASSAL.build.widget.PieceSlot;
-
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 
 
 /**
@@ -201,8 +200,6 @@ public final class GameRefresher implements GameComponent {
    * This method is used by PredefinedSetup.refresh() to update a PredefinedSetup in a GameModule
    * The default execute() method calls: GameModule.getGameModule().getGameState().getAllPieces()
    * to set the pieces list, this method provides an alternative way to specify which pieces should be refreshed.
-   * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
-   * @param pieces - list of pieces to be refreshed, if null defaults to all pieces
    * @throws IllegalBuildException - if we get a gpIdChecker error
    */
   public void execute(Set<String> options, Command command) throws IllegalBuildException {
@@ -361,6 +358,7 @@ public final class GameRefresher implements GameComponent {
     private final Set<String> options = new HashSet<>();
 
     RefreshDialog(GameRefresher refresher) {
+      super(GameModule.getGameModule().getPlayerWindow());
       this.refresher = refresher;
       setTitle(Resources.getString("GameRefresher.refresh_counters"));
       setModal(true);

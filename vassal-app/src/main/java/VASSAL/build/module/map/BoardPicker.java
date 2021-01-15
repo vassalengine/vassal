@@ -50,7 +50,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -371,7 +370,7 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
   protected void selectBoards(Component c) {
     reset();
-    final JDialog d = new JDialog((Frame) null, true);
+    final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
     d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     final Box b = Box.createVerticalBox();
     final Box buttons = Box.createHorizontalBox();

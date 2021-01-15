@@ -1230,7 +1230,7 @@ public class ModuleManagerWindow extends JFrame {
             }
           }
           else {
-            JOptionPane.showMessageDialog(null, testExtInfo.getError(), null, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(ModuleManagerWindow.this, testExtInfo.getError(), null, JOptionPane.ERROR_MESSAGE);
           }
         }
       }

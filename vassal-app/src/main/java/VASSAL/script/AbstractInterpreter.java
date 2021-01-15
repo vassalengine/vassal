@@ -17,19 +17,20 @@
  */
 package VASSAL.script;
 
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.PrivateMap;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WarningDialog;
+
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.NameSpace;
 import bsh.UtilEvalError;
+
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 
 public abstract class AbstractInterpreter extends Interpreter {
 
@@ -108,7 +109,7 @@ public abstract class AbstractInterpreter extends Interpreter {
    * @param message message to display
    */
   public Object alert(String message) {
-    JOptionPane.showMessageDialog(null, message);
+    JOptionPane.showMessageDialog(GameModule.getGameModule().getPlayerWindow(), message);
     return "";
   }
 
