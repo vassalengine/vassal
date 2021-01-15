@@ -1,5 +1,6 @@
 3.5.0-beta3 - ???
 
+13886: Reinstate removed TilingHandler ctor for VASL 6.6.1
 13810: Find all parentless Dialogs and JOptionPanes and give them a parent
 
 3.5.0-beta2 - 4 January 2021
