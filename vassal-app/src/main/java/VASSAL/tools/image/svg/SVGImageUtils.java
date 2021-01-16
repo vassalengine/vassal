@@ -140,6 +140,7 @@ public class SVGImageUtils {
     }
 
     // try to parse the viewBox
+    float[] vb = null;
     final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
     if (!vbs.isEmpty()) {
       try {
