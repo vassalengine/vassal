@@ -106,18 +106,13 @@ public class SVGImageUtils {
 
   public static Dimension getImageSize(SVGDocument doc) throws IOException {
     final SVGSVGElement root = doc.getRootElement();
-    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
-    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
-    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
-
     final BridgeContext bctx = new BridgeContext(new UserAgentAdapter());
     final UnitProcessor.Context uctx = UnitProcessor.createContext(bctx, root);
 
-    float w = -1.0f;
-    float h = -1.0f;
-    float[] vb = null;
-
     // try to parse the width
+    float w = -1.0f;
+    boolean wIsPct = false;
+    final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
     if (!ws.isEmpty()) {
       try {
         w = UnitProcessor.svgHorizontalLengthToUserSpace(ws, SVGConstants.SVG_WIDTH_ATTRIBUTE, uctx);
@@ -126,9 +121,13 @@ public class SVGImageUtils {
         // the width was invalid
         throw new IOException(e);
       }
+      wIsPct = ws.contains("%");
     }
 
     // try to parse the height
+    float h = -1.0f;
+    boolean hIsPct = false;
+    final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
     if (!hs.isEmpty()) {
       try {
         h = UnitProcessor.svgVerticalLengthToUserSpace(hs, SVGConstants.SVG_HEIGHT_ATTRIBUTE, uctx);
@@ -137,9 +136,11 @@ public class SVGImageUtils {
         // the height was invalid
         throw new IOException(e);
       }
+      hIsPct = hs.contains("%");
     }
 
     // try to parse the viewBox
+    final String vbs = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
     if (!vbs.isEmpty()) {
       try {
         vb = ViewBox.parseViewBoxAttribute(root, vbs, bctx);
@@ -159,10 +160,18 @@ public class SVGImageUtils {
             // no width given; use the width of the viewBox
             w = vb[2];
           }
+          else if (wIsPct) {
+            // width is a percentage of the viewBox width
+            w *= vb[2];
+          }
 
           if (h < 0.0f) {
             // no height given; use the height of the viewBox
             h = vb[3];
+          }
+          else if (hIsPct) {
+            // width is a percentage of the viewBox height 
+            h *= vb[3];
           }
         }
       }
@@ -182,7 +191,17 @@ public class SVGImageUtils {
         }
       }
     }
+    else if (!vbs.isEmpty() && vb != null) {
+      // we have a viewBox; adjust width, height if they are percentages of it
+      if (wIsPct) {
+        w *= vb[2];
+      }
 
+      if (hIsPct) {
+        h *= vb[3];
+      }
+    }
+    
     return new Dimension((int)(w + 0.5f), (int)(h + 0.5f));
   }
 
