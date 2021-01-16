@@ -158,6 +158,9 @@ public class SVGImageUtilsTest {
         { "0",   "0",   null,              new Dimension(0, 0)     },
         { "1",   "0",   "0 0 50 60",       new Dimension(1, 0)     },
         { "0",   "1",   "0 0 50 60",       new Dimension(0, 1)     },
+        // percentage width, height gives results from viewBox
+        { "100%", "100%", "0 0 50 60",     new Dimension(50, 60)   },
+        { "20%",  "50%",  "0 0 50 60",     new Dimension(10, 30)   },
         // missing one dimension results in a square
         { "30",  null,  null,              new Dimension(30, 30)   },
         { null,  "30",  null,              new Dimension(30, 30)   },
