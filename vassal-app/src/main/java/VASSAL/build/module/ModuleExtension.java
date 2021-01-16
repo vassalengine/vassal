@@ -118,13 +118,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public void build() {
-
     final AbstractMetaData data = MetaDataFactory.buildMetaData(archive.getArchive().getFile());
-    final String fileName = (VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0) ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE; //NON-NLS
 
     if (!(data instanceof ExtensionMetaData)) {
-      logger.error("Not an extension file {}", fileName); //NON-NLS
-      throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + fileName); //NON-NLS
+      final String archName = archive.getArchive().getName();
+      logger.error("Not an extension file {}", archName); //NON-NLS
+      throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + archName); //NON-NLS
     }
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
@@ -132,7 +131,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     // Record that we are currently building this Extension
     GameModule.getGameModule().setGpIdSupport(this);
 
-    try (BufferedInputStream in = new BufferedInputStream(archive.getInputStream(fileName))) {
+    final String buildFile = VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0 ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE; //NON-NLS
+
+    try (BufferedInputStream in = new BufferedInputStream(archive.getInputStream(buildFile))) {
       try {
         final Document doc = Builder.createDocument(in);
         if (doc != null) {
@@ -140,15 +141,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         }
       }
       catch (IOException e) {
-        logger.error("Error while loading XML data from file {}", fileName, e); //NON-NLS
+        logger.error("Error while loading XML data from file {}", buildFile, e); //NON-NLS
         throw new ExtensionsLoader.LoadExtensionException(e);
       }
     }
     catch (FileNotFoundException | NoSuchFileException e) {
-      logger.error("File {} not found in archive", fileName, e); //NON-NLS
+      logger.error("File {} not found in archive", buildFile, e); //NON-NLS
     }
     catch (IOException e) {
-      logger.error("Error while reading file {} from archive", fileName, e); //NON-NLS
+      logger.error("Error while reading file {} from archive", buildFile, e); //NON-NLS
     }
 
     GameModule.getGameModule().add(this);
