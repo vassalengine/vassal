@@ -1,6 +1,7 @@
 3.5.0-beta3 - ???
 
 * 13886: Reinstate removed TilingHandler ctor for VASL 6.6.1
+* 13876: NPE in AbstractMetaData.getVassalVersion()
 * 13868: Added description field to (nearly) all traits
 * 13853: Toolbars missing from non-dockable windows
 * 13811: NPE in DiceButton.setAttribute()
