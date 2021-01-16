@@ -111,6 +111,7 @@ public class SVGImageUtils {
 
     // try to parse the width
     float w = -1.0f;
+    boolean wIsPct = false;
     final String ws = root.getAttributeNS(null, SVGConstants.SVG_WIDTH_ATTRIBUTE);
     if (!ws.isEmpty()) {
       try {
@@ -120,10 +121,12 @@ public class SVGImageUtils {
         // the width was invalid
         throw new IOException(e);
       }
+      wIsPct = ws.contains("%");
     }
 
     // try to parse the height
     float h = -1.0f;
+    boolean hIsPct = false;
     final String hs = root.getAttributeNS(null, SVGConstants.SVG_HEIGHT_ATTRIBUTE);
     if (!hs.isEmpty()) {
       try {
@@ -133,6 +136,7 @@ public class SVGImageUtils {
         // the height was invalid
         throw new IOException(e);
       }
+      hIsPct = hs.contains("%");
     }
 
     // try to parse the viewBox
@@ -157,10 +161,18 @@ public class SVGImageUtils {
             // no width given; use the width of the viewBox
             w = vb[2];
           }
+          else if (wIsPct) {
+            // width is a percentage of the viewBox width
+            w *= vb[2];
+          }
 
           if (h < 0.0f) {
             // no height given; use the height of the viewBox
             h = vb[3];
+          }
+          else if (hIsPct) {
+            // width is a percentage of the viewBox height 
+            h *= vb[3];
           }
         }
       }
@@ -180,7 +192,17 @@ public class SVGImageUtils {
         }
       }
     }
+    else if (!vbs.isEmpty() && vb != null) {
+      // we have a viewBox; adjust width, height if they are percentages of it
+      if (wIsPct) {
+        w *= vb[2];
+      }
 
+      if (hIsPct) {
+        h *= vb[3];
+      }
+    }
+    
     return new Dimension((int)(w + 0.5f), (int)(h + 0.5f));
   }
 
