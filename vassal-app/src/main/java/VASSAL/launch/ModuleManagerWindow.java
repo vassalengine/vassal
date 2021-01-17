@@ -910,7 +910,18 @@ public class ModuleManagerWindow extends JFrame {
       setText(info.toString());
       setToolTipText(info.getToolTipText());
       setIcon(info.getIcon(expanded));
-      setForeground(info.getTreeCellFgColor());
+
+      Color fg = info.getTreeCellFgColor();
+      if (selected) {
+        // reverse the text color when selected
+        fg = new Color(
+          255 - fg.getRed(),
+          255 - fg.getGreen(),
+          255 - fg.getBlue()
+        );
+      }
+      setForeground(fg);
+
       return this;
     }
   }
