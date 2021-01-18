@@ -24,7 +24,7 @@
                     <dependency>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoctorj-pdf</artifactId>
-                        <version>1.5.3</version>
+                        <version>1.5.4</version>
                     </dependency>
                 </dependencies>
                 <executions>
