@@ -152,7 +152,7 @@ IsRandom(percent) + |{Random(6)} +
 
 *substring(start)* from character indexed by _start_, the rest of the string.
 
-*substring(start,end)* returns the substring between two indices.
+*substring(start,end)* returns the substring from _start_ to _end_, exclusive.
 
 *replace(old,new)* the original string with all instances of the string _old_ replaced by the string _new_
 |*Sum and Count* |SumStack(propertyName) +
