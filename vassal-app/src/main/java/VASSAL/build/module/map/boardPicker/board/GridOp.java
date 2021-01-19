@@ -162,7 +162,7 @@ public class GridOp extends AbstractTiledOpImpl {
 
       size = new Dimension(dw, dh);
 
-      hash = Objects.hash(sop, dx0, dy0, dw, dh);
+      hash = Objects.hash(gop, dx0, dy0, dw, dh);
     }
 
     @Override
