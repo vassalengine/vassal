@@ -471,4 +471,31 @@
         <justification>Removed</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>6001</differenceType>
+        <field>alphaModel</field>
+        <justification>Field introduced in 3.5.0-beta1 no longer required</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>6001</differenceType>
+        <field>classicModel</field>
+        <justification>Field introduced in 3.5.0-beta1 no longer required</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>7002</differenceType>
+        <method>void setSortOrder()</method>
+        <justification>Method introduced in 3.5.0-beta1 no longer required</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>7002</differenceType>
+        <method>void updateSortOrder()</method>
+        <justification>Method introduced in beta 1 no longer required</justification>
+    </difference>
 </differences>

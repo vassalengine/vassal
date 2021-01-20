@@ -438,6 +438,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addButton.setEnabled(o instanceof Decorator);
     });
     availableList.addMouseListener(new MouseAdapter() {
+      @Override
       public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
           doAdd();
