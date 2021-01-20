@@ -34,6 +34,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.swing.Dialogs;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -50,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
@@ -107,6 +107,7 @@ public class MassPieceLoader {
   // The Dialog does all the work.
   public void load() {
     dialog = new MassLoaderDialog();
+    SwingUtils.ensureOnScreen(dialog);
     dialog.setVisible(true);
     if (!dialog.isCancelled()) {
       dialog.load();
@@ -152,6 +153,7 @@ public class MassPieceLoader {
       final JButton defineButton = new JButton(Resources.getString("Editor.MassPieceLoader.edit_piece_template"));
       defineButton.addActionListener(e -> {
         final GamePiece savePiece = definer.getPiece();
+        SwingUtils.ensureOnScreen(defineDialog);
         defineDialog.setVisible(true);
         if (defineDialog.isCancelled()) {
           definer.setPiece(savePiece);
@@ -1168,7 +1170,7 @@ public class MassPieceLoader {
       add(new JLabel(
         Resources.getString("Editor.MassPieceLoader.do_not_suffix")));
 
-      final Box entry = Box.createHorizontalBox();
+      final JPanel entry = new JPanel(new MigLayout("ins 0,hidemode 3", "[]rel[]")); // NON-NLS
       entry.add(new JLabel(Resources.getString("Editor.MassPieceLoader.image_name") + " "));
       typeConfig = new TranslatingStringEnumConfigurer(null, "",
         new String[] { ENDS_WITH, INCLUDES, MATCHES, EQUALS, BASE_IMAGE },
