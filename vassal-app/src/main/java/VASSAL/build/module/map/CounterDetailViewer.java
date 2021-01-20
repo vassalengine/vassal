@@ -437,11 +437,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
-    if (label != null) {
-      Color labelFgColor = fgColor == null ? Color.black : fgColor;
+    if (label != null && fgColor != null) {
       Graphics2D g2d = (Graphics2D) g;
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
+      LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, bgColor, fgColor);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }
@@ -1114,7 +1113,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      fgColor = value == null ? Color.black : (Color) value;
+      fgColor = (Color) value;
     }
     else if (BG_COLOR.equals(name)) {
       if (value instanceof String) {
