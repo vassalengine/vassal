@@ -530,17 +530,16 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * @param skipBox If true, ONLY draws the text, with no box or background (for filling in existing combine-o-rama boxes)
    */
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign, int objectWidth, int minWidth, int extraBorder, boolean skipBox) {
-    if (label != null) {
-      final Color labelFgColor = fgColor == null ? Color.black : fgColor;
+    if (label != null && fgColor != null) {
       final Graphics2D g2d = (Graphics2D) g;
       g2d.addRenderingHints(SwingUtils.FONT_HINTS);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       // If HTML is enabled in the checkbox, OR the text has an explicit <html> tag surrounding it, we use HTML.
       if ((label.length() > 0) && (enableHTML || ((label.length() > 6) && "<html>".equalsIgnoreCase(label.substring(0, 6))))) { //NON-NLS
-        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, (skipBox ? null : bgColor), (skipBox ? null : labelFgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder);
+        LabelUtils.drawHTMLLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), map.getComponent(), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
       else {
-        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, labelFgColor, (skipBox ? null : bgColor), (skipBox ? null : labelFgColor), objectWidth, extraTextPadding, minWidth, extraBorder);
+        LabelUtils.drawLabel(g, label, pt.x, pt.y, g.getFont(), hAlign, vAlign, fgColor, (skipBox ? null : bgColor), (skipBox ? null : fgColor), objectWidth, extraTextPadding, minWidth, extraBorder);
       }
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
@@ -1336,7 +1335,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      fgColor = value == null ? Color.black : (Color) value;
+      fgColor = (Color) value;
     }
     else if (BG_COLOR.equals(name)) {
       if (value instanceof String) {
