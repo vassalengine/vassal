@@ -1,5 +1,6 @@
 3.4.13 - ???
 
+* 13920: CounterDetailViewer should support setting no foreground color
 * 13915: Boards with same source but different grids fail to render distinctly
 * 13903: SVG with viewBox and percentage width, height renders incorrectly
 * 13861: NPE in MassPieceLoader when adding Layer to piece template
