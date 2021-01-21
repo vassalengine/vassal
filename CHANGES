@@ -1,5 +1,7 @@
 3.5.0-beta3 - ???
 
+* 13900: MassPieceLoader trait editor shows standard Embellishment trait
+    editor instead of MPL-specific one
 * 13886: Reinstate removed TilingHandler ctor for VASL 6.6.1
 * 13879: NPE in DieManager ctor
 * 13876: NPE in AbstractMetaData.getVassalVersion()
