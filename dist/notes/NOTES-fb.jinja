@@ -5,73 +5,15 @@ Download: https://github.com/vassalengine/vassal/releases/tag/{{version}}
 
 Release notes: http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes
 
-Changes since 3.5.0-beta1:
+Changes since 3.5.0-beta2:
 
 Bug fixes
 
-* 13825: "Module from older version" check is too strict
-* 13823: Map/Module Global Key Command Description not being saved
-* 13821: SendToLocation does not create Movement Trail points
-* 13783: Non-rectangular trait should remember name of image that created it
-* 13782: Suffix/Prefix fields in Layer trait are not displayed correctly
-* 13781: Bad parameter in Editor.UniqueIdManager.more_than_one message
-* 13771: NPE after cutting/pasting piece palettes in Editor
-* 13755: Chess clock help file is misnamed
-*  4324: Antialiasing RenderingHints not set properly for drawing game components
-
-Other improvements
-
-* 13813: Simplified communication between Module Manager, Player, Editor
-* 13792: Combined save and log loading; Load Continuation moved from File to Tools menu
-* 13777: Improved workflow of zone editor
-* 13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out
-
-Changes since 3.4.12:
-
-New features
-
-* 13706: Console, for entering commands to affect errorlog, properties, etc.
-* 13522: Performance improvements for Global Key Commands
-* 13504: Simpler way to display PDF files from Help menu
-* 13494: Expose version numbers and module strings to module as properties
-* 13432: MouseOverStackViewer can show > 1 piece of a deck
-* 13417: Editor's search function can now search piece traits and component attributes
-* 13415: MouseoverStackViewer has HTML support and additional formatting options
-* 13414: "Help" button (and help information) added to Preferences dialog
-* 13368: Added preference to control drag-at-edge-of-map width
-* 13355: Threshold for centering on opponent's move is now configurable
-* 13352: Title Bar of module should always show most recent Save/Load/Log
-* 13297: Ability to Deselect a piece with a Key Command (also remove it from its stack)
-* 13296: Flare feature for map
-* 13219: Added KeyNamer for overriding key names
-*  1868: Method for removing unused images from modules
-*  1826: Aesthetic improvements to dialogs
-*  1807: Chess clocks
-*  1804: Added Preference for turning off sounds
-
-Bug fixes
-
-* 13741: DataArchive.getImageNames() incorrectly returns an empty string if images/ has an entry in the ZIP archive
-* 13675: Piece Slots shouldn't be allowed at very top level of Piece Palette
-* 13660: Replaced ComponentSplitter with SplitPane for better splitter positioning
-* 13659: "Remember window size" preference is no longer ignored
-* 13593: Global preferences are written when changed
-* 13509: Save As in Editor, if it fails, complains the new filename
-* 13495: Wizard should set the initial value for next save/load dialog
-* 13336: Fixed incorrect date format in SecretNotesController
-* 12946: Prevent top level required components from being deleted in Editor
-*  4779: Comparison operator >= no longer incorrectly documented as =>
-
-Other improvements
-
-* 13661: Simplified ZIP archive writing and error reporting
-* 13450: Improve look of Auto Configured editor dialogs
-* 13437: Improve visibility of Logging status - Help people to remember to start logs
-* 13363: buildFile renamed to buildFile.xml
-* 13354: Add a chatter message when starting to write a logfile
-* 13353: Use native file chooser on Linux
-* 13333: Better handling of logfile/savefile comments
-* 13326: Saving a module will default to .vmod, an extension to .vext
-* 13323: Player switching sides now reported in Chat Log
-* 13098: Move Compatibility related preferences on the General tab to a new Compatibility tab
-*  1907: Suggest default filename extensions
+* 13900: MassPieceLoader trait editor shows standard Embellishment trait editor instead of MPL-specific one
+* 13886: Reinstate removed TilingHandler ctor for VASL 6.6.1
+* 13879: NPE in DieManager ctor
+* 13876: NPE in AbstractMetaData.getVassalVersion()
+* 13868: Added description field to (nearly) all traits
+* 13853: Toolbars missing from non-dockable windows
+* 13811: NPE in DiceButton.setAttribute()
+* 13810: Find all parentless Dialogs and JOptionPanes and give them a parent
