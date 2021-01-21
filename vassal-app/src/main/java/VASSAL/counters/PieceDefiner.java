@@ -103,8 +103,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private static final Insets buttonInsets = new Insets(1, 2, 1, 2);
 
   protected static DefaultListModel<GamePiece> availableModel;
-  protected static DefaultListModel<GamePiece> alphaModel;
-  protected static DefaultListModel<GamePiece> classicModel;
   private static final SortedMap<String, GamePiece> alphaMap = new TreeMap<>();
   private static Boolean sorted = false;
   protected DefaultListModel<GamePiece> inUseModel;
@@ -171,7 +169,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   protected static void addElement(GamePiece piece) {
     // Add piece to the standard model
-    classicModel.addElement(piece);
+    availableModel.addElement(piece);
 
     // Store the piece in a SortedMap, order by translated trait description
     alphaMap.put(((EditablePiece) piece).getDescription(), piece);
@@ -180,7 +178,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   protected static void initDefinitions() {
     if (availableModel == null) {
-      classicModel = new DefaultListModel<>();
       availableModel = new DefaultListModel<>();
       //addElement(new BasicPiece()); // Not needed since you can never add it
       addElement(new Delete());
@@ -222,14 +219,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
       // Generate a model sorted by description, in the current users language
       buildAlphaModel();
-
-      availableModel = classicModel;
     }
   }
 
   private static void buildAlphaModel() {
-    alphaModel = new DefaultListModel<>();
-    alphaMap.values().forEach(p -> alphaModel.addElement(p));
+    final DefaultListModel<GamePiece> alphaModel = new DefaultListModel<>();
+    alphaMap.values().forEach(alphaModel::addElement);
+    availableModel = alphaModel;
   }
 
   /**
@@ -283,7 +279,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         catch (Throwable t) {
           ReflectionUtils.handleNewInstanceFailure(t, pieceClass);
         }
-        setSortOrder();
       }
 
       piece = ((Decorator) piece).piece;
@@ -441,6 +436,14 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       final Object o = availableList.getSelectedValue();
       helpButton.setEnabled(o instanceof EditablePiece && ((EditablePiece) o).getHelpFile() != null);
       addButton.setEnabled(o instanceof Decorator);
+    });
+    availableList.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          doAdd();
+        }
+      }
     });
 
     final JPanel availableListPanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
@@ -625,9 +628,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     controls.add(noteLabel, "span 3,center"); // NON-NLS
 
-    // Force Alpha Sort order
-    setSorted(true);
-    updateSortOrder();
   }
 
   /**
@@ -706,7 +706,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   private void doAdd(int sourceIndex, int insertIndex) {
-    final Object selected = availableModel.getElementAt(sourceIndex);
+    final Object selected = availableList.getModel().getElementAt(sourceIndex);
     if (selected instanceof Decorator) {
       if (inUseModel.getSize() > 0) {
         final Decorator c = (Decorator) selected;
@@ -742,22 +742,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       }
     }
-  }
-
-  /**
-   * Change Sort order by swapping models over
-   */
-  protected void updateSortOrder() {
-    setSorted(!getSorted());
-    setSortOrder();
-  }
-
-  protected void setSortOrder() {
-    final int selectedIndex = availableList.getSelectedIndex();
-    availableModel = getSorted() ? classicModel : alphaModel;
-    availableList.setModel(availableModel);
-    availableList.setSelectedIndex(selectedIndex);
-    refresh();
   }
 
   protected void paste() {
@@ -890,7 +874,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     if (o instanceof GamePiece) {
       addAdditionalElement((GamePiece) o);
-      setSortOrder();
     }
     else {
       ErrorDialog.show("Error.not_a_gamepiece", className); // NON-NLS Error Dialog Key
