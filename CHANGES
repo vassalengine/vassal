@@ -81,7 +81,7 @@
 *  1807: Chess clocks
 *  1804: Added Preference for turning off sounds
 
-3.4.13 - ???
+3.4.13 - 22 January 2021
 
 * 13920: CounterDetailViewer should support setting no foreground color
 * 13915: Boards with same source but different grids fail to render distinctly
