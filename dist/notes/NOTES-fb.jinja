@@ -4,29 +4,12 @@ Download: https://github.com/vassalengine/vassal/releases/tag/{{version}}
 
 Release notes: http://www.vassalengine.org/wiki/VASSAL_3.4_Release_Notes
 
-Changes since 3.4.11:
+Changes since 3.4.12:
 
 Bug fixes
 
-* 13850: Piece rotation fails to apply over masking
-* 13845: Don't display empty items in context menus
-* 13836: "too new" version check should compare minor version only
-* 13827: Ensure that extensions are loaded in alphabetical order
-* 13826: Restore scrolling in drop-down menus in BeanShell expression builder
-* 13825: "Module from older version" check is too strict
-* 13820: Ensure temp directory hasn't been deleted before trying to write to it
-* 13819: Move Fixed Distance no longer updating Movement Trail
-* 13808: Don't prompt to create new logfile before current one is done
-* 13807: SendToLocation does not check outer traits when evaluating expression
-* 13805: CounterDetailViewer incorrectly displayed non-stacking pieces
-* 13795: "too new" version check should apply to all Module Manager items
-* 13786: NPE when Enter hit in Editor component tree with no node selected
-* 13738: IllegalArgumentException because Invisible trait permitted alpha values outside [0,1]
-* 13614: NPE in ZonedGrid due to thread-unsafe caching of Zone clipping
-* 13571: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
-* 13446: Pieces in a stack have the wrong offset while dragging
-
-Other improvements
-
-* 13829: HexGridNumbering.getRawRow() is now public
-* 13760: Upgrade bundled Java to 15.0.1+9
+* 13920: CounterDetailViewer should support setting no foreground color
+* 13915: Boards with same source but different grids fail to render distinctly
+* 13903: SVG with viewBox and percentage width, height renders incorrectly
+* 13861: NPE in MassPieceLoader when adding Layer to piece template
+* 13285: Show useful message on AWTError due to bad Java Access Bridge install
