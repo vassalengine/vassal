@@ -447,9 +447,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final String userDir = System.getProperty("user.dir");
       if (userDir != null) result.add("-Duser.dir=" + userDir); //NON-NLS
 
-      // pass on VASSAL's home dir, if it's set
-      final String vHome = System.getProperty("VASSAL.home");
-      if (vHome != null) result.add("-DVASSAL.home=" + vHome); //NON-NLS
+      // pass on VASSAL's conf dir, if it's set
+      final String vConf = System.getProperty("VASSAL.conf");
+      if (vConf != null) result.add("-DVASSAL.conf" + vConf); //NON-NLS
 
       // set the classpath
       result.add("-cp"); //NON-NLS

@@ -50,7 +50,13 @@ public class StandardConfig implements Config {
     );
 
     // Set up the config dir and ensure it exists
-    if (SystemUtils.IS_OS_MAC) {
+    // Use the value of VASSAL.conf if set, otherwise use the
+    // system-appropriate dir.
+    final String confProp = System.getProperty("VASSAL.conf");
+    if (confProp != null) {
+      confDir = Path.of(confProp);
+    }
+    else if (SystemUtils.IS_OS_MAC) {
       confDir = Path.of(System.getProperty("user.home"), "Library/Application Support/VASSAL"); //NON-NLS
     }
     else if (SystemUtils.IS_OS_WINDOWS) {

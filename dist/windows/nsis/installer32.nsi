@@ -26,11 +26,11 @@
 
 Unicode True
 
-!define SRCDIR "${TMPDIR}/VASSAL-${VERSION}"
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 !define VNAME "VASSAL (${VERSION})"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
+!define INCDIR "${TMPDIR}/VASSAL-${VERSION}-windows-32"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-32.exe"
@@ -674,7 +674,7 @@ Section "-Application" Application
   SetRegView 32 
 
   ; set the files to bundle
-  !include "${TMPDIR}/install_files.inc"
+  !include "${INCDIR}/install_files.inc"
 
   ; write registry keys for uninstaller
   WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
@@ -812,7 +812,7 @@ Section Uninstall
   ${EndIf}
 
   ; delete the installed files and directories
-  !include "${TMPDIR}/uninstall_files.inc"
+  !include "${INCDIR}/uninstall_files.inc"
 
   ; delete VASSAL from start menu if empty
   RMDir "$SMPROGRAMS\VASSAL"

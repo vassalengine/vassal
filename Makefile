@@ -202,15 +202,21 @@ $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: $(TMPDIR)/VASSAL-$(VERSION)-linux/VAS
 # Windows
 #
 
-$(TMPDIR)/VASSAL.exe: $(DISTDIR)/windows/VASSAL.l4j.xml $(DISTDIR)/windows/VASSAL.ico | $(TMPDIR)
-	cp $(DISTDIR)/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
-	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
-				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
-	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
-
-$(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL.exe $(TMPDIR)/module_deps $(JDKDIR)/windows_x%
+$(TMPDIR)/l4j:
 	mkdir -p $@
-	cp $(TMPDIR)/VASSAL.exe $@
+
+$(TMPDIR)/l4j/VASSAL-%.l4j.xml: $(DISTDIR)/windows/VASSAL-%.l4j.xml | $(TMPDIR)/l4j
+	sed -e 's/%NUMVERSION%/$(VNUM)/g' -e 's/%FULLVERSION%/$(VERSION)/g' $< >$@
+
+$(TMPDIR)/l4j/VASSAL.ico: $(DISTDIR)/windows/VASSAL.ico | $(TMPDIR)/l4j
+	cp $< $@
+
+$(TMPDIR)/l4j/VASSAL-%.exe: $(TMPDIR)/l4j/VASSAL-%.l4j.xml $(TMPDIR)/l4j/VASSAL.ico
+	$(LAUNCH4J) $(CURDIR)/$<
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(TMPDIR)/l4j/VASSAL-inst.exe $(TMPDIR)/module_deps $(JDKDIR)/windows_x%
+	mkdir -p $@
+	cp $(TMPDIR)/l4j/VASSAL-inst.exe $@/VASSAL.exe
 	cp -a CHANGES $@/CHANGES.txt
 	cp -a LICENSE $@/LICENSE.txt
 	cp -a README.md $@
@@ -220,27 +226,43 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
 	$(JLINK) --module-path $(JDKDIR)/windows_x$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
-	for i in `find $@ -type d` ; do \
+
+$(TMPDIR)/VASSAL-$(VERSION)-noinst:
+	mkdir -p $@
+
+$(TMPDIR)/VASSAL-$(VERSION)-noinst/VASSAL-$(VERSION): $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION) $(TMPDIR)/l4j/VASSAL-noinst.exe | $(TMPDIR)/VASSAL-$(VERSION)-noinst
+	cp -a $< $@
+	cp $(TMPDIR)/l4j/VASSAL-noinst.exe $@/VASSAL.exe
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%/install_files.inc: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION)
+	for i in `find $< -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
-			sed -e 's|$@/\?||' -e 's/\//\\\/g'`\" ; \
+			sed -e 's|$</\?||' -e 's/\//\\\/g'`\" ; \
 		find $$i -maxdepth 1 -type f -printf 'File "%p"\n' ; \
-	done >$(TMPDIR)/install_files.inc
+	done >$@
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%/uninstall_files.inc: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/install_files.inc
 	sed -e 's/^SetOutPath/RMDir/' \
-			-e 's|^File "$@|Delete "$$INSTDIR|' \
-			-e 's/\//\\/g' <$(TMPDIR)/install_files.inc | \
-		tac	>$(TMPDIR)/uninstall_files.inc
+			-e 's|^File "$(TMPDIR)/VASSAL-$(VERSION)-windows-$(*)/VASSAL-$(VERSION)|Delete "$$INSTDIR|' \
+			-e 's/\//\\/g' <$< | \
+		tac	>$@
 
 # prevents make from trying to delete these, as they're intermediate files
-.SECONDARY: $(TMPDIR)/VASSAL-$(VERSION)-windows-32/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION)
+.SECONDARY: $(TMPDIR)/VASSAL-$(VERSION)-windows-32/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION) $(TMPDIR)/l4j $(TMPDIR)/l4j/VASSAL-inst.l4j.xml $(TMPDIR)/l4j/VASSAL-noinst.l4j.xml $(TMPDIR)/l4j/VASSAL-inst.exe $(TMPDIR)/l4j/VASSAL-noinst.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-32/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-32/uninstall_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-64/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-64/uninstall_files.inc
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION)
+$(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-%/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-%/uninstall_files.inc
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) $(DISTDIR)/windows/nsis/installer$*.nsi
+
+$(TMPDIR)/VASSAL-$(VERSION)-noinst.zip: $(TMPDIR)/VASSAL-$(VERSION)-noinst/VASSAL-$(VERSION)
+	pushd $(TMPDIR)/VASSAL-$(VERSION)-noinst ; zip -9rv ../../$@ VASSAL-$(VERSION) ; popd
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
 release-macos: $(TMPDIR)/VASSAL-$(VERSION)-macos.dmg
 
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe
+
+release-noinst: $(TMPDIR)/VASSAL-$(VERSION)-noinst.zip
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
