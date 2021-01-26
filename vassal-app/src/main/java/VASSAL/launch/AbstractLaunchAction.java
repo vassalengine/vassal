@@ -449,7 +449,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // pass on VASSAL's conf dir, if it's set
       final String vConf = System.getProperty("VASSAL.conf");
-      if (vConf != null) result.add("-DVASSAL.conf" + vConf); //NON-NLS
+      if (vConf != null) result.add("-DVASSAL.conf=" + vConf); //NON-NLS
 
       // set the classpath
       result.add("-cp"); //NON-NLS
