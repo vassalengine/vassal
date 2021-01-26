@@ -4,7 +4,7 @@
 
   <if condition='isDefined("VASSAL.conf")'>
     <then>
-      <property name="CONF_DIR" value="{VASSAL.conf}" />
+      <property name="CONF_DIR" value="${VASSAL.conf}" />
     </then>
     <else>
       <if condition='property("os.name").toLowerCase().startsWith("windows")'>
