@@ -247,8 +247,8 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/uninstall_files.inc: $(TMPDIR)/VASSAL-$(VE
 			-e 's/\//\\/g' <$< | \
 		tac	>$@
 
-# prevents make from trying to delete these, as they're intermediate files
-.SECONDARY: $(TMPDIR)/VASSAL-$(VERSION)-windows-32/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-64/VASSAL-$(VERSION) $(TMPDIR)/l4j $(TMPDIR)/l4j/VASSAL-inst.l4j.xml $(TMPDIR)/l4j/VASSAL-noinst.l4j.xml $(TMPDIR)/l4j/VASSAL-inst.exe $(TMPDIR)/l4j/VASSAL-noinst.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-32/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-32/uninstall_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-64/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-64/uninstall_files.inc
+# prevents make from trying to delete intermediate files
+.SECONDARY:
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-%/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-%/uninstall_files.inc
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) $(DISTDIR)/windows/nsis/installer$*.nsi
