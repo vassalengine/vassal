@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2020 by Brian Reynolds and Michael Kiefte
  *
  * This library is free software; you can redistribute it and/or
@@ -121,7 +120,7 @@ public class ChessClockControl extends AbstractConfigurable
 
     chessClockButton = new LaunchButton("Chess Clocks", BUTTON_TOOLTIP, BUTTON_TEXT, SHOW_HOTKEY, ICON, al); //$NON-NLS-1$
     chessClockButton.setToolTipText(Resources.getString("Editor.tooltip_text_label"));
-    //chessClockButton.setAttribute(ICON, "chessclock.png"); //BR// I have a decent royalty-free icon, but need to figure out vassal-wide licensing ... or just leave it open for module designer?
+    chessClockButton.setAttribute(ICON, "chess_clock.png");
     chessClockButton.addMouseListener(new ChessMouseListener());
 
     // Set up listeners for hotkeys
