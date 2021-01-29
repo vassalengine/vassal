@@ -224,7 +224,6 @@ public class ModuleManagerWindow extends JFrame {
     fileMenu.add(mm.addKey("Main.play_module"));
     fileMenu.add(mm.addKey("Main.edit_module"));
     fileMenu.add(mm.addKey("Main.new_module"));
-    fileMenu.add(mm.addKey("Main.import_module"));
     fileMenu.addSeparator();
 
     if (!SystemUtils.IS_OS_MAC) {
@@ -262,6 +261,8 @@ public class ModuleManagerWindow extends JFrame {
         }
       }
     }, serverStatusConfig.booleanValue()));
+
+    toolsMenu.add(mm.addKey("Main.import_module"));
 
     toolsMenu.add(new MenuItemProxy(new AbstractAction(
                     Resources.getString("ModuleManager.clear_tilecache")) {
