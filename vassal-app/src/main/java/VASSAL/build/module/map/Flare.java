@@ -439,7 +439,7 @@ public class Flare extends AbstractConfigurable
     os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
     double diameter = (circleScale ? map.getZoom() : 1.0) * os_scale * circleSize;
-    if (animate) {
+    if (animate && pulses > 0 && pulsesPerSec > 0) {
       diameter *= (1.0 - animfrac);
     }
 
