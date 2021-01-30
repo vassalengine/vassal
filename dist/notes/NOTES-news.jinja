@@ -1,6 +1,6 @@
 {%- from "common.jinja" import version_feature with context -%}
 <p>
-The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.
+The VASSAL Team is happy to announce VASSAL {{version}}.
 </p>
 
 <h2>IMPORTANT</h2>
@@ -19,42 +19,7 @@ The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview rele
   <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
 </ul>
 
-<h2>Changes since 3.5.0-beta2</h2>
-<h3>Bug fixes</h3>
-<ul>
-<li>13900: MassPieceLoader trait editor shows standard Embellishment trait editor instead of MPL-specific one</li>
-<li>13886: Reinstate removed TilingHandler ctor for VASL 6.6.1</li>
-<li>13879: NPE in DieManager ctor</li>
-<li>13876: NPE in AbstractMetaData.getVassalVersion()</li>
-<li>13868: Added description field to (nearly) all traits</li>
-<li>13853: Toolbars missing from non-dockable windows</li>
-<li>13811: NPE in DiceButton.setAttribute()</li>
-<li>13810: Find all parentless Dialogs and JOptionPanes and give them a parent</li>
-</ul>
-
-<h2>Changes since 3.5.0-beta1</h2>
-<h3>Bug fixes</h3>
-<ul>
-<li>13825: "Module from older version" check is too strict</li>
-<li>13823: Map/Module Global Key Command Description not being saved</li>
-<li>13821: SendToLocation does not create Movement Trail points</li>
-<li>13783: Non-rectangular trait should remember name of image that created it</li>
-<li>13782: Suffix/Prefix fields in Layer trait are not displayed correctly</li>
-<li>13781: Bad parameter in Editor.UniqueIdManager.more_than_one message</li>
-<li>13771: NPE after cutting/pasting piece palettes in Editor</li>
-<li>13755: Chess clock help file is misnamed</li>
-<li>4324: Antialiasing RenderingHints not set properly for drawing game components</li>
-</ul>
-
-<h3>Other improvements</h3>
-<ul>
-<li>13813: Simplified communication between Module Manager, Player, Editor</li>
-<li>13792: Combined save and log loading; Load Continuation moved from File to Tools menu</li>
-<li>13777: Improved workflow of zone editor</li>
-<li>13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out</li>
-</ul>
-
-<h2>Changes since 3.4.12</h2>
+<h2>Changes since 3.4.13</h2>
 <h3>New features</h3>
 <ul>
 <li>13706: Console, for entering commands to affect errorlog, properties, etc.</li>
@@ -79,6 +44,22 @@ The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview rele
 
 <h3>Bug fixes</h3>
 <ul>
+<li>13900: MassPieceLoader trait editor shows standard Embellishment trait editor instead of MPL-specific one</li>
+<li>13886: Reinstate removed TilingHandler ctor for VASL 6.6.1</li>
+<li>13879: NPE in DieManager ctor</li>
+<li>13876: NPE in AbstractMetaData.getVassalVersion()</li>
+<li>13868: Added description field to (nearly) all traits</li>
+<li>13853: Toolbars missing from non-dockable windows</li>
+<li>13825: "Module from older version" check is too strict</li>
+<li>13823: Map/Module Global Key Command Description not being saved</li>
+<li>13821: SendToLocation does not create Movement Trail points</li>
+<li>13811: NPE in DiceButton.setAttribute()</li>
+<li>13810: Find all parentless Dialogs and JOptionPanes and give them a parent</li>
+<li>13783: Non-rectangular trait should remember name of image that created it</li>
+<li>13782: Suffix/Prefix fields in Layer trait are not displayed correctly</li>
+<li>13781: Bad parameter in Editor.UniqueIdManager.more_than_one message</li>
+<li>13771: NPE after cutting/pasting piece palettes in Editor</li>
+<li>13755: Chess clock help file is misnamed</li>
 <li>13741: DataArchive.getImageNames() incorrectly returns an empty string if images/ has an entry in the ZIP archive</li>
 <li>13675: Piece Slots shouldn't be allowed at very top level of Piece Palette</li>
 <li>13660: Replaced ComponentSplitter with SplitPane for better splitter positioning</li>
@@ -89,10 +70,15 @@ The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview rele
 <li>13336: Fixed incorrect date format in SecretNotesController</li>
 <li>12946: Prevent top level required components from being deleted in Editor</li>
 <li>4779: Comparison operator >= no longer incorrectly documented as =></li>
+<li>4324: Antialiasing RenderingHints not set properly for drawing game components</li>
 </ul>
 
 <h3>Other improvements</h3>
 <ul>
+<li>13813: Simplified communication between Module Manager, Player, Editor</li>
+<li>13792: Combined save and log loading; Load Continuation moved from File to Tools menu</li>
+<li>13777: Improved workflow of zone editor</li>
+<li>13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out</li>
 <li>13661: Simplified ZIP archive writing and error reporting</li>
 <li>13450: Improve look of Auto Configured editor dialogs</li>
 <li>13437: Improve visibility of Logging status - Help people to remember to start logs</li>
