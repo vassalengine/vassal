@@ -496,10 +496,11 @@ public class Flare extends AbstractConfigurable
   @Override
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
+      final FlareCommand fc = (FlareCommand) c;
       final SequenceEncoder se = new SequenceEncoder(DELIMITER);
-      se.append(((FlareCommand)c).getId())
-        .append(((FlareCommand)c).getClickPoint().x)
-        .append(((FlareCommand)c).getClickPoint().y);
+      se.append(fc.getId())
+        .append(fc.getClickPoint().x)
+        .append(fc.getClickPoint().y);
       return COMMAND_PREFIX + se.getValue();
     }
     return null;
