@@ -168,7 +168,16 @@ public class Flare extends AbstractConfigurable
    */
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] { String.class, FlareKeyConfig.class, Integer.class, Color.class, Boolean.class, Integer.class, Integer.class, ReportFormatConfig.class };
+    return new Class[] {
+      String.class,
+      FlareKeyConfig.class,
+      Integer.class,
+      Color.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      ReportFormatConfig.class
+    };
   }
 
   /**
@@ -177,7 +186,16 @@ public class Flare extends AbstractConfigurable
    */
   @Override
   public String[] getAttributeNames() {
-    return new String[] { NAME, FLARE_KEY, CIRCLE_SIZE, CIRCLE_COLOR, CIRCLE_SCALE, PULSES, PULSES_PER_SEC, REPORT_FORMAT };
+    return new String[] {
+      NAME,
+      FLARE_KEY,
+      CIRCLE_SIZE,
+      CIRCLE_COLOR,
+      CIRCLE_SCALE,
+      PULSES,
+      PULSES_PER_SEC,
+      REPORT_FORMAT
+    };
   }
 
   /**
