@@ -315,7 +315,6 @@ public class Flare extends AbstractConfigurable
     }
   }
 
-
   /**
    * @return Help file for this component, accessed when "Help" button in Editor is clicked while configuring component.
    */
@@ -364,10 +363,10 @@ public class Flare extends AbstractConfigurable
    */
   private void repaintArea() {
     map.repaint(new Rectangle(
-            (int)(clickPoint.x - circleSize / 2.0 - 2 * STROKE * os_scale),
-            (int)(clickPoint.y - circleSize / 2.0 - 2 * STROKE * os_scale),
-            (int)(circleSize + 4 * STROKE * os_scale + 0.5),
-            (int)(circleSize + 4 * STROKE * os_scale + 0.5)
+      (int)(clickPoint.x - circleSize / 2.0 - 2 * STROKE * os_scale),
+      (int)(clickPoint.y - circleSize / 2.0 - 2 * STROKE * os_scale),
+      (int)(circleSize + 4 * STROKE * os_scale + 0.5),
+      (int)(circleSize + 4 * STROKE * os_scale + 0.5)
     ));
   }
 
@@ -432,9 +431,10 @@ public class Flare extends AbstractConfigurable
    */
   @Override
   public void draw(final Graphics g, final Map map) {
-    if (!active || (clickPoint == null)) {
+    if (!active || clickPoint == null) {
       return;
     }
+
     final Graphics2D g2d = (Graphics2D) g;
     os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
 
@@ -454,10 +454,10 @@ public class Flare extends AbstractConfigurable
     g2d.setColor(color);
     g2d.setStroke(new BasicStroke((float)(STROKE * os_scale)));
     g2d.drawOval(
-            (int)(p.x - diameter / 2.0),
-            (int)(p.y - diameter / 2.0),
-            (int)(diameter + 0.5),
-            (int)(diameter + 0.5)
+      (int)(p.x - diameter / 2.0),
+      (int)(p.y - diameter / 2.0),
+      (int)(diameter + 0.5),
+      (int)(diameter + 0.5)
     );
   }
 
@@ -479,8 +479,7 @@ public class Flare extends AbstractConfigurable
   public String encode(final Command c) {
     if (c instanceof FlareCommand) {
       final SequenceEncoder se = new SequenceEncoder(DELIMITER);
-      se
-        .append(((FlareCommand)c).getId())
+      se.append(((FlareCommand)c).getId())
         .append(((FlareCommand)c).getClickPoint().x)
         .append(((FlareCommand)c).getClickPoint().y);
       return COMMAND_PREFIX + se.getValue();
