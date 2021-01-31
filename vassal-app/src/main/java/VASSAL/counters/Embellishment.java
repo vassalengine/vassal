@@ -1193,6 +1193,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.level_name")));
       levelNameInput.setHintKey("Editor.Embellishment.level_name_hint");
+      levelNameInput.addPropertyChangeListener(evt -> changeLevelName());
       controls.add(levelNameInput.getControls(), "growx"); // NON-NLS
 
       box = Box.createHorizontalBox();
@@ -1332,9 +1333,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         levelNameInput.setValue(null);
       }
       else {
-        levelNameInput.setValue(names.get(index));
         prefix.setSelected(PREFIX.equals(isPrefix.get(index)));
         suffix.setSelected(SUFFIX.equals(isPrefix.get(index)));
+        // Update level name configurer with name for current level without initiating another property change event
+        levelNameInput.setFrozen(true);
+        levelNameInput.setValue(names.get(index));
+        levelNameInput.setFrozen(false);
       }
     }
 
