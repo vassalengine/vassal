@@ -1,0 +1,16 @@
+[main]
+host = https://www.transifex.com
+
+[vassal-engine.vassal-properties]
+file_filter = vassal-app/src/main/resources/VASSAL/i18n/VASSAL_<lang>.properties
+minimum_perc = 0
+source_file = vassal-app/src/main/resources/VASSAL/i18n/VASSAL.properties
+source_lang = en
+type = UNICODEPROPERTIES
+
+[vassal-engine.editor-properties]
+file_filter = vassal-app/src/main/resources/VASSAL/i18n/Editor_<lang>.properties
+source_file = vassal-app/src/main/resources/VASSAL/i18n/Editor.properties
+source_lang = en
+type = UNICODEPROPERTIES
+
