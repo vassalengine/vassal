@@ -75,7 +75,7 @@ public class Flare extends AbstractConfigurable
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public  static final String COMMAND_PREFIX = "FLARE" + DELIMITER; //$NON-NLS-1$
 
-  public static final String SHOW_ANIMATION = "showFlareAnimation"; //$NON-NLS-1$
+  public static final String NO_ANIMATION = "noFlareAnimation"; //$NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Flare"); //$NON-NLS-1$
   protected String id = "";     // Our unique ID
@@ -362,8 +362,8 @@ public class Flare extends AbstractConfigurable
       g.getPrefs().addOption(
         Resources.getString("Prefs.general_tab"), // $NON-NLS-1$
         new BooleanConfigurer(
-          SHOW_ANIMATION,
-          Resources.getString("Flare.show_animation"), // $NON-NLS-1$
+          NO_ANIMATION,
+          Resources.getString("Flare.no_animation"), // $NON-NLS-1$
           Boolean.TRUE
         )
       );
@@ -450,7 +450,7 @@ public class Flare extends AbstractConfigurable
     }
 
     animator.stop();
-    animate = (Boolean) GameModule.getGameModule().getPrefs().getValue(SHOW_ANIMATION);
+    animate = Boolean.FALSE.equals(GameModule.getGameModule().getPrefs().getValue(NO_ANIMATION));
     animator.setRepeatCount(Math.max(pulses, 1));
     animator.setDuration(1000 / Math.max(pulsesPerSec, 1));
     animator.start();
