@@ -1,5 +1,6 @@
 3.5.0 - 31 January 2021
 
+* 13952: Make Flare animation disableable
 * 13950: Level name in Layer trait is not being saved
 * 13947: File > Import Module moved to Tools > Convert Module
 *  1807: Added default chess clock icon
