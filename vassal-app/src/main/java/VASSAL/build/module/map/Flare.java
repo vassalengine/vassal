@@ -364,7 +364,7 @@ public class Flare extends AbstractConfigurable
         new BooleanConfigurer(
           NO_ANIMATION,
           Resources.getString("Flare.no_animation"), // $NON-NLS-1$
-          Boolean.TRUE
+          Boolean.FALSE
         )
       );
     }
