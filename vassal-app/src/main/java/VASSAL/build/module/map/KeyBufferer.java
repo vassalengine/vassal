@@ -122,7 +122,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    */
   @Override
   public void mousePressed(MouseEvent e) {
-    if (e.isConsumed()) {
+    if (e.isConsumed() ||
+        e.isAltDown() ||
+        (e.isShiftDown() && SwingUtils.isSelectionToggle(e))) {
       return;
     }
 
