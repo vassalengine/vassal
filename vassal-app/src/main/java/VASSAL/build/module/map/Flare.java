@@ -57,6 +57,7 @@ import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.FlareCommand;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FlareFormattedStringConfigurer;
 import VASSAL.i18n.Resources;
@@ -73,6 +74,8 @@ public class Flare extends AbstractConfigurable
         implements CommandEncoder, GameComponent, Drawable, MouseListener, UniqueIdManager.Identifyable {
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public  static final String COMMAND_PREFIX = "FLARE" + DELIMITER; //$NON-NLS-1$
+
+  public static final String NO_ANIMATION = "noFlareAnimation"; //$NON-NLS-1$
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Flare"); //$NON-NLS-1$
   protected String id = "";     // Our unique ID
@@ -350,9 +353,20 @@ public class Flare extends AbstractConfigurable
     idMgr.add(this);
     if (parent instanceof Map) {
       map = (Map) parent;
-      GameModule.getGameModule().addCommandEncoder(this);
+      final GameModule g = GameModule.getGameModule();
+
+      g.addCommandEncoder(this);
       map.addDrawComponent(this);
       map.addLocalMouseListener(this);
+
+      g.getPrefs().addOption(
+        Resources.getString("Prefs.general_tab"), // $NON-NLS-1$
+        new BooleanConfigurer(
+          NO_ANIMATION,
+          Resources.getString("Flare.no_animation"), // $NON-NLS-1$
+          Boolean.FALSE
+        )
+      );
     }
     else {
       ErrorDialog.dataWarning(new BadDataReport("Flare - can only be added to a Map. ", //NON-NLS
@@ -436,7 +450,7 @@ public class Flare extends AbstractConfigurable
     }
 
     animator.stop();
-    animate = pulses > 0 && pulsesPerSec > 0;
+    animate = Boolean.FALSE.equals(GameModule.getGameModule().getPrefs().getValue(NO_ANIMATION));
     animator.setRepeatCount(Math.max(pulses, 1));
     animator.setDuration(1000 / Math.max(pulsesPerSec, 1));
     animator.start();
