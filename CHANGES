@@ -1,5 +1,8 @@
 3.5.1 - ???
 
+* 13959: Loads from wizard should add filename to window title
+* 13954: Alt-click, Shift+Ctrl-click should not change selection
+
 3.5.0 - 31 January 2021
 
 * 13952: Make Flare animation disableable
