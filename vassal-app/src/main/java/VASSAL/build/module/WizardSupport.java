@@ -649,6 +649,7 @@ public class WizardSupport {
                   @Override
                   public void run() {
                     GameModule.getGameModule().getFileChooser().setSelectedFile(f); //BR// When loading a saved game from Wizard, put it appropriately into the "default" for the next save/load/etc.
+                    GameModule.getGameModule().setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME); //BR// ... aaaand put it in the app window description.
                     super.run();
                     processing.remove(f);
                   }
