@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 13960: MouseoverStackViewer mis-centering if "draw pieces" wasn't selected
 * 13959: Loads from wizard should add filename to window title
 * 13954: Alt-click, Shift+Ctrl-click should not change selection
 
