@@ -493,12 +493,20 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
       if (report.length() > 0) {
-        x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
-        drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
-                  lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
-                  stretchWidthSummary ? lastPieceBounds.width + 2 : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
-                  stretchWidthSummary ? 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
-                  false);
+        if (graphicsVisible) {
+          x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
+          drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
+            lastPieceBounds.width + 2, // Because for some reason somebody made the default box be "one pixel bigger in all directions". THANKS, somebody!
+            stretchWidthSummary ? lastPieceBounds.width + 2 : 0, // If we're stretching-to-fit, our same width as the stretch-to-fit box.
+            stretchWidthSummary ? 1 : 0, // If stretching-to-fit, this tells the drawer about the entertaining "one extra pixel" issue.
+            false);
+        }
+        else {
+          // If we didn't draw any pieces "but there are valid pieces"
+          x = (int)((bounds.x - bounds.width) * os_scale);
+          drawLabel(g, new Point(x, y), report, centerText ? LabelUtils.CENTER : LabelUtils.RIGHT, LabelUtils.BOTTOM,
+            0, 0, 0, false);
+        }
       }
     }
   }
