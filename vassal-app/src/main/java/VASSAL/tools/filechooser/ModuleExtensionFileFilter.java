@@ -27,7 +27,7 @@ import VASSAL.i18n.Resources;
  * @since 3.1.0
  */
 public class ModuleExtensionFileFilter extends ExtensionFileFilter {
-  public static final String[] types = { ".vext" }; //NON-NLS
+  public static final String[] types = { ".vmdx" }; //NON-NLS
 
   public ModuleExtensionFileFilter() {
     super(Resources.getString("Editor.FileFilter.extensions"), types);

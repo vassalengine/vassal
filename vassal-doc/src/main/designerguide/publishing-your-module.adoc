@@ -22,7 +22,7 @@ _*File Types*_
 The following file types can be uploaded to Vassalengine.org:
 
 * .vmod for modules
-* .vext for extensions
+* .vmdx for extensions
 * .vsav for saved game files
 * .vlog for log files
 
