@@ -768,7 +768,6 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       peekCommandInput.getControls().setVisible(p.displayStyle == PEEK);
       controls.add(peekCommandLabel, peekCommandInput);
 
-
       displayOption.addPropertyChangeListener(evt -> {
         showDisplayOption.repaint();
         peekKeyLabel.setVisible(optionNames[1].equals(evt.getNewValue()));
@@ -790,8 +789,8 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(obscureKeyInput.getValueString())
-          .append(picker.getValueString())
-          .append(obscureCommandInput.getValueString());
+        .append(picker.getValueString())
+        .append(obscureCommandInput.getValueString());
       char optionChar = INSET;
       for (int i = 0; i < optionNames.length; ++i) {
         if (optionNames[i].equals(displayOption.getValueString())) {
