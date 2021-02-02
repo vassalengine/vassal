@@ -151,7 +151,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       .append(bgColor)
       .append(PieceAccessConfigurer.encode(access))
       .append(transparency)
-       .append(description);
+      .append(description);
     return ID + se.getValue();
   }
 
