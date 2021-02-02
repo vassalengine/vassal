@@ -52,7 +52,7 @@ public class EditExtensionAction extends LoadModuleAction {
   @Override
   protected void loadModule(File f) throws IOException {
     final ModuleExtension ext =
-      new ModuleExtension(new ArchiveWriter(new ZipArchive(f), ".vext")); //NON-NLS
+      new ModuleExtension(new ArchiveWriter(new ZipArchive(f), ".vmdx")); //NON-NLS
     ext.build();
     final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     final ExtensionEditorWindow w =

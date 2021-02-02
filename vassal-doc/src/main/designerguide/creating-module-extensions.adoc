@@ -33,7 +33,7 @@ In the Extension Editor, the process of adding components is the same for extens
 
 Extensions, and components defined in them can refer to global items defined in the base module, such as Prototypes, Global Properties, Global Key Commands, and Global Hotkeys. For example, if the base module included a Prototype definition called _Zombie_, pieces created in the extension could be assigned the Zombie Prototype. (This is a two-way street. See _Extension Prototypes in the Base Module_ on page 107 for more information.)
 
-Extensions are given the extension .vext. Like modules, they are ZIP files and can be decompressed using any ZIP-capable utility.
+Extensions are given the extension .vmdx. Like modules, they are ZIP files and can be decompressed using any ZIP-capable utility.
 
 _*Extension Properties*_
 
@@ -67,13 +67,13 @@ If you wish this extension to be used with any module, select *Allow loading wit
 .. ____________________________________
 Click *Save* to save the Properties.
 . In the Extension Editor, add or edit components as desired.
-. On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vext.
+. On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vmdx.
 
 *To edit an extension,*
 
 . In Module Manager, select the extension you wish to edit. Right-click and pick *Edit Extension*. The Extension Editor opens.
 . Add or edit components to the extension as desired.
-. On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vext.
+. On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vmdx.
 
 _*Copying, Pasting and Editing Module Components*_
 
@@ -123,7 +123,7 @@ Scan, create, or otherwise acquire all of the graphic images for your new cards 
 . Right-click a sample card in the deck and pick *Copy*.
 . Right-click the *[Deck]* node and pick *Paste*. You will now be able to edit the pasted card to reflect a card from the expansion. You can change the card name or basic image, add new Traits or Prototypes, or otherwise edit the new card as needed.
 . Repeat Steps 4-5 for any remaining new Cards from the expansion.
-. On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vext.
+. On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vmdx.
 
 You can now test and activate your extension.
 

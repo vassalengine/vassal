@@ -1025,7 +1025,7 @@ For example, an extension could include additional battle maps or optional units
 Generally, an extension is associated with a specific module and is not useable with other modules.
 
 Like modules, extensions are not specific to any operating system.
-A module extension for Vassal {project-version} usually has the suffix .vext, although some older extensions have the suffix .mdx or even .zip.
+A module extension for Vassal {project-version} usually has the suffix .vmdx, although some older extensions have the suffix .mdx or even .zip.
 
 ==== Activating and Deactivating Extensions
 
@@ -1039,7 +1039,7 @@ To activate an extension:
 The extension is now listed in the Module Manager under the name of the module.
 A copy of the extension file is automatically placed in a new directory called <Module Name>_ext, in the same directory where the module is located.
 When Vassal loads the module, any extensions in this directory are also loaded.
-(For example, for the module WorldWarII, upon activating the extension IwoJima.vext, the extension is placed in the directory WorldWarII_ext.)
+(For example, for the module WorldWarII, upon activating the extension IwoJima.vmdx, the extension is placed in the directory WorldWarII_ext.)
 
 You can _deactivate_ an extension if you do not wish it to be loaded with the base module.
 

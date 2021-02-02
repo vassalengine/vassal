@@ -22,7 +22,7 @@ _For some utilities, you may need to change the file extension from .vmod to .zi
 
 Because a module file is itself a ZIP file, when you packaging or publishing a module, do not zip the module file. For one thing, the savings due to compression is minimal. In addition, compressing a ZIP file can cause confusion when unzipping, as some ZIP utilities may unzip the base ZIP file and any included ZIP files, leaving only the component files behind.
 
-Extension (.vext) files are also ZIP files, like module files.
+Extension (.vmdx) files are also ZIP files, like module files.
 
 *File Components*
 
