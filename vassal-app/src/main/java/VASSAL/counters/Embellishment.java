@@ -869,10 +869,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
+    List<String> exp = new ArrayList<>();
     if (followProperty) {
-      return List.of(propertyName);
+      exp.add(propertyName);
     }
-    return Collections.emptyList();
+    exp.addAll(Arrays.asList(imageName));
+    exp.addAll(Arrays.asList(commonName));
+    return exp;
   }
 
   /**
