@@ -77,7 +77,7 @@ public class ExtensionEditorWindow extends EditorWindow {
     if (!StringUtils.isEmpty(extensionName)) {
       title = title + " - " + extensionName; //NON-NLS
       if (!StringUtils.isEmpty(moduleName)) {
-        title = title + Resources.getString("Editor.ExtensionEditor.extends_what_module", moduleName);
+        title = title + " " + Resources.getString("Editor.ExtensionEditor.extends_what_module", moduleName);
       }
     }
 
