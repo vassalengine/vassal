@@ -735,7 +735,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         int shownPieces = 0;
         while (p != null && shownPieces < showDeckDepth) {
-          if (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME))) {
+          if (!Boolean.TRUE.equals(p.getProperty(Properties.OBSCURED_TO_ME)) && !d.isFaceDown()) {
             final Rectangle r = (Rectangle) d.getShape();
             r.x += d.getPosition().x;
             r.y += d.getPosition().y;
