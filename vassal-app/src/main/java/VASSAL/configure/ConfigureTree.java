@@ -1847,7 +1847,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       GamePiece p;
       boolean protoskip;
       if (c instanceof GamePiece) {
-        p = (GamePiece)c;
+        p = (GamePiece) c;
+        protoskip = false;
+      }
+      else if (c instanceof PieceSlot) {
+        p = ((PieceSlot)c).getPiece();
         protoskip = false;
       }
       else if (c instanceof PrototypeDefinition) {
@@ -1989,6 +1993,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       boolean protoskip;
       if (c instanceof GamePiece) {
         p = (GamePiece)c;
+        protoskip = false; // This is a "real" GamePiece so we will look at the BasicPiece too
+      }
+      else if (c instanceof PieceSlot) {
+        p = ((PieceSlot)c).getPiece();
         protoskip = false; // This is a "real" GamePiece so we will look at the BasicPiece too
       }
       else if (c instanceof PrototypeDefinition) {
