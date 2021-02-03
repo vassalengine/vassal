@@ -311,7 +311,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     // Account for edges of window, stuff like that
     dbounds.x = Math.min(dbounds.x, visibleRect.x + visibleRect.width - dbounds.width);
-    dbounds.x = Math.max(dbounds.x, visibleRect.x);
     dbounds.y = Math.min(dbounds.y, visibleRect.y + visibleRect.height - dbounds.height) - (isTextUnderCounters() ? 15 : 0);
     dbounds.y = Math.max(dbounds.y, visibleRect.y + (textVisible ? g.getFontMetrics().getHeight() + 6 : 0));
 
@@ -319,6 +318,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (centerAll) {
       dbounds.x -= Math.max(0, dbounds.width / 2 - Math.abs(origX - dbounds.x)); // account for how much we were impacted by edge of window
     }
+
+    // Enforce left edge of window (AFTER any attempted adjustment for center-over)
+    dbounds.x = Math.max(dbounds.x, visibleRect.x);
 
     // Save this box for possible centering of text box later. This is our "actual combined viewer box" for the pieces.
     lastPieceBounds.x = dbounds.x;
