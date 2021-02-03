@@ -869,7 +869,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getExpressionList() {
-    List<String> exp = new ArrayList<>();
+    final List<String> exp = new ArrayList<>();
     if (followProperty) {
       exp.add(propertyName);
     }
