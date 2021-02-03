@@ -375,7 +375,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
           if (combineCounterSummary && stretchWidthSummary) {
             if (!anyUnderText) {
-              drawLabel(g, new Point(lastPieceBounds.x - 1, y), " ", LabelUtils.CENTER, LabelUtils.CENTER,
+              drawLabel(g, new Point(lastPieceBounds.x - 1, y), (pieces.size() == 1) ? text : " ", LabelUtils.CENTER, LabelUtils.CENTER,
                 lastPieceBounds.width + 2,
                 lastPieceBounds.width + 2,
                 1,
@@ -385,8 +385,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           }
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
-          final int x = dbounds.x  - (int) (pieceBounds.x * graphicsZoom * os_scale)  + (int) (borderOffset * os_scale) + (int)(borderWidth * os_scale);
-          drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
+          if (!combineCounterSummary || !stretchWidthSummary || (pieces.size() != 1)) {
+            final int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale) + (int) (borderWidth * os_scale);
+            drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
+          }
           anyUnderText = true;
         }
       }
