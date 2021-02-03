@@ -475,5 +475,6 @@ public class DiceButton extends AbstractToolbarItem {
   public void addLocalImageNames(final Collection<String> s) {
     final HTMLImageFinder h = new HTMLImageFinder(reportFormat.getFormat());
     h.addImageNames(s);
+    super.addLocalImageNames(s);
   }
 }
