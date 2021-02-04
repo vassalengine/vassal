@@ -120,18 +120,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void build() {
     final AbstractMetaData data = MetaDataFactory.buildMetaData(archive.getArchive().getFile());
 
-    if (!(data instanceof ExtensionMetaData)) {
-      final String archName = archive.getArchive().getName();
-      logger.error("Not an extension file {}", archName); //NON-NLS
-      throw new ExtensionsLoader.LoadExtensionException("Not an extension file " + archName); //NON-NLS
-    }
-
     GameModule.getGameModule().getDataArchive().addExtension(archive);
 
     // Record that we are currently building this Extension
     GameModule.getGameModule().setGpIdSupport(this);
 
-    final String buildFile = VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(data.getVassalVersion()), "3.5") < 0 ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE; //NON-NLS
+    final String buildFile = data instanceof ExtensionMetaData &&
+      VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(
+        data.getVassalVersion()), "3.5" // NON-NLS
+      ) < 0 ? GameModule.BUILDFILE_OLD : GameModule.BUILDFILE;
 
     try (BufferedInputStream in = new BufferedInputStream(archive.getInputStream(buildFile))) {
       try {
@@ -146,7 +143,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
     }
     catch (FileNotFoundException | NoSuchFileException e) {
-      logger.error("File {} not found in archive", buildFile, e); //NON-NLS
+      // This is not necessarily an error; it's normal with new extensions
+      logger.info("File {} not found in archive", buildFile); //NON-NLS
     }
     catch (IOException e) {
       logger.error("Error while reading file {} from archive", buildFile, e); //NON-NLS
