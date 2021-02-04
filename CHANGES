@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 13974: Better window title bars (filename-first like most apps)
 * 13973: Missing message for failure to write file
 * 13971: Cannot create new module extensions
 * 13970: DiceButton icons and Mask images incorrectly suggested for removal by
