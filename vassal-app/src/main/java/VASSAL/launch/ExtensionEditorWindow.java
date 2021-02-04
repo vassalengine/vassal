@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import javax.swing.JDialog;
 
+import VASSAL.Info;
 import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.GameModule;
@@ -72,13 +73,17 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   public void updateWindowTitle() {
-    String title = Resources.getString("Editor.ExtensionEditor.editor_name");
+    String title;
 
     if (!StringUtils.isEmpty(extensionName)) {
-      title = title + " - " + extensionName; //NON-NLS
+      title = extensionName; //NON-NLS
       if (!StringUtils.isEmpty(moduleName)) {
         title = title + " " + Resources.getString("Editor.ExtensionEditor.extends_what_module", moduleName);
       }
+      title = title + " - " + Resources.getString("Editor.ExtensionEditor.editor_name", Info.getVersion());
+    }
+    else {
+      title = Resources.getString("Editor.ExtensionEditor.editor_name", Info.getVersion());
     }
 
     setTitle(title);

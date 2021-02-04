@@ -22,6 +22,7 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import VASSAL.Info;
 import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.GameModule;
@@ -91,10 +92,10 @@ public class ModuleEditorWindow extends EditorWindow {
 
   @Override
   public void updateWindowTitle() {
-    String title = Resources.getString("Editor.ModuleEditor.editor_name");
+    String title = Resources.getString("Editor.ModuleEditor.editor_name", Info.getVersion());
 
     if (!StringUtils.isEmpty(moduleName)) {
-      title = title + " - " + moduleName;
+      title = moduleName + " - " + title;
     }
 
     setTitle(title);

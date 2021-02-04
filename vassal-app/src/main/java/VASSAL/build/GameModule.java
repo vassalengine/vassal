@@ -389,7 +389,7 @@ public class GameModule extends AbstractConfigurable
    * Sets the proper name for module window's title bar
    */
   public void initFrameTitle() {
-    frame.setTitle(getLocalizedGameName());
+    frame.setTitle(getTitleString());
   }
 
   /**
@@ -1359,10 +1359,10 @@ public class GameModule extends AbstractConfigurable
    */
   public String getWindowTitleString(String key, String name) {
     if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title", name);  //NON-NLS-1$
+      return Resources.getString(key + "_title", name, "", Info.getVersion());  //NON-NLS-1$
     }
     else {
-      return Resources.getString(key + "_title_" + gameFileMode, name, gameFile); //NON-NLS-1$
+      return Resources.getString(key + "_title_" + gameFileMode, name, gameFile, Info.getVersion()); //NON-NLS-1$
     }
   }
 
@@ -1379,7 +1379,7 @@ public class GameModule extends AbstractConfigurable
    * Updates the title bar of the main module window, and all map windows
    */
   public void updateTitleBar() {
-    frame.setTitle(getTitleString());  //$NON-NLS-1$
+    frame.setTitle(getTitleString());
 
     for (final Map m : getComponentsOf(Map.class)) {
       m.updateTitleBar();
