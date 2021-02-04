@@ -146,7 +146,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.10.19</version>
+            <version>1.10.20</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
