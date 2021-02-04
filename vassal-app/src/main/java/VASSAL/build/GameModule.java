@@ -1821,7 +1821,7 @@ public class GameModule extends AbstractConfigurable
         getPlayerWindow(),
         e,
         writer.getArchive().getFile(),
-        "Error.new_file_write_error"
+        "Error.file_write_error"
       );
     }
   }
