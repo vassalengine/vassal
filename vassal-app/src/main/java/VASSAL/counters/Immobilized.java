@@ -55,6 +55,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean moveIfSelected = false;
   protected boolean neverBandSelect = false;
   protected boolean altToBandSelect = false;
+  protected boolean altShiftToBandSelect = false;
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
   protected EventFilter bandselectFilter;
@@ -68,6 +69,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char NEVER_SELECT = 'n';
   protected static final char NEVER_BAND_SELECT = 'Z';
   protected static final char ALT_BAND_SELECT = 'A';
+  protected static final char ALT_SHIFT_BAND_SELECT = 'B';
 
   public class UseShift implements EventFilter {
     @Override
@@ -80,6 +82,13 @@ public class Immobilized extends Decorator implements EditablePiece {
     @Override
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isAltDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
+    }
+  }
+
+  public class UseAltShift implements EventFilter {
+    @Override
+    public boolean rejectEvent(InputEvent evt) {
+      return (!evt.isAltDown() || !evt.isShiftDown()) && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   }
 
@@ -117,6 +126,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     moveIfSelected = false;
     neverBandSelect = false;
     altToBandSelect = false;
+    altShiftToBandSelect = false;
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     final String selectionOptions = st.nextToken("");
@@ -138,6 +148,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     if (selectionOptions.indexOf(ALT_BAND_SELECT) >= 0) {
       altToBandSelect = true;
+    }
+    if (selectionOptions.indexOf(ALT_SHIFT_BAND_SELECT) >= 0) {
+      altShiftToBandSelect = true;
     }
     if (selectionOptions.indexOf(NEVER_BAND_SELECT) >= 0) {
       neverBandSelect = true;
@@ -184,6 +197,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
     else if (altToBandSelect) {
       bandselectFilter = new UseAlt();
+    }
+    else if (altShiftToBandSelect) {
+      bandselectFilter = new UseAltShift();
     }
     else {
       bandselectFilter = null;
@@ -297,6 +313,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (altToBandSelect) {
       buffer.append(ALT_BAND_SELECT);
     }
+    else if (altShiftToBandSelect) {
+      buffer.append(ALT_SHIFT_BAND_SELECT);
+    }
 
     buffer.append(';');
     if (neverMove) {
@@ -359,6 +378,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     if (! Objects.equals(neverMove, c.neverMove)) return false;
     if (! Objects.equals(moveIfSelected, c.moveIfSelected)) return false;
     if (! Objects.equals(neverBandSelect, c.neverBandSelect)) return false;
+    if (! Objects.equals(altShiftToBandSelect, c.altShiftToBandSelect)) return false;
 
     return Objects.equals(altToBandSelect, c.altToBandSelect);
   }
@@ -373,6 +393,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     private static final String NORMAL = "normally"; // NON-NLS
     private static final String SHIFT = "when shift-key down"; // NON-NLS
     private static final String ALT = "when alt-key down"; // NON-NLS
+    private static final String ALT_SHIFT = "when alt+shift keys down"; // NON-NLS
     private static final String NEVER = "never"; // NON-NLS
     private static final String SELECTED = "only if selected"; // NON-NLS
 
@@ -385,11 +406,12 @@ public class Immobilized extends Decorator implements EditablePiece {
       "Editor.Immobilized.never"
     };
 
-    private static final String[] BAND_SELECT_OPTIONS = { NORMAL, ALT, NEVER}; // NON-NLS
+    private static final String[] BAND_SELECT_OPTIONS = { NORMAL, ALT, ALT_SHIFT, NEVER}; // NON-NLS
 
     private static final String[] BAND_SELECT_KEYS = {
       "Editor.Immobilized.normally",
       "Editor.Immobilized.when_alt_key_down",
+      "Editor.Immobilized.when_alt_shift_keys_down",
       "Editor.Immobilized.never"
     };
 
@@ -425,6 +447,9 @@ public class Immobilized extends Decorator implements EditablePiece {
       }
       else if (p.altToBandSelect) {
         bandSelectOption.setValue(ALT);
+      }
+      else if (p.altShiftToBandSelect) {
+        bandSelectOption.setValue(ALT_SHIFT);
       }
       else {
         bandSelectOption.setValue(NORMAL);
@@ -471,6 +496,9 @@ public class Immobilized extends Decorator implements EditablePiece {
       switch (bandSelectOption.getValueString()) {
       case ALT:
         s += ALT_BAND_SELECT;
+        break;
+      case ALT_SHIFT:
+        s += ALT_SHIFT_BAND_SELECT;
         break;
       case NEVER:
         s += NEVER_BAND_SELECT;
