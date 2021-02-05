@@ -44,9 +44,11 @@ public class BugUtils {
   }
 
   private static String getDescription(String description, String errorLog) {
+    final GameModule g = GameModule.getGameModule();
     return
       description + "\n\n" +
-      GameModule.getGameModule().getGameName() + " v" + GameModule.getGameModule().getGameVersion() + " " + Info.getVersion() + "\n\n" + //NON-NLS
+      (g == null ? "" : g.getGameName() + " v" + g.getGameModule().getGameVersion() + " ") +
+      Info.getVersion() + "\n\n" + //NON-NLS
       getStackTraceSummary(errorLog);
   }
 
@@ -58,7 +60,8 @@ public class BugUtils {
   }
 
   private static String getSummary(Throwable t) {
-    String summary = "[" + GameModule.getGameModule().getGameName() + "] ";
+    final GameModule g = GameModule.getGameModule();
+    String summary = g == null ? "" : "[" + g.getGameName() + "] ";
     if (t == null) {
       summary += "Automated Bug Report"; //NON-NLS
     }
