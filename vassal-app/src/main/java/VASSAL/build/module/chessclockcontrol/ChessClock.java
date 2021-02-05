@@ -531,7 +531,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     int iconWidth;
     int iconHeight;
 
-    Icon icon = timerButton.getIcon();
+    final Icon icon = timerButton.getIcon();
     if (icon != null) {
       iconWidth = icon.getIconWidth() + ins.left;
       iconHeight = icon.getIconHeight() + ins.top + ins.bottom;
