@@ -378,6 +378,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   public void showClock() {
     timerButton.setVisible(true);
+    setTimerButton();
   }
 
   /**
