@@ -20,11 +20,13 @@ package VASSAL.build.module.chessclockcontrol;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.Icon;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -524,8 +526,24 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
 
     // adjust size to prevent button wobbling
     final Insets ins = timerButton.getInsets();
-    final int width = ins.left + timerButton.getFontMetrics(timerButton.getFont()).stringWidth(getFormattedButtonText() + baseline + ins.right);
-    timerButton.setPreferredSize(new Dimension(width, timerButton.getPreferredSize().height));
+
+    int iconWidth;
+    int iconHeight;
+
+    Icon icon = timerButton.getIcon();
+    if (icon != null) {
+      iconWidth = icon.getIconWidth() + ins.left;
+      iconHeight = icon.getIconHeight() + ins.top + ins.bottom;
+    }
+    else {
+      iconWidth  = 0;
+      iconHeight = 0;
+    }
+
+    final FontMetrics metrics = timerButton.getFontMetrics(timerButton.getFont());
+    final int width = ins.left + iconWidth + metrics.stringWidth(getFormattedButtonText() + baseline + ins.right);
+    final int textHeight = ins.top + metrics.getHeight() + ins.bottom;
+    timerButton.setPreferredSize(new Dimension(width, Math.max(textHeight, iconHeight)));
 
     return tocking != oldTocking;
   }
