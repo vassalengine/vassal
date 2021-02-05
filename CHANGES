@@ -2,6 +2,7 @@
 
 * 13987: ChessClock buttons with icons had inappropriate height/width
 * 13984: NPE in BugUtils when involved from the Module Manager
+* 13977: Alt+Shift now an option for band selection of Does Not Stack pieces
 * 13974: Better window title bars (filename-first like most apps)
 * 13973: Missing message for failure to write file
 * 13971: Cannot create new module extensions
