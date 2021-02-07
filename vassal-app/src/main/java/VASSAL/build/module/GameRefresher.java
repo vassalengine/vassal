@@ -120,6 +120,10 @@ public final class GameRefresher implements GameComponent {
     return options.contains("TestMode"); //$NON-NLS-1$
   }
 
+  public boolean isDeleteNoMap() {
+    return options.contains("DeleteNoMap"); //$NON-NLS-1$
+  }
+
   public void start() {
     dialog = new RefreshDialog(this);
     dialog.setVisible(true);
@@ -228,11 +232,14 @@ public final class GameRefresher implements GameComponent {
       }
 
       if (gpIdChecker.hasErrors()) {
-        // Any errors should have been resolved by the GpId check at startup, so
-        // this error indicates
-        // a bug in GpIdChecker.fixErrors().
+        // Any gpid errors should have been resolved by the GpId check when the editor is run.
+        // If a module created before gpIDChecker was setup is run on a vassal version with gmIDChecker
+        // is run in the player, errors might still be present.
+        // Inform user that he must upgrade the module to the latest vassal version before running Refresh
         gpIdChecker = null;
-        throw new IllegalBuildException("GameRefresher.execute: gpIdChecker has errors"); //$NON-NLS-1$
+        log("Unable to run Refresh, module was saved with older vassal version. Edit and save module with latest vassal version first. "); //$NON-NLS-1$
+        return;
+        //throw new IllegalBuildException("GameRefresher.execute: gpIdChecker has errors"); //$NON-NLS-1$
       }
     }
 
@@ -262,6 +269,13 @@ public final class GameRefresher implements GameComponent {
     if (map == null) {
 //      logger.error("Can't refresh piece " + piece.getName() + + "(" + piece.getId()+ "): No Map"); //$NON-NLS-1$
       log("Can't refresh piece " + piece.getName() + "(" + piece.getId() + "): No Map"); //$NON-NLS-1$
+      // If Option "Delete pieces with no map" is set to true. Get rid of this piece
+      if (isDeleteNoMap()) {
+        log("Deleting " + piece.getName() + "(" + piece.getId() + ") from game"); //$NON-NLS-1$
+        final Command remove = new RemovePiece(Decorator.getOutermost(piece));
+        remove.execute();
+        command.append(remove);
+      }
       return;
     }
 
@@ -355,6 +369,7 @@ public final class GameRefresher implements GameComponent {
     private JCheckBox testModeOn;
     private JCheckBox labelerNameCheck;
     private JCheckBox layerNameCheck;
+    private JCheckBox deletePieceNoMap;
     private final Set<String> options = new HashSet<>();
 
     RefreshDialog(GameRefresher refresher) {
@@ -408,6 +423,9 @@ public final class GameRefresher implements GameComponent {
       add(layerNameCheck);
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
       add(testModeOn);
+      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
+      deletePieceNoMap.setSelected(true);
+      add(deletePieceNoMap);
 
       pack();
     }
@@ -425,6 +443,9 @@ public final class GameRefresher implements GameComponent {
       }
       if (testModeOn.isSelected()) {
         options.add("TestMode"); //$NON-NLS-1$
+      }
+      if (deletePieceNoMap.isSelected()) {
+        options.add("DeleteNoMap"); //$NON-NLS-1$
       }
     }
 
@@ -454,7 +475,7 @@ public final class GameRefresher implements GameComponent {
         final Command msg = new Chatter.DisplayText(g.getChatter(), Resources.getString("GameRefresher.run_refresh_counters_v2", player, g.getGameVersion()));
         msg.execute();
         command.append(msg);
-//FIXME list options in chetter for opponents to see
+//FIXME list options in chatter for opponents to see
 
       }
       refresher.execute(options, command);

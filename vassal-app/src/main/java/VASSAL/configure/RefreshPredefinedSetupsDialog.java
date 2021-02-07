@@ -49,6 +49,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
   private JCheckBox testModeOn;
+  private JCheckBox deletePieceNoMap;
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -92,6 +93,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     add(layerNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
     add(testModeOn);
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
+    deletePieceNoMap.setSelected(true);
+    add(deletePieceNoMap);
     pack();
     setLocationRelativeTo(getOwner());
   }
@@ -109,6 +113,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     if (testModeOn.isSelected()) {
       options.add("TestMode"); //$NON-NLS-1$
+    }
+    if (deletePieceNoMap.isSelected()) {
+      options.add("DeleteNoMap"); //$NON-NLS-1$
     }
   }
 
