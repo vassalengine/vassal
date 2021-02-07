@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 13997: Chat log should start display on bottom line even with larger monitors
 * 13987: ChessClock buttons with icons had inappropriate height/width
 * 13984: NPE in BugUtils when involved from the Module Manager
 * 13977: Alt+Shift now an option for band selection of Does Not Stack pieces
