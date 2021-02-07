@@ -112,7 +112,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     myFont = new Font("SansSerif", Font.PLAIN, 12); //NON-NLS // Will be overridden by the font from Chat preferences
 
     try {
-      for (int i = 0; i < 15; ++i) {
+      for (int i = 0; i < 30; ++i) { // Scroll past some arbitrary number of empty lines so that first text will start appearing on the bottom line
         kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null); //NON-NLS
       }
     }
