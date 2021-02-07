@@ -415,12 +415,34 @@ public class ZipArchive implements FileArchive {
     return dot == -1 ? "" : path.substring(dot);
   }
 
+  private static boolean illegalFilenameChar(int c) {
+    // These characters are illegal in filenames on at least one of
+    // Windows, Mac, or Linux, or are our escape character '%').
+    return c < 0x20 || c == '"' || c == '%' || c == '*' || c == ':'
+                    || c == '<' || c == '>' || c == '?' || c == '|';
+  }
+
+  private static String escapeFilenameChar(int c) {
+    return String.format("%%%1$02X", c);
+  }
+
+  private static String sanitize(String filename) {
+    // Don't write out temp filenames which contain illegal characters.
+    final int len = filename.length();
+    final StringBuilder b = new StringBuilder(len);
+    for (int i = 0; i < len; ++i) {
+      final char c = filename.charAt(i);
+      b.append(illegalFilenameChar(c) ? escapeFilenameChar(c) : c);
+    }
+    return b.toString();
+  }
+
   private static File makeTempFileFor(String path) throws IOException {
     return makeTempFileFor(path, Info.getTempDir().toPath());
   }
 
   private static File makeTempFileFor(String path, Path tmpDir) throws IOException {
-    final String base = FilenameUtils.getBaseName(path) + "_";
+    final String base = sanitize(FilenameUtils.getBaseName(path)) + "_";
     final String ext = extensionOf(path);
     Files.createDirectories(tmpDir);
     return Files.createTempFile(tmpDir, base, ext).toFile();
