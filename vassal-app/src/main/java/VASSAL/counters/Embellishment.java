@@ -27,9 +27,11 @@ import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -64,10 +66,6 @@ import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
-
-import java.util.Arrays;
-
-import java.util.Objects;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -1535,6 +1533,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    Collections.addAll(s, imageName);
+    Arrays.stream(imageName).filter(Objects::nonNull).forEach(i -> s.add(i));
   }
 }
