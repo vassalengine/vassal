@@ -129,7 +129,7 @@ public class GlobalCommand {
     if (!target.fastMatchProperty || fastProperty.isEmpty()) return true;
 
     final Object prop = gamePiece.getProperty(fastProperty);
-    final String value = (prop == null) ? "" : prop.toString();
+    final String value = (prop == null) ? null : prop.toString();
 
     // Intentionally favors the default "Equals" as first to process
     switch (target.targetCompare) {
