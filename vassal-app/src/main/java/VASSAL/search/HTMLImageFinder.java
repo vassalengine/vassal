@@ -50,7 +50,6 @@ public class HTMLImageFinder {
       }
       catch (IOException e) {
         ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.not_found", "HTMLImageFinder"), file.getName(), e)); //NON-NLS
-        fileString = "<html>...</html>"; //NON-NLS
       }
     }
   }
