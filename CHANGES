@@ -3,6 +3,7 @@
 * 13999: Fast-Match wasn't working for "Moved" property
 * 13997: Chat log should start display on bottom line even with larger monitors
 * 13996: Sanitize temp file basenames to escape illegal characters
+* 13995: Don't try to write a logfile without having started one
 * 13987: ChessClock buttons with icons had inappropriate height/width
 * 13984: NPE in BugUtils when involved from the Module Manager
 * 13977: Alt+Shift now an option for band selection of Does Not Stack pieces
@@ -11,6 +12,7 @@
 * 13971: Cannot create new module extensions
 * 13970: DiceButton icons and Mask images incorrectly suggested for removal by
     unneeded-file-remover
+* 13968: NPE in HelpFile.addLocalImageNames()
 * 13967: Search wasn't searching into PieceSlots ("Single Piece" items in
     Setup Stacks, etc.)
 * 13965: MouseoverStackViewer should not show face-down cards in decks, should
