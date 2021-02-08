@@ -308,12 +308,7 @@ public class HelpFile extends AbstractConfigurable {
    */
   @Override
   public void addLocalImageNames(Collection<String> s) {
-    final String file = getAttributeValueString(FILE);
-    if (file == null) {
-      return;
-    }
-    final HTMLImageFinder h = new HTMLImageFinder(file);
+    final HTMLImageFinder h = new HTMLImageFinder(getAttributeValueString(FILE));
     h.addImageNames(s);
   }
 }
-
