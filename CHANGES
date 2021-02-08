@@ -5,6 +5,7 @@
 * 13997: Chat log should start display on bottom line even with larger monitors
 * 13996: Sanitize temp file basenames to escape illegal characters
 * 13995: Don't try to write a logfile without having started one
+* 13992: NPE in Embellishment.addLocalImageNames()
 * 13987: ChessClock buttons with icons had inappropriate height/width
 * 13984: NPE in BugUtils when involved from the Module Manager
 * 13977: Alt+Shift now an option for band selection of Does Not Stack pieces
