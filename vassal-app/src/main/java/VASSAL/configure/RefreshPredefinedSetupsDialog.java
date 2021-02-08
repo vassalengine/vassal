@@ -144,7 +144,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         modulePds.add(pds);
       }
     }
-    log(modulePds.size() + " Predefined setups found");
+    log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
     for (final PredefinedSetup pds : modulePds) {
       log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
     }

@@ -237,7 +237,7 @@ public final class GameRefresher implements GameComponent {
         // is run in the player, errors might still be present.
         // Inform user that he must upgrade the module to the latest vassal version before running Refresh
         gpIdChecker = null;
-        log("Unable to run Refresh, module was saved with older vassal version. Edit and save module with latest vassal version first. "); //$NON-NLS-1$
+        log(Resources.getString("GameRefresher.gpid_error_message"));
         return;
         //throw new IllegalBuildException("GameRefresher.execute: gpIdChecker has errors"); //$NON-NLS-1$
       }
@@ -267,11 +267,10 @@ public final class GameRefresher implements GameComponent {
     // Piece needs to be on a map. Else how do we put it back.
     final Map map = piece.getMap();
     if (map == null) {
-//      logger.error("Can't refresh piece " + piece.getName() + + "(" + piece.getId()+ "): No Map"); //$NON-NLS-1$
-      log("Can't refresh piece " + piece.getName() + "(" + piece.getId() + "): No Map"); //$NON-NLS-1$
+      log(Resources.getString("GameRefresher.refresh_error_nomap1", piece.getName(), piece.getId()));
       // If Option "Delete pieces with no map" is set to true. Get rid of this piece
       if (isDeleteNoMap()) {
-        log("Deleting " + piece.getName() + "(" + piece.getId() + ") from game"); //$NON-NLS-1$
+        log(Resources.getString("GameRefresher.refresh_error_nomap2", piece.getName(), piece.getId()));
         final Command remove = new RemovePiece(Decorator.getOutermost(piece));
         remove.execute();
         command.append(remove);
@@ -283,8 +282,7 @@ public final class GameRefresher implements GameComponent {
     final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
     if (newPiece == null) {
       notFoundCount++;
-      //logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //$NON-NLS-1$
-      log("Can't refresh piece " + piece.getName() + "(" + piece.getId() + "): Can't find matching Piece Slot"); //$NON-NLS-1$
+      log(Resources.getString("GameRefresher.refresh_error_nomatch_pieceslot", piece.getName(), piece.getId()));
       return;
     }
 
@@ -331,22 +329,7 @@ public final class GameRefresher implements GameComponent {
     }
   }
 
-/*  private void testGamePiece(GamePiece piece) {
 
-    final Map map = piece.getMap();
-    if (map == null) {
-      logger.error("Can't refresh piece " + piece.getName() + ": No Map"); //NON-NLS
-      return;
-    }
-
-    if (gpIdChecker.findUpdatedPiece(piece)) {
-      updatedCount++;
-    }
-    else {
-      notFoundCount++;
-      logger.error("Can't refresh piece " + piece.getName() + ": Can't find matching Piece Slot"); //NON-NLS
-    }
-  }*/
 
   @Override
   public Command getRestoreCommand() {
