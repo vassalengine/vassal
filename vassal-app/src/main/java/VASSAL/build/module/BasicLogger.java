@@ -239,7 +239,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
     else {
       // When ending/closing a game
-      if (endLogAction.isEnabled()) {
+      if (endLogAction.isEnabled() && (beginningState != null)) {
         if (JOptionPane.showConfirmDialog(
             GameModule.getGameModule().getPlayerWindow(),
             Resources.getString("BasicLogger.save_log"),    //$NON-NLS-1$
