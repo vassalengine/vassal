@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 14008: Unused Images Tool was suggesting some in-use GIFs for deletion
 * 14000: OverlappingFileLockException when attempting to write preferences
 * 13999: Fast-Match wasn't working for "Moved" property
 * 13997: Chat log should start display on bottom line even with larger monitors
