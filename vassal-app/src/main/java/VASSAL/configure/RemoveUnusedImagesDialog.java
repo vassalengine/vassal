@@ -18,6 +18,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import VASSAL.tools.image.ImageUtils;
 import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
@@ -54,7 +55,15 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     module = GameModule.getGameModule();
     Collections.addAll(keep, module.getDataArchive().getImageNames());
-    keep.removeAll(module.getAllImageNames());
+
+    for (final String filename : module.getAllImageNames()) {
+      if (ImageUtils.hasImageSuffix(filename)) {
+        keep.remove(filename);
+      }
+      else {
+        keep.remove(filename + ImageUtils.GIF_SUFFIX);
+      }
+    }
 
     keepModel.addAll(keep);
 
