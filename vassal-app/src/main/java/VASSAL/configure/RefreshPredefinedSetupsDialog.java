@@ -133,8 +133,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     for (final PredefinedSetup pds : modulePdsAndMenus) {
       if (!pds.isMenu() && pds.isUseFile()) {
         //Exclude scenario folders (isMenu == true)
-        // and exclude any "New game" entries (no predefined setup) (isUseFile == true)
-        modulePds.add(pds);
+        // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
+        // !! Some New Game entries have UseFile = true and filename empty. Check file name too
+        if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
+          modulePds.add(pds);
+        }
       }
     }
     log(modulePds.size() + " Predefined setups found");
