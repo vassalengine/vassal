@@ -5,10 +5,14 @@
 * 13997: Chat log should start display on bottom line even with larger monitors
 * 13996: Sanitize temp file basenames to escape illegal characters
 * 13995: Don't try to write a logfile without having started one
+* 13993: IllegalBuildException on gpIdChecker when using GameRefresher
 * 13992: NPE in Embellishment.addLocalImageNames()
+* 13991: NPE when using Game Refresher on predefined setups
 * 13987: ChessClock buttons with icons had inappropriate height/width
 * 13984: NPE in BugUtils when involved from the Module Manager
+* 13981: NoSuchElementException using Edit All Contained Pieces
 * 13977: Alt+Shift now an option for band selection of Does Not Stack pieces
+* 13975: ArrayIndexOutOfBoundsException using Edi All Contained Pieces
 * 13974: Better window title bars (filename-first like most apps)
 * 13973: Missing message for failure to write file
 * 13971: Cannot create new module extensions
