@@ -25,6 +25,8 @@
 * 13960: MouseoverStackViewer mis-centering if "draw pieces" wasn't selected
 * 13959: Loads from wizard should add filename to window title
 * 13954: Alt-click, Shift+Ctrl-click should not change selection
+* 13944: NPE when loading second game in modules using deprecated
+    Map.mainWindowDock
 
 3.5.0 - 31 January 2021
 
