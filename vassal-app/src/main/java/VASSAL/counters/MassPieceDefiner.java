@@ -94,6 +94,14 @@ public class MassPieceDefiner extends PieceDefiner {
   }
 
   @Override
+  protected void addTrait(Decorator c, int insertIndex) {
+    super.addTrait(c, insertIndex);
+    for (final Entry e : definers) {
+      e.definer.addTrait(c, insertIndex);
+    }
+  }
+
+  @Override
   protected void removeTrait(int index) {
     super.removeTrait(index);
     for (final Entry e : definers) {
