@@ -2565,7 +2565,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (shouldDockIntoMainWindow()) {
         // kludge for modules which still use mainWindowDock
         // remove this when mainWindowDock is removed
-        if (mainWindowDock != null) {
+        if (mainWindowDock != null && splitPane == null) {
           splitPane = new SplitPane(
             SplitPane.VERTICAL_SPLIT,
             mainWindowDock.getTopComponent(),
