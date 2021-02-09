@@ -128,11 +128,10 @@ public class ModuleManagerWindow extends JFrame {
 
   private static final String SHOW_STATUS_KEY = "showServerStatus"; //NON-NLS
   private static final String DIVIDER_LOCATION_KEY = "moduleManagerDividerLocation"; //NON-NLS
-  private static final int COLUMNS = 4;
+  private static final int COLUMNS = 3;
   private static final int KEY_COLUMN = 0;
   private static final int VERSION_COLUMN = 1;
-  private static final int VASSAL_COLUMN = 2;
-  private static final int SPARE_COLUMN = 3;
+  private static final int SPARE_COLUMN = 2;
   private static final String[] columnHeadings = new String[COLUMNS];
 
   private final ImageIcon moduleIcon;
@@ -634,10 +633,6 @@ public class ModuleManagerWindow extends JFrame {
                          .setCellRenderer(new VersionCellRenderer());
     tree.getColumnModel().getColumn(VERSION_COLUMN).setMinWidth(100);
 
-    tree.getColumnModel().getColumn(VASSAL_COLUMN)
-      .setCellRenderer(new VersionCellRenderer());
-    tree.getColumnModel().getColumn(VASSAL_COLUMN).setMinWidth(100);
-
     tree.getColumnModel().getColumn(SPARE_COLUMN).setMinWidth(10);
     tree.getColumnModel().getColumn(SPARE_COLUMN).setPreferredWidth(600);
 
@@ -777,7 +772,6 @@ public class ModuleManagerWindow extends JFrame {
       super(rootNode);
       columnHeadings[KEY_COLUMN] = Resources.getString("ModuleManager.module");
       columnHeadings[VERSION_COLUMN] = Resources.getString("ModuleManager.version");
-      columnHeadings[VASSAL_COLUMN] = Resources.getString("ModuleManager.vassal_version");
       columnHeadings[SPARE_COLUMN] = Resources.getString("ModuleManager.description");
     }
 
@@ -1107,8 +1101,6 @@ public class ModuleManagerWindow extends JFrame {
         return toString();
       case VERSION_COLUMN:
         return getVersion();
-      case VASSAL_COLUMN:
-        return getVassalVersion();
       default:
         return null;
       }
