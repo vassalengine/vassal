@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.nio.file.Files;
@@ -53,16 +54,16 @@ public class RemoveUnusedImagesDialog extends JDialog {
       new FlowLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 
     module = GameModule.getGameModule();
-    for (final String filename : module.getDataArchive().getImageNames()) {
+    Collections.addAll(keep, module.getDataArchive().getImageNames());
+
+    for (final String filename : module.getAllImageNames()) {
       if (ImageUtils.hasImageSuffix(filename)) {
-        keep.add(filename);
+        keep.remove(filename);
       }
       else {
-        keep.add(filename + ImageUtils.GIF_SUFFIX);
+        keep.remove(filename + ImageUtils.GIF_SUFFIX);
       }
     }
-
-    keep.removeAll(module.getAllImageNames());
 
     keepModel.addAll(keep);
 
