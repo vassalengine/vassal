@@ -998,7 +998,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     addTrait(c, inUseList.getSelectedIndex());
   }
 
-  private void addTrait(Decorator c, int insertIndex) {
+  protected void addTrait(Decorator c, int insertIndex) {
     final Class<? extends Decorator> cClass = c.getClass();
     Decorator d = null;
     try {
