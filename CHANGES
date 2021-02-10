@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 14012: Die Roll 'Prompt for values when button pushed' dialog is broken
 * 14011: Search now pre-selects contents of search field when restoring/
     remembering the previous contents
 * 14009: Standardize remaining dialogs
