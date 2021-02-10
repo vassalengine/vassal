@@ -16,8 +16,8 @@ a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will f
 * <<#Personal,*Personal*>> - Your username and password for multiplayer games.
 * <<#Sounds,*Sounds*>> - Sound file mappings.
 * <<#Server,*Server*>> - Which server to connect to for online play.
-* <<#Chat Window,*Chat Window*>> - Fonts and colors for the ChatLog#top,Chat Log>>
-* <<#Turn Counter,*Turn Counter*>> - TurnTracker#top,Turn Tracker>> display configuration.
+* <<#ChatWindow,*Chat Window*>> - Fonts and colors for the <<ChatLog#top,Chat Log>>
+* <<#TurnCounter,*Turn Counter*>> - <<TurnTracker#top,Turn Tracker>> display configuration.
 
 [#General]
 ==== General Preferences
@@ -116,7 +116,7 @@ side on the computer that has the password recorded on it (switch to observer st
 |image:images/PreferencesServer.png[]
 
 |===
-[#Chat]
+[#ChatWindow]
 ==== Chat Window
 [width="100%",cols="50%,50%",]
 |===
@@ -143,7 +143,7 @@ side on the computer that has the password recorded on it (switch to observer st
 |image:images/PreferencesChat.png[]
 
 |===
-[#Turn]
+[#TurnCounter]
 ==== Turn Counter
 [width="100%",cols="50%,50%",]
 |===
