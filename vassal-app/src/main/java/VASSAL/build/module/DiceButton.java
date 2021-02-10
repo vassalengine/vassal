@@ -20,7 +20,9 @@ package VASSAL.build.module;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,11 +113,13 @@ public class DiceButton extends AbstractToolbarItem {
         for (final String key : getAttributeNames()) {
           if (!keepAttributes.contains(key)) {
             final Component controls = ac.getConfigurer(key).getControls();
-            controls.getParent().remove(controls);
+            final Container parent = controls.getParent();
+            parent.remove(controls);
+            parent.remove(ac.getLabel(key));
           }
         }
-        w.pack();
         w.setLocationRelativeTo(getLaunchButton().getTopLevelAncestor());
+        SwingUtils.repack(w, true);
         w.setVisible(true);
 
         for (final String key : keepAttributes) {

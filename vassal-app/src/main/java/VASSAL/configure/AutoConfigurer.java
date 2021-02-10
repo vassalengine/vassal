@@ -265,4 +265,8 @@ public class AutoConfigurer extends Configurer
     }
     return null;
   }
+
+  public JComponent getLabel(String key) {
+    return labels.get(key);
+  }
 }
