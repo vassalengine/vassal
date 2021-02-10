@@ -120,10 +120,13 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void build() {
     final AbstractMetaData data = MetaDataFactory.buildMetaData(archive.getArchive().getFile());
 
-    GameModule.getGameModule().getDataArchive().addExtension(archive);
+    final GameModule g = GameModule.getGameModule();
+    g.getDataArchive().addExtension(archive);
+
+    final boolean alreadyHadDockingPieceWindow = g.getPieceWindow() != null;
 
     // Record that we are currently building this Extension
-    GameModule.getGameModule().setGpIdSupport(this);
+    g.setGpIdSupport(this);
 
     final String buildFile = data instanceof ExtensionMetaData &&
       VersionUtils.compareVersions(VersionUtils.truncateToMinorVersion(
@@ -150,8 +153,18 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       logger.error("Error while reading file {} from archive", buildFile, e); //NON-NLS
     }
 
-    GameModule.getGameModule().add(this);
-    GameModule.getGameModule().getGameState().addGameComponent(this);
+    g.add(this);
+
+    // If a dockable PieceWindow got registered, dock it now (since we're
+    // sure the Chatter will already be safely docked by this point)
+    if (!alreadyHadDockingPieceWindow) {
+      final PieceWindow pw = g.getPieceWindow();
+      if (pw != null) {
+        pw.dockMe();
+      }
+    }
+
+    g.getGameState().addGameComponent(this);
 
     if (archive instanceof ArchiveWriter) {
       lastSave = buildString();

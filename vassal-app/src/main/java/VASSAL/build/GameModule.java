@@ -513,7 +513,8 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
-    //BR// If a dockable PieceWindow got registered, dock it now (since we're sure the Chatter will already be safely docked by this point)
+    // If a dockable PieceWindow got registered, dock it now (since we're
+    // sure the Chatter will already be safely docked by this point)
     final PieceWindow pw = getPieceWindow();
     if (pw != null) {
       pw.dockMe();
