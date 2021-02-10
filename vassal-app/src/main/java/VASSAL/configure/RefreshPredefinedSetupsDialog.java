@@ -23,8 +23,8 @@ import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.swing.SwingUtils;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -37,11 +37,11 @@ import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+
 import javax.swing.JPanel;
-
 import net.miginfocom.swing.MigLayout;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +49,11 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
   private JButton refreshButton;
-  private final BooleanConfigurer nameCheck = new BooleanConfigurer(false);
-  private final BooleanConfigurer testModeOn = new BooleanConfigurer(false);
-  private final BooleanConfigurer labelerNameCheck = new BooleanConfigurer(false);
-  private final BooleanConfigurer layerNameCheck = new BooleanConfigurer(false);
-  private final BooleanConfigurer deletePieceNoMap = new BooleanConfigurer(true);
+  private JCheckBox nameCheck;
+  private JCheckBox labelerNameCheck;
+  private JCheckBox layerNameCheck;
+  private JCheckBox testModeOn;
+  private JCheckBox deletePieceNoMap;
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -63,19 +63,12 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   private void initComponents() {
+    setLayout(new MigLayout("", "[fill]")); // NON-NLS
 
-    final ComponentConfigPanel p = new ComponentConfigPanel();
-    p.setBorder(BorderFactory.createEtchedBorder());
-    setLayout(new MigLayout());
+    final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+    panel.setBorder(BorderFactory.createEtchedBorder());
 
-    p.add("GameRefresher.use_basic_name", nameCheck);
-    p.add("GameRefresher.use_labeler_descr", labelerNameCheck);
-    p.add("GameRefresher.use_layer_descr", layerNameCheck);
-    p.add("GameRefresher.test_mode", testModeOn);
-    p.add("GameRefresher.delete_piece_no_map", deletePieceNoMap);
-
-    final JPanel buttonsBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push")); // NON-NLS
-
+    final JPanel buttonsBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
     refreshButton = new JButton(Resources.getString("General.run"));
     refreshButton.addActionListener(e -> refreshPredefinedSetups());
     refreshButton.setEnabled(true);
@@ -97,32 +90,44 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     final JButton closeButton = new JButton(Resources.getString("General.cancel"));
     closeButton.addActionListener(e -> dispose());
 
-    buttonsBox.add(refreshButton, "sg 1"); // NON-NLS
-    buttonsBox.add(closeButton, "sg 1"); // NON-NLS
-    buttonsBox.add(helpButton, "sg 1"); // NON-NLS
+    buttonsBox.add(refreshButton, "tag ok,sg 1"); // NON-NLS
+    buttonsBox.add(closeButton, "tag cancel,sg 1"); // NON-NLS
+    buttonsBox.add(helpButton, "tag help,sg 1");     // NON-NLS
 
-    p.add(buttonsBox, "span 2,grow"); // NON-NLS
+    nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
+    panel.add(nameCheck);
+    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+    panel.add(labelerNameCheck);
+    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+    panel.add(layerNameCheck);
+    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
+    panel.add(testModeOn);
+    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
+    deletePieceNoMap.setSelected(true);
+    panel.add(deletePieceNoMap);
 
-    add(p);
+    panel.add(buttonsBox, "grow"); // NON-NLS
+    add(panel, "grow"); // NON-NLS
+
     setLocationRelativeTo(getOwner());
     SwingUtils.repack(this);
   }
 
   protected void  setOptions() {
     options.clear();
-    if (nameCheck.booleanValue()) {
+    if (nameCheck.isSelected()) {
       options.add("UseName"); //$NON-NLS-1$
     }
-    if (labelerNameCheck.booleanValue()) {
+    if (labelerNameCheck.isSelected()) {
       options.add("UseLabelerName"); //$NON-NLS-1$
     }
-    if (layerNameCheck.booleanValue()) {
+    if (layerNameCheck.isSelected()) {
       options.add("UseLayerName"); //$NON-NLS-1$
     }
-    if (testModeOn.booleanValue()) {
+    if (testModeOn.isSelected()) {
       options.add("TestMode"); //$NON-NLS-1$
     }
-    if (deletePieceNoMap.booleanValue()) {
+    if (deletePieceNoMap.isSelected()) {
       options.add("DeleteNoMap"); //$NON-NLS-1$
     }
   }

@@ -28,8 +28,7 @@ import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.command.RemovePiece;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ComponentConfigPanel;
+import VASSAL.configure.ConfigurerLayout;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -38,8 +37,8 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.swing.SwingUtils;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -57,8 +56,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
@@ -81,9 +82,9 @@ public final class GameRefresher implements GameComponent {
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker  gpIdChecker;
-//  private List<GamePiece> pieces;
+  //  private List<GamePiece> pieces;
   private RefreshDialog dialog;
-//  private boolean testMode;
+  //  private boolean testMode;
 //  private boolean useLabelerName;
   private int updatedCount;
   private int notFoundCount;
@@ -349,12 +350,12 @@ public final class GameRefresher implements GameComponent {
   static class RefreshDialog extends JDialog {
     private static final long serialVersionUID = 1L;
     private final GameRefresher refresher;
-    // private JTextArea results;
-    private final BooleanConfigurer nameCheck = new BooleanConfigurer(false);
-    private final BooleanConfigurer testModeOn = new BooleanConfigurer(false);
-    private final BooleanConfigurer labelerNameCheck = new BooleanConfigurer(false);
-    private final BooleanConfigurer layerNameCheck = new BooleanConfigurer(false);
-    private final BooleanConfigurer deletePieceNoMap = new BooleanConfigurer(true);
+    private JTextArea results;
+    private JCheckBox nameCheck;
+    private JCheckBox testModeOn;
+    private JCheckBox labelerNameCheck;
+    private JCheckBox layerNameCheck;
+    private JCheckBox deletePieceNoMap;
     private final Set<String> options = new HashSet<>();
 
     RefreshDialog(GameRefresher refresher) {
@@ -373,15 +374,13 @@ public final class GameRefresher implements GameComponent {
           exit();
         }
       });
+      setLayout(new MigLayout("wrap 1", "[fill]")); //NON-NLS
 
-      final ComponentConfigPanel p = new ComponentConfigPanel();
-      p.setBorder(BorderFactory.createEtchedBorder());
-      setLayout(new MigLayout());
+      final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+      panel.setBorder(BorderFactory.createEtchedBorder());
 
-      final JPanel buttonPanel = new JPanel(new MigLayout("", "push[]rel[]rel[]push")); // NON-NLS
+      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
 
-//      final JButton testButton = new JButton(Resources.getString("General.test"));
-//      testButton.addActionListener(e -> test());
 
       final JButton runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(e -> run());
@@ -392,43 +391,44 @@ public final class GameRefresher implements GameComponent {
       final JButton helpButton = new JButton(Resources.getString("General.help"));
       helpButton.addActionListener(e -> help());
 
-      //    buttonPanel.add(testButton);
-      buttonPanel.add(runButton, "sg 1"); // NON-NLS
-      buttonPanel.add(exitButton, "sg 1"); // NON-NLS
-      buttonPanel.add(helpButton, "sg 1"); // NON-NLS
+      buttonPanel.add(runButton, "tag ok,sg 1"); // NON-NLS
+      buttonPanel.add(exitButton, "tag cancel,sg 1"); // NON-NLS
+      buttonPanel.add(helpButton, "tag help,sg 1"); // NON-NLS
 
-      p.add("GameRefresher.use_basic_name", nameCheck);
-      p.add("GameRefresher.use_labeler_descr", labelerNameCheck);
-      p.add("GameRefresher.use_layer_descr", layerNameCheck);
-      p.add("GameRefresher.test_mode", testModeOn);
-      p.add("GameRefresher.delete_piece_no_map", deletePieceNoMap);
+      nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
+      panel.add(nameCheck);
+      labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
+      panel.add(labelerNameCheck);
+      layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
+      panel.add(layerNameCheck);
+      testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
+      panel.add(testModeOn);
+      deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
+      deletePieceNoMap.setSelected(true);
+      panel.add(deletePieceNoMap);
 
-      // Results box is no longer used - all message go to chat window and/or log
-      // results = new JTextArea(7, 40);
-      // results.setEditable(false);
-      // p.add(results, "span 2"); //  NON-NLS
+      panel.add(buttonPanel, "grow"); // NON-NLS
 
-      p.add(buttonPanel, "span 2,grow"); // NON-NLS
+      add(panel, "grow"); // NON-NLS
 
-      add(p);
       SwingUtils.repack(this);
     }
 
     protected void  setOptions() {
       options.clear();
-      if (nameCheck.booleanValue()) {
+      if (nameCheck.isSelected()) {
         options.add("UseName"); //$NON-NLS-1$
       }
-      if (labelerNameCheck.booleanValue()) {
+      if (labelerNameCheck.isSelected()) {
         options.add("UseLabelerName"); //$NON-NLS-1$
       }
-      if (layerNameCheck.booleanValue()) {
+      if (layerNameCheck.isSelected()) {
         options.add("UseLayerName"); //$NON-NLS-1$
       }
-      if (testModeOn.booleanValue()) {
+      if (testModeOn.isSelected()) {
         options.add("TestMode"); //$NON-NLS-1$
       }
-      if (deletePieceNoMap.booleanValue()) {
+      if (deletePieceNoMap.isSelected()) {
         options.add("DeleteNoMap"); //$NON-NLS-1$
       }
     }
@@ -484,7 +484,7 @@ public final class GameRefresher implements GameComponent {
     }
 
     public void addMessage(String mess) {
-      // results.setText(results.getText() + "\n" + mess); //NON-NLS
+      results.setText(results.getText() + "\n" + mess); //NON-NLS
     }
   }
 }
