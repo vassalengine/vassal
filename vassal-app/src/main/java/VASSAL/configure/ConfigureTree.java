@@ -1560,6 +1560,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final JTextField search;
       if (d != null) {
         search = configureTree.getSearchField();
+        search.selectAll();
       }
       else {
         d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), false);
@@ -1569,6 +1570,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         final JLabel searchLabel = new JLabel("String to find: ");
         search = new JTextField(searchParameters.getSearchString(), 32);
+        search.selectAll();
         configureTree.setSearchField(search);
         search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
         searchLabel.setLabelFor(search);
