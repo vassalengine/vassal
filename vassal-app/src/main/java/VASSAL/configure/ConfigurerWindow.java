@@ -20,9 +20,11 @@ package VASSAL.configure;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -56,8 +58,11 @@ public class ConfigurerWindow extends JDialog {
       }
     });
 
-    setLayout(new MigLayout("ins 0", "[grow,fill]")); // NON-NLS
-    add(c.getControls(), "grow,wrap"); // NON-NLS
+    setLayout(new MigLayout("", "[grow]")); // NON-NLS
+    final JPanel panel = new JPanel(new MigLayout("", "[grow]")); // NON-NLS
+    panel.setBorder(BorderFactory.createEtchedBorder());
+
+    panel.add(c.getControls(), "grow,wrap"); // NON-NLS
     c.addPropertyChangeListener(evt -> {
       if (Configurer.NAME_PROPERTY
         .equals(evt.getPropertyName())) {
@@ -77,13 +82,14 @@ public class ConfigurerWindow extends JDialog {
       cancelled = true;
     });
 
-    final JPanel buttonPanel = new JPanel();
-    buttonPanel.add(okButton);
-    buttonPanel.add(canButton);
-    add(buttonPanel, "center"); // NON-NLS
+    final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]push")); // NON-NLS
+    buttonPanel.add(okButton, "tag ok,sg 1"); // NON-NLS
+    buttonPanel.add(canButton, "tag cancel,sg 1"); // NON-NLS
+    panel.add(buttonPanel, "grow"); // NON-NLS
+    add(panel, "grow"); // NON-NLS
     cancelled = false;
 
-    pack();
+    SwingUtils.repack(this);
   }
 
   public boolean isCancelled() {

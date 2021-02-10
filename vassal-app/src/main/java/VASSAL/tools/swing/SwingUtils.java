@@ -520,9 +520,14 @@ public class SwingUtils {
    * @param w Dialog or Frame
    */
   public static void repack(Window w) {
+    repack(w, false);
+  }
+
+  public static void repack(Window w, boolean mayBecomeNarrower) {
     if (w != null) {
       final Dimension min = w.getSize();
       min.height = 1;
+      min.width = mayBecomeNarrower ? 1 : min.width;
       w.setMinimumSize(min);
       w.pack();
       w.setMinimumSize(new Dimension(0, 0));

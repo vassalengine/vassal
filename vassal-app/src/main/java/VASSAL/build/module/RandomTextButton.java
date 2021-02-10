@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,28 +61,22 @@ public class RandomTextButton extends DiceButton {
         // Remove label, hotkey, and prompt controls
         final AutoConfigurer ac = (AutoConfigurer) getConfigurer();
         final ConfigurerWindow w = new ConfigurerWindow(ac, true);
-        ac.getConfigurer(NAME).getControls().setVisible(false);
-        ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
-        ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
-        ac.getConfigurer(ICON).getControls().setVisible(false);
-        ac.getConfigurer(HOTKEY).getControls().setVisible(false);
-        ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
-        ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(false);
-        ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(false);
-        ac.getConfigurer(FACES).getControls().setVisible(false);
-        ac.getConfigurer(NUMERIC).getControls().setVisible(false);
-        w.pack();
+        final List<String> hideAttributes =
+          Arrays.asList(NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, PROMPT_ALWAYS, REPORT_FORMAT, REPORT_TOTAL, FACES, NUMERIC);
+
+        for (final String attr : hideAttributes) {
+          ac.getConfigurer(attr).getControls().setVisible(false);
+          ac.getLabel(attr).setVisible(false);
+        }
+
+        SwingUtils.repack(w, true);
         w.setVisible(true);
-        ac.getConfigurer(NAME).getControls().setVisible(true);
-        ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
-        ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
-        ac.getConfigurer(ICON).getControls().setVisible(true);
-        ac.getConfigurer(HOTKEY).getControls().setVisible(true);
-        ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
-        ac.getConfigurer(REPORT_FORMAT).getControls().setVisible(true);
-        ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(true);
-        ac.getConfigurer(FACES).getControls().setVisible(true);
-        ac.getConfigurer(NUMERIC).getControls().setVisible(true);
+
+        for (final String attr : hideAttributes) {
+          ac.getConfigurer(attr).getControls().setVisible(true);
+          ac.getLabel(attr).setVisible(true);
+        }
+
         if (! w.isCancelled()) {
           DR();
         }
@@ -133,7 +128,7 @@ public class RandomTextButton extends DiceButton {
       }
       else {
         if (!isNumeric)
-          if (roll <= m_faces.length) {
+          if (m_faces != null && roll <= m_faces.length) {
             result.append(m_faces[roll - 1]);
           }
           else {
