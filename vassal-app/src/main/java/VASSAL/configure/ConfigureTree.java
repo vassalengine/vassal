@@ -64,6 +64,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1988,6 +1989,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final String item = getConfigureName(c.getClass());
 
       final TargetProgress progress = new TargetProgress();
+
+      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()), searchString, matchString, item, "", "Name", progress);
+      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(item),                 searchString, matchString, item, "", "Type", progress);
+
       stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress);
       stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress);
       stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress);
@@ -2030,6 +2035,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final TargetProgress progress = new TargetProgress();
       final String matchString = "<b><u>Matches for " + name + ": </u></b>";
 
+      if (protoskip) {
+        stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, "Prototype Definition", "", "Name", progress);
+        stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, "Prototype Definition", "", "Type", progress);
+      }
+
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
       // the same order they're listed in the PieceDefiner window.
 
@@ -2046,12 +2056,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
 
-          stringListHits(searchParameters.isMatchExpressions(), d.getExpressionList(),      searchString, matchString, "Trait", desc, "Expression",    progress);
-          stringListHits(searchParameters.isMatchProperties(),  d.getPropertyList(),        searchString, matchString, "Trait", desc, "Property",      progress);
-          stringListHits(searchParameters.isMatchMenus(),       d.getMenuTextList(),        searchString, matchString, "Trait", desc, "UI Text",       progress);
-          stringListHits(searchParameters.isMatchMessages(),    d.getFormattedStringList(), searchString, matchString, "Trait", desc, "Message/Field", progress);
+          stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, "Trait", desc, "Name", progress);
+          stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, "Trait", desc, "Type", progress);
 
-          keyListHits(searchParameters.isMatchKeys(),           d.getNamedKeyStrokeList(),  searchString, matchString, "Trait", desc, "KeyCommand",    progress);
+          stringListHits(searchParameters.isMatchExpressions(), d.getExpressionList(), searchString, matchString, "Trait", desc, "Expression", progress);
+          stringListHits(searchParameters.isMatchProperties(), d.getPropertyList(), searchString, matchString, "Trait", desc, "Property", progress);
+          stringListHits(searchParameters.isMatchMenus(), d.getMenuTextList(), searchString, matchString, "Trait", desc, "UI Text", progress);
+          stringListHits(searchParameters.isMatchMessages(), d.getFormattedStringList(), searchString, matchString, "Trait", desc, "Message/Field", progress);
+
+          keyListHits(searchParameters.isMatchKeys(), d.getNamedKeyStrokeList(), searchString, matchString, "Trait", desc, "KeyCommand", progress);
         }
         protoskip = false;
         p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
