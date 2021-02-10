@@ -261,9 +261,6 @@ clean-release:
 
 post-release: version-set
 
-upload:
-	rsync -vP $(TMPDIR)/VASSAL-$(VERSION)-{windows-32.exe,windows-64.exe,macos.dmg,linux.tar.bz2,other.zip,src.zip} web.sourceforge.net:/home/project-web/vassalengine/htdocs/builds
-
 vassal-app/target/$(JARNAME)-javadoc.jar: $(LIBDIR)/Vengine.jar
 
 javadoc: vassal-app/target/$(JARNAME)-javadoc.jar | $(JDOCDIR)
