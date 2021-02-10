@@ -17,10 +17,40 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.KeyNamer;
+import VASSAL.build.module.Plugin;
+import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.ZoneProperty;
+import VASSAL.build.widget.CardSlot;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.MassPieceLoader;
+import VASSAL.counters.Properties;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslateAction;
+import VASSAL.launch.EditorWindow;
+import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -46,16 +76,17 @@ import java.util.stream.IntStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -73,35 +104,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
 
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.Plugin;
-import VASSAL.build.module.PrototypeDefinition;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.build.module.properties.GlobalProperty;
-import VASSAL.build.module.properties.ZoneProperty;
-import VASSAL.build.widget.CardSlot;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.EditablePiece;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.MassPieceLoader;
-import VASSAL.counters.Properties;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslateAction;
-import VASSAL.launch.EditorWindow;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -153,7 +155,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JDialog searchDialog;
   protected JTextField searchField;
-  protected JCheckBox searchAdvanced;
+  protected BooleanConfigurer searchAdvanced;
 
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
@@ -255,11 +257,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.searchField = searchField;
   }
 
-  protected void setSearchAdvanced(JCheckBox searchAdvanced) {
+  protected void setSearchAdvanced(BooleanConfigurer searchAdvanced) {
     this.searchAdvanced = searchAdvanced;
   }
 
-  protected JCheckBox getSearchAdvanced() {
+  protected BooleanConfigurer getSearchAdvanced() {
     return searchAdvanced;
   }
 
@@ -1560,57 +1562,79 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final JTextField search;
       if (d != null) {
         search = configureTree.getSearchField();
+        search.selectAll();
       }
       else {
         d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), false);
         configureTree.setSearchDialog(d);
 
         d.setTitle(configureTree.getSearchCmd());
+        d.setLayout(new MigLayout());
 
-        final JLabel searchLabel = new JLabel("String to find: ");
+        final JLabel searchLabel = new JLabel(Resources.getString("Editor.search_string"));
         search = new JTextField(searchParameters.getSearchString(), 32);
         configureTree.setSearchField(search);
-        search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
+        search.selectAll(); // Pre-select all the search text when opening the dialog
         searchLabel.setLabelFor(search);
 
-        final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
-        final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
+        final BooleanConfigurer sensitive = new BooleanConfigurer(searchParameters.isMatchCase());
+        final BooleanConfigurer advanced = new BooleanConfigurer(searchParameters.isMatchAdvanced());
 
-        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
-        final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
+        final JLabel names_label = new JLabel(Resources.getString("Editor.search_names"));
+        final BooleanConfigurer names = new BooleanConfigurer(searchParameters.isMatchNames());
+        final JLabel types_label = new JLabel(Resources.getString("Editor.search_types"));
+        final BooleanConfigurer types = new BooleanConfigurer(searchParameters.isMatchTypes());
 
-        final JCheckBox traits = new JCheckBox(Resources.getString("Editor.search_traits"), searchParameters.isMatchTraits());
-        final JCheckBox expressions = new JCheckBox(Resources.getString("Editor.search_expressions"), searchParameters.isMatchExpressions());
-        final JCheckBox properties = new JCheckBox(Resources.getString("Editor.search_properties"), searchParameters.isMatchProperties());
+        final JLabel traits_label = new JLabel(Resources.getString("Editor.search_traits"));
+        final BooleanConfigurer traits = new BooleanConfigurer(searchParameters.isMatchTraits());
+        final JLabel expressions_label = new JLabel(Resources.getString("Editor.search_expressions"));
+        final BooleanConfigurer expressions = new BooleanConfigurer(searchParameters.isMatchExpressions());
+        final JLabel properties_label = new JLabel(Resources.getString("Editor.search_properties"));
+        final BooleanConfigurer properties = new BooleanConfigurer(searchParameters.isMatchProperties());
 
-        final JCheckBox keys = new JCheckBox(Resources.getString("Editor.search_keys"), searchParameters.isMatchKeys());
-        final JCheckBox menus = new JCheckBox(Resources.getString("Editor.search_menus"), searchParameters.isMatchMenus());
-        final JCheckBox messages = new JCheckBox(Resources.getString("Editor.search_messages"), searchParameters.isMatchMessages());
+        final JLabel keys_label = new JLabel(Resources.getString("Editor.search_keys"));
+        final BooleanConfigurer keys = new BooleanConfigurer(searchParameters.isMatchKeys());
+        final JLabel menus_label = new JLabel(Resources.getString("Editor.search_menus"));
+        final BooleanConfigurer menus = new BooleanConfigurer(searchParameters.isMatchMenus());
+        final JLabel messages_label = new JLabel(Resources.getString("Editor.search_messages"));
+        final BooleanConfigurer messages = new BooleanConfigurer(searchParameters.isMatchMessages());
 
         final Consumer<Boolean> visSetter = visible -> {
-          names.setVisible(visible);
-          types.setVisible(visible);
-          traits.setVisible(visible);
-          expressions.setVisible(visible);
-          properties.setVisible(visible);
-          keys.setVisible(visible);
-          menus.setVisible(visible);
-          messages.setVisible(visible);
+          names_label.setVisible(visible);
+          names.getControls().setVisible(visible);
+          types_label.setVisible(visible);
+          types.getControls().setVisible(visible);
+          traits_label.setVisible(visible);
+          traits.getControls().setVisible(visible);
+          expressions_label.setVisible(visible);
+          expressions.getControls().setVisible(visible);
+          properties_label.setVisible(visible);
+          properties.getControls().setVisible(visible);
+          keys_label.setVisible(visible);
+          keys.getControls().setVisible(visible);
+          menus_label.setVisible(visible);
+          menus.getControls().setVisible(visible);
+          messages_label.setVisible(visible);
+          messages.getControls().setVisible(visible);
         };
 
-        advanced.addChangeListener(l -> {
-          visSetter.accept(advanced.isSelected());
+        advanced.addPropertyChangeListener(l -> {
+          visSetter.accept(advanced.booleanValue());
           SwingUtils.repack(configureTree.getSearchDialog());
         });
 
-        visSetter.accept(advanced.isSelected());
+        visSetter.accept(advanced.booleanValue());
 
         configureTree.setSearchAdvanced(advanced);
 
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
         find.addActionListener(e12 -> {
           final SearchParameters parametersSetInDialog =
-            new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
+            new SearchParameters(search.getText(),
+              sensitive.booleanValue(), names.booleanValue(), types.booleanValue(),
+              true,
+              traits.booleanValue(), expressions.booleanValue(), properties.booleanValue(),
+              keys.booleanValue(), menus.booleanValue(), messages.booleanValue());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
@@ -1621,7 +1645,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // If literally no search parameters are selectable, turn at least one on (and print warning)
           if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && searchParameters.isMatchAdvanced() && (!searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages())) {
             searchParameters.setMatchNames(true);
-            names.setSelected(true);
+            names.setValue(true);
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
@@ -1653,46 +1677,51 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
-        d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
+        final ComponentConfigPanel p = new ComponentConfigPanel();
+        p.setBorder(BorderFactory.createEtchedBorder());
 
         // top row
-        d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
-        d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
+        p.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
+        p.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
 
         // options row
-        d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(advanced, "wrap"); //NON-NLS
+        p.add("Editor.search_case", sensitive);
+        p.add("Editor.search_advanced", advanced);
 
         // Advanced 1
-        d.add(names, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(types, "wrap"); //$NON-NLS-1$//
+        p.add(names_label, names);
+        p.add(types_label, types);
 
         // Advanced 2
-        d.add(traits, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(expressions, "gapx unrel"); //$NON-NLS-1$//
-        d.add(properties, "wrap"); //$NON-NLS-1$//
+        p.add(traits_label, traits);
+        p.add(expressions_label, expressions);
+        p.add(properties_label, properties);
 
         // Advanced 3
-        d.add(keys, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(menus, "gapx unrel"); //$NON-NLS-1$//
-        d.add(messages, "wrap"); //$NON-NLS-1$//
+        p.add(keys_label, keys);
+        p.add(menus_label, menus);
+        p.add(messages_label, messages);
 
         // buttons row
-        d.add(find, "tag ok, split"); //$NON-NLS-1$//
-        d.add(cancel, "tag cancel"); //$NON-NLS-1$//
+        final JPanel buttonPanel = new JPanel(new MigLayout("", "push[]rel[]push")); // NON-NLS
+        buttonPanel.add(find, "tag ok,sg 1"); //$NON-NLS-1$//
+        buttonPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
+        p.add(buttonPanel, "span 2,grow"); // NON-NLS
 
         d.getRootPane().setDefaultButton(find); // Enter key activates search
 
         // Esc Key cancels
         final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        d.add(p);
       }
 
       search.requestFocus(); // Start w/ focus in search string field
 
       if (!d.isVisible()) {
-        SwingUtils.repack(d);
         d.setLocationRelativeTo(d.getParent());
+        SwingUtils.repack(d);
         d.setVisible(true);
       }
     }

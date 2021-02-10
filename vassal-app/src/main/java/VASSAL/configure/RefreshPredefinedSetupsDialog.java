@@ -23,14 +23,8 @@ import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import VASSAL.tools.swing.SwingUtils;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -41,15 +35,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
   private static final long serialVersionUID = 1L;
   private JButton refreshButton;
-  private JCheckBox nameCheck;
-  private JCheckBox labelerNameCheck;
-  private JCheckBox layerNameCheck;
-  private JCheckBox testModeOn;
-  private JCheckBox deletePieceNoMap;
+  private final BooleanConfigurer nameCheck = new BooleanConfigurer(false);
+  private final BooleanConfigurer testModeOn = new BooleanConfigurer(false);
+  private final BooleanConfigurer labelerNameCheck = new BooleanConfigurer(false);
+  private final BooleanConfigurer layerNameCheck = new BooleanConfigurer(false);
+  private final BooleanConfigurer deletePieceNoMap = new BooleanConfigurer(true);
   private final Set<String> options = new HashSet<>();
 
   public RefreshPredefinedSetupsDialog(Frame owner) throws HeadlessException {
@@ -59,14 +63,24 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   private void initComponents() {
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-    final Box buttonsBox = Box.createHorizontalBox();
-    refreshButton = new JButton(Resources.getString("Editor.ModuleEditor.refresh_predefined"));
+    final ComponentConfigPanel p = new ComponentConfigPanel();
+    p.setBorder(BorderFactory.createEtchedBorder());
+    setLayout(new MigLayout());
+
+    p.add("GameRefresher.use_basic_name", nameCheck);
+    p.add("GameRefresher.use_labeler_descr", labelerNameCheck);
+    p.add("GameRefresher.use_layer_descr", layerNameCheck);
+    p.add("GameRefresher.test_mode", testModeOn);
+    p.add("GameRefresher.delete_piece_no_map", deletePieceNoMap);
+
+    final JPanel buttonsBox = new JPanel(new MigLayout("", "push[]rel[]rel[]push")); // NON-NLS
+
+    refreshButton = new JButton(Resources.getString("General.run"));
     refreshButton.addActionListener(e -> refreshPredefinedSetups());
     refreshButton.setEnabled(true);
-    buttonsBox.add(refreshButton);
-    final JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
+
+    final JButton helpButton = new JButton(Resources.getString("General.help"));
 
     HelpFile hf = null;
     try {
@@ -79,42 +93,36 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
-    buttonsBox.add(helpButton);
-    final JButton closeButton = new JButton(Resources.getString("Editor.RefreshPredefinedSetupsDialog.close"));
-    closeButton.addActionListener(e -> dispose());
-    buttonsBox.add(closeButton);
-    add(buttonsBox);
 
-    nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
-    add(nameCheck);
-    labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
-    add(labelerNameCheck);
-    layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
-    add(layerNameCheck);
-    testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
-    add(testModeOn);
-    deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
-    deletePieceNoMap.setSelected(true);
-    add(deletePieceNoMap);
-    pack();
+    final JButton closeButton = new JButton(Resources.getString("General.cancel"));
+    closeButton.addActionListener(e -> dispose());
+
+    buttonsBox.add(refreshButton, "sg 1"); // NON-NLS
+    buttonsBox.add(closeButton, "sg 1"); // NON-NLS
+    buttonsBox.add(helpButton, "sg 1"); // NON-NLS
+
+    p.add(buttonsBox, "span 2,grow"); // NON-NLS
+
+    add(p);
     setLocationRelativeTo(getOwner());
+    SwingUtils.repack(this);
   }
 
   protected void  setOptions() {
     options.clear();
-    if (nameCheck.isSelected()) {
+    if (nameCheck.booleanValue()) {
       options.add("UseName"); //$NON-NLS-1$
     }
-    if (labelerNameCheck.isSelected()) {
+    if (labelerNameCheck.booleanValue()) {
       options.add("UseLabelerName"); //$NON-NLS-1$
     }
-    if (layerNameCheck.isSelected()) {
+    if (layerNameCheck.booleanValue()) {
       options.add("UseLayerName"); //$NON-NLS-1$
     }
-    if (testModeOn.isSelected()) {
+    if (testModeOn.booleanValue()) {
       options.add("TestMode"); //$NON-NLS-1$
     }
-    if (deletePieceNoMap.isSelected()) {
+    if (deletePieceNoMap.booleanValue()) {
       options.add("DeleteNoMap"); //$NON-NLS-1$
     }
   }

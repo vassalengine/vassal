@@ -34,7 +34,6 @@ public class TraitLayout extends ConfigurerLayout {
    */
   public TraitLayout() {
     this(false);
-
   }
 
   /**

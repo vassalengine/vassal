@@ -143,8 +143,10 @@ public abstract class EditorWindow extends JFrame {
     final MenuProxy toolsMenu = new MenuProxy(Resources.getString("General.tools"));
     toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
-    toolsMenu.add(mm.addKey("create_module_updater"));  //NON-NLS
-    toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
+    // Remove old updater from menu
+    // toolsMenu.add(mm.addKey("Editor.ModuleUpdaterDialog.create_updater"));  //NON-NLS
+    // toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
+
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.refresh_predefined"));
     toolsMenu.add(mm.addKey("Editor.UnusedImages.remove_unused_images"));
 
