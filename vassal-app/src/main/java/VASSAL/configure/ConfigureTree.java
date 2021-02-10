@@ -17,10 +17,40 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.KeyNamer;
+import VASSAL.build.module.Plugin;
+import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.ZoneProperty;
+import VASSAL.build.widget.CardSlot;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.MassPieceLoader;
+import VASSAL.counters.Properties;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslateAction;
+import VASSAL.launch.EditorWindow;
+import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
@@ -46,6 +76,7 @@ import java.util.stream.IntStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -56,6 +87,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -73,35 +105,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import net.miginfocom.swing.MigLayout;
 
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.Plugin;
-import VASSAL.build.module.PrototypeDefinition;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.build.module.properties.GlobalProperty;
-import VASSAL.build.module.properties.ZoneProperty;
-import VASSAL.build.widget.CardSlot;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.EditablePiece;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.MassPieceLoader;
-import VASSAL.counters.Properties;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslateAction;
-import VASSAL.launch.EditorWindow;
-import VASSAL.preferences.Prefs;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReflectionUtils;
-import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -555,9 +558,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidPasteTarget(Configurable target) {
     return (cutData != null &&
-            isValidParent(target, (Configurable) cutData.getUserObject())) ||
-           (copyData != null &&
-            isValidParent(target, (Configurable) copyData.getUserObject()));
+      isValidParent(target, (Configurable) cutData.getUserObject())) ||
+      (copyData != null &&
+        isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
   /**
@@ -640,7 +643,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // FIXME: review error message
           catch (Exception ex) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n" //NON-NLS
-                + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+              + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
           }
         }
       }
@@ -678,7 +681,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<>();
     for (final Class<? extends Buildable> newConfig :
-            target.getAllowableConfigureComponents()) {
+      target.getAllowableConfigureComponents()) {
       l.add(buildAddAction(target, newConfig));
     }
 
@@ -780,7 +783,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (clone != null) {
             clone.build(target.getBuildElement(Builder.createNewDocument()));
             insert(getParent(targetNode), clone,
-                   targetNode.getParent().getIndex(targetNode) + 1);
+              targetNode.getParent().getIndex(targetNode) + 1);
           }
         }
       };
@@ -861,7 +864,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     // FIXME: review error message
     catch (IllegalBuildException err) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot delete " + getConfigureName(child) + " from " + getConfigureName(parent) + "\n" //NON-NLS
-          + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+        + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
       return false;
     }
   }
@@ -887,7 +890,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // FIXME: review error message
       catch (IllegalBuildException err) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(theChild) + " before " + getConfigureName(oldContents[i]), //NON-NLS
-            "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+          "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
         for (int j = index; j < i; ++j) {
           parent.add(oldContents[j]);
           oldContents[j].addTo(parent);
@@ -909,7 +912,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     // FIXME: review error message
     catch (IllegalBuildException err) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't add " + getConfigureName(child) + "\n" + err.getMessage(), "Illegal configuration", //NON-NLS
-          JOptionPane.ERROR_MESSAGE);
+        JOptionPane.ERROR_MESSAGE);
       succeeded = false;
     }
 
@@ -939,7 +942,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (c != null) {
           leaf = c.getAllowableConfigureComponents().length == 0;
           value = (c.getConfigureName() != null ? c.getConfigureName() : "") +
-                  " [" + getConfigureName(c.getClass()) + "]";
+            " [" + getConfigureName(c.getClass()) + "]";
         }
       }
 
@@ -992,7 +995,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Object o = null;
     try {
       o = GameModule.getGameModule().getDataArchive()
-                    .loadClass(className).getConstructor().newInstance();
+        .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
       ReflectionUtils.handleImportClassFailure(t, className);
@@ -1039,7 +1042,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-// FIXME: should clicked handling be in mouseClicked()?
+  // FIXME: should clicked handling be in mouseClicked()?
   @Override
   public void mouseReleased(MouseEvent e) {
     if (e.isPopupTrigger()) {
@@ -1083,8 +1086,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Class<?>[] c = parent.getAllowableConfigureComponents();
       for (final Class<?> aClass : c) {
         if (aClass.isAssignableFrom(child.getClass()) ||
-                ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
-                ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
+          ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
+          ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
         ) {
           return true;
         }
@@ -1224,7 +1227,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     moveAction.setEnabled(selected != null);
     searchAction.setEnabled(true);
     propertiesAction.setEnabled(selected != null &&
-                                selected.getConfigurer() != null);
+      selected.getConfigurer() != null);
     translateAction.setEnabled(selected != null);
   }
 
@@ -1529,8 +1532,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     @Override
     public int hashCode() {
       return Objects.hash(getSearchString(), isMatchCase(), isMatchNames(), isMatchTypes(), isMatchAdvanced(),
-                          isMatchTraits(), isMatchExpressions(), isMatchProperties(), isMatchKeys(),
-                          isMatchMenus(), isMatchMessages());
+        isMatchTraits(), isMatchExpressions(), isMatchProperties(), isMatchKeys(),
+        isMatchMenus(), isMatchMessages());
     }
   }
 
@@ -1560,6 +1563,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final JTextField search;
       if (d != null) {
         search = configureTree.getSearchField();
+        search.selectAll();
       }
       else {
         d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, configureTree), false);
@@ -1567,11 +1571,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         d.setTitle(configureTree.getSearchCmd());
 
-        final JLabel searchLabel = new JLabel("String to find: ");
-        search = new JTextField(searchParameters.getSearchString(), 32);
+        search = new HintTextField(32, Resources.getString("Editor.search_string"));
+        search.setText(searchParameters.getSearchString());
         configureTree.setSearchField(search);
-        search.select(0, searchParameters.getSearchString().length()); // Pre-select all the search text when opening the dialog
-        searchLabel.setLabelFor(search);
+        search.selectAll();
 
         final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
         final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
@@ -1653,33 +1656,42 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
-        d.setLayout(new MigLayout("insets dialog, nogrid", "", "[]unrel[]unrel:push[]")); //$NON-NLS-1$//
+        final JButton help = new JButton(Resources.getString(Resources.HELP));
+        help.addActionListener(e2 -> showSearchHelp());
+
+        d.setLayout(new MigLayout("", "[fill]")); // NON-NLS
+        final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+        panel.setBorder(BorderFactory.createEtchedBorder());
 
         // top row
-        d.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
-        d.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
+        panel.add(search);
 
         // options row
-        d.add(sensitive, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(advanced, "wrap"); //NON-NLS
+        panel.add(sensitive);
+        panel.add(advanced);
 
         // Advanced 1
-        d.add(names, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(types, "wrap"); //$NON-NLS-1$//
+        panel.add(names);
+        panel.add(types);
 
         // Advanced 2
-        d.add(traits, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(expressions, "gapx unrel"); //$NON-NLS-1$//
-        d.add(properties, "wrap"); //$NON-NLS-1$//
+        panel.add(traits);
+        panel.add(expressions);
+        panel.add(properties);
 
         // Advanced 3
-        d.add(keys, "align center, gapx unrel, span"); //$NON-NLS-1$//
-        d.add(menus, "gapx unrel"); //$NON-NLS-1$//
-        d.add(messages, "wrap"); //$NON-NLS-1$//
+        panel.add(keys);
+        panel.add(menus);
+        panel.add(messages);
 
         // buttons row
-        d.add(find, "tag ok, split"); //$NON-NLS-1$//
-        d.add(cancel, "tag cancel"); //$NON-NLS-1$//
+        final JPanel bPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+        bPanel.add(find, "tag ok,sg 1"); //$NON-NLS-1$//
+        bPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
+        bPanel.add(help, "tag help,sg 1"); // NON-NLS
+        panel.add(bPanel, "grow"); // NON-NLS
+
+        d.add(panel, "grow"); // NON-NLS
 
         d.getRootPane().setDefaultButton(find); // Enter key activates search
 
@@ -1691,10 +1703,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       search.requestFocus(); // Start w/ focus in search string field
 
       if (!d.isVisible()) {
-        SwingUtils.repack(d);
         d.setLocationRelativeTo(d.getParent());
+        SwingUtils.repack(d);
         d.setVisible(true);
       }
+    }
+
+    private void showSearchHelp() {
+      // FIXME - Add Help ref
     }
 
     /**

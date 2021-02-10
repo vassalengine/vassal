@@ -1,14 +1,24 @@
 package VASSAL.configure;
 
+import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.swing.FlowLabel;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Frame;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.nio.file.Files;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -18,19 +28,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import VASSAL.tools.image.ImageUtils;
 import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.DataArchive;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.swing.FlowLabel;
 
 public class RemoveUnusedImagesDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -97,7 +98,8 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     cancel.addActionListener(e -> dispose());
 
-    final JPanel panel = new JPanel(new MigLayout("insets dialog", "[]rel[]rel[]", "[]unrel[]unrel[]"));  //NON-NLS
+    final JPanel panel = new JPanel(new MigLayout("ins 4", "[]rel[]rel[]", "[]unrel[]unrel[]"));  //NON-NLS
+    panel.setBorder(BorderFactory.createEtchedBorder());
 
     panel.add(text, "span, wrap"); //NON-NLS
 
@@ -106,11 +108,15 @@ public class RemoveUnusedImagesDialog extends JDialog {
     panel.add(keepButton, "align center"); //NON-NLS
     panel.add(dropScroll, "grow, push, sizegroup list, wrap"); //NON-NLS
 
-    panel.add(ok, "tag ok, span, split"); //NON-NLS
-    panel.add(cancel, "tag cancel"); //NON-NLS
+    final JPanel buttonPanel = new JPanel(new MigLayout("", "push[]rel[]push")); // NON-NLS
+    buttonPanel.add(ok, "tag ok,sg 1"); //$NON-NLS-1$//
+    buttonPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
+    panel.add(buttonPanel, "span 3,grow"); // NON-NLS
 
+    setLayout(new MigLayout());
     add(panel);
-    pack();
+
+    SwingUtils.repack(this);
   }
 
   private void updateSelection(JList srclist, DefaultListModel<String> srcmodel, SortedSet<String> src, SortedSet<String> dst) {

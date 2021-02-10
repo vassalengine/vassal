@@ -23,14 +23,8 @@ import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -40,6 +34,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+
+import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RefreshPredefinedSetupsDialog extends JDialog {
   private static final Logger logger = LoggerFactory.getLogger(RefreshPredefinedSetupsDialog.class);
@@ -59,14 +63,17 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   private void initComponents() {
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new MigLayout("", "[fill]")); // NON-NLS
 
-    final Box buttonsBox = Box.createHorizontalBox();
-    refreshButton = new JButton(Resources.getString("Editor.ModuleEditor.refresh_predefined"));
+    final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+    panel.setBorder(BorderFactory.createEtchedBorder());
+
+    final JPanel buttonsBox = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+    refreshButton = new JButton(Resources.getString("General.run"));
     refreshButton.addActionListener(e -> refreshPredefinedSetups());
     refreshButton.setEnabled(true);
-    buttonsBox.add(refreshButton);
-    final JButton helpButton = new JButton(Resources.getString("Editor.SavedGameUpdaterDialog.help"));
+
+    final JButton helpButton = new JButton(Resources.getString("General.help"));
 
     HelpFile hf = null;
     try {
@@ -79,25 +86,31 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
-    buttonsBox.add(helpButton);
-    final JButton closeButton = new JButton(Resources.getString("Editor.RefreshPredefinedSetupsDialog.close"));
+
+    final JButton closeButton = new JButton(Resources.getString("General.cancel"));
     closeButton.addActionListener(e -> dispose());
-    buttonsBox.add(closeButton);
-    add(buttonsBox);
+
+    buttonsBox.add(refreshButton, "tag ok,sg 1"); // NON-NLS
+    buttonsBox.add(closeButton, "tag cancel,sg 1"); // NON-NLS
+    buttonsBox.add(helpButton, "tag help,sg 1");     // NON-NLS
 
     nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
-    add(nameCheck);
+    panel.add(nameCheck);
     labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
-    add(labelerNameCheck);
+    panel.add(labelerNameCheck);
     layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
-    add(layerNameCheck);
+    panel.add(layerNameCheck);
     testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
-    add(testModeOn);
+    panel.add(testModeOn);
     deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
     deletePieceNoMap.setSelected(true);
-    add(deletePieceNoMap);
-    pack();
+    panel.add(deletePieceNoMap);
+
+    panel.add(buttonsBox, "grow"); // NON-NLS
+    add(panel, "grow"); // NON-NLS
+
     setLocationRelativeTo(getOwner());
+    SwingUtils.repack(this);
   }
 
   protected void  setOptions() {

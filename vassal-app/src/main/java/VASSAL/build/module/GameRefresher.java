@@ -28,6 +28,7 @@ import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.command.RemovePiece;
+import VASSAL.configure.ConfigurerLayout;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -37,6 +38,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 
+import VASSAL.tools.swing.SwingUtils;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -52,6 +54,7 @@ import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -79,9 +82,9 @@ public final class GameRefresher implements GameComponent {
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
   private GpIdChecker  gpIdChecker;
-//  private List<GamePiece> pieces;
+  //  private List<GamePiece> pieces;
   private RefreshDialog dialog;
-//  private boolean testMode;
+  //  private boolean testMode;
 //  private boolean useLabelerName;
   private int updatedCount;
   private int notFoundCount;
@@ -371,46 +374,44 @@ public final class GameRefresher implements GameComponent {
           exit();
         }
       });
-      setLayout(new MigLayout("wrap 1", "[center]")); //NON-NLS
+      setLayout(new MigLayout("wrap 1", "[fill]")); //NON-NLS
 
-      final JPanel buttonPanel = new JPanel(new MigLayout());
+      final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+      panel.setBorder(BorderFactory.createEtchedBorder());
 
-//      final JButton testButton = new JButton(Resources.getString("General.test"));
-//      testButton.addActionListener(e -> test());
+      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+
 
       final JButton runButton = new JButton(Resources.getString("General.run"));
       runButton.addActionListener(e -> run());
 
-      final JButton exitButton = new JButton(Resources.getString("General.exit"));
+      final JButton exitButton = new JButton(Resources.getString("General.cancel"));
       exitButton.addActionListener(e -> exit());
 
       final JButton helpButton = new JButton(Resources.getString("General.help"));
       helpButton.addActionListener(e -> help());
 
-      //    buttonPanel.add(testButton);
-      buttonPanel.add(runButton);
-      buttonPanel.add(exitButton);
-      buttonPanel.add(helpButton);
-
-      add(buttonPanel);
-
-      results = new JTextArea(7, 40);
-      results.setEditable(false);
-      add(results);
+      buttonPanel.add(runButton, "tag ok,sg 1"); // NON-NLS
+      buttonPanel.add(exitButton, "tag cancel,sg 1"); // NON-NLS
+      buttonPanel.add(helpButton, "tag help,sg 1"); // NON-NLS
 
       nameCheck = new JCheckBox(Resources.getString("GameRefresher.use_basic_name"));
-      add(nameCheck);
+      panel.add(nameCheck);
       labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"));
-      add(labelerNameCheck);
+      panel.add(labelerNameCheck);
       layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"));
-      add(layerNameCheck);
+      panel.add(layerNameCheck);
       testModeOn = new JCheckBox(Resources.getString("GameRefresher.test_mode"));
-      add(testModeOn);
+      panel.add(testModeOn);
       deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"));
       deletePieceNoMap.setSelected(true);
-      add(deletePieceNoMap);
+      panel.add(deletePieceNoMap);
 
-      pack();
+      panel.add(buttonPanel, "grow"); // NON-NLS
+
+      add(panel, "grow"); // NON-NLS
+
+      SwingUtils.repack(this);
     }
 
     protected void  setOptions() {
