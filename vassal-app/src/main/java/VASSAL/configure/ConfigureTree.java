@@ -80,6 +80,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -155,7 +156,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JDialog searchDialog;
   protected JTextField searchField;
-  protected BooleanConfigurer searchAdvanced;
+  protected JCheckBox searchAdvanced;
 
   private final SearchParameters searchParameters;
   protected static Chatter chatter;
@@ -257,11 +258,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.searchField = searchField;
   }
 
-  protected void setSearchAdvanced(BooleanConfigurer searchAdvanced) {
+  protected void setSearchAdvanced(JCheckBox searchAdvanced) {
     this.searchAdvanced = searchAdvanced;
   }
 
-  protected BooleanConfigurer getSearchAdvanced() {
+  protected JCheckBox getSearchAdvanced() {
     return searchAdvanced;
   }
 
@@ -557,9 +558,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidPasteTarget(Configurable target) {
     return (cutData != null &&
-            isValidParent(target, (Configurable) cutData.getUserObject())) ||
-           (copyData != null &&
-            isValidParent(target, (Configurable) copyData.getUserObject()));
+      isValidParent(target, (Configurable) cutData.getUserObject())) ||
+      (copyData != null &&
+        isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
   /**
@@ -642,7 +643,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // FIXME: review error message
           catch (Exception ex) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n" //NON-NLS
-                + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+              + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
           }
         }
       }
@@ -680,7 +681,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<>();
     for (final Class<? extends Buildable> newConfig :
-            target.getAllowableConfigureComponents()) {
+      target.getAllowableConfigureComponents()) {
       l.add(buildAddAction(target, newConfig));
     }
 
@@ -782,7 +783,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (clone != null) {
             clone.build(target.getBuildElement(Builder.createNewDocument()));
             insert(getParent(targetNode), clone,
-                   targetNode.getParent().getIndex(targetNode) + 1);
+              targetNode.getParent().getIndex(targetNode) + 1);
           }
         }
       };
@@ -863,7 +864,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     // FIXME: review error message
     catch (IllegalBuildException err) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot delete " + getConfigureName(child) + " from " + getConfigureName(parent) + "\n" //NON-NLS
-          + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+        + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
       return false;
     }
   }
@@ -889,7 +890,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // FIXME: review error message
       catch (IllegalBuildException err) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(theChild) + " before " + getConfigureName(oldContents[i]), //NON-NLS
-            "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
+          "Illegal configuration", JOptionPane.ERROR_MESSAGE); //NON-NLS
         for (int j = index; j < i; ++j) {
           parent.add(oldContents[j]);
           oldContents[j].addTo(parent);
@@ -911,7 +912,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     // FIXME: review error message
     catch (IllegalBuildException err) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't add " + getConfigureName(child) + "\n" + err.getMessage(), "Illegal configuration", //NON-NLS
-          JOptionPane.ERROR_MESSAGE);
+        JOptionPane.ERROR_MESSAGE);
       succeeded = false;
     }
 
@@ -941,7 +942,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         if (c != null) {
           leaf = c.getAllowableConfigureComponents().length == 0;
           value = (c.getConfigureName() != null ? c.getConfigureName() : "") +
-                  " [" + getConfigureName(c.getClass()) + "]";
+            " [" + getConfigureName(c.getClass()) + "]";
         }
       }
 
@@ -994,7 +995,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Object o = null;
     try {
       o = GameModule.getGameModule().getDataArchive()
-                    .loadClass(className).getConstructor().newInstance();
+        .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
       ReflectionUtils.handleImportClassFailure(t, className);
@@ -1041,7 +1042,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-// FIXME: should clicked handling be in mouseClicked()?
+  // FIXME: should clicked handling be in mouseClicked()?
   @Override
   public void mouseReleased(MouseEvent e) {
     if (e.isPopupTrigger()) {
@@ -1085,8 +1086,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Class<?>[] c = parent.getAllowableConfigureComponents();
       for (final Class<?> aClass : c) {
         if (aClass.isAssignableFrom(child.getClass()) ||
-                ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
-                ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
+          ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
+          ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
         ) {
           return true;
         }
@@ -1226,7 +1227,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     moveAction.setEnabled(selected != null);
     searchAction.setEnabled(true);
     propertiesAction.setEnabled(selected != null &&
-                                selected.getConfigurer() != null);
+      selected.getConfigurer() != null);
     translateAction.setEnabled(selected != null);
   }
 
@@ -1531,8 +1532,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     @Override
     public int hashCode() {
       return Objects.hash(getSearchString(), isMatchCase(), isMatchNames(), isMatchTypes(), isMatchAdvanced(),
-                          isMatchTraits(), isMatchExpressions(), isMatchProperties(), isMatchKeys(),
-                          isMatchMenus(), isMatchMessages());
+        isMatchTraits(), isMatchExpressions(), isMatchProperties(), isMatchKeys(),
+        isMatchMenus(), isMatchMessages());
     }
   }
 
@@ -1569,72 +1570,50 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         configureTree.setSearchDialog(d);
 
         d.setTitle(configureTree.getSearchCmd());
-        d.setLayout(new MigLayout());
 
-        final JLabel searchLabel = new JLabel(Resources.getString("Editor.search_string"));
-        search = new JTextField(searchParameters.getSearchString(), 32);
+        search = new HintTextField(32, Resources.getString("Editor.search_string"));
+        search.setText(searchParameters.getSearchString());
         configureTree.setSearchField(search);
-        search.selectAll(); // Pre-select all the search text when opening the dialog
-        searchLabel.setLabelFor(search);
+        search.selectAll();
 
-        final BooleanConfigurer sensitive = new BooleanConfigurer(searchParameters.isMatchCase());
-        final BooleanConfigurer advanced = new BooleanConfigurer(searchParameters.isMatchAdvanced());
+        final JCheckBox sensitive = new JCheckBox(Resources.getString("Editor.search_case"), searchParameters.isMatchCase());
+        final JCheckBox advanced  = new JCheckBox(Resources.getString("Editor.search_advanced"), searchParameters.isMatchAdvanced());
 
-        final JLabel names_label = new JLabel(Resources.getString("Editor.search_names"));
-        final BooleanConfigurer names = new BooleanConfigurer(searchParameters.isMatchNames());
-        final JLabel types_label = new JLabel(Resources.getString("Editor.search_types"));
-        final BooleanConfigurer types = new BooleanConfigurer(searchParameters.isMatchTypes());
+        final JCheckBox names = new JCheckBox(Resources.getString("Editor.search_names"), searchParameters.isMatchNames());
+        final JCheckBox types = new JCheckBox(Resources.getString("Editor.search_types"), searchParameters.isMatchTypes());
 
-        final JLabel traits_label = new JLabel(Resources.getString("Editor.search_traits"));
-        final BooleanConfigurer traits = new BooleanConfigurer(searchParameters.isMatchTraits());
-        final JLabel expressions_label = new JLabel(Resources.getString("Editor.search_expressions"));
-        final BooleanConfigurer expressions = new BooleanConfigurer(searchParameters.isMatchExpressions());
-        final JLabel properties_label = new JLabel(Resources.getString("Editor.search_properties"));
-        final BooleanConfigurer properties = new BooleanConfigurer(searchParameters.isMatchProperties());
+        final JCheckBox traits = new JCheckBox(Resources.getString("Editor.search_traits"), searchParameters.isMatchTraits());
+        final JCheckBox expressions = new JCheckBox(Resources.getString("Editor.search_expressions"), searchParameters.isMatchExpressions());
+        final JCheckBox properties = new JCheckBox(Resources.getString("Editor.search_properties"), searchParameters.isMatchProperties());
 
-        final JLabel keys_label = new JLabel(Resources.getString("Editor.search_keys"));
-        final BooleanConfigurer keys = new BooleanConfigurer(searchParameters.isMatchKeys());
-        final JLabel menus_label = new JLabel(Resources.getString("Editor.search_menus"));
-        final BooleanConfigurer menus = new BooleanConfigurer(searchParameters.isMatchMenus());
-        final JLabel messages_label = new JLabel(Resources.getString("Editor.search_messages"));
-        final BooleanConfigurer messages = new BooleanConfigurer(searchParameters.isMatchMessages());
+        final JCheckBox keys = new JCheckBox(Resources.getString("Editor.search_keys"), searchParameters.isMatchKeys());
+        final JCheckBox menus = new JCheckBox(Resources.getString("Editor.search_menus"), searchParameters.isMatchMenus());
+        final JCheckBox messages = new JCheckBox(Resources.getString("Editor.search_messages"), searchParameters.isMatchMessages());
 
         final Consumer<Boolean> visSetter = visible -> {
-          names_label.setVisible(visible);
-          names.getControls().setVisible(visible);
-          types_label.setVisible(visible);
-          types.getControls().setVisible(visible);
-          traits_label.setVisible(visible);
-          traits.getControls().setVisible(visible);
-          expressions_label.setVisible(visible);
-          expressions.getControls().setVisible(visible);
-          properties_label.setVisible(visible);
-          properties.getControls().setVisible(visible);
-          keys_label.setVisible(visible);
-          keys.getControls().setVisible(visible);
-          menus_label.setVisible(visible);
-          menus.getControls().setVisible(visible);
-          messages_label.setVisible(visible);
-          messages.getControls().setVisible(visible);
+          names.setVisible(visible);
+          types.setVisible(visible);
+          traits.setVisible(visible);
+          expressions.setVisible(visible);
+          properties.setVisible(visible);
+          keys.setVisible(visible);
+          menus.setVisible(visible);
+          messages.setVisible(visible);
         };
 
-        advanced.addPropertyChangeListener(l -> {
-          visSetter.accept(advanced.booleanValue());
+        advanced.addChangeListener(l -> {
+          visSetter.accept(advanced.isSelected());
           SwingUtils.repack(configureTree.getSearchDialog());
         });
 
-        visSetter.accept(advanced.booleanValue());
+        visSetter.accept(advanced.isSelected());
 
         configureTree.setSearchAdvanced(advanced);
 
         final JButton find = new JButton(Resources.getString("Editor.search_next"));
         find.addActionListener(e12 -> {
           final SearchParameters parametersSetInDialog =
-            new SearchParameters(search.getText(),
-              sensitive.booleanValue(), names.booleanValue(), types.booleanValue(),
-              true,
-              traits.booleanValue(), expressions.booleanValue(), properties.booleanValue(),
-              keys.booleanValue(), menus.booleanValue(), messages.booleanValue());
+            new SearchParameters(search.getText(), sensitive.isSelected(), names.isSelected(), types.isSelected(), true, traits.isSelected(), expressions.isSelected(), properties.isSelected(), keys.isSelected(), menus.isSelected(), messages.isSelected());
 
           final boolean anyChanges = !searchParameters.equals(parametersSetInDialog);
 
@@ -1645,7 +1624,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           // If literally no search parameters are selectable, turn at least one on (and print warning)
           if (!searchParameters.isMatchNames() && !searchParameters.isMatchTypes() && searchParameters.isMatchAdvanced() && (!searchParameters.isMatchTraits() && !searchParameters.isMatchExpressions() && !searchParameters.isMatchProperties() && !searchParameters.isMatchKeys() && !searchParameters.isMatchMenus() && !searchParameters.isMatchMessages())) {
             searchParameters.setMatchNames(true);
-            names.setValue(true);
+            names.setSelected(true);
             ConfigureTree.chat(Resources.getString("Editor.search_all_off"));
           }
 
@@ -1677,44 +1656,48 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
         cancel.addActionListener(e1 -> configureTree.getSearchDialog().setVisible(false));
 
-        final ComponentConfigPanel p = new ComponentConfigPanel();
-        p.setBorder(BorderFactory.createEtchedBorder());
+        final JButton help = new JButton(Resources.getString(Resources.HELP));
+        help.addActionListener(e2 -> showSearchHelp());
+
+        d.setLayout(new MigLayout("", "[fill]")); // NON-NLS
+        final JPanel panel = new JPanel(new MigLayout("hidemode 3,wrap 1" + "," + ConfigurerLayout.STANDARD_GAPY, "[fill]")); // NON-NLS
+        panel.setBorder(BorderFactory.createEtchedBorder());
 
         // top row
-        p.add(searchLabel, "align right, gapx rel"); //$NON-NLS-1$//
-        p.add(search, "pushx, growx, wrap"); //$NON-NLS-1$//
+        panel.add(search);
 
         // options row
-        p.add("Editor.search_case", sensitive);
-        p.add("Editor.search_advanced", advanced);
+        panel.add(sensitive);
+        panel.add(advanced);
 
         // Advanced 1
-        p.add(names_label, names);
-        p.add(types_label, types);
+        panel.add(names);
+        panel.add(types);
 
         // Advanced 2
-        p.add(traits_label, traits);
-        p.add(expressions_label, expressions);
-        p.add(properties_label, properties);
+        panel.add(traits);
+        panel.add(expressions);
+        panel.add(properties);
 
         // Advanced 3
-        p.add(keys_label, keys);
-        p.add(menus_label, menus);
-        p.add(messages_label, messages);
+        panel.add(keys);
+        panel.add(menus);
+        panel.add(messages);
 
         // buttons row
-        final JPanel buttonPanel = new JPanel(new MigLayout("", "push[]rel[]push")); // NON-NLS
-        buttonPanel.add(find, "tag ok,sg 1"); //$NON-NLS-1$//
-        buttonPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
-        p.add(buttonPanel, "span 2,grow"); // NON-NLS
+        final JPanel bPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+        bPanel.add(find, "tag ok,sg 1"); //$NON-NLS-1$//
+        bPanel.add(cancel, "tag cancel,sg 1"); //$NON-NLS-1$//
+        bPanel.add(help, "tag help,sg 1"); // NON-NLS
+        panel.add(bPanel, "grow"); // NON-NLS
+
+        d.add(panel, "grow"); // NON-NLS
 
         d.getRootPane().setDefaultButton(find); // Enter key activates search
 
         // Esc Key cancels
         final KeyStroke k = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         d.getRootPane().registerKeyboardAction(ee -> configureTree.getSearchDialog().setVisible(false), k, JComponent.WHEN_IN_FOCUSED_WINDOW);
-
-        d.add(p);
       }
 
       search.requestFocus(); // Start w/ focus in search string field
@@ -1724,6 +1707,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         SwingUtils.repack(d);
         d.setVisible(true);
       }
+    }
+
+    private void showSearchHelp() {
+      // FIXME - Add Help ref
     }
 
     /**
