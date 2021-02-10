@@ -1,5 +1,8 @@
 3.5.1 - ???
 
+* 14011: Search now pre-selects contents of search field when restoring/
+    remembering the previous contents
+* 14009: Standardize remaining dialogs
 * 14008: Unused Images Tool was suggesting some in-use GIFs for deletion
 * 14007: NPE when adding dockable PieceWindow from module extension
 * 14000: OverlappingFileLockException when attempting to write preferences
