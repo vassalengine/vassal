@@ -9,15 +9,15 @@
 The VASSAL Preferences dialog allows you to configure VASSAL for your system and to personalize its preference options to suit your needs.
 
 The number of tabs displayed will depend on the module you are using at the time (for example a module without
-a <<TurnTracker.html#top,Turn Tracker>> won't display a Turn Tracker tab). You will find the preferences sorted under the following tabs:
+a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will find the preferences sorted under the following tabs:
 
 * <<#General,*General*>> - Common preferences.
 * <<#Compatibility,*Compatibility*>> - Platform-specific troubleshooting and very old modules.
 * <<#Personal,*Personal*>> - Your username and password for multiplayer games.
 * <<#Sounds,*Sounds*>> - Sound file mappings.
 * <<#Server,*Server*>> - Which server to connect to for online play.
-* <<#Chat Window,*Chat Window*>> - Fonts and colors for the <<ChatLog.html#top,Chat Log>>
-* <<#Turn Counter,*Turn Counter*>> - <<TurnTracker.html#top,Turn Tracker>> display configuration.
+* <<#Chat Window,*Chat Window*>> - Fonts and colors for the ChatLog#top,Chat Log>>
+* <<#Turn Counter,*Turn Counter*>> - TurnTracker#top,Turn Tracker>> display configuration.
 
 [#General]
 ==== General Preferences
@@ -35,8 +35,8 @@ a <<TurnTracker.html#top,Turn Tracker>> won't display a Turn Tracker tab). You w
 
 *Prompt for log/save file comments* Checking this option will prompt you for comments whenever you save a game or begin a log file. From VASSAL 3.5 onward, these comments will be displayed in the chat log whenever the save or log file is loaded.
 
-*Use combined application window (requires restart)?* Check this option to have the first <<Map.html#top,Map>> in each module open as part of the same window
-that includes the <<ChatLog.html#top,Chat Log>> and main module menu. If unchecked, all Maps will have their own windows.
+*Use combined application window (requires restart)?* Check this option to have the first Map#top,Map>> in each module open as part of the same window
+that includes the ChatLog#top,Chat Log>> and main module menu. If unchecked, all Maps will have their own windows.
 
 *JVM initial heap (in MB)* This sets the initial size (in megabytes) of the heap that Java uses to manage memory for the VASSAL application. Normally this setting will be sufficient for most modules and devices. When troubleshooting a memory error, we recommend you start by adjusting the _maximum_ heap size.
 
@@ -50,11 +50,11 @@ that includes the <<ChatLog.html#top,Chat Log>> and main module menu. If uncheck
 
 *Scroll increment (pixels):* Sets the increment, in mapboard pixels, by which the map scrolls when using its scrollbars.
 
-*Use arrow keys to scroll?* If checked, the arrow keys will be mapped to scroll the currently focused <<Map.html#top, Map>> window.
+*Use arrow keys to scroll?* If checked, the arrow keys will be mapped to scroll the currently focused Map#top, Map>> window.
 
-*Disable automatic stack display - use configured control key (Ctrl+Space) instead?* If checked, <<Map.html#StackViewer, Mouseover Stack Viewers>> do not pop up automatically when holding the mouse over a piece or stack. Instead, the viewer appears only when _Ctrl+SPACE_ is then pressed.
+*Disable automatic stack display - use configured control key (Ctrl+Space) instead?* If checked, Map#StackViewer, Mouseover Stack Viewers>> do not pop up automatically when holding the mouse over a piece or stack. Instead, the viewer appears only when _Ctrl+SPACE_ is then pressed.
 
-*Delay before automatic stack display (ms)* Sets the number of milliseconds that the mouse must be held above a piece or stack to activate a <<Map.html#StackViewer, Mouseover Stack Viewer>>.
+*Delay before automatic stack display (ms)* Sets the number of milliseconds that the mouse must be held above a piece or stack to activate a Map#StackViewer, Mouseover Stack Viewer>>.
 
 *Delay scrolling when dragging at map edge (ms)* Sets the number of milliseconds of delay before scrolling the map when dragging a piece near to the edge of the view.
 |image:images/Preferences.png[]
@@ -70,7 +70,7 @@ that includes the <<ChatLog.html#top,Chat Log>> and main module menu. If uncheck
 
 *Drag ghost bug correction? (Use if shadow image missing when dragging counters)* When dragging pieces on a map, the intended behavior involves semi-transparent images of the pieces being dragged. On some Windows machines these images don't appear -- in that case, select this option for an alternate drag image.
 
-*Use Classic Move Fixed Distance trait move batching?* The <<Translate.html#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a <<TriggerAction.html#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depend on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
+*Use Classic Move Fixed Distance trait move batching?* The Translate#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a TriggerAction#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depend on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
 
 *Moving stacks should pick up non-moving pices?* If you move a piece onto another piece and then move it again without deselecting, the default behavior is that it will not "pick up" that intermediate piece. Check this box to cause intermediate pieces to be picked up.
 
@@ -120,19 +120,19 @@ side on the computer that has the password recorded on it (switch to observer st
 ==== Chat Window
 [width="100%",cols="50%,50%",]
 |===
-|The _Chat Window_ tab lets you configure the font and colors for the <<ChatLog.html#top,Chat Log>>.
+|The _Chat Window_ tab lets you configure the font and colors for the ChatLog#top,Chat Log>>.
 
 *Chat Window Font*: Allows you to choose the style and size of the font displayed in the Chat log.
 
 *Game Messages*: Configures the color used for normal game messages.
 
-*Game Messages (#2 - first character "!")*: Configures the #2 color for game messages. The module designer can cause this color to be used for a <<ReportChanges.html#top,Report Action>> trait or other <<MessageFormat.html#top,Message Format>> by putting the character `!` as the very first character in the message.
+*Game Messages (#2 - first character "!")*: Configures the #2 color for game messages. The module designer can cause this color to be used for a ReportChanges#top,Report Action>> trait or other MessageFormat#top,Message Format>> by putting the character `!` as the very first character in the message.
 
-*Game Messages (#3 - first character "?")*: Configures the #3 color for game messages. The module designer can cause this color to be used for a <<ReportChanges.html#top,Report Action>> trait or other <<MessageFormat.html#top,Message Format>> by putting the character `?` as the very first character in the message.
+*Game Messages (#3 - first character "?")*: Configures the #3 color for game messages. The module designer can cause this color to be used for a ReportChanges#top,Report Action>> trait or other MessageFormat#top,Message Format>> by putting the character `?` as the very first character in the message.
 
-*Game Messages (#4 - first character "~")*: Configures the #4 color for game messages. The module designer can cause this color to be used for a <<ReportChanges.html#top,Report Action>> trait or other <<MessageFormat.html#top,Message Format>> by putting the character `~` as the very first character in the message.
+*Game Messages (#4 - first character "~")*: Configures the #4 color for game messages. The module designer can cause this color to be used for a ReportChanges#top,Report Action>> trait or other MessageFormat#top,Message Format>> by putting the character `~` as the very first character in the message.
 
-*Game Messages (#5 - first character "`")*: Configures the #5 color for game messages. The module designer can cause this color to be used for a <<ReportChanges.html#top,Report Action>> trait or other <<MessageFormat.html#top,Message Format>> by putting the character ``` as the very first character in the message.
+*Game Messages (#5 - first character "`")*: Configures the #5 color for game messages. The module designer can cause this color to be used for a ReportChanges#top,Report Action>> trait or other MessageFormat#top,Message Format>> by putting the character ``` as the very first character in the message.
 
 *System Messages*: Configures the color used to display messages from the VASSAL system in the Chat Log.
 
@@ -147,13 +147,13 @@ side on the computer that has the password recorded on it (switch to observer st
 ==== Turn Counter
 [width="100%",cols="50%,50%",]
 |===
-|If your module contains a <<TurnTracker.html#top,Turn Counter>>, this tab will let you configure preferences about its appearance.
+|If your module contains a TurnTracker#top,Turn Counter>>, this tab will let you configure preferences about its appearance.
 
 *Font Size*: Sets the size of the font used in the Turn Counter.
 
 *Bold?*: Controls whether the Turn Counter uses bold text.
 
-*Dock into Toolbar*: Controls whether the Turn Counter begins docked to the <<Toolbar.html#top,Toolbar>>.
+*Dock into Toolbar*: Controls whether the Turn Counter begins docked to the Toolbar#top,Toolbar>>.
 |image:images/PreferencesTurn.png[]
 |===
 
