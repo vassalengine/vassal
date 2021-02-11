@@ -192,6 +192,13 @@ public class Player extends Launcher {
           }
         }
       }
+      else {
+        // A module in the MM should be a valid Module, but people can and do delete
+        // or replace module files while the MM is running.
+        ErrorDialog.show("Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
+        lr.module = null;
+        return;
+      }
 
       // increase the using count
       incrementUsed(lr.module);
