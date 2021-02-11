@@ -17,6 +17,8 @@
  */
 package VASSAL.counters;
 
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -70,7 +72,7 @@ import net.miginfocom.swing.MigLayout;
 /**
  * This Decorator defines a key command to places another counter on top of this one.
  */
-public class PlaceMarker extends Decorator implements TranslatablePiece {
+public class PlaceMarker extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "placemark;"; // NON-NLS
   protected KeyCommand command;
   protected NamedKeyStroke key;
@@ -236,7 +238,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
     if (afterBurnerKey != null && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
-      c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
+      try {
+        RecursionLimiter.startExecution(this);
+        c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
+      }
+      catch (RecursionLimitException e) {
+        RecursionLimiter.infiniteLoop(e);
+      }
+      finally {
+        RecursionLimiter.endExecution();
+      }
     }
 
     if (getProperty(Properties.SELECTED) == Boolean.TRUE)
@@ -418,6 +429,18 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   public void updateGpId() {
     setGpId(gpidSupport.generateGpId());
+  }
+
+  // Implement Loopable
+  @Override
+  public String getComponentName() {
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
+  }
+
+  @Override
+  public String getComponentTypeName() {
+    return getDescription();
   }
 
   @Override
