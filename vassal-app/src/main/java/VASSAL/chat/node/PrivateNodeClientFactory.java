@@ -29,7 +29,13 @@ public class PrivateNodeClientFactory extends NodeClientFactory {
   @Override
   protected ChatServerConnection buildServerImpl(Properties param) {
     final String host = param.getProperty(NODE_HOST, PRIVATE_HOST);
-    final int port = Integer.parseInt(param.getProperty(NODE_PORT, PRIVATE_PORT));
+    int port;
+    try {
+      port = Integer.parseInt(param.getProperty(NODE_PORT, PRIVATE_PORT));
+    }
+    catch (final NumberFormatException e) {
+      port = Integer.parseInt(PRIVATE_PORT);
+    }
 
     final GameModule g = GameModule.getGameModule();
 

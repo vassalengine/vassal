@@ -704,7 +704,7 @@ public class ServerAddressBook {
       return new ServerConfig(p, this, enabled);
     }
 
-    class ServerConfig {
+    private class ServerConfig {
       protected JComponent configControls;
       protected JTextField description = new JTextField();
       protected AddressBookEntry entry;
