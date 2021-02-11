@@ -17,14 +17,14 @@
  */
 package VASSAL.counters;
 
-import javax.swing.KeyStroke;
-
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
+
+import javax.swing.KeyStroke;
 
 /**
  * GamePiece trait that replaces a GamePiece with another one

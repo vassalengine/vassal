@@ -17,6 +17,35 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.GpIdSupport;
+import VASSAL.build.module.BasicCommandEncoder;
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.CardSlot;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.AddPiece;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ChooseComponentPathDialog;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PropertiesWindow;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.ImageSearchTarget;
+import VASSAL.tools.ComponentPathBuilder;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -38,39 +67,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.GpIdSupport;
-import VASSAL.build.module.BasicCommandEncoder;
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.widget.CardSlot;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.AddPiece;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ChooseComponentPathDialog;
-import VASSAL.configure.PropertiesWindow;
-import VASSAL.configure.TranslatingStringEnumConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.search.ImageSearchTarget;
-import VASSAL.tools.ComponentPathBuilder;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-
 import net.miginfocom.swing.MigLayout;
 
 /**
  * This Decorator defines a key command to places another counter on top of this one.
  */
-public class PlaceMarker extends Decorator implements TranslatablePiece {
+public class PlaceMarker extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String ID = "placemark;"; // NON-NLS
   protected KeyCommand command;
   protected NamedKeyStroke key;
@@ -236,7 +238,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
     if (afterBurnerKey != null && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
-      c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
+      try {
+        RecursionLimiter.startExecution(this);
+        c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
+      }
+      catch (RecursionLimitException e) {
+        RecursionLimiter.infiniteLoop(e);
+      }
+      finally {
+        RecursionLimiter.endExecution();
+      }
     }
 
     if (getProperty(Properties.SELECTED) == Boolean.TRUE)
@@ -418,6 +429,18 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   public void updateGpId() {
     setGpId(gpidSupport.generateGpId());
+  }
+
+  // Implement Loopable
+  @Override
+  public String getComponentName() {
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
+  }
+
+  @Override
+  public String getComponentTypeName() {
+    return getDescription();
   }
 
   @Override
