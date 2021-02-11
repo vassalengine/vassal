@@ -432,6 +432,11 @@ public class ImageSaver extends AbstractToolbarItem {
         if (c instanceof IOException) {
           WriteErrorDialog.error(e, (IOException) c, files.get(files.size() - 1));
         }
+        else if (c instanceof InterruptedException) {
+          // This is thrown by the inner imageop when the task is cancelled.
+          // on cancellation, remove all files we created
+          for (final File f : files) f.delete();
+        }
         else {
           ErrorDialog.bug(e);
         }
