@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2020 by Brent Easton, Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2021 by Brent Easton, Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,6 +17,7 @@
 
 package VASSAL.launch;
 
+import VASSAL.configure.StringConfigurer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -69,6 +70,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
@@ -128,12 +131,16 @@ public class ModuleManagerWindow extends JFrame {
 
   private static final String SHOW_STATUS_KEY = "showServerStatus"; //NON-NLS
   private static final String DIVIDER_LOCATION_KEY = "moduleManagerDividerLocation"; //NON-NLS
-  private static final int COLUMNS = 4;
+  private static final String DEVELOPER_INFO_KEY = "moduleManagerDeveloperInfo"; //NON-NLS
+  private static final String COLUMN_WIDTHS_KEY = "moduleManagerColumnWidths"; //NON-NLS
+  private static final int COLUMNS = 5;
   private static final int KEY_COLUMN = 0;
   private static final int VERSION_COLUMN = 1;
-  private static final int VASSAL_COLUMN = 2;
-  private static final int SPARE_COLUMN = 3;
+  private static final int SPARE_COLUMN = 2;
+  private static final int VASSAL_COLUMN = 3;
+  private static final int SAVED_COLUMN = 4;
   private static final String[] columnHeadings = new String[COLUMNS];
+  private static final TableColumn[] columns = new TableColumn[COLUMNS];
 
   private final ImageIcon moduleIcon;
   private final ImageIcon activeExtensionIcon;
@@ -183,6 +190,7 @@ public class ModuleManagerWindow extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
+        saveColumnWidths();
         final Prefs gp = Prefs.getGlobalPrefs();
         try {
           gp.close();
@@ -246,6 +254,10 @@ public class ModuleManagerWindow extends JFrame {
 
     dividerLocationConfig = new IntConfigurer(DIVIDER_LOCATION_KEY, null, -10);
     Prefs.getGlobalPrefs().addOption(null, dividerLocationConfig);
+
+    final BooleanConfigurer developerInfoConfig = new BooleanConfigurer(DEVELOPER_INFO_KEY, Resources.getString("Prefs.developer_info"), false);
+    Prefs.getGlobalPrefs().addOption(Resources.getString("Prefs.general_tab"), developerInfoConfig);
+    developerInfoConfig.addPropertyChangeListener(e1 -> updateColumnDisplay());
 
     toolsMenu.add(new CheckBoxMenuItemProxy(new AbstractAction(
                    Resources.getString("Chat.server_status")) {
@@ -459,6 +471,23 @@ public class ModuleManagerWindow extends JFrame {
     return dividerLocationConfig.getIntValue(500);
   }
 
+  // Show/Hide the two 'developer' columns depending on the pref value
+  private void updateColumnDisplay() {
+    final boolean showDeveloperInfo = (Boolean) Prefs.getGlobalPrefs().getValue(DEVELOPER_INFO_KEY);
+    final TableColumnModel model = tree.getColumnModel();
+
+    if (showDeveloperInfo) {
+      if (model.getColumnCount() < COLUMNS) {
+        model.addColumn(columns[VASSAL_COLUMN]);
+        model.addColumn(columns[SAVED_COLUMN]);
+      }
+    }
+    else {
+      model.removeColumn(columns[VASSAL_COLUMN]);
+      model.removeColumn(columns[SAVED_COLUMN]);
+    }
+  }
+
   protected void buildTree() {
     recentModuleConfig = new StringArrayConfigurer("RecentModules", null); //NON-NLS
     Prefs.getGlobalPrefs().addOption(null, recentModuleConfig);
@@ -627,23 +656,58 @@ public class ModuleManagerWindow extends JFrame {
       }
     });
 
-    // FIXME: Width handling needs improvement. Also save in prefs
-    tree.getColumnModel().getColumn(KEY_COLUMN).setMinWidth(250);
+    // Pref to hold the column widths.
+    final StringConfigurer widthsConfig = new StringConfigurer(COLUMN_WIDTHS_KEY, null, "");
+    Prefs.getGlobalPrefs().addOption(null, widthsConfig);
 
-    tree.getColumnModel().getColumn(VERSION_COLUMN)
-                         .setCellRenderer(new VersionCellRenderer());
-    tree.getColumnModel().getColumn(VERSION_COLUMN).setMinWidth(100);
+    setColumnWidths();
 
-    tree.getColumnModel().getColumn(VASSAL_COLUMN)
-      .setCellRenderer(new VersionCellRenderer());
-    tree.getColumnModel().getColumn(VASSAL_COLUMN).setMinWidth(100);
+    // Set cell renderers for centered fields
+    final TableColumnModel model = tree.getColumnModel();
+    final DefaultTableCellRenderer centerRenderer = new CenteringCellRenderer();
+    model.getColumn(VERSION_COLUMN).setCellRenderer(centerRenderer);
+    model.getColumn(SAVED_COLUMN).setCellRenderer(centerRenderer);
+    model.getColumn(VASSAL_COLUMN).setCellRenderer(centerRenderer);
 
-    tree.getColumnModel().getColumn(SPARE_COLUMN).setMinWidth(10);
-    tree.getColumnModel().getColumn(SPARE_COLUMN).setPreferredWidth(600);
-
-    // FIXME: How to set alignment of individual header components?
     tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
 
+    // Save the columns so they can be removed/restored as needed
+    for (int i = 0; i < COLUMNS; i++) {
+      columns[i] = tree.getColumnModel().getColumn(i);
+    }
+
+    // Show/hide the developer columns
+    updateColumnDisplay();
+  }
+
+  // Set the preferred widths of the columns based on the recorded preference
+  // All 5 columns are guaranteed to exist at this point.
+  private void setColumnWidths() {
+    final String widths = Prefs.getGlobalPrefs().getValue(COLUMN_WIDTHS_KEY).toString();
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(widths, ',');
+    final TableColumnModel model = tree.getColumnModel();
+
+    model.getColumn(0).setPreferredWidth(sd.nextInt(250));
+    model.getColumn(0).setMinWidth(200);
+    model.getColumn(1).setPreferredWidth(sd.nextInt(100));
+    model.getColumn(1).setMinWidth(100);
+    model.getColumn(2).setPreferredWidth(sd.nextInt(500));
+    model.getColumn(2).setMinWidth(200);
+    model.getColumn(3).setPreferredWidth(sd.nextInt(100));
+    model.getColumn(3).setMinWidth(100);
+    model.getColumn(4).setPreferredWidth(sd.nextInt(100));
+    model.getColumn(4).setMinWidth(100);
+  }
+
+  // Save the current column widths in the preference
+  // The Developer columns may not exist at this point.
+  private void saveColumnWidths() {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    final TableColumnModel model = tree.getColumnModel();
+    for (int i = 0; i < model.getColumnCount(); i++) {
+      se.append(model.getColumn(i).getWidth());
+    }
+    Prefs.getGlobalPrefs().setValue(COLUMN_WIDTHS_KEY, se.toString());
   }
 
   public void updateRequest(File f) {
@@ -777,8 +841,9 @@ public class ModuleManagerWindow extends JFrame {
       super(rootNode);
       columnHeadings[KEY_COLUMN] = Resources.getString("ModuleManager.module");
       columnHeadings[VERSION_COLUMN] = Resources.getString("ModuleManager.version");
-      columnHeadings[VASSAL_COLUMN] = Resources.getString("ModuleManager.vassal_version");
+      columnHeadings[VASSAL_COLUMN] = Resources.getString("ModuleManager.created_by");
       columnHeadings[SPARE_COLUMN] = Resources.getString("ModuleManager.description");
+      columnHeadings[SAVED_COLUMN] = Resources.getString("ModuleManager.last_saved");
     }
 
     @Override
@@ -906,10 +971,10 @@ public class ModuleManagerWindow extends JFrame {
    * Custom cell render for Version column
    *   - Center data
    */
-  private static class VersionCellRenderer extends DefaultTableCellRenderer {
+  private static class CenteringCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
 
-    public VersionCellRenderer() {
+    public CenteringCellRenderer() {
       super();
       this.setHorizontalAlignment(CENTER);
     }
@@ -1109,6 +1174,8 @@ public class ModuleManagerWindow extends JFrame {
         return getVersion();
       case VASSAL_COLUMN:
         return getVassalVersion();
+      case SAVED_COLUMN:
+        return getLastSaved();
       default:
         return null;
       }
@@ -1139,6 +1206,10 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public String getComments() {
+      return "";
+    }
+
+    public String getLastSaved() {
       return "";
     }
 
@@ -1277,6 +1348,11 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public String getVassalVersion() {
       return metadata == null ? "" : metadata.getVassalVersion();
+    }
+
+    @Override
+    public String getLastSaved() {
+      return metadata == null ? "" : metadata.formatLastSaved();
     }
 
     /**
@@ -1560,6 +1636,11 @@ public class ModuleManagerWindow extends JFrame {
       return metadata == null ? "" : metadata.getVassalVersion();
     }
 
+    @Override
+    public String getLastSaved() {
+      return metadata == null ? "" : metadata.formatLastSaved();
+    }
+
     public String getDescription() {
       return metadata == null ? "" : metadata.getDescription();
     }
@@ -1749,7 +1830,7 @@ public class ModuleManagerWindow extends JFrame {
     /**
      * Update the display for the specified save File, or add it in if
      * we don't already know about it.
-     * @param f
+     * @param f Save File
      */
     public void update(File f) {
       for (int i = 0; i < getTreeNode().getChildCount(); i++) {
@@ -1989,8 +2070,9 @@ public class ModuleManagerWindow extends JFrame {
       d.setLocationRelativeTo(frame);
       d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-      d.pack();
+      SwingUtils.repack(d);
       d.setVisible(true);
     }
   }
 }
+
