@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 14024: NumberFormatException when private server port is empty
 * 14023: Advanced Search displays "hit lists" properly for names/types of
     prototypes & configurables
 * 14022: Upgrade bundled Java to 15.0.2+7
