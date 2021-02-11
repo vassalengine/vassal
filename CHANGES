@@ -3,6 +3,8 @@
 * 14023: Advanced Search displays "hit lists" properly for names/types of
     prototypes & configurables
 * 14022: Upgrade bundled Java to 15.0.2+7
+* 14019: Remove confusing Vassal Version column from MM, show based on
+    preference
 * 14015: Added infinite loop protection to PlaceMarker
 * 14012: Die Roll 'Prompt for values when button pushed' dialog is broken
 * 14011: Search now pre-selects contents of search field when restoring/
@@ -18,6 +20,7 @@
 * 13993: IllegalBuildException on gpIdChecker when using GameRefresher
 * 13992: NPE in Embellishment.addLocalImageNames()
 * 13991: NPE when using Game Refresher on predefined setups
+* 13988: ExecutionException when opening a moved or renamed module file
 * 13987: ChessClock buttons with icons had inappropriate height/width
 * 13984: NPE in BugUtils when involved from the Module Manager
 * 13981: NoSuchElementException using Edit All Contained Pieces
