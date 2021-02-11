@@ -18,8 +18,40 @@
 
 package VASSAL.build.module.turn;
 
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.IconButton;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.UniqueIdManager;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -50,46 +82,16 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.IconButton;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.NamedKeyStrokeListener;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.UniqueIdManager;
-
 /**
  * Generic Turn Counter
  */
-public class TurnTracker extends TurnComponent implements CommandEncoder, GameComponent, ActionListener, UniqueIdManager.Identifyable {
+public class TurnTracker extends TurnComponent implements CommandEncoder, GameComponent, ActionListener, UniqueIdManager.Identifyable, RecursionLimiter.Loopable {
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("TurnTracker"); //$NON-NLS-1$
 
   protected static final String COMMAND_PREFIX = "TURN"; //$NON-NLS-1$
 
-  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String NAME = "name"; // NON-NLS
   public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
   public static final String NEXT_HOT_KEY = "nexthotkey"; //$NON-NLS-1$
   public static final String PREV_HOT_KEY = "prevhotkey"; //$NON-NLS-1$
@@ -666,8 +668,28 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected void doGlobalkeys() {
     for (final TurnGlobalHotkey key : getComponentsOf(TurnGlobalHotkey.class)) {
-      key.apply();
+      try {
+        RecursionLimiter.startExecution(this);
+        key.apply();
+      }
+      catch (RecursionLimitException e) {
+        RecursionLimiter.infiniteLoop(e);
+      }
+      finally {
+        RecursionLimiter.endExecution();
+      }
     }
+  }
+
+  // Implement Loopable
+  @Override
+  public String getComponentTypeName() {
+    return getConfigureTypeName();
+  }
+
+  @Override
+  public String getComponentName() {
+    return getConfigureName();
   }
 
   @Override
