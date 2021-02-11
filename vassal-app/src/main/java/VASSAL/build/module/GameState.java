@@ -16,6 +16,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.module.map.SetupStack;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
@@ -311,7 +312,7 @@ public class GameState implements CommandEncoder {
   private volatile boolean gameUpdating = false;
 
   public void setupRefresh() {
-    this.gameStarting = false;
+    this.gameStarting = true;
     newGame.setEnabled(false);
     saveGame.setEnabled(true);
     saveGameAs.setEnabled(true);
@@ -319,7 +320,11 @@ public class GameState implements CommandEncoder {
 
     gameStarted &= this.gameStarting;
     for (final GameComponent gc : gameComponents) {
+  //    if (gc instanceof SetupStack) {
+   //     this.gameStarting = false;
+    //  }
       gc.setup(this.gameStarting);
+      this.gameStarting = true;
     }
   }
 
