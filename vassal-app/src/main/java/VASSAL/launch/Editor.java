@@ -151,10 +151,8 @@ public class Editor extends Launcher {
             final AbstractMetaData metadata =
               MetaDataFactory.buildMetaData(lr.importFile);
             if (!(metadata instanceof ImportMetaData)) {
-              ErrorDialog.show(
-                "Error.invalid_import_file", lr.importFile.getAbsolutePath());  //NON-NLS
-              logger.error("Import of " + lr.importFile.getAbsolutePath() +  //NON-NLS
-                " failed: unrecognized import type");  //NON-NLS
+              ErrorDialog.show("Error.invalid_import_file", lr.importFile.getAbsolutePath());  //NON-NLS
+              logger.error("Import of " + lr.importFile.getAbsolutePath() + " failed: unrecognized import type");  //NON-NLS
               lr.importFile = null;
             }
           }
@@ -227,6 +225,17 @@ public class Editor extends Launcher {
             VersionUtils.truncateToMinorVersion(Info.getVersion())
           );
         }
+      }
+      else {
+        // A module in the MM should be a valid Module, but people can and do delete
+        // or replace module files while the MM is running.
+        ErrorDialog.show("Error.invalid_vassal_module", lr.module.getAbsolutePath()); //NON-NLS
+        logger.error(
+          "-- Load of {} failed: Not a Vassal module", //NON-NLS
+          lr.module.getAbsolutePath()
+        );
+        lr.module = null;
+        return;
       }
 
       // register that this module is being edited
