@@ -147,7 +147,6 @@ public class GameState implements CommandEncoder {
         );
       }
     };
-    loadGameOld.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_continuation.shortcut").charAt(0));
     loadGameOld.setEnabled(false);
 
     loadContinuation = new AbstractAction(Resources.getString("GameState.load_game_old")) {
