@@ -91,7 +91,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected static final String COMMAND_PREFIX = "TURN"; //$NON-NLS-1$
 
-  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String NAME = "name"; // NON-NLS
   public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
   public static final String NEXT_HOT_KEY = "nexthotkey"; //$NON-NLS-1$
   public static final String PREV_HOT_KEY = "prevhotkey"; //$NON-NLS-1$
