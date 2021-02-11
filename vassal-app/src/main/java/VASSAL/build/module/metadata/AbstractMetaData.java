@@ -23,10 +23,13 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.NoSuchFileException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -100,6 +103,7 @@ public abstract class AbstractMetaData {
   protected String version;
   protected String vassalVersion;
   protected Attribute descriptionAttr;
+  protected String lastSaved;
 
   public AbstractMetaData() {
     setVassalVersion(Info.getVersion());
@@ -135,6 +139,26 @@ public abstract class AbstractMetaData {
 
   public String getLocalizedDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getLocalizedValue();
+  }
+
+  public String getLastSaved() {
+    return lastSaved;
+  }
+
+  public void setLastSaved(String lastSaved) {
+    this.lastSaved = lastSaved;
+  }
+
+  public String formatLastSaved() {
+    try {
+      final Date date = new Date(Long.parseLong(getLastSaved()));
+      final SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yy", Locale.getDefault());
+      format.setTimeZone(TimeZone.getDefault());
+      return format.format(date);
+    }
+    catch (Exception e) {
+      return "";
+    }
   }
 
   public void save(FileArchive archive) throws IOException {
@@ -438,6 +462,9 @@ public abstract class AbstractMetaData {
         else {
           descriptionAttr.addTranslation(language, value);
         }
+      }
+      else if (DATE_SAVED_ELEMENT.equals(qName)) {
+        setLastSaved(value);
       }
     }
 
