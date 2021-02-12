@@ -131,26 +131,29 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // Get the list of currently selected pieces
     final KeyBuffer kbuf = KeyBuffer.getBuffer();
 
-    // Find out if there's a GamePiece at the point where we're starting this mouse event
-    // (And we don't want to clear the buffer until we find the clicked-on piece because
-    // selecting a piece affects its visibility)
+    // Find out if there's a GamePiece at the point where we're starting this
+    // mouse event (And we don't want to clear the buffer until we find the
+    // clicked-on piece because selecting a piece affects its visibility)
     GamePiece p = map.findPiece(e.getPoint(), PieceFinder.DECK_OR_PIECE_IN_STACK);
 
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE; // Start by assuming we're clicking not band-selecting
     final boolean isDeck = (p != null) && (p instanceof Deck); // Make a note for later if we started on a Deck
     if (p != null) {
-      // Unlike Stacks and regular pieces, Decks aren't selected/unselected so apart from making the note, we don't treat them as a "piece" here
+      // Unlike Stacks and regular pieces, Decks aren't selected/unselected so
+      // apart from making the note, we don't treat them as a "piece" here
       if (isDeck) {
         p = null;
       }
       else {
-        // Construct a filter that we will use to decide if the initial piece is selectable by this action,
-        // according to any Does Not Stack (VASSAL.counters.Immobilized) trait - some pieces aren't selectable
+        // Construct a filter that we will use to decide if the initial piece
+        // is selectable by this action, according to any Does Not Stack
+        // (VASSAL.counters.Immobilized) trait - some pieces aren't selectable
         // and others require e.g. the Alt key to be held down.
         filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
 
-        // Don't "eat" band-selects if the piece we start the mouse event on is non-movable
+        // Don't "eat" band-selects if the piece we start the mouse event on
+        // is non-movable
         if (SwingUtils.isMainMouseButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
           bandSelect = BandSelectType.SPECIAL;
         }
@@ -161,17 +164,21 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     final boolean ignoreEvent = filter != null && filter.rejectEvent(e);
 
     if (p != null && !ignoreEvent) {
-      // We get here if initial piece clicked is eligible to be selected. In the case of a movable piece that means
-      // we are definitely clicking and/or dragging, not band-selecting. If it's a non-movable piece, we do some
-      // preliminaries here, but are still open to the idea that we might do a band-select.
-
+      // We get here if initial piece clicked is eligible to be selected. In
+      // the case of a movable piece that means we are definitely clicking
+      // and/or dragging, not band-selecting. If it's a non-movable piece, we
+      // do some preliminaries here, but are still open to the idea that we
+      // might do a band-select.
       final boolean movingStacksPickupUnits = (Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS);
 
       if (!kbuf.contains(p)) {
-        // If we get here, we've clicked on a selectable piece that's not yet selected.
+        // If we get here, we've clicked on a selectable piece that's not yet
+        // selected.
 
-        // If neither SHIFT (to add units to current selection) nor CTRL/Command (to toggle units to/from current selection)
-        // is pressed, then we clear the selection entirely, in preparation to add only this piece.
+        // If neither SHIFT (to add units to current selection) nor
+        // CTRL/Command (to toggle units to/from current selection)
+        // is pressed, then we clear the selection entirely, in preparation to
+        // add only this piece.
         if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) {
           kbuf.clear();
         }
@@ -179,12 +186,13 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         if (movingStacksPickupUnits ||
             p.getParent() == null ||
             p.getParent().isExpanded() ||
-          SwingUtils.isSelectionToggle(e) ||
-          SwingUtils.isContextMouseButtonDown(e) ||
-          Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-          // If we're shift+clicking (add), or ctrl/command+clicking (toggle), or if
-          // the stack has been "expanded" allowing individual members to be clicked, or
-          // the piece isn't in a stack, add only the individual unit to the selection.
+            SwingUtils.isSelectionToggle(e) ||
+            SwingUtils.isContextMouseButtonDown(e) ||
+            Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+          // If we're shift+clicking (add), or ctrl/command+clicking (toggle),
+          // or if the stack has been "expanded" allowing individual members to
+          // be clicked, or the piece isn't in a stack, add only the individual
+          // unit to the selection.
           kbuf.add(p);
         }
         else {
@@ -195,9 +203,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         }
       }
       else {
-        // If we get here, we've clicked on a selectable piece that is already selected
+        // If we get here, we've clicked on a selectable piece that is already
+        // selected
 
-        // RFE 1659481 Ctrl/Command-click ("toggle") deselects clicked units (if they are already selected)
+        // RFE 1659481 Ctrl/Command-click ("toggle") deselects clicked units
+        // (if they are already selected)
         if (SwingUtils.isSelectionToggle(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
           final Stack s = p.getParent();
           if (s == null) {
@@ -216,24 +226,29 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         // End RFE 1659481
       }
 
-      // Whatever piece or stack was clicked, move it to the front/top of its current visual layer
+      // Whatever piece or stack was clicked, move it to the front/top of its
+      // current visual layer
       final GamePiece to_front = p.getParent() != null ? p.getParent() : p;
       map.getPieceCollection().moveToFront(to_front);
     }
     else {
-      // If we got here, we did NOT start the mouse stroke on a selectable piece. Thus we're probably band-selecting.
+      // If we got here, we did NOT start the mouse stroke on a selectable
+      // piece. Thus we're probably band-selecting.
       bandSelect = BandSelectType.NORMAL; //BR// Allowed to band-select
     }
 
-    // If we get here and are provisionally allowed to band-select, check if we should get one going.
+    // If we get here and are provisionally allowed to band-select, check if
+    // we should get one going.
     if (bandSelect != BandSelectType.NONE) {
       bandSelectPiece = null;
       if (!e.isShiftDown() && !SwingUtils.isSelectionToggle(e)) { // No deselect if shift key down
-        // If we're starting a new band-select, we clear the present selection if we're not doing a Shift+Lasso to
-        // add units to present selection or a Ctrl/Command+Lasso to toggle.
+        // If we're starting a new band-select, we clear the present selection
+        // if we're not doing a Shift+Lasso to add units to present selection
+        // or a Ctrl/Command+Lasso to toggle.
         kbuf.clear();
 
-        //BR// This section allows band-select to be attempted from non-moving pieces w/o preventing click-to-select from working
+        //BR// This section allows band-select to be attempted from non-moving
+        // pieces w/o preventing click-to-select from working
         if (bandSelect == BandSelectType.SPECIAL && p != null && !ignoreEvent) {
           kbuf.add(p);
           bandSelectPiece = p; // We mark the relevant piece so that we can resolve its status at the end of the mouse stroke
@@ -244,7 +259,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         // This initializes the band-select "lasso" visuals
         anchor = map.mapToComponent(e.getPoint()); // Our anchor point
 
-        // Sets the initial selection box (and the fact that selection is non-null is how we know a band-select is ongoing)
+        // Sets the initial selection box (and the fact that selection is
+        // non-null is how we know a band-select is ongoing)
         selection = new Rectangle(anchor.x, anchor.y, 0, 0);
 
         if (map.getHighlighter() instanceof ColoredBorder) {
