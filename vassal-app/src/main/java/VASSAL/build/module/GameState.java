@@ -312,7 +312,7 @@ public class GameState implements CommandEncoder {
   private volatile boolean gameUpdating = false;
 
   public void setupRefresh() {
-    this.gameStarting = true;
+    this.gameStarting = false;
     newGame.setEnabled(false);
     saveGame.setEnabled(true);
     saveGameAs.setEnabled(true);
@@ -320,11 +320,7 @@ public class GameState implements CommandEncoder {
 
     gameStarted &= this.gameStarting;
     for (final GameComponent gc : gameComponents) {
-  //    if (gc instanceof SetupStack) {
-   //     this.gameStarting = false;
-    //  }
       gc.setup(this.gameStarting);
-      this.gameStarting = true;
     }
   }
 
