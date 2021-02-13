@@ -88,6 +88,9 @@ public final class GameRefresher implements GameComponent {
 //  private boolean useLabelerName;
   private int updatedCount;
   private int notFoundCount;
+  private int noStackCount;
+  private int noMapCount;
+
   private final GameModule theModule;
   //private String player;
   //private final Chatter chatter;
@@ -218,7 +221,8 @@ public final class GameRefresher implements GameComponent {
     }
     notFoundCount = 0;
     updatedCount = 0;
-
+    noMapCount = 0;
+    noStackCount = 0;
     /*
      * 1. Use the GpIdChecker to build a cross-reference of all available
      * PieceSlots and PlaceMarker's in the module.
@@ -261,6 +265,9 @@ public final class GameRefresher implements GameComponent {
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
     log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
+    log(Resources.getString("GameRefresher.counters_no_map", noMapCount));
+    log("----------"); //$NON-NLS-1$
+    log(Resources.getString("GameRefresher.counters_no_stack", noStackCount));
     log("----------"); //$NON-NLS-1$
 
   }
@@ -270,6 +277,7 @@ public final class GameRefresher implements GameComponent {
     // Piece needs to be on a map. Else how do we put it back.
     final Map map = piece.getMap();
     if (map == null) {
+      noMapCount++;
       log(Resources.getString("GameRefresher.refresh_error_nomap1", piece.getName(), piece.getId()));
       // If Option "Delete pieces with no map" is set to true. Get rid of this piece
       if (isDeleteNoMap()) {
@@ -280,6 +288,14 @@ public final class GameRefresher implements GameComponent {
       }
       return;
     }
+
+    // Piece should have a parent stack (Decks are extensions of Stacks)
+    final Stack oldStack = piece.getParent();
+    if (oldStack == null) {
+      noStackCount++;
+      log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
+    }
+
 
     //create a new piece. If returns null, it failed
     final GamePiece newPiece = gpIdChecker.createUpdatedPiece(piece);
@@ -304,28 +320,32 @@ public final class GameRefresher implements GameComponent {
     else {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
       final Point pos = piece.getPosition();
-      final Stack oldStack = piece.getParent();
-      final int oldPos = oldStack == null ? 0 : oldStack.indexOf(piece);
+
+      int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
+
+      // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
+      // as same pos as new piece, it somehow deleted the new stack too!
 
       // Place new piece on the map where the old piece was
       // Then position it at the same position in the stack the old piece was
-
-      // Place the new Piece.
-      final Command place = map.placeOrMerge(newPiece, pos);
-      command.append(place);
 
       // Delete the old piece
       final Command remove = new RemovePiece(Decorator.getOutermost(piece));
       remove.execute();
       command.append(remove);
 
+      // Place the new Piece.
+      final Command place = map.placeOrMerge(newPiece, pos);
+      command.append(place);
+      final Stack newStackTest = newPiece.getParent();
+
       // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
       if ((newStack != null) && (newStack == oldStack)) {
         final int newPos = newStack.indexOf(newPiece);
-        if (newPos >= 0 && oldPos >= 0 && newPos != oldPos) {
+        if (newPos >= 0 && oldStackIndex >= 0 && newPos != oldStackIndex) {
           final String oldState = newStack.getState();
-          newStack.insert(newPiece, oldPos);
+          newStack.insert(newPiece, oldStackIndex);
           command.append(new ChangePiece(newStack.getId(), oldState, newStack.getState()));
         }
       }
