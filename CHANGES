@@ -1,5 +1,6 @@
 3.5.1 - ???
 
+* 14032: Fast Match was picking wrong number of cards from decks
 * 14026: GameRefresher incorrectly deletes off map pieces
 * 14024: NumberFormatException when private server port is empty
 * 14023: Advanced Search displays "hit lists" properly for names/types of
