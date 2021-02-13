@@ -281,7 +281,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   }
 
   private void anythingChanged() {
-    super.setValue(getValue());
+    super.setValue(getTarget());
   }
 
   @Override
