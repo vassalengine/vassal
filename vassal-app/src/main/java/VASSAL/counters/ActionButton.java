@@ -344,6 +344,7 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
           final Point point = e.getPoint();
           final GamePiece p = map.findPiece(point, PieceFinder.PIECE_IN_STACK);
           if (p != null) {
+            // arm the pressed button
             armedForClick = p;
           }
         }
@@ -351,14 +352,18 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
 
       @Override
       public void mouseReleased(MouseEvent e) {
+        // check if the release was over the armed button
         if (armedForClick != null) {
           if (SwingUtils.isMainMouseButtonDown(e)) {
-            final Point point = e.getPoint();
-            final GamePiece p = map.findPiece(point, PieceFinder.PIECE_IN_STACK);
-            if (p == armedForClick) {
-              final Point rel = map.positionOf(p);
-              point.translate(-rel.x, -rel.y);
-              doClick(p, point);
+            final Point epos = e.getPoint();
+            final Shape s = armedForClick.getShape();
+            final Point pos = armedForClick.getPosition();
+            final Point p = new Point(epos.x - pos.x, epos.y - pos.y);
+            if (s.contains(p)) {
+              // fire the button
+              final Point rel = map.positionOf(armedForClick);
+              epos.translate(-rel.x, -rel.y);
+              doClick(armedForClick, epos);
             }
           }
           armedForClick = null;
