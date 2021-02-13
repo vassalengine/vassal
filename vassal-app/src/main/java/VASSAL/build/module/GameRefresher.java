@@ -320,8 +320,7 @@ public final class GameRefresher implements GameComponent {
     else {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
       final Point pos = piece.getPosition();
-
-      int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
+      final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
 
       // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
       // as same pos as new piece, it somehow deleted the new stack too!
@@ -337,7 +336,6 @@ public final class GameRefresher implements GameComponent {
       // Place the new Piece.
       final Command place = map.placeOrMerge(newPiece, pos);
       command.append(place);
-      final Stack newStackTest = newPiece.getParent();
 
       // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
