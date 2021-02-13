@@ -128,12 +128,14 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
       targetTypeConfig = new TranslatingStringEnumConfigurer(options, i18nKeys, target.getTargetType().toString());
       targetTypeConfig.addPropertyChangeListener(evt -> targetChanged());
+      targetTypeConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetTypeLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.select_by"));
       controls.add(targetTypeLabel, "span 2"); // NON-NLS
       controls.add(targetTypeConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetMapConfig = new FormattedExpressionConfigurer(target.getTargetMap().getExpression());
       targetMapConfig.addPropertyChangeListener(evt -> getTarget().setTargetMap(targetMapConfig.getValueString()));
+      targetMapConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetMapConfig.setHintKey("Editor.GlobalKeyCommand.map_name_hint");
       targetMapLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.map_name"));
       controls.add(targetMapLabel, "span 2"); // NON-NLS
@@ -141,6 +143,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
       targetBoardConfig = new FormattedExpressionConfigurer(target.getTargetBoard().getExpression());
       targetBoardConfig.addPropertyChangeListener(evt -> getTarget().setTargetBoard(targetBoardConfig.getValueString()));
+      targetBoardConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetBoardConfig.setHintKey("Editor.GlobalKeyCommand.board_name_hint");
       targetBoardLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.board_name"));
       controls.add(targetBoardLabel, "span 2"); // NON-NLS
@@ -148,6 +151,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
       targetZoneConfig = new FormattedExpressionConfigurer(target.getTargetZone().getExpression());
       targetZoneConfig.addPropertyChangeListener(evt -> getTarget().setTargetZone(targetZoneConfig.getValueString()));
+      targetZoneConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetZoneConfig.setHintKey("Editor.GlobalKeyCommand.zone_name_hint");
       targetZoneLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.zone_name"));
       controls.add(targetZoneLabel, "span 2"); // NON-NLS
@@ -155,6 +159,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
       targetLocationConfig = new FormattedExpressionConfigurer(target.getTargetLocation().getExpression());
       targetLocationConfig.addPropertyChangeListener(evt -> getTarget().setTargetLocation(targetLocationConfig.getValueString()));
+      targetLocationConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetLocationConfig.setHintKey("Editor.GlobalKeyCommand.location_name_hint");
       targetLocationLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.location_name"));
       controls.add(targetLocationLabel, "span 2"); // NON-NLS
@@ -162,18 +167,21 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
       targetXConfig = new FormattedExpressionConfigurer(target.getTargetX().getExpression());
       targetXConfig.addPropertyChangeListener(evt -> getTarget().setTargetX(targetXConfig.getValueString()));
+      targetXConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetXLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.x_position"));
       controls.add(targetXLabel, "span 2"); // NON-NLS
       controls.add(targetXConfig.getControls(), "growx, wrap"); // NON-NLS
 
       targetYConfig = new FormattedExpressionConfigurer(target.getTargetY().getExpression());
       targetYConfig.addPropertyChangeListener(evt -> getTarget().setTargetY(targetYConfig.getValueString()));
+      targetYConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetYLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.y_position"));
       controls.add(targetYLabel, "span 2"); // NON-NLS
       controls.add(targetYConfig.getControls(), "growY, wrap"); // NON-NLS
 
       targetDeckConfig = new FormattedExpressionConfigurer(target.getTargetDeck().getExpression());
       targetDeckConfig.addPropertyChangeListener(evt -> getTarget().setTargetDeck(targetDeckConfig.getValueString()));
+      targetDeckConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetDeckConfig.setHintKey("Editor.GlobalKeyCommand.deck_name_hint");
       targetDeckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_name"));
       controls.add(targetDeckLabel, "span 2"); //NON-NLS
@@ -181,11 +189,13 @@ public class GlobalCommandTargetConfigurer extends Configurer {
 
       fastMatchPropertyConfig = new BooleanConfigurer(target.isFastMatchProperty());
       fastMatchPropertyConfig.addPropertyChangeListener(evt -> fastMatchPropertyChanged());
+      fastMatchPropertyConfig.addPropertyChangeListener(evt -> anythingChanged());
       controls.add(fastMatchPropertyConfig.getControls());
       controls.add(new JLabel(Resources.getString("Editor.GlobalKeyCommand.by_property")), "wrap"); //NON-NLS
 
       targetPropertyConfig = new FormattedExpressionConfigurer(target.getTargetProperty().getExpression());
       targetPropertyConfig.addPropertyChangeListener(evt -> getTarget().setTargetProperty(targetPropertyConfig.getValueString()));
+      targetPropertyConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetPropertyConfig.setHintKey("Editor.GlobalKeyCommand.property_name_hint");
       targetPropertyLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_name"));
       controls.add(targetPropertyLabel, "span 2"); // NON-NLS
@@ -194,12 +204,14 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       targetCompareConfig = new CompareConfigurer();
       targetCompareConfig.setValue(getTarget().getTargetCompare().getSymbol());
       targetCompareConfig.addPropertyChangeListener(evt -> getTarget().setTargetCompare(GlobalCommandTarget.CompareMode.whichSymbol(targetCompareConfig.getValueString())));
+      targetCompareConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetCompareLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_compare"));
       controls.add(targetCompareLabel, "span 2"); //NON-NLS
       controls.add(targetCompareConfig.getControls(), "wrap"); //NON-NLS
 
       targetValueConfig = new FormattedExpressionConfigurer(target.getTargetValue().getExpression());
       targetValueConfig.addPropertyChangeListener(evt -> getTarget().setTargetValue(targetValueConfig.getValueString()));
+      targetValueConfig.addPropertyChangeListener(evt -> anythingChanged());
       targetValueConfig.setHintKey("Editor.GlobalKeyCommand.property_value_hint");
       targetValueLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.property_value"));
       controls.add(targetValueLabel, "span 2"); // NON-NLS
@@ -266,6 +278,10 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     targetCompareConfig.getControls().setVisible(target.isFastMatchProperty());
     targetCompareLabel.setVisible(target.isFastMatchProperty());
     repack();
+  }
+
+  private void anythingChanged() {
+    super.setValue(getValue());
   }
 
   @Override
