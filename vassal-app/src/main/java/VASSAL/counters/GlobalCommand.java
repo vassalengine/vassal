@@ -289,27 +289,37 @@ public class GlobalCommand {
       if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.CURSTACK) {
         if (curPiece != null) {
           final Stack stack = curPiece.getParent();
+          final int useFromDeck = (stack instanceof Deck) ? getSelectFromDeck() : -1;
           if (stack instanceof Deck) {
             command = command.append(((Deck)stack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
+            visitor.setSelectedCount(0);
           }
           final List<GamePiece> pieces = stack.asList();
-          for (final GamePiece gamePiece : pieces) {
-            // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
-            if (!passesPropertyFastMatch(gamePiece)) {
-              continue;
-            }
+          if (useFromDeck != 0) {
+            for (final GamePiece gamePiece : pieces) {
+              // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
+              if (!passesPropertyFastMatch(gamePiece)) {
+                continue;
+              }
 
-            // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
-            dispatcher.accept(gamePiece);
+              // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
+              dispatcher.accept(gamePiece);
+
+              if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
+                break;
+              }
+            }
           }
         }
       }
       // If we're using "specific deck", then we find that deck and iterate through it, checking fast property matches only
       else if (target.fastMatchLocation && target.targetType == GlobalCommandTarget.Target.DECK) {
         final DrawPile d = DrawPile.findDrawPile(fastDeck);
-        if (d != null) {
+        final int useFromDeck = getSelectFromDeck();
+        if ((d != null) && (useFromDeck != 0)) {
           command = command.append(d.getDeck().maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
           final List<GamePiece> pieces = d.getDeck().asList();
+          visitor.setSelectedCount(0);
           for (final GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
             if (!passesPropertyFastMatch(gamePiece)) {
@@ -318,6 +328,10 @@ public class GlobalCommand {
 
             // Anything else we send to dispatcher to apply BeanShell filter and issue the command if the piece matches
             dispatcher.accept(gamePiece);
+
+            if ((useFromDeck > 0) && visitor.getSelectedCount() >= useFromDeck) {
+              break;
+            }
           }
         }
       }
@@ -498,6 +512,14 @@ public class GlobalCommand {
       tracker = new BoundsTracker();
       this.filter = filter;
       this.stroke = stroke;
+    }
+
+    public void setSelectedCount(int selectedCount) {
+      this.selectedCount = selectedCount;
+    }
+
+    public int getSelectedCount() {
+      return selectedCount;
     }
 
     @Override
