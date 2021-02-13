@@ -321,22 +321,52 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
     }
 
     protected class MapMouseListener extends MouseAdapter {
+      //
+      // Buttons standardly work like this in GUIs:
+      //
+      // * Pressing a button arms it
+      // * Releasing over an armed button fires it
+      // * Releasing anywhere else disarms an armed button
+      //
+      // What Java reports via mouseClicked is USELESS for this.
+      //
+
       private final Map map;
+      private GamePiece armedForClick = null;
 
       public MapMouseListener(Map map) {
         this.map = map;
       }
 
       @Override
-      public void mouseClicked(MouseEvent e) {
+      public void mousePressed(MouseEvent e) {
         if (SwingUtils.isMainMouseButtonDown(e)) {
           final Point point = e.getPoint();
           final GamePiece p = map.findPiece(point, PieceFinder.PIECE_IN_STACK);
           if (p != null) {
-            final Point rel = map.positionOf(p);
-            point.translate(-rel.x, -rel.y);
-            doClick(p, point);
+            // arm the pressed button
+            armedForClick = p;
           }
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        // check if the release was over the armed button
+        if (armedForClick != null) {
+          if (SwingUtils.isMainMouseButtonDown(e)) {
+            final Point epos = e.getPoint();
+            final Shape s = armedForClick.getShape();
+            final Point pos = armedForClick.getPosition();
+            final Point p = new Point(epos.x - pos.x, epos.y - pos.y);
+            if (s.contains(p)) {
+              // fire the button
+              final Point rel = map.positionOf(armedForClick);
+              epos.translate(-rel.x, -rel.y);
+              doClick(armedForClick, epos);
+            }
+          }
+          armedForClick = null;
         }
       }
     }
