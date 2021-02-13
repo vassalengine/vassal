@@ -18,6 +18,7 @@
 package VASSAL.preferences;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.InputStream;
@@ -27,7 +28,6 @@ import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,7 +124,7 @@ public class Prefs implements Closeable {
    *          If non-null and the value was not read from the preferences file on initialization (i.e. first-time
    *          setup), prompt the user for an initial value
    */
-  public void addOption(String category, Configurer o, String prompt) {
+  public synchronized void addOption(String category, Configurer o, String prompt) {
     if (o != null && options.get(o.getKey()) == null) {
       options.put(o.getKey(), o);
       final String val = storedValues.getProperty(o.getKey());
@@ -138,11 +138,11 @@ public class Prefs implements Closeable {
     }
   }
 
-  public void setValue(String option, Object value) {
+  public synchronized void setValue(String option, Object value) {
     options.get(option).setValue(value);
   }
 
-  public Configurer getOption(String s) {
+  public synchronized Configurer getOption(String s) {
     return options.get(s);
   }
 
@@ -150,7 +150,7 @@ public class Prefs implements Closeable {
    * @param key Pref Key
    * @return the value of the preferences setting stored under key
    */
-  public Object getValue(String key) {
+  public synchronized Object getValue(String key) {
     final Configurer c = options.get(key);
     return c == null ? null : c.getValue();
   }
@@ -163,7 +163,7 @@ public class Prefs implements Closeable {
    * @return the value of this option read from the Preferences file at startup, or <code>null</code> if no value is
    *         undefined
    */
-  public String getStoredValue(String key) {
+  public synchronized String getStoredValue(String key) {
     return storedValues.getProperty(key);
   }
 
@@ -195,11 +195,15 @@ public class Prefs implements Closeable {
     return sb.toString();
   }
 
-  protected void read() {
-    try (InputStream fin = Files.newInputStream(file.toPath());
-         InputStream in = new BufferedInputStream(fin)) {
-      storedValues.clear();
-      storedValues.load(in);
+  protected synchronized void read() {
+    // We're not going to write, but you can't lock a non-writable FileChannel
+    try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+      final FileChannel ch = raf.getChannel();
+      try (FileLock lock = ch.lock()) {
+        final InputStream in = new BufferedInputStream(Channels.newInputStream(ch));
+        storedValues.clear();
+        storedValues.load(in);
+      }
     }
     catch (NoSuchFileException e) {
       // First time for this module, not an error.
@@ -212,7 +216,7 @@ public class Prefs implements Closeable {
   /**
    * Store this set of preferences
    */
-  public void save() throws IOException {
+  public synchronized void save() throws IOException {
     storedValues.clear();
 
     // ensure that the prefs dir exists
@@ -220,31 +224,30 @@ public class Prefs implements Closeable {
       FileUtils.forceMkdir(Info.getPrefsDir());
     }
 
-    // We synchronize here because FileChannel.lock() protects against
-    // other processes, but throws when this process already has the lock.
-    synchronized (this) {
-      try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-        final FileChannel ch = raf.getChannel();
-        try (FileLock lock = ch.lock()) {
-          // read the old key-value pairs
-          final InputStream in = Channels.newInputStream(ch);
-          storedValues.load(in);
+    // FileChannel.lock() protects against other processes, but throws when
+    // this process already has the lock, which is why this method must be
+    // synchronized.
+    try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+      final FileChannel ch = raf.getChannel();
+      try (FileLock lock = ch.lock()) {
+        // read the old key-value pairs
+        final InputStream in = new BufferedInputStream(Channels.newInputStream(ch));
+        storedValues.load(in);
 
-          // merge in the current key-value pairs
-          for (final Configurer c : options.values()) {
-            final String val = c.getValueString();
-            if (val != null) {
-              storedValues.put(c.getKey(), val);
-            }
+        // merge in the current key-value pairs
+        for (final Configurer c : options.values()) {
+          final String val = c.getValueString();
+          if (val != null) {
+            storedValues.put(c.getKey(), val);
           }
-
-          // write back the key-value pairs
-          ch.truncate(0);
-          ch.position(0);
-          final OutputStream out = Channels.newOutputStream(ch);
-          storedValues.store(out, null);
-          out.flush();
         }
+
+        // write back the key-value pairs
+        ch.truncate(0);
+        ch.position(0);
+        final OutputStream out = new BufferedOutputStream(Channels.newOutputStream(ch));
+        storedValues.store(out, null);
+        out.flush();
       }
     }
     // channel and streams closed, lock released
