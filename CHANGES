@@ -1,11 +1,13 @@
 3.5.1 - ???
 
+* 14026: GameRefresher incorrectly deletes off map pieces
 * 14024: NumberFormatException when private server port is empty
 * 14023: Advanced Search displays "hit lists" properly for names/types of
     prototypes & configurables
 * 14022: Upgrade bundled Java to 15.0.2+7
 * 14019: Remove confusing Vassal Version column from MM, show based on
     preference
+* 14018: Refresh Predefined Setup incorrectly clones at start stacks
 * 14015: Added infinite loop protection to PlaceMarker
 * 14012: Die Roll 'Prompt for values when button pushed' dialog is broken
 * 14011: Search now pre-selects contents of search field when restoring/
@@ -47,6 +49,7 @@
 * 13944: NPE when loading second game in modules using deprecated
     Map.mainWindowDock
 * 13930: Added infinite loop protection to TurnTracker
+* 13742: Action Button trait should arm when pressed, fire on release
 
 3.5.0 - 31 January 2021
 
