@@ -1,10 +1,10 @@
 == The Module Editor
 
-Youʼre ready to begin building a module.
+You're ready to begin building a module.
 
 *What is a VASSAL Module?*
 
-A VASSAL module is simply a set of compressed set of graphic, text, and other files, as well a descriptive file (called a Build File) that describes how the other files are expressed in play. A module file has the extension .vmod. There is no limit to the file size for a module, but modules intended to be published to the Vassalengine.org site may be up to 75 MB in size.
+A VASSAL module is simply a set of compressed set of graphic, text, and other files, as well a descriptive file (called a Build File, and stored in XML format) that describes how the other files are expressed in play. A module file has the extension .vmod. There is no limit to the file size for a module, but modules intended to be published to the Vassalengine.org site may be up to 75 MB in size.
 
 All of the files in a module are compressed using ZIP compression. As a result, anyone can examine or retrieve the files that comprise any module by simply unzipping the module, using any ZIP utility. (Unzipping a .vmod file is NOT necessary to play it.)
 
@@ -41,15 +41,13 @@ You install the Module Editor when you install VASSAL, along with the VASSAL Pla
 
 The Module Editor looks and operates the same on all platforms: Windows, MacOS, Linux, and all other platforms.
 
-_*Launching the Module Editor*_
+=== Launching the Module Editor
 
 To launch the Module Editor, in the Module Manager, select *File | New Module.*
 
-_*The Module Editor Window*_
+=== The Module Editor Window
 
 The Module Editor window includes a menu bar, a Toolbar, and Configuration window.
-
-_*The Module Editor: Using the Module Editor*_
 
 *The Menu Bar*
 
@@ -106,9 +104,7 @@ The Module Editor Toolbar includes the following buttons:
 * *Save, Save As:* Duplicates the items of the same names on the menubar *File* menu. As with any other application, save your work often.
 * *Help:* Click *Help* to display the VASSAL HTML help.
 
-image:_images/image13.png[image,width=348,height=324]
-
-Menu Bar
+image:_images/image13.png[image,width=348,height=324]Menu Bar
 
 *The Configuration Window*
 
@@ -122,13 +118,9 @@ Click the arrow next to each folder icon to toggle the expanded folder view and 
 
 You can perform any the following operations on components by right clicking on the component node and selecting the operation from the menu.
 
-*[Module]*
-
-Node
+image:_images/image13.png[image,width=348,height=324]
 
 *The Module Editor, showing the Configuration Window, Menu Bar, and default nodes for a new module.*
-
-_*The Module Editor: Using the Module Editor*_
 
 * *Properties:* Enables you to choose the settings for the selected component. For components that have already been created, you can access the *Properties* dialog by double-clicking on the selected component.
 * *Translate:* Enables you to set translations for the component into a language of your choice. VASSAL is not localized; you must supply the translations for a given module component. See _Translations_ on page 104 for more information.
@@ -140,7 +132,7 @@ _*The Module Editor: Using the Module Editor*_
 * *Move:* Moves the component up and down in the tree view. Used to organize and order the components in a logical sequence. (Order of components in the Configuration Window will also determine the left-to-right Toolbar order of any buttons associated with the components. See page 89 for more information.) After selecting *Move*, you are presented with a dialog to specify a new location for the component in the tree view.
 * *Add <Sub-Component>:* Many components include context menu, giving component-specific options, accessible through a right-click. For example, the context menu for a *[Map Window]* component includes a set of options allowing you to add map-specific components, such as a Line of Sight Thread. When created, new sub-components will be shown at the bottom of the list of the nodeʼs sub-components. (Some of these options may themselves have further options.)
 
-*The [Module] Node*
+=== The [Module] Node
 
 You create new module components by right clicking on the *[Module]* node, the topmost node in the Configuration Window. The node is labeled with the module name and contains all the other nodes.
 
@@ -164,8 +156,6 @@ Using the menu from this node, you can create any of the following new component
 * [.underline]#Symbolic Dice Button#
 * [.underline]#Toolbar Menu#
 * [.underline]#Turn Counter#
-
-_*The Module Editor: Creating a New Module*_
 
 Each of these components is discussed in detail in later sections.
 
@@ -214,17 +204,13 @@ You will be able to see immediately how the edited component looks or works in t
 
 Some modifications, such as new board graphics, sound files, or changes to Prototype Definitions, may not be immediately reflected in the VASSAL Player. As well, the names of some components, such as Game Piece Palette tabs, Charts, and Irregular Grid Regions, may be truncated after you create them. This truncation is merely cosmetic. Any of these additions will require you to re-start the Editor in order for them to be displayed correctly in the VASSAL Player.
 
-_*The Module Editor: Module Basic Settings*_
 
 As a result, a good habit is to save your work, close, and then re-launch your module after you have made any major changes, particularly after adding or editing graphics files. Click *Save* , and then close the Configuration Window. In the Module Manager, right-click your module and pick *Edit Module* to re-load the module in the Module Editor. Any changes you have made to graphics or components should be fully functional after a restart.
 
 _In some instances, you may edit a module but, frustratingly, the changes wonʼt show up even after you refresh the view._
+_This can occur in games that load a Pre-Defined Setup at game start--changes to a module will not be reflected in a Predefined Setup. See page 110 for more information._
 
-_This can occur in games that load a Pre-Defined Setup at game start--changes to a module will not be reflected in a Pre-_
-
-_Defined Setup. See page 110 for more information._
-
-_*Default Module Nodes*_
+=== Default Module Nodes
 
 By default, a new module includes the following nodes. Not all of these nodes need be used in a given module.
 
@@ -267,9 +253,7 @@ The module description is displayed for players in the Module Manager. The descr
 . In the dialog, enter values for *Game Name, Version Number* and *Description*.
 . Click *Ok*.
 
-_*The Module Editor: Module Basic Settings*_
-
-_*Suggested Module Filename Convention*_
+=== Suggested Module Filename Convention
 
 When saving, choose a filename for the module. A suggested filename convention is <game name>_<version number>.vmod.
 
@@ -279,7 +263,7 @@ Whatever filename you choose, it ʼs recommended to always include version numbe
 
 _Some older modules use .zip or .mod as a file extension. However, modules made for VASSAL 3.1 and later must always be given the extension .vmod._
 
-_*Next Steps*_
+=== Next Steps
 
 Now you can add other module components, like Map Windows, Game Pieces, and other items. Depending on the scope of your game, some of these components may be optional for your game. See the succeeding chapters for more information on these components.
 
