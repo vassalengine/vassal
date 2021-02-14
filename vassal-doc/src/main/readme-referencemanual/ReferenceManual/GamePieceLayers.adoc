@@ -24,10 +24,8 @@ Pieces with no value specified for the given property are placed in the topmost 
 *Example:*  A Map has a Game Piece Layer specified with property name _Layer_ and Layer Order _Terrain, Land, Air_.
 Then any piece with a <<PlaceMarker.adoc#top,Marker>> trait with property name "Layer" and value "Terrain" will be in the bottom-most layer.
 The middle layer will contain Pieces with the value "Land" and the top layer will contain Pieces with the value "Air".  Pieces with no value for the "Layer" property will be in their own layer above all three.
-|image:images/GamePieceLayers.png[]+
+|image:images/GamePieceLayers.png[]
 |===
-
-=== 
 
 '''''
 
@@ -49,6 +47,6 @@ _Make Layer Active_ and _Make Layer Inactive_ will activate or deactivate the sp
 _Switch Layer between Active and Inactive_ will toggle the specified layers between active and inactive.
 _Reset All Layers_ makes all Layers active and restores them to their default order.
 
-|image:images/GamePieceLayerControl.png[]+
+|image:images/GamePieceLayerControl.png[]
 |===
 

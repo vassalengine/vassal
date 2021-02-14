@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-<<index.adoc#toc,Home>> > [.small]#*Editor*#
+[.small]#<<index.adoc#toc,Home>> > *Editor*#
 
 '''''
 

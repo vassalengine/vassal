@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> >#[.small]#<<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>> >#[.small]#*Game Piece Layouts*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>> > *Game Piece Layouts*#
 
 '''''
 
@@ -164,9 +164,7 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 
 *Text is:*  Select whether the text is specified right here in the layout or later in the individual Game Piece Image properties.
 
-[.li]##
-
-|image:images/imagelayouttextbox.png[] +
+|image:images/imagelayouttextbox.png[]
 |===
 
 ==== Image Item
@@ -186,7 +184,8 @@ Use the File Open Dialog box to locate a copy of the image you wish to use on yo
 When you save the module, VASSAL will attempt to copy this image into the _images_ folder within the module zip file.
 You can also manually copy images into your images folder.
 
-|image:images/imageitem.png[]|===
+|image:images/imageitem.png[]
+|===
 
 ==== Shape Item
 
@@ -208,15 +207,14 @@ Items *MUST* be uniquely named within an Image Layout.
 
 *Bevel:*  For Rounded Rectangle shapes, larger bevel values mean rounder corners.
 
-|image:images/ShapeItem.png[]+
+|image:images/ShapeItem.png[]
 |===
 
 '''''
 
 === Sub-Components
 
-==== <<GamePieceImage.adoc#top,Game Piece Image +
->>
+==== <<GamePieceImage.adoc#top,Game Piece Image>>
 
 An image created using this layout.
 You can create as many individual Game Piece Images as you'd like using each Game Piece Layout.

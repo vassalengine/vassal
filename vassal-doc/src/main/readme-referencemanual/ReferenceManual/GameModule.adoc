@@ -17,7 +17,7 @@ All additions and modifications to a module are done through the <<editor.adoc#t
 The second illustration on the right shows the Editor's configuration window for a "Brand New Module", with all of the Components that are added by default.
 Right-click on the _[Module]_ to get a context menu with options for the many types of <<#SubComponents,Components>> you can add to a Vassal module, including <<Map.adoc#top,maps>>, <<ChartWindow.adoc#top,charts>>, and <<PieceWindow.adoc#top,palettes>> full of <<GamePiece.adoc#top,game pieces>>. See <<#SubComponents,below>> for more details.
 
-Actually _*playing*_ the game takes place in the Module window (see example below). This window includes a <<Toolbar.adoc#top,Toolbar>> that can be configured by the module designer, as well as a <<ChatLog.adoc#top,Chat Log>> to record player messages and game moves.
+Actually _playing_ the game takes place in the Module window (see example below). This window includes a <<Toolbar.adoc#top,Toolbar>> that can be configured by the module designer, as well as a <<ChatLog.adoc#top,Chat Log>> to record player messages and game moves.
 The game's main <<Map.adoc#top,Map>> will be displayed just below the Chat Log.
 
 image:images/ModuleWindow.png[]
@@ -42,7 +42,7 @@ image:images/Toolbar.png[]
 
 The <<Toolbar.adoc#top,Toolbar>> of the main Module window contains buttons for basic functions such as <<Toolbar.adoc#Undo,Undo>>, <<Toolbar.adoc#StepForward,Step Forward>>, and <<Toolbar.adoc#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<Chartwindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
 
-Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,[Global Options>>] and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
+Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,Global Options>> and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
 
 Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <<SubComponents,Sub-Components>> to the Module.
 
@@ -51,8 +51,8 @@ Buttons for Maps, Charts, Dice, and other additional buttons are created by addi
 '''''
 
 image:images/ChatLog.png[]
-[#ChatLog]
 
+[#ChatLog]
 === <<ChatLog.adoc#top,Chat Log>>
 
 Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the toolbar.
@@ -164,6 +164,7 @@ If an option has a _Use Preferences Setting_ choice, selecting it will add an en
 
 image:images/GlobalOptions.png[]
 image:images/Map.png[]
+
 ==== <<Map.adoc#top,Map Window>>
 
 A Map Window contains the main interface for playing games with VASSAL.
@@ -189,7 +190,9 @@ By default, every module has one Game Piece Palette, although it may be removed 
 <<PieceWindow.adoc#top,See full article for details.>>
 
 image:images/PaletteExample.png[]image:images/PieceWindow.png[]
-image:images/PrototypeComponent.png[]==== <<Prototypes.adoc#top,Game Piece Prototype Definitions>>
+image:images/PrototypeComponent.png[]
+
+==== <<Prototypes.adoc#top,Game Piece Prototype Definitions>>
 
 Game Piece Prototypes allow you to define sets of commonly-used traits for various types of <<GamePiece.adoc#top,Game Pieces>>. For example you could give all of your cards a particular back and a key command to send it to the discard pile, without having to cut-and-paste those traits into every single one of your cards.
 This also has the advantage of allowing you to change these traits in one place and have the changes affect every one of the pieces assigned to the Prototype.
@@ -197,6 +200,7 @@ This also has the advantage of allowing you to change these traits in one place 
 <<Prototypes.adoc#top,See full article for details.>>
 
 image:images/GlobalProperty.png[]
+
 ==== <<GlobalProperties.adoc#top,Global Properties>>
 
 Allows you to define default numeric or string values for <<Properties.adoc#top,Global Properties>> which can then be referenced and modified by <<SetGlobalProperty.adoc#top,traits>> in your Game Pieces.
@@ -214,6 +218,7 @@ Each button named in this component will be removed from the Toolbar and instead
 image:images/ToolbarMenuExample.png[]
 image:images/ToolbarMenu.png[]
 image:images/MultiActionButton.png[]
+
 ==== <<MultiActionButton.adoc#top,Multi-Action Button>>
 
 Combines multiple buttons in a Toolbar into a single button.
@@ -233,6 +238,7 @@ When the button is clicked, or receives its Hotkey, it can display a message to 
 
 image:images/DoActionButtonShort.png[]
 image:images/TurnTrackerTurnWindow.png[]
+
 ==== <<TurnTracker.adoc#top,Turn Counter>>
 
 Creates a Toolbar item that can be used to track the current game turn and phase.
@@ -254,6 +260,7 @@ Images defined in this component will appear in the drop-down menu for selecting
 
 image:images/GamePieceImageDefinitions.png[]
 image:images/GlobalKeyCommand.png[]
+
 ==== <<Map.adoc#GlobalKeyCommand,Global Key Command>>
 
 Creates a button on the Toolbar that applies a given key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to many pieces at once.
@@ -271,6 +278,7 @@ Can be configured to select a particular subset of pieces and to organize them b
 
 image:images/InventoryWindow.png[]
 image:images/SpecialDiceButton.png[]
+
 ==== [#SpecialDiceButton]##<<SpecialDiceButton.adoc#top,Symbolic Dice Button>>
 
 Rolls dice whose faces are represented by graphical images.
@@ -298,7 +306,7 @@ as "2,6,3"). If the _Prompt for values_ box is checked, then players will be ask
 The _$result$_ of the dice roll is stored as a global <<Properties.adoc#top,Property>> under the name <name>_result, where <name> is the name given to the component.
 (_Example:_ A dice button is named "2d6" After a roll of 11, the property name $2d6_result$ will resolve to "11" until the next roll.
 
-|image:images/DiceButton.png[]+
+|image:images/DiceButton.png[]
 |===
 
 [#RandomTextButton]
@@ -306,7 +314,7 @@ The _$result$_ of the dice roll is stored as a global <<Properties.adoc#top,Prop
 
 [width="100%",cols="^50%,50%",]
 |===
-|image:images/RandomTextButton.png[]a|
+|image:images/RandomTextButton.png[]|
 
 A Random Text Button can be used to randomly select a text message from a list defined beforehand.
 For example, a button can be defined to select a random letter "A" "B" "C" or "D". Enter each test message into the box to the left of the _Add_ button and then click the _Add_ button.
@@ -339,14 +347,14 @@ Players may now select _File->Play Scenario->1939_ to load the 1939 scenario, et
 *CAUTION*:  When creating a Pre-defined setup in a module with <<GameModule.adoc#Definition_of_Player_Sides,defined sides>>, always remember to click the _Retire_ button and switch to Observer status before saving.
 Otherwise, the side you chose when creating the game you will be permanently assigned to you.
 |image:images/PredefinedSetup1.png[]
-image:images/PredefinedSetup2.png[]+
+image:images/PredefinedSetup2.png[]
 |===
 
 ==== <<ChartWindow.adoc#top,Chart Window>>
 
 [width="100%",cols="^50%,50%",]
 |===
-|image:images/ChartWindow.png[]a|
+|image:images/ChartWindow.png[]|
 
 Adds a button to the Toolbar which opens a window for holding game play aids: charts, tables, etc for player reference.
 
@@ -373,7 +381,7 @@ The owning sides must correspond to one or more of the sides defined in the <<#D
 
 [width="100%",cols="^50%,50%",]
 |===
-|image:images/PlayerHand.png[]a|
+|image:images/PlayerHand.png[]|
 
 A Player Hand is a specialized <<Map.adoc#top,Map Window>> for containing a hand of cards.
 It is designated as belonging to a particular side or sides.
@@ -403,7 +411,7 @@ Once created, the text of a message cannot be changed.
 At the appropriate time, the owning player may reveal the text of the message, at which point other players may read the contents of the message.
 
 |image:images/NotesWindow2.png[]
-image:images/NotesWindow.png[]+
+image:images/NotesWindow.png[]
 |===
 
 [#ChessClock]
@@ -411,7 +419,7 @@ image:images/NotesWindow.png[]+
 
 [width="100%",cols="^50%,50%",]
 |===
-|image:images/ChessClockControl.png[]a|
+|image:images/ChessClockControl.png[]|
 
 Chess Clocks allow online multiplayer games to be timed.
 

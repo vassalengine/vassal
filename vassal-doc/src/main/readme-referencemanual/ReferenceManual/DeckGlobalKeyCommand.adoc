@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Deck.adoc#top,Deck>># [.small]#> *Deck Global Key Command*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Deck.adoc#top,Deck>> > *Deck Global Key Command*#
 
 '''''
 

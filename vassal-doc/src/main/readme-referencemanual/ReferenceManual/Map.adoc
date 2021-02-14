@@ -291,7 +291,7 @@ Adds a tool that displays the contents of a stack when the player leaves the mou
 [grid=none]
 [frame=none]
 |===
-|image:images/CounterDetailViewer.png[]] |*Recommended Delay before display:*  When the mouse has been stationary for this many milliseconds, the viewer will appear.
+|image:images/CounterDetailViewer.png[] |*Recommended Delay before display:*  When the mouse has been stationary for this many milliseconds, the viewer will appear.
 This can be overridden in the preferences.
 
 *Keyboard shortcut to display:*  Players may display the viewer without waiting by pressing this shortcut key.

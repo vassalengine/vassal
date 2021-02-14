@@ -1,4 +1,4 @@
-    == VASSAL Reference Manual
+== VASSAL Reference Manual
 [#top]
 
 [.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > <<Board.adoc#top,Board>> > *Hex Grid*#

@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> >#[.small]#<<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>> >#[.small]#<<GamePieceLayouts.adoc#top,Game Piece Layout>>**> Game Piece Image**#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<GamePieceImageDefinitions.adoc#top,Game Piece Image Definitions>> > <<GamePieceLayouts.adoc#top,Game Piece Layout>> > *Game Piece Image*#
 
 '''''
 
