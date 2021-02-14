@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.module.GlobalKeyCommand;
 import java.util.Arrays;
 
 import VASSAL.build.AutoConfigurable;
@@ -55,7 +56,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   @Override
   public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-    return new GlobalCommandTargetConfigurer(key, name);
+    return new GlobalCommandTargetConfigurer(key, name, ((GlobalKeyCommand) c).getTarget());
   }
 
   /**
@@ -176,6 +177,10 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public GlobalCommandTarget(String s) {
     decode(s);
+  }
+
+  public GlobalCommandTarget(GlobalCommandTarget gc) {
+    this(gc.encode());
   }
 
   /**
