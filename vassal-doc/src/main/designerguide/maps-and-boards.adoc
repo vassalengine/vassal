@@ -4,31 +4,31 @@ A _board_ is a playing surface on which pieces are moved. Boards are displayed i
 
 Some games have multiple boards, and a single one is selected at game start to play on. Other games include multiple board segments, which are used to build the complete game board at game start. Multiple maps can come in handy to make better use of screen ʻ real estate.ʼ For example, in a physical game, pieces, cards and other items might all be stored on the main game board. But in a VASSAL module, you can have a separate Map Window for the main board, another specifically for a deck of cards, and others to store playersʼ personal items like tokens. You can also add buttons to toggle visibility of these windows, so they can be hidden from view when not in use.
 
-*Types of Map Windows*
+=== Types of Map Windows
 
 The following types of map windows are available.
 
-_*Standard Map Window*_
+*Standard Map Window*
 
 The standard Map Window holds one or more boards to play on. By default, a new module includes a *[Map Window]* node called _Main Map_, but you can change the name of this default, as well as add any number of new Map Windows.
 
-_*Private Window*_
+*Private Window*
 
 A Private Window works just like a regular Map Window, and has all the same options, but includes an additional control to specify which Sides can access the window. Only the owning Side (or Sides) will be able to access the window. You can further specify whether pieces in the Private Window are visible to other Sides. A Private Window can be used for players to store personal items needed in the game, like units, cards, or money.
 
-_*Player Hand*_
+*Player Hand*
 
 A Player Hand is like a Private Window, but specifically intended for use to store a playerʼs personal hand of Cards. Items placed in a Player Hand Window will be displayed side by side, horizontally, and will not stack. The owning Side can manipulate Cards (such as turning them face up or face down), and drag new pieces to the Hand. Like a Private Window, you can specify which Sides can access the Player Hand, and whether items in the Player Hand are visible to other players.
 
 _To make best use of Private Windows or Player Hands, you will need to add Sides to the game. See page 37 for more information on adding Sides._
 
-_*Map (Chart)*_
+*Chart*
 
 A _Chart_ can be defined as a Map Window. This is useful if the players need to interact with the chart in some way, such as to move a tracking piece to record the current turn, player income, or victory points. See _Charts_ on page 84 for more information on creating a Map Window as part of a Chart.
 
 _Maps can be hidden from view, which can be handy if the pieces on the map are performing some automated function, such as drawing from a Deck of Cards that sends Cards to players automatically. For more on creating hidden maps, see Hiding Toolbar Buttons on page 90._
 
-*Map Window Attributes*
+=== Map Window Attributes
 
 Each map window may include these settings.
 
@@ -41,9 +41,6 @@ These settings apply to Private Windows and Player Hands only:
 The rest of these settings apply to all Map Windows, Private Windows, and Player Hands.
 
 * *Map Name:* The name of this Map Window. Each Map Window in the module should have a unique name.
-
-_*Maps and Boards: Map Window Attributes*_
-
 * *Mark Pieces That Move:* If selected, then any Game Pieces with the Mark When Moved Trait will be marked when they are being moved in this Map Window. You can also allow players to set this option in their Preferences.
 * *Horizontal/Vertical Padding:* The dimensions of the blank space, in pixels, surrounding the boards in the window.
 * *Background Color:* The color to use in the blank space padding.
@@ -84,19 +81,17 @@ pieces on this map: message is the text message reported by the Report Action Tr
 
 * *Key Command to Apply to All Units Ending Movement on This Map:* You can specify an optional keyboard shortcut that will be applied to any pieces that are moved on this map. Use this box to force a Game Piece to execute the same command every time it is moved.
 
-_*Attachment*_
+=== Docked Map Window
 
-By default, the first Map Window in the Editor (lthat is, listed topmost in the Editor window) will be shown attached to the module main controls and Chat Window. This is usually the Main Map. All other Map Windows will be detached from the toolbar.
+By default, the first Map Window in the Editor (that is, listed topmost in the Editor window) will be shown docked (attached) to the module main controls and Chat Window. This is usually the Main Map. All other Map Windows will be detached from the toolbar as separate windows.
 
-_Players can control this on an individual basis by de-selecting the *Use Combined Application Window* checkbox, under Preferences. Deselecting this will cause all windows to be shown detached from the module main controls for that player._
+_Players can control this on an individual basis by de-selecting the *Use Combined Application Window* checkbox, under Preferences, and then restarting VASSAL. Deselecting this will cause all windows to be shown undocked (detached) from the module main controls for that player._
 
-_*Maps and Boards: Boards*_
-
-*Boards*
+=== Boards
 
 Once youʼve created a Map Window, you must add one or more Boards to it. If you attempt to save a new module without assigning at least one Board, the Module Editor will prompt you to assign one.
 
-_*The [Map Boards] Node*_
+*The [Map Boards] Node*
 
 Some games include multiple boards (or board segments). The beginning of such games consists of either selecting a board to play on, or laying out the board segments for play, sometimes in rows and columns.
 
@@ -115,7 +110,7 @@ If the Map Window only includes a single board, the settings in this node may be
 * *Cell Height:* The height of a cell when no board has been selected.
 * *Select Default Board Setup:* Click to choose a default set of boards. When a default has been set, the dialog will not be shown to players when a new game is begun. Instead, the game will always be started with the boards you select. If you click this button and then clear the boards, then dialog will again be shown at the start of each game.
 
-_*Boards*_
+*Boards*
 
 When creating a board, you can choose to define a solid color field of any dimension, or you can use an imported image, such as a scan of a game board.
 
@@ -128,7 +123,7 @@ image:_images/image38.png[image,width=159,height=98]
 
 _Large board image size can have an impact on system performance. See page 8 for more information._
 
-*Creating a Map Window*
+=== Creating a Map Window
 
 *To create a Map Window and one or more boards,*
 
@@ -143,9 +138,7 @@ _Large board image size can have an impact on system performance. See page 8 for
 
 By default, a module includes a Map Window called _Main Map_. You must perform the above procedure for the Main Map (starting from Step 3) before saving the module.
 
-_*Maps and Boards: Map Options*_
-
-*Map Options*
+=== Map Options
 
 By selecting options for the Map Window, you can customize the behavior of pieces on it. By selecting different options for different maps, the same piece may behave differently when on those maps.
 
@@ -170,7 +163,7 @@ Customize a Map Window with any of the options listed here. Each new option adde
 
 *Default Nodes:* A newly created Map Window includes these nodes by default: *[Stacking Options]*, *[Image Capture Tool]*, *[Mouseover Stack Viewer]*, *[Global Properties]*, *[Additional Selection Highlighters]*, and *[Last Move Highlighter].* You can configure these nodes, delete unneeded ones, or freely add new ones to the Map Window.
 
-*Recommended Map Options*
+=== Recommended Map Options
 
 Although all Map Options have their uses, always consider adding these visibility options to each Map:
 
@@ -178,7 +171,7 @@ Although all Map Options have their uses, always consider adding these visibilit
 * *Show/Hide Pieces:* (see page 26) Enables players to toggle piece visibility, to view the map directly without moving or interfering with pieces.
 * *Zoom Capability:* (see page 31) Enables re-scaling of the Map, for easier viewing.
 
-*Adding Options to a Map*
+=== Adding Options to a Map
 
 *To add an options node to a Map Window,*
 
@@ -188,13 +181,11 @@ Although all Map Options have their uses, always consider adding these visibilit
 
 image:_images/image41.png[image,width=210,height=124]
 
-_*Additional Selection Highlighter*_
+*Additional Selection Highlighter*
 
 An Additional Selection Highlighter enables you to define additional Tpways to highlight the selected piece on a map. The additional highlighters are drawn only if the selected piece matches the specified Properties. If a Game Piece matches the
 
 Properties of more than one highlighter, all will be drawn, in addition to the highlighting color/border specified in the Map's Properties.
-
-_*Maps and Boards: Map Options*_
 
 An Additional Selection Highlighter has these attributes:
 
@@ -204,7 +195,7 @@ An Additional Selection Highlighter has these attributes:
 * *Border Color:* The color of the border to be drawn around selected pieces.
 * *Border Thickness:* The thickness of the border.
 
-_*At-Start Stack*_
+=== At-Start Stacks
 
 An At-Start Stack is a stack of playing pieces that is automatically placed at the beginning of every game. Once the game begins, the pieces will be in place just as if they had been dragged from the Game Piece Palette.
 
@@ -231,13 +222,11 @@ An At-Start Stack has these attributes:
 
 _EXAMPLE: A strategic game in which a nationality has a fixed force pool of Infantry and Armor counters can be modeled by making a Map Window representing the force pool, with an At-Start Stack of Infantry counters and an At-Start Stack of Armor counters._
 
-*Editing the Contents of an At-Start Stack*
+==== Editing the Contents of an At-Start Stack
 
 You can make wholesale changes quickly to the entire contents of an At-Start Stack in the Editor. In the Configuration Window, right-click the *[At-Start Stack]* node and pick *Edit All Contained Pieces*. The *Properties* dialog for the first piece is displayed, but any changes you make in the *Properties* dialog will affect all Game Pieces in the At-Start Stack. Add, remove or edit Traits as usual, then click *Ok*. Your changes are applied to all Pieces in the At-Start Stack.
 
-_*Maps and Boards: Map Options*_
-
-_*Game Piece Layer*_
+=== Game Piece Layers
 
 Using Game Piece Layers (GPLs) enables you to specify that certain Game Pieces will always be drawn on top of others. GPLs function like a set of transparent sheets, laid in ascending or descending levels. Pieces on one of the levels will not stack with pieces drawn on other levels above or below it.
 
@@ -254,7 +243,7 @@ _Example: A Map has a Game Piece Layer specified with Property name_ Layer _and 
 
 _The Game Piece Layer Map option is not related to the Layer Trait for Game Pieces. See page 49 for more information on the Layer Trait._
 
-*Game Piece Layer Control*
+==== Game Piece Layer Control
 
 The Game Piece Layer Control adds a button to the Map Window Toolbar that enables you to activate or deactivate the Game Piece Layers for that map, and to change their relative order. Game Pieces belonging
 
@@ -294,8 +283,6 @@ The Global Key Command has these settings:
 
 * *Description:* A description of the action, used for the button's mouseover tooltip.
 
-_*Maps and Boards: Map Options*_
-
 * *Key Command:* The keyboard command that will be applied to the selected pieces.
 * *Matching Properties:* The command will apply to all pieces on the map that match the given Property expression.
 * *Within a Deck, Apply To:* Select how this command applies to pieces that are contained within a Deck.
@@ -320,7 +307,7 @@ _Fixed number of pieces_ enables you to specify the number of pieces (drawn from
 
 _Commands applied by Global Key Commands will be affected by piece ownership. If the GKC triggers a command that is restricted by side, the action may not take place as intended when the restricted side triggers the GKC (by button or other command)._
 
-_*Hide Pieces Button*_
+==== Hide Pieces Button
 
 Clicking a Hide Pieces button will temporarily hide all pieces on the map from the clicking player, until the button is clicked again. This is useful to get a better look at the game board, such as to read a map label, terrain hex, or legend. (To make pieces invisible to other players, use the Invisible Trait.)
 
@@ -336,7 +323,7 @@ image:_images/image51.png[image,width=254,height=134]
 
 _If possible, use a different button image for the showing and hidden icons. Players will be able to more clearly determine when the button has been clicked and when pieces are hidden from view._
 
-_*Image Capture Tool*_
+=== Image Capture Tool
 
 The Image Capture tool component adds a button to the Toolbar of the Map Window. Clicking the button will copy the contents of the Map Window to a PNG image file. Using the Image Capture Tool, you can take an image of the entire map, shot even if the Map Window is too large to fit entirely on the screen.
 
@@ -352,7 +339,7 @@ _*Maps and Boards: Map Options*_
 
 * *Hotkey:* Keyboard shortcut for the button.
 
-_*Last Move Highlighter*_
+=== Last Move Highlighter
 
 A Last Move Highlighter draws a colored border around the last piece to have been moved, added, or deleted in a logfile or by an opponent during live play. Clicking on the map clears the highlight.
 
@@ -364,7 +351,7 @@ The Last Move Highlighter has these settings:
 
 image:_images/image55.png[image,width=152,height=98]
 
-_*Line of Sight Thread*_
+=== Line of Sight Thread
 
 A Line of Sight Thread adds a button to the Toolbar of the Map Window. Clicking the button will enable a player to drag the mouse cursor between any two points in the Map Window, drawing a line between those two points to indicate line of sight or range.
 
@@ -400,12 +387,10 @@ be visible to the opponent: _When Persisting, Never,_ _Always_.
 
 image:_images/image56.png[image,width=311,height=250]
 
-_*Maps and Boards: Map Options*_
-
 * *Opacity Of Hidden Pieces:* Set the transparency of Game Pieces, as a percentage of original opacity, while the thread is being drawn. 0 is completely invisible, 100 is completely opaque.
 * *Thread Color:* Specifies the color the thread on the screen. If set to null (by clicking the *Select* button and then the *Cancel* button in the color-choosing dialog), then a Preferences option will determine the color of the thread at game time.
 
-_*Map Shading*_
+=== Map Shading
 
 The Map Shading option applies a semi-transparent solid color or image tiling to the Map. In background mode, Map Shading can be used to overlay a repeating image over solid-color boards. In foreground mode, the area is determined by the pieces on the map that name this Map Shading in an Area of Effect Trait.
 
@@ -427,7 +412,7 @@ The Map Shading option has these settings:
 
 image:_images/image58.jpeg[image,width=251,height=303]
 
-_*Mouseover Stack Viewer*_
+=== Mouseover Stack Viewer
 
 A Mouseover Stack Viewer displays the contents of a stack when a mouse cursor is moved over it, after a specified delay. The Viewer can also display descriptive text about the pieces in the stack. (Note that a ʻstackʼ can consist of a single piece or multiple pieces.)
 
@@ -437,8 +422,6 @@ The option has these settings:
 * *Keyboard Shortcut to Display:* Players may display the viewer without waiting by typing this keyboard shortcut. This can be disabled in the preferences.
 * *Background Color:* Pieces and text are drawn against a background of this color.
 * *Border/Text Color:* Color of any text drawn, and the border around the overall viewer.
-
-_*Maps and Boards: Map Options*_
 
 * *Display When At Least This Many Pieces Will Be Included:* Minimum number of units in a stack that will trigger the viewer. You can set this to 1 to view individual pieces. If set to 0, then the viewer will display even if the location is empty.
 * *Always Display When Zoom Level Is Less Than:* Regardless of the above *Display When At Least This Many…* setting, the viewer will also display when the map's Zoom level is less than this number.
@@ -459,7 +442,7 @@ _*Maps and Boards: Map Options*_
 * *Show Pieces In Unrotated State:* If selected, then pieces that can rotate are drawn in the mouseover as they look when not rotated.
 * *Include Top Piece In Deck:* If selected, then the top piece of a Deck will be shown in the Viewer.
 
-*ʻOffboardʼ Pieces*
+==== ʻOffboardʼ Pieces
 
 By default, a Mouseover Stack Viewer will display each stack showing the value of each pieceʼs current location above each piece. If no Grid is defined for the map, the pieces will be shown as ʻoffboardʼ.
 
@@ -469,14 +452,14 @@ To change the display of the word ʻoffboardʼ, do one of the following:
 * In the *Mouseover Stack Viewer* dialog, select *Display Text*. In *Summary Text Above Pieces*, delete the Property name $LocationName$.
 * As above, but instead of $LocationName$, substitute the name of a different Game Piece Property to be displayed.
 
-*Showing the Number of Items in a Stack*
+==== Showing the Number of Items in a Stack
 
 You can set a Stack Viewer to show the number of items contained in a stack.
 
 . Set a Marker Trait on all units you want to count. Name the Marker Trait _UnitCount_, and set the Value to 1.
 . Create a Stack Viewer for the Map Window. In *Summary Text Above Pieces*, select _$sum(PropertyName)$_. In the box, replace _PropertyName_ with _UnitCount_ (so it shows _$sum(UnitCount)$_). On mouseover, the Viewer will now display the total Unit Count of all pieces in the stack.
 
-*Multiple Stack Viewers*
+==== Multiple Stack Viewers
 
 A Map Window can have any number of Stack Viewers, each with its own settings. You can use different Stack Viewers to view pieces of different types, on different Game Piece Layers, or with different attributes, and display them in different ways.
 
@@ -484,11 +467,9 @@ For example, a playerʼs Map Window contains a stack of game pieces, as well as 
 
 * One viewer is set to display the game pieces, and has *Draw Pieces* enabled, with each pieceʼs Basic Name displayed in a small label below. For *Include Individual Pieces*, _from layers other than those listed_ is selected, and _Money_ is entered. This viewer will now show any stack not on the Money layer, and display all the pieces in the stack.
 
-_*Maps and Boards: Map Options*_
-
 * The second viewer has *Draw Pieces* disabled. In *Summary Text Above Pieces*, the setting _$sum(Value)$_ is entered. For *Include Individual Pieces*, _from listed layers_ is selected, and _Money_ is entered. Now, when mousing over a stack of money, the total value of the money stack, but not the money pieces themselves, will be displayed.
 
-_*Overview Window*_
+=== Overview Window
 
 The Overview Window adds a separate window that will be displayed whenever the main Map Window is displayed. The additional window will contain a view of the entire playing area at a smaller scale than displayed in the main Map Window. The area of the map currently visible in the Map Window is highlighted in the overview map with a colored rectangle. A player may click on the Overview window to center the Map Window at the point clicked on.
 
@@ -505,7 +486,7 @@ The option has these settings:
 * *Scale Factor:* Size of the Overview window compared to the current map view. For example, if the Scale Factor is 0.2, then the Overview window will show the full-scale map image at 20% size.
 * *Visible Rectangle Highlight Color:* Color of the rectangle shown around the overview.
 
-_*Re-center Pieces Button*_
+=== Re-center Pieces Button
 
 image:_images/image62.png[image,width=183,height=113]
 
@@ -520,7 +501,7 @@ The option has these settings:
 
 _Because the size and layout of grids may vary widely, the Re-Center Pieces button may not place pieces exactly in the center of some grids, and some manual adjustment by players may be needed after ʻre-centeringʼ._
 
-_*Stacking Options*_
+=== Stacking Options
 
 Stacking Options determine how stacking is handled in this Map Window. The option may not be deleted.
 
@@ -530,13 +511,10 @@ image:_images/image64.jpeg[image,width=204,height=126]
 * *Horizontal Separation When Expanded:* The distance in pixels from the left edge (right edge if negative) of a Game Piece in a stack to the edge of the piece above it when the stack is expanded.
 * *Vertical Separation When Expanded:* The distance in pixels from the bottom edge (top edge if negative) of a Game Piece in a stack to the edge of the piece above it when the stack is expanded.
 * *Horizontal Separation When Not Expanded:* The distance in pixels from the left edge (right edge if negative) of a Game Piece in a stack to the edge of the piece above it when the stack is compact.
-
-_*Maps and Boards: Map Options*_
-
 * *Vertical Separation When Not Expanded:* The distance in pixels from the bottom edge (top edge if negative) of a Game Piece in a stack to the edge of the piece above it when the stack is compact.
 * *Color Of Pieces When Not Expanded:* If set, then pieces below the top piece in a compact stack will be drawn as plain squares of this color and a black border. If not set (click *Select* and cancel the color-selection dialog) then pieces will be drawn normally.
 
-_*Text Capture Tool*_
+=== Text Capture Tool
 
 image:_images/image66.png[image,width=262,height=162]
 
@@ -549,7 +527,7 @@ The option has these settings:
 * *Button Icon:* Icon used for the Text Capture button.
 * *Hotkey:* Keyboard shortcut for the button.
 
-_*Toolbar Menu*_
+=== Toolbar Menu
 
 The Toolbar Menu component enables you to group buttons from the Toolbar of the Main Controls window or a Map window into a drop-down menu on the Toolbar. Each button named in this component will be removed from the Toolbar and instead appear as a menu item in the drop-down menu.
 
@@ -558,7 +536,7 @@ The Toolbar Menu component enables you to group buttons from the Toolbar of the 
 * *Hotkey:* Keyboard shortcut for revealing the drop-down menu.
 * *Menu Entries:* Enter the text of the buttons that you wish to move to the drop-down menu. The menu item will have the same text. If the button uses an icon, the menu item will also use it.
 
-_*Zoom Capability*_
+=== Zoom Capability
 
 Zoom capability enables re-scaling of a Board. You can add up to 3 buttons, for Zoom In, Zoom Out, and Zoom Select.
 
@@ -578,13 +556,11 @@ The option has these settings:
 * *Zoom In/Out/Select Icon:* Icon used for the Zoom button.
 * *Zoom In/Out/Select Hotkey:* Keyboard shortcut used for the Zoom button.
 
-_*Maps and Boards: Map Grids*_
-
 Since the Zoom In and Zoom Out button functions are both duplicated b the Zoom Select button, you may wish to omit these buttons. To omit a particular Zoom button from the Map Toolbar, leave the text label and tooltip for the button blank. Then, next to the Icon for the button you do not wish to include, click *Select*, and then click *Cancel*. The button will not be displayed.
 
 For example, to exclude the *Zoom In* button, next to *Zoom In Icon*, click Select, and then click Cancel. No Zoom In button will be included.
 
-*Map Grids*
+=== Map Grids
 
 Map Grids help regulate movement and piece location. You can add one of the following types of Grid to a board: Hex, Rectangular, Irregular, and Multi-zoned.
 
@@ -598,7 +574,7 @@ By default, if a hex or rectangular Grid is imposed, pieces will _snap_ to them,
 
 To turn off snap, choose cell edges or vertices as legal locations. (You can also have some pieces ignore snap by assigning them the Does Not Stack Trait. See page 46 for more information.)
 
-_*Hex Grid*_
+=== Hex Grid
 
 A Hex Grid is a standard hexagonal Grid for regulating movement on a Board. This type of Grid has these options:
 
@@ -611,7 +587,7 @@ image:_images/image68.png[image,width=119,height=157]
 * *Show Grid:* If selected, then the Grid will be drawn over the Board image using the specified color.
 * *Draw Center Dots:* If selected, a dot will be drawn at the center of each hex in the specified color. You can add numbering to this type of Grid; see Grid Numbering on page 34.
 
-_*Rectangular Grid*_
+=== Rectangular Grid
 
 A standard rectangular Grid for regulating movement on a Board. This type of Grid has these options:
 
@@ -625,9 +601,7 @@ image:_images/image69.png[image,width=130,height=157]
 
 You can add numbering to this type of Grid; see Grid Numbering on page 34.
 
-_*Irregular Grid*_
-
-_*Maps and Boards: Map Grids*_
+=== Irregular Grid
 
 An irregular Grid is used for area-based games. It enables you to define a set of named Regions at arbitrary locations. These named Regions will act like the cell center points on hex or rectangular Grids. Pieces can be made to snap to the nearest named point, and their location will be reported as the nearest named point.
 
@@ -642,7 +616,7 @@ This type of Grid has these options:
 
 image:_images/image71.png[image,width=120,height=83]
 
-_*Multi-Zoned Grid*_
+=== Multi-Zoned Grid
 
 A multi-zoned Grid enables you to define any number of areas on a board. Each area, called a Zone, can have its own Grid type and naming format, which takes precedence over the default Grid. For example, a board with a hex Grid may have zones along the edge for a turn track or force pools. Pieces will snap to positions in the appropriate Zone and auto-reporting will use text supplied by the zone.
 
@@ -669,9 +643,7 @@ image:_images/image73.png[image,width=151,height=161]
 
 If a given point does not fall within any of the defines Zones for a Multi- zone Grid, the default Grid is used. The default Grid may be any of the usual types of Grid: hex, rectangular or irregular.
 
-*Zone Highlighters*
-
-_*Maps and Boards: Map Grids*_
+=== Zone Highlighters
 
 Any number of Zone Highlighters can be added to a Multi-Zone Grid. Any Zone whose highlighting property matches the name of a Zone Highlighter will be drawn with that highlighter, which overlays a colored pattern over the shape of the Zone.
 
@@ -681,7 +653,7 @@ Any number of Zone Highlighters can be added to a Multi-Zone Grid. Any Zone whos
 * *Style:* Select from solid color, striped diagonal lines, crosshatched diagonal lines, or an image that you specify.
 * *Opacity:* Select the transparency of the overlaid color or image.
 
-*Zone Properties*
+=== Zone Properties
 
 A Zone may contain Global Properties. Zone Properties may not have a Change-Property Toolbar button, but can be modified by a Set Global Property Game Piece Trait.
 
@@ -705,7 +677,7 @@ Multiple Grids can be added to a Board using Zones. Grids are added at the Board
 
 image:_images/image75.png[image,width=217,height=376]
 
-_*Grid Numbering*_
+==== Grid Numbering
 
 You can add Grid numbering to any hex or rectangular Grid. (Numbering is not applicable to the other Grid types.)
 
@@ -718,9 +690,6 @@ You can add Grid numbering to any hex or rectangular Grid. (Numbering is not app
 *number.* One leading zero means to always use two digits for the row/column. Two leading zeros mean always use three digits, and so on.
 
 * *Starting Number:* The number of the first cell ('A' == 0 if using alphabetic numbering).
-
-_*Maps and Boards: Map Grids*_
-
 * *Location Format:* The Message Format for reporting locations within a Map Window (for example, for move reporting): GridLocation is the name as drawn on the sample Grid. This is useful for pre-pending a board name, for example.
 * *Draw Numbering:* If selected, the numbering of the Grid will be drawn on top of the board image.
 * *Font size:* Size of the font to use when drawing the numbering.
@@ -730,7 +699,7 @@ _*Maps and Boards: Map Grids*_
 * *Text Y Offset:* Distance in pixels downward (relative to the text's orientation) of its default position that the text will be drawn. By default, text is center-justified at the top of the cell.
 * *Odd-Numbered Rows Numbered Higher:* For hex Grids only. If selected, then the first number of staggered columns on the Grid will be one greater than non-staggered columns.
 
-_*Adding a Grid to a Board*_
+==== Adding a Grid to a Board
 
 *To add a Grid to a board,*
 
@@ -747,7 +716,7 @@ _*Adding a Grid to a Board*_
 . In the *Grid Numbering* dialog, configure the Grid numbering as desired.
 . Click *Ok*.
 
-_*Aligning a Map Grid with a Printed Grid*_
+==== Aligning a Map Grid with a Printed Grid
 
 Some game board images already include a printed hexagonal or rectangular Grid. Of course, your module Grid should align with the printed Grid as closely as possible. The Module Editor has a number of tools to help you align a Grid.
 
@@ -765,8 +734,6 @@ _For better appearance, make a Map Grid invisible (*Draw Grid* is de-selected) i
 . When the Grid aligns with the printed Grid, click *Save*.
 . Deselect the *Draw Grid* and *Draw Center Dots* checkboxes, so the VASSAL-imposed Grid is invisible.
 . Click *Ok*.
-
-_*Maps and Boards: Map Grids*_
 
 *Guidelines for Grid Alignment*
 
