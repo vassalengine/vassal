@@ -23,7 +23,7 @@ Sides can also be removed by selecting one and clicking the _Remove_ button.
 *Use same boards as this map:*  A Private Window may designate another <<Map.adoc#top,Map Window>> and thereby automatically use the same Boards as that other Map Window.
 If this field is left blank, then the Private Window will use its own set of boards.
 
-Other properties are the same as for ordinary <<Map.adoc#top,Map Windows.>> + |image:images/PrivateMap.png[]+
+Other properties are the same as for ordinary <<Map.adoc#top,Map Windows.>> + |image:images/PrivateMap.png[]
 |===
 
 '''''

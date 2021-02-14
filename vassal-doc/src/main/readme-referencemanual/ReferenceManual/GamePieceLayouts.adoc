@@ -137,8 +137,6 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 *Text is:*  Select whether the text is specified in this layout (i.e.
 right here) or in the individual Game Piece Images to be created from this layout.
 
-[.li]##
-
 |image:images/imagelayouttext1.png[] +
 |===
 

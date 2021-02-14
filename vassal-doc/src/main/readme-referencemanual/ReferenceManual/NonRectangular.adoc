@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> <<GamePiece.adoc#top,Game Piece>># [.small]#> *Non-Rectangular*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Non-Rectangular*#
 
 '''''
 
@@ -26,7 +26,7 @@ Simply select the appropriate image from the drop-down list.
 *EXAMPLE:* In the example shown at right, the file _test.png_ has some orange regions representing the visible parts of a piece, and transparent areas in which nothing will be drawn.
 At the left, the _mask_ is shown -- the black portions representing areas which can be clicked on to select the piece, and the white areas representing transparent regions, clicking on which will not select the piece.
 This helps verify that the mask is being read properly.
-+ a|
+a|
 image:images/NonRectangular.png[]
 
 Mask confirmation at left shows white where transparent.
