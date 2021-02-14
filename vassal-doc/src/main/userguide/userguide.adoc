@@ -64,7 +64,7 @@ Vassal {project-version} is supported on the following platforms:
 
 ==== Downloading Vassal
 
-You can freely download Vassal {project-version} from the https://github.com/vassalengine/vassal/releases/tag/{project-version}[[.underline]#Vassal GitHub project#] (https://github.com/vassalengine/).
+You can freely download Vassal {project-version} from the https://github.com/vassalengine/vassal/releases/tag/{project-version}[[.underline]#Vassal GitHub project#] (https://github.com/vassalengine/vassal).
 Vassal installation files are available for Windows, MacOS, Linux, as well as other platforms which support Java.
 Select the correct download for your platform.
 
@@ -106,7 +106,7 @@ It can also show any associated files, including extensions, saved games, and lo
 Click the arrow-shaped icon next to each module name to expand the listing and view the module's associated files.
 * The Vassal Player runs game modules.
 When a module is loaded, it is displayed in a window labeled with the module’s name, plus the word _controls_.
-For example, a game named World War II would be shown in a window labeled _World War II controls.
+For example, a game named World War II would be shown in a window labeled _World War II controls_.
 * The Editor enables the creation and editing of Vassal modules and extensions.
 The Editor is discussed fully in the _Vassal Module Designer’s Guide_.
 
@@ -115,7 +115,7 @@ Separate from these components are the module files themselves, and extension fi
 === Game Modules
 
 Once you have downloaded and installed Vassal, you can add modules for the games you wish to play.
-There are several hundred game modules located at [.underline]#www.vassalengine.org/modules#. Individual creators have provided these modules for you to play free of charge.
+There are several hundred game modules located at http://www.vassalengine.org/modules[[.underline]#http://www.vassalengine.org/modules#]. Individual creators have provided these modules for you to play free of charge.
 
 In addition, many board game publishers offer official Vassal modules to support their games, either freely or for a small cost.
 A publisher may impose restrictions on the use of these modules.
@@ -142,7 +142,7 @@ If those files are missing it means that your anti-virus software has blocked or
 Open your Anti-Virus program and white list those files.
 
 Beginning with VASSAL 3.3.0, Java is "bundled" with VASSAL on Windows and Mac (not on Linux).
-This means that on those platforms it no longer matters what version of VASSAL you have installed - indeed you don't have to separately install Java any more on Windows and Mac.
+This means that on those platforms it no longer matters what version of VASSAL you have installed--indeed you don't have to separately install Java any more on Windows and Mac.
 However, some antivirus software does not trust the Java JVM executables which we provide.
 Thus it must be told to allow them.
 
@@ -314,9 +314,9 @@ Players in the same room can communicate using the Chat window.
 The Main Room is where players are placed who are running a particular module, but not joined to any particular room.
 You cannot play in the Main Room—you must join a room in order to play a game.
 
-To start a game on the Server,
+To start a game on the Server:
 
-. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+In Module Manager, in the *Module Library* window, double-click the module you want to play.
 The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Look for a game online*, and then follow the other Wizard steps as the module requires.
 . Click *Finish*.
@@ -330,8 +330,9 @@ Other players can now join this new room.
 image:image5.jpeg[image,width=400,height=128] +
 *Figure 4: The Active Games window, showing a room called "My Game" with 1 current player.*
 
-To join a game on the Server,
-. In Module Manager, in the *Module Library* window, double-click the module you want to play.
+To join a game on the Server:
+
+In Module Manager, in the *Module Library* window, double-click the module you want to play.
 The Welcome Wizard opens.
 . In the Welcome Wizard, under *Select play mode,* choose *Look for a game online*, and then follow the other Wizard steps as the module requires.
 . On the Toolbar, click *Connect*.
@@ -1037,9 +1038,9 @@ To activate an extension:
 . In Module Manager, right-click on the module that the extension is for, and select *Add Extension.*
 . Browse to the extension file and click *Open*.
 The extension is now listed in the Module Manager under the name of the module.
-A copy of the extension file is automatically placed in a new directory called <Module Name>_ext, in the same directory where the module is located.
+A copy of the extension file is automatically placed in a new directory called `<Module Name>_ext`, in the same directory where the module is located.
 When Vassal loads the module, any extensions in this directory are also loaded.
-(For example, for the module WorldWarII, upon activating the extension IwoJima.vmdx, the extension is placed in the directory WorldWarII_ext.)
+(For example, for the module WorldWarII, upon activating the extension IwoJima.vmdx, the extension is placed in the directory `WorldWarII_ext`.)
 
 You can _deactivate_ an extension if you do not wish it to be loaded with the base module.
 
@@ -1071,7 +1072,7 @@ You can also view games played on the Server in the past 24 hours, the past week
 (In addition, you can view this information using the Module Manager under *Tools > Server Status.)*
 * Vassalengine.org maintains an Opponents Wanted forum, where you can search for opponents for your game.
 You should specify the game or games you want to play, whether you would like to play real time or by email, and your time zone.
-Visit http://www.vassalengine.org/forums[[.underline]#www.vassalengine.org/forums#] for more information.
+Visit the http://www.vassalengine.org/forums[[.underline]#Vassal forums#] for more information.
 * In addition, gaming sites like BoardGameGeek.com, Wargamer.com, and ComsimWorld.com maintain Vassal opponent lists.
 
 === The Vassal Community
@@ -1091,7 +1092,7 @@ Your opponent should see a message stating _‘Sending game info…’_ You will
 In a multiplayer game, all participants in a game need to be synched, so for consistency, it’s a good idea to pick one player, such as the person who initiated the game, and have everyone synch to that player. +
 Synching is required for both Server and peer-to-peer games.
 
-I want to play a game that was originally produced by SPI, Games Workshop, Avalanche Press, or Sabertooth Games. Why don’t you have any modules for these games?::
+I want to play a game that was originally produced by Games Workshop, Avalanche Press, or Sabertooth Games. Why don’t you have any modules for these games?::
 These publishers, or the current holders of their copyrights, have asked specifically that Vassalengine.org neither host nor distribute modules based on their games.
 Vassalengine.org always complies with such requests from copyright holders.
 Users who disagree with a copyright holder’s policies are encouraged to discuss the issue with the copyright holder.
@@ -1122,4 +1123,4 @@ Launch the module using Module Manager by clicking *File > Open Module* and brow
 
 How do I make or edit a module?::
 The _Vassal Designers’ Guide_ gives complete procedures on how to design your own module.
-There are nearly 400 games that have been converted for Vassal already, and many more in progress, so you may want to check the module list on Vassalengine.org before attempting to create a new one.
+There are over a thousand games that have been converted for Vassal already, and many more in progress, so you may want to check the module list on Vassalengine.org before attempting to create a new one.
