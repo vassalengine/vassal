@@ -2,13 +2,13 @@
 
 Many games include decks of cards as part of play; in fact, some games consist _entirely_ of decks of cards. In VASSAL, Cards are created as a special form of Game Piece. However, the Deck functionality can be applied to a range of Game Piece types besides traditional Cards, such as for any pieces whose number is fixed or which need to be drawn randomly.
 
-*Creating a Deck*
+=== Creating a Deck
 
 A Deck functions like a deck of playing cards. Each game begins with the contents of the Deck as specified in the *[Deck]* node. During a game, players may remove Cards from the Deck by clicking on the Deck and dragging cards from it with the mouse. This removes the Card from the Deck and assigns ownership to the dragging player. Dragging a Card onto the Deck area adds it back to the Deck.
 
 Each Deck must be placed on a Map Window. A Deck may have a Command Menu that can include specialized commands that will affect only the Cards in the Deck.
 
-_*Deck Attributes*_
+==== Deck Attributes
 
 Each Deck has the following attributes:
 
@@ -25,12 +25,7 @@ image:_images/image184.png[image,width=287,height=512]
 * *Contents are Face-down:* Determines whether Cards in the Deck are always face-down, always face-up, or can be switched from face-up to face-down with a Command Menu entry.
 
 [loweralpha, start=15]
-. *Face Down Report Format:* A Message Format that is echoed to the chat text window whenever a player
-
-selects the *Face Down* menu item (if enabled above): DeckName is the name of this Deck, commandName is the name of the menu item.
-
-_*Decks and Cards: Creating a Deck*_
-
+. *Face Down Report Format:* A Message Format that is echoed to the chat text window whenever a player selects the *Face Down* menu item (if enabled above): DeckName is the name of this Deck, commandName is the name of the menu item.
 [loweralpha, start=15]
 . *Draw New Cards Face Up:* If selected, then Cards drawn from this Deck will be placed face-up on the playing area. If un-checked, then Cards in a facedown Deck are drawn face down and owned by the drawing player.
 
@@ -72,9 +67,7 @@ selects the Reversible menu item (if enabled above): DeckName is the name of thi
 * *Maximum Cards To Be Displayed In Stack:* This defines the maximum number of Cards to graphically display in the Deck. The default is 10. For example, if set to 10, a Deck of 52 will appear to have 10 Cards, until the actual number of contents drops below 10. Then the Deck will visually start to shrink as Cards are removed. If set to 1, the Deck will appear flat like a single Card.
 * *Perform Counting Of Property Expressions:* Enable processing of Property expression counting. Expressions must be defined.
 [loweralpha, start=16]
-. *Expressions To Count:* Specify expressions to be counted within the Deck. These can be whatever you like
-
-and must be in the format of: <expression name> : <expression> For each expression, a map-level Property called <DeckName>_<expression name> is exposed. The exposed value is number of pieces for which that expression evaluates to true. An example of how to do this is provided on page 77. NOTE: Currently the only dynamic Property that can be used in counting expressions is playerSide. Other dynamic Properties will most likely not update if they change after pieces move into a Deck.
+. *Expressions To Count:* Specify expressions to be counted within the Deck. These can be whatever you like and must be in the format of: <expression name> : <expression> For each expression, a map-level Property called <DeckName>_<expression name> is exposed. The exposed value is number of pieces for which that expression evaluates to true. An example of how to do this is provided on page 77. NOTE: Currently the only dynamic Property that can be used in counting expressions is playerSide. Other dynamic Properties will most likely not update if they change after pieces move into a Deck.
 
 * *Reposition Stack:* Click to drag a representation of the Deck to its final position on the board. This overrides any values you specified for X and Y positions, above.
 
@@ -93,7 +86,7 @@ First create the Deck, and then create the individual Cards in it.
 
 You may now create the Cards for the new Deck.
 
-_*Deck Properties*_
+=== Deck Properties
 
 Decks include these Properties. <Deckname> is the name of the Deck.
 
@@ -125,11 +118,9 @@ Number of Card types in the Deck.
 
 a|
 Map
-
-| | |
 |================================
 
-*Creating Cards*
+=== Creating Cards
 
 You create Cards like other Game Pieces, and may use any of the standard Game Piece Traits. However, by default, Cards include a Mask Trait to reflect their back face, which is hidden from view until revealed.
 
@@ -157,7 +148,7 @@ In the Module Editor, Cards are treated as a distinct piece type. Cards may not 
 
 For more information on creating Game Pieces, see page 40.
 
-*Cards and Prototypes*
+=== Cards and Prototypes
 
 Cards from the same Deck often behave identically and are different only in their front faces. For instance, they most likely have the same Card back images, and will likely be sent to the same Deck (such as a discard pile) after use.
 
@@ -167,17 +158,15 @@ For example, the game includes an Event Deck where the Cards describe random gam
 
 By default, new Cards include a Mask Trait. You can delete the default Mask Trait and define it in the Prototype instead.
 
-_*Decks and Cards: Creating Cards*_
-
-*Copying and Pasting Cards*
+=== Copying and Pasting Cards
 
 Copying and pasting Cards can vastly speed up the process of Card creation. Define the first Card, then right -click, *Copy* the Card, and paste it into your *[Deck]* node. You will now have an identical copy of the first Card. You can then edit the copy and select a new image for the face of the Card. You can create many new Cards quickly by repeating this method.
 
-*Editing the Contents of a Deck*
+=== Editing the Contents of a Deck
 
 You can make wholesale changes quickly to the entire contents of a Deck. Right-click the Deck and pick *Edit All Contained* *Pieces*. The *Properties* dialog for the first Card is displayed, but any changes you make in the Properties dialog will affect all Cards in the Deck. Add, remove or edit Traits as usual, then click *Ok*. Your changes are applied to all Cards.
 
-*Card Properties*
+=== Card Properties
 
 Cards have all the same Properties as regular Game Pieces. However, they also include these system Properties:
 
@@ -201,12 +190,11 @@ DeckName
 a|
 Name of the Deck the Card is currently stacked in, if any.
 
-| |
 |=========================================================
 
-_*Deck Global Key Command (GKC)*_
+=== Deck Global Key Command (GKC)
 
-This Trait adds an action that applies a key command to pieces contained within the Deck, similar to the Global Key Command component of a Map Window. Each Deck GKC has these attributes.
+This component adds an action that applies a key command to pieces contained within the Deck, similar to the Global Key Command component of a Map Window. Each Deck GKC has these attributes.
 
 * *Menu Command:* Name of the Command Menu item.
 * *Keyboard Command:* Keyboard shortcut of the menu item that initiates the command.
@@ -224,7 +212,7 @@ image:_images/image191.png[image,width=247,height=124]
 . In the *Deck Global Key Command* dialog, specify the behavior of the GKC.
 . Click *Ok.*
 
-_*Card Decks in Practice*_
+=== Card Decks in Practice
 
 The following examples of possible Card Decks illustrate a variety of uses for them.
 
@@ -239,9 +227,6 @@ The following examples of possible Card Decks illustrate a variety of uses for t
 
 [loweralpha, start=15]
 . The Discard pile should begin empty, so there is no need to define Cards for it.
-
-_*Decks and Cards: Creating Cards*_
-
 [loweralpha, start=15]
 . To move discards to the discard pile, for each Card in the main Deck, add a Return to Deck Trait, specifying the Discard Pile as the destination Deck.
 
@@ -251,7 +236,7 @@ _If discards are not intended to return to the main Deck but instead are permane
 * *Random Turn Order Cards:* If the game has a random turn order, players may draw from a Deck to determine who moves first, second and third. Create a Deck where each Card is labeled 1, 2, 3, and so on. Select Allow Multiple = false, Allow Specific = false, Face Down = Always, Re-shuffle = Always, Reversible = false.
 * *Playing Cards with Number of Cards Displayed:* You want to create a Deck of playing Cards, and display the number of red Cards, the number of black Cards, the number of face Cards, and the total number of Cards in the Deck. Create the Deck, and check *Perform counting of expressions*. Add the expressions of "red: Color = red" and "black: Color = black". Also add the expression "faceCards: value > 10". When creating your Cards, give them a Marker Trait named Color with the values of _red_ or _black_. Also give your Cards a Marker Trait named Value with the numeric value of the Card. Then, you can refer to the counts with the map-level Properties of <Deckname>_red, <Deckname>_black, and <Deckname>_faceCards. The total can be referenced by the map-level Property of <Deckname>_numPieces.
 
-_*Map Tiles*_
+==== Map Tiles
 
 Some games make use of map _tiles_, which are usually shuffled at the beginning of a game, drawn randomly and then placed to provide a random map layout. (If the layout is not random, or is in a regular row-column pattern, then an ordinary Map Window, with multiple Boards, will probably meet your needs better.)
 
@@ -265,7 +250,7 @@ To create randomly-placed Map Tiles, do the following:
 
 Now, at game start, players can draw random map tiles and place them in the Map Window. The map tiles will always appear beneath all the other Game Pieces.
 
-_*Dealing Random Cards to a Board*_
+==== Dealing Random Cards to a Board
 
 The Deck shuffle function can be used to deal randomly drawn cards from a Deck to pre-defined locations on the board, using a single click of a Global Key Command button.
 
@@ -278,9 +263,6 @@ To deal random cards to a board, do the following:
 . Create a Deck (on the same or different board) and make sure *Re-shuffle* is set to _Always_.
 . Add the first Card to the Deck. Add a Send to Location Trait to this Card: Send to Board (the Board created in Step 2) and the Region (enter $GridLocation$ in the *Region* box).
 . Add a Set Global Property Trait to the Card, with a command that will increment the GridLocation Property by 1. Give the Set Global Property command a shortcut of Ctrl-I (for Increment). Note that this is the same hotkey we specified in Step 3.
-
-_*Decks and Cards: Creating Cards*_
-
 [arabic, start=8]
 . Copy and Paste the first card repeatedly until you have the desired number of cards in the Deck. Edit each card as needed with graphics or Traits.
 . Create a Global Key Command (GKC) for the same Map Window where the Deck is (or for the *[Module]* node).

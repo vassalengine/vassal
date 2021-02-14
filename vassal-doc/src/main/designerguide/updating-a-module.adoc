@@ -30,9 +30,6 @@ Follow these guidelines when updating your module.
 *Iʼm Not Seeing My Changes*
 
 If you donʼt see your edits reflected in the game, this may be because you are actually looking at a saved game, not the actual module. If your module includes saved games (Pre-Defined Setups), then after making updates, you will not see those
-
-_*Updating a Module: Extensions and Changing Filenames*_
-
 changes take place in the module until you update the saved games. (This is a common oversight among module designers when updating modules. See _Pre-Defined Setups_ on page 97 for more information.)
 
 To rectify this, launch your module and load the saved game. Make your updates to the saved game, adding any newly defined pieces or other components, and save it again. Then re-add the updated saved games to the module. (You may need to use the Saved Game Updater to make sure that any Game Piece updates are reflected in the new saved game.)
@@ -41,12 +38,9 @@ To rectify this, launch your module and load the saved game. Make your updates t
 
 Extensions for a module are located in the directory <Module File Name>_ext. For example, extensions for version 1.0 of the _Global Thermonuclear War_ module, named gtw_1.0.vmod, are located in the directory gtw_1.0_ext.
 
-If you change the file name when updating and include the new version number in the filename (such as to
-
-gtw__2.0.vmod), then Module Manager will no longer be able to locate the extension files from the old version of the module.
+If you change the file name when updating and include the new version number in the filename (such as to gtw__2.0.vmod), then Module Manager will no longer be able to locate the extension files from the old version of the module.
 
 As a result, the extensions will not load automatically with the new version. This is easy to fix, but players will need to repair
-
 this individually in their own Module Manager.
 
 *To re-add existing extensions to the updated module,*

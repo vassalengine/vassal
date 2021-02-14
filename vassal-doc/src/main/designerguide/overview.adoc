@@ -13,9 +13,7 @@ The name _VASSAL_ comes from its original incarnation as a tool to play online g
 VASSAL now extends play to a much wider range of games.
 
 This _VASSAL Designerʼs Guide_ explains how to create game modules and extensions using the Module Editor.
-It is strongly recommended that you be familiar with the contents of the _VASSAL_
-
-_Userʼs Guide_ before attempting to create new modules.
+It is strongly recommended that you be familiar with the contents of the _VASSAL_ _Userʼs Guide_ before attempting to create new modules.
 This guide covers version {project-version} of the VASSAL Engine.
 
 Because of VASSALʼs easy to use interface, programming skills are not at all necessary for creating fully functional VASSAL modules.

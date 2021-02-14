@@ -19,7 +19,7 @@ _VASSAL_ designed by Rodney Kinney
 
 *Designerʼs Guide:* Ed Messina (ed@crucible.cc, mycenae on the VASSAL forums)
 
-*Development Team:* Rodney Kinney, Joel Uckelman, Brent Easton, Michael Kiefte, Tim McCarron
+*Development Team:* Rodney Kinney, Joel Uckelman, Brent Easton, Michael Kiefte, Tim McCarron, Brian Reynolds, Yan Lyubashevskiy, Claudio Ciardelli
 
 *Testing:* Thomas Russ
 

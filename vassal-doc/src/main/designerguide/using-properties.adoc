@@ -8,14 +8,14 @@ Using Properties is an important part of automating your module.
 
 Properties do nothing by themselves. They need to be evaluated by other VASSAL functions or components. Properties can be used as selection criteria for certain pieces, to track game quantities or game events, and for many other purposes.
 
-_*Types of Properties*_
+=== Types of Properties
 
 Properties come in two types: system Properties, and custom Properties.
 
 * Many VASSAL components, such Game Pieces, Decks, Maps, Boards, Dice Rollers, and Turn Counters, already have Properties defined for them. These are called _System Properties_. System Properties for components are listed in the component descriptions in later sections.
 * In addition, you can create and define _custom_ Properties for Game Pieces, Map Windows, Zones, and the module itself. Examples of custom Properties include Global Properties, Dynamic Property Traits, and Marker Traits. Information on using component Properties, Traits, or Global Properties will be found in their descriptions in this Guide.
 
-_*Property Names*_
+=== Property Names
 
 *System Property Names:* The names of System Properties are already defined for module components. For example, all Game Pieces have a system Property named CurrentMap, the value of which is the name the Map where the Game Piece is currently located. System Properties cannot be renamed. System properties for module components are defined in this guide in the sections describing those components.
 
@@ -23,7 +23,7 @@ _*Property Names*_
 
 Property names are case-sensitive. For example, PowerLevel is not the same Property as powerLevel.
 
-_*Property Values*_
+=== Property Values
 
 *System Property Values:* System Properties automatically take their values from the game state. You wonʼ t need to assign values to System Properties manually (in fact, you cannot do so). Their values will depend on the condition they describe. For example, the value of the CurrentBoard Property for a Game Piece is the name of the current Board where the piece is located. If you moved the piece to a new Board, the value of CurrentBoard for that piece would change automatically to the name of the new Board.
 
@@ -35,13 +35,13 @@ _*Property Values*_
 
 As with Property Names, Property values are case-sensitive.
 
-_*Displaying Properties:* Game Piece property values are generally invisible to players unless you choose to display them, using a Trait such as Text Label or Layer._
+*Displaying Properties*
+
+Game Piece property values are generally invisible to players unless you choose to display them, using a Trait such as Text Label or Layer.
 
 *Comparing Properties*
 
 You create Property _expressions_ to determine if a particular game condition is true. For example, since a System Property named LocationName is used to record a pieceʼs current location, we could check the value of this Property to determine if the piece is currently situated in Hex 1212.
-
-_*Using Properties: Comparing Properties*_
 
 Property expressions are found in many components of a module, and you set them in the dialog boxes for those components when you choose the component settings. Expressions are also sometimes called _filters_, because they filter out situations where the comparison does not apply.
 
@@ -51,7 +51,7 @@ _Traditionally, a space character ( ) is placed between the Property, the operat
 
 The following table shows each valid operator, the meaning, and under what conditions a comparison using the operator will be true.
 
-[cols=",,,",]
+[cols=",,",]
 |=======================================================================================
 a|
 *Operator*
@@ -62,8 +62,6 @@ a|
 a|
 *True if…*
 
-|
-| | | |
 a|
 =
 
@@ -73,8 +71,6 @@ Equals
 a|
 The two values on either side are the same.
 
-|
-| | | |
 a|
 !=
 
@@ -84,8 +80,6 @@ Is Not Equal To
 a|
 The two values are not the same. (The exclamation point (!) is known as a ʻbangʼ.)
 
-|
-| | | |
 a|
 =~
 
@@ -95,13 +89,11 @@ Regular Expression
 a|
 The Property value is equal to any one of several values, which are separated by a
 
-|
-| | a|
-pipe (|) character. See _Regular Expressions_, below, for more information.
+a|\|
+a|
+pipe (\|) character.
+a|See _Regular Expressions_, below, for more information.
 
-|
-| | | |
-| | | |
 a|
 !~
 
@@ -110,14 +102,8 @@ Regular Expression (Negation)
 
 a|
 The Property value is _not_ equal to any one of several values, which are separated
+by a pipe (\|) character. See _Regular Expressions_, below, for more information.
 
-|
-| | a|
-by a pipe (|) character. See _Regular Expressions_, below, for more information.
-
-|
-| | | |
-| | | |
 a|
 >
 
@@ -125,15 +111,8 @@ a|
 Greater Than
 
 a|
-The value on the left side is larger than the value on the right. Applies to Numerical
+The value on the left side is larger than the value on the right. Applies to Numerical Properties only.
 
-|
-| | a|
-Properties only.
-
-|
-| | | |
-| | | |
 a|
 >=
 
@@ -142,12 +121,8 @@ Greater Than Or Equal To
 
 a|
 The value on the left side is larger than or equal to the value on the right. Applies to
-
-|
-| | a|
 Numerical Properties only.
 
-|
 a|
 <
 
@@ -155,30 +130,21 @@ a|
 Less Than
 
 a|
-The value on the left side is smaller than the value on the right. Applies to
+The value on the left side is smaller than the value on the right. Applies to Numerical Properties only.
 
-|
-| | a|
-Numerical Properties only.
-
-|
 a|
-<=
+\<=
 
 a|
 Less Than Or Equal To
 
 a|
-The value on the left side is smaller than or equal to the value on the right. Applies
-
-|
-| | a|
-to Numerical Properties only.
+The value on the left side is smaller than or equal to the value on the right. Applies to Numerical Properties only.
 
 |
 |=======================================================================================
 
-_*Types of Expressions*_
+=== Types of Expressions
 
 Typically, expressions are used in a module component to determine the conditions under which the effects of the component should apply. There are several kinds of expressions, which include:
 
@@ -206,11 +172,9 @@ A _regular expression_ checks if a Property has any one of several values. A reg
 
  CurrentPlayer =~ Blue|Green|Red (checks if the Blue, Green or Red player is the current player)
 
-_*Using Properties: Game Piece Properties*_
-
 You can also negate regular expressions by using !~ instead of ~=.
 
-*Comparing a Property to Another Property*
+=== Comparing a Property to Another Property
 
 On occasion, you may need to compare the value of one Property to the value of another. In this case, surround the name of the Property on the right side of the operator with $-signs (such as $PieceName$) to indicate that the Property with that name should be checked for its value. (Do not use $-signs in the left side of the expression. The left side of the expression is always treated as the name of a Property.) Examples:
 
@@ -246,7 +210,7 @@ CurrentBoard = HQ || CurrentBoard = Battlefield && PieceName = Artillery || Piec
 
 This would evaluate to _true_ if the piece were on either the HQ or Battlefield maps, and was either an Artillery or Tank unit. If the piece were on the HQ map, but was an infantry unit, it would evaluate to _false_.
 
-*Game Piece Properties*
+=== Game Piece Properties
 
 Each Game Piece has its own set of System Properties (each with a name and a value) that can be used for identification by various components.
 
@@ -261,15 +225,13 @@ Traits on a Game Piece search for Properties in the following order:
 
 A Game Piece cannot directly access:
 
-_*Using Properties: Message Formats*_
-
 * Properties on another Game Piece.
 * Zone Global Properties on a Zone that the Game Piece is not currently located in.
 * Map Global Properties on a map that the Game Piece is not currently located in.
 
 For most components, system Properties are hardcoded as part of the VASSAL engine. However, for Game Pieces, you can create entirely new Properties using the Dynamic Property, Marker, and Property Sheet Traits. See _Game Piece Traits_ on page 42 for more information.
 
-*Message Formats*
+=== Message Formats
 
 Many Traits and module components enable you to customize the message that is displayed to users in the Chat Window when game events take place. A _Message Format_ is a formula for creating such a message to players. Message formats are highly customizable and usually include Properties as variables.
 
@@ -281,7 +243,7 @@ For example, the Dice button control includes a message indicating the result of
 
 If Bill clicked a Dice button named 2d6, and the result was 5, the message displayed in the Chat Window would be: _**2d6 =_ _5***<Bill>._
 
-_*Constructing a Message Format*_
+*Constructing a Message Format*
 
 In a Message Format, any word surrounded by $-signs represents a variable, the value of which will be determined when the message is generated during play. When constructing a Message Format for a component, click the *Insert* drop-down menu for a list of available variables for the Message Format. Selecting one of the variables from the menu will insert it at the current cursor position.
 

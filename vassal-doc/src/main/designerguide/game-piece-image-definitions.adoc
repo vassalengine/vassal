@@ -28,11 +28,11 @@ a|
 
 _Use of Game Piece Image Definitions to create counters is optional. Itʼs best for use in wargames or other games with a large number of standardized counters._
 
-*Game Piece Image Elements*
+=== Game Piece Image Elements
 
 Game Piece Image Definitions have the following elements: Named Color, Font Style, and Layout.
 
-_*Named Colors*_
+==== Named Colors
 
 Each color you wish to use in Image Definitions is predefined and given a name. These colors will appear in a palette for selecting foreground or background colors in the image. 14 Standard colors are built-in: Clear, White, Black, Light Gray, Dark Gray, Red, Green, Blue, Orange, Pink, Cyan, Magenta, Yellow.
 
@@ -48,7 +48,7 @@ image:_images/image173.png[image,width=157,height=82]
 . In *Color*, click the color selector, and select the desired color.
 . Click *Ok*.
 
-_*Font Styles*_
+==== Font Styles
 
 Font Styles used in Image Layouts are defined here and selected by name from drop-down menus. A Font Style consists of a Font Family, size and style (plain, bold, italic, bold-italic). A default style is always defined: 12 point Dialog font.
 
@@ -58,9 +58,6 @@ image:_images/image174.png[image,width=241,height=128]
 * *Font Family:* The Font Family to use. To ensure maximum compatibility and portability, only the pre-defined Java logical fonts are available as options.
 * *Size:* The size of the font style in points.
 * *Bold:* Click on to select a Bold font style.
-
-_*Game Piece Image Definitions: Game Piece Image Elements*_
-
 * *Italic:* Click on to select an Italic font style.
 * *Sample:* Display a sample of your selected font style.
 
@@ -70,7 +67,7 @@ _*Game Piece Image Definitions: Game Piece Image Elements*_
 . On the Font Style dialog, enter the settings for the font style.
 . Click *Ok*.
 
-_*Game Piece Layouts*_
+=== Game Piece Layouts
 
 A Game Piece Layout defines the general appearance and positioning of the items used in drawing an image. Each Layout is composed of a rectangle of the background color, a border, and items such a symbols, labels, text boxes, images, or shapes. These items are generic and defined in terms of their appearance and position of the counter. Later, when the image is defined based on the layout, we can specify actual settings for each of these items, such as the specific symbol to use, or the specific text to show.
 
@@ -126,11 +123,7 @@ image:_images/image177.png[image,width=256,height=101]
 . *Name:* The name of the Item. Items must be uniquely named within an Image Layout.
 
 [loweralpha, start=15]
-. *Location:* Select the location of the item on the counter. The location also determines the text justification, i.e. selecting Top Left ensures that the upper left corner of the text is in the upper left corner of the image. Once
-
-_*Game Piece Image Definitions: Game Piece Image Elements*_
-
-the justification is set by the Location, you can still use the X/Y offset in the advanced options to place the text in a different location.
+. *Location:* Select the location of the item on the counter. The location also determines the text justification, i.e. selecting Top Left ensures that the upper left corner of the text is in the upper left corner of the image. Once the justification is set by the Location, you can still use the X/Y offset in the advanced options to place the text in a different location.
 
 [loweralpha, start=15]
 . *Font Style:* Select the name of the Font Style to be used for this Text Item.
@@ -170,9 +163,7 @@ image:_images/image179.png[image,width=264,height=144]
 . *Location:* Select the location of the item on the counter.
 
 [loweralpha, start=15]
-. *Image is:* Specify whether the image is specified in this layout or in the images that use this layout. Use the File Open Dialog box to locate a copy of the image you wish to use on your PC. When you save the module, VASSAL will attempt to copy this image into the
-
-images folder within the module zip file. You can also manually copy images into your images folder.
+. *Image is:* Specify whether the image is specified in this layout or in the images that use this layout. Use the File Open Dialog box to locate a copy of the image you wish to use on your PC. When you save the module, VASSAL will attempt to copy this image into the images folder within the module zip file. You can also manually copy images into your images folder.
 
 image:_images/image180.png[image,width=328,height=80]
 
@@ -232,7 +223,7 @@ As you design the Layout, a preview is shown in the *Game Piece Layout* dialog b
 . Select one or more items to include in the Layout by clicking the corresponding button, and then entering the details of the item. Repeat for any additional items.
 . Click *Ok*.
 
-*Game Piece Images*
+=== Game Piece Images
 
 Now that youʼve created a Named Color, Font Style, and a Game Piece Layout, you can create one or more images that use these elements, and choose specific values for the layout items.
 

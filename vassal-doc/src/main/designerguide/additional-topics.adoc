@@ -2,7 +2,7 @@
 
 This section describes some advanced module design topics. It presumes knowledge of the design procedures discussed earlier.
 
-*Importing Custom Classes*
+=== Importing Custom Classes
 
 If youʼre familiar with Java programming, VASSAL enables you to write and plug your own Java classes into a module. As an open- source project, the VASSAL engine package contains the source code for the core engine. The VASSAL libraries package contains additional .jar files you will need to compile and run the program. The main class for the application is named org.Vassalengine.Main and resides in Vassal.jar.
 
@@ -14,7 +14,7 @@ If youʼre familiar with Java programming, VASSAL enables you to write and plug 
 
 A complete programming tutorial, which presumes a level of Java programming skills, is available at [.underline]#http://www.VASSALengine.org/wiki/Programming_Tutorial#.
 
-*Module File Structure*
+=== Module File Structure
 
 A module (.vmod) file is simply an archive file using ZIP compression. It can be easily decompressed using any application that handles ZIP files, including WinZip or the MacOS Archive Utility, to view or extract the files inside. If you need to have a look at a file inside a module, simply unzip the module.
 
@@ -24,7 +24,7 @@ Because a module file is itself a ZIP file, when you packaging or publishing a m
 
 Extension (.vmdx) files are also ZIP files, like module files.
 
-*File Components*
+=== File Components
 
 A module file contains the following components:
 
@@ -43,12 +43,9 @@ In general, use the Module Editor to make changes to your module; these changes 
 * *Images Folder:* Contains all of the moduleʼs images: maps, pieces and other images.
 * *Sounds Folder:* Includes any sound files associated with the module (from Play Sound Traits or Action Buttons).
 * *Help Folder:* Contains HTML help files, if any.
-
-_*Additional Topics: Reducing Module File Size*_
-
 * *Additional Files:* Some modules may contain additional files, such as a Readme.txt file.
 
-*Reducing Module File Size*
+=== Reducing Module File Size
 
 The module design process can lead to module files including unnecessary or obsolete files. Large files are slow to download and unwieldy to distribute. As a result, once the design process is complete, you may wish to reduce the file size of your module.
 
@@ -57,7 +54,7 @@ The vast majority of a moduleʼs file size is usually caused by the image files 
 * Re-scale your game graphics to a smaller size. A large 5000x5000 pixel map may be more manageable when rescaled to 2500x2500 pixels. Use your favorite image editor application to accomplish this.
 * Delete unnecessary files from the module, such as unused images or obsolete text files.
 
-_*Deleting Unnecessary Files from a Module*_
+*Deleting Unnecessary Files from a Module*
 
 To reduce file size, you can delete unnecessary files from a module. To accomplish this, you will require a utility capable of unzipping and re-zipping files.
 
@@ -76,7 +73,7 @@ To reduce file size, you can delete unnecessary files from a module. To accompli
 
 _Ensure that you re -zip the module at the root level (this is the level where you see BuildFile, the Images folder, and other files) ._ Do not zip the folder that contains these items__. If you re-zipped the wrong level, when you open the file in VASSAL, it will return 'Invalid VASSAL module.'__
 
-*Importing an Aide de Camp II Module into VASSAL*
+=== Importing an Aide de Camp II Module into VASSAL
 
 VASSAL includes a tool that enables you to convert modules made for the application [.underline]#Aide de Camp II# (ADC2) into VASSAL module format.
 
@@ -87,18 +84,15 @@ The import process creates maps and pieces and a basic module structure. The too
 . In the Module Manager, *pick File | Import Module.*
 . Browse to the ADC2 module you wish to import.
 . Select the .OPS file for the module.
-
-_*Additional Topics: Translations*_
-
 [arabic, start=4]
 . Click *Open*. The module is converted into VASSAL format and displayed in the Module Editor.
 . Edit the module as needed and save as a .vmod file.
 
-*Translations*
+=== Translations
 
 VASSAL supports two sets of translations: module translations and translations of the VASSAL engine.
 
-_*Translating a Module*_
+==== Translating a Module
 
 VASSAL modules are not localized. VASSAL relies on the generosity of module designers (or players) to translate modules into other languages. If you are a fluent speaker of a language other
 
@@ -130,7 +124,7 @@ Module translations are not shown in edit mode. The translated strings will only
 
 image:_images/image260.png[image,width=280,height=225]
 
-_*Translating the VASSAL Engine*_
+=== Translating the VASSAL Engine
 
 You can also supply translations for the VASSAL engine.
 
@@ -138,9 +132,6 @@ You can also supply translations for the VASSAL engine.
 
 . Launch VASSAL from the command line, with the - translate switch.
 . In the *Translate VASSAL* dialog, select the language you are translating into, and optionally, select a country.
-
-_*Additional Topics: Translations*_
-
 [arabic, start=3]
 . For each string you wish to translate, under *Translation*, double-click the empty box. Then, enter the translation for the selected string into your chosen language.
 . Click *Save*.

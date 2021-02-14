@@ -2,7 +2,7 @@
 
 VASSAL has a variety of methods for generating random results: Dice Buttons, Symbolic Dice, and Random Text Buttons.
 
-*Dice Button*
+=== Dice Button
 
 A Dice Button generates random numbers, simulating the roll of any number of dice of any number of sides. You may add any number of Dice Buttons to a module.
 
@@ -30,35 +30,27 @@ image:_images/image196.png[image,width=310,height=215]
 . In the dialog, specify the settings for the button.
 . Click *Ok*.
 
-_*Dice Properties*_
+==== Dice Properties
 
 Dice buttons include these system Properties. <name> is the name of the Dice button.
 
-[cols=",,,,,,,,",]
+[cols=",,",]
 |========================================================================================================================
-| |*Name* | | | |*Description* | |*Property* |
-| | | | | | | |*Level* |
-| |<name>_result | | |Value is the result of the Die Roll. Example: a Dice Button named 2d6 would include a |Global | | |
-| | | | | |Property named 2d6_result. | | |
-| | | | | | | | |
+|*Property Name* |*Property Level* |*Description*
+|<name>_result |Global |Value is the result of the Die Roll. Example: a Dice Button named 2d6 would include a Global Property named 2d6_result.
 |========================================================================================================================
 
-*Symbolic Dice Button*
+=== Symbolic Dice Button
 
 A Symbolic Dice Button is used to define dice that use arbitrary images. When the button is clicked, a random face is selected for each Symbolic Die that this component contains. The results of the roll can be reported as text into the chat area, graphically in a separate window, or in the button itself.
 
 Each button can roll any number of dice (represented by Symbolic Die components), each of which may have any number of faces (represented by Symbolic Die Face components).
 
-_*Generating Random Results: Symbolic Dice Button*_
-
 * *Name:* The name of the Symbolic Dice Button.
 * *Button Text:* Text for the button in the Toolbar.
 * *Hotkey:* Keyboard shortcut for rolling the dice.
 * *Report Results As Text:* If selected, report results to the chat area.
-* *Report format:* A Message Format specifying the format for
-
-reporting text results: name is the name of the button as specified above, result1, result2, etc is the result of the 1st, 2nd, etc. Symbolic Die as configured below (replace the '#' symbol with the desired number), _numericalTotal_ is the sum of the numerical values of the Symbolic Die rolls.
-
+* *Report format:* A Message Format specifying the format for reporting text results: name is the name of the button as specified above, result1, result2, etc is the result of the 1st, 2nd, etc. Symbolic Die as configured below (replace the '#' symbol with the desired number), _numericalTotal_ is the sum of the numerical values of the Symbolic Die rolls.
 * *Show Result In Window:* If selected, show the results graphically in a standalone window.
 * *Window Title Format:* A Message Format specifying the format for reporting results to the title bar of the standalone window.
 * *Show Result In Button:* If selected, show the results graphically in the Toolbar button.
@@ -76,29 +68,23 @@ image:_images/image198.png[image,width=264,height=251]
 
 After you define the symbolic dice button, you must define the actual dice rolled, including the dice faces.
 
-*Symbolic Dice*
+==== Symbolic Dice
 
 Each Symbolic Die has these attributes.
 
 * *Name:* The name of the die.
-* *Results Format:* A Message Format specifying how to report the result of this die roll. The resulting text will be
-
-substituted for result1, result2, and so on in the Symbolic Dice Button's results format: name is the name of this die as specified above, result is the text value of the Symbolic Die
-
-Face that is rolled, numericalValue is the numerical value of the Symbolic Die rolled.
+* *Results Format:* A Message Format specifying how to report the result of this die roll. The resulting text will be substituted for result1, result2, and so on in the Symbolic Dice Button's results format: name is the name of this die as specified above, result is the text value of the Symbolic Die Face that is rolled, numericalValue is the numerical value of the Symbolic Die rolled.
 
 image:_images/image199.png[image,width=247,height=81]
 
 *To define a Symbolic die,*
 
-. Right-click the *[Symbolic Dice Button]* node and pick *Add*
-
-*Symbolic Die.*
+. Right-click the *[Symbolic Dice Button]* node and pick *Add Symbolic Die.*
 
 [arabic, start=2]
 . In the *Symbolic Die* dialog, specify the attributes of the die. Finally, you must define the face of each Symbolic Die.
 
-*Symbolic Die Faces*
+==== Symbolic Dice Faces
 
 You must define the faces for each Symbolic Die. Each die face contains these attributes:
 
@@ -108,8 +94,6 @@ You must define the faces for each Symbolic Die. Each die face contains these at
 
 *To define a symbolic die face,*
 
-_*Generating Random Results: Random Text Button*_
-
 . Right-click the *[Symbolic Die]* node and pick *Add Symbolic Die* *Face*.
 . In the *Symbolic Die Face* dialog, specify the attributes of the die.
 
@@ -117,48 +101,40 @@ image:_images/image201.png[image,width=232,height=145]
 
 _To quickly create multiple identical symbolic dice, first create one die, and define all its faces. Then, copy and paste the *[Symbolic Die]* node as many times as needed into your *[Symbolic Dice Button]* node._
 
-_*Symbolic Dice Properties*_
+==== Symbolic Dice Properties
 
 Symbolic Dice buttons include these system Properties. <name> is the name of the Symbolic Dice button.
 
-[cols=",,,",]
+[cols=",,",]
 |==================================================================================
 a|
 *Name*
 
 a|
-*Description*
-
-a|
 *Property Level*
 
-|
-| | | |
+a|
+*Description*
+
+
 a|
 <name>_result
 
 a|
-Value is the result of the Symbolic Die roll. Example: a Symbolic Dice button named
-
-a|
 Global
 
-|
-| a|
-Ghost would include a Property named Ghost_result.
+a|
+Value is the result of the Symbolic Die roll. Example: a Symbolic Dice button named Ghost would include a Property named Ghost_result.
 
-| |
-| | | |
 |==================================================================================
 
-*Random Text Button*
+=== Random Text Button
 
 A Random Text Button can be used to randomly select a text message from a list defined beforehand. For example, a button can be defined to select a random letter from the list A, B, C, or D.
 
 It can also be used to define dice with irregular numerical values, such as a six-sided die with values 2,3,3,4,4,5, or dice with verbal values, such as a die with the results “Hit” or “Miss”.
 
 _One use for a Random Text Button could be to roll for results on a chart and then report the results to the Chat Window._
-
 _However, such a chart roll may not have any modifiers applied._
 
 A Random Text button has these attributes:
@@ -195,41 +171,34 @@ result of the roll, nDice is the number of dice, nSides is the number of dice, p
 
 . Right-click the *[Module]* node and pick *Add Random Text Button.*
 
-_*Generating Random Results: Random Text Button*_
-
 [arabic, start=2]
 . In the dialog, specify the settings for the button.
 . Under Faces, enter the value for the first face, and click *Add*. The value is added to the list of results.
 . Repeat Step 3 until all faces have been added.
 . Click *Ok*.
 
-_*Random Text Button Properties*_
+==== Random Text Button Properties
 
 Random Text buttons include these system Properties. <name> is the name of the Random Text button.
 
-[cols=",,,",]
+[cols=",,",]
 |==================================================================================
 a|
 *Name*
-
-| a|
-*Description*
 
 a|
 *Property Level*
 
 a|
-<name>_result
+*Description*
 
-| a|
-Value is the latest result of the Random Text button. Example: a Random Text button
+a|
+<name>_result
 
 a|
 Global
 
-| | a|
+a|
+Value is the latest result of the Random Text button. Example: a Random Text button
 named Events would include a Property named Events_result.
-
-|
-| | | |
 |==================================================================================
