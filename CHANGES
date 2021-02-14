@@ -1,5 +1,8 @@
 3.5.1 - ???
 
+* 14035: Multi Action Button and Toolbar Menu lose last item in Menu Entry list
+* 14034: Prevent concurrent updates to preferences
+* 14033: Fast Match forgets fields when added to Maps and Module
 * 14032: Fast Match was picking wrong number of cards from decks
 * 14026: GameRefresher incorrectly deletes off map pieces
 * 14024: NumberFormatException when private server port is empty
