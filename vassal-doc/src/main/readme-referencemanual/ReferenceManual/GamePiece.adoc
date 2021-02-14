@@ -427,13 +427,15 @@ Adds a command to move a piece a fixed distance in a direction.
 
 <<Translate.adoc#top,See full article for details.>>
 
-|image:images/Translate.png[]|===
+|image:images/Translate.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/ReturnToDeck.png[]a|
+a|
+image:images/ReturnToDeck.png[]
 
-==== <<ReturnToDeck.adoc#top,Return to Deck>>
+a|==== <<ReturnToDeck.adoc#top,Return to Deck>>
 
 Adds a command to send a piece to a <<Deck.adoc#top,Deck>>.
 
@@ -454,11 +456,13 @@ Prevents the piece from combining with other pieces to form a stack, and can als
 
 <<NonStacking.adoc#top,See full article for details.>>
 
-|image:images/NonStacking.png[]|===
+|image:images/NonStacking.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/PropertySheet.png[]a|
+|image:images/PropertySheet.png[]
+a|
 
 ==== <<PropertySheet.adoc#top,Property Sheet>>
 
@@ -469,6 +473,8 @@ Includes sophisticated controls for specifying single- and multi-line text notes
 
 image:images/property_sheet_map.png[]
 |===
+
+
 
 [width="100%",cols="50%,50%",]
 |===
@@ -481,11 +487,13 @@ Unlike a Property Sheet, it contains only plain-text fields, but can contain arb
 
 <<Spreadsheet.adoc#top,See full article for details.>>
 
-|image:images/Spreadsheet.png[]|===
+|image:images/Spreadsheet.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/Marker.png[]a|
+|image:images/Marker.png[]
+a|
 
 ==== <<Marker.adoc#top,Place Marker>>
 
@@ -511,11 +519,13 @@ Such a situation can be worked around by using a Trigger Action trait to first s
 
 <<Replace.adoc#top,See full article for details.>>
 
-|image:images/Replace.png[]|===
+|image:images/Replace.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/NonRectangular.png[]a|
+|image:images/NonRectangular.png[]
+a|
 
 ==== <<NonRectangular.adoc#top,Non-Rectangular>>
 
@@ -536,11 +546,13 @@ Adds a command that plays a specified sound when invoked.
 
 <<PlaySound.adoc#top,See full article for details.>>
 
-|image:images/PlaySound.png[]|===
+|image:images/PlaySound.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/MarkMoved.png[]a|
+|image:images/MarkMoved.png[]
+a|
 
 ==== <<MarkMoved.adoc#top,Mark When Moved>>
 
@@ -560,11 +572,13 @@ Pieces with this trait will leave behind a graphical trail showing the positions
 
 <<MovementTrail.adoc#top,See full article for details.>>
 
-|image:images/MovementTrail.png[]|===
+|image:images/MovementTrail.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/AreaOfEffect.png[]a|
+|image:images/AreaOfEffect.png[]
+a|
 
 ==== <<AreaOfEffect.adoc#top,Area Of Effect>>
 
@@ -586,11 +600,13 @@ Creates a sub-menu in the right-click context menu and groups some of the piece'
 
 <<SubMenu.adoc#top,See full article for details.>>
 
-|image:images/SubMenu.png[]|===
+|image:images/SubMenu.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/MenuSeparator.png[]a|
+|image:images/MenuSeparator.png[]
+a|
 
 ==== <<MenuSeparator.adoc#top,Menu Separator>>
 
@@ -610,11 +626,13 @@ Hides or removes key/menu commands from the piece when certain conditions apply.
 
 <<RestrictCommands.adoc#top,See full article for details.>>
 
-|image:images/RestrictCommands.png[]|===
+|image:images/RestrictCommands.png[]
+|===
 
 [width="100%",cols="50%,50%",]
 |===
-|image:images/RestrictedAccess.png[]a|
+|image:images/RestrictedAccess.png[]
+a|
 
 ==== <<RestrictedAccess.adoc#top,Restricted Access>>
 
@@ -635,30 +653,39 @@ Analogous to creating a "constant" in programming.
 
 <<PropertyMarker.adoc#top,See full article for details.>>
 
-|image:images/PropertyMarker.png[]|===
+|image:images/PropertyMarker.png[]
+|===
 
+[width="100%",cols="50%,50%",]
+|===
+|image:images/DynamicProperty.png[]
+a|
 ==== <<DynamicProperty.adoc#top,Dynamic Property>>
 
 Adds a named property to the piece, with a user-changeable value.
 Allows any number of commands to change and manipulate the value to be defined.
 
 <<DynamicProperty.adoc#top,See full article for details.>>
-
-image:images/DynamicProperty.png[]
-
+|===
+[width="100%",cols="50%,50%",]
+|===
+a|
 ==== <<CalculatedProperty.adoc#top,Calculated Property>>
 
 Adds a named property to the piece, whose value is automatically calculated according to a specified formula.
 
 <<CalculatedProperty.adoc#top,See full article for details.>>
 
-image:images/CalculatedProperty.png[]
-
+|image:images/CalculatedProperty.png[]
+|===
+[width="100%",cols="50%,50%",]
+|===
+|
+image:images/SetGlobalProperty.png[]
+a|
 ==== <<SetGlobalProperty.adoc#top,Set Global Property>>
 
 Defines commands to change the value of a <<GlobalProperties.adoc#top,Global Property>>.
 
 <<SetGlobalProperty.adoc#top,See full article for details.>>
-
-image:images/SetGlobalProperty.png
-
+|===
