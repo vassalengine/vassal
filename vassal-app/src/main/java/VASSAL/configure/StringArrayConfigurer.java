@@ -380,7 +380,9 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
 
   @Override
   public void entryChanged(ConfigurableListEntry entry) {
-    getStringArray()[entries.indexOf(entry)] = entry.getConfigurer().getValueString();
+    final String[] newValue = ArrayUtils.clone(getStringArray());
+    newValue[entries.indexOf(entry)] = entry.getConfigurer().getValueString();
+    setValue(newValue);
   }
 
   /**
