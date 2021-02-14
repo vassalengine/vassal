@@ -147,31 +147,25 @@ Many modules include Toolbar buttons to roll one or more dice.
 [width="100%",cols="50%,^50%",]
 |===
 a|
+
 ==== <<SpecialDiceButton.adoc#top,Symbolic Dice Button>>
 
 A <<SpecialDiceButton.adoc#top,Symbolic Dice Button>> places a button on the Toolbar which rolls dice that use graphical images to display theirfaces -- in simpler terms, "dice that look like dice". Multiple dice can be rolled at once, and the results can be shown in many different ways, including by the Toolbar button itself and by messages displayed in the <<ChatLog.adoc#top,Chat Log>>
 
 <<SpecialDiceButton.adoc#top,See full article for details.>>
 
-[width="100%",cols="34%,^33%,^33%",]
-|===
-| a|
-image:images/SpecialDiceExample1.png[]
-
-Symbolic Die Face
-
 a|
+Symbolic Die Faces
+
+image:images/SpecialDiceExample1.png[]
 image:images/SpecialDiceExample2.png[]
 
-Symbolic Die Face
+Configuring a Special Dice Button
 
-|===
-
-a|
 image:images/SpecialDiceButton.png[]
-Configuring a Symbolic Dice Button
 
 |===
+
 
 [width="100%",cols="50%,^50%",]
 |===
@@ -257,19 +251,15 @@ Because they are a sub-component of a Map, they are added to a Map component rat
 
 <<Map.adoc#Zoom,See full article for details.>>
 
-[width="100%",cols="^100%",]
-|===
 a|
-image:images/ZoomerExample.png[image,width=200]
 
 Zoom Buttons from a Toolbar
 
-|===
-
-a|
-image:images/Zoomer.png[image,width=300]
+image:images/ZoomerExample.png[image,width=200]
 
 Zoom configuration
+
+image:images/Zoomer.png[image,width=300]
 
 |===
 
@@ -371,7 +361,7 @@ Clicking this button automatically invokes the actions of all the removed & comb
 <<MultiActionButton.adoc#top,See full article for details.>>
 
 a|
-image:images/MultiActionButton.png
+image:images/MultiActionButton.png[]]
 
 Multi-Action Buttons group several "buttons" into one.
 
@@ -388,7 +378,7 @@ You can combine multiple buttons into a single drop-down menu using a <<ToolbarM
 <<GlobalProperties.adoc#ChangePropertyToolbarButton,Change-Property Toolbar Button>>See full article for details.
 
 a|
-image:images/ChangePropertyButton.png
+image:images/ChangePropertyButton.png[]]
 
 Change Property Button configuration
 
