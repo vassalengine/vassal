@@ -6,7 +6,7 @@ You first define a Prototype as a set of Traits, and then use the set in the def
 
 For example, in the module _World War II_, we define a Prototype called Tank. The Tank Prototype includes these Traits: Mark When Moved, a Layer showing the tank with its regular strength and strength when damaged, and a Text Label allowing the owner to assign an ID number to the tank. Then, in the US pieces list, we create a counter for the Sherman tank, and in the German pieces list, we create one for the Tiger tank. Both of these pieces are assigned the Trait _Prototype – Tank_. Both Sherman and Tiger tank counters will include all the Traits from the Tank Prototype, without having to assign the Traits individually to each Tank counter.
 
-Itʼs strongly recommended that you use Prototypes whenever possible when creating Game Pieces, as module updates, revisions, and maintenance become considerably easier. When you decide to change or update the pieces in a module, updating the relevant Prototype will update all the pieces with that Prototype as a Trait, without having to individually update each piece.
+It's strongly recommended that you use Prototypes whenever possible when creating Game Pieces, as module updates, revisions, and maintenance become considerably easier. When you decide to change or update the pieces in a module, updating the relevant Prototype will update all the pieces with that Prototype as a Trait, without having to individually update each piece.
 
 For example, players of the World War II module described above complain that the font used in the Text Label Trait on the tanks is too small. Itʼs easy to edit the Tank Prototype to change the Text Label Trait to enlarge the font size from 9 points to 12. All pieces with the Tank Prototype will follow suit automatically, without having to update the pieces individually.
 
@@ -24,7 +24,7 @@ The process for defining a Prototype is just the same as for defining a Game Pie
 
 You can now assign the Prototype to Game Pieces or Cards by assigning them the Prototype trait, and specifying the new Prototype.
 
-_*Using Prototypes*_
+=== Using Prototypes
 
 * As with regular pieces, Traits in Prototypes are evaluated from bottom to top.
 * Prototypes can include other Prototypes. Just assign the included Prototype as a Trait in the containing Prototype.
@@ -32,11 +32,11 @@ _*Using Prototypes*_
 * Pieces in At-Start Stacks, or that were created as part of the Replace with Other or Place Marker Traits, which use Prototypes will be updated if the Prototype definition is ever changed.
 * Game Pieces that use Prototypes and are part of a saved game will not be updated if the Prototype definition is updated. As a result, a Prototype Definition can change in a later version of a module without invalidating saved games from previous versions. However, if you wish the pieces in the saved game to use the updated Prototype, you will need to run the Saved Game Updater in order to bring the pieces in a Saved Game up to date. See page 91 for more information.
 
-_*Pre-Setting Traits in a Prototype*_
+=== Pre-Setting Traits in a Prototype
 
 If you want to pre-set pieces in a Game Piece Palette to start in a certain state, you can use key commands on them to change their state, and then save the module. (See page 40 for more information.)
 
-_*Prototype Definitions: Defining a Prototype*_
+=== Prototype Definitions: Defining a Prototype
 
 However, if the Game Pieces use Prototypes, the Game Piece Palette always loads with the default state of the Prototype. To resolve this, you can pre-set the state of a Trait in the Prototype Definition.
 
@@ -45,7 +45,7 @@ However, if the Game Pieces use Prototypes, the Game Piece Palette always loads 
 . In the *[Prototype Definitions]* node, right-click the Prototype Definition you wish to pre-set Traits for.
 . In the *Properties* dialog, in the image preview window, right-click the piece image. From the Command Menu, select a Trait and adjust it as desired.
 
-_If the Prototype does not include an image preview, you will need to expand the size of the *Properties* dialog in order to select the Command Menu. Right-click where the piece would be shown, in the white background area._
+    If the Prototype does not include an image preview, you will need to expand the size of the *Properties* dialog in order to select the Command Menu. Right-click where the piece would be shown, in the white background area.
 
 [arabic, start=3]
 . Repeat Step 2 for each additional Trait you wish to pre-set.
