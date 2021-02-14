@@ -1,12 +1,12 @@
 = Vassal Designer's Guide
-//// default asciidoc attributes
+// default asciidoc attributes
 :doctype: book
 :idprefix:
 :toc: macro
 :sectlinks:
-//// asciidoc pdf attributes
+// asciidoc pdf attributes
 :pdf-version: 1.7
-//// :compress: //// needs ghostscript
+// :compress: // needs ghostscript
 :front-cover-image: image:_images/image1.jpeg[image,width=784,height=1024]
 :media: screen
 :optimize: screen
