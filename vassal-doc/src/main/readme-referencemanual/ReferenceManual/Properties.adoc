@@ -7,9 +7,6 @@
 
 === Properties
 
-[width="100%",cols="34%,33%,33%",]
-|===
-a|
 A Property is like a variable in programming: it has a _value_ which can be referenced by including its _name_ in <<Expression.adoc#top,Expressions>>, <<MessageFormat.adoc#top,Message Formats>> and other similar fields.
 Most types of Property have their values change through the course of the game.
 Some Properties can have their values set by commands provided in Game Pieces themselves; others have their values set by the system and cannot be changed from within the module.
@@ -56,7 +53,6 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _<=_, _>_, and 
 * The <<GlobalOptions.adoc#top,Global Options>> component allows you to tie property values to preferences settings.
 * The results of a roll by a <<GameModule.adoc#DiceButton,Dice Button>> is exposed as a property
 * A <<Deck.adoc#top,Deck>> component exposes the number of cards remaining as a Map-level property.
-|===
 
 ==== Handy Combined List of VASSAL-defined Properties for Game Pieces
 

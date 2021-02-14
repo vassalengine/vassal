@@ -17,14 +17,15 @@ You can right-click on the _[Turn Counter]_ component entry to add sub-component
 
 [cols=",",]
 |===
-|image:images/TurnTrackerTurnWindow.png[]|image:images/TurnTrackerExample.png[]|===
+|image:images/TurnTrackerTurnWindow.png[]|image:images/TurnTrackerExample.png[]
+|===
 
 The Turn Counter is defined as a series of nested levels, each represented by a sub-component of the Turn Counter.
 "Advancing the turn" moves the _deepest_ level forward.
 When a level wraps around, the next level above it (but under the same parent) advances forward.
 When the last, outermost, child level has wrapped around, the parent level itself advances forward.
 
-_*Example (see screenshots above and below):* A level representing the Month may contain a level representing the Day, which in turn contains a level representing Morning/Evening.
+_Example (see screenshots above and below):_ A level representing the Month may contain a level representing the Day, which in turn contains a level representing Morning/Evening.
 Advancing the turn moves from morning to evening, then to morning of the next day, etc.
 Configuration for this example can be seen in the various screenshots throughout this article._
 
@@ -63,6 +64,7 @@ _Example:_ If the Turn Counter contains a Month level that contains a Day level,
 *Turn Label Display Length:*  Set the number of pixels wide the turn display label should be, or use 0 to let it float to suit the current turn display.
 
 image:images/TurnTracker.png[]
+
 '''''
 
 === Sub-Components
@@ -96,7 +98,8 @@ The Global Property will be updated whenever this level's value changes.
 the item at which the parent level will be advanced.
 _Example:_   If a List represents sides in a game, but the order in which sides move is not always fixed.
 
-|image:images/TurnTrackerList.png[]|===
+|image:images/TurnTrackerList.png[]
+|===
 
 [#Counter]
 ==== Counter
