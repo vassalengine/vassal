@@ -17,14 +17,15 @@
  */
 package VASSAL.counters;
 
-import java.util.Arrays;
-
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.SequenceEncoder;
+
+import java.util.Arrays;
 
 /**
  * GlobalCommandTarget configures and stores the "Fast Match" parameters of Global Key Commands, allowing certain
@@ -55,7 +56,7 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   @Override
   public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-    return new GlobalCommandTargetConfigurer(key, name);
+    return new GlobalCommandTargetConfigurer(key, name, ((MassKeyCommand) c).getTarget());
   }
 
   /**
@@ -176,6 +177,10 @@ public class GlobalCommandTarget implements ConfigurerFactory {
 
   public GlobalCommandTarget(String s) {
     decode(s);
+  }
+
+  public GlobalCommandTarget(GlobalCommandTarget gc) {
+    this(gc.encode());
   }
 
   /**

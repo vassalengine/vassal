@@ -465,6 +465,10 @@ public class MassKeyCommand extends AbstractToolbarItem
     }
   }
 
+  public GlobalCommandTarget getTarget() {
+    return target;
+  }
+
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.GlobalkeyCommand.global_key_command");
   }
