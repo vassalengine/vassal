@@ -2,7 +2,7 @@
 
 Once your module is complete, you can publish it to the Vassalengine.org web site, for sharing with other VASSAL users.
 
-There nearly a thousand VASSAL modules already published and more are available all the time.
+There are over a thousand VASSAL modules already published and more are available all the time.
 
 * _If the module is brand new,_ and no other module exists for the game, you can create a new module page on Vassalengine.org for the module and any related files. Look up the gameʼs page on Boardgamegeek.com. The name listed on Boardgamegeek must be used as the title of your new page.
 * _If there is already a module for your game_, no worries. You can still upload it. There can be any number of modules for the same game—the more, the merrier! You will not need to create a new page, however; simply edit the existing page to accommodate your new files.
@@ -17,27 +17,29 @@ For instructions on how to create a new module page, or edit an existing one, se
 
 http://www.Vassalengine.org/wiki/How_to_Create_a_Module_Page
 
-_*File Types*_
+=== File Types
 
 The following file types can be uploaded to Vassalengine.org:
 
 * .vmod for modules
-* .vmdx for extensions
+* .vmdx for extensions (.vext is also permissible)
 * .vsav for saved game files
 * .vlog for log files
 
 Do not place VASSAL files into ZIP file archives. Use the proper registered extension type listed above.
 
-_*Limitations*_
+=== Limitations
 
 Because of copyright issues, these publishers have specifically asked that modules for their games not be uploaded to
 
 VASSALengine.org:
 
 * Games Workshop
-* SPI (Decision Games)
 * Avalanche Press
 * Sabretooth Games
+
+* SPI (Decision Games) modules **_may_** be uploaded **_except_** for those related to the following specific games/series:
+_D-Day at Omaha Beach series, RAF series, War in Europe, and Struggle for the Galactic Empire_.
 
 If uploaded, such modules will be removed from the site, and designers who upload them risk having publication rights to the site revoked.
 
@@ -45,6 +47,6 @@ Other publishers (and copyright holders) may also ask that specific modules be r
 
 Module designers who take exception to the stated copyright policies of these publishers are urged to discuss their concerns with the publishers.
 
-_*More Information*_
+=== More Information
 
 For more information on publishing your files, see [.underline]#http://www.Vassalengine.org/wiki/Module_Section_Information#

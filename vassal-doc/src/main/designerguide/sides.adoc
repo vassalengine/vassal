@@ -39,8 +39,6 @@ See the _VASSAL_ _Userʼs Guide_ for more information about Sides and passwords.
 . In the Configuration Window, right-click the *[Definition of Player Sides]* node, and choose *Properties*.
 . In the *Definition of Player Sides* dialog, under *Sides Available to Players*, enter the name of a Side and click *Add*. The Side is added to the list.
 
-_*Sides: Adding Sides to the Module*_
-
 [arabic, start=3]
 . Repeat Step 2 for each additional Side.
 . Specify text, tooltip and icon for the *Retire* button.
@@ -48,13 +46,13 @@ _*Sides: Adding Sides to the Module*_
 
 When the game begins, the Sides are presented for player selection in the order you specify.
 
-_*Observer Side*_
+=== Observer Side
 
 The _Observer_ Side is included by default in all modules, and may not be deleted. As the name implies, the Observer can watch a game, but will not have access to any Side-restricted components. A game may have any number of Observers logged in at the same time.
 
 The Observer Side is also important when creating Pre-Defined Setups. See page 97 for more information.
 
-_*Next Steps: Restricting Components By Side*_
+=== Next Steps: Restricting Components By Side
 
 The process of creating Sides merely makes a list of available Sides for the players to choose from. To restrict components to one or more of these sides, you must now configure Side access for individual components, such as with Private Windows or Player Hands (see _Maps and Boards_ on page 20) or using the Restricted Access, Mask, or Invisible Traits on Game Pieces (see _Trait_ _Descriptions_ beginning on page 42).
 
