@@ -361,7 +361,7 @@ Clicking this button automatically invokes the actions of all the removed & comb
 <<MultiActionButton.adoc#top,See full article for details.>>
 
 a|
-image:images/MultiActionButton.png[]]
+image:images/MultiActionButton.png[]
 
 Multi-Action Buttons group several "buttons" into one.
 
@@ -378,7 +378,7 @@ You can combine multiple buttons into a single drop-down menu using a <<ToolbarM
 <<GlobalProperties.adoc#ChangePropertyToolbarButton,Change-Property Toolbar Button>>See full article for details.
 
 a|
-image:images/ChangePropertyButton.png[]]
+image:images/ChangePropertyButton.png[]
 
 Change Property Button configuration
 
