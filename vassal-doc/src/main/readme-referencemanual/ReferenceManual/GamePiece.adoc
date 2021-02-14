@@ -266,7 +266,7 @@ A piece can contain as many Layers as you wish.
 
 [cols=",",]
 |===
-|image:images/Layer.png[] | +
+|image:images/Layer.png[] |
 |===
 
 [width="100%",cols="50%,50%",]
