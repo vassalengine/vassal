@@ -397,7 +397,7 @@ Clicking the button will write a plain text summary of the contents of the map t
 
 Decks are versatile containers for collections of pieces -- especially the kind that need to be shuffled, randomized, hidden, and drawn from.
 
-See <<Deck.adoc#top,full article>> for details.|image:images/DeckShort.png[]]
+See <<Deck.adoc#top,full article>> for details.|image:images/DeckShort.png[]
 |===
 
 ==== <<SetupStack.adoc#top,At-Start Stack>>
@@ -406,7 +406,7 @@ See <<Deck.adoc#top,full article>> for details.|image:images/DeckShort.png[]]
 [grid=none]
 [frame=none]
 |===
-|image:images/AtStartStack.png[]] + |A group of one or more pieces which begin the game on the map.
+|image:images/AtStartStack.png[] + |A group of one or more pieces which begin the game on the map.
 
 See <<SetupStack.adoc#top,full article>> for more details.
 
@@ -510,7 +510,7 @@ Specify CTRL-F as the key command.
 Now clicking the Global Key Command's button will set all marked pieces on the map to not having fired. (Optionally take advantage of Fast Match
 by checking _by Property_ in the Fast Match area, setting _Property name_ to _{"canFire"}_, the _Comparison_ to _==_, and _Property value_ to _{"true"}_. In this case
 the _canFire == "true"_ can be removed from the _Additional matching expression_ as targets will be pre-screened for the _canFire_ property -- this will slightly speed
-execution of the Global Key Command)|image:images/GlobalKeyCommand.png[]]
+execution of the Global Key Command)|image:images/GlobalKeyCommand.png[]
 |===
 [#MapShading]
 ==== Map Shading
@@ -523,7 +523,7 @@ In foreground mode, the area is determined by the pieces on the map that name th
 [grid=none]
 [frame=none]
 |===
-|image:images/MapShading.png[]] |*Name:*  A short name of this shading for reference by pieces with the <<AreaOfEffect.adoc#top,Area of Effect>> trait.
+|image:images/MapShading.png[] |*Name:*  A short name of this shading for reference by pieces with the <<AreaOfEffect.adoc#top,Area of Effect>> trait.
 
 *Shading Always On:*  If selected then the shading is always drawn.
 Otherwise, visibility is controlled by a button on the Toolbar.
@@ -565,7 +565,7 @@ Maps can have their own Global Properties, which apply to and are accessible by 
 [grid=none]
 [frame=none]
 |===
-|image:images/ChangeGlobalProperty.png[]] |image:images/MapGlobalProperties.png[]
+|image:images/ChangeGlobalProperty.png[] |image:images/MapGlobalProperties.png[]
 
 To add a Global Property to your map, find the _[Global Properties]_ subcomponent in the Editor, right-click it, and select _Add Global Property_.
 This will let you define the initial value and any numeric constraints.
@@ -613,7 +613,7 @@ both in online games and in play-by-email games using a log file.
 [grid=none]
 [frame=none]
 |===
-|image:images/Flare.png[]] |
+|image:images/Flare.png[] |
 
 A Flare component is automatically added to each Map, so you will not normally need to add more. However, to add a Flare to your map, find your _[Map]_ component in the Editor, right-click it, and select _Add Flare_.
 

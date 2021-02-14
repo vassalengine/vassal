@@ -34,8 +34,6 @@ image:images/BrandNewModule.png[]
 
 '''''
 
-<<Toolbar.adoc#top>>
-
 === Toolbar
 
 image:images/Toolbar.png[]

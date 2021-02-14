@@ -120,7 +120,8 @@ The Global Property will be updated whenever this level's value changes.
 *Loop:*  If selected, the level will return to its starting value after reaching the maximum value.
 
 *Maximum value:*  The maximum value, after which the level will loop.
-|image:images/TurnTrackerCounter.png[]|===
+|image:images/TurnTrackerCounter.png[]
+|===
 
 [#Hotkey]
 ==== Global Hotkey
@@ -140,4 +141,5 @@ The module will respond exactly as if one of the players had pressed this key or
 If the expression is true after any level of the Turn Counter advances, the hotkey will fire.
 
 *Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that will be echoed to the chat log when the hotkey fires.
-|image:images/TurnTrackerGlobalHotkey.png[]|===
+|image:images/TurnTrackerGlobalHotkey.png[]
+|===
