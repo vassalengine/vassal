@@ -18,6 +18,62 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
   <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
 </ul>
 
+<h2>Changes since 3.5.0</h2>
+<h3>Bug fixes</h3>
+<ul>
+<li>14035: Multi Action Button and Toolbar Menu lose last item in Menu Entry list</li>
+<li>14034: Prevent concurrent updates to preferences</li>
+<li>14033: Fast Match forgets fields when added to Maps and Module</li>
+<li>14032: Fast Match was picking wrong number of cards from decks</li>
+<li>14026: GameRefresher incorrectly deletes off map pieces</li>
+<li>14024: NumberFormatException when private server port is empty</li>
+<li>14023: Advanced Search displays "hit lists" properly for names/types of prototypes & configurables</li>
+<li>14018: Refresh Predefined Setup incorrectly clones at start stacks</li>
+<li>14012: Die Roll 'Prompt for values when button pushed' dialog is broken</li>
+<li>14008: Unused Images Tool was suggesting some in-use GIFs for deletion</li>
+<li>14007: NPE when adding dockable PieceWindow from module extension</li>
+<li>14000: OverlappingFileLockException when attempting to write preferences</li>
+<li>13999: Fast-Match wasn't working for "Moved" property</li>
+<li>13997: Chat log should start display on bottom line even with larger monitors</li>
+<li>13996: Sanitize temp file basenames to escape illegal characters</li>
+<li>13995: Don't try to write a logfile without having started one</li>
+<li>13993: IllegalBuildException on gpIdChecker when using GameRefresher</li>
+<li>13992: NPE in Embellishment.addLocalImageNames()</li>
+<li>13991: NPE when using Game Refresher on predefined setups</li>
+<li>13988: ExecutionException when opening a moved or renamed module file</li>
+<li>13987: ChessClock buttons with icons had inappropriate height/width</li>
+<li>13984: NPE in BugUtils when involved from the Module Manager</li>
+<li>13981: NoSuchElementException using Edit All Contained Pieces</li>
+<li>13975: ArrayIndexOutOfBoundsException using Edit All Contained Pieces</li>
+<li>13973: Missing message for failure to write file</li>
+<li>13971: Cannot create new module extensions</li>
+<li>13970: DiceButton icons and Mask images incorrectly suggested for removal by unneeded-file-remover</li>
+<li>13968: NPE in HelpFile.addLocalImageNames()</li>
+<li>13967: Search wasn't searching into PieceSlots ("Single Piece" items in Setup Stacks, etc.)</li>
+<li>13965: MouseoverStackViewer should not show face-down cards in decks, should not unnecessarily clip underneath text, and should not run off left edge of screen in an overzealous attempt to center-on-cursor</li>
+<li>13964: Module extension file extension incorrectly listed as .vext instead of .vmdx</li>
+<li>13960: MouseoverStackViewer mis-centering if "draw pieces" wasn't selected</li>
+<li>13959: Loads from wizard should add filename to window title</li>
+<li>13958: ExecutionException when cancelling a screenshot</li>
+<li>13954: Alt-click, Shift+Ctrl-click should not change selection</li>
+<li>13944: NPE when loading second game in modules using deprecated Map.mainWindowDock</li>
+</ul>
+
+<h3>Other improvements</h3>
+<ul>
+<li>14040: Reference Manual cleanup</li>
+<li>14039: Improved/Repaired some tables in online docs</li>
+<li>14022: Upgrade bundled Java to 15.0.2+7</li>
+<li>14019: Remove confusing Vassal Version column from MM, show based on preference</li>
+<li>14015: Added infinite loop protection to PlaceMarker</li>
+<li>14011: Search now pre-selects contents of search field when restoring/remembering the previous contents</li>
+<li>14009: Standardize remaining dialogs</li>
+<li>13977: Alt+Shift now an option for band selection of Does Not Stack pieces</li>
+<li>13974: Better window title bars (filename-first like most apps)</li>
+<li>13930: Added infinite loop protection to TurnTracker</li>
+<li>13742: Action Button trait should arm when pressed, fire on release</li>
+</ul>
+
 <h2>Changes since 3.4.13</h2>
 <h3>New features</h3>
 <ul>

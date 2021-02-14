@@ -1,5 +1,7 @@
-3.5.1 - ???
+3.5.1 - 14 February 2021
 
+* 14040: Reference Manual cleanup
+* 14039: Improved/Repaired some tables in online docs
 * 14035: Multi Action Button and Toolbar Menu lose last item in Menu Entry list
 * 14034: Prevent concurrent updates to preferences
 * 14033: Fast Match forgets fields when added to Maps and Module
