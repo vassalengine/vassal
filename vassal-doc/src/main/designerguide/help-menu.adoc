@@ -6,7 +6,14 @@ The *Help* menu in the main control window contains general informational files 
 
 *Help* menu items can be any of these types:
 
-_*HTML Help File*_
+=== PDF Help File
+
+From VASSAL 3.5 onward you can add a PDF file directly to VASSAL. Selecting the menu opens the default browser on the user's machine with the PDF file you specified. A PDF Help file has these attributres:
+
+* *Menu Command:* The menu item to be added to the Help menu.
+* *PDF file:* Click the select button to select a PDF file from your computer. It will be copied into the module and then displayed when the user selects the menu item.
+
+=== HTML Help File
 
 The HTML Help file component adds an entry to the *Help* menu. Selecting the menu opens the default browser on the user's machine with HTML content that you specify. An HTML Help file has these attributes:
 
@@ -32,7 +39,7 @@ image:_images/image248.png[image,width=379,height=100]
 . In the Configuration window, right-click the *[Help Menu]* node and pick *Add HTML Help File.*
 . Enter values for *Menu Entry*, *Contents* folder, and *Starting Page*, and then click *Ok*.
 
-_*Plain Text Help File*_
+=== Plain Text Help File
 
 The Plain Text Help file component adds an entry to the *Help* menu. Selecting the menu displays a new window with the contents of a plain text file.
 
@@ -48,15 +55,13 @@ A Plain Text file has these attributes:
 * *Menu Entry:* The menu item to be added to the Help menu.
 * *Text File:* A file containing the contents of the window to be displayed. Create and save the text file in your choice of text editor before adding it to the module.
 
-_*Help Menu: The Saved Game Updater Tool*_
-
 *To add a Plain Text help file to the module,*
 
 . Open your module in the Module Editor.
 . In the Configuration window, right-click the *[Help Menu]* node and pick *Add Plain Text Help File.*
 . Enter values for Menu Entry and Text File, and then click *Ok*.
 
-_*About Screen*_
+=== About Screen
 
 The *About* screen will display the currently installed versions of the VASSAL engine and module. This helps players make sure they are running compatible versions.
 
@@ -77,7 +82,7 @@ The About Screen has two attributes:
 . In the Configuration window, right-click the *[Help Menu]* node and pick Add About Screen.
 . Enter the values for each setting, and then click *Ok*.
 
-_*Tutorials*_
+=== Tutorials
 
 A Tutorial is a short walk-through of your module, played back live by new players. It can include a demonstration game setup, a sample turn sequence, or show the use of module functions.
 
@@ -101,8 +106,6 @@ The *Tutorial* menu item includes these attributes:
 . In the VASSAL player, click *File | Begin Logfile.*
 . Play one or more turns of the game, changing Sides as needed. (You can also add explanatory text in the Chat window.)
 . Click *File | End Logfile.* This ends recording of your logfile.
-
-_*Help Menu: The Saved Game Updater Tool*_
 
 [arabic, start=5]
 . In the Module Editor, in the Configuration Window, right-click on *Help Menu* and choose *Add Tutorial.*
