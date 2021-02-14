@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > [.small]#*Chat Log*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > *Chat Log*#
 
 '''''
 

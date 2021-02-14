@@ -100,4 +100,5 @@ image:images/CounterGlobalKeyCommand3.png[] +
 |===
 
 image:images/CounterGlobalKeyCommand2.png[]
+
 '''''

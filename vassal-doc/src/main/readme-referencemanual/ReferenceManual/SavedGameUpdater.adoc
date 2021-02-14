@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > Updating Saved Games#
+[.small]#<<index.adoc#toc,Home>> > *Updating Saved Games*#
 
 '''''
 

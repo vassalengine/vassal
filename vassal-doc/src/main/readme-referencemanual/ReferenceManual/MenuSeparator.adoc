@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> <<GamePiece.adoc#top,Game Piece>># [.small]#> *Menu Separator*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Menu Separator*#
 
 '''''
 
@@ -20,4 +20,5 @@ The keystroke can be shared with another trait, or you can provide a unique one.
 
 image:images/MenuSeparator.png[]
 image:images/MenuSeparator2.png[]
+
 *SEE ALSO:*  <<SubMenu.adoc#top,Sub-Menu>>, <<RestrictCommands.adoc#top,Restrict Commands>>

@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> <<GamePiece.adoc#top,Game Piece>># [.small]#> *Return to Deck*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Return to Deck*#
 
 '''''
 
@@ -29,7 +29,7 @@ You will be shown the configuration tree for your module (the same tree you see 
 *EXAMPLE:* +
 For a game in which cards are drawn from a deck, used, and placed into a discard pile, both the deck and the discard pile will be represented by a Deck component.
 By adding a Return to Deck trait to each card, with the text 'Discard' and the command _Ctrl+R_, then hitting _Ctrl+R_ on with a card selected will automatically send it to the discard pile.
-|image:images/ReturnToDeck.png
+|image:images/ReturnToDeck.png[]
 
-image:images/ReturnToDeck2.png
+image:images/ReturnToDeck2.png[]
 |===

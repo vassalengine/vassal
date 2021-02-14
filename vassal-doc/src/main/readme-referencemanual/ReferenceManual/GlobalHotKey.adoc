@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Global Hotkey*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Global Hotkey*#
 
 '''''
 
@@ -23,7 +23,7 @@ Note: Sometimes you may have a deck of cards or pieces that you want shuffled at
 *EXAMPLE:*  A Dice Button component has been added to the Toolbar and assigned the Hotkey F2.
 A Game Piece is given a Global Hotkey trait with Menu text _Roll Dice,_ Keyboard Command _CTRL+R_ and Global Hotkey _F2_.
 Now, selecting the piece and typing _CTRL+R_ or selecting _Roll Dice_ from the right-click context menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed _F2_ from the keyboard.
-+ a|
+a|
 image:images/GlobalHotkey.png[]
 When _Ctrl+H_ pressed, send _F2_ to the Toolbar
 

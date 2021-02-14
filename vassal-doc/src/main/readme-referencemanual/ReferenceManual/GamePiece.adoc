@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> *Game Piece*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > *Game Piece*#
 
 '''''
 
@@ -321,8 +321,7 @@ Triggers can be used to combine multiple commands into a single menu entry, plac
 [width="100%",cols="50%,50%",]
 |===
 a|
-==== <<GlobalHotKey.adoc#top,Global Hotkey +
->>
+==== <<GlobalHotKey.adoc#top,Global Hotkey>>
 
 Allows pieces to activate a function from the Toolbar, via the Hotkey associated with the button on the Toolbar.
 
@@ -334,8 +333,7 @@ Allows pieces to activate a function from the Toolbar, via the Hotkey associated
 [width="100%",cols="50%,50%",]
 |===
 |image:images/ActionButton.png[] a|
-==== <<ActionButton.adoc#top,Action Button +
->>
+==== <<ActionButton.adoc#top,Action Button>>
 
 Allows a region of a piece to be configured to act like a button, invoking a command when a player clicks within the designated region.
 
@@ -423,8 +421,7 @@ Global Key Commands are the main avenue by which pieces can prompt action by oth
 [width="100%",cols="50%,50%",]
 |===
 a|
-==== <<Translate.adoc#top,Move Fixed Distance +
->>
+==== <<Translate.adoc#top,Move Fixed Distance>>
 
 Adds a command to move a piece a fixed distance in a direction.
 
@@ -435,6 +432,7 @@ Adds a command to move a piece a fixed distance in a direction.
 [width="100%",cols="50%,50%",]
 |===
 |image:images/ReturnToDeck.png[]a|
+
 ==== <<ReturnToDeck.adoc#top,Return to Deck>>
 
 Adds a command to send a piece to a <<Deck.adoc#top,Deck>>.
@@ -449,6 +447,7 @@ Also useful with groups of chits or for fixed pools of counters.
 [width="100%",cols="50%,50%",]
 |===
 a|
+
 ==== <<NonStacking.adoc#top,Does Not Stack>>
 
 Prevents the piece from combining with other pieces to form a stack, and can also be used to control whether the piece can be moved, selected, and/or band-selected by a player.
@@ -460,6 +459,7 @@ Prevents the piece from combining with other pieces to form a stack, and can als
 [width="100%",cols="50%,50%",]
 |===
 |image:images/PropertySheet.png[]a|
+
 ==== <<PropertySheet.adoc#top,Property Sheet>>
 
 Provides a popup window from which players may set and view auxiliary information about a piece.
@@ -473,6 +473,7 @@ image:images/property_sheet_map.png[]
 [width="100%",cols="50%,50%",]
 |===
 a|
+
 ==== <<Spreadsheet.adoc#top,Spreadsheet>>
 
 Attaches an editable informational table to a piece.
@@ -485,6 +486,7 @@ Unlike a Property Sheet, it contains only plain-text fields, but can contain arb
 [width="100%",cols="50%,50%",]
 |===
 |image:images/Marker.png[]a|
+
 ==== <<Marker.adoc#top,Place Marker>>
 
 Adds a command to place another piece (of any type) at the same location as this piece.
@@ -498,8 +500,8 @@ move the piece somewhere else.
 [width="100%",cols="50%,50%",]
 |===
 a|
-==== <<Replace.adoc#top,Replace with Other +
->>
+
+==== <<Replace.adoc#top,Replace with Other>>
 
 Adds a command that replaces this piece with a different piece.
 
@@ -514,6 +516,7 @@ Such a situation can be worked around by using a Trigger Action trait to first s
 [width="100%",cols="50%,50%",]
 |===
 |image:images/NonRectangular.png[]a|
+
 ==== <<NonRectangular.adoc#top,Non-Rectangular>>
 
 Allows pieces with unconventional shapes to use their actual image boundaries for selection and dragging.
@@ -526,8 +529,8 @@ In technical terms, directs the piece to ignore transparent areas of its image f
 [width="100%",cols="50%,50%",]
 |===
 a|
-==== <<PlaySound.adoc#top,Play Sound +
->>
+
+==== <<PlaySound.adoc#top,Play Sound>>
 
 Adds a command that plays a specified sound when invoked.
 
@@ -538,6 +541,7 @@ Adds a command that plays a specified sound when invoked.
 [width="100%",cols="50%,50%",]
 |===
 |image:images/MarkMoved.png[]a|
+
 ==== <<MarkMoved.adoc#top,Mark When Moved>>
 
 Allows the piece to be automatically marked with a visible image when moved in a Map Window.
@@ -549,8 +553,8 @@ Allows the piece to be automatically marked with a visible image when moved in a
 [width="100%",cols="50%,50%",]
 |===
 a|
-==== <<MovementTrail.adoc#top,Movement Trail +
->>
+
+==== <<MovementTrail.adoc#top,Movement Trail>>
 
 Pieces with this trait will leave behind a graphical trail showing the positions through which the piece has been moved.
 
@@ -561,6 +565,7 @@ Pieces with this trait will leave behind a graphical trail showing the positions
 [width="100%",cols="50%,50%",]
 |===
 |image:images/AreaOfEffect.png[]a|
+
 ==== <<AreaOfEffect.adoc#top,Area Of Effect>>
 
 The Area of Effect trait allows you to graphically highlight an area surrounding a gamepiece.
@@ -574,6 +579,7 @@ Alternatively, you canpoint to a <<Map.adoc#MapShading,Map Shading>> component, 
 [width="100%",cols="50%,50%",]
 |===
 a|
+
 ==== <<SubMenu.adoc#top,Sub-Menu>>
 
 Creates a sub-menu in the right-click context menu and groups some of the piece's other commands into it.
@@ -585,6 +591,7 @@ Creates a sub-menu in the right-click context menu and groups some of the piece'
 [width="100%",cols="50%,50%",]
 |===
 |image:images/MenuSeparator.png[]a|
+
 ==== <<MenuSeparator.adoc#top,Menu Separator>>
 
 Creates a menu separator (horizontal bar) in the piece's right-click context menu.
@@ -596,6 +603,7 @@ Creates a menu separator (horizontal bar) in the piece's right-click context men
 [width="100%",cols="50%,50%",]
 |===
 a|
+
 ==== <<RestrictCommands.adoc#top,Restrict Commands>>
 
 Hides or removes key/menu commands from the piece when certain conditions apply.
@@ -607,6 +615,7 @@ Hides or removes key/menu commands from the piece when certain conditions apply.
 [width="100%",cols="50%,50%",]
 |===
 |image:images/RestrictedAccess.png[]a|
+
 ==== <<RestrictedAccess.adoc#top,Restricted Access>>
 
 Limits control of a Piece by opponents and other non-owning players.
@@ -636,6 +645,7 @@ Allows any number of commands to change and manipulate the value to be defined.
 <<DynamicProperty.adoc#top,See full article for details.>>
 
 image:images/DynamicProperty.png[]
+
 ==== <<CalculatedProperty.adoc#top,Calculated Property>>
 
 Adds a named property to the piece, whose value is automatically calculated according to a specified formula.
@@ -643,6 +653,7 @@ Adds a named property to the piece, whose value is automatically calculated acco
 <<CalculatedProperty.adoc#top,See full article for details.>>
 
 image:images/CalculatedProperty.png[]
+
 ==== <<SetGlobalProperty.adoc#top,Set Global Property>>
 
 Defines commands to change the value of a <<GlobalProperties.adoc#top,Global Property>>.

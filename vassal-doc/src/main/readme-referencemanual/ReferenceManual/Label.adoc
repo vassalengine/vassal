@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> ** <<GamePiece.adoc#top,Game Piece>># [.small]#> *Text Label*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Text Label*#
 
 '''''
 
@@ -63,4 +63,4 @@ Rotation is performed after the horizontal/vertical justification and positionin
 
 *Property Name:*  The value of this label will be exposed as a <<Properties.adoc#top,Property>> with the given name.
 
-image:images/Label.png
+image:images/Label.png[]
