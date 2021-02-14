@@ -51,7 +51,7 @@ _Traditionally, a space character ( ) is placed between the Property, the operat
 
 The following table shows each valid operator, the meaning, and under what conditions a comparison using the operator will be true.
 
-[cols=",,,",]
+[cols=",,",]
 |=======================================================================================
 a|
 *Operator*
@@ -62,8 +62,6 @@ a|
 a|
 *True if…*
 
-|
-| | | |
 a|
 =
 
@@ -73,8 +71,6 @@ Equals
 a|
 The two values on either side are the same.
 
-|
-| | | |
 a|
 !=
 
@@ -84,8 +80,6 @@ Is Not Equal To
 a|
 The two values are not the same. (The exclamation point (!) is known as a ʻbangʼ.)
 
-|
-| | | |
 a|
 =~
 
@@ -95,13 +89,11 @@ Regular Expression
 a|
 The Property value is equal to any one of several values, which are separated by a
 
-|
-| | a|
-pipe (|) character. See _Regular Expressions_, below, for more information.
+a|\|
+a|
+pipe (\|) character.
+a|See _Regular Expressions_, below, for more information.
 
-|
-| | | |
-| | | |
 a|
 !~
 
@@ -110,14 +102,8 @@ Regular Expression (Negation)
 
 a|
 The Property value is _not_ equal to any one of several values, which are separated
+by a pipe (\|) character. See _Regular Expressions_, below, for more information.
 
-|
-| | a|
-by a pipe (|) character. See _Regular Expressions_, below, for more information.
-
-|
-| | | |
-| | | |
 a|
 >
 
@@ -125,15 +111,8 @@ a|
 Greater Than
 
 a|
-The value on the left side is larger than the value on the right. Applies to Numerical
+The value on the left side is larger than the value on the right. Applies to Numerical Properties only.
 
-|
-| | a|
-Properties only.
-
-|
-| | | |
-| | | |
 a|
 >=
 
@@ -142,12 +121,8 @@ Greater Than Or Equal To
 
 a|
 The value on the left side is larger than or equal to the value on the right. Applies to
-
-|
-| | a|
 Numerical Properties only.
 
-|
 a|
 <
 
@@ -155,30 +130,21 @@ a|
 Less Than
 
 a|
-The value on the left side is smaller than the value on the right. Applies to
+The value on the left side is smaller than the value on the right. Applies to Numerical Properties only.
 
-|
-| | a|
-Numerical Properties only.
-
-|
 a|
-<=
+\<=
 
 a|
 Less Than Or Equal To
 
 a|
-The value on the left side is smaller than or equal to the value on the right. Applies
-
-|
-| | a|
-to Numerical Properties only.
+The value on the left side is smaller than or equal to the value on the right. Applies to Numerical Properties only.
 
 |
 |=======================================================================================
 
-_*Types of Expressions*_
+*Types of Expressions*
 
 Typically, expressions are used in a module component to determine the conditions under which the effects of the component should apply. There are several kinds of expressions, which include:
 
