@@ -96,109 +96,95 @@ This happens starting at the bottom of the list and proceeding up toward the <<B
 
 === Advanced Trait Ordering
 
-Traits
+[cols=",",]
+|===
+|**Traits**
 
-(in recommended order they should normally appear in a piece)
+(in recommended order they should normally appear in a piece)|**Ordering Notes**
 
-Ordering Notes
-
-Basic Piece
-
-(Basic Piece will always be at the top)
-
-Layer _(Rotatable)_ +
+|Basic Piece|(Basic Piece will always be at the top)
+|Layer _(Rotatable)_ +
 Text Label _(Rotatable)_
+|Drawing Layers that will rotate should be *_above_* the Can Rotate and/or Can Pivot.
 
-Drawing Layers that will rotate should be *_above_* the Can Rotate and/or Can Pivot.
-
-Can Rotate +
+|Can Rotate +
 Can Pivot
+|Can Rotate belongs below any drawing trait that it should rotate, but *_above_* any Can Pivot trait.
 
-Can Rotate belongs below any drawing trait that it should rotate, but *_above_* any Can Pivot trait.
-
-Movement Trail +
+|Movement Trail +
 Layer +
 Mark When Moved +
 Text Label +
 Area of Effect
-
-These drawing traits all belong *_above_* Non-Rectangular, and *_above_* Masking/Restricting Traits (see red box below). Optionally they could also move *_above_* Can Rotate if you want them to rotate/pivot; in this position they will *_not_* rotate or pivot.
+|These drawing traits all belong *_above_* Non-Rectangular, and *_above_* Masking/Restricting Traits (see red box below). Optionally they could also move *_above_* Can Rotate if you want them to rotate/pivot; in this position they will *_not_* rotate or pivot.
 Traits will draw in order from the Basic Piece on down, meaning the very last drawing trait in the list will be "drawn on top of" everything else, and so forth.
 
-Non-Rectangular
+|Non-Rectangular
+|Non-Rectangular belongs *_below_* all drawable traits - otherwise their bounding box regions will be selectable even if transparent.
 
-Non-Rectangular belongs *_below_* all drawable traits - otherwise their bounding box regions will be selectable even if transparent.
-
-Delete +
+|Delete +
 Replace With Other
-
-These delete the piece & stop any further processing.
+|These delete the piece & stop any further processing.
 Keep them *_above_* anything that needs doing first.
+
 *NOTE:* Be aware that any Trigger Action on the same Key Command as a deleting trait will never get to execute -- you will need to use a forking/chaining Trigger Action sequence to be sure any Trigger Action traits you need to have run before a deleting trait are executed.
 
-Send to Location +
+|Send to Location +
 Move Fixed Distance +
 Return to Deck +
 Place Marker +
 Clone
-
-Movement and Piece-Placement traits normally belong *_above_* any Masking/Restricting traits (i.e.
+|Movement and Piece-Placement traits normally belong *_above_* any Masking/Restricting traits (i.e.
 Mask, Invisible, Restrict Access, Restrict Commands).
 
-Play Sound +
+|Play Sound +
 Action Button +
 Global Hotkey +
 Global Key Command
-
-"Communication" and Key Command initiating traits normally belong *_above_* Masking/Restricting traits (i.e.
+|"Communication" and Key Command initiating traits normally belong *_above_* Masking/Restricting traits (i.e.
 Mask, Invisible, Restrict Access, Restrict Commands).
 
-Trigger Action
-
-Trigger Action traits should normally be grouped *_above_* Report Action traits so that any changes to properties they trigger are resolved before the Report Action reports on them.
+|Trigger Action
+|Trigger Action traits should normally be grouped *_above_* Report Action traits so that any changes to properties they trigger are resolved before the Report Action reports on them.
 (They should also normally appear *_above_* any Mask & Restrict Commands).
 
-Report Action
+|Report Action
+|Report Action traits should be grouped *_below_* Trigger Action traits (so that they report results after the Triggers process).
 
-Report Action traits should be grouped *_below_* Trigger Action traits (so that they report results after the Triggers process).
-
-Set Global Property +
+|Set Global Property +
 Spreadsheet +
 Property Sheet +
 Dynamic Property
-
-Property traits can have their values read faster (so that Vassal runs slightly faster) the *_lower_* they are in the trait list.
+|Property traits can have their values read faster (so that Vassal runs slightly faster) the *_lower_* they are in the trait list.
 However you'll normally want the "setter" actions of e.g.
 Dynamic Properties and Set Global Property to remain *_above_* any Mask, Invisible, Restrict Access, and Restrict Commands traits that could affect them.
 
-Mask +
+|Mask +
 Invisible +
 Restrict Access +
 Restrict Commands
+|Masking/Restricting traits belong *_below_* any traits that they need to be able to hide, restrict, and protect.
 
-Masking/Restricting traits belong *_below_* any traits that they need to be able to hide, restrict, and protect.
 Mask belongs *_above_* Invisible.
 
-Does not stack
+|Does not stack
+|Does Not Stack functions correctly anywhere in the trait list but _runs slightly faster near the bottom._
 
-Does Not Stack functions correctly anywhere in the trait list but _runs slightly faster near the bottom._
-
-Calculated Property +
+|Calculated Property +
 Marker
+|Calculated Property and Marker function properly anywhere, but they _run slightly faster near the bottom_.
 
-Calculated Property and Marker function properly anywhere, but they _run slightly faster near the bottom_.
+|**Free Floating Traits**
+|**(Proper Order Varies)**
 
-==== Free Floating Traits
+|Prototype
+|The proper location for a Prototype... *_depends_* on what's in the Prototype! Note that you may sometimes decide that you need to split up large/complex Prototypes so that "the part that needs to go on top can go on top" and "the part that needs to go down below can go down below".
 
-Prototype
-
-The proper location for a Prototype... *_depends_* on what's in the Prototype! Note that you may sometimes decide that you need to split up large/complex Prototypes so that "the part that needs to go on top can go on top" and "the part that needs to go down below can go down below".
-
-Sub-Menu +
+|Sub-Menu +
 Menu Separator
-
-Menu-building traits should go wherever you need them for building the right kinds of right-click context menus.
+|Menu-building traits should go wherever you need them for building the right kinds of right-click context menus.
 Note, however, that Sub-Menu traits must always go *_below_* the traits that it should be grouping into a menu.
+|===
 
 '''''
 
