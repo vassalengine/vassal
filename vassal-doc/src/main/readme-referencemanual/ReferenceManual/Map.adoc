@@ -70,7 +70,7 @@ It could optionally be modified to include e.g.
 the name of this Map.
 
 *Key Command to apply to all units ending movement on this map:*  The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be automatically applied to each piece that ends movement on this map, whether it is moved by drag-and-drop or by a <<SendToLocation.adoc#top,Send To Location>> trait.
-This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png[]]
+This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png[]
 
 image:images/Map2.png[]
 |===
@@ -133,7 +133,7 @@ It may not be removed.
 [grid=none]
 [frame=none]
 |===
-|image:images/StackingOptions.png[]+ |*Disable stacking:*  If checked, then pieces will never form stacks in this window
+|image:images/StackingOptions.png[] |*Disable stacking:*  If checked, then pieces will never form stacks in this window
 
 *Horizontal Separation when expanded:*  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
 
@@ -203,8 +203,7 @@ If set to null (by clicking the "Select" button and then the "Cancel" button in 
 |Groups buttons in the toolbar into a single drop-down menu.
 See <<ToolbarMenu.adoc#top,full article>> for details.
 
-image:images/ToolbarMenuExample.png[]] |image:images/ToolbarMenu.png[] +
-  +
+image:images/ToolbarMenuExample.png[] |image:images/ToolbarMenu.png[]
 |===
 
 [#HidePieces]
@@ -341,7 +340,6 @@ Otherwise they are excluded regardless of any other filters.
 [#LastMoveHighlighter]
 ==== Last Move Highlighter
 
-
 [grid=none]
 [frame=none]
 |===
@@ -353,11 +351,10 @@ The highlight is cleared by clicking on the map.|image:images/LastMoveHighlighte
 [#GamePieceLayers]
 ==== <<GamePieceLayers.adoc#top,Game Piece Layers>>
 
-
 [grid=none]
 [frame=none]
 |===
-|image:images/GamePieceLayers.png[]] |Allows you designate certain "layers" of Game Pieces to be drawn before others.
+|image:images/GamePieceLayers.png[] |Allows you designate certain "layers" of Game Pieces to be drawn before others.
 Pieces in higher layers are always drawn on top of lower layers, and pieces never combine into stacks with pieces from other layers.
 
 See full <<GamePieceLayers.adoc#top,Game Piece Layers>> article for details.
