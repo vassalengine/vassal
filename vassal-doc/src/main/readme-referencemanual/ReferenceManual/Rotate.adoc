@@ -1,7 +1,7 @@
 == VASSAL Reference Manual
 [#top]
 
-[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> <<GamePiece.adoc#top,Game Piece>># [.small]#> *Can Rotate*#
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>> > <<GamePiece.adoc#top,Game Piece>> > *Can Rotate*#
 
 '''''
 
@@ -38,7 +38,7 @@ If left blank no context menu item will appear.
 Alternatively, you may get better image quality for your rotations by creating separate images for each rotation in an external paint program (If your images are based on vector objects, you can rotate them without degrading quality) and putting them into different levels of a <<Layer.adoc#top,Layer>>.
 
 image:images/Rotate.png[]
-image:images/Rotate2.png
+image:images/Rotate2.png[]
 
 '''''
 

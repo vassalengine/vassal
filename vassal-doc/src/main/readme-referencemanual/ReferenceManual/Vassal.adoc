@@ -1,4 +1,5 @@
 image:images/Vassal.png[]
+
 == Table of Contents
 
 [cols=",",]

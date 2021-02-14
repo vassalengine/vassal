@@ -39,7 +39,7 @@ It will be bundled with the next VASSAL release for use by other players worldwi
 [#module]
 ==== Translating a VASSAL Module
 
-image:images/TranslateModule.png
+image:images/TranslateModule.png[]
 
 You can translate a module into another language by editing the module or by creating a module extension.
 Right-click on the Module folder in the edit window and select _Translate_.
