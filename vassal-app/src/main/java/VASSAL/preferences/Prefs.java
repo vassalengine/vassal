@@ -43,6 +43,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
 
 /**
@@ -254,7 +255,9 @@ public class Prefs implements Closeable {
   }
 
   /** Save these preferences and write to disk. */
+  @Deprecated(since = "2021-02-15", forRemoval = true)
   public void write() throws IOException {
+    ProblemDialog.showDeprecated("2021-02-15");
     save();
   }
 

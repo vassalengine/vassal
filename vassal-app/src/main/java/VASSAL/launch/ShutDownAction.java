@@ -39,7 +39,7 @@ public class ShutDownAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
     if (GameModule.getGameModule() == null) {
       try (Prefs p = Prefs.getGlobalPrefs()) {
-        p.write();
+        p.save();
       }
       catch (IOException ex) {
         WriteErrorDialog.error(ex, Prefs.getGlobalPrefs().getFile().getPath());

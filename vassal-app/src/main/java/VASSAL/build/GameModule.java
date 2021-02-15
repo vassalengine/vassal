@@ -1476,7 +1476,7 @@ public class GameModule extends AbstractConfigurable
       // write and close module prefs
       try {
         p = getPrefs();
-        p.write();
+        p.save();
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, p.getFile());
