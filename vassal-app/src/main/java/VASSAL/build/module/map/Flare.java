@@ -341,7 +341,7 @@ public class Flare extends AbstractConfigurable
    */
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Flare.htm");  //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("Flare.html");  //$NON-NLS-1$
   }
 
   /**

@@ -718,7 +718,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
    */
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ChessClock.htm");  //$NON-NLS-1$
+    return HelpFile.getReferenceManualPage("ChessClock.html");  //$NON-NLS-1$
   }
 
   /**
