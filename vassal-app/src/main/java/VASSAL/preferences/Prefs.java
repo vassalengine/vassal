@@ -168,34 +168,6 @@ public class Prefs implements Closeable {
     return storedValues.getProperty(key);
   }
 
-  public static String sanitize(String str) {
-    /*
-      Java gives us no way of checking whether a string is a valid
-      filename on the filesystem we're using. Filenames matching
-      [0-9A-Za-z_]+ are safe pretty much everywhere. Any code point
-      in [0-9A-Za-z] is passed through; every other code point c is
-      escaped as "_hex(c)_". This mapping is a surjection and will
-      produce filenames safe on every sane filesystem, so long as the
-      input strings are not too long.
-    */
-    final StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < str.length(); ++i) {
-      final int cp = str.codePointAt(i);
-      if (('0' <= cp && cp <= '9') ||
-          ('A' <= cp && cp <= 'Z') ||
-          ('a' <= cp && cp <= 'z')) {
-        sb.append((char) cp);
-      }
-      else {
-        sb.append('_')
-          .append(Integer.toHexString(cp).toUpperCase())
-          .append('_');
-      }
-    }
-
-    return sb.toString();
-  }
-
   protected synchronized void read() {
     // We're not going to write, but you can't lock a non-writable FileChannel
     try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
@@ -336,5 +308,33 @@ public class Prefs implements Closeable {
     );
 
     globalPrefs.addOption(wizardConf);
+  }
+
+  public static String sanitize(String str) {
+    /*
+      Java gives us no way of checking whether a string is a valid
+      filename on the filesystem we're using. Filenames matching
+      [0-9A-Za-z_]+ are safe pretty much everywhere. Any code point
+      in [0-9A-Za-z] is passed through; every other code point c is
+      escaped as "_hex(c)_". This mapping is a surjection and will
+      produce filenames safe on every sane filesystem, so long as the
+      input strings are not too long.
+    */
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < str.length(); ++i) {
+      final int cp = str.codePointAt(i);
+      if (('0' <= cp && cp <= '9') ||
+          ('A' <= cp && cp <= 'Z') ||
+          ('a' <= cp && cp <= 'z')) {
+        sb.append((char) cp);
+      }
+      else {
+        sb.append('_')
+          .append(Integer.toHexString(cp).toUpperCase())
+          .append('_');
+      }
+    }
+
+    return sb.toString();
   }
 }
