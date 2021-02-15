@@ -242,16 +242,11 @@ public class Prefs implements Closeable {
    *
    * @return the global <code>Prefs</code> object
    */
-  public static Prefs getGlobalPrefs() {
+  public static synchronized Prefs getGlobalPrefs() {
     if (globalPrefs == null) {
       final PrefsEditor ed = new PrefsEditor();
       // The underscore prevents collisions with module prefs
       globalPrefs = new GlobalPrefs(ed, new File(Info.getPrefsDir(), "V_Global"));
-
-      final DirectoryConfigurer c =
-        new DirectoryConfigurer(MODULES_DIR_KEY, null);
-      c.setValue(new File(System.getProperty("user.home")));
-      globalPrefs.addOption(null, c);
     }
 
     return globalPrefs;
@@ -264,6 +259,11 @@ public class Prefs implements Closeable {
    */
   public static void initSharedGlobalPrefs() {
     getGlobalPrefs();
+
+    final DirectoryConfigurer c =
+      new DirectoryConfigurer(MODULES_DIR_KEY, null);
+    c.setValue(new File(System.getProperty("user.home")));
+    globalPrefs.addOption(null, c);
 
     // Options to remember main window size
     final BooleanConfigurer windowRemember = new BooleanConfigurer(
