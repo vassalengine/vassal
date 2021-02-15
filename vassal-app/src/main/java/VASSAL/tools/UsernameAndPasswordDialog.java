@@ -83,7 +83,7 @@ public class UsernameAndPasswordDialog extends JDialog {
       p.getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
 
       try {
-        p.write();
+        p.save();
       }
       catch (IOException ex) {
         WriteErrorDialog.error(ex, p.getFile());
