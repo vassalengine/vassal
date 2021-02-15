@@ -106,7 +106,6 @@ public class Prefs implements Closeable {
   public void setDisableAutoWrite(boolean b) {
   }
 
-
   public void addOption(Configurer o) {
     addOption(Resources.getString("Prefs.general_tab"), o); //$NON-NLS-1$
   }
