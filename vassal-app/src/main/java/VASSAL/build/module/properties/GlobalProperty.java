@@ -412,7 +412,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(initialValue);
+    return List.of(initialValue, minValue, maxValue);
   }
 
   /**
