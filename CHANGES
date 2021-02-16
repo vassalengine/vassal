@@ -1,5 +1,7 @@
 3.5.2 - ???
 
+* 14047: Prevent versions <= 3.2 from clobbering the 3.5 module list
+* 14046: Nested ExecutionException when cancelling a screenshot
 * 14043: Help button on Flare, Chess Clock, Deselect had broken link
 * 14041: Prevent race when creating GlobalPrefs
 
