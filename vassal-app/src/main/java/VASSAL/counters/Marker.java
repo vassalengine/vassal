@@ -162,13 +162,20 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    if (keys != null
-      && keys.length > 0 && keys[0].length() > 0
-      && values.length > 0 && values[0].length() > 0) {
-      return Resources.getString("Editor.Marker.trait_description") + " - " + keys[0] + " = " + values[0];
+    String result = Resources.getString("Editor.Marker.trait_description");
+
+    if (keys != null && keys.length > 0 && keys[0].length() > 0) {
+      result += " - " + keys[0];
+      if (values.length > 0 && values[0].length() > 0) {
+        result += " = " + values[0];
+      }
+
+      if (keys.length > 1) {
+        result += " " + Resources.getString("Editor.Marker.more_keys", keys.length - 1);
+      }
     }
-    else
-      return Resources.getString("Editor.Marker.trait_description");
+
+    return result;
   }
 
   @Override
