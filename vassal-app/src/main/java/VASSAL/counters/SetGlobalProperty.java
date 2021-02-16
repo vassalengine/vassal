@@ -77,7 +77,7 @@ public class SetGlobalProperty extends DynamicProperty {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.SetGlobalProperty.trait_description", description);
+    return buildDescription("Editor.SetGlobalProperty.trait_description", key, description);
   }
 
   @Override
