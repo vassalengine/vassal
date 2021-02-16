@@ -193,13 +193,8 @@ public class WizardSupport {
         if (g.shutDown()) {
           System.exit(0);
         }
-        else {
-          g.getPlayerWindow().setVisible(true);
-        }
       }
-      else {
-        g.getPlayerWindow().setVisible(true);
-      }
+      g.getPlayerWindow().setVisible(true);
     }
   }
 
