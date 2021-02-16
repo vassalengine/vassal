@@ -428,7 +428,11 @@ public class ImageSaver extends AbstractToolbarItem {
         ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        final Throwable c = e.getCause();
+        Throwable c = e;
+
+        // Unwrap until we hit a cause which is not an ExecutionException
+        while ((c = c.getCause()) instanceof ExecutionException);
+
         if (c instanceof IOException) {
           WriteErrorDialog.error(e, (IOException) c, files.get(files.size() - 1));
         }
