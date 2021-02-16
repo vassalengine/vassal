@@ -41,10 +41,12 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -150,6 +152,7 @@ public class ModuleManagerWindow extends JFrame {
   private final ImageIcon fileIcon;
 
   private StringArrayConfigurer recentModuleConfig;
+  private StringArrayConfigurer moduleConfig;
   private File selectedModule;
 
   private final CardLayout modulePanelLayout;
@@ -489,11 +492,22 @@ public class ModuleManagerWindow extends JFrame {
   }
 
   protected void buildTree() {
+    final List<ModuleInfo> moduleList = new ArrayList<>();
+    final List<String> missingModules = new ArrayList<>();
+
+    // RecentModules key was used through 3.5.1, but 3.2 can't read the
+    // buildFile.xml for 3.5+ modules. Hence we've switched to the Modules
+    // key, but still collect whatever is in RecentModules for compatibility.
     recentModuleConfig = new StringArrayConfigurer("RecentModules", null); //NON-NLS
     Prefs.getGlobalPrefs().addOption(null, recentModuleConfig);
-    final List<String> missingModules = new ArrayList<>();
-    final List<ModuleInfo> moduleList = new ArrayList<>();
-    for (final String s : recentModuleConfig.getStringArray()) {
+
+    moduleConfig = new StringArrayConfigurer("Modules", null); //NON-NLS
+    Prefs.getGlobalPrefs().addOption(null, moduleConfig);
+
+    Stream.concat(
+      Arrays.stream(recentModuleConfig.getStringArray()),
+      Arrays.stream(moduleConfig.getStringArray())
+    ).sorted().distinct().forEach(s -> {
       final ModuleInfo module = new ModuleInfo(s);
       if (module.getFile().exists() && module.isValid()) {
         moduleList.add(module);
@@ -501,7 +515,7 @@ public class ModuleManagerWindow extends JFrame {
       else {
         missingModules.add(s);
       }
-    }
+    });
 
     for (final String s : missingModules) {
       logger.info(Resources.getString("ModuleManager.removing_module", s));
@@ -512,6 +526,7 @@ public class ModuleManagerWindow extends JFrame {
         .orElse(null);
       moduleList.remove(toRemove);
       recentModuleConfig.removeValue(s);
+      moduleConfig.removeValue(s);
     }
 
     moduleList.sort(AbstractInfo::compareTo);
@@ -827,6 +842,7 @@ public class ModuleManagerWindow extends JFrame {
       l.add(module.encode());
     }
     recentModuleConfig.setValue(l.toArray(new String[0]));
+    moduleConfig.setValue(l.toArray(new String[0]));
     modulePanelLayout.show(
       moduleView, getModuleCount() == 0 ? "quickStart" : "modules");
   }
