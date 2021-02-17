@@ -188,6 +188,10 @@ public class WizardSupport {
       }
     }
     else {
+      final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WizardSupport.WELCOME_WIZARD_KEY);
+      if (Boolean.TRUE.equals(showWizard) && g.shutDown()) {
+        System.exit(0);
+      }
       g.getPlayerWindow().setVisible(true);
     }
   }
