@@ -46,6 +46,7 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -101,6 +102,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   // A reduced inset size for the icon buttons gives a better look
   private static final Insets buttonInsets = new Insets(1, 2, 1, 2);
+
+  // Some empty space around the rendered Piece Image so it doesn't look to crammed
+  private static final int PIECE_IMAGE_INSET = 10;
 
   protected static DefaultListModel<GamePiece> availableModel;
   private static final SortedMap<String, GamePiece> alphaMap = new TreeMap<>();
@@ -300,7 +304,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * The piece defined has been changed. It may have changed size, or image
    *
    */
-  private void refresh() {
+  public void refresh() {
     if (inUseModel.getSize() > 0) {
       piece = inUseModel.lastElement();
     }
@@ -320,28 +324,43 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    *
    * Re-calculate how to layout the left hand Piece display panel.
    *
-   * 1. Always try and show the entire image 100% scale
+   * 1. Always try and show the entire image 100% scale, plus PIECE_IMAGE_BORDER pixels
    * 2. If the image can't fit in the available space, scale it until it can
    * 3. If the image size is < max split size, then set the divider size = image size to now waste space
    *
    */
   private void resizeSlotPanel() {
 
-    // Reset the piece to 100% scale to get the actual size.
-    final double oldScale = slot.getScale();
-    slot.setScale(1.0);
-    final Dimension newSlotSize = slot.getPreferredSize();
-    slot.setScale(oldScale);
+    Dimension newSlotSize;
 
-    final int maxSlotWidth = getMaxSplit();
-    final int maxSlotHeight = maxPanelHeight;
+    // Find the size of the piece rendered at 100% in the PieceSlot.
+    // If the PieceSlot has not been rendered yet, use the bounding box
+    // of the piece as an estimate
+    if (slot.isValid()) {
+      // Reset the piece to 100% scale to get the actual size.
+      final double oldScale = slot.getScale();
+      slot.setScale(1.0);
+      newSlotSize = slot.getPreferredSize();
+      slot.setScale(oldScale);
+    }
+    else {
+      slot.getComponent().revalidate();
+      slot.getComponent().repaint();
+      boolean s = slot.isValid();
+      final Rectangle r = slot.getPiece().boundingBox();
+      newSlotSize = new Dimension(r.width, r.height);
+    }
+
+    final int maxSlotWidth = getMaxSplit() - PIECE_IMAGE_INSET * 2;
+    final int maxSlotHeight = maxPanelHeight - PIECE_IMAGE_INSET * 2;
 
     // Updated image size, work out a new scale factor and divider position to
     // best display it.
     if (newSlotSize.width <= maxSlotWidth && newSlotSize.height <= maxSlotHeight) {
       // The new piece will fit at 100% scale. Set the maximum size of the slotPanel to prevent it expanding too far
-      slotPanel.setMaximumSize(new Dimension(newSlotSize.width, maxPanelHeight));
-      slotPanel.setPreferredSize(newSlotSize);
+      slotPanel.setMaximumSize(new Dimension(newSlotSize.width + PIECE_IMAGE_INSET * 2, maxPanelHeight));
+      final Dimension updatedSlotSize = new Dimension(newSlotSize.width + PIECE_IMAGE_INSET * 2, newSlotSize.height);
+      slotPanel.setPreferredSize(updatedSlotSize);
       slot.setScale(1.0);
       scaleLabel.setText("");
     }
@@ -355,8 +374,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       slot.getComponent().revalidate();
       slot.getComponent().repaint();
       final Dimension scaledSlotSize = new Dimension((int) (newSlotSize.width * newScale), (int) (newSlotSize.height * newScale));
-      slotPanel.setMaximumSize(new Dimension(Math.min(scaledSlotSize.width, maxSlotWidth), maxPanelHeight));
-      slotPanel.setPreferredSize(scaledSlotSize);
+      slotPanel.setMaximumSize(new Dimension(Math.min(scaledSlotSize.width + PIECE_IMAGE_INSET * 2, maxSlotWidth), maxPanelHeight));
+      final Dimension updatedSlotSize = new Dimension(scaledSlotSize.width + PIECE_IMAGE_INSET * 2, scaledSlotSize.height);
+      slotPanel.setPreferredSize(updatedSlotSize);
     }
     slotPanel.revalidate();
     splitPane.resetToPreferredSizes();
@@ -635,7 +655,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * Record the level as current maximum and resize the image if it is not
    * at 100% already
    */
-  private void splitChanged() {
+  public void splitChanged() {
     // Exclude size changes due to resizes not initiated by the user
     if (! isSplitDragInProgress()) {
       return;

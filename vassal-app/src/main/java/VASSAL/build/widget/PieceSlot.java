@@ -165,6 +165,14 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
   }
 
+  /**
+   * Has the PieceSlot been rendered for the first time yet?
+   * @return true if slot has been rendered
+   */
+  public boolean isValid() {
+    return panel.isValid() && panel.getGraphics() != null;
+  }
+
   public PieceSlot(GamePiece p) {
     this();
     setPiece(p);
