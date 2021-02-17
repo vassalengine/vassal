@@ -4,6 +4,8 @@
 * 14059: Show better descriptions for Marker traits in Piece Definer
 * 14056: Search now covers initial/min/max values in property traits
 * 14055: Set Global Property: include name/expression of property in trait list
+* 14053: Canceling Welcome Wizard closes the Player (unless "show wizard at
+    startup" has been unchecked)
 * 14047: Prevent versions <= 3.2 from clobbering the 3.5 module list
 * 14046: Nested ExecutionException when cancelling a screenshot
 * 14043: Help button on Flare, Chess Clock, Deselect had broken link
