@@ -1,6 +1,5 @@
 3.5.2 - ???
 
-
 * 14076: SetGlobalProperty editor has incorrect label for maximum value field
 * 14075: BoardPicker and LOS_Thread could sometimes intercept commands for
     wrong objects
