@@ -47,4 +47,10 @@
         <justification>No chance of subclass</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/launch/ModuleEditorWindow</className>
+        <differenceType>6001</differenceType>
+        <field>refreshPredefinedSetups</field>
+        <justification>Transferred to EditorWindow class</justification>
+    </difference>
 </differences>
