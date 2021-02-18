@@ -527,7 +527,7 @@ public class Flare extends AbstractConfigurable
    */
   @Override
   public Command decode(final String s) {
-    if (s.startsWith(COMMAND_PREFIX + getId())) { // Make sure this command is for this flare
+    if (s.startsWith(COMMAND_PREFIX + getId() + DELIMITER)) { // Make sure this command is for this flare
       final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
       sd.nextToken(); // Skip over the Command Prefix
       sd.nextToken(); // Skip over the Id
