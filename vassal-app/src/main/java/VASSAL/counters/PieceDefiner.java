@@ -47,12 +47,12 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -304,7 +304,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * The piece defined has been changed. It may have changed size, or image
    *
    */
-  public void refresh() {
+  private void refresh() {
     if (inUseModel.getSize() > 0) {
       piece = inUseModel.lastElement();
     }
@@ -655,7 +655,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * Record the level as current maximum and resize the image if it is not
    * at 100% already
    */
-  public void splitChanged() {
+  private void splitChanged() {
     // Exclude size changes due to resizes not initiated by the user
     if (! isSplitDragInProgress()) {
       return;
@@ -694,7 +694,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * @return OS specific name.
    */
   private String getCtrlKeyName(char c) {
-    return KeyNamer.getKeyString(SwingUtils.genericToSystem(KeyStroke.getKeyStroke(c, InputEvent.CTRL_DOWN_MASK)));
+    return KeyNamer.getKeyString(SwingUtils.genericToSystem(KeyStroke.getKeyStroke(c, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())));
   }
 
   private void doCopy() {
