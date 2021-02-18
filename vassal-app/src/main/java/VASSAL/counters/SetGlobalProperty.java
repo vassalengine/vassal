@@ -311,7 +311,7 @@ public class SetGlobalProperty extends DynamicProperty {
       minConfig = new IntConfigurer(m.getMinimumValue());
       controls.add(minLabel, minConfig);
 
-      maxLabel = new JLabel(Resources.getString("Editor.GlobalProperty.minimum_value"));
+      maxLabel = new JLabel(Resources.getString("Editor.GlobalProperty.maximum_value"));
       maxConfig = new IntConfigurer(m.getMaximumValue());
       controls.add(maxLabel, maxConfig);
 
