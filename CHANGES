@@ -1,5 +1,9 @@
 3.5.2 - ???
 
+* 14075: BoardPicker and LOS_Thread could sometimes intercept commands for
+    wrong objects
+* 14074: Flares sometimes not appearing on opponent's map (in log replay,
+    or online)
 * 14061: ArrayIndexOutOfBoundsException in StringArrayConfigurer.entryChanged()
 * 14059: Show better descriptions for Marker traits in Piece Definer
 * 14056: Search now covers initial/min/max values in property traits
