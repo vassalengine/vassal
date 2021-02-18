@@ -346,7 +346,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     else {
       slot.getComponent().revalidate();
       slot.getComponent().repaint();
-      boolean s = slot.isValid();
       final Rectangle r = slot.getPiece().boundingBox();
       newSlotSize = new Dimension(r.width, r.height);
     }
