@@ -704,8 +704,8 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
 
   @Override
   public Command decode(String command) {
-    if (!command.startsWith(map.getId() + ID) &&
-      !command.startsWith(map.getConfigureName() + ID)) {
+    if (!command.startsWith(map.getId() + ID + "\t") &&
+      !command.startsWith(map.getConfigureName() + ID + "\t")) {
       return null;
     }
 
