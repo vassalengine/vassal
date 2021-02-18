@@ -907,7 +907,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
 
   @Override
   public Command decode(String command) {
-    if (!command.startsWith(LOS_THREAD_COMMAND + getId())) {
+    if (!command.startsWith(LOS_THREAD_COMMAND + getId() + "\t")) {
       return null;
     }
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
