@@ -1,6 +1,6 @@
 3.5.2 - ???
 
-
+* 14086: Fix Alt key for selecting on maps
 * 14077: Include '(pixels)' in Turn Counter Label Display Length Label
 * 14076: SetGlobalProperty editor has incorrect label for maximum value field
 * 14075: BoardPicker and LOS_Thread could sometimes intercept commands for
