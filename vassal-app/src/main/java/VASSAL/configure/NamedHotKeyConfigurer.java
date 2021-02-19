@@ -20,9 +20,9 @@ package VASSAL.configure;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.icon.IconFactory;
 
+import VASSAL.tools.icon.IconFamily;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -197,7 +197,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       final JLayer<JTextField> keyLayer = new JLayer<>(keyStroke, layerUI);
       panel.add(keyLayer, "grow"); // NON-NLS
 
-      undoButton = new JButton(new OpIcon(Op.load("Undo16.gif"))); // NON-NLS
+      undoButton = new JButton(IconFactory.getIcon("edit-undo", IconFamily.XSMALL)); // NON-NLS
       final int size = (int) keyName.getPreferredSize().getHeight();
       undoButton.setPreferredSize(new Dimension(size, size));
       undoButton.setMaximumSize(new Dimension(size, size));
