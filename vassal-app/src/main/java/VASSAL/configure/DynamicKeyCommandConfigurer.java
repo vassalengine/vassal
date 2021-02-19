@@ -200,4 +200,11 @@ public class DynamicKeyCommandConfigurer extends Configurer {
     keyConfig.removeFocusListener(listener);
     propChangeConfig.removeFocusListener(listener);
   }
+
+  @Override
+  public void requestFocus() {
+    if (commandConfig != null) {
+      commandConfig.requestFocus();
+    }
+  }
 }

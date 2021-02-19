@@ -145,7 +145,7 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     setSelectedEntryIndex(pos + 1);
 
     // Refresh the view
-    updateControls();
+    updateControls(pos + 1);
 
   }
 
@@ -287,6 +287,11 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
       updateControls();
       repack();
     }
+  }
+
+  private void updateControls(int focus) {
+    updateControls();
+    entries.get(focus).requestFocus();
   }
 
   /**
@@ -442,11 +447,6 @@ public class DynamicKeyCommandListConfigurer extends Configurer implements Confi
     @Override
     public void focusGained() {
       listConfig.selectEntry(this);
-    }
-
-    @Override
-    public void requestFocus() {
-
     }
 
     @Override

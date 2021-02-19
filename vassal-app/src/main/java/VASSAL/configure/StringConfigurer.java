@@ -89,6 +89,13 @@ public class StringConfigurer extends Configurer {
   }
 
   @Override
+  public void requestFocus() {
+    if (nameField != null) {
+      nameField.requestFocus();
+    }
+  }
+
+  @Override
   public Component getControls() {
     if (p == null) {
       p = new ConfigurerPanel(getName(), "[fill,grow]0[0]", "[][fill,grow][]"); // NON-NLS

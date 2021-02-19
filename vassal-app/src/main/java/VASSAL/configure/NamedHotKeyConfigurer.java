@@ -125,6 +125,13 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   }
 
   @Override
+  public void requestFocus() {
+    if (keyName != null) {
+      keyName.requestFocus();
+    }
+  }
+
+  @Override
   public void setValue(Object o) {
     super.setValue(o);
     setFrozen(true); // Prevent changes to the input fields triggering further updates

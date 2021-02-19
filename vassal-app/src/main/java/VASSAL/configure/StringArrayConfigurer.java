@@ -191,6 +191,15 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
   }
 
   /**
+   * Rebuild controls from scratch and set focus
+   * @param focus index of entry to request focus
+   */
+  private void rebuildControls(int focus) {
+    rebuildControls();
+    entries.get(focus).requestFocus();
+  }
+
+  /**
    * Rebuild controls from scratch
    */
   private void rebuildControls() {
@@ -252,11 +261,6 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
       getConfigurer().setHighlighted(b);
     }
 
-    @Override
-    public void requestFocus() {
-      getConfigurer().getControls().requestFocus();
-    }
-
     public void addFocusListener(FocusListener listener) {
       getConfigurer().addFocusListener(listener);
     }
@@ -306,19 +310,22 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
 
   @Override
   public void addEntry() {
+    int newEntry;
     final int pos = getSelectedEntryIndex();
 
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
       setValue(ArrayUtils.add(getStringArray(), ""));
-      setSelectedEntryIndex(getStringArray().length - 1);
+      newEntry = getStringArray().length - 1;
+      setSelectedEntryIndex(newEntry);
     }
     else {
-      setValue(ArrayUtils.insert(pos + 1, getStringArray(), ""));
-      setSelectedEntryIndex(pos + 1);
+      newEntry = pos + 1;
+      setValue(ArrayUtils.insert(newEntry, getStringArray(), ""));
+      setSelectedEntryIndex(newEntry);
     }
 
-    rebuildControls();
+    rebuildControls(newEntry);
   }
 
   @Override
