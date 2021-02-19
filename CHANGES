@@ -1,11 +1,14 @@
 3.5.2 - ???
 
+
+* 14077: Include '(pixels)' in Turn Counter Label Display Length Label
 * 14076: SetGlobalProperty editor has incorrect label for maximum value field
 * 14075: BoardPicker and LOS_Thread could sometimes intercept commands for
     wrong objects
 * 14074: Flares sometimes not appearing on opponent's map (in log replay,
     or online)
 * 14065: Show OS Specific cut/paste key descriptions in Piece Definer
+* 14068: Key Command editor: Change return arrow icon to Tango undo icon
 * 14061: ArrayIndexOutOfBoundsException in StringArrayConfigurer.entryChanged()
 * 14059: Show better descriptions for Marker traits in Piece Definer
 * 14057: Piece Definer should give piece image a little breathing space on
