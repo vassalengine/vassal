@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
+import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -170,6 +171,26 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   /**
+   * Return the size in bytes of a file in the Archive
+   * @param fileName File name (include path if required)
+   * @return size in bytes
+   */
+  public long getFileSize(String fileName) {
+    long totalBytesRead = 0;
+    try (final BufferedInputStream bi = new BufferedInputStream(getInputStream(fileName))) {
+      int currentBytesRead;
+      final byte[] buf = new byte[1024];
+      while ((currentBytesRead = bi.read(buf)) > 0) {
+        totalBytesRead += currentBytesRead;
+      }
+    }
+    catch (IOException ignored) {
+
+    }
+    return totalBytesRead;
+  }
+
+  /**
    * Get an {@link InputStream} for the given file in the archive.
    *
    * @param fileName the name of the file
@@ -202,7 +223,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     // HFS+ filesystem and the filename contains decomposable characters,
     // so it got munged into NFD. Aauugh! Seriously, DIAF Apple!
     final String nfd = Normalizer.normalize(fileName, Normalizer.Form.NFD);
-    if (fileName != nfd) {
+    if (!fileName.equals(nfd)) {
       in = getInputStreamImpl(nfd);
       if (in != null) {
         return in;
@@ -762,7 +783,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * Read all available bytes from the given InputStream.
-   * @deprecated Use {@link InputStream.readAllBytes()} instead.
+   * @deprecated Use {@link InputStream#readAllBytes()} instead.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static byte[] getBytes(InputStream in) throws IOException {
