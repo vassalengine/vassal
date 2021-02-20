@@ -17,22 +17,17 @@
  */
 package VASSAL.configure;
 
-import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
-import VASSAL.build.module.ExtensionElement;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.ExtensionEditorWindow;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-
 import VASSAL.tools.swing.SwingUtils;
-
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,15 +35,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-
 import javax.swing.JPanel;
-import javax.swing.tree.TreeModel;
-
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,7 +156,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
     if (moduleExtensionList.isEmpty()) {
       isRefreshOfExtension = false;
-    };
+    }
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
     for (final PredefinedSetup pds : modulePdsAndMenus) {
@@ -181,7 +172,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
           catch (final IOException e) {
             ErrorDialog.bug(e);
           }
-          if ( isExtensionPDS == isRefreshOfExtension) {
+          if (isExtensionPDS == isRefreshOfExtension) {
             modulePds.add(pds);
           }
         }
