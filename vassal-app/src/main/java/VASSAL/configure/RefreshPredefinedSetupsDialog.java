@@ -17,16 +17,22 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.ExtensionElement;
+import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.ExtensionEditorWindow;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 
 import VASSAL.tools.swing.SwingUtils;
-import java.awt.Frame;
-import java.awt.HeadlessException;
+
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -41,6 +47,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 
 import javax.swing.JPanel;
+import javax.swing.tree.TreeModel;
+
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,12 +150,22 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   }
 
   private void refreshPredefinedSetups() {
+
     refreshButton.setEnabled(false);
+
     setOptions();
     if (isTestMode()) {
       log(Resources.getString("GameRefresher.refresh_counters_test_mode"));
     }
+
+    // Are we running a refresh on a main module or on an extension
+    Boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
+    final DataArchive dataArchive = mod.getDataArchive();
+    final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
+    if (moduleExtensionList.isEmpty()) {
+      isRefreshOfExtension = false;
+    };
     final List<PredefinedSetup>  modulePdsAndMenus = mod.getAllDescendantComponentsOf(PredefinedSetup.class);
     final List<PredefinedSetup>  modulePds = new ArrayList<>();
     for (final PredefinedSetup pds : modulePdsAndMenus) {
@@ -156,7 +174,16 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
         if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
-          modulePds.add(pds);
+          Boolean isExtensionPDS = true;
+          try {
+            isExtensionPDS =  !dataArchive.contains(pds.getFileName());
+          }
+          catch (final IOException e) {
+            ErrorDialog.bug(e);
+          }
+          if ( isExtensionPDS == isRefreshOfExtension) {
+            modulePds.add(pds);
+          }
         }
       }
     }
