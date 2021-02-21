@@ -118,7 +118,9 @@ public abstract class AbstractConfigurableListEntry implements ConfigurableListE
    * Ensure this entry has the focus
    */
   @Override
-  public abstract void requestFocus();
+  public  void requestFocus() {
+    getConfigurer().requestFocus();
+  }
 
   /**
    * Update the visibility of any optional components in this entry

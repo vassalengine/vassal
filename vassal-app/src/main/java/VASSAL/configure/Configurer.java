@@ -265,4 +265,11 @@ public abstract class Configurer {
   public void removeFocusListener(FocusListener listener) {
 
   }
+
+  /**
+   * Move the cursor to the first input field of this Configurer
+   */
+  public void requestFocus() {
+
+  }
 }

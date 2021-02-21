@@ -79,6 +79,10 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     return panel;
   }
 
+  private void rebuildControls(int focus) {
+    rebuildControls();
+    entries.get(focus).requestFocus();
+  }
   /**
    * Rebuild controls from scratch
    */
@@ -224,17 +228,20 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     final int pos = getSelectedEntryIndex();
     final NamedKeyStroke[] keys = getValue() == null ? new NamedKeyStroke[0] : getNameKeyStrokeArrayValue();
 
+    int newEntry;
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
       setValue(ArrayUtils.add(keys, new NamedKeyStroke()));
-      setSelectedEntryIndex(getNameKeyStrokeArrayValue().length - 1);
+      newEntry = getNameKeyStrokeArrayValue().length - 1;
+      setSelectedEntryIndex(newEntry);
     }
     else {
-      setValue(ArrayUtils.insert(pos + 1, keys, new NamedKeyStroke()));
-      setSelectedEntryIndex(pos + 1);
+      newEntry = pos + 1;
+      setValue(ArrayUtils.insert(newEntry, keys, new NamedKeyStroke()));
+      setSelectedEntryIndex(newEntry);
     }
 
-    rebuildControls();
+    rebuildControls(newEntry);
 
   }
 
@@ -316,9 +323,5 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
       getConfigurer().setHighlighted(b);
     }
 
-    @Override
-    public void requestFocus() {
-      getConfigurer().getControls().requestFocus();
-    }
   }
 }
