@@ -294,7 +294,7 @@ public final class GameRefresher implements GameComponent {
     // Except pieces with a DNS (Immobilized) trait.
     final Stack oldStack = piece.getParent();
     if (oldStack == null) {
-      Immobilized i = (Immobilized)Decorator.getDecorator(piece, Immobilized.class);
+      final Immobilized i = (Immobilized)Decorator.getDecorator(piece, Immobilized.class);
       if (i == null) {
         noStackCount++;
         log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
