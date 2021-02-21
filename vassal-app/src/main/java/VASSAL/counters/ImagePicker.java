@@ -93,8 +93,8 @@ public class ImagePicker extends JPanel
   public void setImageName(String name) {
     imageName = name;
     remove(0);
-    if (name == null || name.isBlank() || name.equals(NO_IMAGE)) {
-      imageName = "";
+    if (name == null || name.isEmpty()) {
+      imageName = null;
       add(noImage, 0);
     }
     else {
@@ -170,7 +170,7 @@ public class ImagePicker extends JPanel
       setImageName(name);
     }
     else {
-      setImageName(NO_IMAGE);
+      setImageName(null);
     }
     repaint();
   }
