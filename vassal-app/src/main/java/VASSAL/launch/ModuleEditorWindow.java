@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.ConfigureTree;
-import VASSAL.configure.RefreshPredefinedSetupsDialog;
 import VASSAL.configure.SavedGameUpdaterDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.MenuManager;
@@ -36,7 +35,6 @@ public class ModuleEditorWindow extends EditorWindow {
   private static final long serialVersionUID = 1L;
 
   protected Action updateSavedGame;
-  protected Action refreshPredefinedSetups;
 
   public ModuleEditorWindow(GameModule mod) {
     super();
@@ -64,21 +62,9 @@ public class ModuleEditorWindow extends EditorWindow {
     };
     mm.addAction("Editor.ModuleEditor.update_saved", updateSavedGame);
 
-    refreshPredefinedSetups = new AbstractAction(Resources.getString(
-      "Editor.ModuleEditor.refresh_predefined")) { //$NON-NLS-1$
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        new RefreshPredefinedSetupsDialog(ModuleEditorWindow.this).setVisible(true);
-      }
-    };
-    mm.addAction("Editor.ModuleEditor.refresh_predefined", refreshPredefinedSetups);
-
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     updateSavedGame.setEnabled(true);
-    refreshPredefinedSetups.setEnabled(true);
 
     pack();
 
