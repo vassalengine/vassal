@@ -420,7 +420,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     int result = 0;
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
-      if (s != null) {
+      if (s == null) {
+        result += Integer.parseInt(ps.getProperty(property).toString());
+      }
+      else {
         for (final GamePiece gamePiece : s.asList()) {
           try {
             result +=
