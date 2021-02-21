@@ -143,7 +143,7 @@ public class ImageSelector extends Configurer implements ItemListener {
     controls.revalidate();
     repack(controls);
 
-    setValue((Object) s);
+    setValue((Object) imageName);
   }
 
   @Override
