@@ -12,6 +12,36 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
 * <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe' target='_new'>Windows (32-bit)</a>
 * <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a>
 
+<h3>Changes since 3.5.1</h3>
+
+Bug fixes
+
+* 14104: Removing Image from BasicPiece stores image name as '(No Image)'
+* 14086: Fix Alt key for selecting on maps
+* 14078: Undo causes standard counter to become unstacked
+* 14076: SetGlobalProperty editor has incorrect label for maximum value field
+* 14075: BoardPicker and LOS_Thread could sometimes intercept commands for wrong objects
+* 14074: Flares sometimes not appearing on opponent's map (in log replay, or online)
+* 14065: Show OS Specific cut/paste key descriptions in Piece Definer
+* 14061: ArrayIndexOutOfBoundsException in StringArrayConfigurer.entryChanged()
+* 14047: Prevent versions <= 3.2 from clobbering the 3.5 module list
+* 14046: Nested ExecutionException when cancelling a screenshot
+* 14043: Help button on Flare, Chess Clock, Deselect had broken link
+* 14041: Prevent race when creating GlobalPrefs
+
+Other improvements
+
+* 14098: Player includes module version number in window title
+* 14077: Include '(pixels)' in Turn Counter Label Display Length Label
+* 14070: Array Configurers: Add button moves focus to newly created entry
+* 14068: Key Command editor: Change return arrow icon to Tango undo icon
+* 14064: Add Refresh Predefined Setups in ExtensionEditor + (remove warning on pieces without parent)
+* 14059: Show better descriptions for Marker traits in Piece Definer
+* 14057: Piece Definer should give piece image a little breathing space on left and right by default
+* 14056: Search now covers initial/min/max values in property traits
+* 14053: Canceling Welcome Wizard closes the Player (unless "show wizard at startup" has been unchecked)
+* 14055: Set Global Property: include name/expression of property in trait list
+
 <h3>Changes since 3.5.0</h3>
 
 Bug fixes
