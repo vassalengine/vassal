@@ -13,6 +13,8 @@
 * 14070: Array Configurers: Add button moves focus to newly created entry
 * 14065: Show OS Specific cut/paste key descriptions in Piece Definer
 * 14068: Key Command editor: Change return arrow icon to Tango undo icon
+* 14064: Add Refresh Predefined Setups in ExtensionEditor + (remove warning on
+    pieces without parent)
 * 14061: ArrayIndexOutOfBoundsException in StringArrayConfigurer.entryChanged()
 * 14059: Show better descriptions for Marker traits in Piece Definer
 * 14057: Piece Definer should give piece image a little breathing space on
