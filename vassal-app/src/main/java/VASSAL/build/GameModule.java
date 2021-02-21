@@ -229,7 +229,9 @@ public class GameModule extends AbstractConfigurable
 
   private static GameModule theModule;
 
-  private String moduleVersion = "0.0";  //$NON-NLS-1$
+  private static String DEFAULT_MODULE_VERSION = "0.0"; //$NON-NLS-1$
+
+  private String moduleVersion = DEFAULT_MODULE_VERSION;
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
   private String moduleOther1 = "";
   private String moduleOther2 = "";
@@ -1359,11 +1361,20 @@ public class GameModule extends AbstractConfigurable
    * @param name Name of the object whose title bar is to be generated
    */
   public String getWindowTitleString(String key, String name) {
-    if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
-      return Resources.getString(key + "_title", name, "", Info.getVersion());  //NON-NLS-1$
+    final String version = getGameVersion();
+    String nameString;
+    if (!DEFAULT_MODULE_VERSION.equals(version)) {
+      nameString = name + " " + version;
     }
     else {
-      return Resources.getString(key + "_title_" + gameFileMode, name, gameFile, Info.getVersion()); //NON-NLS-1$
+      nameString = name;
+    }
+
+    if (StringUtils.isEmpty(gameFile) || GameFileMode.NEW_GAME.equals(gameFileMode)) {
+      return Resources.getString(key + "_title", nameString, "", Info.getVersion());  //NON-NLS-1$
+    }
+    else {
+      return Resources.getString(key + "_title_" + gameFileMode, nameString, gameFile, Info.getVersion()); //NON-NLS-1$
     }
   }
 
