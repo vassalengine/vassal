@@ -103,9 +103,8 @@ public class ImageSelector extends Configurer implements ItemListener {
 
   @Override
   public void setValue(String s) {
-
-    if (s == null || s.isBlank() || s.equals(NO_IMAGE)) {
-      setImageName("");
+    if (s == null || s.isBlank()) {
+      setImageName(null);
       imageViewer.setIcon(getNoImageIcon());
       imageViewer.setPreferredSize(new Dimension(DEFAULT_SIZE, DEFAULT_SIZE));
     }
@@ -194,12 +193,12 @@ public class ImageSelector extends Configurer implements ItemListener {
       setValue(name);
     }
     else {
-      setValue(NO_IMAGE);
+      setValue(null);
     }
   }
 
   private void clearImage() {
-    setValue(NO_IMAGE);
+    setValue(null);
   }
 
   private Icon getNoImageIcon() {
