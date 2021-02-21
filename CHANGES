@@ -1,5 +1,6 @@
 3.5.2 - ???
 
+* 14104: Removing Image from BasicPiece stores image name as '(No Image)'
 * 14098: Player includes module version number in window title
 * 14086: Fix Alt key for selecting on maps
 * 14078: Undo causes standard counter to become unstacked
