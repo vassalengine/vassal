@@ -1,5 +1,6 @@
-3.5.2 - 21 February 2021
+3.5.2 - 22 February 2021
 
+* 14116: Incorrect module sort order in Module Manager
 * 14111: Incorrect description for Dynamic Property initial value
 * 14104: Removing Image from BasicPiece stores image name as '(No Image)'
 * 14098: Player includes module version number in window title
