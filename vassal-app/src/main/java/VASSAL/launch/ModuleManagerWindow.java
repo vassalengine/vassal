@@ -1589,7 +1589,7 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public String getSortKey() {
-      return metadata == null ? "" : metadata.getLocalizedName();
+      return metadata == null ? "" : metadata.getLocalizedName() + "\n" + metadata.getVersion();
     }
 
     @Override
