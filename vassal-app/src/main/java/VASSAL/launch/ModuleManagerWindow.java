@@ -531,9 +531,11 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     moduleList.sort((a, b) -> {
+      // sort module names in ascending order
       final int i = a.toString().compareTo(b.toString());
       if (i == 0) {
-        return VersionUtils.compareVersions(a.getVersion(), b.getVersion());
+        // sort versions in descending order
+        return -VersionUtils.compareVersions(a.getVersion(), b.getVersion());
       }
       else {
         return i;
