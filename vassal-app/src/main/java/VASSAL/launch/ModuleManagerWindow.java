@@ -124,6 +124,7 @@ import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
+import VASSAL.tools.version.VersionUtils;
 
 public class ModuleManagerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -529,7 +530,15 @@ public class ModuleManagerWindow extends JFrame {
       moduleConfig.removeValue(s);
     }
 
-    moduleList.sort(AbstractInfo::compareTo);
+    moduleList.sort((a, b) -> {
+      final int i = a.toString().compareTo(b.toString());
+      if (i == 0) {
+        return VersionUtils.compareVersions(a.getVersion(), b.getVersion());
+      }
+      else {
+        return i;
+      }
+    });
 
     rootNode = new MyTreeNode(new RootInfo());
 
@@ -1589,7 +1598,7 @@ public class ModuleManagerWindow extends JFrame {
 
     @Override
     public String getSortKey() {
-      return metadata == null ? "" : metadata.getLocalizedName() + "\n" + metadata.getVersion();
+      return metadata == null ? "" : metadata.getLocalizedName();
     }
 
     @Override
