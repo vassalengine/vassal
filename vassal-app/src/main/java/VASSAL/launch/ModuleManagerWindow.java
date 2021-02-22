@@ -554,7 +554,7 @@ public class ModuleManagerWindow extends JFrame {
         if (i == 0) {
           // leading nonnumeric part of versions are the same
           // sort version numbers in descending order
-          return -VersionUtils.compareVersions(ap.getRight(), bp.getLeft());
+          return -VersionUtils.compareVersions(ap.getRight(), bp.getRight());
         }
         else {
           return i;
