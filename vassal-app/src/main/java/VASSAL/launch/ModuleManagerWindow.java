@@ -83,6 +83,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -124,6 +125,7 @@ import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.swing.SplitPane;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.UpdateCheckAction;
+import VASSAL.tools.version.VersionUtils;
 
 public class ModuleManagerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -491,6 +493,17 @@ public class ModuleManagerWindow extends JFrame {
     }
   }
 
+  private static Pair<String, String> splitVersion(String s) {
+    final int len = s.length();
+    for (int i = 0; i < len; ++i) {
+      final char c = s.charAt(i);
+      if (0x30 <= c && c <= 0x39) {
+        return Pair.of(s.substring(0, i), s.substring(i));
+      }
+    }
+    return Pair.of(s, "");
+  }
+
   protected void buildTree() {
     final List<ModuleInfo> moduleList = new ArrayList<>();
     final List<String> missingModules = new ArrayList<>();
@@ -529,7 +542,23 @@ public class ModuleManagerWindow extends JFrame {
       moduleConfig.removeValue(s);
     }
 
-    moduleList.sort(AbstractInfo::compareTo);
+    moduleList.sort((a, b) -> {
+      // sort module names in ascending order
+      int i = a.toString().compareTo(b.toString());
+      if (i == 0) {
+        // module names are the same
+        final Pair<String, String> ap = splitVersion(a.getVersion());
+        final Pair<String, String> bp = splitVersion(b.getVersion());
+
+        i = ap.getLeft().compareTo(bp.getLeft());
+        if (i == 0) {
+          // leading nonnumeric part of versions are the same
+          // sort version numbers in descending order
+          i = -VersionUtils.compareVersions(ap.getRight(), bp.getRight());
+        }
+      }
+      return i;
+    });
 
     rootNode = new MyTreeNode(new RootInfo());
 

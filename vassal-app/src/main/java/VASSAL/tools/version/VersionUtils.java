@@ -48,10 +48,7 @@ public class VersionUtils {
   }
 
   /**
-   * Compares VASSAL version strings. This method is guaranteed to
-   * correctly compare the current version string with any other
-   * version string. It is <em>not</em> guaranteed to correctly
-   * compare two arbitrary version strings.
+   * Compares version strings.
    *
    * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from
