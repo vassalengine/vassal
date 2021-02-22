@@ -297,7 +297,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     final List<String> l = new ArrayList<>();
 
     if (!value.isEmpty()) {
-      l.add(Resources.getString("Editor.DynamicProperty.initial_value", value)); // We'll treat the at-start value of the property as a quasi-expression
+      l.add(Resources.getString("Editor.DynamicProperty.init_value", value)); // We'll treat the at-start value of the property as a quasi-expression
     }
 
     // If this is a numeric property, our min and max values will be treated as a quasi-expression (and so they will be searchable)
