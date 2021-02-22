@@ -554,15 +554,10 @@ public class ModuleManagerWindow extends JFrame {
         if (i == 0) {
           // leading nonnumeric part of versions are the same
           // sort version numbers in descending order
-          return -VersionUtils.compareVersions(ap.getRight(), bp.getRight());
-        }
-        else {
-          return i;
+          i = -VersionUtils.compareVersions(ap.getRight(), bp.getRight());
         }
       }
-      else {
-        return i;
-      }
+      return i;
     });
 
     rootNode = new MyTreeNode(new RootInfo());
