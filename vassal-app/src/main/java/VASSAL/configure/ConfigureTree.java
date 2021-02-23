@@ -942,8 +942,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           (Configurable) ((DefaultMutableTreeNode) value).getUserObject();
         if (c != null) {
           leaf = c.getAllowableConfigureComponents().length == 0;
-          value = (c.getConfigureName() != null ? c.getConfigureName() : "") +
-            " [" + getConfigureName(c.getClass()) + "]";
+          String name = (c.getConfigureName() != null ? c.getConfigureName() : "");
+          if (c instanceof GlobalProperty) {
+            String desc = ((GlobalProperty)c).getDescription();
+            if (!desc.isEmpty()) {
+              name = name + " - " + desc;
+            }
+          }
+          value = name + " [" + getConfigureName(c.getClass()) + "]";
         }
       }
 
