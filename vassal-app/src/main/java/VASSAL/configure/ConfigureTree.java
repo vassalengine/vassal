@@ -944,7 +944,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           leaf = c.getAllowableConfigureComponents().length == 0;
           String name = (c.getConfigureName() != null ? c.getConfigureName() : "");
           if (c instanceof GlobalProperty) {
-            String desc = ((GlobalProperty)c).getDescription();
+            final String desc = ((GlobalProperty)c).getDescription();
             if (!desc.isEmpty()) {
               name = name + " - " + desc;
             }
