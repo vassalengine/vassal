@@ -421,7 +421,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (ps instanceof GamePiece) {
       final Stack s = ((GamePiece) ps).getParent();
       if (s == null) {
-        result += Integer.parseInt(ps.getProperty(property).toString());
+        try {
+          result += Integer.parseInt(ps.getProperty(property).toString());
+        }
+        catch (Exception ignored) {
+          // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
+        }
       }
       else {
         for (final GamePiece gamePiece : s.asList()) {
@@ -429,7 +434,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
             result +=
               Integer.parseInt(gamePiece.getProperty(property).toString());
           }
-          catch (Exception e) {
+          catch (Exception ignored) {
             // Anything at all goes wrong trying to add the property, just ignore it and treat as 0
           }
         }
