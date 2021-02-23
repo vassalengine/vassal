@@ -354,7 +354,8 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
       public void mouseReleased(MouseEvent e) {
         // check if the release was over the armed button
         if (armedForClick != null) {
-          if (SwingUtils.isMainMouseButtonDown(e)) {
+          if (SwingUtils.isMainMouseButtonDown(e) &&
+              armedForClick.getMap() == map) {
             final Point epos = e.getPoint();
             final Point rel = map.positionOf(armedForClick);
             epos.translate(-rel.x, -rel.y);
