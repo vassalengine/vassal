@@ -1,5 +1,9 @@
 3.5.3 - 23 February 2021
 
+* 14122: IllegalArgumentException when Action Button is armed on one map but
+    released on another
+* 14121: Editor shows Global Property descriptions next to the names in the
+    main list
 * 14078: Undo causes standard counter to become unstacked
 
 3.5.2 - 22 February 2021
