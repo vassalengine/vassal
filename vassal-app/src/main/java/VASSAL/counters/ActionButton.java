@@ -356,13 +356,11 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
         if (armedForClick != null) {
           if (SwingUtils.isMainMouseButtonDown(e)) {
             final Point epos = e.getPoint();
+            final Point rel = map.positionOf(armedForClick);
+            epos.translate(-rel.x, -rel.y);
             final Shape s = armedForClick.getShape();
-            final Point pos = armedForClick.getPosition();
-            final Point p = new Point(epos.x - pos.x, epos.y - pos.y);
-            if (s.contains(p)) {
+            if (s.contains(epos)) {
               // fire the button
-              final Point rel = map.positionOf(armedForClick);
-              epos.translate(-rel.x, -rel.y);
               doClick(armedForClick, epos);
             }
           }
