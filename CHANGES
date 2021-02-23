@@ -1,3 +1,7 @@
+3.5.3 - 23 February 2021
+
+* 14078: Undo causes standard counter to become unstacked
+
 3.5.2 - 22 February 2021
 
 * 14117:  Action Button fails to respond on a stacked counter (except at top)
