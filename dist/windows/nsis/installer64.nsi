@@ -27,7 +27,7 @@
 Unicode True
 
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
-!define VNAME "VASSAL (${VERSION})"
+!define VNAME "VASSAL ${VERSION}"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
 !define INCDIR "${TMPDIR}/VASSAL-${VERSION}-windows-64"
