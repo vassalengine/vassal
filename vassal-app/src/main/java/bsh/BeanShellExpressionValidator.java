@@ -54,39 +54,37 @@ public class BeanShellExpressionValidator {
    *    GetProperty("stringVariable").function()
    *
    */
-  private static final Set<String> supportedStringFunctions;
-  static {
-    supportedStringFunctions = new HashSet<>();
-    supportedStringFunctions.add(".compareTo");
-    supportedStringFunctions.add(".compareToIgnoreCase");
-    supportedStringFunctions.add(".contains");
-    supportedStringFunctions.add(".endsWith");
-    supportedStringFunctions.add(".equals");
-    supportedStringFunctions.add(".equalsIgnoreCase");
-    supportedStringFunctions.add(".format");
-    supportedStringFunctions.add(".formatted");
-    supportedStringFunctions.add(".hashCode");
-    supportedStringFunctions.add(".indexOf");
-    supportedStringFunctions.add(".isBlank");
-    supportedStringFunctions.add(".isEmpty");
-    supportedStringFunctions.add(".lastIndexOf");
-    supportedStringFunctions.add(".length");
-    supportedStringFunctions.add(".matches");
-    supportedStringFunctions.add(".regionMatches");
-    supportedStringFunctions.add(".repeat");
-    supportedStringFunctions.add(".replace");
-    supportedStringFunctions.add(".replaceAll");
-    supportedStringFunctions.add(".replaceFirst");
-    supportedStringFunctions.add(".startsWith");
-    supportedStringFunctions.add(".strip");
-    supportedStringFunctions.add(".stripLeading");
-    supportedStringFunctions.add(".stripTrailing");
-    supportedStringFunctions.add(".substring");
-    supportedStringFunctions.add(".toLowerCase");
-    supportedStringFunctions.add(".toUpperCase");
-    supportedStringFunctions.add(".translateEscapes");
-    supportedStringFunctions.add(".trim");
-  }
+  private static final Set<String> supportedStringFunctions = Set.of (
+    ".compareTo",
+    ".compareToIgnoreCase",
+    ".contains",
+    ".endsWith",
+    ".equals",
+    ".equalsIgnoreCase",
+    ".format",
+    ".formatted",
+    ".hashCode",
+    ".indexOf",
+    ".isBlank",
+    ".isEmpty",
+    ".lastIndexOf",
+    ".length",
+    ".matches",
+    ".regionMatches",
+    ".repeat",
+    ".replace",
+    ".replaceAll",
+    ".replaceFirst",
+    ".startsWith",
+    ".strip",
+    ".stripLeading",
+    ".stripTrailing",
+    ".substring",
+    ".toLowerCase",
+    ".toUpperCase",
+    ".translateEscapes",
+    ".trim"
+  );
 
 
   /**
