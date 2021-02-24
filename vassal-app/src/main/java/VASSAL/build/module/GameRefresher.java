@@ -256,10 +256,20 @@ public final class GameRefresher implements GameComponent {
      */
     final List<GamePiece> pieces = getCurrentGameRefresherPieces();
 
+    // Build list of Decks.
+
+
     /*
      * 3. Generate the commands to update the pieces
      */
     for (final GamePiece piece : pieces) {
+      final Stack stack = piece.getParent();
+      boolean isDeck = ( stack instanceof  Deck );
+      Deck deck = null;
+      if (isDeck) {
+         deck = (Deck) stack;
+      }
+      String stackName = deck.getName();
       processGamePiece(piece, command);
     }
 
