@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.configure.ConfigurableListEntry;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringArrayConfigurer;
@@ -145,7 +146,7 @@ public class PropertyChangerConfigurer extends Configurer {
       incrLabel.setLabelFor(incrConfig.getControls());
       incrConfig.addPropertyChangeListener(l);
 
-      validValuesConfig = new FormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints);
+      validValuesConfig = new NoUpdateFormattedStringArrayConfigurer(null, Resources.getString("Editor.PropertyChangeConfigurer.valid_values"), constraints);
       validValuesConfig.setHint(Resources.getString("Editor.PropertyChangeConfigurer.valid_values_hint"));
       validValuesConfig.addPropertyChangeListener(l);
 
@@ -346,4 +347,17 @@ public class PropertyChangerConfigurer extends Configurer {
     getControls();
     subConfigurers.forEach(c -> c.removeFocusListener(listener));
   }
+
+  private static class NoUpdateFormattedStringArrayConfigurer extends FormattedStringArrayConfigurer {
+
+    public NoUpdateFormattedStringArrayConfigurer(String key, String name, Constraints c) {
+      super(key, name, c);
+    }
+
+    @Override
+    public void entryChanged(ConfigurableListEntry entry) {
+      getStringArray()[getEntries().indexOf(entry)] = entry.getConfigurer().getValueString();
+    }
+  }
+
 }

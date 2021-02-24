@@ -1047,7 +1047,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean selected, boolean hasFocus) {
 
-      super.getListCellRendererComponent(list, value, index, selected, hasFocus);
+      // DO NOT pass value to super.getListCellRendererComponent()
+      // It is incredibly inefficient for GamePieces and is not needed
+      // since we overwrite the label text anyway.
+      super.getListCellRendererComponent(list, "", index, selected, hasFocus);
       if (value instanceof EditablePiece) {
         setText(((EditablePiece) value).getDescription());
       }

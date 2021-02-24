@@ -406,4 +406,7 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
     }
   }
 
+  public List<StringEntry> getEntries() {
+    return entries;
+  }
 }
