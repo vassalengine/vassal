@@ -1,6 +1,8 @@
 3.5.4 - ???
 
 * 14136: Module-level GKCs were not honoring fast match
+* 14131: String method calls in Beanshell don't return proper result unless
+    GetProperty is used
 * 14124: Remove "(Optional)" from Send to Location Board Name hint text
 * 14112: In Dynamic Property List of values, cursor jumps after first
     character entered
