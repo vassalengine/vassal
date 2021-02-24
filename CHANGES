@@ -1,5 +1,10 @@
 3.5.4 - ???
 
+* 14136: Module-level GKCs were not honoring fast match
+* 14124: Remove "(Optional)" from Send to Location Board Name hint text
+* 14112: In Dynamic Property List of values, cursor jumps after first
+    character entered
+
 3.5.3 - 23 February 2021
 
 * 14122: IllegalArgumentException when Action Button is armed on one map but
