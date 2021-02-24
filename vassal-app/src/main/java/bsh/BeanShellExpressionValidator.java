@@ -19,7 +19,9 @@ package bsh;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Validate a single line BeanShell expression. 
@@ -38,7 +40,54 @@ public class BeanShellExpressionValidator {
   protected String error;
   protected boolean valid;
 
-  protected final String SUPPORTED_STRING_METHODS = ".length,.contains,.startsWith,.endsWith,.matches,.indexOf,.lastIndexOf,.substring,.replace,";
+  /**
+   * List of all Java 15 String functions that can be applied to property names directly within Beanshell.
+   * (i.e. those with return values and argument types that Vassal supports).
+   *
+   * This list is used to recognize and evaluate constructs of the form
+   *
+   *    stringVariable.function()
+   *
+   * And allow stringVariable to be used directly within beanshell with Java syntax,
+   * rather than having to resort to
+   *
+   *    GetProperty("stringVariable").function()
+   *
+   */
+  private static final Set<String> supportedStringFunctions;
+  static {
+    supportedStringFunctions = new HashSet<>();
+    supportedStringFunctions.add(".compareTo");
+    supportedStringFunctions.add(".compareToIgnoreCase");
+    supportedStringFunctions.add(".contains");
+    supportedStringFunctions.add(".endsWith");
+    supportedStringFunctions.add(".equals");
+    supportedStringFunctions.add(".equalsIgnoreCase");
+    supportedStringFunctions.add(".format");
+    supportedStringFunctions.add(".formatted");
+    supportedStringFunctions.add(".hashCode");
+    supportedStringFunctions.add(".indexOf");
+    supportedStringFunctions.add(".isBlank");
+    supportedStringFunctions.add(".isEmpty");
+    supportedStringFunctions.add(".lastIndexOf");
+    supportedStringFunctions.add(".length");
+    supportedStringFunctions.add(".matches");
+    supportedStringFunctions.add(".regionMatches");
+    supportedStringFunctions.add(".repeat");
+    supportedStringFunctions.add(".replace");
+    supportedStringFunctions.add(".replaceAll");
+    supportedStringFunctions.add(".replaceFirst");
+    supportedStringFunctions.add(".startsWith");
+    supportedStringFunctions.add(".strip");
+    supportedStringFunctions.add(".stripLeading");
+    supportedStringFunctions.add(".stripTrailing");
+    supportedStringFunctions.add(".substring");
+    supportedStringFunctions.add(".toLowerCase");
+    supportedStringFunctions.add(".toUpperCase");
+    supportedStringFunctions.add(".translateEscapes");
+    supportedStringFunctions.add(".trim");
+  }
+
 
   /**
    * Build a new Validator and validate the expression
@@ -171,7 +220,7 @@ public class BeanShellExpressionValidator {
       final String name = node.getText().trim();
       if ((node.parent instanceof BSHMethodInvocation)) {
         if (! methods.contains(name)) {
-          // Check for x.y() where y is a String method. x will be a property name we need tp report
+          // Check for x.y() where y is a String method. x will be a property name we need to report
           // node.getText() returns the unknown method name with parts split by spaces. Break this into an array of tokens
           String[] tokens = name.split(" ");
           // Only 1 Token, it's a straight method, we're not interested.
@@ -182,7 +231,7 @@ public class BeanShellExpressionValidator {
           }
           else {
             // If Token 2 is one of the String methods, then token 1 is a property name we need to report as a String variable
-            if (SUPPORTED_STRING_METHODS.contains(tokens[1]+",")) {
+            if (supportedStringFunctions.contains(tokens[1])) {
               if (! stringVariables.contains(tokens[0])) {
                 stringVariables.add(tokens[0]);
               }
