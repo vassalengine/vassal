@@ -23,34 +23,9 @@
     </difference>
 
     <difference>
-        <className>VASSAL/configure/ConfigureTree</className>
-        <differenceType>6004</differenceType>
-        <field>searchAdvanced</field>
-        <from>javax.swing.JCheckBox</from>
-        <to>VASSAL.configure.BooleanConfigurer</to>
+        <className>bsh/BeanShellExpressionValidator</className>
+        <differenceType>6011</differenceType>
+        <field>SUPPORTED_STRING_METHODS</field>
         <justification>No chance of subclass</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/configure/ConfigureTree</className>
-        <differenceType>7005</differenceType>
-        <method>void setSearchAdvanced(javax.swing.JCheckBox)</method>
-        <to>void setSearchAdvanced(VASSAL.configure.BooleanConfigurer)</to>
-        <justification>No chance of subclass</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/configure/ConfigureTree</className>
-        <differenceType>7006</differenceType>
-        <method>javax.swing.JCheckBox getSearchAdvanced()</method>
-        <to>VASSAL.configure.BooleanConfigurer</to>
-        <justification>No chance of subclass</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/launch/ModuleEditorWindow</className>
-        <differenceType>6001</differenceType>
-        <field>refreshPredefinedSetups</field>
-        <justification>Transferred to EditorWindow class</justification>
     </difference>
 </differences>
