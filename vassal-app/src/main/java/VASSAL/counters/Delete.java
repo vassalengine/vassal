@@ -119,7 +119,8 @@ public class Delete extends Decorator implements TranslatablePiece {
           SwingUtilities.invokeLater(runnable);
         }
       }
-      c = new RemovePiece(outer);
+      c = putOldProperties(Decorator.getOutermost(this));
+      c = c.append(new RemovePiece(outer));
       c.execute();
     }
     return c;
