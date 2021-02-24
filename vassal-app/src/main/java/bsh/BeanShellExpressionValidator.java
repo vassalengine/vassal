@@ -62,7 +62,6 @@ public class BeanShellExpressionValidator {
     ".equals",
     ".equalsIgnoreCase",
     ".format",
-    ".formatted",
     ".hashCode",
     ".indexOf",
     ".isBlank",
@@ -82,7 +81,6 @@ public class BeanShellExpressionValidator {
     ".substring",
     ".toLowerCase",
     ".toUpperCase",
-    ".translateEscapes",
     ".trim"
   );
 
