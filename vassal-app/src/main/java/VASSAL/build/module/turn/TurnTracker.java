@@ -223,7 +223,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   protected void setLaunchToolTip() {
-    launch.setToolTipText(getTurnString());
+    if (!GameModule.getGameModule().isEditorOpen()) {
+      launch.setToolTipText(getTurnString());
+    }
   }
 
   /*

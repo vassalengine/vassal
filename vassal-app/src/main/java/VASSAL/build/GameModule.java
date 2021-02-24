@@ -1768,6 +1768,15 @@ public class GameModule extends AbstractConfigurable
     return getArchiveWriter() == null;
   }
 
+
+  /**
+   * Is an editor window currently open
+   * @return true if we're running with an editor window
+   */
+  public boolean isEditorOpen() {
+    return !isLocalizationEnabled();
+  }
+
   /**
    * @return the <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a> instance of GameModule
    */
