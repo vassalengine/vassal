@@ -164,6 +164,18 @@ public interface FileArchive extends Closeable {
   long getSize(String path) throws IOException;
 
   /**
+   * Get the compressed size of a file in the archive, in bytes.
+   * Rerurn the uncompressed size by default.
+   *
+   * @return the compressed size of the file, in bytes
+   * @throws FileNotFoundException if <code>path</code> is not in the archive
+   * @throws IOException oops
+   */
+  default long getCompressedSize(String path) throws IOException  {
+    return getSize(path);
+  }
+
+  /**
    * Gets the modification time of a file in the archive, in milliseconds
    * since the epoch.
    *

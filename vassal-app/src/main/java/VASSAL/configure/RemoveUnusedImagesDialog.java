@@ -240,11 +240,16 @@ public class RemoveUnusedImagesDialog extends JDialog {
   private static class Entry {
     private final String fileName;
     private final String displayName;
-    private final long size;
+    private long size;
 
     public Entry(String fileName) {
       this.fileName = fileName;
-      size = GameModule.getGameModule().getDataArchive().getFileSize(DataArchive.IMAGE_DIR  + fileName);
+      try {
+        size = GameModule.getGameModule().getDataArchive().getArchive().getCompressedSize(DataArchive.IMAGE_DIR + fileName);
+      }
+      catch (IOException ignored) {
+        size = -1;
+      }
       displayName = fileName + " (" + FileUtils.byteCountToDisplaySize(size) + ")";
     }
 

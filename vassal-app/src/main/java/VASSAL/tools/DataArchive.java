@@ -24,7 +24,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
-import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -168,26 +167,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
     throw new FileNotFoundException(
       "'" + imageDir + fileName + "' not found in " + getName());
-  }
-
-  /**
-   * Return the size in bytes of a file in the Archive
-   * @param fileName File name (include path if required)
-   * @return size in bytes
-   */
-  public long getFileSize(String fileName) {
-    long totalBytesRead = 0;
-    try (final BufferedInputStream bi = new BufferedInputStream(getInputStream(fileName))) {
-      int currentBytesRead;
-      final byte[] buf = new byte[1024];
-      while ((currentBytesRead = bi.read(buf)) > 0) {
-        totalBytesRead += currentBytesRead;
-      }
-    }
-    catch (IOException ignored) {
-
-    }
-    return totalBytesRead;
   }
 
   /**
