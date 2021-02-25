@@ -21,8 +21,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFactory;
-
 import VASSAL.tools.icon.IconFamily;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -47,6 +47,9 @@ import javax.swing.text.DocumentFilter;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A configurer for Configuring Key Strokes. It allows the entry of either
  * a standard keystroke, or a Named command.
@@ -61,6 +64,7 @@ import net.miginfocom.swing.MigLayout;
  * wipes out data in the other field.
  */
 public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
+  private static final Logger logger = LoggerFactory.getLogger(NamedHotKeyConfigurer.class);
   private static final String STROKE_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.keystroke");
   private static final String NAME_HINT = Resources.getString("Editor.NamedHotKeyConfigurer.command");
   private final HintTextField keyStroke = new HintTextField(StringConfigurer.DEFAULT_LENGHTH, STROKE_HINT);
@@ -345,6 +349,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private class KeyStrokeAdapter extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
+      reportKeyEvent("KEY_PRESSED", e); // NON-NLS
       switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
       case KeyEvent.VK_BACK_SPACE:
@@ -362,7 +367,29 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+      reportKeyEvent("KEY_RELEASED", e); // NON-NLS
       keyStroke.setText(getString((NamedKeyStroke) getValue()));
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+      reportKeyEvent("KEY_TYPED", e); // NON-NLS
+      super.keyTyped(e);
+    }
+
+    private void reportKeyEvent(String type, KeyEvent e) {
+      final String m = type +
+        ": Key=" + e.getKeyCode() + // NON-NLS
+        ", XKey=" + e.getExtendedKeyCode() + // NON-NLS
+        ", Shift=" + e.isShiftDown() + // NON-NLS
+        ", Ctrl=" + e.isControlDown() + // NON-NLS
+        ", Alt=" + e.isAltDown() + // NON-NLS
+        ", Meta=" + e.isMetaDown() + // NON-NLS
+        ", AltGraph=" + e.isAltGraphDown() + // NON-NLS
+        ", char=" + e.getKeyChar() + ", " + ((int) e.getKeyChar()) + ", \\u" + Integer.toHexString(e.getKeyChar()) // NON-NLS
+       ;
+      System.out.println(m);
+      logger.info(m);
     }
   }
 
