@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008-2020 by Joel Uckelman
+#  Copyright (c) 2008-2021 by Joel Uckelman
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
@@ -19,24 +19,29 @@
 # General Configuration
 #
 
-; Note: VERSION and TMPDIR are defined from the command line in
+Unicode true
+
+; Note: VERSION, ARCH, and TMPDIR are defined from the command line in
 ; the Makefile. These are here as a reminder only.
 ;!define VERSION "3.1.0-svn3025"
+;!define ARCH 64
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
-Unicode True
+!define INCDIR "${TMPDIR}/VASSAL-${VERSION}-windows-${ARCH}"
 
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 !define VNAME "VASSAL ${VERSION}"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
-!define INCDIR "${TMPDIR}/VASSAL-${VERSION}-windows-32"
 
 Name "VASSAL"
-OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-32.exe"
+OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-${ARCH}.exe"
 
-; InstDir is set in .onInit based on the architecture
-InstallDir ""
+!if ${ARCH} == 64
+  InstallDir "$PROGRAMFILES64\VASSAL-${VERSION}"
+!else
+  InstallDir "$PROGRAMFILES\VASSAL-${VERSION}"
+!endif
 
 RequestExecutionLevel admin
 
@@ -191,7 +196,6 @@ Page custom preConfirm leaveConfirm
 !define ForceSingleton "!insertmacro ForceSingleton"
 
 
-; detect running instances of VASSAL
 !macro WaitForVASSALToClose
   #
   # Detect running instances of VASSAL.
@@ -278,13 +282,12 @@ bail_out:
 !define WaitForVASSALToClose "!insertmacro WaitForVASSALToClose"
 
 
-
 !macro FindVASSALVersions
   StrCpy $R0 0
   ${Do}
     EnumRegKey $0 HKLM "${UNINST}" $R0
-    StrCpy $R1 "$0" 8
-    ${If} $R1 == "VASSAL ("
+    StrCpy $R1 "$0" 7
+    ${If} $R1 == "VASSAL "
       ${WordFind} "$RemoveOtherVersions" "$\n" "E/$R0" $1
       IfErrors 0 +2
       StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
@@ -306,26 +309,34 @@ Var AddStartMenuSC
 Var AddQuickLaunchSC
 Var RemoveOtherVersions
 
+
 #
 # Functions
 #
 Function un.onInit
-  SetRegView 32 
   ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
 
 Function .onInit
+  ; save registers
+  Push $0
+
   ${If} ${RunningX64}
-    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer is for the 32-bit Windows version of VASSAL, but you are running 64-bit Windows.$\n$\nWhile you can install 32-bit VASSAL, we encourage you to download and install the 64-bit version instead."
+    StrCpy $0 64
+  ${Else}
+    StrCpy $0 32
   ${EndIf}
 
-  SetRegView 32
-
-  ${If} $InstDir == "" ; /D= was not used on the command line
-    StrCpy $InstDir "$PROGRAMFILES\VASSAL-${VERSION}"
+  ${If} $0 != ${ARCH}
+    # wrong package for your architecture
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires ${ARCH}-bit Windows.$\n$\nTo use VASSAL ${VERSION} on $0-bit Windows, please install the $0-bit Windows package."
+    Abort
   ${EndIf}
+
+  ; restore registers
+  Pop $0
 
   ${ForceSingleton} "VASSAL-installer"
   ${WaitForVASSALToClose}
@@ -377,9 +388,11 @@ Function preUninstallOld
   ; find all versions of VASSAL, checking the 32- and 64-bit hives
   SetRegView 32
   ${FindVASSALVersions}
-  SetRegView 64
-  ${FindVASSALVersions}
-  SetRegView 32
+
+  ${If} ${RunningX64}
+    SetRegView 64
+    ${FindVASSALVersions}
+  ${EndIf}
 
   ; remove all versions in Standard setup, skip this page
   ${SkipIfNotCustom}
@@ -663,21 +676,23 @@ Section "-Application" Application
       ClearErrors
 
       ; clean up leftover reg keys
-      SetRegView 64
-      DeleteRegKey HKLM "${UNINST}\$1"
+      ${If} ${RunningX64}
+        SetRegView 64
+        DeleteRegKey HKLM "${UNINST}\$1"
+      ${EndIf}
 
       SetRegView 32
       DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
   ${EndIf}
 
-  SetRegView 32 
+  SetRegView ${ARCH}
 
   ; set the files to bundle
   !include "${INCDIR}/install_files.inc"
 
   ; write registry keys for uninstaller
-  WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
+  WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL ${VERSION}"
   WriteRegStr HKLM "${UROOT}" "DisplayVersion" "${VERSION}"
   WriteRegStr HKLM "${UROOT}" "InstallLocation" "$INSTDIR"
   WriteRegStr HKLM "${UROOT}" "UninstallString" "$INSTDIR\uninst.exe"
@@ -746,11 +761,12 @@ Section "-Application" Application
   ${RefreshShellIcons}
 SectionEnd
 
+
 #
 # Uninstall Section
 #
 Section Uninstall
-  SetRegView 32
+  SetRegView ${ARCH}
 
   ; delete the uninstaller
   Delete "$INSTDIR\uninst.exe"
