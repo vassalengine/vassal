@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.command.SetPersistentPropertyCommand;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -89,8 +90,11 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
     // Don't pass modifier keys alone to counters
     final boolean onlyModifierKeys = (c == KeyEvent.VK_SHIFT || c == KeyEvent.VK_CONTROL || c == KeyEvent.VK_ALT || c == KeyEvent.VK_META);
     if (!e.isConsumed() && !onlyModifierKeys) {
+      // Apply the Key to the currently selected pieces
       final Command comm = KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
-      if (comm != null && !comm.isNull()) {
+      // If the generated Command contains anything other than NullCommands or SetPersistantPropertyCommands, then then
+      // the KeyStroke triggered a trait action, so consume the KeyEvent so it doesn't get passed to the Chatter
+      if (! comm.isNullOrcontainsOnly(SetPersistentPropertyCommand.class)) {
         GameModule.getGameModule().sendAndLog(comm);
         e.consume();
         lastConsumedEvent = e;
