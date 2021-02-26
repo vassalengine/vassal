@@ -196,4 +196,22 @@ public abstract class Command {
     }
     return undo;
   }
+
+  /**
+   * Return true if this Command is a NullCommand or only contains
+   * Null Commands or commands of the same type as target
+   * @param target Class to inspect for
+   * @return true if this command contains only non-null Commands target class Commands
+   */
+  public boolean isNullOrcontainsOnly(Class<?> target) {
+    if (this instanceof NullCommand || target.isInstance(this)) {
+      for (final Command c : seq) {
+        if (c != null && !c.isNullOrcontainsOnly(target)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
 }
