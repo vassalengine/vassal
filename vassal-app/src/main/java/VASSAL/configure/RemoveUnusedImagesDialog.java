@@ -1,8 +1,9 @@
 package VASSAL.configure;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
+import VASSAL.launch.ExtensionEditorWindow;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
@@ -50,7 +51,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
   private final JButton ok;
 
-  private final GameModule module;
+  private final DataArchive archive;
 
   private final JButton dropAllButton;
   private final JButton keepAllButton;
@@ -65,10 +66,19 @@ public class RemoveUnusedImagesDialog extends JDialog {
     final FlowLabel text =
       new FlowLabel(Resources.getString("Editor.UnusedImages.unused_1"));
 
-    module = GameModule.getGameModule();
-    Collections.addAll(keep, module.getDataArchive().getImageNames());
+    AbstractBuildable parent;
+    if (owner instanceof ExtensionEditorWindow) {
+      parent = ((ExtensionEditorWindow) owner).getExtension();
+      archive = ((ExtensionEditorWindow) owner).getExtension().getDataArchive().getWriter();
+    }
+    else {
+      parent = GameModule.getGameModule();
+      archive = GameModule.getGameModule().getArchiveWriter();
+    }
 
-    for (final String filename : module.getAllImageNames()) {
+    Collections.addAll(keep, archive.getImageNames());
+
+    for (final String filename : parent.getAllImageNames()) {
       if (ImageUtils.hasImageSuffix(filename)) {
         keep.remove(filename);
       }
@@ -82,7 +92,7 @@ public class RemoveUnusedImagesDialog extends JDialog {
     SortedSet<String> keep2 = new TreeSet<>(keep);
     keep.clear();
     for (String file : keep2) {
-      final Entry entry = new Entry(file);
+      final Entry entry = new Entry(file, archive);
       keep.add(entry.getDisplayName());
       displayIndex.put(entry.getDisplayName(), entry);
     }
@@ -210,9 +220,8 @@ public class RemoveUnusedImagesDialog extends JDialog {
   }
 
   private void removeImages() {
-    final ArchiveWriter aw = module.getDataArchive().getWriter();
 
-    final File dir = new File(new File(aw.getName()).getParent(), "removed");
+    final File dir = new File(new File(archive.getName()).getParent(), "removed");
     dir.mkdir();
 
     for (final String uName : dump) {
@@ -220,14 +229,14 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
       GameModule.getGameModule().warn("- " + Resources.getString("Editor.UnusedImages.removing", uName));
 
-      try (InputStream in = aw.getInputStream(DataArchive.IMAGE_DIR + u)) {
+      try (InputStream in = archive.getWriter().getInputStream(DataArchive.IMAGE_DIR + u)) {
         Files.copy(in, dir.toPath().resolve(u));
       }
       catch (IOException ex) {
         logger.error("Augh!", ex); //NON-NLS, obviously
       }
 
-      aw.removeImage(u);
+      archive.getWriter().removeImage(u);
     }
 
     if (!dump.isEmpty()) {
@@ -242,10 +251,10 @@ public class RemoveUnusedImagesDialog extends JDialog {
     private final String displayName;
     private long size;
 
-    public Entry(String fileName) {
+    public Entry(String fileName, DataArchive archive) {
       this.fileName = fileName;
       try {
-        size = GameModule.getGameModule().getDataArchive().getArchive().getCompressedSize(DataArchive.IMAGE_DIR + fileName);
+        size = archive.getArchive().getCompressedSize(DataArchive.IMAGE_DIR + fileName);
       }
       catch (IOException ignored) {
         size = -1;
