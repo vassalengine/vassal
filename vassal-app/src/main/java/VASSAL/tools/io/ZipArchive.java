@@ -606,6 +606,25 @@ public class ZipArchive implements FileArchive {
 
   /** {@inheritDoc} */
   @Override
+  public long getCompressedSize(String path) throws IOException {
+    r.lock();
+    try {
+      openIfClosed();
+
+      final Entry e = entries.get(path);
+      if (e == null) {
+        throw new FileNotFoundException(path + " not in archive");
+      }
+
+      return e.file == null ? e.ze.getCompressedSize() : e.file.length();
+    }
+    finally {
+      r.unlock();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public long getMTime(String path) throws IOException {
     r.lock();
     try {

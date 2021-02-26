@@ -119,4 +119,8 @@ public class ExtensionEditorWindow extends EditorWindow {
       }
     });
   }
+
+  public ModuleExtension getExtension() {
+    return extension;
+  }
 }
