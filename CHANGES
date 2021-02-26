@@ -11,6 +11,7 @@
     character entered
 * 14088: Ensure image is updated on selection of new image with duplicate
     filename in the Editor
+* 14066: Remove Unused Images: Dialog sizing and file size display improvements
 
 3.5.3 - 23 February 2021
 
