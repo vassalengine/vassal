@@ -69,8 +69,8 @@ public class FileUtils {
     BigDecimal fileSizeInUnit = BigDecimal.ZERO;
     String val;
 
-    for (FileSize fs : FileSize.values()) {
-      BigDecimal size_bd = new BigDecimal(fileSize);
+    for (final FileSize fs : FileSize.values()) {
+      final BigDecimal size_bd = new BigDecimal(fileSize);
       fileSizeInUnit = size_bd.divide(new BigDecimal(fs.byteCount), 5, ROUNDING_MODE);
       if (fileSizeInUnit.compareTo(BigDecimal.ONE) >= 0) {
         unit = fs.unit;

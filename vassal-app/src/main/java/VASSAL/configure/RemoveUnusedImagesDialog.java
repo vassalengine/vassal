@@ -89,9 +89,9 @@ public class RemoveUnusedImagesDialog extends JDialog {
 
     // keep now contains a list of file names. Convert this to a list of display names
     // And build an index of Display names back to real names
-    SortedSet<String> keep2 = new TreeSet<>(keep);
+    final SortedSet<String> keep2 = new TreeSet<>(keep);
     keep.clear();
-    for (String file : keep2) {
+    for (final String file : keep2) {
       final Entry entry = new Entry(file, archive);
       keep.add(entry.getDisplayName());
       displayIndex.put(entry.getDisplayName(), entry);
@@ -208,10 +208,10 @@ public class RemoveUnusedImagesDialog extends JDialog {
     long keepTotal = 0;
     long dropTotal = 0;
 
-    for (String keepFile : keep) {
+    for (final String keepFile : keep) {
       keepTotal += displayIndex.get(keepFile).getSize();
     }
-    for (String keepFile : dump) {
+    for (final String keepFile : dump) {
       dropTotal += displayIndex.get(keepFile).getSize();
     }
 
