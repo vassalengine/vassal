@@ -306,7 +306,6 @@ bail_out:
 Var CustomSetup
 Var AddDesktopSC
 Var AddStartMenuSC
-Var AddQuickLaunchSC
 Var RemoveOtherVersions
 
 
@@ -542,7 +541,6 @@ Function preShortcuts
   ; set shortcuts defaults
   StrCpy $AddDesktopSC 1
   StrCpy $AddStartMenuSC 1
-  StrCpy $AddQuickLaunchSC 1
 
   ; present user with choices in a custom install
   ${SkipIfNotCustom}
@@ -559,9 +557,6 @@ Function preShortcuts
   ${NSD_CreateCheckBox} 15u 40u 100% 12u "In my &Start Menu Programs folder"
   Pop $AddStartMenuSC
   SendMessage $AddStartMenuSC ${BM_SETCHECK} ${BST_CHECKED} 1
-  ${NSD_CreateCheckBox} 15u 60u 100% 12u "In my &Quick Launch bar"
-  Pop $AddQuickLaunchSC
-  SendMessage $AddQuickLaunchSC ${BM_SETCHECK} ${BST_CHECKED} 1
 
   nsDialogs::Show
 
@@ -574,7 +569,6 @@ Function leaveShortcuts
   ; read which shortcuts to create from the check boxes
   ${NSD_GetState} $AddDesktopSC $AddDesktopSC
   ${NSD_GetState} $AddStartMenuSC $AddStartMenuSC
-  ${NSD_GetState} $AddQuickLaunchSC $AddQuickLaunchSC
 FunctionEnd
 
 
@@ -731,12 +725,6 @@ Section "-Application" Application
     ${EndIf}
   !insertmacro MUI_STARTMENU_WRITE_END
 
-  ; create the quick launch shortcut
-  ${If} $AddQuickLaunchSC == 1
-    CreateShortCut "$QUICKLAUNCH\$0.lnk" "$INSTDIR\VASSAL.exe"
-    WriteRegStr HKLM "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
-  ${EndIf}
-
   ; create file associations
   WriteRegStr HKLM "${AROOT}\.vmod" "" "VASSALModule"
 ;  WriteRegStr HKLM ".vmod" "Content Type" "application/vnd.vassal.module"
@@ -773,12 +761,6 @@ Section Uninstall
 
   ; delete the desktop shortuct
   ReadRegStr $0 HKLM "${UROOT}" "DesktopShortcut"
-  ${If} $0 != ""
-    Delete "$0"
-  ${EndIf}
-
-  ; delete the quick launch shortcut
-  ReadRegStr $0 HKLM "${UROOT}" "QuickLaunchShortcut"
   ${If} $0 != ""
     Delete "$0"
   ${EndIf}
