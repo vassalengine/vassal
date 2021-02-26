@@ -1,5 +1,6 @@
 3.5.4 - ???
 
+* 13143: First character is 'eaten' when typing chat while over map
 * 14139: Delete trait to set 'old...' properties prior to deleting piece
 * 14138: Turn Tracker mispopulates button tooltip field while running in editor
 * 14136: Module-level GKCs were not honoring fast match
