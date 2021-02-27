@@ -251,7 +251,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows-%/uninstall_files.inc: $(TMPDIR)/VASSAL-$(VE
 .SECONDARY:
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/VASSAL-$(VERSION)-windows-%/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)-windows-%/install_files.inc $(TMPDIR)/VASSAL-$(VERSION)-windows-%/uninstall_files.inc
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) -DARCH=$* $(DISTDIR)/windows/nsis/installer.nsi
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DNUMVERSION=$(VNUM) -DTMPDIR=$(TMPDIR) -DARCH=$* $(DISTDIR)/windows/nsis/installer.nsi
 
 $(TMPDIR)/VASSAL-$(VERSION)-noinst.zip: $(TMPDIR)/VASSAL-$(VERSION)-noinst/VASSAL-$(VERSION)
 	pushd $(TMPDIR)/VASSAL-$(VERSION)-noinst ; zip -9rv ../../$@ VASSAL-$(VERSION) ; popd

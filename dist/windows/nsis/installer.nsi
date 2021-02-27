@@ -20,10 +20,12 @@
 #
 
 Unicode true
+CRCCheck on
 
-; Note: VERSION, ARCH, and TMPDIR are defined from the command line in
-; the Makefile. These are here as a reminder only.
+; Note: VERSION, NUMVERSION, ARCH, and TMPDIR are defined from the command line
+; in the Makefile. These are here as a reminder only.
 ;!define VERSION "3.1.0-svn3025"
+;!define NUMVERSION "3.1.0"
 ;!define ARCH 64
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
@@ -42,6 +44,15 @@ OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-${ARCH}.exe"
 !else
   InstallDir "$PROGRAMFILES\VASSAL-${VERSION}"
 !endif
+
+VIProductVersion ${NUMVERSION}.0
+VIAddVersionKey ProductName VASSAL
+VIAddVersionKey CompanyName vassalengine.org
+VIAddVersionKey LegalCopyright "The VASSAL Team"
+VIAddVersionKey FileDescription VASSAL
+VIAddVersionKey FileVersion ${NUMVERSION}.0
+VIAddVersionKey ProductVersion ${VERSION}
+VIAddVersionKey InternalName VASSAL
 
 RequestExecutionLevel admin
 
