@@ -349,7 +349,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private class KeyStrokeAdapter extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      reportKeyEvent("KEY_PRESSED", e); // NON-NLS
+      // reportKeyEvent("KEY_PRESSED", e); // NON-NLS
       switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
       case KeyEvent.VK_BACK_SPACE:
@@ -359,38 +359,58 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_CONTROL:
       case KeyEvent.VK_META:
       case KeyEvent.VK_ALT:
+      case KeyEvent.VK_ALT_GRAPH:
+      case KeyEvent.VK_UNDEFINED:
         break;
       default:
         setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
       }
     }
 
+    // Repeat the Key handling for each Key of interest on release.
+    // This has no effect on Windows, but caters for the bizarre
+    // KeyEvent sequences created on MacOS.
     @Override
     public void keyReleased(KeyEvent e) {
-      reportKeyEvent("KEY_RELEASED", e); // NON-NLS
-      keyStroke.setText(getString((NamedKeyStroke) getValue()));
+      // reportKeyEvent("KEY_RELEASED", e); // NON-NLS
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_DELETE:
+      case KeyEvent.VK_BACK_SPACE:
+        setValue(NamedKeyStroke.NULL_KEYSTROKE);
+        break;
+      case KeyEvent.VK_SHIFT:
+      case KeyEvent.VK_CONTROL:
+      case KeyEvent.VK_META:
+      case KeyEvent.VK_ALT:
+      case KeyEvent.VK_ALT_GRAPH:
+      case KeyEvent.VK_UNDEFINED:
+        break;
+      default:
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
+      }
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-      reportKeyEvent("KEY_TYPED", e); // NON-NLS
-      super.keyTyped(e);
-    }
+    // Ignore KeyTyped
+//    @Override
+//    public void keyTyped(KeyEvent e) {
+//      reportKeyEvent("KEY_TYPED", e); // NON-NLS
+//      super.keyTyped(e);
+//    }
 
-    private void reportKeyEvent(String type, KeyEvent e) {
-      final String m = type +
-        ": Key=" + e.getKeyCode() + // NON-NLS
-        ", XKey=" + e.getExtendedKeyCode() + // NON-NLS
-        ", Shift=" + e.isShiftDown() + // NON-NLS
-        ", Ctrl=" + e.isControlDown() + // NON-NLS
-        ", Alt=" + e.isAltDown() + // NON-NLS
-        ", Meta=" + e.isMetaDown() + // NON-NLS
-        ", AltGraph=" + e.isAltGraphDown() + // NON-NLS
-        ", char=" + e.getKeyChar() + ", " + ((int) e.getKeyChar()) + ", \\u" + Integer.toHexString(e.getKeyChar()) // NON-NLS
-       ;
-      System.out.println(m);
-      logger.info(m);
-    }
+//    private void reportKeyEvent(String type, KeyEvent e) {
+//      final String m = type +
+//        ": Key=" + e.getKeyCode() + // NON-NLS
+//        ", XKey=" + e.getExtendedKeyCode() + // NON-NLS
+//        ", Shift=" + e.isShiftDown() + // NON-NLS
+//        ", Ctrl=" + e.isControlDown() + // NON-NLS
+//        ", Alt=" + e.isAltDown() + // NON-NLS
+//        ", Meta=" + e.isMetaDown() + // NON-NLS
+//        ", AltGraph=" + e.isAltGraphDown() + // NON-NLS
+//        ", char=" + e.getKeyChar() + ", " + ((int) e.getKeyChar()) + ", \\u" + Integer.toHexString(e.getKeyChar()) // NON-NLS
+//       ;
+//      System.out.println(m);
+//      logger.info(m);
+//    }
   }
 
   private class KeyNameFilter extends DocumentFilter {
@@ -418,6 +438,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       super.replace(fb, 0, keyStroke.getText().length(), text, attrs);
     }
+
   }
 
 
