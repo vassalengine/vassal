@@ -779,16 +779,6 @@ Section Uninstall
   ; delete registry keys
   DeleteRegKey HKLM "${UROOT}"
 
-  ${If} ${RunningX64}
-    ; kill the 32-bit registry tree if empty
-    DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org\VASSAL"
-    DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org"
-  ${EndIf}
-
-  ; kill the registry tree if empty
-  DeleteRegKey /ifempty HKLM "Software\vassalengine.org\VASSAL"
-  DeleteRegKey /ifempty HKLM "Software\vassalengine.org"
-
   ; remove file associations if they are ours
   ReadRegStr $0 HKLM "${AROOT}\VASSALModule\shell\open\command" ""
   ${If} $0 != ""
