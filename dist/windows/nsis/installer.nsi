@@ -787,6 +787,9 @@ Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER StartMenu $StartMenuFolder
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
+  ; delete VASSAL from start menu if empty
+  RMDir "$SMPROGRAMS\VASSAL"
+
   ; delete registry keys
   DeleteRegKey HKLM "${UROOT}"
 
@@ -813,7 +816,4 @@ Section Uninstall
 
   ; delete the installed files and directories
   !include "${INCDIR}/uninstall_files.inc"
-
-  ; delete VASSAL from start menu if empty
-  RMDir "$SMPROGRAMS\VASSAL"
 SectionEnd
