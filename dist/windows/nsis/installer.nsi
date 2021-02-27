@@ -47,7 +47,7 @@ RequestExecutionLevel admin
 
 # compression
 SetCompress auto
-SetCompressor /SOLID lzma
+SetCompressor /SOLID /FINAL lzma
 SetDatablockOptimize on
 
 # includes for various functions
@@ -79,6 +79,7 @@ SetDatablockOptimize on
 #
 # Install Pages
 #
+
 ; Welcome page
 !define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
