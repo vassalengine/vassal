@@ -400,7 +400,7 @@ Function preUninstallOld
   SetRegView 32
   ${FindVASSALVersions}
 
-  ${If} ${RunningX64}
+  ${If} ${ARCH} == 64
     SetRegView 64
     ${FindVASSALVersions}
   ${EndIf}
@@ -647,7 +647,7 @@ Section "-Application" Application
       DetailPrint "Uninstall: $1"
 
       ; look for 64-bit install
-      ${If} ${RunningX64}
+      ${If} ${ARCH} == 64
         SetRegView 64
 
         ; get old install and uninstaller paths
@@ -681,14 +681,6 @@ Section "-Application" Application
     cleanup:
       ClearErrors
 
-      ; clean up leftover reg keys
-      ${If} ${RunningX64}
-        SetRegView 64
-        DeleteRegKey HKLM "${UNINST}\$1"
-      ${EndIf}
-
-      SetRegView 32
-      DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
   ${EndIf}
 
