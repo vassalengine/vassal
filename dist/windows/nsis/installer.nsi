@@ -258,7 +258,7 @@ check_processes:
     System::Free $R6
     System::Call "Psapi::GetModuleBaseName(i R8, i r6, t .R7, i 256)i .r6"
 
-    ${If} $6 == 0
+    ${If} $R6 == 0
       System::Free $R7
       System::Free $R9
       GoTo cannot_check
