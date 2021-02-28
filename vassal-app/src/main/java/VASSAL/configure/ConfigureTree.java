@@ -2126,7 +2126,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @param target Edited Configurable
    */
   public void nodeEdited(Configurable target) {
-    ConfigureTreeNode node = (ConfigureTreeNode) getTreeNode(target);
+    final ConfigureTreeNode node = (ConfigureTreeNode) getTreeNode(target);
     node.setEdited(true);
     ((DefaultTreeModel) getModel()).nodeChanged(node);
   }
@@ -2137,6 +2137,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    *  - Track this node has been edited
    */
   private static class ConfigureTreeNode extends DefaultMutableTreeNode {
+    private static final long serialVersionUID = 1L;
 
     private boolean edited;
 
@@ -2184,7 +2185,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      */
     public void resetChildEditFlags() {
       if (getChildCount() > 0) {
-        for (TreeNode node : children) {
+        for (final TreeNode node : children) {
           ((ConfigureTreeNode) node).resetEditFlags();
         }
       }
