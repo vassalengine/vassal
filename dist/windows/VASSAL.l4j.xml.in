@@ -15,6 +15,7 @@
   </classPath>
   <jre>
     <path>jre</path>
+    %JREOPTS%
   </jre>
   <versionInfo>
     <fileVersion>%NUMVERSION%.0</fileVersion>

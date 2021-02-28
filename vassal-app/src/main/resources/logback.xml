@@ -2,25 +2,34 @@
   <property resource="git.properties" />
   <property name="LOG_FILE" value="errorLog-${git.version}" />
 
+  <if condition='isDefined("VASSAL.conf")'>
+    <then>
+      <property name="CONF_DIR" value="${VASSAL.conf}" />
+    </then>
+    <else>
+      <if condition='property("os.name").toLowerCase().startsWith("windows")'>
+        <then>
+          <property name="CONF_DIR" value="${APPDATA}/VASSAL" />
+        </then>
+        <else>
+          <if condition='property("os.name").toLowerCase().startsWith("mac")'>
+            <then>
+              <property name="CONF_DIR" value="${user.home}/Library/Application Support/VASSAL" />
+            </then>
+            <else>
+              <property name="CONF_DIR" value="${user.home}/.VASSAL" />
+            </else>
+          </if>
+        </else>
+      </if>
+    </else>
+  </if>
+
   <conversionRule conversionWord="pid"
                   converterClass="VASSAL.tools.logging.ProcessIDConverter" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <if condition='property("os.name").toLowerCase().startsWith("windows")'>
-      <then>
-        <file>${APPDATA}/VASSAL/${LOG_FILE}</file>
-      </then>
-      <else>
-        <if condition='property("os.name").toLowerCase().startsWith("mac")'>
-          <then>
-            <file>${user.home}/Library/Application Support/VASSAL/${LOG_FILE}</file>
-          </then>
-          <else>
-            <file>${user.home}/.VASSAL/${LOG_FILE}</file>
-          </else>
-        </if>
-      </else>
-    </if>
+    <file>${CONF_DIR}/${LOG_FILE}</file>
     <encoder>
       <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
     </encoder>
