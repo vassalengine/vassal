@@ -171,43 +171,6 @@ Page custom preConfirm leaveConfirm
 !define SkipIfNotCustom "!insertmacro SkipIfNotCustom"
 
 
-!macro ForceSingleton _MUTEX
-  #
-  # Only one instance of the installer may run at a time.
-  # Based on http://nsis.sourceforge.net/Allow_only_one_installer_instance.
-  #
-
-  ; set up a mutex
-  BringToFront
-  System::Call "kernel32::CreateMutexA(i 0, i 0, t '${_MUTEX}') i .r0 ?e"
-  Pop $0
-
-  ; if the mutex already existed, find the installer running before us
-  ${If} $0 != 0
-    StrLen $0 "${_MUTEX}"
-    IntOp $0 $0 + 1
-
-    ; loop until we find the other installer
-    ${Do}
-      FindWindow $1 '#32770' '' 0 $1
-      ${If} $1 == 0
-        Abort
-      ${EndIf}
-
-      System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-      ${If} $2 == "${_MUTEX}"
-        ; bring it to the front and die
-        System::Call "user32::ShowWindow(i r1,i 9) i."
-        System::Call "user32::SetForegroundWindow(i r1) i."
-        Abort
-      ${EndIf}
-    ${Loop}
-  ${EndIf}
-!macroend
-
-!define ForceSingleton "!insertmacro ForceSingleton"
-
-
 !macro WaitForVASSALToClose
   #
   # Detect running instances of VASSAL.
@@ -325,7 +288,6 @@ Var RemoveOtherVersions
 # Functions
 #
 Function un.onInit
-  ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
@@ -349,7 +311,6 @@ Function .onInit
   ; restore registers
   Pop $0
 
-  ${ForceSingleton} "VASSAL-installer"
   ${WaitForVASSALToClose}
 FunctionEnd
 
@@ -668,15 +629,16 @@ Section "-Application" Application
 
       ; copy the uninstaller to $TEMP
       CopyFiles "$3" "$TEMP"
-      ${GetFileName} $3 $3
+      ${GetFileName} $3 $4
 
       ; run the uninstaller silently
-      ExecWait '"$TEMP\$3" /S _?=$2'
+      ExecWait '"$TEMP\$4" /S _?=$2' $5
       IfErrors 0 +2
-      DetailPrint "Failed: $1"
+      DetailPrint "Failed with code $5"
       ClearErrors
 
-      Delete "$TEMP\$3"   ; remove the uninstaller copy
+      ; remove the uninstaller copy
+      Delete "$TEMP\$4"
 
     cleanup:
       ClearErrors
