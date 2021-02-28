@@ -1,7 +1,7 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <outfile>VASSAL-noinst.exe</outfile>
+  <outfile>VASSAL.exe</outfile>
   <errTitle>VASSAL</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -15,7 +15,7 @@
   </classPath>
   <jre>
     <path>jre</path>
-    <opt>-DVASSAL.conf="%EXEDIR%\..\VASSAL"</opt>
+    %JREOPTS%
   </jre>
   <versionInfo>
     <fileVersion>%NUMVERSION%.0</fileVersion>

@@ -29,7 +29,7 @@ CRCCheck on
 ;!define ARCH 64
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
-!define INCDIR "${TMPDIR}/VASSAL-${VERSION}-windows-${ARCH}"
+!define INCDIR "${TMPDIR}/windows-${ARCH}-${VERSION}-build"
 
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 !define VNAME "VASSAL ${VERSION}"
