@@ -96,6 +96,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -117,7 +119,7 @@ import org.apache.commons.lang3.StringUtils;
  * When we're running as the Extension Editor, this is subclassed by {@link ExtensionTree}, which
  * overrides some methods to handle extension-specific differences.
  */
-public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener, TreeSelectionListener {
+public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener, TreeSelectionListener, TreeExpansionListener {
   private static final long serialVersionUID = 1L;
 
   protected Map<Configurable, DefaultMutableTreeNode> nodes = new HashMap<>();
@@ -182,6 +184,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addMouseListener(this);
     addMouseMotionListener(this);
     addTreeSelectionListener(this);
+    addTreeExpansionListener(this);
     searchCmd = Resources.getString("Editor.search"); //$NON-NLS-1$
     moveCmd = Resources.getString("Editor.move"); //$NON-NLS-1$
     deleteCmd = Resources.getString("Editor.delete"); //$NON-NLS-1$
@@ -303,6 +306,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     });
   }
 
+  @Override
+  public void treeExpanded(TreeExpansionEvent event) {
+
+  }
+
+  /**
+   * A cell has been collapsed. Reset the edit flag on all the children owned by this node
+   * @param event Expansion event
+   */
+  @Override
+  public void treeCollapsed(TreeExpansionEvent event) {
+    final ConfigureTreeNode node = (ConfigureTreeNode) event.getPath().getLastPathComponent();
+    node.resetChildEditFlags();
+  }
+
 
   class KeyAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
@@ -347,7 +365,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected DefaultMutableTreeNode buildTreeNode(Configurable c) {
     c.addPropertyChangeListener(this);
-    final DefaultMutableTreeNode node = new DefaultMutableTreeNode(c);
+    final DefaultMutableTreeNode node = new ConfigureTreeNode(c);
     final Configurable[] children = c.getConfigureComponents();
     for (final Configurable child : children) {
       if (! (child instanceof Plugin)) { // Hide Plug-ins
@@ -932,30 +950,35 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     ((DefaultTreeModel) getModel()).nodeChanged(newValue);
   }
 
+  /**
+   * Custom Tree Cell Renderer
+   * Change the font to italic if the Configurable held by the node for this cell has been edited.
+   */
   static class Renderer extends javax.swing.tree.DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
+    private Font plainFont;
+    private Font italicFont;
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-      if (value instanceof DefaultMutableTreeNode) {
-        final Configurable c =
-          (Configurable) ((DefaultMutableTreeNode) value).getUserObject();
-        if (c != null) {
-          leaf = c.getAllowableConfigureComponents().length == 0;
-          String name = (c.getConfigureName() != null ? c.getConfigureName() : "");
-          if (c instanceof GlobalProperty) {
-            final String desc = ((GlobalProperty)c).getDescription();
-            if (!desc.isEmpty()) {
-              name = name + " - " + desc;
-            }
+      final JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+      if (plainFont == null) {
+        plainFont = label.getFont();
+      }
+      if (value instanceof ConfigureTreeNode) {
+        final ConfigureTreeNode c = (ConfigureTreeNode) value;
+        if (c.isEdited()) {
+          if (italicFont == null) {
+            final Font f = label.getFont();
+            italicFont = new Font(f.getFontName(), Font.ITALIC, f.getSize());
           }
-          value = name + " [" + getConfigureName(c.getClass()) + "]";
+          label.setFont(italicFont);
+        }
+        else {
+          label.setFont(plainFont);
         }
       }
-
-      return super.getTreeCellRendererComponent(
-        tree, value, sel, expanded, leaf, row, hasFocus
-      );
+      return label;
     }
   }
 
@@ -1128,6 +1151,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (remove(parent, target)) {
       insert(parent, target, 0);
     }
+    ((DefaultTreeModel) getModel()).nodeChanged(node);
   }
 
   /**
@@ -1220,9 +1244,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     selected = null;
     final TreePath path = e.getPath();
     if (path != null) {
-      selected = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+      final DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+      selected = (Configurable) selectedNode.getUserObject();
       selectedRow = getRowForPath(path);
       updateEditMenu();
+      ((DefaultTreeModel) getModel()).nodeChanged(selectedNode);
     }
   }
 
@@ -1233,8 +1259,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
     moveAction.setEnabled(selected != null);
     searchAction.setEnabled(true);
-    propertiesAction.setEnabled(selected != null &&
-      selected.getConfigurer() != null);
+    // Check the cached Configurer in the TreeNode, not the Configurable as Configurable.getConfigurer()
+    // is very expensive and resets the Configurer causing label truncation issues in the JTree
+    propertiesAction.setEnabled(selected != null && selected.getConfigurer() != null);
     translateAction.setEnabled(selected != null);
   }
 
@@ -2089,6 +2116,77 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
       else {
         return target.toLowerCase().contains(searchString.toLowerCase());
+      }
+    }
+  }
+
+  /**
+   * Called when the Configurable held by a node has been edited.
+   * Set the edit status and re-build the Jtree label
+   * @param target Edited Configurable
+   */
+  public void nodeEdited(Configurable target) {
+    ConfigureTreeNode node = (ConfigureTreeNode) getTreeNode(target);
+    node.setEdited(true);
+    ((DefaultTreeModel) getModel()).nodeChanged(node);
+  }
+
+  /**
+   * Custom TreeNode
+   *  - Determine description for the node
+   *  - Track this node has been edited
+   */
+  private static class ConfigureTreeNode extends DefaultMutableTreeNode {
+
+    private boolean edited;
+
+    public ConfigureTreeNode(Object userObject) {
+      super(userObject);
+      edited = false;
+    }
+
+    @Override
+    public String toString() {
+      String description = "";
+
+      final Configurable c =  (Configurable) getUserObject();
+      if (c != null) {
+        description = (c.getConfigureName() != null ? c.getConfigureName() : "");
+        if (c instanceof GlobalProperty) {
+          final String desc = ((GlobalProperty)c).getDescription();
+          if (!desc.isEmpty()) {
+            description += " - " + desc;
+          }
+        }
+        description += " [" + getConfigureName(c.getClass()) + "]";
+      }
+      return description;
+    }
+
+    public boolean isEdited() {
+      return edited;
+    }
+
+    public void setEdited(boolean edited) {
+      this.edited = edited;
+    }
+
+    /**
+     * Reset the edit flags on this node and all Children of this node
+     */
+    private void resetEditFlags() {
+      setEdited(false);
+      resetChildEditFlags();
+    }
+
+    /**
+     * Reset the edit flags on all Children of this node
+     */
+    public void resetChildEditFlags() {
+      if (getChildCount() > 0) {
+        for (TreeNode node : children) {
+          ((ConfigureTreeNode) node).resetEditFlags();
+        }
       }
     }
   }
