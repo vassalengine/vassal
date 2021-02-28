@@ -17,6 +17,6 @@ jobs:
       - name: Install JDK
         run: |
           sudo apt-get install openjdk-11-jdk
-          sudo update-java-alternatives -s java-11-openjdk-amd64
+          sudo update-java-alternatives -l
       - name: Build and Test
         run: ./mvnw clean test -B
