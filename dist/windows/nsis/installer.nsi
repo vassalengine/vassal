@@ -650,7 +650,7 @@ Section "-Application" Application
       ${If} ${ARCH} == 64
         SetRegView 64
 
-        ; get old install and uninstaller paths
+        ; get paths
         ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
         ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
         IfErrors 0 found
