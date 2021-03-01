@@ -80,6 +80,7 @@
                             <overWriteIfNewer>true</overWriteIfNewer>
                             <includeArtifactIds>vassal-doc</includeArtifactIds>
                             <includeScope>compile</includeScope>
+                            <excludes>META-INF/**</excludes>
                         </configuration>
                     </execution>
                 </executions>

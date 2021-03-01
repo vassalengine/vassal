@@ -1,5 +1,5 @@
 #
-#  Copyright (c) 2008-2020 by Joel Uckelman
+#  Copyright (c) 2008-2021 by Joel Uckelman
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
@@ -19,30 +19,46 @@
 # General Configuration
 #
 
-; Note: VERSION and TMPDIR are defined from the command line in
-; the Makefile. These are here as a reminder only.
+Unicode true
+CRCCheck on
+
+; Note: VERSION, NUMVERSION, ARCH, and TMPDIR are defined from the command line
+; in the Makefile. These are here as a reminder only.
 ;!define VERSION "3.1.0-svn3025"
+;!define NUMVERSION "3.1.0"
+;!define ARCH 64
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
-Unicode True
+!define INCDIR "${TMPDIR}/windows-${ARCH}-${VERSION}-build"
 
-!define SRCDIR "${TMPDIR}/VASSAL-${VERSION}"
 !define UNINST "Software\Microsoft\Windows\CurrentVersion\Uninstall"
-!define VNAME "VASSAL (${VERSION})"
+!define VNAME "VASSAL ${VERSION}"
 !define UROOT "${UNINST}\${VNAME}"
 !define AROOT "Software\Classes"
 
 Name "VASSAL"
-OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-64.exe"
+OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-${ARCH}.exe"
 
-; InstDir is set in .onInit based on the architecture
-InstallDir ""
+!if ${ARCH} == 64
+  InstallDir "$PROGRAMFILES64\VASSAL-${VERSION}"
+!else
+  InstallDir "$PROGRAMFILES\VASSAL-${VERSION}"
+!endif
+
+VIProductVersion ${NUMVERSION}.0
+VIAddVersionKey ProductName VASSAL
+VIAddVersionKey CompanyName vassalengine.org
+VIAddVersionKey LegalCopyright "The VASSAL Team"
+VIAddVersionKey FileDescription VASSAL
+VIAddVersionKey FileVersion ${NUMVERSION}.0
+VIAddVersionKey ProductVersion ${VERSION}
+VIAddVersionKey InternalName VASSAL
 
 RequestExecutionLevel admin
 
 # compression
 SetCompress auto
-SetCompressor /SOLID lzma
+SetCompressor /SOLID /FINAL lzma
 SetDatablockOptimize on
 
 # includes for various functions
@@ -74,6 +90,7 @@ SetDatablockOptimize on
 #
 # Install Pages
 #
+
 ; Welcome page
 !define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
@@ -154,44 +171,6 @@ Page custom preConfirm leaveConfirm
 !define SkipIfNotCustom "!insertmacro SkipIfNotCustom"
 
 
-!macro ForceSingleton _MUTEX
-  #
-  # Only one instance of the installer may run at a time.
-  # Based on http://nsis.sourceforge.net/Allow_only_one_installer_instance.
-  #
-
-  ; set up a mutex
-  BringToFront
-  System::Call "kernel32::CreateMutexA(i 0, i 0, t '${_MUTEX}') i .r0 ?e"
-  Pop $0
-
-  ; if the mutex already existed, find the installer running before us
-  ${If} $0 != 0
-    StrLen $0 "${_MUTEX}"
-    IntOp $0 $0 + 1
-
-    ; loop until we find the other installer
-    ${Do}
-      FindWindow $1 '#32770' '' 0 $1
-      ${If} $1 == 0
-        Abort
-      ${EndIf}
-
-      System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-      ${If} $2 == "${_MUTEX}"
-        ; bring it to the front and die
-        System::Call "user32::ShowWindow(i r1,i 9) i."
-        System::Call "user32::SetForegroundWindow(i r1) i."
-        Abort
-      ${EndIf}
-    ${Loop}
-  ${EndIf}
-!macroend
-
-!define ForceSingleton "!insertmacro ForceSingleton"
-
-
-; detect running instances of VASSAL
 !macro WaitForVASSALToClose
   #
   # Detect running instances of VASSAL.
@@ -242,7 +221,7 @@ check_processes:
     System::Free $R6
     System::Call "Psapi::GetModuleBaseName(i R8, i r6, t .R7, i 256)i .r6"
 
-    ${If} $6 == 0
+    ${If} $R6 == 0
       System::Free $R7
       System::Free $R9
       GoTo cannot_check
@@ -278,13 +257,12 @@ bail_out:
 !define WaitForVASSALToClose "!insertmacro WaitForVASSALToClose"
 
 
-
 !macro FindVASSALVersions
   StrCpy $R0 0
   ${Do}
     EnumRegKey $0 HKLM "${UNINST}" $R0
-    StrCpy $R1 "$0" 8
-    ${If} $R1 == "VASSAL ("
+    StrCpy $R1 "$0" 7
+    ${If} $R1 == "VASSAL "
       ${WordFind} "$RemoveOtherVersions" "$\n" "E/$R0" $1
       IfErrors 0 +2
       StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
@@ -303,32 +281,36 @@ bail_out:
 Var CustomSetup
 Var AddDesktopSC
 Var AddStartMenuSC
-Var AddQuickLaunchSC
 Var RemoveOtherVersions
+
 
 #
 # Functions
 #
 Function un.onInit
-  SetRegView 64
-  ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
 
 Function .onInit
-  ${IfNot} ${RunningX64}
-    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires 64-bit Windows.$\n$\nTo use VASSAL ${VERSION} on 32-bit Windows, please install the 32-bit Windows package."
+  ; save registers
+  Push $0
+
+  ${If} ${RunningX64}
+    StrCpy $0 64
+  ${Else}
+    StrCpy $0 32
+  ${EndIf}
+
+  ${If} $0 != ${ARCH}
+    # wrong package for your architecture
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires ${ARCH}-bit Windows.$\n$\nTo use VASSAL ${VERSION} on $0-bit Windows, please install the $0-bit Windows package."
     Abort
   ${EndIf}
 
-  SetRegView 64
+  ; restore registers
+  Pop $0
 
-  ${If} $InstDir == "" ; /D= was not used on the command line
-      StrCpy $InstDir "$PROGRAMFILES64\VASSAL-${VERSION}"
-  ${EndIf}
-
-  ${ForceSingleton} "VASSAL-installer"
   ${WaitForVASSALToClose}
 FunctionEnd
 
@@ -378,8 +360,11 @@ Function preUninstallOld
   ; find all versions of VASSAL, checking the 32- and 64-bit hives
   SetRegView 32
   ${FindVASSALVersions}
-  SetRegView 64
-  ${FindVASSALVersions}
+
+  ${If} ${ARCH} == 64
+    SetRegView 64
+    ${FindVASSALVersions}
+  ${EndIf}
 
   ; remove all versions in Standard setup, skip this page
   ${SkipIfNotCustom}
@@ -529,7 +514,6 @@ Function preShortcuts
   ; set shortcuts defaults
   StrCpy $AddDesktopSC 1
   StrCpy $AddStartMenuSC 1
-  StrCpy $AddQuickLaunchSC 1
 
   ; present user with choices in a custom install
   ${SkipIfNotCustom}
@@ -546,9 +530,6 @@ Function preShortcuts
   ${NSD_CreateCheckBox} 15u 40u 100% 12u "In my &Start Menu Programs folder"
   Pop $AddStartMenuSC
   SendMessage $AddStartMenuSC ${BM_SETCHECK} ${BST_CHECKED} 1
-  ${NSD_CreateCheckBox} 15u 60u 100% 12u "In my &Quick Launch bar"
-  Pop $AddQuickLaunchSC
-  SendMessage $AddQuickLaunchSC ${BM_SETCHECK} ${BST_CHECKED} 1
 
   nsDialogs::Show
 
@@ -561,7 +542,6 @@ Function leaveShortcuts
   ; read which shortcuts to create from the check boxes
   ${NSD_GetState} $AddDesktopSC $AddDesktopSC
   ${NSD_GetState} $AddStartMenuSC $AddStartMenuSC
-  ${NSD_GetState} $AddQuickLaunchSC $AddQuickLaunchSC
 FunctionEnd
 
 
@@ -628,13 +608,15 @@ Section "-Application" Application
       DetailPrint "Uninstall: $1"
 
       ; look for 64-bit install
-      SetRegView 64
+      ${If} ${ARCH} == 64
+        SetRegView 64
 
-      ; get old install and uninstaller paths
-      ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
-      ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
-      IfErrors 0 found
-      ClearErrors
+        ; get paths
+        ReadRegStr $2 HKLM "${UNINST}\$1" "InstallLocation"
+        ReadRegStr $3 HKLM "${UNINST}\$1" "UninstallString"
+        IfErrors 0 found
+        ClearErrors
+      ${EndIf}
 
       ; look for 32-bit install
       SetRegView 32
@@ -647,35 +629,30 @@ Section "-Application" Application
 
       ; copy the uninstaller to $TEMP
       CopyFiles "$3" "$TEMP"
-      ${GetFileName} $3 $3
+      ${GetFileName} $3 $4
 
       ; run the uninstaller silently
-      ExecWait '"$TEMP\$3" /S _?=$2'
+      ExecWait '"$TEMP\$4" /S _?=$2' $5
       IfErrors 0 +2
-      DetailPrint "Failed: $1"
+      DetailPrint "Failed with code $5"
       ClearErrors
 
-      Delete "$TEMP\$3"   ; remove the uninstaller copy
+      ; remove the uninstaller copy
+      Delete "$TEMP\$4"
 
     cleanup:
       ClearErrors
 
-      ; clean up leftover reg keys
-      SetRegView 64
-      DeleteRegKey HKLM "${UNINST}\$1"
-
-      SetRegView 32
-      DeleteRegKey HKLM "${UNINST}\$1"
     ${Loop}
   ${EndIf}
 
-  SetRegView 64
+  SetRegView ${ARCH}
 
   ; set the files to bundle
-  !include "${TMPDIR}/install_files.inc"
+  !include "${INCDIR}/install_files.inc"
 
   ; write registry keys for uninstaller
-  WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
+  WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL ${VERSION}"
   WriteRegStr HKLM "${UROOT}" "DisplayVersion" "${VERSION}"
   WriteRegStr HKLM "${UROOT}" "InstallLocation" "$INSTDIR"
   WriteRegStr HKLM "${UROOT}" "UninstallString" "$INSTDIR\uninst.exe"
@@ -714,12 +691,6 @@ Section "-Application" Application
     ${EndIf}
   !insertmacro MUI_STARTMENU_WRITE_END
 
-  ; create the quick launch shortcut
-  ${If} $AddQuickLaunchSC == 1
-    CreateShortCut "$QUICKLAUNCH\$0.lnk" "$INSTDIR\VASSAL.exe"
-    WriteRegStr HKLM "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
-  ${EndIf}
-
   ; create file associations
   WriteRegStr HKLM "${AROOT}\.vmod" "" "VASSALModule"
 ;  WriteRegStr HKLM ".vmod" "Content Type" "application/vnd.vassal.module"
@@ -744,23 +715,18 @@ Section "-Application" Application
   ${RefreshShellIcons}
 SectionEnd
 
+
 #
 # Uninstall Section
 #
 Section Uninstall
-  SetRegView 64
+  SetRegView ${ARCH}
 
   ; delete the uninstaller
   Delete "$INSTDIR\uninst.exe"
 
   ; delete the desktop shortuct
   ReadRegStr $0 HKLM "${UROOT}" "DesktopShortcut"
-  ${If} $0 != ""
-    Delete "$0"
-  ${EndIf}
-
-  ; delete the quick launch shortcut
-  ReadRegStr $0 HKLM "${UROOT}" "QuickLaunchShortcut"
   ${If} $0 != ""
     Delete "$0"
   ${EndIf}
@@ -775,16 +741,11 @@ Section Uninstall
   !insertmacro MUI_STARTMENU_GETFOLDER StartMenu $StartMenuFolder
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
+  ; delete VASSAL from start menu if empty
+  RMDir "$SMPROGRAMS\VASSAL"
+
   ; delete registry keys
   DeleteRegKey HKLM "${UROOT}"
-
-  ; kill the 32-bit registry tree if empty
-  DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org\VASSAL"
-  DeleteRegKey /ifempty HKLM "Software\Wow6432Node\vassalengine.org"
-
-  ; kill the registry tree if empty
-  DeleteRegKey /ifempty HKLM "Software\vassalengine.org\VASSAL"
-  DeleteRegKey /ifempty HKLM "Software\vassalengine.org"
 
   ; remove file associations if they are ours
   ReadRegStr $0 HKLM "${AROOT}\VASSALModule\shell\open\command" ""
@@ -808,8 +769,5 @@ Section Uninstall
   ${EndIf}
 
   ; delete the installed files and directories
-  !include "${TMPDIR}/uninstall_files.inc"
-
-  ; delete VASSAL from start menu if empty
-  RMDir "$SMPROGRAMS\VASSAL"
+  !include "${INCDIR}/uninstall_files.inc"
 SectionEnd

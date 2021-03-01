@@ -68,8 +68,11 @@ public class EditPropertiesAction extends AbstractAction {
         @Override
         public void windowClosed(WindowEvent e) {
           openWindows.remove(target);
-          if (tree != null && target instanceof ConfigureTree.Mutable) {
-            tree.nodeUpdated(target);
+          if (tree != null) {
+            if (target instanceof ConfigureTree.Mutable) {
+              tree.nodeUpdated(target);
+            }
+            tree.nodeEdited(target);
           }
         }
       });
@@ -78,6 +81,7 @@ public class EditPropertiesAction extends AbstractAction {
       SwingUtils.ensureOnScreen(w);
       if (tree != null) {
         tree.notifyStateChanged(true);
+        tree.nodeEdited(target);
       }
     }
     w.toFront();

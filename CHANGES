@@ -1,5 +1,9 @@
 3.5.4 - ???
 
+* 14149: Installer fails to run uninstallers for old versions
+* 14148: Module Editor Labels get truncated with '...'
+* 14143: First character is 'eaten' when typing chat while over map
+* 14139: Delete trait to set 'old...' properties prior to deleting piece
 * 14138: Turn Tracker mispopulates button tooltip field while running in editor
 * 14136: Module-level GKCs were not honoring fast match
 * 14131: String method calls in Beanshell don't return proper result unless
@@ -7,6 +11,9 @@
 * 14124: Remove "(Optional)" from Send to Location Board Name hint text
 * 14112: In Dynamic Property List of values, cursor jumps after first
     character entered
+* 14088: Ensure image is updated on selection of new image with duplicate
+    filename in the Editor
+* 14066: Remove Unused Images: Dialog sizing and file size display improvements
 
 3.5.3 - 23 February 2021
 

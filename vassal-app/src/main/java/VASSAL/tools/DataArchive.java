@@ -202,7 +202,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     // HFS+ filesystem and the filename contains decomposable characters,
     // so it got munged into NFD. Aauugh! Seriously, DIAF Apple!
     final String nfd = Normalizer.normalize(fileName, Normalizer.Form.NFD);
-    if (fileName != nfd) {
+    if (!fileName.equals(nfd)) {
       in = getInputStreamImpl(nfd);
       if (in != null) {
         return in;
@@ -762,7 +762,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * Read all available bytes from the given InputStream.
-   * @deprecated Use {@link InputStream.readAllBytes()} instead.
+   * @deprecated Use {@link InputStream#readAllBytes()} instead.
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public static byte[] getBytes(InputStream in) throws IOException {

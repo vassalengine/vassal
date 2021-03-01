@@ -91,13 +91,22 @@ public class ImagePicker extends JPanel
   }
 
   public void setImageName(String name) {
-    imageName = name;
     remove(0);
+
     if (name == null || name.isEmpty()) {
       imageName = null;
       add(noImage, 0);
     }
     else {
+      if (name.equals(imageName)) {
+        // We have to do this because we have no way of calling update on
+        // any ImageOps which depend on this image.
+        Op.clearCache();
+      }
+      else {
+        imageName = name;
+      }
+
       icon.setOp(Op.load(imageName));
       final Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
 
