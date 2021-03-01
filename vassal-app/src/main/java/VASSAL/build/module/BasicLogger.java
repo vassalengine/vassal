@@ -419,8 +419,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
     File file = fc.getSelectedFile();
-    if (file.getName().indexOf('.') == -1)
+
+    // append .vlog if it's not there already
+    if (!file.getName().endsWith(".vlog")) {
       file = new File(file.getParent(), file.getName() + ".vlog"); //NON-NLS
+    }
 
     // warn user if overwriting log from an old version
     if (file.exists()) {
