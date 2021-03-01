@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -47,6 +48,7 @@ import javax.swing.text.DocumentFilter;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -363,7 +365,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(convert(e)));
       }
     }
 
@@ -386,9 +388,10 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(convert(e)));
       }
     }
+
 
     // Ignore KeyTyped
 //    @Override
@@ -411,6 +414,28 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 //      System.out.println(m);
 //      logger.info(m);
 //    }
+  }
+
+  /**
+   * On Mac Systems, convert the Right-Option modifier (VK_ALT_GRAPH) to be the same as the Left-Option
+   * modifier (VK_ALT). This mirrors the equivalency of the left and right ALT keys under windows.
+   *
+   * @param e KeyEvent to be examined
+   * @return Updated KeyEvent
+   */
+  public static KeyEvent convert(KeyEvent e) {
+    if (SystemUtils.IS_OS_MAC && e.isAltGraphDown()) {
+      return new KeyEvent(
+        (Component) e.getSource(),
+        e.getID(),
+        e.getWhen(),
+        (e.getModifiersEx() | InputEvent.ALT_DOWN_MASK) & ~InputEvent.ALT_GRAPH_DOWN_MASK,
+        e.getKeyCode(),
+        e.getKeyChar(),
+        e.getKeyLocation()
+      );
+    }
+    return e;
   }
 
   private class KeyNameFilter extends DocumentFilter {
