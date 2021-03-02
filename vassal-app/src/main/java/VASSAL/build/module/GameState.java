@@ -536,12 +536,14 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
-        if (gameStarted) { //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
-          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-          setup(false);
-        }
+        final boolean foreground = gameStarted;
         g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
-        loadGameInBackground(f);
+        if (foreground) {
+          loadGameInForeground(f);
+        }
+        else {
+          loadGameInBackground(f);
+        }
       }
 
       lastSaveFile = f;
@@ -880,8 +882,24 @@ public class GameState implements CommandEncoder {
     ModuleManagerUpdateHelper.sendGameUpdate(f);
   }
 
+
+  public void loadGameInForeground(final File f) {
+    try {
+      loadGameInForeground(
+        f.getName(),
+        new BufferedInputStream(Files.newInputStream(f.toPath()))
+      );
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, f);
+    }
+  }
+
   public void loadGameInForeground(final String shortName,
                                    final InputStream in) throws IOException {
+    GameModule.getGameModule().warn(
+      Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
@@ -890,6 +908,16 @@ public class GameState implements CommandEncoder {
       }
       finally {
         gameLoadingInForeground = false;
+
+        String msg;
+        if (loadComments != null && loadComments.length() > 0) {
+          msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
+        }
+        else {
+          msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
+        }
+        GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
+        GameModule.getGameModule().warn(msg);
       }
     }
   }
