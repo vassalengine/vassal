@@ -620,13 +620,25 @@ public class MassKeyCommand extends AbstractToolbarItem
     return getConfigureTypeName();
   }
 
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurables property fields (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return target.getPropertyList();
+  }
+
   /**
    * {@link VASSAL.search.SearchTarget}
    * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(propertiesFilter.getExpression());
+    final List<String> expList = target.getExpressionList();
+    expList.add(propertiesFilter.getExpression());
+    return expList;
   }
 
   /**
