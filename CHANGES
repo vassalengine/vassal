@@ -1,5 +1,7 @@
 3.5.4 - ???
 
+* 14152: .vsav, .vlog should be appended to saves, logs when not present,
+    instead of checking for '.'
 * 14149: Installer fails to run uninstallers for old versions
 * 14148: Module Editor Labels get truncated with '...'
 * 14143: First character is 'eaten' when typing chat while over map
