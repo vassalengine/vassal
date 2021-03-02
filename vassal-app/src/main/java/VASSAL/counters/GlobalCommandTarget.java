@@ -278,19 +278,17 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
       }
       if (targetType == Target.XY) {
         expList.add(targetBoard.getExpression());
-      }
-      if (targetType == Target.ZONE) {
-        expList.add(targetZone.getExpression());
-      }
-      if (targetType == Target.LOCATION) {
-        expList.add(targetLocation.getExpression());
-      }
-      if (targetType == Target.DECK) {
-        expList.add(targetDeck.getExpression());
-      }
-      if (targetType == Target.XY) {
         expList.add(targetX.getExpression());
         expList.add(targetY.getExpression());
+      }
+      else if (targetType == Target.ZONE) {
+        expList.add(targetZone.getExpression());
+      }
+      else if (targetType == Target.LOCATION) {
+        expList.add(targetLocation.getExpression());
+      }
+      else if (targetType == Target.DECK) {
+        expList.add(targetDeck.getExpression());
       }
     }
 
