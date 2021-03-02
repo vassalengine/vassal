@@ -2068,10 +2068,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final TargetProgress progress = new TargetProgress();
       final String matchString = "<b><u>Matches for " + name + ": </u></b>";
 
-      if (protoskip) {
-        stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, "Prototype Definition", "", "Name", progress);
-        stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, "Prototype Definition", "", "Type", progress);
-      }
+      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Name", progress);
+      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress);
 
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
       // the same order they're listed in the PieceDefiner window.
@@ -2088,9 +2086,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               progress.checkShowTrait(matchString, "Trait", desc);
             }
           }
-
-          stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, "Trait", desc, "Name", progress);
-          stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, "Trait", desc, "Type", progress);
 
           stringListHits(searchParameters.isMatchExpressions(), d.getExpressionList(), searchString, matchString, "Trait", desc, "Expression", progress);
           stringListHits(searchParameters.isMatchProperties(), d.getPropertyList(), searchString, matchString, "Trait", desc, "Property", progress);
