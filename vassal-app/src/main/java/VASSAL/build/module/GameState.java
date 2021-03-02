@@ -647,8 +647,11 @@ public class GameState implements CommandEncoder {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
     File file = fc.getSelectedFile();
-    if (file.getName().indexOf('.') == -1)
+
+    // append .vsav if it's not there already
+    if (!file.getName().endsWith(".vsav")) {
       file = new File(file.getParent(), file.getName() + ".vsav"); //NON-NLS
+    }
 
     return file;
   }
