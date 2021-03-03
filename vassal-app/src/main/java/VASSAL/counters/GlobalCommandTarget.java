@@ -269,6 +269,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   /**
    * @return a list of the item's string/expression fields if any (for search)
    */
+  @Override
   public List<String> getExpressionList() {
     final List<String> expList = new ArrayList<>();
 
@@ -303,6 +304,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   /**
    * @return a list of any Message Format strings referenced in the item, if any (for search)
    */
+  @Override
   public List<String> getFormattedStringList() {
     return Collections.emptyList();
   }
@@ -310,6 +312,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   /**
    * @return a list of any Menu/Button/Tooltip Text strings referenced in the item, if any (for search)
    */
+  @Override
   public List<String> getMenuTextList() {
     return Collections.emptyList();
   }
@@ -317,6 +320,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   /**
    * @return a list of any Named KeyStrokes referenced in the item, if any (for search)
    */
+  @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     return Collections.emptyList();
   }
@@ -324,6 +328,7 @@ public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
   /**
    * @return a list of any Property Names referenced in the item, if any (for search)
    */
+  @Override
   public List<String> getPropertyList() {
     if (fastMatchProperty) {
       return List.of(targetProperty.getExpression());
