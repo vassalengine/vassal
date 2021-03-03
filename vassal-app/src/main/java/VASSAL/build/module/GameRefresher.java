@@ -233,7 +233,7 @@ public final class GameRefresher implements GameComponent {
       for (final PieceSlot slot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
         gpIdChecker.add(slot);
       }
-
+  
       // Add any PieceSlots in Prototype Definitions
       for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
         pc.getDefinitions().forEach(gpIdChecker::add);
@@ -256,20 +256,10 @@ public final class GameRefresher implements GameComponent {
      */
     final List<GamePiece> pieces = getCurrentGameRefresherPieces();
 
-    // Build list of Decks.
-
-
     /*
      * 3. Generate the commands to update the pieces
      */
     for (final GamePiece piece : pieces) {
-      final Stack stack = piece.getParent();
-      boolean isDeck = ( stack instanceof  Deck );
-      Deck deck = null;
-      if (isDeck) {
-         deck = (Deck) stack;
-      }
-      String stackName = deck.getName();
       processGamePiece(piece, command);
     }
 
@@ -320,8 +310,6 @@ public final class GameRefresher implements GameComponent {
       return;
     }
 
-
-    // Remove the old Piece if different
     updatedCount++;
 
     if (isTestMode()) {
@@ -334,7 +322,8 @@ public final class GameRefresher implements GameComponent {
     }
     else {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
-      final Point pos = piece.getPosition();
+      final Point piecePosition = piece.getPosition();
+      Point tempPosition = piecePosition;
       final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
 
       // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
@@ -343,14 +332,28 @@ public final class GameRefresher implements GameComponent {
       // Place new piece on the map where the old piece was
       // Then position it at the same position in the stack the old piece was
 
+
+      // Place the new Piece.
+      final Stack stack = piece.getParent();
+      Deck deck = null;
+      boolean isDeck = ( stack instanceof  Deck );
+      if (isDeck) {
+        deck = (Deck) stack;
+        tempPosition = new Point(-1,-1);
+        deck.setPosition(tempPosition);
+      }
+
       // Delete the old piece
       final Command remove = new RemovePiece(Decorator.getOutermost(piece));
       remove.execute();
       command.append(remove);
 
-      // Place the new Piece.
-      final Command place = map.placeOrMerge(newPiece, pos);
+      final Command place = map.placeOrMerge(newPiece, tempPosition);
       command.append(place);
+
+      if (isDeck) {
+        deck.setPosition(piecePosition);
+      }
 
       // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
@@ -520,4 +523,6 @@ public final class GameRefresher implements GameComponent {
       results.setText(results.getText() + "\n" + mess); //NON-NLS
     }
   }
+
+
 }
