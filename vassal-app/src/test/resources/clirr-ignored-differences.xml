@@ -28,4 +28,12 @@
         <field>SUPPORTED_STRING_METHODS</field>
         <justification>No chance of subclass</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/NullExpression</className>
+        <differenceType>7009</differenceType>
+        <method>NullExpression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
 </differences>

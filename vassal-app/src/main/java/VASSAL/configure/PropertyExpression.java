@@ -17,7 +17,7 @@ import VASSAL.tools.ErrorDialog;
  */
 public class PropertyExpression implements PieceFilter {
 
-  protected Expression expression = new NullExpression();
+  protected Expression expression = NullExpression.instance();
 
   public PropertyExpression() {
 

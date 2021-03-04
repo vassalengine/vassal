@@ -27,7 +27,7 @@ import VASSAL.tools.SequenceEncoder;
  * least one $variable$ name reference
  *
  */
-public class FormattedStringExpression extends Expression {
+public class FormattedStringExpression extends BaseExpression {
 
   public FormattedStringExpression(String s) {
     setExpression(s);

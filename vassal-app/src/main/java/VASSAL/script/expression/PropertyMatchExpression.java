@@ -27,7 +27,7 @@ import VASSAL.tools.FormattedString;
 /**
  * An old-style Property Match expression.
  */
-public class PropertyMatchExpression extends Expression {
+public class PropertyMatchExpression extends BaseExpression {
 
   protected PieceFilter filter;
 

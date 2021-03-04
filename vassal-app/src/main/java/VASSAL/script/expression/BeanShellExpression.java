@@ -31,7 +31,7 @@ import VASSAL.tools.FormattedString;
 /**
  * A basic beanShell expression
  */
-public class BeanShellExpression extends Expression {
+public class BeanShellExpression extends BaseExpression {
 
   protected ExpressionInterpreter interpreter;
 
@@ -182,7 +182,7 @@ public class BeanShellExpression extends Expression {
     }
 
     if (expr.isBlank()) {
-      return new NullExpression();
+      return NullExpression.instance();
     }
 
     try {

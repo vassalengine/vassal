@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -19,12 +18,9 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 
 /**
  * An abstract class representing an expression that can be evaluated.
@@ -35,15 +31,9 @@ import VASSAL.tools.ErrorDialog;
  */
 public abstract class Expression {
 
-  private String expression;
+  public abstract void setExpression(String s);
 
-  public void setExpression(String s) {
-    expression = s;
-  }
-
-  public String getExpression() {
-    return expression;
-  }
+  public abstract String getExpression();
 
   /**
    * Each subclass must implement evaluate() to evaluate itself
@@ -80,34 +70,13 @@ public abstract class Expression {
    * @param ps Property Source providing property values
    * @return evaluated String
    */
-  public String tryEvaluate(PropertySource ps) {
-    String result = null;
-    try {
-      result = evaluate(ps);
-    }
-    catch (ExpressionException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
-    }
-    return result;
-  }
+  public abstract String tryEvaluate(PropertySource ps);
 
   /**
    * Evaluate an expression with data warning support built in
    * @return evaluated String
    */
-  public String tryEvaluate() {
-    String result = null;
-    try {
-      result = evaluate();
-    }
-    catch (ExpressionException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
-    }
-    return result;
-  }
-
+  public abstract String tryEvaluate();
 
   /**
    * Evaluate an expression with data warning support built in
@@ -115,18 +84,7 @@ public abstract class Expression {
    * @param localized Localize property calls?
    * @return evaluated String
    */
-  public String tryEvaluate(PropertySource ps, boolean localized) {
-    String result = null;
-    try {
-      result = evaluate(ps, localized);
-    }
-    catch (ExpressionException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));  //NON-NLS
-    }
-    return result;
-  }
-
+  public abstract String tryEvaluate(PropertySource ps, boolean localized);
 
   /**
    * Evaluate an expression with data warning support built in
@@ -135,18 +93,7 @@ public abstract class Expression {
    * @param localized Localize property calls?
    * @return evaluated String
    */
-  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    String result = null;
-    try {
-      result = evaluate(ps, properties, localized);
-    }
-    catch (ExpressionException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        "Expression=" + getExpression() + ", Error=" + e.getError(), e));  //NON-NLS
-    }
-    return result;
-  }
-
+  public abstract String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized);
 
   /**
    * Return a PieceFilter using the expression.
@@ -176,10 +123,9 @@ public abstract class Expression {
    * these types.
    */
   public static Expression createExpression(String s) {
-
     // A null expression?
     if (s == null || s.isBlank()) {
-      return new NullExpression();
+      return NullExpression.instance();
     }
 
     final String t = s.trim();
@@ -204,7 +150,6 @@ public abstract class Expression {
 
     // Must be a plain String
     return new StringExpression(s);
-
   }
 
   /**
@@ -214,10 +159,9 @@ public abstract class Expression {
    * @return Generated Expression
    */
   public static Expression createPropertyExpression(String s) {
-
     // A null expression?
     if (s == null || s.isBlank()) {
-      return new NullExpression();
+      return NullExpression.instance();
     }
 
     final String t = s.trim();
@@ -229,7 +173,6 @@ public abstract class Expression {
 
     // An old-style Property Match String
     return new PropertyMatchExpression(t);
-
   }
 
   /**
@@ -239,10 +182,9 @@ public abstract class Expression {
    *
    */
   public static Expression createSimplePropertyExpression(String s) {
-
     // A null expression?
     if (s == null || s.isBlank()) {
-      return new NullExpression();
+      return NullExpression.instance();
     }
 
     final String t = s.trim();
@@ -253,23 +195,5 @@ public abstract class Expression {
     }
 
     return new SinglePropertyExpression(t);
-  }
-
-  @Override
-  public int hashCode() {
-    return expression == null ? 0 : expression.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-
-    if (obj == null || getClass() != obj.getClass()) return false;
-
-    final Expression other = (Expression) obj;
-
-    if (expression == null && other.expression != null) return false;
-
-    return expression.equals(other.expression);
   }
 }

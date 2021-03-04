@@ -25,7 +25,7 @@ import VASSAL.build.module.properties.PropertySource;
  * An expression consisting of an Integer only
  *
  */
-public class IntExpression extends Expression {
+public class IntExpression extends BaseExpression {
 
   public IntExpression(int i) {
     try {

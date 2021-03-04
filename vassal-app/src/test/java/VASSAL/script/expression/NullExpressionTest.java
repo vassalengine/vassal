@@ -10,20 +10,20 @@ public class NullExpressionTest {
 
   @Test
   public void constructor() {
-    Expression e = new NullExpression();
+    Expression e = NullExpression.instance();
     assertThat(e.getExpression(), is(emptyString()));
   }
 
   @Test
   public void evaluate() throws ExpressionException {
-    Expression e = new NullExpression();
+    Expression e = NullExpression.instance();
     String s = e.evaluate();
     assertThat(s, is(emptyString()));
   }
 
   @Test
   public void toBeanShellString() {
-    Expression e = new NullExpression();
+    Expression e = NullExpression.instance();
     String s = e.toBeanShellString();
     assertThat(s, is(emptyString()));
   }
