@@ -77,6 +77,22 @@ public class ZipWriter implements Closeable {
   public OutputStream write(String dst) throws IOException {
     zout.putNextEntry(makeEntry(dst));
     return new FilterOutputStream(zout) {
+      // Override the write methods to pass directly to the inner stream
+      @Override
+      public void write(int b) throws IOException {
+        out.write(b);
+      }
+
+      @Override
+      public void write(byte[] b) throws IOException {
+        out.write(b);
+      }
+
+      @Override
+      public void write(byte[] b, int off, int len) throws IOException {
+        out.write(b, off, len);
+      }
+
       @Override
       public void close() throws IOException {
         // Prevent zout from being closed; there may be entries yet to write
