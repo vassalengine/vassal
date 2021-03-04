@@ -27,7 +27,7 @@ import VASSAL.build.module.properties.PropertySource;
  * An expression consisting of a single property name
  *
  */
-public class SinglePropertyExpression extends Expression {
+public class SinglePropertyExpression extends BaseExpression {
 
   public SinglePropertyExpression(String ex) {
     if (ex.startsWith("$") && ex.endsWith("$")) {

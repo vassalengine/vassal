@@ -26,14 +26,46 @@ import VASSAL.build.module.properties.PropertySource;
  *
  */
 public class NullExpression extends Expression {
+  private NullExpression() {
+  }
 
-  public NullExpression() {
-    setExpression("");
+  private static final NullExpression THE_EXPRESSION = new NullExpression();
+
+  public static NullExpression instance() {
+    return THE_EXPRESSION;
   }
 
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) {
+  public void setExpression(String s) {
+  }
+
+  @Override
+  public String getExpression() {
+    return "";
+  }
+
+  @Override
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
+    return "";
+  }
+
+  @Override
+  public String tryEvaluate(PropertySource ps) {
+    return "";
+  }
+
+  @Override
+  public String tryEvaluate() {
+    return "";
+  }
+
+  @Override
+  public String tryEvaluate(PropertySource ps, boolean localized) {
+    return "";
+  }
+
+  @Override
+  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
     return "";
   }
 
@@ -41,5 +73,4 @@ public class NullExpression extends Expression {
   public String toBeanShellString() {
     return "";
   }
-
 }
