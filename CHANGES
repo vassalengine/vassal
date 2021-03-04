@@ -1,5 +1,6 @@
 3.5.4 - ???
 
+* 14167: Inefficient implementation of FilterOutputStream in ZipWriter
 * 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
 * 14155: Search was showing duplicate entries for certain items
 * 14154: Search wasn't finding "Fast Match" fields
