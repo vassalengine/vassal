@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2020 by Vassal developers
  *
  * This library is free software; you can redistribute it and/or
@@ -37,11 +36,8 @@ import VASSAL.tools.RecursionLimiter.Loopable;
  * A String that can include options of the form $optionName$. Option values
  * are maintained in a property list and getText returns the string will all
  * options replaced by their value
- *
- *
  */
 public class FormattedString implements Loopable {
-
   // The actual string for display purposes
   protected String formatString;
 
@@ -49,6 +45,7 @@ public class FormattedString implements Loopable {
   protected Expression format;
 
   protected Map<String, String> props = new HashMap<>();
+
   protected PropertySource defaultProperties;
 
   @Override
@@ -60,7 +57,6 @@ public class FormattedString implements Loopable {
   public String getComponentName() {
     return Resources.getString("Editor.FormattedString.component_type");
   }
-
 
   public FormattedString() {
     this("");
@@ -149,20 +145,33 @@ public class FormattedString implements Loopable {
         return format.evaluate(source, props, localized);
       }
       catch (ExpressionException e) {
+        BadDataReport bdr;
+        final String msg = Resources.getString("Error.expression_error");
+        final String exp = format.getExpression();
+
         if (source instanceof EditablePiece) {
-          ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+          bdr = new BadDataReport(
+            (EditablePiece) source, msg, exp, e
+          );
         }
         else if (source instanceof AbstractConfigurable) {
-          ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+          bdr = new BadDataReport(
+            (AbstractConfigurable) source, msg, exp, e
+          );
         }
         else {
-          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+          bdr = new BadDataReport(msg, exp, e);
         }
+
+        ErrorDialog.dataWarning(bdr);
         return "";
       }
     }
     catch (RecursionLimitException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
+      ErrorDialog.dataWarning(new BadDataReport(
+        Resources.getString("Error.possible_infinite_string_loop"),
+        format.getExpression(), e
+      ));
       return "";
     }
     finally {
@@ -183,7 +192,11 @@ public class FormattedString implements Loopable {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(
+        source,
+        Resources.getString("Error.non_number_error"),
+        debugInfo(this, value, description), e
+      ));
     }
     return result;
   }
@@ -195,7 +208,11 @@ public class FormattedString implements Loopable {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(
+        source,
+        Resources.getString("Error.non_number_error"),
+        debugInfo(this, value, description), e
+      ));
     }
     return result;
   }
@@ -253,5 +270,4 @@ public class FormattedString implements Loopable {
     }
     else return formatString.equals(other.formatString);
   }
-
 }
