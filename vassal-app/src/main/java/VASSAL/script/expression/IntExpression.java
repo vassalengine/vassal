@@ -16,6 +16,8 @@
  */
 package VASSAL.script.expression;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * An expression consisting of an Integer only
  *
@@ -26,6 +28,6 @@ public class IntExpression extends ImmutableExpression {
   }
 
   public static Expression instance(int i) {
-    return CACHE.computeIfAbsent(i, k -> new IntExpression(i));
+    return CACHE.computeIfAbsent(Pair.of(i, IntExpression.class), k -> new IntExpression(i));
   }
 }
