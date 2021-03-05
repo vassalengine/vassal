@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -18,33 +17,27 @@
 package VASSAL.script.expression;
 
 import java.util.Map;
-
-import VASSAL.build.module.properties.PropertySource;
+import java.util.WeakHashMap;
 
 /**
  * An expression consisting of an Integer only
  *
  */
-public class IntExpression extends BaseExpression {
+public class IntExpression extends ImmutableExpression {
+  private static final Map<Integer, IntExpression> CACHE = new WeakHashMap<>();
 
-  public IntExpression(int i) {
-    try {
-      setExpression(String.valueOf(i));
-    }
-    catch (NumberFormatException e) {
-      setExpression("0");
-    }
+  private final String v;
+
+  private IntExpression(int i) {
+    v = String.valueOf(i);
   }
 
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) {
-    return getExpression();
+  public String getExpression() {
+    return v;
   }
 
-  @Override
-  public String toBeanShellString() {
-    return getExpression();
+  public static IntExpression instance(int i) {
+    return CACHE.computeIfAbsent(i, k -> new IntExpression(k));
   }
-
 }

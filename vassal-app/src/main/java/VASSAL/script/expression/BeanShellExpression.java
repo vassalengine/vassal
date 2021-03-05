@@ -186,7 +186,7 @@ public class BeanShellExpression extends BaseExpression {
     }
 
     try {
-      return new IntExpression(Integer.parseInt(expr));
+      return IntExpression.instance(Integer.parseInt(expr));
     }
     catch (NumberFormatException e) {
       // Not an error
@@ -196,7 +196,7 @@ public class BeanShellExpression extends BaseExpression {
     if (! dontCreateStringExpressions) {
       if (expr.length() > 1 && expr.startsWith("\"") && expr.endsWith("\"")
         && expr.indexOf('"', 1) == expr.length() - 1) {
-        return new StringExpression(expr.substring(1, expr.length() - 1));
+        return StringExpression.instance(expr.substring(1, expr.length() - 1));
       }
     }
 
