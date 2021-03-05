@@ -18,9 +18,12 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * An abstract class representing an expression that can be evaluated.
@@ -46,8 +49,7 @@ public abstract class Expression {
    *          localize property calls?
    * @return evaluated String.
    */
-  public abstract String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) throws ExpressionException;
+  public abstract String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException;
 
   public String evaluate() throws ExpressionException {
     return evaluate(null, null, false);
@@ -65,18 +67,30 @@ public abstract class Expression {
     return evaluate(null, null, localized);
   }
 
+  private void handleError(ExpressionException e) {
+    ErrorDialog.dataWarning(new BadDataReport(
+      Resources.getString("Error.expression_error"),
+      "Expression=" + getExpression() + ", Error=" + e.getError(), //NON-NLS
+      e
+    ));
+  }
+
   /**
    * Evaluate an expression with data warning support built in
    * @param ps Property Source providing property values
    * @return evaluated String
    */
-  public abstract String tryEvaluate(PropertySource ps);
+  public String tryEvaluate(PropertySource ps) {
+    return tryEvaluate(ps, null, false);
+  }
 
   /**
    * Evaluate an expression with data warning support built in
    * @return evaluated String
    */
-  public abstract String tryEvaluate();
+  public String tryEvaluate() {
+    return tryEvaluate(null, null, false);
+  }
 
   /**
    * Evaluate an expression with data warning support built in
@@ -84,7 +98,18 @@ public abstract class Expression {
    * @param localized Localize property calls?
    * @return evaluated String
    */
-  public abstract String tryEvaluate(PropertySource ps, boolean localized);
+  public String tryEvaluate(PropertySource ps, boolean localized) {
+    return tryEvaluate(ps, null, localized);
+  }
+
+  /**
+   * Evaluate an expression with data warning support built in
+   * @param localized Localize property calls?
+   * @return evaluated String
+   */
+  public String tryEvaluate(boolean localized) {
+    return tryEvaluate(null, null, localized);
+  }
 
   /**
    * Evaluate an expression with data warning support built in
@@ -93,7 +118,15 @@ public abstract class Expression {
    * @param localized Localize property calls?
    * @return evaluated String
    */
-  public abstract String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized);
+  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
+    try {
+      return evaluate(ps, properties, localized);
+    }
+    catch (ExpressionException e) {
+      handleError(e);
+      return null;
+    }
+  }
 
   /**
    * Return a PieceFilter using the expression.

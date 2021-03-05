@@ -17,13 +17,7 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
 import java.util.Objects;
-
-import VASSAL.build.BadDataReport;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 
 /**
  * An abstract class representing an expression that can be evaluated.
@@ -43,80 +37,6 @@ public abstract class BaseExpression extends Expression {
   @Override
   public String getExpression() {
     return expression;
-  }
-
-  private void handleError(ExpressionException e) {
-    ErrorDialog.dataWarning(new BadDataReport(
-      Resources.getString("Error.expression_error"),
-      "Expression=" + getExpression() + ", Error=" + e.getError(), //NON-NLS
-      e
-    ));
-  }
-
-  /**
-   * Evaluate an expression with data warning support built in
-   * @param ps Property Source providing property values
-   * @return evaluated String
-   */
-  @Override
-  public String tryEvaluate(PropertySource ps) {
-    try {
-      return evaluate(ps);
-    }
-    catch (ExpressionException e) {
-      handleError(e);
-      return null;
-    }
-  }
-
-  /**
-   * Evaluate an expression with data warning support built in
-   * @return evaluated String
-   */
-  @Override
-  public String tryEvaluate() {
-    try {
-      return evaluate();
-    }
-    catch (ExpressionException e) {
-      handleError(e);
-      return null;
-    }
-  }
-
-  /**
-   * Evaluate an expression with data warning support built in
-   * @param ps Property Source providing property values
-   * @param localized Localize property calls?
-   * @return evaluated String
-   */
-  @Override
-  public String tryEvaluate(PropertySource ps, boolean localized) {
-    try {
-      return evaluate(ps, localized);
-    }
-    catch (ExpressionException e) {
-      handleError(e);
-      return null;
-    }
-  }
-
-  /**
-   * Evaluate an expression with data warning support built in
-   * @param ps Property Source providing property values
-   * @param properties Default property values
-   * @param localized Localize property calls?
-   * @return evaluated String
-   */
-  @Override
-  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    try {
-      return evaluate(ps, properties, localized);
-    }
-    catch (ExpressionException e) {
-      handleError(e);
-      return null;
-    }
   }
 
   @Override

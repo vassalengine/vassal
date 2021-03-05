@@ -23,16 +23,12 @@ package VASSAL.script.expression;
  */
 public class NullExpression extends ImmutableExpression {
   private NullExpression() {
+    super("");
   }
 
   private static final NullExpression THE_EXPRESSION = new NullExpression();
 
   public static NullExpression instance() {
     return THE_EXPRESSION;
-  }
-
-  @Override
-  public String getExpression() {
-    return "";
   }
 }

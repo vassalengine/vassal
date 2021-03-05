@@ -16,26 +16,13 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
-
 /**
  * An expression consisting of a String only
  *
  */
 public class StringExpression extends ImmutableExpression {
-  private static final Map<String, StringExpression> CACHE = new ConcurrentSoftHashMap<>();
-
-  private final String v;
-
   private StringExpression(String s) {
-    v = s;
-  }
-
-  @Override
-  public String getExpression() {
-    return v;
+    super(s);
   }
 
   @Override
@@ -43,7 +30,7 @@ public class StringExpression extends ImmutableExpression {
     return "\"" + getExpression() + "\"";
   }
 
-  public static StringExpression instance(String s) {
-    return CACHE.computeIfAbsent(s, k -> new StringExpression(k));
+  public static Expression instance(String s) {
+    return CACHE.computeIfAbsent(s, k -> new StringExpression(s));
   }
 }
