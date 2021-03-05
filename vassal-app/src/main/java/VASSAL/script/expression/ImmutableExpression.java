@@ -18,6 +18,8 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
@@ -26,7 +28,7 @@ import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
  *
  */
 public abstract class ImmutableExpression extends Expression {
-  protected static final Map<Object, ImmutableExpression> CACHE = new ConcurrentSoftHashMap<>();
+  protected static final Map<Pair<Object, Class<? extends ImmutableExpression>>, ImmutableExpression> CACHE = new ConcurrentSoftHashMap<>();
 
   protected final String expr;
 
@@ -45,7 +47,7 @@ public abstract class ImmutableExpression extends Expression {
   }
 
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
     return expr;
   }
 
