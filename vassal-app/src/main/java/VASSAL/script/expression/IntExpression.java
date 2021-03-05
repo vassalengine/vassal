@@ -16,29 +16,16 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
-
 /**
  * An expression consisting of an Integer only
  *
  */
 public class IntExpression extends ImmutableExpression {
-  private static final Map<Integer, IntExpression> CACHE = new ConcurrentSoftHashMap<>();
-
-  private final String v;
-
   private IntExpression(int i) {
-    v = String.valueOf(i);
+    super(String.valueOf(i));
   }
 
-  @Override
-  public String getExpression() {
-    return v;
-  }
-
-  public static IntExpression instance(int i) {
-    return CACHE.computeIfAbsent(i, k -> new IntExpression(k));
+  public static Expression instance(int i) {
+    return CACHE.computeIfAbsent(i, k -> new IntExpression(i));
   }
 }

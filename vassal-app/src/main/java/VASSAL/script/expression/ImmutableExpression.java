@@ -19,12 +19,26 @@ package VASSAL.script.expression;
 import java.util.Map;
 
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 /**
  * An immutable Expression
  *
  */
 public abstract class ImmutableExpression extends Expression {
+  protected static final Map<Object, ImmutableExpression> CACHE = new ConcurrentSoftHashMap<>();
+
+  protected final String expr;
+
+  public ImmutableExpression(String s) {
+    expr = s;
+  }
+
+  @Override
+  public String getExpression() {
+    return expr;
+  }
+
   @Override
   public void setExpression(String s) {
     throw new UnsupportedOperationException();
@@ -32,31 +46,11 @@ public abstract class ImmutableExpression extends Expression {
 
   @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    return getExpression();
-  }
-
-  @Override
-  public String tryEvaluate(PropertySource ps) {
-    return getExpression();
-  }
-
-  @Override
-  public String tryEvaluate() {
-    return getExpression();
-  }
-
-  @Override
-  public String tryEvaluate(PropertySource ps, boolean localized) {
-    return getExpression();
-  }
-
-  @Override
-  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    return getExpression();
+    return expr;
   }
 
   @Override
   public String toBeanShellString() {
-    return getExpression();
+    return expr;
   }
 }
