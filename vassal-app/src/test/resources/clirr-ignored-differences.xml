@@ -50,4 +50,18 @@
         <justification>No chance of subclass</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/script/expression/Expression</className>
+        <differenceType>7004</differenceType>
+        <method>Expression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/Expression</className>
+        <differenceType>7009</differenceType>
+        <method>Expression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
 </differences>

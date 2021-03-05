@@ -21,7 +21,7 @@ package VASSAL.script.expression;
  * An Empty Expression
  *
  */
-public class NullExpression extends ImmutableExpression {
+public class NullExpression extends Expression {
   private NullExpression() {
     super("");
   }
