@@ -137,7 +137,7 @@ public abstract class Expression {
 
     // A simple integer expression
     try {
-      return new IntExpression(Integer.parseInt(t));
+      return IntExpression.instance(Integer.parseInt(t));
     }
     catch (NumberFormatException e) {
       // Not an error
@@ -149,7 +149,7 @@ public abstract class Expression {
     }
 
     // Must be a plain String
-    return new StringExpression(s);
+    return StringExpression.instance(s);
   }
 
   /**

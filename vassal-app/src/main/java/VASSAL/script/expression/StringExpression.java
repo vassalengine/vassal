@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -18,26 +17,32 @@
 package VASSAL.script.expression;
 
 import java.util.Map;
-
-import VASSAL.build.module.properties.PropertySource;
+import java.util.WeakHashMap;
 
 /**
  * An expression consisting of a String only
  *
  */
-public class StringExpression extends BaseExpression {
+public class StringExpression extends ImmutableExpression {
+  private static final Map<String, StringExpression> CACHE = new WeakHashMap<>();
 
-  public StringExpression(String s) {
-    setExpression(s);
+  private final String v;
+
+  private StringExpression(String s) {
+    v = s;
   }
 
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    return getExpression();
+  public String getExpression() {
+    return v;
   }
 
   @Override
   public String toBeanShellString() {
     return "\"" + getExpression() + "\"";
+  }
+
+  public static StringExpression instance(String s) {
+    return CACHE.computeIfAbsent(s, k -> new StringExpression(k));
   }
 }

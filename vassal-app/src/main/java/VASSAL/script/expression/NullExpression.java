@@ -17,15 +17,11 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import VASSAL.build.module.properties.PropertySource;
-
 /**
  * An Empty Expression
  *
  */
-public class NullExpression extends Expression {
+public class NullExpression extends ImmutableExpression {
   private NullExpression() {
   }
 
@@ -36,41 +32,7 @@ public class NullExpression extends Expression {
   }
 
   @Override
-  public void setExpression(String s) {
-  }
-
-  @Override
   public String getExpression() {
-    return "";
-  }
-
-  @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    return "";
-  }
-
-  @Override
-  public String tryEvaluate(PropertySource ps) {
-    return "";
-  }
-
-  @Override
-  public String tryEvaluate() {
-    return "";
-  }
-
-  @Override
-  public String tryEvaluate(PropertySource ps, boolean localized) {
-    return "";
-  }
-
-  @Override
-  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    return "";
-  }
-
-  @Override
-  public String toBeanShellString() {
     return "";
   }
 }

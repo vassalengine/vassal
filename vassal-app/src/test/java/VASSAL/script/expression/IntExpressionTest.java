@@ -12,28 +12,28 @@ public class IntExpressionTest {
 
   @Test
   public void constructor() {
-    Expression e = new IntExpression(TEST_INT);
+    Expression e = IntExpression.instance(TEST_INT);
     assertThat(e.getExpression(), is(equalTo(String.valueOf(TEST_INT))));
   }
 
   @Test
   public void evaluate() throws ExpressionException {
-    Expression e = new IntExpression(TEST_INT);
+    Expression e = IntExpression.instance(TEST_INT);
     String s = e.evaluate();
     assertThat(s, is(equalTo(String.valueOf(TEST_INT))));
 
-    e = new IntExpression(-TEST_INT);
+    e = IntExpression.instance(-TEST_INT);
     s = e.evaluate();
     assertThat(s, is(equalTo(String.valueOf(-TEST_INT))));
   }
 
   @Test
   public void toBeanShellString() {
-    Expression e = new IntExpression (TEST_INT);
+    Expression e = IntExpression.instance(TEST_INT);
     String s = e.toBeanShellString();
     assertThat(s, is(equalTo(String.valueOf(TEST_INT))));
 
-    e = new IntExpression(-TEST_INT);
+    e = IntExpression.instance(-TEST_INT);
     s = e.toBeanShellString();
     assertThat(s, is(equalTo(String.valueOf(-TEST_INT))));
   }
