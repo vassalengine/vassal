@@ -17,14 +17,15 @@
 package VASSAL.script.expression;
 
 import java.util.Map;
-import java.util.WeakHashMap;
+
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 /**
  * An expression consisting of an Integer only
  *
  */
 public class IntExpression extends ImmutableExpression {
-  private static final Map<Integer, IntExpression> CACHE = new WeakHashMap<>();
+  private static final Map<Integer, IntExpression> CACHE = new ConcurrentSoftHashMap<>();
 
   private final String v;
 
