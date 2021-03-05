@@ -17,6 +17,9 @@
 package VASSAL.script.expression;
 
 import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -24,6 +27,7 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 /**
  * An abstract class representing an expression that can be evaluated.
@@ -32,11 +36,22 @@ import VASSAL.tools.ErrorDialog;
  * evaluated.
  *
  */
-public abstract class Expression {
+public class Expression {
+  protected static final Map<Pair<Object, Class<? extends Expression>>, Expression> CACHE = new ConcurrentSoftHashMap<>();
 
-  public abstract void setExpression(String s);
+  private final String expr;
 
-  public abstract String getExpression();
+  protected Expression(String s) {
+    expr = s;
+  }
+
+  public String getExpression() {
+    return expr;
+  }
+
+  public void setExpression(String s) {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Each subclass must implement evaluate() to evaluate itself
@@ -49,7 +64,9 @@ public abstract class Expression {
    *          localize property calls?
    * @return evaluated String.
    */
-  public abstract String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException;
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
+    return expr;
+  }
 
   public String evaluate() throws ExpressionException {
     return evaluate(null, null, false);
@@ -67,7 +84,7 @@ public abstract class Expression {
     return evaluate(null, null, localized);
   }
 
-  private void handleError(ExpressionException e) {
+  protected void handleError(ExpressionException e) {
     ErrorDialog.dataWarning(new BadDataReport(
       Resources.getString("Error.expression_error"),
       "Expression=" + getExpression() + ", Error=" + e.getError(), //NON-NLS
@@ -147,7 +164,9 @@ public abstract class Expression {
    *
    * @return BeanShell equivalent
    */
-  public abstract String toBeanShellString();
+  public String toBeanShellString() {
+    return expr;
+  }
 
   /**
    * Factory method to create an appropriate expression based on the supplied
@@ -178,11 +197,26 @@ public abstract class Expression {
 
     // An old-style Formatted String?
     if (t.indexOf('$') >= 0) {
-      return new FormattedStringExpression(t);
+      return FormattedStringExpression.instance(t);
     }
 
     // Must be a plain String
     return StringExpression.instance(s);
+  }
+
+  @Override
+  public int hashCode() {
+    return expr == null ? 0 : expr.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+
+    if (obj == null || getClass() != obj.getClass()) return false;
+
+    final Expression other = (Expression) obj;
+    return Objects.equals(expr, other.expr);
   }
 
   /**
@@ -201,11 +235,11 @@ public abstract class Expression {
 
     // BeanShell expression?
     if (t.startsWith("{") && t.endsWith("}")) {
-      return new BeanShellExpression(t.substring(1, t.length() - 1));
+      return BeanShellExpression.instance(t.substring(1, t.length() - 1));
     }
 
     // An old-style Property Match String
-    return new PropertyMatchExpression(t);
+    return PropertyMatchExpression.instance(t);
   }
 
   /**
@@ -224,9 +258,9 @@ public abstract class Expression {
 
     // BeanShell expression?
     if (t.startsWith("{") && t.endsWith("}")) {
-      return new BeanShellExpression(t.substring(1, t.length() - 1));
+      return BeanShellExpression.instance(t.substring(1, t.length() - 1));
     }
 
-    return new SinglePropertyExpression(t);
+    return SinglePropertyExpression.instance(t);
   }
 }

@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
  * An expression consisting of an Integer only
  *
  */
-public class IntExpression extends ImmutableExpression {
+public class IntExpression extends Expression {
   private IntExpression(int i) {
     super(String.valueOf(i));
   }

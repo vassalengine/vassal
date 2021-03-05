@@ -169,7 +169,7 @@ public class PropertiesPieceFilter {
 
     protected String toBeanShellName() {
       if (name.indexOf('$') >= 0) {
-        return "GetProperty(" + new FormattedStringExpression(name).toBeanShellString() + ")"; // NON-NLS
+        return "GetProperty(" + FormattedStringExpression.instance(name).toBeanShellString() + ")"; // NON-NLS
       }
       else {
         return BeanShellExpression.convertProperty(name);
@@ -177,7 +177,7 @@ public class PropertiesPieceFilter {
     }
 
     protected String toBeanShellValue() {
-      return new FormattedStringExpression(value).toBeanShellString();
+      return FormattedStringExpression.instance(value).toBeanShellString();
     }
 
     protected static boolean isBooleanString(final String possibleBoolean) {
