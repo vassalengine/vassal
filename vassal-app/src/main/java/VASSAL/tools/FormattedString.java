@@ -18,6 +18,7 @@ package VASSAL.tools;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
@@ -258,16 +259,15 @@ public class FormattedString implements Loopable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    final FormattedString other = (FormattedString) obj;
-    if (formatString == null) {
-      return other.formatString == null;
     }
-    else return formatString.equals(other.formatString);
+
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    final FormattedString other = (FormattedString) obj;
+    return Objects.equals(formatString, other.formatString);
   }
 }
