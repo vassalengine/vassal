@@ -18,11 +18,11 @@ public class IntExpressionTest {
 
   @Test
   public void evaluate() throws ExpressionException {
-    Expression e = new IntExpression (TEST_INT);
+    Expression e = new IntExpression(TEST_INT);
     String s = e.evaluate();
     assertThat(s, is(equalTo(String.valueOf(TEST_INT))));
 
-    e = new IntExpression (-TEST_INT);
+    e = new IntExpression(-TEST_INT);
     s = e.evaluate();
     assertThat(s, is(equalTo(String.valueOf(-TEST_INT))));
   }
@@ -33,7 +33,7 @@ public class IntExpressionTest {
     String s = e.toBeanShellString();
     assertThat(s, is(equalTo(String.valueOf(TEST_INT))));
 
-    e = new IntExpression (-TEST_INT);
+    e = new IntExpression(-TEST_INT);
     s = e.toBeanShellString();
     assertThat(s, is(equalTo(String.valueOf(-TEST_INT))));
   }
