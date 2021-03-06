@@ -64,4 +64,25 @@
         <justification>No chance of subclass</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>defaultProperties</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>format</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>formatString</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
 </differences>
