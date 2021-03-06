@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -30,6 +32,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 /**
  * FormattedString.java
@@ -39,15 +42,34 @@ import VASSAL.tools.RecursionLimiter.Loopable;
  * options replaced by their value
  */
 public class FormattedString implements Loopable {
-  // The actual string for display purposes
-  protected String formatString;
+  private static final Map<Pair<String, PropertySource>, FSData> CACHE = new ConcurrentSoftHashMap<>();
 
-  // An efficiently evaluable representation of the string
-  protected Expression format;
+  private static class FSData {
+    // The actual string for display purposes
+    public final String formatString;
+
+    // An efficiently evaluable representation of the string
+    public final Expression format;
+
+    public final PropertySource defaultProperties;
+
+    public FSData(String fs, PropertySource dp) {
+      formatString = fs;
+      format = Expression.createExpression(fs);
+      defaultProperties = dp;
+    }
+  }
+
+  private static FSData dataOf(String fs, PropertySource dp) {
+    return CACHE.computeIfAbsent(
+      Pair.of(fs, dp),
+      k -> new FSData(k.getLeft(), k.getRight())
+    );
+  }
+
+  private FSData fsdata;
 
   protected Map<String, String> props;
-
-  protected PropertySource defaultProperties;
 
   public FormattedString() {
     this("");
@@ -62,17 +84,15 @@ public class FormattedString implements Loopable {
   }
 
   public FormattedString(String formatString, PropertySource defaultProperties) {
-    setFormat(formatString);
-    this.defaultProperties = defaultProperties;
+    fsdata = dataOf(formatString, defaultProperties);
   }
 
-  public void setFormat(String s) {
-    formatString = s;
-    format = Expression.createExpression(s);
+  public void setFormat(String fs) {
+    fsdata = dataOf(fs, fsdata.defaultProperties);
   }
 
   public String getFormat() {
-    return formatString;
+    return fsdata.formatString;
   }
 
   public void setProperty(String name, String value) {
@@ -88,23 +108,23 @@ public class FormattedString implements Loopable {
     }
   }
 
-  public PropertySource getDefaultProperties() {
-    return defaultProperties;
+  public void setDefaultProperties(PropertySource defaultProperties) {
+    fsdata = dataOf(fsdata.formatString, defaultProperties);
   }
 
-  public void setDefaultProperties(PropertySource defaultProperties) {
-    this.defaultProperties = defaultProperties;
+  public PropertySource getDefaultProperties() {
+    return fsdata.defaultProperties;
   }
 
   /**
    * @return the resulting string after substituting properties
    */
   public String getText() {
-    return getText(defaultProperties, false);
+    return getText(fsdata.defaultProperties, false);
   }
 
   public String getLocalizedText() {
-    return getText(defaultProperties, true);
+    return getText(fsdata.defaultProperties, true);
   }
 
   /**
@@ -142,16 +162,16 @@ public class FormattedString implements Loopable {
   }
 
   protected String getText(PropertySource ps, boolean localized) {
-    final PropertySource source = ps == null ? defaultProperties : ps;
+    final PropertySource source = ps == null ? fsdata.defaultProperties : ps;
     try {
       RecursionLimiter.startExecution(this);
       try {
-        return format.evaluate(source, props, localized);
+        return fsdata.format.evaluate(source, props, localized);
       }
       catch (ExpressionException e) {
         BadDataReport bdr;
         final String msg = Resources.getString("Error.expression_error");
-        final String exp = format.getExpression();
+        final String exp = fsdata.format.getExpression();
 
         if (source instanceof EditablePiece) {
           bdr = new BadDataReport(
@@ -174,7 +194,7 @@ public class FormattedString implements Loopable {
     catch (RecursionLimitException e) {
       ErrorDialog.dataWarning(new BadDataReport(
         Resources.getString("Error.possible_infinite_string_loop"),
-        format.getExpression(), e
+        fsdata.format.getExpression(), e
       ));
       return "";
     }
@@ -245,7 +265,7 @@ public class FormattedString implements Loopable {
 
   @Override
   public int hashCode() {
-    return formatString == null ? 0 : formatString.hashCode();
+    return fsdata.formatString == null ? 0 : fsdata.formatString.hashCode();
   }
 
   @Override
@@ -259,7 +279,7 @@ public class FormattedString implements Loopable {
     }
 
     final FormattedString other = (FormattedString) obj;
-    return Objects.equals(formatString, other.formatString);
+    return Objects.equals(fsdata.formatString, other.fsdata.formatString);
   }
 
   @Override
