@@ -45,7 +45,7 @@ public class FormattedString implements Loopable {
   // An efficiently evaluable representation of the string
   protected Expression format;
 
-  protected Map<String, String> props = new HashMap<>();
+  protected Map<String, String> props;
 
   protected PropertySource defaultProperties;
 
@@ -76,11 +76,16 @@ public class FormattedString implements Loopable {
   }
 
   public void setProperty(String name, String value) {
+    if (props == null) {
+      props = new HashMap<>();
+    }
     props.put(name, value);
   }
 
   public void clearProperties() {
-    props.clear();
+    if (props != null) {
+      props.clear();
+    }
   }
 
   public PropertySource getDefaultProperties() {
