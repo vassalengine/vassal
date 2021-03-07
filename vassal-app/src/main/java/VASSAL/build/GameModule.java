@@ -1768,7 +1768,6 @@ public class GameModule extends AbstractConfigurable
     return getArchiveWriter() == null;
   }
 
-
   /**
    * Is an editor window currently open
    * @return true if we're running with an editor window
