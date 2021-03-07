@@ -976,7 +976,7 @@ public class GameModule extends AbstractConfigurable
   }
 
   public void resetKeyStrokeSources() {
-    keyStrokeSources.subList(ourKeyStrokeSourceCount, keyStrokeSources.size());
+    keyStrokeSources.subList(ourKeyStrokeSourceCount, keyStrokeSources.size()).clear();
   }
 
   /**
@@ -996,7 +996,7 @@ public class GameModule extends AbstractConfigurable
   }
 
   public void resetKeyStrokeListeners() {
-    keyStrokeListeners.subList(ourKeyStrokeListenerCount, keyStrokeListeners.size());
+    keyStrokeListeners.subList(ourKeyStrokeListenerCount, keyStrokeListeners.size()).clear();
   }
 
   /**
