@@ -80,8 +80,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected List<String> sides = new ArrayList<>();
   protected String[] untranslatedSides;
   protected LaunchButton retireButton;
-  protected List<SideChangeListener> sideChangeListeners =
-    new ArrayList<>();
+
+  protected List<SideChangeListener> sideChangeListeners = new ArrayList<>();
+
+  protected int ourSideChangeListenerCount = -1;
 
   protected String translatedObserver;
 
@@ -218,15 +220,30 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     GameModule.getGameModule().addSideChangeListenerToPlayerRoster(l);
   }
 
+  public void resetListeners() {
+    final int curSize = sideChangeListeners.size();
+    if (ourSideChangeListenerCount == -1) {
+      ourSideChangeListenerCount = curSize;
+    }
+    else {
+      sideChangeListeners.subList(ourSideChangeListenerCount, curSize).clear();
+    }
+  }
+
   public void addSideChangeListenerToInstance(SideChangeListener l) {
     sideChangeListeners.add(l);
   }
 
+  @Deprecated
   public static void removeSideChangeListener(SideChangeListener l) {
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       r.sideChangeListeners.remove(l);
     }
+  }
+
+  public void removeSideChangeListenerFromInstance(SideChangeListener l) {
+    sideChangeListeners.remove(l);
   }
 
   @Override
