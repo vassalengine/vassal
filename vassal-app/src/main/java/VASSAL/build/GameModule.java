@@ -975,10 +975,6 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
-  public void resetKeyStrokeSources() {
-    keyStrokeSources.subList(ourKeyStrokeSourceCount, keyStrokeSources.size()).clear();
-  }
-
   /**
    * The GameModule acts as the mediator for hotkey events.
    *
@@ -995,8 +991,20 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
-  public void resetKeyStrokeListeners() {
+  public void resetKeyStrokeListenersAndSources() {
+    // remove the non-module KeyStrokeListeners
     keyStrokeListeners.subList(ourKeyStrokeListenerCount, keyStrokeListeners.size()).clear();
+
+    // remove the non-module KeyStrokeSources
+    final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, keyStrokeSources.size());
+
+    for (final KeyStrokeListener l : keyStrokeListeners) {
+      for (final KeyStrokeSource s : sourcesToRemove) {
+        l.removeKeyStrokeSource(s);
+      }
+    }
+
+    sourcesToRemove.clear();
   }
 
   /**
