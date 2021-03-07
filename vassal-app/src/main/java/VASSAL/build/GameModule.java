@@ -337,7 +337,7 @@ public class GameModule extends AbstractConfigurable
   private final Object loggingLock = new Object();
   private Command pausedCommands;
 
-  private String gameFile     = ""; //NON-NLS
+  private String gameFile = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
   private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
@@ -1919,7 +1919,6 @@ public class GameModule extends AbstractConfigurable
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
-
 
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the
