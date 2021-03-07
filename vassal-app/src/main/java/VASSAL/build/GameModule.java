@@ -326,6 +326,10 @@ public class GameModule extends AbstractConfigurable
 
   private final List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
+
+  private int ourKeyStrokeSourceCount;
+  private int ourKeyStrokeListenerCount;
+
   private CommandEncoder[] commandEncoders = new CommandEncoder[0];
   private final List<String> deferredChat = new ArrayList<>();
 
@@ -577,6 +581,7 @@ public class GameModule extends AbstractConfigurable
       buildDefaultComponents();
     }
     initFrame();
+    initListeners();
   }
 
   /**
@@ -695,6 +700,11 @@ public class GameModule extends AbstractConfigurable
     warn(mess);
     log.info(mess);
     initFrameTitle();
+  }
+
+  private void initListeners() {
+    ourKeyStrokeSourceCount = keyStrokeSources.size();
+    ourKeyStrokeListenerCount = keyStrokeListeners.size();
   }
 
   /**
@@ -965,6 +975,10 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  public void resetKeyStrokeSources() {
+    keyStrokeSources.subList(ourKeyStrokeSourceCount, keyStrokeSources.size());
+  }
+
   /**
    * The GameModule acts as the mediator for hotkey events.
    *
@@ -979,6 +993,10 @@ public class GameModule extends AbstractConfigurable
     for (final KeyStrokeSource s : keyStrokeSources) {
       l.addKeyStrokeSource(s);
     }
+  }
+
+  public void resetKeyStrokeListeners() {
+    keyStrokeListeners.subList(ourKeyStrokeListenerCount, keyStrokeListeners.size());
   }
 
   /**
