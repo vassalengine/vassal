@@ -327,8 +327,8 @@ public class GameModule extends AbstractConfigurable
   private final List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
 
-  private int ourKeyStrokeSourceCount;
-  private int ourKeyStrokeListenerCount;
+  private int ourKeyStrokeSourceCount = -1;
+  private int ourKeyStrokeListenerCount = -1;
 
   private CommandEncoder[] commandEncoders = new CommandEncoder[0];
   private final List<String> deferredChat = new ArrayList<>();
@@ -581,7 +581,6 @@ public class GameModule extends AbstractConfigurable
       buildDefaultComponents();
     }
     initFrame();
-    initListeners();
   }
 
   /**
@@ -700,11 +699,6 @@ public class GameModule extends AbstractConfigurable
     warn(mess);
     log.info(mess);
     initFrameTitle();
-  }
-
-  private void initListeners() {
-    ourKeyStrokeSourceCount = keyStrokeSources.size();
-    ourKeyStrokeListenerCount = keyStrokeListeners.size();
   }
 
   /**
@@ -991,20 +985,34 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
-  public void resetKeyStrokeListenersAndSources() {
-    // remove the non-module KeyStrokeListeners
-    keyStrokeListeners.subList(ourKeyStrokeListenerCount, keyStrokeListeners.size()).clear();
+  public void resetListeners() {
+    final int curSourcesSize = keyStrokeSources.size();
+    final int curListenersSize = keyStrokeListeners.size();
 
-    // remove the non-module KeyStrokeSources
-    final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, keyStrokeSources.size());
+    if (ourKeyStrokeSourceCount == -1) {
+      ourKeyStrokeSourceCount = curSourcesSize;
+      ourKeyStrokeListenerCount = curListenersSize;
+    }
+    else {
+      System.out.println(curListenersSize);
+      System.out.println(ourKeyStrokeListenerCount);
 
-    for (final KeyStrokeListener l : keyStrokeListeners) {
-      for (final KeyStrokeSource s : sourcesToRemove) {
-        l.removeKeyStrokeSource(s);
+      // remove the non-module KeyStrokeListeners
+      keyStrokeListeners.subList(ourKeyStrokeListenerCount, curListenersSize).clear();
+
+      // remove the non-module KeyStrokeSources
+      final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, curSourcesSize);
+
+      for (final KeyStrokeListener l : keyStrokeListeners) {
+        for (final KeyStrokeSource s : sourcesToRemove) {
+          l.removeKeyStrokeSource(s);
+        }
       }
+
+      sourcesToRemove.clear();
     }
 
-    sourcesToRemove.clear();
+    getPlayerRoster().resetListeners();
   }
 
   /**
@@ -2049,6 +2057,17 @@ public class GameModule extends AbstractConfigurable
     final PlayerRoster r = getPlayerRoster();
     if (r != null) {
       r.addSideChangeListenerToInstance(l);
+    }
+  }
+
+  /**
+   * Removes listener for players changing sides
+   * @param l old SideChangeListener
+   */
+  public void removeSideChangeListenerFromPlayerRoster(PlayerRoster.SideChangeListener l) {
+    final PlayerRoster r = getPlayerRoster();
+    if (r != null) {
+      r.removeSideChangeListenerFromInstance(l);
     }
   }
 
