@@ -83,4 +83,14 @@ public class KeyStrokeListener {
       src.getComponent().registerKeyboardAction(l, SwingUtils.genericToSystem(key), src.getMode());
     }
   }
+
+  public void removeKeyStrokeSource(KeyStrokeSource src) {
+    if (sources.contains(src)) {
+      sources.remove(src);
+    }
+    if (key != null) {
+      //BR// We are registering/unregistering events directly with components, so we perform our special Mac keyboard translations.
+      src.getComponent().unregisterKeyboardAction(SwingUtils.genericToSystem(key));
+    }
+  }
 }

@@ -376,8 +376,7 @@ public class GameState implements CommandEncoder {
     this.gameStarting = gameStarting;
 
     if (!gameStarting) {
-      g.resetKeyStrokeSources();
-      g.resetKeyStrokeListeners();
+      g.resetKeyStrokeListenersAndSources();
 
       pieces.clear();
     }
