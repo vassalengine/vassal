@@ -288,7 +288,7 @@ public class GameModule extends AbstractConfigurable
    * The Chat Log Console
    */
   private final Console console = new Console();
-  
+
   /**
    * Docked PieceWindow (we need to know which one to get our splitters all splatting in the right order)
    */
@@ -522,14 +522,18 @@ public class GameModule extends AbstractConfigurable
       pw.dockMe();
     }
 
-    MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
-      getPrefs().getEditor().getEditAction());
+    MenuManager.getInstance().addAction(
+      "Prefs.edit_preferences", //NON-NLS
+      getPrefs().getEditor().getEditAction()
+    );
 
     // Our counter refresher
     final GameRefresher gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
-    MenuManager.getInstance().addAction("GameRefresher.refresh_counters", //NON-NLS
-      gameRefresher.getRefreshAction());
+    MenuManager.getInstance().addAction(
+      "GameRefresher.refresh_counters", //NON-NLS
+      gameRefresher.getRefreshAction()
+    );
   }
 
   /**
