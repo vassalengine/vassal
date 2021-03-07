@@ -1652,16 +1652,15 @@ public class GameModule extends AbstractConfigurable
         Resources.getString("GameModule.open_error",
           theModule.getDataArchive().getName()));
     }
-    else {
-      theModule = module;
-      theModule.setGpIdSupport(theModule);
-      try {
-        theModule.build();
-      }
-      catch (IOException e) {
-        theModule = null;
-        throw e;
-      }
+
+    theModule = module;
+    theModule.setGpIdSupport(theModule);
+    try {
+      theModule.build();
+    }
+    catch (IOException e) {
+      theModule = null;
+      throw e;
     }
 
     /*
