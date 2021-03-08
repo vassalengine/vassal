@@ -119,6 +119,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return interpreter;
   }
 
+  public static void clearCache() {
+    cache.clear();
+  }
+
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {

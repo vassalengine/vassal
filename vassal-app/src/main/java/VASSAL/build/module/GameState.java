@@ -375,7 +375,7 @@ public class GameState implements CommandEncoder {
 
     this.gameStarting = gameStarting;
 
-    g.resetListeners();
+    g.reset();
 
     if (!gameStarting) {
       pieces.clear();
