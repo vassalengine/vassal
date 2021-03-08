@@ -40,7 +40,6 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.ImageNotFoundException;
 
 /**
  * A class for reading and writing image tiles.
@@ -63,7 +62,7 @@ public class TileUtils {
    * @return the tile image
    *
    * @throws ImageIOException if the read fails
-   * @throws ImageNotFoundException if the file isn't found
+   * @throws TileNotFoundException if the file isn't found
    */
   public static BufferedImage read(String src) throws ImageIOException {
     return read(new File(src));
@@ -76,7 +75,7 @@ public class TileUtils {
    * @return the tile image
    *
    * @throws ImageIOException if the read fails
-   * @throws ImageNotFoundException if the file isn't found
+   * @throws TileNotFoundException if the file isn't found
    */
   public static BufferedImage read(File src) throws ImageIOException {
     try (InputStream fin = Files.newInputStream(src.toPath());
@@ -84,7 +83,7 @@ public class TileUtils {
       return read(in);
     }
     catch (NoSuchFileException e) {
-      throw new ImageNotFoundException(src, e);
+      throw new TileNotFoundException(src, e);
     }
     catch (IOException e) {
       throw new ImageIOException(src, e);
@@ -187,7 +186,7 @@ public class TileUtils {
    * @return the dimensions
    *
    * @throws ImageIOException if the read fails
-   * @throws ImageNotFoundException if the file isn't found
+   * @throws TileNotFoundException if the file isn't found
    */
   public static Dimension size(String src) throws ImageIOException {
     return size(new File(src));
@@ -200,7 +199,7 @@ public class TileUtils {
    * @return the dimensions
    *
    * @throws ImageIOException if the read fails
-   * @throws ImageNotFoundException if the file isn't found
+   * @throws TileNotFoundException if the file isn't found
    */
   public static Dimension size(File src) throws ImageIOException {
     try (InputStream in = Files.newInputStream(src.toPath())) {
@@ -208,7 +207,7 @@ public class TileUtils {
       return size(in);
     }
     catch (NoSuchFileException e) {
-      throw new ImageNotFoundException(src, e);
+      throw new TileNotFoundException(src, e);
     }
     catch (IOException e) {
       throw new ImageIOException(src, e);

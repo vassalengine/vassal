@@ -26,6 +26,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
+import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.opcache.OpFailedException;
 
 public class Op {
@@ -132,6 +133,13 @@ public class Op {
         // We ignore OpFailedExceptions since the original exceptions
         // which caused them have already been reported.
         return true;
+      }
+      else if (c instanceof TileNotFoundException) {
+        ErrorDialog.dataWarning(new BadDataReport(
+          "Tile not found", //NON-NLS
+          ((TileNotFoundException) c).getFile().getName(),
+          null
+        ));
       }
       else if (c instanceof ImageNotFoundException) {
         ErrorDialog.dataWarning(new BadDataReport(
