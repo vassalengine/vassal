@@ -1,5 +1,6 @@
 3.5.4 - ???
 
+* 14182: Prevent duplication of FormattedString data and Expressions
 * 14178: Some weird systems lack awt.font.desktophints but aren't headless
 * 14167: Inefficient implementation of FilterOutputStream in ZipWriter
 * 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
