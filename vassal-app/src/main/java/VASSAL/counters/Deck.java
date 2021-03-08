@@ -778,7 +778,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     emptyKey = k;
   }
 
-
   public void setRestrictOption(boolean restrictOption) {
     this.restrictOption = restrictOption;
   }

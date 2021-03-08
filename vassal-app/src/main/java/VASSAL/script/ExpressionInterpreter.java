@@ -81,7 +81,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   protected static final String MAGIC2 = "_plugh"; // NON-NLS
   protected static final String MAGIC3 = "_plover"; // NON-NLS
 
-
   // Top-level static NameSpace shared between all ExpressionInterpreters
   // Loaded with utility methods available to all interpreters
   protected static NameSpace topLevelNameSpace;
@@ -247,7 +246,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public String evaluate(PropertySource ps, boolean localized) throws ExpressionException {
-
     if (getExpression().length() == 0) {
       return "";
     }
@@ -331,6 +329,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
     finally {
       RecursionLimiter.endExecution();
+      source = null;  // prevent source from being retained
     }
 
     return result;
@@ -504,9 +503,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * - isRandom()        - Equivalent to Random(50) (init_beanshell.bsh calls isRandom(50))
    */
 
-  public Object random(Object source, Object minString, Object maxString) {
-    final int min = parseInt(source, "Random", minString, 1); // NON-NLS
-    int max = parseInt(source, "Random", maxString, 1); // NON-NLS
+  public Object random(Object src, Object minString, Object maxString) {
+    final int min = parseInt(src, "Random", minString, 1); // NON-NLS
+    int max = parseInt(src, "Random", maxString, 1); // NON-NLS
     if (max < min) {
       max = min;
     }
@@ -517,8 +516,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return GameModule.getGameModule().getRNG().nextInt(range) + min;
   }
 
-  public Object isRandom(Object source, Object percentString) {
-    int percent = parseInt(source, "IsRandom", percentString, 50); // NON-NLS
+  public Object isRandom(Object src, Object percentString) {
+    int percent = parseInt(src, "IsRandom", percentString, 50); // NON-NLS
     if (percent < 0)
       percent = 0;
     if (percent > 100)
@@ -527,13 +526,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return r <= percent;
   }
 
-  private int parseInt(Object source, String function, Object value, int dflt) {
+  private int parseInt(Object src, String function, Object value, int dflt) {
     int result = dflt;
     try {
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((source instanceof Decorator) ? "Piece= [" + ((Decorator) source).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
       final String data = "Data=[" + value.toString() + "]."; //NON-NLS
       ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
@@ -552,19 +551,19 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Count (match, map)         - Count units on named map matching match
 
    */
-  public Object sum(Object source, Object propertyName, Object propertyMatch) {
-    return sum(source, propertyName, propertyMatch, null);
+  public Object sum(Object src, Object propertyName, Object propertyMatch) {
+    return sum(src, propertyName, propertyMatch, null);
   }
 
-  public Object sum(Object source, Object propertyName, Object propertyMatch, Object mapName) {
+  public Object sum(Object src, Object propertyName, Object propertyMatch, Object mapName) {
     int result = 0;
 
-    if (! (source instanceof GamePiece)) return 0;
+    if (! (src instanceof GamePiece)) return 0;
     if (! (propertyName instanceof String)) return 0;
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final GamePiece sourcePiece = (GamePiece) source;
+    final GamePiece sourcePiece = (GamePiece) src;
     final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
@@ -596,16 +595,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return 0;
   }
 
-  public Object count(Object source, Object propertyMatch) {
-    return count(source, propertyMatch, null);
+  public Object count(Object src, Object propertyMatch) {
+    return count(src, propertyMatch, null);
   }
 
-  public Object count(Object source, Object propertyMatch, Object mapName) {
-    if (! (source instanceof GamePiece)) return 0;
+  public Object count(Object src, Object propertyMatch, Object mapName) {
+    if (! (src instanceof GamePiece)) return 0;
     if (! (propertyMatch == null || propertyMatch instanceof String)) return 0;
     if (! (mapName == null || mapName instanceof String)) return 0;
 
-    final GamePiece sourcePiece = (GamePiece) source;
+    final GamePiece sourcePiece = (GamePiece) src;
     final String matchString = replaceDollarVariables((String) propertyMatch, sourcePiece);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter(sourcePiece);
 
@@ -671,11 +670,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * Utility function to replace $xxx$ variables with values from a GamePiece
    *
    * @param expression Expression possibly containing $$ variables
-   * @param source A GamePiece to use as a source for the $$ variable values
+   * @param src A GamePiece to use as a source for the $$ variable values
    *
    * @return Updated expression
    */
-  private String replaceDollarVariables(String expression, GamePiece source) {
+  private String replaceDollarVariables(String expression, GamePiece src) {
     if (expression == null || !expression.contains("$")) {
       return expression;
     }
@@ -706,7 +705,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         if (c == '$') {
           // Closing '$' seen, is this a property with a value?
           final String propName = propertyName.toString();
-          final Object prop = source == null ? null : source.getLocalizedProperty(propName);
+          final Object prop = src == null ? null : src.getLocalizedProperty(propName);
           final String propertyValue = prop == null ? null : prop.toString();
           if (propertyValue == null) {
             // Not a property value. Add the initial '$' plus the assembled text to the output and start
@@ -738,5 +737,4 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     return buffer.toString();
   }
-
 }
