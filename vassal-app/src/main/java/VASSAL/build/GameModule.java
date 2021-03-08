@@ -127,6 +127,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
+import VASSAL.script.ExpressionInterpreter;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
@@ -985,7 +986,7 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
-  public void resetListeners() {
+  public void reset() {
     final int curSourcesSize = keyStrokeSources.size();
     final int curListenersSize = keyStrokeListeners.size();
 
@@ -1013,6 +1014,7 @@ public class GameModule extends AbstractConfigurable
     }
 
     getPlayerRoster().resetListeners();
+    ExpressionInterpreter.clearCache();
   }
 
   /**
