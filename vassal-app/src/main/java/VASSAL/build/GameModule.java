@@ -998,9 +998,6 @@ public class GameModule extends AbstractConfigurable
       ourKeyStrokeListenerCount = curListenersSize;
     }
     else {
-      System.out.println(curListenersSize);
-      System.out.println(ourKeyStrokeListenerCount);
-
       // remove the non-module KeyStrokeSources
       final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, curSourcesSize);
 
