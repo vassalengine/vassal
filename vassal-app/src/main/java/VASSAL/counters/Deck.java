@@ -219,7 +219,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Deck(GameModule gameModule, String type) {
     this.gameModule = gameModule;
     mySetType(type);
-    gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
   /**
@@ -231,6 +230,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Deck(GameModule gameModule, String type, PropertySource source) {
     this(gameModule, type);
     propertySource = source;
+  }
+
+  public void registerListeners() {
+    gameModule.addKeyStrokeListener(shuffleListener);
+    shuffleListener.setKeyStroke(getShuffleKey());
+
+    gameModule.addKeyStrokeListener(reshuffleListener);
+    reshuffleListener.setKeyStroke(getReshuffleKey());
+
+    gameModule.addKeyStrokeListener(reverseListener);
+    reverseListener.setKeyStroke(getReverseKey());
+
+    gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
   /**
@@ -479,28 +491,21 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         gameModule.sendAndLog(shuffle());
         repaintMap();
       });
-      gameModule.addKeyStrokeListener(shuffleListener);
     }
-    shuffleListener.setKeyStroke(getShuffleKey());
 
     if (reshuffleListener == null) {
       reshuffleListener = new NamedKeyStrokeListener(e -> {
         gameModule.sendAndLog(sendToDeck());
         repaintMap();
       });
-      gameModule.addKeyStrokeListener(reshuffleListener);
     }
-    reshuffleListener.setKeyStroke(getReshuffleKey());
 
     if (reverseListener == null) {
       reverseListener = new NamedKeyStrokeListener(e -> {
         gameModule.sendAndLog(reverse());
         repaintMap();
       });
-      gameModule.addKeyStrokeListener(reverseListener);
     }
-    reverseListener.setKeyStroke(getReverseKey());
-
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
@@ -1071,7 +1076,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     final int count = Math.min(getPieceCount(), maxStack);
     final GamePiece top = (nextDraw != null && !nextDraw.isEmpty()) ?
-      nextDraw.get(0) : topPiece();  
+      nextDraw.get(0) : topPiece();
 
     if (top != null) {
       final Object owner = top.getProperty(Properties.OBSCURED_BY);

@@ -963,9 +963,11 @@ public class GameModule extends AbstractConfigurable
    * @param src KeyStrokeSource Component that wants to register as a source for hotkey events
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
-    keyStrokeSources.add(src);
-    for (final KeyStrokeListener l : keyStrokeListeners) {
-      l.addKeyStrokeSource(src);
+    if (!keyStrokeSources.contains(src)) {
+      keyStrokeSources.add(src);
+      for (final KeyStrokeListener l : keyStrokeListeners) {
+        l.addKeyStrokeSource(src);
+      }
     }
   }
 
@@ -979,9 +981,11 @@ public class GameModule extends AbstractConfigurable
    * @param l KeystrokeListener to add
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
-    keyStrokeListeners.add(l);
-    for (final KeyStrokeSource s : keyStrokeSources) {
-      l.addKeyStrokeSource(s);
+    if (!keyStrokeListeners.contains(l)) {
+      keyStrokeListeners.add(l);
+      for (final KeyStrokeSource s : keyStrokeSources) {
+        l.addKeyStrokeSource(s);
+      }
     }
   }
 
@@ -997,9 +1001,6 @@ public class GameModule extends AbstractConfigurable
       System.out.println(curListenersSize);
       System.out.println(ourKeyStrokeListenerCount);
 
-      // remove the non-module KeyStrokeListeners
-      keyStrokeListeners.subList(ourKeyStrokeListenerCount, curListenersSize).clear();
-
       // remove the non-module KeyStrokeSources
       final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, curSourcesSize);
 
@@ -1009,7 +1010,17 @@ public class GameModule extends AbstractConfigurable
         }
       }
 
+      // remove the non-module KeyStrokeListeners
+      final List<KeyStrokeListener> listenersToRemove = keyStrokeListeners.subList(ourKeyStrokeListenerCount, curListenersSize);
+
+      for (final KeyStrokeListener l : listenersToRemove) {
+        for (final KeyStrokeSource s : keyStrokeSources) {
+          l.removeKeyStrokeSource(s);
+        }
+      }
+
       sourcesToRemove.clear();
+      listenersToRemove.clear();
     }
 
     getPlayerRoster().resetListeners();
