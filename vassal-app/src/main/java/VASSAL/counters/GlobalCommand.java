@@ -69,7 +69,7 @@ public class GlobalCommand {
   private double fastNumber = 0;        // Used during property Fast Match to hold evaluated numerical value
   private Pattern fastPattern;          // Fast Match regex pattern
 
-  private final Pattern fastCheckNumber = Pattern.compile("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
+  private static final Pattern fastCheckNumber = Pattern.compile("(\\+-)?\\d+(\\.\\d+)?");  //match a number with optional +/- and decimal.
 
   public GlobalCommand(Loopable l) {
     this (l, null);
