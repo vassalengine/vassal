@@ -43,7 +43,7 @@ public class BeanShellExpression extends Expression {
   @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
     if (interpreter == null) {
-      interpreter = ExpressionInterpreter.createInterpreter(strip(getExpression()));
+      interpreter = new ExpressionInterpreter(strip(getExpression()));
     }
     return interpreter.evaluate(ps, localized);
   }

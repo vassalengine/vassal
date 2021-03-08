@@ -37,7 +37,7 @@ public class ExpressionInterpreterTest {
 
   @Test
   public void getExpression() throws ExpressionException {
-    final ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("6 * 7");
+    final ExpressionInterpreter interpreter = new ExpressionInterpreter("6 * 7");
     final String s = interpreter.getExpression();
     assertThat(s, is(equalTo("6 * 7")));
   }
@@ -45,7 +45,7 @@ public class ExpressionInterpreterTest {
   @Test
   public void createInterpreter1() throws ExpressionException {
     // Just test the interpreter is working at all. Exercise custom Vassal functions below.
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("6 * 7");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("6 * 7");
     final String s = interpreter.evaluate();
     assertThat(s, is(equalTo("42")));
   }
@@ -53,13 +53,13 @@ public class ExpressionInterpreterTest {
   @Test(expected = ExpressionException.class)
   public void createInterpreter2() throws ExpressionException {
     // A broken expression should throw an ExpressionException
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("6 * ");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("6 * ");
   }
 
   @Test(expected = ExpressionException.class)
   public void createInterpreter3() throws ExpressionException {
     // Evaluating a non-existent custom function should throw an ExpressionException
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("Blurgh()");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("Blurgh()");
     final String s = interpreter.evaluate();
 
   }
@@ -72,34 +72,34 @@ public class ExpressionInterpreterTest {
   // 5. !~ Regexp operator
   @Test
   public void checkExtensions() throws ExpressionException {
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("2 + \"\"");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("2 + \"\"");
     String s = interpreter.evaluate();
     assertThat(s, is(equalTo("2")));
 
-    interpreter = ExpressionInterpreter.createInterpreter("2 + \"a\"");
+    interpreter = new ExpressionInterpreter("2 + \"a\"");
     s = interpreter.evaluate();
     assertThat(s, is(equalTo("2a")));
 
-    interpreter = ExpressionInterpreter.createInterpreter("\"1\" == \"1\"");
+    interpreter = new ExpressionInterpreter("\"1\" == \"1\"");
     s = interpreter.evaluate();
     assertThat(s, is(equalTo("true")));
 
-    interpreter = ExpressionInterpreter.createInterpreter("\"1\" > \"2\"");
+    interpreter = new ExpressionInterpreter("\"1\" > \"2\"");
     s = interpreter.evaluate();
     assertThat(s, is(equalTo("false")));
 
-    interpreter = ExpressionInterpreter.createInterpreter("\"x\" =~ \"a|x|z\"");
+    interpreter = new ExpressionInterpreter("\"x\" =~ \"a|x|z\"");
     s = interpreter.evaluate();
     assertThat(s, is(equalTo("true")));
 
-    interpreter = ExpressionInterpreter.createInterpreter("\"x\" !~ \"a|x|z\"");
+    interpreter = new ExpressionInterpreter("\"x\" !~ \"a|x|z\"");
     s = interpreter.evaluate();
     assertThat(s, is(equalTo("false")));
   }
 
   @Test
   public void wrap() throws ExpressionException {
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("");
     Object o;
 
     // Null string should remain unchanged
@@ -179,25 +179,25 @@ public class ExpressionInterpreterTest {
     };
 
     // Check GetProperty bsh function
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("GetProperty(\"" + GETKEY1 + "\")");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("GetProperty(\"" + GETKEY1 + "\")");
     String result = interpreter.evaluate(ps);
     assertThat(result, is(equalTo(GETVAL1)));
 
     // Check GetLocalizedProperty bsh function
-    interpreter = ExpressionInterpreter.createInterpreter("GetLocalizedProperty(\"" + GETKEY1 + "\")");
+    interpreter = new ExpressionInterpreter("GetLocalizedProperty(\"" + GETKEY1 + "\")");
     result = interpreter.evaluate(ps);
     assertThat(result, is(equalTo(GETLVAL1)));
 
     // Regression Test - Check numeric literals returned as properties do not get converted to floating point values
-    interpreter = ExpressionInterpreter.createInterpreter(GETKEY2);
+    interpreter = new ExpressionInterpreter(GETKEY2);
     result = interpreter.evaluate(ps);
     assertThat(result, is(equalTo(GETVAL2)));
 
-    interpreter = ExpressionInterpreter.createInterpreter(GETKEY3);
+    interpreter = new ExpressionInterpreter(GETKEY3);
     result = interpreter.evaluate(ps);
     assertThat(result, is(equalTo(GETVAL3)));
 
-    interpreter = ExpressionInterpreter.createInterpreter(GETKEY4);
+    interpreter = new ExpressionInterpreter(GETKEY4);
     result = interpreter.evaluate(ps);
     assertThat(result, is(equalTo(GETVAL4)));
   }
@@ -219,14 +219,14 @@ public class ExpressionInterpreterTest {
     GamePiece piece = mock(GamePiece.class);
     when(piece.getMap()).thenReturn(map);
 
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("GetZoneProperty(\"" + ZONE_PROP + "\", \"" + ZONE_NAME + "\")");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("GetZoneProperty(\"" + ZONE_PROP + "\", \"" + ZONE_NAME + "\")");
     String result = interpreter.evaluate(piece);
     assertThat(result, is(equalTo(ZONE_VAL)));
 
     try (MockedStatic<Map> staticMap = Mockito.mockStatic(Map.class)) {
       staticMap.when(Map::getMapList).thenReturn(List.of(map));
 
-      interpreter = ExpressionInterpreter.createInterpreter("GetZoneProperty(\"" + ZONE_PROP + "\", \"" + ZONE_NAME + "\", \"" + MAP_NAME + "\")");
+      interpreter = new ExpressionInterpreter("GetZoneProperty(\"" + ZONE_PROP + "\", \"" + ZONE_NAME + "\", \"" + MAP_NAME + "\")");
       result = interpreter.evaluate(piece);
       assertThat(result, is(equalTo(ZONE_VAL)));
 
@@ -243,7 +243,7 @@ public class ExpressionInterpreterTest {
       when(map.getProperty(MAP_PROP)).thenReturn(MAP_VAL);
       staticMap.when(Map::getMapList).thenReturn(List.of(map));
 
-      ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("GetMapProperty(\"" + MAP_PROP + "\", \"" + MAP_NAME + "\")");
+      ExpressionInterpreter interpreter = new ExpressionInterpreter("GetMapProperty(\"" + MAP_PROP + "\", \"" + MAP_NAME + "\")");
       String result = interpreter.evaluate();
       assertThat(result, is(equalTo(MAP_VAL)));
 
@@ -265,7 +265,7 @@ public class ExpressionInterpreterTest {
     s.add(bp1);
     s.add(bp2);
 
-    ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("SumStack(\"" + SUM_PROP + "\")");
+    ExpressionInterpreter interpreter = new ExpressionInterpreter("SumStack(\"" + SUM_PROP + "\")");
     String result = interpreter.evaluate(bp1);
     assertThat(result, is(equalTo("42")));
 
@@ -280,12 +280,12 @@ public class ExpressionInterpreterTest {
 
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("Random(4)");
+      ExpressionInterpreter interpreter = new ExpressionInterpreter("Random(4)");
       String result = interpreter.evaluate();
       assertThat(result, is(greaterThanOrEqualTo("1")));
       assertThat(result, is(lessThanOrEqualTo("4")));
 
-      interpreter = ExpressionInterpreter.createInterpreter("Random(-1, 1)");
+      interpreter = new ExpressionInterpreter("Random(-1, 1)");
       result = interpreter.evaluate();
       assertThat(result, is(greaterThanOrEqualTo("-1")));
       assertThat(result, is(lessThanOrEqualTo("1")));
@@ -300,14 +300,14 @@ public class ExpressionInterpreterTest {
 
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("IsRandom()");
+      ExpressionInterpreter interpreter = new ExpressionInterpreter("IsRandom()");
       String result = interpreter.evaluate();
 
-      interpreter = ExpressionInterpreter.createInterpreter("IsRandom(0)");
+      interpreter = new ExpressionInterpreter("IsRandom(0)");
       result = interpreter.evaluate();
       assertThat(result, is(equalTo("false")));
 
-      interpreter = ExpressionInterpreter.createInterpreter("IsRandom(100)");
+      interpreter = new ExpressionInterpreter("IsRandom(100)");
       result = interpreter.evaluate();
       assertThat(result, is(equalTo("true")));
     }
@@ -354,22 +354,22 @@ public class ExpressionInterpreterTest {
       staticMap.when(Map::getMapList).thenReturn(List.of(map1, map2));
 
       // Sum Test 1 - No map name, should select pieces 1, 3 & 4 across both maps.
-      ExpressionInterpreter interpreter = ExpressionInterpreter.createInterpreter("Sum(\"" + SUM_PROP + "\", \"" + MATCH_EXPR + "\")");
+      ExpressionInterpreter interpreter = new ExpressionInterpreter("Sum(\"" + SUM_PROP + "\", \"" + MATCH_EXPR + "\")");
       String result = interpreter.evaluate(bp1);
       assertThat("Sum properties across multiple maps", result, is(equalTo("26")));
 
       // Sum Test 2 - Map name provided,  should select pieces 1 and 3
-      interpreter = ExpressionInterpreter.createInterpreter("Sum(\"" + SUM_PROP + "\", \"" + MATCH_EXPR + "\", \"" + MAP_NAME_2 + "\")");
+      interpreter = new ExpressionInterpreter("Sum(\"" + SUM_PROP + "\", \"" + MATCH_EXPR + "\", \"" + MAP_NAME_2 + "\")");
       result = interpreter.evaluate(bp1);
       assertThat("Sum properties on named map", result, is(equalTo("10")));
 
       // Count Test 1 - No map name, should select pieces 1, 3 & 4 across both maps.
-      interpreter = ExpressionInterpreter.createInterpreter("Count(\"" + MATCH_EXPR + "\")");
+      interpreter = new ExpressionInterpreter("Count(\"" + MATCH_EXPR + "\")");
       result = interpreter.evaluate(bp1);
       assertThat("Count across multiple maps", result, is(equalTo("3")));
 
       // Count Test 2 - Map name provided,  should select pieces 1 and 3
-      interpreter = ExpressionInterpreter.createInterpreter("Count(\"" + MATCH_EXPR + "\", \"" + MAP_NAME_2 + "\")");
+      interpreter = new ExpressionInterpreter("Count(\"" + MATCH_EXPR + "\", \"" + MAP_NAME_2 + "\")");
       result = interpreter.evaluate(bp1);
       assertThat("Count on named map", result, is(equalTo("2")));
     }

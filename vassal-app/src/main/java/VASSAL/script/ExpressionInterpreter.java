@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -90,13 +89,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   //protected NameSpace localNameSpace;
 
   protected String expression;
-  protected PropertySource source;
   protected List<String> variables;
   protected List<String> stringVariables;
 
-  // Maintain a cache of all generated Interpreters. All Expressions
-  // with the same Expression use the same Interpreter.
-  protected static final java.util.Map<String, ExpressionInterpreter> cache = new HashMap<>();
+  // source is not persistent; it should be set during evaluate() only
+  protected PropertySource source;
 
   @Override
   public String getComponentTypeName() {
@@ -106,20 +103,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   @Override
   public String getComponentName() {
     return Resources.getString("Editor.ExpressionInterpreter.component_type");
-  }
-
-  public static ExpressionInterpreter createInterpreter(String expr) throws ExpressionException {
-    final String e = expr == null ? "" : strip(expr);
-    ExpressionInterpreter interpreter = cache.get(e);
-    if (interpreter == null) {
-      interpreter = new ExpressionInterpreter(e);
-      cache.put(e, interpreter);
-    }
-    return interpreter;
-  }
-
-  public static void clearCache() {
-    cache.clear();
   }
 
   protected static String strip(String expr) {
@@ -137,10 +120,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @param expr Expression
    * @throws ExpressionException Invalid Expression details
    */
-  private ExpressionInterpreter(String expr) throws ExpressionException {
+  public ExpressionInterpreter(String expr) throws ExpressionException {
     super();
 
-    expression = expr;
+    expression = expr == null ? "" : strip(expr);
 
     // Install the Vassal Class loader so that bsh can find Vassal classes
     this.setClassLoader(this.getClass().getClassLoader());
