@@ -28,4 +28,61 @@
         <field>SUPPORTED_STRING_METHODS</field>
         <justification>No chance of subclass</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/IntExpression</className>
+        <differenceType>7009</differenceType>
+        <method>IntExpression(int)</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/NullExpression</className>
+        <differenceType>7009</differenceType>
+        <method>NullExpression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/StringExpression</className>
+        <differenceType>7009</differenceType>
+        <method>StringExpression(java.lang.String)</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/Expression</className>
+        <differenceType>7004</differenceType>
+        <method>Expression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/Expression</className>
+        <differenceType>7009</differenceType>
+        <method>Expression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>defaultProperties</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>format</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>formatString</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
 </differences>

@@ -12,20 +12,20 @@ public class StringExpressionTest {
 
   @Test
   public void constructor() {
-    Expression e = new StringExpression(TEST);
+    Expression e = StringExpression.instance(TEST);
     assertThat(e.getExpression(), is(equalTo(TEST)));
   }
 
   @Test
   public void evaluate() throws ExpressionException {
-    Expression e = new StringExpression(TEST);
+    Expression e = StringExpression.instance(TEST);
     String s = e.evaluate();
     assertThat(s, equalTo(TEST));
   }
 
   @Test
   public void toBeanShellString() {
-    Expression e = new StringExpression(TEST);
+    Expression e = StringExpression.instance(TEST);
     String s = e.toBeanShellString();
     assertThat(s, equalTo("\"" + TEST + "\""));
   }

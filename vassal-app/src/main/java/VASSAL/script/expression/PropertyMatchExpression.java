@@ -19,6 +19,8 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PropertiesPieceFilter;
@@ -28,25 +30,29 @@ import VASSAL.tools.FormattedString;
  * An old-style Property Match expression.
  */
 public class PropertyMatchExpression extends Expression {
-
   protected PieceFilter filter;
 
   public PropertyMatchExpression(String s) {
-    setExpression(s);
+    super(s);
   }
 
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
     return null;
   }
 
   @Override
   public PieceFilter getFilter(PropertySource ps) {
-    if (filter == null || isDynamic()) {
-      filter = PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps));
+    if (filter != null) {
+      return filter;
     }
-    return filter;
+
+    final PieceFilter pf =  PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps));
+    if (!isDynamic()) {
+      filter = pf;
+    }
+
+    return pf;
   }
 
   protected boolean isDynamic() {
@@ -58,4 +64,7 @@ public class PropertyMatchExpression extends Expression {
     return PropertiesPieceFilter.toBeanShellString(getExpression());
   }
 
+  public static Expression instance(String s) {
+    return CACHE.computeIfAbsent(Pair.of(s, PropertyMatchExpression.class), k -> new PropertyMatchExpression(s));
+  }
 }

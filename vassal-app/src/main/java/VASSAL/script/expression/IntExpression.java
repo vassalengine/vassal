@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -17,34 +16,18 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import VASSAL.build.module.properties.PropertySource;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An expression consisting of an Integer only
  *
  */
 public class IntExpression extends Expression {
-
-  public IntExpression(int i) {
-    try {
-      setExpression(String.valueOf(i));
-    }
-    catch (NumberFormatException e) {
-      setExpression("0");
-    }
+  private IntExpression(int i) {
+    super(String.valueOf(i));
   }
 
-  @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) {
-    return getExpression();
+  public static Expression instance(int i) {
+    return CACHE.computeIfAbsent(Pair.of(i, IntExpression.class), k -> new IntExpression(i));
   }
-
-  @Override
-  public String toBeanShellString() {
-    return getExpression();
-  }
-
 }

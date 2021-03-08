@@ -19,6 +19,8 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.tools.SequenceEncoder;
 
@@ -28,9 +30,8 @@ import VASSAL.tools.SequenceEncoder;
  *
  */
 public class FormattedStringExpression extends Expression {
-
   public FormattedStringExpression(String s) {
-    setExpression(s);
+    super(s);
   }
 
   /**
@@ -38,11 +39,9 @@ public class FormattedStringExpression extends Expression {
    * NB. Code moved from FormattedString.java
    */
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
     final StringBuilder buffer = new StringBuilder();
-    final SequenceEncoder.Decoder st =
-      new SequenceEncoder.Decoder(getExpression(), '$');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(getExpression(), '$');
     boolean isProperty = true;
     while (st.hasMoreTokens()) {
       final String token = st.nextToken();
@@ -95,8 +94,7 @@ public class FormattedStringExpression extends Expression {
     }
 
     final StringBuilder buffer = new StringBuilder();
-    final SequenceEncoder.Decoder st =
-      new SequenceEncoder.Decoder(s, '$');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '$');
     boolean isProperty = true;
     boolean first = true;
     while (st.hasMoreTokens()) {
@@ -124,4 +122,7 @@ public class FormattedStringExpression extends Expression {
     return buffer.toString();
   }
 
+  public static Expression instance(String s) {
+    return CACHE.computeIfAbsent(Pair.of(s, FormattedStringExpression.class), k -> new FormattedStringExpression(s));
+  }
 }
