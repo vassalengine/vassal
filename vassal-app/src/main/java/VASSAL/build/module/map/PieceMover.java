@@ -944,6 +944,7 @@ public class PieceMover extends AbstractBuildable
             !Boolean.TRUE.equals(dragging.getProperty(Properties.IGNORE_GRID)) &&
             (dragging.getParent() == null || !dragging.getParent().isExpanded());
       }
+
       if (useGrid) {
         if (map.equals(DragBuffer.getBuffer().getFromMap())) {
           if (map.snapTo(pt).equals(map.snapTo(dragBegin))) {
@@ -951,11 +952,10 @@ public class PieceMover extends AbstractBuildable
           }
         }
       }
-      else {
-        if (Math.abs(pt.x - dragBegin.x) <= 5 &&
-          Math.abs(pt.y - dragBegin.y) <= 5) {
-          isClick = true;
-        }
+
+      if (map.mapToComponent(Math.abs(pt.x - dragBegin.x)) <= GlobalOptions.getInstance().getDragThreshold() &&
+        map.mapToComponent(Math.abs(pt.y - dragBegin.y)) <= GlobalOptions.getInstance().getDragThreshold()) {
+        isClick = true;
       }
     }
     return isClick;
@@ -970,7 +970,9 @@ public class PieceMover extends AbstractBuildable
   public void mouseReleased(MouseEvent e) {
     if (canHandleEvent(e)) {
       if (!isClick(e.getPoint())) {
-        performDrop(e.getPoint());
+        if (!isClick(e.getPoint())) {
+          performDrop(e.getPoint());
+        }
       }
     }
     dragBegin = null;
