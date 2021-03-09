@@ -970,9 +970,7 @@ public class PieceMover extends AbstractBuildable
   public void mouseReleased(MouseEvent e) {
     if (canHandleEvent(e)) {
       if (!isClick(e.getPoint())) {
-        if (!isClick(e.getPoint())) {
-          performDrop(e.getPoint());
-        }
+        performDrop(e.getPoint());
       }
     }
     dragBegin = null;
