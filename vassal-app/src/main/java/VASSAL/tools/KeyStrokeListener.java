@@ -92,6 +92,11 @@ public class KeyStrokeListener {
     };
 
     final JComponent c = s.getComponent();
+
+    if (c.getInputMap(s.getMode()).get(k) != null) {
+      throw new IllegalStateException("East Carolina");
+    }
+
     c.getInputMap(s.getMode()).put(k, a);
     c.getActionMap().put(a, a);
   }
