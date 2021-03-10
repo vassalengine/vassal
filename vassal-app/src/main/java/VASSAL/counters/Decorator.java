@@ -96,7 +96,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
   }
 
   /**
-   * @return the next member "inward" (toward the BasicPiece) of the full GamePiece.i
+   * @return the next member "inward" (toward the BasicPiece) of the full GamePiece.
    * Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
    * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it. The
    * "innermost" piece of a Trait/Decorator stack will be a BasicPiece. Since Traits (Decorators) implement the {@link GamePiece} interface,
