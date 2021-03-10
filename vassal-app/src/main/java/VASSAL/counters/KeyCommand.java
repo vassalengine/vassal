@@ -66,18 +66,25 @@ public class KeyCommand extends AbstractAction {
   }
 
   public KeyCommand(String name, NamedKeyStroke key, GamePiece target, boolean enabled) {
-    this(name, key == null ? null : key.getKeyStroke(), target, enabled);
+    this(name, key, target, null, enabled);
+  }
+
+  public KeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, boolean enabled) {
+    this(name, key == null ? null : key.getKeyStroke(), target, i18nPiece, enabled);
     namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
   }
 
   public KeyCommand(String name, KeyStroke key, GamePiece target, boolean enabled) {
-    this(name, key, target, null);
+    this(name, key, target, null, enabled);
+  }
+
+  public KeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece, boolean enabled) {
+    this(name, key, target, i18nPiece);
     setEnabled(enabled);
   }
 
   public KeyCommand(KeyCommand command) {
-    this(command.name, command.stroke, command.target, command.isEnabled());
-    this.i18nPiece = command.i18nPiece;
+    this(command.name, command.stroke, command.target, command.i18nPiece, command.isEnabled());
   }
 
   public String getName() {
