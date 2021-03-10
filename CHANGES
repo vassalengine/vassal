@@ -1,5 +1,7 @@
 3.5.4 - ???
 
+* 14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners
+    (e.g. accepting double click AND drag from same mouse sequence)
 * 14182: Prevent duplication of FormattedString data and Expressions
 * 14178: Some weird systems lack awt.font.desktophints but aren't headless
 * 14167: Inefficient implementation of FilterOutputStream in ZipWriter
