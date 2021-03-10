@@ -37,8 +37,6 @@ import VASSAL.tools.swing.SwingUtils;
  * @see VASSAL.build.GameModule#addKeyStrokeSource
  */
 public class KeyStrokeListener {
-  private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(KeyStrokeListener.class);
-
   private ActionListener l;
   private KeyStroke key;
   private final List<KeyStrokeSource> sources = new ArrayList<>();
@@ -94,16 +92,11 @@ public class KeyStrokeListener {
     };
 
     final JComponent c = s.getComponent();
-
-    if (c.getInputMap(s.getMode()).get(k) != null) {
-      log.info(k.getKeyCode() + " " + k + " " + l);
-    }
-
     c.getInputMap(s.getMode()).put(k, a);
     c.getActionMap().put(a, a);
   }
 
-  private static void unregisterKey(ActionListener l, KeyStrokeSource s, KeyStroke k) {
+  private static void unregisterKey(ActionListener l, KeyStrokeSource s, KeyStroke k) { // NOPMD
     final JComponent c = s.getComponent();
     final InputMap im = c.getInputMap(s.getMode());
     c.getActionMap().remove(im.get(k));
