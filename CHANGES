@@ -6,6 +6,7 @@
 * 14178: Some weird systems lack awt.font.desktophints but aren't headless
 * 14167: Inefficient implementation of FilterOutputStream in ZipWriter
 * 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
+* 14156: Loading a log file to continue a game shouldn't reset the map window
 * 14155: Search was showing duplicate entries for certain items
 * 14154: Search wasn't finding "Fast Match" fields
 * 14152: .vsav, .vlog should be appended to saves, logs when not present,
