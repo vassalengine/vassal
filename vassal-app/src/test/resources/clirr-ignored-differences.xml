@@ -85,4 +85,17 @@
         <justification>Should be no subclasses</justification>
     </difference>
 
+   <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>6001</differenceType>
+        <field>cache</field>
+        <justification>Should be no subclasses</justification>
+   </difference>
+
+   <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.script.ExpressionInterpreter createInterpreter(java.lang.String)</method>
+        <justification>Used only by BeanShellExpression</justification>
+    </difference>
 </differences>
