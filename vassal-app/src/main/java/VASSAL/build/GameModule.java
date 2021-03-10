@@ -127,6 +127,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
+import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
@@ -1021,6 +1022,8 @@ public class GameModule extends AbstractConfigurable
     }
 
     getPlayerRoster().resetListeners();
+
+    Expression.resetCachedExpressions();
   }
 
   /**

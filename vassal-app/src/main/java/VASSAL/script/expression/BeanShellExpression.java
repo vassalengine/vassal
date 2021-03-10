@@ -37,6 +37,11 @@ public class BeanShellExpression extends Expression {
 
   protected ExpressionInterpreter interpreter;
 
+  @Override
+  protected void reset() {
+    interpreter = null;
+  }
+
   /**
    * Evaluate this expression using a BeanShell Interpreter
    */

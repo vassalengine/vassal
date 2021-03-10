@@ -53,6 +53,9 @@ public class Expression {
     throw new UnsupportedOperationException();
   }
 
+  protected void reset() {
+  }
+
   /**
    * Each subclass must implement evaluate() to evaluate itself
    *
@@ -262,5 +265,9 @@ public class Expression {
     }
 
     return SinglePropertyExpression.instance(t);
+  }
+
+  public static void resetCachedExpressions() {
+    CACHE.values().forEach(Expression::reset);
   }
 }
