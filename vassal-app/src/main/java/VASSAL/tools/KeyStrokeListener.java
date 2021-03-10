@@ -55,7 +55,7 @@ public class KeyStrokeListener {
       newKey = null;
     }
 
-    if (key != null) {
+    if (key != null && !NamedKeyManager.isNamed(key)) {
       final KeyStroke sysKey = SwingUtils.genericToSystem(key);
       for (final KeyStrokeSource s : sources) {
         unregisterKey(l, s, sysKey);
@@ -63,7 +63,7 @@ public class KeyStrokeListener {
     }
 
     key = newKey;
-    if (key != null) {
+    if (key != null && !NamedKeyManager.isNamed(key)) {
       final KeyStroke sysKey = SwingUtils.genericToSystem(key);
       for (final KeyStrokeSource s : sources) {
         registerKey(l, s, sysKey);
@@ -111,7 +111,7 @@ public class KeyStrokeListener {
   public void addKeyStrokeSource(KeyStrokeSource src) {
     if (!sources.contains(src)) {
       sources.add(src);
-      if (key != null) {
+      if (key != null && !NamedKeyManager.isNamed(key)) {
         registerKey(l, src, SwingUtils.genericToSystem(key));
       }
     }
@@ -119,7 +119,7 @@ public class KeyStrokeListener {
 
   public void removeKeyStrokeSource(KeyStrokeSource src) {
     if (sources.remove(src)) {
-      if (key != null) {
+      if (key != null && !NamedKeyManager.isNamed(key)) {
         unregisterKey(l, src, SwingUtils.genericToSystem(key));
       }
     }
