@@ -1,5 +1,7 @@
 3.5.4 - ???
 
+* 14193: Expressions should be cached
+* 14192: Decks from previous saves and logs are retained in memory
 * 14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners
     (e.g. accepting double click AND drag from same mouse sequence)
 * 14182: Prevent duplication of FormattedString data and Expressions
