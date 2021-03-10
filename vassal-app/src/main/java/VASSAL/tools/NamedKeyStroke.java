@@ -52,7 +52,7 @@ public class NamedKeyStroke {
 
   public NamedKeyStroke(KeyStroke k, String s) {
     stroke = k;
-    name = s;
+    name = s != null ? s.intern() : null;
   }
 
   public NamedKeyStroke(KeyStroke k) {
@@ -141,5 +141,4 @@ public class NamedKeyStroke {
   public static NamedKeyStroke getKeyStrokeForEvent(KeyEvent e) {
     return new NamedKeyStroke(SwingUtils.getKeyStrokeForEvent(e));
   }
-
 }

@@ -183,7 +183,7 @@ public class KeyCommand extends AbstractAction {
   }
 
   private static String makeMenuText(KeyStroke ks, String text) {
-    return ks != null && text != null && !text.isBlank() ?
-      text + "  " + NamedHotKeyConfigurer.getString(ks) : text;
+    return (ks != null && text != null && !text.isBlank() ?
+      text + "  " + NamedHotKeyConfigurer.getString(ks) : text).intern();
   }
 }

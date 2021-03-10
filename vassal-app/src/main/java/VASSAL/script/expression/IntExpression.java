@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public class IntExpression extends Expression {
   private IntExpression(int i) {
-    super(String.valueOf(i));
+    super(String.valueOf(i).intern());
   }
 
   public static Expression instance(int i) {

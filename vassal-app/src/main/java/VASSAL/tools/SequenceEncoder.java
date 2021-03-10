@@ -289,7 +289,7 @@ public class SequenceEncoder {
         val = null;
       }
 
-      return unquote(tok != null ? tok : buf);
+      return unquote(tok != null ? tok : buf).intern();
     }
 
     private String unquote(CharSequence cs) {
@@ -443,7 +443,7 @@ public class SequenceEncoder {
      * @return next token, or the default value if no more tokens
      */
     public String nextToken(String defaultValue) {
-      return val != null ? nextToken() : defaultValue;
+      return val != null ? nextToken() : (defaultValue != null ? defaultValue.intern() : null);
     }
 
     public String[] nextStringArray(int minLength) {
