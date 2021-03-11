@@ -95,7 +95,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
   @Override
   public Object getLocalizedProperty(Object key) {
     if (this.key.equals(key)) {
-      return getTranslation(message); // ?????
+      return message;
     }
     return super.getLocalizedProperty(key);
   }
@@ -131,16 +131,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
 
   @Override
   public String getDescription() {
-    String result = Resources.getString("Editor.TranslatableMessage.trait_description");
-
-    if (!key.isEmpty()) {
-      result += " - " + key;
-      if (!description.isEmpty()) {
-        result += " - " + description;
-      }
-    }
-
-    return result;
+    return buildDescription("Editor.TranslatableMessage.trait_description", key, description);
   }
 
   @Override
