@@ -116,14 +116,19 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     updateDeckName();
   }
 
-  private void updateDeckName() {
-    deckName = "[" + Resources.getString("Editor.ReturnToDeck.none") + "]";
+  private static String getDeckName(String deckId) {
+    String dn = "[" + Resources.getString("Editor.ReturnToDeck.none") + "]";
     if (deckId != null) {
       final DrawPile p = DrawPile.findDrawPile(deckId);
       if (p != null) {
-        deckName =  p.getConfigureName();
+        dn = p.getConfigureName();
       }
     }
+    return dn.intern();
+  }
+
+  private void updateDeckName() {
+    deckName = getDeckName(deckId);
   }
 
   @Override
@@ -350,14 +355,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     }
 
     private void updateDeckName() {
-      String deckName = "[" + Resources.getString("Editor.ReturnToDeck.none") + "]";
-      if (deckId != null) {
-        final DrawPile p = DrawPile.findDrawPile(deckId);
-        if (p != null) {
-          deckName =  p.getConfigureName();
-        }
-      }
-      tf.setText(deckName);
+      tf.setText(getDeckName(deckId));
     }
 
     @Override
