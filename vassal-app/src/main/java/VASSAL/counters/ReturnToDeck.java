@@ -93,7 +93,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
             new KeyCommand[]{myCommand};
       }
       else {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
     }
     return commands;

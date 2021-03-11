@@ -152,7 +152,7 @@ public class Marker extends Decorator implements EditablePiece {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[0];
+    return KeyCommand.NONE;
   }
 
   @Override

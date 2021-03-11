@@ -708,7 +708,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         || labelKey.isNull()
         || menuCommand == null
         || menuCommand.length() == 0) {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
       else {
         commands = new KeyCommand[]{menuKeyCommand};

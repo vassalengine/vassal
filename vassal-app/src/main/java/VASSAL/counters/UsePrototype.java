@@ -109,7 +109,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[0];
+    return KeyCommand.NONE;
   }
 
   @Override

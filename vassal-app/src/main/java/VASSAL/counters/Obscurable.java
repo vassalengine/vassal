@@ -464,7 +464,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       commandsWithoutPeek = new KeyCommand[] {hide};
     }
     else {
-      commandsWithoutPeek = new KeyCommand[0];
+      commandsWithoutPeek = KeyCommand.NONE;
     }
 
     // Peek Command

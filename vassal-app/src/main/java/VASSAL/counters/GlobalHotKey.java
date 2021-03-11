@@ -55,7 +55,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
         commands = new KeyCommand[]{command};
       }
       else {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
     }
     return commands;

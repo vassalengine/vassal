@@ -96,7 +96,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
           new KeyCommand[]{deselectCommand};
       }
       else {
-        command = new KeyCommand[0];
+        command = KeyCommand.NONE;
       }
     }
     if (command.length > 0) {

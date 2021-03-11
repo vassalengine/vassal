@@ -116,7 +116,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         commands = new KeyCommand[]{moveCommand};
       }
       else {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
     }
     moveCommand.setEnabled(getMap() != null);

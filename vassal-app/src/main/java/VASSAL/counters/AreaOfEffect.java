@@ -290,7 +290,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       if (alwaysActive || activateCommand.length() == 0) {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
       else {
         commands = new KeyCommand[]{keyCommand};

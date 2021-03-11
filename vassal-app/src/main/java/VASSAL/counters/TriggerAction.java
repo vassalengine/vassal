@@ -121,7 +121,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       return new KeyCommand[] { c };
     }
     else {
-      return new KeyCommand[0];
+      return KeyCommand.NONE;
     }
   }
 

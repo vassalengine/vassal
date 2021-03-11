@@ -33,6 +33,8 @@ import VASSAL.tools.NamedKeyStroke;
 public class KeyCommand extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
+  public static final KeyCommand[] NONE = new KeyCommand[0];
+
   private final String name;
   protected String untranslatedName;
   protected String localizedMenuText;
