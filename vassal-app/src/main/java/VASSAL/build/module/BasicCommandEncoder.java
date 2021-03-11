@@ -53,6 +53,7 @@ import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
+import VASSAL.counters.TranslatableMessage;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.NonRectangular;
@@ -165,6 +166,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(Pivot.ID, Pivot::new),
     Map.entry(NonRectangular.ID, NonRectangular::new),
     Map.entry(Marker.ID, Marker::new),
+    Map.entry(TranslatableMessage.ID, TranslatableMessage::new),
     Map.entry(Restricted.ID, Restricted::new),
     Map.entry(PlaceMarker.ID, PlaceMarker::new),
     Map.entry(Replace.ID, Replace::new),
@@ -320,7 +322,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (command.length() == 0) {
       return new NullCommand();
     }
-    SequenceEncoder.Decoder st;
+    final SequenceEncoder.Decoder st;
     if (command.startsWith(ADD)) {
       command = command.substring(ADD.length());
       st = new SequenceEncoder.Decoder(command, PARAM_SEPARATOR);
