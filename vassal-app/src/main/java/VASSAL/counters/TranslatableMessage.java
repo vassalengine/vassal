@@ -32,21 +32,16 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * A generic Decorator that retains in its state the value of a property.
- * That is, if {@link #setProperty(Object,Object)} is invoked with a key
- * that is one of {@link #getKeys()}, the <code>String</code> value of that
- * property will be reflected in the #myGetState() method.
+ * A trait to expose a translated string as a readable/displayable property.
  */
 public class TranslatableMessage extends Decorator implements EditablePiece {
-  public static final char DELIMITER = '\7'; // Something that won't be in text messages?
+  public static final char DELIMITER = ';'; 
   public static final String ID = "locmsg" + DELIMITER; // NON-NLS
 
   protected String key;
   protected String description;
   protected String message;
 
-  //protected String[] keys;
-  //protected String[] values;
 
   public TranslatableMessage() {
     this(ID, null);
@@ -134,11 +129,13 @@ public class TranslatableMessage extends Decorator implements EditablePiece {
 
   @Override
   public String getDescription() {
-    String result = Resources.getString("Editor.Marker.trait_description");
+    String result = Resources.getString("Editor.TranslatableMessage.trait_description");
 
-    result += " - " + key;
-    if (!description.isEmpty()) {
-      result += " - " + description;
+    if (!key.isEmpty()) {
+      result += " - " + key;
+      if (!description.isEmpty()) {
+        result += " - " + description;
+      }
     }
 
     return result;
@@ -183,13 +180,13 @@ public class TranslatableMessage extends Decorator implements EditablePiece {
       panel = new TraitConfigPanel();
 
       propDesc = new StringConfigurer(m.description);
-      panel.add("Editor.TranslatableMessage", propDesc);
+      panel.add("Editor.TranslatableMessage.description", propDesc);
 
       propName = new StringConfigurer(m.key);
-      panel.add("Editor.Marker.property_name", propName);
+      panel.add("Editor.TranslatableMessage.property_name", propName);
 
       propValue = new StringConfigurer(m.message);
-      panel.add("Editor.Marker.property_value", propValue);
+      panel.add("Editor.TranslatableMessage.property_value", propValue);
     }
 
     @Override
@@ -204,7 +201,11 @@ public class TranslatableMessage extends Decorator implements EditablePiece {
 
     @Override
     public String getType() {
-      return VASSAL.counters.TranslatableMessage.ID + propName.getValueString() + DELIMITER + propDesc.getValueString() + DELIMITER + propValue.getValueString();
+      SequenceEncoder se = new SequenceEncoder(DELIMITER);
+      se.append(propName.getValueString());
+      se.append(propDesc.getValueString());
+      se.append(propValue.getValueString());
+      return VASSAL.counters.TranslatableMessage.ID + se.getValue();
     }
   }
 
