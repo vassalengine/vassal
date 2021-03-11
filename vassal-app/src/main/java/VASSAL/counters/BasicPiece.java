@@ -95,6 +95,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String OLD_Y = "OldY"; // NON-NLS
   public static final String BASIC_NAME = "BasicName"; // NON-NLS
   public static final String PIECE_NAME = "PieceName"; // NON-NLS
+  public static final String LOCALIZED_BASIC_NAME = "LocalizedBasicName"; //NON-NLS
+  public static final String LOCALIZED_PIECE_NAME = "LocalizedPieceName"; //NON-NLS
   public static final String DECK_NAME = "DeckName"; // NON-NLS
   public static final String DECK_POSITION = "DeckPosition"; // NON-NLS
   public static final String CLICKED_X = "ClickedX"; // NON-NLS
@@ -228,6 +230,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     if (BASIC_NAME.equals(key)) {
       return getName();
     }
+    else if (LOCALIZED_BASIC_NAME.equals(key)) {
+      return getLocalizedName();
+    }
     else
         return getPublicProperty(key);
   }
@@ -245,6 +250,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     }
     else if (PIECE_NAME.equals(key)) {
       return Decorator.getOutermost(this).getName();
+    }
+    else if (LOCALIZED_PIECE_NAME.equals(key)) {
+      return Decorator.getOutermost(this).getLocalizedName();
     }
     else if (CURRENT_MAP.equals(key)) {
       return getMap() == null ? "" : getMap().getConfigureName();
