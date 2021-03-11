@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -29,13 +30,14 @@ import javax.swing.KeyStroke;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * A trait to expose a translated string as a readable/displayable property.
  */
-public class TranslatableMessage extends Decorator implements EditablePiece {
-  public static final char DELIMITER = ';'; 
+public class TranslatableMessage extends Decorator implements TranslatablePiece {
+  public static final char DELIMITER = ';';
   public static final String ID = "locmsg" + DELIMITER; // NON-NLS
 
   protected String key;
@@ -93,7 +95,7 @@ public class TranslatableMessage extends Decorator implements EditablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (this.key.equals(key)) {
-      return message;
+      return getTranslation(message); // ?????
     }
     return super.getLocalizedProperty(key);
   }
@@ -209,6 +211,15 @@ public class TranslatableMessage extends Decorator implements EditablePiece {
     }
   }
 
+
+  @Override
+  public PieceI18nData getI18nData() {
+    return getI18nData(
+      new String[] { message },
+      new String[] {
+        Resources.getString("Editor.TranslatableMessage.property_value"),
+      });
+  }
 
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)
