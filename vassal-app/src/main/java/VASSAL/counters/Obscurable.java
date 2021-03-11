@@ -135,7 +135,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         break;
       case IMAGE:
         if (s.length() > 1) {
-          obscuredToOthersImage = s.substring(1);
+          obscuredToOthersImage = s.substring(1).intern();
           obscuredToOthersView = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;" + obscuredToOthersImage + ";;");
           obscuredToMeView.setPosition(new Point());
         }

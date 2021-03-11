@@ -99,7 +99,7 @@ public class FormattedString implements Loopable {
     if (props == null) {
       props = new HashMap<>();
     }
-    props.put(name, value);
+    props.put(name.intern(), value != null ? value.intern() : null);
   }
 
   public void clearProperties() {

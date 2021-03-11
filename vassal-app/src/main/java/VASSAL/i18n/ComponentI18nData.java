@@ -85,7 +85,7 @@ public class ComponentI18nData {
      *          I18n prefix
      */
   public ComponentI18nData(AutoConfigurable c, String prefix) {
-    this.prefix = prefix;
+    this.prefix = prefix.intern();
     parent = null;
     init(c, prefix, c.getAttributeNames(),
          c.getAttributeTypes(), c.getAttributeDescriptions());
@@ -103,7 +103,7 @@ public class ComponentI18nData {
   }
 
   protected void init(Configurable c, String pfx, String[] names, String[] descriptions, boolean[] translatable) {
-    prefix = pfx;
+    prefix = pfx.intern();
     myComponent = c;
     children.addAll(Arrays.asList(myComponent.getConfigureComponents()));
     for (int i = 0; i < translatable.length; i++) {
@@ -133,7 +133,7 @@ public class ComponentI18nData {
    */
   public ComponentI18nData(Configurable c, String prefix, Translatable parent, String[] names, boolean[] translatable, String[] descriptions) {
     myComponent = c;
-    this.prefix = prefix;
+    this.prefix = prefix.intern();
     this.parent = parent;
     init(c, prefix, names, descriptions, translatable);
   }
@@ -184,7 +184,7 @@ public class ComponentI18nData {
   }
 
   public void setPrefix(String p) {
-    prefix = p;
+    prefix = p.intern();
   }
 
   /**
