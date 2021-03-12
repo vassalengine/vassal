@@ -62,7 +62,7 @@ public class GlobalTranslatableMessages extends AbstractConfigurable implements 
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.GlobalProperties.component_type");
+    return Resources.getString("Editor.GlobalTranslatableMessages.component_type");
   }
 
   @Override
@@ -80,12 +80,12 @@ public class GlobalTranslatableMessages extends AbstractConfigurable implements 
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS
+    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS //FIXME not this HTML
   }
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] {TranslatableString.class};
+    return new Class<?>[] { GlobalTranslatableMessage.class };
   }
 
   @Override

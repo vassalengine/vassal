@@ -67,7 +67,7 @@ public class GlobalTranslatableMessage extends AbstractConfigurable implements T
   public String[] getAttributeDescriptions() {
     return new String[]{
       Resources.getString("Editor.name_label"),
-      Resources.getString("Editor.GlobalProperty.initial_value"),
+      Resources.getString("Editor.GlobalTranslatableMessage.message"),
       Resources.getString("Editor.description_label"),
     };
   }
@@ -130,7 +130,7 @@ public class GlobalTranslatableMessage extends AbstractConfigurable implements T
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS
+    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS //FIXME not this html
   }
 
   @Override
@@ -195,7 +195,7 @@ public class GlobalTranslatableMessage extends AbstractConfigurable implements T
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.GlobalProperty.component_type");
+    return Resources.getString("Editor.GlobalTranslatableMessage.component_type");
   }
 
   public void setPropertyName(String name) {
