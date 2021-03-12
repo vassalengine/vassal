@@ -59,7 +59,7 @@ public class Deselect extends Decorator implements TranslatablePiece {
 
   public Deselect() {
     commandName = Resources.getString("Editor.Deselect.deselect");
-    key = new NamedKeyStroke(KeyStroke.getKeyStroke("K"));
+    key = NamedKeyStroke.of(KeyStroke.getKeyStroke("K"));
     description = "";
     unstack = false;
   }

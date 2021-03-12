@@ -414,7 +414,7 @@ public class SequenceEncoder {
     }
 
     public NamedKeyStroke nextNamedKeyStroke(char defaultValue) {
-      return nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(defaultValue, InputEvent.CTRL_DOWN_MASK));
+      return nextNamedKeyStroke(NamedKeyStroke.of(defaultValue, InputEvent.CTRL_DOWN_MASK));
     }
 
     public NamedKeyStroke nextNamedKeyStroke() {
@@ -428,7 +428,7 @@ public class SequenceEncoder {
           defaultValue = null;
         }
         else if (s.indexOf(',') < 0) {
-          defaultValue = NamedKeyStroke.getNamedKeyStroke(s.charAt(0), InputEvent.CTRL_DOWN_MASK);
+          defaultValue = NamedKeyStroke.of(s.charAt(0), InputEvent.CTRL_DOWN_MASK);
         }
         else {
           defaultValue = NamedHotKeyConfigurer.decode(s);

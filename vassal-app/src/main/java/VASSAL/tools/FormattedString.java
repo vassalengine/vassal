@@ -63,7 +63,7 @@ public class FormattedString implements Loopable {
   private static FSData dataOf(String fs, PropertySource dp) {
     return CACHE.computeIfAbsent(
       Pair.of(fs, dp),
-      k -> new FSData(k.getLeft(), k.getRight())
+      p -> new FSData(p.getLeft(), p.getRight())
     );
   }
 

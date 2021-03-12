@@ -148,7 +148,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final NamedKeyStrokeListener undoKeyListener = new NamedKeyStrokeListener(undoAction, null);
     mod.addKeyStrokeListener(undoKeyListener);
 
-    final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+    final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.of(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
 
     final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK));

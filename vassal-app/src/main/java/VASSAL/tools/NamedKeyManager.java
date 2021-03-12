@@ -24,26 +24,19 @@ import java.util.Map;
 import javax.swing.KeyStroke;
 
 public class NamedKeyManager {
-
-  protected static NamedKeyManager instance;
+  protected static NamedKeyManager instance = new NamedKeyManager();
 
   /*
    * Named Keys are allocated real Keystrokes
    * in the sequence from '\uE000' to '\uF8FE'.
-   * The value '\uF8FF' is used as a place marker to
-   * indicate a real KeyStroke has not been allocated yet.
    */
   protected static final int NAMED_START = '\uE000';
   protected static final int NAMED_END = '\uF8FE';
-  protected static final int NAMED_MARKER = '\uF8FF';
 
   protected static int nextNamedKey = NAMED_START;
   protected static final Map<String, KeyStroke> strokes = new HashMap<>();
 
   public static NamedKeyManager getInstance() {
-    if (instance == null) {
-      instance = new NamedKeyManager();
-    }
     return instance;
   }
 
@@ -58,36 +51,25 @@ public class NamedKeyManager {
       return false;
     }
     final int code = k.getKeyCode();
-    return code == NAMED_MARKER || (code >= NAMED_START && code <= NAMED_END);
+    return code >= NAMED_START && code <= NAMED_END;
   }
 
   /**
-   * @return Return a generic marker KeyStroke
-   */
-  public static KeyStroke getMarkerKeyStroke() {
-    return KeyStroke.getKeyStroke(NAMED_MARKER, 0);
-  }
-
-  /**
-   * Return the generated KeyStroke associated with the NamedKeyStroke
-   * @param vkey Named Keystroke
+   * Return the generated KeyStroke associated with the name
+   * @param name NamedKeyStroke name
    * @return generated KeyStroke
    */
-  public KeyStroke getKeyStroke(NamedKeyStroke vkey) {
-    // No name means it is just a standard keystroke
-    if (!vkey.isNamed()) {
-      return vkey.getStroke();
+  public KeyStroke getKeyStroke(String name, KeyStroke ks) {
+    if (name == null || name.isEmpty()) {
+      return ks;
     }
 
     // Look up the name in the cache and allocate the next
     // available KeyStroke if required.
-    KeyStroke stroke = strokes.get(vkey.getName());
-    if (stroke == null) {
-      stroke = KeyStroke.getKeyStroke(getNextStroke(), 0);
-      strokes.put(vkey.getName(), stroke);
-    }
-
-    return stroke;
+    return strokes.computeIfAbsent(
+      name,
+      k -> KeyStroke.getKeyStroke(getNextStroke(), 0)
+    );
   }
 
   /**
@@ -100,5 +82,4 @@ public class NamedKeyManager {
     }
     return nextNamedKey++;
   }
-
 }

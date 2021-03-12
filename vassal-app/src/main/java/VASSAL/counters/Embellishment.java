@@ -42,6 +42,7 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -239,26 +240,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
         // Cannot convert if activate, up or down has more than 1 char specified
         if (activateKey.length() <= 1 && upKey.length() <= 1 && downKey.length() <= 1) {
-          if (activateKey.length() == 0) {
-            activateKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
-          }
-          else {
-            activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers);
-          }
+          activateKeyStroke = activateKey.length() == 0 ?
+            NamedKeyStroke.NULL_KEYSTROKE :
+            NamedKeyStroke.of(activateKey.charAt(0), activateModifiers);
 
-          if (upKey.length() == 0) {
-            increaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
-          }
-          else {
-            increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
-          }
+          increaseKeyStroke = upKey.length() == 0 ?
+            NamedKeyStroke.NULL_KEYSTROKE :
+            NamedKeyStroke.of(upKey.charAt(0), upModifiers);
 
-          if (downKey.length() == 0) {
-            decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
-          }
-          else {
-            decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers);
-          }
+          decreaseKeyStroke = downKey.length() == 0 ?
+            NamedKeyStroke.NULL_KEYSTROKE :
+            NamedKeyStroke.of(downKey.charAt(0), downModifiers);
+
           version = CURRENT_VERSION;
         }
       }
@@ -302,7 +295,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       new SequenceEncoder.Decoder(st.nextToken(), ';');
     activateKey = st2.nextToken().toUpperCase();
     if (activateKey.length() > 0) {
-      activateKeyStroke = new NamedKeyStroke(KeyStroke.getKeyStroke(activateKey));
+      activateKeyStroke = NamedKeyStroke.of(KeyStroke.getKeyStroke(activateKey));
     }
     activateModifiers = InputEvent.CTRL_DOWN_MASK;
     if (st2.hasMoreTokens()) {
@@ -360,28 +353,20 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     loopLevels = true;
 
     alwaysActive = activateKey.length() == 0;
-    if (activateKey.length() == 0) {
-      activateKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
-    }
-    else {
-      activateKeyStroke = new NamedKeyStroke(activateKey.charAt(0), activateModifiers);
-    }
 
-    if (upKey.length() == 0) {
-      increaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
-    }
-    else {
-      increaseKeyStroke = new NamedKeyStroke(upKey.charAt(0), upModifiers);
-    }
+    activateKeyStroke = activateKey.length() == 0 ?
+      NamedKeyStroke.NULL_KEYSTROKE :
+      NamedKeyStroke.of(activateKey.charAt(0), activateModifiers);
 
-    if (downKey.length() == 0) {
-      decreaseKeyStroke = NamedKeyStroke.NULL_KEYSTROKE;
-    }
-    else {
-      decreaseKeyStroke = new NamedKeyStroke(downKey.charAt(0), downModifiers);
-    }
+    increaseKeyStroke = upKey.length() == 0 ?
+      NamedKeyStroke.NULL_KEYSTROKE :
+      NamedKeyStroke.of(upKey.charAt(0), upModifiers);
+
+    decreaseKeyStroke = downKey.length() == 0 ?
+      NamedKeyStroke.NULL_KEYSTROKE :
+      NamedKeyStroke.of(downKey.charAt(0), downModifiers);
+
     version = CURRENT_VERSION;
-
   }
 
   @Override

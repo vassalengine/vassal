@@ -186,6 +186,6 @@ public abstract class AbstractInterpreter extends Interpreter {
    *          Keystroke
    */
   public void globalHotKey(KeyStroke stroke) {
-    GameModule.getGameModule().fireKeyStroke(new NamedKeyStroke(stroke));
+    GameModule.getGameModule().fireKeyStroke(NamedKeyStroke.of(stroke));
   }
 }

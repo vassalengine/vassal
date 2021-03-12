@@ -35,8 +35,8 @@ public class GlobalHotKeyTest extends DecoratorTest {
     // Set a Command and Named KeyStroke
     trait = new GlobalHotKey();
     trait.commandName = "testCommand"; // NON-NLS
-    trait.commandKey = new NamedKeyStroke("xyzzy"); // NON-NLS
-    trait.globalHotKey = new NamedKeyStroke("Plugh"); // NON-NLS
+    trait.commandKey = NamedKeyStroke.of("xyzzy"); // NON-NLS
+    trait.globalHotKey = NamedKeyStroke.of("Plugh"); // NON-NLS
     trait.description = "plover"; // NON-NLS
     serializeTest("Complex Test", trait); // NON-NLS
 

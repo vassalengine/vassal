@@ -48,7 +48,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.plaf.basic.BasicHTML;
 
-import VASSAL.search.HTMLImageFinder;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -64,6 +63,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;

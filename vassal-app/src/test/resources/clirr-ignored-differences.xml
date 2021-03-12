@@ -85,17 +85,53 @@
         <justification>Should be no subclasses</justification>
     </difference>
 
-   <difference>
+    <difference>
         <className>VASSAL/script/ExpressionInterpreter</className>
         <differenceType>6001</differenceType>
         <field>cache</field>
         <justification>Should be no subclasses</justification>
-   </difference>
+    </difference>
 
-   <difference>
+    <difference>
         <className>VASSAL/script/ExpressionInterpreter</className>
         <differenceType>7002</differenceType>
         <method>VASSAL.script.ExpressionInterpreter createInterpreter(java.lang.String)</method>
         <justification>Used only by BeanShellExpression</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyStroke</className>
+        <differenceType>6006</differenceType>
+        <field>name</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyStroke</className>
+        <differenceType>6006</differenceType>
+        <field>stroke</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6011</differenceType>
+        <field>NAMED_MARKER</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>7004</differenceType>
+        <method>javax.swing.KeyStroke getKeyStroke(VASSAL.tools.NamedKeyStroke)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>7002</differenceType>
+        <method>javax.swing.KeyStroke getMarkerKeyStroke()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
 </differences>
