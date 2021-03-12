@@ -17,18 +17,17 @@
  */
 package VASSAL.build.module.map;
 
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.command.SetPersistentPropertyCommand;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
+import VASSAL.command.SetPersistentPropertyCommand;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * This KeyListener forwards key event from a {@link Map} to the
@@ -62,24 +61,24 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
 
   @Override
   public void keyPressed(KeyEvent e) {
-    process(NamedHotKeyConfigurer.convert(e));
+    process(SwingUtils.convertKeyEvent(e));
   }
 
   @Override
   public void keyReleased(KeyEvent e) {
-    process(NamedHotKeyConfigurer.convert(e));
+    process(SwingUtils.convertKeyEvent(e));
   }
 
   @Override
   public void keyTyped(KeyEvent e) {
-    process(NamedHotKeyConfigurer.convert(e));
+    process(SwingUtils.convertKeyEvent(e));
   }
 
   protected void process(KeyEvent e) {
     // If we've consumed a KeyPressed event,
     // then automatically consume any following KeyTyped event
     // resulting from the same keypress
-    // This prevents echoing characters to the Chat area if they're keycommand for selected pieces
+    // This prevents echoing characters to the Chat area if they're a keycommand for selected pieces
     if (lastConsumedEvent != null
         && lastConsumedEvent.getWhen() == e.getWhen()) {
       e.consume();

@@ -22,6 +22,7 @@ import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -29,7 +30,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -48,7 +48,6 @@ import javax.swing.text.DocumentFilter;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -365,7 +364,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(convert(e)));
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(SwingUtils.convertKeyEvent(e)));
       }
     }
 
@@ -388,55 +387,12 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(convert(e)));
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(SwingUtils.convertKeyEvent(e)));
       }
     }
-
-
-    // Ignore KeyTyped
-//    @Override
-//    public void keyTyped(KeyEvent e) {
-//      reportKeyEvent("KEY_TYPED", e); // NON-NLS
-//      super.keyTyped(e);
-//    }
-
-//    private void reportKeyEvent(String type, KeyEvent e) {
-//      final String m = type +
-//        ": Key=" + e.getKeyCode() + // NON-NLS
-//        ", XKey=" + e.getExtendedKeyCode() + // NON-NLS
-//        ", Shift=" + e.isShiftDown() + // NON-NLS
-//        ", Ctrl=" + e.isControlDown() + // NON-NLS
-//        ", Alt=" + e.isAltDown() + // NON-NLS
-//        ", Meta=" + e.isMetaDown() + // NON-NLS
-//        ", AltGraph=" + e.isAltGraphDown() + // NON-NLS
-//        ", char=" + e.getKeyChar() + ", " + ((int) e.getKeyChar()) + ", \\u" + Integer.toHexString(e.getKeyChar()) // NON-NLS
-//       ;
-//      System.out.println(m);
-//      logger.info(m);
-//    }
   }
 
-  /**
-   * On Mac Systems, convert the Right-Option modifier (VK_ALT_GRAPH) to be the same as the Left-Option
-   * modifier (VK_ALT). This mirrors the equivalency of the left and right ALT keys under windows.
-   *
-   * @param e KeyEvent to be examined
-   * @return Updated KeyEvent
-   */
-  public static KeyEvent convert(KeyEvent e) {
-    if (SystemUtils.IS_OS_MAC && e.isAltGraphDown()) {
-      return new KeyEvent(
-        (Component) e.getSource(),
-        e.getID(),
-        e.getWhen(),
-        (e.getModifiersEx() | InputEvent.ALT_DOWN_MASK) & ~InputEvent.ALT_GRAPH_DOWN_MASK,
-        e.getKeyCode(),
-        e.getKeyChar(),
-        e.getKeyLocation()
-      );
-    }
-    return e;
-  }
+
 
   private class KeyNameFilter extends DocumentFilter {
     @Override

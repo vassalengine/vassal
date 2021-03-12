@@ -390,6 +390,28 @@ public class SwingUtils {
   }
 
   /**
+   * On Mac Systems, convert the Right-Option modifier (VK_ALT_GRAPH) to be the same as the Left-Option
+   * modifier (VK_ALT). This mirrors the equivalency of the left and right ALT keys under windows.
+   *
+   * @param e KeyEvent to be examined
+   * @return Updated KeyEvent
+   */
+  public static KeyEvent convertKeyEvent(KeyEvent e) {
+    if (SystemUtils.IS_OS_MAC && e.isAltGraphDown()) {
+      return new KeyEvent(
+        (Component) e.getSource(),
+        e.getID(),
+        e.getWhen(),
+        (e.getModifiersEx() | InputEvent.ALT_DOWN_MASK) & ~InputEvent.ALT_GRAPH_DOWN_MASK,
+        e.getKeyCode(),
+        e.getKeyChar(),
+        e.getKeyLocation()
+      );
+    }
+    return e;
+  }
+
+  /**
    * @return size of screen accounting for the screen insets (e.g., Windows
    * taskbar)
    */

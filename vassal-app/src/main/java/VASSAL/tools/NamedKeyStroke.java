@@ -118,12 +118,10 @@ public class NamedKeyStroke {
    * Return the allocated KeyStroke associated with this KeyStroke
    */
   public KeyStroke getKeyStroke() {
-    if (isNamed()) {
-      return NamedKeyManager.getInstance().getKeyStroke(this);
+    if (isNamed() && stroke == null) {
+      stroke = NamedKeyManager.getInstance().getKeyStroke(this);
     }
-    else {
-      return getStroke();
-    }
+    return getStroke();
   }
 
   public static NamedKeyStroke getNamedKeyStroke(char c) {
