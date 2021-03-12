@@ -27,7 +27,8 @@ Reference: link:https://maven.apache.org/ref/3.6.3/maven-core/lifecycles.html[]
 * javadoc
 * source: creates source code jar
 * license: downloads licenses
-. *verify*: not used
+. *verify*
+* pmd
 . *install*: copies build artifacts into local maven repository
 . *site*: not used
 . *deploy*: copies build artifacts and maven meta files to `/snapshots` or `/releases`
@@ -45,6 +46,16 @@ Runs goal link:https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mo
 * Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
 * Checkstyle configuration in link:{rootdir}vassal-app/src/test/resources/checkstyle-checks.xml[]
 * Exceptions from checks in link:{rootdir}vassal-app/src/test/resources/checkstyle-suppressions.xml[]
+
+===== PMD
+
+[NOTE]
+====
+Runs goal link:https://maven.apache.org/plugins/maven-pmd-plugin/check-mojo.html[pmd:check] in *verify* phase
+====
+
+* Maven plugin version in link:{rootdir}pom.xml[]
+* Maven plugin configuration in link:{rootdir}vassal-app/pom.xml[]
 
 ===== Source
 
@@ -220,13 +231,6 @@ The project's public maven repository can be found at http://www.vassalengine.or
 ----
 include::{rootdir}Makefile[lines=258]
 ----
-
-== Release checklist
-
-* [ ] do this
-* [ ] do that
-* [ ] ???
-* [ ] profit
 
 == Running Vassal
 
