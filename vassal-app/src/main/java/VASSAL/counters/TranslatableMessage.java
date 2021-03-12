@@ -43,6 +43,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
   protected String key;
   protected String description;
   protected String message;
+  protected String localisedMessage;
 
 
   public TranslatableMessage() {
@@ -95,7 +96,12 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
   @Override
   public Object getLocalizedProperty(Object key) {
     if (this.key.equals(key)) {
-      return message;
+      if (localisedMessage != null) {
+        return localisedMessage;
+      }
+
+      localisedMessage = getI18nData().translate(message);
+      return localisedMessage;
     }
     return super.getLocalizedProperty(key);
   }
