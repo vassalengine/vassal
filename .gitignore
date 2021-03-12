@@ -1,5 +1,6 @@
 .*.swp
 *.bak
+*.vmod
 
 # packaging
 dist/dmg/
