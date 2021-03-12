@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import java.awt.Component;
