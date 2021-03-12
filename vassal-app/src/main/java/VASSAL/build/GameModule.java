@@ -44,6 +44,9 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.properties.GlobalTranslatableMessages;
+import VASSAL.build.module.properties.TranslatableString;
+import VASSAL.build.module.properties.TranslatableStringContainer;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -167,7 +170,7 @@ import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger}, {@link Chatter}, and {@link Prefs}.</p>
  */
 public class GameModule extends AbstractConfigurable
-  implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
+  implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, TranslatableStringContainer, GpIdSupport {
 
   private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameModule.class);
 
@@ -242,7 +245,9 @@ public class GameModule extends AbstractConfigurable
   private String lastSavedConfiguration;
   private FileChooser fileChooser;
   private FileDialog fileDialog;
-  private final MutablePropertiesContainer propsContainer = new Impl();
+  private final MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
+  private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
+
   private final PropertyChangeListener repaintOnPropertyChange =
     evt -> {
       for (final Map map : Map.getMapList()) {
@@ -569,6 +574,7 @@ public class GameModule extends AbstractConfigurable
       super.build(e);
       ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
+      ensureComponent(GlobalTranslatableMessages.class);
       ensureComponent(Language.class);
       ensureComponent(BasicCommandEncoder.class);
       ensureComponent(Documentation.class);
@@ -653,6 +659,7 @@ public class GameModule extends AbstractConfigurable
     addComponent(Map.class);
     addComponent(GamePieceImageDefinitions.class);
     addComponent(GlobalProperties.class);
+    addComponent(GlobalTranslatableMessages.class);
     addComponent(PrototypesContainer.class);
     addComponent(PieceWindow.class);
     addComponent(Chatter.class);
@@ -1942,8 +1949,14 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
     }
+
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
-    return p == null ? null : p.getPropertyValue();
+    if (p != null) {
+      return p.getPropertyValue();
+    }
+
+    final TranslatableString s = transContainer.getTranslatableString(String.valueOf(key));
+    return s == null ? null : s.getPropertyValue();
   }
 
   /**
@@ -1957,6 +1970,11 @@ public class GameModule extends AbstractConfigurable
     return propsContainer.getMutableProperty(name);
   }
 
+  @Override
+  public TranslatableString getTranslatableString(String name) {
+    return transContainer.getTranslatableString(name);
+  }
+
   /**
    * Adds a new mutable (changeable) "Global Property" to the Module. Module level Global Properties serve as the
    * "global variables" of a VASSAL Module, as they are accessible by any component at any time.
@@ -1967,6 +1985,11 @@ public class GameModule extends AbstractConfigurable
   public void addMutableProperty(String key, MutableProperty p) {
     propsContainer.addMutableProperty(key, p);
     p.addMutablePropertyChangeListener(repaintOnPropertyChange);
+  }
+
+  @Override
+  public void addTranslatableString(String key, TranslatableString p) {
+    transContainer.addTranslatableString(key, p);
   }
 
   /**
@@ -1983,12 +2006,22 @@ public class GameModule extends AbstractConfigurable
     return p;
   }
 
+  @Override
+  public TranslatableString removeTranslatableString(String key) {
+    return transContainer.removeTranslatableString(key);
+  }
+
   /**
    * @return Identifies the ID/level for mutable properties stored here in the Module.
    */
   @Override
   public String getMutablePropertiesContainerId() {
     return "Module"; //NON-NLS-$1
+  }
+
+  @Override
+  public String getTranslatableStringContainerId() {
+    return "Module"; //NON-NLS
   }
 
   /**
