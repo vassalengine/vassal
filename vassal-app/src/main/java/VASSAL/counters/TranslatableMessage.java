@@ -136,7 +136,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PropertyMarker.html"); // NON-NLS
+    return HelpFile.getReferenceManualPage("TranslatableMessage.html"); // NON-NLS
   }
 
   @Override
@@ -179,7 +179,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
       panel.add("Editor.TranslatableMessage.property_name", propName);
 
       propValue = new StringConfigurer(m.message);
-      panel.add("Editor.TranslatableMessage.property_value", propValue);
+      panel.add("Editor.TranslatableMessage.message", propValue);
     }
 
     @Override
@@ -208,7 +208,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
     return getI18nData(
       new String[] { message },
       new String[] {
-        Resources.getString("Editor.TranslatableMessage.property_value"),
+        Resources.getString("Editor.TranslatableMessage.message"),
       });
   }
 

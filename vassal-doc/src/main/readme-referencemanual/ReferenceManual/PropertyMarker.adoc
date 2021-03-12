@@ -30,5 +30,5 @@ You can combine multiple name/value pairs by separating the names and values wit
 *EXAMPLE:*  A Marker with property name "owner" and property value "sigmund" would return "sigmund" from getProperty("owner") or $owner$. Use commas to set multiple properties with a single Marker.
 A Marker with name "owner,status" and value "sigmund,unknown" would also return "unknown" from getProperty("status") or $status$.
 
-*SEE ALSO:*  <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top,Set Global Property>> |image:images/PropertyMarker.png[] +
+*SEE ALSO:*  <<DynamicProperty.adoc#top,Dynamic Property>>, <<SetGlobalProperty.adoc#top,Set Global Property>>, <<TranslatableMessage.adoc#top,Translatable Message>> |image:images/PropertyMarker.png[] +
 |===

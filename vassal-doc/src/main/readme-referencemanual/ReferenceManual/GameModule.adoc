@@ -94,6 +94,8 @@ Any of them can be added by right-clicking on the _[Module]_ component in the Mo
 
 <<GlobalProperties.adoc#top,Global Properties>>
 
+<<GlobalTranslatableMessages.adoc#top, Global Translatable Messages>>
+
 <<HelpMenu.adoc#top,Help Menu>>
 
 <<Map.adoc#top,Map Window>>
