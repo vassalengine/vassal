@@ -80,7 +80,7 @@ public class GlobalTranslatableMessages extends AbstractConfigurable implements 
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalProperties.html"); //NON-NLS //FIXME not this HTML
+    return HelpFile.getReferenceManualPage("GlobalTranslatableMessages.html"); //NON-NLS
   }
 
   @Override
