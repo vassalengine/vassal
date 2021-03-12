@@ -219,7 +219,7 @@ public class GlobalCommand {
       }
 
       // If there actually isn't any key command to execute, we're finished here, having issued the report-if-any.
-      if ((keyStroke == null) || (keyStroke.getKeyCode() == 0) && (keyStroke.getModifiers() == 0)) {
+      if ((keyStroke == null) || ((keyStroke.getKeyCode() == 0) && (keyStroke.getModifiers() == 0))) {
         return command;
       }
 
