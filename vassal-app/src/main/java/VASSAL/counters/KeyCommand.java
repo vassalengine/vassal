@@ -25,8 +25,6 @@ import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 
