@@ -132,19 +132,16 @@ public class TilingHandler {
     List<Pair<String, IOException>> failed) throws IOException {
 
     // build a list of all multi-tile images and count tiles
-    final Set<String> images = archive.getImageNameSet();
+    final Set<String> images = archive.getImageNameSet(true, true);
 
     int maxpix = 0; // number of pixels in the largest image
     int tcount = 0; // tile count
 
     final FileArchive fa = archive.getArchive();
 
-    for (final String iname : images) {
-      final String ipath = DataArchive.IMAGE_DIR + iname;
-
+    for (final String ipath : images) {
       // skip images with fresh tiles
       if (isFresh(fa, tcache, ipath)) continue;
-
       final Dimension idim;
       try {
         idim = getImageSize(archive, ipath);
