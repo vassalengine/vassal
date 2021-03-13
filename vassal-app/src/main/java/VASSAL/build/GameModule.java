@@ -200,6 +200,9 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
 
+  public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
+  public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
+
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   /**
@@ -1941,6 +1944,12 @@ public class GameModule extends AbstractConfigurable
     }
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
+    }
+    else if (GameModule.MODULE_CURRENT_LOCALE.equals(key)) {
+      return Resources.getLocale().getLanguage();
+    }
+    else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
+      return Resources.getLocale().getDisplayName();
     }
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
