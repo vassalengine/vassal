@@ -54,6 +54,7 @@ public class PieceI18nData {
     for (final Property p : getProperties()) {
       if (p.getName().equals(value)) {
         i18nKey = TranslatablePiece.PREFIX + p.getName();
+        break;
       }
     }
     if (i18nKey != null) {
