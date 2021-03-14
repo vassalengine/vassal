@@ -46,6 +46,23 @@ public class PieceI18nData {
       properties.add(new Property(value, description));
     }
   }
+
+  public String translate(String value) {
+    String localisedValue = value;
+    String i18nKey = null;
+
+    for (final Property p : getProperties()) {
+      if (p.getName().equals(value)) {
+        i18nKey = TranslatablePiece.PREFIX + p.getName();
+        break;
+      }
+    }
+    if (i18nKey != null) {
+      localisedValue = Localization.getInstance().translate(i18nKey, value);
+    }
+    return localisedValue;
+  }
+
   public static class Property {
     private final String name;
     private final String description;

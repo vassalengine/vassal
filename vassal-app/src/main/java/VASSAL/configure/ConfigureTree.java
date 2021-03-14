@@ -31,6 +31,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.GlobalTranslatableMessage;
 import VASSAL.build.module.properties.ZoneProperty;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
@@ -2150,6 +2151,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         description = (c.getConfigureName() != null ? c.getConfigureName() : "");
         if (c instanceof GlobalProperty) {
           final String desc = ((GlobalProperty)c).getDescription();
+          if (!desc.isEmpty()) {
+            description += " - " + desc;
+          }
+        }
+        if (c instanceof GlobalTranslatableMessage) {
+          final String desc = ((GlobalTranslatableMessage)c).getDescription();
           if (!desc.isEmpty()) {
             description += " - " + desc;
           }

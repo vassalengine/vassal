@@ -171,8 +171,9 @@ Mask belongs *_above_* Invisible.
 |Does Not Stack functions correctly anywhere in the trait list but _runs slightly faster near the bottom._
 
 |Calculated Property +
-Marker
-|Calculated Property and Marker function properly anywhere, but they _run slightly faster near the bottom_.
+Marker +
+Translatable Message
+|Calculated Property, Marker, and Translatable Message function properly anywhere, but they _run slightly faster near the bottom_.
 
 |**Free Floating Traits**
 |**(Proper Order Varies)**
@@ -199,7 +200,8 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 |<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<MenuSeparator.adoc#top,Menu Separator>> |<<Translate.adoc#top,Move fixed distance>>
 |<<MovementTrail.adoc#top,Movement Trail>> |<<NonRectangular.adoc#top,Non-Rectangular>> |<<Marker.adoc#top,Place Marker>> |<<PlaySound.adoc#top,Play Sound>> |<<PropertySheet.adoc#top,Property Sheet>>
 |<<UsePrototype.adoc#top,Prototype>> |<<Replace.adoc#top,Replace with Other>> |<<ReportChanges.adoc#top,Report Action>> |<<RestrictCommands.adoc#top,Restrict Commands>> |<<RestrictedAccess.adoc#top,Restricted Access>>
-|<<SendToLocation.adoc#top,Send to Location>> |<<Spreadsheet.adoc#top,Spreadsheet>> |<<SubMenu.adoc#top,Sub-Menu>> |<<Label.adoc#top,Text Label>> |<<TriggerAction.adoc#top,Trigger Action>>
+|<<SendToLocation.adoc#top,Send to Location>> |<<Spreadsheet.adoc#top,Spreadsheet>> |<<SubMenu.adoc#top,Sub-Menu>> |<<Label.adoc#top,Text Label>> |<<TranslatableMessage.adoc#top,Translatable Message>>
+|<<TriggerAction.adoc#top,Trigger Action>>||||
 |===
 
 '''''
