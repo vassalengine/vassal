@@ -109,7 +109,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[0];
+    return KeyCommand.NONE;
   }
 
   @Override
@@ -132,7 +132,7 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
       // Check to see if prototype definition has changed
       final String type = expandedPrototype.getType();
       if (!type.equals(lastCachedPrototype)) {
-        lastCachedPrototype = type;
+        lastCachedPrototype = type.intern();
         try {
           RecursionLimiter.startExecution(this);
 

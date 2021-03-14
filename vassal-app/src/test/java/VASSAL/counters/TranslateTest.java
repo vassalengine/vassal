@@ -34,7 +34,7 @@ public class TranslateTest extends DecoratorTest {
     // Set a Command and Named KeyStroke
     trait = new Translate();
     trait.commandName = "testCommand"; // NON-NLS
-    trait.keyCommand = new NamedKeyStroke("xyzzy"); // NON-NLS
+    trait.keyCommand = NamedKeyStroke.of("xyzzy"); // NON-NLS
     trait.xDist.setFormat("1");
     trait.yDist.setFormat("2");
     trait.moveStack = true;

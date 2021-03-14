@@ -19,9 +19,14 @@
 package VASSAL.tools;
 
 import java.awt.event.KeyEvent;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.KeyStroke;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 import VASSAL.tools.swing.SwingUtils;
 
 /**
@@ -37,10 +42,12 @@ import VASSAL.tools.swing.SwingUtils;
  * represent a NamedKeyStroke with no value.
  */
 public class NamedKeyStroke {
+  private static final Map<Pair<KeyStroke, String>, NamedKeyStroke> CACHE = new ConcurrentSoftHashMap<>();
+
   public static final NamedKeyStroke NULL_KEYSTROKE = new NamedKeyStroke();
 
-  protected KeyStroke stroke;
-  protected String name;
+  protected final KeyStroke stroke;
+  protected final String name;
 
   public NamedKeyStroke(int code, int modifiers) {
     this(code, modifiers, null);
@@ -50,21 +57,21 @@ public class NamedKeyStroke {
     this(KeyStroke.getKeyStroke(code, modifiers), s);
   }
 
-  public NamedKeyStroke(KeyStroke k, String s) {
-    stroke = k;
-    name = s;
-  }
-
   public NamedKeyStroke(KeyStroke k) {
     this(k, null);
   }
 
   public NamedKeyStroke(String s) {
-    this(NamedKeyManager.getMarkerKeyStroke(), s);
+    this(null, s);
   }
 
   public NamedKeyStroke() {
     this(null, null);
+  }
+
+  public NamedKeyStroke(KeyStroke k, String s) {
+    name = s != null ? s.intern() : null;
+    stroke = NamedKeyManager.getInstance().getKeyStroke(name, k);
   }
 
   /**
@@ -73,7 +80,7 @@ public class NamedKeyStroke {
    * @return True if a name associated with this Keystroke
    */
   public boolean isNamed() {
-    return ! (name == null || name.length() == 0);
+    return name != null && !name.isEmpty();
   }
 
   public String getName() {
@@ -94,23 +101,19 @@ public class NamedKeyStroke {
 
   @Override
   public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
     if (o instanceof NamedKeyStroke) {
-      if (getKeyStroke() == null) {
-        return ((NamedKeyStroke) o).getKeyStroke() == null;
-      }
-      else {
-        return getKeyStroke().equals(((NamedKeyStroke) o).getKeyStroke());
-      }
+      return Objects.equals(stroke, ((NamedKeyStroke) o).stroke);
     }
     // checking for parameter being a completely unrelated class to this class
     // deliberate misuse of equals()
     else if (o instanceof KeyStroke) {
-      final KeyStroke a = getKeyStroke();
-      if (a == null) {
-        return false;
-      }
-      return a.equals(o);
+      return o.equals(stroke);
     }
+
     return false;
   }
 
@@ -118,28 +121,60 @@ public class NamedKeyStroke {
    * Return the allocated KeyStroke associated with this KeyStroke
    */
   public KeyStroke getKeyStroke() {
-    if (isNamed()) {
-      return NamedKeyManager.getInstance().getKeyStroke(this);
-    }
-    else {
-      return getStroke();
-    }
+    return stroke;
   }
 
+  @Deprecated
   public static NamedKeyStroke getNamedKeyStroke(char c) {
-    return getNamedKeyStroke(c, 0);
+    return of(c);
   }
-
+  @Deprecated
   public static NamedKeyStroke getNamedKeyStroke(char c, int mod) {
-    return new NamedKeyStroke(KeyStroke.getKeyStroke(c, mod));
+    return of(c, mod);
   }
 
+  @Deprecated
   public static NamedKeyStroke getNamedKeyStroke(int c, int mod) {
-    return new NamedKeyStroke(KeyStroke.getKeyStroke(c, mod));
+    return of(c, mod);
   }
 
+  @Deprecated
   public static NamedKeyStroke getKeyStrokeForEvent(KeyEvent e) {
-    return new NamedKeyStroke(SwingUtils.getKeyStrokeForEvent(e));
+    return of(e);
   }
 
+  public static NamedKeyStroke of(char c) {
+    return of(c, 0);
+  }
+
+  public static NamedKeyStroke of(KeyEvent e) {
+    return of(SwingUtils.getKeyStrokeForEvent(e));
+  }
+
+  public static NamedKeyStroke of(char c, int modifiers) {
+    return of(KeyStroke.getKeyStroke(c, modifiers));
+  }
+
+  public static NamedKeyStroke of(int code, int modifiers) {
+    return of(KeyStroke.getKeyStroke(code, modifiers));
+  }
+
+  public static NamedKeyStroke of(int code, int modifiers, String s) {
+    return of(KeyStroke.getKeyStroke(code, modifiers), s);
+  }
+
+  public static NamedKeyStroke of(KeyStroke k) {
+    return of(k, null);
+  }
+
+  public static NamedKeyStroke of(String s) {
+    return of(NamedKeyManager.getInstance().getKeyStroke(s, null), s);
+  }
+
+  public static NamedKeyStroke of(KeyStroke k, String s) {
+    return CACHE.computeIfAbsent(
+      Pair.of(k, s),
+      p -> new NamedKeyStroke(p.getLeft(), p.getRight())
+    );
+  }
 }

@@ -35,11 +35,11 @@ public class FreeRotatorTest extends DecoratorTest {
     // Fixed rotation test
     trait = new FreeRotator();
     trait.validAngles = new double[] { 0, 90, 180, 270 };
-    trait.rotateCWKey = new NamedKeyStroke("rotateCWKey");
-    trait.rotateCCWKey = new NamedKeyStroke("rotateCCWKey");
+    trait.rotateCWKey = NamedKeyStroke.of("rotateCWKey");
+    trait.rotateCCWKey = NamedKeyStroke.of("rotateCCWKey");
     trait.rotateCWText = "rotateCW";
     trait.rotateCCWText = "rotateCCW";
-    trait.rotateRNDKey = new NamedKeyStroke("rotateRNDKey");
+    trait.rotateRNDKey = NamedKeyStroke.of("rotateRNDKey");
     trait.rotateRNDText = "rotateRND";
     trait.name = "xyzzy";
     trait.angleIndex = 2;
@@ -49,7 +49,7 @@ public class FreeRotatorTest extends DecoratorTest {
     // Free Rotation test
     trait = new FreeRotator();
     trait.validAngles = new double[] { 42.0 };
-    trait.setAngleKey = new NamedKeyStroke("setAngleKey");
+    trait.setAngleKey = NamedKeyStroke.of("setAngleKey");
     trait.setAngleText = "setAngle";
     trait.rotateRNDText = "rotateRND";
     trait.name = "xyzzy";

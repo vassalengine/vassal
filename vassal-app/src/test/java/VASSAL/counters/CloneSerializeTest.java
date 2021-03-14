@@ -12,7 +12,7 @@ public class CloneSerializeTest extends SerializeTest<Clone> {
   public void serialize() throws Exception {
     Clone clone = new Clone();
     clone.commandName = "testCommand";
-    clone.key = new NamedKeyStroke("A");
+    clone.key = NamedKeyStroke.of("A");
     super.serializeTest(Clone.class, clone);
   }
 

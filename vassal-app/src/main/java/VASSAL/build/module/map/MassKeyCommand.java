@@ -111,7 +111,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   @Deprecated (since = "2020-10-21", forRemoval = true)
   protected LaunchButton launch; // Exists for clirr - but use getLaunchButton()
 
-  protected NamedKeyStroke stroke = new NamedKeyStroke();
+  protected NamedKeyStroke stroke = NamedKeyStroke.NULL_KEYSTROKE;
   protected String[] names = new String[0];
   protected String condition;
   protected String checkProperty;

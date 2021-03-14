@@ -100,7 +100,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   }
 
   public NamedHotKeyConfigurer(String key, String name) {
-    this(key, name, new NamedKeyStroke());
+    this(key, name, NamedKeyStroke.NULL_KEYSTROKE);
   }
 
   public NamedHotKeyConfigurer(NamedKeyStroke val) {
@@ -172,7 +172,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
         setValue(NamedKeyStroke.NULL_KEYSTROKE);
       }
       else {
-        setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), key));
+        setValue(NamedKeyStroke.of(key));
       }
     }
   }
@@ -271,7 +271,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       if (parts.length > 2) {
         name = parts[2];
       }
-      return new NamedKeyStroke(stroke, name);
+      return NamedKeyStroke.of(stroke, name);
     }
     catch (Exception e) {
       return NamedKeyStroke.NULL_KEYSTROKE;

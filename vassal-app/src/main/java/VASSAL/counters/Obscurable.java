@@ -121,7 +121,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       case PEEK:
         if (s.length() > 1) {
           if (s.length() == 2) {
-            peekKey = NamedKeyStroke.getNamedKeyStroke(s.charAt(1), InputEvent.CTRL_DOWN_MASK);
+            peekKey = NamedKeyStroke.of(s.charAt(1), InputEvent.CTRL_DOWN_MASK);
           }
           else {
             peekKey = NamedHotKeyConfigurer.decode(s.substring(1));
@@ -135,7 +135,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         break;
       case IMAGE:
         if (s.length() > 1) {
-          obscuredToOthersImage = s.substring(1);
+          obscuredToOthersImage = s.substring(1).intern();
           obscuredToOthersView = GameModule.getGameModule().createPiece(BasicPiece.ID + ";;" + obscuredToOthersImage + ";;");
           obscuredToMeView.setPosition(new Point());
         }
@@ -455,7 +455,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
     // Hide Command
     if (keyCommand == null) { // Backwards compatibility with VASL classes
-      keyCommand = NamedKeyStroke.getNamedKeyStroke(obscureKey, InputEvent.CTRL_DOWN_MASK);
+      keyCommand = NamedKeyStroke.of(obscureKey, InputEvent.CTRL_DOWN_MASK);
     }
 
     hide = new KeyCommand(hideCommand, keyCommand, outer, this);
@@ -464,7 +464,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       commandsWithoutPeek = new KeyCommand[] {hide};
     }
     else {
-      commandsWithoutPeek = new KeyCommand[0];
+      commandsWithoutPeek = KeyCommand.NONE;
     }
 
     // Peek Command

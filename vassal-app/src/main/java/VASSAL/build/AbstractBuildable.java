@@ -62,7 +62,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     final NamedNodeMap n = e.getAttributes();
     for (int i = 0; i < n.getLength(); ++i) {
       final Attr att = (Attr) n.item(i);
-      setAttribute(att.getName(), att.getValue());
+      setAttribute(att.getName(), att.getValue().intern());
 
       /*
        * Save a record of all Attributes for later translation. Need to save

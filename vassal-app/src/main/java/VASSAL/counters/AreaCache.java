@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Brent Easton
+ * Copyright (c) 2021 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -14,20 +14,18 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.script.expression;
+package VASSAL.counters;
 
-import org.apache.commons.lang3.tuple.Pair;
+import java.awt.Rectangle;
+import java.awt.geom.Area;
+import java.util.Map;
 
-/**
- * An expression consisting of an Integer only
- *
- */
-public class IntExpression extends Expression {
-  private IntExpression(int i) {
-    super(String.valueOf(i).intern());
-  }
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
-  public static Expression instance(int i) {
-    return CACHE.computeIfAbsent(Pair.of(i, IntExpression.class), k -> new IntExpression(i));
+public class AreaCache {
+  private static final Map<Rectangle, Area> CACHE = new ConcurrentSoftHashMap<>();
+
+  public static Area get(Rectangle r) {
+    return CACHE.computeIfAbsent(r, k -> new Area(k));
   }
 }

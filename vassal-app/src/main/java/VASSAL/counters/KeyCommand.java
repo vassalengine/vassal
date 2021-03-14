@@ -33,6 +33,8 @@ import VASSAL.tools.NamedKeyStroke;
 public class KeyCommand extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
+  public static final KeyCommand[] NONE = new KeyCommand[0];
+
   private final String name;
   protected String untranslatedName;
   protected String localizedMenuText;
@@ -183,7 +185,7 @@ public class KeyCommand extends AbstractAction {
   }
 
   private static String makeMenuText(KeyStroke ks, String text) {
-    return ks != null && text != null && !text.isBlank() ?
-      text + "  " + NamedHotKeyConfigurer.getString(ks) : text;
+    return (ks != null && text != null && !text.isBlank() ?
+      text + "  " + NamedHotKeyConfigurer.getString(ks) : text).intern();
   }
 }

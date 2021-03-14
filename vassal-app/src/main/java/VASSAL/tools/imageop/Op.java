@@ -35,6 +35,7 @@ public class Op {
     if (!name.startsWith("/")) {
       name = "images/" + name; //NON-NLS
     }
+    name = name.intern();
 
     if (name.endsWith(".svg")) { //NON-NLS
       return new SourceOpSVGImpl(name);
@@ -52,6 +53,7 @@ public class Op {
     if (!name.startsWith("/")) {
       name = "images/" + name; //NON-NLS
     }
+    name = name.intern();
 
     if (name.endsWith(".svg")) { //NON-NLS
       return new SourceOpSVGImpl(name);
