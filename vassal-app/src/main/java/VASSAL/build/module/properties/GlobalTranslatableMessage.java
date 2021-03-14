@@ -202,6 +202,7 @@ public class GlobalTranslatableMessage extends AbstractConfigurable implements T
     property.setPropertyName(name);
   }
 
+  @Override
   public void setPropertyValue(String newValue) {
     property.setPropertyValue(newValue);
   }

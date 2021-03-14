@@ -162,8 +162,8 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
 
   @Override
   public boolean testEquals(Object o) {
-    if (! (o instanceof VASSAL.counters.TranslatableMessage)) return false;
-    final VASSAL.counters.TranslatableMessage c = (VASSAL.counters.TranslatableMessage) o;
+    if (! (o instanceof TranslatableMessage)) return false;
+    final TranslatableMessage c = (TranslatableMessage) o;
     if (!key.equals(c.key)) return false;
     if (!description.equals(c.description)) return false;
     return (message.equals(c.message));
@@ -175,7 +175,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
     private final StringConfigurer propValue;
     private final TraitConfigPanel panel;
 
-    private Ed(VASSAL.counters.TranslatableMessage m) {
+    private Ed(TranslatableMessage m) {
       panel = new TraitConfigPanel();
 
       propDesc = new StringConfigurer(m.description);
@@ -200,7 +200,7 @@ public class TranslatableMessage extends Decorator implements TranslatablePiece 
 
     @Override
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(DELIMITER);
+      final SequenceEncoder se = new SequenceEncoder(DELIMITER);
       se.append(propName.getValueString());
       se.append(propDesc.getValueString());
       se.append(propValue.getValueString());
