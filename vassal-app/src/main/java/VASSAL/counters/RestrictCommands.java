@@ -85,7 +85,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[0];
+    return KeyCommand.NONE;
   }
 
   @Override
@@ -196,7 +196,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     else {
       watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = new NamedKeyStroke(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
+        watchKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
       }
     }
   }

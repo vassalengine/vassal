@@ -189,7 +189,7 @@ public class ChatServerControls extends AbstractBuildable {
     final ActionListener al = evt -> toggleVisible();
     launch.addActionListener(al);
     final NamedKeyStrokeListener l = new NamedKeyStrokeListener(al);
-    l.setKeyStroke(NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
+    l.setKeyStroke(NamedKeyStroke.of(KeyEvent.VK_S, InputEvent.ALT_DOWN_MASK));
     final URL iconURL = getClass().getResource("/images/connect.gif");  //$NON-NLS-1$
     if (iconURL != null) {
       launch.setIcon(new ImageIcon(iconURL));

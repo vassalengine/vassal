@@ -86,7 +86,7 @@ public class Clone extends Decorator implements TranslatablePiece {
             new KeyCommand[]{cloneCommand};
       }
       else {
-        command = new KeyCommand[0];
+        command = KeyCommand.NONE;
       }
     }
     if (command.length > 0) {

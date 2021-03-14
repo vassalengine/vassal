@@ -383,7 +383,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       commands = new KeyCommand[]{command};
     }
     else {
-      commands = new KeyCommand[0];
+      commands = KeyCommand.NONE;
     }
     markerSpec = st.nextToken();
     if ("null".equals(markerSpec)) { // NON-NLS

@@ -42,7 +42,7 @@ public class NamedKeyStrokeListener extends KeyStrokeListener {
   @Override
   public void setKeyStroke(KeyStroke newKey) {
     super.setKeyStroke(newKey);
-    namedKeyStroke = new NamedKeyStroke(newKey);
+    namedKeyStroke = NamedKeyStroke.of(newKey);
   }
 
   public void setKeyStroke(NamedKeyStroke newKey) {

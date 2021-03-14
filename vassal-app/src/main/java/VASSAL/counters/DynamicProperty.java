@@ -560,14 +560,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       super(target.getKey(), target.getKey(),
         new DynamicKeyCommand(
           Resources.getString("Editor.DynamicProperty.change_value"),
-          NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK),
+          NamedKeyStroke.of('V', InputEvent.CTRL_DOWN_MASK),
           Decorator.getOutermost(target),
           target,
           new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
 
       ProblemDialog.showDeprecated("2020-12-06");
       commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
-      keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_DOWN_MASK));
+      keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.of('V', InputEvent.CTRL_DOWN_MASK));
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
       propChangeConfig.setValue(new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey())));
 

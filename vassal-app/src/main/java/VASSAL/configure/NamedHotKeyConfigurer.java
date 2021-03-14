@@ -21,8 +21,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.icon.IconFactory;
-
 import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -100,7 +101,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   }
 
   public NamedHotKeyConfigurer(String key, String name) {
-    this(key, name, new NamedKeyStroke());
+    this(key, name, NamedKeyStroke.NULL_KEYSTROKE);
   }
 
   public NamedHotKeyConfigurer(NamedKeyStroke val) {
@@ -172,7 +173,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
         setValue(NamedKeyStroke.NULL_KEYSTROKE);
       }
       else {
-        setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), key));
+        setValue(NamedKeyStroke.of(key));
       }
     }
   }
@@ -271,7 +272,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       if (parts.length > 2) {
         name = parts[2];
       }
-      return new NamedKeyStroke(stroke, name);
+      return NamedKeyStroke.of(stroke, name);
     }
     catch (Exception e) {
       return NamedKeyStroke.NULL_KEYSTROKE;
@@ -345,6 +346,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
   private class KeyStrokeAdapter extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
+      // reportKeyEvent("KEY_PRESSED", e); // NON-NLS
       switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
       case KeyEvent.VK_BACK_SPACE:
@@ -354,17 +356,39 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_CONTROL:
       case KeyEvent.VK_META:
       case KeyEvent.VK_ALT:
+      case KeyEvent.VK_ALT_GRAPH:
+      case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(SwingUtils.convertKeyEvent(e)));
       }
     }
 
+    // Repeat the Key handling for each Key of interest on release.
+    // This has no effect on Windows, but caters for the bizarre
+    // KeyEvent sequences created on MacOS.
     @Override
     public void keyReleased(KeyEvent e) {
-      keyStroke.setText(getString((NamedKeyStroke) getValue()));
+      // reportKeyEvent("KEY_RELEASED", e); // NON-NLS
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_DELETE:
+      case KeyEvent.VK_BACK_SPACE:
+        setValue(NamedKeyStroke.NULL_KEYSTROKE);
+        break;
+      case KeyEvent.VK_SHIFT:
+      case KeyEvent.VK_CONTROL:
+      case KeyEvent.VK_META:
+      case KeyEvent.VK_ALT:
+      case KeyEvent.VK_ALT_GRAPH:
+      case KeyEvent.VK_UNDEFINED:
+        break;
+      default:
+        setValue(NamedKeyStroke.getKeyStrokeForEvent(SwingUtils.convertKeyEvent(e)));
+      }
     }
   }
+
+
 
   private class KeyNameFilter extends DocumentFilter {
     @Override
@@ -391,6 +415,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       super.replace(fb, 0, keyStroke.getText().length(), text, attrs);
     }
+
   }
 
 

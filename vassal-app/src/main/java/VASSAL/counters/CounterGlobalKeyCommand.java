@@ -142,7 +142,7 @@ public class CounterGlobalKeyCommand extends Decorator
         command = new KeyCommand[]{ myCommand };
       }
       else {
-        command = new KeyCommand[0];
+        command = KeyCommand.NONE;
       }
     }
     if (command.length > 0) {

@@ -353,8 +353,8 @@ public class ErrorDialog {
     dataWarning(e);
   }
 
-  public static void dataWarning(BadDataReport e) {
-    if (! e.isReportable()) {
+  private static void doReportWarning(BadDataReport e, String msgKey) {
+    if (!e.isReportable()) {
       return;
     }
     logger.warn(e.getMessage() + ": " + e.getData());
@@ -366,9 +366,17 @@ public class ErrorDialog {
       // send a warning to the controls window
       final GameModule g = GameModule.getGameModule();
       if (g != null) {
-        g.warn(Resources.getString("Error.data_error_message", e.getMessage(), e.getData()));
+        g.warn(Resources.getString(msgKey, e.getMessage(), e.getData()));
       }
     }
+  }
+
+  public static void tileWarning(BadDataReport e) {
+    doReportWarning(e, "Error.tile_cache_error_message");
+  }
+
+  public static void dataWarning(BadDataReport e) {
+    doReportWarning(e, "Error.data_error_message");
   }
 
 ///////////////////

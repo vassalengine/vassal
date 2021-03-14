@@ -569,9 +569,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       nextChoice // Offer calculated most likely "next side" as the default
     );
 
-    // OBSERVER must always be stored internally in English.
+    // sides must always be stored internally in English.
     if (translatedObserver.equals(newSide)) {
       newSide = OBSERVER;
+    }
+    else {
+      newSide = untranslateSide(newSide);
     }
     return newSide;
   }

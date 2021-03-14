@@ -15,7 +15,7 @@ public class ActionButtonSerializeTest extends SerializeTest<ActionButton> {
     ActionButton button = new ActionButton();
     button.bounds = new Rectangle(1,2,3,4);
     button.description = "testDesc";
-    button.stroke = new NamedKeyStroke("A");
+    button.stroke = NamedKeyStroke.of("A");
     super.serializeTest(ActionButton.class, button);
   }
 

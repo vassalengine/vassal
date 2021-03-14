@@ -45,7 +45,7 @@ public class DynamicKeyCommandConfigurer extends Configurer {
     super(target.getKey(), target.getKey(),
       new DynamicProperty.DynamicKeyCommand(
         "",
-        new NamedKeyStroke(),
+        NamedKeyStroke.NULL_KEYSTROKE,
         Decorator.getOutermost(target),
         target,
         new PropertySetter("", target)));

@@ -33,9 +33,9 @@ public class ReportStateTest extends DecoratorTest {
 
     //
     trait = new ReportState();
-    trait.keys = new NamedKeyStroke[] { new NamedKeyStroke("key1"), new NamedKeyStroke("key2") };
+    trait.keys = new NamedKeyStroke[] { NamedKeyStroke.of("key1"), NamedKeyStroke.of("key2") };
     trait.reportFormat = "xyzzy";
-    trait.cycleDownKeys = new NamedKeyStroke[] { new NamedKeyStroke("cycle1"), new NamedKeyStroke("cycle2") };
+    trait.cycleDownKeys = new NamedKeyStroke[] { NamedKeyStroke.of("cycle1"), NamedKeyStroke.of("cycle2") };
     trait.cycleReportFormat = new String[] { "format1", "format2" };
     trait.description = "plover";
 

@@ -35,14 +35,14 @@ public class ActionButtonTest extends DecoratorTest {
 
     // Set a command name and NamedKeyStroke
     trait = new ActionButton();
-    trait.stroke = new NamedKeyStroke("plugh"); // NON-NLS
+    trait.stroke = NamedKeyStroke.of("plugh"); // NON-NLS
     trait.description = "xyzzy"; // NON-NLS
     trait.bounds = new Rectangle(1, 2, 3, 4);
     serializeTest("Named KeyStroke", trait); // NON-NLS
 
     // Set a command name and KeyStroke
     trait = new ActionButton();
-    trait.stroke = new NamedKeyStroke(KeyStroke.getKeyStroke(65, 0));
+    trait.stroke = NamedKeyStroke.of(KeyStroke.getKeyStroke(65, 0));
     trait.description = "xyzzy"; // NON-NLS
     trait.bounds = new Rectangle(1, 2, 3, 4);
     serializeTest("KeyStroke", trait); // NON-NLS

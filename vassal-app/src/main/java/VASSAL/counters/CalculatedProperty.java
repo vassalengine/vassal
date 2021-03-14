@@ -83,7 +83,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[0];
+    return KeyCommand.NONE;
   }
 
   @Override

@@ -660,7 +660,7 @@ public class Footprint extends MovementMarkable {
         commands = new KeyCommand[]{showTrailCommand};
       }
       else {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
     }
     if (showTrailCommand != null) {

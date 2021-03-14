@@ -114,14 +114,14 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   protected KeyCommand[] myGetKeyCommands() {
     if (command.length() > 0 && key != null) {
       final KeyCommand c =  new KeyCommand(command, key, Decorator
-          .getOutermost(this), matchesFilter());
+          .getOutermost(this), this, matchesFilter());
       if (getMap() == null) {
         c.setEnabled(false);
       }
       return new KeyCommand[] { c };
     }
     else {
-      return new KeyCommand[0];
+      return KeyCommand.NONE;
     }
   }
 
@@ -395,8 +395,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     else {
       watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = NamedKeyStroke.getNamedKeyStroke(keys.charAt(i),
-            InputEvent.CTRL_DOWN_MASK);
+        watchKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
       }
     }
 
@@ -407,8 +406,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     else {
       actionKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < actionKeys.length; i++) {
-        actionKeys[i] = NamedKeyStroke.getNamedKeyStroke(keys.charAt(i),
-            InputEvent.CTRL_DOWN_MASK);
+        actionKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
       }
     }
     loop = st.nextBoolean(false);
