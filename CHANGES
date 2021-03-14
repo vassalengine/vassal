@@ -1,5 +1,7 @@
 3.5.4 - ???
 
+* 14209: Write logs and saves to .part file to forestall copying of partially
+    written files
 * 14203: Global Key Commands should exit after displaying report if there is
     no key command to issue
 * 14201: Share immutable objects
