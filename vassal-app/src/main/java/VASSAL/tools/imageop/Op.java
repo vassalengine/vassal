@@ -135,7 +135,7 @@ public class Op {
         return true;
       }
       else if (c instanceof TileNotFoundException) {
-        ErrorDialog.dataWarning(new BadDataReport(
+        ErrorDialog.tileWarning(new BadDataReport(
           "Tile not found", //NON-NLS
           ((TileNotFoundException) c).getFile().getName(),
           null
