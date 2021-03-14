@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2012 by Brent Easton, Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -130,7 +129,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected KeyCommand down = null;
 
   // Shape cache
+  @Deprecated(since = "2021-03-14", forRemoval = true)
   protected Rectangle lastBounds = null;
+  @Deprecated(since = "2021-03-14", forRemoval = true)
   protected Area lastShape = null;
 
   // Version control
@@ -741,14 +742,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       else {
         final Area a = new Area(innerShape);
-
-        // Cache the Area object generated. Only recreate if the layer position or size has changed
-        if (!r.equals(lastBounds)) {
-          lastShape = new Area(r);
-          lastBounds = new Rectangle(r);
-        }
-
-        a.add(lastShape);
+        a.add(AreaCache.get(r));
         return a;
       }
     }

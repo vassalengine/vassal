@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2012 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -660,7 +659,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return r;
   }
 
+  @Deprecated(since = "2021-03-14", forRemoval = true)
   protected Rectangle lastRect = null;
+  @Deprecated(since = "2021-03-14", forRemoval = true)
   protected Area lastShape = null;
 
   /**
@@ -689,14 +690,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
 
     final Area a = new Area(innerShape);
-
-    // Cache the Area object generated. Only recreate if the label position
-    // or size has changed
-    if (!r.equals(lastRect)) {
-      lastShape = new Area(r);
-      lastRect = new Rectangle(r);
-    }
-    a.add(lastShape);
+    a.add(AreaCache.get(r));
     return a;
   }
 
