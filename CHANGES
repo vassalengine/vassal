@@ -2,14 +2,15 @@
 
 * 14203: Global Key Commands should exit after displaying report if there is
     no key command to issue
+* 14201: Share immutable objects
 * 14200: Scenario names (Predefined Setup) should be displayed in translated
     language
 * 14198: Translated private windows do not work when changing sides if module
     is translated
 * 14196: Right-click menu localization is not shown for some elements
 * 14193: Expressions should be cached
-* 14191: CurrentLanguage and CurrentLanguageName exposed as module properties
 * 14192: Decks from previous saves and logs are retained in memory
+* 14191: CurrentLanguage and CurrentLanguageName exposed as module properties
 * 14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners
     (e.g. accepting double click AND drag from same mouse sequence)
 * 14182: Prevent duplication of FormattedString data and Expressions
