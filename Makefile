@@ -76,10 +76,6 @@ YEAR:=$(shell date +%Y)
 
 MVN:=./mvnw
 
-JAVAPATH:=/usr/bin
-JDEPS:=$(JAVAPATH)/jdeps
-JLINK:=$(JAVAPATH)/jlink
-
 DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 
 NSIS:=makensis
@@ -115,7 +111,7 @@ $(LIBDIR)/Vengine.jar: version-set
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	$(JDEPS) --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	jdeps --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
@@ -140,7 +136,7 @@ $(TMPDIR)/macos-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/mod
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
-	$(JLINK) --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	jlink --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
@@ -231,7 +227,7 @@ $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
-	$(JLINK) --module-path $(JDKDIR)/windows_x$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	jlink --module-path $(JDKDIR)/windows_x$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 
 $(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL-$(VERSION): $(TMPDIR)/windows-64-$(VERSION)-build/VASSAL-$(VERSION) $(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.exe
 	cp -a $< $@
