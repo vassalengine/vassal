@@ -1,9 +1,19 @@
 3.5.4 - ???
 
+* 14203: Global Key Commands should exit after displaying report if there is
+    no key command to issue
+* 14201: Share immutable objects
+* 14200: Scenario names (Predefined Setup) should be displayed in translated
+    language
+* 14198: Translated private windows do not work when changing sides if module
+    is translated
+* 14196: Right-click menu localization is not shown for some elements
 * 14193: Expressions should be cached
 * 14192: Decks from previous saves and logs are retained in memory
+* 14191: CurrentLanguage and CurrentLanguageName exposed as module properties
 * 14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners
     (e.g. accepting double click AND drag from same mouse sequence)
+* 14185: Distinguish tile loading errors from other image loading errors
 * 14182: Prevent duplication of FormattedString data and Expressions
 * 14178: Some weird systems lack awt.font.desktophints but aren't headless
 * 14167: Inefficient implementation of FilterOutputStream in ZipWriter
@@ -19,6 +29,7 @@
 * 14139: Delete trait to set 'old...' properties prior to deleting piece
 * 14138: Turn Tracker mispopulates button tooltip field while running in editor
 * 14136: Module-level GKCs were not honoring fast match
+* 14133: Better support for Mac Alt and Function keys
 * 14131: String method calls in Beanshell don't return proper result unless
     GetProperty is used
 * 14124: Remove "(Optional)" from Send to Location Board Name hint text
@@ -38,7 +49,7 @@
 
 3.5.2 - 22 February 2021
 
-* 14117:  Action Button fails to respond on a stacked counter (except at top)
+* 14117: Action Button fails to respond on a stacked counter (except at top)
 * 14116: Incorrect module sort order in Module Manager
 * 14111: Incorrect description for Dynamic Property initial value
 * 14104: Removing Image from BasicPiece stores image name as '(No Image)'

@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public class StringExpression extends Expression {
   private StringExpression(String s) {
-    super(s);
+    super(s.intern());
   }
 
   @Override

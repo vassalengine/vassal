@@ -13,7 +13,7 @@ public class HideableSerializeTest extends SerializeTest<Hideable> {
   @Test
   public void serialize() throws Exception {
     Hideable hideable = new Hideable();
-    hideable.hideKey = new NamedKeyStroke("A");
+    hideable.hideKey = NamedKeyStroke.of("A");
     hideable.command = "testCommand";
     hideable.bgColor = Color.black;
     hideable.access = PlayerAccess.getInstance();

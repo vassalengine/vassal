@@ -12,8 +12,8 @@ public class GlobalHotKeySerializeTest extends SerializeTest<GlobalHotKey> {
   public void serialize() throws Exception {
     GlobalHotKey ghk = new GlobalHotKey();
     ghk.commandName = "testCommandName";
-    ghk.commandKey = new NamedKeyStroke("A");
-    ghk.globalHotKey = new NamedKeyStroke("B");
+    ghk.commandKey = NamedKeyStroke.of("A");
+    ghk.globalHotKey = NamedKeyStroke.of("B");
     ghk.description = "testDesc";
 
     super.serializeTest(GlobalHotKey.class, ghk);

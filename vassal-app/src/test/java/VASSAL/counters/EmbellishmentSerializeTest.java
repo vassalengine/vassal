@@ -24,7 +24,7 @@ public class EmbellishmentSerializeTest extends SerializeTest<Embellishment> {
     emb.downCommand = "testDownCommand";
     emb.downModifiers = InputEvent.CTRL_DOWN_MASK;
     emb.downKey = "testDownKey";
-    emb.resetKey = new NamedKeyStroke("A");
+    emb.resetKey = NamedKeyStroke.of("A");
     emb.resetLevel = new FormattedString("resetLevel");
     emb.drawUnderneathWhenSelected = true;
     emb.xOff = 1;
@@ -33,15 +33,15 @@ public class EmbellishmentSerializeTest extends SerializeTest<Embellishment> {
     emb.commonName = new String[] {"commonName1", "commonName2"};
     emb.loopLevels = true;
     emb.name = "testName";
-    emb.rndKey = new NamedKeyStroke("B");
+    emb.rndKey = NamedKeyStroke.of("B");
     emb.followProperty = true;
     emb.propertyName = "testPropertyName";
     emb.firstLevelValue = 3;
     emb.version = 4;
     emb.alwaysActive = true;
-    emb.activateKeyStroke = new NamedKeyStroke("C");
-    emb.increaseKeyStroke = new NamedKeyStroke("D");
-    emb.decreaseKeyStroke = new NamedKeyStroke("E");
+    emb.activateKeyStroke = NamedKeyStroke.of("C");
+    emb.increaseKeyStroke = NamedKeyStroke.of("D");
+    emb.decreaseKeyStroke = NamedKeyStroke.of("E");
 
     super.serializeTest(Embellishment.class, emb);
   }

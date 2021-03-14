@@ -19,7 +19,7 @@ public class DeselectTest extends DecoratorTest {
     // Set a Command and Named KeyStroke
     trait = new Deselect();
     trait.commandName = "testCommand"; // NON-NLS
-    trait.key = new NamedKeyStroke("xyzzy"); // NON-NLS
+    trait.key = NamedKeyStroke.of("xyzzy"); // NON-NLS
     trait.description = "plugh"; // NON-NLS
     trait.unstack = true;
     serializeTest("NamedKeyStroke", trait); // NON-NLS
@@ -27,7 +27,7 @@ public class DeselectTest extends DecoratorTest {
     // Set a Command and standard KeyStroke
     trait = new Deselect();
     trait.commandName = "testCommand"; // NON-NLS
-    trait.key = new NamedKeyStroke(KeyStroke.getKeyStroke(65, 0));
+    trait.key = NamedKeyStroke.of(KeyStroke.getKeyStroke(65, 0));
     trait.description = "plugh"; // NON-NLS
     trait.unstack = true;
     serializeTest("KeyStroke", trait); // NON-NLS

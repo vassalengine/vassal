@@ -881,10 +881,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
    */
   @Override
   public java.util.Map<String, Object> getProperties(java.util.Map<String, Object> result) {
-    for (final String propertyName : getPropertyNames()) {
-      result.computeIfAbsent(propertyName, pn -> getLocalizedProperty(pn));
-    }
-
+    PropertyExporter.super.getProperties(result);
     return piece == null ? result : ((PropertyExporter) piece).getProperties(result);
   }
 }

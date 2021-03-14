@@ -34,7 +34,7 @@ public class ReturnToDeckTest extends DecoratorTest {
     // Set a Command and Named KeyStroke
     trait = createTrait();
     trait.returnCommand = "Plugh";
-    trait.returnKey = new NamedKeyStroke("xyzzy");
+    trait.returnKey = NamedKeyStroke.of("xyzzy");
     trait.deckId = "aDeck";
     trait.selectDeckPrompt = "prompt";
     trait.description = "plover";

@@ -488,7 +488,7 @@ public class WizardSupport {
           final JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
           final String labelText =
             value instanceof PredefinedSetup ?
-              ((PredefinedSetup) value).getConfigureName() :
+              ((PredefinedSetup) value).getLocalizedConfigureName() :
               value == null ? "" : value.toString();
           c.setText(labelText);
           return c;

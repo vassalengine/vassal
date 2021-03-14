@@ -172,6 +172,12 @@ public class Console {
       if (propValue != null) {
         show("[" + property + "]: " + propValue.getPropertyValue());
       }
+      else {
+        final String propVal = (String)GameModule.getGameModule().getProperty(property);
+        if (propVal != null) {
+          show("[" + property + "]: " + propVal);
+        }
+      }
     }
     else if (matches("set", option)) { //NON-NLS
       final MutableProperty.Impl propValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(property);

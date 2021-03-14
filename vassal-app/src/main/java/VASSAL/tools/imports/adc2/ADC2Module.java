@@ -944,7 +944,7 @@ public class ADC2Module extends Importer {
     public Obscurable getHiddenDecorator() throws IOException {
       final Obscurable p;
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_DOWN_MASK))); // key command
+      se.append(NamedKeyStroke.of(KeyStroke.getKeyStroke('H', InputEvent.CTRL_DOWN_MASK))); // key command
       se.append(getHiddenSymbol().getFileName()); // hide image
       se.append("Hide Piece"); // menu name
       final BufferedImage image = getSymbol().getImage();
@@ -1199,7 +1199,7 @@ public class ADC2Module extends Importer {
     public Obscurable getPieceValueMask() throws IOException {
       if (getOwner().useHiddenPieces()) {
         final SequenceEncoder se = new SequenceEncoder(';');
-        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('I', InputEvent.CTRL_DOWN_MASK))); // key command
+        se.append(NamedKeyStroke.of(KeyStroke.getKeyStroke('I', InputEvent.CTRL_DOWN_MASK))); // key command
         se.append(getImageName()); // hide image
         se.append("Hide Info"); // menu name
         final BufferedImage image = getSymbol().getImage();
@@ -1241,7 +1241,7 @@ public class ADC2Module extends Importer {
           sides = "sides:" + getOwner().getName();
         }
         final SequenceEncoder se = new SequenceEncoder(';');
-        se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('H', InputEvent.CTRL_DOWN_MASK))); // key command
+        se.append(NamedKeyStroke.of(KeyStroke.getKeyStroke('H', InputEvent.CTRL_DOWN_MASK))); // key command
         if (getHiddenSymbol() == null) {
           // TODO Add transparency to background color as well as alpha for unit.
           se.append("Hide Piece"); // command
@@ -2219,7 +2219,7 @@ public class ADC2Module extends Importer {
 
     final Delete del = new Delete();
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append("Delete").append(new NamedKeyStroke(KeyStroke.getKeyStroke("DELETE")));
+    se.append("Delete").append(NamedKeyStroke.of(KeyStroke.getKeyStroke("DELETE")));
     del.mySetType(Delete.ID + se.getValue());
     del.setInner(gp);
     gp = del;
@@ -2228,7 +2228,7 @@ public class ADC2Module extends Importer {
       gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
 
     se = new SequenceEncoder(';');
-    se.append(new NamedKeyStroke(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK)))
+    se.append(NamedKeyStroke.of(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK)))
       .append("Movement Trail")
       .append(false)
       .append(false)
@@ -2312,7 +2312,7 @@ public class ADC2Module extends Importer {
     command.setAttribute(MassKeyCommand.HOTKEY, null);
     command.setAttribute(MassKeyCommand.ICON, imageName);
     command.setAttribute(MassKeyCommand.NAME, "Attacked");
-    command.setAttribute(MassKeyCommand.KEY_COMMAND, new NamedKeyStroke(KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK)));
+    command.setAttribute(MassKeyCommand.KEY_COMMAND, NamedKeyStroke.of(KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK)));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Attacked_Active = true");
     command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
@@ -2326,7 +2326,7 @@ public class ADC2Module extends Importer {
     command.setAttribute(MassKeyCommand.HOTKEY, null);
     command.setAttribute(MassKeyCommand.ICON, imageName);
     command.setAttribute(MassKeyCommand.NAME, "Defended");
-    command.setAttribute(MassKeyCommand.KEY_COMMAND, new NamedKeyStroke(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
+    command.setAttribute(MassKeyCommand.KEY_COMMAND, NamedKeyStroke.of(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Defended_Active = true");
     command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
@@ -2348,7 +2348,7 @@ public class ADC2Module extends Importer {
       charts.setAttribute(ChartWindow.NAME, CHARTS);
       charts.setAttribute(ChartWindow.BUTTON_TEXT, CHARTS);
       charts.setAttribute(ChartWindow.TOOLTIP, CHARTS);
-      charts.setAttribute(ChartWindow.HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK)));
+      charts.setAttribute(ChartWindow.HOTKEY, NamedKeyStroke.of(KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK)));
 
       final TabWidget tab = new TabWidget();
       insertComponent(tab, charts);
@@ -2558,7 +2558,7 @@ public class ADC2Module extends Importer {
     deckMap.setAttribute(Map.MARK_MOVED, GlobalOptions.NEVER);
     deckMap.setAttribute(Map.USE_LAUNCH_BUTTON, Boolean.TRUE);
     deckMap.setAttribute(Map.BUTTON_NAME, DECKS);
-    deckMap.setAttribute(Map.HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
+    deckMap.setAttribute(Map.HOTKEY, NamedKeyStroke.of(KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK)));
 
     final BoardPicker boardPicker = deckMap.getBoardPicker();
 
@@ -2653,7 +2653,7 @@ public class ADC2Module extends Importer {
       pile.setAttribute(DrawPile.NAME, pool.name);
       pile.setAttribute(DrawPile.SHUFFLE, DrawPile.USE_MENU);
       pile.setAttribute(DrawPile.SHUFFLE_REPORT_FORMAT, "$playerName$ reshuffles $deckName$");
-      pile.setAttribute(DrawPile.SHUFFLE_HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK)));
+      pile.setAttribute(DrawPile.SHUFFLE_HOTKEY, NamedKeyStroke.of(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK)));
 
       for (final Piece pc : pool.getPieces()) {
         pc.writeToArchive(pile);
@@ -2712,7 +2712,7 @@ public class ADC2Module extends Importer {
     forcePoolMap.setAttribute(Map.MARK_MOVED, GlobalOptions.NEVER);
     forcePoolMap.setAttribute(Map.USE_LAUNCH_BUTTON, Boolean.TRUE);
     forcePoolMap.setAttribute(Map.BUTTON_NAME, TRAY);
-    forcePoolMap.setAttribute(Map.HOTKEY, new NamedKeyStroke(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK)));
+    forcePoolMap.setAttribute(Map.HOTKEY, NamedKeyStroke.of(KeyStroke.getKeyStroke('T', InputEvent.CTRL_DOWN_MASK)));
 
     final BoardPicker boardPicker = forcePoolMap.getBoardPicker();
 

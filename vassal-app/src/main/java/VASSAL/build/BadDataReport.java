@@ -129,8 +129,6 @@ public class BadDataReport {
     this(c, messageKey, data, null);
   }
 
-
-
   /**
    * Expanded Bad Data Report for PieceSlot
    * Display the name of the slot
@@ -169,5 +167,4 @@ public class BadDataReport {
   public String getData() {
     return data;
   }
-
 }

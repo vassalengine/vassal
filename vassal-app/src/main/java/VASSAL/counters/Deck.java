@@ -776,7 +776,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public void setEmptyKey(KeyStroke k) {
     ProblemDialog.showDeprecated("2020-08-06");
-    emptyKey = new NamedKeyStroke(k);
+    emptyKey = NamedKeyStroke.of(k);
   }
 
   public void setEmptyKey(NamedKeyStroke k) {

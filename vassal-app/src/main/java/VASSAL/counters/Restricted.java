@@ -109,7 +109,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
   @Override
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[0];
+    return KeyCommand.NONE;
   }
 
   public boolean isRestricted() {
@@ -151,12 +151,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
   @Override
   protected KeyCommand[] getKeyCommands() {
-    if (!isRestricted()) {
-      return super.getKeyCommands();
-    }
-    else {
-      return new KeyCommand[0];
-    }
+    return isRestricted() ? KeyCommand.NONE : super.getKeyCommands();
   }
 
   @Override

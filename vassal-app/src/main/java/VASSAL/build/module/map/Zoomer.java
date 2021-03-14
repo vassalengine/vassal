@@ -974,8 +974,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       final List<Double> levels = state.getLevels();
       for (int i = 0; i < levels.size(); ++i) {
         final String zs = Math.round(levels.get(i) * 100) + "%"; //$NON-NLS-1$
-        final JMenuItem item = new JRadioButtonMenuItem(zs);
-        item.setActionCommand(Integer.toString(i));
+        final JMenuItem item = new JRadioButtonMenuItem(zs.intern());
+        item.setActionCommand(Integer.toString(i).intern());
         item.addActionListener(this);
         bg.add(item);
         insert(item, 0);
