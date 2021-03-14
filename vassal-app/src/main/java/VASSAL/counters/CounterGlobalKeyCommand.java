@@ -142,7 +142,7 @@ public class CounterGlobalKeyCommand extends Decorator
         command = new KeyCommand[]{ myCommand };
       }
       else {
-        command = new KeyCommand[0];
+        command = KeyCommand.NONE;
       }
     }
     if (command.length > 0) {
@@ -208,7 +208,17 @@ public class CounterGlobalKeyCommand extends Decorator
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(propertiesFilter.getExpression());
+    final List<String> expList = target.getExpressionList();
+    expList.add(propertiesFilter.getExpression());
+    return expList;
+  }
+
+  /**
+   * @return a list of the Decorator's property fields if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return target.getPropertyList();
   }
 
   /**

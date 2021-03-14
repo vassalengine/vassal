@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -22,6 +21,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import VASSAL.tools.swing.SwingUtils;
@@ -51,15 +54,20 @@ public class KeyStrokeListener {
     if (newKey != null && newKey.getKeyCode() == 0) {
       newKey = null;
     }
-    if (key != null) {
+
+    if (key != null && !NamedKeyManager.isNamed(key)) {
+      final KeyStroke sysKey = SwingUtils.genericToSystem(key);
       for (final KeyStrokeSource s : sources) {
-        //BR// We are registering/unregistering events directly with components, so we perform our special Mac keyboard translations.
-        s.getComponent().unregisterKeyboardAction(SwingUtils.genericToSystem(key));
+        unregisterKey(l, s, sysKey);
       }
     }
+
     key = newKey;
-    for (final KeyStrokeSource s : sources) {
-      addKeyStrokeSource(s);
+    if (key != null && !NamedKeyManager.isNamed(key)) {
+      final KeyStroke sysKey = SwingUtils.genericToSystem(key);
+      for (final KeyStrokeSource s : sources) {
+        registerKey(l, s, sysKey);
+      }
     }
   }
 
@@ -68,19 +76,47 @@ public class KeyStrokeListener {
   }
 
   public void keyPressed(KeyStroke stroke) {
-    //BR// We are receiving events directly from components, so we perform our special Mac keyboard translations.
-    if ((stroke != null) && (key != null) && stroke.equals(SwingUtils.genericToSystem(key))) {
+    //BR// We are receiving events directly from components, so we perform our
+    // special Mac keyboard translations.
+    if (stroke != null && key != null && stroke.equals(SwingUtils.genericToSystem(key))) {
       l.actionPerformed(new ActionEvent(this, 0, "Direct Invocation")); //NON-NLS
     }
+  }
+
+  private static void registerKey(ActionListener l, KeyStrokeSource s, KeyStroke k) {
+    final Action a = new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        l.actionPerformed(e);
+      }
+    };
+
+    final JComponent c = s.getComponent();
+    c.getInputMap(s.getMode()).put(k, a);
+    c.getActionMap().put(a, a);
+  }
+
+  private static void unregisterKey(ActionListener l, KeyStrokeSource s, KeyStroke k) { // NOPMD
+    final JComponent c = s.getComponent();
+    final InputMap im = c.getInputMap(s.getMode());
+    c.getActionMap().remove(im.get(k));
+    im.remove(k);
   }
 
   public void addKeyStrokeSource(KeyStrokeSource src) {
     if (!sources.contains(src)) {
       sources.add(src);
+      if (key != null && !NamedKeyManager.isNamed(key)) {
+        registerKey(l, src, SwingUtils.genericToSystem(key));
+      }
     }
-    if (key != null) {
-      //BR// We are registering with components directly, so we perform our special Mac keyboard translations.
-      src.getComponent().registerKeyboardAction(l, SwingUtils.genericToSystem(key), src.getMode());
+  }
+
+  public void removeKeyStrokeSource(KeyStrokeSource src) {
+    if (sources.remove(src)) {
+      if (key != null && !NamedKeyManager.isNamed(key)) {
+        unregisterKey(l, src, SwingUtils.genericToSystem(key));
+      }
     }
   }
 }

@@ -17,40 +17,41 @@
  */
 package VASSAL.script.expression;
 
-import VASSAL.script.BeanShell;
 import java.util.Map;
 
-import VASSAL.build.BadDataReport;
+import org.apache.commons.lang3.tuple.Pair;
+
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
-import VASSAL.i18n.Resources;
+import VASSAL.script.BeanShell;
 import VASSAL.script.ExpressionInterpreter;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 
 /**
  * A basic beanShell expression
  */
 public class BeanShellExpression extends Expression {
+  public BeanShellExpression(String s) {
+    super("{" + s + "}");
+  }
 
   protected ExpressionInterpreter interpreter;
 
-  public BeanShellExpression(String s) {
-    setExpression("{" + s + "}");
+  @Override
+  protected void reset() {
+    interpreter = null;
   }
 
   /**
    * Evaluate this expression using a BeanShell Interpreter
    */
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) throws ExpressionException {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
     if (interpreter == null) {
-      interpreter = ExpressionInterpreter.createInterpreter(strip(getExpression()));
+      interpreter = new ExpressionInterpreter(strip(getExpression()));
     }
     return interpreter.evaluate(ps, localized);
   }
-
 
   @Override
   public String toBeanShellString() {
@@ -69,40 +70,41 @@ public class BeanShellExpression extends Expression {
     return getExpression() != null && getExpression().indexOf('$') >= 0;
   }
 
-
   /**
    * Return a PieceFilter that selects GamePieces that cause
    * this expression to evaluate to true
    */
   @Override
-  public PieceFilter getFilter(final PropertySource ps) {
+  public PieceFilter getFilter(PropertySource ps) {
     /*
-     * If this expression contains old-style $....$ variables, then we need to evaluate these first on the source piece
-     * and return a filter using the updated expression.
+     * If this expression contains old-style $....$ variables, then we need
+     * to evaluate these first on the source piece and return a filter using
+     * the updated expression.
      */
     if (isDynamic()) {
-      // Strip the Beanshell braces so the expression just looks like a string and evaluate the $...$ variables
-      final String s = (new FormattedString(strip(getExpression()))).getText(ps);
+      // Strip the Beanshell braces so the expression just looks like a
+      // string and evaluate the $...$ variables
+      final String s = new FormattedString(strip(getExpression())).getText(ps);
 
-      // Turn the resulting string back into a Beanshell expression and create a filter.
+      // Turn the result back into a Beanshell expression and create a filter.
       return Expression.createExpression("{" + s + "}").getFilter();
     }
 
-    // Non dynamic, just return a standard filter based on the existing expression.
+    // Non dynamic, return a standard filter based on the existing expression.
     return piece -> {
       String result = null;
       try {
         result = evaluate(piece);
       }
       catch (ExpressionException e) {
-        ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), "Expression=" + getExpression() + ", Error=" + e.getError(), e)); //NON-NLS
+        handleError(e);
       }
       return BeanShell.TRUE.equals(result);
     };
   }
 
   /**
-   * Convert a Property name to it's BeanShell equivalent.
+   * Convert a Property name to its BeanShell equivalent.
    *
    * @param prop Property name
    * @return beanshell equivalent
@@ -171,37 +173,31 @@ public class BeanShellExpression extends Expression {
    * @return Expression
    */
   public static Expression createExpression(String s, boolean dontCreateStringExpressions) {
-    final String expr;
-    final String t = s.trim();
-
-    if (t.startsWith("{") && t.endsWith("}")) {
-      expr = t.substring(1, t.length() - 1).trim();
-    }
-    else {
-      expr = t;
-    }
-
+    final String expr = strip(s);
     if (expr.isBlank()) {
-      return new NullExpression();
+      return NullExpression.instance();
     }
 
     try {
-      return new IntExpression(Integer.parseInt(expr));
+      return IntExpression.instance(Integer.parseInt(expr));
     }
     catch (NumberFormatException e) {
       // Not an error
     }
 
     // Return a single String as a string without quotes
-    if (! dontCreateStringExpressions) {
+    if (!dontCreateStringExpressions) {
       if (expr.length() > 1 && expr.startsWith("\"") && expr.endsWith("\"")
         && expr.indexOf('"', 1) == expr.length() - 1) {
-        return new StringExpression(expr.substring(1, expr.length() - 1));
+        return StringExpression.instance(expr.substring(1, expr.length() - 1));
       }
     }
 
     // Return a generalised Beanshell expression
-    return new BeanShellExpression(expr);
+    return instance(expr);
+  }
 
+  public static Expression instance(String s) {
+    return CACHE.computeIfAbsent(Pair.of(s, BeanShellExpression.class), k -> new BeanShellExpression(s));
   }
 }

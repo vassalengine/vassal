@@ -23,15 +23,20 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.script.expression.Expression;
+import VASSAL.search.SearchTarget;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * GlobalCommandTarget configures and stores the "Fast Match" parameters of Global Key Commands, allowing certain
  * simple filters to be "pre-matched" without having to initiate the (relatively slower) BeanShell filters.
  */
-public class GlobalCommandTarget implements ConfigurerFactory {
+public class GlobalCommandTarget implements ConfigurerFactory, SearchTarget {
 
   protected static final char ENCODE_DELIMITER = '|';
 
@@ -242,6 +247,93 @@ public class GlobalCommandTarget implements ConfigurerFactory {
     if (! (o instanceof GlobalCommandTarget)) return false;
     final GlobalCommandTarget t = (GlobalCommandTarget) o;
     return encode().equals(t.encode());
+  }
+
+/*
+  protected boolean fastMatchLocation = false; // True if we are doing Fast Match by location (else other values in this block unused)
+  protected Target targetType = Target.MAP;    // Type of location Fast Match we are doing
+  protected Expression targetMap;              // Specified Map (for MAP, ZONE, LOCATION, XY types)
+  protected Expression targetBoard;            // Specified Board (for XY type)
+  protected Expression targetZone;             // Specified Zone (for ZONE type)
+  protected Expression targetLocation;         // Specified Location (for LOCATION type)
+  protected Expression targetDeck;             // Specified Deck (for DECK type)
+  protected Expression targetX;                // Specified X (for XY type)
+  protected Expression targetY;                // Specified Y (for XY type)
+
+  protected boolean fastMatchProperty = false; // True if we're doing a Fast Match by property value (else next two values ignored)
+  protected Expression targetProperty;         // Name/Key of Fast Match property
+  protected Expression targetValue;            // Value to match for that property
+  protected CompareMode targetCompare;         // Comparison mode
+*/
+
+  /**
+   * @return a list of the item's string/expression fields if any (for search)
+   */
+  @Override
+  public List<String> getExpressionList() {
+    final List<String> expList = new ArrayList<>();
+
+    if (fastMatchLocation) {
+      if ((targetType == Target.MAP) || (targetType == Target.ZONE) || (targetType == Target.LOCATION) || (targetType == Target.XY)) {
+        expList.add(targetMap.getExpression());
+      }
+      if (targetType == Target.XY) {
+        expList.add(targetBoard.getExpression());
+        expList.add(targetX.getExpression());
+        expList.add(targetY.getExpression());
+      }
+      else if (targetType == Target.ZONE) {
+        expList.add(targetZone.getExpression());
+      }
+      else if (targetType == Target.LOCATION) {
+        expList.add(targetLocation.getExpression());
+      }
+      else if (targetType == Target.DECK) {
+        expList.add(targetDeck.getExpression());
+      }
+    }
+
+    if (fastMatchProperty) {
+      expList.add(targetProperty.getExpression());
+      expList.add(targetValue.getExpression());
+    }
+
+    return expList;
+  }
+
+  /**
+   * @return a list of any Message Format strings referenced in the item, if any (for search)
+   */
+  @Override
+  public List<String> getFormattedStringList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return a list of any Menu/Button/Tooltip Text strings referenced in the item, if any (for search)
+   */
+  @Override
+  public List<String> getMenuTextList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return a list of any Named KeyStrokes referenced in the item, if any (for search)
+   */
+  @Override
+  public List<NamedKeyStroke> getNamedKeyStrokeList() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * @return a list of any Property Names referenced in the item, if any (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    if (fastMatchProperty) {
+      return List.of(targetProperty.getExpression());
+    }
+    return Collections.emptyList();
   }
 
   // Welcome to Getters-and-Setters HELL!

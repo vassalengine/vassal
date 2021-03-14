@@ -37,8 +37,8 @@ public class CounterGlobalKeyCommandTest extends DecoratorTest {
 
     trait = new CounterGlobalKeyCommand();
     trait.description = "abc";
-    trait.key = new NamedKeyStroke("xyzzy");
-    trait.globalKey = new NamedKeyStroke("plugh");
+    trait.key = NamedKeyStroke.of("xyzzy");
+    trait.globalKey = NamedKeyStroke.of("plugh");
     trait.propertiesFilter = new PropertyExpression("{x==2}");
     trait.restrictRange = true;
     trait.range = 3;
@@ -49,8 +49,8 @@ public class CounterGlobalKeyCommandTest extends DecoratorTest {
 
     trait = new CounterGlobalKeyCommand();
     trait.description = "abc";
-    trait.key = new NamedKeyStroke("xyzzy");
-    trait.globalKey = new NamedKeyStroke("plugh");
+    trait.key = NamedKeyStroke.of("xyzzy");
+    trait.globalKey = NamedKeyStroke.of("plugh");
     trait.propertiesFilter = new PropertyExpression("{x==2}");
     trait.restrictRange = true;
     trait.range = 3;

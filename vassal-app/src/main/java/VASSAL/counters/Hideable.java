@@ -236,7 +236,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
         commands = new KeyCommand[] {hideCommand};
       }
       else {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
     }
     hideCommand.setEnabled(access.currentPlayerCanModify(hiddenBy));

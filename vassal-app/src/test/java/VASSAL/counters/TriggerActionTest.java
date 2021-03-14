@@ -93,7 +93,7 @@ public class TriggerActionTest {
     trigger.setInner(new BasicPiece());
     trigger.setCommandName("Trigger");
     trigger.name = "Plover";
-    trigger.setKey(NamedKeyStroke.getNamedKeyStroke('T', KeyEvent.CTRL_DOWN_MASK));
+    trigger.setKey(NamedKeyStroke.of('T', KeyEvent.CTRL_DOWN_MASK));
   }
 
   @Test

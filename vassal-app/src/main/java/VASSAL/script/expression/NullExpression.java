@@ -17,29 +17,18 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import VASSAL.build.module.properties.PropertySource;
-
 /**
  * An Empty Expression
  *
  */
 public class NullExpression extends Expression {
-
-  public NullExpression() {
-    setExpression("");
+  private NullExpression() {
+    super("");
   }
 
-  @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties,
-      boolean localized) {
-    return "";
-  }
+  private static final NullExpression THE_EXPRESSION = new NullExpression();
 
-  @Override
-  public String toBeanShellString() {
-    return "";
+  public static NullExpression instance() {
+    return THE_EXPRESSION;
   }
-
 }

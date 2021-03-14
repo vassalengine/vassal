@@ -1,7 +1,6 @@
 package VASSAL.counters;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import VASSAL.build.module.properties.PropertyNameSource;
@@ -38,10 +37,11 @@ public interface PropertyExporter extends PropertyNameSource, PropertySource {
    * @return Update property Map
    */
   default Map<String, Object> getProperties(Map<String, Object> result) {
-    final List<String> propertyNames = getPropertyNames();
-
-    for (String propertyName : propertyNames) {
-      result.computeIfAbsent(propertyName, pn -> getLocalizedProperty(pn));
+    for (final String propertyName : getPropertyNames()) {
+      result.computeIfAbsent(propertyName.intern(), pn -> {
+        final Object pv = getLocalizedProperty(pn);
+        return pv instanceof String ? ((String) pv).intern() : pv;
+      });
     }
 
     return result;

@@ -1,6 +1,29 @@
 3.5.4 - ???
 
-* 14149: Installer fails to run uninstallers for old versions
+* 14203: Global Key Commands should exit after displaying report if there is
+    no key command to issue
+* 14201: Share immutable objects
+* 14200: Scenario names (Predefined Setup) should be displayed in translated
+    language
+* 14198: Translated private windows do not work when changing sides if module
+    is translated
+* 14196: Right-click menu localization is not shown for some elements
+* 14193: Expressions should be cached
+* 14192: Decks from previous saves and logs are retained in memory
+* 14191: CurrentLanguage and CurrentLanguageName exposed as module properties
+* 14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners
+    (e.g. accepting double click AND drag from same mouse sequence)
+* 14185: Distinguish tile loading errors from other image loading errors
+* 14182: Prevent duplication of FormattedString data and Expressions
+* 14178: Some weird systems lack awt.font.desktophints but aren't headless
+* 14167: Inefficient implementation of FilterOutputStream in ZipWriter
+* 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
+* 14156: Loading a log file to continue a game shouldn't reset the map window
+* 14155: Search was showing duplicate entries for certain items
+* 14154: Search wasn't finding "Fast Match" fields
+* 14152: .vsav, .vlog should be appended to saves, logs when not present,
+    instead of checking for '.'
+* 14149: Windows installer fails to run uninstallers for old versions
 * 14148: Module Editor Labels get truncated with '...'
 * 14143: First character is 'eaten' when typing chat while over map
 * 14139: Delete trait to set 'old...' properties prior to deleting piece
@@ -25,7 +48,7 @@
 
 3.5.2 - 22 February 2021
 
-* 14117:  Action Button fails to respond on a stacked counter (except at top)
+* 14117: Action Button fails to respond on a stacked counter (except at top)
 * 14116: Incorrect module sort order in Module Manager
 * 14111: Incorrect description for Dynamic Property initial value
 * 14104: Removing Image from BasicPiece stores image name as '(No Image)'

@@ -28,4 +28,110 @@
         <field>SUPPORTED_STRING_METHODS</field>
         <justification>No chance of subclass</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/IntExpression</className>
+        <differenceType>7009</differenceType>
+        <method>IntExpression(int)</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/NullExpression</className>
+        <differenceType>7009</differenceType>
+        <method>NullExpression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/StringExpression</className>
+        <differenceType>7009</differenceType>
+        <method>StringExpression(java.lang.String)</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/Expression</className>
+        <differenceType>7004</differenceType>
+        <method>Expression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/expression/Expression</className>
+        <differenceType>7009</differenceType>
+        <method>Expression()</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>defaultProperties</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>format</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/FormattedString</className>
+        <differenceType>6001</differenceType>
+        <field>formatString</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>6001</differenceType>
+        <field>cache</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/script/ExpressionInterpreter</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.script.ExpressionInterpreter createInterpreter(java.lang.String)</method>
+        <justification>Used only by BeanShellExpression</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyStroke</className>
+        <differenceType>6006</differenceType>
+        <field>name</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyStroke</className>
+        <differenceType>6006</differenceType>
+        <field>stroke</field>
+        <justification>Should be no subclasses</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>6011</differenceType>
+        <field>NAMED_MARKER</field>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>7004</differenceType>
+        <method>javax.swing.KeyStroke getKeyStroke(VASSAL.tools.NamedKeyStroke)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/NamedKeyManager</className>
+        <differenceType>7002</differenceType>
+        <method>javax.swing.KeyStroke getMarkerKeyStroke()</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
+
 </differences>

@@ -35,14 +35,14 @@ public class DeleteTest extends DecoratorTest {
     // Set a Command and Named KeyStroke
     trait = new Delete();
     trait.commandName = "testCommand"; // NON-NLS
-    trait.key = new NamedKeyStroke("xyzzy"); // NON-NLS
+    trait.key = NamedKeyStroke.of("xyzzy"); // NON-NLS
     trait.description = "plover";
     serializeTest("NamedKeyStroke", trait); // NON-NLS
 
     // Set a Command and standard KeyStroke
     trait = new Delete();
     trait.commandName = "testCommand"; // NON-NLS
-    trait.key = new NamedKeyStroke(KeyStroke.getKeyStroke(65, 0));
+    trait.key = NamedKeyStroke.of(KeyStroke.getKeyStroke(65, 0));
     trait.description = "plover";
     serializeTest("KeyStroke", trait); // NON-NLS
 

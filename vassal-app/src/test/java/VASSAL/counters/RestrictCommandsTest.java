@@ -37,7 +37,7 @@ public class RestrictCommandsTest extends DecoratorTest {
     trait.name = "testCommand"; // NON-NLS
     trait.action = RestrictCommands.HIDE;
     trait.propertyMatch = new PropertyExpression("{x==2}");
-    trait.watchKeys = new NamedKeyStroke[] { new NamedKeyStroke("key1"), new NamedKeyStroke("key2") };
+    trait.watchKeys = new NamedKeyStroke[] { NamedKeyStroke.of("key1"), NamedKeyStroke.of("key2") };
     serializeTest("Complex trait", trait); // NON-NLS
 
   }

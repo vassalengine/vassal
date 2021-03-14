@@ -1,6 +1,4 @@
 /*
- * $Id: SinglePropertyExpression.java 7725 2011-07-31 18:51:43Z uckelman $
- *
  * Copyright (c) 2013 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -21,26 +19,20 @@ package VASSAL.script.expression;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import VASSAL.build.module.properties.PropertySource;
 
 /**
  * An expression consisting of a single property name
- *
  */
 public class SinglePropertyExpression extends Expression {
-
   public SinglePropertyExpression(String ex) {
-    if (ex.startsWith("$") && ex.endsWith("$")) {
-      setExpression(ex.substring(1, ex.length() - 1));
-    }
-    else {
-      setExpression(ex);
-    }
+    super(ex.startsWith("$") && ex.endsWith("$") ? ex.substring(1, ex.length() - 1) : ex);
   }
 
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized)
-      throws ExpressionException {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
     String value = null;
     try {
       if (properties != null) {
@@ -66,4 +58,7 @@ public class SinglePropertyExpression extends Expression {
     return BeanShellExpression.convertProperty(getExpression());
   }
 
+  public static Expression instance(String s) {
+    return CACHE.computeIfAbsent(Pair.of(s, SinglePropertyExpression.class), k -> new SinglePropertyExpression(s));
+  }
 }

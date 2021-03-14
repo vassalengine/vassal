@@ -49,8 +49,8 @@ public class NamedHotKeyConfigurerTest {
         NamedKeyManager nkm = new NamedKeyManager();
         final String key = "key"; // NON-NLS
         final String name = "name"; // NON-NLS
-        final NamedKeyStroke namedStroke = new NamedKeyStroke("xyzzy");
-        final NamedKeyStroke keyStroke = new NamedKeyStroke(KeyStroke.getKeyStroke("A"));
+        final NamedKeyStroke namedStroke = NamedKeyStroke.of("xyzzy");
+        final NamedKeyStroke keyStroke = NamedKeyStroke.of(KeyStroke.getKeyStroke("A"));
 
         NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(key, name, namedStroke);
 

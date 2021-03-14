@@ -148,7 +148,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final NamedKeyStrokeListener undoKeyListener = new NamedKeyStrokeListener(undoAction, null);
     mod.addKeyStrokeListener(undoKeyListener);
 
-    final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+    final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.of(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
 
     final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.ALT_DOWN_MASK));
@@ -419,8 +419,11 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
     File file = fc.getSelectedFile();
-    if (file.getName().indexOf('.') == -1)
+
+    // append .vlog if it's not there already
+    if (!file.getName().endsWith(".vlog")) {
       file = new File(file.getParent(), file.getName() + ".vlog"); //NON-NLS
+    }
 
     // warn user if overwriting log from an old version
     if (file.exists()) {

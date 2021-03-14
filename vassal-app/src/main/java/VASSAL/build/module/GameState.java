@@ -68,6 +68,7 @@ import VASSAL.command.ConditionalCommand;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
@@ -374,6 +375,9 @@ public class GameState implements CommandEncoder {
     }
 
     this.gameStarting = gameStarting;
+
+    g.reset();
+
     if (!gameStarting) {
       pieces.clear();
     }
@@ -536,12 +540,15 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
-        if (gameStarted) { //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
-          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-          setup(false);
-        }
+        //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
+        final boolean foreground = gameStarted;
         g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
-        loadGameInBackground(f);
+        if (foreground) {
+          loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
+        }
+        else {
+          loadGameInBackground(f);
+        }
       }
 
       lastSaveFile = f;
@@ -647,8 +654,11 @@ public class GameState implements CommandEncoder {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
     File file = fc.getSelectedFile();
-    if (file.getName().indexOf('.') == -1)
+
+    // append .vsav if it's not there already
+    if (!file.getName().endsWith(".vsav")) {
       file = new File(file.getParent(), file.getName() + ".vsav"); //NON-NLS
+    }
 
     return file;
   }
@@ -663,6 +673,10 @@ public class GameState implements CommandEncoder {
       p.setId(getNewPieceId());
     }
     pieces.put(p.getId(), p);
+
+    if (p instanceof Deck) {
+      ((Deck) p).registerListeners();
+    }
   }
 
   /**
@@ -877,8 +891,24 @@ public class GameState implements CommandEncoder {
     ModuleManagerUpdateHelper.sendGameUpdate(f);
   }
 
+
+  public void loadGameInForeground(final File f) {
+    try {
+      loadGameInForeground(
+        f.getName(),
+        new BufferedInputStream(Files.newInputStream(f.toPath()))
+      );
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, f);
+    }
+  }
+
   public void loadGameInForeground(final String shortName,
                                    final InputStream in) throws IOException {
+    GameModule.getGameModule().warn(
+      Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
@@ -887,6 +917,16 @@ public class GameState implements CommandEncoder {
       }
       finally {
         gameLoadingInForeground = false;
+
+        String msg;
+        if (loadComments != null && loadComments.length() > 0) {
+          msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
+        }
+        else {
+          msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
+        }
+        GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
+        GameModule.getGameModule().warn(msg);
       }
     }
   }

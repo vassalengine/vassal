@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2020 by Vassal developers
  *
  * This library is free software; you can redistribute it and/or
@@ -19,6 +18,9 @@ package VASSAL.tools;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
@@ -30,6 +32,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 /**
  * FormattedString.java
@@ -37,30 +40,36 @@ import VASSAL.tools.RecursionLimiter.Loopable;
  * A String that can include options of the form $optionName$. Option values
  * are maintained in a property list and getText returns the string will all
  * options replaced by their value
- *
- *
  */
 public class FormattedString implements Loopable {
+  private static final Map<Pair<String, PropertySource>, FSData> CACHE = new ConcurrentSoftHashMap<>();
 
-  // The actual string for display purposes
-  protected String formatString;
+  private static class FSData {
+    // The actual string for display purposes
+    public final String formatString;
 
-  // An efficiently evaluable representation of the string
-  protected Expression format;
+    // An efficiently evaluable representation of the string
+    public final Expression format;
 
-  protected Map<String, String> props = new HashMap<>();
-  protected PropertySource defaultProperties;
+    public final PropertySource defaultProperties;
 
-  @Override
-  public String getComponentTypeName() {
-    return Resources.getString("Editor.FormattedString.component_type");
+    public FSData(String fs, PropertySource dp) {
+      formatString = fs;
+      format = Expression.createExpression(fs);
+      defaultProperties = dp;
+    }
   }
 
-  @Override
-  public String getComponentName() {
-    return Resources.getString("Editor.FormattedString.component_type");
+  private static FSData dataOf(String fs, PropertySource dp) {
+    return CACHE.computeIfAbsent(
+      Pair.of(fs, dp),
+      p -> new FSData(p.getLeft(), p.getRight())
+    );
   }
 
+  private FSData fsdata;
+
+  protected Map<String, String> props;
 
   public FormattedString() {
     this("");
@@ -75,36 +84,47 @@ public class FormattedString implements Loopable {
   }
 
   public FormattedString(String formatString, PropertySource defaultProperties) {
-    setFormat(formatString);
-    this.defaultProperties = defaultProperties;
+    fsdata = dataOf(formatString, defaultProperties);
   }
 
-  public void setFormat(String s) {
-    formatString = s;
-    format = Expression.createExpression(s);
+  public void setFormat(String fs) {
+    fsdata = dataOf(fs, fsdata.defaultProperties);
   }
 
   public String getFormat() {
-    return formatString;
+    return fsdata.formatString;
   }
 
   public void setProperty(String name, String value) {
-    props.put(name, value);
+    if (props == null) {
+      props = new HashMap<>();
+    }
+    props.put(name.intern(), value != null ? value.intern() : null);
   }
 
   public void clearProperties() {
-    props.clear();
+    if (props != null) {
+      props.clear();
+    }
+  }
+
+  public void setDefaultProperties(PropertySource defaultProperties) {
+    fsdata = dataOf(fsdata.formatString, defaultProperties);
+  }
+
+  public PropertySource getDefaultProperties() {
+    return fsdata.defaultProperties;
   }
 
   /**
    * @return the resulting string after substituting properties
    */
   public String getText() {
-    return getText(defaultProperties, false);
+    return getText(fsdata.defaultProperties, false);
   }
 
   public String getLocalizedText() {
-    return getText(defaultProperties, true);
+    return getText(fsdata.defaultProperties, true);
   }
 
   /**
@@ -142,27 +162,40 @@ public class FormattedString implements Loopable {
   }
 
   protected String getText(PropertySource ps, boolean localized) {
-    final PropertySource source = (ps == null) ? defaultProperties : ps;
+    final PropertySource source = ps == null ? fsdata.defaultProperties : ps;
     try {
       RecursionLimiter.startExecution(this);
       try {
-        return format.evaluate(source, props, localized);
+        return fsdata.format.evaluate(source, props, localized);
       }
       catch (ExpressionException e) {
+        BadDataReport bdr;
+        final String msg = Resources.getString("Error.expression_error");
+        final String exp = fsdata.format.getExpression();
+
         if (source instanceof EditablePiece) {
-          ErrorDialog.dataWarning(new BadDataReport((EditablePiece) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+          bdr = new BadDataReport(
+            (EditablePiece) source, msg, exp, e
+          );
         }
         else if (source instanceof AbstractConfigurable) {
-          ErrorDialog.dataWarning(new BadDataReport((AbstractConfigurable) source, Resources.getString("Error.expression_error"), format.getExpression(), e));
+          bdr = new BadDataReport(
+            (AbstractConfigurable) source, msg, exp, e
+          );
         }
         else {
-          ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), format.getExpression(), e));
+          bdr = new BadDataReport(msg, exp, e);
         }
+
+        ErrorDialog.dataWarning(bdr);
         return "";
       }
     }
     catch (RecursionLimitException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_string_loop"), format.getExpression(), e));
+      ErrorDialog.dataWarning(new BadDataReport(
+        Resources.getString("Error.possible_infinite_string_loop"),
+        fsdata.format.getExpression(), e
+      ));
       return "";
     }
     finally {
@@ -183,7 +216,11 @@ public class FormattedString implements Loopable {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(
+        source,
+        Resources.getString("Error.non_number_error"),
+        debugInfo(this, value, description), e
+      ));
     }
     return result;
   }
@@ -195,7 +232,11 @@ public class FormattedString implements Loopable {
       result = Integer.parseInt(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataWarning(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));
+      ErrorDialog.dataWarning(new BadDataReport(
+        source,
+        Resources.getString("Error.non_number_error"),
+        debugInfo(this, value, description), e
+      ));
     }
     return result;
   }
@@ -214,44 +255,40 @@ public class FormattedString implements Loopable {
    * @param value Value generated by the formatted string
    * @return error message
    */
-  public static String debugInfo(FormattedString format, String value, String description) {
-    return description + (value.equals(format.getFormat()) ? "" : "[" + format.getFormat() + "]") + "=" + value;
+  public static String debugInfo(FormattedString fs, String value, String description) {
+    return description + (value.equals(fs.getFormat()) ? "" : "[" + fs.getFormat() + "]") + "=" + value;
   }
 
   public String debugInfo(String value, String description) {
     return debugInfo(this, value, description);
   }
 
-  public PropertySource getDefaultProperties() {
-    return defaultProperties;
-  }
-
-  public void setDefaultProperties(PropertySource defaultProperties) {
-    this.defaultProperties = defaultProperties;
-  }
-
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result
-      + ((formatString == null) ? 0 : formatString.hashCode());
-    return result;
+    return fsdata.formatString == null ? 0 : fsdata.formatString.hashCode();
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    final FormattedString other = (FormattedString) obj;
-    if (formatString == null) {
-      return other.formatString == null;
     }
-    else return formatString.equals(other.formatString);
+
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    final FormattedString other = (FormattedString) obj;
+    return Objects.equals(fsdata.formatString, other.fsdata.formatString);
   }
 
+  @Override
+  public String getComponentTypeName() {
+    return Resources.getString("Editor.FormattedString.component_type");
+  }
+
+  @Override
+  public String getComponentName() {
+    return Resources.getString("Editor.FormattedString.component_type");
+  }
 }

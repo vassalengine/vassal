@@ -38,7 +38,7 @@ public class FootprintTest extends DecoratorTest {
 
     // Complex test
     trait = new Footprint();
-    trait.trailKey = new NamedKeyStroke("testkey"); // NON-NLS
+    trait.trailKey = NamedKeyStroke.of("testkey"); // NON-NLS
     trait.menuCommand = "xyzzy"; // NON-NLS
     trait.initiallyVisible = true;
     trait.globallyVisible = true;
@@ -50,9 +50,9 @@ public class FootprintTest extends DecoratorTest {
     trait.edgePointBuffer = 3;
     trait.edgeDisplayBuffer = 14;
     trait.lineWidth = 2;
-    trait.trailKeyOn = new NamedKeyStroke("keyOn"); // NON-NLS
-    trait.trailKeyOff = new NamedKeyStroke("keyOff"); // NON-NLS
-    trait.trailKeyClear = new NamedKeyStroke("keyClear"); // NON-NLS
+    trait.trailKeyOn = NamedKeyStroke.of("keyOn"); // NON-NLS
+    trait.trailKeyOff = NamedKeyStroke.of("keyOff"); // NON-NLS
+    trait.trailKeyClear = NamedKeyStroke.of("keyClear"); // NON-NLS
     trait.description = "plover"; // NON-NLS
 
     trait.globalVisibility = true;

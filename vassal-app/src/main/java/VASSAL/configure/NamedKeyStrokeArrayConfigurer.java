@@ -231,13 +231,13 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     int newEntry;
     // Insert the new entry into the list at the appropriate place
     if (entries.isEmpty() || getSelectedEntryIndex() < 0) {
-      setValue(ArrayUtils.add(keys, new NamedKeyStroke()));
+      setValue(ArrayUtils.add(keys, NamedKeyStroke.NULL_KEYSTROKE));
       newEntry = getNameKeyStrokeArrayValue().length - 1;
       setSelectedEntryIndex(newEntry);
     }
     else {
       newEntry = pos + 1;
-      setValue(ArrayUtils.insert(newEntry, keys, new NamedKeyStroke()));
+      setValue(ArrayUtils.insert(newEntry, keys, NamedKeyStroke.NULL_KEYSTROKE));
       setSelectedEntryIndex(newEntry);
     }
 

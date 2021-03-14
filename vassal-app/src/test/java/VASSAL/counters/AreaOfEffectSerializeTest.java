@@ -19,7 +19,7 @@ public class AreaOfEffectSerializeTest extends SerializeTest<AreaOfEffect> {
       aoe.radius = 2;
       aoe.alwaysActive = true;
       aoe.activateCommand = "testActivateCommand";
-      aoe.activateKey = new NamedKeyStroke("A");
+      aoe.activateKey = NamedKeyStroke.of("A");
       aoe.mapShaderName = "testMapShaderName";
       aoe.fixedRadius = true;
       aoe.radiusMarker = "testRadiusMarker";

@@ -115,7 +115,7 @@ public class GlobalMap implements AutoConfigurable,
                               HOTKEY, ICON_NAME, al);
     launch.setAttribute(TOOLTIP, Resources.getString("Editor.GlobalMap.show_hide_overview_window"));
     launch.setAttribute(HOTKEY,
-      NamedKeyStroke.getNamedKeyStroke(
+      NamedKeyStroke.of(
         KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK
       )
     );

@@ -127,6 +127,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
+import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
@@ -198,6 +199,9 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
+
+  public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
+  public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -288,7 +292,7 @@ public class GameModule extends AbstractConfigurable
    * The Chat Log Console
    */
   private final Console console = new Console();
-  
+
   /**
    * Docked PieceWindow (we need to know which one to get our splitters all splatting in the right order)
    */
@@ -326,6 +330,10 @@ public class GameModule extends AbstractConfigurable
 
   private final List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
+
+  private int ourKeyStrokeSourceCount = -1;
+  private int ourKeyStrokeListenerCount = -1;
+
   private CommandEncoder[] commandEncoders = new CommandEncoder[0];
   private final List<String> deferredChat = new ArrayList<>();
 
@@ -333,7 +341,7 @@ public class GameModule extends AbstractConfigurable
   private final Object loggingLock = new Object();
   private Command pausedCommands;
 
-  private String gameFile     = ""; //NON-NLS
+  private String gameFile = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
 
   private boolean iFeelDirty = false; // Touched the module in ways not detectable by buildString compare
@@ -522,14 +530,18 @@ public class GameModule extends AbstractConfigurable
       pw.dockMe();
     }
 
-    MenuManager.getInstance().addAction("Prefs.edit_preferences", //NON-NLS
-      getPrefs().getEditor().getEditAction());
+    MenuManager.getInstance().addAction(
+      "Prefs.edit_preferences", //NON-NLS
+      getPrefs().getEditor().getEditAction()
+    );
 
     // Our counter refresher
     final GameRefresher gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
-    MenuManager.getInstance().addAction("GameRefresher.refresh_counters", //NON-NLS
-      gameRefresher.getRefreshAction());
+    MenuManager.getInstance().addAction(
+      "GameRefresher.refresh_counters", //NON-NLS
+      gameRefresher.getRefreshAction()
+    );
   }
 
   /**
@@ -955,9 +967,11 @@ public class GameModule extends AbstractConfigurable
    * @param src KeyStrokeSource Component that wants to register as a source for hotkey events
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
-    keyStrokeSources.add(src);
-    for (final KeyStrokeListener l : keyStrokeListeners) {
-      l.addKeyStrokeSource(src);
+    if (!keyStrokeSources.contains(src)) {
+      keyStrokeSources.add(src);
+      for (final KeyStrokeListener l : keyStrokeListeners) {
+        l.addKeyStrokeSource(src);
+      }
     }
   }
 
@@ -971,10 +985,48 @@ public class GameModule extends AbstractConfigurable
    * @param l KeystrokeListener to add
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
-    keyStrokeListeners.add(l);
-    for (final KeyStrokeSource s : keyStrokeSources) {
-      l.addKeyStrokeSource(s);
+    if (!keyStrokeListeners.contains(l)) {
+      keyStrokeListeners.add(l);
+      for (final KeyStrokeSource s : keyStrokeSources) {
+        l.addKeyStrokeSource(s);
+      }
     }
+  }
+
+  public void reset() {
+    final int curSourcesSize = keyStrokeSources.size();
+    final int curListenersSize = keyStrokeListeners.size();
+
+    if (ourKeyStrokeSourceCount == -1) {
+      ourKeyStrokeSourceCount = curSourcesSize;
+      ourKeyStrokeListenerCount = curListenersSize;
+    }
+    else {
+      // remove the non-module KeyStrokeSources
+      final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, curSourcesSize);
+
+      for (final KeyStrokeListener l : keyStrokeListeners) {
+        for (final KeyStrokeSource s : sourcesToRemove) {
+          l.removeKeyStrokeSource(s);
+        }
+      }
+
+      // remove the non-module KeyStrokeListeners
+      final List<KeyStrokeListener> listenersToRemove = keyStrokeListeners.subList(ourKeyStrokeListenerCount, curListenersSize);
+
+      for (final KeyStrokeListener l : listenersToRemove) {
+        for (final KeyStrokeSource s : keyStrokeSources) {
+          l.removeKeyStrokeSource(s);
+        }
+      }
+
+      sourcesToRemove.clear();
+      listenersToRemove.clear();
+    }
+
+    getPlayerRoster().resetListeners();
+
+    Expression.resetCachedExpressions();
   }
 
   /**
@@ -1622,16 +1674,15 @@ public class GameModule extends AbstractConfigurable
         Resources.getString("GameModule.open_error",
           theModule.getDataArchive().getName()));
     }
-    else {
-      theModule = module;
-      theModule.setGpIdSupport(theModule);
-      try {
-        theModule.build();
-      }
-      catch (IOException e) {
-        theModule = null;
-        throw e;
-      }
+
+    theModule = module;
+    theModule.setGpIdSupport(theModule);
+    try {
+      theModule.build();
+    }
+    catch (IOException e) {
+      theModule = null;
+      throw e;
     }
 
     /*
@@ -1768,7 +1819,6 @@ public class GameModule extends AbstractConfigurable
     return getArchiveWriter() == null;
   }
 
-
   /**
    * Is an editor window currently open
    * @return true if we're running with an editor window
@@ -1895,10 +1945,15 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(key)) {
       return moduleOther2;
     }
+    else if (GameModule.MODULE_CURRENT_LOCALE.equals(key)) {
+      return Resources.getLocale().getLanguage();
+    }
+    else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
+      return Resources.getLocale().getDisplayName();
+    }
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     return p == null ? null : p.getPropertyValue();
   }
-
 
   /**
    * Gets the value of a mutable (changeable) "Global Property". Module level Global Properties serve as the
@@ -2022,6 +2077,17 @@ public class GameModule extends AbstractConfigurable
     final PlayerRoster r = getPlayerRoster();
     if (r != null) {
       r.addSideChangeListenerToInstance(l);
+    }
+  }
+
+  /**
+   * Removes listener for players changing sides
+   * @param l old SideChangeListener
+   */
+  public void removeSideChangeListenerFromPlayerRoster(PlayerRoster.SideChangeListener l) {
+    final PlayerRoster r = getPlayerRoster();
+    if (r != null) {
+      r.removeSideChangeListenerFromInstance(l);
     }
   }
 

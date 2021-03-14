@@ -44,7 +44,7 @@ public class IconConfigurer extends Configurer {
   private final String defaultImage;
   private Icon icon;
   private JPanel holdingPanel;
-  private final JLabel iconLabel = new JLabel();
+  private JLabel iconLabel;
 
   public IconConfigurer(String defaultImage) {
     this(null, "", defaultImage);
@@ -78,7 +78,9 @@ public class IconConfigurer extends Configurer {
         icon = new ImageIcon(new OwningOpMultiResolutionImage(sop));
       }
     }
-    iconLabel.setIcon(icon);
+    if (iconLabel != null) {
+      iconLabel.setIcon(icon);
+    }
     setValue((Object) imageName);
   }
 
@@ -90,6 +92,9 @@ public class IconConfigurer extends Configurer {
   public Component getControls() {
     if (controls == null) {
       controls = new ConfigurerPanel(getName(), "[]rel[]rel[]", "[]rel[]rel[]rel[]", "[fill,grow]"); // NON-NLS
+      if (iconLabel == null) {
+        iconLabel = new JLabel();
+      }
       iconLabel.setIcon(icon);
 
       holdingPanel = new JPanel(new MigLayout("ins 0", "[grow,fill]", "[grow,fill]")); // NON-NLS

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2009 Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -17,27 +16,23 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import VASSAL.build.module.properties.PropertySource;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An expression consisting of a String only
  *
  */
 public class StringExpression extends Expression {
-
-  public StringExpression(String s) {
-    setExpression(s);
-  }
-
-  @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
-    return getExpression();
+  private StringExpression(String s) {
+    super(s.intern());
   }
 
   @Override
   public String toBeanShellString() {
     return "\"" + getExpression() + "\"";
+  }
+
+  public static Expression instance(String s) {
+    return CACHE.computeIfAbsent(Pair.of(s, StringExpression.class), k -> new StringExpression(s));
   }
 }

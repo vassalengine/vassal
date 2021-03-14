@@ -37,7 +37,7 @@ public class TableInfoTest extends DecoratorTest {
     trait.nCols = 2;
     trait.nRows = 3;
     trait.command = "xyzzy"; // NON-NLS
-    trait.launchKey = new NamedKeyStroke("plover"); // NON-NLS
+    trait.launchKey = NamedKeyStroke.of("plover"); // NON-NLS
     trait.values = "a,b,c,d,e,f"; // NON-NLS
     trait.description = "plugh";
     serializeTest("Complex trait", trait); // NON-NLS

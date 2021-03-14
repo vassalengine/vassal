@@ -111,7 +111,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   @Deprecated (since = "2020-10-21", forRemoval = true)
   protected LaunchButton launch; // Exists for clirr - but use getLaunchButton()
 
-  protected NamedKeyStroke stroke = new NamedKeyStroke();
+  protected NamedKeyStroke stroke = NamedKeyStroke.NULL_KEYSTROKE;
   protected String[] names = new String[0];
   protected String condition;
   protected String checkProperty;
@@ -620,13 +620,25 @@ public class MassKeyCommand extends AbstractToolbarItem
     return getConfigureTypeName();
   }
 
+
+  /**
+   * {@link VASSAL.search.SearchTarget}
+   * @return a list of the Configurables property fields (for search)
+   */
+  @Override
+  public List<String> getPropertyList() {
+    return target.getPropertyList();
+  }
+
   /**
    * {@link VASSAL.search.SearchTarget}
    * @return a list of the Configurables string/expression fields if any (for search)
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(propertiesFilter.getExpression());
+    final List<String> expList = target.getExpressionList();
+    expList.add(propertiesFilter.getExpression());
+    return expList;
   }
 
   /**

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2012 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
@@ -48,7 +47,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.plaf.basic.BasicHTML;
 
-import VASSAL.search.HTMLImageFinder;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -64,6 +62,7 @@ import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
@@ -660,7 +659,9 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     return r;
   }
 
+  @Deprecated(since = "2021-03-14", forRemoval = true)
   protected Rectangle lastRect = null;
+  @Deprecated(since = "2021-03-14", forRemoval = true)
   protected Area lastShape = null;
 
   /**
@@ -689,14 +690,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     }
 
     final Area a = new Area(innerShape);
-
-    // Cache the Area object generated. Only recreate if the label position
-    // or size has changed
-    if (!r.equals(lastRect)) {
-      lastShape = new Area(r);
-      lastRect = new Rectangle(r);
-    }
-    a.add(lastShape);
+    a.add(AreaCache.get(r));
     return a;
   }
 
@@ -708,7 +702,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         || labelKey.isNull()
         || menuCommand == null
         || menuCommand.length() == 0) {
-        commands = new KeyCommand[0];
+        commands = KeyCommand.NONE;
       }
       else {
         commands = new KeyCommand[]{menuKeyCommand};
