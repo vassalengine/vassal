@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install dependencies
-        run: sudo apt-get install ghostscript nsis
+        run: sudo apt-get install genisoimage ghostscript nsis
 
       - name: Install Java
         uses: actions/setup-java@v1
