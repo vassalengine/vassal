@@ -45,17 +45,30 @@ jobs:
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh
 
+      - name: Store version
+        id: version
+        run: echo '::set-output name=VERSION::$(make version-print)'
+
       - name: Build packages
         run: make release
 
       - name: Archive packages
         uses: actions/upload-artifact@v2
         with:
-          name: packages
-          path: |
-            tmp/VASSAL-*-linux.tar.bz2
-            tmp/VASSAL-*-macos.dmg
-            tmp/VASSAL-*-other.zip
-            tmp/VASSAL-*-windows-32.exe
-            tmp/VASSAL-*-windows-64.exe
-            tmp/VASSAL-*.sha256
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-linux
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos.dmg
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-other
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-32.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-32.exe
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-64.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-64.exe
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}.sha256
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}.sha256
