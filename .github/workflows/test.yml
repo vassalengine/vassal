@@ -31,11 +31,34 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks
+            ./dist/launch4j
+          key: ${{ runner.os }}-m2-${{ hashFiles('bootstrap.sh') }}
+
       - name: Build and test
         run: make
 
       - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh
 
       - name: Build packages
         run: make release
+
+      - name: Archive packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: packages
+          path: |
+            tmp/VASSAL-*-linux.tar.bz2
+            tmp/VASSAL-*-macos.dmg
+            tmp/VASSAL-*-other.zip
+            tmp/VASSAL-*-windows-32.exe
+            tmp/VASSAL-*-windows-64.exe
+            tmp/VASSAL-*.sha256
