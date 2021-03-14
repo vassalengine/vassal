@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -36,6 +37,8 @@ import java.util.zip.ZipOutputStream;
  * @since 3.5.0
  */
 public class ZipWriter implements Closeable {
+  private final Path full;
+  private final Path part;
   private final ZipOutputStream zout;
 
   public ZipWriter(File f) throws IOException {
@@ -43,11 +46,14 @@ public class ZipWriter implements Closeable {
   }
 
   public ZipWriter(Path p) throws IOException {
-    this(new BufferedOutputStream(Files.newOutputStream(Objects.requireNonNull(p))));
-  } 
+    full = Objects.requireNonNull(p);
 
-  public ZipWriter(OutputStream out) {
-    zout = new ZipOutputStream(Objects.requireNonNull(out));
+    if (!Files.exists(full)) {
+      Files.createFile(full);
+    }
+
+    part = full.resolveSibling(full.getFileName() + ".part");
+    zout = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(part)));
   }
 
   public void write(File src, String dst) throws IOException {
@@ -103,6 +109,7 @@ public class ZipWriter implements Closeable {
   @Override
   public void close() throws IOException {
     zout.close();
+    Files.move(part, full, StandardCopyOption.REPLACE_EXISTING);
   }
 
   private static ZipEntry makeEntry(String path) {

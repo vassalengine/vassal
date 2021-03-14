@@ -134,4 +134,11 @@
         <justification>Nothing external should use this</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/tools/io/ZipWriter</className>
+        <differenceType>7002</differenceType>
+        <method>ZipWriter(java.io.OutputStream)</method>
+        <justification>No chance of subclass</justification>
+    </difference>
+
 </differences>
