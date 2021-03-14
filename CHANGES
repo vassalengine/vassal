@@ -29,6 +29,7 @@
 * 14139: Delete trait to set 'old...' properties prior to deleting piece
 * 14138: Turn Tracker mispopulates button tooltip field while running in editor
 * 14136: Module-level GKCs were not honoring fast match
+* 14133: Better support for Mac Alt and Function keys
 * 14131: String method calls in Beanshell don't return proper result unless
     GetProperty is used
 * 14124: Remove "(Optional)" from Send to Location Board Name hint text
