@@ -284,6 +284,9 @@ vassal-app/target/$(JARNAME)-javadoc.jar: $(LIBDIR)/Vengine.jar
 javadoc: vassal-app/target/$(JARNAME)-javadoc.jar | $(JDOCDIR)
 	pushd $(JDOCDIR) ; unzip ../vassal-app/target/$(JARNAME)-javadoc.jar ; popd
 
+version-print:
+	@echo $(VERSION)
+
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
 
@@ -293,4 +296,4 @@ clean: clean-release
 # prevents make from trying to delete intermediate files
 .SECONDARY:
 
-.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set
+.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set version-print

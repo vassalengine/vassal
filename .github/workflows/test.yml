@@ -41,9 +41,6 @@ jobs:
             ./dist/launch4j
           key: ${{ runner.os }}-m2-${{ hashFiles('bootstrap.sh') }}
 
-      - name: Build and test
-        run: make
-
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh
