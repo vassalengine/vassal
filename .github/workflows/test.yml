@@ -32,4 +32,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and test
-        run: ./mvnw clean test -B
+        run: make
+
+      - name: Install packaging dependencies
+        run: ./bootstrap.sh
+
+      - name: Build packages
+        run: make release
