@@ -137,13 +137,12 @@ public class GlobalTranslatableMessages extends AbstractConfigurable implements 
 
   @Override
   public GlobalTranslatableMessage getTranslatableString(String name) {
-    GlobalTranslatableMessage property = null;
     for (final GlobalTranslatableMessage prop : getComponentsOf(GlobalTranslatableMessage.class)) {
       if (prop.getConfigureName().equals(name)) {
-        property = prop;
+        return prop;
       }
     }
-    return property;
+    return null;
   }
 
   /*
