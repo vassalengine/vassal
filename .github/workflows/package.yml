@@ -1,6 +1,8 @@
 name: Package
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    branches: [ master ]
 
 jobs:
   package:
