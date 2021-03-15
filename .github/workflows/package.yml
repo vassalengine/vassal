@@ -1,11 +1,12 @@
-name: Package
-
 on:
-  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
     branches: [ master ]
 
 jobs:
   package:
+    name: Test & Package
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repo
