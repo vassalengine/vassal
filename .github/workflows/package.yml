@@ -44,6 +44,9 @@ jobs:
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh
 
+      - name: Set branch
+        run: git branch ${GITHUB_HEAD_REF:-master}
+
       - name: Store version
         id: version
         run: echo "::set-output name=VERSION::$(make version-print)"
