@@ -47,7 +47,7 @@ jobs:
 
       - name: Store version
         id: version
-        run: echo '::set-output name=VERSION::$(make version-print)'
+        run: echo "::set-output name=VERSION::$(make version-print)"
 
       - name: Build packages
         run: make release
