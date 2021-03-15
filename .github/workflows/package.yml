@@ -46,8 +46,7 @@ jobs:
 
       - name: Set branch
         run: |
-          echo "${GITHUB_HEAD_REF}"
-          git branch ${GITHUB_HEAD_REF:-master}
+          git checkout -b ${GITHUB_HEAD_REF:-master}
 
       - name: Store version
         id: version
