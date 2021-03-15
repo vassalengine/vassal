@@ -1,0 +1,89 @@
+name: Package
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  package:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: sudo apt-get install genisoimage ghostscript nsis
+
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks
+            ./dist/launch4j
+          key: ${{ runner.os }}-m2-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh
+
+      - name: Store version
+        id: version
+        run: echo "::set-output name=VERSION::$(make version-print)"
+
+      - name: Build packages
+        run: make release
+
+      - name: Archive Linux
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-linux
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
+
+      - name: Archive MacOS
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos.dmg
+
+      - name: Archive other
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-other
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
+
+      - name: Archive Windows 32-bit
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-32.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-32.exe
+
+      - name: Archive Windows 64-bit
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-64.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-64.exe
+
+      - name: Archive SHA256 hashes
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}.sha256
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}.sha256
