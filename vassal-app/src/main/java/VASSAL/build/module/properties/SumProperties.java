@@ -64,7 +64,7 @@ public class SumProperties implements PropertySource {
         value = sum + (indeterminate ? "+?" : "");
       }
     }
-    else if (keyString.equals("sumpieces")) { //NON-NLS
+    else if (keyString.equals("countPieces")) { //NON-NLS
       value = pieces.size();
     }
     else if (!pieces.isEmpty()) {
