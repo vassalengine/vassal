@@ -38,7 +38,7 @@ jobs:
             ./dist/dmg
             ./dist/jdks
             ./dist/launch4j
-          key: ${{ runner.os }}-m2-${{ hashFiles('bootstrap.sh') }}
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
