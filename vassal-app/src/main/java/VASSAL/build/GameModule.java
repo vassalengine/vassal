@@ -127,6 +127,7 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.I18nResourcePathFinder;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -141,6 +142,7 @@ import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.QuickColors;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ReflectionUtils;
+import VASSAL.tools.ResourcePathFinder;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
@@ -278,6 +280,11 @@ public class GameModule extends AbstractConfigurable
    */
   private final DataArchive archive;
 
+  /**
+   * Our finder of the resources, for translation of images.
+   */
+  private final ResourcePathFinder resourceFinder;
+  
   /**
    * The user preferences
    */
@@ -464,6 +471,8 @@ public class GameModule extends AbstractConfigurable
    */
   public GameModule(DataArchive archive) {
     this.archive = archive;
+    final boolean isEditing = (archive instanceof ArchiveWriter);
+    resourceFinder = new I18nResourcePathFinder(archive, isEditing ? "en" : Resources.getLocale().getLanguage());
 
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
@@ -1786,6 +1795,13 @@ public class GameModule extends AbstractConfigurable
    */
   public DataArchive getDataArchive() {
     return archive;
+  }
+
+  /*
+   * Returns the i18n resource finder
+   */
+  public ResourcePathFinder getResourcePathFinder() {
+    return resourceFinder;
   }
 
   /**
