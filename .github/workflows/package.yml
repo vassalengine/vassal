@@ -45,8 +45,11 @@ jobs:
         run: ./bootstrap.sh
 
       - name: Set branch
-        run: |
-          git checkout -b ${GITHUB_HEAD_REF:-master}
+        if: github.ref != 'refs/heads/master'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
 
       - name: Store version
         id: version
