@@ -23,17 +23,13 @@ import java.io.IOException;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ResourcePathFinder;
 import VASSAL.tools.DataArchive;
-
-import org.slf4j.LoggerFactory;
 /*
  * Class to support lookup of resources based on language  */
 public class I18nResourcePathFinder implements ResourcePathFinder {
 
-  SortedSet<String> images = null;
-  DataArchive archive = null;
-  String language = "en";
-
-  private static final org.slf4j.Logger log = LoggerFactory.getLogger(GameModule.class);
+  private SortedSet<String> images = null;
+  private final DataArchive archive;
+  private String language = "en";
   
   public I18nResourcePathFinder(DataArchive d, String l) {
     archive = d;
@@ -67,25 +63,19 @@ public class I18nResourcePathFinder implements ResourcePathFinder {
   public String findHelpFileName(String name) {
     String modifiedName = name;
     if (!language.equals("en")) {
-      log.error("HOLA JAVI");
       if (name.contains("help/")) {
         modifiedName = name.replace("help/", "help_" + language + "/");
-        log.error("HOLA JAVI2 " + modifiedName);
       }
       else {
         modifiedName = "help_" + language + "/" + name;
-        log.error("HOLA JAVI3 " + modifiedName);
       }
       try {
-        log.error("HOLA ANTES");
         GameModule.getGameModule().getDataArchive().getURL(modifiedName);
-        log.error("HOLA DESPUES");
       }
       catch (IOException e) {
         modifiedName = name;
       }
     }
-    log.error("HOLA JAVI4 " + modifiedName);
     return modifiedName;
   }
 }
