@@ -25,4 +25,5 @@ package VASSAL.tools;
 public interface ResourcePathFinder {
   String findImagePath(String name);
 
+  String findHelpFileName(String name);
 }

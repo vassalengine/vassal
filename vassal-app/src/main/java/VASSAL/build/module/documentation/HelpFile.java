@@ -136,7 +136,8 @@ public class HelpFile extends AbstractConfigurable {
 
     if (ARCHIVE_ENTRY.equals(fileType)) {
       try {
-        contents = GameModule.getGameModule().getDataArchive().getURL(fileName);
+        final String localizedFileName = GameModule.getGameModule().getResourcePathFinder().findHelpFileName(fileName);
+        contents = GameModule.getGameModule().getDataArchive().getURL(localizedFileName);
       }
       catch (IOException e) {
         ReadErrorDialog.error(e, fileName);

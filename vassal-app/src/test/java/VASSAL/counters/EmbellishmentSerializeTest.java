@@ -26,6 +26,9 @@ public class EmbellishmentSerializeTest extends SerializeTest<Embellishment> {
     public String findImagePath(String name) {
       return "images/" + name;
     }
+    public String findHelpFileName(String name) {
+      return name;
+    }
   }
   @Test
   public void serialize() throws Exception {
