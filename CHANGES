@@ -9,6 +9,7 @@
 * 14201: Share immutable objects
 * 14200: Scenario names (Predefined Setup) should be displayed in translated
     language
+* 14199: Inventory text not translated
 * 14198: Translated private windows do not work when changing sides if module
     is translated
 * 14196: Right-click menu localization is not shown for some elements
