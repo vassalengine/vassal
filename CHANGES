@@ -1,5 +1,6 @@
 3.5.4 - ???
 
+* 14227: Mark When Moved had Vertical offset mislabeled as Horizontal offset
 * 14209: Write logs and saves to .part file to forestall copying of partially
     written files
 * 14207: Improved translation features (Global Translatable Message component,
