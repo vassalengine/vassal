@@ -271,7 +271,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       box.add("Editor.MovementMarkable.horizontal_offset", xOff);
 
       yOff = new IntConfigurer(p.yOffset);
-      box.add("Editor.MovementMarkable.horizontal_offset", yOff);
+      box.add("Editor.MovementMarkable.vertical_offset", yOff);
     }
 
     @Override
