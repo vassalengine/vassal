@@ -138,6 +138,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mm.addAction("BasicLogger.end_logfile", endLogAction); //NON-NLS
 
     JButton button = mod.getToolBar().add(undoAction);
+    button.setFocusable(false); //BR// Since for some reason we're manually making a raw "JButton" here, need to make it not focusable (so it won't start stealing keystrokes from the main window)
     button.setToolTipText(Resources.getString("BasicLogger.undo_last_move"));  //$NON-NLS-1$
     button.setAlignmentY((float) 0.0);
 

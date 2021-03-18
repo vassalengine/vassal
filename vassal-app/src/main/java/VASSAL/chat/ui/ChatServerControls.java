@@ -185,6 +185,7 @@ public class ChatServerControls extends AbstractBuildable {
     final GameModule gm = GameModule.getGameModule();
     setClient((ChatServerConnection) gm.getServer());
     launch = new JButton(Resources.getString("Chat.server"));  //$NON-NLS-1$
+    launch.setFocusable(false);
     launch.setAlignmentY(0.0F);
     final ActionListener al = evt -> toggleVisible();
     launch.addActionListener(al);
