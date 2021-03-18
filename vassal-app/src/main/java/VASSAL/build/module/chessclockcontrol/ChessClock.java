@@ -22,22 +22,32 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.build.module.ChessClockControl;
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -84,6 +94,10 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
   public static final String TOCKING_FONT_COLOR       = "tockingFontColor"; //NON-NLS
 
   public static final String GENERIC   = "Player"; //NON-NLS
+
+  public static final String CHESSMENU_START  = Resources.getString("ChessClock.start"); //NON-NLS
+  public static final String CHESSMENU_STOP   = Resources.getString("ChessClock.stop"); //NON-NLS
+  public static final String CHESSMENU_RESET  = Resources.getString("ChessClock.reset"); //NON-NLS
 
   private static Color defaultColor;       // Stores default look-and-feel colors for buttons
   private static Color defaultFontColor;
@@ -185,6 +199,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     timerButton = new LaunchButton(buttonText + " " + "0:00:00", TOOLTIP, null, null, ICON, al); //$NON-NLS-1$
     timerButton.setFont(new Font("SansSerif", Font.BOLD, 12)); //$NON-NLS-1$
     timerButton.setHorizontalAlignment(SwingConstants.LEFT);
+    timerButton.addMouseListener(new ChessClock.ClockMouseListener());
     initTimerButton();
   }
 
@@ -262,6 +277,15 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
 
     /**
+     * Resets the clock to 0
+     * @param who who is doing the resetting
+     * @param name side for whom clock is to be reset
+     */
+    public UpdateTimerCommand(String who, String name) {
+      this(who, name, -1, -1, false, false);
+    }
+
+    /**
      * Everything that comes from another computer is verified unless its verified time is earlier than what we've already verified.
      */
     @Override
@@ -282,7 +306,13 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
       // This part is mostly so that "testing" the chess clocks when game not yet going feels responsive. Also gives referee control access to clocks.
       final boolean noChecks = GameModule.getGameModule().getGameState().isGameStarted() || isReferee(who) || ((ChessClockControl.getInstance() != null) && !ChessClockControl.getInstance().isOnline());
 
-      if (who.equals(me) || noChecks) {
+      if ((elapsedTime == -1) && (verifiedTime == -1)) {
+        // We are resetting this clock
+        elapsedTime  = 0;
+        verifiedTime = 0;
+        clockTicking = false;
+      }
+      else if (who.equals(me) || noChecks) {
         // my computer reporting back: restore
         // Don't update elapsed time. It could have run on before saving
         if (noChecks) {
@@ -528,8 +558,8 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     // adjust size to prevent button wobbling
     final Insets ins = timerButton.getInsets();
 
-    int iconWidth;
-    int iconHeight;
+    final int iconWidth;
+    final int iconHeight;
 
     final Icon icon = timerButton.getIcon();
     if (icon != null) {
@@ -737,6 +767,15 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     return new Class[0];
   }
 
+
+  /**
+   * @return the JButton for our clock's button
+   */
+  private JButton getComponent() {
+    return timerButton;
+  }
+
+
   /**
    * Deserializes our command from a string version, if the command belongs to us.
    * @param command Serialized string command
@@ -834,6 +873,26 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     }
   }
 
+
+  /**
+   * Creates a command to reset the clock and turn it off
+   * @param ticking If true, the clock will be set to "running". If false the clock will be set to "stopped".
+   * @return a command to communicate the status of this clock to others
+   */
+  public Command resetState() {
+    final String mySide = PlayerRoster.getMySide();
+    if (mySide != null) {
+      return new UpdateTimerCommand(mySide, getName());
+    }
+    else if (!GameModule.getGameModule().getGameState().isGameStarted()) {
+      return new UpdateTimerCommand("", getName());
+    }
+    else {
+      return new NullCommand();
+    }
+  }
+
+
   // These autoconfigurers allow the attributes to be edited in the editor, using intuitive controls instead of just a fill-in-the-blank field.
 
   /**
@@ -901,6 +960,130 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new ColorConfigurer(key, name, ColorConfigurer.stringToColor(c.getAttributeValueString(TOCKING_FONT_COLOR)));
+    }
+  }
+
+
+  /**
+   * Processes right-clicks on our clock's button to put up a context menu
+   */
+  private class ClockMouseListener implements MouseListener, ActionListener {
+    protected JPopupMenu popup;
+
+    /**
+     * Process popup results
+     * @param e popup result
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final String command = e.getActionCommand();
+
+      Command c = new NullCommand();
+      final ChessClockControl ccc = ChessClockControl.getInstance();
+      if (command.contains(CHESSMENU_START) || command.contains(CHESSMENU_STOP)) {
+        if ((ccc != null) && ccc.getClocksTicking() > 0) {
+          c = c.append(ChessClockControl.getInstance().startNextClock());
+        }
+        else {
+          c = c.append(updateState(true));
+        }
+      }
+      else if (command.contains(CHESSMENU_RESET)) {
+        c = resetState();
+
+        final PlayerRoster.PlayerInfo me = new PlayerRoster.PlayerInfo(
+          GameModule.getUserId(),
+          GlobalOptions.getInstance().getPlayerId(),
+          PlayerRoster.getMySide()
+        );
+
+        c = c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "ChessClock.reset_clock_2" : "ChessClock.reset_clock", me.playerName, side)));
+      }
+      c.execute();
+      GameModule.getGameModule().sendAndLog(c);
+
+      if (timer == null) {
+        setup(true);
+      }
+      startTimer();
+    }
+
+    /**
+     * Build our context menu
+     */
+    void buildPopup() {
+      popup = new JPopupMenu();
+      popup.addPopupMenuListener(new PopupMenuListener() {
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent evt) {
+          getComponent().repaint();
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+          getComponent().repaint();
+        }
+
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
+        }
+      });
+
+      JMenuItem item;
+      final String s;
+
+      if (clockTicking) {
+        s = CHESSMENU_STOP;
+      }
+      else {
+        s = CHESSMENU_START;
+      }
+      item = new JMenuItem(s);
+      item.addActionListener(this);
+      popup.add(item);
+
+      final ChessClockControl ccc = ChessClockControl.getInstance();
+      if ((ccc == null) || ccc.isAllowReset()) {
+        item = new JMenuItem(CHESSMENU_RESET);
+        item.addActionListener(this);
+        popup.add(item);
+      }
+    }
+
+    /**
+     * Build and display our context menu
+     * @param p Coordinates for popup
+     */
+    void doPopup(Point p) {
+      buildPopup();
+      popup.show(getComponent(), p.x, p.y);
+    }
+
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (e.isPopupTrigger()) { // how we detect context menu clicks in this age of the world
+        doPopup(e.getPoint());
+      }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+      if (e.isPopupTrigger()) { // how we detect context menu clicks in this age of the world
+        doPopup(e.getPoint());
+      }
     }
   }
 }
