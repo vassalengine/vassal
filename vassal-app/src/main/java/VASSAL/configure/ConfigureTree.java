@@ -39,7 +39,6 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.MassPieceLoader;
-import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
@@ -1916,27 +1915,37 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return false;
       }
 
-      p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.
-      do {
+      // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
+      // the same order they're listed in the PieceDefiner window. So we first traverse them in the "normal" direction
+      // outer to inner and make a list in the order we want to traverse it (for architectural reasons, just traversing
+      // with getOuter() would take us inside of prototypes inside a piece, which we don't want).
+      final List<GamePiece> pieces = new ArrayList<>();
+      pieces.add(p);
+      while (p instanceof Decorator) {
+        p = ((Decorator) p).getInner();
+        pieces.add(p);
+      }
+      Collections.reverse(pieces);
+
+      for (final GamePiece piece : pieces) {
         if (!protoskip) { // Skip the fake "Basic Piece" on a Prototype definition
           if (searchParameters.isMatchTraits()) {
-            if (p instanceof EditablePiece) {
-              final String desc = ((EditablePiece) p).getDescription();
+            if (piece instanceof EditablePiece) {
+              final String desc = ((EditablePiece) piece).getDescription();
               if ((desc != null) && checkString(desc, searchString)) {
                 return true;
               }
             }
           }
 
-          if (p instanceof SearchTarget) {
-            if (checkSearchTarget((SearchTarget)p, searchString)) {
+          if (piece instanceof SearchTarget) {
+            if (checkSearchTarget((SearchTarget)piece, searchString)) {
               return true;
             }
           }
         }
         protoskip = false;
-        p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
-      } while (p != null);
+      }
 
       return false;
     }
@@ -2073,13 +2082,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress);
 
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
-      // the same order they're listed in the PieceDefiner window.
+      // the same order they're listed in the PieceDefiner window. So we first traverse them in the "normal" direction
+      // outer to inner and make a list in the order we want to traverse it (for architectural reasons, just traversing
+      // with getOuter() would take us inside of prototypes inside a piece, which we don't want).
+      final List<GamePiece> pieces = new ArrayList<>();
+      pieces.add(p);
+      while (p instanceof Decorator) {
+        p = ((Decorator) p).getInner();
+        pieces.add(p);
+      }
+      Collections.reverse(pieces);
 
-      p = Decorator.getInnermost(p); // Head to the innermost trait, which would be the BasicPiece in a regular piece i.e. the "top" of the list.
-      do {
-        if (!protoskip && (p instanceof EditablePiece) && (p instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
-          final String desc = ((EditablePiece) p).getDescription();
-          final Decorator d = (Decorator)p;
+      for (final GamePiece piece : pieces) {
+        if (!protoskip && (piece instanceof EditablePiece) && (piece instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
+          final String desc = ((EditablePiece) piece).getDescription();
+          final Decorator d = (Decorator)piece;
           progress.startNewTrait();    // A new trait, so reset our "trait progress".
 
           if (searchParameters.isMatchTraits()) {
@@ -2096,8 +2113,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           keyListHits(searchParameters.isMatchKeys(), d.getNamedKeyStrokeList(), searchString, matchString, "Trait", desc, "KeyCommand", progress);
         }
         protoskip = false;
-        p = (GamePiece)p.getProperty(Properties.OUTER); // Continue traversing traits list from inner to outer
-      } while (p != null);
+      }
     }
 
     /**
