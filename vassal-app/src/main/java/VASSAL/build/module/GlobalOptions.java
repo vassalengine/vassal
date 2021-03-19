@@ -89,6 +89,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
+  public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
 
   // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
@@ -134,6 +135,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private String autoReport = ALWAYS;        // "Auto-report moves" -> defaults to forced on
   private String markMoved = NEVER;          // **NO LONGER USED**
   private String chatterHTMLSupport = NEVER; // "Enable HTML Chat" - > defaults to forced off
+
+  private boolean translatableSupport = false;
 
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");

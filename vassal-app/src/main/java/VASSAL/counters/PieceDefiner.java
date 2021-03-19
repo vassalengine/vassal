@@ -220,7 +220,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addElement(new CalculatedProperty());
       addElement(new SetGlobalProperty());
       addElement(new Deselect());
-      addElement(new TranslatableMessage());
+      if (GameModule.getGameModule().isTranslatableSupport()) {
+        addElement(new TranslatableMessage());
+      }
 
       // Generate a model sorted by description, in the current users language
       buildAlphaModel();

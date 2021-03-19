@@ -61,6 +61,8 @@ public class Prefs implements Closeable {
   public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //NON-NLS
   public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //NON-NLS
 
+  public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
+
   private static Prefs globalPrefs; // A Global Preferences object
 
   private final Map<String, Configurer> options = new HashMap<>();
@@ -304,6 +306,14 @@ public class Prefs implements Closeable {
     );
 
     globalPrefs.addOption(wizardConf);
+
+    // Option for translatable support
+    final BooleanConfigurer translatableSupport = new BooleanConfigurer(
+      TRANSLATABLE_SUPPORT,
+      "Translatable Support", //NON-NLS
+      Boolean.FALSE
+    );
+    globalPrefs.addOption(null, translatableSupport);
   }
 
   public static String sanitize(String str) {
