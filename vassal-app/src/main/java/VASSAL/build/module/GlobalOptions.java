@@ -136,8 +136,6 @@ public class GlobalOptions extends AbstractConfigurable {
   private String markMoved = NEVER;          // **NO LONGER USED**
   private String chatterHTMLSupport = NEVER; // "Enable HTML Chat" - > defaults to forced off
 
-  private boolean translatableSupport = false;
-
   // Configurable prompt string for unmask-my-pieces
   private String promptString = Resources.getString("GlobalOptions.opponents_can_unmask_my_pieces");
 
