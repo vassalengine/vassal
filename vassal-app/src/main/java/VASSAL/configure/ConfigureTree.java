@@ -1923,8 +1923,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       pieces.add(p);
       while (p instanceof Decorator) {
         p = ((Decorator) p).getInner();
-        pieces.add(0, p);
+        pieces.add(p);
       }
+      Collections.reverse(pieces);
 
       for (final GamePiece piece : pieces) {
         if (!protoskip) { // Skip the fake "Basic Piece" on a Prototype definition
@@ -2088,8 +2089,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       pieces.add(p);
       while (p instanceof Decorator) {
         p = ((Decorator) p).getInner();
-        pieces.add(0, p);
+        pieces.add(p);
       }
+      Collections.reverse(pieces);
 
       for (final GamePiece piece : pieces) {
         if (!protoskip && (piece instanceof EditablePiece) && (piece instanceof Decorator)) { // Skip the fake "Basic Piece" on a Prototype definition
