@@ -92,6 +92,29 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   }
 
   @Override
+  public void setValue(Object o) {
+    if (!noUpdate && controls != null && o instanceof GlobalCommandTarget) {
+      setFrozen(true);
+      final GlobalCommandTarget t = (GlobalCommandTarget) o;
+      fastMatchLocationConfig.setValue(t.isFastMatchLocation());
+      targetTypeConfig.setValue(t.getTargetType());
+      targetMapConfig.setValue(t.getTargetMap().getExpression());
+      targetBoardConfig.setValue(t.getTargetBoard().getExpression());
+      targetZoneConfig.setValue(t.getTargetZone().getExpression());
+      targetLocationConfig.setValue(t.getTargetLocation().getExpression());
+      targetXConfig.setValue(t.getTargetX().getExpression());
+      targetYConfig.setValue(t.getTargetY().getExpression());
+      targetDeckConfig.setValue(t.getTargetDeck().getExpression());
+      fastMatchPropertyConfig.setValue(t.isFastMatchProperty());
+      targetPropertyConfig.setValue(t.getTargetProperty().getExpression());
+      targetCompareConfig.setValue(t.getTargetCompare());
+      targetValueConfig.setValue(t.getTargetValue().getExpression());
+      setFrozen(false);
+    }
+    super.setValue(o);
+  }
+
+  @Override
   public Component getControls() {
     if (controls == null) {
       controls = new JPanel(new MigLayout("hidemode 3," + TraitLayout.STANDARD_GAPY, "[]rel[]rel[fill,grow]")); // NON-NLS
