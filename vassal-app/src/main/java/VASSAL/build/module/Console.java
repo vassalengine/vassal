@@ -233,7 +233,7 @@ public class Console {
     final Logger log = GameModule.getGameModule().getLogger();
     if (log instanceof BasicLogger) {
       if (((BasicLogger)log).isMultiPlayer() || GameModule.getGameModule().getPlayerRoster().isMultiPlayer()) {
-        show("<b>Console commands not allowed in multiplayer games.</b>"); //NON-NLS
+        show("|<b>Console commands not allowed in multiplayer games.</b>"); //NON-NLS
         return false;
       }
     }
