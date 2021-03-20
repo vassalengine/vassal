@@ -239,6 +239,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
 
+  protected static String noHTML(String text) {
+    return text.replaceAll("<", "&lt;")  //NON-NLS // This prevents any unwanted tag from functioning
+               .replaceAll(">", "&gt;"); //NON-NLS // This makes sure > doesn't break any of our legit <div> tags
+  }
+
   protected static void chat(String text) {
     if (chatter != null) {
       chatter.show("- " + text);
@@ -1666,7 +1671,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             if (anyChanges) {
               // Unless we're just continuing to the next match in an existing search, compute & display hit count
               final int matches = getNumMatches(searchParameters.getSearchString());
-              chat(matches + " " + Resources.getString("Editor.search_count") + searchParameters.getSearchString());
+              chat(matches + " " + Resources.getString("Editor.search_count") + noHTML(searchParameters.getSearchString()));
             }
 
             // Find first match
@@ -1682,7 +1687,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               }
             }
             else {
-              chat(Resources.getString("Editor.search_none_found") + searchParameters.getSearchString());
+              chat(Resources.getString("Editor.search_none_found") + noHTML(searchParameters.getSearchString()));
             }
           }
         });
@@ -1993,7 +1998,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     private void hitCheck(String s, String searchString, String matchString, String item, String desc, String show, TargetProgress progress) {
       if (!StringUtils.isEmpty(s) && checkString(s, searchString)) {
         progress.checkShowTrait(matchString, item, desc);
-        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + s); //NON-NLS
+        chat("&nbsp;&nbsp;&nbsp;&nbsp;{" + show + "} " + noHTML(s)); //NON-NLS
       }
     }
 
@@ -2026,7 +2031,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
-      final String matchString = "<b><u>Matches for " + name + ": </u></b>";
+      final String matchString = "<b><u>Matches for " + noHTML(name) + ": </u></b>";
 
       final SearchTarget st = (SearchTarget) c;
       final String item = getConfigureName(c.getClass());
