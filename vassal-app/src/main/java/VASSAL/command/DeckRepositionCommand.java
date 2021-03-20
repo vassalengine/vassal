@@ -19,16 +19,21 @@ package VASSAL.command;
 
 import java.awt.Point;
 
-import VASSAL.build.module.map.Flare;
+import VASSAL.build.module.DeckReposition;
+import VASSAL.counters.Deck;
 
 /**
- * A {@link Command} for sending {@link GameRefresh} actions to other clients
+ * A {@link Command} for sending {@link DeckReposition} actions to other clients
  */
-public class GameRefreshCommand extends Command {
+public class DeckRepositionCommand extends Command {
+  private Deck deck;
+  private Point newPosition;
 
   /**
    */
-  public GameRefreshCommand() {
+  public DeckRepositionCommand(Deck deck, Point newPosition) {
+    this.deck = deck;
+    this.newPosition = newPosition;
   }
 
   /**
@@ -36,6 +41,7 @@ public class GameRefreshCommand extends Command {
    */
   @Override
   protected void executeCommand() {
+    DeckReposition dr = new DeckReposition(this.deck, this.newPosition);
   }
 
   /**
@@ -44,19 +50,6 @@ public class GameRefreshCommand extends Command {
   protected Command myUndoCommand() {
     return null;
   }
-
-  /**
-   * @return 0
-   */
-  public int getValue() {
-    return 0;
-  }
-
-
-  /**
-   * @return unique ID of the Flare object that this flare command is intended to activate
-   */
-  public String getId() {
-    return "";
-  }
 }
+
+

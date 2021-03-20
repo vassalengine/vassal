@@ -24,10 +24,7 @@ import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.ChangePiece;
-import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
-import VASSAL.command.RemovePiece;
+import VASSAL.command.*;
 import VASSAL.configure.ConfigurerLayout;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
@@ -334,6 +331,13 @@ public final class GameRefresher implements GameComponent {
 
 
       // Place the new Piece.
+
+      // Here we use a workaround for placing pieces into decks. If 2 decks are defined
+      // with the same x,y position, the piece placement will not be able to determine
+      // the target deck. So 1st move the deck of the piece being replaced to -1, -1
+      // then put it back to its original position
+      // FIXME: should check if there is not already a deck in -1,-1. else choose another position
+
       final Stack stack = piece.getParent();
       Deck deck = null;
       boolean isDeck = ( stack instanceof  Deck );
@@ -526,3 +530,4 @@ public final class GameRefresher implements GameComponent {
 
 
 }
+
