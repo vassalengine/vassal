@@ -71,6 +71,8 @@ public class ChessClockControl extends AbstractConfigurable
   protected String showHours = STYLE_AUTO;
   protected String showDays = STYLE_AUTO;
 
+  protected boolean allowReset = false; // Allow reset
+
   protected LaunchButton chessClockButton;  // Main chess clock button on toolbar
   protected boolean chessClocksVisible;     // Whether the individual clocks are visible or hidden (as opposed to just main chess clock button)
   protected boolean onlineGame;             // If we've ever detected a live "online" connection during use of the clocks
@@ -98,6 +100,8 @@ public class ChessClockControl extends AbstractConfigurable
   public static final String SHOW_SECONDS = "showSeconds"; //NON-NLS
   public static final String SHOW_HOURS = "showHours"; //NON-NLS
   public static final String SHOW_DAYS = "showDays"; //NON-NLS
+
+  public static final String ALLOW_RESET = "allowReset"; //NON-NLS
 
   public static final String STYLE_ALWAYS = "Always"; //NON-NLS (really)
   public static final String STYLE_AUTO   = "Auto"; //NON-NLS (really)
@@ -244,6 +248,13 @@ public class ChessClockControl extends AbstractConfigurable
   }
 
   /**
+   * @return Whether clocks can be reset manually
+   */
+  public boolean isAllowReset() {
+    return allowReset;
+  }
+
+  /**
    * @return true if the group of chess clocks we manage is currently visible
    */
   public boolean getChessClocksVisible() {
@@ -281,7 +292,7 @@ public class ChessClockControl extends AbstractConfigurable
   @Override
   public String[] getAttributeNames() {
     return new String[] { NAME, ICON, BUTTON_TEXT, BUTTON_TOOLTIP, SHOW_HOTKEY, NEXT_HOTKEY,
-      PAUSE_HOTKEY, SHOW_TENTHSECONDS, SHOW_SECONDS, SHOW_HOURS, SHOW_DAYS };
+      PAUSE_HOTKEY, SHOW_TENTHSECONDS, SHOW_SECONDS, SHOW_HOURS, SHOW_DAYS, ALLOW_RESET };
   }
 
   /**
@@ -300,7 +311,8 @@ public class ChessClockControl extends AbstractConfigurable
       Resources.getString("Editor.ChessClock.show_tenths_of_seconds"),
       Resources.getString("Editor.ChessClock.show_seconds"),
       Resources.getString("Editor.ChessClock.show_hours"),
-      Resources.getString("Editor.ChessClock.show_days")
+      Resources.getString("Editor.ChessClock.show_days"),
+      Resources.getString("Editor.ChessClock.allow_reset")
     };
   }
 
@@ -311,7 +323,7 @@ public class ChessClockControl extends AbstractConfigurable
   public Class<?>[] getAttributeTypes() {
     return new Class[] { String.class, IconConfig.class, String.class, String.class,
       NamedKeyStroke.class, NamedKeyStroke.class, NamedKeyStroke.class, TimeStyleConfig.class, TimeStyleConfig.class,
-      TimeStyleConfig.class, TimeStyleConfig.class };
+      TimeStyleConfig.class, TimeStyleConfig.class, Boolean.class };
   }
 
   /**
@@ -360,6 +372,12 @@ public class ChessClockControl extends AbstractConfigurable
     else if (SHOW_DAYS.equals(key)) {
       showDays = (String) value;
       updateAllClocks();
+    }
+    else if (ALLOW_RESET.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      allowReset = (Boolean) value;
     }
     else {
       chessClockButton.setAttribute(key, value);
