@@ -4,6 +4,7 @@
     for them by module designer)
 * 14227: Mark When Moved had Vertical offset mislabeled as Horizontal offset
 * 14226: Undo and Server buttons steal focus after being clicked
+* 14222: Editor Search output loses less-than symbols
 * 14219: Do not expand every prototype in a piece before searching it, just
     match the name of the prototype.
 * 14209: Write logs and saves to .part file to forestall copying of partially
@@ -27,6 +28,7 @@
 * 14185: Distinguish tile loading errors from other image loading errors
 * 14182: Prevent duplication of FormattedString data and Expressions
 * 14178: Some weird systems lack awt.font.desktophints but aren't headless
+* 14168: Fix broken HTML in the 'not-allowed-in-multiplayer-games' message
 * 14167: Inefficient implementation of FilterOutputStream in ZipWriter
 * 14164: Fast Match change persists despite Cancel
 * 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
