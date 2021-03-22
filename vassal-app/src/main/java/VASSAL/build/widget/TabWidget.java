@@ -40,7 +40,7 @@ import VASSAL.i18n.Resources;
  * (via {@link Configurable#getConfigureName})
  */
 public class TabWidget extends Widget
-    implements ChangeListener, PropertyChangeListener {
+  implements ChangeListener, PropertyChangeListener {
   private JTabbedPane tab = null;
   private final List<Widget> widgets = new ArrayList<>();
 
@@ -54,6 +54,7 @@ public class TabWidget extends Widget
     if (index >= 0) {
       tab.setComponentAt(index, widgets.get(index).getComponent());
     }
+    refreshTabs();
   }
 
   @Override
@@ -101,6 +102,19 @@ public class TabWidget extends Widget
     }
   }
 
+
+  /**
+   * Shouldn't be necessary, but there's a bug in JTabbedPane with HTML items. Doing this (unsetting and then resetting each title) seems to clear up the problem.
+   */
+  private void refreshTabs() {
+    int index = 0;
+    for (final Widget w : widgets) {
+      tab.setTitleAt(index, "");
+      tab.setTitleAt(index, w.getConfigureName());
+      index++;
+    }
+  }
+
   @Override
   public Component getComponent() {
     if (tab == null) {
@@ -108,13 +122,15 @@ public class TabWidget extends Widget
       tab = new JTabbedPane();
       for (final Widget w : widgets) {
         w.addPropertyChangeListener(this);
-        tab.addTab(w.getConfigureName(), new JPanel());
+        tab.addTab("", new JPanel());
       }
       tab.addChangeListener(this);
       if (!widgets.isEmpty()) {
         tab.setSelectedIndex(0);
       }
       stateChanged(null);
+
+      refreshTabs();
     }
     return tab;
   }
