@@ -321,7 +321,7 @@ public class WizardSupport {
         box.add(Box.createVerticalGlue());
         final BooleanConfigurer wizardConf = (BooleanConfigurer)
           Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
-        final JCheckBox show = new JCheckBox(wizardConf.getName());
+        final JCheckBox show = new JCheckBox(wizardConf.getName() + " " + Resources.getString("WizardSupport.Bypass"));
         show.setSelected(wizardConf.booleanValue());
         show.addActionListener(e -> wizardConf.setValue(show.isSelected()));
         box.add(show);
