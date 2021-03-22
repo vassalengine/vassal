@@ -764,7 +764,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       new MandatoryComponent(this, StackMetrics.class))
       .append(idMgr)
       .append(new SingleChildInstance(this, Zoomer.class))
-      .append(new SingleChildInstance(this, CounterDetailViewer.class))
       .append(new SingleChildInstance(this, HighlightLastMoved.class))
       .append(new SingleChildInstance(this, LayeredPieceCollection.class));
 
