@@ -77,7 +77,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
@@ -659,8 +658,6 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
     map = (Map) b;
-
-    validator = new SingleChildInstance(map, getClass());
 
     map.setZoomer(this);
     map.getToolBar().add(zoomInButton);

@@ -141,4 +141,16 @@
         <justification>No chance of subclass</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/tools/io/DirArchive</className>
+        <differenceType>8001</differenceType>
+        <justification>No chance of subclass</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/io/FileArchiveBase</className>
+        <differenceType>8001</differenceType>
+        <justification>No chance of subclass</justification>
+    </difference>
+
 </differences>

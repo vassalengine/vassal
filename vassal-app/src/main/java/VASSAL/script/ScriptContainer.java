@@ -19,10 +19,8 @@ package VASSAL.script;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.ComponentI18nData;
 
 /**
@@ -69,7 +67,6 @@ public class ScriptContainer extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   @Override

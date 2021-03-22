@@ -32,7 +32,6 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
@@ -127,7 +126,6 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     instances.put(map, this);
-    validator = new SingleChildInstance(map, getClass());
   }
 
   @Override
