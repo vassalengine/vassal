@@ -64,7 +64,6 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.TranslatableStringEnum;
@@ -218,7 +217,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public void addTo(Buildable b) {
     map = (Map) b;
     view = map.getView();
-    validator = new SingleChildInstance(map, getClass());
     map.addDrawComponent(this);
     final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),

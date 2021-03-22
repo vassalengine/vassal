@@ -27,7 +27,6 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
@@ -120,7 +119,6 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     map = (Map)parent;
-    validator = new SingleChildInstance(map, getClass());
     map.setPieceCollection(collection);
     if (tempToolBar != null) {
       tempToolBar.setDelegate(map);
@@ -206,7 +204,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     /**
      * Gets the appropriate layer for the given piece (or Stack or Deck). Will call one of the dispatcher
-     * methods below, as appropriate: {@link visitDeck}, {@link visitStack}, or {@link visitDefault}.
+     * methods below, as appropriate: {@link #visitDeck}, {@link #visitStack}, or {@link #visitDefault}.
      * @param p Piece (possibly a Deck or Stack) to obtain layer for
      * @return visual layer
      */

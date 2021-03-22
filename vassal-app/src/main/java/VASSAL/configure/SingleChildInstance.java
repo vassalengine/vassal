@@ -28,8 +28,7 @@ public class SingleChildInstance implements ValidityChecker {
   private final AbstractConfigurable target;
   private final Class<?> childClass;
 
-  public SingleChildInstance(AbstractConfigurable target,
-                             Class<?> childClass) {
+  public SingleChildInstance(AbstractConfigurable target, Class<?> childClass) {
     this.childClass = childClass;
     this.target = target;
   }
@@ -38,10 +37,13 @@ public class SingleChildInstance implements ValidityChecker {
   public void validate(Buildable b, ValidationReport report) {
     if (b == target && target.getComponentsOf(childClass).size() > 1) {
       report.addWarning(
-        "No more than one " + //NON-NLS
+        "No more than one [" + //NON-NLS
         ConfigureTree.getConfigureName(childClass) +
-        " allowed in " + //NON-NLS
-        ConfigureTree.getConfigureName(target));
+        "] allowed in " + //NON-NLS
+        ConfigureTree.getConfigureName(target) +
+        " [" +
+        ConfigureTree.getConfigureName(target.getClass()) +
+        "]");
     }
   }
 }

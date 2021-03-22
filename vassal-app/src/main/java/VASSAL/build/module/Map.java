@@ -18,6 +18,8 @@
 package VASSAL.build.module;
 
 import static java.lang.Math.round;
+
+import VASSAL.configure.SingleChildInstance;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -759,7 +761,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
 
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, BoardPicker.class),
-      new MandatoryComponent(this, StackMetrics.class)).append(idMgr);
+      new MandatoryComponent(this, StackMetrics.class))
+      .append(idMgr)
+      .append(new SingleChildInstance(this, Zoomer.class))
+      .append(new SingleChildInstance(this, CounterDetailViewer.class))
+      .append(new SingleChildInstance(this, HighlightLastMoved.class))
+      .append(new SingleChildInstance(this, LayeredPieceCollection.class));
 
     final DragGestureListener dgl = dge -> {
       if (dragGestureListener != null &&
@@ -2674,7 +2681,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
             splitPane.hideBottom();
 
             // Now we restore the main window to its "map is offline" state.
-            window.setSize(w, h/3);
+            window.setSize(w, h / 3);
           }
         }
       }

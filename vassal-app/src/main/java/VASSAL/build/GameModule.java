@@ -17,6 +17,11 @@
  */
 package VASSAL.build;
 
+import VASSAL.build.module.gamepieceimage.ColorManager;
+import VASSAL.build.module.gamepieceimage.FontManager;
+import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
+import VASSAL.configure.SingleChildInstance;
+import VASSAL.script.ScriptContainer;
 import java.awt.FileDialog;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -478,10 +483,21 @@ public class GameModule extends AbstractConfigurable
 
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, Documentation.class),
-      new MandatoryComponent(this, GlobalOptions.class));
+      new MandatoryComponent(this, GlobalOptions.class))
+      .append(new SingleChildInstance(this, Documentation.class))
+      .append(new SingleChildInstance(this, GlobalOptions.class))
+      .append(new SingleChildInstance(this, PrototypesContainer.class))
+      .append(new SingleChildInstance(this, ColorManager.class))
+      .append(new SingleChildInstance(this, FontManager.class))
+      .append(new SingleChildInstance(this, GamePieceImageDefinitions.class))
+      .append(new SingleChildInstance(this, GamePieceLayoutsContainer.class))
+      .append(new SingleChildInstance(this, ScriptContainer.class))
+      .append(new SingleChildInstance(this, Localization.class));
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
+
+
 
   /**
    * Builds the module's component hierarchy from the XML buildFile, or if the module file does not
