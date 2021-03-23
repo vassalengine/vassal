@@ -540,11 +540,14 @@ public class GameState implements CommandEncoder {
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
         if (gameStarted) {
           GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+          
           GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
-
-          loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
-
-          GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
+          try {
+            loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
+          }
+          finally {
+            GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
+          }
         }
         else {
           loadGameInBackground(f);
