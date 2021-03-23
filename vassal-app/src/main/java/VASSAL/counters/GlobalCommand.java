@@ -35,6 +35,7 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -299,7 +300,11 @@ public class GlobalCommand {
             command = command.append(((Deck)stack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
             visitor.setSelectedCount(0);
           }
-          final List<GamePiece> pieces = stack.asList();
+          List<GamePiece> pieces = stack.asList();
+          if (stack instanceof Deck) {
+            pieces = new ArrayList<>(pieces);
+            Collections.reverse(pieces); // So that we deal from "top" of deck
+          }
           if (useFromDeck != 0) {
             for (final GamePiece gamePiece : pieces) {
               // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -323,7 +328,9 @@ public class GlobalCommand {
         final int useFromDeck = getSelectFromDeck();
         if ((d != null) && (useFromDeck != 0)) {
           command = command.append(d.getDeck().maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
-          final List<GamePiece> pieces = d.getDeck().asList();
+          final List<GamePiece> pieces = new ArrayList<>(d.getDeck().asList());
+          Collections.reverse(pieces); // So that we deal from "top" of deck
+
           visitor.setSelectedCount(0);
           for (final GamePiece gamePiece : pieces) {
             // If a property-based Fast Match is specified, we eliminate non-matchers of that first.
@@ -379,8 +386,10 @@ public class GlobalCommand {
                 if (pieceOrStack instanceof Deck) {
                   final int useFromDeck = getSelectFromDeck();
                   if (useFromDeck != 0) {
+                    command = command.append(((Deck)pieceOrStack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
                     visitor.setSelectedCount(0);
-                    pieceList = ((Stack) pieceOrStack).asList();
+                    pieceList = new ArrayList<>(((Stack) pieceOrStack).asList());
+                    Collections.reverse(pieceList); // So that we deal from "top" of deck
 
                     // This will iterate through actual game pieces
                     for (final GamePiece gamePiece : pieceList) {
@@ -419,19 +428,23 @@ public class GlobalCommand {
           else {
             // WITH Location Fast Matching we have some extra steps
             for (final GamePiece pieceOrStack : everythingOnMap) {
-              final List<GamePiece> pieceList;
+              List<GamePiece> pieceList;
               final int useFromDeck;
 
               // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
               if (pieceOrStack instanceof Stack) {
-                pieceList = ((Stack) pieceOrStack).asList();
-
                 if (pieceOrStack instanceof Deck) {
+                  command = command.append(((Deck)pieceOrStack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
                   useFromDeck = getSelectFromDeck();
                   visitor.setSelectedCount(0);
                 }
                 else {
                   useFromDeck = -1; // Not a deck, so accept all pieces
+                }
+                pieceList = ((Stack) pieceOrStack).asList();
+                if (pieceOrStack instanceof Deck) {
+                  pieceList = new ArrayList<>(pieceList);
+                  Collections.reverse(pieceList);
                 }
               }
               else {
