@@ -2,6 +2,8 @@
 
 * 14246: Fast Match Global Key Commands were "dealing off the bottom of the
     deck" in certain cases
+* 14240: Welcome Wizard: Put "enter your name" screen after the main welcome
+    (so that option to turn off wizard is always on first screen viewed)
 * 14228: Chess Clocks can now be manually reset (if manual reset is enabled
     for them by module designer)
 * 14227: Mark When Moved had Vertical offset mislabeled as Horizontal offset
