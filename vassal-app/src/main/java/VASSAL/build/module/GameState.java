@@ -541,6 +541,12 @@ public class GameState implements CommandEncoder {
       }
       else {
         //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
+
+        if (gameStarted) {
+          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+          setup(false);
+        }
+
         final boolean foreground = gameStarted;
         g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
         if (foreground) {
