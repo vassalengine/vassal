@@ -758,7 +758,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   @Override
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting);
+
     turnWindow.setVisible(false);
+
     launchWidget.setVisible(isDocked() && gameStarting);
     if (gameStarting) {
       lastCommand.setPropertyValue(SET);
