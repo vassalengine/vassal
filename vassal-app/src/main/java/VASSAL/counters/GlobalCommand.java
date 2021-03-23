@@ -300,8 +300,9 @@ public class GlobalCommand {
             command = command.append(((Deck)stack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
             visitor.setSelectedCount(0);
           }
-          final List<GamePiece> pieces = new ArrayList<>(stack.asList());
+          List<GamePiece> pieces = stack.asList();
           if (stack instanceof Deck) {
+            pieces = new ArrayList<>(pieces);
             Collections.reverse(pieces); // So that we deal from "top" of deck
           }
           if (useFromDeck != 0) {
@@ -427,7 +428,7 @@ public class GlobalCommand {
           else {
             // WITH Location Fast Matching we have some extra steps
             for (final GamePiece pieceOrStack : everythingOnMap) {
-              final List<GamePiece> pieceList;
+              List<GamePiece> pieceList;
               final int useFromDeck;
 
               // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
@@ -440,8 +441,9 @@ public class GlobalCommand {
                 else {
                   useFromDeck = -1; // Not a deck, so accept all pieces
                 }
-                pieceList = new ArrayList<>(((Stack) pieceOrStack).asList());
+                pieceList = ((Stack) pieceOrStack).asList();
                 if (pieceOrStack instanceof Deck) {
+                  pieceList = new ArrayList<>(pieceList);
                   Collections.reverse(pieceList);
                 }
               }
