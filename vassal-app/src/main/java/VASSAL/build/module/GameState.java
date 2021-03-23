@@ -110,7 +110,6 @@ public class GameState implements CommandEncoder {
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
   protected String loadComments;
-  private boolean gameLoadingInForeground; // Will be set to true by loadGameInForeground to block setup method
 
   //public GameState() {}
 
@@ -353,10 +352,6 @@ public class GameState implements CommandEncoder {
    * on all registered {@link GameComponent} objects.
    */
   public void setup(boolean gameStarting) {
-    if (gameLoadingInForeground) {
-      return;
-    }
-
     final GameModule g = GameModule.getGameModule();
 
     if (!gameStarting && gameStarted && isModified()) {
@@ -540,11 +535,19 @@ public class GameState implements CommandEncoder {
         loadContinuation(f);
       }
       else {
-        //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
-        final boolean foreground = gameStarted;
         g.setGameFile(f.getName(), GameModule.GameFileMode.LOADED_GAME);
-        if (foreground) {
-          loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
+
+        //BR// New preferred style load for vlogs is close the old stuff and hard-reset to the new log state.
+        if (gameStarted) {
+          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+          
+          GameModule.getGameModule().setLoadOverSemaphore(true); // Stop updating Map UI etc for a bit
+          try {
+            loadGameInForeground(f); // Foreground loading minimizes the bad behavior of windows during vlog load "mid game"
+          }
+          finally {
+            GameModule.getGameModule().setLoadOverSemaphore(false); // Resume normal UI updates
+          }
         }
         else {
           loadGameInBackground(f);
@@ -912,12 +915,9 @@ public class GameState implements CommandEncoder {
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
-        gameLoadingInForeground = true;
         loadCommand.execute();
       }
       finally {
-        gameLoadingInForeground = false;
-
         String msg;
         if (loadComments != null && loadComments.length() > 0) {
           msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$

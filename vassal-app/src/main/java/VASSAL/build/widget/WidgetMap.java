@@ -2,6 +2,7 @@ package VASSAL.build.widget;
 
 import javax.swing.JScrollPane;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.configure.VisibilityCondition;
 
@@ -20,7 +21,9 @@ public class WidgetMap extends Map {
     else {
       pieces.clear();
       boards.clear();
-      toolBar.setVisible(false);
+      if (!GameModule.getGameModule().isLoadOverSemaphore()) {
+        toolBar.setVisible(false);
+      }
     }
   }
 
