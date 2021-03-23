@@ -410,6 +410,11 @@ public class GameState implements CommandEncoder {
         });
       }
     }
+
+    if (gameStarting) {
+      g.resetSourcesAndListeners();
+      g.incorporateSourcesAndListeners();
+    }
   }
 
   /** Return true if a game is currently in progress */
@@ -1074,20 +1079,6 @@ public class GameState implements CommandEncoder {
       new BufferedInputStream(Files.newInputStream(saveFile.toPath())));
   }
 
-  private static class RegisterListenersCommand extends Command {
-    @Override
-    protected void executeCommand() {
-      final GameModule g = GameModule.getGameModule();
-      g.resetSourcesAndListeners();
-      g.incorporateSourcesAndListeners();
-    }
-
-    @Override
-    protected Command myUndoCommand() {
-      return null;
-    }
-  }
-
   public Command decodeSavedGame(InputStream in) throws IOException {
     try (ZipInputStream zipInput = new ZipInputStream(in)) {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
@@ -1097,7 +1088,7 @@ public class GameState implements CommandEncoder {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
             return GameModule.getGameModule().decode(
               IOUtils.toString(din, StandardCharsets.UTF_8)
-            ).append(new RegisterListenersCommand());
+            );
           }
         }
       }
