@@ -89,6 +89,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String CHATTER_HTML_SUPPORT = "chatterHTMLSupport"; //$NON-NLS-1$
+  public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
 
   // Hybrid preference settings
   public static final String ALWAYS = "Always"; //$NON-NLS-1$
