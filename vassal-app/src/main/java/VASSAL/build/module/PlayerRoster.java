@@ -220,6 +220,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     GameModule.getGameModule().addSideChangeListenerToPlayerRoster(l);
   }
 
+  public void markModuleListeners() {
+    ourSideChangeListenerCount = sideChangeListeners.size();
+  }
+
   public void resetListeners() {
     final int curSize = sideChangeListeners.size();
     if (ourSideChangeListenerCount == -1) {

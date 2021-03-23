@@ -68,7 +68,6 @@ import VASSAL.command.ConditionalCommand;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
@@ -370,8 +369,6 @@ public class GameState implements CommandEncoder {
     }
 
     this.gameStarting = gameStarting;
-
-    g.reset();
 
     if (!gameStarting) {
       pieces.clear();
@@ -676,10 +673,6 @@ public class GameState implements CommandEncoder {
       p.setId(getNewPieceId());
     }
     pieces.put(p.getId(), p);
-
-    if (p instanceof Deck) {
-      ((Deck) p).registerListeners();
-    }
   }
 
   /**
@@ -1081,6 +1074,20 @@ public class GameState implements CommandEncoder {
       new BufferedInputStream(Files.newInputStream(saveFile.toPath())));
   }
 
+  private static class RegisterListenersCommand extends Command {
+    @Override
+    protected void executeCommand() {
+      final GameModule g = GameModule.getGameModule();
+      g.resetSourcesAndListeners();
+      g.incorporateSourcesAndListeners();
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
   public Command decodeSavedGame(InputStream in) throws IOException {
     try (ZipInputStream zipInput = new ZipInputStream(in)) {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
@@ -1090,7 +1097,7 @@ public class GameState implements CommandEncoder {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
             return GameModule.getGameModule().decode(
               IOUtils.toString(din, StandardCharsets.UTF_8)
-            );
+            ).append(new RegisterListenersCommand());
           }
         }
       }
