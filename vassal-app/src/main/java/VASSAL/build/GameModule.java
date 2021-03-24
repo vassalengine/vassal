@@ -273,7 +273,6 @@ public class GameModule extends AbstractConfigurable
    * Reads/writes full game state; starts/stops gameplay.
    */
   private GameState theState;
-  private boolean loadOverSemaphore = false; // if we're currently loading overtop of another game (so don't disturb UI if possible, it will get a setup(true) soon enough)
 
   /**
    * Our "zip" archive with a .vmod file extension
@@ -375,6 +374,7 @@ public class GameModule extends AbstractConfigurable
    */
   private static boolean errorLogToChat = false;
 
+  private boolean loadOverSemaphore = false; // if we're currently loading overtop of another game (so don't disturb UI if possible, it will get a setup(true) soon enough)
   /**
    * @paramn state - true if we're loading-over-top of an existing game (so don't disturb UI elements if possible, will receive a setup(true) soon enough)
    */
@@ -388,6 +388,23 @@ public class GameModule extends AbstractConfigurable
   public boolean isLoadOverSemaphore() {
     return loadOverSemaphore;
   }
+
+
+  private boolean refreshingSemaphore = false; // if we're currently loading a game just to refresh its (not to play it)
+  /**
+   * @param state - true if refreshing (suppresses GameState.setup method)
+   */
+  public void setRefreshingSemaphore(boolean state) {
+    loadOverSemaphore = state;
+  }
+
+  /**
+   * @return true if refreshing (suppresses GameState.setup method)
+   */
+  public boolean isRefreshingSemaphore() {
+    return loadOverSemaphore;
+  }
+
 
   /**
    * @return the top-level frame of the controls window

@@ -353,6 +353,10 @@ public class GameState implements CommandEncoder {
   public void setup(boolean gameStarting) {
     final GameModule g = GameModule.getGameModule();
 
+    if (g.isRefreshingSemaphore()) {
+      return; // Blocks setup method during Game Refresh
+    }
+
     if (!gameStarting && gameStarted && isModified()) {
       switch (JOptionPane.showConfirmDialog(
         g.getPlayerWindow(),
