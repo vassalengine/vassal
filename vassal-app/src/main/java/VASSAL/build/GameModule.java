@@ -395,14 +395,14 @@ public class GameModule extends AbstractConfigurable
    * @param state - true if refreshing (suppresses GameState.setup method)
    */
   public void setRefreshingSemaphore(boolean state) {
-    loadOverSemaphore = state;
+    refreshingSemaphore = state;
   }
 
   /**
    * @return true if refreshing (suppresses GameState.setup method)
    */
   public boolean isRefreshingSemaphore() {
-    return loadOverSemaphore;
+    return refreshingSemaphore;
   }
 
 
