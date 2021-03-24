@@ -13,6 +13,8 @@
 * 14222: Editor Search output loses less-than symbols
 * 14219: Do not expand every prototype in a piece before searching it, just
     match the name of the prototype.
+* 14217: MouseoverStackViewer - $countPieces$ will give the total number of
+    pieces found in the stack (w/o having to create a property)
 * 14209: Write logs and saves to .part file to forestall copying of partially
     written files
 * 14207: Improved translation features (Global Translatable Message component,
