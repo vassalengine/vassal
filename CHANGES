@@ -58,6 +58,8 @@
 * 14088: Ensure image is updated on selection of new image with duplicate
     filename in the Editor
 * 14066: Remove Unused Images: Dialog sizing and file size display improvements
+* 13472: "Send to Deck" creates phantom cards in proportion to the number ofi
+    game starts
 
 3.5.3 - 23 February 2021
 
