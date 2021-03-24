@@ -467,13 +467,13 @@ public class GlobalCommand {
                   switch (target.targetType) {
                   case ZONE:
                   case CURZONE:
-                    if (!fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
+                    if ((fastZone != null) && !fastZone.equals(gamePiece.getProperty(BasicPiece.CURRENT_ZONE))) {
                       continue;
                     }
                     break;
                   case LOCATION:
                   case CURLOC:
-                    if (!fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
+                    if ((fastLocation != null) && !fastLocation.equals(gamePiece.getProperty(BasicPiece.LOCATION_NAME))) {
                       continue;
                     }
                     break;
@@ -481,11 +481,11 @@ public class GlobalCommand {
 
                   // Fast Match of "exact XY position"
                   if (target.targetType == GlobalCommandTarget.Target.XY) {
-                    if (!fastBoard.isEmpty() && !fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
+                    if ((fastBoard != null) && !fastBoard.isEmpty() && !fastBoard.equals(gamePiece.getProperty(BasicPiece.CURRENT_BOARD))) {
                       continue;
                     }
                     final Point pt = new Point(gamePiece.getPosition());
-                    if (!fastX.equals(Integer.toString((int) pt.getX())) || !fastY.equals(Integer.toString((int) pt.getY()))) {
+                    if ((fastX == null) || (fastY == null) || !fastX.equals(Integer.toString((int) pt.getX())) || !fastY.equals(Integer.toString((int) pt.getY()))) {
                       continue;
                     }
                   }
