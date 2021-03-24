@@ -22,6 +22,7 @@
     written files
 * 14207: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
+* 14205: Allow different images to be loaded based on currrent VASSAL language
 * 14203: Global Key Commands should exit after displaying report if there is
     no key command to issue
 * 14201: Share immutable objects
