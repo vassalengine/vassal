@@ -280,7 +280,13 @@ public class LayeredPieceCollection extends AbstractConfigurable {
       final GamePiece top = s.topPiece(); //NOTE: top VISIBLE piece. Can return null for a non-empty stack!
       if (top == null) {
         final int layer = s.getLayer();
-        return layer != LAYER_NOT_SET ? layer : layerOrder.length;
+        if ((layer != LAYER_NOT_SET) && s.getPieceCount() > 0) {
+          final GamePiece secretTop = s.getPieceAt(0);
+          if (secretTop != null) {
+            return visitDefault(secretTop);
+          }
+        }
+        return layerOrder.length;
       }
       return visitDefault(top);
     }
