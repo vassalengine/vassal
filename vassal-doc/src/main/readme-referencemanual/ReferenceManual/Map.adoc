@@ -316,7 +316,7 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 *Font size:* Fort size for the text drawn by the stack viewer.
 
 *Summary text above pieces:*  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display above the drawn pieces in the viewer.
-In addition to standard <<Properties.adoc#top,Properties>>, you can include $countPieces$ to sum the pieces included in the display. You can also include a property with the name _sum(propertyName)_ where _propertyName_ is a property defined on a Game Piece.
+In addition to standard <<Properties.adoc#top,Properties>>, you can include $countPieces$ to count the pieces included in the display. You can also include a property with the name _sum(propertyName)_ where _propertyName_ is a property defined on a Game Piece.
 The sum of the numeric values of this property for all included pieces will be substituted.
 
 *Text below each piece:*  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display below each included piece.
