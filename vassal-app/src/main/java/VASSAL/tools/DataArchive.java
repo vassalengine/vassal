@@ -340,44 +340,89 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public SortedSet<String> getImageNameSet() {
+    return getImageNameSet(false, false);
+  }
+
+  public SortedSet<String> getImageNameSet(boolean localized, boolean fullPath) {
     final TreeSet<String> s = new TreeSet<>();
-    getImageNamesRecursively(s);
+    getImageNamesRecursively(s, localized, fullPath);
     return s;
   }
 
-  protected void getImageNamesRecursively(SortedSet<String> s) {
-    if (localImages == null) localImages = getLocalImageNames();
+  protected void getImageNamesRecursively(SortedSet<String> s, boolean localized, boolean fullPath) {
+    if (localImages == null) localImages = getAllLocalImageNames(localized, fullPath);
     s.addAll(localImages);
 
     for (final DataArchive ext : extensions) {
-      ext.getImageNamesRecursively(s);
+      ext.getImageNamesRecursively(s, localized, fullPath);
     }
+  }
+
+  protected void getImageNamesRecursively(SortedSet<String> s) {
+    getImageNamesRecursively(s, false, false);
   }
 
   protected SortedSet<String> getLocalImageNames() {
-    final TreeSet<String> s = new TreeSet<>();
+    return getAllLocalImageNames(false, true);
+  }
 
-    if (archive != null) {
-      // trim the trailing slash
-      final int trimlen = imageDir.length();
-      final String root = imageDir.substring(0, trimlen - 1);
-      try {
-        for (final String filename : archive.getFiles(root)) {
-          final String fn = filename.substring(trimlen);
-          // Empty fn is the entry for the root directory; don't return that
-          if (!fn.isEmpty()) {
-            s.add(fn);
+  /* Localized directories always take the form images_XX with XX being a i18n code */
+  protected void buildLocalizedDirectoryList(List<String> list) {
+    final int rootlen = imageDir.length();
+    final String root = imageDir.substring(0, rootlen - 1);
+    try {
+      for (final String fname : archive.getFiles("")) {
+        final int fnamelen = fname.length();
+        if (fname.charAt(fnamelen - 1) == '/') {
+          final String fnamedir = fname.substring(0, fnamelen - 1);
+          if (fnamedir.startsWith(root) && !fnamedir.equals(root) && fnamedir.charAt(rootlen - 1) == '_') {
+            list.add(fname);
           }
         }
       }
-      catch (IOException e) {
-// FIXME: don't swallow this exception!
-        e.printStackTrace();
+    }
+    catch (IOException e) {
+      // FIXME: don't swallow this exception!
+      e.printStackTrace();
+    }
+  }
+
+  protected void getAllLocalImageNamesForDirectory(SortedSet<String> s, String directory, boolean fullPath) {
+    // trim the trailing slash
+    final int trimlen = directory.length();
+    final String root = directory.substring(0, trimlen - 1);
+    try {
+      for (final String filename : archive.getFiles(root)) {
+        final String trimmedFileName = filename.substring(trimlen);
+        // Empty fn is the entry for the root directory; don't return that
+        if (!trimmedFileName.isEmpty()) {
+          final String fn = fullPath ? (root + '/' + trimmedFileName) : trimmedFileName;
+          s.add(fn);
+        }
       }
     }
+    catch (IOException e) {
+      // FIXME: don't swallow this exception!
+      e.printStackTrace();
+    }
+  }
 
+  protected SortedSet<String> getAllLocalImageNames(boolean localized, boolean fullPath) {
+    final TreeSet<String> s = new TreeSet<>();
+
+    if (archive != null) {
+      final ArrayList<String> directories = new ArrayList<>();
+      directories.add(imageDir);
+      if (localized) {
+        buildLocalizedDirectoryList(directories);
+      }      
+      for (final String directory : directories) {
+        getAllLocalImageNamesForDirectory(s, directory, fullPath);
+      }
+    }
     return s;
   }
+
 
   /**
    * DataArchives can extend other archives. The extensions will be

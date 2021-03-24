@@ -28,13 +28,14 @@ import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.opcache.OpFailedException;
+import VASSAL.build.GameModule;
 
 public class Op {
   protected Op() {}
 
   public static SourceOp load(String name) {
     if (!name.startsWith("/")) {
-      name = "images/" + name; //NON-NLS
+      name = GameModule.getGameModule().getResourcePathFinder().findImagePath(name);
     }
     name = name.intern();
 
@@ -45,14 +46,14 @@ public class Op {
       return new SourceOpBitmapImpl(name);
     }
   }
-
+  
   public static SourceOp load(BufferedImage image) {
     return new ImageSourceOpBitmapImpl(image);
   }
 
   public static SourceOp loadLarge(String name) {
     if (!name.startsWith("/")) {
-      name = "images/" + name; //NON-NLS
+      name = GameModule.getGameModule().getResourcePathFinder().findImagePath(name);
     }
     name = name.intern();
 
@@ -63,7 +64,7 @@ public class Op {
       return new SourceOpTiledBitmapImpl(name);
     }
   }
-
+  
   public static ScaleOp scale(ImageOp sop, double scale) {
     if (sop instanceof RotateScaleOpSVGImpl) {
       final RotateScaleOpSVGImpl rsop = (RotateScaleOpSVGImpl) sop;
