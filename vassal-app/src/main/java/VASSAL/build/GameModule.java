@@ -376,7 +376,7 @@ public class GameModule extends AbstractConfigurable
 
   private boolean loadOverSemaphore = false; // if we're currently loading overtop of another game (so don't disturb UI if possible, it will get a setup(true) soon enough)
   /**
-   * @paramn state - true if we're loading-over-top of an existing game (so don't disturb UI elements if possible, will receive a setup(true) soon enough)
+   * @param state - true if we're loading-over-top of an existing game (so don't disturb UI elements if possible, will receive a setup(true) soon enough)
    */
   public void setLoadOverSemaphore(boolean state) {
     loadOverSemaphore = state;
@@ -1497,7 +1497,7 @@ public class GameModule extends AbstractConfigurable
    */
   public String getWindowTitleString(String key, String name) {
     final String version = getGameVersion();
-    String nameString;
+    final String nameString;
     if (!DEFAULT_MODULE_VERSION.equals(version)) {
       nameString = name + " " + version;
     }
@@ -1577,6 +1577,13 @@ public class GameModule extends AbstractConfigurable
    */
   public GameFileMode getGameFileMode() {
     return gameFileMode;
+  }
+
+  /**
+   * @return true if we are currently logging or replaying a game.
+   */
+  public boolean isReplayingOrLogging() {
+    return (gameFileMode == GameFileMode.LOGGING_GAME) || (gameFileMode == GameFileMode.REPLAYING_GAME);
   }
 
   /**
@@ -1978,7 +1985,7 @@ public class GameModule extends AbstractConfigurable
         getPlayerWindow(),
         e,
         writer.getArchive().getFile(),
-        "Error.file_write_error"
+        "Error.file_write_error" //NON-NLS
       );
     }
   }

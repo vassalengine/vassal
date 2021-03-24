@@ -611,7 +611,9 @@ public class GameState implements CommandEncoder {
 
       try {
         saveGame(lastSaveFile);
-        GameModule.getGameModule().setGameFile(lastSaveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
+        if (!GameModule.getGameModule().isReplayingOrLogging()) {
+          GameModule.getGameModule().setGameFile(lastSaveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
+        }
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, lastSaveFile);
@@ -638,7 +640,9 @@ public class GameState implements CommandEncoder {
       try {
         saveGame(saveFile);
         lastSaveFile = saveFile;
-        g.setGameFile(saveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
+        if (!GameModule.getGameModule().isReplayingOrLogging()) {
+          g.setGameFile(saveFile.getName(), GameModule.GameFileMode.SAVED_GAME);
+        }
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
