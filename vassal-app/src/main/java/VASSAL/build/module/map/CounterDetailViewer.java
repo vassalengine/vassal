@@ -612,7 +612,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     if (GlobalOptions.getInstance().isReverseStackViewerOrder()) {
-      List<GamePiece> list = visitor.getPieces();
+      final List<GamePiece> list = visitor.getPieces();
       Collections.reverse(list);
       return list;
     }
