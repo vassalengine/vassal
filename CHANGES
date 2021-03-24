@@ -2,6 +2,7 @@
 
 * 14258: "Logging" and "Replaying" should have priority over "Saved" in the
     title bar
+* 14255: Default autoreport text made -< instead of ->
 * 14246: Fast Match Global Key Commands were "dealing off the bottom of the
     deck" in certain cases
 * 14245: HTML in Tabbed Panes (charts, widgets): Work around apparent Swing
