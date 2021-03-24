@@ -102,6 +102,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String DRAG_THRESHOLD = "dragThreshold"; //$NON-NLS-1$
+  public static final String STACK_VIEWER_ORDER = "stackViewerOrder"; //NON-NLS
 
   // Compatibility Tab preferences
   public static final String BUG_10295 = "bug10295"; //$NON-NLS-1$
@@ -225,6 +226,10 @@ public class GlobalOptions extends AbstractConfigurable {
     // Preference to center on opponent's moves (used to be module-designer-set attribute, now always a player preference)
     final BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"), Boolean.TRUE); //$NON-NLS-1$
     prefs.addOption(config);
+
+    // Preference to reverse the left-to-right order for the Mouseover Stack Viewer (CounterDetailViewer)
+    final BooleanConfigurer stackViewerOrder = new BooleanConfigurer(STACK_VIEWER_ORDER, Resources.getString("GlobalOptions.stack_viewer_order"), Boolean.FALSE);
+    prefs.addOption(stackViewerOrder);
 
     //CC// Center-on-Moves Sensitivity (is the pct of distance from border to center of window that triggers a recenter)
     final IntConfigurer pctRecenterOn = new IntConfigurer(CENTER_ON_MOVE_SENSITIVITY,
@@ -708,6 +713,11 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @return true if center-on-opponents-move user pref is selected (no longer a designer setting) */
   public boolean centerOnOpponentsMove() {
     return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(CENTER_ON_MOVE));
+  }
+
+  /** @return true if stack viewer should reverse left-to-right order */
+  public boolean isReverseStackViewerOrder() {
+    return Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(STACK_VIEWER_ORDER));
   }
 
   /** @return percent-distance-from-center sensitivity for centering on opponent's move */
