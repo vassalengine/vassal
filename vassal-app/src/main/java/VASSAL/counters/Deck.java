@@ -232,19 +232,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     propertySource = source;
   }
 
-  public void registerListeners() {
-    gameModule.addKeyStrokeListener(shuffleListener);
-    shuffleListener.setKeyStroke(getShuffleKey());
-
-    gameModule.addKeyStrokeListener(reshuffleListener);
-    reshuffleListener.setKeyStroke(getReshuffleKey());
-
-    gameModule.addKeyStrokeListener(reverseListener);
-    reverseListener.setKeyStroke(getReverseKey());
-
-    gameModule.addSideChangeListenerToPlayerRoster(this);
-  }
-
   /**
    * Sets the Deck's property source
    * @param source PropertySource
@@ -491,6 +478,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         gameModule.sendAndLog(shuffle());
         repaintMap();
       });
+
+      gameModule.addKeyStrokeListener(shuffleListener);
+      shuffleListener.setKeyStroke(getShuffleKey());
     }
 
     if (reshuffleListener == null) {
@@ -498,6 +488,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         gameModule.sendAndLog(sendToDeck());
         repaintMap();
       });
+
+      gameModule.addKeyStrokeListener(reshuffleListener);
+      reshuffleListener.setKeyStroke(getReshuffleKey());
     }
 
     if (reverseListener == null) {
@@ -505,7 +498,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         gameModule.sendAndLog(reverse());
         repaintMap();
       });
+
+      gameModule.addKeyStrokeListener(reverseListener);
+      reverseListener.setKeyStroke(getReverseKey());
     }
+
+    gameModule.addSideChangeListenerToPlayerRoster(this);
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 

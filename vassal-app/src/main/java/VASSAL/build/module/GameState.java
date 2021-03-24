@@ -68,7 +68,6 @@ import VASSAL.command.ConditionalCommand;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.ModuleManagerUpdateHelper;
@@ -371,8 +370,6 @@ public class GameState implements CommandEncoder {
 
     this.gameStarting = gameStarting;
 
-    g.reset();
-
     if (!gameStarting) {
       pieces.clear();
     }
@@ -412,6 +409,11 @@ public class GameState implements CommandEncoder {
           }
         });
       }
+    }
+
+    if (gameStarting) {
+      g.resetSourcesAndListeners();
+      g.incorporateSourcesAndListeners();
     }
   }
 
@@ -676,10 +678,6 @@ public class GameState implements CommandEncoder {
       p.setId(getNewPieceId());
     }
     pieces.put(p.getId(), p);
-
-    if (p instanceof Deck) {
-      ((Deck) p).registerListeners();
-    }
   }
 
   /**
