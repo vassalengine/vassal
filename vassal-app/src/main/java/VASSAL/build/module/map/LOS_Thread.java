@@ -391,7 +391,24 @@ public class LOS_Thread extends AbstractToolbarItem implements
   }
 
   public void setup(boolean show) {
+    visible = false;
+    initializing = false;
+    persisting = false;
+    mirroring = false;
     getLaunchButton().setEnabled(show);
+  }
+
+  /**
+   * Reset the LOS Thread back to hidden, ready for next activation
+   */
+  public void reset() {
+    visible = false;
+    initializing = false;
+    persisting = false;
+    mirroring = false;
+    map.setPieceOpacity(1.0f);
+    map.popMouseListener(this); // Only pop the top listener if it is us
+    map.repaint();
   }
 
   /**
@@ -481,8 +498,14 @@ public class LOS_Thread extends AbstractToolbarItem implements
       retainAfterRelease = false;
       initializing = true;
     }
-    else if (persisting) {
-      setPersisting(false);
+    else {
+      // Launch button has been clicked while the LOS is currently visible.
+      // Reset the LOS and tell other clients to do the same if this is a shared LOS.
+      final Command com = new LOSCommand(this);
+      com.execute();
+      if (! global.equals(NEVER)) {
+        GameModule.getGameModule().sendAndLog(com);
+      }
     }
   }
 
@@ -917,7 +940,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
     final Point arrow = new Point(sd.nextInt(0), sd.nextInt(0));
     final boolean persisting = sd.nextBoolean(false);
     final boolean mirroring = sd.nextBoolean(false);
-    return new LOSCommand(this, anchor, arrow, persisting, mirroring);
+    final boolean reset = sd.nextBoolean(false);
+    return reset ? new LOSCommand(this) : new LOSCommand(this, anchor, arrow, persisting, mirroring);
   }
 
   @Override
@@ -933,7 +957,8 @@ public class LOS_Thread extends AbstractToolbarItem implements
       .append(com.newArrow.x)
       .append(com.newArrow.y)
       .append(com.newPersisting)
-      .append(com.newMirroring);
+      .append(com.newMirroring)
+      .append(com.reset);
     return LOS_THREAD_COMMAND + se.getValue();
   }
 
@@ -944,6 +969,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
     protected Point newArrow, oldArrow;
     protected boolean newPersisting, oldPersisting;
     protected boolean newMirroring, oldMirroring;
+    protected boolean reset;
 
     public LOSCommand(LOS_Thread oTarget, Point anchor, Point arrow, boolean persisting, boolean mirroring) {
       target = oTarget;
@@ -955,13 +981,36 @@ public class LOS_Thread extends AbstractToolbarItem implements
       newArrow = arrow;
       newPersisting = persisting;
       newMirroring = mirroring;
+      reset = false;
+    }
+
+    /**
+     * Constructor for a Reset command to reset the thread to inactive
+     * @param oTarget target Thread
+     */
+    public LOSCommand(LOS_Thread oTarget) {
+      reset = true;
+      target = oTarget;
+      oldAnchor = target.getAnchor();
+      oldArrow = target.getArrow();
+      oldPersisting = target.isPersisting();
+      oldMirroring = target.isMirroring();
+      newAnchor = new Point(0, 0);
+      newArrow = new Point(0, 0);
+      newPersisting = false;
+      newMirroring = false;
     }
 
     @Override
     protected void executeCommand() {
-      target.setEndPoints(newAnchor, newArrow);
-      target.setPersisting(newPersisting);
-      target.setMirroring(newMirroring);
+      if (reset) {
+        target.reset();
+      }
+      else {
+        target.setEndPoints(newAnchor, newArrow);
+        target.setPersisting(newPersisting);
+        target.setMirroring(newMirroring);
+      }
     }
 
     @Override

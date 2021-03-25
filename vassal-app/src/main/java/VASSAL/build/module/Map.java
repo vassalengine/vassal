@@ -1603,6 +1603,15 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * Remove the most recently pushed mouse listener only if it is the supplied listener
+   * @param l Listener
+   */
+  public void popMouseListener(MouseListener l) {
+    if (mouseListenerStack.size() > 0 && mouseListenerStack.get(mouseListenerStack.size() - 1).equals(l)) {
+      popMouseListener();
+    }
+  }
+  /**
    * @param e MouseEvent
    */
   @Override
