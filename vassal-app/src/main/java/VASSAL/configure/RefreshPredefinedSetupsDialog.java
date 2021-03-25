@@ -180,7 +180,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
     log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
 
-    if (modulePds.size() > 0) { // Saves shutting down the current game if we aren't actually going to do anything
+    if (!modulePds.isEmpty()) { // Saves shutting down the current game if we aren't actually going to do anything
       GameModule.getGameModule().getGameState().setup(false); //BR// Must close any current game "with save-game warning" or we will write over it.
 
       for (final PredefinedSetup pds : modulePds) {
