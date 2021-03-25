@@ -67,6 +67,7 @@
 * 13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()
 * 13472: "Send to Deck" creates phantom cards in proportion to the number ofi
     game starts
+* 12538: Decks report multiple shuffles after loading saved game
 
 3.5.3 - 23 February 2021
 
