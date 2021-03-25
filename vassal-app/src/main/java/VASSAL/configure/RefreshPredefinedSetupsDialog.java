@@ -150,7 +150,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     }
 
     // Are we running a refresh on a main module or on an extension
-    Boolean isRefreshOfExtension = true;
+    boolean isRefreshOfExtension = true;
     final GameModule mod = GameModule.getGameModule();
     final DataArchive dataArchive = mod.getDataArchive();
     final List<ModuleExtension>  moduleExtensionList = mod.getComponentsOf(ModuleExtension.class);
@@ -165,7 +165,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
         // and exclude any "New game" entries (no predefined setup) (isUseFile == false)
         // !! Some New Game entries have UseFile = true and filename empty. Check file name too
         if (pds.getFileName() != null && ! pds.getFileName().isBlank()) {
-          Boolean isExtensionPDS = true;
+          boolean isExtensionPDS = true;
           try {
             isExtensionPDS =  !dataArchive.contains(pds.getFileName());
           }
@@ -179,18 +179,32 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
     }
     log(modulePds.size() + " " + Resources.getString("GameRefresher.predefined_setups_found"));
-    for (final PredefinedSetup pds : modulePds) {
-      log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
-    }
-    for (final PredefinedSetup pds : modulePds) {
+
+    if (modulePds.size() > 0) { // Saves shutting down the current game if we aren't actually going to do anything
+      GameModule.getGameModule().getGameState().setup(false); //BR// Must close any current game "with save-game warning" or we will write over it.
+
+      for (final PredefinedSetup pds : modulePds) {
+        log(pds.getAttributeValueString(PredefinedSetup.NAME) + " (" + pds.getFileName() + ")");
+      }
+      for (final PredefinedSetup pds : modulePds) {
+        try {
+          pds.refresh(options);
+        }
+        catch (final IOException e) {
+          ErrorDialog.bug(e);
+        }
+      }
+
+      //BR// now get rid of anything left over from the last file we refreshed
+      mod.setRefreshingSemaphore(true);
       try {
-        pds.refresh(options);
+        GameModule.getGameModule().getGameState().setup(false);
       }
-      catch (final IOException e) {
-        ErrorDialog.bug(e);
+      finally {
+        mod.setRefreshingSemaphore(false);
       }
     }
+
     refreshButton.setEnabled(true);
   }
-
 }

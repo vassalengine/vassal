@@ -353,11 +353,11 @@ public class GameState implements CommandEncoder {
   public void setup(boolean gameStarting) {
     final GameModule g = GameModule.getGameModule();
 
-    if (g.isRefreshingSemaphore()) {
-      return; // Blocks setup method during Game Refresh
+    if (g.isRefreshingSemaphore() && gameStarting) {
+      return; // Blocks setup(true) method during Game Refresh. Still need setup(false) to clear pieces and stuff.
     }
 
-    if (!gameStarting && gameStarted && isModified()) {
+    if (!gameStarting && gameStarted && isModified() && !g.isRefreshingSemaphore()) {
       switch (JOptionPane.showConfirmDialog(
         g.getPlayerWindow(),
         Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
