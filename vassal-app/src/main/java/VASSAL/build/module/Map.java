@@ -1607,7 +1607,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * @param l Listener
    */
   public void popMouseListener(MouseListener l) {
-    if (mouseListenerStack.size() > 0 && mouseListenerStack.get(mouseListenerStack.size() - 1).equals(l)) {
+    if (!mouseListenerStack.isEmpty() && mouseListenerStack.get(mouseListenerStack.size() - 1).equals(l)) {
       popMouseListener();
     }
   }
