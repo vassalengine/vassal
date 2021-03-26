@@ -16,6 +16,7 @@
  */
 package VASSAL.tools;
 
+import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -83,24 +85,68 @@ public class KeyStrokeListener {
     }
   }
 
-  private static void registerKey(ActionListener l, KeyStrokeSource s, KeyStroke k) {
-    final Action a = new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        l.actionPerformed(e);
-      }
-    };
+  private static class ActionChain extends AbstractAction {
+    private static final long serialVersionUID = 1L;
 
-    final JComponent c = s.getComponent();
-    c.getInputMap(s.getMode()).put(k, a);
-    c.getActionMap().put(a, a);
+    private ActionListener l;
+
+    public ActionChain(ActionListener l) {
+      this.l = l;
+    }
+
+    public static ActionChain add(ActionListener l, ActionListener r) {
+      final ActionChain c = l instanceof ActionChain ?
+        (ActionChain) l : new ActionChain(l);
+      c.l = AWTEventMulticaster.add(c.l, r);
+      return c;
+    }
+
+    public static ActionChain remove(ActionListener l, ActionListener r) {
+      ActionChain c;
+      if (l instanceof ActionChain) {
+        c = (ActionChain) l;
+        c.l = AWTEventMulticaster.remove(c.l, r);
+        return c.l == null ? null : c;
+      }
+      else {
+        l = AWTEventMulticaster.remove(l, r);
+        return l == null ? null : new ActionChain(l);
+      }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      l.actionPerformed(e);
+    }
   }
 
-  private static void unregisterKey(ActionListener l, KeyStrokeSource s, KeyStroke k) { // NOPMD
+  private static void registerKey(ActionListener l, KeyStrokeSource s, KeyStroke k) {
     final JComponent c = s.getComponent();
-    final InputMap im = c.getInputMap(s.getMode());
-    c.getActionMap().remove(im.get(k));
-    im.remove(k);
+    final InputMap imap = c.getInputMap(s.getMode());
+    final ActionMap amap = c.getActionMap();
+
+    Object o = imap.get(k);
+    if (o == null) {
+      o = new Object();
+      imap.put(k, o);
+    }
+
+    amap.put(o, ActionChain.add(amap.get(o), l));
+  }
+
+  private static void unregisterKey(ActionListener l, KeyStrokeSource s, KeyStroke k) {
+    final JComponent c = s.getComponent();
+    final InputMap imap = c.getInputMap(s.getMode());
+
+    final Object o = imap.get(k);
+    if (o != null) {
+      final ActionMap amap = c.getActionMap();
+      final Action a = ActionChain.remove(amap.get(o), l);
+      if (a == null) {
+        imap.remove(k);
+        amap.remove(o);
+      }
+    }
   }
 
   public void addKeyStrokeSource(KeyStrokeSource src) {
