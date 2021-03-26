@@ -69,10 +69,11 @@ else ifeq ($(patsubst release-%,release,$(GITBRANCH)), release)
   VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)
 else
   # we are on some other branch
-  VERSION:=$(MAVEN_VERSION)-$(GITBRANCH)-$(GITCOMMIT)
+  VERSION:=$(MAVEN_VERSION)-$(GITCOMMIT)-$(GITBRANCH)
 endif
 
 YEAR:=$(shell date +%Y)
+VERSION_50:=$(shell echo "$(VERSION)" | cut -c1-50)
 
 MVN:=./mvnw
 
@@ -207,7 +208,7 @@ $(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.l4j.xml: JREOPTS:=<opt>-DVASSAL
 
 $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.l4j.xml: $(DISTDIR)/windows/VASSAL.l4j.xml.in | $(TMPDIR)/windows-%-$(VERSION)-build
 	sed -e 's/%NUMVERSION%/$(VNUM)/g' \
-			-e 's/%FULLVERSION%/$(VERSION)/g' \
+			-e 's/%FULLVERSION%/$(VERSION_50)/g' \
 			-e 's|%JREOPTS%|$(JREOPTS)|g' $< >$@
 
 $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.ico: $(DISTDIR)/windows/VASSAL.ico | $(TMPDIR)/windows-%-$(VERSION)-build
