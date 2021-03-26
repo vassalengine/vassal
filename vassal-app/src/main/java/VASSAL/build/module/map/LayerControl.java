@@ -41,7 +41,7 @@ public class LayerControl extends AbstractToolbarItem {
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
 
   protected LaunchButton launch;
-  protected static final String[] COMMANDS = {CMD_ROTATE_UP, CMD_ROTATE_DN, CMD_RESET, CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE};
+  protected static final String[] COMMANDS = {CMD_ROTATE_UP, CMD_ROTATE_DN, CMD_ENABLE, CMD_DISABLE, CMD_TOGGLE, CMD_RESET};
   protected static final String[] COMMANDS_DISPLAY_NAMES = {
     "Editor.LayerControl.rotate_layer_order_up",
     "Editor.LayerControl.rotate_layer_order_down",

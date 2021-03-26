@@ -206,7 +206,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     /**
      * Gets the appropriate layer for the given piece (or Stack or Deck). Will call one of the dispatcher
-     * methods below, as appropriate: {@link visitDeck}, {@link visitStack}, or {@link visitDefault}.
+     * methods below, as appropriate: {@link #visitDeck}, {@link #visitStack}, or {@link #visitDefault}.
      * @param p Piece (possibly a Deck or Stack) to obtain layer for
      * @return visual layer
      */
