@@ -24,7 +24,11 @@ import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.*;
+import VASSAL.command.ChangePiece;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.NullCommand;
+import VASSAL.command.RemovePiece;
 import VASSAL.configure.ConfigurerLayout;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
@@ -144,11 +148,13 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
           }
         }
       }
-      if (deck==null) {return null;};
+      if (deck == null) {
+        return null;
+      }
       final int x = sd.nextInt(0);
       final int y = sd.nextInt(0);
       final Point newPosition = new Point(x, y);
-      return new DeckRepositionCommand(deck,newPosition);
+      return new DeckRepositionCommand(deck, newPosition);
     }
     return null;
   }
@@ -391,11 +397,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
       final Stack stack = piece.getParent();
       Deck deck = null;
-      boolean isDeck = ( stack instanceof  Deck );
+      final boolean isDeck = (stack instanceof  Deck);
       if (isDeck) {
         deck = (Deck) stack;
         tempPosition = getDeckFreePosition(deck);
-        final Command deckRepositionCommand = new DeckRepositionCommand(deck,tempPosition);
+        final Command deckRepositionCommand = new DeckRepositionCommand(deck, tempPosition);
         deckRepositionCommand.execute();
         command.append(deckRepositionCommand);
       }
@@ -409,10 +415,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       command.append(place);
 
       if (isDeck) {
-        final Command deckRepositionCommand = new DeckRepositionCommand(deck,piecePosition);
+        final Command deckRepositionCommand = new DeckRepositionCommand(deck, piecePosition);
         deckRepositionCommand.execute();
         command.append(deckRepositionCommand);
-     }
+      }
 
       // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
@@ -428,20 +434,20 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   }
 
   private Point getDeckFreePosition(Deck deck) {
-    Point tempPosition = new Point(-1,-1);
+    Point tempPosition = new Point(-1, -1);
     Boolean correctTempPositionNotFound;
     final GamePiece[] pieces;
     pieces = deck.getMap().getAllPieces();
     do {
       correctTempPositionNotFound = false; //Assuming scan of pieces finds no match on tempPosition
       for (final GamePiece piece : pieces) {
-          final Point piecePosition = piece.getPosition();
-          if (piecePosition.equals(tempPosition)) {
-            tempPosition.x -= 1;
-            correctTempPositionNotFound = true;
-            break;
-          }
+        final Point piecePosition = piece.getPosition();
+        if (piecePosition.equals(tempPosition)) {
+          tempPosition.x -= 1;
+          correctTempPositionNotFound = true;
+          break;
         }
+      }
     } while (correctTempPositionNotFound);
     return tempPosition;
   }
