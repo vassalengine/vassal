@@ -205,9 +205,10 @@ public class StringArrayConfigurer extends Configurer implements ConfigurableLis
   private void rebuildControls() {
     for (final StringEntry entry : entries) {
       entry.removeFocusListener(sharedFocusListener);
+      entry.removePropertyChangeListener(entry);
     }
-    entries.clear();
     controls.removeAll();
+    entries.clear();
 
     final String[] strings = getStringArray();
 
