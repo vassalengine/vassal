@@ -146,6 +146,9 @@ public class KeyStrokeListener {
         imap.remove(k);
         amap.remove(o);
       }
+      else {
+        amap.put(o, a);
+      }
     }
   }
 
