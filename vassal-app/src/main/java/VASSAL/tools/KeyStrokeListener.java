@@ -144,11 +144,8 @@ public class KeyStrokeListener {
       final Action a = ActionChain.remove(amap.get(o), l);
       if (a == null) {
         imap.remove(k);
-        amap.remove(o);
       }
-      else {
-        amap.put(o, a);
-      }
+      amap.put(o, a);
     }
   }
 
