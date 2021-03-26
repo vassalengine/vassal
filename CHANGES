@@ -7,6 +7,7 @@
     deck" in certain cases
 * 14245: HTML in Tabbed Panes (charts, widgets): Work around apparent Swing
     bug in JTabbedPane
+* 14243: Game Piece Layer manipulation commands do not match described effect
 * 14240: Welcome Wizard: Put "enter your name" screen after the main welcome
     (so that option to turn off wizard is always on first screen viewed)
 * 14228: Chess Clocks can now be manually reset (if manual reset is enabled
@@ -63,6 +64,7 @@
     character entered
 * 14088: Ensure image is updated on selection of new image with duplicate
     filename in the Editor
+* 14069: ArrayIndexOutOfBoundsException in StringArrayConfigurer due to race
 * 14066: Remove Unused Images: Dialog sizing and file size display improvements
 * 13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()
 * 13472: "Send to Deck" creates phantom cards in proportion to the number ofi
