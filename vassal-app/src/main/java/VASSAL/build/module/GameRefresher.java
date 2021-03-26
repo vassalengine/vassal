@@ -36,6 +36,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 
+import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -73,9 +74,14 @@ import org.slf4j.LoggerFactory;
  * Note: Counters that are Hidden or Obscured to us cannot be updated.
  *
  */
-public final class GameRefresher implements GameComponent {
+public final class GameRefresher implements CommandEncoder, GameComponent {
 
   private static final Logger logger = LoggerFactory.getLogger(GameRefresher.class);
+
+  private static final char DELIMITER = '\t'; //$NON-NLS-1$
+  public  static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
+  private Deck deck;
+  private Point newPosition;
 
   private Action refreshAction;
   private final GpIdSupport gpIdSupport;
@@ -102,6 +108,51 @@ public final class GameRefresher implements GameComponent {
     //chatter = theModule.getChatter();
     //msg = new Chatter.DisplayText(chatter, "----------"); //$NON-NLS-1$
   }
+
+  @Override
+  public String encode(final Command c) {
+    if (c instanceof DeckRepositionCommand) {
+      final DeckRepositionCommand drc = (DeckRepositionCommand) c;
+      final SequenceEncoder se = new SequenceEncoder(DELIMITER);
+      se.append(drc.deck.getId())
+        .append(drc.newPosition.x)
+        .append(drc.newPosition.y);
+      return COMMAND_PREFIX + se.getValue();
+    }
+    return null;
+  }
+
+  /**
+   * Deserializes string command info into a Deck Reposition Command.
+   * @param s String for a Deck Reposition command string
+   * @return Deck Reposition Command object
+   */
+  @Override
+  public Command decode(final String s) {
+    Deck deck = null;
+    if (s.startsWith(COMMAND_PREFIX)) { // Make sure this command is for a Deck Reposition
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
+      sd.nextToken(); // Skip over the Command Prefix
+      final String decodedDeckId = sd.next();
+      //Scan pieces to find the Deck
+      for (final GamePiece piece : GameModule.getGameModule().getGameState().getAllPieces()) {
+        if (piece instanceof Deck) {
+          final String deckId = ((Deck) piece).getId();
+          if (deckId.equals(decodedDeckId)) {
+            deck =  (Deck) piece;
+            break;
+          }
+        }
+      }
+      if (deck==null) {return null;};
+      final int x = sd.nextInt(0);
+      final int y = sd.nextInt(0);
+      final Point newPosition = new Point(x, y);
+      return new DeckRepositionCommand(deck,newPosition);
+    }
+    return null;
+  }
+
 
   public void addTo(AbstractConfigurable parent) {
     refreshAction = new AbstractAction(Resources.getString("GameRefresher.refresh_counters")) { //$NON-NLS-1$
@@ -343,8 +394,10 @@ public final class GameRefresher implements GameComponent {
       boolean isDeck = ( stack instanceof  Deck );
       if (isDeck) {
         deck = (Deck) stack;
-        tempPosition = new Point(-1,-1);
-        deck.setPosition(tempPosition);
+        tempPosition = getDeckFreePosition(deck);
+        final Command deckRepositionCommand = new DeckRepositionCommand(deck,tempPosition);
+        deckRepositionCommand.execute();
+        command.append(deckRepositionCommand);
       }
 
       // Delete the old piece
@@ -356,8 +409,10 @@ public final class GameRefresher implements GameComponent {
       command.append(place);
 
       if (isDeck) {
-        deck.setPosition(piecePosition);
-      }
+        final Command deckRepositionCommand = new DeckRepositionCommand(deck,piecePosition);
+        deckRepositionCommand.execute();
+        command.append(deckRepositionCommand);
+     }
 
       // Move to the correct position in the stack
       final Stack newStack = newPiece.getParent();
@@ -372,6 +427,24 @@ public final class GameRefresher implements GameComponent {
     }
   }
 
+  private Point getDeckFreePosition(Deck deck) {
+    Point tempPosition = new Point(-1,-1);
+    Boolean correctTempPositionNotFound;
+    final GamePiece[] pieces;
+    pieces = deck.getMap().getAllPieces();
+    do {
+      correctTempPositionNotFound = false; //Assuming scan of pieces finds no match on tempPosition
+      for (final GamePiece piece : pieces) {
+          final Point piecePosition = piece.getPosition();
+          if (piecePosition.equals(tempPosition)) {
+            tempPosition.x -= 1;
+            correctTempPositionNotFound = true;
+            break;
+          }
+        }
+    } while (correctTempPositionNotFound);
+    return tempPosition;
+  }
 
 
   @Override
@@ -528,6 +601,39 @@ public final class GameRefresher implements GameComponent {
     }
   }
 
+ /**
+    * A {@link Command} for sending {@link GameRefresher} DeckReposition actions to other clients
+ */
+  private class DeckRepositionCommand extends Command {
+    private final Deck deck;
+    private final Point newPosition;
+
+    /**
+     */
+    public DeckRepositionCommand(Deck deck, Point newPosition) {
+      this.deck = deck;
+      this.newPosition = newPosition;
+    }
+
+    /**
+     * Executes the command (starts a Flare at the specified location)
+     */
+    @Override
+    protected void executeCommand() {
+      this.deck.setPosition(this.newPosition);
+    }
+
+    /**
+     */
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+
 
 }
+
+
+
 
