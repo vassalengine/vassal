@@ -2,6 +2,7 @@
 
 * 14258: "Logging" and "Replaying" should have priority over "Saved" in the
     title bar
+* 14256: LOS gets stuck on screen when replayed through logfile
 * 14255: Default autoreport text made -< instead of ->
 * 14246: Fast Match Global Key Commands were "dealing off the bottom of the
     deck" in certain cases
