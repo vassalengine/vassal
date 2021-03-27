@@ -38,6 +38,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.GameState;
+import VASSAL.command.AlertCommand;
+import VASSAL.command.Command;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.RefreshPredefinedSetupsDialog;
 import VASSAL.configure.RemoveUnusedImagesDialog;
@@ -239,7 +242,15 @@ public abstract class EditorWindow extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        new RefreshPredefinedSetupsDialog(EditorWindow.this).setVisible(true);
+        final GameState gs = GameModule.getGameModule().getGameState();
+        if (gs.isGameStarted()) {
+          //If a game is started log waning and stop
+          final Command ac = new AlertCommand(Resources.getString("GameRefresher.game_started_in_editor"));
+          ac.execute();
+        }
+        else {
+          new RefreshPredefinedSetupsDialog(EditorWindow.this).setVisible(true);
+        }
       }
     });
 

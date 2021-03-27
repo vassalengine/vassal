@@ -182,6 +182,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     for (final PredefinedSetup pds : modulePds) {
       log(pds.getAttributeValueString(pds.NAME) + " (" + pds.getFileName() + ")");
     }
+
     for (final PredefinedSetup pds : modulePds) {
       try {
         pds.refresh(options);
