@@ -137,6 +137,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     targetCompareConfig.setFrozen(val);
     targetValueConfig.setFrozen(val);
   }
+
   @Override
   public Component getControls() {
     if (controls == null) {
