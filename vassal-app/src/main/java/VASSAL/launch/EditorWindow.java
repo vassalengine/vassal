@@ -244,7 +244,7 @@ public abstract class EditorWindow extends JFrame {
       public void actionPerformed(ActionEvent e) {
         final GameState gs = GameModule.getGameModule().getGameState();
         if (gs.isGameStarted()) {
-          //If a game is started log waning and stop
+          //If a game is started log warning and stop
           final Command ac = new AlertCommand(Resources.getString("GameRefresher.game_started_in_editor"));
           ac.execute();
         }
