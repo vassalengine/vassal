@@ -383,6 +383,8 @@ public class GameState implements CommandEncoder {
     saveGameAs.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
 
+    g.resetSourcesAndListeners();
+
     if (gameStarting) {
       g.getWizardSupport().showGameSetupWizard();
     }
@@ -416,7 +418,6 @@ public class GameState implements CommandEncoder {
     }
 
     if (gameStarting) {
-      g.resetSourcesAndListeners();
       g.incorporateSourcesAndListeners();
     }
   }

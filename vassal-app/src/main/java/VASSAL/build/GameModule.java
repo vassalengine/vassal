@@ -1105,10 +1105,14 @@ public class GameModule extends AbstractConfigurable
       }
     }
 
+    getPlayerRoster().resetListeners();
+
     sourcesToRemove.clear();
     listenersToRemove.clear();
 
-    getPlayerRoster().resetListeners();
+    keyStrokeSourcesToAdd.clear();
+    keyStrokeListenersToAdd.clear();
+    sideChangeListenersToAdd.clear();
 
     Expression.resetCachedExpressions();
   }
