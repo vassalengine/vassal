@@ -281,14 +281,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     // get a stream to the saved game in the module file
     gs.setupRefresh();
-
-    mod.setRefreshingSemaphore(true);
-    try {
-      gs.loadGameInForeground(fileName, getSavedGameContents());
-    }
-    finally {
-      mod.setRefreshingSemaphore(false);
-    }
+    gs.loadGameInForeground(fileName, getSavedGameContents());
 
     // call the gameRefresher
     gameRefresher.execute(refresherOptions, null);
