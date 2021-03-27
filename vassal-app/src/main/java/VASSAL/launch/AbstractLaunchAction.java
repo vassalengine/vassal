@@ -256,7 +256,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // set default heap size
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
-      int initialHeap = DEFAULT_MAXIMUM_HEAP;
 
       String moduleName = null;
 
@@ -306,7 +305,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 // actions.
       // maximum heap must fit in physical RAM
       if (maximumHeap > PHYS_MEMORY) {
-        initialHeap = maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
         FutureUtils.wait(WarningDialog.show(
           "Warning.maximum_heap_too_large", //NON-NLS
@@ -315,13 +314,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       // maximum heap must be at least the failsafe size
       else if (maximumHeap < FAILSAFE_MAXIMUM_HEAP) {
-        initialHeap = maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
         FutureUtils.wait(WarningDialog.show(
           "Warning.maximum_heap_too_small", //NON-NLS
           FAILSAFE_MAXIMUM_HEAP
         ));
       }
+
+      final int initialHeap = maximumHeap;
 
       final List<String> argumentList = buildArgumentList(moduleName);
       final String[] args = argumentList.toArray(new String[0]);
