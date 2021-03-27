@@ -1,5 +1,6 @@
 3.5.4 - ???
 
+* 14269: Poor Editor performance when using Fast Match
 * 14258: "Logging" and "Replaying" should have priority over "Saved" in the
     title bar
 * 14256: LOS gets stuck on screen when replayed through logfile
