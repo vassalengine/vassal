@@ -1,5 +1,6 @@
 3.5.4 - ???
 
+* 14270: "maximum heap too large" message shown when maximum heap is too small
 * 14269: Poor Editor performance when using Fast Match
 * 14267: Game Refresher: Refresh Predefined Setups should clear any open game
     in the Player
