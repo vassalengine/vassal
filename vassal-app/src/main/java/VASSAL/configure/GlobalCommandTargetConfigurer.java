@@ -114,6 +114,29 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     super.setValue(o);
   }
 
+  /**
+   * Freeze the Configurer from issuing PropertyChange Events.
+   * Ensure the subsidiary Configurers are quiet also.
+   *
+   * @param val true to freeze
+   */
+  @Override
+  public void setFrozen(boolean val) {
+    super.setFrozen(val);
+    fastMatchLocationConfig.setFrozen(val);
+    targetTypeConfig.setFrozen(val);
+    targetMapConfig.setFrozen(val);
+    targetBoardConfig.setFrozen(val);
+    targetZoneConfig.setFrozen(val);
+    targetLocationConfig.setFrozen(val);
+    targetXConfig.setFrozen(val);
+    targetYConfig.setFrozen(val);
+    targetDeckConfig.setFrozen(val);
+    fastMatchPropertyConfig.setFrozen(val);
+    targetPropertyConfig.setFrozen(val);
+    targetCompareConfig.setFrozen(val);
+    targetValueConfig.setFrozen(val);
+  }
   @Override
   public Component getControls() {
     if (controls == null) {
