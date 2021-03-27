@@ -728,10 +728,8 @@ public class PieceMover extends AbstractBuildable
           p = map.snapTo(p);
         }
 
-        if (offset == null) {
-          offset = new Point(p.x - dragging.getPosition().x,
-                             p.y - dragging.getPosition().y);
-        }
+        offset = new Point(p.x - dragging.getPosition().x,
+                           p.y - dragging.getPosition().y);
 
         // If we've HAVE found a piece to merge with, and we're going to a map that allows stacking, then
         // add our current piece & the mergable one to our cached list of merge targets.
