@@ -1470,6 +1470,20 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void addFolder(File f) {
+      try {
+        f = f.getCanonicalFile();
+      }
+      catch (final IOException e) {
+        JOptionPane.showMessageDialog(
+          ModuleManagerWindow.this,
+          Resources.getString("Error.file_read_error", f.getPath()),
+          "Error",
+          JOptionPane.ERROR_MESSAGE
+        );
+
+        return;
+      }
+
       // try to create the directory if it doesn't exist
       if (!f.exists() && !f.mkdirs()) {
         JOptionPane.showMessageDialog(
