@@ -17,6 +17,7 @@
  */
 package VASSAL.build;
 
+import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -2064,6 +2065,20 @@ public class GameModule extends AbstractConfigurable
     else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
+
+    //BR// MapName_isVisible property for each map window
+    for (final Map map : Map.getMapList()) {
+      if ((map.getConfigureName() + "_isVisible").equals(key) || (map.getConfigureName().replaceAll(" ", "_") + "_isVisible").equals(key)) { //NON-NLS
+        final Container tla = (map.getComponent() != null) ? ((JPanel)map.getComponent()).getTopLevelAncestor() : null;
+        if ((tla != null) && tla.isVisible()) {
+          return "true"; //NON-NLS
+        }
+        else {
+          return "false"; //NON-NLS
+        }
+      }
+    }
+
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       return p.getPropertyValue();

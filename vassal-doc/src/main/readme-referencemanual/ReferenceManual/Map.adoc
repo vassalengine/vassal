@@ -19,6 +19,9 @@ Your new Map Window will be added to the very bottom of your Module's list of co
 You can then open the _[Map Window]_ entry, where you should right click on the _[Map Boards]_ subcomponent and add at least one <<Board.adoc#top,Board>>. You can also add additional subcomponents by right-clicking the _[Map Window]_ entry and selecting one of the appropriate _Add_ options.
 See <<#SubComponents,Sub-Components>>, below.
 
+Every map window (including player hands and private windows) exposes a property _MapName_isVisible_ which will hold "true" if the map is currently visible, or "false" otherwise. This allows the
+module to know whether Global Hotkeys sent to that map's components will currently be accepted or not. If the Map's name contains spaces, the property name can optionally include '_' characters in place of spaces.
+
 *SEE ALSO:*  <<PlayerHand.adoc#top,Player Hands>> and <<PrivateWindow.adoc#top,Private Windows>> are specialized forms of Map Window and share most of its properties and subcomponents.
 They are designed for holding pieces and cards that are private to one player or side.
 
