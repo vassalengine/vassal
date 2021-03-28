@@ -77,6 +77,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     new HashMap<>();
 
   protected SortedSet<String> localImages = null;
+  protected SortedSet<String>[] cachedLocalImages = new SortedSet[4];
 
   public static final String IMAGE_DIR = "images/"; //NON-NLS
   protected String imageDir = IMAGE_DIR;
@@ -88,6 +89,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
+    resetLocalImages();
   }
 
   public DataArchive(String zipName, String imageDir) throws IOException {
@@ -349,9 +351,26 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     return s;
   }
 
+  private int getLocalImagesCacheIndex(boolean localized, boolean fullPath) {
+    int i = 0;
+    if (localized) {
+      i = 1;
+    }
+    if (fullPath) {
+      i += 2;
+    }
+    return i;
+  }
+
   protected void getImageNamesRecursively(SortedSet<String> s, boolean localized, boolean fullPath) {
-    if (localImages == null) localImages = getAllLocalImageNames(localized, fullPath);
-    s.addAll(localImages);
+    final int index = getLocalImagesCacheIndex(localized, fullPath);
+    if (cachedLocalImages[index] == null) {
+      cachedLocalImages[index] = getAllLocalImageNames(localized, fullPath);
+      if (!localized && !fullPath) {
+        localImages = cachedLocalImages[index];
+      }
+    }
+    s.addAll(cachedLocalImages[index]);
 
     for (final DataArchive ext : extensions) {
       ext.getImageNamesRecursively(s, localized, fullPath);
@@ -387,6 +406,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
   }
 
+  private static final Logger logger =
+    LoggerFactory.getLogger(DataArchive.class);
+  
   protected void getAllLocalImageNamesForDirectory(SortedSet<String> s, String directory, boolean fullPath) {
     // trim the trailing slash
     final int trimlen = directory.length();
@@ -394,6 +416,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     try {
       for (final String filename : archive.getFiles(root)) {
         final String trimmedFileName = filename.substring(trimlen);
+        logger.error("1 : " + trimmedFileName + " 2 : " + root + " 3: " + filename);
         // Empty fn is the entry for the root directory; don't return that
         if (!trimmedFileName.isEmpty()) {
           final String fn = fullPath ? (root + '/' + trimmedFileName) : trimmedFileName;
@@ -529,6 +552,13 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   private final Map<String, ImageSource> imageSources =
     new HashMap<>();
 
+  private void resetLocalImages() {
+    for (int i = 0; i < cachedLocalImages.length; ++i) {
+      cachedLocalImages[i] = null;
+    }
+    localImages = null;
+  }
+  
   /**
    * Add an ImageSource under the given name, but only if no source is
    * yet registered under this name.
@@ -543,7 +573,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     ProblemDialog.showDeprecated("2020-08-06");
     if (!imageSources.containsKey(name)) {
       imageSources.put(name, src);
-      localImages = null;
+      resetLocalImages();
       return true;
     }
     return false;
@@ -553,7 +583,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public void removeImageSource(String name) {
     ProblemDialog.showDeprecated("2020-08-06");
     imageSources.remove(name);
-    localImages = null;
+    resetLocalImages();
   }
 
   /**
