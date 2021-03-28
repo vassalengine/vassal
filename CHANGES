@@ -71,6 +71,8 @@
     filename in the Editor
 * 14069: ArrayIndexOutOfBoundsException in StringArrayConfigurer due to race
 * 14066: Remove Unused Images: Dialog sizing and file size display improvements
+* 13796: Stacks after the first are unstacked when multiple stacks dragged to
+    a snap-to map
 * 13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()
 * 13472: "Send to Deck" creates phantom cards in proportion to the number ofi
     game starts
