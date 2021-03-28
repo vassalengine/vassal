@@ -18,182 +18,77 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
   <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
 </ul>
 
-<h2>Changes since 3.5.2</h2>
-<h3>Bug fixes</h3>
-<ul>
-<li>14122: IllegalArgumentException when Action Button is armed on one map but released on another</li>
-<li>14078: Undo causes standard counter to become unstacked</li>
-</ul>
+<h2>Changes since 3.5.3</h2>
 
-<h3>Other improvements</h3>
-<ul>
-<li>14121: Editor shows Global Property descriptions next to the names in the main list</li>
-</ul>
-
-<h2>Changes since 3.5.1</h2>
-<h3>Bug fixes</h3>
-<ul>
-<li>14117: Action Button fails to respond on a stacked counter (except at top)</li>
-<li>14116: Incorrect module sort order in Module Manager</li>
-<li>14111: Incorrect description for Dynamic Property initial value</li>
-<li>14104: Removing Image from BasicPiece stores image name as '(No Image)'</li>
-<li>14086: Fix Alt key for selecting on maps</li>
-<li>14078: Undo causes standard counter to become unstacked</li>
-<li>14076: SetGlobalProperty editor has incorrect label for maximum value field</li>
-<li>14075: BoardPicker and LOS_Thread could sometimes intercept commands for wrong objects</li>
-<li>14074: Flares sometimes not appearing on opponent's map (in log replay, or online)</li>
-<li>14065: Show OS Specific cut/paste key descriptions in Piece Definer</li>
-<li>14061: ArrayIndexOutOfBoundsException in StringArrayConfigurer.entryChanged()</li>
-<li>14047: Prevent versions <= 3.2 from clobbering the 3.5 module list</li>
-<li>14046: Nested ExecutionException when cancelling a screenshot</li>
-<li>14043: Help button on Flare, Chess Clock, Deselect had broken link</li>
-<li>14041: Prevent race when creating GlobalPrefs</li>
-</ul>
-
-<h3>Other improvements</h3>
-<ul>
-<li>14098: Player includes module version number in window title</li>
-<li>14077: Include '(pixels)' in Turn Counter Label Display Length Label</li>
-<li>14070: Array Configurers: Add button moves focus to newly created entry</li>
-<li>14068: Key Command editor: Change return arrow icon to Tango undo icon</li>
-<li>14064: Add Refresh Predefined Setups in ExtensionEditor + (remove warning on pieces without parent)</li>
-<li>14059: Show better descriptions for Marker traits in Piece Definer</li>
-<li>14057: Piece Definer should give piece image a little breathing space on left and right by default</li>
-<li>14056: Search now covers initial/min/max values in property traits</li>
-<li>14053: Canceling Welcome Wizard closes the Player (unless "show wizard at startup" has been unchecked)</li>
-<li>14055: Set Global Property: include name/expression of property in trait list</li>
-</ul>
-
-<h2>Changes since 3.5.0</h2>
-<h3>Bug fixes</h3>
-<ul>
-<li>14035: Multi Action Button and Toolbar Menu lose last item in Menu Entry list</li>
-<li>14034: Prevent concurrent updates to preferences</li>
-<li>14033: Fast Match forgets fields when added to Maps and Module</li>
-<li>14032: Fast Match was picking wrong number of cards from decks</li>
-<li>14026: GameRefresher incorrectly deletes off map pieces</li>
-<li>14024: NumberFormatException when private server port is empty</li>
-<li>14023: Advanced Search displays "hit lists" properly for names/types of prototypes & configurables</li>
-<li>14018: Refresh Predefined Setup incorrectly clones at start stacks</li>
-<li>14012: Die Roll 'Prompt for values when button pushed' dialog is broken</li>
-<li>14008: Unused Images Tool was suggesting some in-use GIFs for deletion</li>
-<li>14007: NPE when adding dockable PieceWindow from module extension</li>
-<li>14000: OverlappingFileLockException when attempting to write preferences</li>
-<li>13999: Fast-Match wasn't working for "Moved" property</li>
-<li>13997: Chat log should start display on bottom line even with larger monitors</li>
-<li>13996: Sanitize temp file basenames to escape illegal characters</li>
-<li>13995: Don't try to write a logfile without having started one</li>
-<li>13993: IllegalBuildException on gpIdChecker when using GameRefresher</li>
-<li>13992: NPE in Embellishment.addLocalImageNames()</li>
-<li>13991: NPE when using Game Refresher on predefined setups</li>
-<li>13988: ExecutionException when opening a moved or renamed module file</li>
-<li>13987: ChessClock buttons with icons had inappropriate height/width</li>
-<li>13984: NPE in BugUtils when involved from the Module Manager</li>
-<li>13981: NoSuchElementException using Edit All Contained Pieces</li>
-<li>13975: ArrayIndexOutOfBoundsException using Edit All Contained Pieces</li>
-<li>13973: Missing message for failure to write file</li>
-<li>13971: Cannot create new module extensions</li>
-<li>13970: DiceButton icons and Mask images incorrectly suggested for removal by unneeded-file-remover</li>
-<li>13968: NPE in HelpFile.addLocalImageNames()</li>
-<li>13967: Search wasn't searching into PieceSlots ("Single Piece" items in Setup Stacks, etc.)</li>
-<li>13965: MouseoverStackViewer should not show face-down cards in decks, should not unnecessarily clip underneath text, and should not run off left edge of screen in an overzealous attempt to center-on-cursor</li>
-<li>13964: Module extension file extension incorrectly listed as .vext instead of .vmdx</li>
-<li>13960: MouseoverStackViewer mis-centering if "draw pieces" wasn't selected</li>
-<li>13959: Loads from wizard should add filename to window title</li>
-<li>13958: ExecutionException when cancelling a screenshot</li>
-<li>13954: Alt-click, Shift+Ctrl-click should not change selection</li>
-<li>13944: NPE when loading second game in modules using deprecated Map.mainWindowDock</li>
-</ul>
-
-<h3>Other improvements</h3>
-<ul>
-<li>14040: Reference Manual cleanup</li>
-<li>14039: Improved/Repaired some tables in online docs</li>
-<li>14022: Upgrade bundled Java to 15.0.2+7</li>
-<li>14019: Remove confusing Vassal Version column from MM, show based on preference</li>
-<li>14015: Added infinite loop protection to PlaceMarker</li>
-<li>14011: Search now pre-selects contents of search field when restoring/remembering the previous contents</li>
-<li>14009: Standardize remaining dialogs</li>
-<li>13977: Alt+Shift now an option for band selection of Does Not Stack pieces</li>
-<li>13974: Better window title bars (filename-first like most apps)</li>
-<li>13930: Added infinite loop protection to TurnTracker</li>
-<li>13742: Action Button trait should arm when pressed, fire on release</li>
-</ul>
-
-<h2>Changes since 3.4.13</h2>
 <h3>New features</h3>
 <ul>
-<li>13706: Console, for entering commands to affect errorlog, properties, etc.</li>
-<li>13522: Performance improvements for Global Key Commands</li>
-<li>13504: Simpler way to display PDF files from Help menu</li>
-<li>13494: Expose version numbers and module strings to module as properties</li>
-<li>13432: MouseOverStackViewer can show > 1 piece of a deck</li>
-<li>13417: Editor's search function can now search piece traits and component attributes</li>
-<li>13415: MouseoverStackViewer has HTML support and additional formatting options</li>
-<li>13414: "Help" button (and help information) added to Preferences dialog</li>
-<li>13368: Added preference to control drag-at-edge-of-map width</li>
-<li>13355: Threshold for centering on opponent's move is now configurable</li>
-<li>13352: Title Bar of module should always show most recent Save/Load/Log</li>
-<li>13297: Ability to Deselect a piece with a Key Command (also remove it from its stack)</li>
-<li>13296: Flare feature for map</li>
-<li>13219: Added KeyNamer for overriding key names</li>
-<li>1868: Method for removing unused images from modules</li>
-<li>1826: Aesthetic improvements to dialogs</li>
-<li>1807: Chess clocks</li>
-<li>1804: Added Preference for turning off sounds</li>
+<li>14228: Chess Clocks can now be manually reset (if manual reset is enabled for them by module designer)</li>
+<li>14217: MouseoverStackViewer - $countPieces$ will give the total number of pieces found in the stack (w/o having to create a property)</li>
+<li>14207: Improved translation features (Global Translatable Message component, Translatable Message trait, exposing current language/locale as property)</li>
+<li>14191: CurrentLanguage and CurrentLanguageName exposed as module properties</li>
 </ul>
 
-<h3>Bug fixes</h3>
+<h3>Bug fixes</h3></li>
 <ul>
-<li>13950: Level name in Layer trait is not being saved</li>
-<li>13900: MassPieceLoader trait editor shows standard Embellishment trait editor instead of MPL-specific one</li>
-<li>13886: Reinstate removed TilingHandler ctor for VASL 6.6.1</li>
-<li>13879: NPE in DieManager ctor</li>
-<li>13876: NPE in AbstractMetaData.getVassalVersion()</li>
-<li>13868: Added description field to (nearly) all traits</li>
-<li>13853: Toolbars missing from non-dockable windows</li>
-<li>13825: "Module from older version" check is too strict</li>
-<li>13823: Map/Module Global Key Command Description not being saved</li>
-<li>13821: SendToLocation does not create Movement Trail points</li>
-<li>13811: NPE in DiceButton.setAttribute()</li>
-<li>13810: Find all parentless Dialogs and JOptionPanes and give them a parent</li>
-<li>13783: Non-rectangular trait should remember name of image that created it</li>
-<li>13782: Suffix/Prefix fields in Layer trait are not displayed correctly</li>
-<li>13781: Bad parameter in Editor.UniqueIdManager.more_than_one message</li>
-<li>13771: NPE after cutting/pasting piece palettes in Editor</li>
-<li>13755: Chess clock help file is misnamed</li>
-<li>13741: DataArchive.getImageNames() incorrectly returns an empty string if images/ has an entry in the ZIP archive</li>
-<li>13675: Piece Slots shouldn't be allowed at very top level of Piece Palette</li>
-<li>13660: Replaced ComponentSplitter with SplitPane for better splitter positioning</li>
-<li>13659: "Remember window size" preference is no longer ignored</li>
-<li>13593: Global preferences are written when changed</li>
-<li>13509: Save As in Editor, if it fails, complains the new filename</li>
-<li>13495: Wizard should set the initial value for next save/load dialog</li>
-<li>13336: Fixed incorrect date format in SecretNotesController</li>
-<li>12946: Prevent top level required components from being deleted in Editor</li>
-<li>4779: Comparison operator >= no longer incorrectly documented as =></li>
-<li>4324: Antialiasing RenderingHints not set properly for drawing game components</li>
+<li>14270: "maximum heap too large" message shown when maximum heap is too small</li>
+<li>14269: Poor Editor performance when using Fast Match</li>
+<li>14267: Game Refresher: Refresh Predefined Setups should clear any open game in the Player</li>
+<li>14256: LOS gets stuck on screen when replayed through logfile</li>
+<li>14255: Default autoreport text made -&lt; instead of -&gt;</li>
+<li>14246: Fast Match Global Key Commands were "dealing off the bottom of the deck" in certain cases</li>
+<li>14245: HTML in Tabbed Panes (charts, widgets): Work around apparent Swing bug in JTabbedPane</li>
+<li>14243: Game Piece Layer manipulation commands do not match described effect</li>
+<li>14227: Mark When Moved had Vertical offset mislabeled as Horizontal offset</li>
+<li>14226: Undo and Server buttons steal focus after being clicked</li>
+<li>14222: Editor Search output loses less-than symbols</li>
+<li>14219: Do not expand every prototype in a piece before searching it, just match the name of the prototype.</li>
+<li>14203: Global Key Commands should exit after displaying report if there is no key command to issue</li>
+<li>14200: Scenario names (Predefined Setup) should be displayed in translated language</li>
+<li>14199: Inventory text not translated</li>
+<li>14198: Translated private windows do not work when changing sides if module is translated</li>
+<li>14196: Right-click menu localization is not shown for some elements</li>
+<li>14192: Decks from previous saves and logs are retained in memory</li>
+<li>14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners (e.g. accepting double click AND drag from same mouse sequence)</li>
+<li>14178: Some weird systems lack awt.font.desktophints but aren't headless</li>
+<li>14168: Fix broken HTML in the 'not-allowed-in-multiplayer-games' message</li>
+<li>14164: Fast Match change persists despite Cancel</li>
+<li>14163: NPE due to File.listFiles() returning null for symlnks on Macs</li>
+<li>14159: Fast Search GKC ignores "Within a deck, apply to no pieces"</li>
+<li>14156: Loading a log file to continue a game shouldn't reset the map window</li>
+<li>14155: Search was showing duplicate entries for certain items</li>
+<li>14154: Search wasn't finding "Fast Match" fields</li>
+<li>14152: .vsav, .vlog should be appended to saves, logs when not present, instead of checking for '.'</li>
+<li>14149: Windows installer fails to run uninstallers for old versions</li>
+<li>14143: First character is 'eaten' when typing chat while over map</li>
+<li>14138: Turn Tracker mispopulates button tooltip field while running in editor</li>
+<li>14136: Module-level GKCs were not honoring fast match</li>
+<li>14131: String method calls in Beanshell don't return proper result unless GetProperty is used</li>
+<li>14124: Remove "(Optional)" from Send to Location Board Name hint text</li>
+<li>14112: In Dynamic Property List of values, cursor jumps after first character entered</li>
+<li>14088: Ensure image is updated on selection of new image with duplicate filename in the Editor</li>
+<li>14069: ArrayIndexOutOfBoundsException in StringArrayConfigurer due to race</li>
+<li>13796: Stacks after the first are unstacked when multiple stacks dragged to a snap-to map</li>
+<li>13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()</li>
+<li>13472: "Send to Deck" creates phantom cards in proportion to the number of game starts</li>
+<li>13145: Send Hot Key ignored by Deck</li>
+<li>12538: Decks report multiple shuffles after loading saved game</li>
 </ul>
 
 <h3>Other improvements</h3>
 <ul>
-<li>13952: Make Flare animation disableable</li>
-<li>13947: File > Import Module moved to Tools > Convert Module</li>
-<li>13813: Simplified communication between Module Manager, Player, Editor</li>
-<li>13792: Combined save and log loading; Load Continuation moved from File to Tools menu</li>
-<li>13777: Improved workflow of zone editor</li>
-<li>13761: Refer to MacOS instead of MacOS X now that MacOS 11 is out</li>
-<li>13661: Simplified ZIP archive writing and error reporting</li>
-<li>13450: Improve look of Auto Configured editor dialogs</li>
-<li>13437: Improve visibility of Logging status - Help people to remember to start logs</li>
-<li>13363: buildFile renamed to buildFile.xml</li>
-<li>13354: Add a chatter message when starting to write a logfile</li>
-<li>13353: Use native file chooser on Linux</li>
-<li>13333: Better handling of logfile/savefile comments</li>
-<li>13326: Saving a module will default to .vmod, an extension to .vext</li>
-<li>13323: Player switching sides now reported in Chat Log</li>
-<li>13098: Move Compatibility related preferences on the General tab to a new Compatibility tab</li>
-<li>1907: Suggest default filename extensions</li>
+<li>14258: "Logging" and "Replaying" should have priority over "Saved" in the title bar</li>
+<li>14240: Welcome Wizard: Put "enter your name" screen after the main welcome (so that option to turn off wizard is always on first screen viewed)</li>
+<li>14209: Write logs and saves to .part file to forestall copying of partially written files</li>
+<li>14205: Allow different images to be loaded based on currrent VASSAL language</li>
+<li>14201: Share immutable objects</li>
+<li>14193: Expressions should be cached</li>
+<li>14185: Distinguish tile loading errors from other image loading errors</li>
+<li>14182: Prevent duplication of FormattedString data and Expressions</li>
+<li>14167: Inefficient implementation of FilterOutputStream in ZipWriter</li>
+<li>14148: Module Editor Labels get truncated with '...'</li>
+<li>14139: Delete trait to set 'old...' properties prior to deleting piece</li>
+<li>14133: Better support for Mac Alt and Function keys</li>
+<li>14066: Remove Unused Images: Dialog sizing and file size display improvements</li>
 </ul>
 
 <p>

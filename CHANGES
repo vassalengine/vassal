@@ -1,4 +1,4 @@
-3.5.4 - ???
+3.5.4 - 29 March 2021
 
 * 14270: "maximum heap too large" message shown when maximum heap is too small
 * 14269: Poor Editor performance when using Fast Match
@@ -75,7 +75,7 @@
 * 13796: Stacks after the first are unstacked when multiple stacks dragged to
     a snap-to map
 * 13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()
-* 13472: "Send to Deck" creates phantom cards in proportion to the number ofi
+* 13472: "Send to Deck" creates phantom cards in proportion to the number of
     game starts
 * 13145: Send Hot Key ignored by Deck
 * 12538: Decks report multiple shuffles after loading saved game
