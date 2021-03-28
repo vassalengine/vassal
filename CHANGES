@@ -49,6 +49,7 @@
 * 14168: Fix broken HTML in the 'not-allowed-in-multiplayer-games' message
 * 14167: Inefficient implementation of FilterOutputStream in ZipWriter
 * 14164: Fast Match change persists despite Cancel
+* 14163: NPE due to File.listFiles() returning null for symlnks on Macs
 * 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
 * 14156: Loading a log file to continue a game shouldn't reset the map window
 * 14155: Search was showing duplicate entries for certain items
