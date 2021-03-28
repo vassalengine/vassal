@@ -406,9 +406,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
   }
 
-  private static final Logger logger =
-    LoggerFactory.getLogger(DataArchive.class);
-  
   protected void getAllLocalImageNamesForDirectory(SortedSet<String> s, String directory, boolean fullPath) {
     // trim the trailing slash
     final int trimlen = directory.length();
@@ -416,7 +413,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     try {
       for (final String filename : archive.getFiles(root)) {
         final String trimmedFileName = filename.substring(trimlen);
-        logger.error("1 : " + trimmedFileName + " 2 : " + root + " 3: " + filename);
         // Empty fn is the entry for the root directory; don't return that
         if (!trimmedFileName.isEmpty()) {
           final String fn = fullPath ? (root + '/' + trimmedFileName) : trimmedFileName;
