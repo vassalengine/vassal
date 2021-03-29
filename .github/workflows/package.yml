@@ -22,7 +22,7 @@ jobs:
       - name: Install Java
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
           java-package: jdk
 
       - name: Cache Maven packages
