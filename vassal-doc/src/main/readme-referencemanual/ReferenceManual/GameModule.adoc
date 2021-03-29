@@ -53,23 +53,24 @@ Buttons for Maps, Charts, Dice, and other additional buttons are created by addi
 
 '''''
 
-image:images/ChatLog.png[]
-
 [#ChatLog]
 === <<ChatLog.adoc#top,Chat Log>>
-
-Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the toolbar.
+[width="100%",cols="^40%,60%",]
+|===
+|image:images/ChatLog.png[]
+|Every game module contains exactly one Chat Log, and it always appears in the main Module window just underneath the toolbar.
 It exists by default and cannot be removed in the Editor.
 The chat log not only allows players to "chat" with each other by typing messages into the lower text line, it also displays a running "log" of game events -- messages produced by <<ReportChanges.adoc#top,Report Action>> traits and other <<MessageFormat.adoc#top,Message Formats>> in traits and various module components.
 Messages from your components can be displayed in a variety of colored, bold, and italicized fonts, as the chat log provides substantial HTML support to create a visually attractive and easy-to-read report log.
 
 <<ChatLog.adoc#top,See full article for details.>>
+|===
 
 '''''
 
 [#SubComponents]
 === Sub-Components
-[width="100%",cols="75%,25%",]
+[width="100%",cols="60%,^40%",]
 |===
 a|A proper module consists of many different types of subcomponents.
 Any of them can be added by right-clicking on the _[Module]_ component in the Module Editor (the very top entry in the editor) and then selecting the appropriate _Add_ option.
@@ -179,7 +180,7 @@ This also has the advantage of allowing you to change these traits in one place 
 |===
 
 ==== <<GlobalProperties.adoc#top,Global Properties>>
-[width="100%",cols="60%,40%",]
+[width="100%",cols="60%,^40%",]
 |===
 |Allows you to define default numeric or string values for <<Properties.adoc#top,Global Properties>> which can then be referenced and modified by <<SetGlobalProperty.adoc#top,traits>> in your Game Pieces.
 Global Properties work much like "global variables" in programming, in that they are accessible to any piece or component in your module.
