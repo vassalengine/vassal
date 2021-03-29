@@ -360,7 +360,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(SwingUtils.convertKeyEvent(e)));
+        setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
       }
     }
 
@@ -383,7 +383,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       case KeyEvent.VK_UNDEFINED:
         break;
       default:
-        setValue(NamedKeyStroke.getKeyStrokeForEvent(SwingUtils.convertKeyEvent(e)));
+        setValue(NamedKeyStroke.of(SwingUtils.convertKeyEvent(e)));
       }
     }
   }
