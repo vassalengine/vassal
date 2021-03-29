@@ -18,6 +18,9 @@ menu. Keyboard shortcuts can also be specified for starting and stopping clocks.
 The time display format of the clocks can also be configured here. Display of fields such as "milliseconds" and "days" can be left on the _Auto_ setting, or
 configured to _Always_ or _Never_ as appropriate for your game.
 
+If _Allow manual reset of Chess Click timers_ is selected, players will be able to reset any clock to 0 at any time during the game by right-clicking on the clock
+to reset and selecting the "reset" option from the context menu.
+
 The individual clocks can then be configured with an icon and text, as desired, on their own components.
 
 To add Chess Clocks to your module, find the main _[Module]_ entry at the very top of the Editor's configuration window.

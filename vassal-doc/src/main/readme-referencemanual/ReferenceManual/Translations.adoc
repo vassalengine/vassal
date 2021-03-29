@@ -52,4 +52,6 @@ When your translation is complete, save the module or module extension.
 When a user loads the module, VASSAL will use the translation appropriate for the user's computer.
 It is not necessary for module translations to be bundled into a VASSAL release, and an extension containing a translation can be distributed independently of the module itself.
 
+When running a translated module, the properties `CurrentLanguage` (e.g. "en", "fr", "es") and `CurrentLanguageName` (e.g. "English") are visible to the module.
+
 _Note:  A module is not translated when opened in edit mode; module translations are *only* applied in play mode._
