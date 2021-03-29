@@ -869,7 +869,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       g.removeCommandEncoder(picker);
       g.getGameState().addGameComponent(picker);
     }
-    PlayerRoster.removeSideChangeListener(this);
+    g.addSideChangeListenerToPlayerRoster(this);
   }
 
   /**
