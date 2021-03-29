@@ -23,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -67,7 +68,7 @@ public class LaunchButton extends JButton {
     iconConfig = new IconConfigurer(iconAtt, null, null);
     setAlignmentY(0.0F);
     keyListener = new NamedKeyStrokeListener(e -> {
-      if (isEnabled() && getParent() != null && getParent().isShowing()) {
+      if (isEnabled() && (GlobalOptions.getInstance().isHotKeysOnClosedWindows() || (getParent() != null && getParent().isShowing()))) {
         al.actionPerformed(e);
       }
     });
