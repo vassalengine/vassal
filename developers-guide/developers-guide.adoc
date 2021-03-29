@@ -241,6 +241,7 @@ include::{rootdir}Makefile[lines=258]
 * [ ] `make` (This will update various `pom.xml` with the new version number.)
 * [ ] Commit the changes.
 * [ ] `git tag -s -m 'The x.y.z release.' x.y.z`
+* [ ] `git push --tags`
 * [ ] `make release`
 * [ ] `make release-notes`
 * [ ] Add a new release at GitHub. Upload the release pacakges. Paste in the change log.
@@ -248,9 +249,10 @@ include::{rootdir}Makefile[lines=258]
 * [ ] Pull `site` repo (in `/var/www/html/site` on vassalengine.org).
 * [ ] Upload maven artifacts to our repo: `rsync -avP releases/ vassal.org:/var/www/html/site/maven`
 * [ ] From `/var/www/html/site/javadoc/` on vassalengine.org: `mkdir x.y.z && cd x.y.z && unzip ../../maven/org/vassalengine/vassal-app/x.y.z/vassal-app-x.y.z-javadoc.jar`
+* [ ] Update the release notes in our wiki.
 * [ ] Post release announcements (see `tmp/notes-*`):
   * Our news page: http://www.vassalengine.org/news/
-  * Our forum: http://www.vassalengine.org/forum/viewforum.php?f=2 (Set the new post to be an Announcement; also set the previous release's post to be a Normal post again.)
+  * Our forum: http://www.vassalengine.org/forum/viewforum.php?f=2 (Set the new post to be an Announcement; also set the previous release's post to be a Standart Topic post again.)
   * BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming
   * BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases
   * Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067
