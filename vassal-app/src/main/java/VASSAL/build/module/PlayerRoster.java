@@ -38,6 +38,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -83,7 +84,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   protected List<SideChangeListener> sideChangeListeners = new ArrayList<>();
 
-  protected int ourSideChangeListenerCount = -1;
+  private int ourSideChangeListenerCount = 0;
 
   protected String translatedObserver;
 
@@ -215,8 +216,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   /**
    * @deprecated use {@link GameModule#addSideChangeListenerToPlayerRoster(SideChangeListener)}
    */
-  @Deprecated
+  @Deprecated(since = "2020-06-15", forRemoval = true)
   public static void addSideChangeListener(SideChangeListener l) {
+    ProblemDialog.showDeprecated("2020-06-15");
     GameModule.getGameModule().addSideChangeListenerToPlayerRoster(l);
   }
 
@@ -226,20 +228,19 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   public void resetListeners() {
     final int curSize = sideChangeListeners.size();
-    if (ourSideChangeListenerCount == -1) {
-      ourSideChangeListenerCount = curSize;
-    }
-    else {
-      sideChangeListeners.subList(ourSideChangeListenerCount, curSize).clear();
-    }
+    sideChangeListeners.subList(ourSideChangeListenerCount, curSize).clear();
   }
 
   public void addSideChangeListenerToInstance(SideChangeListener l) {
     sideChangeListeners.add(l);
   }
 
-  @Deprecated
+  /**
+   * @deprecated use {@link GameModule#removeSideChangeListenerFromPlayerRoster(SideChangeListener)}
+   */
+  @Deprecated(since = "2020-06-15", forRemoval = true)
   public static void removeSideChangeListener(SideChangeListener l) {
+    ProblemDialog.showDeprecated("2020-06-15");
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       r.sideChangeListeners.remove(l);

@@ -344,8 +344,8 @@ public class GameModule extends AbstractConfigurable
   private final List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
 
-  private int ourKeyStrokeSourceCount = -1;
-  private int ourKeyStrokeListenerCount = -1;
+  private int ourKeyStrokeSourceCount = 0;
+  private int ourKeyStrokeListenerCount = 0;
 
   private final List<KeyStrokeSource> keyStrokeSourcesToAdd = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListenersToAdd = new ArrayList<>();
