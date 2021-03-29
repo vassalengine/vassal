@@ -954,7 +954,7 @@ public class GameModule extends AbstractConfigurable
     return new String[]{
       Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
-      Resources.getString("Editor.description_label"),    //NON-NLS
+      Resources.getString("Editor.GameModule.description_label"),    //NON-NLS
       Resources.getString("Editor.GameModule.module_other_1_label"), //NON-NLS
       Resources.getString("Editor.GameModule.module_other_2_label") //NON-NLS
     };
