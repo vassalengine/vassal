@@ -1,5 +1,6 @@
 3.5.5 - ???
 
+* 14285: IllegalArgumentException in PlayerRoster when moving items in Editor
 * 14282: Upgrade to Java 16 for Windows, Mac packages
 
 3.5.4 - 29 March 2021
