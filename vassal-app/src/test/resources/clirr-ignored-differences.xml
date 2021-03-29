@@ -22,4 +22,10 @@
         <method>*</method>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>6010</differenceType>
+        <field>ourSideChangeListenerCount</field>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
 </differences>

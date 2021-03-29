@@ -83,7 +83,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   protected List<SideChangeListener> sideChangeListeners = new ArrayList<>();
 
-  protected int ourSideChangeListenerCount = -1;
+  private int ourSideChangeListenerCount = 0;
 
   protected String translatedObserver;
 
@@ -226,12 +226,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   public void resetListeners() {
     final int curSize = sideChangeListeners.size();
-    if (ourSideChangeListenerCount == -1) {
-      ourSideChangeListenerCount = curSize;
-    }
-    else {
-      sideChangeListeners.subList(ourSideChangeListenerCount, curSize).clear();
-    }
+    sideChangeListeners.subList(ourSideChangeListenerCount, curSize).clear();
   }
 
   public void addSideChangeListenerToInstance(SideChangeListener l) {
