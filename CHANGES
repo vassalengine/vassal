@@ -1,3 +1,7 @@
+3.5.5 - ???
+
+* 14282: Upgrade to Java 16 for Windows, Mac packages
+
 3.5.4 - 29 March 2021
 
 * 14270: "maximum heap too large" message shown when maximum heap is too small
@@ -26,8 +30,6 @@
     pieces found in the stack (w/o having to create a property)
 * 14209: Write logs and saves to .part file to forestall copying of partially
     written files
-* 14207: Improved translation features (Global Translatable Message component,
-    Translatable Message trait, exposing current language/locale as property)
 * 14205: Allow different images to be loaded based on currrent VASSAL language
 * 14203: Global Key Commands should exit after displaying report if there is
     no key command to issue
