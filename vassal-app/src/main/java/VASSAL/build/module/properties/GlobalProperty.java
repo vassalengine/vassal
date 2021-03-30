@@ -25,6 +25,7 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.configure.NotNullConfigureName;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
@@ -203,6 +204,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public void addTo(Buildable parent) {
+    validator = new NotNullConfigureName(this);
     if (parent instanceof AbstractFolder) {
       parent = ((AbstractFolder) parent).getNonFolderAncestor();
     }
