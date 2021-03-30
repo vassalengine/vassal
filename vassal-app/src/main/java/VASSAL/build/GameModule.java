@@ -1100,6 +1100,9 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+  /**
+   * Dump the list-of-new-listeners. Preferably done right before we're about to assemble a NEW list-of-new-listeners.
+   */
   public void dumpNewListeners() {
     if (!isLoadingContinuationSemaphore()) {
       keyStrokeSourcesToAdd.clear();

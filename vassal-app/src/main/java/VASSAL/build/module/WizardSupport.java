@@ -114,7 +114,6 @@ public class WizardSupport {
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
   public static final String WELCOME_WIZARD_ENABLED = "showWelcomeWizard"; //$NON-NLS-1$
-  public static final String BRAND_NEW_GAME = "brandNewGame"; //NON-NLS
   protected Dimension logoSize = new Dimension(200, 200);
   protected List<PredefinedSetup> setups = new ArrayList<>();
   protected Tutorial tutorial;
@@ -184,11 +183,6 @@ public class WizardSupport {
         }.execute();
       }
       else {
-        final Object brandNew = m.get(BRAND_NEW_GAME);
-        if ((brandNew != null) && (boolean)brandNew) {
-          g.dumpNewListeners();
-        }
-
         g.getGameState().setup(true);
         g.getPlayerWindow().setVisible(true);
       }
@@ -356,7 +350,6 @@ public class WizardSupport {
         settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
         final Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
         settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-        settings.put(BRAND_NEW_GAME, false);
         controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
         controller.setProblem(null);
       });
@@ -387,7 +380,6 @@ public class WizardSupport {
         else {
           final Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
           settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-          settings.put(BRAND_NEW_GAME, true);
           controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
         }
       });
@@ -483,12 +475,10 @@ public class WizardSupport {
           final PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
           if (setup.isUseFile() && setup.getFileName() != null) {
             loadSetup(setup, controller, settings);
-            settings.put(BRAND_NEW_GAME, false);
           }
           else {
             final GameSetupPanels panels = GameSetupPanels.newInstance();
             settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
-            settings.put(BRAND_NEW_GAME, true);
             controller.setProblem(null);
             controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
           }

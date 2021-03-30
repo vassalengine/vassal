@@ -16,6 +16,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.module.map.SetupStack;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
@@ -189,7 +190,7 @@ public class GameState implements CommandEncoder {
       public void actionPerformed(ActionEvent e) {
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
 
-        GameModule.getGameModule().dumpNewListeners();
+        GameModule.getGameModule().dumpNewListeners(); // When starting a brand new game, setup() will actually end up constructor-ing decks and stuff, so we dump earlier lists first.
         setup(false);
 
         final Logger log = GameModule.getGameModule().getLogger();
@@ -389,6 +390,10 @@ public class GameState implements CommandEncoder {
 
     if (gameStarting) {
       g.getWizardSupport().showGameSetupWizard();
+
+      if (SetupStack.indicator.isNewGame()) {
+        g.dumpNewListeners();
+      }
     }
 
     loadGameOld.setEnabled(gameStarting);
