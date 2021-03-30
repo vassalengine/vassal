@@ -918,7 +918,11 @@ public class GameState implements CommandEncoder {
                                    final InputStream in) throws IOException {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
-    
+
+    //BR// Dump any to-be-added listeners from our list before we start calling new game's constructors
+    //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
+    //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
+    //BR// get to execute it.
     GameModule.getGameModule().dumpNewListeners();
 
     final Command loadCommand = decodeSavedGame(in);
@@ -958,6 +962,10 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
+    //BR// Dump any to-be-added listeners from our list before we start calling new game's constructors
+    //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
+    //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
+    //BR// get to execute it.
     GameModule.getGameModule().dumpNewListeners();
 
     final JFrame frame = GameModule.getGameModule().getPlayerWindow();
