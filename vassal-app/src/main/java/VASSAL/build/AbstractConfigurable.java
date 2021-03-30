@@ -59,7 +59,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    */
   @Override
   public String getConfigureName() {
-    return name;
+    return (name != null) ? name : "";
   }
 
   /**
