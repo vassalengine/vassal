@@ -84,7 +84,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
 
   private static final char DELIMITER = '\t'; //$NON-NLS-1$
   public  static final String COMMAND_PREFIX = "DECKREPOS" + DELIMITER; //$NON-NLS-1$
-  private Deck deck;
+  private String id;
   private Point newPosition;
 
   private Action refreshAction;
@@ -118,9 +118,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     if (c instanceof DeckRepositionCommand) {
       final DeckRepositionCommand drc = (DeckRepositionCommand) c;
       final SequenceEncoder se = new SequenceEncoder(DELIMITER);
-      se.append(drc.deck.getId())
+      se.append(drc.id)
         .append(drc.newPosition.x)
-        .append(drc.newPosition.y);
+        .append(drc.newPosition.y)
+        .append(drc.oldPosition.x)
+        .append(drc.oldPosition.y);
       return COMMAND_PREFIX + se.getValue();
     }
     return null;
@@ -133,28 +135,17 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
    */
   @Override
   public Command decode(final String s) {
-    Deck deck = null;
     if (s.startsWith(COMMAND_PREFIX)) { // Make sure this command is for a Deck Reposition
       final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, DELIMITER);
       sd.nextToken(); // Skip over the Command Prefix
-      final String decodedDeckId = sd.next();
-      //Scan pieces to find the Deck
-      for (final GamePiece piece : GameModule.getGameModule().getGameState().getAllPieces()) {
-        if (piece instanceof Deck) {
-          final String deckId = ((Deck) piece).getId();
-          if (deckId.equals(decodedDeckId)) {
-            deck =  (Deck) piece;
-            break;
-          }
-        }
-      }
-      if (deck == null) {
-        return null;
-      }
+      final String id = sd.next();
       final int x = sd.nextInt(0);
       final int y = sd.nextInt(0);
       final Point newPosition = new Point(x, y);
-      return new DeckRepositionCommand(deck, newPosition);
+      final int xold = sd.nextInt(0);
+      final int yold = sd.nextInt(0);
+      final Point oldPosition = new Point(xold, yold);
+      return new DeckRepositionCommand(id, newPosition, oldPosition);
     }
     return null;
   }
@@ -169,9 +160,25 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         new GameRefresher(gpIdSupport).start();
       }
     };
-    refreshAction.setEnabled(false);
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    GameModule.getGameModule().addCommandEncoder(this);
+    refreshAction.setEnabled(false);
   }
+
+/*
+  */
+/**
+   * Removes this component from a Buildable parent.
+   * @param parent - the Map to remove the Flare from.
+   *//*
+
+  public void removeFrom(final Buildable parent) {
+    if (parent instanceof Map) {
+      GameModule.getGameModule().removeCommandEncoder(this);
+    }
+    //idMgr.remove(this);
+  }
+*/
 
   public Action getRefreshAction() {
     return refreshAction;
@@ -393,15 +400,15 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // with the same x,y position, the piece placement will not be able to determine
       // the target deck. So 1st move the deck of the piece being replaced to -1, -1
       // then put it back to its original position
-      // FIXME: should check if there is not already a deck in -1,-1. else choose another position
 
       final Stack stack = piece.getParent();
-      Deck deck = null;
+      final Deck deck = (Deck) stack;
+      String id = "";
       final boolean isDeck = (stack instanceof  Deck);
       if (isDeck) {
-        deck = (Deck) stack;
+        id = deck.getId();
         tempPosition = getDeckFreePosition(deck);
-        final Command deckRepositionCommand = new DeckRepositionCommand(deck, tempPosition);
+        final Command deckRepositionCommand = new DeckRepositionCommand(id, tempPosition, piecePosition);
         deckRepositionCommand.execute();
         command.append(deckRepositionCommand);
       }
@@ -415,7 +422,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       command.append(place);
 
       if (isDeck) {
-        final Command deckRepositionCommand = new DeckRepositionCommand(deck, piecePosition);
+        final Command deckRepositionCommand = new DeckRepositionCommand(id, piecePosition, tempPosition);
         deckRepositionCommand.execute();
         command.append(deckRepositionCommand);
       }
@@ -611,14 +618,16 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     * A {@link Command} for sending {@link GameRefresher} DeckReposition actions to other clients
  */
   private class DeckRepositionCommand extends Command {
-    private final Deck deck;
+    private final String id;
     private final Point newPosition;
+    private final Point oldPosition;
 
     /**
      */
-    public DeckRepositionCommand(Deck deck, Point newPosition) {
-      this.deck = deck;
+    public DeckRepositionCommand(String id, Point newPosition, Point oldPosition) {
+      this.id = id;
       this.newPosition = newPosition;
+      this.oldPosition = oldPosition;
     }
 
     /**
@@ -626,14 +635,28 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      */
     @Override
     protected void executeCommand() {
-      this.deck.setPosition(this.newPosition);
+      Deck deck = null;
+      //Scan pieces to find the Deck
+      for (final GamePiece piece : GameModule.getGameModule().getGameState().getAllPieces()) {
+        if (piece instanceof Deck) {
+          final String deckId = ((Deck) piece).getId();
+          if (deckId.equals(id)) {
+            deck =  (Deck) piece;
+            break;
+          }
+        }
+      }
+      if (deck == null) {
+        return;
+      }
+      deck.setPosition(this.newPosition);
     }
 
     /**
      */
     @Override
     protected Command myUndoCommand() {
-      return null;
+      return new DeckRepositionCommand(this.id, this.oldPosition, this.newPosition);
     }
   }
 
