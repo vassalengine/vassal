@@ -189,8 +189,6 @@ public class GameState implements CommandEncoder {
       @Override
       public void actionPerformed(ActionEvent e) {
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
-
-        GameModule.getGameModule().dumpNewListeners(); // When starting a brand new game, setup() will actually end up constructor-ing decks and stuff, so we dump earlier lists first.
         setup(false);
 
         final Logger log = GameModule.getGameModule().getLogger();
@@ -392,6 +390,9 @@ public class GameState implements CommandEncoder {
       g.getWizardSupport().showGameSetupWizard();
 
       if (SetupStack.indicator.isNewGame()) {
+        //BR// If we're "truly" starting a new game (not loading a game or even predefined-setup), then we need to 
+        //BR// dump the new-listeners list now, because the Game Component setups WILL call constructors.
+        //BR// SetupStack is a dorky place for a static "is this a new game" indicator, but it's where it already exists.
         g.dumpNewListeners();
       }
     }

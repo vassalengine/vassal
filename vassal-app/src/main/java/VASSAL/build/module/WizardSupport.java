@@ -589,7 +589,6 @@ public class WizardSupport {
     }
 
     protected Command loadSavedGame() throws IOException {
-      GameModule.getGameModule().dumpNewListeners();
       Command setupCommand =
         GameModule.getGameModule().getGameState().decodeSavedGame(in);
       if (setupCommand == null) {
