@@ -1105,7 +1105,9 @@ public class GameState implements CommandEncoder {
     //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
     //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
     //BR// get to execute it.
-    GameModule.getGameModule().dumpNewListeners();
+    if (!GameModule.getGameModule().isLoadingContinuationSemaphore()) {
+      GameModule.getGameModule().dumpNewListeners();
+    }
 
     try (ZipInputStream zipInput = new ZipInputStream(in)) {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
