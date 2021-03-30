@@ -413,6 +413,23 @@ public class GameModule extends AbstractConfigurable
   }
 
 
+  private boolean loadingContinuationSemaphore = false; // if we're currently loading a game as continuation
+  /**
+   * @param state - true if loading game as continuation (don't thrash listeners)
+   */
+  public void setLoadingContinuationSemaphore(boolean state) {
+    loadingContinuationSemaphore = state;
+  }
+
+  /**
+   * @return true if loading game as continuation (don't thrash listeners)
+   */
+  public boolean isLoadingContinuationSemaphore() {
+    return loadingContinuationSemaphore;
+  }
+
+
+
   /**
    * @return the top-level frame of the controls window
    * @deprecated use {@link #getPlayerWindow()}
@@ -1024,7 +1041,9 @@ public class GameModule extends AbstractConfigurable
    * @param src KeyStrokeSource Component that wants to register as a source for hotkey events
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
-    keyStrokeSourcesToAdd.add(src);
+    if (!isLoadingContinuationSemaphore()) {
+      keyStrokeSourcesToAdd.add(src);
+    }
   }
 
   private void addKeyStrokeSourceNow(KeyStrokeSource src) {
@@ -1046,7 +1065,9 @@ public class GameModule extends AbstractConfigurable
    * @param l KeystrokeListener to add
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
-    keyStrokeListenersToAdd.add(l);
+    if (!isLoadingContinuationSemaphore()) {
+      keyStrokeListenersToAdd.add(l);
+    }
   }
 
   private void addKeyStrokeListenerNow(KeyStrokeListener l) {
@@ -1082,9 +1103,11 @@ public class GameModule extends AbstractConfigurable
   }
 
   public void dumpNewListeners() {
-    keyStrokeSourcesToAdd.clear();
-    keyStrokeListenersToAdd.clear();
-    sideChangeListenersToAdd.clear();
+    if (!isLoadingContinuationSemaphore()) {
+      keyStrokeSourcesToAdd.clear();
+      keyStrokeListenersToAdd.clear();
+      sideChangeListenersToAdd.clear();
+    }
   }
 
   public void resetSourcesAndListeners() {
@@ -2212,7 +2235,9 @@ public class GameModule extends AbstractConfigurable
    * @param l new SideChangeListener
    */
   public void addSideChangeListenerToPlayerRoster(PlayerRoster.SideChangeListener l) {
-    sideChangeListenersToAdd.add(l);
+    if (!isLoadingContinuationSemaphore()) {
+      sideChangeListenersToAdd.add(l);
+    }
   }
 
   private void addSideChangeListenerToPlayerRosterNow(PlayerRoster.SideChangeListener l) {

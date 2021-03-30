@@ -188,6 +188,8 @@ public class GameState implements CommandEncoder {
       @Override
       public void actionPerformed(ActionEvent e) {
         GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+
+        GameModule.getGameModule().dumpNewListeners();
         setup(false);
 
         final Logger log = GameModule.getGameModule().getLogger();
@@ -723,7 +725,17 @@ public class GameState implements CommandEncoder {
   public void loadContinuation(File f) throws IOException {
     final GameModule g = GameModule.getGameModule();
     g.warn(Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
-    Command c = decodeSavedGame(f);
+
+    Command c;
+
+    g.setLoadingContinuationSemaphore(true); //BR// So we won't thrash the listeners while decoding.
+    try {
+      c = decodeSavedGame(f);
+    }
+    finally {
+      g.setLoadingContinuationSemaphore(false);
+    }
+
     final CommandFilter filter = new CommandFilter() {
       @Override
       protected boolean accept(Command c) {
@@ -919,12 +931,6 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
-    //BR// Dump any to-be-added listeners from our list before we start calling new game's constructors
-    //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
-    //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
-    //BR// get to execute it.
-    GameModule.getGameModule().dumpNewListeners();
-
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
       try {
@@ -961,12 +967,6 @@ public class GameState implements CommandEncoder {
                                    final InputStream in)  {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
-
-    //BR// Dump any to-be-added listeners from our list before we start calling new game's constructors
-    //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
-    //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
-    //BR// get to execute it.
-    GameModule.getGameModule().dumpNewListeners();
 
     final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -1101,6 +1101,12 @@ public class GameState implements CommandEncoder {
   }
 
   public Command decodeSavedGame(InputStream in) throws IOException {
+    //BR// Dump any to-be-added listeners from our list before we start calling new game's constructors
+    //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
+    //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
+    //BR// get to execute it.
+    GameModule.getGameModule().dumpNewListeners();
+
     try (ZipInputStream zipInput = new ZipInputStream(in)) {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
            entry = zipInput.getNextEntry()) {
