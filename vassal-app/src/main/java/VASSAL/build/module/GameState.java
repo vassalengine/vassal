@@ -918,6 +918,8 @@ public class GameState implements CommandEncoder {
                                    final InputStream in) throws IOException {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+    
+    GameModule.getGameModule().dumpNewListeners();
 
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
@@ -955,6 +957,8 @@ public class GameState implements CommandEncoder {
                                    final InputStream in)  {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+
+    GameModule.getGameModule().dumpNewListeners();
 
     final JFrame frame = GameModule.getGameModule().getPlayerWindow();
     frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
