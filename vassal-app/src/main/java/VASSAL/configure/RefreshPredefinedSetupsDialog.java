@@ -185,6 +185,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
 
     for (final PredefinedSetup pds : modulePds) {
       GameModule.getGameModule().getGameState().setup(false); //BR// Ensure we clear any existing game data/listeners/objects out.
+      GameModule.getGameModule().dumpNewListeners();
 
       GameModule.getGameModule().setRefreshingSemaphore(true); //BR// Raise the semaphore that suppresses GameState.setup()
 

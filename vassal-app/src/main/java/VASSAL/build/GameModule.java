@@ -1078,6 +1078,10 @@ public class GameModule extends AbstractConfigurable
       addSideChangeListenerToPlayerRosterNow(l);
     }
 
+    dumpNewListeners();
+  }
+
+  public void dumpNewListeners() {
     keyStrokeSourcesToAdd.clear();
     keyStrokeListenersToAdd.clear();
     sideChangeListenersToAdd.clear();
@@ -1109,10 +1113,6 @@ public class GameModule extends AbstractConfigurable
 
     sourcesToRemove.clear();
     listenersToRemove.clear();
-
-    keyStrokeSourcesToAdd.clear();
-    keyStrokeListenersToAdd.clear();
-    sideChangeListenersToAdd.clear();
 
     Expression.resetCachedExpressions();
   }
