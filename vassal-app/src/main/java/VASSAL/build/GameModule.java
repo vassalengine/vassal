@@ -1098,8 +1098,6 @@ public class GameModule extends AbstractConfigurable
     for (final PlayerRoster.SideChangeListener l : sideChangeListenersToAdd) {
       addSideChangeListenerToPlayerRosterNow(l);
     }
-
-    dumpNewListeners();
   }
 
   public void dumpNewListeners() {
