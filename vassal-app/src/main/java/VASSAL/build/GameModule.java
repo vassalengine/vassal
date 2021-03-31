@@ -1047,7 +1047,8 @@ public class GameModule extends AbstractConfigurable
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
     if (!isLoadingContinuationSemaphore()) {
-      keyStrokeSourcesToAdd.add(src);
+      addKeyStrokeSourceNow(src);
+      //keyStrokeSourcesToAdd.add(src);
     }
   }
 
@@ -1081,7 +1082,8 @@ public class GameModule extends AbstractConfigurable
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
     if (!isLoadingContinuationSemaphore()) {
-      keyStrokeListenersToAdd.add(l);
+      addKeyStrokeListenerNow(l);
+      //keyStrokeListenersToAdd.add(l);
     }
   }
 
@@ -2277,7 +2279,8 @@ public class GameModule extends AbstractConfigurable
    */
   public void addSideChangeListenerToPlayerRoster(PlayerRoster.SideChangeListener l) {
     if (!isLoadingContinuationSemaphore()) {
-      sideChangeListenersToAdd.add(l);
+      addSideChangeListenerToPlayerRosterNow(l);
+      //sideChangeListenersToAdd.add(l);
     }
   }
 
