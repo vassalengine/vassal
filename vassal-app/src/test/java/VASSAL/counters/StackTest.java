@@ -505,21 +505,6 @@ public class StackTest {
     assertEquals(gamePiece2, pieces.get(2));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void asListShouldReturnUnmodifiableList() {
-    // prepare
-    final GamePiece gamePiece0 = mock(GamePiece.class);
-    Stack s = new Stack();
-    s.add(gamePiece0);
-    final List<GamePiece> pieces = s.asList();
-
-    // run - trying to modify the list should throw
-    pieces.add(gamePiece0);
-
-    // assert - should not get here
-    Assert.fail();
-  }
-
   @Test
   public void asListShouldReturnDefensiveList() {
     // prepare
@@ -538,5 +523,4 @@ public class StackTest {
     assertEquals(gamePiece0, pieces.get(0));
     assertEquals(gamePiece1, pieces.get(1));
   }
-
 }

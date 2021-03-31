@@ -26,7 +26,6 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -117,15 +116,11 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   /**
    * A list of the pieces in the stack.
-   * @return an unmodifiable {@link List} which is a defensive copy of {@link GamePiece}s contained in
-   * this {@link Stack}
+   * @return a {@link List} which is a defensive copy of {@link GamePiece}s
+   * contained in this {@link Stack}
    */
   public List<GamePiece> asList() {
-    final List<GamePiece> result = new ArrayList<>();
-    for (int i = 0; i < pieceCount; i++) {
-      result.add(contents[i]);
-    }
-    return Collections.unmodifiableList(result);
+    return new ArrayList<>(Arrays.asList(contents).subList(0, pieceCount));
   }
 
   public Iterator<GamePiece> getPiecesReverseIterator() {
