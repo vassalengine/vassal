@@ -32,28 +32,28 @@
     <difference>
         <className>VASSAL/build/GameModule</className>
         <differenceType>7002</differenceType>
-        <method>incorporateSourcesAndListeners</method>
+        <method>void incorporateSourcesAndListeners()</method>
         <justification>Only just created in 3.5.4</justification>
     </difference>
 
     <difference>
         <className>VASSAL/build/GameModule</className>
         <differenceType>7002</differenceType>
-        <method>markModuleListeners</method>
+        <method>void markModuleListeners()</method>
         <justification>Only just created in 3.5.4</justification>
     </difference>
 
     <difference>
         <className>VASSAL/build/module/PlayerRoster</className>
         <differenceType>7002</differenceType>
-        <method>markModuleListeners</method>
+        <method>void markModuleListeners()</method>
         <justification>Only just created in 3.5.4</justification>
     </difference>
 
     <difference>
         <className>VASSAL/build/module/PlayerRoster</className>
         <differenceType>7002</differenceType>
-        <method>resetListeners</method>
+        <method>void resetListeners()</method>
         <justification>Only just created in 3.5.4</justification>
     </difference>
 
