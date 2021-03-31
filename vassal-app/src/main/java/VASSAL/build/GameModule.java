@@ -1060,6 +1060,16 @@ public class GameModule extends AbstractConfigurable
     }
   }
 
+
+  public void removeKeyStrokeListener(KeyStrokeListener l) {
+    for (final KeyStrokeSource s : keyStrokeSources) {
+      l.removeKeyStrokeSource(s);
+    }
+
+    keyStrokeListeners.remove(l);
+    keyStrokeListenersToAdd.remove(l);
+  }
+
   /**
    * The GameModule acts as the mediator for hotkey events.
    *
@@ -2288,6 +2298,12 @@ public class GameModule extends AbstractConfigurable
       r.removeSideChangeListenerFromInstance(l);
     }
   }
+
+  public void removeSideChangeListener(PlayerRoster.SideChangeListener l) {
+    removeSideChangeListenerFromPlayerRoster(l);
+    sideChangeListenersToAdd.remove(l);
+  }
+
 
   /**
    * @return a list of the Configurables string/expression fields if any (for search)
