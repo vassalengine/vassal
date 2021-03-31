@@ -5,7 +5,6 @@ import VASSAL.tools.DataArchive;
 import org.junit.Before;
 import org.junit.Ignore;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,8 +23,6 @@ public class MockModuleTest {
     final DataArchive arch = mock(DataArchive.class);
 
     when(module.getDataArchive()).thenReturn(arch);
-    //doNothing().when(module).incorporateSourcesAndListeners();
-    //doNothing().when(module).markModuleListeners();
 
     GameModule.init(module);
     initialized = true;
