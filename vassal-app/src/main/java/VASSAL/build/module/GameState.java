@@ -1112,6 +1112,7 @@ public class GameState implements CommandEncoder {
     //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
     //BR// get to execute it.
     if (!GameModule.getGameModule().isLoadingContinuationSemaphore()) {
+      GameModule.getGameModule().backupNewListeners();
       GameModule.getGameModule().dumpNewListeners();
     }
 
@@ -1121,13 +1122,24 @@ public class GameState implements CommandEncoder {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
+            GameModule.getGameModule().removeBackupNewListeners();
             return GameModule.getGameModule().decode(
               IOUtils.toString(din, StandardCharsets.UTF_8)
             );
           }
+          catch (Exception e) {
+            GameModule.getGameModule().restoreNewListeners();
+            throw e;
+          }
         }
       }
     }
+    catch (Exception e) {
+      GameModule.getGameModule().restoreNewListeners();
+      throw e;
+    }
+
+    GameModule.getGameModule().restoreNewListeners();
 
 // FIXME: give more specific error message
     throw new IOException("Invalid saveFile format"); //NON-NLS

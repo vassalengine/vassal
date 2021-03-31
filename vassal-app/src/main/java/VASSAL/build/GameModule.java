@@ -33,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -350,6 +351,10 @@ public class GameModule extends AbstractConfigurable
   private final List<KeyStrokeSource> keyStrokeSourcesToAdd = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListenersToAdd = new ArrayList<>();
   private final List<PlayerRoster.SideChangeListener> sideChangeListenersToAdd = new ArrayList<>();
+
+  private final List<KeyStrokeSource> keyStrokeSourcesToAddBackup = new ArrayList<>();
+  private final List<KeyStrokeListener> keyStrokeListenersToAddBackup = new ArrayList<>();
+  private final List<PlayerRoster.SideChangeListener> sideChangeListenersToAddBackup = new ArrayList<>();
 
   private CommandEncoder[] commandEncoders = new CommandEncoder[0];
   private final List<String> deferredChat = new ArrayList<>();
@@ -1110,6 +1115,31 @@ public class GameModule extends AbstractConfigurable
       sideChangeListenersToAdd.clear();
     }
   }
+
+  public void backupNewListeners() {
+    if (!isLoadingContinuationSemaphore()) {
+      Collections.copy(keyStrokeSourcesToAdd, keyStrokeSourcesToAddBackup);
+      Collections.copy(keyStrokeListenersToAdd, keyStrokeListenersToAddBackup);
+      Collections.copy(sideChangeListenersToAdd, sideChangeListenersToAddBackup);
+    }
+  }
+
+  public void restoreNewListeners() {
+    if (!isLoadingContinuationSemaphore()) {
+      Collections.copy(keyStrokeSourcesToAdd, keyStrokeSourcesToAddBackup);
+      Collections.copy(keyStrokeListenersToAdd, keyStrokeListenersToAddBackup);
+      Collections.copy(sideChangeListenersToAdd, sideChangeListenersToAddBackup);
+    }
+  }
+
+  public void removeBackupNewListeners() {
+    if (!isLoadingContinuationSemaphore()) {
+      keyStrokeSourcesToAddBackup.clear();
+      keyStrokeListenersToAddBackup.clear();
+      sideChangeListenersToAddBackup.clear();
+    }
+  }
+
 
   public void resetSourcesAndListeners() {
     final int curSourcesSize = keyStrokeSources.size();
