@@ -28,4 +28,40 @@
         <field>ourSideChangeListenerCount</field>
         <justification>Only just created in 3.5.4</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>incorporateSourcesAndListeners</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>markModuleListeners</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>7002</differenceType>
+        <method>markModuleListeners</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>7002</differenceType>
+        <method>resetListeners</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>6001</differenceType>
+        <field>ourSideChangeListenerCount</field>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
 </differences>
