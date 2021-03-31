@@ -36,4 +36,39 @@
         <justification>New method no longer required</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>void incorporateSourcesAndListeners()</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>void markModuleListeners()</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>7002</differenceType>
+        <method>void markModuleListeners()</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>7002</differenceType>
+        <method>void resetListeners()</method>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>6001</differenceType>
+        <field>ourSideChangeListenerCount</field>
+        <justification>Only just created in 3.5.4</justification>
+    </difference>
+
 </differences>

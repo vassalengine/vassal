@@ -1,7 +1,10 @@
 3.5.5 - ???
 
+* 14288: Deck Hotkey ignored from keyboard and Global Hotkey Trait in preset
+    scenarios
 * 14285: IllegalArgumentException in PlayerRoster when moving items in Editor
 * 14282: Upgrade to Java 16 for Windows, Mac packages
+* 14225: Send Hotkey action corrupts target deck
 
 3.5.4 - 29 March 2021
 

@@ -344,13 +344,6 @@ public class GameModule extends AbstractConfigurable
   private final List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
 
-  private int ourKeyStrokeSourceCount = 0;
-  private int ourKeyStrokeListenerCount = 0;
-
-  private final List<KeyStrokeSource> keyStrokeSourcesToAdd = new ArrayList<>();
-  private final List<KeyStrokeListener> keyStrokeListenersToAdd = new ArrayList<>();
-  private final List<PlayerRoster.SideChangeListener> sideChangeListenersToAdd = new ArrayList<>();
-
   private CommandEncoder[] commandEncoders = new CommandEncoder[0];
   private final List<String> deferredChat = new ArrayList<>();
 
@@ -411,6 +404,23 @@ public class GameModule extends AbstractConfigurable
   public boolean isRefreshingSemaphore() {
     return refreshingSemaphore;
   }
+
+
+  private boolean loadingContinuationSemaphore = false; // if we're currently loading a game as continuation
+  /**
+   * @param state - true if loading game as continuation (don't thrash listeners)
+   */
+  public void setLoadingContinuationSemaphore(boolean state) {
+    loadingContinuationSemaphore = state;
+  }
+
+  /**
+   * @return true if loading game as continuation (don't thrash listeners)
+   */
+  public boolean isLoadingContinuationSemaphore() {
+    return loadingContinuationSemaphore;
+  }
+
 
 
   /**
@@ -1024,16 +1034,23 @@ public class GameModule extends AbstractConfigurable
    * @param src KeyStrokeSource Component that wants to register as a source for hotkey events
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
-    keyStrokeSourcesToAdd.add(src);
-  }
-
-  private void addKeyStrokeSourceNow(KeyStrokeSource src) {
-    if (!keyStrokeSources.contains(src)) {
-      keyStrokeSources.add(src);
-      for (final KeyStrokeListener l : keyStrokeListeners) {
-        l.addKeyStrokeSource(src);
+    if (!isLoadingContinuationSemaphore()) {
+      if (!keyStrokeSources.contains(src)) {
+        keyStrokeSources.add(src);
+        for (final KeyStrokeListener l : keyStrokeListeners) {
+          l.addKeyStrokeSource(src);
+        }
       }
     }
+  }
+
+
+  public void removeKeyStrokeListener(KeyStrokeListener l) {
+    for (final KeyStrokeSource s : keyStrokeSources) {
+      l.removeKeyStrokeSource(s);
+    }
+
+    keyStrokeListeners.remove(l);
   }
 
   /**
@@ -1046,74 +1063,18 @@ public class GameModule extends AbstractConfigurable
    * @param l KeystrokeListener to add
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
-    keyStrokeListenersToAdd.add(l);
-  }
-
-  private void addKeyStrokeListenerNow(KeyStrokeListener l) {
-    if (!keyStrokeListeners.contains(l)) {
-      keyStrokeListeners.add(l);
-      for (final KeyStrokeSource s : keyStrokeSources) {
-        l.addKeyStrokeSource(s);
+    if (!isLoadingContinuationSemaphore()) {
+      if (!keyStrokeListeners.contains(l)) {
+        keyStrokeListeners.add(l);
+        for (final KeyStrokeSource s : keyStrokeSources) {
+          l.addKeyStrokeSource(s);
+        }
       }
     }
   }
 
-  protected void markModuleListeners() {
-    ourKeyStrokeSourceCount = keyStrokeSources.size();
-    ourKeyStrokeListenerCount = keyStrokeListeners.size();
-
-    getPlayerRoster().markModuleListeners();
-  }
-
-  public void incorporateSourcesAndListeners() {
-    for (final KeyStrokeSource s : keyStrokeSourcesToAdd) {
-      addKeyStrokeSourceNow(s);
-    }
-
-    for (final KeyStrokeListener l : keyStrokeListenersToAdd) {
-      addKeyStrokeListenerNow(l);
-    }
-
-    for (final PlayerRoster.SideChangeListener l : sideChangeListenersToAdd) {
-      addSideChangeListenerToPlayerRosterNow(l);
-    }
-
-    keyStrokeSourcesToAdd.clear();
-    keyStrokeListenersToAdd.clear();
-    sideChangeListenersToAdd.clear();
-  }
 
   public void resetSourcesAndListeners() {
-    final int curSourcesSize = keyStrokeSources.size();
-    final int curListenersSize = keyStrokeListeners.size();
-
-    // remove the non-module KeyStrokeSources
-    final List<KeyStrokeSource> sourcesToRemove = keyStrokeSources.subList(ourKeyStrokeSourceCount, curSourcesSize);
-
-    for (final KeyStrokeListener l : keyStrokeListeners) {
-      for (final KeyStrokeSource s : sourcesToRemove) {
-        l.removeKeyStrokeSource(s);
-      }
-    }
-
-    // remove the non-module KeyStrokeListeners
-    final List<KeyStrokeListener> listenersToRemove = keyStrokeListeners.subList(ourKeyStrokeListenerCount, curListenersSize);
-
-    for (final KeyStrokeListener l : listenersToRemove) {
-      for (final KeyStrokeSource s : keyStrokeSources) {
-        l.removeKeyStrokeSource(s);
-      }
-    }
-
-    getPlayerRoster().resetListeners();
-
-    sourcesToRemove.clear();
-    listenersToRemove.clear();
-
-    keyStrokeSourcesToAdd.clear();
-    keyStrokeListenersToAdd.clear();
-    sideChangeListenersToAdd.clear();
-
     Expression.resetCachedExpressions();
   }
 
@@ -1803,9 +1764,6 @@ public class GameModule extends AbstractConfigurable
     for (final Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
       plugin.init();
     }
-
-    theModule.incorporateSourcesAndListeners();
-    theModule.markModuleListeners();
   }
 
   /**
@@ -2212,13 +2170,11 @@ public class GameModule extends AbstractConfigurable
    * @param l new SideChangeListener
    */
   public void addSideChangeListenerToPlayerRoster(PlayerRoster.SideChangeListener l) {
-    sideChangeListenersToAdd.add(l);
-  }
-
-  private void addSideChangeListenerToPlayerRosterNow(PlayerRoster.SideChangeListener l) {
-    final PlayerRoster r = getPlayerRoster();
-    if (r != null) {
-      r.addSideChangeListenerToInstance(l);
+    if (!isLoadingContinuationSemaphore()) {
+      final PlayerRoster r = getPlayerRoster();
+      if (r != null) {
+        r.addSideChangeListenerToInstance(l);
+      }
     }
   }
 

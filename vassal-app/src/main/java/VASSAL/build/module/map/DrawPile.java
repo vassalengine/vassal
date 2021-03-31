@@ -896,6 +896,19 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     return l;
   }
 
+  @Override
+  public void setup(boolean gameStarting) {
+    super.setup(gameStarting);
+    if (myDeck != null) {
+      if (gameStarting) {
+        myDeck.addListeners();
+      }
+      else {
+        myDeck.removeListeners();
+      }
+    }
+  }
+
   /**
    * {@link VASSAL.search.SearchTarget}
    * @return a list of any Named KeyStrokes referenced in the Configurable, if any (for search)

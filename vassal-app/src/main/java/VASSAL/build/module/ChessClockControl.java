@@ -419,7 +419,7 @@ public class ChessClockControl extends AbstractConfigurable
       return showDays;
     }
     else if (ALLOW_RESET.equals(key)) {
-      return ALLOW_RESET;
+      return String.valueOf(allowReset);
     }
     else {
       return chessClockButton.getAttributeValueString(key);

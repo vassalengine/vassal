@@ -429,6 +429,61 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     fireNumCardsProperty();
   }
 
+
+  public void addListeners() {
+    if (shuffleListener == null) {
+      shuffleListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(shuffle());
+        repaintMap();
+      });
+
+      gameModule.addKeyStrokeListener(shuffleListener);
+      shuffleListener.setKeyStroke(getShuffleKey());
+    }
+
+    if (reshuffleListener == null) {
+      reshuffleListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(sendToDeck());
+        repaintMap();
+      });
+
+      gameModule.addKeyStrokeListener(reshuffleListener);
+      reshuffleListener.setKeyStroke(getReshuffleKey());
+    }
+
+    if (reverseListener == null) {
+      reverseListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(reverse());
+        repaintMap();
+      });
+
+      gameModule.addKeyStrokeListener(reverseListener);
+      reverseListener.setKeyStroke(getReverseKey());
+    }
+
+    gameModule.addSideChangeListenerToPlayerRoster(this);
+  }
+
+  public void removeListeners() {
+    if (shuffleListener != null) {
+      gameModule.removeKeyStrokeListener(shuffleListener);
+      shuffleListener = null;
+    }
+
+    if (reshuffleListener != null) {
+      gameModule.removeKeyStrokeListener(reshuffleListener);
+      reshuffleListener = null;
+    }
+
+    if (reverseListener != null) {
+      gameModule.removeKeyStrokeListener(reverseListener);
+      reverseListener = null;
+    }
+
+    gameModule.removeSideChangeListenerFromPlayerRoster(this);
+  }
+
+
   /** Sets the information for this Deck.  See {@link Decorator#myGetType}
    *  @param type a serialized configuration string to
    *              set the "type information" of this Deck, which is
@@ -472,38 +527,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     shuffleCommand = st.nextToken(Resources.getString("Deck.shuffle"));
     reverseCommand = st.nextToken(Resources.getString("Deck.reverse"));
     reverseKey = st.nextNamedKeyStroke(null);
-
-    if (shuffleListener == null) {
-      shuffleListener = new NamedKeyStrokeListener(e -> {
-        gameModule.sendAndLog(shuffle());
-        repaintMap();
-      });
-
-      gameModule.addKeyStrokeListener(shuffleListener);
-      shuffleListener.setKeyStroke(getShuffleKey());
-    }
-
-    if (reshuffleListener == null) {
-      reshuffleListener = new NamedKeyStrokeListener(e -> {
-        gameModule.sendAndLog(sendToDeck());
-        repaintMap();
-      });
-
-      gameModule.addKeyStrokeListener(reshuffleListener);
-      reshuffleListener.setKeyStroke(getReshuffleKey());
-    }
-
-    if (reverseListener == null) {
-      reverseListener = new NamedKeyStrokeListener(e -> {
-        gameModule.sendAndLog(reverse());
-        repaintMap();
-      });
-
-      gameModule.addKeyStrokeListener(reverseListener);
-      reverseListener.setKeyStroke(getReverseKey());
-    }
-
-    gameModule.addSideChangeListenerToPlayerRoster(this);
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
