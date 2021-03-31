@@ -416,10 +416,6 @@ public class GameState implements CommandEncoder {
         });
       }
     }
-
-    if (gameStarting) {
-      g.incorporateSourcesAndListeners();
-    }
   }
 
   /** Return true if a game is currently in progress */
@@ -723,7 +719,17 @@ public class GameState implements CommandEncoder {
   public void loadContinuation(File f) throws IOException {
     final GameModule g = GameModule.getGameModule();
     g.warn(Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
-    Command c = decodeSavedGame(f);
+
+    Command c;
+
+    g.setLoadingContinuationSemaphore(true); //BR// So we won't thrash the listeners while decoding.
+    try {
+      c = decodeSavedGame(f);
+    }
+    finally {
+      g.setLoadingContinuationSemaphore(false);
+    }
+
     final CommandFilter filter = new CommandFilter() {
       @Override
       protected boolean accept(Command c) {
