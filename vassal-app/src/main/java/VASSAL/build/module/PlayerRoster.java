@@ -83,9 +83,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected LaunchButton retireButton;
 
   protected List<SideChangeListener> sideChangeListeners = new ArrayList<>();
-
-  private int ourSideChangeListenerCount = 0;
-
+  
   protected String translatedObserver;
 
   private boolean pickedSide = false;
@@ -220,15 +218,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static void addSideChangeListener(SideChangeListener l) {
     ProblemDialog.showDeprecated("2020-06-15");
     GameModule.getGameModule().addSideChangeListenerToPlayerRoster(l);
-  }
-
-  public void markModuleListeners() {
-    ourSideChangeListenerCount = sideChangeListeners.size();
-  }
-
-  public void resetListeners() {
-    final int curSize = sideChangeListeners.size();
-    sideChangeListeners.subList(ourSideChangeListenerCount, curSize).clear();
   }
 
   public void addSideChangeListenerToInstance(SideChangeListener l) {

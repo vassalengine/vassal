@@ -345,17 +345,6 @@ public class GameModule extends AbstractConfigurable
   private final List<KeyStrokeSource> keyStrokeSources = new ArrayList<>();
   private final List<KeyStrokeListener> keyStrokeListeners = new ArrayList<>();
 
-  private int ourKeyStrokeSourceCount = 0;
-  private int ourKeyStrokeListenerCount = 0;
-
-  private final List<KeyStrokeSource> keyStrokeSourcesToAdd = new ArrayList<>();
-  private final List<KeyStrokeListener> keyStrokeListenersToAdd = new ArrayList<>();
-  private final List<PlayerRoster.SideChangeListener> sideChangeListenersToAdd = new ArrayList<>();
-
-  private final List<KeyStrokeSource> keyStrokeSourcesToAddBackup = new ArrayList<>();
-  private final List<KeyStrokeListener> keyStrokeListenersToAddBackup = new ArrayList<>();
-  private final List<PlayerRoster.SideChangeListener> sideChangeListenersToAddBackup = new ArrayList<>();
-
   private CommandEncoder[] commandEncoders = new CommandEncoder[0];
   private final List<String> deferredChat = new ArrayList<>();
 
@@ -1063,7 +1052,6 @@ public class GameModule extends AbstractConfigurable
     }
 
     keyStrokeListeners.remove(l);
-    keyStrokeListenersToAdd.remove(l);
   }
 
   /**
