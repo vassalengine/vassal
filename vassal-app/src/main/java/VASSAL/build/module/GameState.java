@@ -16,7 +16,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.build.module.map.SetupStack;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Cursor;
