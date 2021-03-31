@@ -388,13 +388,6 @@ public class GameState implements CommandEncoder {
 
     if (gameStarting) {
       g.getWizardSupport().showGameSetupWizard();
-
-      if (SetupStack.indicator.isNewGame()) {
-        //BR// If we're "truly" starting a new game (not loading a game or even predefined-setup), then we need to 
-        //BR// dump the new-listeners list now, because the Game Component setups WILL call constructors.
-        //BR// SetupStack is a dorky place for a static "is this a new game" indicator, but it's where it already exists.
-        g.dumpNewListeners();
-      }
     }
 
     loadGameOld.setEnabled(gameStarting);
@@ -423,10 +416,6 @@ public class GameState implements CommandEncoder {
           }
         });
       }
-    }
-
-    if (gameStarting) {
-      g.incorporateSourcesAndListeners();
     }
   }
 
@@ -1107,39 +1096,19 @@ public class GameState implements CommandEncoder {
   }
 
   public Command decodeSavedGame(InputStream in) throws IOException {
-    //BR// Dump any to-be-added listeners from our list before we start calling new game's constructors
-    //BR// This won't corrupt current game because we're only clearing the to-be-added list, not the actual
-    //BR// Listeners themselves, which will be cleared during the setup(false) of the loadCommand, assuming we
-    //BR// get to execute it.
-    if (!GameModule.getGameModule().isLoadingContinuationSemaphore()) {
-      GameModule.getGameModule().backupNewListeners();
-      GameModule.getGameModule().dumpNewListeners();
-    }
-
     try (ZipInputStream zipInput = new ZipInputStream(in)) {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
           try (InputStream din = new DeobfuscatingInputStream(zipInput)) {
             // FIXME: toString() is very inefficient, make decode() use the stream directly
-            GameModule.getGameModule().removeBackupNewListeners();
             return GameModule.getGameModule().decode(
               IOUtils.toString(din, StandardCharsets.UTF_8)
             );
           }
-          catch (Exception e) {
-            GameModule.getGameModule().restoreNewListeners();
-            throw e;
-          }
         }
       }
     }
-    catch (Exception e) {
-      GameModule.getGameModule().restoreNewListeners();
-      throw e;
-    }
-
-    GameModule.getGameModule().restoreNewListeners();
 
 // FIXME: give more specific error message
     throw new IOException("Invalid saveFile format"); //NON-NLS

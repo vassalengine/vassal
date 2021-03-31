@@ -480,7 +480,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener = null;
     }
 
-    gameModule.removeSideChangeListener(this);
+    gameModule.removeSideChangeListenerFromPlayerRoster(this);
   }
 
 

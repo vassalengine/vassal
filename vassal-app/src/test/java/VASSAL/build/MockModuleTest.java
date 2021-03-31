@@ -24,8 +24,8 @@ public class MockModuleTest {
     final DataArchive arch = mock(DataArchive.class);
 
     when(module.getDataArchive()).thenReturn(arch);
-    doNothing().when(module).incorporateSourcesAndListeners();
-    doNothing().when(module).markModuleListeners();
+    //doNothing().when(module).incorporateSourcesAndListeners();
+    //doNothing().when(module).markModuleListeners();
 
     GameModule.init(module);
     initialized = true;
