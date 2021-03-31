@@ -83,7 +83,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   protected LaunchButton retireButton;
 
   protected List<SideChangeListener> sideChangeListeners = new ArrayList<>();
-  
+
   protected String translatedObserver;
 
   private boolean pickedSide = false;

@@ -125,7 +125,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected String owningBoardName;
   protected String id;
   public static final String NAME = "name"; //NON-NLS
-  public static NewGameIndicator indicator; //BR// Just shut up, it was already here.
+  protected static NewGameIndicator indicator;
 
   protected StackConfigurer stackConfigurer;
   protected JButton configureButton;
