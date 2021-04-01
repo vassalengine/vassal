@@ -891,7 +891,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   public List<GamePiece> getOrderedPieces() {
     final List<GamePiece> pieces = asList();
-    if (!ALWAYS.equals(shuffleOption)) {
+    if (ALWAYS.equals(shuffleOption)) {
       Collections.shuffle(pieces, GameModule.getGameModule().getRNG());
     }
     else {
