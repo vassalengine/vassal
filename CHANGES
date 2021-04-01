@@ -1,8 +1,12 @@
 3.5.5 - ???
 
+* 14296: IndexOutOfBoundsException in BasicLogger.step() when holding down
+    step key
 * 14288: Deck Hotkey ignored from keyboard and Global Hotkey Trait in preset
     scenarios
 * 14285: IllegalArgumentException in PlayerRoster when moving items in Editor
+* 14284: Chess Clocks: fixed problem where "allow reset" option selection
+    wouldn't "stick"
 * 14282: Upgrade to Java 16 for Windows, Mac packages
 * 14225: Send Hotkey action corrupts target deck
 
