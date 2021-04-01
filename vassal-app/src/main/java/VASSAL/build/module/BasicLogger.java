@@ -309,6 +309,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * Step forward through the currently replaying vlog logfile, by getting the next {@link Command} and executing it.
    */
   protected void step() {
+    if (!isReplaying()) {
+      return; //BR// key held down can stack up extra calls to this in spite of "setEnabled(false)"
+    }
+
     final Command c = logInput.get(nextInput++);
     c.execute();
     GameModule.getGameModule().sendAndLog(c);
@@ -478,6 +482,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * This handles the UNDO button, executing the actual "Undo".
    */
   protected void undo() {
+    if (nextUndo <= 0) {
+      return; //BR// Throw away extra keys-held-down when nothing left to do
+    }
+
     final Command lastOutput = logOutput.get(nextUndo);
     final Command lastInput = (nextInput > logInput.size() || nextInput < 1) ?
       null : logInput.get(nextInput - 1);
