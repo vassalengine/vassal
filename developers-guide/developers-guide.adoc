@@ -252,14 +252,14 @@ include::{rootdir}Makefile[lines=258]
 * [ ] Add x.y.z release in our Bugzilla.
 * [ ] Update the release notes in our wiki.
 * [ ] Post release announcements (see `tmp/notes-*`):
-  * Our news page: http://www.vassalengine.org/news/
-  * Our forum: http://www.vassalengine.org/forum/viewforum.php?f=2 (Set the new post to be an Announcement; also set the previous release's post to be a Standart Topic post again.)
-  * BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming
-  * BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases
-  * Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067
-  * VASL forum at GameSquad: http://www.gamesquad.com/forums/index.php?forums/vasl.103/
-  * Facebook: Vassal Wargamers Americas: https://www.facebook.com/groups/vassalwargamers/
-  * Facebook: Vassal Wargamers Europe: https://www.facebook.com/groups/VassalWargamersEurope
+** Our news page: http://www.vassalengine.org/news/
+** Our forum: http://www.vassalengine.org/forum/viewforum.php?f=2 (Set the new post to be an Announcement; also set the previous release's post to be a Standard Topic post again.)
+** BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming
+** BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases
+** Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067
+** VASL forum at GameSquad: http://www.gamesquad.com/forums/index.php?forums/vasl.103/
+** Facebook: Vassal Wargamers Americas: https://www.facebook.com/groups/vassalwargamers/
+** Facebook: Vassal Wargamers Europe: https://www.facebook.com/groups/VassalWargamersEurope
 * [ ] Relax.
 
 == Running Vassal
