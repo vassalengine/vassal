@@ -30,6 +30,13 @@
     </difference>
 
     <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.command.Command maybeShuffle()</method>
+        <justification>New method no longer required</justification>
+    </difference>
+
+    <difference>
         <className>VASSAL/build/GameModule</className>
         <differenceType>7002</differenceType>
         <method>void incorporateSourcesAndListeners()</method>

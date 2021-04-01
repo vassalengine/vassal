@@ -35,7 +35,6 @@ import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -297,13 +296,11 @@ public class GlobalCommand {
           final Stack stack = curPiece.getParent();
           final int useFromDeck = (stack instanceof Deck) ? getSelectFromDeck() : -1;
           if (stack instanceof Deck) {
-            command = command.append(((Deck)stack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
             visitor.setSelectedCount(0);
           }
           List<GamePiece> pieces = stack.asList();
           if (stack instanceof Deck) {
-            pieces = new ArrayList<>(pieces);
-            Collections.reverse(pieces); // So that we deal from "top" of deck
+            pieces = ((Deck) stack).getOrderedPieces();
           }
           if (useFromDeck != 0) {
             for (final GamePiece gamePiece : pieces) {
@@ -327,9 +324,7 @@ public class GlobalCommand {
         final DrawPile d = DrawPile.findDrawPile(fastDeck);
         final int useFromDeck = getSelectFromDeck();
         if ((d != null) && (useFromDeck != 0)) {
-          command = command.append(d.getDeck().maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
-          final List<GamePiece> pieces = new ArrayList<>(d.getDeck().asList());
-          Collections.reverse(pieces); // So that we deal from "top" of deck
+          final List<GamePiece> pieces = d.getDeck().getOrderedPieces();
 
           visitor.setSelectedCount(0);
           for (final GamePiece gamePiece : pieces) {
@@ -386,10 +381,8 @@ public class GlobalCommand {
                 if (pieceOrStack instanceof Deck) {
                   final int useFromDeck = getSelectFromDeck();
                   if (useFromDeck != 0) {
-                    command = command.append(((Deck)pieceOrStack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
                     visitor.setSelectedCount(0);
-                    pieceList = new ArrayList<>(((Stack) pieceOrStack).asList());
-                    Collections.reverse(pieceList); // So that we deal from "top" of deck
+                    pieceList = ((Deck) pieceOrStack).getOrderedPieces();
 
                     // This will iterate through actual game pieces
                     for (final GamePiece gamePiece : pieceList) {
@@ -434,7 +427,6 @@ public class GlobalCommand {
               // We may have an individual piece, or we may have a Stack (or Deck), in which case we need to traverse it.
               if (pieceOrStack instanceof Stack) {
                 if (pieceOrStack instanceof Deck) {
-                  command = command.append(((Deck)pieceOrStack).maybeShuffle()); // If it's an always-shuffle deck, shuffle it.
                   useFromDeck = getSelectFromDeck();
                   visitor.setSelectedCount(0);
                 }
@@ -443,8 +435,7 @@ public class GlobalCommand {
                 }
                 pieceList = ((Stack) pieceOrStack).asList();
                 if (pieceOrStack instanceof Deck) {
-                  pieceList = new ArrayList<>(pieceList);
-                  Collections.reverse(pieceList);
+                  pieceList = ((Deck) pieceOrStack).getOrderedPieces();
                 }
               }
               else {

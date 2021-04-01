@@ -882,17 +882,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return setContents(l).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
-  /** Shuffle the contents of the Deck, IF it is an always-shuffle, and we're about to ask for a random list from it */
-  public Command maybeShuffle() {
-    if (!ALWAYS.equals(shuffleOption)) {
-      return new NullCommand();
+  /**
+   * Return a list if pieces in the Deck in Dealable order.
+   * If this is an Always shuffle Deck, then shuffle the list of pieces, otherwise just
+   * reverse the list order so that we deal from the top.
+   *
+   * @return List of pieces in Dealable order
+   */
+  public List<GamePiece> getOrderedPieces() {
+    final List<GamePiece> pieces = asList();
+    if (ALWAYS.equals(shuffleOption)) {
+      Collections.shuffle(pieces, GameModule.getGameModule().getRNG());
     }
-    final GamePiece[] a = new GamePiece[pieceCount];
-    System.arraycopy(contents, 0, a, 0, pieceCount);
-    final List<GamePiece> l = Arrays.asList(a);
-    DragBuffer.getBuffer().clear();
-    Collections.shuffle(l, gameModule.getRNG());
-    return setContents(l);
+    else {
+      Collections.reverse(pieces);
+    }
+    return pieces;
   }
 
   /**
