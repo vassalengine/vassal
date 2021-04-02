@@ -673,8 +673,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       add(new JLabel(name), c);
 
       c.weightx = 1.0;
-      final HintTextField field = new HintTextField(value);
-      field.setHint(Resources.getString(hintKey));
+      final HintTextField field = new HintTextField(Resources.getString(hintKey));
+      field.setText(value);
       ++c.gridx;
       c.anchor = GridBagConstraints.WEST;
       c.fill = GridBagConstraints.HORIZONTAL;
@@ -921,7 +921,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     public Ed(PropertySheet propertySheet) {
       m_panel = new PropertyPanel();
-      descCtrl = m_panel.addStringCtrl(Resources.getString("Editor.description_label"), propertySheet.menuName, "Editor.description_hint");
+      descCtrl = m_panel.addStringCtrl(Resources.getString("Editor.description_label"), propertySheet.description, "Editor.description_hint");
       menuNameCtrl = m_panel.addStringCtrl(Resources.getString("Editor.menu_command"), propertySheet.menuName, "Editor.menu_command_hint");
       keyStrokeConfig = m_panel.addKeyStrokeConfig(propertySheet.launchKeyStroke);
       commitCtrl = m_panel.addComboBox(Resources.getString("Editor.PropertySheet.commit_on"), COMMIT_VALUES, propertySheet.commitStyle);
