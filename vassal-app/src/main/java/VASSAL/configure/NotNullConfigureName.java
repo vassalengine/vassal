@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import java.util.Objects;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.i18n.Resources;
@@ -27,7 +28,7 @@ public class NotNullConfigureName implements ValidityChecker {
   private final AbstractConfigurable target;
 
   public NotNullConfigureName(AbstractConfigurable target) {
-    this.target = Object.requiresNonNull(target);
+    this.target = Objects.requireNonNull(target);
   }
 
   @Override
