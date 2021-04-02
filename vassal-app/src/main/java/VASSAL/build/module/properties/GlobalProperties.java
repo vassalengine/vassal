@@ -145,7 +145,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public GlobalProperty getMutableProperty(String name) {
     GlobalProperty property = null;
     for (final GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
-      if (prop.getConfigureName().equals(name)) {
+      if (name.equals(prop.getConfigureName())) {
         property = prop;
       }
     }
