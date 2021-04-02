@@ -10,6 +10,7 @@
 * 14284: Chess Clocks: fixed problem where "allow reset" option selection
     wouldn't "stick"
 * 14282: Upgrade to Java 16 for Windows, Mac packages
+* 14262: Missing Editor.GridEditor.command_arrow_keys translation key
 * 14225: Send Hotkey action corrupts target deck
 
 3.5.4 - 29 March 2021
