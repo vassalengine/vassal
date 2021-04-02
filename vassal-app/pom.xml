@@ -171,8 +171,8 @@
     <repositories>
         <!-- for org.netbeans:wizard -->
         <repository>
-            <id>geotoolkit</id>
-            <url>http://maven.geotoolkit.org/</url>
+            <id>vassal-maven</id>
+            <url>http://vassalengine.org/maven</url>
         </repository>
     </repositories>
 
