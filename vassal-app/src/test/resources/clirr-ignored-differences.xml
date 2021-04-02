@@ -71,4 +71,11 @@
         <justification>Only just created in 3.5.4</justification>
     </difference>
 
+    <difference>
+        <className>VASSAL/command/Command</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isNullOrcontainsOnly(java.lang.Class)</method>
+        <justification>Only just created in 3.5.4, fixed typo in name</justification>
+    </difference>
+
 </differences>

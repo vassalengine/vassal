@@ -203,10 +203,10 @@ public abstract class Command {
    * @param target Class to inspect for
    * @return true if this command contains only non-null Commands target class Commands
    */
-  public boolean isNullOrcontainsOnly(Class<?> target) {
+  public boolean isNullOrContainsOnly(Class<?> target) {
     if (this instanceof NullCommand || target.isInstance(this)) {
       for (final Command c : seq) {
-        if (c != null && !c.isNullOrcontainsOnly(target)) {
+        if (c != null && !c.isNullOrContainsOnly(target)) {
           return false;
         }
       }

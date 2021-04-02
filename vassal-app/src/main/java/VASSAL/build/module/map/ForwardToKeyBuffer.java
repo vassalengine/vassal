@@ -94,7 +94,7 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
       final Command comm = KeyBuffer.getBuffer().keyCommand(SwingUtils.getKeyStrokeForEvent(e));
       // If the generated Command contains anything other than NullCommands or SetPersistantPropertyCommands, then then
       // the KeyStroke triggered a trait action, so consume the KeyEvent so it doesn't get passed to the Chatter
-      if (! comm.isNullOrcontainsOnly(SetPersistentPropertyCommand.class)) {
+      if (! comm.isNullOrContainsOnly(SetPersistentPropertyCommand.class)) {
         GameModule.getGameModule().sendAndLog(comm);
         e.consume();
         lastConsumedEvent = e;
