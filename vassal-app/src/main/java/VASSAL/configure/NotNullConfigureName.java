@@ -27,12 +27,12 @@ public class NotNullConfigureName implements ValidityChecker {
   private final AbstractConfigurable target;
 
   public NotNullConfigureName(AbstractConfigurable target) {
-    this.target = target;
+    this.target = Object.requiresNonNull(target);
   }
 
   @Override
   public void validate(Buildable b, ValidationReport report) {
-    if (b == this.target && target.getConfigureName().equals("")) {
+    if (b == target && target.getConfigureName().equals("")) {
       report.addWarning(Resources.getString("Editor.ValidationReportDialog.blank_name") + " " + target.getClass().getName());
     }
   }
