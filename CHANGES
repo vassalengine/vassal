@@ -12,6 +12,7 @@
 * 14282: Upgrade to Java 16 for Windows, Mac packages
 * 14262: Missing Editor.GridEditor.command_arrow_keys translation key
 * 14225: Send Hotkey action corrupts target deck
+* 13837: Creating a Global Property with Null name causes NPE on Load Game
 
 3.5.4 - 29 March 2021
 
