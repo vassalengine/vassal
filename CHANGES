@@ -1,5 +1,6 @@
 3.5.5 - ???
 
+* 14309: Missing Deck.deck translation key
 * 14296: IndexOutOfBoundsException in BasicLogger.step() when holding down
     step key
 * 14291: IllegalArgumentException in PlayerRoster.resetListeners()
