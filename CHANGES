@@ -1,5 +1,6 @@
 3.5.5 - ???
 
+* 14310: Property Sheet options not saved
 * 14309: Missing Deck.deck translation key
 * 14296: IndexOutOfBoundsException in BasicLogger.step() when holding down
     step key
