@@ -18,6 +18,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
@@ -40,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -169,38 +171,48 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
-    if (launch.matches(stroke)) {
-      if (frame == null) {
-        frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), false);
-        table = new JTable(nRows, nCols);
-        setValues(values);
-        table.setTableHeader(null);
-        final JScrollPane scroll = new ScrollPane(table);
-        scroll.getViewport().setPreferredSize(table.getPreferredSize());
-        frame.add(scroll);
-        Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
-        if (getMap() != null) {
-          p = getMap().getView().getLocationOnScreen();
-          final Point p2 = getMap().mapToComponent(getPosition());
+
+    if (!launch.matches(stroke)) {
+      return null;
+    }
+
+    if (frame == null) {
+      frame = new JDialog(GameModule.getGameModule().getPlayerWindow(), false);
+      table = new JTable(nRows, nCols);
+      setValues(values);
+      table.setTableHeader(null);
+      final JScrollPane scroll = new ScrollPane(table);
+      scroll.getViewport().setPreferredSize(table.getPreferredSize());
+      frame.add(scroll);
+
+      Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
+      final Map map = getMap();
+      if (map != null) {
+        final JComponent view = map.getView();
+        if (view.isShowing()) {
+          p = view.getLocationOnScreen();
+          final Point p2 = map.mapToComponent(getPosition());
           p.translate(p2.x, p2.y);
         }
-        frame.setLocation(p.x, p.y);
-        frame.addWindowListener(new WindowAdapter() {
-          @Override
-          public void windowClosing(WindowEvent evt) {
-            table.editingStopped(null);
-            final GamePiece outer = Decorator.getOutermost(TableInfo.this);
-            if (outer.getId() != null) {
-              GameModule.getGameModule().sendAndLog(new ChangePiece(outer.getId(), oldState, outer.getState()));
-            }
-          }
-        });
-        frame.pack();
       }
-      frame.setTitle(getName());
-      oldState = Decorator.getOutermost(this).getState();
-      frame.setVisible(true);
+      frame.setLocation(p.x, p.y);
+
+      frame.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent evt) {
+          table.editingStopped(null);
+          final GamePiece outer = Decorator.getOutermost(TableInfo.this);
+          if (outer.getId() != null) {
+            GameModule.getGameModule().sendAndLog(new ChangePiece(outer.getId(), oldState, outer.getState()));
+          }
+        }
+      });
+      frame.pack();
     }
+    frame.setTitle(getName());
+    oldState = Decorator.getOutermost(this).getState();
+    frame.setVisible(true);
+
     return null;
   }
 
