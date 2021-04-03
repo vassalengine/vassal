@@ -53,7 +53,6 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
@@ -108,6 +107,7 @@ public class MassKeyCommand extends AbstractToolbarItem
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
 
+  /** @deprecated use launch from the superclass */
   @Deprecated (since = "2020-10-21", forRemoval = true)
   protected LaunchButton launch; // Exists for clirr - but use getLaunchButton()
 
@@ -137,20 +137,17 @@ public class MassKeyCommand extends AbstractToolbarItem
   }
 
   public MassKeyCommand() {
-    final ActionListener al = e -> apply();
-
     setButtonTextKey(BUTTON_TEXT);
     setHotKeyKey(HOTKEY);
 
-    launch = makeLaunchButton(Resources.getString("Editor.GlobalKeyCommand.button_name"),
-                              Resources.getString("Editor.GlobalKeyCommand.button_name"),
-                      "", //Default art exists, but is a little weird, and wasn't actually being defaulted to before --> "/images/keyCommand.gif", //NON-NLS
-                             al);
-  }
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.GlobalKeyCommand.button_name"),
+      Resources.getString("Editor.GlobalKeyCommand.button_name"),
+      "", //Default art exists, but is a little weird, and wasn't actually being defaulted to before --> "/images/keyCommand.gif", //NON-NLS
+      e -> apply()
+    ));
 
-  @Override
-  public LaunchButton getLaunchButton() {
-    return super.getLaunchButton();
+    launch = getLaunchButton(); // for compatibility
   }
 
   @Override

@@ -126,7 +126,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
     final ActionListener rollAction = e -> DR();
 
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
-    makeLaunchButton(desc, desc, "/images/die.gif", rollAction); //NON-NLS
+    setLaunchButton(makeLaunchButton(desc, desc, "/images/die.gif", rollAction)); //NON-NLS
     setAttribute(NAME, desc);
   }
 

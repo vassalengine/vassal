@@ -73,22 +73,36 @@ public class ToolbarMenu extends AbstractToolbarItem
   protected List<String> menuItems = new ArrayList<>();
   protected Map<AbstractButton, JMenuItem> buttonsToMenuMap =
     new HashMap<>();
+
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected JToolBar toolbar;
   protected JPopupMenu menu;
   protected Runnable menuBuilder;
 
   public ToolbarMenu() {
     setNameKey(DESCRIPTION); // We have a legacy name key that's different from the standard AbstractToolbarItem name key
-    launch = makeLaunchButton(Resources.getString("Editor.ToolbarMenu.tooltip_text"),
-                              Resources.getString(Resources.MENU), "", e -> launch());
+
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.ToolbarMenu.tooltip_text"),
+      Resources.getString(Resources.MENU),
+      "",
+      e -> launch()
+    ));
+    launch = getLaunchButton(); // for compatibility
+
     menu = new JPopupMenu();
     getLaunchButton().putClientProperty(MENU_PROPERTY, menu);
     GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   public void launch() {
-    menu.show(getLaunchButton(), 0, 0);
+    final LaunchButton lb = getLaunchButton();
+    if (lb.isShowing()) {
+      menu.show(lb, 0, 0);
+    }
   }
 
   @Override

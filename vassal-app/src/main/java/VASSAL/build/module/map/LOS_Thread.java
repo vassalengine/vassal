@@ -24,7 +24,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -127,7 +126,10 @@ public class LOS_Thread extends AbstractToolbarItem implements
   protected boolean retainAfterRelease = false;
   protected long lastRelease = 0;
 
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected Map map;
   protected KeyStroke hotkey;
   protected Point anchor;
@@ -166,18 +168,20 @@ public class LOS_Thread extends AbstractToolbarItem implements
     visible = false;
     persisting = false;
     mirroring = false;
-    final ActionListener al = e -> launch();
 
     setNameKey(NAME);
     setButtonTextKey(LABEL);
     setTooltipKey(TOOLTIP);
     setIconKey(ICON_NAME);
     setHotKeyKey(HOTKEY);
-    launch = makeLaunchButton(Resources.getString("Editor.LosThread.show_los_thread"),
-                              Resources.getString("Editor.LosThread.thread"),
-                              DEFAULT_ICON,
-                              al
-                              );
+
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.LosThread.show_los_thread"),
+      Resources.getString("Editor.LosThread.thread"),
+      DEFAULT_ICON,
+      e -> launch()
+    ));
+    launch = getLaunchButton(); // for compatibility
   }
 
   /**
@@ -611,10 +615,10 @@ public class LOS_Thread extends AbstractToolbarItem implements
     visible = b;
     setMirroring(false);
     if (persisting) {
-      launch.setAttribute(ICON_NAME, persistentIconName);
+      getLaunchButton().setAttribute(ICON_NAME, persistentIconName);
     }
     else {
-      launch.setAttribute(ICON_NAME, iconName);
+      getLaunchButton().setAttribute(ICON_NAME, iconName);
       map.repaint();
     }
   }

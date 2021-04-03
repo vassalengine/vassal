@@ -32,7 +32,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -75,7 +74,10 @@ public class ImageSaver extends AbstractToolbarItem {
   private static final Logger logger =
     LoggerFactory.getLogger(ImageSaver.class);
 
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected Map map;
   protected boolean promptToSplit = false;
   protected static final String DEFAULT_ICON = "/images/camera.gif"; //NON-NLS
@@ -89,16 +91,17 @@ public class ImageSaver extends AbstractToolbarItem {
   protected static final String TOOLTIP = "tooltip"; //NON-NLS
   protected static final String ICON_NAME = "icon"; //NON-NLS
 
-
   public ImageSaver() {
-    final ActionListener al = e -> writeMapAsImage();
-
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT); //NON-NLS
-    launch = makeLaunchButton(Resources.getString("Editor.ImageSaver.save_map_as_png_image"),
-                             "",
-                              DEFAULT_ICON,
-                              al);
+
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.ImageSaver.save_map_as_png_image"),
+      "",
+      DEFAULT_ICON,
+      e -> writeMapAsImage()
+    ));
+    launch = getLaunchButton(); // for compatibility
   }
 
   public ImageSaver(Map m) {
@@ -113,13 +116,13 @@ public class ImageSaver extends AbstractToolbarItem {
   @Override
   public void addTo(Buildable b) {
     map = (Map) b;
-    map.getToolBar().add(launch);
+    map.getToolBar().add(getLaunchButton());
   }
 
   @Override
   public void removeFrom(Buildable b) {
     map = (Map) b;
-    map.getToolBar().remove(launch);
+    map.getToolBar().remove(getLaunchButton());
     map.getToolBar().revalidate();
   }
 

@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -64,7 +63,11 @@ public class NotesWindow extends AbstractToolbarItem
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
 
   protected JDialog frame;
+
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected TextConfigurer scenarioNotes;
   protected TextConfigurer publicNotes;
   protected PrivateNotesController privateNotes;
@@ -80,16 +83,20 @@ public class NotesWindow extends AbstractToolbarItem
     secretNotes = new SecretNotesController();
     frame = new NotesDialog();
     frame.setTitle(Resources.getString("Notes.notes")); //$NON-NLS-1$
-    final ActionListener al = e -> {
-      captureState();
-      frame.setVisible(!frame.isShowing());
-    };
     setNameKey("");                // No description or name configured
     setButtonTextKey(BUTTON_TEXT); // Legacy different button text key
-    launch = makeLaunchButton(Resources.getString("Notes.notes"),
-                              Resources.getString("Notes.notes"),
-                             "/images/notes.gif", //NON-NLS
-                              al);
+
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Notes.notes"),
+      Resources.getString("Notes.notes"),
+      "/images/notes.gif", //NON-NLS
+      e -> {
+        captureState();
+        frame.setVisible(!frame.isShowing());
+      }
+    ));
+    launch = getLaunchButton();
+
     frame.pack();
     setup(false);
   }
