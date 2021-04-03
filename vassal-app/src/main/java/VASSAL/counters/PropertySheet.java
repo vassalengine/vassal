@@ -386,11 +386,13 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     if (frame == null) {
+      final VASSAL.build.module.Map map = getMap();
+      final JComponent view = map != null ? map.getView() : null;
+
       m_fields = new ArrayList<>();
-      final VASSAL.build.module.Map map = piece.getMap();
       Frame parent = null;
-      if (map != null && map.getView() != null) {
-        final Container topWin = map.getView().getTopLevelAncestor();
+      if (map != null) {
+        final Container topWin = view.getTopLevelAncestor();
         if (topWin instanceof JFrame) {
           parent = (Frame) topWin;
         }
@@ -578,9 +580,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
       // move window
       Point p = GameModule.getGameModule().getPlayerWindow().getLocation();
-      if (getMap() != null) {
-        p = getMap().getView().getLocationOnScreen();
-        final Point p2 = getMap().mapToComponent(getPosition());
+      if (map != null && view.isShowing()) {
+        p = view.getLocationOnScreen();
+        final Point p2 = map.mapToComponent(getPosition());
         p.translate(p2.x, p2.y);
       }
       frame.setLocation(p.x, p.y);
