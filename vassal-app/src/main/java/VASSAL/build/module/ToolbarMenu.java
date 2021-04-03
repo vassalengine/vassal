@@ -99,7 +99,10 @@ public class ToolbarMenu extends AbstractToolbarItem
   }
 
   public void launch() {
-    menu.show(getLaunchButton(), 0, 0);
+    final LaunchButton lb = getLaunchButton();
+    if (lb.isShowing()) {
+      menu.show(lb, 0, 0);
+    }
   }
 
   @Override
