@@ -447,7 +447,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           switch (commitStyle) {
           case COMMIT_IMMEDIATELY:
             // queue commit operation because it could do something
-            // unsafe in a an event update
+            // unsafe in an event update
             SwingUtilities.invokeLater(() -> updateStateFromFields());
             break;
           case COMMIT_ON_APPLY:
