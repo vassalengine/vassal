@@ -19,7 +19,6 @@ package VASSAL.build.module.map;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -50,17 +49,24 @@ public class PieceRecenterer extends AbstractToolbarItem implements DeckVisitor 
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOTKEY = "hotkey"; //NON-NLS
   @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //NON-NLS
 
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected Map map;
   protected DeckVisitorDispatcher dispatcher;
 
   public PieceRecenterer() {
-    final ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
     setNameKey("");
-    launch = makeLaunchButton("Editor.PieceRecenterer.recenter",
-                           "Editor.PieceRecenterer.recenter",
-                              "/images/recenter.gif", //NON-NLS
-                                     al);
+
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.PieceRecenterer.recenter"),
+      Resources.getString("Editor.PieceRecenterer.recenter"),
+      "/images/recenter.gif", //NON-NLS
+      e -> GameModule.getGameModule().sendAndLog(recenter(map))
+    ));
+    launch = getLaunchButton(); // for compatibility
+
     dispatcher = new DeckVisitorDispatcher(this);
   }
 

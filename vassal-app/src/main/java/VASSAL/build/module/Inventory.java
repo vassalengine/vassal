@@ -22,7 +22,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -101,12 +100,17 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.swing.SwingUtils;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 public class Inventory extends AbstractToolbarItem
                        implements GameComponent,
                                   PlayerRoster.SideChangeListener {
+
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected CounterInventory results;
   protected JTree tree;
 
@@ -202,11 +206,14 @@ public class Inventory extends AbstractToolbarItem
 
 
   public Inventory() {
-    final ActionListener al = e -> launch();
-    launch = makeLaunchButton(Resources.getString("Inventory.show_inventory"),
-                              Resources.getString("Inventory.inventory"),
-                             "/images/inventory.gif", //NON-NLS
-                              al);
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Inventory.show_inventory"),
+      Resources.getString("Inventory.inventory"),
+      "/images/inventory.gif", //NON-NLS
+      e -> launch()
+    ));
+    launch = getLaunchButton(); // for compatibility
+
     getLaunchButton().setEnabled(false);
     getLaunchButton().setVisible(false);
   }

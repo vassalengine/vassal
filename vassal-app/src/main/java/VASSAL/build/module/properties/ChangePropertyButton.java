@@ -58,7 +58,10 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   public static final String NEW_VALUE_FORMAT = "newValue"; //NON-NLS
   public static final String DESCRIPTION_FORMAT = "description"; //NON-NLS
 
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected FormattedString report = new FormattedString();
   protected GlobalProperty property;
   protected PropertyChangerConfigurer propChangeConfig = new PropertyChangerConfigurer(null, null, this);
@@ -66,9 +69,14 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
 
   public ChangePropertyButton() {
     setNameKey("");
-    launch = makeLaunchButton(Resources.getString("Editor.ChangePropertyButton.change"),
-                              Resources.getString("Editor.ChangePropertyButton.change"),
-                              "", e -> launch());
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.ChangePropertyButton.change"),
+      Resources.getString("Editor.ChangePropertyButton.change"),
+      "",
+      e -> launch()
+    ));
+
+    launch = getLaunchButton(); // for compatibility
   }
 
   public void launch() {

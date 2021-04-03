@@ -95,7 +95,10 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("MapShader"); //NON-NLS
 
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected boolean alwaysOn = false;
   protected boolean startsOn = false;
   protected String boardSelection = ALL_BOARDS;
@@ -152,7 +155,15 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   public MapShader() {
     setButtonTextKey(BUTTON_TEXT);
-    launch = makeLaunchButton("", Resources.getString("Editor.MapShader.shade"), "", e -> toggleShading());
+
+    setLaunchButton(makeLaunchButton(
+      "",
+      Resources.getString("Editor.MapShader.shade"),
+      "",
+      e -> toggleShading()
+    ));
+    launch = getLaunchButton(); // for compatibility
+
     getLaunchButton().setEnabled(false);
     setLaunchButtonVisibility();
     setConfigureName(Resources.getString("Editor.MapShader.configure_name"));
@@ -672,7 +683,10 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, ((MapShader) c).launch.getAttributeValueString(ICON));
+      return new IconConfigurer(
+        key, name,
+        ((MapShader) c).getLaunchButton().getAttributeValueString(ICON)
+      );
     }
   }
 
@@ -890,7 +904,7 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   @Override
   public void removeFrom(Buildable parent) {
-    GameModule.getGameModule().getToolBar().remove(launch);
+    GameModule.getGameModule().getToolBar().remove(getLaunchButton());
     GameModule.getGameModule().getGameState().removeGameComponent(this);
     map.removeDrawComponent(this);
     idMgr.remove(this);
@@ -903,8 +917,9 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   @Override
   public void addTo(Buildable parent) {
-    GameModule.getGameModule().getToolBar().add(launch);
-    launch.setAlignmentY(0.0F);
+    final LaunchButton lb = getLaunchButton();
+    GameModule.getGameModule().getToolBar().add(lb);
+    lb.setAlignmentY(0.0F);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     map = (Map) parent;
     map.addDrawComponent(this);

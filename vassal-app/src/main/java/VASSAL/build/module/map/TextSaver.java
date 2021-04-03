@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -52,26 +51,33 @@ public class TextSaver extends AbstractToolbarItem {
   @Deprecated protected static final String TOOLTIP = "tooltip"; //NON-NLS
 
   protected Map map;
+
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
 
   public TextSaver() {
-    final ActionListener al = e -> apply();
-
     setNameKey("");
     setButtonTextKey(BUTTON_TEXT);
-    launch = makeLaunchButton(
+
+    setLaunchButton(makeLaunchButton(
       Resources.getString("Editor.TextSaver.save_tooltip"),
       Resources.getString("Editor.TextSaver.save_text"),
       "",
-      al
-    );
+      e -> apply()
+    ));
+    launch = getLaunchButton(); // for compatibility
   }
 
   @Deprecated(since = "2020-10-01", forRemoval = true)
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, ((TextSaver) c).launch.getAttributeValueString(ICON_NAME));
+      return new IconConfigurer(
+        key,
+        name,
+        ((TextSaver) c).getLaunchButton().getAttributeValueString(ICON_NAME)
+      );
     }
   }
 

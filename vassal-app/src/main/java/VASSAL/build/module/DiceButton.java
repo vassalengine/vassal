@@ -62,7 +62,11 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
   protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+  /** @deprecated use launch from the superclass */
+  @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
+
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this);
 
@@ -97,7 +101,7 @@ public class DiceButton extends AbstractToolbarItem {
         final DiceButton delegate = new DiceButton() {
           @Override
           protected void initLaunchButton() {
-            launch = makeLaunchButton("", AbstractToolbarItem.BUTTON_TEXT, "", null);
+            setLaunchButton(makeLaunchButton("", AbstractToolbarItem.BUTTON_TEXT, "", null));
           }
         };
 
@@ -133,10 +137,15 @@ public class DiceButton extends AbstractToolbarItem {
         DR();
       }
     };
-    launch = makeLaunchButton(Resources.getString("Editor.DiceButton.dice_button_text"),
-                              Resources.getString("Editor.DiceButton.dice_button_tooltip"),
-                             "/images/die.gif", //NON-NLS
-                              rollAction);
+
+    setLaunchButton(makeLaunchButton(
+      Resources.getString("Editor.DiceButton.dice_button_text"),
+      Resources.getString("Editor.DiceButton.dice_button_tooltip"),
+      "/images/die.gif", //NON-NLS
+      rollAction
+    ));
+    launch = getLaunchButton(); // for compatibility
+
     setAttribute(AbstractToolbarItem.NAME, Resources.getString("Editor.DiceButton.dice_name")); //NON-NLS
   }
 
