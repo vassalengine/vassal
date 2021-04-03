@@ -80,8 +80,10 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   public ToolbarMenu() {
     setNameKey(DESCRIPTION); // We have a legacy name key that's different from the standard AbstractToolbarItem name key
-    launch = makeLaunchButton(Resources.getString("Editor.ToolbarMenu.tooltip_text"),
-                              Resources.getString(Resources.MENU), "", e -> launch());
+    launch = makeLaunchButton(
+      Resources.getString("Editor.ToolbarMenu.tooltip_text"),
+      Resources.getString(Resources.MENU), "", e -> launch()
+    );
     menu = new JPopupMenu();
     getLaunchButton().putClientProperty(MENU_PROPERTY, menu);
     GameModule.getGameModule().getGameState().addGameComponent(this);
