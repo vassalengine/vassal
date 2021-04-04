@@ -402,10 +402,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       // then put it back to its original position
 
       final Stack stack = piece.getParent();
-      final Deck deck = (Deck) stack;
+      Deck deck = null;
       String id = "";
       final boolean isDeck = (stack instanceof  Deck);
       if (isDeck) {
+        deck = (Deck) stack;
         id = deck.getId();
         tempPosition = getDeckFreePosition(deck);
         final Command deckRepositionCommand = new DeckRepositionCommand(id, tempPosition, piecePosition);
