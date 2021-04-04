@@ -313,15 +313,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return; //BR// key held down can stack up extra calls to this in spite of "setEnabled(false)"
     }
 
+    final GameModule g = GameModule.getGameModule();
+
     final Command c = logInput.get(nextInput++);
     c.execute();
-    GameModule.getGameModule().sendAndLog(c);
+    g.sendAndLog(c);
     stepAction.setEnabled(isReplaying());
     if (!isReplaying()) {
-      if (GameModule.GameFileMode.REPLAYING_GAME.equals(GameModule.getGameModule().getGameFileMode())) {
-        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.REPLAYED_GAME);
+      if (GameModule.GameFileMode.REPLAYING_GAME.equals(g.getGameFileMode())) {
+        g.setGameFileMode(GameModule.GameFileMode.REPLAYED_GAME);
       }
     }
+
     if (!isReplaying()) {
       queryNewLogFile(false);
     }
