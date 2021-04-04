@@ -268,6 +268,10 @@ public class Expression {
   }
 
   public static void resetCachedExpressions() {
-    CACHE.values().forEach(Expression::reset);
+    CACHE.values().forEach(e -> {
+      if (e != null) {
+        e.reset();
+      }
+    });
   }
 }
