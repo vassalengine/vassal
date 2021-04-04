@@ -1,5 +1,6 @@
 3.5.5 - ???
 
+* 14332: NullPointerException in Expression.resetCachedExpressions()
 * 14327: IllegalComponentStateException in ToolbarMenu.launch()
 * 14322: IllegalComponentStateException in TableInfo.myKeyEvent()
 * 14321: IllegalComponentStateException in PropertySheet.myKeyEvent()
