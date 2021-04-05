@@ -352,7 +352,6 @@ public class GameModule extends AbstractConfigurable
   private boolean loggingPaused = false;
   private final Object loggingLock = new Object();
   private final Deque<Command> pausedCommands = new ArrayDeque<>();
-  private Command pausedCommandCurrent = null;
 
   private String gameFile = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
