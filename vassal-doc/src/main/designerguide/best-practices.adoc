@@ -44,4 +44,4 @@ Test out your module before you publish it by playing some full games. You may r
 
 There ʼs no need to reinvent the wheel. With nearly one thousand VASSAL modules available, chances are high that a game similar to yours has already been turned into a module. In fact, most module designers got started by examining the workings of existing modules and learning from them. Previous module designers may already have solved some of the issues that your game presents. With modules easily available for view in the Module Editor, why not examine previously used methods and learn from them?
 
-The VASSALengine.org site also features a forum for asking module design questions.
+The vassalengine.org site also features a forum for asking module design questions.

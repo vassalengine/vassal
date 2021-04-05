@@ -32,7 +32,7 @@ Do not place VASSAL files into ZIP file archives. Use the proper registered exte
 
 Because of copyright issues, these publishers have specifically asked that modules for their games not be uploaded to
 
-VASSALengine.org:
+vassalengine.org:
 
 * Games Workshop
 * Avalanche Press

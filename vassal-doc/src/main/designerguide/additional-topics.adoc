@@ -12,7 +12,7 @@ If youʼre familiar with Java programming, VASSAL enables you to write and plug 
 . Pick *Add Imported Class.*
 . Enter the name of the class, and click *Ok*.
 
-A complete programming tutorial, which presumes a level of Java programming skills, is available at [.underline]#http://www.VASSALengine.org/wiki/Programming_Tutorial#.
+A complete programming tutorial, which presumes a level of Java programming skills, is available at [.underline]#http://www.vassalengine.org/wiki/Programming_Tutorial#.
 
 === Module File Structure
 
@@ -138,4 +138,4 @@ You can also supply translations for the VASSAL engine.
 
 A translation file is saved in the VASSAL home directory. The next time you start VASSAL, it will look in the home directory for a translation file matching your computerʼs locale and display the strings.
 
-When your translation file is complete, email it to support@VASSALengine.org. It will be bundled with the next VASSAL release for use by other players worldwide!
+When your translation file is complete, email it to support@vassalengine.org. It will be bundled with the next VASSAL release for use by other players worldwide!

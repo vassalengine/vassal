@@ -16,7 +16,7 @@ The imaginary _Zap Wars_ boxed set includes the following components:
 * The Zombie arsenal includes a unit called the Minefield, which can be placed in a hidden location on the map.
 * Battles are resolved using 2 ten-sided dice (d10s).
 
-All data for this tutorial can be found on the VASSALengine wiki in the File:Zapwars.zip file.
+All data for this tutorial can be found on the vassalengine.org wiki in the File:Zapwars.zip file.
 
 === Getting Started
 
