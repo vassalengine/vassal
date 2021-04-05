@@ -61,11 +61,19 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   protected int thickness = 3;
   protected boolean useImage = false;
   protected String imageName = "";
+
+  protected int xOff = 0;
+  protected int yOff = 0;
+
+  @Deprecated(since = "2021-04-05", forRemoval = true)
   protected int x = 0;
+  @Deprecated(since = "2021-04-05", forRemoval = true)
   protected int y = 0;
-  protected VisibilityCondition visibilityCondition;
   @Deprecated(since = "2020-08-06", forRemoval = true)
   protected Image image;
+
+  protected VisibilityCondition visibilityCondition;
+
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   @Override
@@ -73,8 +81,8 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     final Graphics2D g2d = (Graphics2D) g;
     if (accept(p)) {
       if (useImage) {
-        final int x1 = x - (int) (imagePainter.getImageSize().width * zoom / 2);
-        final int y1 = y - (int) (imagePainter.getImageSize().height * zoom / 2);
+        final int x1 = x + xOff - (int) (imagePainter.getImageSize().width * zoom / 2);
+        final int y1 = y + yOff - (int) (imagePainter.getImageSize().height * zoom / 2);
         imagePainter.draw(g, x1, y1, zoom, obs);
       }
       else {
@@ -196,7 +204,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         value = Integer.valueOf((String) value);
       }
       try {
-        x = (Integer) value;
+        xOff = x = (Integer) value;
       }
       catch (NumberFormatException ex) {
         throw new IllegalBuildException(ex);
@@ -207,7 +215,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         value = Integer.valueOf((String) value);
       }
       try {
-        y = (Integer) value;
+        yOff = y = (Integer) value;
       }
       catch (NumberFormatException ex) {
         throw new IllegalBuildException(ex);
@@ -236,10 +244,10 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       return imageName;
     }
     else if (key.equals(X_OFFSET)) {
-      return String.valueOf(x);
+      return String.valueOf(xOff);
     }
     else if (key.equals(Y_OFFSET)) {
-      return String.valueOf(y);
+      return String.valueOf(yOff);
     }
     return null;
   }
