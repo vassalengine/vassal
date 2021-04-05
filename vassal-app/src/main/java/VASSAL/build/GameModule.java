@@ -352,6 +352,7 @@ public class GameModule extends AbstractConfigurable
   private boolean loggingPaused = false;
   private final Object loggingLock = new Object();
   private final Deque<Command> pausedCommands = new ArrayDeque<>();
+  private Command pausedCommandCurrent = null;
 
   private String gameFile = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
@@ -1655,12 +1656,7 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          if (pausedCommands.isEmpty()) {
-            pausedCommands.push(c);
-          }
-          else {
-            pausedCommands.getLast().append(c);
-          }
+          pausedCommands.getLast().append(c);
         }
         else {
           dumpCommand(c, 0);
@@ -1684,10 +1680,9 @@ public class GameModule extends AbstractConfigurable
   public boolean pauseLogging() {
     synchronized (loggingLock) {
       if (loggingPaused) {
-        return false;
+        pausedCommands.push(new NullCommand());
       }
       loggingPaused = true;
-//      pausedCommands = null;
       return true;
     }
   }
@@ -1700,7 +1695,9 @@ public class GameModule extends AbstractConfigurable
     final Command c;
     synchronized (loggingLock) {
       c = pausedCommands.isEmpty() ? new NullCommand() : pausedCommands.removeLast();
-      loggingPaused = false;
+      if (pausedCommands.isEmpty()) {
+        loggingPaused = false;
+      }
     }
     return c;
   }
