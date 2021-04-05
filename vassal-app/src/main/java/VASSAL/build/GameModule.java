@@ -1635,12 +1635,14 @@ public class GameModule extends AbstractConfigurable
     return !cancelled;
   }
 
+/*
   private void dumpCommand(Command c, int indent) {
     System.out.println(" ".repeat(indent) + c);
     for (final Command s : c.getSubCommands()) {
       dumpCommand(s, indent + 1);
     }
   }
+*/
 
   /**
    * When the local player has taken any action that would change the game state (or otherwise needs to be sent to
@@ -1658,8 +1660,6 @@ public class GameModule extends AbstractConfigurable
           pausedCommands.getLast().append(c);
         }
         else {
-          dumpCommand(c, 0);
-          System.out.println();
           getServer().sendToOthers(c);
           getLogger().log(c);
         }
@@ -1706,7 +1706,6 @@ public class GameModule extends AbstractConfigurable
    * Use where the calling level handles the sending of outstanding commands
    */
   public void clearPausedCommands() {
-//    pausedCommands = null;
     pausedCommands.clear();
   }
 
