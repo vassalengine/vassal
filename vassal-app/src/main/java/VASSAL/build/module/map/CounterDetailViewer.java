@@ -640,14 +640,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         return false;
       }
 
-      if (Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE)) && !showNonMovable) {
-        return false;
+      if (Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
+        if (!showNonMovable) {
+          return false;
+        }
       }
-
-      if (Boolean.TRUE.equals(piece.getProperty(Properties.TERRAIN)) && !showMoveSelected) {
-        return false;
+      else {
+        //BR// This needs to be in "else" case because Properties.TERRAIN also returns true for non-movable.
+        if (Boolean.TRUE.equals(piece.getProperty(Properties.TERRAIN)) && !showMoveSelected) {
+          return false;
+        }
       }
-
 
       // Deck?
       if (piece.getParent() instanceof Deck && !showDeck) {
