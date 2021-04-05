@@ -32,10 +32,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.security.SecureRandom;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Deque;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -349,7 +351,7 @@ public class GameModule extends AbstractConfigurable
 
   private boolean loggingPaused = false;
   private final Object loggingLock = new Object();
-  private Command pausedCommands;
+  private final Deque<Command> pausedCommands = new ArrayDeque<>();
 
   private String gameFile = ""; //NON-NLS
   private GameFileMode gameFileMode = GameFileMode.NEW_GAME;
@@ -1633,6 +1635,15 @@ public class GameModule extends AbstractConfigurable
     return !cancelled;
   }
 
+/*
+  private void dumpCommand(Command c, int indent) {
+    System.out.println(" ".repeat(indent) + c);
+    for (final Command s : c.getSubCommands()) {
+      dumpCommand(s, indent + 1);
+    }
+  }
+*/
+
   /**
    * When the local player has taken any action that would change the game state (or otherwise needs to be sent to
    * any other players' clients), the action should be encapsulated into a {@link Command} and sent here. This method
@@ -1646,12 +1657,7 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          if (pausedCommands == null) {
-            pausedCommands = c;
-          }
-          else {
-            pausedCommands.append(c);
-          }
+          pausedCommands.getFirst().append(c);
         }
         else {
           getServer().sendToOthers(c);
@@ -1672,11 +1678,8 @@ public class GameModule extends AbstractConfigurable
    */
   public boolean pauseLogging() {
     synchronized (loggingLock) {
-      if (loggingPaused) {
-        return false;
-      }
+      pausedCommands.push(new NullCommand());
       loggingPaused = true;
-      pausedCommands = null;
       return true;
     }
   }
@@ -1688,9 +1691,10 @@ public class GameModule extends AbstractConfigurable
   public Command resumeLogging() {
     final Command c;
     synchronized (loggingLock) {
-      c = pausedCommands == null ? new NullCommand() : pausedCommands;
-      pausedCommands = null;
-      loggingPaused = false;
+      c = pausedCommands.pop();
+      if (pausedCommands.isEmpty()) {
+        loggingPaused = false;
+      }
     }
     return c;
   }
@@ -1700,7 +1704,7 @@ public class GameModule extends AbstractConfigurable
    * Use where the calling level handles the sending of outstanding commands
    */
   public void clearPausedCommands() {
-    pausedCommands = null;
+    pausedCommands.clear();
   }
 
   /**
