@@ -485,7 +485,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * This handles the UNDO button, executing the actual "Undo".
    */
   protected void undo() {
-    if (nextUndo <= 0) {
+    if (nextUndo < 0) {
       return; //BR// Throw away extra keys-held-down when nothing left to do
     }
 
