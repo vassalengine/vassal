@@ -639,6 +639,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       return c;
     }
   }
+
   public class StepAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
