@@ -1678,9 +1678,7 @@ public class GameModule extends AbstractConfigurable
    */
   public boolean pauseLogging() {
     synchronized (loggingLock) {
-      if (loggingPaused) {
-        pausedCommands.push(new NullCommand());
-      }
+      pausedCommands.push(new NullCommand());
       loggingPaused = true;
       return true;
     }
@@ -1693,7 +1691,7 @@ public class GameModule extends AbstractConfigurable
   public Command resumeLogging() {
     final Command c;
     synchronized (loggingLock) {
-      c = pausedCommands.isEmpty() ? new NullCommand() : pausedCommands.removeLast();
+      c = pausedCommands.isEmpty() ? new NullCommand() : pausedCommands.pop();
       if (pausedCommands.isEmpty()) {
         loggingPaused = false;
       }
