@@ -124,7 +124,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         dn = p.getConfigureName();
       }
     }
-    return dn.intern();
+    return dn != null ? dn.intern() : null;
   }
 
   private void updateDeckName() {
