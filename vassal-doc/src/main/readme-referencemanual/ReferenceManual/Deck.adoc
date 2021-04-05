@@ -122,7 +122,7 @@ These can be whatever you like and must be in the format of:
 <expression name> : <expression>
 ....
 
-For each expression, a map-level property called _<deckName>_<expression name>_ is exposed.
+For each expression, a map-level property called __<deckName>_<expression name>__ is exposed.
 The exposed value is number of pieces for which that expression evaluates to _true_.
 An example of how to do this is provided below.
 NOTE: Currently the only "dynamic" property which can be used in counting expressions is _playerSide_.
