@@ -10,6 +10,7 @@
 * 14317: NPE in ReturnToDeck.getDeckName()
 * 14310: Property Sheet options not saved
 * 14309: Missing Deck.deck translation key
+* 14301: GKC/GHK trigger actions out of order at remote end in online play
 * 14296: IndexOutOfBoundsException in BasicLogger.step() when holding down
     step key
 * 14291: IllegalArgumentException in PlayerRoster.resetListeners()
