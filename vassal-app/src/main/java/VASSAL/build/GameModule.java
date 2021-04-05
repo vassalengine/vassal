@@ -1691,7 +1691,7 @@ public class GameModule extends AbstractConfigurable
   public Command resumeLogging() {
     final Command c;
     synchronized (loggingLock) {
-      c = pausedCommands.isEmpty() ? new NullCommand() : pausedCommands.pop();
+      c = pausedCommands.pop();
       if (pausedCommands.isEmpty()) {
         loggingPaused = false;
       }
