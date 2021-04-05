@@ -18,6 +18,7 @@
 * 14262: Missing Editor.GridEditor.command_arrow_keys translation key
 * 14225: Send Hotkey action corrupts target deck
 * 13837: Creating a Global Property with Null name causes NPE on Load Game
+* 13203: Refresh Counters causes Pieces within Decks to expand
 
 3.5.4 - 29 March 2021
 
