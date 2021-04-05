@@ -1,5 +1,7 @@
 3.5.5 - ???
 
+* 14336: MouseoverStackViewer improperly excludes does-not-move pieces when
+    "include move-when-selected" is unchecked
 * 14332: NullPointerException in Expression.resetCachedExpressions()
 * 14331: Additional Selection Highlighter fails to offset images
 * 14327: IllegalComponentStateException in ToolbarMenu.launch()
