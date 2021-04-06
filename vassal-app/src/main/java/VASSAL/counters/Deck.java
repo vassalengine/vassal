@@ -142,6 +142,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected PropertyExpression restrictExpression = new PropertyExpression();
   protected PropertySource propertySource;
 
+  protected String drawMultipleMessage;
+  protected String drawSpecificMessage;
+  protected String faceUpMessage;
+  protected String faceDownMessage;
+
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
    */
@@ -528,6 +533,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseCommand = st.nextToken(Resources.getString("Deck.reverse"));
     reverseKey = st.nextNamedKeyStroke(null);
 
+    drawMultipleMessage = st.nextToken(Resources.getString("Deck.draw_multiple"));
+    drawSpecificMessage = st.nextToken(Resources.getString("Deck.draw_specific"));
+    faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
+    faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
+
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
     // If a New game/Load Game is starting, set this Deck into the matching DrawPile
@@ -776,6 +786,38 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     this.reshuffleMsgFormat = reshuffleMsgFormat;
   }
 
+  public String getDrawMultipleMessage() {
+    return drawMultipleMessage;
+  }
+
+  public void setDrawMultipleMessage(String m) {
+    drawMultipleMessage = m;
+  }
+
+  public String getDrawSpecificMessage() {
+    return drawSpecificMessage;
+  }
+
+  public void setDrawSpecificMessage(String m) {
+    drawSpecificMessage = m;
+  }
+
+  public String getFaceUpMessage() {
+    return faceUpMessage;
+  }
+
+  public void setFaceUpMessage(String m) {
+    faceUpMessage = m;
+  }
+
+  public String getFaceDownMessage() {
+    return faceDownMessage;
+  }
+
+  public void setFaceDownMessage(String m) {
+    faceDownMessage = m;
+  }
+
   public boolean isHotkeyOnEmpty() {
     return hotkeyOnEmpty;
   }
@@ -868,7 +910,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(restrictExpression)
       .append(shuffleCommand)
       .append(reverseCommand)
-      .append(reverseKey);
+      .append(reverseKey)
+      .append(drawMultipleMessage)
+      .append(drawSpecificMessage)
+      .append(faceUpMessage)
+      .append(faceDownMessage);
     return ID + se.getValue();
   }
 
@@ -1218,7 +1264,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {
-        final KeyCommand faceDownAction = new KeyCommand(faceDown ? Resources.getString("Deck.face_up") : Resources.getString("Deck.face_down"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
+        final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1244,7 +1290,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (allowMultipleDraw) {
-        c = new KeyCommand(Resources.getString("Deck.draw_multiple"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(drawMultipleMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1255,7 +1301,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (allowSelectDraw) {
-        c = new KeyCommand(Resources.getString("Deck.draw_specific"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(drawSpecificMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1297,11 +1343,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     for (final KeyCommand command : commands) {
-      if (Resources.getString("Deck.face_up").equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
+      if (faceUpMessage.equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
+        command.putValue(Action.NAME, faceDownMessage); //$NON-NLS-1$
       }
-      else if (Resources.getString("Deck.face_down").equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
+      else if (faceDownMessage.equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
+        command.putValue(Action.NAME, faceUpMessage); //$NON-NLS-1$
       }
     }
     return commands;

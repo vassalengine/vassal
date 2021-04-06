@@ -82,6 +82,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition restrictExpressionVisibleCondition = () -> dummy.isRestrictOption();
 
+  private final VisibilityCondition drawMultipleMessageVisibleCondition = () -> dummy.isAllowMultipleDraw();
+
+  private final VisibilityCondition drawSpecificMessageVisibleCondition = () -> dummy.isAllowSelectDraw();
+
+  private final VisibilityCondition faceUpDownMessageVisibleCondition = () -> Deck.USE_MENU.equals(dummy.getFaceDownOption());
+
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
   @Override
@@ -163,6 +169,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   public static final String COMMAND_NAME = "commandName"; //NON-NLS
   public static final String DECK_NAME = "deckName"; //NON-NLS
+
+  public static final String DRAW_MULTIPLE_MESSAGE = "drawMultipleMessage"; //NON-NLS
+  public static final String DRAW_SPECIFIC_MESSAGE = "drawSpecificMessage"; //NON-NLS
+  public static final String FACE_UP_MESSAGE = "faceUpMessage"; //NON-NLS
+  public static final String FACE_DOWN_MESSAGE = "faceDownMessage"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -272,7 +283,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       EXPRESSIONCOUNTING,
       COUNTEXPRESSIONS,
       RESTRICT_OPTION,
-      RESTRICT_EXPRESSION
+      RESTRICT_EXPRESSION,
+      DRAW_MULTIPLE_MESSAGE,
+      DRAW_SPECIFIC_MESSAGE,
+      FACE_UP_MESSAGE,
+      FACE_DOWN_MESSAGE
     };
   }
 
@@ -315,6 +330,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.draw_multiple_message"), //NON-NLS
+        Resources.getString("Editor.DrawPile.draw_specific_message"), //NON-NLS
+        Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
+        Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
     };
   }
 
@@ -356,7 +375,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       Boolean.class, // EXPRESSIONCOUNTING
       String[].class, // COUNTEXPRESSIONS
       Boolean.class, // RESTRICT_OPTION
-      PropertyExpression.class //RESTRICT_EXPRESSION
+      PropertyExpression.class, //RESTRICT_EXPRESSION
+      String.class,
+      String.class,
+      String.class,
+      String.class,
     };
   }
 
@@ -484,6 +507,18 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (RESTRICT_EXPRESSION.equals(key)) {
       return dummy.getRestrictExpression().getExpression();
+    }
+    else if (DRAW_MULTIPLE_MESSAGE.equals(key)) {
+      return dummy.getDrawMultipleMessage();
+    }
+    else if (DRAW_SPECIFIC_MESSAGE.equals(key)) {
+      return dummy.getDrawSpecificMessage();
+    }
+    else if (FACE_UP_MESSAGE.equals(key)) {
+      return dummy.getFaceUpMessage();
+    }
+    else if (FACE_DOWN_MESSAGE.equals(key)) {
+      return dummy.getFaceDownMessage();
     }
     else {
       return super.getAttributeValueString(key);
@@ -676,6 +711,18 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       }
       dummy.setRestrictExpression((PropertyExpression) value);
     }
+    else if (DRAW_MULTIPLE_MESSAGE.equals(key)) {
+      dummy.setDrawMultipleMessage((String)value);
+    }
+    else if (DRAW_SPECIFIC_MESSAGE.equals(key)) {
+      dummy.setDrawSpecificMessage((String)value);
+    }
+    else if (FACE_UP_MESSAGE.equals(key)) {
+      dummy.setFaceUpMessage((String)value);
+    }
+    else if (FACE_DOWN_MESSAGE.equals(key)) {
+      dummy.setFaceDownMessage((String)value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -709,6 +756,15 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (RESTRICT_EXPRESSION.equals(name)) {
       return restrictExpressionVisibleCondition;
+    }
+    else if (DRAW_MULTIPLE_MESSAGE.equals(name)) {
+      return drawMultipleMessageVisibleCondition;
+    }
+    else if (DRAW_SPECIFIC_MESSAGE.equals(name)) {
+      return drawSpecificMessageVisibleCondition;
+    }
+    else if (FACE_DOWN_MESSAGE.equals(name) || FACE_UP_MESSAGE.equals(name)) {
+      return faceUpDownMessageVisibleCondition;
     }
     else {
       return null;
