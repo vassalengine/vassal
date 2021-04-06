@@ -88,6 +88,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition faceUpDownMessageVisibleCondition = () -> Deck.USE_MENU.equals(dummy.getFaceDownOption());
 
+  private final VisibilityCondition sortVisibleCondition = () -> dummy.isSortable();
+
+  private final VisibilityCondition selectOrSortVisibleCondition = () -> dummy.isSortable() || dummy.isAllowSelectDraw();
+
+
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
   @Override
@@ -174,6 +179,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String DRAW_SPECIFIC_MESSAGE = "drawSpecificMessage"; //NON-NLS
   public static final String FACE_UP_MESSAGE = "faceUpMessage"; //NON-NLS
   public static final String FACE_DOWN_MESSAGE = "faceDownMessage"; //NON-NLS
+
+  public static final String SORTABLE = "sortable"; //NON-NLS
+  public static final String SORT_COMMAND = "sortCommand"; //NON-NLS
+  public static final String SORT_HOTKEY = "sortKey"; //NON-NLS
+  public static final String SORT_REPORT_FORMAT = "sortMsgFormat"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -287,7 +297,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       DRAW_MULTIPLE_MESSAGE,
       DRAW_SPECIFIC_MESSAGE,
       FACE_UP_MESSAGE,
-      FACE_DOWN_MESSAGE
+      FACE_DOWN_MESSAGE,
+      SORTABLE,
+      SORT_COMMAND,
+      SORT_HOTKEY,
+      SORT_REPORT_FORMAT
     };
   }
 
@@ -334,6 +348,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.draw_specific_message"), //NON-NLS
         Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
         Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
+        Resources.getString("Editor.DrawPile.sortable"), //NON-NLS
+        Resources.getString("Editor.DrawPile.sort_text"), //NON-NLS
+        Resources.getString("Editor.DrawPile.sort_key"), //NON-NLS
+        Resources.getString("Editor.DrawPile.sort_report"), //NON-NLS
     };
   }
 
@@ -376,10 +394,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String[].class, // COUNTEXPRESSIONS
       Boolean.class, // RESTRICT_OPTION
       PropertyExpression.class, //RESTRICT_EXPRESSION
-      String.class,
-      String.class,
-      String.class,
-      String.class,
+      String.class, // draw multiple message
+      String.class, // draw specific message
+      String.class, // face up message
+      String.class, // face down message
+      Boolean.class, // sortable
+      String.class, // Sort deck command
+      NamedKeyStroke.class, // Sort hotkey
+      FormattedStringConfig.class, // Sort deck report format
     };
   }
 
@@ -519,6 +541,18 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (FACE_DOWN_MESSAGE.equals(key)) {
       return dummy.getFaceDownMessage();
+    }
+    else if (SORTABLE.equals(key)) {
+      return String.valueOf(dummy.isSortable());
+    }
+    else if (SORT_COMMAND.equals(key)) {
+      return dummy.getSortCommand();
+    }
+    else if (SORT_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getSortKey());
+    }
+    else if (SORT_REPORT_FORMAT.equals(key)) {
+      return dummy.getSortMsgFormat();
     }
     else {
       return super.getAttributeValueString(key);
@@ -723,6 +757,21 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (FACE_DOWN_MESSAGE.equals(key)) {
       dummy.setFaceDownMessage((String)value);
     }
+    else if (SORTABLE.equals(key)) {
+      dummy.setSortable("true".equals(value) || Boolean.TRUE.equals(value)); //NON-NLS
+    }
+    else if (SORT_COMMAND.equals(key)) {
+      dummy.setSortCommand((String)value);
+    }
+    else if (SORT_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setSortKey((NamedKeyStroke) value);
+    }
+    else if (SORT_REPORT_FORMAT.equals(key)) {
+      dummy.setSortMsgFormat((String) value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -751,7 +800,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (EMPTY_HOTKEY.equals(name)) {
       return hotkeyOnEmptyVisibleCondition;
     }
-    else if (SELECT_DISPLAY_PROPERTY.equals(name) || SELECT_SORT_PROPERTY.equals(name)) {
+    else if (SELECT_DISPLAY_PROPERTY.equals(name)) {
       return selectionAllowedVisibleCondition;
     }
     else if (RESTRICT_EXPRESSION.equals(name)) {
@@ -765,6 +814,12 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (FACE_DOWN_MESSAGE.equals(name) || FACE_UP_MESSAGE.equals(name)) {
       return faceUpDownMessageVisibleCondition;
+    }
+    else if (SELECT_SORT_PROPERTY.equals(name)) {
+      return selectOrSortVisibleCondition;
+    }
+    else if (List.of(SORT_COMMAND, SORT_HOTKEY, SORT_REPORT_FORMAT).contains(name)) {
+      return sortVisibleCondition;
     }
     else {
       return null;
@@ -908,7 +963,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<String> getFormattedStringList() {
     if (dummy != null) {
-      return List.of(dummy.getFaceDownMsgFormat(), dummy.getReshuffleMsgFormat(), dummy.getReverseMsgFormat(), dummy.getShuffleMsgFormat());
+      return List.of(dummy.getFaceDownMsgFormat(), dummy.getReshuffleMsgFormat(), dummy.getReverseMsgFormat(), dummy.getShuffleMsgFormat(), dummy.getSortMsgFormat());
     }
     else {
       return Collections.emptyList();
@@ -947,6 +1002,23 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       if (dummy.isReversible()) {
         l.add(dummy.getReverseCommand());
       }
+
+      if (dummy.isSortable()) {
+        l.add(dummy.getSortCommand());
+      }
+
+      if (dummy.isAllowMultipleDraw()) {
+        l.add(dummy.getDrawMultipleMessage());
+      }
+
+      if (dummy.isAllowSelectDraw()) {
+        l.add(dummy.getDrawSpecificMessage());
+      }
+
+      if (Deck.USE_MENU.equals(dummy.getFaceDownOption())) {
+        l.add(dummy.getFaceDownMessage());
+        l.add(dummy.getFaceUpMessage());
+      }
     }
 
     return l;
@@ -972,7 +1044,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public List<NamedKeyStroke> getNamedKeyStrokeList() {
     if (dummy != null) {
-      return Arrays.asList(dummy.getNamedEmptyKey(), dummy.getReshuffleKey(), dummy.getReverseKey(), dummy.getShuffleKey());
+      return Arrays.asList(dummy.getNamedEmptyKey(), dummy.getReshuffleKey(), dummy.getReverseKey(), dummy.getShuffleKey(), dummy.getSortKey());
     }
     else {
       return Collections.emptyList();

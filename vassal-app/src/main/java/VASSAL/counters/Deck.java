@@ -147,6 +147,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceUpMessage;
   protected String faceDownMessage;
 
+  protected boolean sortable;
+  protected String sortCommand;
+  protected NamedKeyStrokeListener sortListener;
+  protected NamedKeyStroke sortKey;
+  protected String sortMsgFormat;
+
+
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
    */
@@ -466,6 +473,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener.setKeyStroke(getReverseKey());
     }
 
+    if (sortListener == null) {
+      sortListener = new NamedKeyStrokeListener (e -> {
+        gameModule.sendAndLog(sortDeck());
+        repaintMap();
+      });
+    }
+
     gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
@@ -537,6 +551,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     drawSpecificMessage = st.nextToken(Resources.getString("Deck.draw_specific"));
     faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
     faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
+
+    sortable            = st.nextBoolean(false);
+    sortCommand         = st.nextToken(Resources.getString("Deck.sort"));
+    sortKey             = st.nextNamedKeyStroke(null);
+    sortMsgFormat       = st.nextToken("");
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
@@ -633,6 +652,30 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseCommand = s;
   }
 
+  public String getSortMsgFormat() {
+    return sortMsgFormat;
+  }
+
+  public void setSortMsgFormat(String s) {
+    sortMsgFormat = s;
+  }
+
+  public String getSortCommand() {
+    return sortCommand;
+  }
+
+  public void setSortCommand(String s) {
+    sortCommand = s;
+  }
+
+  public NamedKeyStroke getSortKey() {
+    return sortKey;
+  }
+
+  public void setSortKey(NamedKeyStroke sortKey) {
+    this.sortKey = sortKey;
+  }
+
   public NamedKeyStroke getReverseKey() {
     return reverseKey;
   }
@@ -712,6 +755,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setAllowSelectDraw(boolean allowSelectDraw) {
     this.allowSelectDraw = allowSelectDraw;
+  }
+
+  public boolean isSortable() {
+    return sortable;
+  }
+
+  public void setSortable(boolean sortable) {
+    this.sortable = sortable;
   }
 
   public boolean isReversible() {
@@ -914,7 +965,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(drawMultipleMessage)
       .append(drawSpecificMessage)
       .append(faceUpMessage)
-      .append(faceDownMessage);
+      .append(faceDownMessage)
+      .append(sortable)
+      .append(sortCommand)
+      .append(sortKey)
+      .append(sortMsgFormat);
     return ID + se.getValue();
   }
 
@@ -1106,6 +1161,66 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     return setContents(list).append(reportCommand(
       reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
+  }
+
+  /** Sort the contents of the Deck */
+  public Command sortDeck() {
+    class AvailablePiece implements Comparable<AvailablePiece> {
+      private final GamePiece piece;
+
+      public AvailablePiece(GamePiece piece) {
+        this.piece = piece;
+      }
+
+      @Override
+      public int compareTo(AvailablePiece other) {
+        if (other == null) return 1;
+
+        final String otherProperty =
+          (String) other.piece.getProperty(selectSortProperty);
+        if (otherProperty == null) return 1;
+
+        final String myProperty =
+          (String) piece.getProperty(selectSortProperty);
+        if (myProperty == null) return -1;
+
+        return -otherProperty.compareTo(myProperty);
+      }
+
+      @Override
+      public String toString() {
+        return selectDisplayProperty.getText(piece);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (! (o instanceof AvailablePiece)) return false;
+        return ((AvailablePiece)o).piece.equals(piece);
+      }
+    }
+
+    final AvailablePiece[] pieces = new AvailablePiece[getPieceCount()];
+    for (int i = 0; i < pieces.length; ++i) {
+      pieces[pieces.length - i - 1] = new AvailablePiece(getPieceAt(i));
+    }
+
+    if (selectSortProperty != null && selectSortProperty.length() > 0) {
+      Arrays.sort(pieces);
+    }
+
+    List<GamePiece> pieceList = new ArrayList<>();
+    for (AvailablePiece ap : pieces) {
+      pieceList.add(ap.piece);
+    }
+
+    final Command c = new NullCommand();
+    c.append(setContents(pieceList));
+
+    if (Map.isChangeReportingEnabled()) {
+      c.append(reportCommand(sortMsgFormat, Resources.getString("Deck.sort")));
+    }
+
+    return c;
   }
 
   public boolean isDrawOutline() {
@@ -1307,6 +1422,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           @Override
           public void actionPerformed(ActionEvent e) {
             promptForNextDraw();
+            repaintMap();
+          }
+        };
+        l.add(c);
+      }
+      if (sortable) {
+        c = new KeyCommand(sortCommand, getSortKey(), this) {
+          private static final long serialVersionUID = 1L;
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            final Command c = sortDeck();
+            gameModule.sendAndLog(c);
             repaintMap();
           }
         };
