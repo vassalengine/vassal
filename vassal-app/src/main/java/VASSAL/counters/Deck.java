@@ -879,7 +879,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final List<GamePiece> l = Arrays.asList(a);
     DragBuffer.getBuffer().clear();
     Collections.shuffle(l, gameModule.getRNG());
-    return setContents(l).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
+    Command c = setContents(l);
+    if (Map.isChangeReportingEnabled()) {
+      c.append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
+    }
+    return c;
   }
 
   /**
@@ -1047,9 +1051,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public Command setContentsFaceDown(boolean value) {
     final ChangeTracker t = new ChangeTracker(this);
-    final Command c = new NullCommand();
+    Command c = new NullCommand();
     faceDown = value;
-    return t.getChangeCommand().append(c).append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up"))); //$NON-NLS-1$ //$NON-NLS-2$
+    if (Map.isChangeReportingEnabled()) {
+      c.append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
+    }
+    return t.getChangeCommand().append(c);
   }
 
   /** Reverse the order of the contents of the Deck */
@@ -1058,8 +1065,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     for (final Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
       list.add(i.next());
     }
-    return setContents(list).append(reportCommand(
-      reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
+    Command c = setContents(list);
+    if (Map.isChangeReportingEnabled()) {
+      c.append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse")));
+    }
+    return c;
   }
 
   public boolean isDrawOutline() {
@@ -1431,7 +1441,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     nextDraw = null;
     final DrawPile target = DrawPile.findDrawPile(reshuffleTarget);
     if (target != null) {
-      if (reshuffleMsgFormat.length() > 0) {
+      if ((reshuffleMsgFormat.length() > 0) && Map.isChangeReportingEnabled()) {
         c = reportCommand(reshuffleMsgFormat, reshuffleCommand);
         if (c == null) {
           c = new NullCommand();
