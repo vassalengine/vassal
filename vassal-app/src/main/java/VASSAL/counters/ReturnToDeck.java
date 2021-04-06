@@ -324,7 +324,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     private final StringConfigurer menuName;
     private final NamedHotKeyConfigurer menuKey;
     private final TraitConfigPanel controls;
-    private String deckId;
+    private final String deckId;
     private final JTextField tf = new JTextField(12);
     private final JLabel promptLabel;
     private final StringConfigurer promptText;
