@@ -347,7 +347,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       controls.add("Editor.Hideable.background_color", colorConfig);
 
       transpConfig = new IntConfigurer((int) (p.transparency * 100));
-      controls.add("Editor.Hideable.transparency", transpConfig);
+      controls.add("Editor.Hideable.opacity", transpConfig);
 
       accessConfig = new PieceAccessConfigurer(p.access);
       controls.add("Editor.Hideable.can_be_hidden_by", accessConfig);
