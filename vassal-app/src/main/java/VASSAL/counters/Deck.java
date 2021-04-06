@@ -1208,8 +1208,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       Arrays.sort(pieces);
     }
 
-    List<GamePiece> pieceList = new ArrayList<>();
-    for (AvailablePiece ap : pieces) {
+    final List<GamePiece> pieceList = new ArrayList<>();
+    for (final AvailablePiece ap : pieces) {
       pieceList.add(ap.piece);
     }
 
