@@ -23,7 +23,7 @@ To other players it will not appear at all.
 
 *Background Color:* The background color that the owner sees the piece drawn against when invisible.
 
-*Transparency(%):* The level of transparency that the owner sees when the piece is invisible to others.
+*Opacity(%):* The level of opacity that the owner sees when the piece is invisible to others (0% = completely transparent, 100% = full normal opacity)
 
 *Can be hidden by:* Specifies who may hide this piece (and see it once hidden). _Any Player_ means that any player may hide this piece, including observers.
 _Any Side_ means that any player who has been assigned a <<GameModule.adoc#Definition_of_Player_Sides,side>> in a game (not an observer) can hide this piece.
