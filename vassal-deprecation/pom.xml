@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.5.5-SNAPSHOT</version>
+        <version>3.5.5</version>
     </parent>
 
     <artifactId>vassal-deprecation</artifactId>
-    <version>3.5.5-SNAPSHOT</version>
+    <version>3.5.5</version>
     <packaging>jar</packaging>
 
     <properties>

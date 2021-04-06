@@ -1,4 +1,4 @@
-3.5.5 - ???
+3.5.5 - 6 April 2021
 
 * 14336: MouseoverStackViewer improperly excludes does-not-move pieces when
     "include move-when-selected" is unchecked
@@ -14,6 +14,8 @@
 * 14296: IndexOutOfBoundsException in BasicLogger.step() when holding down
     step key
 * 14291: IllegalArgumentException in PlayerRoster.resetListeners()
+* 14290: Online multi-player game is subject to a race condition that ends
+    with corrupt decks
 * 14288: Deck Hotkey ignored from keyboard and Global Hotkey Trait in preset
     scenarios
 * 14285: IllegalArgumentException in PlayerRoster when moving items in Editor
