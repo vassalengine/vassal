@@ -879,7 +879,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final List<GamePiece> l = Arrays.asList(a);
     DragBuffer.getBuffer().clear();
     Collections.shuffle(l, gameModule.getRNG());
-    Command c = setContents(l);
+    final Command c = setContents(l);
     if (Map.isChangeReportingEnabled()) {
       c.append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
     }
@@ -1051,7 +1051,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public Command setContentsFaceDown(boolean value) {
     final ChangeTracker t = new ChangeTracker(this);
-    Command c = new NullCommand();
+    final   Command c = new NullCommand();
     faceDown = value;
     if (Map.isChangeReportingEnabled()) {
       c.append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
@@ -1065,7 +1065,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     for (final Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
       list.add(i.next());
     }
-    Command c = setContents(list);
+    final Command c = setContents(list);
     if (Map.isChangeReportingEnabled()) {
       c.append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse")));
     }
