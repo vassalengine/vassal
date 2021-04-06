@@ -474,7 +474,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     if (sortListener == null) {
-      sortListener = new NamedKeyStrokeListener (e -> {
+      sortListener = new NamedKeyStrokeListener(e -> {
         gameModule.sendAndLog(sortDeck());
         repaintMap();
       });
