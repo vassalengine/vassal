@@ -52,6 +52,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.filechooser.FileChooser;
@@ -423,7 +424,23 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       catch (CancellationException e) {
         // this means that loading was cancelled
       }
-      catch (ExecutionException | InterruptedException e) {
+      catch (ExecutionException e) {
+        if (SystemUtils.IS_OS_WINDOWS &&
+            ThrowableUtils.getAncestor(IOException.class, e) != null) {
+          final String msg = e.getMessage();
+          if (msg.contains("jre\\bin\\java") && msg.contains("CreateProcess")) {
+            ErrorDialog.showDetails(
+              e,
+              ThrowableUtils.getStackTrace(e),
+              "Error.possible_windows_av_interference",
+              msg
+            );
+            return;
+          }
+        }
+        ErrorDialog.bug(e);
+      }
+      catch (InterruptedException e) {
         ErrorDialog.bug(e);
       }
       finally {
