@@ -1736,9 +1736,7 @@ public class GameModule extends AbstractConfigurable
     if ((sv != null) && sv.isConnected()) return true;
 
     final PlayerRoster pr = getPlayerRoster();
-    if ((pr != null) && pr.isMultiPlayer()) return true;
-
-    return false;
+    return ((pr != null) && pr.isMultiPlayer());
   }
 
   /**
