@@ -48,12 +48,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -206,6 +201,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     logger.info(message);
   }
 
+  public List<GamePiece>  getNewDecksAndAtStartStacks() {
+    final List<GamePiece> pieces = new ArrayList<>();
+    return pieces;
+  }
+
   public List<GamePiece>  getCurrentGameRefresherPieces() {
     final List<GamePiece> pieces = new ArrayList<>();
     int totalCount = 0;
@@ -295,7 +295,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         gpIdChecker.add(slot);
       }
   
-      // Add any PieceSlots in Prototype Definitions
+        // Add any PieceSlots in Prototype Definitions
+        //For debug
+        //final List<PrototypesContainer> pcList =  theModule.getComponentsOf(PrototypesContainer.class);
+        //final PrototypesContainer pc1 = pcList.get(0);
+        //final Collection<PrototypeDefinition> pdColl = pc1.getDefinitions();
+        //for (PrototypeDefinition pd : pdColl) {
+          //gpIdChecker.add(pd);
+        // }
       for (final PrototypesContainer pc : theModule.getComponentsOf(PrototypesContainer.class)) {
         pc.getDefinitions().forEach(gpIdChecker::add);
       }
@@ -316,6 +323,11 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      * 2. Collect the game pieces
      */
     final List<GamePiece> pieces = getCurrentGameRefresherPieces();
+
+    /*
+     * 2.1 Add any new Decks or At Start Stacks to the list of pieces
+     */
+    pieces.addAll(getNewDecksAndAtStartStacks());
 
     /*
      * 3. Generate the commands to update the pieces
