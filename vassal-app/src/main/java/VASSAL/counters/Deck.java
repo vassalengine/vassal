@@ -1202,6 +1202,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     }
 
+    if (!isSortable()) {
+      return new NullCommand(); // Prevents us from sorting "Always Shuffle" decks
+    }
+
     final AvailablePiece[] pieces = new AvailablePiece[getPieceCount()];
     for (int i = 0; i < pieces.length; ++i) {
       pieces[pieces.length - i - 1] = new AvailablePiece(getPieceAt(i));
