@@ -92,6 +92,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition selectOrSortVisibleCondition = () -> dummy.isSortable() || dummy.isAllowSelectDraw();
 
+  private final VisibilityCondition sortableVisibleCondition = () -> !ALWAYS.equals(dummy.getShuffleOption());
+
 
   protected static final UniqueIdManager idMgr = new UniqueIdManager("Deck"); //NON-NLS
 
@@ -818,8 +820,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (SELECT_SORT_PROPERTY.equals(name)) {
       return selectOrSortVisibleCondition;
     }
-    else if (List.of(SORT_COMMAND, SORT_HOTKEY, SORT_REPORT_FORMAT).contains(name)) {
+    else if (SORTABLE.equals(name)) {
       return sortVisibleCondition;
+    }
+    else if (List.of(SORT_COMMAND, SORT_HOTKEY, SORT_REPORT_FORMAT).contains(name)) {
+      return sortableVisibleCondition;
     }
     else {
       return null;

@@ -761,7 +761,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public boolean isSortable() {
-    return sortable;
+    return sortable && !ALWAYS.equals(getShuffleOption());
   }
 
   public void setSortable(boolean sortable) {
