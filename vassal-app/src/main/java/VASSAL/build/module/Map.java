@@ -3256,6 +3256,14 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * @return "changed on map" format string
+   */
+  public String getChangeFormat(boolean noSuppress) {
+    return (isChangeReportingEnabled() || noSuppress) ? changeFormat : "";
+  }
+
+
+  /**
    * @return "moved to map" format string
    */
   public String getMoveToFormat() {

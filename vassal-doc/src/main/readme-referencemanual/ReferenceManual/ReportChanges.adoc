@@ -21,6 +21,8 @@ Each time one of the key commands is received, the next message in the list will
 
 *Report Format:* The <<MessageFormat.adoc#top,Message Format>> for the message that will appear in the <<ChatLog.adoc#top,Chat Log>>.
 
+*Override suppression by Global Key Commands:* If this box is checked, the message will be displayed when triggered even if it is triggered by a Global Key Command with the "Suppress Individual Reports" option checked. This can be used to ensure that certain key messages are displayed no matter what.
+
 *ENHANCED CHAT LOG:* Note that the Chat Log now supports *bold text*, _italicized text_, *and even colored text* and image:images/ChatLogDice.png[]. See the <<ChatLog.adoc#top,Chat Log>> article for full details.
 
 *IMPORTANT*: When HTML is enabled in the chat log, it is important to remember that the `<` character will be interpreted as the beginning of an HTML tag, rather than simply displaying a "less than" or "left angle bracket" symbol. Thus, modules which use the `<` symbol to indicate "less than" or to "draw an arrow" or enclose a user name, etc, will need to have those instances changed to `\&lt;` (the HTML escape code which causes a literal `<` character to be printed). Otherwise you may
