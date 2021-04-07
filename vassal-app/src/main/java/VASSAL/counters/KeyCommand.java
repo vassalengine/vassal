@@ -20,6 +20,7 @@ package VASSAL.counters;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
@@ -33,7 +34,7 @@ public class KeyCommand extends AbstractAction {
 
   public static final KeyCommand[] NONE = new KeyCommand[0];
 
-  private final String name;
+  private String name;
   protected String untranslatedName;
   protected String localizedMenuText;
   private final KeyStroke stroke;
@@ -157,6 +158,17 @@ public class KeyCommand extends AbstractAction {
   // Returns true if this command exists simply to produce a menu separator
   public boolean isMenuSeparator() {
     return MenuSeparator.SEPARATOR_NAME.equals(name);
+  }
+
+  @Override
+  public void putValue(String key, Object newValue) {
+    super.putValue(key, newValue);
+
+    //BR// If name gets changed, regenerate localized text. Supports the face up / face down deck flipping, which apparently hasn't worked since localizatino came in
+    if (Action.NAME.equals(key)) {
+      name = (String)newValue;
+      localizedMenuText = null;
+    }
   }
 
   /**

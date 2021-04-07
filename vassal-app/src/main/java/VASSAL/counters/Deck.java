@@ -146,6 +146,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String drawSpecificMessage;
   protected String faceUpMessage;
   protected String faceDownMessage;
+  protected NamedKeyStroke faceDownKey;
+  protected NamedKeyStrokeListener faceDownListener;
 
   protected boolean sortable;
   protected String sortCommand;
@@ -484,6 +486,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       sortListener.setKeyStroke(getSortKey());
     }
 
+    if (faceDownListener == null) {
+      faceDownListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(setContentsFaceDown(!faceDown));
+        repaintMap();
+      });
+
+      gameModule.addKeyStrokeListener(faceDownListener);
+      faceDownListener.setKeyStroke(getFaceDownKey());
+    }
+
     gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
@@ -501,6 +513,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (reverseListener != null) {
       gameModule.removeKeyStrokeListener(reverseListener);
       reverseListener = null;
+    }
+
+    if (sortListener != null) {
+      gameModule.removeKeyStrokeListener(sortListener);
+      sortListener = null;
+    }
+
+    if (faceDownListener != null) {
+      gameModule.removeKeyStrokeListener(faceDownListener);
+      faceDownListener = null;
     }
 
     gameModule.removeSideChangeListenerFromPlayerRoster(this);
@@ -555,6 +577,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     drawSpecificMessage = st.nextToken(Resources.getString("Deck.draw_specific"));
     faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
     faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
+    faceDownKey         = st.nextNamedKeyStroke(null);
 
     sortable            = st.nextBoolean(false);
     sortCommand         = st.nextToken(Resources.getString("Deck.sort"));
@@ -655,6 +678,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setReverseCommand(String s) {
     reverseCommand = s;
+  }
+
+  public NamedKeyStroke getFaceDownKey() {
+    return faceDownKey;
+  }
+
+  public void setFaceDownKey(NamedKeyStroke k) {
+    faceDownKey = k;
   }
 
   public String getSortMsgFormat() {
@@ -979,6 +1010,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(drawSpecificMessage)
       .append(faceUpMessage)
       .append(faceDownMessage)
+      .append(faceDownKey)
       .append(sortable)
       .append(sortCommand)
       .append(sortKey)
@@ -1401,7 +1433,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {
-        final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
+        final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, getFaceDownKey(), this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1492,11 +1524,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     for (final KeyCommand command : commands) {
-      if (faceUpMessage.equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, faceDownMessage); //$NON-NLS-1$
-      }
-      else if (faceDownMessage.equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, faceUpMessage); //$NON-NLS-1$
+      if (command.getValue(Action.NAME) != null) {
+        if (((String) command.getValue(Action.NAME)).contains(faceUpMessage) && !faceDown) {
+          command.putValue(Action.NAME, faceDownMessage); //$NON-NLS-1$
+        }
+        else if (((String) command.getValue(Action.NAME)).contains(faceDownMessage) && faceDown) { //$NON-NLS-1$
+          command.putValue(Action.NAME, faceUpMessage); //$NON-NLS-1$
+        }
       }
     }
     return commands;
