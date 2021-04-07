@@ -1729,6 +1729,19 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * @return true if the game is online or has ever had more than one player.
+   */
+  public boolean isMultiPlayer() {
+    final ServerConnection sv = getServer();
+    if ((sv != null) && sv.isConnected()) return true;
+
+    final PlayerRoster pr = getPlayerRoster();
+    if ((pr != null) && pr.isMultiPlayer()) return true;
+
+    return false;
+  }
+
+  /**
    * Loads a module object into the player window.
    *
    * Registers a <a href="https://en.wikipedia.org/wiki/Singleton_pattern">singleton</a> GameModule

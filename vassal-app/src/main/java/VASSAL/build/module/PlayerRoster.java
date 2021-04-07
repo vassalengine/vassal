@@ -352,7 +352,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       players.add(e);
     }
 
-    if (isMultiPlayer()) {
+    if (GameModule.getGameModule().isMultiPlayer()) {
       final Logger log = GameModule.getGameModule().getLogger();
       if (log instanceof BasicLogger) {
         ((BasicLogger)log).setMultiPlayer(true);
@@ -410,7 +410,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         final PlayerInfo saved = players.get(players.indexOf(me));
         saved.playerName = me.playerName;
       }
-      if (isMultiPlayer()) {
+      if (GameModule.getGameModule().isMultiPlayer()) {
         final Logger log = GameModule.getGameModule().getLogger();
         if (log instanceof BasicLogger) {
           ((BasicLogger)log).setMultiPlayer(true);
@@ -517,8 +517,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)
    */
   public boolean isMultiPlayer() {
-    if (GameModule.getGameModule().getServer().isConnected()) return true;
-
     // NB. Intentionally not excluding observers.
     return players.size() > 1;
   }
