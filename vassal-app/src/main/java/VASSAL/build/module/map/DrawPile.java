@@ -186,6 +186,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String SORT_COMMAND = "sortCommand"; //NON-NLS
   public static final String SORT_HOTKEY = "sortKey"; //NON-NLS
   public static final String SORT_REPORT_FORMAT = "sortMsgFormat"; //NON-NLS
+  public static final String SORT_DESCENDING = "sortDescending"; //NON-NLS
 
   public static class Prompt extends TranslatableStringEnum {
     @Override
@@ -303,57 +304,59 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       SORTABLE,
       SORT_COMMAND,
       SORT_HOTKEY,
-      SORT_REPORT_FORMAT
+      SORT_REPORT_FORMAT,
+      SORT_DESCENDING
     };
   }
 
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-        Resources.getString(Resources.NAME_LABEL),
-        Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
-        Resources.getString("Editor.x_position"), //$NON-NLS-1$
-        Resources.getString("Editor.y_position"), //$NON-NLS-1$
-        Resources.getString("Editor.width"), //$NON-NLS-1$
-        Resources.getString("Editor.height"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
-        Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$        // Internally these match "RESHUFFLE"
-        Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.draw_multiple_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.draw_specific_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.sortable"), //NON-NLS
-        Resources.getString("Editor.DrawPile.sort_text"), //NON-NLS
-        Resources.getString("Editor.DrawPile.sort_key"), //NON-NLS
-        Resources.getString("Editor.DrawPile.sort_report"), //NON-NLS
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
+      Resources.getString("Editor.x_position"), //$NON-NLS-1$
+      Resources.getString("Editor.y_position"), //$NON-NLS-1$
+      Resources.getString("Editor.width"), //$NON-NLS-1$
+      Resources.getString("Editor.height"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
+      Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$        // Internally these match "RESHUFFLE"
+      Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.draw_multiple_message"), //NON-NLS
+      Resources.getString("Editor.DrawPile.draw_specific_message"), //NON-NLS
+      Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
+      Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
+      Resources.getString("Editor.DrawPile.sortable"), //NON-NLS
+      Resources.getString("Editor.DrawPile.sort_text"), //NON-NLS
+      Resources.getString("Editor.DrawPile.sort_key"), //NON-NLS
+      Resources.getString("Editor.DrawPile.sort_report"), //NON-NLS
+      Resources.getString("Editor.DrawPile.sort_descending"),
     };
   }
 
@@ -404,6 +407,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String.class, // Sort deck command
       NamedKeyStroke.class, // Sort hotkey
       FormattedStringConfig.class, // Sort deck report format
+      Boolean.class, // sort descending
     };
   }
 
@@ -555,6 +559,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (SORT_REPORT_FORMAT.equals(key)) {
       return dummy.getSortMsgFormat();
+    }
+    else if (SORT_DESCENDING.equals(key)) {
+      return String.valueOf(dummy.isSortDescending());
     }
     else {
       return super.getAttributeValueString(key);
@@ -774,6 +781,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (SORT_REPORT_FORMAT.equals(key)) {
       dummy.setSortMsgFormat((String) value);
     }
+    else if (SORT_DESCENDING.equals(key)) {
+      dummy.setSortDescending("true".equals(value) || Boolean.TRUE.equals(value)); //NON-NLS
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -817,14 +827,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (FACE_DOWN_MESSAGE.equals(name) || FACE_UP_MESSAGE.equals(name)) {
       return faceUpDownMessageVisibleCondition;
     }
-    else if (SELECT_SORT_PROPERTY.equals(name)) {
+    else if (SELECT_SORT_PROPERTY.equals(name) || SORT_DESCENDING.equals(name)) {
       return selectOrSortVisibleCondition;
     }
     else if (SORTABLE.equals(name)) {
-      return sortVisibleCondition;
+      return sortableVisibleCondition;
     }
     else if (List.of(SORT_COMMAND, SORT_HOTKEY, SORT_REPORT_FORMAT).contains(name)) {
-      return sortableVisibleCondition;
+      return sortVisibleCondition;
     }
     else {
       return null;

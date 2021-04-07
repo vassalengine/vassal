@@ -152,6 +152,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStrokeListener sortListener;
   protected NamedKeyStroke sortKey;
   protected String sortMsgFormat;
+  protected boolean sortDescending;
 
 
   /**
@@ -559,6 +560,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     sortCommand         = st.nextToken(Resources.getString("Deck.sort"));
     sortKey             = st.nextNamedKeyStroke(null);
     sortMsgFormat       = st.nextToken("");
+    sortDescending      = st.nextBoolean(false);
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
@@ -768,6 +770,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     this.sortable = sortable;
   }
 
+  public boolean isSortDescending() {
+    return sortDescending;
+  }
+
+  public void setSortDescending(boolean sa) {
+    sortDescending = sa;
+  }
+
   public boolean isReversible() {
     return reversible;
   }
@@ -972,7 +982,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(sortable)
       .append(sortCommand)
       .append(sortKey)
-      .append(sortMsgFormat);
+      .append(sortMsgFormat)
+      .append(sortDescending);
     return ID + se.getValue();
   }
 
@@ -1220,6 +1231,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       pieceList.add(ap.piece);
     }
 
+    if (!isSortDescending()) {
+      Collections.reverse(pieceList);
+    }
+
     final Command c = new NullCommand();
     c.append(setContents(pieceList));
 
@@ -1434,7 +1449,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         };
         l.add(c);
       }
-      if (sortable) {
+      if (isSortable()) {
         c = new KeyCommand(sortCommand, getSortKey(), this) {
           private static final long serialVersionUID = 1L;
           @Override
@@ -1570,6 +1585,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     if (selectSortProperty != null && selectSortProperty.length() > 0) {
       Arrays.sort(pieces);
+    }
+
+    if (isSortDescending()) {
+      Collections.reverse(Arrays.asList(pieces));
     }
 
     final JList<AvailablePiece> list = new JList<>(pieces);
