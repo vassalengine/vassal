@@ -306,14 +306,6 @@ public class Prefs implements Closeable {
     );
 
     globalPrefs.addOption(wizardConf);
-
-    // Option for translatable support
-    final BooleanConfigurer translatableSupport = new BooleanConfigurer(
-      TRANSLATABLE_SUPPORT,
-      "Translatable Support", //NON-NLS
-      Boolean.FALSE
-    );
-    globalPrefs.addOption(null, translatableSupport);
   }
 
   public static String sanitize(String str) {

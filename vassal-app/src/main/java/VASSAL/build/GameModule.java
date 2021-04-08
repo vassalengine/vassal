@@ -635,9 +635,7 @@ public class GameModule extends AbstractConfigurable
       super.build(e);
       ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
-      if (isTranslatableSupport()) {
-        ensureComponent(GlobalTranslatableMessages.class);
-      }
+      ensureComponent(GlobalTranslatableMessages.class);
       ensureComponent(Language.class);
       ensureComponent(BasicCommandEncoder.class);
       ensureComponent(Documentation.class);
@@ -722,9 +720,7 @@ public class GameModule extends AbstractConfigurable
     addComponent(Map.class);
     addComponent(GamePieceImageDefinitions.class);
     addComponent(GlobalProperties.class);
-    if (isTranslatableSupport()) {
-      addComponent(GlobalTranslatableMessages.class);
-    }
+    addComponent(GlobalTranslatableMessages.class);
     addComponent(PrototypesContainer.class);
     addComponent(PieceWindow.class);
     addComponent(Chatter.class);
@@ -1176,9 +1172,7 @@ public class GameModule extends AbstractConfigurable
 
 
   public boolean isTranslatableSupport() {
-    final Prefs p = Prefs.getGlobalPrefs();
-
-    return Boolean.TRUE.equals(p.getOption(TRANSLATABLE_SUPPORT).getValue());
+    return true;
   }
 
 
