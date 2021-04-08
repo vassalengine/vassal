@@ -16,6 +16,17 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Set branch
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.6'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
+
+      - name: Store version
+        id: version
+        run: echo "::set-output name=VERSION::$(make version-print)"
+
       - name: Install dependencies
         run: sudo apt-get install genisoimage ghostscript nsis
 
@@ -45,17 +56,6 @@ jobs:
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh
-
-      - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.6'
-        # Checking out a detached head for PR means we have to set the branch
-        # name for it to show up later; shallow checkout means the branch
-        # won't exist yet so there's no conflict.
-        run: git checkout -b ${GITHUB_HEAD_REF}
-
-      - name: Store version
-        id: version
-        run: echo "::set-output name=VERSION::$(make version-print)"
 
       - name: Build packages
         run: make release
