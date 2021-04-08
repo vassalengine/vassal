@@ -463,7 +463,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           result = s.nVisible(); // Blank property returns number of visible-to-me pieces in the stack
         }
         else {
-          for ( final GamePiece gamePiece: s.asList() ) {
+          for (final GamePiece gamePiece: s.asList()) {
             try {
               final String val = gamePiece.getProperty(property).toString();
               if (!"".equals(val)) {
