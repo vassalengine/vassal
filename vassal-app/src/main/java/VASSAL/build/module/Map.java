@@ -2759,10 +2759,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   protected String getDefaultWindowTitle() {
     if (getLocalizedMapName().length() > 0) {
-      return GameModule.getGameModule().getWindowTitleString("Map.window_named", getLocalizedMapName()); //$NON-NLS-1$
+      return GameModule.getGameModule().getWindowTitleString("Map.window_named", getLocalizedMapName(), false); //$NON-NLS-1$
     }
     else {
-      return GameModule.getGameModule().getWindowTitleString("Map.window", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
+      return GameModule.getGameModule().getWindowTitleString("Map.window", GameModule.getGameModule().getLocalizedGameName(), false); //$NON-NLS-1$
     }
   }
 
