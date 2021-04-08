@@ -1209,7 +1209,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
   }
 
-  /** Sort the contents of the Deck */
+
+  private boolean anyNonNumeric = false; // It won't let me use it if I put it inside the method, and it won't let the inner class have a static. So "whatevs". Sigh.
+
+  /** Sort the contents of the Deck. Numeric sort preferred if possible */
   public Command sortDeck() {
     class AvailablePiece implements Comparable<AvailablePiece> {
       private final GamePiece piece;
@@ -1229,6 +1232,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         final String myProperty =
           (String) piece.getProperty(selectSortProperty);
         if (myProperty == null) return -1;
+
+        if (!anyNonNumeric) {
+          try {
+            final Integer otherNum = Integer.parseInt(otherProperty);
+            final Integer myNum = Integer.parseInt(myProperty);
+            return -otherNum.compareTo(myNum);
+          }
+          catch (NumberFormatException e) {
+            // no action, we revert to string.
+          }
+        }
 
         return -otherProperty.compareTo(myProperty);
       }
@@ -1252,6 +1266,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final AvailablePiece[] pieces = new AvailablePiece[getPieceCount()];
     for (int i = 0; i < pieces.length; ++i) {
       pieces[pieces.length - i - 1] = new AvailablePiece(getPieceAt(i));
+
+      //BR// If every property contains a parsable number, we will be able to do a numeric sort.
+      if (!anyNonNumeric) {
+        final String prop = (String) pieces[pieces.length - i - 1].piece.getProperty(selectSortProperty);
+        try {
+          Integer.parseInt(prop);
+        }
+        catch (NumberFormatException e) {
+          anyNonNumeric = true;
+        }
+      }
     }
 
     if (selectSortProperty != null && selectSortProperty.length() > 0) {
