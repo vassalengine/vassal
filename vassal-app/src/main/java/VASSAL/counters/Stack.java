@@ -544,7 +544,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   /**
    * @return Number of GamePieces that are visible to me
    */
-  protected int nVisible() {
+  public int nVisible() {
     return (int) asList().stream()
                          .filter(PieceIterator.VISIBLE)
                          .count();
