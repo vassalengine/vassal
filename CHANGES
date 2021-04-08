@@ -1,3 +1,8 @@
+3.6.0 - ???
+
+* 14207: Improved translation features (Global Translatable Message component,
+    Translatable Message trait, exposing current language/locale as property)
+
 3.5.6 - ???
 
 * 14351: NPE when Player Roster deleted from module
