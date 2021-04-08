@@ -159,7 +159,6 @@ import VASSAL.tools.version.VersionUtils;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
-import static VASSAL.preferences.Prefs.TRANSLATABLE_SUPPORT;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
