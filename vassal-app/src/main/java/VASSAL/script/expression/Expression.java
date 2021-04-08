@@ -144,7 +144,7 @@ public class Expression {
     }
     catch (ExpressionException e) {
       handleError(e);
-      return null;
+      return ""; // Return something that won't cause downstream code to throw exceptions, since we're basically dealing with "Bad Module Data".
     }
   }
 
