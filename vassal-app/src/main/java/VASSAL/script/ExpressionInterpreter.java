@@ -311,9 +311,6 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = "";
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
     }
-    catch (Exception e) {
-      result = "";
-    }
     finally {
       RecursionLimiter.endExecution();
       source = null;  // prevent source from being retained
