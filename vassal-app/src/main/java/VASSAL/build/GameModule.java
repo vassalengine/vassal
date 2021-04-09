@@ -50,6 +50,7 @@ import VASSAL.build.module.properties.GlobalTranslatableMessages;
 import VASSAL.build.module.properties.TranslatableString;
 import VASSAL.build.module.properties.TranslatableStringContainer;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -1463,11 +1464,13 @@ public class GameModule extends AbstractConfigurable
    * @return appropriate title bar string for a window.
    * @param key Localization key to be used to generate string
    * @param name Name of the object whose title bar is to be generated
+   * @param moduleVersion if true, include the module version number
    */
-  public String getWindowTitleString(String key, String name) {
+  public String getWindowTitleString(String key, String name, boolean moduleVersion) {
     final String version = getGameVersion();
     final String nameString;
-    if (!DEFAULT_MODULE_VERSION.equals(version)) {
+
+    if (moduleVersion && !DEFAULT_MODULE_VERSION.equals(version)) {
       nameString = name + " " + version;
     }
     else {
@@ -1478,9 +1481,14 @@ public class GameModule extends AbstractConfigurable
       return Resources.getString(key + "_title", nameString, "", Info.getVersion());  //NON-NLS-1$
     }
     else {
-      return Resources.getString(key + "_title_" + gameFileMode, nameString, gameFile, Info.getVersion()); //NON-NLS-1$
+      return Resources.getString(key + "_title_" + gameFileMode, nameString, moduleVersion ? gameFile : FilenameUtils.removeExtension(gameFile), Info.getVersion()); //NON-NLS-1$
     }
   }
+
+  public String getWindowTitleString(String key, String name) {
+    return getWindowTitleString(key, name, true);
+  }
+
 
   /**
    * Returns an appropriate Title Bar string for the main module window, based on the module name,
