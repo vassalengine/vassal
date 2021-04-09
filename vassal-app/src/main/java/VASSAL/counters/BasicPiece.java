@@ -265,7 +265,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
         final Deck deck = (Deck) getParent();
         final int size = deck.getPieceCount();
         final int pos = deck.indexOf(Decorator.getOutermost(this));
-        return String.valueOf(size - pos + 1);
+        return String.valueOf(size - pos);
       }
       else {
         return "0";
