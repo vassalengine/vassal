@@ -162,7 +162,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           }
           argList.append("String ").append(variable); // NON-NLS
         }
-        eval("String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}"); // NON-NLS
+        final String ex = "String " + MAGIC2 + "(" + argList.toString() + ") { " + MAGIC3 + "=" + expression + "; return " + MAGIC3 + ".toString();}";
+        eval(ex); // NON-NLS
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -286,7 +287,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           argList.append(',');
         }
         final Object value = localized ? source.getLocalizedProperty(var) : source.getProperty(var);
-        argList.append('"').append(value == null ? "" : value.toString()).append('"');
+        argList.append('"').append(value == null ? "" : value.toString().replace("\"", "\\\"")).append('"');
       }
 
       // Re-evaluate the pre-parsed expression now that the undefined variables have
@@ -309,6 +310,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     catch (RecursionLimitException e) {
       result = "";
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.possible_infinite_expression_loop"), getExpression(), e));
+    }
+    catch (Exception e) {
+      result = "";
     }
     finally {
       RecursionLimiter.endExecution();
