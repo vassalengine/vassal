@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14360: Less verbose window titles for sub-windows
 * 14207: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
 
