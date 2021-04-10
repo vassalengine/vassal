@@ -244,7 +244,7 @@ public class GameState implements CommandEncoder {
    * @return true if saveGame action is enabled (mainly to detect if logging can start)
    */
   public boolean isSaveEnabled() {
-    return (saveGame == null) ? false : saveGame.isEnabled();
+    return saveGame != null && saveGame.isEnabled();
   }
 
   /**
