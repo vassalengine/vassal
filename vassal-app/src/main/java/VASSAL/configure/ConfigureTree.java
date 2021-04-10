@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -704,6 +705,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<>();
+
+    if (target instanceof AbstractConfigurable) {
+      final DefaultMutableTreeNode targetNode = getTreeNode(target);
+      if (targetNode != null) {
+        final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode.getParent();
+        if (parentNode != null) {
+          l.add(buildAddAction((Configurable)parentNode.getUserObject(), target.getClass(), "Editor.ConfigureTree.add_duplicate", parentNode.getIndex(targetNode) + 1, target));
+          l.add(buildAddAction((Configurable)parentNode.getUserObject(), target.getClass(), "Editor.ConfigureTree.add_peer", parentNode.getIndex(targetNode) + 1, null));
+        }
+      }
+    }
+
     for (final Class<? extends Buildable> newConfig :
       target.getAllowableConfigureComponents()) {
       l.add(buildAddAction(target, newConfig));
@@ -715,6 +728,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         l.add(buildAddAction(target, newConfig));
       }
     }
+
     return l;
   }
 
@@ -728,7 +742,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
-    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_component", getConfigureName(newConfig))) {
+    return buildAddAction(target, newConfig, "Editor.ConfigureTree.add_component", -1, null);
+  }
+
+
+  protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig, String key, int index, final Configurable duplicate) {
+    return new AbstractAction(Resources.getString(key, getConfigureName(newConfig))) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -743,14 +762,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         if (ch != null) {
           final Configurable child = ch;
-          child.build(null);
+          child.build((duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null);
 
           if (child instanceof PieceSlot) {
             ((PieceSlot) child).updateGpId(GameModule.getGameModule());
           }
 
           if (child.getConfigurer() != null) {
-            if (insert(target, child, getTreeNode(target).getChildCount())) {
+            if (insert(target, child, (index < 0) ? getTreeNode(target).getChildCount() : index)) {
+              if (duplicate != null) {
+                updateGpIds(child);
+              }
+
               // expand the new node
               final TreePath path = new TreePath(getTreeNode(child).getPath());
               expandPath(path);
@@ -768,7 +791,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
           else {
-            insert(target, child, getTreeNode(target).getChildCount());
+            insert(target, child, (index < 0) ? getTreeNode(target).getChildCount() : index);
+            if (duplicate != null) {
+              updateGpIds(child);
+            }
           }
         }
       }
