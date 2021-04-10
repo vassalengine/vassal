@@ -239,6 +239,14 @@ public class GameState implements CommandEncoder {
     return s != null && !s.equals(lastSave);
   }
 
+
+  /**
+   * @return true if saveGame action is enabled (mainly to detect if logging can start)
+   */
+  public boolean isSaveEnabled() {
+    return saveGame != null && saveGame.isEnabled();
+  }
+
   /**
    * Add a {@link GameComponent} to the list of objects that will
    * be notified when a game is started/ended

@@ -335,7 +335,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * @param atStart true if prompting because we're just starting a session; false if prompting because we just finished replaying a logfile.
    */
   public void queryNewLogFile(boolean atStart) {
-    if (isLogging()) {
+    final GameModule g = GameModule.getGameModule();
+
+    if (isLogging() || !g.getGameState().isSaveEnabled()) {
       return;
     }
 
@@ -350,8 +352,6 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       prefName = PROMPT_NEW_LOG_END;
       prompt = Resources.getString("BasicLogger.replay_completed");  //$NON-NLS-1$
     }
-
-    final GameModule g = GameModule.getGameModule();
 
     if (Boolean.TRUE.equals(g.getPrefs().getValue(prefName))) {
       final Object[] options = {
@@ -472,6 +472,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     logOutput.clear();
     beginningState = gm.getGameState().getRestoreCommand();
+    if (beginningState == null) {
+      return;
+    }
 
     undoAction.setEnabled(false);
     endLogAction.setEnabled(true);
@@ -568,10 +571,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     @Override
     public void actionPerformed(ActionEvent e) {
       try {
-        write();
-        GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written"));  //$NON-NLS-1$
+        if (beginningState != null) {
+          write();
+          GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written"));  //$NON-NLS-1$
+          GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.LOGGED_GAME);
+        }
         newLogAction.setEnabled(true);
-        GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.LOGGED_GAME);
         outputFile = null;
       }
       catch (IOException ex) {
