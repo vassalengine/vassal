@@ -2279,75 +2279,33 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return false;
       }
 
-      // Do not allow MOVE-action drops if a non-leaf node is
-      // selected unless all of its children are also selected.
       int action = support.getDropAction();
       if (action == MOVE) {
-        return true;
-        //return haveCompleteNode(tree);
-      }
-
-      // Do not allow a non-leaf node to be copied to a level
-      // which is less than its source level.
-      if (firstNode.getChildCount() > 0 && targetNode.getLevel() < firstNode.getLevel()) {
-        return false;
+        // Don't allow move (cut) to our own descendant
+        if (targetNode.isNodeAncestor(firstNode)) {
+          return false;
+        }
       }
 
       return true;
-    }
-
-    private List<DefaultMutableTreeNode> dragCopies;
-    private List<DefaultMutableTreeNode> dragRemoves;
-
-    protected void initTransferable() {
-      dragCopies = new ArrayList<DefaultMutableTreeNode>();
-      dragRemoves = new ArrayList<DefaultMutableTreeNode>();
-    }
-
-    protected void recursiveTransfer(DefaultMutableTreeNode node) {
-      DefaultMutableTreeNode copy = copy(node);
-      dragCopies.add(copy);
-      dragRemoves.add(node);
-
-      for (int i = 0; i < node.getChildCount(); i++) {
-        DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(i);
-        recursiveTransfer(child);
-      }
     }
 
     protected Transferable createTransferable(JComponent c) {
       JTree tree = (JTree)c;
       TreePath[] paths = tree.getSelectionPaths();
       if (paths != null) {
-        // Make up a node array of copies for transfer and
-        // another for/of the nodes that will be removed in
-        // exportDone after a successful drop.
-        initTransferable();
+        // Array w/ node to be transferred
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[0].getLastPathComponent();
-        recursiveTransfer(node);
-
-        DefaultMutableTreeNode[] nodes = dragCopies.toArray(new DefaultMutableTreeNode[dragCopies.size()]);
-        nodesToRemove = dragRemoves.toArray(new DefaultMutableTreeNode[dragRemoves.size()]);
+        DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[1];
+        nodes[0] = node;
         return new NodesTransferable(nodes);
       }
       return null;
     }
 
-    /** Defensive copy used in createTransferable. */
-    private DefaultMutableTreeNode copy(TreeNode node) {
-      DefaultMutableTreeNode n = (DefaultMutableTreeNode)node;
-      return (DefaultMutableTreeNode) n.clone();
-    }
 
     protected void exportDone(JComponent source, Transferable data, int action) {
-      if ((action & MOVE) == MOVE) {
-        JTree tree = (JTree)source;
-        DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-        // Remove nodes saved in nodesToRemove in createTransferable.
-        for (int i = 0; i < nodesToRemove.length; i++) {
-          model.removeNodeFromParent(nodesToRemove[i]);
-        }
-      }
+      // Nothing to do here, as we do our removal in the import stage
     }
 
     public int getSourceActions(JComponent c) {
@@ -2373,24 +2331,44 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // Get drop location info.
-      JTree.DropLocation dl =
-        (JTree.DropLocation)support.getDropLocation();
+      JTree.DropLocation dl = (JTree.DropLocation)support.getDropLocation();
       int childIndex = dl.getChildIndex();
       TreePath dest = dl.getPath();
-      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)dest.getLastPathComponent();
+      DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode)dest.getLastPathComponent();
+      Configurable target = (Configurable)targetNode.getUserObject();
+
       JTree tree = (JTree)support.getComponent();
-      DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
 
-      // Configure for drop mode.
-      int index = childIndex;    // DropMode.INSERT
-      if (childIndex == -1) {     // DropMode.ON
-        index = parent.getChildCount();
+      if ((support.getDropAction() & MOVE) == MOVE) {
+        DefaultMutableTreeNode myCut = nodes[0];
+        if (!targetNode.isNodeAncestor(myCut)) {
+          final Configurable cutObj = (Configurable) myCut.getUserObject();
+          final Configurable convertedCutObj = convertChild(target, cutObj);
+
+          if (remove(getParent(myCut), cutObj)) {
+            insert(target, convertedCutObj, childIndex);
+          }
+        }
+      }
+      else {
+        DefaultMutableTreeNode myCopy = nodes[0];
+
+        final Configurable copyBase = (Configurable) myCopy.getUserObject();
+        Configurable clone = null;
+        try {
+          clone = convertChild(target, copyBase.getClass().getConstructor().newInstance());
+        }
+        catch (Throwable t) {
+          ReflectionUtils.handleNewInstanceFailure(t, copyBase.getClass());
+        }
+
+        if (clone != null) {
+          clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
+          insert(target, clone, childIndex);
+          updateGpIds(clone);
+        }
       }
 
-      // Add data to model.
-      for (int i = 0; i < nodes.length; i++) {
-        model.insertNodeInto(nodes[i], parent, index++);
-      }
       return true;
     }
 
