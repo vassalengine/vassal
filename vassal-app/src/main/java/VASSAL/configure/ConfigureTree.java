@@ -114,6 +114,7 @@ import javax.swing.tree.TreeSelectionModel;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.commons.nullanalysis.NotNull;
 
 /**
  * The beating heart of the Editor, this class handles the Configuration Tree
@@ -2229,15 +2230,17 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  // Tree Transfer Handler provides drag-and-drop support for editor items.
+  /**
+   * Tree Transfer Handler provides drag-and-drop support for editor items. Heavily adapted from Oracle "tutorial" and various StackOverflow and Code Ranch articles, but yeah, google ftw.
+   * (Brian Reynolds Apr 4 2021)
+   */
   class TreeTransferHandler extends TransferHandler {
     DataFlavor nodesFlavor;
     DataFlavor[] flavors = new DataFlavor[1];
-    DefaultMutableTreeNode[] nodesToRemove;
 
     public TreeTransferHandler() {
       try {
-        String mimeType = DataFlavor.javaJVMLocalObjectMimeType +
+        final String mimeType = DataFlavor.javaJVMLocalObjectMimeType +
           ";class=\"" +
           javax.swing.tree.DefaultMutableTreeNode[].class.getName() +
           "\"";
@@ -2249,6 +2252,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
+    /**
+     * @param support info on the drag/drop in question (called continuously as item is dragged over various targets)
+     * @return true if drag/drop is "legal", false if the "No Drag For You!" icon should be shown
+     */
     public boolean canImport(TransferHandler.TransferSupport support) {
       if (!support.isDrop()) {
         return false;
@@ -2259,59 +2266,66 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
 
       // Do not allow a drop on the drag source selections.
-      JTree.DropLocation dl = (JTree.DropLocation)support.getDropLocation();
-      JTree tree = (JTree)support.getComponent();
-      int dropRow = tree.getRowForPath(dl.getPath());
-      int[] selRows = tree.getSelectionRows();
-      for (int i = 0; i < selRows.length; i++) {
-        if (selRows[i] == dropRow) {
+      final JTree.DropLocation dl = (JTree.DropLocation)support.getDropLocation();
+      final JTree tree = (JTree)support.getComponent();
+      final int dropRow = tree.getRowForPath(dl.getPath());
+      final int[] selRows = tree.getSelectionRows();
+      if (selRows == null) return false;
+      for (final int selRow : selRows) {
+        if (selRow == dropRow) {
           return false;
         }
       }
 
-      // Only allow drag to a valid parent
-      TreePath dest = dl.getPath();
-      DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode)dest.getLastPathComponent();
-      TreePath path = tree.getPathForRow(selRows[0]);
-      DefaultMutableTreeNode firstNode = (DefaultMutableTreeNode)path.getLastPathComponent();
-      Configurable target = (Configurable)targetNode.getUserObject();
+      // Only allow drag to a valid parent (same logic as our regular cut-and-paste)
+      final TreePath dest = dl.getPath();
+      final DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode)dest.getLastPathComponent();
+      final TreePath path = tree.getPathForRow(selRows[0]);
+      final DefaultMutableTreeNode firstNode = (DefaultMutableTreeNode)path.getLastPathComponent();
+      final Configurable target = (Configurable)targetNode.getUserObject();
       if (!isValidPasteTarget(target, firstNode)) {
         return false;
       }
 
-      int action = support.getDropAction();
+      final int action = support.getDropAction();
       if (action == MOVE) {
         // Don't allow move (cut) to our own descendant
-        if (targetNode.isNodeAncestor(firstNode)) {
-          return false;
-        }
+        return !targetNode.isNodeAncestor(firstNode);
       }
 
       return true;
     }
 
+    /**
+     * @param c The component being dragged
+     * @return Package describing data to be moved/copied
+     */
     protected Transferable createTransferable(JComponent c) {
-      JTree tree = (JTree)c;
-      TreePath[] paths = tree.getSelectionPaths();
+      final JTree tree = (JTree)c;
+      final TreePath[] paths = tree.getSelectionPaths();
       if (paths != null) {
         // Array w/ node to be transferred
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[0].getLastPathComponent();
-        DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[1];
+        final DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[0].getLastPathComponent();
+        final DefaultMutableTreeNode[] nodes = new DefaultMutableTreeNode[1];
         nodes[0] = node;
         return new NodesTransferable(nodes);
       }
       return null;
     }
 
-
     protected void exportDone(JComponent source, Transferable data, int action) {
-      // Nothing to do here, as we do our removal in the import stage
+      //BR// Nothing to do here, as we do our removal in the import stage (original algorithm made a copy and then deleted the source, but that would make our "unique ID" code barf a mighty barf)
     }
 
     public int getSourceActions(JComponent c) {
       return COPY_OR_MOVE;
     }
 
+    /**
+     * Actually performs the data transfer for a move or copy operation
+     * @param support Info on the drag being performed
+     * @return true if drag/drop operation was successful
+     */
     public boolean importData(TransferHandler.TransferSupport support) {
       if (!canImport(support)) {
         return false;
@@ -2320,7 +2334,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       // Extract transfer data.
       DefaultMutableTreeNode[] nodes = null;
       try {
-        Transferable t = support.getTransferable();
+        final Transferable t = support.getTransferable();
         nodes = (DefaultMutableTreeNode[])t.getTransferData(nodesFlavor);
       }
       catch (UnsupportedFlavorException ufe) {
@@ -2330,30 +2344,58 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         System.out.println("I/O error: " + ioe.getMessage());
       }
 
-      // Get drop location info.
-      JTree.DropLocation dl = (JTree.DropLocation)support.getDropLocation();
-      int childIndex = dl.getChildIndex();
-      TreePath dest = dl.getPath();
-      DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode)dest.getLastPathComponent();
-      Configurable target = (Configurable)targetNode.getUserObject();
+      if (nodes == null) {
+        return false;
+      }
 
-      JTree tree = (JTree)support.getComponent();
+      // Get drop location info.
+      final JTree.DropLocation dl = (JTree.DropLocation)support.getDropLocation();
+      final TreePath dest = dl.getPath();
+      final DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode)dest.getLastPathComponent();
+      final Configurable target = (Configurable)targetNode.getUserObject();
+      final DefaultMutableTreeNode sourceNode = nodes[0];
+
+      // What new index shall we drop it at? -1 means it was dropped directly on the parent item.
+      int childIndex = dl.getChildIndex();
+      if (childIndex < 0) {
+        if (sourceNode.getParent() == targetNode) {
+          childIndex = 0; // If we've been dragged up to our same parent then drop at top of list.
+        }
+        else {
+          childIndex = targetNode.getChildCount(); // Otherwise we drop it at the bottom
+        }
+      }
+
+      if (childIndex > targetNode.getChildCount()) {
+        childIndex = targetNode.getChildCount();
+      }
 
       if ((support.getDropAction() & MOVE) == MOVE) {
-        DefaultMutableTreeNode myCut = nodes[0];
-        if (!targetNode.isNodeAncestor(myCut)) {
-          final Configurable cutObj = (Configurable) myCut.getUserObject();
+        if (!targetNode.isNodeAncestor(sourceNode)) {
+          // Here's we're "moving", so therefore "cutting" the source object from its original location (plain drag)
+          final Configurable cutObj = (Configurable) sourceNode.getUserObject();
           final Configurable convertedCutObj = convertChild(target, cutObj);
 
-          if (remove(getParent(myCut), cutObj)) {
+          if (sourceNode.getParent() == targetNode) {
+            final int oldIndex = targetNode.getIndex(sourceNode);
+            //BR// If we're being dragged to our same parent, but lower down the list, adjust index to account for the fact we're about to be cut from it. Such humiliations are the price of keeping the Unique ID manager copacetic.
+            if (childIndex > oldIndex) {
+              childIndex--;
+            }
+            // If just moving to same place, report success without doing anything.
+            if (childIndex == oldIndex) {
+              return true;
+            }
+          }
+
+          if (remove(getParent(sourceNode), cutObj)) {
             insert(target, convertedCutObj, childIndex);
           }
         }
       }
       else {
-        DefaultMutableTreeNode myCopy = nodes[0];
-
-        final Configurable copyBase = (Configurable) myCopy.getUserObject();
+        // Or, if we're actually making a new copy (ctrl-drag)
+        final Configurable copyBase = (Configurable) sourceNode.getUserObject();
         Configurable clone = null;
         try {
           clone = convertChild(target, copyBase.getClass().getConstructor().newInstance());
@@ -2376,6 +2418,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return getClass().getName();
     }
 
+    /**
+     * Self-important data blurp that describes a potential drag/drop source. But there's stuff about flavor, and who doesn't like flavor?
+     */
     public class NodesTransferable implements Transferable {
       DefaultMutableTreeNode[] nodes;
 
