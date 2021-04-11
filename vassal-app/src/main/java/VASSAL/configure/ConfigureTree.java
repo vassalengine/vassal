@@ -2296,31 +2296,23 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return true;
     }
 
-    private boolean haveCompleteNode(JTree tree) {
-      int[] selRows = tree.getSelectionRows();
-      TreePath path = tree.getPathForRow(selRows[0]);
-      DefaultMutableTreeNode first = (DefaultMutableTreeNode)path.getLastPathComponent();
-      int childCount = first.getChildCount();
+    private List<DefaultMutableTreeNode> dragCopies;
+    private List<DefaultMutableTreeNode> dragRemoves;
 
-      // first has children and no children are selected.
-      if (childCount > 0 && selRows.length == 1) {
-        return false;
-      }
+    protected void initTransferable() {
+      dragCopies = new ArrayList<DefaultMutableTreeNode>();
+      dragRemoves = new ArrayList<DefaultMutableTreeNode>();
+    }
 
-      // first may have children.
-      for (int i = 1; i < selRows.length; i++) {
-        path = tree.getPathForRow(selRows[i]);
-        DefaultMutableTreeNode next =
-          (DefaultMutableTreeNode)path.getLastPathComponent();
-        if (first.isNodeChild(next)) {
-          // Found a child of first.
-          if (childCount > selRows.length - 1) {
-            // Not all children of first are selected.
-            return false;
-          }
-        }
+    protected void recursiveTransfer(DefaultMutableTreeNode node) {
+      DefaultMutableTreeNode copy = copy(node);
+      dragCopies.add(copy);
+      dragRemoves.add(node);
+
+      for (int i = 0; i < node.getChildCount(); i++) {
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(i);
+        recursiveTransfer(child);
       }
-      return true;
     }
 
     protected Transferable createTransferable(JComponent c) {
@@ -2330,31 +2322,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         // Make up a node array of copies for transfer and
         // another for/of the nodes that will be removed in
         // exportDone after a successful drop.
-        List<DefaultMutableTreeNode> copies = new ArrayList<DefaultMutableTreeNode>();
-        List<DefaultMutableTreeNode> toRemove = new ArrayList<DefaultMutableTreeNode>();
+        initTransferable();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)paths[0].getLastPathComponent();
-        DefaultMutableTreeNode copy = copy(node);
-        copies.add(copy);
-        toRemove.add(node);
-        for (int i = 1; i < paths.length; i++) {
-          DefaultMutableTreeNode next =
-            (DefaultMutableTreeNode)paths[i].getLastPathComponent();
+        recursiveTransfer(node);
 
-          // Do not allow higher level nodes to be added to list.
-          if (next.getLevel() < node.getLevel()) {
-            break;
-          }
-          else if (next.getLevel() > node.getLevel()) {  // child node
-            copy.add(copy(next));
-            // node already contains child
-          }
-          else {                                        // sibling
-            copies.add(copy(next));
-            toRemove.add(next);
-          }
-        }
-        DefaultMutableTreeNode[] nodes = copies.toArray(new DefaultMutableTreeNode[copies.size()]);
-        nodesToRemove = toRemove.toArray(new DefaultMutableTreeNode[toRemove.size()]);
+        DefaultMutableTreeNode[] nodes = dragCopies.toArray(new DefaultMutableTreeNode[dragCopies.size()]);
+        nodesToRemove = dragRemoves.toArray(new DefaultMutableTreeNode[dragRemoves.size()]);
         return new NodesTransferable(nodes);
       }
       return null;
