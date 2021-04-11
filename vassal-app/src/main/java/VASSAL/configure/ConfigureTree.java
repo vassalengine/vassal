@@ -114,7 +114,6 @@ import javax.swing.tree.TreeSelectionModel;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.commons.nullanalysis.NotNull;
 
 /**
  * The beating heart of the Editor, this class handles the Configuration Tree
