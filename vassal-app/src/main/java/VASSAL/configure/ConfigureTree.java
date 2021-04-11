@@ -2230,10 +2230,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   /**
-   * Tree Transfer Handler provides drag-and-drop support for editor items. Heavily adapted from Oracle "tutorial" and various StackOverflow and Code Ranch articles, but yeah, google ftw.
-   * (Brian Reynolds Apr 4 2021)
+   * Tree Transfer Handler provides drag-and-drop support for editor items. Heavily adapted from Oracle "tutorial" and
+   * various StackOverflow and Code Ranch articles, but yeah, google ftw. (Brian Reynolds Apr 4 2021)
    */
   class TreeTransferHandler extends TransferHandler {
+    private static final long serialVersionUID = 1L;
+
     DataFlavor nodesFlavor;
     DataFlavor[] flavors = new DataFlavor[1];
 
@@ -2241,7 +2243,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       try {
         final String mimeType = DataFlavor.javaJVMLocalObjectMimeType +
           ";class=\"" +
-          javax.swing.tree.DefaultMutableTreeNode[].class.getName() +
+          DefaultMutableTreeNode[].class.getName() +
           "\"";
         nodesFlavor = new DataFlavor(mimeType);
         flavors[0] = nodesFlavor;
@@ -2255,6 +2257,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @param support info on the drag/drop in question (called continuously as item is dragged over various targets)
      * @return true if drag/drop is "legal", false if the "No Drag For You!" icon should be shown
      */
+    @Override
     public boolean canImport(TransferHandler.TransferSupport support) {
       if (!support.isDrop()) {
         return false;
@@ -2299,6 +2302,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @param c The component being dragged
      * @return Package describing data to be moved/copied
      */
+    @Override
     protected Transferable createTransferable(JComponent c) {
       final JTree tree = (JTree)c;
       final TreePath[] paths = tree.getSelectionPaths();
@@ -2312,10 +2316,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return null;
     }
 
+    /**
+     * Nothing to do here, as we do our removal in the import stage (original algorithm made a copy and then deleted
+     * the source, but that would make our "unique ID" code barf a mighty barf)
+     */
+    @Override
     protected void exportDone(JComponent source, Transferable data, int action) {
-      //BR// Nothing to do here, as we do our removal in the import stage (original algorithm made a copy and then deleted the source, but that would make our "unique ID" code barf a mighty barf)
+      //
     }
 
+    @Override
     public int getSourceActions(JComponent c) {
       return COPY_OR_MOVE;
     }
@@ -2325,6 +2335,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
      * @param support Info on the drag being performed
      * @return true if drag/drop operation was successful
      */
+    @Override
     public boolean importData(TransferHandler.TransferSupport support) {
       if (!canImport(support)) {
         return false;
@@ -2377,7 +2388,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (sourceNode.getParent() == targetNode) {
             final int oldIndex = targetNode.getIndex(sourceNode);
-            //BR// If we're being dragged to our same parent, but lower down the list, adjust index to account for the fact we're about to be cut from it. Such humiliations are the price of keeping the Unique ID manager copacetic.
+            //BR// If we're being dragged to our same parent, but lower down the list, adjust index to account for the
+            //BR// fact we're about to be cut from it. Such humiliations are the price of keeping the Unique ID manager
+            //BR// copacetic.
             if (childIndex > oldIndex) {
               childIndex--;
             }
@@ -2413,12 +2426,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       return true;
     }
 
+    @Override
     public String toString() {
       return getClass().getName();
     }
 
     /**
-     * Self-important data blurp that describes a potential drag/drop source. But there's stuff about flavor, and who doesn't like flavor?
+     * Self-important data blurp that describes a potential drag/drop source. But there's stuff
+     * about flavor, and who doesn't like flavor?
      */
     public class NodesTransferable implements Transferable {
       DefaultMutableTreeNode[] nodes;
@@ -2427,6 +2442,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         this.nodes = nodes;
       }
 
+      @SuppressWarnings("NullableProblems") //BR// Because I just have no idea
+      @Override
       public Object getTransferData(DataFlavor flavor)
         throws UnsupportedFlavorException {
         if (!isDataFlavorSupported(flavor)) {
@@ -2435,10 +2452,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return nodes;
       }
 
+      @Override
       public DataFlavor[] getTransferDataFlavors() {
         return flavors;
       }
 
+      @Override
       public boolean isDataFlavorSupported(DataFlavor flavor) {
         return nodesFlavor.equals(flavor);
       }
