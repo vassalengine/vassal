@@ -2484,6 +2484,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public Object getProperty(Object key) {
     final Object value;
+
     final MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();
