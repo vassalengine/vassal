@@ -19,12 +19,15 @@
 package VASSAL.launch;
 
 import java.awt.AWTError;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import VASSAL.preferences.Prefs;
+import VASSAL.preferences.ReadOnlyPrefs;
 import org.apache.commons.lang3.SystemUtils;
 
 import org.slf4j.Logger;
@@ -63,6 +66,22 @@ public class StartUp {
       System.setProperty(httpProxyPort, System.getProperty(proxyPort));
     }
   }
+
+  /**
+   * Changes all the UI fonts to the specified one
+   * @param f Font for UI
+   */
+  public void setUIFont(javax.swing.plaf.FontUIResource f) {
+    final java.util.Enumeration keys = UIManager.getDefaults().keys();
+    while (keys.hasMoreElements()) {
+      final Object key = keys.nextElement();
+      final Object value = UIManager.get(key);
+      if (value instanceof javax.swing.plaf.FontUIResource) {
+        UIManager.put(key, f);
+      }
+    }
+  }
+
 
   protected void initUIProperties() {
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -125,6 +144,18 @@ public class StartUp {
         // upon a JPopupMenu closing (added for Windows L&F, but others might
         // also be affected.
         UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
+
+        // If user has chosen a different UI font size, then put that into effect
+        final String fontString = ReadOnlyPrefs.getGlobalPrefs().getStoredValue(Prefs.OVERRIDE_DEFAULT_FONT_SIZE);
+        try {
+          final int fontSize = Integer.parseInt(fontString);
+          if (fontSize >= 8) {
+            setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, Math.min(fontSize, 50)));
+          }
+        }
+        catch (NumberFormatException e) {
+          // No action, keep default system/java/whatever fonts.
+        }
       });
     }
     catch (InterruptedException | InvocationTargetException e) {

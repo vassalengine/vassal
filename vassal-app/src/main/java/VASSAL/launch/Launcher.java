@@ -51,21 +51,6 @@ public abstract class Launcher {
     return instance;
   }
 
-  /**
-   * Changes all the UI fonts to the specified one
-   * @param f Font for UI
-   */
-  public static void setUIFont(javax.swing.plaf.FontUIResource f) {
-    final java.util.Enumeration keys = UIManager.getDefaults().keys();
-    while (keys.hasMoreElements()) {
-      final Object key = keys.nextElement();
-      final Object value = UIManager.get(key);
-      if (value instanceof javax.swing.plaf.FontUIResource) {
-        UIManager.put(key, f);
-      }
-    }
-  }
-
   protected Launcher(String[] args) {
     if (instance != null) throw new IllegalStateException();
     instance = this;
@@ -95,8 +80,6 @@ public abstract class Launcher {
     start.initSystemProperties();
 
     createMenuManager();
-
-    setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, 18));
 
     SwingUtilities.invokeLater(new Runnable() {
       @Override

@@ -61,6 +61,8 @@ public class Prefs implements Closeable {
   public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //NON-NLS
   public static final String MAIN_WINDOW_WIDTH  = "mainWindowWidth";  //NON-NLS
 
+  public static final String OVERRIDE_DEFAULT_FONT_SIZE = "overrideDefaultFontSize"; //NON-NLS
+
   public static final String TRANSLATABLE_SUPPORT = "translatableSupport"; //NON-NLS
 
   private static Prefs globalPrefs; // A Global Preferences object
@@ -266,6 +268,13 @@ public class Prefs implements Closeable {
       new DirectoryConfigurer(MODULES_DIR_KEY, null);
     c.setValue(new File(System.getProperty("user.home")));
     globalPrefs.addOption(null, c);
+
+    final IntConfigurer overrideDefaultFontSize = new IntConfigurer(
+        OVERRIDE_DEFAULT_FONT_SIZE,
+        Resources.getString("Prefs.override_default_font_size"),
+       0
+    );
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), overrideDefaultFontSize);
 
     // Options to remember main window size
     final BooleanConfigurer windowRemember = new BooleanConfigurer(
