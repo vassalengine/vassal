@@ -1,7 +1,10 @@
 3.5.6 - ???
 
 * 14370: NPE in BasicLogger.write() when there is no game state to write
+* 14368: Using String functions on property names containing double quotes in
+    value causes Bad Module Data errors
 * 14351: NPE when Player Roster deleted from module
+* 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
 * 14286: Prevent bad expressions from returning null
 
 3.5.5 - 6 April 2021
