@@ -75,6 +75,7 @@ import javax.swing.WindowConstants;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.GlobalPrefs;
 
+import VASSAL.tools.NamedKeyStrokeListener;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -269,6 +270,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
 
+  protected NamedKeyStrokeListener showKeyListener;
+  protected NamedKeyStrokeListener hideKeyListener;
+
   private IntConfigurer preferredScrollConfig;
 
   public Map() {
@@ -285,6 +289,30 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
+
+    showKeyListener = new NamedKeyStrokeListener(e -> showMap());
+    GameModule.getGameModule().addKeyStrokeListener(showKeyListener);
+
+    hideKeyListener = new NamedKeyStrokeListener(e -> hideMap());
+    GameModule.getGameModule().addKeyStrokeListener(hideKeyListener);
+  }
+
+  public void showMap() {
+    if (splitPane == null && getLaunchButton().isEnabled()) {
+      final Container tla = theMap.getTopLevelAncestor();
+      if (tla != null) {
+        tla.setVisible(true);
+      }
+    }
+  }
+
+  public void hideMap() {
+    if (splitPane == null && getLaunchButton().isEnabled()) {
+      final Container tla = theMap.getTopLevelAncestor();
+      if (tla != null) {
+        tla.setVisible(false);
+      }
+    }
   }
 
   /**
@@ -334,6 +362,8 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   public static final String CHANGE_FORMAT = "changeFormat"; //$NON-NLS-1$
   public static final String MOVE_KEY = "moveKey"; //$NON-NLS-1$
   public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits"; //$NON-NLS-1$
+  public static final String SHOW_KEY = "showKey"; //NON-NLS
+  public static final String HIDE_KEY = "hideKey"; //NON-NLS
 
   /**
    * Sets a buildFile (XML) attribute value for this component.
@@ -462,6 +492,18 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       tooltip = (String) value;
       getLaunchButton().setAttribute(key, value);
     }
+    else if (SHOW_KEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      showKeyListener.setKeyStroke((NamedKeyStroke) value);
+    }
+    else if (HIDE_KEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      hideKeyListener.setKeyStroke((NamedKeyStroke) value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -542,6 +584,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     else if (TOOLTIP.equals(key)) {
       return (tooltip == null || tooltip.length() == 0)
         ? getLaunchButton().getAttributeValueString(name) : tooltip;
+    }
+    else if (SHOW_KEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(showKeyListener.getNamedKeyStroke());
+    }
+    else if (HIDE_KEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(hideKeyListener.getNamedKeyStroke());
     }
     else {
       return super.getAttributeValueString(key);
@@ -624,6 +672,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     add(b);
     b.addTo(this);
   }
+
 
   /**
    * Every map must include a single {@link BoardPicker} as one of its build components. This will contain
@@ -3079,11 +3128,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       Resources.getString(Resources.TOOLTIP_TEXT),
       Resources.getString(Resources.BUTTON_ICON),
       Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.Map.show_key"),
+      Resources.getString("Editor.Map.hide_key"),
       Resources.getString("Editor.Map.report_move_within"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_move_to"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_created"), //$NON-NLS-1$
       Resources.getString("Editor.Map.report_modified"), //$NON-NLS-1$
-      Resources.getString("Editor.Map.key_applied_all") //$NON-NLS-1$
+      Resources.getString("Editor.Map.key_applied_all"), //$NON-NLS-1$
     };
   }
 
@@ -3113,11 +3164,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       TOOLTIP,
       ICON,
       HOTKEY,
+      SHOW_KEY,
+      HIDE_KEY,
       MOVE_WITHIN_FORMAT,
       MOVE_TO_FORMAT,
       CREATE_FORMAT,
       CHANGE_FORMAT,
-      MOVE_KEY
+      MOVE_KEY,
     };
   }
 
@@ -3148,11 +3201,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       String.class,
       IconConfig.class,
       NamedKeyStroke.class,
+      NamedKeyStroke.class,
+      NamedKeyStroke.class,
       MoveWithinFormatConfig.class,
       MoveToFormatConfig.class,
       CreateFormatConfig.class,
       ChangeFormatConfig.class,
-      NamedKeyStroke.class
+      NamedKeyStroke.class,
     };
   }
 
@@ -3328,7 +3383,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     if (visibilityCondition == null) {
       visibilityCondition = () -> useLaunchButton;
     }
-    if (List.of(HOTKEY, BUTTON_NAME, TOOLTIP, ICON).contains(name)) {
+    if (List.of(HOTKEY, BUTTON_NAME, TOOLTIP, ICON, SHOW_KEY, HIDE_KEY).contains(name)) {
       return visibilityCondition;
     }
     else if (List.of(MARK_UNMOVED_TEXT, MARK_UNMOVED_ICON, MARK_UNMOVED_TOOLTIP).contains(name)) {
