@@ -109,6 +109,8 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       targetPropertyConfig.setValue(t.getTargetProperty().getExpression());
       targetCompareConfig.setValue(t.getTargetCompare());
       targetValueConfig.setValue(t.getTargetValue().getExpression());
+      targetChanged();
+      fastMatchPropertyChanged();
       setFrozen(false);
     }
     super.setValue(o);
