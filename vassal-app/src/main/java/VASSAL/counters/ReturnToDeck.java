@@ -51,7 +51,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
@@ -59,8 +58,8 @@ import javax.swing.ListSelectionModel;
  * GamePiece trait that returns a piece to a {@link DrawPile}
  */
 public class ReturnToDeck extends Decorator implements TranslatablePiece {
-  public static final String OLD_ID = "return;"; // NON-NLS
-  public static final String ID = "todeck;"; // NON-NLS
+  public static final String ID = "return;"; // NON-NLS
+  public static final int RtDversion = 2;
   protected String deckId;
   protected String returnCommand;
   protected String selectDeckPrompt = Resources.getString("Editor.ReturnToDeck.select_destination");
@@ -109,42 +108,40 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   @Override
   public void mySetType(String s) {
-    if (s.startsWith(OLD_ID)) {
-      s = s.substring(OLD_ID.length());
+    if (s.startsWith(ID)) {
+      s = s.substring(ID.length());
       final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       returnCommand = st.nextToken();
       returnKey = st.nextNamedKeyStroke(null);
       deckId = st.nextToken("");
       selectDeckPrompt = st.nextToken(selectDeckPrompt);
       description = st.nextToken("");
-      updateDeckName();
 
-      //BR// if loading an "old ID" format trait, create values needed for new format.
-      deckSelect = (deckId == null || deckId.isEmpty());
-      deckExpression.setFormat("");
+      final int version = st.nextInt(0);
+      if (version < 2) {
+        updateDeckName();
 
-      if (deckId != null) {
-        final DrawPile p = DrawPile.findDrawPile(deckId);
-        if (p != null) {
-          final String name = p.getConfigureName();
-          if (name != null) {
-            deckExpression.setFormat(name);
-          }
-          else {
-            deckExpression.setFormat(deckId);
+        //BR// if loading an "old ID" format trait, create values needed for new format.
+        deckSelect = (deckId == null || deckId.isEmpty());
+        deckExpression.setFormat("");
+
+        if (deckId != null) {
+          final DrawPile p = DrawPile.findDrawPile(deckId);
+          if (p != null) {
+            final String name = p.getConfigureName();
+            if (name != null) {
+              deckExpression.setFormat(name);
+            }
+            else {
+              deckExpression.setFormat(deckId);
+            }
           }
         }
       }
-    }
-    else {
-      s = s.substring(ID.length());
-      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
-      returnCommand = st.nextToken();
-      returnKey = st.nextNamedKeyStroke(null);
-      deckExpression.setFormat(st.nextToken(""));
-      deckSelect = st.nextBoolean(true);
-      selectDeckPrompt = st.nextToken(selectDeckPrompt);
-      description = st.nextToken("");
+      else {
+        deckSelect = st.nextBoolean(true);
+        deckExpression.setFormat(st.nextToken(""));
+      }
     }
   }
 
@@ -166,7 +163,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
-    return ID + se.append(returnCommand).append(returnKey).append(deckExpression.getFormat()).append(deckSelect).append(selectDeckPrompt).append(description).getValue();
+    return ID + se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).append(description).append(RtDversion).append(deckSelect).append(deckExpression.getFormat()).getValue();
   }
 
   @Override
@@ -174,18 +171,20 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command comm = null;
     if (myCommand.matches(stroke)) {
-      DrawPile pile = null;
+      final DrawPile pile;
 
       if (deckSelect) {
         pile = promptForDrawPile();
       }
-
-      final String evalName = deckExpression.getText(this);
-      pile = DrawPile.findDrawPile(evalName);
-      if (pile == null) {
-        if (!deckSelect) {
+      else {
+        final String evalName = deckExpression.getText(this);
+        pile = DrawPile.findDrawPile(evalName);
+        if (pile == null) {
           ErrorDialog.dataWarning(new BadDataReport("Deck Not Found for Return-to-Deck trait: " + evalName, deckExpression.getFormat())); //NON-NLS
         }
+      }
+
+      if (pile == null) {
         return null;
       }
 
@@ -317,6 +316,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     if (! Objects.equals(returnKey, c.returnKey)) return false;
     if (! Objects.equals(deckExpression, c.deckExpression)) return false;
     if (! Objects.equals(deckSelect, c.deckSelect)) return false;
+    if (! Objects.equals(deckId, c.deckId)) return false;
     return Objects.equals(selectDeckPrompt, c.selectDeckPrompt);
   }
 
@@ -325,12 +325,10 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer menuKey;
     private final TraitConfigPanel controls;
     private final String deckId;
-    private final JTextField tf = new JTextField(12);
     private final JLabel promptLabel;
     private final StringConfigurer promptText;
     private final BooleanConfigurer prompt;
     private final JLabel selectLabel;
-    //private final JPanel selectPanel;
     private final StringConfigurer description;
     private final FormattedExpressionConfigurer deckExp;
 
@@ -354,26 +352,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       prompt.addPropertyChangeListener(e -> updateVisibility());
       controls.add("Editor.ReturnToDeck.choose_destination_deck_at_game_time", prompt);
 
-      //selectPanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
-      //final JButton select = new JButton(Resources.getString("Editor.ReturnToDeck.select_deck"));
-      //tf.setEditable(false);
-      //updateDeckName();
-      //select.addActionListener(e -> {
-      //  final ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
-      //  d.setTitle(Resources.getString("Editor.ReturnToDeck.select_deck"));
-      //  d.setVisible(true);
-      //  if (d.getTarget() != null) {
-      //    deckId = UniqueIdManager.getIdentifier((UniqueIdManager.Identifyable)d.getTarget());
-      //    updateDeckName();
-      //  }
-      //});
-      //selectPanel.add(select);
-      //selectPanel.add(tf, "grow"); // NON-NLS
-      //selectPanel.add(, "grow"); //NON-NLS
-      //selectLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.selected_deck"));
-      //controls.add(selectLabel, selectPanel, "grow"); // NON-NLS;
-
-      //selectPanel = new JPanel(new MigLayout("ins 0", "[]rel[grow,fill]")); // NON-NLS
       selectLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.deck_name"));
       deckExp = new FormattedExpressionConfigurer(p.deckExpression.getFormat(), p);
       controls.add(selectLabel, deckExp);
@@ -389,13 +367,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       promptLabel.setVisible(prompt.getValueBoolean());
       promptText.getControls().setVisible(prompt.getValueBoolean());
       deckExp.getControls().setVisible(!prompt.getValueBoolean());
-      //selectPanel.setVisible(!prompt.getValueBoolean());
-      //selectLabel.setVisible(!prompt.getValueBoolean());
-      //repack(selectPanel);
-    }
-
-    private void updateDeckName() {
-      tf.setText(getDeckName(deckId));
+      selectLabel.setVisible(!prompt.getValueBoolean());
     }
 
     @Override
@@ -413,10 +385,12 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(menuName.getValueString())
         .append(menuKey.getValueString())
-        .append(deckExp.getValueString())
-        .append(prompt.getValueBoolean())
+        .append(deckId)
         .append(promptText.getValueString())
-        .append(description.getValueString());
+        .append(description.getValueString())
+        .append(RtDversion)
+        .append(prompt.getValueBoolean())
+        .append(deckExp.getValueString());
       return ID + se.getValue();
     }
   }
