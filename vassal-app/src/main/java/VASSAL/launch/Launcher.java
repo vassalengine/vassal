@@ -18,11 +18,13 @@
 
 package VASSAL.launch;
 
+import java.awt.Font;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -47,6 +49,21 @@ public abstract class Launcher {
 
   public static Launcher getInstance() {
     return instance;
+  }
+
+  /**
+   * Changes all the UI fonts to the specified one
+   * @param f Font for UI
+   */
+  public static void setUIFont(javax.swing.plaf.FontUIResource f) {
+    java.util.Enumeration keys = UIManager.getDefaults().keys();
+    while (keys.hasMoreElements()) {
+      final Object key = keys.nextElement();
+      final Object value = UIManager.get(key);
+      if (value instanceof javax.swing.plaf.FontUIResource) {
+        UIManager.put(key, f);
+      }
+    }
   }
 
   protected Launcher(String[] args) {
@@ -78,6 +95,8 @@ public abstract class Launcher {
     start.initSystemProperties();
 
     createMenuManager();
+
+    setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, 18));
 
     SwingUtilities.invokeLater(new Runnable() {
       @Override
