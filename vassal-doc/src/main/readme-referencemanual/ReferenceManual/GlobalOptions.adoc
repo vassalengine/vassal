@@ -29,9 +29,11 @@ It is available for use as a short-cut in other message formats such as move aut
 It is recommended that for new modules you set this option to _Always_, as the other settings exist only to maintain compatibility with VASSAL modules created before HTML support existed that might have included symbols in their text messages, e.g.
 < > which could otherwise be misinterpreted as HTML tags.
 
+*Toolbars On Closed Map Windows Accept Hotkeys:* This option, if enabled, will allow toolbar buttons and items (such as Global Key Commands, Dice rollers, and Global Property setters) to receive Global Hotkeys sent by Game Pieces even when their Map Window is currently closed. This option is "off" by default, meaning that the toolbar items on windows are disabled while the windows are closed.
+
 *Icons and hotkeys:* You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons and the button that shows/hides the server controls.
 
-|image:images/GlobalOptions.png[]+
+|image:images/GlobalOptions.png[]
 |===
 
 '''''
