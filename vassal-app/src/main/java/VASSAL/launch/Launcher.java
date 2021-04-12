@@ -56,7 +56,7 @@ public abstract class Launcher {
    * @param f Font for UI
    */
   public static void setUIFont(javax.swing.plaf.FontUIResource f) {
-    java.util.Enumeration keys = UIManager.getDefaults().keys();
+    final java.util.Enumeration keys = UIManager.getDefaults().keys();
     while (keys.hasMoreElements()) {
       final Object key = keys.nextElement();
       final Object value = UIManager.get(key);
