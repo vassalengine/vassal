@@ -18,13 +18,11 @@
 
 package VASSAL.launch;
 
-import java.awt.Font;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
