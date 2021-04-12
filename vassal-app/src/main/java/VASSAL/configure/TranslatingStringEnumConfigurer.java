@@ -317,7 +317,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    */
   public boolean isValidValue(Object o) {
     for (final String validValue : validValues) {
-      if (validValue.equals(o)) {
+      if (validValue.equals(o.toString())) {
         return true;
       }
     }
@@ -373,7 +373,7 @@ public class TranslatingStringEnumConfigurer extends Configurer {
       super.setValue(o);
       if (!noUpdate && box != null && validValues != null) {
         for (int i = 0; i < validValues.length; i++) {
-          if (validValues[i].equals(o)) {
+          if (validValues[i].equals(o.toString())) {
             box.setSelectedIndex(i);
             break;
           }
