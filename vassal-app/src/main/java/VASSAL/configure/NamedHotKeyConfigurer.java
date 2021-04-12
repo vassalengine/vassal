@@ -134,22 +134,21 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
 
   @Override
   public void setValue(Object o) {
-    super.setValue(o);
     setFrozen(true); // Prevent changes to the input fields triggering further updates
-    if (controls != null) {
-      if (isNamed()) {
-        if (keyName.getText().isEmpty()) {
-          keyName.setText(((NamedKeyStroke) value).getName());
-        }
+    if (controls != null && !noUpdate) {
+      final NamedKeyStroke stroke = (NamedKeyStroke) o;
+      if (stroke.isNamed()) {
+        keyName.setText(stroke.getName());
         keyStroke.setText("");
       }
       else {
         keyName.setText("");
-        keyStroke.setText(keyToString());
+        keyStroke.setText(getString(stroke));
       }
       updateVisibility();
     }
     setFrozen(false);
+    super.setValue(o);
   }
 
   protected void updateVisibility() {
