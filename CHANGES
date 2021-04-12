@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14283: [Global Options] can be configured to let toolbar items on closed windows accept global hotkeys.
 * 14276: Add Global property MapName_isVisible for each Map to allow checking if Map is currently open.
 * 14257: Preference to reverse left-to-right order counters are shown in Mouseover Stack Viewer
 * 14365: DeckPosition was reporting 1 higher than the actual position
