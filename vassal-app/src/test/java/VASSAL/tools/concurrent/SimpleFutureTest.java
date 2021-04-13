@@ -23,82 +23,82 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SimpleFutureTest {
 
   @Test
   public void testCancelReturnValueInitially() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     assertTrue(f.cancel(true));
   }
 
   @Test
   public void testCancelReturnValueAfterDone() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.set(42);
     assertFalse(f.cancel(true));
   }
 
   @Test
   public void testCancelReturnValueAfterCancel() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     assertTrue(f.cancel(true));
     assertFalse(f.cancel(true));
   }
 
   @Test
   public void testNotCancelledInitially() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     assertFalse(f.isCancelled());
   }
 
   @Test
   public void testNotCancelledAfterSet() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.set(42);
     assertFalse(f.isCancelled());
   }
 
   @Test
   public void testNotCancelledAfterSetException() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.setException(new Exception());
     assertFalse(f.isCancelled());
   }
 
   @Test
   public void testCancelledAfterCancel() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.cancel(true);
     assertTrue(f.isCancelled());
   }
 
   @Test
   public void testNotDoneInitially() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     assertFalse(f.isDone());
   }
 
   @Test
   public void testDoneAfterSet() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.set(42);
     assertTrue(f.isDone());
   }
 
   @Test
   public void testDoneAfterSetException() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.setException(new Exception());
     assertTrue(f.isDone());
   }
 
   @Test
   public void testDoneAfterCancel() {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.cancel(true);
     assertTrue(f.isDone());
   }
@@ -106,77 +106,60 @@ public class SimpleFutureTest {
   @Test
   public void testGetAfterSet()
                               throws ExecutionException, InterruptedException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.set(42);
     assertEquals(42, (int) f.get());
   }
 
-  @Test(expected=ExecutionException.class)
-  public void testGetAfterSetException()
-                              throws ExecutionException, InterruptedException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+  @Test
+  public void testGetAfterSetException() {
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
 
     final Exception ex = new Exception();
     f.setException(ex);
 
-    try {
-      f.get();
-    }
-    catch (ExecutionException e) {
-      assertEquals(ex, e.getCause());
-      throw e;
-    }
+    ExecutionException e = assertThrows(ExecutionException.class, () -> f.get());
+    assertEquals(ex, e.getCause());
   }
 
-  @Test(expected=CancellationException.class)
-  public void testGetAfterCancel()
-                              throws ExecutionException, InterruptedException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+  @Test
+  public void testGetAfterCancel() {
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.cancel(true);
-    f.get();
+
+    assertThrows(CancellationException.class, () -> f.get());
   }
 
   @Test
   public void testGetTimeoutAfterSet() throws ExecutionException,
                                               InterruptedException,
                                               TimeoutException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.set(42);
     assertEquals(42, (int) f.get(1, TimeUnit.NANOSECONDS));
   }
 
-  @Test(expected=ExecutionException.class)
-  public void testGetTimeoutAfterSetException() throws ExecutionException,
-                                                       InterruptedException,
-                                                       TimeoutException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+  @Test
+  public void testGetTimeoutAfterSetException() {
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
 
     final Exception ex = new Exception();
     f.setException(ex);
 
-    try {
-      f.get(1, TimeUnit.NANOSECONDS);
-    }
-    catch (ExecutionException e) {
-      assertEquals(ex, e.getCause());
-      throw e;
-    }
+    ExecutionException e = assertThrows(ExecutionException.class, () -> f.get(1, TimeUnit.NANOSECONDS));
+    assertEquals(ex, e.getCause());
   }
 
-  @Test(expected=CancellationException.class)
-  public void testGetTimeoutAfterCancel() throws ExecutionException,
-                                                 InterruptedException,
-                                                 TimeoutException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
+  @Test
+  public void testGetTimeoutAfterCancel() {
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
     f.cancel(true);
-    f.get(1, TimeUnit.NANOSECONDS);
+    assertThrows(CancellationException.class, () -> f.get(1, TimeUnit.NANOSECONDS));
   }
 
-  @Test(expected=TimeoutException.class)
-  public void testGetTimeoutAfterTimeout() throws ExecutionException,
-                                                  InterruptedException,
-                                                  TimeoutException {
-    final SimpleFuture<Integer> f = new SimpleFuture<Integer>();
-    f.get(1, TimeUnit.NANOSECONDS);
+  @Test
+  public void testGetTimeoutAfterTimeout() {
+    final SimpleFuture<Integer> f = new SimpleFuture<>();
+    assertThrows(TimeoutException.class, () -> f.get(1, TimeUnit.NANOSECONDS));
   }
 }

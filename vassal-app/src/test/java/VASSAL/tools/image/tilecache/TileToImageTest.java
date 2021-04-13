@@ -27,9 +27,9 @@ import java.nio.file.Path;
 import org.apache.commons.io.IOUtils;
 
 import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TileToImageTest {
   private static final String in_dir = "src/test/resources/test-images";

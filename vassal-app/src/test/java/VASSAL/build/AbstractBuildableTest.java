@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AbstractBuildableTest {
   public static class FakeBuildable extends AbstractBuildable {

@@ -6,13 +6,13 @@ import static org.mockito.Mockito.any;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.ResourcePathFinder;

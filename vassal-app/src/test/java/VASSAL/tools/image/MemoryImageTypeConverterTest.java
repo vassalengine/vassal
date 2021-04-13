@@ -25,7 +25,7 @@ import javax.imageio.ImageIO;
 
 import VASSAL.tools.lang.Reference;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static VASSAL.tools.image.AssertImage.*;
 

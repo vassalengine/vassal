@@ -25,8 +25,8 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.NullInputStream;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -65,10 +65,10 @@ public class RereadableInputStreamTest {
     assertArrayEquals(expected, actual);
   }
 
-  @Test(expected=IOException.class)
-  public void testResetBad() throws IOException {
+  @Test
+  public void testResetBad() {
     final InputStream in = new RereadableInputStream(new NullInputStream(10));
-    in.reset();
+    assertThrows(IOException.class, () -> in.reset());
   }
 
   @Test

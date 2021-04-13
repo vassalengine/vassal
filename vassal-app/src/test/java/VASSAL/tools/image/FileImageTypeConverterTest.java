@@ -31,9 +31,10 @@ import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Reference;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static VASSAL.tools.image.AssertImage.*;
 
 public class FileImageTypeConverterTest {
@@ -62,8 +63,8 @@ public class FileImageTypeConverterTest {
 
   private static BufferedImage src;
 
-  @BeforeClass
-  public static void setup() throws IOException {
+  @BeforeEach
+  public void setup() throws IOException {
     src = ImageIO.read(new File(test));
   }
 

@@ -22,18 +22,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MemoryUtilsTest {
   @Test
+  @EnabledOnOs({ OS.LINUX })
   public void testGetPhysicalMemoryLinux() throws IOException {
-    assumeTrue(SystemUtils.IS_OS_LINUX);
 
     // get the total RAM from the system, in kB
     final Process p = Runtime.getRuntime().exec(new String[] {
@@ -52,17 +50,17 @@ public class MemoryUtilsTest {
     assertEquals(eRAM, MemoryUtils.getPhysicalMemory() >> 10);
   }
 
-// FIXME: how to get RAM on MacOS?
-  @Ignore
+  // FIXME: how to get RAM on MacOS?
   @Test
+  @EnabledOnOs({ OS.MAC })
   public void testGetPhysicalMemoryMacOS() {
-    assumeTrue(SystemUtils.IS_OS_MAC);
+    assertTrue(true);
   }
 
-// FIXME: how to get RAM on Windows?
-  @Ignore
+  // FIXME: how to get RAM on Windows?
   @Test
+  @EnabledOnOs({ OS.WINDOWS })
   public void testGetPhysicalMemoryWindows() {
-    assumeTrue(SystemUtils.IS_OS_WINDOWS);
+    assertTrue(true);
   }
 }

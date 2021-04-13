@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import VASSAL.build.module.properties.PropertySource;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FormattedStringExpressionTest {
 

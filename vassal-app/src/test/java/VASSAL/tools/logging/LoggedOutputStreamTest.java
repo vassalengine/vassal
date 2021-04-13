@@ -20,27 +20,16 @@ package VASSAL.tools.logging;
 
 import org.slf4j.Logger;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Rule;
-import org.junit.Test;
+import static org.mockito.Mockito.*;
 
 public class LoggedOutputStreamTest {
-  @Rule
-  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   @Test
   public void testWriteInt() {
-    final Logger logger = context.mock(Logger.class);
+    final Logger logger = mock(Logger.class);
     final LoggedOutputStream out = new LoggedOutputStream(logger);
-
-    context.checking(new Expectations() {
-      {
-        oneOf(logger).warn("xyzzy");
-        oneOf(logger).warn("foo");
-      }
-    });
 
     out.write((byte) 'x');
     out.write((byte) 'y');
@@ -52,38 +41,34 @@ public class LoggedOutputStreamTest {
     out.write((byte) 'o');
     out.write((byte) 'o');
     out.write((byte) '\n');
+
+    verify(logger, atMostOnce()).warn(eq("xyzzy"));
+    verify(logger, atMostOnce()).warn(eq("foo"));
   }
 
   @Test
   public void testWriteArray() {
-    final Logger logger = context.mock(Logger.class);
+    final Logger logger = mock(Logger.class);
     final LoggedOutputStream out = new LoggedOutputStream(logger);
-
-    context.checking(new Expectations() {
-      {
-        oneOf(logger).warn("xyzzy");
-        oneOf(logger).warn("foo");
-      }
-    });
 
     final byte[] xyzzy = new byte[] { 'x', 'y', 'z', 'z', 'y', '\n' };
     out.write(xyzzy, 0, xyzzy.length);
 
     final byte[] foo = new byte[] { 'f', 'o', 'o' };
     out.write(foo, 0, foo.length);
+
+    verify(logger, atMostOnce()).warn(eq("xyzzy"));
+    verify(logger, atMostOnce()).warn(eq("foo"));
   }
 
   @Test
   public void testEmptyFlush() {
-    final Logger logger = context.mock(Logger.class);
+    final Logger logger = mock(Logger.class);
     final LoggedOutputStream out = new LoggedOutputStream(logger);
 
-    context.checking(new Expectations() {
-      {
-        never(logger).warn(with(any(String.class)));
-      }
-    });
-
     out.write((byte) '\n');
+
+    verify(logger, never()).warn(anyString());
   }
+
 }
