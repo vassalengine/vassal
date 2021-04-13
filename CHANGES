@@ -1,5 +1,7 @@
 3.6.0 - ???
 
+* 14358: ReportState checkbox overrides Global Key Command suppression of
+    individual reports
 * 14283: Global Options can be configured to let toolbar items on closed
     windows accept global hotkeys.
 * 14276: Add Global property MapName_isVisible for each Map to allow checking
