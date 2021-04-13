@@ -1377,12 +1377,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_NAMES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TYPES,  null, true));
       prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_ADVANCED, null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TRAITS,      null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_EXPRESSIONS, null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_PROPERTIES, null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_KEYS,        null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MENUS, null, false));
-      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MESSAGES, null, false));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_TRAITS,      null, true));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_EXPRESSIONS, null, true));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_PROPERTIES, null, true));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_KEYS,        null, true));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MENUS, null, true));
+      prefs.addOption(null, new BooleanConfigurer(SearchParameters.MATCH_MESSAGES, null, true));
 
       searchString = (String) prefs.getValue(SearchParameters.SEARCH_STRING);
       matchCase    = (Boolean)prefs.getValue(SearchParameters.MATCH_CASE);
