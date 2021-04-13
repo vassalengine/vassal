@@ -25,6 +25,7 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.DeckSelector;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -231,6 +232,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   private DrawPile promptForDrawPile() {
     final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
+
     d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -406,41 +408,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     }
   }
 
-  /**
-   * Class to display a drop-down list of Decks by Map and set an owning Configurer to the selected value
-   */
-  private static class DeckSelector extends JButton implements ActionListener {
-    private static final long serialVersionUID = 1L;
-    private final Configurer owner;
-
-    public DeckSelector(Configurer owner) {
-      this.owner = owner;
-      setText(Resources.getString("Editor.select"));
-      addActionListener(this);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      final JPopupMenu mapMenu = new JPopupMenu();
-      for (final Map m: GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)) {
-        final JMenu deckMenu = new JMenu(m.getMapName());
-        for (final DrawPile d : m.getAllDescendantComponentsOf(DrawPile.class)) {
-          final JMenuItem item = new JMenuItem(d.getConfigureName());
-          item.addActionListener(ev -> setOwnerValue(d.getConfigureName()));
-          deckMenu.add(item);
-        }
-        if (deckMenu.getItemCount() > 0) {
-          mapMenu.add(deckMenu);
-        }
-      }
-      mapMenu.show(this, 0, 0);
-    }
-
-    private void setOwnerValue(String value) {
-      owner.setValue(value);
-    }
-
-  }
   /**
    * @return a list of any Property Names referenced in the Decorator, if any (for search)
    */
