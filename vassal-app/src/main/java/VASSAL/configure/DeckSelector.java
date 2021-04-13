@@ -55,7 +55,7 @@ public class DeckSelector extends JButton implements ActionListener {
   }
 
   public void doPopup() {
-    
+
   }
 
   public void showPopup() {
