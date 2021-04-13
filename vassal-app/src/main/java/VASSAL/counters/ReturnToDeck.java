@@ -24,6 +24,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -41,6 +42,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +54,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 
@@ -75,7 +81,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
   protected boolean deckSelect = true;
   protected FormattedString deckExpression = new FormattedString("");
-
 
   public ReturnToDeck() {
     this(ID + Resources.getString("Editor.ReturnToDeck.default_command") + ";R;", null); // NON-NLS
@@ -331,6 +336,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     private final JLabel selectLabel;
     private final StringConfigurer description;
     private final FormattedExpressionConfigurer deckExp;
+    private final DeckSelector deckSelector;
 
 
     public Ed(ReturnToDeck p) {
@@ -354,7 +360,10 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       selectLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.deck_name"));
       deckExp = new FormattedExpressionConfigurer(p.deckExpression.getFormat(), p);
-      controls.add(selectLabel, deckExp);
+      deckSelector = new DeckSelector(deckExp);
+      controls.add(selectLabel);
+      controls.add(deckExp.getControls(), "split 2");
+      controls.add(deckSelector, "grow 0");
 
       promptLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.prompt_for_destination_deck"));
       promptText = new StringConfigurer(p.selectDeckPrompt);
@@ -367,7 +376,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       promptLabel.setVisible(prompt.getValueBoolean());
       promptText.getControls().setVisible(prompt.getValueBoolean());
       deckExp.getControls().setVisible(!prompt.getValueBoolean());
+      deckSelector.setVisible(!prompt.getValueBoolean());
       selectLabel.setVisible(!prompt.getValueBoolean());
+      repack(controls);
     }
 
     @Override
@@ -395,6 +406,40 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     }
   }
 
+  /**
+   * Class to display a drop-down list of Decks by Map and set an owning Configurer to the selected value
+   */
+  private static class DeckSelector extends JButton implements ActionListener {
+    private Configurer owner;
+
+    public DeckSelector(Configurer owner) {
+      this.owner = owner;
+      setText(Resources.getString("Editor.select"));
+      addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final JPopupMenu mapMenu = new JPopupMenu();
+      for (Map m: GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)) {
+        final JMenu deckMenu = new JMenu(m.getMapName());
+        for (DrawPile d : m.getAllDescendantComponentsOf(DrawPile.class)) {
+          final JMenuItem item = new JMenuItem(d.getConfigureName());
+          item.addActionListener(ev -> setOwnerValue(d.getConfigureName()));
+          deckMenu.add(item);
+        }
+        if (deckMenu.getItemCount() > 0) {
+          mapMenu.add(deckMenu);
+        }
+      }
+      mapMenu.show(this,0, 0);
+    }
+
+    private void setOwnerValue(String value) {
+      owner.setValue(value);
+    }
+
+  }
   /**
    * @return a list of any Property Names referenced in the Decorator, if any (for search)
    */
