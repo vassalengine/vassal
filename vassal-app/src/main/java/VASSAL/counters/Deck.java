@@ -879,9 +879,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final List<GamePiece> l = Arrays.asList(a);
     DragBuffer.getBuffer().clear();
     Collections.shuffle(l, gameModule.getRNG());
-    final Command c = setContents(l);
+    Command c = setContents(l);
     if (Map.isChangeReportingEnabled()) {
-      c.append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
+      c = c.append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
     }
     return c;
   }
@@ -1051,10 +1051,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public Command setContentsFaceDown(boolean value) {
     final ChangeTracker t = new ChangeTracker(this);
-    final   Command c = new NullCommand();
+    Command c = new NullCommand();
     faceDown = value;
     if (Map.isChangeReportingEnabled()) {
-      c.append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
+      c = c.append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up")));
     }
     return t.getChangeCommand().append(c);
   }
@@ -1065,9 +1065,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     for (final Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
       list.add(i.next());
     }
-    final Command c = setContents(list);
+    Command c = setContents(list);
     if (Map.isChangeReportingEnabled()) {
-      c.append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse")));
+      c = c.append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse")));
     }
     return c;
   }
@@ -1453,7 +1453,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       // move cards to deck
       final int cnt = getPieceCount() - 1;
       for (int i = cnt; i >= 0; i--) {
-        c.append(target.addToContents(getPieceAt(i)));
+        c = c.append(target.addToContents(getPieceAt(i)));
       }
     }
     return c;
