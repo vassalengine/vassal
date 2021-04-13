@@ -28,10 +28,10 @@ import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static VASSAL.tools.image.AssertImage.*;
 
 public class ImageIOImageLoaderTest {
@@ -39,8 +39,8 @@ public class ImageIOImageLoaderTest {
 
   private static BufferedImage src;
 
-  @BeforeClass
-  public static void setup() throws IOException {
+  @BeforeEach
+  public void setup() throws IOException {
     src = ImageIO.read(new File(jpg));
   }
 
@@ -117,13 +117,13 @@ public class ImageIOImageLoaderTest {
     assertEquals(ed, ad);
   }
 
-  @Test(expected=UnrecognizedImageTypeException.class)
-  public void testSizeUnrecognized() throws IOException {
+  @Test
+  public void testSizeUnrecognized() {
     final String junk = "src/test/resources/test-images/NotAnImageForImageIOImageLoaderTest.txt";
 
     final ImageTypeConverter mconv = new MemoryImageTypeConverter();
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 
-    final Dimension ad = size(loader, junk);
+    assertThrows(UnrecognizedImageTypeException.class, () -> size(loader, junk));
   }
 }

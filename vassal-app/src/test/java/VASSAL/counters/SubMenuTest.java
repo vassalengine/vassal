@@ -18,7 +18,7 @@
 package VASSAL.counters;
 
 import java.lang.reflect.InvocationTargetException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SubMenuTest extends DecoratorTest {
 

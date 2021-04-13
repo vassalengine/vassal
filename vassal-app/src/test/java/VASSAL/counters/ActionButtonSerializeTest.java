@@ -1,13 +1,12 @@
 package VASSAL.counters;
 
-import static org.junit.Assert.assertEquals;
-
 import java.awt.Rectangle;
-
-import org.junit.Test;
 
 import VASSAL.tools.NamedKeyStroke;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActionButtonSerializeTest extends SerializeTest<ActionButton> {
   @Test

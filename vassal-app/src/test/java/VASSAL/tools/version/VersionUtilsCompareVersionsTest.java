@@ -1,48 +1,35 @@
 package VASSAL.tools.version;
 
-import static VASSAL.tools.version.VersionUtils.compareVersions;
 import static java.lang.Integer.signum;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class VersionUtilsCompareVersionsTest {
 
-
-  private final String[] inputVersions;
-  private final int expectedResult;
-
-  public VersionUtilsCompareVersionsTest(String[] inputVersions, int expectedResult) {
-    this.inputVersions = inputVersions;
-    this.expectedResult = expectedResult;
+  private static Stream<Arguments> addFixture() {
+    return Stream.of(
+      Arguments.of(new String[] { "1.2.3", "1.2.4" }, -1),
+      Arguments.of(new String[] { "1.2.4", "1.2.3" }, 1),
+      Arguments.of(new String[] { "1.2.3", "1.2.3" }, 0),
+      Arguments.of(new String[] { "1.2.3-beta1", "1.2.2" }, 1),
+      Arguments.of(new String[] { "1.2.3-beta1", "1.2.3" }, -1),
+      Arguments.of(new String[] { "1.2.3-beta1", "1.2.4" }, -1),
+      Arguments.of(new String[] { "1.2.3-beta1", "1.2.4" }, -1),
+      Arguments.of(new String[] { "1.2.3-snapshot", "1.2.3" }, -1),
+      Arguments.of(new String[] { "1.2.3-SNAPSHOT", "1.2.3" }, -1));
   }
 
-  @Parameterized.Parameters
-  public static Collection<Object[]> testData() {
-    return Arrays.asList(new Object[][]{
-      { new String[] { "1.2.3", "1.2.4" }, -1 },
-      { new String[] { "1.2.4", "1.2.3" }, 1 },
-      { new String[] { "1.2.3", "1.2.3" }, 0 },
-      { new String[] { "1.2.3-beta1", "1.2.2" }, 1 },
-      { new String[] { "1.2.3-beta1", "1.2.3" }, -1 },
-      { new String[] { "1.2.3-beta1", "1.2.4" }, -1 },
-      { new String[] { "1.2.3-beta1", "1.2.4" }, -1 },
-      { new String[] { "1.2.3-snapshot", "1.2.3" }, -1 },
-      { new String[] { "1.2.3-SNAPSHOT", "1.2.3" }, -1 },
-    });
-  }
-
-  @Test
-  public void testCompareVersions() {
+  @ParameterizedTest
+  @MethodSource("addFixture")
+  public void testCompareVersions(String[] inputVersions, int expectedResult) {
     assertThat(
-      signum(compareVersions(inputVersions[0], inputVersions[1])),
+      signum(VersionUtils.compareVersions(inputVersions[0], inputVersions[1])),
       is(expectedResult));
   }
 

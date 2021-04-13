@@ -1,24 +1,21 @@
 package VASSAL.counters;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.awt.Point;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-@RunWith(MockitoJUnitRunner.class)
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 public class DeckTest {
 
   @Test
