@@ -3,7 +3,7 @@
         documentation at https://www.mojohaus.org/clirr-maven-plugin/examples/ignored-differences.html
     -->
 
-    <difference>  
+    <difference>
         <!-- It is okay to add classes to the set of superclasses -->
         <className>**</className>
         <differenceType>5000</differenceType>
@@ -20,62 +20,6 @@
         <className>**</className>
         <differenceType>7013</differenceType>
         <method>*</method>
-    </difference>
-
-    <difference>
-        <className>VASSAL/build/module/PlayerRoster</className>
-        <differenceType>6010</differenceType>
-        <field>ourSideChangeListenerCount</field>
-        <justification>Only just created in 3.5.4</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/counters/Deck</className>
-        <differenceType>7002</differenceType>
-        <method>VASSAL.command.Command maybeShuffle()</method>
-        <justification>New method no longer required</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/build/GameModule</className>
-        <differenceType>7002</differenceType>
-        <method>void incorporateSourcesAndListeners()</method>
-        <justification>Only just created in 3.5.4</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/build/GameModule</className>
-        <differenceType>7002</differenceType>
-        <method>void markModuleListeners()</method>
-        <justification>Only just created in 3.5.4</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/build/module/PlayerRoster</className>
-        <differenceType>7002</differenceType>
-        <method>void markModuleListeners()</method>
-        <justification>Only just created in 3.5.4</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/build/module/PlayerRoster</className>
-        <differenceType>7002</differenceType>
-        <method>void resetListeners()</method>
-        <justification>Only just created in 3.5.4</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/build/module/PlayerRoster</className>
-        <differenceType>6001</differenceType>
-        <field>ourSideChangeListenerCount</field>
-        <justification>Only just created in 3.5.4</justification>
-    </difference>
-
-    <difference>
-        <className>VASSAL/command/Command</className>
-        <differenceType>7002</differenceType>
-        <method>boolean isNullOrcontainsOnly(java.lang.Class)</method>
-        <justification>Only just created in 3.5.4, fixed typo in name</justification>
     </difference>
 
 </differences>
