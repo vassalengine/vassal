@@ -87,6 +87,29 @@ SumStack(String property) {
 }
 
 /**
+ * Callback to Vassal to count the number of pieces in the same stack
+ *
+ * Example: CountStack()
+ */
+CountStack() {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countStack("", _source));
+}
+
+/**
+ * Callback to Vassal to count the number of pieces in the same
+ * stack that *contain* the target property
+ *
+ * Example: CountStack("Strength")
+ */
+CountStack(String property) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countStack(property, _source));
+}
+
+/**
  * Callback to Vassal to sum the value of a property in all
  * counters in the same location as the target property
  * WARNING - This could be slow on maps with many counters

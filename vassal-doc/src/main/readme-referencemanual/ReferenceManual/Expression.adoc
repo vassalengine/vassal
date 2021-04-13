@@ -156,14 +156,22 @@ IsRandom(percent) + |{Random(6)} +
 
 *replace(old,new)* the original string with all instances of the string _old_ replaced by the string _new_
 |*Sum and Count* |SumStack(propertyName) +
+CountStack() +
+CountStack(propertyName) +
 Sum(prop, expression) +
 Sum(prop, expr, map) +
 Count(expr) +
 Count(expr, map) + |{SumStack("Attack")} +
+{CountStack()} +
+{CountStack("Russian")} +
 {Sum("Defense", "{Type != \"Artillery\"}")} +
 {Sum("Cost", "{ Value > 0 }", "Purchases")} +
 {Count("{ Nation == \"$Nation$\" }")} +
 {Count("{ CombatValue > 0 }", "BattleMap") } + |*SumStack(prop)* returns the total of the specified property in all pieces in the same stack as this one.
+
+*CountStack()* returns the total number of pieces in the same stack as this one (including this piece)
+
+*CountStack(prop)* returns the number of pieces in the same stack as this one, that have a non-blank value for the named property. If this piece has a non-blank value for the named property, it is counted in the total.
 
 *Sum(prop, expr)* returns the total of the specified property for all pieces in the game matching the expression.
 

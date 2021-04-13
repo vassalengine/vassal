@@ -431,6 +431,57 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   /**
+   * CountStack(property) function count the number of pieces in
+   * the same stack which have any non-blank value for the
+   * specified property.
+   *
+   * @param property Property Name
+   * @param ps       GamePiece
+   * @return total
+   */
+  public Object countStack(String property, PropertySource ps) {
+    int result = 0;
+    if (ps instanceof GamePiece) {
+      final Stack s = ((GamePiece) ps).getParent();
+      if (s == null) {        
+        try {
+          if ("".equals(property)) {
+            result++;
+          }
+          else {
+            final String val = ps.getProperty(property).toString();
+            if (!"".equals(val)) {
+              result++;
+            }
+          }
+        }
+        catch (Exception ignored) {
+          // Anything at all goes wrong trying to read the property, just ignore it and treat as 0
+        }
+      }
+      else {
+        if ("".equals(property)) {
+          result = s.nVisible(); // Blank property returns number of visible-to-me pieces in the stack
+        }
+        else {
+          for (final GamePiece gamePiece: s.asList()) {
+            try {
+              final String val = gamePiece.getProperty(property).toString();
+              if (!"".equals(val)) {
+                result++;
+              }
+            }
+            catch (Exception ignored) {
+              // Anything at all goes wrong trying to read the property, just ignore it and treat as 0
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
    * SumLocation(property) function
    * Total the value of the named property in all counters in the
    * same location as the specified piece.
