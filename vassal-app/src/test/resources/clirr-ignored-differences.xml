@@ -1,4 +1,4 @@
-<differences>
+<difference>
     <!--
         documentation at https://www.mojohaus.org/clirr-maven-plugin/examples/ignored-differences.html
     -->
@@ -78,4 +78,32 @@
         <justification>Only just created in 3.5.4, fixed typo in name</justification>
     </difference>
 
-</differences>
+    <difference>
+        <className>VASSAL.tools.ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>public void save()</method>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL.tools.ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>public void save(boolean)</method>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL.tools.ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>public void saveAs()</method>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL.tools.ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>public void saveAs(boolean)</method>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
+
+</difference>
