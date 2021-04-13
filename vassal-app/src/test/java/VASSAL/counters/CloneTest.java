@@ -20,13 +20,13 @@ package VASSAL.counters;
 import VASSAL.tools.NamedKeyStroke;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.KeyStroke;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CloneTest extends DecoratorTest {
 
 
   @Test
-  public void serializeTests() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+  public void serialize() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
     // Default piece
     Clone trait = new Clone();

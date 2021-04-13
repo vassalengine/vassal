@@ -17,11 +17,9 @@
 
 package VASSAL.counters;
 
-import VASSAL.tools.NamedKeyStroke;
-import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 public class ImmobilizedTest extends DecoratorTest {
 

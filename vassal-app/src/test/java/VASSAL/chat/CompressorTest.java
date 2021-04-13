@@ -13,12 +13,12 @@ import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class CompressorTest {
 
-  @Ignore
+  @Disabled
   @Test
   public void runCompressor() throws Exception {
     compressorMain(new String[0]);

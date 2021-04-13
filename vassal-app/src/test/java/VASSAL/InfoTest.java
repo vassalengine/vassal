@@ -1,10 +1,10 @@
 package VASSAL;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import VASSAL.tools.version.VersionUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InfoTest {
   @Test

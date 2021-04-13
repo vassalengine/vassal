@@ -27,9 +27,9 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.tools.concurrent.SimpleFuture;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EDTExecutorServiceTest {
   @Test
@@ -187,78 +187,72 @@ public class EDTExecutorServiceTest {
     }
   }
 
-  @Test(expected=RejectedExecutionException.class)
+  @Test
   public void testSubmitRunnableAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
-    ex.submit(new Runnable() {
-      public void run() {}
-    });
+    assertThrows(RejectedExecutionException.class, () -> ex.submit(() -> {}));
   }
 
-  @Test(expected=RejectedExecutionException.class)
+  @Test
   public void testSubmitRunnableWithValueAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
-    ex.submit(new Runnable() {
-      public void run() {}
-    }, Boolean.TRUE);
+    assertThrows(RejectedExecutionException.class, () -> ex.submit(() -> {}, Boolean.TRUE));
   }
 
-  @Test(expected=RejectedExecutionException.class)
+  @Test
   public void testSubmitCallableAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
-    ex.submit(new Callable<Float>() {
+    assertThrows(RejectedExecutionException.class, () -> ex.submit(new Callable<Float>() {
       public Float call() { return 1.0f; }
-    });
+    }));
   }
 
-  @Test(expected=RejectedExecutionException.class)
+  @Test
   public void testSubmitEDTRunnableFutureAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
-    ex.submit(new EDTRunnableFuture<Void>() {
+    assertThrows(RejectedExecutionException.class, () -> ex.submit(new EDTRunnableFuture<Void>() {
       protected void runOnEDT() {}
-    });
+    }));
   }
 
-  @Test(expected=RejectedExecutionException.class)
-  public void testExecuteAfterShutdown() throws Exception {
+  @Test
+  public void testExecuteAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
-    ex.submit(new Runnable() {
-      public void run() {}
-    });
+    assertThrows(RejectedExecutionException.class, () -> ex.submit(() -> {}));
   }
 
-  @Test(expected=RejectedExecutionException.class)
-  public void testInvokeAllAfterShutdown() throws Exception {
+  @Test
+  public void testInvokeAllAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
 
-    final List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+    final List<Callable<Boolean>> tasks = new ArrayList<>();
     for (int i = 0; i < 10; ++i) {
       tasks.add(new Callable<Boolean>() {
         public Boolean call() { return Boolean.TRUE; }
       });
     }
 
-    ex.invokeAll(tasks);
+    assertThrows(RejectedExecutionException.class, () -> ex.invokeAll(tasks));
   }
 
-  @Test(expected=RejectedExecutionException.class)
-  public void testInvokeAllTimeoutAfterShutdown() throws Exception {
+  @Test
+  public void testInvokeAllTimeoutAfterShutdown() {
     final EDTExecutorService ex = new EDTExecutorService();
     ex.shutdown();
 
-    final List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+    final List<Callable<Boolean>> tasks = new ArrayList<>();
     for (int i = 0; i < 10; ++i) {
       tasks.add(new Callable<Boolean>() {
         public Boolean call() { return Boolean.TRUE; }
       });
     }
 
-    ex.invokeAll(tasks, 1L, TimeUnit.NANOSECONDS);
+    assertThrows(RejectedExecutionException.class, () -> ex.invokeAll(tasks, 1L, TimeUnit.NANOSECONDS));
   }
 }

@@ -9,7 +9,8 @@ import VASSAL.counters.DecoratorTest;
 import VASSAL.tools.icon.IconFactory;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 

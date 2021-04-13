@@ -29,17 +29,13 @@ import org.apache.commons.io.output.ClosedOutputStream;
 
 import VASSAL.tools.concurrent.listener.EventListener;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class InputOutputStreamPumpTest {
-  @Rule
-  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   protected static class IOSP extends InputOutputStreamPump {
     @Override
@@ -56,13 +52,16 @@ public class InputOutputStreamPumpTest {
     p.setInputStream(in);
   }
 
-  @Test(expected=UnsupportedOperationException.class)
+  @Test
   public void testSetInputStreamRunning() {
-    final InputOutputStreamPump p = new IOSP();
-    p.run();
+    assertThrows(UnsupportedOperationException.class, () -> {
+      final InputOutputStreamPump p = new IOSP();
 
-    final InputStream in = new ClosedInputStream();
-    p.setInputStream(in);
+      p.run();
+
+      final InputStream in = new ClosedInputStream();
+      p.setInputStream(in);
+    });
   }
 
   @Test
@@ -72,13 +71,15 @@ public class InputOutputStreamPumpTest {
     p.setOutputStream(out);
   }
 
-  @Test(expected=UnsupportedOperationException.class)
+  @Test
   public void testSetOutputStreamRunning() {
-    final InputOutputStreamPump p = new IOSP();
-    p.run();
+    assertThrows(UnsupportedOperationException.class, () -> {
+      final InputOutputStreamPump p = new IOSP();
+      p.run();
 
-    final OutputStream out = new ClosedOutputStream();
-    p.setOutputStream(out);
+      final OutputStream out = new ClosedOutputStream();
+      p.setOutputStream(out);
+    });
   }
 
   @Test
@@ -89,17 +90,12 @@ public class InputOutputStreamPumpTest {
     final ByteArrayInputStream in = new ByteArrayInputStream(eout);
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    final EventListener<IOException> el = context.mock(EventListener.class);
-    context.checking(new Expectations() {
-      {
-        never(el).receive(with(any(Object.class)),
-                          with(any(IOException.class)));
-      }
-    });
+    final EventListener<IOException> el = mock(EventListener.class);
 
     final InputOutputStreamPump p = new InputOutputStreamPump(in, out, el);
     p.run();
 
+    verify(el, never()).receive(any(Object.class), any(IOException.class));
     assertArrayEquals(eout, out.toByteArray());
   }
 
@@ -110,17 +106,12 @@ public class InputOutputStreamPumpTest {
 
     final ByteArrayInputStream in = new ByteArrayInputStream(eout);
     final OutputStream out = new ClosedOutputStream();
-
-    final EventListener<IOException> el = context.mock(EventListener.class);
-    context.checking(new Expectations() {
-      {
-        oneOf(el).receive(with(aNonNull(InputOutputStreamPump.class)),
-                          with(any(IOException.class)));
-      }
-    });
+    final EventListener<IOException> el = mock(EventListener.class);
 
     final InputOutputStreamPump p = new InputOutputStreamPump(in, out, el);
     p.run();
+
+    verify(el, times(1)).receive(any(Object.class), any(IOException.class));
   }
 
   @Test
@@ -129,17 +120,12 @@ public class InputOutputStreamPumpTest {
     final InputStream in = new ClosedInputStream();
     final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    final EventListener<IOException> el = context.mock(EventListener.class);
-    context.checking(new Expectations() {
-      {
-        never(el).receive(with(any(Object.class)),
-                          with(any(IOException.class)));
-      }
-    });
-
+    final EventListener<IOException> el = mock(EventListener.class);
     final InputOutputStreamPump p = new InputOutputStreamPump(in, out, el);
+
     p.run();
 
+    verify(el, never()).receive(any(Object.class), any(IOException.class));
     assertArrayEquals(new byte[0], out.toByteArray());
   }
 
@@ -149,15 +135,12 @@ public class InputOutputStreamPumpTest {
     final InputStream in = new ClosedInputStream();
     final OutputStream out = new ClosedOutputStream();
 
-    final EventListener<IOException> el = context.mock(EventListener.class);
-    context.checking(new Expectations() {
-      {
-        never(el).receive(with(any(Object.class)),
-                          with(any(IOException.class)));
-      }
-    });
-
+    final EventListener<IOException> el = mock(EventListener.class);
     final InputOutputStreamPump p = new InputOutputStreamPump(in, out, el);
+
     p.run();
+
+    verify(el, never()).receive(any(Object.class), any(IOException.class));
   }
+
 }
