@@ -410,6 +410,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    * Class to display a drop-down list of Decks by Map and set an owning Configurer to the selected value
    */
   private static class DeckSelector extends JButton implements ActionListener {
+    private static final long serialVersionUID = 1L;
     private final Configurer owner;
 
     public DeckSelector(Configurer owner) {
