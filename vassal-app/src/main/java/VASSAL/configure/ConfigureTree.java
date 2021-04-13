@@ -88,6 +88,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -388,6 +389,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
+  protected void addSubMenu(JPopupMenu menu, String name, List<Action> l) {
+    if ((l != null) && !l.isEmpty()) {
+      final JMenu subMenu = new JMenu(name);
+      for (final Action a: l) {
+        subMenu.add(a).setFont(POPUP_MENU_FONT);;
+      }
+      menu.add(subMenu).setFont(POPUP_MENU_FONT);;
+      l.clear();
+    }
+  }
+
+
   private void addActionGroup(JPopupMenu menu, List<Action> l) {
     boolean empty = true;
     for (final Action a : l) {
@@ -404,7 +417,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected JPopupMenu buildPopupMenu(final Configurable target) {
     final JPopupMenu popup = new JPopupMenu();
-    final ArrayList<Action> l = new ArrayList<>();
+    final List<Action> l = new ArrayList<>();
     l.add(buildEditAction(target));
     l.add(buildEditPiecesAction(target));
     addActionGroup(popup, l);
@@ -420,9 +433,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     l.add(buildPasteAction(target));
     l.add(buildMoveAction(target));
     addActionGroup(popup, l);
-    for (final Action a : buildAddActionsFor(target)) {
+    final List<Action> inserts = new ArrayList<>();
+    final List<Action> adds = buildAddActionsFor(target, inserts);
+    for (final Action a : adds) {
       addAction(popup, a);
     }
+    addSubMenu(popup, Resources.getString("Editor.ConfigureTree.insert"), inserts);
     if (hasChild(target, PieceSlot.class) || hasChild(target, CardSlot.class)) {
       addAction(popup, buildMassPieceLoaderAction(target));
     }
@@ -704,6 +720,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected List<Action> buildAddActionsFor(final Configurable target) {
+    return buildAddActionsFor(target, null);
+  }
+
+
+  protected List<Action> buildAddActionsFor(final Configurable target, List<Action> peerInserts) {
     final ArrayList<Action> l = new ArrayList<>();
 
     if (target instanceof AbstractConfigurable) {
@@ -712,7 +733,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode.getParent();
         if (parentNode != null) {
           l.add(buildAddAction((Configurable)parentNode.getUserObject(), target.getClass(), "Editor.ConfigureTree.add_duplicate", parentNode.getIndex(targetNode) + 1, target));
-          l.add(buildAddAction((Configurable)parentNode.getUserObject(), target.getClass(), "Editor.ConfigureTree.add_peer", parentNode.getIndex(targetNode) + 1, null));
+
+          if (peerInserts != null) {
+            final Configurable parent = ((Configurable)parentNode.getUserObject());
+            for (final Class<? extends Buildable> newConfig : parent.getAllowableConfigureComponents()) {
+              peerInserts.add(buildAddAction(parent, newConfig, "Editor.ConfigureTree.add_peer", parentNode.getIndex(targetNode) + 1, null));
+            }
+          }
         }
       }
     }
