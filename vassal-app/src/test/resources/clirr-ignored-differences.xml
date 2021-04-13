@@ -3,7 +3,7 @@
         documentation at https://www.mojohaus.org/clirr-maven-plugin/examples/ignored-differences.html
     -->
 
-    <difference>  
+    <difference>
         <!-- It is okay to add classes to the set of superclasses -->
         <className>**</className>
         <differenceType>5000</differenceType>
@@ -79,11 +79,34 @@
     </difference>
 
     <difference>
-        <className>VASSAL.tools.ArchiveWriter</className>
+        <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>*</method>
-        <to>*</to>
+        <method>void save()</method>
+        <to>boolean</to>
         <justification>Editor method -- not a custom class target</justification>
     </difference>
-    
+
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>void save(boolean)</method>
+        <to>boolean</to>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>void saveAs(boolean)</method>
+        <to>boolean</to>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
+
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7006</differenceType>
+        <method>void saveAs()</method>
+        <to>boolean</to>
+        <justification>Editor method -- not a custom class target</justification>
+    </difference>
 </differences>
