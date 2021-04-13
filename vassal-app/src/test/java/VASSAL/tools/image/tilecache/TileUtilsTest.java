@@ -28,10 +28,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static VASSAL.tools.image.AssertImage.*;
 
 public class TileUtilsTest {
@@ -39,8 +39,8 @@ public class TileUtilsTest {
   private static byte[] bytes;
   private static BufferedImage src;
 
-  @BeforeClass
-  public static void setup() throws IOException {
+  @BeforeEach
+  public void setup() throws IOException {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     // write the header
@@ -71,10 +71,10 @@ public class TileUtilsTest {
     assertImageEquals(src, img);
   }
 
-  @Test(expected=IOException.class)
-  public void testReadInputStreamUnderflow() throws IOException {
+  @Test
+  public void testReadInputStreamUnderflow() {
     final InputStream in = new ByteArrayInputStream(new byte[0]);
-    TileUtils.read(in);
+    assertThrows(IOException.class, () -> TileUtils.read(in));
   }
 
 /*
@@ -90,10 +90,10 @@ public class TileUtilsTest {
   }
 */
 
-  @Test(expected=IOException.class)
-  public void testReadInputStreamBadSignature() throws IOException {
+  @Test
+  public void testReadInputStreamBadSignature() {
     final InputStream in = new ByteArrayInputStream("xyzzy".getBytes());
-    TileUtils.read(in);
+    assertThrows(IOException.class, () -> TileUtils.read(in));
   }
 
   @Test
@@ -103,10 +103,10 @@ public class TileUtilsTest {
     assertArrayEquals(Arrays.copyOfRange(bytes, 0, 18), actual);
   }
 
-  @Test(expected=IOException.class)
-  public void testReadHeaderBad() throws IOException {
+  @Test
+  public void testReadHeaderBad() {
     final InputStream in = new ByteArrayInputStream("xyzzy".getBytes());
-    TileUtils.readHeader(in);
+    assertThrows(IOException.class, () -> TileUtils.readHeader(in));
   }
 
   @Test
@@ -114,9 +114,9 @@ public class TileUtilsTest {
     TileUtils.checkSignature("VASSAL".getBytes());
   }
 
-  @Test(expected=IOException.class)
-  public void testCheckSignatureBad() throws IOException {
-    TileUtils.checkSignature("xyzzy".getBytes());
+  @Test
+  public void testCheckSignatureBad()  {
+    assertThrows(IOException.class, () -> TileUtils.checkSignature("xyzzy".getBytes()));
   }
 
   @Test
@@ -126,11 +126,11 @@ public class TileUtilsTest {
     assertEquals(new Dimension(src.getWidth(), src.getHeight()), d);
   }
 
-  @Test(expected=IOException.class)
-  public void testSizeUnderflow() throws IOException {
+  @Test
+  public void testSizeUnderflow() {
     final InputStream in =
       new ByteArrayInputStream(Arrays.copyOfRange(bytes, 0, 12));
-    TileUtils.size(in);
+    assertThrows(IOException.class, () -> TileUtils.size(in));
   }
 
   @Test

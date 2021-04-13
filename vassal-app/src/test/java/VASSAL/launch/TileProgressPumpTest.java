@@ -27,19 +27,18 @@ import org.apache.commons.io.input.ClosedInputStream;
 import VASSAL.tools.concurrent.listener.DummyEventListener;
 import VASSAL.tools.concurrent.listener.EventListener;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Rule;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 public class TileProgressPumpTest {
-  @Rule
-  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   protected static class TPP extends TileProgressPump {
     public TPP() {
-      super(null, null, new DummyEventListener<IOException>());
+      super(null, null, new DummyEventListener<>());
     }
 
     @Override
@@ -56,13 +55,15 @@ public class TileProgressPumpTest {
     p.setInputStream(in);
   }
 
-  @Test(expected=UnsupportedOperationException.class)
+  @Test
   public void testSetInputStreamRunning() {
-    final TileProgressPump p = new TPP();
-    p.run();
+    assertThrows(UnsupportedOperationException.class, () -> {
+      final TileProgressPump p = new TPP();
+      p.run();
 
-    final InputStream in = new ClosedInputStream();
-    p.setInputStream(in);
+      final InputStream in = new ClosedInputStream();
+      p.setInputStream(in);
+    });
   }
 
   @Test
@@ -71,29 +72,19 @@ public class TileProgressPumpTest {
     final byte[] input = "xyzzy\n......\nfoo\n...\n\n".getBytes();
     final ByteArrayInputStream in = new ByteArrayInputStream(input);
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
-    final EventListener<IOException> el =
-      context.mock(EventListener.class, "el");
-
-    context.checking(new Expectations() {
-      {
-        oneOf(nl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal("xyzzy")));
-        oneOf(pl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal(6)));
-        oneOf(nl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal("foo")));
-        oneOf(pl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal(3)));
-        never(el).receive(with(any(Object.class)),
-                          with(any(IOException.class)));
-      }
-    });
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
+    final EventListener<IOException> el = mock(EventListener.class, "el");
 
     final TileProgressPump p = new TileProgressPump(nl, pl, el);
     p.setInputStream(in);
     p.run();
+
+    verify(nl).receive(any(TileProgressPumpStateMachine.class), eq("xyzzy"));
+    verify(pl).receive(any(TileProgressPumpStateMachine.class), eq(6));
+    verify(nl).receive(any(TileProgressPumpStateMachine.class), eq("foo"));
+    verify(pl).receive(any(TileProgressPumpStateMachine.class), eq(3));
+    verify(el, never()).receive(any(TileProgressPumpStateMachine.class), any(IOException.class));
   }
 
   @Test
@@ -102,25 +93,17 @@ public class TileProgressPumpTest {
     final byte[] input = "x".getBytes();
     final ByteArrayInputStream in = new ByteArrayInputStream(input);
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
-    final EventListener<IOException> el =
-      context.mock(EventListener.class, "el");
-
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-        oneOf(el).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(aNonNull(IOException.class)));
-      }
-    });
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
+    final EventListener<IOException> el = mock(EventListener.class, "el");
 
     final TileProgressPump p = new TileProgressPump(nl, pl, el);
     p.setInputStream(in);
     p.run();
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
+    verify(el).receive(any(Object.class), any(IOException.class));
   }
 
   @Test
@@ -128,24 +111,17 @@ public class TileProgressPumpTest {
   public void testPumpInClosed() {
     final InputStream in = new ClosedInputStream();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
-    final EventListener<IOException> el =
-      context.mock(EventListener.class, "el");
-
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-        never(el).receive(with(any(Object.class)),
-                          with(any(IOException.class)));
-      }
-    });
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
+    final EventListener<IOException> el = mock(EventListener.class, "el");
 
     final TileProgressPump p = new TileProgressPump(nl, pl, el);
     p.setInputStream(in);
     p.run();
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
+    verify(el, never()).receive(any(Object.class), any(IOException.class));
   }
+
 }

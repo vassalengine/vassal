@@ -23,9 +23,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PNGDecoderTest {
   @Test
@@ -52,12 +52,12 @@ public class PNGDecoderTest {
     assertFalse(PNGDecoder.decodeSignature(in));
   }
 
-  @Test(expected=IOException.class)
+  @Test
   public void testDecodeSignatureShort() throws IOException {
     final DataInputStream in =
       new DataInputStream(new ByteArrayInputStream(new byte[0]));
 
-    PNGDecoder.decodeSignature(in);
+    assertThrows(IOException.class, () -> PNGDecoder.decodeSignature(in));
   }
 
   @Test
@@ -79,19 +79,18 @@ public class PNGDecoderTest {
     assertEquals(0xDEADBEEFL, ch.crc);
   }
 
-  @Test(expected=IOException.class)
-  public void testDecodeChunkBadLength() throws IOException {
+  @Test
+  public void testDecodeChunkBadLength() {
     final byte[] chunk = {
       (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff
     };
 
-    final DataInputStream in =
-      new DataInputStream(new ByteArrayInputStream(chunk));
+    final DataInputStream in = new DataInputStream(new ByteArrayInputStream(chunk));
 
-    PNGDecoder.decodeChunk(in);
+    assertThrows(IOException.class, () -> PNGDecoder.decodeChunk(in));
   }
 
-  @Test(expected=IOException.class)
+  @Test
   public void testDecodeChunkShort() throws IOException {
     final byte[] chunk = {
       (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xff,
@@ -101,6 +100,6 @@ public class PNGDecoderTest {
     final DataInputStream in =
       new DataInputStream(new ByteArrayInputStream(chunk));
 
-    PNGDecoder.decodeChunk(in);
+    assertThrows(IOException.class, () -> PNGDecoder.decodeChunk(in));
   }
 }

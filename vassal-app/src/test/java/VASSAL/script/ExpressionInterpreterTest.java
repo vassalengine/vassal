@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +22,7 @@ import VASSAL.script.expression.ExpressionException;
 
 import java.security.SecureRandom;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -50,17 +51,17 @@ public class ExpressionInterpreterTest {
     assertThat(s, is(equalTo("42")));
   }
 
-  @Test(expected = ExpressionException.class)
+  @Test
   public void createInterpreter2() throws ExpressionException {
     // A broken expression should throw an ExpressionException
-    ExpressionInterpreter interpreter = new ExpressionInterpreter("6 * ");
+    assertThrows(ExpressionException.class, () -> new ExpressionInterpreter("6 * "));
   }
 
-  @Test(expected = ExpressionException.class)
+  @Test
   public void createInterpreter3() throws ExpressionException {
     // Evaluating a non-existent custom function should throw an ExpressionException
     ExpressionInterpreter interpreter = new ExpressionInterpreter("Blurgh()");
-    final String s = interpreter.evaluate();
+    assertThrows(ExpressionException.class, () -> interpreter.evaluate());
 
   }
 

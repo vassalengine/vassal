@@ -21,7 +21,8 @@ import VASSAL.tools.NamedKeyStroke;
 import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.KeyStroke;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 public class ActionButtonTest extends DecoratorTest {
 

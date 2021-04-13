@@ -20,7 +20,7 @@ package VASSAL.counters;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.tools.NamedKeyStroke;
 import java.lang.reflect.InvocationTargetException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RestrictCommandsTest extends DecoratorTest {
 

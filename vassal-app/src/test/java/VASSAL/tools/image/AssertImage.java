@@ -20,9 +20,9 @@ package VASSAL.tools.image;
 
 import java.awt.image.BufferedImage;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A set of assertion methods for writing tests involving images.
@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
  * @since 3.2.0
  * @author Joel Uckelman
  */
-@Ignore
+@Disabled
 public class AssertImage {
   public static void assertImageEquals(BufferedImage expected,
                                        BufferedImage actual) {

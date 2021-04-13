@@ -23,7 +23,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 
 import java.lang.reflect.InvocationTargetException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 

@@ -2,18 +2,18 @@ package VASSAL.build;
 
 import VASSAL.tools.DataArchive;
 
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Ignore
+@Disabled
 public class MockModuleTest {
   private static boolean initialized = false;
 
   @SuppressWarnings("unchecked")
-  @Before
+  @BeforeEach
   public void init() throws Exception {
     if (initialized) {
       return;

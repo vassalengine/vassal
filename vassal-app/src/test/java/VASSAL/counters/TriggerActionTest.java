@@ -17,23 +17,20 @@
  */
 package VASSAL.counters;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import java.util.stream.Stream;
 
 import VASSAL.build.module.Map;
 import VASSAL.tools.NamedKeyStroke;
 
-@RunWith(value = Parameterized.class)
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+
 public class TriggerActionTest {
 
   /**
@@ -51,43 +48,24 @@ public class TriggerActionTest {
   final static Map MAP = mock(Map.class);
   static TriggerAction trigger;
 
-  String propertyExpression;
-  Map map;
-  boolean result;
-  String message;
-
-  public TriggerActionTest(String propertyExpression, Map map, boolean result, String message) {
-    this.propertyExpression = propertyExpression;
-    this.map = map;
-    this.result = result;
-    this.message = message;
+  private static Stream<Arguments> addFixture() {
+    return Stream.of(
+      Arguments.of("", null, false, "No Match expression, Unit not on map, KeyCommand should be disabled"),
+      Arguments.of("", MAP, true, "No Match expression, Unit on map, KeyCommand should be enabled"),
+      Arguments.of(FALSE_EXPRESSION, null, false, "Classic Match expression false, Unit not on map, KeyCommand should be disabled"),
+      Arguments.of(FALSE_EXPRESSION, MAP, false, "Classic Match expression false, unit on map, KeyCommand should be disabled"),
+      Arguments.of(TRUE_EXPRESSION, null, false, "Classic Match expression true, Unit not on map, KeyCommand should be disabled"),
+      Arguments.of(TRUE_EXPRESSION, MAP, true, "Classic Match expression true, Unit on map, KeyCommand should be enabled"),
+      Arguments.of(FALSE_BSH_EXPRESSION, null, false, "Beanshell Match expression false, Unit not on map, KeyCommand should be disabled"),
+      Arguments.of(FALSE_BSH_EXPRESSION, MAP,  false, "Beanshell Match expression false, unit on map, KeyCommand should be disabled"),
+      Arguments.of(TRUE_BSH_EXPRESSION, null, false, "Beanshell Match expression true, Unit not on map, KeyCommand should be disabled"),
+      Arguments.of(TRUE_BSH_EXPRESSION, MAP, true, "Beanshell Match expression true, Unit on map, KeyCommand should be enabled"));
   }
 
-  @Parameters
-  // Test Parameters:
-  //  Property - Property Expression, either empty, or a known True or False expression
-  //  Map - Either null, or a mocked Map object.
-  //  Result - Expected Enabled state of the Trigger KeyCommand.
-  //  Message - Test description/failure message
-  public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[][] {
-        // Property         Map   Result  Message
-        { "",               null, false,  "No Match expression, Unit not on map, KeyCommand should be disabled"     },
-        { "",               MAP,  true,   "No Match expression, Unit on map, KeyCommand should be enabled"  },
-        { FALSE_EXPRESSION, null, false,  "Classic Match expression false, Unit not on map, KeyCommand should be disabled" },
-        { FALSE_EXPRESSION, MAP,  false,  "Classic Match expression false, unit on map, KeyCommand should be disabled" },
-        { TRUE_EXPRESSION,  null, false,  "Classic Match expression true, Unit not on map, KeyCommand should be disabled" },
-        { TRUE_EXPRESSION,  MAP,  true,   "Classic Match expression true, Unit on map, KeyCommand should be enabled" },
-        { FALSE_BSH_EXPRESSION, null, false,  "Beanshell Match expression false, Unit not on map, KeyCommand should be disabled" },
-        { FALSE_BSH_EXPRESSION, MAP,  false,  "Beanshell Match expression false, unit on map, KeyCommand should be disabled" },
-        { TRUE_BSH_EXPRESSION,  null, false,  "Beanshell Match expression true, Unit not on map, KeyCommand should be disabled" },
-        { TRUE_BSH_EXPRESSION,  MAP,  true,   "Beanshell Match expression true, Unit on map, KeyCommand should be enabled" }
-
-    });
-  }
-
-  @Before
-  // Create a standard Trigger
+  /**
+   * Creates a standard Trigger
+   */
+  @BeforeEach
   public void setup() {
     trigger = new TriggerAction();
     trigger.setInner(new BasicPiece());
@@ -96,13 +74,16 @@ public class TriggerActionTest {
     trigger.setKey(NamedKeyStroke.of('T', KeyEvent.CTRL_DOWN_MASK));
   }
 
-  @Test
-  // Set the property expression and map and check the enabled state of the generated KeyCommand.
-  public void testBugRegression_2900930() {
+  /**
+   * Sets the property expression and map and checks the enabled state of the generated KeyCommand.
+   */
+  @ParameterizedTest
+  @MethodSource("addFixture")
+  public void testBugRegression_2900930(String propertyExpression, Map map, boolean result, String message) {
     trigger.setPropertyMatch(propertyExpression);
     trigger.setMap(map);
     final boolean enabled = trigger.myGetKeyCommands()[0].isEnabled();
-    assertEquals(message, result, enabled);
+    assertEquals(result, enabled, message);
   }
 
 }

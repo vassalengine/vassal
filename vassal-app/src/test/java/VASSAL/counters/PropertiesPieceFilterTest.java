@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import VASSAL.build.GameModule;
 
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 

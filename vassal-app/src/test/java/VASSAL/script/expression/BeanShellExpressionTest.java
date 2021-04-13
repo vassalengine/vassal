@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is;
 
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.PieceFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BeanShellExpressionTest {
 

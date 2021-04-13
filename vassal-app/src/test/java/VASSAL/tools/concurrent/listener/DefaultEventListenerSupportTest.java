@@ -20,27 +20,18 @@ package VASSAL.tools.concurrent.listener;
 
 import java.util.Collections;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class DefaultEventListenerSupportTest {
-  @Rule
-  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
-  protected static final EventListener<Boolean> dummy =
-                                                 new EventListener<Boolean>() {
-    public void receive(Object src, Boolean event) {}
-  };
+  protected static final EventListener<Boolean> dummy = (src, event) -> {};
 
   @Test
   public void testHasEventListeners() {
-    final EventListenerSupport<Boolean> lsup =
-      new DefaultEventListenerSupport<Boolean>(this);
+    final EventListenerSupport<Boolean> lsup = new DefaultEventListenerSupport<>(this);
 
     lsup.addEventListener(dummy);
     assertTrue(lsup.hasEventListeners());
@@ -48,8 +39,7 @@ public class DefaultEventListenerSupportTest {
 
   @Test
   public void testGetEventListeners() {
-    final EventListenerSupport<Boolean> lsup =
-      new DefaultEventListenerSupport<Boolean>(this);
+    final EventListenerSupport<Boolean> lsup = new DefaultEventListenerSupport<>(this);
 
     lsup.addEventListener(dummy);
     assertEquals(Collections.singletonList(dummy), lsup.getEventListeners());
@@ -57,8 +47,7 @@ public class DefaultEventListenerSupportTest {
 
   @Test
   public void testRemoveEventListener() {
-    final EventListenerSupport<Boolean> lsup =
-      new DefaultEventListenerSupport<Boolean>(this);
+    final EventListenerSupport<Boolean> lsup = new DefaultEventListenerSupport<>(this);
 
     lsup.addEventListener(dummy);
     assertTrue(lsup.hasEventListeners());
@@ -70,21 +59,16 @@ public class DefaultEventListenerSupportTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testNotify() {
-    final EventListenerSupport<Boolean> lsup =
-      new DefaultEventListenerSupport<Boolean>(this);
-
-    final EventListener<Boolean> listener = context.mock(EventListener.class);
-
-    context.checking(new Expectations() {
-      {
-        oneOf(listener).receive(DefaultEventListenerSupportTest.this, true);
-        oneOf(listener).receive(DefaultEventListenerSupportTest.this, false);
-      }
-    });
+    final EventListenerSupport<Boolean> lsup = new DefaultEventListenerSupport<>(this);
+    final EventListener<Boolean> listener = mock(EventListener.class);
 
     lsup.addEventListener(listener);
 
     lsup.notify(true);
     lsup.notify(false);
+
+    verify(listener, times(1)).receive(DefaultEventListenerSupportTest.this, true);
+    verify(listener, times(1)).receive(DefaultEventListenerSupportTest.this, false);
   }
+
 }

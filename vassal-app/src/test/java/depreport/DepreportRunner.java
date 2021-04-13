@@ -3,12 +3,9 @@ package depreport;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@RunWith(BlockJUnit4ClassRunner.class)
 public class DepreportRunner {
 
   private static final String DEPRECATED = "src/test/resources/depreport/deprecated.txt";
@@ -21,7 +18,7 @@ public class DepreportRunner {
    *
    * Do not commit without active @Ignore annotation.
    */
-  @Ignore
+  @Disabled
   @Test
   public void rewriteUnusedDependenciesFile() throws IOException {
     List<String> flatDepReport = new DepreportFlattener(DEPREPORT).getFlatReport();

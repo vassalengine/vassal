@@ -24,7 +24,7 @@ import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FootprintTest extends DecoratorTest {
 
