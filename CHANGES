@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14364: Removed ignored 'button tooltip' field from Turn Tracker config
 * 14358: ReportState checkbox overrides Global Key Command suppression of
     individual reports
 * 14283: Global Options can be configured to let toolbar items on closed
