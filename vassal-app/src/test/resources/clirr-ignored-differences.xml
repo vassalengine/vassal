@@ -81,28 +81,32 @@
     <difference>
         <className>VASSAL.tools.ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>public void save()</method>
+        <method>void save()</method>
+        <to>boolean</to>
         <justification>Editor method -- not a custom class target</justification>
     </difference>
 
     <difference>
         <className>VASSAL.tools.ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>public void save(boolean)</method>
+        <method>void save(boolean)</method>
+        <to>boolean</to>
         <justification>Editor method -- not a custom class target</justification>
     </difference>
 
     <difference>
         <className>VASSAL.tools.ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>public void saveAs()</method>
+        <method>void saveAs()</method>
+        <to>boolean</to>
         <justification>Editor method -- not a custom class target</justification>
     </difference>
 
     <difference>
         <className>VASSAL.tools.ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>public void saveAs(boolean)</method>
+        <method>void saveAs(boolean)</method>
+        <to>boolean</to>
         <justification>Editor method -- not a custom class target</justification>
     </difference>
 
