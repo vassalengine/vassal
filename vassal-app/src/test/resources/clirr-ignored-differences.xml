@@ -1,4 +1,4 @@
-<difference>
+<differences>
     <!--
         documentation at https://www.mojohaus.org/clirr-maven-plugin/examples/ignored-differences.html
     -->
@@ -106,4 +106,4 @@
         <justification>Editor method -- not a custom class target</justification>
     </difference>
 
-</difference>
+</differences>
