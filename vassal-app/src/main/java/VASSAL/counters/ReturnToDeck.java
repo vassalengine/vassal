@@ -362,8 +362,8 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       deckExp = new FormattedExpressionConfigurer(p.deckExpression.getFormat(), p);
       deckSelector = new DeckSelector(deckExp);
       controls.add(selectLabel);
-      controls.add(deckExp.getControls(), "split 2");
-      controls.add(deckSelector, "grow 0");
+      controls.add(deckExp.getControls(), "split 2"); //NON-NLS
+      controls.add(deckSelector, "grow 0"); //NON-NLS
 
       promptLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.prompt_for_destination_deck"));
       promptText = new StringConfigurer(p.selectDeckPrompt);
@@ -410,7 +410,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
    * Class to display a drop-down list of Decks by Map and set an owning Configurer to the selected value
    */
   private static class DeckSelector extends JButton implements ActionListener {
-    private Configurer owner;
+    private final Configurer owner;
 
     public DeckSelector(Configurer owner) {
       this.owner = owner;
@@ -421,9 +421,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     @Override
     public void actionPerformed(ActionEvent e) {
       final JPopupMenu mapMenu = new JPopupMenu();
-      for (Map m: GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)) {
+      for (final Map m: GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)) {
         final JMenu deckMenu = new JMenu(m.getMapName());
-        for (DrawPile d : m.getAllDescendantComponentsOf(DrawPile.class)) {
+        for (final DrawPile d : m.getAllDescendantComponentsOf(DrawPile.class)) {
           final JMenuItem item = new JMenuItem(d.getConfigureName());
           item.addActionListener(ev -> setOwnerValue(d.getConfigureName()));
           deckMenu.add(item);
@@ -432,7 +432,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
           mapMenu.add(deckMenu);
         }
       }
-      mapMenu.show(this,0, 0);
+      mapMenu.show(this, 0, 0);
     }
 
     private void setOwnerValue(String value) {
