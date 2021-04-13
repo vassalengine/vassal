@@ -22,9 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TailerTest {
 
@@ -54,18 +54,18 @@ public class TailerTest {
     assertFalse(tailer.isTailing());
   }
 
-  @Test(expected=IOException.class)
-  public void testNoFile() throws IOException {
+  @Test
+  public void testNoFile() {
     final File file = new File(NOTEXISTS);
     final Tailer tailer = new Tailer(file);
-    tailer.start();
+    assertThrows(IOException.class, () -> tailer.start());
   }
 
-  @Test(expected=IOException.class)
-  public void testDirectory() throws IOException {
+  @Test
+  public void testDirectory() {
     final File file = new File(".");
     final Tailer tailer = new Tailer(file);
-    tailer.start();
+    assertThrows(IOException.class, () -> tailer.start());
   }
 
   @Test

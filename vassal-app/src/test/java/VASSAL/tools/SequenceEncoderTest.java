@@ -24,9 +24,9 @@ import javax.swing.KeyStroke;
 
 import VASSAL.configure.PropertyExpression;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SequenceEncoderTest {
 
@@ -172,7 +172,7 @@ public class SequenceEncoderTest {
     assertEquals(VALUE, new PropertyExpression(sd.nextToken()));
   }
 
-  @Test(expected=NoSuchElementException.class)
+  @Test
   public void testEncodeDecodeMulti() {
 
     final boolean booleanIn = true;
@@ -216,7 +216,7 @@ public class SequenceEncoderTest {
     assertEquals(propertyExpressionIn, new PropertyExpression(sd.nextToken()));
 
     // Should be nothing left - should throw a NoSuchElementException
-    sd.nextToken();
+    assertThrows(NoSuchElementException.class, () -> sd.nextToken());
   }
 
   @Test

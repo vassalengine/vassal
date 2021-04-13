@@ -21,13 +21,12 @@ import VASSAL.tools.NamedKeyStroke;
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.KeyStroke;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AreaOfEffectTest extends DecoratorTest {
 
-
   @Test
-  public void serializeTests() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+  void serializeTests() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
 
     // Default piece
     AreaOfEffect trait = new AreaOfEffect();

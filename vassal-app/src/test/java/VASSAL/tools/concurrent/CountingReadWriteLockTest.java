@@ -21,39 +21,43 @@ package VASSAL.tools.concurrent;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CountingReadWriteLockTest {
   @Test
-  public void testReadLockReadUnlock() {
-    final ReadWriteLock rwl = new CountingReadWriteLock();
-    final Lock r = rwl.readLock();
-    r.lock();
-    r.unlock();
+  void testReadLockReadUnlock() {
+    assertDoesNotThrow(() -> {
+      ReadWriteLock rwl = new CountingReadWriteLock();
+      Lock r = rwl.readLock();
+      r.lock();
+      r.unlock();
+    });
   }
 
-  @Test(expected=IllegalMonitorStateException.class)
+  @Test
   public void testReadUnlock() {
     final ReadWriteLock rwl = new CountingReadWriteLock();
     final Lock r = rwl.readLock();
-    r.unlock();
+    assertThrows(IllegalMonitorStateException.class, () -> r.unlock());
   }
 
   @Test
   public void testWriteLockWriteUnlock() {
-    final ReadWriteLock rwl = new CountingReadWriteLock();
-    final Lock w = rwl.writeLock();
-    w.lock();
-    w.unlock();
+    assertDoesNotThrow(() -> {
+      final ReadWriteLock rwl = new CountingReadWriteLock();
+      final Lock w = rwl.writeLock();
+      w.lock();
+      w.unlock();
+    });
   }
 
-  @Test(expected=IllegalMonitorStateException.class)
+  @Test
   public void testWriteUnlock() {
     final ReadWriteLock rwl = new CountingReadWriteLock();
     final Lock w = rwl.writeLock();
-    w.unlock();
+    assertThrows(IllegalMonitorStateException.class, () -> w.unlock());
   }
 
   @Test

@@ -19,14 +19,14 @@ package VASSAL.tools.swing;
 
 import java.util.concurrent.ExecutionException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EDTRunnableFutureTest {
   @Test
   public void testRunOk() throws Exception {
-    final EDTRunnableFuture<Integer> r = new EDTRunnableFuture<Integer>(42) {
+    final EDTRunnableFuture<Integer> r = new EDTRunnableFuture<>(42) {
       protected void runOnEDT() {}
     };
 
@@ -34,15 +34,15 @@ public class EDTRunnableFutureTest {
     assertEquals(42, r.get().intValue());
   }
 
-  @Test(expected=ExecutionException.class)
+  @Test
   public void testRunException() throws Exception {
-    final EDTRunnableFuture<Boolean> r = new EDTRunnableFuture<Boolean>() {
+    final EDTRunnableFuture<Boolean> r = new EDTRunnableFuture<>() {
       protected void runOnEDT() {
         throw new RuntimeException();
       }
     };
 
     r.run();
-    r.get();
+    assertThrows(ExecutionException.class, () -> r.get());
   }
 }

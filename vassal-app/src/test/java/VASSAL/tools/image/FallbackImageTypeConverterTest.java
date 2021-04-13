@@ -26,15 +26,13 @@ import javax.imageio.ImageIO;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.lang.Reference;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static VASSAL.tools.image.AssertImage.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class FallbackImageTypeConverterTest {
 
@@ -45,11 +43,8 @@ public class FallbackImageTypeConverterTest {
 
   private static BufferedImage src;
 
-  @Rule
-  public final JUnitRuleMockery context = new JUnitRuleMockery();
-
-  @BeforeClass
-  public static void setup() throws IOException {
+  @BeforeEach
+  public void setup() throws IOException {
     src = ImageIO.read(new File(test));
   }
 
@@ -58,7 +53,7 @@ public class FallbackImageTypeConverterTest {
     final Reference<BufferedImage> ref = new Reference<>(src);
     final File tmpFile = new File(tmp);
 
-    BufferedImage dst = null;
+    BufferedImage dst;
     try {
       final FallbackImageTypeConverter c = new FallbackImageTypeConverter(tf);
       dst = c.convert(ref, BufferedImage.TYPE_INT_ARGB_PRE);
@@ -79,18 +74,12 @@ public class FallbackImageTypeConverterTest {
     final Reference<BufferedImage> ref = new Reference<>(src);
     final File tmpFile = new File(tmp);
 
-    final ImageTypeConverter mock = context.mock(ImageTypeConverter.class);
+    final ImageTypeConverter mock = mock(ImageTypeConverter.class);
 
-    context.checking(new Expectations() {
-      {
-        // this will force a fallback to the file converter
-        allowing(mock).convert(with(any(Reference.class)),
-                               with(any(int.class)));
-        will(throwException(new OutOfMemoryError()));
-      }
-    });
+    // this will force a fallback to the file converter
+    when(mock.convert(any(Reference.class), any(int.class))).thenThrow(new OutOfMemoryError());
 
-    BufferedImage dst = null;
+    BufferedImage dst;
     try {
       final FallbackImageTypeConverter c = new FallbackImageTypeConverter(
         tf, mock, new FileImageTypeConverter(tf)
@@ -106,4 +95,5 @@ public class FallbackImageTypeConverterTest {
       tmpFile.delete();
     }
   }
+
 }

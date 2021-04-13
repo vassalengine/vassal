@@ -24,24 +24,27 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.commons.io.IOUtils;
 
 public class ZipArchiveTest {
   private static final String OUT_DIR = "target/test-classes";
 
-  @Rule
-  public TestName name = new TestName();
+  private String name;
 
-  @After
+  @BeforeEach
+  public void beforeEach(TestInfo info) {
+    name = info.getTestMethod().toString();
+  }
+
+  @AfterEach
   public void cleanup() throws IOException {
     Files.deleteIfExists(testArchivePath());
     Files.deleteIfExists(Path.of(testArchivePath().toString() + ".bak"));
@@ -50,7 +53,7 @@ public class ZipArchiveTest {
   private Path testArchivePath() {
     return Path.of(
       OUT_DIR,
-      getClass().getSimpleName() + "_" + name.getMethodName() + ".zip"
+      getClass().getSimpleName() + "_" + name + ".zip"
     );
   }
 
@@ -294,4 +297,5 @@ public class ZipArchiveTest {
       assertTrue(z.isClosed());
     }
   }
+
 }

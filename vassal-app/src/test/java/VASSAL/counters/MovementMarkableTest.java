@@ -30,7 +30,7 @@ import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 

@@ -1,8 +1,8 @@
 package VASSAL.counters;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import VASSAL.script.expression.BeanShellExpression;
 
@@ -21,4 +21,5 @@ public class CalculatedPropertySerializeTest extends
     assertEquals(cp1.name, cp2.name);
     assertEquals(cp1.expression, cp2.expression);
   }
+
 }

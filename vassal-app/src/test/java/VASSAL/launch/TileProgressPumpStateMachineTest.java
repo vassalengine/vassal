@@ -27,17 +27,12 @@ import static VASSAL.launch.TileProgressPumpStateMachine.DOTS;
 import static VASSAL.launch.TileProgressPumpStateMachine.DOTS_LF;
 import static VASSAL.launch.TileProgressPumpStateMachine.DONE;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Rule;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class TileProgressPumpStateMachineTest {
-  @Rule
-  public final JUnitRuleMockery context = new JUnitRuleMockery();
 
   @Test
   @SuppressWarnings("unchecked")
@@ -45,22 +40,14 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "xyzzy".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(NAME, sm.run(INIT, buf, 0, buf.length, sb));
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -69,22 +56,14 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "xyzzy".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(NAME, sm.run(NAME, buf, 0, buf.length, sb));
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -93,22 +72,15 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "xyzzy\r".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        oneOf(nl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal("xyzzy")));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(NAME_LF, sm.run(NAME, buf, 0, buf.length, sb));
+
+    verify(nl).receive(any(TileProgressPumpStateMachine.class), eq("xyzzy"));
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -117,22 +89,15 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "xyzzy\n".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        oneOf(nl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal("xyzzy")));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(DOTS, sm.run(NAME, buf, 0, buf.length, sb));
+
+    verify(nl).receive(any(TileProgressPumpStateMachine.class), eq("xyzzy"));
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -141,22 +106,15 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "\n".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(DONE, sm.run(NAME, buf, 0, buf.length, sb));
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -165,46 +123,31 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "\n".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(DOTS, sm.run(NAME_LF, buf, 0, buf.length, sb));
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
-  @Test(expected=IllegalStateException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void testNAME_LFtoIllegal() {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "x".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
-
-    sm.run(NAME_LF, buf, 0, buf.length, sb);
+    assertThrows(IllegalStateException.class, () -> sm.run(NAME_LF, buf, 0, buf.length, sb));
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -213,22 +156,14 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "....".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
-
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        oneOf(pl).receive(with(aNonNull(TileProgressPumpStateMachine.class)),
-                          with(equal(4)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(DOTS, sm.run(DOTS, buf, 0, buf.length, sb));
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl).receive(any(TileProgressPumpStateMachine.class), eq(4));
   }
 
   @Test
@@ -237,22 +172,15 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "..\r".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        oneOf(pl).receive(with(any(Object.class)),
-                          with(equal(2)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(DOTS_LF, sm.run(DOTS, buf, 0, buf.length, sb));
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl).receive(any(Object.class), eq(2));
   }
 
   @Test
@@ -261,46 +189,32 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "..\n".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        oneOf(pl).receive(with(any(Object.class)),
-                          with(equal(2)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(NAME, sm.run(DOTS, buf, 0, buf.length, sb));
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl).receive(any(Object.class), eq(2));
   }
 
-  @Test(expected=IllegalStateException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void testDOTStoIllegal() {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "x".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    assertThrows(IllegalStateException.class, () -> sm.run(DOTS, buf, 0, buf.length, sb));
 
-    sm.run(DOTS, buf, 0, buf.length, sb);
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
   @Test
@@ -309,69 +223,49 @@ public class TileProgressPumpStateMachineTest {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "\n".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
-
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
     assertEquals(NAME, sm.run(DOTS_LF, buf, 0, buf.length, sb));
+
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
-  @Test(expected=IllegalStateException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void testDOTS_LFtoIllegal() {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "x".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    assertThrows(IllegalStateException.class, () -> sm.run(DOTS_LF, buf, 0, buf.length, sb));
 
-    sm.run(DOTS_LF, buf, 0, buf.length, sb);
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("unchecked")
   public void testDONEtoIllegal() {
     final StringBuilder sb = new StringBuilder();
     final byte[] buf = "x".getBytes();
 
-    final EventListener<String> nl = context.mock(EventListener.class, "nl");
-    final EventListener<Integer> pl = context.mock(EventListener.class, "pl");
+    final EventListener<String> nl = mock(EventListener.class, "nl");
+    final EventListener<Integer> pl = mock(EventListener.class, "pl");
 
-    context.checking(new Expectations() {
-      {
-        never(nl).receive(with(any(Object.class)),
-                          with(any(String.class)));
-        never(pl).receive(with(any(Object.class)),
-                          with(any(Integer.class)));
-      }
-    });
+    final TileProgressPumpStateMachine sm = new TileProgressPumpStateMachine(nl, pl);
 
-    final TileProgressPumpStateMachine sm =
-      new TileProgressPumpStateMachine(nl, pl);
+    assertThrows(IllegalArgumentException.class, () -> sm.run(DONE, buf, 0, buf.length, sb));
 
-    sm.run(DONE, buf, 0, buf.length, sb);
+    verify(nl, never()).receive(any(Object.class), anyString());
+    verify(pl, never()).receive(any(Object.class), anyInt());
   }
+
 }

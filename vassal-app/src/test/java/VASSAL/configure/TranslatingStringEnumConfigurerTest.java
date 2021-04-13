@@ -3,16 +3,12 @@ package VASSAL.configure;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
 import VASSAL.i18n.Resources;
 import java.util.ArrayList;
 import java.util.List;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -93,8 +89,6 @@ public class TranslatingStringEnumConfigurerTest {
     assertThat(validValues[0], is(equalTo(option1)));
     assertThat(validValues[1], is(equalTo(option2)));
     assertThat(validValues[2], is(equalTo(option3)));
-
-
   }
 
 }
