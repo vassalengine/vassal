@@ -393,9 +393,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if ((l != null) && !l.isEmpty()) {
       final JMenu subMenu = new JMenu(name);
       for (final Action a: l) {
-        subMenu.add(a).setFont(POPUP_MENU_FONT);;
+        subMenu.add(a).setFont(POPUP_MENU_FONT);
       }
-      menu.add(subMenu).setFont(POPUP_MENU_FONT);;
+      menu.add(subMenu).setFont(POPUP_MENU_FONT);
       l.clear();
     }
   }
