@@ -87,6 +87,17 @@ SumStack(String property) {
 }
 
 /**
+ * Callback to Vassal to count the number of pieces in the same stack
+ *
+ * Example: CountStack()
+ */
+CountStack() {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.countStack("", _source));
+}
+
+/**
  * Callback to Vassal to count the number of pieces in the same
  * stack that *contain* the target property
  *
