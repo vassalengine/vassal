@@ -597,6 +597,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return isValidParent(target, (Configurable) sourceNode.getUserObject());
   }
 
+
   protected boolean isValidPasteTarget(Configurable target) {
     return isValidPasteTarget(target, cutData) || isValidPasteTarget(target, copyData);
   }
@@ -2230,6 +2231,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   /**
+   * Allows ExtensionEditor to override and control what indexes are allowed
+   */
+  public int checkMinimumIndex(DefaultMutableTreeNode targetNode, int index) {
+    return index;
+  }
+
+  /**
    * Tree Transfer Handler provides drag-and-drop support for editor items. Heavily adapted from Oracle "tutorial" and
    * various StackOverflow and Code Ranch articles, but yeah, google ftw. (Brian Reynolds Apr 4 2021)
    */
@@ -2375,6 +2383,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           childIndex = targetNode.getChildCount(); // Otherwise we drop it at the bottom
         }
       }
+
+      // This is for Extension editor to override
+      childIndex = checkMinimumIndex(targetNode, childIndex);
 
       if (childIndex > targetNode.getChildCount()) {
         childIndex = targetNode.getChildCount();
