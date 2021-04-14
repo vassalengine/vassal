@@ -42,6 +42,7 @@ import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.version.UpdateCheckAction;
 
 public class PlayerWindow extends JFrame {
 
@@ -125,6 +126,11 @@ public class PlayerWindow extends JFrame {
 
     helpMenu.add(mm.addKey("Documentation.about_module"));
 
+    helpMenu.addSeparator();
+
+    helpMenu.add(mm.addKey("UpdateCheckAction.update_check"));
+    helpMenu.add(mm.addKey("Help.error_log"));
+
     if (!SystemUtils.IS_OS_MAC) {
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
@@ -157,6 +163,9 @@ public class PlayerWindow extends JFrame {
     }
 
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
+
+    mm.addAction("UpdateCheckAction.update_check", new UpdateCheckAction(this));
+    mm.addAction("Help.error_log", new ShowErrorLogAction(this));
 
     mb.add(fileMenu);
     mb.add(toolsMenu);

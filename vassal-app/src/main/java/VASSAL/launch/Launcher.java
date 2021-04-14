@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.logging.LoggedOutputStream;
@@ -50,17 +51,12 @@ public abstract class Launcher {
   }
 
   protected Launcher(String[] args) {
+    this(LaunchRequest.parseArgsOrDie(args));
+  }
+
+  protected Launcher(LaunchRequest lreq) {
     if (instance != null) throw new IllegalStateException();
     instance = this;
-
-    LaunchRequest lreq = null;
-    try {
-      lreq = LaunchRequest.parseArgs(args);
-    }
-    catch (LaunchRequestException e) {
-      System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
-      System.exit(1);
-    }
 
     lr = lreq;
 
@@ -100,6 +96,9 @@ public abstract class Launcher {
         System.exit(1);
       }
     });
+
+    final Prefs globalPrefs = Prefs.getGlobalPrefs();
+    UpdateCheckRequest.updateCheck(globalPrefs);
   }
 
   protected abstract void launch() throws IOException;

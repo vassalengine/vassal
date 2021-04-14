@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
 import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
@@ -63,8 +62,6 @@ import VASSAL.tools.menu.MacOSXMenuManager;
 public class ModuleManager {
   private static final Logger logger =
     LoggerFactory.getLogger(ModuleManager.class);
-
-  private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
 
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
 
@@ -110,18 +107,16 @@ public class ModuleManager {
 // is thrown here...
 
     // parse command-line arguments
-    LaunchRequest lr = null;
-    try {
-      lr = LaunchRequest.parseArgs(args);
-    }
-    catch (LaunchRequestException e) {
-// FIXME: should be a dialog...
-      System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
-      e.printStackTrace();
-      System.exit(1);
-    }
+    final LaunchRequest lr = LaunchRequest.parseArgsOrDie(args);
 
-    if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
+    switch (lr.mode) {
+    case LOAD:
+      // this load request is from the command line or via a file association;
+      // don't start the Module Manager
+      new Player(lr);
+      return;
+
+    case TRANSLATE:
       // show the translation window in translation mode
       SwingUtilities.invokeLater(() -> {
         // FIXME: does this window exit on close?
@@ -296,34 +291,8 @@ public class ModuleManager {
     socketListener.start();
 
     final Prefs globalPrefs = Prefs.getGlobalPrefs();
-    updateCheck(globalPrefs);
+    UpdateCheckRequest.updateCheck(globalPrefs);
     importerHeapSetup(globalPrefs);
-  }
-
-  private void updateCheck(Prefs globalPrefs) {
-    // determine when we should next check on the current version of VASSAL
-    final LongConfigurer nextVersionCheckConfig =
-      new LongConfigurer(NEXT_VERSION_CHECK, null, -1L);
-    globalPrefs.addOption(null, nextVersionCheckConfig);
-
-    long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
-    if (nextVersionCheck < System.currentTimeMillis()) {
-      new UpdateCheckRequest().execute();
-    }
-
-    // set the time for the next version check
-    if (nextVersionCheck == -1L) {
-      // this was our first check; randomly check after 0-10 days to
-      // to spread version checks evenly over a 10-day period
-      nextVersionCheck = System.currentTimeMillis() +
-                         (long) (Math.random() * 10 * 86400000);
-    }
-    else {
-      // check again in 10 days
-      nextVersionCheck += 10 * 86400000;
-    }
-
-    nextVersionCheckConfig.setValue(nextVersionCheck);
   }
 
   private void importerHeapSetup(Prefs globalPrefs) {

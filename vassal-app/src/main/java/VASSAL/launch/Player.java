@@ -63,6 +63,10 @@ public class Player extends Launcher {
     super(args);
   }
 
+  public Player(LaunchRequest lreq) {
+    super(lreq);
+  }
+
   @Override
   protected MenuManager createMenuManager() {
     return SystemUtils.IS_OS_MAC ?

@@ -54,7 +54,6 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -77,8 +76,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-
-import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -115,7 +112,6 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
-import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuItemProxy;
@@ -2101,37 +2097,4 @@ public class ModuleManagerWindow extends JFrame {
       };
     }
   }
-
-  private static class ShowErrorLogAction extends AbstractAction {
-    private static final long serialVersionUID = 1L;
-
-    private final Frame frame;
-
-    public ShowErrorLogAction(Frame frame) {
-      super(Resources.getString("Help.error_log"));
-      this.frame = frame;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-// FIXME: don't create a new one each time!
-      final File logfile = Info.getErrorLogPath();
-      final LogPane lp = new LogPane(logfile);
-
-// FIXME: this should have its own key. Probably keys should be renamed
-// to reflect what they are labeling, e.g., Help.show_error_log_menu_item,
-// Help.error_log_dialog_title.
-      final JDialog d =
-        new JDialog(frame, Resources.getString("Help.error_log"));
-      d.setLayout(new MigLayout("insets 0")); //NON-NLS
-      d.add(new JScrollPane(lp), "grow, push, w 500, h 600"); //NON-NLS
-
-      d.setLocationRelativeTo(frame);
-      d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-      SwingUtils.repack(d);
-      d.setVisible(true);
-    }
-  }
 }
-

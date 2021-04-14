@@ -502,4 +502,17 @@ public class LaunchRequest implements Serializable {
                                                 throws LaunchRequestException {
     throw new LaunchRequestException(key, vals);
   }
+
+  public static LaunchRequest parseArgsOrDie(String[] args) {
+    LaunchRequest lreq = null;
+    try {
+      lreq = LaunchRequest.parseArgs(args);
+    }
+    catch (LaunchRequestException e) {
+      System.err.println("VASSAL: " + e.getMessage()); //NON-NLS
+      e.printStackTrace();
+      System.exit(1);
+    }
+    return lreq;
+  }
 }

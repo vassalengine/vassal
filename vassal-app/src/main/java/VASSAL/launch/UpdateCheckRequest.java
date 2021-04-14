@@ -24,7 +24,9 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.version.AbstractUpdateCheckRequest;
 
@@ -36,6 +38,8 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
 
   private static final Logger logger =
     LoggerFactory.getLogger(UpdateCheckRequest.class);
+
+  private static final String NEXT_VERSION_CHECK = "nextVersionCheck"; //NON-NLS
 
   @Override
   protected void done() {
@@ -57,5 +61,31 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
     catch (InterruptedException | ExecutionException e) {
       logger.error("", e);
     }
+  }
+
+  public static void updateCheck(Prefs globalPrefs) {
+    // determine when we should next check on the current version of VASSAL
+    final LongConfigurer nextVersionCheckConfig =
+      new LongConfigurer(NEXT_VERSION_CHECK, null, -1L);
+    globalPrefs.addOption(null, nextVersionCheckConfig);
+
+    long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
+    if (nextVersionCheck < System.currentTimeMillis()) {
+      new UpdateCheckRequest().execute();
+    }
+
+    // set the time for the next version check
+    if (nextVersionCheck == -1L) {
+      // this was our first check; randomly check after 0-10 days to
+      // to spread version checks evenly over a 10-day period
+      nextVersionCheck = System.currentTimeMillis() +
+                         (long) (Math.random() * 10 * 86400000);
+    }
+    else {
+      // check again in 10 days
+      nextVersionCheck += 10 * 86400000;
+    }
+
+    nextVersionCheckConfig.setValue(nextVersionCheck);
   }
 }
