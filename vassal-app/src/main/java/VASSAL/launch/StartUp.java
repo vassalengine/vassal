@@ -149,9 +149,7 @@ public class StartUp {
         final String fontString = ReadOnlyPrefs.getGlobalPrefs().getStoredValue(Prefs.OVERRIDE_DEFAULT_FONT_SIZE);
         try {
           final int fontSize = Integer.parseInt(fontString);
-          if (fontSize >= 8) {
-            setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, Math.min(fontSize, 50)));
-          }
+          setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, Math.max(8, Math.min(fontSize, 32))));
         }
         catch (NumberFormatException e) {
           // No action, keep default system/java/whatever fonts.
