@@ -267,8 +267,8 @@ public class ArchiveWriter extends DataArchive {
    * Saves the archive, prompting for a name only if none has ever been provided.
    * @throws IOException IOException
    */
-  public void save() throws IOException {
-    save(false);
+  public boolean save() throws IOException {
+    return save(false);
   }
 
   /**
@@ -276,17 +276,22 @@ public class ArchiveWriter extends DataArchive {
    * @param notifyModuleManager If true, notifies Module Manager that the save has occurred
    * @throws IOException IOException
    */
-  public void save(boolean notifyModuleManager) throws IOException {
-    if (isTempArchive) saveAs(notifyModuleManager);
-    else write(archive, notifyModuleManager);
+  public boolean save(boolean notifyModuleManager) throws IOException {
+    if (isTempArchive) {
+      return saveAs(notifyModuleManager);
+    }
+    else {
+      write(archive, notifyModuleManager);
+    }
+    return true;
   }
 
   /**
    * Saves the archive, always prompting for a new filename.
    * @throws IOException IOException
    */
-  public void saveAs() throws IOException {
-    saveAs(false);
+  public boolean saveAs() throws IOException {
+    return saveAs(false);
   }
 
   /**
@@ -304,20 +309,21 @@ public class ArchiveWriter extends DataArchive {
    * Saves the archive, always prompting for a new filename. If a defaultExtension has been
    * provided, it will be added to the filename unless the user specifies a different one explicitly.
    * @param notifyModuleManager If true, notifies Module Manager that the save has occurred
+   * @return true if operation proceeded, false if it was cancelled by user at file chooser or confirmation dialog
    * @throws IOException IOException
    */
-  public void saveAs(boolean notifyModuleManager) throws IOException {
+  public boolean saveAs(boolean notifyModuleManager) throws IOException {
     final FileChooser fc = FileChooser.createFileChooser(
       GameModule.getGameModule().getPlayerWindow(),
       (DirectoryConfigurer) Prefs.getGlobalPrefs()
                                  .getOption(Prefs.MODULES_DIR_KEY));
-    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return false;
     String filename = fc.getSelectedFile().getPath();
 
     if (!StringUtils.isEmpty(defaultExtension) && (filename.lastIndexOf('.') < 0)) {
       filename = filename + defaultExtension;
       if (new File(filename).exists() && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getPlayerWindow(), Resources.getString("Editor.ArchiveWriter.overwrite", filename), Resources.getString("Editor.ArchiveWriter.file_exists"), JOptionPane.YES_NO_OPTION)) {
-        return;
+        return false;
       }
     }
 
@@ -342,6 +348,8 @@ public class ArchiveWriter extends DataArchive {
     else {
       write(archive, notifyModuleManager);
     }
+
+    return true;
   }
 
   /**
