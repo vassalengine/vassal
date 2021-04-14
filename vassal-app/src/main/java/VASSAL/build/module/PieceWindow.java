@@ -49,6 +49,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
+import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
@@ -271,6 +272,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
         final Window w = initFrame();
         final PositionOption pos = new VisibilityOption(key, w);
         GameModule.getGameModule().getPrefs().addOption(pos);
+
+        GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(root, JComponent.WHEN_IN_FOCUSED_WINDOW));
       }
       GameModule.getGameModule().getToolBar().add(launch);
     }
