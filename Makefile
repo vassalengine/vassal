@@ -47,7 +47,7 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.5.6
+VNUM:=3.6.0
 
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 #MAVEN_VERSION:=$(VNUM)-beta3
