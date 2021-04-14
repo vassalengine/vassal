@@ -20,7 +20,6 @@ package VASSAL.configure;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.DrawPile;
-import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 
 import javax.swing.JButton;
@@ -52,10 +51,6 @@ public class DeckSelector extends JButton implements ActionListener {
 
   public String getValue() {
     return value;
-  }
-
-  public void doPopup() {
-
   }
 
   public void showPopup() {

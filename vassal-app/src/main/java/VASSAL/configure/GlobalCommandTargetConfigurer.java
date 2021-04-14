@@ -221,8 +221,12 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       targetDeckConfig.addPropertyChangeListener(evt -> update());
       targetDeckConfig.setHintKey("Editor.GlobalKeyCommand.deck_name_hint");
       targetDeckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_name"));
+      final DeckSelector targetDeckSelector = new DeckSelector(targetDeckConfig);
+      final JPanel deckPanel = new JPanel();
+      deckPanel.add(targetDeckConfig.getControls());
+      deckPanel.add(targetDeckSelector);
       controls.add(targetDeckLabel, "span 2"); //NON-NLS
-      controls.add(targetDeckConfig.getControls(), "growx, wrap"); //NON-NLS
+      controls.add(deckPanel, "growx, wrap"); //NON-NLS
 
       fastMatchPropertyConfig = new BooleanConfigurer(target.isFastMatchProperty());
       fastMatchPropertyConfig.addPropertyChangeListener(evt -> update());
