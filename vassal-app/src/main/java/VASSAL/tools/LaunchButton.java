@@ -47,6 +47,7 @@ public class LaunchButton extends JButton {
   protected String toolTipText;
   protected NamedKeyStrokeListener keyListener;
   protected Configurer nameConfig, keyConfig;
+  protected boolean alwaysAcceptKeystroke;
 
   public LaunchButton(String text, String textAttribute,
                       String hotkeyAttribute, ActionListener al) {
@@ -62,13 +63,14 @@ public class LaunchButton extends JButton {
 
   public LaunchButton(String text, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al) {
     super(text);
+    alwaysAcceptKeystroke = false;
     nameAtt = textAttribute;
     keyAtt = hotkeyAttribute;
     iconAtt = iconAttribute;
     iconConfig = new IconConfigurer(iconAtt, null, null);
     setAlignmentY(0.0F);
     keyListener = new NamedKeyStrokeListener(e -> {
-      if (isEnabled() && (GlobalOptions.getInstance().isHotKeysOnClosedWindows() || (getParent() != null && getParent().isShowing()))) {
+      if ((isEnabled() || isAlwaysAcceptKeystroke()) && (GlobalOptions.getInstance().isHotKeysOnClosedWindows() || (getParent() != null && getParent().isShowing()))) {
         al.actionPerformed(e);
       }
     });
@@ -78,6 +80,14 @@ public class LaunchButton extends JButton {
     }
     setFocusable(false);
     checkVisibility();
+  }
+
+  public boolean isAlwaysAcceptKeystroke() {
+    return alwaysAcceptKeystroke;
+  }
+
+  public void setAlwaysAcceptKeystroke(boolean always) {
+    alwaysAcceptKeystroke = always;
   }
 
   @Override
@@ -180,8 +190,11 @@ public class LaunchButton extends JButton {
     return keyConfig;
   }
 
+  public boolean isNonBlank() {
+    return (getText() != null && getText().length() > 0) || getIcon() != null;
+  }
+
   protected void checkVisibility() {
-    setVisible((getText() != null && getText().length() > 0) ||
-                getIcon() != null);
+    setVisible(isNonBlank());
   }
 }
