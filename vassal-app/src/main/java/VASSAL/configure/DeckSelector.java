@@ -34,23 +34,12 @@ import java.awt.event.ActionListener;
  */
 public class DeckSelector extends JButton implements ActionListener {
   private static final long serialVersionUID = 1L;
-  private Configurer owner;
-  private String value;
-
-  public DeckSelector() {
-    this.owner = null;
-    this.value = "";
-    setText(Resources.getString("Editor.select"));
-    addActionListener(this);
-  }
+  private final Configurer owner;
 
   public DeckSelector(Configurer owner) {
-    this();
     this.owner = owner;
-  }
-
-  public String getValue() {
-    return value;
+    setText(Resources.getString("Editor.select"));
+    addActionListener(this);
   }
 
   public void showPopup() {
@@ -75,7 +64,6 @@ public class DeckSelector extends JButton implements ActionListener {
   }
 
   private void setValue(String value) {
-    this.value = value;
     owner.setValue(value);
   }
 }
