@@ -283,7 +283,7 @@ public class ArchiveWriter extends DataArchive {
     else {
       write(archive, notifyModuleManager);
     }
-    return false;
+    return true;
   }
 
   /**
