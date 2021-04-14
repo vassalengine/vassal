@@ -72,7 +72,7 @@ public class ExtensionTree extends ConfigureTree {
   }
   
 
-  private boolean isEditable(DefaultMutableTreeNode node) {
+  public boolean isEditable(DefaultMutableTreeNode node) {
     if (extension == null) {
       return false;
     }

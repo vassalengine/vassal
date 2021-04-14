@@ -309,7 +309,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if ((target != null) && (target.getConfigurer() != null)) {
             final Action a = buildEditAction(target);
             if (a != null) {
-              a.actionPerformed(new ActionEvent(ae.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
+              a.actionPerformed(new ActionEvent(ae.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //NON-NLS
             }
           }
         }
@@ -1107,7 +1107,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       if (target.getConfigurer() != null) {
         final Action a = buildEditAction(target);
         if (a != null) {
-          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit"));
+          a.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, "Edit")); //NON-NLS
         }
       }
     }
@@ -2046,22 +2046,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
       final String name = (c.getConfigureName() != null ? c.getConfigureName() : "") +
         " [" + getConfigureName(c.getClass()) + "]";
-      final String matchString = "<b><u>Matches for " + noHTML(name) + ": </u></b>";
+      final String matchString = "<b><u>Matches for " + noHTML(name) + ": </u></b>"; //NON-NLS
 
       final SearchTarget st = (SearchTarget) c;
       final String item = getConfigureName(c.getClass());
 
       final TargetProgress progress = new TargetProgress();
 
-      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()), searchString, matchString, item, "", "Name", progress);
-      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(item),                 searchString, matchString, item, "", "Type", progress);
+      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()), searchString, matchString, item, "", "Name", progress); //NON-NLS
+      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(item),                 searchString, matchString, item, "", "Type", progress); //NON-NLS
 
-      stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress);
-      stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress);
-      stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress);
-      stringListHits(searchParameters.isMatchMessages(),    st.getFormattedStringList(), searchString, matchString, item, "", "Message/Field", progress);
+      stringListHits(searchParameters.isMatchExpressions(), st.getExpressionList(),      searchString, matchString, item, "", "Expression",    progress); //NON-NLS
+      stringListHits(searchParameters.isMatchProperties(),  st.getPropertyList(),        searchString, matchString, item, "", "Property",      progress); //NON-NLS
+      stringListHits(searchParameters.isMatchMenus(),       st.getMenuTextList(),        searchString, matchString, item, "", "UI Text",       progress); //NON-NLS
+      stringListHits(searchParameters.isMatchMessages(),    st.getFormattedStringList(), searchString, matchString, item, "", "Message/Field", progress); //NON-NLS
 
-      keyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress);
+      //NON-NLSkeyListHits(searchParameters.isMatchKeys(),           st.getNamedKeyStrokeList(),  searchString, matchString, item, "", "KeyCommand",    progress);
     }
 
     /**
@@ -2096,10 +2096,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         " [" + getConfigureName(c.getClass()) + "]";
 
       final TargetProgress progress = new TargetProgress();
-      final String matchString = "<b><u>Matches for " + name + ": </u></b>";
+      final String matchString = "<b><u>Matches for " + name + ": </u></b>"; //NON-NLS
 
-      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Name", progress);
-      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress);
+      stringListHits(searchParameters.isMatchNames(), Arrays.asList(c.getConfigureName()),           searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Name", progress); //NON-NLS
+      stringListHits(searchParameters.isMatchTypes(), Arrays.asList(getConfigureName(c.getClass())), searchString, matchString, protoskip ? "Prototype Definition" : "Game Piece", "", "Type", progress); //NON-NLS
 
       // We're going to search Decorator from inner-to-outer (BasicPiece-on-out), so that user sees the traits hit in
       // the same order they're listed in the PieceDefiner window. So we first traverse them in the "normal" direction
@@ -2121,16 +2121,16 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
           if (searchParameters.isMatchTraits()) {
             if ((desc != null) && checkString(desc, searchString)) {
-              progress.checkShowTrait(matchString, "Trait", desc);
+              progress.checkShowTrait(matchString, "Trait", desc); //NON-NLS
             }
           }
 
-          stringListHits(searchParameters.isMatchExpressions(), d.getExpressionList(), searchString, matchString, "Trait", desc, "Expression", progress);
-          stringListHits(searchParameters.isMatchProperties(), d.getPropertyList(), searchString, matchString, "Trait", desc, "Property", progress);
-          stringListHits(searchParameters.isMatchMenus(), d.getMenuTextList(), searchString, matchString, "Trait", desc, "UI Text", progress);
-          stringListHits(searchParameters.isMatchMessages(), d.getFormattedStringList(), searchString, matchString, "Trait", desc, "Message/Field", progress);
+          stringListHits(searchParameters.isMatchExpressions(), d.getExpressionList(), searchString, matchString, "Trait", desc, "Expression", progress); //NON-NLS
+          stringListHits(searchParameters.isMatchProperties(), d.getPropertyList(), searchString, matchString, "Trait", desc, "Property", progress); //NON-NLS
+          stringListHits(searchParameters.isMatchMenus(), d.getMenuTextList(), searchString, matchString, "Trait", desc, "UI Text", progress); //NON-NLS
+          stringListHits(searchParameters.isMatchMessages(), d.getFormattedStringList(), searchString, matchString, "Trait", desc, "Message/Field", progress); //NON-NLS
 
-          keyListHits(searchParameters.isMatchKeys(), d.getNamedKeyStrokeList(), searchString, matchString, "Trait", desc, "KeyCommand", progress);
+          keyListHits(searchParameters.isMatchKeys(), d.getNamedKeyStrokeList(), searchString, matchString, "Trait", desc, "KeyCommand", progress); //NON-NLS
         }
         protoskip = false;
       }
@@ -2257,7 +2257,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         flavors[0] = nodesFlavor;
       }
       catch (ClassNotFoundException e) {
-        System.out.println("Class Not Found: " + e.getMessage());
+        System.out.println("Class Not Found: " + e.getMessage()); //NON-NLS
       }
     }
 
@@ -2295,6 +2295,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final Configurable target = (Configurable)targetNode.getUserObject();
       if (!isValidPasteTarget(target, firstNode)) {
         return false;
+      }
+
+      // If we're editing an extension, components owned by the moduel can never be dragged
+      if (tree instanceof ExtensionTree) {
+        final ExtensionTree xTree = (ExtensionTree) tree;
+        if (!xTree.isEditable(firstNode)) {
+          return false;
+        }
       }
 
       final int action = support.getDropAction();
@@ -2356,10 +2364,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         nodes = (DefaultMutableTreeNode[])t.getTransferData(nodesFlavor);
       }
       catch (UnsupportedFlavorException ufe) {
-        System.out.println("Unsupported Flavor: " + ufe.getMessage());
+        System.out.println("Unsupported Flavor: " + ufe.getMessage()); //NON-NLS
       }
       catch (java.io.IOException ioe) {
-        System.out.println("I/O error: " + ioe.getMessage());
+        System.out.println("I/O error: " + ioe.getMessage()); //NON-NLS
       }
 
       if (nodes == null) {
