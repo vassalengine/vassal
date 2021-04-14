@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14372: Can duplicate and insert components in Editor, not just add to bottom
 * 13817: Default UI font size can be over-ridden in preferences
 * 14376: Inventory window allows a hotkey for Refresh
 * 14374: First 'advanced search' on a module defaults to all boxes prechecked
