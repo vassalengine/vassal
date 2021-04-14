@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14346: Deck reports now suppressed during GKC report suppresssion
 * 14374: First 'advanced search' on a module defaults to all boxes prechecked
 * 14365: DeckPosition was reporting 1 higher than the actual position
 * 14364: Removed ignored 'button tooltip' field from Turn Tracker config
