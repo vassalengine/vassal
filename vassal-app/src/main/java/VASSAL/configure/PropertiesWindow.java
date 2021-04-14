@@ -143,7 +143,7 @@ public class PropertiesWindow extends JDialog {
     else if (target instanceof Map) {
       //BR// Keeps us from wiping the whole map contents (running in the player right now) just because user hit cancel.
       //BR// Possibly this would be better for all/most AbstractConfigurable items. But probably a matter for further research & experiment.
-      for (String propName : ((Map)target).getAttributeNames()) {
+      for (final String propName : ((Map)target).getAttributeNames()) {
         target.setAttribute(propName, originalState.getAttribute(propName));
       }
     }
