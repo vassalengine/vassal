@@ -54,7 +54,25 @@ public class ExtensionTree extends ConfigureTree {
     setCellRenderer(new ExtensionRenderer());
   }
 
-  private boolean isEditable(DefaultMutableTreeNode node) {
+  /**
+   * Allows ExtensionEditor to override and control what indexes are available during drag and drop
+   */
+  @Override
+  public int checkMinimumIndex(DefaultMutableTreeNode targetNode, int index) {
+    if (isEditable(targetNode)) {
+      return index;
+    }
+
+    // Don't allow dragging things up in among the greyed-out (owned by module, not our extension) items.
+    while ((index < targetNode.getChildCount()) && !isEditable((DefaultMutableTreeNode)targetNode.getChildAt(index))) {
+      index++;
+    }
+
+    return index;
+  }
+  
+
+  public boolean isEditable(DefaultMutableTreeNode node) {
     if (extension == null) {
       return false;
     }
@@ -263,15 +281,21 @@ public class ExtensionTree extends ConfigureTree {
     return a;
   }
 
+
   @Override
   protected boolean isValidPasteTarget(Configurable target) {
-    return
-      (cutData != null &&
-      super.isValidParent(target, (Configurable) cutData.getUserObject()) &&
-      isEditable(getParent(cutData))) ||
-      (copyData != null &&
-      super.isValidParent(target, (Configurable) copyData.getUserObject()));
+    return isValidPasteTarget(target, cutData) || isValidPasteTarget(target, copyData);
   }
+
+
+  @Override
+  protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode) {
+    if (sourceNode == null) {
+      return false;
+    }
+    return super.isValidParent(target, (Configurable) sourceNode.getUserObject());
+  }
+
 
   /**
    * Allocate new PieceSlot Id's to any PieceSlot sub-components
