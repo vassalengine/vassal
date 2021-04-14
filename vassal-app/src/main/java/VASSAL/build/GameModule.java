@@ -1966,12 +1966,11 @@ public class GameModule extends AbstractConfigurable
 
       writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
-      if (saveAs) writer.saveAs(true);
-      else writer.save(true);
-
-      lastSavedConfiguration = save;
-
-      warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
+      final boolean actuallyDidStuff = saveAs ? writer.saveAs(true) : writer.save(true);
+      if (actuallyDidStuff) {
+        lastSavedConfiguration = save;
+        warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
+      }
     }
     catch (IOException e) {
       WriteErrorDialog.showError(
