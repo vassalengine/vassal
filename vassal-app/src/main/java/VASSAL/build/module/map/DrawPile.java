@@ -90,8 +90,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   private final VisibilityCondition sortVisibleCondition = () -> dummy.isSortable();
 
-  private final VisibilityCondition selectOrSortVisibleCondition = () -> dummy.isSortable() || dummy.isAllowSelectDraw();
-
   private final VisibilityCondition sortableVisibleCondition = () -> !ALWAYS.equals(dummy.getShuffleOption());
 
 
@@ -183,6 +181,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public static final String FACE_DOWN_MESSAGE = "faceDownMessage"; //NON-NLS
 
   public static final String SORTABLE = "sortable"; //NON-NLS
+  public static final String SORT_PROPERTY = "sortProperty"; //NON-NLS
   public static final String SORT_COMMAND = "sortCommand"; //NON-NLS
   public static final String SORT_HOTKEY = "sortKey"; //NON-NLS
   public static final String SORT_REPORT_FORMAT = "sortMsgFormat"; //NON-NLS
@@ -303,6 +302,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       FACE_DOWN_MESSAGE,
       FACE_DOWN_HOTKEY,
       SORTABLE,
+      SORT_PROPERTY,
       SORT_COMMAND,
       SORT_HOTKEY,
       SORT_REPORT_FORMAT,
@@ -355,6 +355,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
       Resources.getString("Editor.DrawPile.face_down_key"),
       Resources.getString("Editor.DrawPile.sortable"), //NON-NLS
+      Resources.getString("Editor.DrawPile.sort_property"),
       Resources.getString("Editor.DrawPile.sort_text"), //NON-NLS
       Resources.getString("Editor.DrawPile.sort_key"), //NON-NLS
       Resources.getString("Editor.DrawPile.sort_report"), //NON-NLS
@@ -407,6 +408,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String.class, // face down message
       NamedKeyStroke.class, // face down key
       Boolean.class, // sortable
+      String.class, // SORT_PROPERTY
       String.class, // Sort deck command
       NamedKeyStroke.class, // Sort hotkey
       FormattedStringConfig.class, // Sort deck report format
@@ -556,6 +558,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
     else if (SORTABLE.equals(key)) {
       return String.valueOf(dummy.isSortable());
+    }
+    else if (SORT_PROPERTY.equals(key)) {
+      return dummy.getSortProperty();
     }
     else if (SORT_COMMAND.equals(key)) {
       return dummy.getSortCommand();
@@ -781,6 +786,9 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (SORTABLE.equals(key)) {
       dummy.setSortable("true".equals(value) || Boolean.TRUE.equals(value)); //NON-NLS
     }
+    else if (SORT_PROPERTY.equals(key)) {
+      dummy.setSortProperty((String)value);
+    }
     else if (SORT_COMMAND.equals(key)) {
       dummy.setSortCommand((String)value);
     }
@@ -824,7 +832,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (EMPTY_HOTKEY.equals(name)) {
       return hotkeyOnEmptyVisibleCondition;
     }
-    else if (SELECT_DISPLAY_PROPERTY.equals(name)) {
+    else if (SELECT_DISPLAY_PROPERTY.equals(name) || SELECT_SORT_PROPERTY.equals(name)) {
       return selectionAllowedVisibleCondition;
     }
     else if (RESTRICT_EXPRESSION.equals(name)) {
@@ -839,13 +847,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     else if (FACE_DOWN_MESSAGE.equals(name) || FACE_UP_MESSAGE.equals(name) || FACE_DOWN_HOTKEY.equals(name)) {
       return faceUpDownMessageVisibleCondition;
     }
-    else if (SELECT_SORT_PROPERTY.equals(name) || SORT_DESCENDING.equals(name)) {
-      return selectOrSortVisibleCondition;
-    }
     else if (SORTABLE.equals(name)) {
       return sortableVisibleCondition;
     }
-    else if (List.of(SORT_COMMAND, SORT_HOTKEY, SORT_REPORT_FORMAT).contains(name)) {
+    else if (List.of(SORT_COMMAND, SORT_HOTKEY, SORT_REPORT_FORMAT, SORT_DESCENDING, SORT_PROPERTY).contains(name)) {
       return sortVisibleCondition;
     }
     else {

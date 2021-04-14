@@ -120,7 +120,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean drawFaceUp;
   protected boolean persistable;
   protected FormattedString selectDisplayProperty = new FormattedString("$" + BasicPiece.BASIC_NAME + "$");
-  protected String selectSortProperty = "";
+  protected String selectSortProperty = ""; // Sort property when "draw specific cards"
+  protected String sortProperty = ""; // Sort property when using "sort command"
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("", this);
   protected List<MutableProperty.Impl> expressionProperties = new ArrayList<>();
@@ -580,6 +581,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     faceDownKey         = st.nextNamedKeyStroke(null);
 
     sortable            = st.nextBoolean(false);
+    sortProperty        = st.nextToken("");
     sortCommand         = st.nextToken(Resources.getString("Deck.sort"));
     sortKey             = st.nextNamedKeyStroke(null);
     sortMsgFormat       = st.nextToken("");
@@ -1012,6 +1014,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(faceDownMessage)
       .append(faceDownKey)
       .append(sortable)
+      .append(sortProperty)
       .append(sortCommand)
       .append(sortKey)
       .append(sortMsgFormat)
@@ -1226,11 +1229,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         if (other == null) return 1;
 
         final String otherProperty =
-          (String) other.piece.getProperty(selectSortProperty);
+          (String) other.piece.getProperty(sortProperty);
         if (otherProperty == null) return 1;
 
         final String myProperty =
-          (String) piece.getProperty(selectSortProperty);
+          (String) piece.getProperty(sortProperty);
         if (myProperty == null) return -1;
 
         if (!anyNonNumeric) {
@@ -1269,7 +1272,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
       //BR// If every property contains a parsable number, we will be able to do a numeric sort.
       if (!anyNonNumeric) {
-        final String prop = (String) pieces[pieces.length - i - 1].piece.getProperty(selectSortProperty);
+        final String prop = (String) pieces[pieces.length - i - 1].piece.getProperty(sortProperty);
         try {
           Integer.parseInt(prop);
         }
@@ -1279,7 +1282,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     }
 
-    if (selectSortProperty != null && selectSortProperty.length() > 0) {
+    if (sortProperty != null && sortProperty.length() > 0) {
       Arrays.sort(pieces);
     }
 
@@ -1949,6 +1952,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public String getSelectSortProperty() {
     return selectSortProperty;
+  }
+
+  public String getSortProperty() {
+    return sortProperty;
+  }
+
+  public void setSortProperty(String sp) {
+    this.sortProperty = sp;
   }
 
   protected void repaintMap() {
