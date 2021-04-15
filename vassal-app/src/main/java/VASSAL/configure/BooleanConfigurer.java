@@ -20,6 +20,8 @@ package VASSAL.configure;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 /**
  * Configurer for Boolean values
  */
@@ -110,7 +112,7 @@ public class BooleanConfigurer extends Configurer {
   @Override
   public java.awt.Component getControls() {
     if (p == null) {
-      p = new ConfigurerPanel(getName(), "[]0[0]", "[][][]"); // NON-NLS
+      p = new JPanel(new MigLayout(ConfigurerLayout.DEFAULT_CFG_LAYOUT_CONSTRAINTS, (getName() == null || getName().isEmpty()) ? "[]0[0]" : "[][][]", "push[]push"));
 
       box = new JCheckBox();
       box.setSelected(booleanValue());
