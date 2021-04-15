@@ -42,9 +42,13 @@ public class VersionUtils {
     }
   }
 
+  public static int compareReportable(String version) throws IOException {
+    // a version is reportable if it is the current release or beta
+    return compareCurrent(version);
+  }
+
   public static boolean isCurrent(String version) throws IOException {
-    // a version is current if it would update to itself
-    return version.equals(update(version));
+    return compareCurrent(version) >= 0;
   }
 
   /**
@@ -60,31 +64,22 @@ public class VersionUtils {
     return comparableVersion0.compareTo(comparableVersion1);
   }
 
-  private static String update(String version) throws IOException {
-    String current = VersionUtils.getRelease();
-    switch (signum(compareVersions(version, current))) {
+  private static int compareCurrent(String version) throws IOException {
+    switch (signum(compareVersions(version, getRelease()))) {
     case -1: // version is older than the current release
-      return current;
+      return -1;
     case  0: // version is the current release
-      return version;
+      return 0;
     case  1:
       // version is newer than the current release
-      current = VersionUtils.getBeta();
-      switch (signum(compareVersions(version, current))) {
-      case -1:  // version is older than the current beta
-        return current;
-      case  0:  // version is the current beta
-      case  1:  // version is newer than the current beta
-        return version;
-      }
+      return signum(compareVersions(version, getBeta()));
     }
 
-    throw new IllegalStateException();
+    throw new IllegalStateException();  // impossible
   }
 
   public static Boolean isUpdateable(String runningVersion) throws IOException {
-    final String update = update(runningVersion);
-    return !update.equals(runningVersion);
+    return compareCurrent(runningVersion) < 0;
   }
 
   public static String nextMinorVersion(String v) {
