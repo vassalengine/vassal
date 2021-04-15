@@ -275,7 +275,7 @@ public class NotesWindow extends AbstractToolbarItem
   public void addTo(Buildable b) {
     super.addTo(b);
     getLaunchButton().setAlignmentY(0.0F);
-    GameModule gm = GameModule.getGameModule();
+    final GameModule gm = GameModule.getGameModule();
     gm.addCommandEncoder(this);
     gm.getGameState().addGameComponent(this);
     gm.addCommandEncoder(privateNotes);
@@ -288,7 +288,7 @@ public class NotesWindow extends AbstractToolbarItem
   @Override
   public void removeFrom(Buildable b) {
     super.removeFrom(b);
-    GameModule gm = GameModule.getGameModule();
+    final GameModule gm = GameModule.getGameModule();
     gm.removeCommandEncoder(this);
     gm.getGameState().removeGameComponent(this);
     gm.removeCommandEncoder(privateNotes);
