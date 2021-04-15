@@ -19,52 +19,43 @@ package VASSAL.tools.version;
 import static java.lang.Integer.signum;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
-import VASSAL.Info;
-
 public class VersionUtils {
   protected VersionUtils() {}
 
-  private static final String baseURL = "http://www.vassalengine.org/util/"; //NON-NLS
+  private static VersionInfo vinfo = new LiveVersionInfo();
 
-  private static final String currentRelease = "current-release"; //NON-NLS
-  private static final String currentBeta = "current-beta"; //NON-NLS
-
-  private static String release = null;
-  private static String beta = null;
-
-  private static String getRelease() throws IOException {
-    if (release == null) release = getVersion(baseURL + currentRelease);
-    return release;
-  }
-
-  private static String getBeta() throws IOException {
-    if (beta == null) beta = getVersion(baseURL + currentBeta);
-    return beta;
-  }
-
-  private static String getVersion(String url) throws IOException {
-    try (InputStream in = new URL(url).openStream()) {
-      return IOUtils.toString(in, StandardCharsets.UTF_8).trim();
-    }
+  public static void setVersionInfo(VersionInfo vi) {
+    vinfo = vi;
   }
 
   public static int compareReportable(String version) throws IOException {
     // a version is reportable if it is the current release or beta
-    return compareCurrent(version);
+    switch (signum(compareVersions(version, vinfo.getRelease()))) {
+    case -1: // version is older than the current release
+      return -1;
+    case 0: // version is the current release
+      return 0;
+    case 1:
+      // version is newer than the current release
+      return signum(compareVersions(version, vinfo.getBeta()));
+    }
+
+    throw new IllegalStateException();  // impossible
   }
 
   public static boolean isCurrent(String version) throws IOException {
-    return compareCurrent(version) >= 0;
+    return compareReportable(version) >= 0;
+  }
+
+  /** @deprecated Use !{@link isCurrent(String)} instead */
+  @Deprecated(since = "2021-04-15", forRemoval = true)
+  public static Boolean isUpdateable(String runningVersion) throws IOException {
+    return !isCurrent(runningVersion);
   }
 
   /**
@@ -80,24 +71,6 @@ public class VersionUtils {
     return comparableVersion0.compareTo(comparableVersion1);
   }
 
-  private static int compareCurrent(String version) throws IOException {
-    switch (signum(compareVersions(version, getRelease()))) {
-    case -1: // version is older than the current release
-      return -1;
-    case  0: // version is the current release
-      return 0;
-    case  1:
-      // version is newer than the current release
-      return signum(compareVersions(version, getBeta()));
-    }
-
-    throw new IllegalStateException();  // impossible
-  }
-
-  public static Boolean isUpdateable(String runningVersion) throws IOException {
-    return compareCurrent(runningVersion) < 0;
-  }
-
   public static String nextMinorVersion(String v) {
     final ArtifactVersion av = new DefaultArtifactVersion(v);
     return String.valueOf(av.getMajorVersion()) + '.' +
@@ -108,9 +81,5 @@ public class VersionUtils {
     final ArtifactVersion av = new DefaultArtifactVersion(v);
     return String.valueOf(av.getMajorVersion()) + '.' +
       av.getMinorVersion();
-  }
-
-  public static void main(String[] args) throws IOException {
-    System.out.println(Info.getVersion() + " is current? " + isCurrent(Info.getVersion())); //NON-NLS
   }
 }

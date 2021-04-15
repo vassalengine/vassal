@@ -133,7 +133,7 @@ public class BugDialog extends JDialog {
     contents.add(buildCurrentVersionPanel(),   "currentVersionPanel"); //NON-NLS
     contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel"); //NON-NLS
     contents.add(buildNonReportingVersionPanel("BugDialog.old_version_instructions"), "oldVersionPanel"); //NON-NLS
-    contents.add(buildNonReportingVersionPanel("BugDialog.test_version_instructions"), "oldVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel("BugDialog.test_version_instructions"), "testVersionPanel"); //NON-NLS
     contents.add(buildConnectionFailedPanel(), "connectionFailedPanel"); //NON-NLS
     contents.add(buildEmergencySavePanel(),    "emergencySavePanel"); //NON-NLS
 
@@ -475,7 +475,7 @@ public class BugDialog extends JDialog {
     @Override
     protected void done() {
       try {
-        final Integer v = get(10, TimeUnit.SECONDS);
+        final int v = get(10, TimeUnit.SECONDS);
 
         if (v == 0) {
           showCurrentVersionPanel();
