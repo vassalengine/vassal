@@ -1,5 +1,9 @@
 3.6.0 - ???
 
+* 14377: Add Hotkeys to hide and show map windows
+         Existing show/hide hotkey field is now always visible
+         Allow changes to hide/show Map button settings without needing Editor
+     restart
 * 14388: Add Scrollbars to Prefs Dialog when needed
 * 14373: 1944: Editor now has Drag and Drop support
 * 14372: Can duplicate and insert components in Editor, not just add to bottom
