@@ -467,12 +467,13 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
+      boolean oldValue = useLaunchButtonEdit;
       useLaunchButtonEdit = (Boolean) value;
       getLaunchButton().setVisible(useLaunchButtonEdit && getLaunchButton().isNonBlank());
 
       //BR// If we've just turned off the Launch Button, assume that we
       //BR// should be always (and therefore currently) displaying the map.
-      if (!useLaunchButtonEdit) {
+      if (oldValue && !useLaunchButtonEdit) {
         showMap();
       }
     }
