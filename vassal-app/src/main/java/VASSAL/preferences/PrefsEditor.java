@@ -27,6 +27,7 @@ import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
 
 import VASSAL.tools.swing.SwingUtils;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -48,6 +49,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
@@ -94,12 +96,22 @@ public class PrefsEditor {
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(e -> cancel());
 
-      dialog.setLayout(new MigLayout("insets dialog")); //NON-NLS
-      dialog.add(optionsTab, "push, grow, wrap unrelated"); //NON-NLS
+      dialog.setLayout(new MigLayout("insets dialog", "[push,fill]"));
 
-      dialog.add(help, "tag help, split"); //NON-NLS
-      dialog.add(ok, "tag ok, split"); //NON-NLS
-      dialog.add(cancel, "tag cancel"); //NON-NLS
+      final JPanel contentPanel = new JPanel(new MigLayout("insets dialog", "[push,fill]"));
+      contentPanel.add(optionsTab, "push, grow, wrap unrelated"); //NON-NLS
+      final JScrollPane scrollPane = new JScrollPane(contentPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+      final JPanel scrollPanel = new JPanel(new BorderLayout());
+      scrollPanel.add(scrollPane, BorderLayout.CENTER);
+      dialog.add(scrollPanel, "grow, wrap");
+
+      final JPanel buttonPanel = new JPanel(new MigLayout("ins 0", "push[]rel[]rel[]push")); // NON-NLS
+      buttonPanel.add(ok, "tag ok, sg 1"); //NON-NLS
+      buttonPanel.add(cancel, "tag cancel, sg 1"); //NON-NLS
+      buttonPanel.add(help, "tag help, split, sg 1"); //NON-NLS
+      dialog.add(buttonPanel, "grow");
     }
   }
 
@@ -175,7 +187,7 @@ public class PrefsEditor {
     c.setLabelVisibile(false);
     label.setLabelFor(c.getControls());
     pan.add(label);
-    pan.add(c.getControls(), "grow,wrap"); // NON-NLS
+    pan.add(c.getControls(), "grow,wrap,aligny center"); // NON-NLS
   }
 
   private synchronized void storeValues() {
