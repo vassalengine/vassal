@@ -22,9 +22,14 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.DetailsButton;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.version.VersionUtils;
+
 import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHeader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -60,6 +65,8 @@ import java.util.concurrent.TimeoutException;
  */
 public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
+
+  private static final Logger logger = LoggerFactory.getLogger(BugDialog.class);
 
   private final Throwable thrown;
   private final String errorLog;
@@ -473,7 +480,7 @@ public class BugDialog extends JDialog {
       }
       catch (InterruptedException | TimeoutException | ExecutionException e) {
         timer.stop();
-        e.printStackTrace();
+        logger.error("", e);
         showConnectionFailedPanel();
       }
     }
@@ -551,7 +558,7 @@ public class BugDialog extends JDialog {
       }
       catch (InterruptedException | TimeoutException | ExecutionException e) {
         timer.stop();
-        e.printStackTrace();
+        logger.error("", e);
         showConnectionFailedPanel();
       }
     }
