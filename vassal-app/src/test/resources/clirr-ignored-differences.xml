@@ -53,4 +53,11 @@
         <to>boolean</to>
         <justification>Editor method -- not a custom class target</justification>
     </difference>
+
+     <difference>
+        <className>VASSAL/tools/version/VersionUtils</className>
+        <differenceType>7002</differenceType>
+        <method>void main(java.lang.String[])</method>
+        <justification>Removed useless main()</justification>
+    </difference>
 </differences>
