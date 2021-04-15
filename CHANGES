@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14278: Increase number of default zomm levels in new Map Zoom Capability
 * 14377: Add Hotkeys to hide and show map windows.
     Existing show/hide hotkey field is now always visible.
     Allow changes to hide/show Map button settings without needing Editor
