@@ -369,11 +369,12 @@ public class TranslatingStringEnumConfigurer extends Configurer {
    */
   @Override
   public void setValue(Object o) {
-    if (validValues == null || isValidValue(o)) {
-      super.setValue(o);
+    final String val = o == null ? "" : o.toString();
+    if (validValues == null || isValidValue(val)) {
+      super.setValue((Object) val);
       if (!noUpdate && box != null && validValues != null) {
         for (int i = 0; i < validValues.length; i++) {
-          if (validValues[i].equals(o.toString())) {
+          if (validValues[i].equals(val)) {
             box.setSelectedIndex(i);
             break;
           }
