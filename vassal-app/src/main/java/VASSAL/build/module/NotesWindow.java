@@ -23,6 +23,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 
 /**
@@ -273,23 +275,26 @@ public class NotesWindow extends AbstractToolbarItem
   public void addTo(Buildable b) {
     super.addTo(b);
     getLaunchButton().setAlignmentY(0.0F);
-    GameModule.getGameModule().addCommandEncoder(this);
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    GameModule.getGameModule().addCommandEncoder(privateNotes);
-    GameModule.getGameModule().getGameState().addGameComponent(privateNotes);
-    GameModule.getGameModule().addCommandEncoder(secretNotes);
-    GameModule.getGameModule().getGameState().addGameComponent(secretNotes);
+    final GameModule gm = GameModule.getGameModule();
+    gm.addCommandEncoder(this);
+    gm.getGameState().addGameComponent(this);
+    gm.addCommandEncoder(privateNotes);
+    gm.getGameState().addGameComponent(privateNotes);
+    gm.addCommandEncoder(secretNotes);
+    gm.getGameState().addGameComponent(secretNotes);
+    gm.addKeyStrokeSource(new KeyStrokeSource(frame.getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW));
   }
 
   @Override
   public void removeFrom(Buildable b) {
     super.removeFrom(b);
-    GameModule.getGameModule().removeCommandEncoder(this);
-    GameModule.getGameModule().getGameState().removeGameComponent(this);
-    GameModule.getGameModule().removeCommandEncoder(privateNotes);
-    GameModule.getGameModule().getGameState().removeGameComponent(privateNotes);
-    GameModule.getGameModule().removeCommandEncoder(secretNotes);
-    GameModule.getGameModule().getGameState().removeGameComponent(secretNotes);
+    final GameModule gm = GameModule.getGameModule();
+    gm.removeCommandEncoder(this);
+    gm.getGameState().removeGameComponent(this);
+    gm.removeCommandEncoder(privateNotes);
+    gm.getGameState().removeGameComponent(privateNotes);
+    gm.removeCommandEncoder(secretNotes);
+    gm.getGameState().removeGameComponent(secretNotes);
   }
 
   @Override
