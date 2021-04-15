@@ -132,7 +132,8 @@ public class BugDialog extends JDialog {
     contents.add(buildVersionCheckPanel(),     "versionCheckPanel");  //NON-NLS
     contents.add(buildCurrentVersionPanel(),   "currentVersionPanel"); //NON-NLS
     contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel"); //NON-NLS
-    contents.add(buildOldVersionPanel(),       "oldVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel("BugDialog.old_version_instructions"), "oldVersionPanel"); //NON-NLS
+    contents.add(buildNonReportingVersionPanel("BugDialog.test_version_instructions"), "testVersionPanel"); //NON-NLS
     contents.add(buildConnectionFailedPanel(), "connectionFailedPanel"); //NON-NLS
     contents.add(buildEmergencySavePanel(),    "emergencySavePanel"); //NON-NLS
 
@@ -146,7 +147,8 @@ public class BugDialog extends JDialog {
     buttons.add(buildVersionCheckButtons(),     "versionCheckButtons"); //NON-NLS
     buttons.add(buildCurrentVersionButtons(),   "currentVersionButtons"); //NON-NLS
     buttons.add(buildSendingBugReportButtons(), "sendingBugReportButtons"); //NON-NLS
-    buttons.add(buildOldVersionButtons(),       "oldVersionButtons"); //NON-NLS
+    buttons.add(buildNonReportingVersionButtons(), "oldVersionButtons"); //NON-NLS
+    buttons.add(buildNonReportingVersionButtons(), "testVersionButtons"); //NON-NLS
     buttons.add(buildConnectionFailedButtons(), "connectionFailedButtons"); //NON-NLS
     buttons.add(buildEmergencySaveButtons(),    "emergencySaveButtons"); //NON-NLS
 
@@ -268,9 +270,8 @@ public class BugDialog extends JDialog {
     return new JScrollPane(detailsArea);
   }
 
-  private Component buildOldVersionPanel() {
-    final FlowLabel label = new FlowLabel(
-      Resources.getString("BugDialog.old_version_instructions"));
+  private Component buildNonReportingVersionPanel(String key) {
+    final FlowLabel label = new FlowLabel(Resources.getString(key));
     label.addHyperlinkListener(BrowserSupport.getListener());
 
     final JScrollPane detailsScroll = buildDetailsScroll();
@@ -291,7 +292,7 @@ public class BugDialog extends JDialog {
     return panel;
   }
 
-  private Component buildOldVersionButtons() {
+  private Component buildNonReportingVersionButtons() {
     final JButton okButton = new JButton(
       new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
@@ -426,6 +427,11 @@ public class BugDialog extends JDialog {
     button_deck.show(buttons, "oldVersionButtons");
   }
 
+  private void showTestVersionPanel() {
+    deck.show(contents, "testVersionPanel");
+    button_deck.show(buttons, "testVersionButtons");
+  }
+
   private void showConnectionFailedPanel() {
     deck.show(contents, "connectionFailedPanel");
     button_deck.show(buttons, "connectionFailedButtons");
@@ -447,11 +453,11 @@ public class BugDialog extends JDialog {
     super.setVisible(visible);
   }
 
-  private class CheckRequest extends SwingWorker<Boolean, Void> {
+  private class CheckRequest extends SwingWorker<Integer, Void> {
     private Timer timer = null;
 
     @Override
-    protected Boolean doInBackground() throws Exception {
+    protected Integer doInBackground() throws Exception {
       final CountDownLatch latch = new CountDownLatch(1);
 
       // Wait 3 seconds before counting down the latch to ensure
@@ -461,7 +467,7 @@ public class BugDialog extends JDialog {
       timer.start();
 
       // Make the request to the server and wait for the latch.
-      final Boolean cur = VersionUtils.isCurrent(Info.getVersion());
+      final int cur = VersionUtils.compareReportable(Info.getVersion());
       latch.await();
       return cur;
     }
@@ -469,10 +475,17 @@ public class BugDialog extends JDialog {
     @Override
     protected void done() {
       try {
-        if (get(10, TimeUnit.SECONDS)) showCurrentVersionPanel();
-//          else       showCurrentVersionPanel();
-        else       showOldVersionPanel();
-//          else       showConnectionFailedPanel();
+        final int v = get(10, TimeUnit.SECONDS);
+
+        if (v == 0) {
+          showCurrentVersionPanel();
+        }
+        else if (v < 0) {
+          showOldVersionPanel();
+        }
+        else {
+          showTestVersionPanel();
+        }
       }
       catch (CancellationException e) {
         // cancelled by user, do nothing

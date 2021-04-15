@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2021 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,21 +17,9 @@
 package VASSAL.tools.version;
 
 import java.io.IOException;
-import javax.swing.SwingWorker;
 
-import VASSAL.Info;
+public interface VersionInfo {
+  String getRelease() throws IOException;
 
-/**
- * @since 3.1.0
- * @author Joel Uckelman
- */
-public abstract class AbstractUpdateCheckRequest
-                                      extends SwingWorker<Boolean, Void> {
-  @Override
-  protected Boolean doInBackground() throws IOException {
-    return !VersionUtils.isCurrent(Info.getVersion());
-  }
-
-  @Override
-  protected abstract void done();
+  String getBeta() throws IOException;
 }
