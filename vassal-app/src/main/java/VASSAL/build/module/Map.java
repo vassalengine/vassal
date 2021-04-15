@@ -467,7 +467,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
       }
-      boolean oldValue = useLaunchButtonEdit;
+      final boolean oldValue = useLaunchButtonEdit;
       useLaunchButtonEdit = (Boolean) value;
       getLaunchButton().setVisible(useLaunchButtonEdit && getLaunchButton().isNonBlank());
 
