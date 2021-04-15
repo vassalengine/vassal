@@ -71,13 +71,14 @@ public class StartUp {
    * Changes all the UI fonts to the specified one
    * @param f Font for UI
    */
-  public void setUIFont(javax.swing.plaf.FontUIResource f) {
+  public void setUIFont(javax.swing.plaf.FontUIResource f, javax.swing.plaf.FontUIResource fItalic, javax.swing.plaf.FontUIResource fBold, javax.swing.plaf.FontUIResource fBoth) {
     final java.util.Enumeration keys = UIManager.getDefaults().keys();
     while (keys.hasMoreElements()) {
       final Object key = keys.nextElement();
       final Object value = UIManager.get(key);
       if (value instanceof javax.swing.plaf.FontUIResource) {
-        UIManager.put(key, f);
+        final javax.swing.plaf.FontUIResource fonty = (javax.swing.plaf.FontUIResource) value;
+        UIManager.put(key, fonty.getStyle() == Font.ITALIC ? fItalic : fonty.getStyle() == Font.BOLD ? fBold : fonty.getStyle() == (Font.BOLD | Font.ITALIC) ? fBoth : f);
       }
     }
   }
@@ -150,7 +151,10 @@ public class StartUp {
         try {
           final int fontSize = Integer.parseInt(fontString);
           if (fontSize > 0) {
-            setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, Math.max(8, Math.min(fontSize, 32))));
+            setUIFont(new javax.swing.plaf.FontUIResource("SansSerif", Font.PLAIN, Math.max(8, Math.min(fontSize, 32))),
+                      new javax.swing.plaf.FontUIResource("SansSerif", Font.ITALIC, Math.max(8, Math.min(fontSize, 32))),
+                      new javax.swing.plaf.FontUIResource("SansSerif", Font.BOLD, Math.max(8, Math.min(fontSize, 32))),
+                      new javax.swing.plaf.FontUIResource("SansSerif", Font.BOLD | Font.ITALIC, Math.max(8, Math.min(fontSize, 32))));
           }
         }
         catch (NumberFormatException e) {
