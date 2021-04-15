@@ -21,6 +21,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
@@ -135,9 +136,16 @@ public class PropertiesWindow extends JDialog {
 
   public void cancel() {
     if (target instanceof GameModule) { // Modules we don't want to do the full scary rebuild, just put the text fields back.
-      target.setAttribute(GameModule.MODULE_NAME,    originalState.getAttribute(GameModule.MODULE_NAME));
+      target.setAttribute(GameModule.MODULE_NAME, originalState.getAttribute(GameModule.MODULE_NAME));
       target.setAttribute(GameModule.MODULE_VERSION, originalState.getAttribute(GameModule.MODULE_VERSION));
-      target.setAttribute(GameModule.DESCRIPTION,    originalState.getAttribute(GameModule.DESCRIPTION));
+      target.setAttribute(GameModule.DESCRIPTION, originalState.getAttribute(GameModule.DESCRIPTION));
+    }
+    else if (target instanceof Map) {
+      //BR// Keeps us from wiping the whole map contents (running in the player right now) just because user hit cancel.
+      //BR// Possibly this would be better for all/most AbstractConfigurable items. But probably a matter for further research & experiment.
+      for (final String propName : ((Map)target).getAttributeNames()) {
+        target.setAttribute(propName, originalState.getAttribute(propName));
+      }
     }
     else {
       target.build(originalState);
