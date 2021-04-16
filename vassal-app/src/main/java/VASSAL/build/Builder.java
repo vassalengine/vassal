@@ -77,7 +77,7 @@ public class Builder {
          child = child.getNextSibling()) {
       if (Node.ELEMENT_NODE == child.getNodeType()) {
         try {
-          final Buildable b = create((Element) child);
+          final Buildable b = create((Element) child, parent);
           if (parent != null) {
             b.addTo(parent);
             parent.add(b);
@@ -94,23 +94,32 @@ public class Builder {
     }
   }
 
-  /**
-   * Create an instance of a class from an XML element and build it.
-   *
-   * The <code>.class</code> file for the named class may be either
-   * in the System's classpath or else within the {@link DataArchive}
-   * of the {@link GameModule}.
-   *
-   * @throws IllegalBuildException if something goes wrong when loading
-   * the class or creating an instance of it
-   */
   public static Buildable create(Element e) throws IllegalBuildException {
+    return create(e, null);
+  }
+
+    /**
+     * Create an instance of a class from an XML element and build it.
+     *
+     * The <code>.class</code> file for the named class may be either
+     * in the System's classpath or else within the {@link DataArchive}
+     * of the {@link GameModule}.
+     *
+     * @throws IllegalBuildException if something goes wrong when loading
+     * the class or creating an instance of it
+     */
+  public static Buildable create(Element e, Buildable parent) throws IllegalBuildException {
     final GameModule mod = GameModule.getGameModule();
     final String name = e.getTagName();
 
     try {
       final Buildable b = (Buildable) (mod == null ?  Class.forName(name) :
         mod.getDataArchive().loadClass(name)).getConstructor().newInstance();
+
+      if (b instanceof AbstractBuildable) {
+        ((AbstractBuildable)b).setAncestor(parent);
+      }
+
       b.build(e);
       return b;
     }

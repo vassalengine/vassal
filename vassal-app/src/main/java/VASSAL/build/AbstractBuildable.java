@@ -101,6 +101,7 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
         Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
       }
     }
+
     Builder.build(e, this);
   }
 
