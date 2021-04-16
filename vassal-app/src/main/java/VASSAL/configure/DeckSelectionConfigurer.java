@@ -20,11 +20,8 @@ package VASSAL.configure;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.DrawPile;
-import VASSAL.build.module.properties.PropertyChangerConfigurer;
-import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.FormattedString;
 
 import java.awt.Component;
 
@@ -36,7 +33,7 @@ import javax.swing.JPopupMenu;
 
 public class DeckSelectionConfigurer extends FormattedExpressionConfigurer {
 
-  private JButton select;
+  private final JButton select;
 
   public DeckSelectionConfigurer(String s, GamePiece p) {
     super(s, p);

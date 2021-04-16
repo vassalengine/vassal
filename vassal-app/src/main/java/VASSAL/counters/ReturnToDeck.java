@@ -25,8 +25,6 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DeckSelectionConfigurer;
-import VASSAL.configure.DeckSelector;
-import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
