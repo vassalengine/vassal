@@ -69,6 +69,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   public DeckGlobalKeyCommand() {
     globalCommand = new DeckGlobalCommand(this);
+    globalCommand.setReportSingle(true);
     setConfigureName("");
   }
 
@@ -153,7 +154,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       .append(getAttributeValueString(DECK_COUNT))
       .append(getAttributeValueString(REPORT_FORMAT))
       .append(getLocalizedConfigureName())
-      .append(getAttributeValueString(TARGET));
+      .append(getAttributeValueString(TARGET))
+      .append(getAttributeValueString(REPORT_SINGLE));
     return se.getValue();
   }
 
@@ -166,6 +168,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
     localizedName = sd.nextToken(getConfigureName());
     setAttribute(TARGET, sd.nextToken(""));
+    setAttribute(REPORT_SINGLE, sd.nextBoolean(true));
   }
 
   @Override
@@ -179,6 +182,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
       Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
       Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString("Editor.MassKey.suppress"),
     };
   }
 
@@ -192,7 +196,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
       PROPERTIES_FILTER,
       DECK_COUNT,
-      REPORT_FORMAT
+      REPORT_FORMAT,
+      REPORT_SINGLE,
     };
   }
 
@@ -207,7 +212,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
       PropertyExpression.class,
       DeckPolicyConfig2.class,
-      ReportFormatConfig.class
+      ReportFormatConfig.class,
+      Boolean.class
     };
   }
 
