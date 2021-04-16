@@ -24,6 +24,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.DeckSelectionConfigurer;
 import VASSAL.configure.DeckSelector;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -331,8 +332,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     private final BooleanConfigurer prompt;
     private final JLabel selectLabel;
     private final StringConfigurer description;
-    private final FormattedExpressionConfigurer deckExp;
-    private final DeckSelector deckSelector;
+    private final DeckSelectionConfigurer deckExp;
 
 
     public Ed(ReturnToDeck p) {
@@ -355,11 +355,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       controls.add("Editor.ReturnToDeck.choose_destination_deck_at_game_time", prompt);
 
       selectLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.deck_name"));
-      deckExp = new FormattedExpressionConfigurer(p.deckExpression.getFormat(), p);
-      deckSelector = new DeckSelector(deckExp);
+      deckExp = new DeckSelectionConfigurer(p.deckExpression.getFormat(), p);
       controls.add(selectLabel);
       controls.add(deckExp.getControls(), "split 2"); //NON-NLS
-      controls.add(deckSelector, "grow 0"); //NON-NLS
 
       promptLabel = new JLabel(Resources.getString("Editor.ReturnToDeck.prompt_for_destination_deck"));
       promptText = new StringConfigurer(p.selectDeckPrompt);
@@ -372,7 +370,6 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       promptLabel.setVisible(prompt.getValueBoolean());
       promptText.getControls().setVisible(prompt.getValueBoolean());
       deckExp.getControls().setVisible(!prompt.getValueBoolean());
-      deckSelector.setVisible(!prompt.getValueBoolean());
       selectLabel.setVisible(!prompt.getValueBoolean());
       repack(controls);
     }
