@@ -169,11 +169,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     super.add(b);
 
     if (b instanceof Translatable) {
-      Buildable owning = this;
-      if (this instanceof AbstractFolder) {
-        owning = ((AbstractFolder)owning).getNonFolderAncestor();
-      }
-      ((Translatable) b).getI18nData().setOwningComponent((Translatable)owning);
+      ((Translatable) b).getI18nData().setOwningComponent(this);
     }
   }
 
