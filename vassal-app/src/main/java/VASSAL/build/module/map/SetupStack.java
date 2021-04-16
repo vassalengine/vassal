@@ -214,7 +214,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       final Stack s = initializeContents();
       updatePosition();
       final Point p = new Point(pos);
-      Map map = getMap();
+      final Map map = getMap();
       // If the Stack belongs to a specific Board, offset the position by the origin of the Board
       // Otherwise, offset the position by the amount of Edge padding specified by the map (i.e. the origin of the top left board)
       if (owningBoardName == null) {
@@ -316,7 +316,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (OWNING_BOARD.equals(key)) {
       if (OwningBoardPrompt.ANY.equals(value)) {
-        Map map = getMap();
+        final Map map = getMap();
         if (map != null) {
           final List<String> selectedBoardNames = map.getBoardPicker().getSelectedBoardNames();
           owningBoardName = selectedBoardNames.isEmpty() ? null : selectedBoardNames.get(0);
@@ -550,7 +550,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected Board getConfigureBoard(boolean checkSelectedBoards) {
     Board board = null;
 
-    Map map = getMap();
+    final Map map = getMap();
 
     if (map != null && !OwningBoardPrompt.ANY.equals(owningBoardName)) {
       board = map.getBoardPicker().getBoard(owningBoardName);
