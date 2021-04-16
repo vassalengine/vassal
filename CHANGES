@@ -1,16 +1,14 @@
 3.6.0 - ???
 
-* 14278: Increase number of default zomm levels in new Map Zoom Capability
+* 14388: Add Scrollbars to Prefs Dialog when needed
 * 14377: Add Hotkeys to hide and show map windows.
     Existing show/hide hotkey field is now always visible.
     Allow changes to hide/show Map button settings without needing Editor
     restart
-* 14388: Add Scrollbars to Prefs Dialog when needed
-* 14373: 1944: Editor now has Drag and Drop support
-* 14372: Can duplicate and insert components in Editor, not just add to bottom
-* 13817: Default UI font size can be over-ridden in preferences
 * 14376: Inventory window allows a hotkey for Refresh
 * 14374: First 'advanced search' on a module defaults to all boxes prechecked
+* 14373: 1944: Editor now has Drag and Drop support
+* 14372: Can duplicate and insert components in Editor, not just add to bottom
 * 14365: DeckPosition was reporting 1 higher than the actual position
 * 14364: Removed ignored 'button tooltip' field from Turn Tracker config
 * 14360: Less verbose window titles for sub-windows
@@ -20,12 +18,14 @@
 * 14346: Deck reports now suppressed during GKC report suppresssion
 * 14283: Global Options can be configured to let toolbar items on closed
     windows accept global hotkeys.
+* 14278: Increase number of default zomm levels in new Map Zoom Capability
 * 14276: Add Global property MapName_isVisible for each Map to allow checking
     if Map is currently open.
 * 14257: Preference to reverse left-to-right order counters are shown in
     Mouseover Stack Viewer
 * 14207: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
+* 13817: Default UI font size can be over-ridden in preferences
 
 3.5.6 - ???
 
