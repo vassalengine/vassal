@@ -122,7 +122,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public static final String X_POSITION = "x"; //NON-NLS
   public static final String Y_POSITION = "y"; //NON-NLS
   protected Buildable parent;
-  //protected Map map;
+
+  protected Map map; // No longer used - for binary compatibility only
+
   protected String owningBoardName;
   protected String id;
   public static final String NAME = "name"; //NON-NLS
