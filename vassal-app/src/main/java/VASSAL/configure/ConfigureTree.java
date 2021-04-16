@@ -611,6 +611,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (sourceNode == null) {
       return false;
     }
+
+    // We can always be dragged/pasted onto our own parent.
+    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) sourceNode.getParent();
+    if (parent != null) {
+      if (parent.getUserObject().equals(target)) {
+        return true;
+      }
+    }
+
     return isValidParent(target, (Configurable) sourceNode.getUserObject());
   }
 
@@ -2352,7 +2361,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return false;
       }
 
-      // If we're editing an extension, components owned by the moduel can never be dragged
+      // If we're editing an extension, components owned by the module can never be dragged
       if (tree instanceof ExtensionTree) {
         final ExtensionTree xTree = (ExtensionTree) tree;
         if (!xTree.isEditable(firstNode)) {
