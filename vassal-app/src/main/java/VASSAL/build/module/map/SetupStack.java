@@ -74,7 +74,6 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.AbstractFolder;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractConfigurable;
