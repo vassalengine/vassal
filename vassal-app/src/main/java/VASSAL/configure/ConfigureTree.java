@@ -810,8 +810,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             ((PieceSlot) child).updateGpId(GameModule.getGameModule());
           }
 
+          final int finalIndex = (index < 0) ? getTreeNode(target).getChildCount() : checkMinimumIndex(getTreeNode(target), index);
+
           if (child.getConfigurer() != null) {
-            if (insert(target, child, (index < 0) ? getTreeNode(target).getChildCount() : index)) {
+            if (insert(target, child, finalIndex)) {
               if (duplicate != null) {
                 updateGpIds(child);
               }
@@ -833,7 +835,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             }
           }
           else {
-            insert(target, child, (index < 0) ? getTreeNode(target).getChildCount() : index);
+            insert(target, child, finalIndex);
             if (duplicate != null) {
               updateGpIds(child);
             }

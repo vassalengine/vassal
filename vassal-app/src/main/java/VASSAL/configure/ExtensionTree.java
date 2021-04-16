@@ -107,9 +107,16 @@ public class ExtensionTree extends ConfigureTree {
     }
   }
 
+
   @Override
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
-    return new AbstractAction(Resources.getString("Editor.ConfigureTree.add_component", getConfigureName(newConfig))) {
+    return buildAddAction(target, newConfig, "Editor.ConfigureTree.add_component", -1, null);
+  }
+
+
+  @Override
+  protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig, String key, int index, final Configurable duplicate) {
+    return new AbstractAction(Resources.getString(key, getConfigureName(newConfig))) {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -124,13 +131,16 @@ public class ExtensionTree extends ConfigureTree {
 
         if (ch != null) {
           final Configurable child = ch;
+          child.build((duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null);
 
-          child.build(null);
           if (child instanceof PieceSlot) {
             ((PieceSlot) child).updateGpId(extension);
           }
+
+          final int finalIndex = (index < 0) ? getTreeNode(target).getChildCount() : checkMinimumIndex(getTreeNode(target), index);
+
           if (child.getConfigurer() != null) {
-            if (insert(target, child, getTreeNode(target).getChildCount())) {
+            if (insert(target, child, finalIndex)) {
               final PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
                 private static final long serialVersionUID = 1L;
 
@@ -153,7 +163,7 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
           else {
-            final boolean inserted = insert(target, child, getTreeNode(target).getChildCount());
+            final boolean inserted = insert(target, child, finalIndex);
             if (inserted && !isEditable(getTreeNode(target))) {
               extension.add(new ExtensionElement(child, getPath(getTreeNode(target))));
             }
