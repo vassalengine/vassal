@@ -722,15 +722,16 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   public Point getPosition() {
     final Point p = new Point(pos);
-    final Board b = map.getBoardByName(owningBoardName);
+    final Board b = getMap().getBoardByName(owningBoardName);
     if (b != null) {
       p.translate(b.bounds().x, b.bounds().y);
     }
     return p;
   }
 
+  @Override
   public Map getMap() {
-    return map;
+    return super.getMap();
   }
 
   public Rectangle boundingBox() {
@@ -743,7 +744,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return new NullCommand();
     }
     // Merge it in
-    return map.placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
+    return getMap().placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
   }
 
   @Override

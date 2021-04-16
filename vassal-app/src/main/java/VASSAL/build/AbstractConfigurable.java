@@ -51,6 +51,10 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   @Override
   public void remove(Buildable b) {
     buildComponents.remove(b);
+
+    if (b instanceof AbstractBuildable) {
+      ((AbstractBuildable) b).setAncestor(null);
+    }
   }
 
   /**
@@ -163,8 +167,13 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   @Override
   public void add(Buildable b) {
     super.add(b);
+
     if (b instanceof Translatable) {
-      ((Translatable) b).getI18nData().setOwningComponent(this);
+      Buildable owning = this;
+      if (this instanceof AbstractFolder) {
+        owning = ((AbstractFolder)owning).getNonFolderAncestor();
+      }
+      ((Translatable) b).getI18nData().setOwningComponent((Translatable)owning);
     }
   }
 
