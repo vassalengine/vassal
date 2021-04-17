@@ -34,7 +34,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.folder.CardFolder;
+import VASSAL.build.module.folder.DeckSubFolder;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
@@ -718,7 +718,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class, CardFolder.class};
+    return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class, DeckSubFolder.class};
   }
 
   public Point getPosition() {

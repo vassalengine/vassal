@@ -72,7 +72,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import VASSAL.build.module.folder.SetupStackFolder;
+import VASSAL.build.module.folder.MapSubFolder;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.GlobalPrefs;
 
@@ -3401,7 +3401,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{ GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
-      CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class, SetupStackFolder.class,
+      CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class, MapSubFolder.class,
       MassKeyCommand.class, MapShader.class, PieceRecenterer.class, Flare.class };
   }
 

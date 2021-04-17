@@ -22,13 +22,13 @@ import VASSAL.build.AbstractFolder;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.i18n.Resources;
 
-public class SetupStackFolder extends AbstractFolder {
+public class MapSubFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { SetupStack.class, this.getClass()};
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type", SetupStack.getConfigureTypeName()); //$NON-NLS-1$
+    return Resources.getString("Editor.Folder.component_type");
   }
 }

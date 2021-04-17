@@ -23,13 +23,13 @@ import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.i18n.Resources;
 
-public class CardFolder extends AbstractFolder {
+public class DeckSubFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { CardSlot.class, DeckGlobalKeyCommand.class, this.getClass()};
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type", CardSlot.getConfigureTypeName()); //$NON-NLS-1$
+    return Resources.getString("Editor.Folder.component_type");
   }
 }
