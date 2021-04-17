@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.JToolBar;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
@@ -202,6 +203,10 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder) parent).getNonFolderAncestor();
+    }
+
     parentContainer = (MutablePropertiesContainer) parent;
     property.addTo(parentContainer);
     tempToolbar.setDelegate((ToolBarComponent) parent);

@@ -72,7 +72,7 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import VASSAL.build.module.map.SetupStackFolder;
+import VASSAL.build.module.folder.SetupStackFolder;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.GlobalPrefs;
 

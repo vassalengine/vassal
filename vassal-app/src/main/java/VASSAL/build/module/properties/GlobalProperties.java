@@ -28,6 +28,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.folder.GlobalPropertyFolder;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
@@ -89,7 +90,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] {GlobalProperty.class};
+    return new Class<?>[] {GlobalProperty.class, GlobalPropertyFolder.class};
   }
 
   @Override

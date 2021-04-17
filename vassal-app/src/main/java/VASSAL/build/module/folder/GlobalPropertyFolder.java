@@ -16,13 +16,14 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.build.module.map;
+package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
+import VASSAL.build.module.properties.GlobalProperty;
 
-public class SetupStackFolder extends AbstractFolder {
+public class GlobalPropertyFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { SetupStack.class, this.getClass()};
+    return new Class<?>[] { GlobalProperty.class, this.getClass()};
   }
 }
