@@ -74,6 +74,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.AbstractFolder;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractConfigurable;
@@ -405,13 +406,18 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return active;
   }
 
-  protected Stack initializeContents() {
-    final Stack s = createStack();
-    final Configurable[] c = getConfigureComponents();
-    int num = 0; // For error reporting
+  /**
+   * Traverses children components recursively (to support folder structure), adding any pieces found in
+   * PieceSlot objects to our stack.
+   * @param s The stack we are creating
+   * @param c Next layer of configurables to traverse
+   * @param num Incoming pieceslot count for error reporting
+   * @return resulting pieceslot count for error reporting
+   */
+  protected int recursiveInitializeContents(Stack s, Configurable[] c, int num) {
     for (final Configurable configurable : c) {
-      num++;
       if (configurable instanceof PieceSlot) {
+        num++;
         final PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
         if (p != null) { // In case slot fails to "build the piece", which is a possibility.
@@ -423,7 +429,19 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           ErrorDialog.dataWarning(new BadDataReport(slot, Resources.getString("Error.build_piece_at_start_stack", num, getConfigureName()), slot.getPieceDefinition()));
         }
       }
+      else if (configurable instanceof AbstractFolder) {
+        final Configurable[] cDeeper = configurable.getConfigureComponents();
+        num = recursiveInitializeContents(s, cDeeper, num);
+      }
     }
+
+    return num;
+  }
+
+  protected Stack initializeContents() {
+    final Stack s = createStack();
+    final Configurable[] c = getConfigureComponents();
+    recursiveInitializeContents(s, c, 0);
     GameModule.getGameModule().getGameState().addPiece(s);
     return s;
   }
