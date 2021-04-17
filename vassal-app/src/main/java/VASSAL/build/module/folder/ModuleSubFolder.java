@@ -1,7 +1,6 @@
 package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
-import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.GlobalKeyCommand;
