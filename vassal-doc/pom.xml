@@ -40,7 +40,7 @@
                             <backend>html</backend>
                             <preserveDirectories>true</preserveDirectories>
                             <attributes>
-                                <filetype>htm</filetype>
+                                <outfilesuffix>.htm</outfilesuffix>
                             </attributes>
                         </configuration>
                     </execution>
