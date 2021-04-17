@@ -88,7 +88,7 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{PrototypeDefinition.class, PrototypeFolder.class};
+    return new Class<?>[]{ PrototypeFolder.class, PrototypeDefinition.class };
   }
 
   public static String getConfigureTypeName() {

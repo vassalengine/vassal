@@ -26,7 +26,7 @@ import VASSAL.i18n.Resources;
 public class DeckSubFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { CardSlot.class, DeckGlobalKeyCommand.class, this.getClass()};
+    return new Class<?>[] { this.getClass(), CardSlot.class, DeckGlobalKeyCommand.class };
   }
 
   public static String getConfigureTypeName() {

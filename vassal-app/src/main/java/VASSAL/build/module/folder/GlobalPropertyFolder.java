@@ -25,7 +25,7 @@ import VASSAL.i18n.Resources;
 public class GlobalPropertyFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { GlobalProperty.class, this.getClass()};
+    return new Class<?>[] { this.getClass(), GlobalProperty.class };
   }
 
   public static String getConfigureTypeName() {

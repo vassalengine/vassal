@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.module.folder.ModuleSubFolder;
 import VASSAL.build.module.properties.GlobalTranslatableMessages;
 import VASSAL.build.module.properties.TranslatableString;
 import VASSAL.build.module.properties.TranslatableStringContainer;
@@ -1001,6 +1002,7 @@ public class GameModule extends AbstractConfigurable
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{
+      ModuleSubFolder.class,
       Map.class,
       PieceWindow.class,
       PrototypesContainer.class,
@@ -1020,7 +1022,7 @@ public class GameModule extends AbstractConfigurable
       PlayerHand.class,
       NotesWindow.class,
       TurnTracker.class,
-      ChessClockControl.class
+      ChessClockControl.class,
     };
   }
 

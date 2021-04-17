@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ProblemDialog;
@@ -336,8 +337,13 @@ public class DiceButton extends AbstractToolbarItem {
    * control window's toolbar and registers itself as a @link
    * KeyStrokeListener */
   @Override
-  public void addTo(final Buildable parent) {
+  public void addTo(Buildable parent) {
     super.addTo(parent);
+
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
     ran = GameModule.getGameModule().getRNG();
     property.setPropertyValue("1"); // Initialize with a numeric value //$NON-NLS-1$
     property.addTo((MutablePropertiesContainer)parent);

@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -327,6 +328,10 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
    */
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
     resultsIcon.setResults(new int[dice.size()]);
     launch.addHierarchyListener(new HierarchyListener() {
       @Override

@@ -90,7 +90,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] {GlobalProperty.class, GlobalPropertyFolder.class};
+    return new Class<?>[] {GlobalPropertyFolder.class, GlobalProperty.class };
   }
 
   @Override

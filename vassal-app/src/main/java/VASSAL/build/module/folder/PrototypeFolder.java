@@ -27,7 +27,7 @@ import VASSAL.i18n.Resources;
 public class PrototypeFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { PrototypeDefinition.class, this.getClass()};
+    return new Class<?>[] { this.getClass(), PrototypeDefinition.class, };
   }
 
   public static String getConfigureTypeName() {

@@ -724,7 +724,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class, DeckSubFolder.class};
+    return new Class<?>[]{ DeckSubFolder.class, CardSlot.class, DeckGlobalKeyCommand.class };
   }
 
   public Point getPosition() {
