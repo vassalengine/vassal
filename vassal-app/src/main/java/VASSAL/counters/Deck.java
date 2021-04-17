@@ -58,6 +58,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
@@ -1032,7 +1033,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
   }
 
-  public boolean isDrawOutline() {
+  public boolean  isDrawOutline() {
     return drawOutline;
   }
 
@@ -1668,4 +1669,67 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       map.repaint();
     }
   }
+
+  /**
+   * Updates the properties of the Deck in the current open game based on the Deck definition stored in the module (stored in DrawPile.dummy)
+   */
+  public void Refresh() {
+    // Locate the Drawpile in the module that matches the Deck
+    // Update properties
+    for (final DrawPile drawPile : gameModule.getAllDescendantComponentsOf(DrawPile.class)) {
+      if (getDeckName().equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
+        final Deck dummyDeck = drawPile.getDummy();
+        setPosition(drawPile.getPosition());
+        setSize(dummyDeck.getSize());
+        setDrawOutline(dummyDeck.isDrawOutline());
+        setOutlineColor(dummyDeck.getOutlineColor());
+        setFaceDownOption(dummyDeck.getFaceDownOption());
+        setShuffleOption(dummyDeck.getShuffleOption());
+        setAllowMultipleDraw(dummyDeck.isAllowMultipleDraw());
+        setAllowSelectDraw(dummyDeck.isAllowSelectDraw());
+        setReversible(dummyDeck.isReversible());
+        setReshuffleCommand(dummyDeck.getReshuffleCommand());
+        setReshuffleTarget(dummyDeck.getReshuffleTarget());
+        setReshuffleMsgFormat(dummyDeck.getReshuffleMsgFormat());
+        setShuffleMsgFormat(dummyDeck.getShuffleMsgFormat());
+        setReverseMsgFormat(dummyDeck.getReverseMsgFormat());
+        setFaceDownMsgFormat(dummyDeck.getFaceDownMsgFormat());
+        setDrawFaceUp(dummyDeck.isDrawFaceUp());
+        setPersistable(dummyDeck.isPersistable());
+        setShuffleKey(dummyDeck.getShuffleKey());
+        setReshuffleKey(dummyDeck.getReshuffleKey());
+        setMaxStack(dummyDeck.getMaxStack());
+        setCountExpressions(dummyDeck.getCountExpressions());
+        setExpressionCounting(dummyDeck.doesExpressionCounting());
+        setGlobalCommands(dummyDeck.getGlobalCommands());
+        setHotkeyOnEmpty(dummyDeck.isHotkeyOnEmpty());
+        setEmptyKey(dummyDeck.getNamedEmptyKey());
+        setSelectDisplayProperty(dummyDeck.getSelectDisplayProperty());
+        setSelectSortProperty(dummyDeck.getSelectSortProperty());
+        setRestrictOption(dummyDeck.isRestrictOption());
+        setRestrictExpression(dummyDeck.getRestrictExpression());
+        setShuffleCommand(dummyDeck.getShuffleCommand());
+        setReverseCommand(dummyDeck.getReverseCommand());
+        setReverseKey(dummyDeck.getReverseKey());
+
+        //Assuming shuffleListener, reshuffleListener, reverseListener are always instantiated when Refresh is called.
+        if (shuffleListener != null) {
+          shuffleListener.setKeyStroke(dummyDeck.getShuffleKey());
+        }
+        if (reshuffleListener != null) {
+          reshuffleListener.setKeyStroke(dummyDeck.getReshuffleKey());
+        }
+        if (reverseListener != null) {
+          reverseListener.setKeyStroke(dummyDeck.getReverseKey());
+        }
+
+/*
+
+*/
+
+        break;
+      }
+    }
+  }
 }
+

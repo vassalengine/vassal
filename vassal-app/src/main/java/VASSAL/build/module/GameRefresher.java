@@ -23,6 +23,8 @@ import VASSAL.build.GpIdChecker;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
@@ -48,7 +50,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -201,9 +208,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     logger.info(message);
   }
 
-  public List<GamePiece>  getNewDecksAndAtStartStacks() {
-    final List<GamePiece> pieces = new ArrayList<>();
-    return pieces;
+  public List<DrawPile>  getModuleDrawPiles() {
+    return  theModule.getAllDescendantComponentsOf(DrawPile.class);
   }
 
   public List<GamePiece>  getCurrentGameRefresherPieces() {
@@ -324,10 +330,6 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
      */
     final List<GamePiece> pieces = getCurrentGameRefresherPieces();
 
-    /*
-     * 2.1 Add any new Decks or At Start Stacks to the list of pieces
-     */
-    pieces.addAll(getNewDecksAndAtStartStacks());
 
     /*
      * 3. Generate the commands to update the pieces
@@ -336,6 +338,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       processGamePiece(piece, command);
     }
 
+
+
+
     log(Resources.getString("GameRefresher.run_refresh_counters_v3", theModule.getGameVersion()));
     log(Resources.getString("GameRefresher.counters_refreshed", updatedCount));
     log(Resources.getString("GameRefresher.counters_not_found", notFoundCount));
@@ -343,6 +348,67 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     log("----------"); //$NON-NLS-1$
     log(Resources.getString("GameRefresher.counters_no_stack", noStackCount));
     log("----------"); //$NON-NLS-1$
+
+
+    /*
+     * 4/ Refresh properties of decks in the game
+     */
+
+    //Drawpiles have the module definition of the Deck in the dummy child object
+    //  and a link to the actual Deck in the game.
+    final List<Deck> decksToDelete = new ArrayList<>();
+    final List<DrawPile> drawPiles = getModuleDrawPiles();
+    final List<DrawPile> foundDrawPiles = new ArrayList<>();
+    //Collection<GameComponent> gc = theModule.getGameState().getGameComponents();
+
+//    for (final DrawPile drawPile : drawPiles) {
+//        final String theString = drawPile.getAttributeValueString(SetupStack.NAME);
+//        log(theString);
+//    }
+
+    log("List of Decks to be refreshed");
+    for (final Map map : Map.getMapList()) {
+      final GamePiece[] gpArray = map.getPieces();
+      for (final GamePiece pieceOrStack : map.getPieces()) {
+        if (pieceOrStack instanceof Deck) {
+          // Match with a DrawPile
+          boolean deckFound = false;
+          log("Testing Deck:" + ((Deck) pieceOrStack).getDeckName());
+          for (final DrawPile drawPile : drawPiles) {
+            log("Compare to DrawPile:" + drawPile.getAttributeValueString(SetupStack.NAME));
+            if (((Deck) pieceOrStack).getDeckName().equals(drawPile.getAttributeValueString(SetupStack.NAME))) {
+              log(Resources.getString(((Deck) pieceOrStack).getDeckName()));
+              deckFound = true;
+              foundDrawPiles.add(drawPile);
+              ((Deck) pieceOrStack).Refresh();
+              break;
+            }
+          }
+          if (!deckFound) {
+            decksToDelete.add((Deck) pieceOrStack.getParent());
+          }
+        }
+      }
+    }
+    log("List of Decks to remove");
+    for (final Deck deck : decksToDelete) {
+      log(deck.getDeckName());
+    }
+    log("List of Decks to add");
+    for (final DrawPile drawPile : drawPiles) {
+      boolean matchFound = false;
+      for (final DrawPile drawPile2 : foundDrawPiles) {
+        if (drawPile.getAttributeValueString(SetupStack.NAME).equals(drawPile2.getAttributeValueString(SetupStack.NAME))) {
+          matchFound = true;
+          break;
+        }
+      }
+      if (!matchFound) {
+        log(drawPile.getAttributeValueString(SetupStack.NAME));
+      }
+    }
+
+
 
   }
 
@@ -453,7 +519,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
   }
 
-  private Point getDeckFreePosition(Deck deck) {
+  public Point getDeckFreePosition(Deck deck) {
     Point tempPosition = new Point(-1, -1);
     Boolean correctTempPositionNotFound;
     final GamePiece[] pieces;

@@ -173,8 +173,8 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     @Override
     public String[] getI18nKeys(AutoConfigurable target) {
       return new String[] { "Editor.always",
-                            "Editor.never",
-                            "Editor.DrawPile.use_menu"
+        "Editor.never",
+        "Editor.DrawPile.use_menu"
       };
     }
   }
@@ -203,7 +203,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       final ArrayList<String> l = new ArrayList<>();
       l.add(NONE);
       for (final GameComponent g :
-           GameModule.getGameModule().getGameState().getGameComponents()) {
+        GameModule.getGameModule().getGameState().getGameComponents()) {
         if (g instanceof Map) {
           for (final DrawPile dp : ((Map) g).getComponentsOf(DrawPile.class)) {
             if (dp.getConfigureName() != null)
@@ -279,42 +279,42 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public String[] getAttributeDescriptions() {
     return new String[]{
-        Resources.getString(Resources.NAME_LABEL),
-        Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
-        Resources.getString("Editor.x_position"), //$NON-NLS-1$
-        Resources.getString("Editor.y_position"), //$NON-NLS-1$
-        Resources.getString("Editor.width"), //$NON-NLS-1$
-        Resources.getString("Editor.height"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
-        Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$        // Internally these match "RESHUFFLE"
-        Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
+      Resources.getString("Editor.x_position"), //$NON-NLS-1$
+      Resources.getString("Editor.y_position"), //$NON-NLS-1$
+      Resources.getString("Editor.width"), //$NON-NLS-1$
+      Resources.getString("Editor.height"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
+      Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$        // Internally these match "RESHUFFLE"
+      Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
+      Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
     };
   }
 
@@ -364,7 +364,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{DECK_NAME,
-                                                                           COMMAND_NAME});
+        COMMAND_NAME});
     }
   }
 
@@ -431,10 +431,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       // reshufflable unreliable in modules created prior to 3.2.13.
       return String.valueOf(
         reshufflable ||
-        dummy.getReshuffleCommand().length() > 0 ||
-        dummy.getReshuffleTarget().length() > 0 ||
-        dummy.getReshuffleMsgFormat().length() > 0 ||
-        dummy.getReshuffleKey() != NamedKeyStroke.NULL_KEYSTROKE
+          dummy.getReshuffleCommand().length() > 0 ||
+          dummy.getReshuffleTarget().length() > 0 ||
+          dummy.getReshuffleMsgFormat().length() > 0 ||
+          dummy.getReshuffleKey() != NamedKeyStroke.NULL_KEYSTROKE
       );
     }
     else if (RESHUFFLE_COMMAND.equals(key)) {
@@ -715,6 +715,10 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   }
 
+  public Deck getDummy() {
+    return dummy;
+  }
+
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class};
@@ -867,7 +871,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   public List<String> getPropertyList() {
     if (dummy != null) {
       return List.of(dummy.getSelectDisplayProperty(),
-                     dummy.getSelectSortProperty());
+        dummy.getSelectSortProperty());
     }
     return Collections.emptyList();
   }
