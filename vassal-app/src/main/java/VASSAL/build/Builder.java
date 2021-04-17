@@ -116,6 +116,9 @@ public class Builder {
       final Buildable b = (Buildable) (mod == null ?  Class.forName(name) :
         mod.getDataArchive().loadClass(name)).getConstructor().newInstance();
 
+      //BR// We do an early & extra set of the ancestor during build so that if, during the addTo() sequence,
+      //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
+      //BR// tree as necessary.
       if (b instanceof AbstractBuildable) {
         ((AbstractBuildable)b).setAncestor(parent);
       }
