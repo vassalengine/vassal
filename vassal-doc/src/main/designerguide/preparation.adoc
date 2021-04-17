@@ -1,4 +1,4 @@
-== Preparation
+= Preparation
 
 The permutations and combinations possible in board games are nearly infinite: there are board games with a single board, and those with multiple boards; games with many simple pieces and games where the behavior of the pieces is very complex.
 
@@ -96,11 +96,11 @@ You need to create, scan, or otherwise acquire the graphics files to be included
 
 VASSAL has a limited set of graphics files available for use in building modules. These include a small set of default icons, which you can use for buttons. In addition, you can create a limited set of pieces, using NATO military symbols. See page 69 for more details.
 
-=== Graphic File Support
+== Graphic File Support
 
 VASSAL supports graphic files in SVG, PNG, GIF, and JPG formats. These are listed in order of preference, with SVG and PNG files being recommended over the other types. SVG and PNG files are the most scalable and reliable, GIF files less so, while using JPG files can cause graphics issues with the display of your module.
 
-=== Graphic Filenames
+== Graphic Filenames
 
 When working with graphic files, consider these points:
 
@@ -119,7 +119,7 @@ Examples of resulting filenames from this system could be:
 * GerDiv1Inf3.png: A PNG image for German Division 1, Infantry Type 3.
 * AmeDiv2Arm4.png: A PNG image for American Division 2, Armor Type 4. Of course, you can decide on any naming convention that fits your module best.
 
-=== Graphic Dimensions
+== Graphic Dimensions
 
 The dimensions of your graphics are an important factor in determining the performance impact of your module. A module with many sizeable graphics can cause significant performance delays on player systems. In addition, large graphic images can be awkward to manipulate on many computer screens.
 
@@ -134,7 +134,7 @@ _*Preparation: Help and Text Files*_
 
 * *Icons:* Button icons can be any size. There is no upper or lower limit on dimensions, but 10-50 pixels is probably the most useful size. Test the visual quality of your icons so you can decide on a common, compatible size for your buttons. Icon buttons need not be all the same size, but they should be sized to be easily visible and accessible by your players.
 
-=== Non-Rectangular Graphics
+== Non-Rectangular Graphics
 
 Most graphics used in games (for example, map, counter, and card images) are rectangular (or square). However, your graphics need not be rectangular if you make use of transparency in creating the files. Both PNG and GIF files support transparency.
 
@@ -142,7 +142,7 @@ For example, to make a circular image for a coin counter, create the coin image 
 
 _Game Pieces can include an optional Trait, Non-Rectangular, which can make using non-rectangular graphics easier for players. See page 55 for more information._
 
-=== Performance Impact
+== Performance Impact
 
 A module is not limited by size on a disk; it is limited by memory space available in RAM only. In general, the graphics used in a module are the biggest driver of memory usage, requiring 4 bytes per pixel for each image that is currently being displayed. Gauge the performance impact of your module accordingly.
 

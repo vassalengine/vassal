@@ -1,4 +1,4 @@
-== Prototype Definitions
+= Prototype Definitions
 
 Most games have counters that look different from one another, but behave very similarly. _Prototypes_ are a method of using templates to vastly simplify the definition of most Game Pieces. A Game Piece assigned a Prototype will inherit all of the Traits assigned to the Prototype.
 
@@ -24,7 +24,7 @@ The process for defining a Prototype is just the same as for defining a Game Pie
 
 You can now assign the Prototype to Game Pieces or Cards by assigning them the Prototype trait, and specifying the new Prototype.
 
-=== Using Prototypes
+== Using Prototypes
 
 * As with regular pieces, Traits in Prototypes are evaluated from bottom to top.
 * Prototypes can include other Prototypes. Just assign the included Prototype as a Trait in the containing Prototype.
@@ -32,11 +32,11 @@ You can now assign the Prototype to Game Pieces or Cards by assigning them the P
 * Pieces in At-Start Stacks, or that were created as part of the Replace with Other or Place Marker Traits, which use Prototypes will be updated if the Prototype definition is ever changed.
 * Game Pieces that use Prototypes and are part of a saved game will not be updated if the Prototype definition is updated. As a result, a Prototype Definition can change in a later version of a module without invalidating saved games from previous versions. However, if you wish the pieces in the saved game to use the updated Prototype, you will need to run the Saved Game Updater in order to bring the pieces in a Saved Game up to date. See page 91 for more information.
 
-=== Pre-Setting Traits in a Prototype
+== Pre-Setting Traits in a Prototype
 
 If you want to pre-set pieces in a Game Piece Palette to start in a certain state, you can use key commands on them to change their state, and then save the module. (See page 40 for more information.)
 
-=== Prototype Definitions: Defining a Prototype
+== Prototype Definitions: Defining a Prototype
 
 However, if the Game Pieces use Prototypes, the Game Piece Palette always loads with the default state of the Prototype. To resolve this, you can pre-set the state of a Trait in the Prototype Definition.
 

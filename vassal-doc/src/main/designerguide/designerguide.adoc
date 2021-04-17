@@ -10,6 +10,7 @@
 :front-cover-image: image:_images/image1.jpeg[image,width=784,height=1024]
 :media: screen
 :optimize:
+:leveloffset: +1
 
 Version {project-version}, {docdate}
 

@@ -1,4 +1,4 @@
-== Tutorials
+= Tutorials
 
 Two tutorials are presented here, putting the module design process into practice.
 
@@ -18,7 +18,7 @@ The imaginary _Zap Wars_ boxed set includes the following components:
 
 All data for this tutorial can be found on the vassalengine.org wiki in the File:Zapwars.zip file.
 
-=== Getting Started
+== Getting Started
 
 Launch VASSAL. In the Module Manager, pick *File | New Module.* A new, empty module is created, shown here.
 
@@ -30,7 +30,7 @@ We right-click the *[Module]* node, and in the resulting dialog, enter the follo
 
 We can now begin creating the module.
 
-=== Sides
+== Sides
 
 Sides are usually optional when creating a module. However, in _Zap Wars_, it will be required: since some Zombie units will be hidden from the Fuzzy player (using the Invisible Trait), we want to ensure that the module can clearly distinguish between Sides.
 
@@ -40,7 +40,7 @@ Sides are usually optional when creating a module. However, in _Zap Wars_, it wi
 
 Now when the game begins, each player will be prompted to select one of these Sides to play as.
 
-=== Maps, Boards, and Grids
+== Maps, Boards, and Grids
 
 The two maps in _Zap Wars_ will each be represented by a different Map Window.
 
@@ -78,7 +78,7 @@ Now select *File | New Game* in the controls window. The *Tactical* button becom
 
 It would be a good idea to save your module at this point before continuing. On the Configuration Window Toolbar, click *Save*, and save your module as _zapwars_1.0.vmod._
 
-=== The Strategic Display
+== The Strategic Display
 
 The main playing area for _Zap Wars_ is the strategic map, plus a Tension track. For both of these, we'll use pre-defined artwork. The ZapWarsData folder contains a Strategic.gif and a TensionTrack file.
 
@@ -114,7 +114,7 @@ In practice, you'll want to follow the guidelines for aligning a Grid given on p
 
 That completes the definition of the maps in our Zap Wars module. During play, players will drag pieces from the Strategic display to the Tactical display to complete their battles, then drag them back to the Strategic display when finished.
 
-=== Counters
+== Counters
 
 We need a way to generate Game Pieces for the game, so we will a Game Piece Palette. (You'll find artwork for the counters in the ZapWarsData folder.)
 
@@ -199,7 +199,7 @@ The Zombie base has two states: normal and Undead.
 * Set the *View When Masked* to the mine.gif image. The Fuzzy player will see only this image until the minefield is revealed. The display option determines how the Zombie player will see the counter. We'll select the _Inset_ style, which displays the masked image in the upper left corner as a reminder to the Zombie player that the piece is not revealed.
 * Finally, add the Invisible Trait. Under *Can Be Hidden By*, select _Any of the Specified Sides_. Enter _Zombies_ and click *Add*. When activated, the counter will be completely invisible to the Fuzzy player. The zombie player will see a transparent version of the piece against a colored background. Select black for the background color. The Zombie player can make the piece invisible and masked in the Game Piece Palette before dragging it onto the map.
 
-=== Prototypes
+== Prototypes
 
 Prototypes are a way of allowing many pieces to share a common set of Traits. In _Zap Wars_, every Zombie unit has the Undeath Ray capability. While Copy/Paste can be used to create the units initially, it can be difficult to manage if the module author later decides to make some alteration that affects many different pieces.
 
@@ -210,7 +210,7 @@ Prototypes are a way of allowing many pieces to share a common set of Traits. In
 
 Now other ship types may be added that use the same prototype. The Undeath Ray layer can be adjusted later, affecting all of the units at once. Furthermore, a new Trait may be added to all pieces at once by simply adding the new Trait to the Prototype definition.
 
-=== Dice Button
+== Dice Button
 
 We need to add a Dice Button so we can resolve battles. Right-click the *Zap Wars [Module]* node and pick *Add Dice* *Button.* We change the *Name* and *Button Text* to _2d10_. In *Number of Sides Per Die*, we enter 10. Because the results of each individual die donʼt matter, we select *Report Total.*
 
@@ -218,7 +218,7 @@ A button labeled 2d10 is now shown in the Main Controls Toolbar. Clicking it wil
 
 _Not all component changes are refreshed in real time. Itʼs a good idea to restart the Module Editor after making major changes to your module, so you can see the changes implemented._
 
-=== Next Steps
+== Next Steps
 
 The _Zap Wars_ module is well underway now. We can continue to add components to refine the game. Perhaps a Zoom Tool for the strategic display will help view the map better and more clearly. A Line of Sight Thread would be helpful to quickly measure distances on the Tactical display. Experiment until youʼve created the _Zap Wars_ module to your liking.
 

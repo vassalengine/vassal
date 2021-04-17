@@ -1,8 +1,8 @@
-== Generating Random Results
+= Generating Random Results
 
 VASSAL has a variety of methods for generating random results: Dice Buttons, Symbolic Dice, and Random Text Buttons.
 
-=== Dice Button
+== Dice Button
 
 A Dice Button generates random numbers, simulating the roll of any number of dice of any number of sides. You may add any number of Dice Buttons to a module.
 
@@ -30,7 +30,7 @@ image:_images/image196.png[image,width=310,height=215]
 . In the dialog, specify the settings for the button.
 . Click *Ok*.
 
-==== Dice Properties
+=== Dice Properties
 
 Dice buttons include these system Properties. <name> is the name of the Dice button.
 
@@ -40,7 +40,7 @@ Dice buttons include these system Properties. <name> is the name of the Dice but
 |<name>_result |Global |Value is the result of the Die Roll. Example: a Dice Button named 2d6 would include a Global Property named 2d6_result.
 |========================================================================================================================
 
-=== Symbolic Dice Button
+== Symbolic Dice Button
 
 A Symbolic Dice Button is used to define dice that use arbitrary images. When the button is clicked, a random face is selected for each Symbolic Die that this component contains. The results of the roll can be reported as text into the chat area, graphically in a separate window, or in the button itself.
 
@@ -68,7 +68,7 @@ image:_images/image198.png[image,width=264,height=251]
 
 After you define the symbolic dice button, you must define the actual dice rolled, including the dice faces.
 
-==== Symbolic Dice
+=== Symbolic Dice
 
 Each Symbolic Die has these attributes.
 
@@ -84,7 +84,7 @@ image:_images/image199.png[image,width=247,height=81]
 [arabic, start=2]
 . In the *Symbolic Die* dialog, specify the attributes of the die. Finally, you must define the face of each Symbolic Die.
 
-==== Symbolic Dice Faces
+=== Symbolic Dice Faces
 
 You must define the faces for each Symbolic Die. Each die face contains these attributes:
 
@@ -101,7 +101,7 @@ image:_images/image201.png[image,width=232,height=145]
 
 _To quickly create multiple identical symbolic dice, first create one die, and define all its faces. Then, copy and paste the *[Symbolic Die]* node as many times as needed into your *[Symbolic Dice Button]* node._
 
-==== Symbolic Dice Properties
+=== Symbolic Dice Properties
 
 Symbolic Dice buttons include these system Properties. <name> is the name of the Symbolic Dice button.
 
@@ -128,7 +128,7 @@ Value is the result of the Symbolic Die roll. Example: a Symbolic Dice button na
 
 |==================================================================================
 
-=== Random Text Button
+== Random Text Button
 
 A Random Text Button can be used to randomly select a text message from a list defined beforehand. For example, a button can be defined to select a random letter from the list A, B, C, or D.
 
@@ -177,7 +177,7 @@ result of the roll, nDice is the number of dice, nSides is the number of dice, p
 . Repeat Step 3 until all faces have been added.
 . Click *Ok*.
 
-==== Random Text Button Properties
+=== Random Text Button Properties
 
 Random Text buttons include these system Properties. <name> is the name of the Random Text button.
 

@@ -1,4 +1,4 @@
-== Creating Module Extensions
+= Creating Module Extensions
 
 An _extension_ is a file that adds features or components to a module. For example, for the fictional game “World War II”, the basic module might include 6 maps, each one the scene of an important European battle. Later, the “North Africa” extension adds 2 more maps that show the scenes of two important North African desert battles, as well as counters representing new tank models. When the extension is loaded, players can select from the older maps or the newer maps, and use the new counters as well.
 
@@ -6,7 +6,7 @@ A module can include any number of extensions.
 
 _You should be familiar with creating and editing modules before attempting to create or edit an extension._
 
-=== What an Extension Can Do
+== What an Extension Can Do
 
 An extension can add functionality or components to a module. Here are some examples of what an extension could add to a game:
 
@@ -16,7 +16,7 @@ An extension can add functionality or components to a module. Here are some exam
 * New tools, such as die rollers or charts.
 * New Prototype Definitions (see Extension Prototypes in the Base Module, below).
 
-=== What an Extension Canʼt Do
+== What an Extension Canʼt Do
 
 An extension cannot do any of the following:
 
@@ -25,7 +25,7 @@ An extension cannot do any of the following:
 * Modify, replace, or override Prototype Definitions from the base module.
 * Add new Sides.
 
-=== Using the Extension Editor
+== Using the Extension Editor
 
 An extension is created using a special editor called the Extension Editor, which is similar to the Module Editor.
 
@@ -35,7 +35,7 @@ Extensions, and components defined in them can refer to global items defined in 
 
 Extensions are given the extension .vmdx. Like modules, they are ZIP files and can be decompressed using any ZIP-capable utility.
 
-=== Extension Properties
+== Extension Properties
 
 Each extension has the following Properties.
 
@@ -43,7 +43,7 @@ Each extension has the following Properties.
 * *Description:* Brief description or title of the extension. This will be displayed in the Module Manager.
 * *Extension ID:* An extension ID links counters in existing save games to the counter definitions in the extension. If this ID is changed, then the Saved Game Updater may not be able to update the counters from existing save games.
 
-=== Universal Extensions
+== Universal Extensions
 
 Although extensions are usually intended to enhance a specific module, it is possible to create a universal extension that can be used by any module.
 
@@ -72,21 +72,21 @@ Click *Save* to save the Properties.
 . Add or edit components to the extension as desired.
 . On the Extension Editor Toolbar, click *Save*. Save your extension with the suffix .vmdx.
 
-==== Copying, Pasting and Editing Module Components
+=== Copying, Pasting and Editing Module Components
 
 One useful technique for adding new components to an extension is to copy and paste a similar component from the base module into the corresponding node of the Extension Editor, and then edit the copy as required. Although you cannot change the base module, you can utilize its components in the Extension Editor. (The same strictures apply for pasting as they do for the Module Editor; you can only paste like to like. For example, you could paste Game Pieces from the module palette into an extension palette, but you could not paste a Game Piece copied from the module to a turn counter in the extension.)
 
-==== Integrating Extensions
+=== Integrating Extensions
 
 Although an extension cannot itself modify the components in the base module, itʼs sometimes useful to manually modify the base module, in the Module Editor, to make room for extension functionality and improve integration.
 
-=== Extension Toolbar Menu Items
+== Extension Toolbar Menu Items
 
 An extension may add new buttons to the base moduleʼs Toolbar. Ordinarily, these new buttons would be displayed separately from the module Toolbar buttons. However, if want to add them to an existing module Toolbar menu, simply add the names of these buttons to the Toolbar Menu component of the main module, in the Module Editor.
 
 For example, the main module includes a Toolbar Menu named Maps that includes the gameʼs 3 basic maps: Map 1, Map 2 and Map 3. You later create an extension with Map 4. In the base module, in the Module Editor, you would add _Map 4_ to the Toolbar Menu component. Now the Toolbar Menu would include all of the gameʼs maps (1 through 4). However, the Map 4 menu item would not be displayed until the Map 4 extension is loaded.
 
-=== Extension Prototypes in the Base Module
+== Extension Prototypes in the Base Module
 
 Prototypes in the base module are usable by pieces in the extension, and Prototypes defined in an extension will be available to pieces in the base module when the extension is loaded. This enables you to add optional functionality to the base module, which would be activated by loading an extension, and requires that you edit the base module.
 
@@ -94,13 +94,13 @@ For example, we add a Prototype trait called Extension1 to every counter in a ba
 
 We then create a Prototype Definition named Extension1 in an extension with the appropriate Traits. When the base module is used with the extension, all counters defined in the base module will now have the extended Traits defined in the Extension1 Prototype.
 
-=== Testing Your Extension
+== Testing Your Extension
 
 If the Extension Editor is open, launching new games will launch the base module with the extension loaded (automatically activated), enabling you to test the extension like you would a module.
 
 You can only test one extension at a time this way. To test multiple extensions together, you will need to close the Module Editor and the Extension Editor, and launch the game from the Module Manager into regular play mode.
 
-=== Activating an Extension
+== Activating an Extension
 
 In order for a player use an extension, it must be _activated_. For information on activating extensions, consult the _VASSAL_ _Userʼs Guide._
 

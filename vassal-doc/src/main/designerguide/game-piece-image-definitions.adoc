@@ -1,4 +1,4 @@
-== Game Piece Image Definitions
+= Game Piece Image Definitions
 
 Using Game Piece Image Definitions, you can build your own Game Piece images, by combining text, images, and standard NATO military symbols. Images defined in this component will be available for use with Game Pieces, just like any externally created images you have imported into the module.
 
@@ -28,11 +28,11 @@ a|
 
 _Use of Game Piece Image Definitions to create counters is optional. Itʼs best for use in wargames or other games with a large number of standardized counters._
 
-=== Game Piece Image Elements
+== Game Piece Image Elements
 
 Game Piece Image Definitions have the following elements: Named Color, Font Style, and Layout.
 
-==== Named Colors
+=== Named Colors
 
 Each color you wish to use in Image Definitions is predefined and given a name. These colors will appear in a palette for selecting foreground or background colors in the image. 14 Standard colors are built-in: Clear, White, Black, Light Gray, Dark Gray, Red, Green, Blue, Orange, Pink, Cyan, Magenta, Yellow.
 
@@ -48,7 +48,7 @@ image:_images/image173.png[image,width=157,height=82]
 . In *Color*, click the color selector, and select the desired color.
 . Click *Ok*.
 
-==== Font Styles
+=== Font Styles
 
 Font Styles used in Image Layouts are defined here and selected by name from drop-down menus. A Font Style consists of a Font Family, size and style (plain, bold, italic, bold-italic). A default style is always defined: 12 point Dialog font.
 
@@ -67,7 +67,7 @@ image:_images/image174.png[image,width=241,height=128]
 . On the Font Style dialog, enter the settings for the font style.
 . Click *Ok*.
 
-=== Game Piece Layouts
+== Game Piece Layouts
 
 A Game Piece Layout defines the general appearance and positioning of the items used in drawing an image. Each Layout is composed of a rectangle of the background color, a border, and items such a symbols, labels, text boxes, images, or shapes. These items are generic and defined in terms of their appearance and position of the counter. Later, when the image is defined based on the layout, we can specify actual settings for each of these items, such as the specific symbol to use, or the specific text to show.
 
@@ -223,7 +223,7 @@ As you design the Layout, a preview is shown in the *Game Piece Layout* dialog b
 . Select one or more items to include in the Layout by clicking the corresponding button, and then entering the details of the item. Repeat for any additional items.
 . Click *Ok*.
 
-=== Game Piece Images
+== Game Piece Images
 
 Now that youʼve created a Named Color, Font Style, and a Game Piece Layout, you can create one or more images that use these elements, and choose specific values for the layout items.
 

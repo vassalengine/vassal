@@ -1,14 +1,14 @@
-== Decks and Cards
+= Decks and Cards
 
 Many games include decks of cards as part of play; in fact, some games consist _entirely_ of decks of cards. In VASSAL, Cards are created as a special form of Game Piece. However, the Deck functionality can be applied to a range of Game Piece types besides traditional Cards, such as for any pieces whose number is fixed or which need to be drawn randomly.
 
-=== Creating a Deck
+== Creating a Deck
 
 A Deck functions like a deck of playing cards. Each game begins with the contents of the Deck as specified in the *[Deck]* node. During a game, players may remove Cards from the Deck by clicking on the Deck and dragging cards from it with the mouse. This removes the Card from the Deck and assigns ownership to the dragging player. Dragging a Card onto the Deck area adds it back to the Deck.
 
 Each Deck must be placed on a Map Window. A Deck may have a Command Menu that can include specialized commands that will affect only the Cards in the Deck.
 
-==== Deck Attributes
+=== Deck Attributes
 
 Each Deck has the following attributes:
 
@@ -86,7 +86,7 @@ First create the Deck, and then create the individual Cards in it.
 
 You may now create the Cards for the new Deck.
 
-=== Deck Properties
+== Deck Properties
 
 Decks include these Properties. <Deckname> is the name of the Deck.
 
@@ -120,7 +120,7 @@ a|
 Map
 |================================
 
-=== Creating Cards
+== Creating Cards
 
 You create Cards like other Game Pieces, and may use any of the standard Game Piece Traits. However, by default, Cards include a Mask Trait to reflect their back face, which is hidden from view until revealed.
 
@@ -148,7 +148,7 @@ In the Module Editor, Cards are treated as a distinct piece type. Cards may not 
 
 For more information on creating Game Pieces, see page 40.
 
-=== Cards and Prototypes
+== Cards and Prototypes
 
 Cards from the same Deck often behave identically and are different only in their front faces. For instance, they most likely have the same Card back images, and will likely be sent to the same Deck (such as a discard pile) after use.
 
@@ -158,15 +158,15 @@ For example, the game includes an Event Deck where the Cards describe random gam
 
 By default, new Cards include a Mask Trait. You can delete the default Mask Trait and define it in the Prototype instead.
 
-=== Copying and Pasting Cards
+== Copying and Pasting Cards
 
 Copying and pasting Cards can vastly speed up the process of Card creation. Define the first Card, then right -click, *Copy* the Card, and paste it into your *[Deck]* node. You will now have an identical copy of the first Card. You can then edit the copy and select a new image for the face of the Card. You can create many new Cards quickly by repeating this method.
 
-=== Editing the Contents of a Deck
+== Editing the Contents of a Deck
 
 You can make wholesale changes quickly to the entire contents of a Deck. Right-click the Deck and pick *Edit All Contained* *Pieces*. The *Properties* dialog for the first Card is displayed, but any changes you make in the Properties dialog will affect all Cards in the Deck. Add, remove or edit Traits as usual, then click *Ok*. Your changes are applied to all Cards.
 
-=== Card Properties
+== Card Properties
 
 Cards have all the same Properties as regular Game Pieces. However, they also include these system Properties:
 
@@ -192,7 +192,7 @@ Name of the Deck the Card is currently stacked in, if any.
 
 |=========================================================
 
-=== Deck Global Key Command (GKC)
+== Deck Global Key Command (GKC)
 
 This component adds an action that applies a key command to pieces contained within the Deck, similar to the Global Key Command component of a Map Window. Each Deck GKC has these attributes.
 
@@ -212,7 +212,7 @@ image:_images/image191.png[image,width=247,height=124]
 . In the *Deck Global Key Command* dialog, specify the behavior of the GKC.
 . Click *Ok.*
 
-=== Card Decks in Practice
+== Card Decks in Practice
 
 The following examples of possible Card Decks illustrate a variety of uses for them.
 
@@ -236,7 +236,7 @@ _If discards are not intended to return to the main Deck but instead are permane
 * *Random Turn Order Cards:* If the game has a random turn order, players may draw from a Deck to determine who moves first, second and third. Create a Deck where each Card is labeled 1, 2, 3, and so on. Select Allow Multiple = false, Allow Specific = false, Face Down = Always, Re-shuffle = Always, Reversible = false.
 * *Playing Cards with Number of Cards Displayed:* You want to create a Deck of playing Cards, and display the number of red Cards, the number of black Cards, the number of face Cards, and the total number of Cards in the Deck. Create the Deck, and check *Perform counting of expressions*. Add the expressions of "red: Color = red" and "black: Color = black". Also add the expression "faceCards: value > 10". When creating your Cards, give them a Marker Trait named Color with the values of _red_ or _black_. Also give your Cards a Marker Trait named Value with the numeric value of the Card. Then, you can refer to the counts with the map-level Properties of <Deckname>_red, <Deckname>_black, and <Deckname>_faceCards. The total can be referenced by the map-level Property of <Deckname>_numPieces.
 
-==== Map Tiles
+=== Map Tiles
 
 Some games make use of map _tiles_, which are usually shuffled at the beginning of a game, drawn randomly and then placed to provide a random map layout. (If the layout is not random, or is in a regular row-column pattern, then an ordinary Map Window, with multiple Boards, will probably meet your needs better.)
 
@@ -250,7 +250,7 @@ To create randomly-placed Map Tiles, do the following:
 
 Now, at game start, players can draw random map tiles and place them in the Map Window. The map tiles will always appear beneath all the other Game Pieces.
 
-==== Dealing Random Cards to a Board
+=== Dealing Random Cards to a Board
 
 The Deck shuffle function can be used to deal randomly drawn cards from a Deck to pre-defined locations on the board, using a single click of a Global Key Command button.
 

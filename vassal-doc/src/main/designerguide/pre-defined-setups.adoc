@@ -1,4 +1,4 @@
-== Pre-Defined Setups
+= Pre-Defined Setups
 
 Many games include scenarios, where different maps and pieces may be used to simulate diverse game situations. For example, a World War II game could have a scenario for the Battle of the Bulge and another for the Battle of Midway. Each is played using the same module and rules, but would use different maps and counters.
 
@@ -10,7 +10,7 @@ saved game in a module.
 
 If a module includes pre-defined setups, players will be prompted to select a setup when the module is launched. They can also select scenarios from the *File* menu.
 
-=== About Saved Games
+== About Saved Games
 
 A saved game is a snapshot of the module at the time it was created. This is particularly true of the Game Pieces used in the setup:
 
@@ -42,7 +42,7 @@ Create a setup file as a saved game (.vsav) file. Always save the game when logg
 . Click *File | Save Game*. Save the game as a .vsav file.
 . The .vsav file you have created can now be added as a Pre-defined Setup, per the below instructions.
 
-=== The Pre-Defined Setup Menu
+== The Pre-Defined Setup Menu
 
 The pre-defined setup menu can include two types of item: links to scenario files, and parent menus.
 
