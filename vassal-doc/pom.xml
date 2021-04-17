@@ -39,9 +39,6 @@
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                             <backend>html</backend>
                             <preserveDirectories>true</preserveDirectories>
-                            <attributes>
-                                <outfilesuffix>.htm</outfilesuffix>
-                            </attributes>
                         </configuration>
                     </execution>
                     <execution>
