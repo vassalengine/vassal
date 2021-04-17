@@ -1,4 +1,4 @@
-== Using Properties
+= Using Properties
 
 A _Property_ is an attribute of a module component (or the module itself), simply consisting of a name and a value.
 
@@ -8,14 +8,14 @@ Using Properties is an important part of automating your module.
 
 Properties do nothing by themselves. They need to be evaluated by other VASSAL functions or components. Properties can be used as selection criteria for certain pieces, to track game quantities or game events, and for many other purposes.
 
-=== Types of Properties
+== Types of Properties
 
 Properties come in two types: system Properties, and custom Properties.
 
 * Many VASSAL components, such Game Pieces, Decks, Maps, Boards, Dice Rollers, and Turn Counters, already have Properties defined for them. These are called _System Properties_. System Properties for components are listed in the component descriptions in later sections.
 * In addition, you can create and define _custom_ Properties for Game Pieces, Map Windows, Zones, and the module itself. Examples of custom Properties include Global Properties, Dynamic Property Traits, and Marker Traits. Information on using component Properties, Traits, or Global Properties will be found in their descriptions in this Guide.
 
-=== Property Names
+== Property Names
 
 *System Property Names:* The names of System Properties are already defined for module components. For example, all Game Pieces have a system Property named CurrentMap, the value of which is the name the Map where the Game Piece is currently located. System Properties cannot be renamed. System properties for module components are defined in this guide in the sections describing those components.
 
@@ -23,7 +23,7 @@ Properties come in two types: system Properties, and custom Properties.
 
 Property names are case-sensitive. For example, PowerLevel is not the same Property as powerLevel.
 
-=== Property Values
+== Property Values
 
 *System Property Values:* System Properties automatically take their values from the game state. You wonʼ t need to assign values to System Properties manually (in fact, you cannot do so). Their values will depend on the condition they describe. For example, the value of the CurrentBoard Property for a Game Piece is the name of the current Board where the piece is located. If you moved the piece to a new Board, the value of CurrentBoard for that piece would change automatically to the name of the new Board.
 
@@ -174,7 +174,7 @@ A _regular expression_ checks if a Property has any one of several values. A reg
 
 You can also negate regular expressions by using !~ instead of ~=.
 
-=== Comparing a Property to Another Property
+== Comparing a Property to Another Property
 
 On occasion, you may need to compare the value of one Property to the value of another. In this case, surround the name of the Property on the right side of the operator with $-signs (such as $PieceName$) to indicate that the Property with that name should be checked for its value. (Do not use $-signs in the left side of the expression. The left side of the expression is always treated as the name of a Property.) Examples:
 
@@ -210,7 +210,7 @@ CurrentBoard = HQ || CurrentBoard = Battlefield && PieceName = Artillery || Piec
 
 This would evaluate to _true_ if the piece were on either the HQ or Battlefield maps, and was either an Artillery or Tank unit. If the piece were on the HQ map, but was an infantry unit, it would evaluate to _false_.
 
-=== Game Piece Properties
+== Game Piece Properties
 
 Each Game Piece has its own set of System Properties (each with a name and a value) that can be used for identification by various components.
 
@@ -231,7 +231,7 @@ A Game Piece cannot directly access:
 
 For most components, system Properties are hardcoded as part of the VASSAL engine. However, for Game Pieces, you can create entirely new Properties using the Dynamic Property, Marker, and Property Sheet Traits. See _Game Piece Traits_ on page 42 for more information.
 
-=== Message Formats
+== Message Formats
 
 Many Traits and module components enable you to customize the message that is displayed to users in the Chat Window when game events take place. A _Message Format_ is a formula for creating such a message to players. Message formats are highly customizable and usually include Properties as variables.
 

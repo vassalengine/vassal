@@ -1,4 +1,4 @@
-== Overview
+= Overview
 
 VASSAL is a free, open-source engine for playing board games by computer.
 VASSAL supports many types of games, including war games, hobby games, card games, miniatures games, and even board- based role-playing games.

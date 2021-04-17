@@ -1,4 +1,4 @@
-== Updating a Module
+= Updating a Module
 
 Inevitably, your module will need to be updated. A new feature or functionality could be added to the VASSAL engine; you may get a better idea on how to implement one of your moduleʼs features; or the game itself may be produced in a new edition.
 

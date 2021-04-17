@@ -1,8 +1,8 @@
-== Additional Module Components
+= Additional Module Components
 
 This section discusses additional module controls. These controls are not available for individual Map Windows. Buttons associated with these controls will always appear in the Main Controls Toolbar.
 
-=== Action Button
+== Action Button
 
 The Action Button combines a number of different actions into a single button. When the button is clicked, or its Hotkey is pressed, it can display a message to the Chat window, play a sound, or send a list of Hotkeys to other components.
 
@@ -34,7 +34,7 @@ image:_images/image207.png[image,width=232,height=273]
 
 _The Action Button component is distinct from the Action Button Piece Trait (see page 43)._
 
-=== Charts Window
+== Charts Window
 
 A Charts Window is used for displaying gameplay aids, such as charts, tables, and important game information. Charts are accessible using a Toolbar button.
 
@@ -52,14 +52,14 @@ A Charts Window is highly configurable, and can contain any combination of tabs,
 
 _*Additional Module Components: Game Piece Inventory Window*_
 
-==== Chart Displays
+=== Chart Displays
 
 * *Tabbed Panel:* A panel with tabs, each of which corresponds to a Panel or other Tabbed Pane subcomponent. The label of the tab will be the name of the subcomponent.
 * *Panel:* A panel that can contain Charts, HTML Charts, or Maps. Select *Fixed cell size* to specify a fixed number of columns for the panel. Otherwise, the sub-components will appear in a single row, or a single column if the *Vertical* *layout box* is checked.
 * *Pull-down Menu:* A pull-down menu in which each menu item corresponds to a subcomponent. The name of the menu item will be the name of the subcomponent.
 * *Scrollable List:* A scroll list in which each entry corresponds to a subcomponent. The name of the entry will be the name of the subcomponent.
 
-==== Chart Types
+=== Chart Types
 
 * *Chart:* A chart is an image file depicting a game table or other useful information.
 * *HTML Chart:* An HTML Chart is a simple HTML page. The HTML should be simple; avoid using the <Head> tag. HTML Charts can contain hyperlinks to one another, and to files in the module, but not to external resources.
@@ -77,7 +77,7 @@ _You cannot paste a Map Window created as a Chart to the *[Module]* node, or vic
 . Right-click the new *[Charts]* node and pick a sub-component to add.
 . Continue adding subcomponents as needed.
 
-=== Game Piece Inventory Window
+== Game Piece Inventory Window
 
 A Game Piece Inventory Window organizes and summarizes the pieces in the game in a tree view (similar to browsing a file system). You can define exactly which pieces are displayed in the window and how they are organized.
 
@@ -137,7 +137,7 @@ XXX for all pieces within that folder. For example, a Game Piece uses a Layer Tr
 . In the *Inventory* dialog, enter the settings for your *Game Piece Inventory window.*
 . Click *Ok.*
 
-=== Global Key Command (Module Level)
+== Global Key Command (Module Level)
 
 The Global Key Command (GKC) adds a button to the Main Controls Toolbar. Clicking the button will select certain pieces in the module and apply the same keyboard command to all of them simultaneously.
 
@@ -182,7 +182,7 @@ _Give each piece the Marker Trait with Property name canFire and value true. Con
 . In the *Global Key Command* dialog, enter the settings for the command.
 . Click *Ok*.
 
-=== Global Options
+== Global Options
 
 Global Options are settings that apply to the module as a whole. If an option has a *Use Preferences Setting* choice, selecting it will add an entry *Preferences* window to allow players to choose their own value for the setting at game time.
 
@@ -194,7 +194,7 @@ Global Options are settings that apply to the module as a whole. If an option ha
 
 image:_images/image218.png[image,width=274,height=209]
 
-==== Sub-Components
+=== Sub-Components
 
 You may add your own arbitrary preference settings to the global options. The different sub-components support different constraints on the values of the preference setting. The values of these preference settings are exposed as Properties.
 
@@ -207,7 +207,7 @@ You must save and re-load the module before these sub-components will show up in
 * *Decimal Number Preference:* A floating-point value.
 * *Checkbox Preference:* A true/false value.
 
-=== Global Property
+== Global Property
 
 Global Properties can be attached to a Zone, Map Window, or Module. The *[Global Properties]* node is a container for all Properties attached to the Map or Module.
 
@@ -233,7 +233,7 @@ A Global Property has these attributes:
 . On the Global Property dialog, enter the settings for the Property.
 . Click *Ok.*
 
-==== Change-Property Toolbar Button
+=== Change-Property Toolbar Button
 
 A Change-Property Toolbar button changes the value of a Global Property. Like other Toolbar buttons, you can combine multiple buttons into a single drop-down menu using a Toolbar Menu.
 
@@ -264,11 +264,11 @@ image:_images/image221.png[image,width=311,height=135]
 . In the dialog, enter the settings for the button.
 . Click *Ok*. The button is added to the Main Controls Toolbar.
 
-=== Map Window Toolbars
+== Map Window Toolbars
 
 Each Map Window comes with a Toolbar, which includes button controls for the options you have selected for it. Typically, each of these buttons includes a text label and icon that describes its function. For example, if you have selected additional controls like the Zoom Tool or Line of Sight Thread, the Toolbar for the Map Window will include buttons for these controls.
 
-==== Main Controls Toolbar
+=== Main Controls Toolbar
 
 The Main Controls Toolbar is displayed above the main Map Window, at the top of the screen. Every module must have a main Toolbar; it cannot be disabled even if the game does not have a main map window.
 
@@ -278,7 +278,7 @@ The Toolbar comprises these button types:
 * *Module-Specific Buttons:* These buttons represent components specific to the module. If a Toolbar button is associated with a component (such as with a Game Piece Palette, Toolbar Menu, or Map Window), the module-specific buttons will appear in the order they appear in the Configuration Window, from top to bottom.
 * *Map-Specific Buttons:* If the main Map Window includes any additional map options, their buttons, if any, will be shown on the right-hand portion of the Toolbar.
 
-==== Keyboard Shortcuts (Hotkeys)
+=== Keyboard Shortcuts (Hotkeys)
 
 If your cursor is in the Chat Window, pressing a buttonʼs keyboard shortcut when the piece is selected will invoke the corresponding button, just as if the Toolbar button was actually clicked.
 
@@ -294,11 +294,11 @@ Use these guidelines when assigning keyboard shortcuts.
 * Avoid using keyboard shortcuts that players could type inadvertently. For example, a single capital letter M would not be a suitable shortcut, nor would Shift-M, because players could easily type either in the Chat window during ordinary conversation. However, Ctrl-M or Ctrl-Shift-M would both be suitable.
 * Be careful about assigning hotkeys to keys that invoke special functions on your computer. Caps Lock, Backspace, Delete, Home, End, Enter/Return, and so on, are not generally suitable for use as hotkeys. Similarly, the Function (F1-F9) keys at the top of a standard keyboard may serve as hotkeys for various Windows or MacOS functions, and pressing them could cause unexpected operating system functions to be invoked instead of the desired piece command.
 
-==== Modifying Toolbar Buttons
+=== Modifying Toolbar Buttons
 
 You can modify Toolbar buttons in a variety of ways.
 
-===== Setting Toolbar Buttons Icons to Null
+==== Setting Toolbar Buttons Icons to Null
 
 Many module components, such as Dice buttons, include a default button icon. By setting a Toolbar button icon to null, you can prevent its default icon from being displayed on the Toolbar button. Only the button text will be shown.
 
@@ -306,7 +306,7 @@ To set a Toolbar button to null, when selecting the button icon, click *Select*,
 
 If the icon is set to null, make sure you specify some button text, or the button will not show up at all in the game.
 
-===== Replacing Toolbar Button Text with Icons
+==== Replacing Toolbar Button Text with Icons
 
 By default, Toolbar buttons include a text label, but the text label is actually optional. If desired, you can replace the text label completely with an icon.
 
@@ -316,13 +316,13 @@ You cannot use this method if the Toolbar button is intended to be included in a
 
 _The four standard buttons (*Undo*, *Step Through Log*, *Connect*, and *Retire*) will always appear on the Toolbar even if no text label or icon is assigned to them. If both label and icon are omitted, they will appear as very small, blank, but clickable buttons. To reduce player confusion, always assign a text label, an icon, or both to each of these four buttons._
 
-===== Hiding Toolbar Buttons
+==== Hiding Toolbar Buttons
 
 You can hide Toolbar buttons completely from player view. This is helpful if the hidden buttons are for components that players do not need to access directly, such as for automated Global Key Commands, or to create hidden maps.
 
 To hide a componentʼs Toolbar button, create a new Toolbar Menu (see page 90) . Leave the button text for the Toolbar Menu button blank. Then, under *Menu Entries*, enter the name of each button you want to hide. (You can add any number of buttons to the hidden Toolbar Menu, so you can repeat this as many times as needed to hide multiple buttons.) Click *Ok.* The buttons are now hidden in the invisible Toolbar Menu, but will still be accessible to automated game functions.
 
-===== Modifying Toolbar Button Labels
+==== Modifying Toolbar Button Labels
 
 By enclosing button label text within simple HTML tags, you can use simple HTML format to specify various colors, font weights, and sizes. Example: <html><b>Bold text</b><p>with a line break<p>and <font color=red>different</font> <font color=blue>colors</font></html| would display as:
 
@@ -334,7 +334,7 @@ and different colors
 
 _*Additional Module Components: Multi-Action Button*_
 
-=== Multi-Action Button
+== Multi-Action Button
 
 The Multi-Action Button combines multiple buttons in a Toolbar into a single button, which replaces the component buttons.
 
@@ -361,7 +361,7 @@ Clicking this button automatically invokes the actions of all the other buttons 
 
 image:_images/image226.png[image,width=253,height=161]
 
-==== Multi-Action Button Examples
+=== Multi-Action Button Examples
 
 * A Global Key Command is defined that resets the fatigue level of all armies on the map. A second Global Key Command returns them to their home base. A Multi-Action Button can be used to combine both actions into a single button.
 * A Dice Button is defined that exposes its result as a Property named Damage. Some Game Pieces are defined with
@@ -370,7 +370,7 @@ a Trigger Action Trait that compares the level of a Layer (representing armor) w
 
 * A Symbolic Dice button makes a dice-rolling sound when clicked. The Multi-Action button combines the Symbolic Dice button with a separate Action button, which triggers the dice rolling sound file. For best results, the Action button that plays the sound should be listed first.
 
-=== Notes Window
+== Notes Window
 
 The Notes window, accessible by a Toolbar button, enables you to save text notes for a game. The window contains these tabs:
 
@@ -399,7 +399,7 @@ _*Additional Module Components: Toolbar Menu*_
 . In the *Notes Window* dialog, enter the settings for the Notes Window.
 . Click *Ok*.
 
-=== Toolbar Menu
+== Toolbar Menu
 
 The Toolbar Menu component enables you to organize buttons from the Toolbar of the main controls window or a Map Window into a single drop -down menu. Each button named in this component will be removed from the Toolbar and instead appear as a menu item in the drop-down menu. Items added to a Toolbar Menu are case-sensitive.
 
@@ -418,7 +418,7 @@ image:_images/image229.png[image,width=263,height=162]
 . Repeat Step 3 for each additional Toolbar button.
 . Click *Ok*. The Toolbar Menu is displayed on the Toolbar.
 
-=== Turn Counter
+== Turn Counter
 
 A Turn Counter can be used to track any intervals you define, such as turns, phases, rounds, segments or days. To mark the progress of the game, players can advance the turn forward or backward, or, optionally, jump directly to a selected turn.
 
@@ -446,11 +446,11 @@ A Turn Counter includes these attributes:
 * *Turn Label Tooltip Text:* Tooltip text for the Turn Display.
 * *Turn Label Display Length:* Set the number of pixels wide the turn display label should be, or use 0 to let it float to suit the current turn display.
 
-==== Types of Turns
+=== Types of Turns
 
 Turns can be of two types: Counters and Lists. Both types can freely be nested in one another, in any combinations.
 
-===== Counter
+==== Counter
 
 A Counter is a numerical level that advances by incrementing the number by a fixed value. It can optionally loop when it reaches a maximum value. An example of a Counter would be Turn 1, Turn 2, Turn 3, and so on. A Counter has these attributes:
 
@@ -464,7 +464,7 @@ A Counter is a numerical level that advances by incrementing the number by a fix
 
 image:_images/image233.png[image,width=265,height=140]
 
-===== List
+==== List
 
 A List is a level that cycles through a specified list of text strings. An example of a List would be Spring, Summer, Fall, and Winter.
 
@@ -481,13 +481,13 @@ be the beginning item in the list, i.e. the item at which the parent level will 
 
 _*Additional Module Components: Turn Counter*_
 
-==== Turn Counter Properties
+=== Turn Counter Properties
 
 Lists and Counters both allow you to define the name of the global Property used to hold the value of the given level, in the *Property Name* entry box.
 
 For example, if you define a Counter that tracks turns numerically, you could enter currentTurn in *Property Name*.
 
-==== Turn-Based Global Hotkey
+=== Turn-Based Global Hotkey
 
 A Turn-Based Global Hotkey automatically fires a key sequence whenever a certain state of the Turn Counter is reached. The Hotkey can trigger the firing of another command or button, such as a Global Key Command, exactly as if a player had typed it in.
 
@@ -506,7 +506,7 @@ _Actions initiated by Turn- Based Global Hotkeys will be affected by piece owner
 
 _For example, Side A in a game represents a group of camouflaged units, which can be hidden (Masked) from Side B at the start of each turn. Each of Side Aʼs pieces includes a Mask trait which only Side A can use. To make things easier, you create a Turn- Based Global Hotkey that triggers a GKC, which causes Side Aʼs pieces to automatically reset their Masks at the beginning of each turn. When Side A clicks to advance the turn, the pieces are masked as intended. However, when Side B clicks to advance the turn, the pieces will not be masked automatically, since Side B Is restricted from using the piecesʼ Mask trait._
 
-==== Creating a Turn Counter
+=== Creating a Turn Counter
 
 *To create a Turn Counter,*
 
@@ -519,7 +519,7 @@ _For example, Side A in a game represents a group of camouflaged units, which ca
 . Repeat Step 4 for all further nested levels.
 . Optionally, right-click the *[Turn Counter]* node and pick *Add Global Hotkey*. In the *Global Hotkey dialog*, enter the settings for the Global Hotkey, then click *Ok*.
 
-==== Tracking Numerical Quantities with a Turn Counter
+=== Tracking Numerical Quantities with a Turn Counter
 
 You can adapt Turn Counters to track a variety of numerical quantities for the game or for individual players. For example, if players in the game must keep track of their Resource Points used to purchase units, you could use a Turn Counter for each player to track Resource Point levels.
 
@@ -533,7 +533,7 @@ In general, to track numerical quantities, you will use a Counter component, and
 . Choose any other settings required for the Counter.
 . If each player will need such a tracker, copy/paste the newly created tracker as many times as needed to the *[Module]* node, and edit each one appropriately.
 
-==== Automating an Action to Happen Regularly
+=== Automating an Action to Happen Regularly
 
 Using the Turn-Based Global Hotkey, you can automate a global action to happen on a regular basis, each time the Turn Counter is advanced to a particular level. For example, you have a module where all disabled Infantry units are reset at the end of the Turn, during the End Phase. Since this must occur every turn, automating this will make gameplay faster.
 

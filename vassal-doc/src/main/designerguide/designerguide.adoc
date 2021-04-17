@@ -31,6 +31,8 @@ Programming skills are not necessary for creating fully functional VASSAL module
 
 toc::[]
 
+:leveloffset: +1
+
 include::overview.adoc[]
 
 include::preparation.adoc[]
@@ -70,3 +72,5 @@ include::updating-a-module.adoc[]
 include::best-practices.adoc[]
 
 include::tutorials.adoc[]
+
+:leveloffset: -1

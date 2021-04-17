@@ -1,4 +1,4 @@
-== Publishing Your Module
+= Publishing Your Module
 
 Once your module is complete, you can publish it to the Vassalengine.org web site, for sharing with other VASSAL users.
 
@@ -17,7 +17,7 @@ For instructions on how to create a new module page, or edit an existing one, se
 
 http://www.Vassalengine.org/wiki/How_to_Create_a_Module_Page
 
-=== File Types
+== File Types
 
 The following file types can be uploaded to Vassalengine.org:
 
@@ -28,7 +28,7 @@ The following file types can be uploaded to Vassalengine.org:
 
 Do not place VASSAL files into ZIP file archives. Use the proper registered extension type listed above.
 
-=== Limitations
+== Limitations
 
 Because of copyright issues, these publishers have specifically asked that modules for their games not be uploaded to
 
@@ -47,6 +47,6 @@ Other publishers (and copyright holders) may also ask that specific modules be r
 
 Module designers who take exception to the stated copyright policies of these publishers are urged to discuss their concerns with the publishers.
 
-=== More Information
+== More Information
 
 For more information on publishing your files, see [.underline]#http://www.Vassalengine.org/wiki/Module_Section_Information#

@@ -1,4 +1,4 @@
-== Help Menu
+= Help Menu
 
 You can supplement your module with a variety of informational files and settings. Help files and Tutorials can be useful in explaining the functions of a complex module to your players.
 
@@ -6,14 +6,14 @@ The *Help* menu in the main control window contains general informational files 
 
 *Help* menu items can be any of these types:
 
-=== PDF Help File
+== PDF Help File
 
 From VASSAL 3.5 onward you can add a PDF file directly to VASSAL. Selecting the menu opens the default browser on the user's machine with the PDF file you specified. A PDF Help file has these attributres:
 
 * *Menu Command:* The menu item to be added to the Help menu.
 * *PDF file:* Click the select button to select a PDF file from your computer. It will be copied into the module and then displayed when the user selects the menu item.
 
-=== HTML Help File
+== HTML Help File
 
 The HTML Help file component adds an entry to the *Help* menu. Selecting the menu opens the default browser on the user's machine with HTML content that you specify. An HTML Help file has these attributes:
 
@@ -39,7 +39,7 @@ image:_images/image248.png[image,width=379,height=100]
 . In the Configuration window, right-click the *[Help Menu]* node and pick *Add HTML Help File.*
 . Enter values for *Menu Entry*, *Contents* folder, and *Starting Page*, and then click *Ok*.
 
-=== Plain Text Help File
+== Plain Text Help File
 
 The Plain Text Help file component adds an entry to the *Help* menu. Selecting the menu displays a new window with the contents of a plain text file.
 
@@ -61,7 +61,7 @@ A Plain Text file has these attributes:
 . In the Configuration window, right-click the *[Help Menu]* node and pick *Add Plain Text Help File.*
 . Enter values for Menu Entry and Text File, and then click *Ok*.
 
-=== About Screen
+== About Screen
 
 The *About* screen will display the currently installed versions of the VASSAL engine and module. This helps players make sure they are running compatible versions.
 
@@ -82,7 +82,7 @@ The About Screen has two attributes:
 . In the Configuration window, right-click the *[Help Menu]* node and pick Add About Screen.
 . Enter the values for each setting, and then click *Ok*.
 
-=== Tutorials
+== Tutorials
 
 A Tutorial is a short walk-through of your module, played back live by new players. It can include a demonstration game setup, a sample turn sequence, or show the use of module functions.
 
