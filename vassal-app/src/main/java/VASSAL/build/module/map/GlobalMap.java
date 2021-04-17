@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.search.SearchTarget;
@@ -127,6 +128,9 @@ public class GlobalMap implements AutoConfigurable,
    */
   @Override
   public void addTo(Buildable b) {
+    if (b instanceof AbstractFolder) {
+      b = ((AbstractFolder)b).getNonFolderAncestor();
+    }
     map = (Map) b;
 
     mouseOverViewer = new CounterViewer();
@@ -156,6 +160,10 @@ public class GlobalMap implements AutoConfigurable,
 
   @Override
   public void removeFrom(Buildable b) {
+    if (b instanceof AbstractFolder) {
+      b = ((AbstractFolder)b).getNonFolderAncestor();
+    }
+
     map = (Map) b;
     map.removeDrawComponent(this);
     map.getToolBar().remove(launch);

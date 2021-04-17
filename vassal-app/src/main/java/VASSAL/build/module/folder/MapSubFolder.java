@@ -19,13 +19,21 @@
 package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
+import VASSAL.build.module.MultiActionButton;
+import VASSAL.build.module.ToolbarMenu;
+import VASSAL.build.module.map.CounterDetailViewer;
+import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.map.Flare;
+import VASSAL.build.module.map.LOS_Thread;
+import VASSAL.build.module.map.MapShader;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.i18n.Resources;
 
 public class MapSubFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[] { SetupStack.class, this.getClass()};
+    return new Class<?>[] {LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, CounterDetailViewer.class, DrawPile.class, SetupStack.class, MassKeyCommand.class, MapShader.class, Flare.class, this.getClass()};
   }
 
   public static String getConfigureTypeName() {

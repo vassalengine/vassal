@@ -36,6 +36,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -154,6 +155,9 @@ public class ToolbarMenu extends AbstractToolbarItem
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
     if (parent instanceof ToolBarComponent) {
       toolbar = ((ToolBarComponent) parent).getToolBar();
     }

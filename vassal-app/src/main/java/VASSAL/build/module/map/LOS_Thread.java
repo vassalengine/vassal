@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -207,6 +208,10 @@ public class LOS_Thread extends AbstractToolbarItem implements
    * @see Map#pushMouseListener*/
   @Override
   public void addTo(Buildable b) {
+    if (b instanceof AbstractFolder) {
+      b = ((AbstractFolder)b).getNonFolderAncestor();
+    }
+
     idMgr.add(this);
     map = (Map) b;
     map.getView().addMouseMotionListener(this);
@@ -231,6 +236,9 @@ public class LOS_Thread extends AbstractToolbarItem implements
 
   @Override
   public void removeFrom(Buildable b) {
+    if (b instanceof AbstractFolder) {
+      b = ((AbstractFolder)b).getNonFolderAncestor();
+    }
     map = (Map) b;
     map.removeDrawComponent(this);
     map.getToolBar().remove(getLaunchButton());

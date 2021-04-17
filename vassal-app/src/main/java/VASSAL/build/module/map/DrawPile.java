@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -88,6 +89,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public void addTo(Buildable parent) {
     super.addTo(parent);
+
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
     idMgr.add(this);
     setAttributeTranslatable(NAME, true);
     if (parent instanceof PropertySource) {

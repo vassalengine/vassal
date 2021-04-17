@@ -145,6 +145,24 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     return Collections.enumeration(getComponentsOf(target));
   }
 
+
+
+  /**
+   * @return all build components that are either (a) immediate children or (b) held in folders.
+   */
+  public <T> List<T> getComponentChildrenAndFolderDescendants() {
+    final ArrayList<T> l = new ArrayList<>();
+    for (final Buildable b : buildComponents) {
+      l.add((T)b);
+      if (b instanceof AbstractFolder) {
+        // Folders (only) are descended through recursively
+        l.addAll(((AbstractFolder)b).getComponentChildrenAndFolderDescendants());
+      }
+    }
+    return l;
+  }
+
+
   /**
    * @return all build components that are an instance of the given class
    */
@@ -153,6 +171,10 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     for (final Buildable b : buildComponents) {
       if (target.isInstance(b)) {
         l.add(target.cast(b));
+      }
+      else if (b instanceof AbstractFolder) {
+        // Folders (only) are descended through recursively
+        l.addAll(((AbstractFolder)b).getComponentsOf(target));
       }
     }
     return l;

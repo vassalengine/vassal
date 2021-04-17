@@ -18,6 +18,7 @@
 
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.LaunchButton;
@@ -917,6 +918,10 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
     final LaunchButton lb = getLaunchButton();
     GameModule.getGameModule().getToolBar().add(lb);
     lb.setAlignmentY(0.0F);
