@@ -10,7 +10,6 @@
 :front-cover-image: image:_images/image1.jpeg[image,width=784,height=1024]
 :media: screen
 :optimize:
-:leveloffset: +1
 
 Version {project-version}, {docdate}
 
@@ -31,6 +30,8 @@ Comments on this document and suggestions for improvement are welcomed. Please c
 Programming skills are not necessary for creating fully functional VASSAL modules.
 
 toc::[]
+
+:leveloffset: +1
 
 include::overview.adoc[]
 
@@ -71,3 +72,5 @@ include::updating-a-module.adoc[]
 include::best-practices.adoc[]
 
 include::tutorials.adoc[]
+
+:leveloffset: -1
