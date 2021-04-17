@@ -20,10 +20,15 @@ package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.i18n.Resources;
 
 public class GlobalPropertyFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { GlobalProperty.class, this.getClass()};
+  }
+
+  public static String getConfigureTypeName() {
+    return Resources.getString("Editor.Folder.component_type", GlobalProperty.getConfigureTypeName()); //$NON-NLS-1$
   }
 }

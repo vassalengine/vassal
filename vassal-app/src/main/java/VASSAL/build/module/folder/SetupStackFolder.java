@@ -20,10 +20,15 @@ package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.module.map.SetupStack;
+import VASSAL.i18n.Resources;
 
 public class SetupStackFolder extends AbstractFolder {
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { SetupStack.class, this.getClass()};
+  }
+
+  public static String getConfigureTypeName() {
+    return Resources.getString("Editor.Folder.component_type", SetupStack.getConfigureTypeName()); //$NON-NLS-1$
   }
 }
