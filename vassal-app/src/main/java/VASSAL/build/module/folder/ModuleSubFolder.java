@@ -25,8 +25,4 @@ public class ModuleSubFolder extends AbstractFolder {
                             // ChartWindow.class,  //BR// These little hierarchies weren't wanting to behave (visually) in a folder, for no reason I could discern, so presently I have deemed them "not worth it".
                             PrivateMap.class, PlayerHand.class};
   }
-
-  public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type");
-  }
 }

@@ -27,8 +27,4 @@ public class GlobalPropertyFolder extends AbstractFolder {
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { this.getClass(), GlobalProperty.class };
   }
-
-  public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type");
-  }
 }

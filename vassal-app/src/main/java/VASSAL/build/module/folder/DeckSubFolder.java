@@ -28,8 +28,4 @@ public class DeckSubFolder extends AbstractFolder {
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { this.getClass(), CardSlot.class, DeckGlobalKeyCommand.class };
   }
-
-  public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type");
-  }
 }

@@ -100,6 +100,6 @@ public abstract class AbstractFolder extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type"); //$NON-NLS-1$
+    return Resources.getString("Editor.Folder.component_type");
   }
 }

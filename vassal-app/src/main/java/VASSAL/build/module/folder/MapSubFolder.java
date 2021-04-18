@@ -35,8 +35,4 @@ public class MapSubFolder extends AbstractFolder {
   public Class<?>[] getAllowableConfigureComponents() {
     return new Class<?>[] { this.getClass(), LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, CounterDetailViewer.class, DrawPile.class, SetupStack.class, MassKeyCommand.class, MapShader.class, Flare.class };
   }
-
-  public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type");
-  }
 }

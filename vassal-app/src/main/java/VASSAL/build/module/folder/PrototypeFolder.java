@@ -30,10 +30,6 @@ public class PrototypeFolder extends AbstractFolder {
     return new Class<?>[] { this.getClass(), PrototypeDefinition.class, };
   }
 
-  public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Folder.component_type"); //$NON-NLS-1$
-  }
-
   @Override
   public void add(Buildable b) {
     super.add(b);
