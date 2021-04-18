@@ -930,8 +930,8 @@ public class GameState implements CommandEncoder {
 
   public void loadGameInForeground(final String shortName,
                                    final InputStream in) throws IOException {
-    GameModule.getGameModule().warn(
-      Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+    final GameModule g = GameModule.getGameModule();
+    g.warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
     final Command loadCommand = decodeSavedGame(in);
     if (loadCommand != null) {
@@ -941,19 +941,19 @@ public class GameState implements CommandEncoder {
       finally {
         String msg;
 
-        if (GameModule.getGameModule().getGameState().isGameStarted()) {
+        if (g.getGameState().isGameStarted()) {
           if (loadComments != null && loadComments.length() > 0) {
             msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
           }
           else {
             msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
           }
-          GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
+          g.setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
         }
         else {
           msg = Resources.getString("GameState.cancel_load", shortName);
         }
-        GameModule.getGameModule().warn(msg);
+        g.warn(msg);
       }
     }
   }
@@ -1018,7 +1018,8 @@ public class GameState implements CommandEncoder {
             loadCommand.execute();
           }
 
-          if (GameModule.getGameModule().getGameState().isGameStarted()) {
+          final GameModule g = GameModule.getGameModule();
+          if (g.getGameState().isGameStarted()) {
             if (loadCommand != null) {
               if (loadComments != null && loadComments.length() > 0) {
                 msg = "!" + Resources.getString("GameState.loaded", shortName) + ": <b>" + loadComments + "</b>"; //$NON-NLS-1$
@@ -1026,19 +1027,19 @@ public class GameState implements CommandEncoder {
               else {
                 msg = Resources.getString("GameState.loaded", shortName); //$NON-NLS-1$
               }
-              GameModule.getGameModule().setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
+              g.setGameFile(shortName, GameModule.GameFileMode.LOADED_GAME);
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
-              GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+              g.setGameFileMode(GameModule.GameFileMode.NEW_GAME);
             }
           }
           else {
             msg = Resources.getString("GameState.cancel_load", shortName);
-            GameModule.getGameModule().setGameFileMode(GameModule.GameFileMode.NEW_GAME);
+            g.setGameFileMode(GameModule.GameFileMode.NEW_GAME);
           }
 
-          GameModule.getGameModule().warn(msg);
+          g.warn(msg);
         }
         finally {
           frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
