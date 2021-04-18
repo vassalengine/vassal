@@ -101,7 +101,6 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
         Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
       }
     }
-
     Builder.build(e, this);
   }
 
@@ -144,7 +143,6 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     ProblemDialog.showDeprecated("2020-08-06");
     return Collections.enumeration(getComponentsOf(target));
   }
-
 
   /**
    * @return all build components that are an instance of the given class

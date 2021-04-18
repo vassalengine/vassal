@@ -167,7 +167,6 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   @Override
   public void add(Buildable b) {
     super.add(b);
-
     if (b instanceof Translatable) {
       ((Translatable) b).getI18nData().setOwningComponent(this);
     }

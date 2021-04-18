@@ -21,7 +21,6 @@ package VASSAL.build.module.folder;
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.widget.CardSlot;
-import VASSAL.i18n.Resources;
 
 public class DeckSubFolder extends AbstractFolder {
   @Override

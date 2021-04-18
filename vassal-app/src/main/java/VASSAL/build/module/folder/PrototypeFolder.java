@@ -22,7 +22,6 @@ import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
-import VASSAL.i18n.Resources;
 
 public class PrototypeFolder extends AbstractFolder {
   @Override

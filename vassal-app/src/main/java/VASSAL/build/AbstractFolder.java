@@ -83,7 +83,6 @@ public abstract class AbstractFolder extends AbstractConfigurable {
     }
   }
 
-
   @Override
   public void addTo(Buildable parent) {
     setAttributeTranslatable(NAME, false);

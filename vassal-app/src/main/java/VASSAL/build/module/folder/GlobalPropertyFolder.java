@@ -20,7 +20,6 @@ package VASSAL.build.module.folder;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.module.properties.GlobalProperty;
-import VASSAL.i18n.Resources;
 
 public class GlobalPropertyFolder extends AbstractFolder {
   @Override

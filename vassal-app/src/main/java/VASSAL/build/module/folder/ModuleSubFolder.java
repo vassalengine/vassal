@@ -14,7 +14,6 @@ import VASSAL.build.module.RandomTextButton;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
-import VASSAL.i18n.Resources;
 
 public class ModuleSubFolder extends AbstractFolder {
   @Override

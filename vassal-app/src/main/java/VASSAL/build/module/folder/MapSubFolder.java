@@ -28,7 +28,6 @@ import VASSAL.build.module.map.LOS_Thread;
 import VASSAL.build.module.map.MapShader;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
-import VASSAL.i18n.Resources;
 
 public class MapSubFolder extends AbstractFolder {
   @Override

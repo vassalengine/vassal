@@ -1022,7 +1022,7 @@ public class GameModule extends AbstractConfigurable
       PlayerHand.class,
       NotesWindow.class,
       TurnTracker.class,
-      ChessClockControl.class,
+      ChessClockControl.class
     };
   }
 
