@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
@@ -349,8 +350,13 @@ public class Flare extends AbstractConfigurable
    * @param parent - the Map to add the Flare to.
    */
   @Override
-  public void addTo(final Buildable parent) {
+  public void addTo(Buildable parent) {
     idMgr.add(this);
+
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
     if (parent instanceof Map) {
       map = (Map) parent;
       final GameModule g = GameModule.getGameModule();
@@ -379,7 +385,10 @@ public class Flare extends AbstractConfigurable
    * @param parent - the Map to remove the Flare from.
    */
   @Override
-  public void removeFrom(final Buildable parent) {
+  public void removeFrom(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
     if (parent instanceof Map) {
       GameModule.getGameModule().removeCommandEncoder(this);
     }

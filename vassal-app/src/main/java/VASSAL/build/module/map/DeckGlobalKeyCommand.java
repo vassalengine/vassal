@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.counters.CounterGlobalKeyCommand;
@@ -97,6 +98,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder) parent).getNonFolderAncestor();
+    }
     if (parent instanceof Map) {
       map = (Map) parent;
     }
@@ -109,6 +113,9 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   @Override
   public void removeFrom(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder) parent).getNonFolderAncestor();
+    }
     ((DrawPile) parent).removeGlobalKeyCommand(this);
   }
 

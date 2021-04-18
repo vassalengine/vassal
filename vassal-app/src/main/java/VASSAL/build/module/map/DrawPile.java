@@ -28,12 +28,14 @@ import java.util.List;
 
 import javax.swing.JPopupMenu;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.folder.DeckSubFolder;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
@@ -87,6 +89,11 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   @Override
   public void addTo(Buildable parent) {
     super.addTo(parent);
+
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
+
     idMgr.add(this);
     setAttributeTranslatable(NAME, true);
     if (parent instanceof PropertySource) {
@@ -717,20 +724,21 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class};
+    return new Class<?>[]{ DeckSubFolder.class, CardSlot.class, DeckGlobalKeyCommand.class };
   }
 
   public Point getPosition() {
     final Point p = new Point(pos);
-    final Board b = map.getBoardByName(owningBoardName);
+    final Board b = getMap().getBoardByName(owningBoardName);
     if (b != null) {
       p.translate(b.bounds().x, b.bounds().y);
     }
     return p;
   }
 
+  @Override
   public Map getMap() {
-    return map;
+    return super.getMap();
   }
 
   public Rectangle boundingBox() {
@@ -743,7 +751,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return new NullCommand();
     }
     // Merge it in
-    return map.placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
+    return getMap().placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
   }
 
   @Override

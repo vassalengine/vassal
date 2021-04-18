@@ -49,6 +49,33 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
   // Sub-classes can set this reference to perform validity checking
   protected ValidityChecker validator;
 
+  private Buildable ancestor; // Used for tracking folder chains to their source. Because "parent" was already taken by existing subclasses.
+
+  /**
+   * @return direct ancestor of this item
+   */
+  public Buildable getAncestor() {
+    return ancestor;
+  }
+
+  /**
+   * @param ancestor Sets the direct ancestor of this item
+   */
+  public void setAncestor(Buildable ancestor) {
+    this.ancestor = ancestor;
+  }
+
+  /**
+   * @return first non-folder ancestor of this item
+   */
+  public Buildable getNonFolderAncestor() {
+    Buildable nonFolderAncestor = ancestor;
+    while (nonFolderAncestor instanceof AbstractFolder) {
+      nonFolderAncestor = ((AbstractFolder)nonFolderAncestor).getAncestor();
+    }
+    return nonFolderAncestor;
+  }
+
   /**
    * Build this component by getting all XML attributes of the XML element and
    * calling {@link #setAttribute} with the String value of the attribute
@@ -126,6 +153,10 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
       if (target.isInstance(b)) {
         l.add(target.cast(b));
       }
+      else if (b instanceof AbstractFolder) {
+        // Folders (only) are descended through recursively
+        l.addAll(((AbstractFolder)b).getComponentsOf(target));
+      }
     }
     return l;
   }
@@ -191,6 +222,9 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
   @Override
   public void add(Buildable b) {
     buildComponents.add(b);
+    if (b instanceof AbstractBuildable) {
+      ((AbstractBuildable)b).setAncestor(this);
+    }
   }
 
   /**

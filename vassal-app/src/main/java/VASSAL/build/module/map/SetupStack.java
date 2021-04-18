@@ -74,6 +74,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.AbstractFolder;
 import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.build.AbstractConfigurable;
@@ -121,7 +122,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   public static final String OWNING_BOARD = "owningBoard"; //NON-NLS
   public static final String X_POSITION = "x"; //NON-NLS
   public static final String Y_POSITION = "y"; //NON-NLS
-  protected Map map;
+  protected Buildable parent;
+
+  protected Map map; // No longer used - for binary compatibility only
+
   protected String owningBoardName;
   protected String id;
   public static final String NAME = "name"; //NON-NLS
@@ -211,6 +215,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       final Stack s = initializeContents();
       updatePosition();
       final Point p = new Point(pos);
+      final Map map = getMap();
       // If the Stack belongs to a specific Board, offset the position by the origin of the Board
       // Otherwise, offset the position by the amount of Edge padding specified by the map (i.e. the origin of the top left board)
       if (owningBoardName == null) {
@@ -312,6 +317,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (OWNING_BOARD.equals(key)) {
       if (OwningBoardPrompt.ANY.equals(value)) {
+        final Map map = getMap();
         if (map != null) {
           final List<String> selectedBoardNames = map.getBoardPicker().getSelectedBoardNames();
           owningBoardName = selectedBoardNames.isEmpty() ? null : selectedBoardNames.get(0);
@@ -354,12 +360,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     updateConfigureButton();
   }
 
+  public Map getMap() {
+    return (Map)getNonFolderAncestor();
+  }
+
   @Override
   public void addTo(Buildable parent) {
     if (indicator == null) {
       indicator = new NewGameIndicator(COMMAND_PREFIX);
     }
-    map = (Map) parent;
     idMgr.add(this);
 
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -391,19 +400,24 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     if (owningBoardName == null) {
       active = true;
     }
-    else if (map.getBoardByName(owningBoardName) != null) {
+    else if (getMap().getBoardByName(owningBoardName) != null) {
       active = true;
     }
     return active;
   }
 
-  protected Stack initializeContents() {
-    final Stack s = createStack();
-    final Configurable[] c = getConfigureComponents();
-    int num = 0; // For error reporting
+  /**
+   * Traverses children components recursively (to support folder structure), adding any pieces found in
+   * PieceSlot objects to our stack.
+   * @param s The stack we are creating
+   * @param c Next layer of configurables to traverse
+   * @param num Incoming pieceslot count for error reporting
+   * @return resulting pieceslot count for error reporting
+   */
+  protected int recursiveInitializeContents(Stack s, Configurable[] c, int num) {
     for (final Configurable configurable : c) {
-      num++;
       if (configurable instanceof PieceSlot) {
+        num++;
         final PieceSlot slot = (PieceSlot) configurable;
         GamePiece p = slot.getPiece();
         if (p != null) { // In case slot fails to "build the piece", which is a possibility.
@@ -415,7 +429,19 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           ErrorDialog.dataWarning(new BadDataReport(slot, Resources.getString("Error.build_piece_at_start_stack", num, getConfigureName()), slot.getPieceDefinition()));
         }
       }
+      else if (configurable instanceof AbstractFolder) {
+        final Configurable[] cDeeper = configurable.getConfigureComponents();
+        num = recursiveInitializeContents(s, cDeeper, num);
+      }
     }
+
+    return num;
+  }
+
+  protected Stack initializeContents() {
+    final Stack s = createStack();
+    final Configurable[] c = getConfigureComponents();
+    recursiveInitializeContents(s, c, 0);
     GameModule.getGameModule().getGameState().addPiece(s);
     return s;
   }
@@ -453,7 +479,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (target instanceof SetupStack) {
         final ArrayList<String> l = new ArrayList<>();
         l.add(ANY);
-        final Map m = ((SetupStack) target).map;
+        final Map m = ((SetupStack) target).getMap();
         if (m != null) {
           l.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
         }
@@ -477,7 +503,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (target instanceof SetupStack) {
         final ArrayList<String> l = new ArrayList<>();
         l.add(ANY_NAME);
-        final Map m = ((SetupStack) target).map;
+        final Map m = ((SetupStack) target).getMap();
         if (m != null) {
           l.addAll(Arrays.asList(m.getBoardPicker().getAllowableLocalizedBoardNames()));
         }
@@ -541,6 +567,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
    */
   protected Board getConfigureBoard(boolean checkSelectedBoards) {
     Board board = null;
+
+    final Map map = getMap();
 
     if (map != null && !OwningBoardPrompt.ANY.equals(owningBoardName)) {
       board = map.getBoardPicker().getBoard(owningBoardName);

@@ -51,6 +51,10 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   @Override
   public void remove(Buildable b) {
     buildComponents.remove(b);
+
+    if (b instanceof AbstractBuildable) {
+      ((AbstractBuildable) b).setAncestor(null);
+    }
   }
 
   /**

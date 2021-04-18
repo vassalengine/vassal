@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.counters.BasicPiece;
@@ -220,7 +221,8 @@ public class ComponentI18nData {
    * Return the owning Translatable of this component
    */
   public Translatable getOwningComponent() {
-    return parent;
+    //BR// Ideally dragging components around between equivalent subfolders won't change their translation key
+    return (parent instanceof AbstractFolder) ? (Translatable)((AbstractFolder) parent).getNonFolderAncestor() : parent;
   }
 
   /**

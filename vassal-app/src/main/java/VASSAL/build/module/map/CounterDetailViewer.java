@@ -47,6 +47,7 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -218,6 +219,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   @Override
   public void addTo(Buildable b) {
+    if (b instanceof AbstractFolder) {
+      b = ((AbstractFolder)b).getNonFolderAncestor();
+    }
     map = (Map) b;
     view = map.getView();
     validator = new SingleChildInstance(map, getClass());

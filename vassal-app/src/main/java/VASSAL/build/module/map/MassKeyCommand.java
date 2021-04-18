@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -152,6 +153,9 @@ public class MassKeyCommand extends AbstractToolbarItem
 
   @Override
   public void addTo(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
     if (parent instanceof Map) {
       map = (Map) parent;
     }
@@ -477,6 +481,9 @@ public class MassKeyCommand extends AbstractToolbarItem
 
   @Override
   public void removeFrom(Buildable parent) {
+    if (parent instanceof AbstractFolder) {
+      parent = ((AbstractFolder)parent).getNonFolderAncestor();
+    }
     if (parent instanceof ToolBarComponent) {
       ((ToolBarComponent)parent).getToolBar().remove(getLaunchButton());
     }

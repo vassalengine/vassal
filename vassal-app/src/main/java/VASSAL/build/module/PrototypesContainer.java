@@ -29,6 +29,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.folder.PrototypeFolder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.ComponentI18nData;
@@ -87,26 +88,29 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{PrototypeDefinition.class};
+    return new Class<?>[]{ PrototypeFolder.class, PrototypeDefinition.class };
   }
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.PrototypesContainer.component_type"); //$NON-NLS-1$
   }
 
+  public void addDefinition(PrototypeDefinition def) {
+    definitions.put(def.getConfigureName(), def);
+    def.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        definitions.remove(evt.getOldValue());
+        definitions.put((String) evt.getNewValue(),
+          (PrototypeDefinition) evt.getSource());
+      }
+    });
+  }
+
   @Override
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof PrototypeDefinition) {
-      final PrototypeDefinition def = (PrototypeDefinition) b;
-      definitions.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(evt -> {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          definitions.remove(evt.getOldValue());
-          definitions.put((String) evt.getNewValue(),
-                          (PrototypeDefinition) evt.getSource());
-        }
-      });
+      addDefinition((PrototypeDefinition) b);
     }
   }
 
