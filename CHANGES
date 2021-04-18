@@ -31,6 +31,8 @@
 
 3.5.6 - ???
 
+* 14401: Cancelling a predefined-setup load during setup wizard shouldn't show
+    "Loaded..." message.
 * 14393: Don't show that sending bug reports failed when they've succeeded
 * 14386: Editor was reporting module saved when the "confirm overwrite" dialog
     cancelled
