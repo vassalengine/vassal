@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -761,7 +762,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (peerInserts != null) {
             final Configurable parent = ((Configurable)parentNode.getUserObject());
             for (final Class<? extends Buildable> newConfig : parent.getAllowableConfigureComponents()) {
-              peerInserts.add(buildAddAction(parent, newConfig, "Editor.ConfigureTree.add_peer", parentNode.getIndex(targetNode) + 1, null));
+              peerInserts.add(buildAddAction(parent, newConfig, "Editor.ConfigureTree.add_peer", parentNode.getIndex(targetNode), null));
             }
           }
         }
@@ -813,6 +814,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         if (ch != null) {
           final Configurable child = ch;
+
+          //BR// We do an early & extra set of the ancestor before build so that if, during the addTo() sequence,
+          //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
+          //BR// tree as necessary.
+          if (ch instanceof AbstractBuildable) {
+            ((AbstractBuildable)ch).setAncestor(target);
+          }
+
           child.build((duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null);
 
           if (child instanceof PieceSlot) {
