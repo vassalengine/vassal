@@ -1,6 +1,5 @@
 3.6.0 - ???
 
-* 14341: Ability to specify Return-to-Deck target as an expression
 * 14440: Added sub-folders to group components under Module, Maps, Decks,
     At-Start Stacks, Prototypes and Global Properties folders
 * 14388: Add Scrollbars to Prefs Dialog when needed
@@ -19,6 +18,7 @@
 * 14358: ReportState checkbox overrides Global Key Command suppression of
     individual reports
 * 14346: Deck reports now suppressed during GKC report suppresssion
+* 14341: Ability to specify Return-to-Deck target as an expression
 * 14283: Global Options can be configured to let toolbar items on closed
     windows accept global hotkeys.
 * 14278: Increase number of default zomm levels in new Map Zoom Capability
