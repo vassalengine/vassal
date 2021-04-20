@@ -35,6 +35,12 @@ public class DeckSelectionConfigurer extends FormattedExpressionConfigurer {
 
   private final JButton select;
 
+  public DeckSelectionConfigurer(String s) {
+    super(s);
+    select = new JButton(Resources.getString("Editor.select"));
+    select.addActionListener(e -> showPopup());
+  }
+
   public DeckSelectionConfigurer(String s, GamePiece p) {
     super(s, p);
     select = new JButton(Resources.getString("Editor.select"));

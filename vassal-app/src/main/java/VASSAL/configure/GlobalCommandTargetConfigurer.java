@@ -51,7 +51,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
   private JLabel targetXLabel;
   private FormattedExpressionConfigurer targetYConfig;
   private JLabel targetYLabel;
-  private FormattedExpressionConfigurer targetDeckConfig;
+  private DeckSelectionConfigurer targetDeckConfig;
   private JLabel targetDeckLabel;
 
   private FormattedExpressionConfigurer targetPropertyConfig;
@@ -217,16 +217,12 @@ public class GlobalCommandTargetConfigurer extends Configurer {
       controls.add(targetYLabel, "span 2"); // NON-NLS
       controls.add(targetYConfig.getControls(), "growY, wrap"); // NON-NLS
 
-      targetDeckConfig = new FormattedExpressionConfigurer(target.getTargetDeck().getExpression());
+      targetDeckConfig = new DeckSelectionConfigurer(target.getTargetDeck().getExpression());
       targetDeckConfig.addPropertyChangeListener(evt -> update());
       targetDeckConfig.setHintKey("Editor.GlobalKeyCommand.deck_name_hint");
       targetDeckLabel = new JLabel(Resources.getString("Editor.GlobalKeyCommand.deck_name"));
-      final DeckSelector targetDeckSelector = new DeckSelector(targetDeckConfig);
-      final JPanel deckPanel = new JPanel();
-      deckPanel.add(targetDeckConfig.getControls());
-      deckPanel.add(targetDeckSelector);
       controls.add(targetDeckLabel, "span 2"); //NON-NLS
-      controls.add(deckPanel, "growx, wrap"); //NON-NLS
+      controls.add(targetDeckConfig.getControls(), "growx, wrap"); //NON-NLS
 
       fastMatchPropertyConfig = new BooleanConfigurer(target.isFastMatchProperty());
       fastMatchPropertyConfig.addPropertyChangeListener(evt -> update());
