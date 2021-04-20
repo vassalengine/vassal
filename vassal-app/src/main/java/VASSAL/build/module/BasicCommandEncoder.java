@@ -53,6 +53,8 @@ import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatPiece;
 import VASSAL.counters.TranslatableMessage;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
@@ -191,7 +193,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(PlaySound.ID, PlaySound::new),
     Map.entry(ActionButton.ID, ActionButton::new),
     Map.entry(GlobalHotKey.ID, GlobalHotKey::new),
-    Map.entry(Deselect.ID, Deselect::new)
+    Map.entry(Deselect.ID, Deselect::new),
+    Map.entry(Mat.ID, Mat::new),
+    Map.entry(MatPiece.ID, MatPiece::new)
   );
 
   /**

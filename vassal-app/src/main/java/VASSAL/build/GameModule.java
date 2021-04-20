@@ -258,6 +258,16 @@ public class GameModule extends AbstractConfigurable
   private final MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
 
+  private boolean matSupport = false; // Whether Module currently needs to support Mats
+
+  public boolean isMatSupport() {
+    return matSupport;
+  }
+
+  public void setMatSupport(boolean matSupport) {
+    this.matSupport = matSupport;
+  }
+
   private final PropertyChangeListener repaintOnPropertyChange =
     evt -> {
       for (final Map map : Map.getMapList()) {

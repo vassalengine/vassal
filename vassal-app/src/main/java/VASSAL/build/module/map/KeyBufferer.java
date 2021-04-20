@@ -27,9 +27,12 @@ import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 import javax.swing.JComponent;
 
+import VASSAL.counters.Decorator;
+import VASSAL.counters.Mat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -192,6 +195,19 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
           // be clicked, or the piece isn't in a stack, add only the individual
           // unit to the selection.
           kbuf.add(p);
+
+          // If we've added a mat, add all its pieces to the selection.
+          if (GameModule.getGameModule().isMatSupport() && !SwingUtils.isSelectionToggle(e)) {
+            if (p instanceof Decorator) {
+              final Mat mat = (Mat)Decorator.getDecorator(Decorator.getOutermost(p), Mat.class);
+              if (mat != null) {
+                final List<GamePiece> matPieces = mat.getContents();
+                for (final GamePiece mp : matPieces) {
+                  kbuf.add(mp);
+                }
+              }
+            }
+          }
         }
         else {
           // If the top piece of an unexpanded stack is left-clicked

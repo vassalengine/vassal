@@ -18,6 +18,8 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatPiece;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
@@ -392,6 +394,7 @@ public class PieceMover extends AbstractBuildable
       }
     };
   }
+
 
   /**
    * Detects when a game is starting, for purposes of managing the mark-unmoved button.
@@ -806,6 +809,19 @@ public class PieceMover extends AbstractBuildable
       // Any piece we successfully moved, make sure is now considered a "selected piece" (i.e. a member of KeyBuffer)
       for (final GamePiece piece : draggedPieces) {
         KeyBuffer.getBuffer().add(piece);
+
+        // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
+        if (GameModule.getGameModule().isMatSupport()) {
+          if ("true".equals(piece.getProperty(MatPiece.IS_MAT_PIECE))) { //NON-NLS
+            final GamePiece newMat = map.findAnyPiece(p, PieceFinder.MAT_ONLY);
+            if (newMat != null) {
+              final GamePiece mat = Decorator.getDecorator(newMat, Mat.class);
+              if (mat != null) {
+                comm = comm.append(((Mat)mat).addMatPieceCommand(piece));
+              }
+            }
+          }
+        }
       }
 
       // Record each individual piece moved this iteration into our master list for this move
