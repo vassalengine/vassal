@@ -2,7 +2,9 @@ package VASSAL.counters;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
@@ -65,18 +67,69 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   }
 
   /**
+   * Clear our relationship with any Mat we're assigned to, and return a command to do that.
+   * @return return a command to clear our Mat relationship
+   */
+  public Command makeClearMatCommand() {
+    if (mat == null) {
+      return new NullCommand();
+    }
+
+    ChangeTracker ctMat = null;
+    final Mat actualMat = (Mat)Decorator.getDecorator(Decorator.getOutermost(mat), Mat.class);
+    if (actualMat != null) {
+      ctMat = new ChangeTracker(actualMat);
+      actualMat.removeCargo(Decorator.getOutermost(this));
+    }
+
+    final ChangeTracker ct = new ChangeTracker(this);
+
+    clearMat();
+
+    Command c = ct.getChangeCommand();
+    if (ctMat != null) {
+      c = c.append(ctMat.getChangeCommand());
+    }
+
+    return c;
+  }
+
+  /**
    * Mark us as being on a specific Mat piece
    * @param mat the mat we are joining
    */
   public void setMat(GamePiece mat) {
     this.mat = mat;
     if (mat != null) {
-      final GamePiece actualMat = Decorator.getDecorator(mat, Mat.class);
+      final GamePiece actualMat = Decorator.getDecorator(Decorator.getOutermost(mat), Mat.class);
       if (actualMat != null) {
         if (!((Mat)actualMat).hasCargo(Decorator.getOutermost(this))) {
           ((Mat) actualMat).addCargo(Decorator.getOutermost(this));
         }
       }
+    }
+  }
+
+  /**
+   * Places us "on" the designated Mat and returns a Command to duplicate the changes on other clients
+   * @param newMat GamePiece with a Mat trait, that we are to be placed "on"
+   * @return Command to duplicate the changes on other clients
+   */
+  public Command makeSetMatCommand(GamePiece newMat) {
+    if (mat == newMat) {
+      return new NullCommand();
+    }
+
+    if (newMat == null) {
+      return makeClearMatCommand();
+    }
+
+    final Mat actualMat = (Mat)Decorator.getDecorator(Decorator.getOutermost(newMat), Mat.class);
+    if (actualMat == null) {
+      return makeClearMatCommand();
+    }
+    else {
+      return actualMat.makeAddCargoCommand(this);
     }
   }
 

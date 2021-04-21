@@ -815,20 +815,44 @@ public class PieceMover extends AbstractBuildable
           if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
             final GamePiece newMat = map.findAnyPiece(p, PieceFinder.MAT_ONLY);
             if (newMat != null) {
-              final GamePiece mat = Decorator.getDecorator(newMat, Mat.class);
+              final Mat mat = (Mat)Decorator.getDecorator(newMat, Mat.class);
               if (mat != null) {
-                comm = comm.append(((Mat)mat).makeAddCargoCommand(piece));
+                comm = comm.append(mat.makeAddCargoCommand(piece));
               }
             }
             else {
               // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
               final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
               if (cargo != null) {
-                final GamePiece mat = cargo.getMat();
-                if (mat != null) {
-                  final Mat actualMat = (Mat)Decorator.getDecorator(mat, Mat.class);
-                  if (actualMat != null) {
-                    comm = comm.append(((Mat)mat).makeRemoveCargoCommand(piece));
+                comm = comm.append(cargo.makeClearMatCommand());
+              }
+            }
+          }
+          else {
+            // If the piece being moved is a Mat, check if any of our cargo is being "left behind"
+            final Mat thisMat = (Mat)Decorator.getDecorator(piece, Mat.class);
+            if (thisMat != null) {
+              final List<GamePiece> contents = thisMat.getContents();
+              for (final GamePiece cargo : contents) {
+                // If the cargo is being dragged with us, it isn't being left behind
+                if (draggedPieces.contains(cargo) || allDraggedPieces.contains(cargo) || DragBuffer.getBuffer().contains(cargo)) {
+                  continue;
+                }
+
+                final Map cargoMap  = cargo.getMap();
+                final Point cargoPt = cargo.getPosition();
+                final GamePiece newMat = cargoMap.findAnyPiece(cargoPt, PieceFinder.MAT_ONLY);
+                if (newMat != null) {
+                  final Mat mat = (Mat)Decorator.getDecorator(newMat, Mat.class);
+                  if (mat != null) {
+                    comm = comm.append(mat.makeAddCargoCommand(cargo));
+                  }
+                }
+                else {
+                  // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
+                  final MatCargo theCargo = (MatCargo)Decorator.getDecorator(cargo, MatCargo.class);
+                  if (theCargo != null) {
+                    comm = comm.append(theCargo.makeClearMatCommand());
                   }
                 }
               }
