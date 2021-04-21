@@ -19,20 +19,20 @@ import java.util.Objects;
 /**
  * Designates the piece as a "Mat" on which other pieces can be placed.
  */
-public class MatPiece extends Decorator implements TranslatablePiece {
+public class MatCargo extends Decorator implements TranslatablePiece {
   public static final String ID = "matPiece;"; // NON-NLS
   public static final String NO_MAT = "noMat"; //NON-NLS
-  public static final String CURRENT_MAT = "CurrentMat"; //NON-NLS
-  public static final String IS_MAT_PIECE = "IsMatPiece"; //NON-NLS
-  protected String desc;
-  protected KeyCommand separatorCommand;
-  protected GamePiece mat;
 
-  public MatPiece() {
+  public static final String CURRENT_MAT = "CurrentMat"; //NON-NLS     // Exposed property giving our current mat or "null"
+  public static final String IS_CARGO    = "IsCargo"; //NON-NLS        // Exposed property returns "true"
+  protected String desc;
+  protected GamePiece mat; // Mat piece we are assigned to, or null
+
+  public MatCargo() {
     this(ID + ";", null);
   }
 
-  public MatPiece(String type, GamePiece inner) {
+  public MatCargo(String type, GamePiece inner) {
     mySetType(type);
     setInner(inner);
   }
@@ -51,28 +51,38 @@ public class MatPiece extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
+  /**
+   * Clear our relationship with any Mat we're assigned to
+   */
   public void clearMat() {
     if (mat != null) {
       final GamePiece actualMat = Decorator.getDecorator(mat, Mat.class);
       mat = null;
       if (actualMat != null) {
-        ((Mat)actualMat).removeMatPiece(Decorator.getOutermost(this));
+        ((Mat)actualMat).removeCargo(Decorator.getOutermost(this));
       }
     }
   }
 
+  /**
+   * Mark us as being on a specific Mat piece
+   * @param mat the mat we are joining
+   */
   public void setMat(GamePiece mat) {
     this.mat = mat;
     if (mat != null) {
       final GamePiece actualMat = Decorator.getDecorator(mat, Mat.class);
       if (actualMat != null) {
-        if (!((Mat)actualMat).hasMatPiece(Decorator.getOutermost(this))) {
-          ((Mat) actualMat).addMatPiece(Decorator.getOutermost(this));
+        if (!((Mat)actualMat).hasCargo(Decorator.getOutermost(this))) {
+          ((Mat) actualMat).addCargo(Decorator.getOutermost(this));
         }
       }
     }
   }
 
+  /**
+   * @return current Mat we are on top of (or null for none)
+   */
   public GamePiece getMat() {
     return mat;
   }
@@ -148,7 +158,7 @@ public class MatPiece extends Decorator implements TranslatablePiece {
         return mat.getProperty(Mat.MAT_NAME);
       }
     }
-    else if (IS_MAT_PIECE.equals(key)) {
+    else if (IS_CARGO.equals(key)) {
       return "true"; //NON-NLS
     }
     return super.getProperty(key);
@@ -161,7 +171,7 @@ public class MatPiece extends Decorator implements TranslatablePiece {
         return mat.getLocalizedProperty(Mat.MAT_NAME);
       }
     }
-    else if (IS_MAT_PIECE.equals(key)) {
+    else if (IS_CARGO.equals(key)) {
       return "true"; //NON-NLS
     }
     return super.getLocalizedProperty(key);
@@ -169,13 +179,13 @@ public class MatPiece extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.MatPiece.trait_description", desc);
+    return buildDescription("Editor.MatCargo.trait_description", desc);
   }
 
   @Override
   public boolean testEquals(Object o) {
-    if (! (o instanceof MenuSeparator)) return false;
-    final MenuSeparator c = (MenuSeparator) o;
+    if (! (o instanceof MatCargo)) return false;
+    final MatCargo c = (MatCargo) o;
     return Objects.equals(desc, c.desc);
   }
 
@@ -205,7 +215,7 @@ public class MatPiece extends Decorator implements TranslatablePiece {
     private final StringConfigurer descInput;
     private final TraitConfigPanel controls;
 
-    public Ed(MatPiece p) {
+    public Ed(MatCargo p) {
       controls = new TraitConfigPanel();
 
       descInput = new StringConfigurer(p.desc);

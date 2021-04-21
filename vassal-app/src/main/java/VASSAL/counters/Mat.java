@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Designates the piece as a "Mat" on which other pieces can be placed.
+ * Designates the piece as a "Mat" on which other pieces ("Cargo") can be placed.
  */
 public class Mat extends Decorator implements TranslatablePiece {
   public static final String ID = "mat;"; // NON-NLS
   public static final String MAT_NAME = "MatName"; //NON-NLS
+  public static final String MAT_CONTENTS = "MatContents"; //NON-NLS
   protected String matName;
   protected String desc;
-  protected KeyCommand separatorCommand;
   protected List<GamePiece> contents = new ArrayList<>();
 
   public Mat() {
@@ -94,40 +94,53 @@ public class Mat extends Decorator implements TranslatablePiece {
     GameModule.getGameModule().setMatSupport(true);
   }
 
-  public boolean hasMatPiece(GamePiece p) {
+  /**
+   * @param p a particular gamepiece, presumably with a MatCargo trait
+   * @return true if the given piece is on our list of contained cargo
+   */
+  public boolean hasCargo(GamePiece p) {
     return contents.contains(p);
   }
 
-  public void addMatPiece(GamePiece p) {
-    if (!(p instanceof Decorator) || hasMatPiece(p)) {
+  /**
+   * Adds a piece of cargo to this mat
+   * @param p game piece to add
+   */
+  public void addCargo(GamePiece p) {
+    if (!(p instanceof Decorator) || hasCargo(p)) {
       return;
     }
 
     contents.add(p);
 
-    final GamePiece mp = Decorator.getDecorator(Decorator.getOutermost(p), MatPiece.class);
-    if (mp != null) {
-      ((MatPiece)mp).setMat(Decorator.getOutermost(this));
+    final GamePiece cargo = Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+    if (cargo != null) {
+      ((MatCargo)cargo).setMat(Decorator.getOutermost(this));
     }
   }
 
 
-  public Command addMatPieceCommand(GamePiece p) {
+  /**
+   * Adds a piece of cargo and returns a command to duplicate the operation on another client
+   * @param p piece of cargo to add
+   * @return Command that adds the cargo to this mat (and removes it from any other mat it was on)
+   */
+  public Command makeAddCargoCommand(GamePiece p) {
     final ChangeTracker ct  = new ChangeTracker(this);
     final ChangeTracker ct2 = new ChangeTracker(p);
     ChangeTracker ct3 = null;
 
-    if ((p instanceof Decorator) && !hasMatPiece(p)) {
-      final GamePiece mp = Decorator.getDecorator(Decorator.getOutermost(p), MatPiece.class);
-      if (mp != null) {
-        final GamePiece mt = ((MatPiece)mp).getMat();
+    if ((p instanceof Decorator) && !hasCargo(p)) {
+      final GamePiece cargo = Decorator.getDecorator(Decorator.getOutermost(p), MatCargo.class);
+      if (cargo != null) {
+        final GamePiece mt = ((MatCargo)cargo).getMat();
         if ((mt != null) && (mt != Decorator.getOutermost(this))) {
           ct3 = new ChangeTracker(mt);
         }
       }
     }
 
-    addMatPiece(p);
+    addCargo(p);
 
     Command c = ct.getChangeCommand().append(ct2.getChangeCommand());
     if (ct3 != null) {
@@ -137,15 +150,34 @@ public class Mat extends Decorator implements TranslatablePiece {
     return c;
   }
 
-  public void removeMatPiece(GamePiece p) {
-    if (!(p instanceof Decorator) || !hasMatPiece(p)) {
+  /**
+   * Removes a MatCargo piece from our list of cargo
+   * @param p Cargo to remove
+   */
+  public void removeCargo(GamePiece p) {
+    if (!(p instanceof Decorator) || !hasCargo(p)) {
       contents.remove(p);
-      final GamePiece mp = Decorator.getDecorator(p, MatPiece.class);
+      final GamePiece mp = Decorator.getDecorator(p, MatCargo.class);
       if (mp != null) {
-        ((MatPiece)mp).clearMat();
+        ((MatCargo)mp).clearMat();
       }
     }
   }
+
+  /**
+   * Removes a MatCargo piece from our list of cargo, and returns a Command to duplicate the changes on another client
+   * @param p GamePiece with a MatCargo trait, to be removed
+   * @return Command to remove the piece
+   */
+  public Command makeRemoveCargoCommand(GamePiece p) {
+    final ChangeTracker ct  = new ChangeTracker(this);
+    final ChangeTracker ct2 = new ChangeTracker(p);
+
+    removeCargo(p);
+
+    return ct.getChangeCommand().append(ct2.getChangeCommand());
+  }
+
 
   @Override
   public Rectangle boundingBox() {
@@ -181,6 +213,9 @@ public class Mat extends Decorator implements TranslatablePiece {
   public Object getProperty(Object key) {
     if (MAT_NAME.equals(key)) {
       return matName;
+    }
+    else if (MAT_CONTENTS.equals(key)) {
+      return new ArrayList<>(contents);
     }
     return super.getProperty(key);
   }

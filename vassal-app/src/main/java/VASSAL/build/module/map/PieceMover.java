@@ -19,7 +19,7 @@
 package VASSAL.build.module.map;
 
 import VASSAL.counters.Mat;
-import VASSAL.counters.MatPiece;
+import VASSAL.counters.MatCargo;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
@@ -812,12 +812,25 @@ public class PieceMover extends AbstractBuildable
 
         // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
         if (GameModule.getGameModule().isMatSupport()) {
-          if ("true".equals(piece.getProperty(MatPiece.IS_MAT_PIECE))) { //NON-NLS
+          if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
             final GamePiece newMat = map.findAnyPiece(p, PieceFinder.MAT_ONLY);
             if (newMat != null) {
               final GamePiece mat = Decorator.getDecorator(newMat, Mat.class);
               if (mat != null) {
-                comm = comm.append(((Mat)mat).addMatPieceCommand(piece));
+                comm = comm.append(((Mat)mat).makeAddCargoCommand(piece));
+              }
+            }
+            else {
+              // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
+              final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
+              if (cargo != null) {
+                final GamePiece mat = cargo.getMat();
+                if (mat != null) {
+                  final Mat actualMat = (Mat)Decorator.getDecorator(mat, Mat.class);
+                  if (actualMat != null) {
+                    comm = comm.append(((Mat)mat).makeRemoveCargoCommand(piece));
+                  }
+                }
               }
             }
           }
