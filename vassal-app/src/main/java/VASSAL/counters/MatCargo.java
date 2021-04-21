@@ -148,7 +148,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       if (newMat != null) {
         final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
         if (mat != null) {
-          comm = comm.append(mat.makeAddCargoCommand(piece));
+          comm = comm.append(mat.makeAddCargoCommand(getOutermost(this)));
         }
       }
       else {

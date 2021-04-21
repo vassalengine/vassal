@@ -210,7 +210,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
             if (p instanceof Decorator) {
               final Mat mat = (Mat)Decorator.getDecorator(Decorator.getOutermost(p), Mat.class);
               if (mat != null) {
-                final List<GamePiece> matPieces = mat.getContents();
+                final List<GamePiece> matPieces = new ArrayList<GamePiece>(mat.getContents());
                 for (final GamePiece mp : matPieces) {
                   kbuf.add(mp);
                 }
