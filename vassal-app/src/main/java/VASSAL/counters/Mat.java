@@ -26,6 +26,7 @@ public class Mat extends Decorator implements TranslatablePiece {
   public static final String ID = "mat;"; // NON-NLS
   public static final String MAT_NAME = "MatName"; //NON-NLS
   public static final String MAT_CONTENTS = "MatContents"; //NON-NLS
+  public static final String MAT_NUM_CARGO = "MatNumCargo"; //NON-NLS
   protected String matName;
   protected String desc;
   protected List<GamePiece> contents = new ArrayList<>();
@@ -217,6 +218,9 @@ public class Mat extends Decorator implements TranslatablePiece {
     else if (MAT_CONTENTS.equals(key)) {
       return new ArrayList<>(contents);
     }
+    else if (MAT_NUM_CARGO.equals(key)) {
+      return String.valueOf(contents.size());
+    }
     return super.getProperty(key);
   }
 
@@ -224,6 +228,9 @@ public class Mat extends Decorator implements TranslatablePiece {
   public Object getLocalizedProperty(Object key) {
     if (MAT_NAME.equals(key)) {
       return matName;
+    }
+    else if (MAT_NUM_CARGO.equals(key)) {
+      return String.valueOf(contents.size());
     }
     return super.getLocalizedProperty(key);
   }
@@ -257,15 +264,7 @@ public class Mat extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(MAT_NAME);
-  }
-
-  /**
-   * @return a list of any Property Names referenced in the Decorator, if any (for search)
-   */
-  @Override
-  public List<String> getPropertyList() {
-    return Arrays.asList(MAT_NAME);
+    return Arrays.asList(MAT_NAME, MAT_NUM_CARGO);
   }
 
 

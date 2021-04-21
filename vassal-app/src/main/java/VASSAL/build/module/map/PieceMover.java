@@ -810,27 +810,18 @@ public class PieceMover extends AbstractBuildable
       for (final GamePiece piece : draggedPieces) {
         KeyBuffer.getBuffer().add(piece);
 
-        // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
+        // Support for Mats and Cargo
         if (GameModule.getGameModule().isMatSupport()) {
-          if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+          // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
+          if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS  
             final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
             final GamePiece oldMat = cargo.getMat();
 
             if ((oldMat == null) || (!draggedPieces.contains(oldMat) && !allDraggedPieces.contains(oldMat) && !DragBuffer.getBuffer().contains(oldMat))) {
-              final GamePiece newMat = map.findAnyPiece(p, PieceFinder.MAT_ONLY);
-              if (newMat != null) {
-                final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
-                if (mat != null) {
-                  comm = comm.append(mat.makeAddCargoCommand(piece));
-                }
-              }
-              else {
-                // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
-                comm = comm.append(cargo.makeClearMatCommand());
-              }
+              comm = comm.append(cargo.findNewMat(map, p));
             }
           }
-          else {
+          else if (!"".equals(piece.getProperty(Mat.MAT_NAME))) {
             // If the piece being moved is a Mat, check if any of our cargo is being "left behind"
             final Mat thisMat = (Mat)Decorator.getDecorator(piece, Mat.class);
             if (thisMat != null) {
@@ -841,21 +832,9 @@ public class PieceMover extends AbstractBuildable
                   continue;
                 }
 
-                final Map cargoMap  = cargo.getMap();
-                final Point cargoPt = cargo.getPosition();
-                final GamePiece newMat = cargoMap.findAnyPiece(cargoPt, PieceFinder.MAT_ONLY);
-                if (newMat != null) {
-                  final Mat mat = (Mat)Decorator.getDecorator(newMat, Mat.class);
-                  if (mat != null) {
-                    comm = comm.append(mat.makeAddCargoCommand(cargo));
-                  }
-                }
-                else {
-                  // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
-                  final MatCargo theCargo = (MatCargo)Decorator.getDecorator(cargo, MatCargo.class);
-                  if (theCargo != null) {
-                    comm = comm.append(theCargo.makeClearMatCommand());
-                  }
+                final MatCargo theCargo = (MatCargo)Decorator.getDecorator(cargo, MatCargo.class);
+                if (theCargo != null) {
+                  comm = comm.append(theCargo.findNewMat(cargo.getMap(), cargo.getPosition()));
                 }
               }
             }

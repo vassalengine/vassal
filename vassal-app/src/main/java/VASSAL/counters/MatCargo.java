@@ -1,6 +1,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
@@ -12,6 +13,7 @@ import VASSAL.tools.SequenceEncoder;
 import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
@@ -132,6 +134,40 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return actualMat.makeAddCargoCommand(this);
     }
   }
+
+  /**
+   * Finds us a Mat to join at the specified point on a specified map. Or if no Mat, marks our removal from any we're on.
+   * @param map map to check
+   * @param pt point to check
+   * @return A command that will duplicate any changes on another client.
+   */
+  public Command findNewMat(Map map, Point pt) {
+    Command comm = new NullCommand();
+    if (map != null) {
+      final GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
+      if (newMat != null) {
+        final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
+        if (mat != null) {
+          comm = comm.append(mat.makeAddCargoCommand(piece));
+        }
+      }
+      else {
+        // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
+        comm = comm.append(makeClearMatCommand());
+      }
+    }
+    return comm;
+  }
+
+
+  /**
+   * Finds us a Mat to join at our current location. Or if no Mat, marks our removal from any we were on.
+   * @return A Command that will duplicate any changes on another client.
+   */
+  public Command findNewMat() {
+    return findNewMat(getMap(), getPosition());
+  }
+
 
   /**
    * @return current Mat we are on top of (or null for none)
