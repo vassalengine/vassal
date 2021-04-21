@@ -155,7 +155,7 @@ public class Mat extends Decorator implements TranslatablePiece {
    * @param p Cargo to remove
    */
   public void removeCargo(GamePiece p) {
-    if (!(p instanceof Decorator) || !hasCargo(p)) {
+    if ((p instanceof Decorator) && hasCargo(p)) {
       contents.remove(p);
       final GamePiece mp = Decorator.getDecorator(p, MatCargo.class);
       if (mp != null) {

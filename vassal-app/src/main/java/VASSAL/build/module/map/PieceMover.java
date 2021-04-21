@@ -813,17 +813,19 @@ public class PieceMover extends AbstractBuildable
         // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
         if (GameModule.getGameModule().isMatSupport()) {
           if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-            final GamePiece newMat = map.findAnyPiece(p, PieceFinder.MAT_ONLY);
-            if (newMat != null) {
-              final Mat mat = (Mat)Decorator.getDecorator(newMat, Mat.class);
-              if (mat != null) {
-                comm = comm.append(mat.makeAddCargoCommand(piece));
+            final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
+            final GamePiece oldMat = cargo.getMat();
+
+            if ((oldMat == null) || (!draggedPieces.contains(oldMat) && !allDraggedPieces.contains(oldMat) && !DragBuffer.getBuffer().contains(oldMat))) {
+              final GamePiece newMat = map.findAnyPiece(p, PieceFinder.MAT_ONLY);
+              if (newMat != null) {
+                final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
+                if (mat != null) {
+                  comm = comm.append(mat.makeAddCargoCommand(piece));
+                }
               }
-            }
-            else {
-              // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
-              final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
-              if (cargo != null) {
+              else {
+                // We're NOT on a mat, so if we WERE on one, mark ourselves as no longer on it
                 comm = comm.append(cargo.makeClearMatCommand());
               }
             }
