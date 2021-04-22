@@ -42,7 +42,6 @@ import java.util.zip.ZipOutputStream;
 public class ZipWriter implements Closeable {
   private final Path path;
   private final ZipOutputStream zout;
-  private final FileChannel fc;
   private final FileLock lock;
 
   public ZipWriter(File f) throws IOException {
@@ -52,7 +51,7 @@ public class ZipWriter implements Closeable {
   public ZipWriter(Path p) throws IOException {
     path = Objects.requireNonNull(p);
 
-    fc = FileChannel.open(
+    final FileChannel fc = FileChannel.open(
       path,
       StandardOpenOption.WRITE,
       StandardOpenOption.CREATE,
@@ -117,19 +116,14 @@ public class ZipWriter implements Closeable {
   public void close() throws IOException {
     try {
       try {
-        try {
-          zout.flush();
-        }
-        finally {
-          lock.release();
-        }
+        zout.flush();
       }
       finally {
-        zout.close();
+        lock.release();
       }
     }
     finally {
-      fc.close();
+      zout.close();
     }
   }
 
