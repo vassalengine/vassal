@@ -42,7 +42,7 @@ import java.util.zip.ZipOutputStream;
 public class ZipWriter implements Closeable {
   private final Path path;
   private final ZipOutputStream zout;
-  private final FileLock lock;
+  private final FileLock lock; //NOPMD
 
   public ZipWriter(File f) throws IOException {
     this(Objects.requireNonNull(f).toPath());
