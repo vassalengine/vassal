@@ -135,7 +135,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     st.nextToken();
     final String selectionOptions = st.nextToken("");
     final String movementOptions = st.nextToken("");
-    final String stackingOptions = st.nextToken("" + NEVER_STACK);  // Compatibility - default to no Stacking
+    final String stackingOptions = st.nextToken(String.valueOf(NEVER_STACK));  // Compatibility - default to no Stacking
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
