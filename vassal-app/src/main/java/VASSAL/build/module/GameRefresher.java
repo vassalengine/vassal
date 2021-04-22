@@ -34,6 +34,7 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Immobilized;
+import VASSAL.counters.Mat;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
@@ -352,11 +353,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
     // Piece should have a parent stack (Decks are extensions of Stacks)
-    // Except pieces with a DNS (Immobilized) trait.
+    // Except pieces with a DNS (Immobilized) or Mat trait.
     final Stack oldStack = piece.getParent();
     if (oldStack == null) {
-      final Immobilized i = (Immobilized)Decorator.getDecorator(piece, Immobilized.class);
-      if (i == null) {
+      if ((Decorator.getDecorator(piece, Immobilized.class) == null) && (Decorator.getDecorator(piece, Mat.class) == null)) {
         noStackCount++;
         log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
       }

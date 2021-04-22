@@ -221,6 +221,9 @@ public class Mat extends Decorator implements TranslatablePiece {
     else if (MAT_NUM_CARGO.equals(key)) {
       return String.valueOf(contents.size());
     }
+    else if (Properties.NO_STACK.equals(key)) { // Mats can't stack
+      return Boolean.TRUE;
+    }
     return super.getProperty(key);
   }
 
@@ -231,6 +234,9 @@ public class Mat extends Decorator implements TranslatablePiece {
     }
     else if (MAT_NUM_CARGO.equals(key)) {
       return String.valueOf(contents.size());
+    }
+    else if (Properties.NO_STACK.equals(key)) { //  Mats can't stack
+      return Boolean.TRUE;
     }
     return super.getLocalizedProperty(key);
   }
