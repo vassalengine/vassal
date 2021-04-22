@@ -114,14 +114,7 @@ public class ZipWriter implements Closeable {
 
   @Override
   public void close() throws IOException {
-    try {
-      zout.close();
-    }
-    catch (final IOException e) {
-      // release the lock if something goes wrong
-      lock.release();
-      throw e;
-    }
+    zout.close();
   }
 
   private static ZipEntry makeEntry(String path) {
