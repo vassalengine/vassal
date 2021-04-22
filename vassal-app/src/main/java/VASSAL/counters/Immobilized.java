@@ -551,8 +551,9 @@ public class Immobilized extends Decorator implements EditablePiece {
         s += NEVER_MOVE;
         break;
       }
+
       s += ';';
-      switch(stackOption.getValueString()) {
+      switch (stackOption.getValueString()) {
       case NORMAL:
         s += STACK_NORMAL;
         break;

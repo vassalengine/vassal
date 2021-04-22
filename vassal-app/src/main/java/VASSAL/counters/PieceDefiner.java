@@ -734,7 +734,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private void doAdd(int sourceIndex, int insertIndex) {
     Object selected = availableList.getModel().getElementAt(sourceIndex);
     if (selected instanceof EditablePiece && Resources.getString("Editor.Immobilized.old_trait_description").equals(((EditablePiece) selected).getDescription())) {
-        selected = new Immobilized();
+      selected = new Immobilized();
     }
     if (selected instanceof Decorator) {
       if (inUseModel.getSize() > 0) {
