@@ -356,7 +356,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     final Stack oldStack = piece.getParent();
     if (oldStack == null) {
       final Immobilized i = (Immobilized)Decorator.getDecorator(piece, Immobilized.class);
-      if (i == null) {
+      if (i == null || !i.isCanStack()) {
         noStackCount++;
         log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
       }
