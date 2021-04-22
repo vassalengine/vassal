@@ -371,6 +371,21 @@ public class PieceMover extends AbstractBuildable
         else {
           dbuf.add(selected);
         }
+
+        // Mat Support: if we're dragging a Mat, bring its cargo too
+        if (GameModule.getGameModule().isMatSupport()) {
+          final List<GamePiece> checkDrag = new ArrayList<>(dbuf.asList());
+          for (final GamePiece piece : checkDrag) {
+            final List<GamePiece> cargoList = (List<GamePiece>) piece.getProperty(Mat.MAT_CONTENTS);
+            if (cargoList != null) {
+              for (final GamePiece cargo : cargoList) {
+                if (!dbuf.contains(cargo)) {
+                  dbuf.add(cargo);
+                }
+              }
+            }
+          }
+        }
         return null;
       }
     });
