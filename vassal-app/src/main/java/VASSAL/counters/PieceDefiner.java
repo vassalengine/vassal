@@ -202,12 +202,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addElement(new Translate());
       addElement(new ReturnToDeck());
       addElement(new Immobilized());
-      addElement(new Immobilized() {
-        @Override
-        public String getDescription() {
-          return Resources.getString("Editor.Immobilized.old_trait_description");
-        }
-      });
       addElement(new PropertySheet());
       addElement(new TableInfo());
       addElement(new PlaceMarker());
@@ -732,10 +726,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   private void doAdd(int sourceIndex, int insertIndex) {
-    Object selected = availableList.getModel().getElementAt(sourceIndex);
-    if (selected instanceof EditablePiece && Resources.getString("Editor.Immobilized.old_trait_description").equals(((EditablePiece) selected).getDescription())) {
-      selected = new Immobilized();
-    }
+    final Object selected = availableList.getModel().getElementAt(sourceIndex);
     if (selected instanceof Decorator) {
       if (inUseModel.getSize() > 0) {
         final Decorator c = (Decorator) selected;
@@ -893,7 +884,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     Object o = null;
     try {
       o = GameModule.getGameModule().getDataArchive()
-                    .loadClass(className).getConstructor().newInstance();
+        .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
       ReflectionUtils.handleImportClassFailure(t, className);
