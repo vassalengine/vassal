@@ -115,15 +115,12 @@ public class ZipWriter implements Closeable {
   @Override
   public void close() throws IOException {
     try {
-      try {
-        zout.flush();
-      }
-      finally {
-        lock.release();
-      }
-    }
-    finally {
       zout.close();
+    }
+    catch (final IOException e) {
+      // release the lock if something goes wrong
+      lock.release();
+      throw e;
     }
   }
 
