@@ -287,10 +287,6 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 
-  public boolean isCanStack() {
-    return canStack;
-  }
-
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
