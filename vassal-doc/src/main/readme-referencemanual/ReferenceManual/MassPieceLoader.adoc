@@ -72,7 +72,7 @@ The options you have to choose from are:
 * _Same as:_
 * _Use Base image:_
 
-==== Version 3.5.5 limitations
+==== Base name and suffix limitations
 The name of the file defining the base image of the piece cannot contain dots (apart from the file type separator).
 The suffixes defined for the extra layers must not contain dots.
 
