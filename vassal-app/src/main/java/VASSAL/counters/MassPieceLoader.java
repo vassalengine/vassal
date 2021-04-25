@@ -989,6 +989,8 @@ public class MassPieceLoader {
       super(type, p);
     }
 
+
+
     public String[] getImageNames() {
       return imageName;
     }
@@ -1081,6 +1083,24 @@ public class MassPieceLoader {
           builtImages.add(thisImage);
         }
       }
+      int j = 0;
+      int newLength = 0;
+      for (int i = 0; i < imageName.length; i++) {
+        if (imageName[i] != null) {
+          newLength++;
+        }
+      }
+      String[] imageNameTmp = new String[newLength];
+      String[] commonNameTmp = new String[newLength];
+      for (int i = 0; i < imageName.length; i++) {
+        if (imageName[i] != null) {
+          imageNameTmp[j] = imageName[i];
+          commonNameTmp[j] = commonName[i];
+          j++;
+        }
+      }
+      imageName = imageNameTmp;
+      commonName = commonNameTmp;
       return count > 0;
     }
 
