@@ -23,9 +23,12 @@ import java.io.FilterOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -37,23 +40,26 @@ import java.util.zip.ZipOutputStream;
  * @since 3.5.0
  */
 public class ZipWriter implements Closeable {
-  private final Path full;
-  private final Path part;
+  private final Path path;
   private final ZipOutputStream zout;
+  private final FileLock lock; //NOPMD
 
   public ZipWriter(File f) throws IOException {
     this(Objects.requireNonNull(f).toPath());
   }
 
   public ZipWriter(Path p) throws IOException {
-    full = Objects.requireNonNull(p);
+    path = Objects.requireNonNull(p);
 
-    if (!Files.exists(full)) {
-      Files.createFile(full);
-    }
+    final FileChannel fc = FileChannel.open(
+      path,
+      StandardOpenOption.WRITE,
+      StandardOpenOption.CREATE,
+      StandardOpenOption.TRUNCATE_EXISTING
+    );
 
-    part = full.resolveSibling(full.getFileName() + ".part");
-    zout = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(part)));
+    lock = fc.lock();
+    zout = new ZipOutputStream(new BufferedOutputStream(Channels.newOutputStream(fc)));
   }
 
   public void write(File src, String dst) throws IOException {
@@ -109,7 +115,6 @@ public class ZipWriter implements Closeable {
   @Override
   public void close() throws IOException {
     zout.close();
-    Files.move(part, full, StandardCopyOption.REPLACE_EXISTING);
   }
 
   private static ZipEntry makeEntry(String path) {
