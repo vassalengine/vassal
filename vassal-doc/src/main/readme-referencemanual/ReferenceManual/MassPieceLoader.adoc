@@ -10,7 +10,7 @@
 The Mass Piece Loader allows you to create multiple Game Pieces at once, based on a directory of appropriately named images.
 All Game Pieces created will use the same Piece template, but will have different images loaded into their Layer traits.
 
-Images can be loaded intothe Basic Piece trait and into multiple Levels within Layer traits.
+Images can be loaded into the Basic Piece trait and into multiple Levels within Layer traits.
 A modified version of the Layer trait is used which defines how image names are matched and loaded into each level.
 
 image:images/MassPieceLoader.png[]
