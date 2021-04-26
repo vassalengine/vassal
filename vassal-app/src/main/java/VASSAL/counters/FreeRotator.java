@@ -507,39 +507,40 @@ public class FreeRotator extends Decorator
     return c;
   }
 
-  protected Command rotateCargo(Command command, Mat mat, Point p, List<GamePiece> contents, List<Point> offsets, double dtheta) {
-    if (mat == null || offsets == null || !GameModule.getGameModule().isMatSupport()) {
+  protected Command rotateCargo(Command command, Point center, double dtheta) {
+    if (!GameModule.getGameModule().isMatSupport()) {
       return command;
     }
 
-    final Map ourMap = Decorator.getOutermost(this).getMap();
-    if (ourMap == null) {
+    final GamePiece outer = getOutermost(this);
+    if ("".equals(outer.getProperty(Mat.MAT_NAME))) {
       return command;
     }
 
-    final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, p.x, p.y);
+    if (outer.getMap() == null) {
+      return command;
+    }
 
-    // If a Mat has been rotated, revolve all its contents, at an appropriate
-    // offset, around our center.
-    for (int i = 0; i < contents.size(); i++) {
-      final GamePiece piece = contents.get(i);
+    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+    if (mat == null) {
+      return command;
+    }
+
+    final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, center.x, center.y);
+
+    // If a Mat has been rotated, make the contents orbit the Mat's center
+    for (final GamePiece piece : mat.getContents()) {
       final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
       if (cargo != null) {
-        // Get Cargo's pre-move offset from the Mat
-        final Point pt = new Point();
-        t.transform(piece.getPosition(), pt);
-//        pt.x += offsets.get(i).x;
-//        pt.y += offsets.get(i).y;
-
-        // MAT SUPPORT -- REVOLVE!!!!
-
-        command = command.append(movePiece(piece, pt));
+        // Rotate Cargo's current position to its destination
+        final Point dst = new Point();
+        t.transform(piece.getPosition(), dst);
+        command = command.append(movePiece(piece, dst));
       }
     }
 
     return command;
   }
-
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
@@ -551,29 +552,7 @@ public class FreeRotator extends Decorator
 
     Command c = null;
 
-    // Current Position
-    final Point p = getPosition();
-
-    Mat mat = null;
-    List<GamePiece> contents = null;
-    List<Point> offsets = null;
     final double origAngle = getAngle();
-
-    // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
-    final GamePiece outer = getOutermost(this);
-    if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
-      mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-      if (mat != null) {
-        contents = new ArrayList<>(mat.getContents());
-        offsets = new ArrayList<>();
-        for (final GamePiece piece : contents) {
-          final Point pt = piece.getPosition();
-          pt.x -= p.x;
-          pt.y -= p.y;
-          offsets.add(pt);
-        }
-      }
-    }
 
     if (rotateCWCommand.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
@@ -603,7 +582,8 @@ public class FreeRotator extends Decorator
     }
     // end random rotation
 
-    c = rotateCargo(c, mat, p, contents, offsets, getAngle() - origAngle);
+    // Mat Support
+    c = rotateCargo(c, getPosition(), getAngle() - origAngle);
 
     return c;
   }
@@ -683,30 +663,9 @@ public class FreeRotator extends Decorator
       }
 
       final Map m = getMap();
+      final GamePiece outer = getOutermost(this);
 
       try {
-        final Point p = getPosition();
-        Mat mat = null;
-        List<GamePiece> contents = null;
-        List<Point> offsets = null;
-
-        // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
-        final GamePiece outer = getOutermost(this);
-        if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
-          mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-          if (mat != null) {
-            //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
-            contents = new ArrayList<>(mat.getContents());
-            offsets = new ArrayList<>();
-            for (final GamePiece piece : contents) {
-              final Point pt = piece.getPosition();
-              pt.x -= p.x;
-              pt.y -= p.y;
-              offsets.add(pt);
-            }
-          }
-        }
-
         final Point ghostPosition = getGhostPosition();
 
         Command c = null;
@@ -719,7 +678,8 @@ public class FreeRotator extends Decorator
         setAngle(tempAngle);
         c = tracker.getChangeCommand().append(c);
 
-        c = rotateCargo(c, mat, p, contents, offsets, tempAngle - origAngle);
+        // Mat Support
+        c = rotateCargo(c, getPosition(), tempAngle - origAngle);
 
         GameModule.getGameModule().sendAndLog(c);
       }
