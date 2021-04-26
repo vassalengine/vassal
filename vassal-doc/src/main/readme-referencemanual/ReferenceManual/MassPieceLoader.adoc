@@ -10,7 +10,7 @@
 The Mass Piece Loader allows you to create multiple Game Pieces at once, based on a directory of appropriately named images.
 All Game Pieces created will use the same Piece template, but will have different images loaded into their Layer traits.
 
-Images can be loaded into multiple levels within each Layer trait.
+Images can be loaded intothe Basic Piece trait and into multiple Levels within Layer traits.
 A modified version of the Layer trait is used which defines how image names are matched and loaded into each level.
 
 image:images/MassPieceLoader.png[]
@@ -18,10 +18,11 @@ image:images/MassPieceLoader.png[]
 *The processing works as follows:*
 
 . Locate all images that match any of the selection criteria in any level of any layer defined in the template.
-. Any remaining images are used as the base images.
+. Any remaining images are used as the base images. Base images will be used in the Basic Piece trait and / or in a layer level, depending on the setting chosen.
 . A level image is matched to a base image when it commences with the base image, but has a different suffix and matches the rule recorded against the level.
 . Images that match one of the level definitions, but do not match any base image are ignored.
 . A Layer trait is added to the counter only if it has at least one image in a level.
+. By default all Levels in a Layer trait are created, whether the matching image is found or not. By checking the option 'Do not load Layer Level if no matching image found' only levels with a matching image will be created.
 
 The table in the lower half of the screen shows the Game Pieces that will be created.
 
@@ -45,6 +46,8 @@ You can modify this field to give each piece a non-standard name.
 **Image Directory:  **Select the directory containing your images.
 
 **Do not load images into Basic Piece traits:  **Select this option if all of your images are to be loaded into Layer traits and you do not want any images loaded into the <<BasicPiece.adoc#top,Basic Piece>> trait.
+
+**Do not load Layer Level if no matching image: **Select this option if you do not want a layer to be created in a piece when the matching image is not found.
 
 **Edit Piece Template:  **Opens up a <<GamePiece.adoc#top,Game Piece Definition>> dialog to define the Game Piece template that will be used to create each new piece.
 
