@@ -191,6 +191,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     else {
       s = s.substring(ID.length());
+
+      final boolean brandNew = Resources.getString("Editor.Embellishment.activate").equals(s);
+
       final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("");
       activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
@@ -228,7 +231,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       firstLevelValue = st.nextInt(1);
 
       version = st.nextInt(0);
-      alwaysActive = st.nextBoolean(false);
+      alwaysActive = st.nextBoolean(true);
       activateKeyStroke = st.nextNamedKeyStroke();
       increaseKeyStroke = st.nextNamedKeyStroke();
       decreaseKeyStroke = st.nextNamedKeyStroke();
@@ -237,7 +240,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       // Conversion?
       if (version == BASE_VERSION) {
-        alwaysActive = activateKey.length() == 0;
+        alwaysActive = brandNew ? true : (activateKey.length() == 0);
 
         // Cannot convert if activate, up or down has more than 1 char specified
         if (activateKey.length() <= 1 && upKey.length() <= 1 && downKey.length() <= 1) {
