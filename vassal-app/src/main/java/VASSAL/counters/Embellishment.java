@@ -240,7 +240,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       // Conversion?
       if (version == BASE_VERSION) {
-        alwaysActive = brandNew ? true : (activateKey.length() == 0);
+        alwaysActive = brandNew || (activateKey.length() == 0);
 
         // Cannot convert if activate, up or down has more than 1 char specified
         if (activateKey.length() <= 1 && upKey.length() <= 1 && downKey.length() <= 1) {
