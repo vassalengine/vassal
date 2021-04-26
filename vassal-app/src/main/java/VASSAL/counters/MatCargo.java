@@ -159,7 +159,6 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     return comm;
   }
 
-
   /**
    * Finds us a Mat to join at our current location. Or if no Mat, marks our removal from any we were on.
    * @return A Command that will duplicate any changes on another client.
@@ -167,7 +166,6 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public Command findNewMat() {
     return findNewMat(getMap(), getPosition());
   }
-
 
   /**
    * @return current Mat we are on top of (or null for none)
