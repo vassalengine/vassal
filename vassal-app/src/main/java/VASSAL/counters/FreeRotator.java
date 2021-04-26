@@ -524,7 +524,7 @@ public class FreeRotator extends Decorator
 
     final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, center.x, center.y);
 
-    // If a Mat has been rotated, make the contents orbit the Mat's center
+    // If a Mat has been rotated, make the contents orbit the center point
     for (final GamePiece piece : mat.getContents()) {
       final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
       if (cargo != null) {
