@@ -513,16 +513,12 @@ public class FreeRotator extends Decorator
     }
 
     final GamePiece outer = getOutermost(this);
-    if ("".equals(outer.getProperty(Mat.MAT_NAME))) {
-      return command;
-    }
-
     if (outer.getMap() == null) {
       return command;
     }
 
     final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-    if (mat == null) {
+    if (mat == null || "".equals(mat.getProperty(Mat.MAT_NAME))) {
       return command;
     }
 
@@ -583,7 +579,9 @@ public class FreeRotator extends Decorator
     // end random rotation
 
     // Mat Support
-    c = rotateCargo(c, getPosition(), getAngle() - origAngle);
+    if (c != null) {
+      c = rotateCargo(c, getPosition(), getAngle() - origAngle);
+    }
 
     return c;
   }
