@@ -137,8 +137,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-
-
   /*
    * Move a single piece to a destination
    */
@@ -186,7 +184,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return c;
   }
 
-
   protected Command rotateCargo(Command command, Mat mat, Point p, List<GamePiece> contents, List<Point> offsets) {
     if (!GameModule.getGameModule().isMatSupport() || mat == null || offsets == null) {
       return command;
@@ -213,7 +210,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
 
     return command;
   }
-
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
