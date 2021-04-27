@@ -128,12 +128,12 @@ public class Pivot extends Decorator implements TranslatablePiece {
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(command)
-        .append(key)
-        .append(pivotX)
-        .append(pivotY)
-        .append(fixedAngle)
-        .append(angle)
-        .append(description);
+      .append(key)
+      .append(pivotX)
+      .append(pivotY)
+      .append(fixedAngle)
+      .append(angle)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -343,7 +343,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return getI18nData(command, Resources.getString("Editor.Pivot.pivot_command"));
   }
 
-
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof Pivot)) return false;
@@ -422,12 +421,12 @@ public class Pivot extends Decorator implements TranslatablePiece {
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(command.getValueString())
-          .append(key.getValueString())
-          .append(xOff.getValueString())
-          .append(yOff.getValueString())
-          .append(Boolean.TRUE.equals(fixedAngle.getValue()))
-          .append(angle.getValueString())
-          .append(desc.getValueString());
+        .append(key.getValueString())
+        .append(xOff.getValueString())
+        .append(yOff.getValueString())
+        .append(Boolean.TRUE.equals(fixedAngle.getValue()))
+        .append(angle.getValueString())
+        .append(desc.getValueString());
       return ID + se.getValue();
     }
   }

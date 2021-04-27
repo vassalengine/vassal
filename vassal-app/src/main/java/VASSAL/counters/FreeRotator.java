@@ -459,12 +459,10 @@ public class FreeRotator extends Decorator
     return commands;
   }
 
-
   /*
    * Move a single piece to a destination
    */
   protected Command movePiece(GamePiece gp, Point dest) {
-
     // Is the piece on a map?
     final Map map = gp.getMap();
     if (map == null) {
