@@ -43,7 +43,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -69,6 +68,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected KeyCommand pivotCommand;
   protected FreeRotator rotator;
   protected String description;
+
+  private static final double PI_180 = Math.PI / 180.0;
 
   public Pivot() {
     this(ID, null);
@@ -141,7 +142,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
    * Move a single piece to a destination
    */
   protected Command movePiece(GamePiece gp, Point dest) {
-
     // Is the piece on a map?
     final Map map = gp.getMap();
     if (map == null) {
@@ -184,27 +184,32 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return c;
   }
 
-  protected Command rotateCargo(Command command, Mat mat, Point p, List<GamePiece> contents, List<Point> offsets) {
-    if (!GameModule.getGameModule().isMatSupport() || mat == null || offsets == null) {
+  protected Command rotateCargo(Command command, Point center, double dtheta) {
+    if (!GameModule.getGameModule().isMatSupport()) {
       return command;
     }
 
-    // If a Mat has been rotated sent, revolve all its contents, at an appropriate offset, around our center.
-    final Map ourMap = Decorator.getOutermost(this).getMap();
-    if (ourMap != null) {
-      for (int i = 0; i < contents.size(); i++) {
-        final GamePiece piece = contents.get(i);
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
-        if (cargo != null) {
-          // Get Cargo's pre-move offset from the Mat
-          final Point pt = new Point(p);
-          pt.x += offsets.get(i).x;
-          pt.y += offsets.get(i).y;
+    // check that we have a map and that the mat-ness is visible for us
+    final GamePiece outer = getOutermost(this);
+    if (outer.getMap() == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
+      return command;
+    }
 
-          // MAT SUPPORT -- REVOLVE!!!!
+    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+    if (mat == null) {
+      return command;
+    }
 
-          command = command.append(movePiece(piece, pt));
-        }
+    final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, center.x, center.y);
+
+    // If a Mat has been rotated, make the contents orbit the center point
+    for (final GamePiece piece : mat.getContents()) {
+      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+      if (cargo != null) {
+        // Rotate Cargo's current position to its destination
+        final Point dst = new Point();
+        t.transform(piece.getPosition(), dst);
+        command = command.append(movePiece(piece, dst));
       }
     }
 
@@ -218,36 +223,21 @@ public class Pivot extends Decorator implements TranslatablePiece {
     if (pivotCommand.matches(stroke)) {
       if (fixedAngle) {
         final ChangeTracker t = new ChangeTracker(this);
+
         final double oldAngle = rotator.getAngle();
+
+        final Point oldPos = getPosition();
+        final Point piv = new Point(oldPos.x + pivotX, oldPos.y + pivotY);
+        AffineTransform.getRotateInstance(-oldAngle * PI_180, oldPos.x, oldPos.y).transform(piv, piv);
+
         rotator.setAngle(oldAngle - angle);
         final double newAngle = rotator.getAngle();
+
         if (getMap() != null) {
-
-          final Point p = getPosition();
-          Mat mat = null;
-          List<GamePiece> contents = null;
-          List<Point> offsets = null;
-
-          // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
-          final GamePiece outer = getOutermost(this);
-          if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
-            mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-            if (mat != null) {
-              //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
-              contents = new ArrayList<>(mat.getContents());
-              offsets = new ArrayList<>();
-              for (final GamePiece piece : contents) {
-                final Point pt = piece.getPosition();
-                pt.x -= p.x;
-                pt.y -= p.y;
-                offsets.add(pt);
-              }
-            }
-          }
-
           c = putOldProperties(this);
           Point pos = getPosition();
-          pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
+          pivotPoint(pos, -oldAngle * PI_180, -newAngle * PI_180);
+          final GamePiece outer = getOutermost(this);
           if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
             pos = getMap().snapTo(pos);
           }
@@ -267,7 +257,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
           }
           c = c.append(r.markMovedPieces());
 
-          c = rotateCargo(c, mat, p, contents, offsets);
+          c = rotateCargo(c, piv, newAngle - oldAngle);
 
           getMap().ensureVisible(getMap().selectionBoundsOf(outer));
         }
@@ -286,6 +276,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
                          getPosition().y + (int) Math.round(pivot2D.getY()));
       }
     }
+
     // Apply map auto-move key
     if (c != null && getMap() != null && getMap().getMoveKey() != null) {
       c = c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
