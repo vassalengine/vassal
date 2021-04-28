@@ -1,8 +1,8 @@
 3.6.0 - ???
 
-* 14440: Added sub-folders to group components under Module, Maps, Decks,
-    At-Start Stacks, Prototypes and Global Properties folders
 * 14423: Newly added Layer traits will now default to 'Always active'
+* 14400: Added sub-folders to group components under Module, Maps, Decks,
+    At-Start Stacks, Prototypes and Global Properties folders
 * 14388: Add Scrollbars to Prefs Dialog when needed
 * 14377: Add Hotkeys to hide and show map windows.
     Existing show/hide hotkey field is now always visible.
