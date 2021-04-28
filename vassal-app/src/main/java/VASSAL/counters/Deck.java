@@ -120,7 +120,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean drawFaceUp;
   protected boolean persistable;
   protected FormattedString selectDisplayProperty = new FormattedString("$" + BasicPiece.BASIC_NAME + "$");
-  protected String selectSortProperty = "";
+  protected String selectSortProperty = ""; // Sort property when "draw specific cards"
+  protected String sortProperty = ""; // Sort property when using "sort command"
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("", this);
   protected List<MutableProperty.Impl> expressionProperties = new ArrayList<>();
@@ -141,6 +142,21 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean restrictOption;
   protected PropertyExpression restrictExpression = new PropertyExpression();
   protected PropertySource propertySource;
+
+  protected String drawMultipleMessage;
+  protected String drawSpecificMessage;
+  protected String faceUpMessage;
+  protected String faceDownMessage;
+  protected NamedKeyStroke faceDownKey;
+  protected NamedKeyStrokeListener faceDownListener;
+
+  protected boolean sortable;
+  protected String sortCommand;
+  protected NamedKeyStrokeListener sortListener;
+  protected NamedKeyStroke sortKey;
+  protected String sortMsgFormat;
+  protected boolean sortDescending;
+
 
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
@@ -461,6 +477,26 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener.setKeyStroke(getReverseKey());
     }
 
+    if (sortListener == null) {
+      sortListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(sortDeck());
+        repaintMap();
+      });
+
+      gameModule.addKeyStrokeListener(sortListener);
+      sortListener.setKeyStroke(getSortKey());
+    }
+
+    if (faceDownListener == null) {
+      faceDownListener = new NamedKeyStrokeListener(e -> {
+        gameModule.sendAndLog(setContentsFaceDown(!faceDown));
+        repaintMap();
+      });
+
+      gameModule.addKeyStrokeListener(faceDownListener);
+      faceDownListener.setKeyStroke(getFaceDownKey());
+    }
+
     gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
@@ -478,6 +514,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (reverseListener != null) {
       gameModule.removeKeyStrokeListener(reverseListener);
       reverseListener = null;
+    }
+
+    if (sortListener != null) {
+      gameModule.removeKeyStrokeListener(sortListener);
+      sortListener = null;
+    }
+
+    if (faceDownListener != null) {
+      gameModule.removeKeyStrokeListener(faceDownListener);
+      faceDownListener = null;
     }
 
     gameModule.removeSideChangeListenerFromPlayerRoster(this);
@@ -527,6 +573,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     shuffleCommand = st.nextToken(Resources.getString("Deck.shuffle"));
     reverseCommand = st.nextToken(Resources.getString("Deck.reverse"));
     reverseKey = st.nextNamedKeyStroke(null);
+
+    drawMultipleMessage = st.nextToken(Resources.getString("Deck.draw_multiple"));
+    drawSpecificMessage = st.nextToken(Resources.getString("Deck.draw_specific"));
+    faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
+    faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
+    faceDownKey         = st.nextNamedKeyStroke(null);
+
+    sortable            = st.nextBoolean(false);
+    sortProperty        = st.nextToken("");
+    sortCommand         = st.nextToken(Resources.getString("Deck.sort"));
+    sortKey             = st.nextNamedKeyStroke(null);
+    sortMsgFormat       = st.nextToken("");
+    sortDescending      = st.nextBoolean(false);
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
@@ -623,6 +682,38 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseCommand = s;
   }
 
+  public NamedKeyStroke getFaceDownKey() {
+    return faceDownKey;
+  }
+
+  public void setFaceDownKey(NamedKeyStroke k) {
+    faceDownKey = k;
+  }
+
+  public String getSortMsgFormat() {
+    return sortMsgFormat;
+  }
+
+  public void setSortMsgFormat(String s) {
+    sortMsgFormat = s;
+  }
+
+  public String getSortCommand() {
+    return sortCommand;
+  }
+
+  public void setSortCommand(String s) {
+    sortCommand = s;
+  }
+
+  public NamedKeyStroke getSortKey() {
+    return sortKey;
+  }
+
+  public void setSortKey(NamedKeyStroke sortKey) {
+    this.sortKey = sortKey;
+  }
+
   public NamedKeyStroke getReverseKey() {
     return reverseKey;
   }
@@ -704,6 +795,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     this.allowSelectDraw = allowSelectDraw;
   }
 
+  public boolean isSortable() {
+    return sortable && !ALWAYS.equals(getShuffleOption());
+  }
+
+  public void setSortable(boolean sortable) {
+    this.sortable = sortable;
+  }
+
+  public boolean isSortDescending() {
+    return sortDescending;
+  }
+
+  public void setSortDescending(boolean sa) {
+    sortDescending = sa;
+  }
+
   public boolean isReversible() {
     return reversible;
   }
@@ -774,6 +881,38 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setReshuffleMsgFormat(String reshuffleMsgFormat) {
     this.reshuffleMsgFormat = reshuffleMsgFormat;
+  }
+
+  public String getDrawMultipleMessage() {
+    return drawMultipleMessage;
+  }
+
+  public void setDrawMultipleMessage(String m) {
+    drawMultipleMessage = m;
+  }
+
+  public String getDrawSpecificMessage() {
+    return drawSpecificMessage;
+  }
+
+  public void setDrawSpecificMessage(String m) {
+    drawSpecificMessage = m;
+  }
+
+  public String getFaceUpMessage() {
+    return faceUpMessage;
+  }
+
+  public void setFaceUpMessage(String m) {
+    faceUpMessage = m;
+  }
+
+  public String getFaceDownMessage() {
+    return faceDownMessage;
+  }
+
+  public void setFaceDownMessage(String m) {
+    faceDownMessage = m;
   }
 
   public boolean isHotkeyOnEmpty() {
@@ -868,7 +1007,18 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(restrictExpression)
       .append(shuffleCommand)
       .append(reverseCommand)
-      .append(reverseKey);
+      .append(reverseKey)
+      .append(drawMultipleMessage)
+      .append(drawSpecificMessage)
+      .append(faceUpMessage)
+      .append(faceDownMessage)
+      .append(faceDownKey)
+      .append(sortable)
+      .append(sortProperty)
+      .append(sortCommand)
+      .append(sortKey)
+      .append(sortMsgFormat)
+      .append(sortDescending);
     return ID + se.getValue();
   }
 
@@ -1072,6 +1222,99 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return c;
   }
 
+
+  private boolean anyNonNumeric = false; // It won't let me use it if I put it inside the method, and it won't let the inner class have a static. So "whatevs". Sigh.
+
+  /** Sort the contents of the Deck. Numeric sort preferred if possible */
+  public Command sortDeck() {
+    class AvailablePiece implements Comparable<AvailablePiece> {
+      private final GamePiece piece;
+
+      public AvailablePiece(GamePiece piece) {
+        this.piece = piece;
+      }
+
+      @Override
+      public int compareTo(AvailablePiece other) {
+        if (other == null) return 1;
+
+        final String otherProperty =
+          (String) other.piece.getProperty(sortProperty);
+        if (otherProperty == null) return 1;
+
+        final String myProperty =
+          (String) piece.getProperty(sortProperty);
+        if (myProperty == null) return -1;
+
+        if (!anyNonNumeric) {
+          try {
+            final Integer otherNum = Integer.parseInt(otherProperty);
+            final Integer myNum = Integer.parseInt(myProperty);
+            return -otherNum.compareTo(myNum);
+          }
+          catch (NumberFormatException e) {
+            // no action, we revert to string.
+          }
+        }
+
+        return -otherProperty.compareTo(myProperty);
+      }
+
+      @Override
+      public String toString() {
+        return selectDisplayProperty.getText(piece);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (! (o instanceof AvailablePiece)) return false;
+        return ((AvailablePiece)o).piece.equals(piece);
+      }
+    }
+
+    if (!isSortable()) {
+      return new NullCommand(); // Prevents us from sorting "Always Shuffle" decks
+    }
+
+    final AvailablePiece[] pieces = new AvailablePiece[getPieceCount()];
+    for (int i = 0; i < pieces.length; ++i) {
+      pieces[pieces.length - i - 1] = new AvailablePiece(getPieceAt(i));
+
+      //BR// If every property contains a parsable number, we will be able to do a numeric sort.
+      if (!anyNonNumeric) {
+        final String prop = (String) pieces[pieces.length - i - 1].piece.getProperty(sortProperty);
+        try {
+          Integer.parseInt(prop);
+        }
+        catch (NumberFormatException e) {
+          anyNonNumeric = true;
+        }
+      }
+    }
+
+    if (sortProperty != null && sortProperty.length() > 0) {
+      Arrays.sort(pieces);
+    }
+
+    final List<GamePiece> pieceList = new ArrayList<>();
+    for (final AvailablePiece ap : pieces) {
+      pieceList.add(ap.piece);
+    }
+
+    if (!isSortDescending()) {
+      Collections.reverse(pieceList);
+    }
+
+    final Command c = new NullCommand();
+    c.append(setContents(pieceList));
+
+    if (Map.isChangeReportingEnabled()) {
+      c.append(reportCommand(sortMsgFormat, Resources.getString("Deck.sort")));
+    }
+
+    return c;
+  }
+
   public boolean isDrawOutline() {
     return drawOutline;
   }
@@ -1228,7 +1471,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {
-        final KeyCommand faceDownAction = new KeyCommand(faceDown ? Resources.getString("Deck.face_up") : Resources.getString("Deck.face_down"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
+        final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, getFaceDownKey(), this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1254,7 +1497,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (allowMultipleDraw) {
-        c = new KeyCommand(Resources.getString("Deck.draw_multiple"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(drawMultipleMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1265,12 +1508,24 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (allowSelectDraw) {
-        c = new KeyCommand(Resources.getString("Deck.draw_specific"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(drawSpecificMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           @Override
           public void actionPerformed(ActionEvent e) {
             promptForNextDraw();
+            repaintMap();
+          }
+        };
+        l.add(c);
+      }
+      if (isSortable()) {
+        c = new KeyCommand(sortCommand, getSortKey(), this) {
+          private static final long serialVersionUID = 1L;
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            final Command c = sortDeck();
+            gameModule.sendAndLog(c);
             repaintMap();
           }
         };
@@ -1307,11 +1562,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     for (final KeyCommand command : commands) {
-      if (Resources.getString("Deck.face_up").equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
-      }
-      else if (Resources.getString("Deck.face_down").equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
+      if (command.getValue(Action.NAME) != null) {
+        if (((String) command.getValue(Action.NAME)).contains(faceUpMessage) && !faceDown) {
+          command.putValue(Action.NAME, faceDownMessage); //$NON-NLS-1$
+        }
+        else if (((String) command.getValue(Action.NAME)).contains(faceDownMessage) && faceDown) { //$NON-NLS-1$
+          command.putValue(Action.NAME, faceUpMessage); //$NON-NLS-1$
+        }
       }
     }
     return commands;
@@ -1400,6 +1657,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     if (selectSortProperty != null && selectSortProperty.length() > 0) {
       Arrays.sort(pieces);
+    }
+
+    if (isSortDescending()) {
+      Collections.reverse(Arrays.asList(pieces));
     }
 
     final JList<AvailablePiece> list = new JList<>(pieces);
@@ -1701,6 +1962,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public String getSelectSortProperty() {
     return selectSortProperty;
+  }
+
+  public String getSortProperty() {
+    return sortProperty;
+  }
+
+  public void setSortProperty(String sp) {
+    this.sortProperty = sp;
   }
 
   protected void repaintMap() {

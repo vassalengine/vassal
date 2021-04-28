@@ -20,6 +20,7 @@ package VASSAL.configure;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.swing.SwingUtils;
@@ -140,6 +141,9 @@ public class AutoConfigurer extends Configurer
     }
     else if (PropertyExpression.class.isAssignableFrom(type)) {
       config = new PropertyExpressionConfigurer(key, prompt);
+    }
+    else if (FormattedStringExpression.class.isAssignableFrom(type)) {
+      config = new FormattedExpressionConfigurer(key, prompt);
     }
     else if (TranslatableStringEnum.class.isAssignableFrom(type)) {
       TranslatableStringEnum se = null;
