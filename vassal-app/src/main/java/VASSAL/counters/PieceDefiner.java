@@ -884,7 +884,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     Object o = null;
     try {
       o = GameModule.getGameModule().getDataArchive()
-                    .loadClass(className).getConstructor().newInstance();
+        .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
       ReflectionUtils.handleImportClassFailure(t, className);

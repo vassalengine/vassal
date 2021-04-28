@@ -53,7 +53,7 @@ import VASSAL.search.ImageSearchTarget;
  * {@link Decorator} traits.
  * <br><br>
  * A standard Stack will only contain pieces that are "stackable" (i.e. doesn't have a "Does Not Stack" {@link Immobilized}
- * trait, so that {@link Properties.NO_STACK} is false) and share the same X/Y position on the same {@link Map}, and all
+ * trait with stacking disabled, so that {@link Properties.NO_STACK} is false) and share the same X/Y position on the same {@link Map}, and all
  * stackable pieces on a {@link Map} will always be part of <i>some</i> Stack -- even single stackable pieces will have
  * a Stack created to contain them. Stacks <i>should</i> contain only pieces from the same visual layer (see
  * {@link VASSAL.build.module.map.LayeredPieceCollection}), but presently bad behaviors can still develop (e.g. a piece
