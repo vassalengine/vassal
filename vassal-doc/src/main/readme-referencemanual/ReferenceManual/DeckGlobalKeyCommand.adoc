@@ -24,6 +24,8 @@ Right-click on the _[Deck]_ entry and select _Add Deck Global Key Command_.
 
 *Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever the Deck Global Key Command is activated.
 
+*Suppress individual reports:* If selected, then any reports (whether auto-reporting or <<ReportChanges.adoc#top,Report Action>> traits) by the affected Pieces will be disabled throughout the processing of this Global Key Command.
+
  + a|
 image:images/DeckGlobalKeyCommand.png[]
 
