@@ -29,6 +29,8 @@
 * 14207: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
 * 13817: Default UI font size can be over-ridden in preferences
+*  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
+
 
 3.5.6 - ???
 
