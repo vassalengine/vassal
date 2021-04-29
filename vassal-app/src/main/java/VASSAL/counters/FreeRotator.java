@@ -360,8 +360,8 @@ public class FreeRotator extends Decorator
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(validAngles.length);
     if (validAngles.length == 1) {
-      se.append(setAngleKey);
-      se.append(setAngleText);
+      se.append(setAngleKey)
+        .append(setAngleText);
     }
     else {
       se.append(rotateCWKey)
@@ -789,12 +789,20 @@ public class FreeRotator extends Decorator
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText},
-                       new String[] {
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))});
+    return getI18nData(
+      new String[] {
+        setAngleText,
+        rotateCWText,
+        rotateCCWText,
+        rotateRNDText
+      },
+      new String[] {
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))
+      }
+    );
   }
 
   /**
