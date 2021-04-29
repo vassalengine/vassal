@@ -593,7 +593,7 @@ public class MassPieceLoader {
     protected void paste() {
       final String type = clipBoard.getType();
       final Decorator c =  type.startsWith(Embellishment.ID) ? new Emb(type, null) :
-        (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
+        (Decorator) GameModule.getGameModule().createPiece(type, null);
       if (c instanceof PlaceMarker) {
         ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
       }
