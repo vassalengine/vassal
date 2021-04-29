@@ -17,9 +17,7 @@
  */
 package VASSAL.counters;
 
-import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
 import VASSAL.command.ChangeTracker;
@@ -138,91 +136,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  /*
-   * Move a single piece to a destination
-   */
-  protected Command movePiece(GamePiece gp, Point dest) {
-    // Is the piece on a map?
-    final Map map = gp.getMap();
-    if (map == null) {
-      return null;
-    }
-
-    // Set the Old... properties
-    Command c = putOldProperties(this);
-
-    // Mark the piece moved
-    final GamePiece outer = Decorator.getOutermost(gp);
-    final ChangeTracker comm = new ChangeTracker(outer);
-    outer.setProperty(Properties.MOVED, Boolean.TRUE);
-    c = c.append(comm.getChangeCommand());
-
-    // Move the piece
-    c = c.append(map.placeOrMerge(outer, dest));
-
-    // Apply after Move Key
-    if (map.getMoveKey() != null) {
-      c = c.append(outer.keyEvent(map.getMoveKey()));
-    }
-
-    // Unlink from Parent Stack (in case it is a Deck).
-    final Stack parent = outer.getParent();
-    if (parent != null) {
-      c = c.append(parent.pieceRemoved(outer));
-    }
-
-    if (GameModule.getGameModule().isMatSupport()) {
-      // If a cargo piece has been "sent", find it a new Mat if needed.
-      if ("true".equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
-        if (cargo != null) {
-          c = c.append(cargo.findNewMat());
-        }
-      }
-    }
-
-    return c;
-  }
-
-  protected Command rotateCargo(Command command, Point center, double dtheta) {
-    if (!GameModule.getGameModule().isMatSupport()) {
-      return command;
-    }
-
-    // check that we have a map and that the mat-ness is visible for us
-    final GamePiece outer = getOutermost(this);
-    if (outer.getMap() == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
-      return command;
-    }
-
-    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-    if (mat == null) {
-      return command;
-    }
-
-    final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, center.x, center.y);
-
-    // If a Mat has been rotated, make the contents orbit the center point
-    for (final GamePiece piece : mat.getContents()) {
-      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
-      if (cargo != null) {
-        // Rotate Cargo's current position to its destination
-        final Point dst = new Point();
-        t.transform(piece.getPosition(), dst);
-        command = command.append(movePiece(piece, dst));
-
-        final FreeRotator crot = (FreeRotator) Decorator.getDecorator(cargo, FreeRotator.class);
-        if (crot != null) {
-          final ChangeTracker tracker = new ChangeTracker(crot);
-          crot.setAngle(crot.getAngle() + dtheta);
-          command = command.append(tracker.getChangeCommand());
-        }
-      }
-    }
-
-    return command;
-  }
-
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
@@ -264,7 +177,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
           }
           c = c.append(r.markMovedPieces());
 
-          c = rotateCargo(c, piv, newAngle - oldAngle);
+          c = rotator.rotateCargo(c, piv, newAngle - oldAngle);
 
           getMap().ensureVisible(getMap().selectionBoundsOf(outer));
         }

@@ -505,7 +505,7 @@ public class FreeRotator extends Decorator
     return c;
   }
 
-  protected Command rotateCargo(Command command, Point center, double dtheta) {
+  public Command rotateCargo(Command command, Point center, double dtheta) {
     if (!GameModule.getGameModule().isMatSupport()) {
       return command;
     }
