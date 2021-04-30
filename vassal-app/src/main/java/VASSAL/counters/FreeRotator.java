@@ -531,13 +531,6 @@ public class FreeRotator extends Decorator
         final Point dst = new Point();
         t.transform(piece.getPosition(), dst);
         command = command.append(movePiece(piece, dst));
-
-        final FreeRotator crot = (FreeRotator) Decorator.getDecorator(cargo, FreeRotator.class);
-        if (crot != null) {
-          final ChangeTracker tracker = new ChangeTracker(crot);
-          crot.setAngle(crot.getAngle() + dtheta);
-          command = command.append(tracker.getChangeCommand());
-        }
       }
     }
 
