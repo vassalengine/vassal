@@ -63,7 +63,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     type = type.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     desc = st.nextToken();
-    rotateWithMat = st.nextBoolean(false);
+    rotateWithMat = st.nextBoolean(true);
   }
 
   @Override
