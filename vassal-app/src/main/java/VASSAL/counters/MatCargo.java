@@ -253,7 +253,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   }
 
   protected double getMatAngle() {
-    if (mat == null) {
+    if (mat == null || !rotateWithMat) {
       return 0.0;
     }
 
