@@ -40,7 +40,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
   protected String desc;
 
-  protected boolean rotateWithMat;
+  protected boolean maintainRelativeFacing;
   protected GamePieceOp gpOp;
   protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
   protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
@@ -63,14 +63,14 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     type = type.substring(ID.length());
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     desc = st.nextToken();
-    rotateWithMat = st.nextBoolean(true);
+    maintainRelativeFacing = st.nextBoolean(true);
   }
 
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(desc)
-      .append(rotateWithMat);
+      .append(maintainRelativeFacing);
     return ID + se.getValue();
   }
 
@@ -253,7 +253,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   }
 
   protected double getMatAngle() {
-    if (mat == null || !rotateWithMat) {
+    if (mat == null || !maintainRelativeFacing) {
       return 0.0;
     }
 
@@ -362,7 +362,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public boolean testEquals(Object o) {
     if (! (o instanceof MatCargo)) return false;
     final MatCargo c = (MatCargo) o;
-    return Objects.equals(desc, c.desc) && rotateWithMat == c.rotateWithMat;
+    return Objects.equals(desc, c.desc) &&
+           maintainRelativeFacing == c.maintainRelativeFacing;
   }
 
   @Override
@@ -398,8 +399,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       descInput.setHintKey("Editor.description_hint");
       controls.add("Editor.description_label", descInput);
 
-      rotInput = new BooleanConfigurer(p.rotateWithMat);
-      controls.add("Editor.MatCargo.rotate_with_mat", rotInput);
+      rotInput = new BooleanConfigurer(p.maintainRelativeFacing);
+      controls.add("Editor.MatCargo.maintain_relative_facing", rotInput);
     }
 
     @Override
