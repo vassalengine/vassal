@@ -65,7 +65,7 @@ import VASSAL.tools.WarningDialog;
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
 
-  private final Controls controls;
+  private Controls controls;
   private JPanel panel;
   private final List<SecretNote> notes;
   private List<SecretNote> lastSavedNotes;
@@ -118,7 +118,17 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       notes.clear();
-      controls.refresh();
+      rebuildControls();
+    }
+  }
+
+  private void rebuildControls() {
+    if (panel != null) {
+      panel.remove(controls);
+    }
+    controls = new Controls();
+    if (panel != null) {
+      panel.add(controls);
     }
   }
 
@@ -182,7 +192,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     else {
       notes.add(0, note);
     }
-    controls.refresh();
+    rebuildControls();
   }
 
 
@@ -233,7 +243,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public void restoreState() {
     notes.clear();
     notes.addAll(lastSavedNotes);
-    controls.refresh();
+    rebuildControls();
   }
 
   private class Controls extends JPanel implements ItemListener {
