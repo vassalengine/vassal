@@ -68,7 +68,7 @@ public class UsernameAndPasswordDialog extends JDialog {
     final StringConfigurer pwd2 = new PasswordConfigurer(null, "");
     add(pwd2.getControls());
 
-    final JLabel note = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+    final JLabel note = new JLabel(Resources.getString("WizardSupport.Details"));
     add(note, "span 2,center"); // NON-NLS
 
     final JLabel error = new JLabel(Resources.getString("WizardSupport.EnterNameAndPassword"));
