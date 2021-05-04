@@ -33,8 +33,6 @@ import VASSAL.configure.ConfigurerLayout;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
-import VASSAL.counters.Immobilized;
-import VASSAL.counters.Mat;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
