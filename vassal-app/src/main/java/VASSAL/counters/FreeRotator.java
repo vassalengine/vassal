@@ -360,8 +360,8 @@ public class FreeRotator extends Decorator
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(validAngles.length);
     if (validAngles.length == 1) {
-      se.append(setAngleKey);
-      se.append(setAngleText);
+      se.append(setAngleKey)
+        .append(setAngleText);
     }
     else {
       se.append(rotateCWKey)
@@ -459,12 +459,10 @@ public class FreeRotator extends Decorator
     return commands;
   }
 
-
   /*
    * Move a single piece to a destination
    */
   protected Command movePiece(GamePiece gp, Point dest) {
-
     // Is the piece on a map?
     final Map map = gp.getMap();
     if (map == null) {
@@ -507,34 +505,37 @@ public class FreeRotator extends Decorator
     return c;
   }
 
-
-  protected Command rotateCargo(Command command, Mat mat, Point p, List<GamePiece> contents, List<Point> offsets) {
-    if (!GameModule.getGameModule().isMatSupport() || mat == null || offsets == null) {
+  public Command rotateCargo(Command command, Point center, double dtheta) {
+    if (!GameModule.getGameModule().isMatSupport()) {
       return command;
     }
 
-    // If a Mat has been rotated sent, revolve all its contents, at an appropriate offset, around our center.
-    final Map ourMap = Decorator.getOutermost(this).getMap();
-    if (ourMap != null) {
-      for (int i = 0; i < contents.size(); i++) {
-        final GamePiece piece = contents.get(i);
-        final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
-        if (cargo != null) {
-          // Get Cargo's pre-move offset from the Mat
-          final Point pt = new Point(p);
-          pt.x += offsets.get(i).x;
-          pt.y += offsets.get(i).y;
+    // check that we have a map and that the mat-ness is visible for us
+    final GamePiece outer = getOutermost(this);
+    if (outer.getMap() == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
+      return command;
+    }
 
-          // MAT SUPPORT -- REVOLVE!!!!
+    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+    if (mat == null) {
+      return command;
+    }
 
-          command = command.append(movePiece(piece, pt));
-        }
+    final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, center.x, center.y);
+
+    // If a Mat has been rotated, make the contents orbit the center point
+    for (final GamePiece piece : mat.getContents()) {
+      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+      if (cargo != null) {
+        // Rotate Cargo's current position to its destination
+        final Point dst = new Point();
+        t.transform(piece.getPosition(), dst);
+        command = command.append(movePiece(piece, dst));
       }
     }
 
     return command;
   }
-
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
@@ -546,28 +547,7 @@ public class FreeRotator extends Decorator
 
     Command c = null;
 
-    // Current Position
-    final Point p = getPosition();
-
-    Mat mat = null;
-    List<GamePiece> contents = null;
-    List<Point> offsets = null;
-
-    // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
-    final GamePiece outer = getOutermost(this);
-    if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
-      mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-      if (mat != null) {
-        contents = new ArrayList<>(mat.getContents());
-        offsets = new ArrayList<>();
-        for (final GamePiece piece : contents) {
-          final Point pt = piece.getPosition();
-          pt.x -= p.x;
-          pt.y -= p.y;
-          offsets.add(pt);
-        }
-      }
-    }
+    final double origAngle = getAngle();
 
     if (rotateCWCommand.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
@@ -597,7 +577,10 @@ public class FreeRotator extends Decorator
     }
     // end random rotation
 
-    c = rotateCargo(c, mat, p, contents, offsets);
+    // Mat Support
+    if (c != null) {
+      c = rotateCargo(c, getPosition(), getAngle() - origAngle);
+    }
 
     return c;
   }
@@ -677,30 +660,9 @@ public class FreeRotator extends Decorator
       }
 
       final Map m = getMap();
+      final GamePiece outer = getOutermost(this);
 
       try {
-        final Point p = getPosition();
-        Mat mat = null;
-        List<GamePiece> contents = null;
-        List<Point> offsets = null;
-
-        // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
-        final GamePiece outer = getOutermost(this);
-        if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
-          mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-          if (mat != null) {
-            //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
-            contents = new ArrayList<>(mat.getContents());
-            offsets = new ArrayList<>();
-            for (final GamePiece piece : contents) {
-              final Point pt = piece.getPosition();
-              pt.x -= p.x;
-              pt.y -= p.y;
-              offsets.add(pt);
-            }
-          }
-        }
-
         final Point ghostPosition = getGhostPosition();
 
         Command c = null;
@@ -709,10 +671,12 @@ public class FreeRotator extends Decorator
           outer.setProperty(Properties.MOVED, Boolean.TRUE);
           c = m.placeOrMerge(outer, m.snapTo(ghostPosition));
         }
+        final double origAngle = getAngle();
         setAngle(tempAngle);
         c = tracker.getChangeCommand().append(c);
 
-        c = rotateCargo(c, mat, p, contents, offsets);
+        // Mat Support
+        c = rotateCargo(c, getPosition(), tempAngle - origAngle);
 
         GameModule.getGameModule().sendAndLog(c);
       }
@@ -825,12 +789,20 @@ public class FreeRotator extends Decorator
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText},
-                       new String[] {
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))});
+    return getI18nData(
+      new String[] {
+        setAngleText,
+        rotateCWText,
+        rotateCCWText,
+        rotateRNDText
+      },
+      new String[] {
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))
+      }
+    );
   }
 
   /**
