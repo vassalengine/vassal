@@ -588,6 +588,23 @@ public class MassPieceLoader {
       setPiece(null);
 
     }
+
+    @Override
+    protected void paste() {
+      final String type = clipBoard.getType();
+      final Decorator c =  type.startsWith(Embellishment.ID) ? new Emb(type, null) :
+        (Decorator) GameModule.getGameModule().createPiece(type, null);
+      if (c instanceof PlaceMarker) {
+        ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
+      }
+      final int selectedIndex = getInUseSelectedIndex();
+      c.setInner(inUseModel.lastElement());
+      inUseModel.addElement(c);
+      c.mySetState(clipBoard.getState());
+      moveDecorator(inUseModel.size() - 1, selectedIndex + 1);
+      refresh();
+    }
+
   }
 
   /**

@@ -40,9 +40,9 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
-
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -353,10 +353,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     }
 
     // Piece should have a parent stack (Decks are extensions of Stacks)
-    // Except pieces with a DNS (Immobilized) or Mat trait.
+    // Except pieces that return TRUE for the NO_STACK property.
     final Stack oldStack = piece.getParent();
     if (oldStack == null) {
-      if ((Decorator.getDecorator(piece, Immobilized.class) == null) && (Decorator.getDecorator(piece, Mat.class) == null)) {
+      if (!Boolean.TRUE.equals(Decorator.getOutermost(piece).getProperty(Properties.NO_STACK))) {
         noStackCount++;
         log(Resources.getString("GameRefresher.refresh_error_nostack", piece.getName(), piece.getId()));
       }

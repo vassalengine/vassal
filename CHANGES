@@ -1,6 +1,7 @@
 3.6.0 - ???
 
-* 14440: Added sub-folders to group components under Module, Maps, Decks,
+* 14423: Newly added Layer traits will now default to 'Always active'
+* 14400: Added sub-folders to group components under Module, Maps, Decks,
     At-Start Stacks, Prototypes and Global Properties folders
 * 14388: Add Scrollbars to Prefs Dialog when needed
 * 14377: Add Hotkeys to hide and show map windows.
@@ -18,6 +19,7 @@
 * 14358: ReportState checkbox overrides Global Key Command suppression of
     individual reports
 * 14346: Deck reports now suppressed during GKC report suppresssion
+* 14341: Ability to specify Return-to-Deck target as an expression
 * 14283: Global Options can be configured to let toolbar items on closed
     windows accept global hotkeys.
 * 14278: Increase number of default zomm levels in new Map Zoom Capability
@@ -28,9 +30,14 @@
 * 14207: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
 * 13817: Default UI font size can be over-ridden in preferences
+*  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
 
 3.5.6 - ???
 
+* 14418: MassPieceLoader: Copy/Paste of Modified Layer trait generates
+    Standard Layer on Paste
+* 14408: Lock logs and saves during writes to preempt locking by programs like
+    Dropbox
 * 14401: Cancelling a predefined-setup load during setup wizard shouldn't show
     "Loaded..." message.
 * 14393: Don't show that sending bug reports failed when they've succeeded
@@ -44,6 +51,7 @@
 * 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
 * 14286: Prevent bad expressions from returning null
 * 14271: Chat & Notes input panel(s) treat Hotkeys differently
+* 10114: ArrayIndexOutOfBoundsException in SecretNotesController.setup()
 
 3.5.5 - 6 April 2021
 

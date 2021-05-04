@@ -41,6 +41,7 @@ public class ImmobilizedTest extends DecoratorTest {
     trait.moveIfSelected = false;
     trait.neverBandSelect = true;
     trait.altToBandSelect = false;
+    trait.canStack = false;
     serializeTest("Test 1", trait); // NON-NLS
 
     trait = new Immobilized();
@@ -52,6 +53,7 @@ public class ImmobilizedTest extends DecoratorTest {
     trait.moveIfSelected = true;
     trait.neverBandSelect = false;
     trait.altToBandSelect = true;
+    trait.canStack = true;
     serializeTest("Test 2", trait); // NON-NLS
 
     trait = new Immobilized();

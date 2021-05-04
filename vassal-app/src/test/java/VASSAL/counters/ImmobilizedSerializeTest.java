@@ -127,5 +127,6 @@ public class ImmobilizedSerializeTest extends SerializeTest<Immobilized> {
     assertEquals(immob1.ignoreGrid, immob2.ignoreGrid);
     assertEquals(immob1.neverMove, immob2.neverMove);
     assertEquals(immob1.moveIfSelected, immob2.moveIfSelected);
+    assertEquals(immob1.canStack, immob2.canStack);
   }
 }
