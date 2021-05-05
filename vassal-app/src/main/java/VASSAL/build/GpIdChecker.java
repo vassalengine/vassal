@@ -19,14 +19,6 @@ package VASSAL.build;
 
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.PrototypeDefinition;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
@@ -38,6 +30,13 @@ import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.Resources;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Build a cross-reference of all GpId-able elements in a module or ModuleExtension,
@@ -346,8 +345,9 @@ public class GpIdChecker {
           else if (d instanceof Embellishment) {
             if (useLayerName()) {
               final String nameToFind = ((Embellishment)decoratorNewPc).getLayerName();
-              ((Embellishment) d).getLayerName().equals(nameToFind);
-              return d.myGetState();
+              if (((Embellishment) d).getLayerName().equals(nameToFind)) {
+                return d.myGetState();
+              }
             }
           }
 
