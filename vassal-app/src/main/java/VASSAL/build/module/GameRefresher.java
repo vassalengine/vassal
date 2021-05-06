@@ -17,30 +17,6 @@
 
 package VASSAL.build.module;
 
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.GpIdChecker;
-import VASSAL.build.GpIdSupport;
-import VASSAL.build.IllegalBuildException;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.widget.PieceSlot;
-import VASSAL.command.ChangePiece;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.command.NullCommand;
-import VASSAL.command.RemovePiece;
-import VASSAL.configure.ConfigurerLayout;
-import VASSAL.counters.Deck;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.Properties;
-import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.swing.SwingUtils;
-
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -65,10 +41,32 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.GpIdChecker;
+import VASSAL.build.GpIdSupport;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.ChangePiece;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.NullCommand;
+import VASSAL.command.RemovePiece;
+import VASSAL.configure.ConfigurerLayout;
+import VASSAL.counters.Deck;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
 
 /**
  * GameRefresher Replace all counters in the same game with the current version
@@ -382,18 +380,18 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     else {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
       final Point piecePosition = piece.getPosition();
+      final Point hiddenPosition = new Point(-100, -100);
       Point tempPosition = piecePosition;
       final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
 
       // Delete old piece 1st. Doing that after placing the new piece causes errors if the old piece has no stack
       // as same pos as new piece, it somehow deleted the new stack too!
 
-      // Place new piece on the map where the old piece was
-      // Then position it at the same position in the stack the old piece was
+      // Place new piece on the map at position -100 -100 (this is to fix bug 14440). For some reason
+      // the new piece misbehaves in a stack (not visible when stack expanded) when 1st placed on the map (or game)
+      // By placing in -100 -100 1st the error seems to disappear
 
-
-      // Place the new Piece.
-
+      // Pieces in Decks
       // Here we use a workaround for placing pieces into decks. If 2 decks are defined
       // with the same x,y position, the piece placement will not be able to determine
       // the target deck. So 1st move the deck of the piece being replaced to -1, -1
@@ -417,7 +415,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       remove.execute();
       command.append(remove);
 
-      final Command place = map.placeOrMerge(newPiece, tempPosition);
+      Command place = map.placeOrMerge(newPiece, hiddenPosition);
+      command.append(place);
+      place = map.placeOrMerge(newPiece, tempPosition);
       command.append(place);
 
       if (isDeck) {
