@@ -19,6 +19,7 @@ package VASSAL.counters;
 
 import javax.swing.KeyStroke;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -28,6 +29,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -38,6 +40,7 @@ import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -276,7 +279,13 @@ public class GlobalCommand {
         }
         else if ((target.targetCompare == GlobalCommandTarget.CompareMode.MATCH) ||
                  (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_MATCH)) {
-          fastPattern  = Pattern.compile(fastValue);
+          try {
+            fastPattern = Pattern.compile(fastValue);
+          }
+          catch (PatternSyntaxException ex) {
+            ErrorDialog.dataWarning(new BadDataReport("Fast Match - syntax error in regex: ", target.targetValue.getExpression()));  //NON-NLS
+            fastPattern = Pattern.compile("bAdMoDuLeDaTa"); //NON-NLS // Give it "something" so it won't throw more exceptions later.
+          }
           fastIsNumber = false;
           fastNumber   = 0;
         }
