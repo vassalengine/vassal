@@ -381,7 +381,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     else {
       // Refreshing is done. This section is for non test mode, to replace all the old pieces with the new pieces
       final Point piecePosition = piece.getPosition();
-      Point hiddenPosition = new Point(-100, -100);
+      final Point hiddenPosition = new Point(-100, -100);
       Point tempPosition = piecePosition;
       final int oldStackIndex = oldStack == null ? 0 : oldStack.indexOf(piece);
 
