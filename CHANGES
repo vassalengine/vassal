@@ -1,6 +1,7 @@
 3.5.6 - ???
 
 * 14452: Catch PatternSyntaxException on user-provided regexes
+* 14440: Counter refresh function sometimes changes stacking order of pieces
 * 14422: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
 * 14418: MassPieceLoader: Copy/Paste of Modified Layer trait generates
     Standard Layer on Paste
