@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 14455: Mats & Cargo - Cargo pieces stay attached to Mat piece when moving.
 * 14423: Newly added Layer traits will now default to 'Always active'
 * 14400: Added sub-folders to group components under Module, Maps, Decks,
     At-Start Stacks, Prototypes and Global Properties folders
