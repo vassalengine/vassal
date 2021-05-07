@@ -187,6 +187,27 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Current Position
     Point p = getPosition();
 
+    Mat mat = null;
+    List<GamePiece> contents = null;
+    List<Point> offsets = null;
+
+    // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
+    final GamePiece outer = getOutermost(target);
+    if (GameModule.getGameModule().isMatSupport() && !(target instanceof Stack) && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
+      mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+      if (mat != null) {
+        //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
+        contents = new ArrayList<>(mat.getContents());
+        offsets = new ArrayList<>();
+        for (final GamePiece piece : contents) {
+          final Point pt = piece.getPosition();
+          pt.x -= p.x;
+          pt.y -= p.y;
+          offsets.add(pt);
+        }
+      }
+    }
+
     // Calculate the destination
     translate(p);
 
@@ -217,6 +238,26 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
     else {
       c = c.append(movePiece(target, p));
+
+      // Mat Support
+      if (GameModule.getGameModule().isMatSupport() && (offsets != null)) {
+        // If a Mat has been sent, send all its contents, at an appropriate offset.
+        final Map ourMap = outer.getMap();
+        if (ourMap != null) {
+          for (int i = 0; i < contents.size(); i++) {
+            final GamePiece piece = contents.get(i);
+            final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+            if (cargo != null) {
+              // Get Cargo's pre-move offset from the Mat
+              final Point pt = new Point(p);
+              pt.x += offsets.get(i).x;
+              pt.y += offsets.get(i).y;
+
+              c = c.append(movePiece(piece, pt));
+            }
+          }
+        }
+      }
     }
 
     return c;
@@ -254,6 +295,16 @@ public class Translate extends Decorator implements TranslatablePiece {
     final Stack parent = outer.getParent();
     if (parent != null) {
       c = c.append(parent.pieceRemoved(outer));
+    }
+
+    if (GameModule.getGameModule().isMatSupport()) {
+      // If a cargo piece has been "sent", find it a new Mat if needed.
+      if ("true".equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+        }
+      }
     }
 
     return c;

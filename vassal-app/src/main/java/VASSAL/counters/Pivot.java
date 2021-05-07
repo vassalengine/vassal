@@ -67,6 +67,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected FreeRotator rotator;
   protected String description;
 
+  private static final double PI_180 = Math.PI / 180.0;
+
   public Pivot() {
     this(ID, null);
   }
@@ -125,12 +127,12 @@ public class Pivot extends Decorator implements TranslatablePiece {
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(command)
-        .append(key)
-        .append(pivotX)
-        .append(pivotY)
-        .append(fixedAngle)
-        .append(angle)
-        .append(description);
+      .append(key)
+      .append(pivotX)
+      .append(pivotY)
+      .append(fixedAngle)
+      .append(angle)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -141,14 +143,21 @@ public class Pivot extends Decorator implements TranslatablePiece {
     if (pivotCommand.matches(stroke)) {
       if (fixedAngle) {
         final ChangeTracker t = new ChangeTracker(this);
+
         final double oldAngle = rotator.getAngle();
+
+        final Point oldPos = getPosition();
+        final Point piv = new Point(oldPos.x + pivotX, oldPos.y + pivotY);
+        AffineTransform.getRotateInstance(-oldAngle * PI_180, oldPos.x, oldPos.y).transform(piv, piv);
+
         rotator.setAngle(oldAngle - angle);
         final double newAngle = rotator.getAngle();
+
         if (getMap() != null) {
           c = putOldProperties(this);
           Point pos = getPosition();
-          pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
-          final GamePiece outer = Decorator.getOutermost(this);
+          pivotPoint(pos, -oldAngle * PI_180, -newAngle * PI_180);
+          final GamePiece outer = getOutermost(this);
           if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
             pos = getMap().snapTo(pos);
           }
@@ -157,6 +166,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
           final MoveTracker moveTracker = new MoveTracker(outer);
           getMap().placeOrMerge(outer, pos);
           c = c.append(moveTracker.getMoveCommand());
+
           final MovementReporter r = new MovementReporter(c);
           if (GlobalOptions.getInstance().autoReportEnabled()) {
             final Command reportCommand = r.getReportCommand();
@@ -166,6 +176,9 @@ public class Pivot extends Decorator implements TranslatablePiece {
             c = c.append(reportCommand);
           }
           c = c.append(r.markMovedPieces());
+
+          c = rotator.rotateCargo(c, piv, newAngle - oldAngle);
+
           getMap().ensureVisible(getMap().selectionBoundsOf(outer));
         }
         else {
@@ -183,6 +196,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
                          getPosition().y + (int) Math.round(pivot2D.getY()));
       }
     }
+
     // Apply map auto-move key
     if (c != null && getMap() != null && getMap().getMoveKey() != null) {
       c = c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
@@ -239,7 +253,6 @@ public class Pivot extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(command, Resources.getString("Editor.Pivot.pivot_command"));
   }
-
 
   @Override
   public boolean testEquals(Object o) {
@@ -319,12 +332,12 @@ public class Pivot extends Decorator implements TranslatablePiece {
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(command.getValueString())
-          .append(key.getValueString())
-          .append(xOff.getValueString())
-          .append(yOff.getValueString())
-          .append(Boolean.TRUE.equals(fixedAngle.getValue()))
-          .append(angle.getValueString())
-          .append(desc.getValueString());
+        .append(key.getValueString())
+        .append(xOff.getValueString())
+        .append(yOff.getValueString())
+        .append(Boolean.TRUE.equals(fixedAngle.getValue()))
+        .append(angle.getValueString())
+        .append(desc.getValueString());
       return ID + se.getValue();
     }
   }

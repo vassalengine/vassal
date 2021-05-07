@@ -23,6 +23,8 @@ import java.util.Iterator;
 
 import VASSAL.build.module.Map;
 
+import static VASSAL.counters.Mat.MAT_NAME;
+
 /**
  * This interface defines selection criteria for finding a GamePiece in a Map
  */
@@ -51,6 +53,26 @@ public interface PieceFinder {
    * or a piece within that stack if expanded and overlapping the given point
    */
   PieceFinder MOVABLE = new Movable();
+
+  PieceFinder MAT_ONLY = new MatOnly();
+
+  /**
+   * Returns a Mat that overlaps this piece
+   */
+  class MatOnly extends Movable {
+    @Override
+    public Object visitDefault(GamePiece piece) {
+      if (!"".equals(piece.getProperty(MAT_NAME))) {
+        return super.visitDefault(piece);
+      }
+      return null;
+    }
+
+    @Override
+    public Object visitStack(Stack s) {
+      return null;
+    }
+  }
 
   class StackOnly extends Movable {
     @Override
@@ -158,7 +180,6 @@ public interface PieceFinder {
       this.pt = pt;
       return (GamePiece) dispatcher.accept(piece);
     }
-
   }
 }
 

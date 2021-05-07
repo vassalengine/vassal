@@ -258,6 +258,22 @@ public class GameModule extends AbstractConfigurable
   private final MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
 
+  private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
+
+  /**
+   * @return True if there are any Mat or MatCargo objects in the module
+   */
+  public boolean isMatSupport() {
+    return matSupport;
+  }
+
+  /**
+   * @param matSupport true if a Mat or MatCargo trait has been added to the module (thus meaning we'll want to do those calculations during moves/selects)
+   */
+  public void setMatSupport(boolean matSupport) {
+    this.matSupport = matSupport;
+  }
+
   private final PropertyChangeListener repaintOnPropertyChange =
     evt -> {
       for (final Map map : Map.getMapList()) {

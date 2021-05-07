@@ -225,6 +225,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addElement(new SetGlobalProperty());
       addElement(new Deselect());
       addElement(new TranslatableMessage());
+      addElement(new Mat());
+      addElement(new MatCargo());
 
       // Generate a model sorted by description, in the current users language
       buildAlphaModel();

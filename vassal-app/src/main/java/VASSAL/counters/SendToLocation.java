@@ -366,12 +366,41 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    Command c = null;
     myGetKeyCommands();
-    if (sendCommand.matches(stroke)) {
-      final GamePiece outer = Decorator.getOutermost(this);
+
+    // Get the non-matching keystrokes out of here early so that we can have some common Mat code for the remainder
+    final boolean send = sendCommand.matches(stroke);
+    if (!send && !backCommand.matches(stroke)) {
+      return null;
+    }
+
+    final GamePiece outer = Decorator.getOutermost(this);
+    final Mat mat;
+    List<GamePiece> contents = null;
+    List<Point> offsets = null;
+    Command c = null;
+    Point dest = null;
+
+    // If we're about to move a Mat, establish the initial relative positions of all its "contents"
+    if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
+      mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+      if (mat != null) {
+        //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
+        contents = new ArrayList<>(mat.getContents());
+        offsets = new ArrayList<>();
+        final Point basePt = outer.getPosition();
+        for (final GamePiece piece : contents) {
+          final Point pt = piece.getPosition();
+          pt.x -= basePt.x;
+          pt.y -= basePt.y;
+          offsets.add(pt);
+        }
+      }
+    }
+
+    if (send) {
       final Stack parent = outer.getParent();
-      Point dest = getSendLocation();
+      dest = getSendLocation();
       if (map != null && dest != null) {
         if (map == getMap() && dest.equals(getPosition())) {
           // don't do anything if we're already there.
@@ -402,8 +431,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
       }
     }
-    else if (backCommand.matches(stroke)) {
-      final GamePiece outer = Decorator.getOutermost(this);
+    else {
       final Map backMap = (Map) getProperty(BACK_MAP);
       final Point backPoint = (Point) getProperty(BACK_POINT);
       final ChangeTracker tracker = new ChangeTracker(this);
@@ -420,6 +448,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if (backMap != null && backPoint != null) {
         c = c.append(putOldProperties(this));
         c = c.append(backMap.placeOrMerge(outer, backPoint));
+        dest = backPoint;
 
         // Apply Auto-move key
         if (backMap.getMoveKey() != null) {
@@ -427,6 +456,62 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
       }
     }
+
+    // Mat support
+    if ((c != null) && GameModule.getGameModule().isMatSupport()) {
+
+      // If a cargo piece has been "sent", find it a new Mat if needed.
+      if ("true".equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+        }
+      }
+
+      // If a Mat has been sent, send all its contents, at an appropriate offset.
+      if ((offsets != null) && dest != null) {
+        for (int i = 0; i < contents.size(); i++) {
+          final GamePiece piece = contents.get(i);
+          final Stack pieceParent = piece.getParent();
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+          if (cargo != null) {
+
+            // Get Cargo's pre-move offset from the Mat
+            final Point pt = new Point(dest);
+            pt.x += offsets.get(i).x;
+            pt.y += offsets.get(i).y;
+
+            // From here down we're just duplicating a send-to-location command for the Cargo piece
+
+            final ChangeTracker tracker = new ChangeTracker(piece);
+            // Mark moved and generate movement trail if compatibility pref turned on
+            if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(GlobalOptions.SEND_TO_LOCATION_MOVEMENT_TRAILS))) {
+              piece.setProperty(Properties.MOVED, Boolean.TRUE);
+            }
+
+            c = tracker.getChangeCommand();
+            c = c.append(putOldProperties(piece));
+
+            //BR// I sort of think cargo shouldn't snap when moving in lockstep with its mat.
+            //BR// This may lead to the eventual conclusion that cargo pieces shouldn't snap
+            //BR// even when dragged, IF they land on an eligible Mat.
+            //if (!Boolean.TRUE.equals(piece.getProperty(Properties.IGNORE_GRID))) {
+            //  dest = map.snapTo(dest);
+            //}
+
+            c = c.append(map.placeOrMerge(piece, pt));
+            // Apply Auto-move key
+            if (map.getMoveKey() != null) {
+              c = c.append(piece.keyEvent(map.getMoveKey()));
+            }
+            if (pieceParent != null) {
+              c = c.append(pieceParent.pieceRemoved(piece));
+            }
+          }
+        }
+      }
+    }
+
     return c;
   }
 
