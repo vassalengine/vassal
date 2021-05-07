@@ -24,6 +24,7 @@
 
 3.5.5 - 6 April 2021
 
+* 14451: Skipping wizard/password flow more intuitive now
 * 14348: Invisible Trait UI conflated opacity with transparency
 * 14336: MouseoverStackViewer improperly excludes does-not-move pieces when
     "include move-when-selected" is unchecked
