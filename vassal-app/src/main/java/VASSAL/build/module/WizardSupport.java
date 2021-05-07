@@ -439,6 +439,15 @@ public class WizardSupport {
         box.add("WizardSupport.ConfirmPassword", pwd2);
         final JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
         box.add(l, "span 2,center"); // NON-NLS
+
+        box.add(Box.createVerticalGlue());
+        final BooleanConfigurer wizardConf = (BooleanConfigurer)
+          Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
+        final JCheckBox show = new JCheckBox(wizardConf.getName());
+        show.setSelected(wizardConf.booleanValue());
+        show.addActionListener(e -> wizardConf.setValue(show.isSelected()));
+        box.add(show);
+
         nameControls = box;
       }
       return nameControls;
