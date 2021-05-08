@@ -539,7 +539,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (i < imagePainter.length && imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
       final double myzoom = (scale == 1.0) ? zoom : zoom * scale;
-      imagePainter[i].draw(g, x + (int)(myzoom * r.x), y + (int)(myzoom * r.y), myzoom, obs);
+      imagePainter[i].draw(g, x + (int)(zoom * r.x), y + (int)(zoom * r.y), myzoom, obs);
     }
 
     if (drawUnder) {
@@ -722,6 +722,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (size[i] == null) {
         if (imagePainter[i] != null) {
           size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
+
+          if (scale != 1.0) {
+            size[i].x = (int)(scale * size[i].x);
+            size[i].y = (int)(scale * size[i].y);
+            size[i].width = (int)(scale * size[i].width);
+            size[i].height = (int)(scale * size[i].height);
+          }
+
           size[i].translate(xOff, yOff);
         }
         else {
