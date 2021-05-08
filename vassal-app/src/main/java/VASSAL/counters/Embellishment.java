@@ -16,6 +16,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.configure.DoubleConfigurer;
 import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Font;
@@ -149,6 +150,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   protected String description = "";
 
+  protected double scale = 1.0;
+
   public Embellishment() {
     this(ID + Resources.getString("Editor.Embellishment.activate"), null);
   }
@@ -237,6 +240,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       decreaseKeyStroke = st.nextNamedKeyStroke();
 
       description = st.nextToken("");
+
+      scale = st.nextDouble(1.0);
 
       // Conversion?
       if (version == BASE_VERSION) {
@@ -371,6 +376,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       NamedKeyStroke.of(downKey.charAt(0), downModifiers);
 
     version = CURRENT_VERSION;
+
+    scale = 1.0;
   }
 
   @Override
@@ -460,7 +467,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       .append(activateKeyStroke)
       .append(increaseKeyStroke)
       .append(decreaseKeyStroke)
-      .append(description);
+      .append(description)
+      .append(scale);
 
     return ID + se.getValue();
   }
@@ -530,7 +538,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     if (i < imagePainter.length && imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
-      imagePainter[i].draw(g, x + (int)(zoom * r.x), y + (int)(zoom * r.y), zoom, obs);
+      final double myzoom = (scale == 1.0) ? zoom : zoom * scale;
+      imagePainter[i].draw(g, x + (int)(myzoom * r.x), y + (int)(myzoom * r.y), myzoom, obs);
     }
 
     if (drawUnder) {
@@ -988,6 +997,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (! Objects.equals(alwaysActive, c.alwaysActive)) return false;
     if (! Objects.equals(activateKeyStroke, c.activateKeyStroke)) return false;
     if (! Objects.equals(increaseKeyStroke, c.increaseKeyStroke)) return false;
+    if (! Objects.equals(scale, c.scale)) return false;
     return Objects.equals(decreaseKeyStroke, c.decreaseKeyStroke);
   }
 
@@ -1026,6 +1036,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final IntConfigurer firstLevelConfig;
     private final StringConfigurer nameConfig;
     private final StringConfigurer descConfig;
+    private final DoubleConfigurer scaleConfig;
 
     private final JButton up;
     private final JButton down;
@@ -1082,6 +1093,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       offsetControls.add(yOffInput.getControls());
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.offset")));
       controls.add(offsetControls, "wrap"); // NON-NLS
+
+      controls.add(new JLabel(Resources.getString("Editor.Embellishment.scale")));
+      scaleConfig = new DoubleConfigurer(e.scale);
+      controls.add(scaleConfig.getControls(), "wrap"); //NON-NLS
 
       followConfig = new BooleanConfigurer(e.followProperty);
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.levels_follow_expression_value")));
@@ -1421,7 +1436,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(activateConfig.getValueString())
         .append(increaseConfig.getValueString())
         .append(decreaseConfig.getValueString())
-        .append(descConfig.getValueString());
+        .append(descConfig.getValueString())
+        .append(scaleConfig.getValueString());
 
       return ID + se.getValue();
 
@@ -1460,6 +1476,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         names.add(s);
         isPrefix.add(is);
       }
+
+      scaleConfig.setValue(e.scale);
 
       alwaysActiveConfig.setValue(e.alwaysActive);
       drawUnderneath.setSelected(e.drawUnderneathWhenSelected);
