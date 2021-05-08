@@ -235,6 +235,13 @@ public class SequenceEncoder {
       return val != null;
     }
 
+    public String getRemaining() {
+      if (!hasMoreTokens()) {
+        return "";
+      }
+      return val.substring(start, stop);
+    }
+
     public String nextToken() {
       if (!hasMoreTokens()) throw new NoSuchElementException();
 
