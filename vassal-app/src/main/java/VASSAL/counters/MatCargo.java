@@ -50,7 +50,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   protected GamePiece mat; // Mat piece we are assigned to, or null
 
   public MatCargo() {
-    this(ID + ";", null);
+    this(ID + ";true", null); //NON-NLS
   }
 
   public MatCargo(String type, GamePiece inner) {

@@ -32,7 +32,11 @@ public class Mat extends Decorator implements TranslatablePiece {
   protected List<GamePiece> contents = new ArrayList<>();
 
   public Mat() {
-    this(ID + ";Mat;", null); //NON-NLS
+    this(ID + "Mat;;", null); //NON-NLS
+  }
+
+  public Mat(String name) {
+    this (ID + name + ";;", null);
   }
 
   public Mat(String type, GamePiece inner) {
@@ -207,7 +211,7 @@ public class Mat extends Decorator implements TranslatablePiece {
 
   @Override
   public String getDescription() {
-    return buildDescription("Editor.Mat.trait_description", desc);
+    return buildDescription("Editor.Mat.trait_description", matName, desc);
   }
 
   @Override
