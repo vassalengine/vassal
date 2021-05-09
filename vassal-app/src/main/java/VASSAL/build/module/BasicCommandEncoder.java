@@ -166,6 +166,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(PropertySheet.ID, PropertySheet::new),
     Map.entry(FreeRotator.ID, FreeRotator::new),
     Map.entry(Pivot.ID, Pivot::new),
+    Map.entry(NonRectangular.OLD_ID, NonRectangular::new),
     Map.entry(NonRectangular.ID, NonRectangular::new),
     Map.entry(Marker.ID, Marker::new),
     Map.entry(TranslatableMessage.ID, TranslatableMessage::new),
