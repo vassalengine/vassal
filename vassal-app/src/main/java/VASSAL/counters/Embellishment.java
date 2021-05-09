@@ -18,6 +18,8 @@ package VASSAL.counters;
 
 import VASSAL.configure.DoubleConfigurer;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -83,7 +85,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
  *    replaces this class with an Embellishment0 if Embellishment(type, inner) returns
  *    a version 0 Embellishment trait.
  */
-public class Embellishment extends Decorator implements TranslatablePiece {
+public class Embellishment extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String OLD_ID = "emb;"; // NON-NLS
   public static final String ID = "emb2;"; // New type encoding // NON-NLS
 
@@ -551,28 +553,42 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * Calculate the new level to display based on a property?
    */
   protected void checkPropertyLevel() {
-    if (!followProperty || propertyName.length() == 0) return;
-
-    if (followPropertyExpression == null) {
-      followPropertyExpression = Expression.createSimplePropertyExpression(propertyName);
-    }
-
-    String val = "";
     try {
-      val = followPropertyExpression.evaluate(Decorator.getOutermost(this));
-      if (val == null || val.length() == 0) val = String.valueOf(firstLevelValue);
+      RecursionLimiter.startExecution(this);
+      if (!followProperty || propertyName.length() == 0)
+        return;
 
-      int v = Integer.parseInt(val) - firstLevelValue + 1;
-      if (v <= 0) v = 1;
-      if (v > nValues) v = nValues;
+      if (followPropertyExpression == null) {
+        followPropertyExpression = Expression.createSimplePropertyExpression(propertyName);
+      }
 
-      value = isActive() ? v : -v;
+      String val = "";
+      try {
+        val = followPropertyExpression.evaluate(Decorator.getOutermost(this));
+        if (val == null || val.length() == 0)
+          val = String.valueOf(firstLevelValue);
+
+        int v = Integer.parseInt(val) - firstLevelValue + 1;
+        if (v <= 0)
+          v = 1;
+        if (v > nValues)
+          v = nValues;
+
+        value = isActive() ? v : -v;
+      }
+      catch (NumberFormatException e) {
+        reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e); // NON-NLS
+      }
+      catch (ExpressionException e) {
+        reportDataError(this, Resources.getString("Error.expression_error"), "followProperty[" + propertyName + "]", e); // NON-NLS
+      }
     }
-    catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e); // NON-NLS
+    catch (RecursionLimitException e) {
+      e.setAdditionalErrorMessage(Resources.getString("Error.infinite_loop_layer"));
+      RecursionLimiter.infiniteLoop(e);
     }
-    catch (ExpressionException e) {
-      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty[" + propertyName + "]", e); // NON-NLS
+    finally {
+      RecursionLimiter.endExecution();
     }
   }
 
@@ -971,6 +987,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     l.add(name + ACTIVE);
     l.add(name + NAME);
     return l;
+  }
+
+  // Implement Loopable
+  @Override
+  public String getComponentName() {
+    // Use inner name to prevent recursive looping when reporting errors.
+    return piece.getName();
+  }
+
+  @Override
+  public String getComponentTypeName() {
+    return getDescription();
   }
 
   @Override

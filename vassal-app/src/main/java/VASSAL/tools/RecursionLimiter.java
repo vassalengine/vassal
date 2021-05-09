@@ -49,7 +49,8 @@ public class RecursionLimiter {
       ThrowableUtils.getStackTrace(e),
       "Error.infinite_loop", //NON-NLS
       e.getComponentTypeName(),
-      e.getComponentName()
+      e.getComponentName(),
+      e.getAdditionalErrorMessage()
     );
     reporting = false;
   }
