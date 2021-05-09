@@ -108,8 +108,11 @@ Text Label _(Rotatable)_
 |Drawing Layers that will rotate should be *_above_* the Can Rotate and/or Can Pivot.
 
 |Can Rotate +
-Can Pivot
+Can Pivot +
+Mat Cargo
 |Can Rotate belongs below any drawing trait that it should rotate, but *_above_* any Can Pivot trait.
+
+Mat Cargo similarly belongs any drawing trait that it should cause to maintain relative facing.
 
 |Movement Trail +
 Layer +
@@ -172,8 +175,9 @@ Mask belongs *_above_* Invisible.
 
 |Calculated Property +
 Marker +
-Translatable Message
-|Calculated Property, Marker, and Translatable Message function properly anywhere, but they _run slightly faster near the bottom_.
+Translatable Message +
+Mat
+|Calculated Property, Marker, Mat, and Translatable Message function properly anywhere, but they _run slightly faster near the bottom_.
 
 |**Free Floating Traits**
 |**(Proper Order Varies)**
@@ -197,11 +201,11 @@ Note, however, that Sub-Menu traits must always go *_below_* the traits that it 
 |<<ActionButton.adoc#top,Action Button>> |<<AreaOfEffect.adoc#top,Area Of Effect>> |<<BasicPiece.adoc#top,Basic Piece>> |<<CalculatedProperty.adoc#top,Calculated Property>> |<<Pivot.adoc#top,Can Pivot>>
 |<<Rotate.adoc#top,Can Rotate>> |<<#Clone,Clone>> |<<#Delete,Delete>> |<<NonStacking.adoc#top,Does not stack>> |<<DynamicProperty.adoc#top,Dynamic Property>>
 |<<GlobalHotkey.adoc#top,Global Hotkey>> |<<GlobalKeyCommand.adoc#top,Global Key Command>> |<<SetGlobalProperty.adoc#top,Global Property, Set>> |<<Hideable.adoc#top,Invisible>> |<<Layer.adoc#top,Layer>>
-|<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<MenuSeparator.adoc#top,Menu Separator>> |<<Translate.adoc#top,Move fixed distance>>
-|<<MovementTrail.adoc#top,Movement Trail>> |<<NonRectangular.adoc#top,Non-Rectangular>> |<<Marker.adoc#top,Place Marker>> |<<PlaySound.adoc#top,Play Sound>> |<<PropertySheet.adoc#top,Property Sheet>>
-|<<UsePrototype.adoc#top,Prototype>> |<<Replace.adoc#top,Replace with Other>> |<<ReportChanges.adoc#top,Report Action>> |<<RestrictCommands.adoc#top,Restrict Commands>> |<<RestrictedAccess.adoc#top,Restricted Access>>
-|<<SendToLocation.adoc#top,Send to Location>> |<<Spreadsheet.adoc#top,Spreadsheet>> |<<SubMenu.adoc#top,Sub-Menu>> |<<Label.adoc#top,Text Label>> |<<TranslatableMessage.adoc#top,Translatable Message>>
-|<<TriggerAction.adoc#top,Trigger Action>>||||
+|<<MarkMoved.adoc#top,Mark When Moved>> |<<PropertyMarker.adoc#top,Marker>> |<<Mask.adoc#top,Mask>> |<<Mat.adoc#top,Mat>> |<<MatCargo.doc,Mat Cargo>>
+|<<MenuSeparator.adoc#top,Menu Separator>> |<<Translate.adoc#top,Move fixed distance>>|<<MovementTrail.adoc#top,Movement Trail>> |<<NonRectangular.adoc#top,Non-Rectangular>> |<<Marker.adoc#top,Place Marker>>
+|<<PlaySound.adoc#top,Play Sound>> |<<PropertySheet.adoc#top,Property Sheet>> |<<UsePrototype.adoc#top,Prototype>> |<<Replace.adoc#top,Replace with Other>> |<<ReportChanges.adoc#top,Report Action>>
+|<<RestrictCommands.adoc#top,Restrict Commands>> |<<RestrictedAccess.adoc#top,Restricted Access>> |<<SendToLocation.adoc#top,Send to Location>> |<<Spreadsheet.adoc#top,Spreadsheet>> |<<SubMenu.adoc#top,Sub-Menu>>
+|<<Label.adoc#top,Text Label>> |<<TranslatableMessage.adoc#top,Translatable Message>> |<<TriggerAction.adoc#top,Trigger Action>>||||
 |===
 
 '''''
@@ -690,4 +694,15 @@ a|
 Defines commands to change the value of a <<GlobalProperties.adoc#top,Global Property>>.
 
 <<SetGlobalProperty.adoc#top,See full article for details.>>
+|===
+[width="100%",cols="50%,50%",]
+|===
+a|
+==== <<Mat.adoc#top,Mat />> <<MatCargo.adoc#top,Mat Cargo>>
+
+Allows designated smaller "cargo" pieces to be moved and optionally rotated along with a larger "mat" piece.
+
+<<Mat.adoc#top,See full article for details.>>
+
+|image:images/Mat2.png[]
 |===

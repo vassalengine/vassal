@@ -368,7 +368,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
   @Override
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Mat.html"); // NON-NLS
+    return HelpFile.getReferenceManualPage("MatCargo.html"); // NON-NLS
   }
 
   /**
