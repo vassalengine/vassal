@@ -388,7 +388,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
           if (!combineCounterSummary || !stretchWidthSummary || (pieces.size() != 1)) {
-            final int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale); // + (int) (borderWidth * os_scale);
+            final int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale);
             drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
           }
           anyUnderText = true;
