@@ -821,6 +821,18 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * @return KeyBufferer (if any) for this map.
+   */
+  public KeyBufferer getKeyBufferer() {
+    for (final Object o : drawComponents) {
+      if (o instanceof KeyBufferer) {
+        return (KeyBufferer)o;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Registers this Map as a child of another buildable component, usually the {@link GameModule}. Determines a unique id for
    * this Map. Registers itself as {@link KeyStrokeSource}. Registers itself as a {@link GameComponent}. Registers itself as
    * a drop target and drag source. If the map is to be removed or otherwise shutdown, it can be deregistered, reversing this

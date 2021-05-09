@@ -1559,6 +1559,16 @@ public class PieceMover extends AbstractBuildable
       );
 
       dge.getDragSource().addDragSourceMotionListener(this);
+
+      // Let our map's KeyBufferer know that this is now a drag not a click.
+      final Map map = dge.getComponent() instanceof Map.View ?
+        ((Map.View) dge.getComponent()).getMap() : null;
+      if (map != null) {
+        final KeyBufferer kb = map.getKeyBufferer();
+        if (kb != null) {
+          kb.dragStarted();
+        }
+      }
     }
 
     /**************************************************************************
