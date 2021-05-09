@@ -29,7 +29,7 @@ import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
 
 /**
- * Designates the piece as a "Mat" on which other pieces can be placed.
+ * Designates the piece as "Cargo", which can be placed on a "Mat" to move along with it
  */
 public class MatCargo extends Decorator implements TranslatablePiece {
   public static final String ID = "matPiece;"; // NON-NLS
@@ -261,6 +261,9 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     return mrot == null ? 0.0 : mrot.getAngle();
   }
 
+  /**
+   * If we're maintaining facing to our Mat, rotate our graphics as appropriate to account for that when drawing
+   */
   @Override
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     final double angle = getMatAngle();
@@ -308,6 +311,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     return (piece.boundingBox().height % 2) / 2.0;
   }
 
+  /**
+   * If we're maintaining facing to our Mat, rotate our piece's shape to account for that.
+   * @return Properly rotated shape
+   */
   @Override
   public Shape getShape() {
     final double angle = getMatAngle();
@@ -376,14 +383,6 @@ public class MatCargo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(CURRENT_MAT);
-  }
-
-  /**
-   * @return a list of any Property Names referenced in the Decorator, if any (for search)
-   */
-  @Override
-  public List<String> getPropertyList() {
     return Arrays.asList(CURRENT_MAT);
   }
 
