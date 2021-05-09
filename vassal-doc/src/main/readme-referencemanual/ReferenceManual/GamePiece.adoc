@@ -112,7 +112,7 @@ Can Pivot +
 Mat Cargo
 |Can Rotate belongs below any drawing trait that it should rotate, but *_above_* any Can Pivot trait.
 
-Mat Cargo similarly belongs any drawing trait that it should cause to maintain relative facing.
+Mat Cargo similarly belongs _below_ any drawing trait that it should cause to maintain relative facing.
 
 |Movement Trail +
 Layer +
