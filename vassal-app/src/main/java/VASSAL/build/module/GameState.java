@@ -401,7 +401,9 @@ public class GameState implements CommandEncoder {
     loadContinuation.setEnabled(gameStarting);
 
     gameStarted &= this.gameStarting;
-    for (final GameComponent gc : gameComponents) {
+
+    final List<GameComponent> comps = new ArrayList<>(gameComponents);
+    for (final GameComponent gc : comps) {
       gc.setup(this.gameStarting);
     }
 
