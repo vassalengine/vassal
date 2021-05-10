@@ -2,6 +2,7 @@
 
 * 14468: MouseoverStackViewer: corrected text centering problem with "extra
     space between" setting
+* 14461: NPE in TableInfo.getExpressionList()
 * 14460: StackOverflowError when referencing _Level property in layer-
     following expression
 * 14452: Catch PatternSyntaxException on user-provided regexes
