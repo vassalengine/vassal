@@ -314,10 +314,15 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   @Override
   public List<String> getExpressionList() {
     final List<String> l = new ArrayList<>();
-    for (int row = 0; row < nRows; ++row) {
-      for (int col = 0; col < nCols; ++col) {
-        l.add((String) table.getValueAt(row, col));
+    if (table != null) {
+      for (int row = 0; row < nRows; ++row) {
+        for (int col = 0; col < nCols; ++col) {
+          l.add((String) table.getValueAt(row, col));
+        }
       }
+    }
+    else {
+      l.add(values);
     }
     return l;
   }
