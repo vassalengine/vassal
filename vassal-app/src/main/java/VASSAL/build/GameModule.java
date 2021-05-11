@@ -1709,17 +1709,6 @@ public class GameModule extends AbstractConfigurable
   }
 
 
-  /**
-   * @return List of currently matchable passwords, including "defaults" of various types.
-   */
-  public static List<String> getCurrentPasswords() {
-    final List<String> l = new ArrayList<>();
-    l.add(GameModule.getUserId());
-    l.add(Resources.getString("Prefs.password_prompt", System.getProperty("user.name")));
-    l.add("");
-    return l;
-  }
-
   static String tempUserId = null;
 
   /**

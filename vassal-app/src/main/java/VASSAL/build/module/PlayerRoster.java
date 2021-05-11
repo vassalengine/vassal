@@ -326,6 +326,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return getMySide(true);
   }
 
+  /**
+   * @return List of currently matchable passwords, including "defaults" of various types.
+   */
+  protected static List<String> getCurrentPasswords() {
+    final List<String> l = new ArrayList<>();
+    l.add(GameModule.getUserId());
+    l.add(Resources.getString("Prefs.password_prompt", System.getProperty("user.name")));
+    l.add("");
+    return l;
+  }
+
+
   protected static String getMySide(boolean localized) {
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
@@ -417,12 +429,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
-      final PlayerInfo me = new PlayerInfo(GameModule.getActiveUserId(),
-        GlobalOptions.getInstance().getPlayerId(), null);
-      if (players.contains(me)) {
-        final PlayerInfo saved = players.get(players.indexOf(me));
-        saved.playerName = me.playerName;
-      }
+      claimOccupiedSide();
       if (GameModule.getGameModule().isMultiPlayer()) {
         final Logger log = GameModule.getGameModule().getLogger();
         if (log instanceof BasicLogger) {
@@ -431,6 +438,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
     }
     else {
+      GameModule.setTempUserId(null);
       players.clear();
     }
     getLaunchButton().setVisible(gameStarting && getMySide() != null);
@@ -541,6 +549,82 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public boolean isMultiPlayer() {
     // NB. Intentionally not excluding observers.
     return players.size() > 1;
+  }
+
+
+  /**
+   * Claims an existing slot for the current player, and sets our temporary user id appropriately
+   * @param index The index of the slot to be claimed in the roster
+   */
+  protected void claimSlot(int index) {
+    final PlayerInfo[] roster = GameModule.getGameModule().getPlayerRoster().getPlayers();
+    final PlayerInfo slot = roster[index];
+    slot.playerName = GlobalOptions.getInstance().getPlayerId();
+    GameModule.setTempUserId(slot.playerId);
+  }
+
+  /**
+   * Claims the appropriate occupied side, if any, for the current player. If more than one is available, prompts.
+   */
+  protected void claimOccupiedSide() {
+    final List<Integer> indices = new ArrayList<>();
+    final List<String> availableNames = new ArrayList<>();
+    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    final List<String> pwdsToMatch = getCurrentPasswords();
+    final List<PlayerInfo> allowedSides = new ArrayList<>();
+
+    if (r != null) {
+      int index = 0;
+      for (final PlayerInfo pi : r.getPlayers()) {
+        if (pwdsToMatch.contains(pi.playerId)) {
+          allowedSides.add(pi);
+          indices.add(index);
+        }
+        index++;
+      }
+    }
+
+    GameModule.setTempUserId(null);
+
+    if (allowedSides.isEmpty()) {
+      return;
+    }
+    else if (allowedSides.size() == 1) {
+      claimSlot(indices.get(0));
+      return;
+    }
+
+    for (final PlayerInfo p : allowedSides) {
+      final String s;
+      if (p.playerId.equals(GameModule.getUserId())) {
+        s = Resources.getString("PlayerRoster.current_password");
+      }
+      else if (p.playerId.isEmpty()) {
+        s = Resources.getString("PlayerRoster.empty_password");
+      }
+      else {
+        // must be the "UserName's Password" version
+        s = Resources.getString("PlayerRoster.quoted_password", p.playerId);
+      }
+
+      availableNames.add(Resources.getString("PlayerRoster.occupied_side", p.getLocalizedSide(), s));
+    }
+
+    final GameModule g = GameModule.getGameModule();
+    final String choice = (String) JOptionPane.showInputDialog(
+      g.getPlayerWindow(),
+      Resources.getString("PlayerRoster.pick_an_occupied_side"),
+      Resources.getString("PlayerRoster.choose_side"),
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      availableNames.toArray(new String[0]),
+      availableNames.get(0)
+    );
+
+    final int index = availableNames.indexOf(choice);
+    if (index > 0) {
+      claimSlot(indices.get(index));
+    }
   }
 
 
