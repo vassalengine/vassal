@@ -330,11 +330,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
    * @return List of currently matchable passwords, including "defaults" of various types.
    */
   protected static List<String> getCurrentPasswords() {
-    final List<String> l = new ArrayList<>();
-    l.add(GameModule.getUserId());
-    l.add(Resources.getString("Prefs.password_prompt", System.getProperty("user.name")));
-    l.add("");
-    return l;
+    return List.of(
+      GameModule.getUserId(),
+      Resources.getString("Prefs.password_prompt", System.getProperty("user.name")),
+      ""
+    );
   }
 
 
