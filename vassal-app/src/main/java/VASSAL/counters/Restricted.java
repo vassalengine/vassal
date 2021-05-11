@@ -115,7 +115,7 @@ public class Restricted extends Decorator implements EditablePiece {
   public boolean isRestricted() {
     boolean restricted = false;
     if (restrictByPlayer) {
-      restricted = owningPlayer.length() > 0 && !GameModule.getUserId().equals(owningPlayer);
+      restricted = owningPlayer.length() > 0 && !GameModule.getActiveUserId().equals(owningPlayer);
     }
     if ((restricted || !restrictByPlayer)
         && PlayerRoster.isActive()
@@ -134,7 +134,7 @@ public class Restricted extends Decorator implements EditablePiece {
 /*  @Override
   public void setMap(Map m) {
     if (m != null && restrictByPlayer && owningPlayer.length() == 0) {
-      owningPlayer = GameModule.getUserId();
+      owningPlayer = GameModule.getActiveUserId();
     }
     super.setMap(m);
   }
@@ -143,7 +143,7 @@ public class Restricted extends Decorator implements EditablePiece {
   public void setProperty(Object key, Object val) {
     if (Properties.SELECTED.equals(key) && Boolean.TRUE.equals(val) && restrictByPlayer && owningPlayer.length() == 0) {
       if (getMap() != null) {
-        owningPlayer = GameModule.getUserId();
+        owningPlayer = GameModule.getActiveUserId();
       }
     }
     super.setProperty(key, val);
@@ -293,7 +293,7 @@ public class Restricted extends Decorator implements EditablePiece {
       final Restricted r = (Restricted)Decorator.getDecorator(p, Restricted.class);
       if (r != null
           && r.restrictByPlayer
-          && GameModule.getUserId().equals(r.owningPlayer)) {
+          && GameModule.getActiveUserId().equals(r.owningPlayer)) {
 
         final ChangeTracker t = new ChangeTracker(p);
         r.owningPlayer = "";

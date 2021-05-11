@@ -37,7 +37,7 @@ public class PlayerAccess implements PieceAccess {
 
   @Override
   public String getCurrentPlayerId() {
-    return GameModule.getUserId();
+    return GameModule.getActiveUserId();
   }
 
   @Override

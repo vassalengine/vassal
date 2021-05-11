@@ -262,6 +262,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
 
+  /**
+   * Called when the Launch Button for the player roster is clicked (i.e. the "Retire" or "Change Sides" button)
+   */
   protected void launch() {
     final String mySide = getMySide();
     if (mySide == null && allSidesAllocated()) {
@@ -277,7 +280,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final GameModule gm = GameModule.getGameModule();
 
     final PlayerInfo me = new PlayerInfo(
-      GameModule.getUserId(),
+      GameModule.getActiveUserId(),
       GlobalOptions.getInstance().getPlayerId(),
       newSide
     );
@@ -285,7 +288,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", me.playerName, mySide, newSide));
     c.execute();
 
-    remove(GameModule.getUserId());
+    remove(GameModule.getActiveUserId());
 
     final Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
@@ -327,7 +330,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       for (final PlayerInfo pi : r.getPlayers()) {
-        if (pi.playerId.equals(GameModule.getUserId())) {
+        if (pi.playerId.equals(GameModule.getActiveUserId())) {
           return localized ? pi.getLocalizedSide() : pi.getSide();
         }
       }
@@ -343,6 +346,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return new ArrayList<>(sides);
   }
 
+  /**
+   * Adds a player to the list of active players occupying sides
+   * @param playerId player unique id (password)
+   * @param playerName player name
+   * @param side player side
+   */
   public void add(String playerId, String playerName, String side) {
     final PlayerInfo e = new PlayerInfo(playerId, playerName, side);
     if (players.contains(e)) {
@@ -360,6 +369,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
   }
 
+  /**
+   * Remove a player from the list of active players occupying sides
+   * @param playerId player unique id (password)
+   */
   public void remove(String playerId) {
     final PlayerInfo e = new PlayerInfo(playerId, null, null);
     players.remove(e);
@@ -404,7 +417,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
-      final PlayerInfo me = new PlayerInfo(GameModule.getUserId(),
+      final PlayerInfo me = new PlayerInfo(GameModule.getActiveUserId(),
         GlobalOptions.getInstance().getPlayerId(), null);
       if (players.contains(me)) {
         final PlayerInfo saved = players.get(players.indexOf(me));
@@ -424,11 +437,14 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     pickedSide = false;
   }
 
+  /**
+   * finish() step for Wizard
+   */
   @Override
   public void finish() {
     final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
-      final Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+      final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
@@ -454,12 +470,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return sideConfig.getControls();
   }
 
+  /**
+   * @return step title for Wizard's GameSetupStep
+   */
   @Override
   public String getStepTitle() {
     return Resources.getString("PlayerRoster.choose_side"); //$NON-NLS-1$
   }
 
-  // Implement GameSetupStep
+  /**
+   * Implement GameSetupStep for Wizard
+   * @return true if Wizard GameSetupStep is finished
+   */
   @Override
   public boolean isFinished() {
     if (pickedSide) {
@@ -474,7 +496,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // If we are already recorded as a player (i.e. in Saved Game), then
     // the step is only finished if we are not the Observer.
     final PlayerInfo newPlayerInfo = new PlayerInfo(
-      GameModule.getUserId(),
+      GameModule.getActiveUserId(),
       GlobalOptions.getInstance().getPlayerId(), null
     );
 
