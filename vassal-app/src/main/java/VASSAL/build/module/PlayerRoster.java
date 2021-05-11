@@ -501,6 +501,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return true;
     }
 
+    claimOccupiedSide();
+
     // If we are already recorded as a player (i.e. in Saved Game), then
     // the step is only finished if we are not the Observer.
     final PlayerInfo newPlayerInfo = new PlayerInfo(
