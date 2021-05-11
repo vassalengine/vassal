@@ -31,7 +31,9 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import VASSAL.counters.DragBuffer;
 import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -80,6 +82,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   protected Color color = Color.black;          // Color for drawing band-select
   protected int thickness = 3;                  // Thickness for drawing band select
   protected GamePiece bandSelectPiece = null;   // If a band-select started within the boundaries of a piece, this is the piece
+  private GamePiece maybeClickPiece = null;     // Piece left-clicked on and no band-select started
 
   /**
    * Band select modes
@@ -102,6 +105,13 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     map.addDrawComponent(this);
   }
 
+  /**
+   * If a drag operation begins, we clear any click-specific information
+   */
+  public void dragStarted() {
+    maybeClickPiece = null;
+  }
+
   @Override
   public void add(Buildable b) {
   }
@@ -113,6 +123,55 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
   @Override
   public void build(Element e) {
+  }
+
+
+  /**
+   * Remove GamePiece (or unexpanded Stack) from Selection
+   * @param p GamePiece or unexpanded Stack to remove
+   */
+  private void removePieceOrStack(GamePiece p) {
+    if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+      final Stack s = p.getParent();
+      if (s == null) {
+        // Lone piece: simply remove
+        KeyBuffer.getBuffer().remove(p);
+      }
+      else if (!s.isExpanded()) {
+        // Unexpanded stack: remove the whole stack
+        s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().remove(gamePiece));
+      }
+      else {
+        // Expanded stack: remove just the clicked piece
+        KeyBuffer.getBuffer().remove(p);
+      }
+    }
+  }
+
+  /**
+   * Select only the given piece or unexpanded stack
+   * @param p GamePiece or unexpanded Stack to select
+   */
+  private void selectOnlyPieceOrStack(GamePiece p) {
+    DragBuffer.getBuffer().clear();
+    KeyBuffer.getBuffer().clear();
+    final Stack s = p.getParent();
+    if (s == null) {
+      // Lone piece: simply add
+      KeyBuffer.getBuffer().add(p);
+    }
+    else if (!s.isExpanded()) {
+      // Unexpanded stack: add the whole stack
+      s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().add(gamePiece));
+    }
+    else {
+      // Expanded stack: add just the clicked piece
+      KeyBuffer.getBuffer().add(p);
+    }
+
+    for (final GamePiece piece : KeyBuffer.getBuffer().asList()) {
+      DragBuffer.getBuffer().add(piece);
+    }
   }
 
   /**
@@ -135,6 +194,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     // mouse event (And we don't want to clear the buffer until we find the
     // clicked-on piece because selecting a piece affects its visibility)
     GamePiece p = map.findPiece(e.getPoint(), PieceFinder.DECK_OR_PIECE_IN_STACK);
+
+    maybeClickPiece = null;
 
     EventFilter filter = null;
     BandSelectType bandSelect = BandSelectType.NONE; // Start by assuming we're clicking not band-selecting
@@ -232,22 +293,19 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
         // RFE 1659481 Ctrl/Command-click ("toggle") deselects clicked units
         // (if they are already selected)
-        if (SwingUtils.isSelectionToggle(e) && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-          final Stack s = p.getParent();
-          if (s == null) {
-            // Lone piece: simply remove
-            kbuf.remove(p);
-          }
-          else if (!s.isExpanded()) {
-            // Unexpanded stack: remove the whole stack
-            s.asList().forEach(gamePiece -> KeyBuffer.getBuffer().remove(gamePiece));
-          }
-          else {
-            // Expanded stack: remove just the clicked piece
-            kbuf.remove(p);
-          }
+        if (SwingUtils.isSelectionToggle(e)) {
+          removePieceOrStack(p);
         }
         // End RFE 1659481
+
+        // If we're a cargo piece, and on a mat, then a simple left click grabs us uniquely out of the selection if we're in it
+        if (GameModule.getGameModule().isMatSupport() && !SwingUtils.isSelectionToggle(e) && !SwingUtils.isContextMouseButtonDown(e) && !e.isShiftDown()) {
+          final String matName = (String)p.getProperty(MatCargo.CURRENT_MAT);
+          if ((matName != null) && !matName.isEmpty()) {
+            maybeClickPiece = p;
+            bandSelect = BandSelectType.NONE;
+          }
+        }
       }
 
       // Whatever piece or stack was clicked, move it to the front/top of its
@@ -306,6 +364,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   public void mouseReleased(MouseEvent e) {
     // If selection is null, no band-select is happening, so nothing to do here -- we already did everything on the initial click
     if (selection == null) {
+
+      // If we resolved a complete "click" on a piece that should only be removed from the selection on click (not drag), then remove it.
+      if (maybeClickPiece != null) {
+        selectOnlyPieceOrStack(maybeClickPiece);
+      }
       return;
     }
 
