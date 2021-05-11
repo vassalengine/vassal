@@ -1,0 +1,55 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<PieceWindow.adoc#top,Game Piece Palette>># [.small]#> <<GamePiece.adoc#top,Game Piece>># [.small]#> *Mat Cargo*#
+
+'''''
+
+=== Mat Cargo
+
+[cols=",",]
+|===
+|A Mat Cargo piece has special capabilities when placed on top of a larger <<Mat.adoc#top,Mat>> piece: they will select automatically
+when their parent Mat is left clicked, and will attempt to move with it and even optionally maintain the same facing.
+
+When a <<GamePiece.adoc#top,Game Piece>> with the <<Mat.adoc#top,Mat>> trait is selected by left-clicking on it, any game pieces with the Mat Cargo
+trait that have been placed on top of the Mat piece will also become selected automatically. Therefore if the Mat game
+piece is then moved with a drag-and-drop, the Mat Cargo pieces conveniently move along with it and maintain their relative
+positions.
+
+Similarly, when a Mat piece is moved with a <<SendToLocation.adoc#top,Send to Location>> trait or a <<Translate.adoc#top,Move Fixed Distance>> trait, cargo pieces on top
+of it will follow.
+
+If a Mat piece is <<Rotate.adoc#top,rotated>> or <<Pivot.adoc#top,pivoted>>, any cargo pieces on top can also match their facing to the Mat, if that option is
+selected in the Mat Cargo trait.
+
+*Description:* Description of the trait - displayed only in the Editor, in the piece definer dialog.
+
+*Maintain facing relative to mat:* If checked, then the cargo piece will attempt to maintain its relative facing to any
+Mat it has been placed on, changing facing if/when the Mat rotates. **NOTE:** This means that like a Can Rotate trait,
+the Mat Cargo trait should be placed _below_ the graphical elements (e.g. Layer and Non-Rectangular Traits) to
+potentially be rotated. A Mat Cargo piece does _not_ need a separate Can Rotate trait in order to be able to maintain
+relative facing, although it is permitted to have its own Can Rotate trait as well.
+
+|image:images/MatCargo.png[]
+
+image:images/Mat2.png[]
+*Above:* a <<Mat.adoc#top,Mat>> and its Mat Cargo pieces rotated 45 degrees in _Almoravid_
+
+|===
+
+
+'''''
+
+==== Properties
+
+A Mat Cargo trait exposes the following <<Properties.adoc#top,Properties>>:
+
+* _CurrentMat_ contains the name of any <<Mat.adoc#top,Mat>> that the Mat Cargo piece is currently sitting atop, taken from the
+Mat's _Mat Name_ field. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _IsCargo_ will always contain the string _"true"_ for a Mat Cargo piece (it will contain an empty string, "" for a
+piece which does not have this trait).
+
+
+
