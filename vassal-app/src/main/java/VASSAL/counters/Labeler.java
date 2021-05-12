@@ -257,7 +257,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         result = nameFormat.getText(Decorator.getOutermost(this));
       }
       catch (RecursionLimitException e) {
-        e.printStackTrace();
+        RecursionLimiter.infiniteLoop(e);
       }
       finally {
         RecursionLimiter.endExecution();
