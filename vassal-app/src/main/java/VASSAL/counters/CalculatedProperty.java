@@ -169,6 +169,11 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
         return "";
       }
       else {
+        // Don't potentially create more infinite loops while already reporting one
+        if (RecursionLimiter.isReportingInfiniteLoop()) {
+          return getExpression();
+        }
+
         try {
           RecursionLimiter.startExecution(this);
           result = evaluate();
