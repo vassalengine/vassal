@@ -27,6 +27,9 @@
 * 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
 * 14286: Prevent bad expressions from returning null
 * 14271: Chat & Notes input panel(s) treat Hotkeys differently
+* 14261: StackOverflowError: Infinite loop caused by Text Label wasn't being
+    caught properly
+* 10755: Infinite loop in RecursionLimiter.infiniteLoop()
 * 10114: ArrayIndexOutOfBoundsException in SecretNotesController.setup()
 
 3.5.5 - 6 April 2021
