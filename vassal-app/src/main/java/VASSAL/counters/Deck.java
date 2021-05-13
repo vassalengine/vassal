@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Random;
 
@@ -1554,6 +1555,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, loadFile);
+    }
+    catch (NoSuchElementException e) {
+      JOptionPane.showMessageDialog(
+        GameModule.getGameModule().getPlayerWindow(),
+        Resources.getString("Deck.load_failed_title"),
+        Resources.getString("Deck.load_failed_text", (loadFile != null) ? loadFile.getName() : ""),
+        JOptionPane.ERROR_MESSAGE
+      );
     }
 
     return c;
