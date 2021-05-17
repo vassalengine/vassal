@@ -100,10 +100,10 @@ public class TextSaver extends AbstractToolbarItem {
       writeMapAsText();
       break;
     case JOptionPane.YES_OPTION:
-      final String myId = GameModule.getUserId();
-      GameModule.setUserId("yendoR117"); //NON-NLS
+      final String myId = GameModule.getTempUserId();
+      GameModule.setTempUserId("yendoR117"); //NON-NLS
       writeMapAsText();
-      GameModule.setUserId(myId);
+      GameModule.setTempUserId(myId);
       break;
     }
   }

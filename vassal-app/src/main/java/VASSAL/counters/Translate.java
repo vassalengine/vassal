@@ -410,7 +410,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         && !outer.getParent().isExpanded()) {
       // Only move entire stack if this is the top piece
       // Otherwise moves the stack too far if the whole stack is multi-selected
-      if (outer != outer.getParent().topPiece(GameModule.getUserId())) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
+      if (outer != outer.getParent().topPiece(GameModule.getActiveUserId())) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
         target = null;
       }
       else {

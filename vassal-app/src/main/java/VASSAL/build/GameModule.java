@@ -669,6 +669,7 @@ public class GameModule extends AbstractConfigurable
     initFrame();
   }
 
+
   /**
    * Associates our user identity with the module's preferences.
    */
@@ -678,7 +679,7 @@ public class GameModule extends AbstractConfigurable
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final ToggleablePasswordConfigurer user = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    final ToggleablePasswordConfigurer user = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
@@ -1725,6 +1726,28 @@ public class GameModule extends AbstractConfigurable
    */
   public void clearPausedCommands() {
     pausedCommands.clear();
+  }
+
+
+  static String tempUserId = null;
+
+  /**
+   * @return the userId/password we're currently using, in case we're using one of our alternate defaults. Or if none explicitly picked, the actual contents of our password field.
+   */
+  public static String getActiveUserId() {
+    return (tempUserId == null) ? userId : tempUserId;
+  }
+
+  public static String getTempUserId() {
+    return tempUserId;
+  }
+
+  public static void setTempUserId(String id) {
+    tempUserId = id;
+  }
+
+  public static void clearTempUserId() {
+    tempUserId = null;
   }
 
   /**

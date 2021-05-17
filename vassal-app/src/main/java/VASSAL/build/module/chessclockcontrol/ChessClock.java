@@ -992,7 +992,7 @@ public class ChessClock extends AbstractConfigurable implements CommandEncoder, 
         c = resetState();
 
         final PlayerRoster.PlayerInfo me = new PlayerRoster.PlayerInfo(
-          GameModule.getUserId(),
+          GameModule.getActiveUserId(),
           GlobalOptions.getInstance().getPlayerId(),
           PlayerRoster.getMySide()
         );

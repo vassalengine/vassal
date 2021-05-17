@@ -395,7 +395,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       final String selectedName = (String) table.getValueAt(selectedRow, COL_NAME);
       SecretNote note = getNoteForName(selectedName);
 
-      if (note.getOwner().equals(GameModule.getUserId())) {
+      if (note.getOwner().equals(GameModule.getActiveUserId())) {
         note = new SecretNote(note.getName(), note.getOwner(), note.getText(), false, note.getDate(), note.getHandle());
         if (note != null) {
           final int i = notes.indexOf(note);
@@ -436,7 +436,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       okButton.addActionListener(e -> {
         final SecretNote note = new SecretNote(
           name.getValueString(),
-          GameModule.getUserId(),
+          GameModule.getActiveUserId(),
           (String) text.getValue(),
           true
         );
@@ -487,7 +487,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       final SecretNote note = getNoteForName(selectedName);
 
       if (note != null) {
-        if (note.getOwner().equals(GameModule.getUserId())) {
+        if (note.getOwner().equals(GameModule.getActiveUserId())) {
           text.setText(note.getText());
           revealButton.setEnabled(note.isHidden());
         }

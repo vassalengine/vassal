@@ -404,7 +404,7 @@ public class WizardSupport {
           if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
             controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
           }
-          else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
+          else if (pwd.getValue() == null) { //$NON-NLS-1$
             controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
           }
           else if (!pwd.getValue().equals(pwd2.getValue())) {
