@@ -368,7 +368,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       final int oldX = Integer.parseInt(st.nextToken());
       final int oldY = Integer.parseInt(st.nextToken());
       final String oldUnderId = unwrapNull(st.nextToken());
-      final String playerid = st.nextToken(GameModule.getUserId());
+      final String playerid = st.nextToken(GameModule.getActiveUserId());
       return new MovePiece(id, newMapId, new Point(newX, newY), newUnderId, oldMapId, new Point(oldX, oldY), oldUnderId, playerid);
     }
     else {

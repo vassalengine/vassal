@@ -262,6 +262,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   }
 
 
+  /**
+   * Called when the Launch Button for the player roster is clicked (i.e. the "Retire" or "Change Sides" button)
+   */
   protected void launch() {
     final String mySide = getMySide();
     if (mySide == null && allSidesAllocated()) {
@@ -277,7 +280,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final GameModule gm = GameModule.getGameModule();
 
     final PlayerInfo me = new PlayerInfo(
-      GameModule.getUserId(),
+      GameModule.getActiveUserId(),
       GlobalOptions.getInstance().getPlayerId(),
       newSide
     );
@@ -285,7 +288,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString(GlobalOptions.getInstance().chatterHTMLSupport() ? "PlayerRoster.changed_sides_2" : "PlayerRoster.changed_sides", me.playerName, mySide, newSide));
     c.execute();
 
-    remove(GameModule.getUserId());
+    remove(GameModule.getActiveUserId());
 
     final Add a = new Add(this, me.playerId, me.playerName, me.side);
     a.execute();
@@ -323,11 +326,23 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return getMySide(true);
   }
 
+  /**
+   * @return List of currently matchable passwords, including "defaults" of various types.
+   */
+  protected static List<String> getCurrentPasswords() {
+    return List.of(
+      GameModule.getUserId(),
+      Resources.getString("Prefs.password_prompt", System.getProperty("user.name")),
+      ""
+    );
+  }
+
+
   protected static String getMySide(boolean localized) {
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
       for (final PlayerInfo pi : r.getPlayers()) {
-        if (pi.playerId.equals(GameModule.getUserId())) {
+        if (pi.playerId.equals(GameModule.getActiveUserId())) {
           return localized ? pi.getLocalizedSide() : pi.getSide();
         }
       }
@@ -343,6 +358,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return new ArrayList<>(sides);
   }
 
+  /**
+   * Adds a player to the list of active players occupying sides
+   * @param playerId player unique id (password)
+   * @param playerName player name
+   * @param side player side
+   */
   public void add(String playerId, String playerName, String side) {
     final PlayerInfo e = new PlayerInfo(playerId, playerName, side);
     if (players.contains(e)) {
@@ -360,6 +381,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
   }
 
+  /**
+   * Remove a player from the list of active players occupying sides
+   * @param playerId player unique id (password)
+   */
   public void remove(String playerId) {
     final PlayerInfo e = new PlayerInfo(playerId, null, null);
     players.remove(e);
@@ -404,12 +429,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public void setup(boolean gameStarting) {
     if (gameStarting) {
-      final PlayerInfo me = new PlayerInfo(GameModule.getUserId(),
-        GlobalOptions.getInstance().getPlayerId(), null);
-      if (players.contains(me)) {
-        final PlayerInfo saved = players.get(players.indexOf(me));
-        saved.playerName = me.playerName;
-      }
+      claimOccupiedSide();
       if (GameModule.getGameModule().isMultiPlayer()) {
         final Logger log = GameModule.getGameModule().getLogger();
         if (log instanceof BasicLogger) {
@@ -418,17 +438,21 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       }
     }
     else {
+      GameModule.setTempUserId(null);
       players.clear();
     }
     getLaunchButton().setVisible(gameStarting && getMySide() != null);
     pickedSide = false;
   }
 
+  /**
+   * finish() step for Wizard
+   */
   @Override
   public void finish() {
     final String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
-      final Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+      final Add a = new Add(this, GameModule.getActiveUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
@@ -454,12 +478,18 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     return sideConfig.getControls();
   }
 
+  /**
+   * @return step title for Wizard's GameSetupStep
+   */
   @Override
   public String getStepTitle() {
     return Resources.getString("PlayerRoster.choose_side"); //$NON-NLS-1$
   }
 
-  // Implement GameSetupStep
+  /**
+   * Implement GameSetupStep for Wizard
+   * @return true if Wizard GameSetupStep is finished
+   */
   @Override
   public boolean isFinished() {
     if (pickedSide) {
@@ -471,10 +501,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       return true;
     }
 
+    claimOccupiedSide();
+
     // If we are already recorded as a player (i.e. in Saved Game), then
     // the step is only finished if we are not the Observer.
     final PlayerInfo newPlayerInfo = new PlayerInfo(
-      GameModule.getUserId(),
+      GameModule.getActiveUserId(),
       GlobalOptions.getInstance().getPlayerId(), null
     );
 
@@ -519,6 +551,82 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public boolean isMultiPlayer() {
     // NB. Intentionally not excluding observers.
     return players.size() > 1;
+  }
+
+
+  /**
+   * Claims an existing slot for the current player, and sets our temporary user id appropriately
+   * @param index The index of the slot to be claimed in the roster
+   */
+  protected void claimSlot(int index) {
+    final PlayerInfo[] roster = GameModule.getGameModule().getPlayerRoster().getPlayers();
+    final PlayerInfo slot = roster[index];
+    slot.playerName = GlobalOptions.getInstance().getPlayerId();
+    GameModule.setTempUserId(slot.playerId);
+  }
+
+  /**
+   * Claims the appropriate occupied side, if any, for the current player. If more than one is available, prompts.
+   */
+  protected void claimOccupiedSide() {
+    final List<Integer> indices = new ArrayList<>();
+    final List<String> availableNames = new ArrayList<>();
+    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
+    final List<String> pwdsToMatch = getCurrentPasswords();
+    final List<PlayerInfo> allowedSides = new ArrayList<>();
+
+    if (r != null) {
+      int index = 0;
+      for (final PlayerInfo pi : r.getPlayers()) {
+        if (pwdsToMatch.contains(pi.playerId)) {
+          allowedSides.add(pi);
+          indices.add(index);
+        }
+        index++;
+      }
+    }
+
+    GameModule.setTempUserId(null);
+
+    if (allowedSides.isEmpty()) {
+      return;
+    }
+    else if (allowedSides.size() == 1) {
+      claimSlot(indices.get(0));
+      return;
+    }
+
+    for (final PlayerInfo p : allowedSides) {
+      final String s;
+      if (p.playerId.equals(GameModule.getUserId())) {
+        s = Resources.getString("PlayerRoster.current_password");
+      }
+      else if (p.playerId.isEmpty()) {
+        s = Resources.getString("PlayerRoster.empty_password");
+      }
+      else {
+        // must be the "UserName's Password" version
+        s = Resources.getString("PlayerRoster.quoted_password", p.playerId);
+      }
+
+      availableNames.add(Resources.getString("PlayerRoster.occupied_side", p.getLocalizedSide(), s));
+    }
+
+    final GameModule g = GameModule.getGameModule();
+    final String choice = (String) JOptionPane.showInputDialog(
+      g.getPlayerWindow(),
+      Resources.getString("PlayerRoster.pick_an_occupied_side"),
+      Resources.getString("PlayerRoster.choose_side"),
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      availableNames.toArray(new String[0]),
+      availableNames.get(0)
+    );
+
+    final int index = availableNames.indexOf(choice);
+    if (index > 0) {
+      claimSlot(indices.get(index));
+    }
   }
 
 

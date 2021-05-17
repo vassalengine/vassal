@@ -64,6 +64,6 @@ public class MoveTracker {
       oldMapId,
       oldPosition,
       oldUnderneathId,
-      GameModule.getUserId());
+      GameModule.getActiveUserId());
   }
 }
