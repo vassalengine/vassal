@@ -773,13 +773,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
           s.asList().forEach(this::apply);
         }
         else {
-          for (final GamePiece p : s.asList()) {
-            final int index = s.indexOf(p);
-            if (index >= 0 && index < shapes.length) {
-              if (shapes[index].contains(pt)) {
-                apply(p);
-                break;
-              }
+          for (int i = 0; i < shapes.length; ++i) {
+            if (shapes[i].contains(pt)) {
+              apply(s.getPieceAt(i));
+              break;
             }
           }
         }
