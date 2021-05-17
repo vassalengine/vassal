@@ -2073,7 +2073,7 @@ public class ModuleManagerWindow extends JFrame {
       incrementUsed(lr.module);
 
       // register that this extension is being edited
-      markEditing(lr.module);
+      markEditing(lr.extension);
 
       super.actionPerformed(e);
       setEnabled(false);
