@@ -3,6 +3,7 @@
 * 14504: Improved results for users who started with no password and then set
     one later
 * 14502: Tailer misdecodes errorLog
+* 14484: Module editing permanently disabled after editing associated Extension
 * 14468: MouseoverStackViewer: corrected text centering problem with "extra
     space between" setting
 * 14461: NPE in TableInfo.getExpressionList()
