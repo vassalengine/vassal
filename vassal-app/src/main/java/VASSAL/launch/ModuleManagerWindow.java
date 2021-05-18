@@ -1741,7 +1741,7 @@ public class ModuleManagerWindow extends JFrame {
 
       final Action editAction = new EditExtensionLaunchAction(
           ModuleManagerWindow.this, getFile(), getSelectedModule());
-      editAction.setEnabled(!tooNew);
+      editAction.setEnabled(editAction.isEnabled() && !tooNew);
       m.add(editAction);
 
       return m;
