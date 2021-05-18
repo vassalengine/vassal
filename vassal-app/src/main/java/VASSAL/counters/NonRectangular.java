@@ -370,6 +370,10 @@ public class NonRectangular extends Decorator implements EditablePiece {
         }
       }
 
+      if ("1.0".equals(scaleConfig.getValueString())) {
+        return OLD_ID + buffer.toString();
+      }
+
       final SequenceEncoder se = new SequenceEncoder(';');
 
       se.append(scaleConfig.getValueString())
