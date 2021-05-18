@@ -258,7 +258,7 @@ public class LaunchRequest implements Serializable {
         setMode(lr, Mode.NEW_EXT);
         break;
       case PORT:
-        // does nothing
+        // obsolete, does nothing
         break;
       case VERSION:
         System.err.println("VASSAL " + Info.getVersion()); //NON-NLS
@@ -277,7 +277,7 @@ public class LaunchRequest implements Serializable {
         setMode(lr, Mode.UPDATE_GAME);
         break;
       case STANDALONE:
-        // does nothing
+        // obsolete, does nothing
         break;
       case 'a':
         lr.builtInModule = true;
