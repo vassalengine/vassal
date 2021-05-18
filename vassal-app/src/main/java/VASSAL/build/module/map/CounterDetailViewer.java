@@ -51,6 +51,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
@@ -768,7 +769,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
-        s.asList().forEach(this::apply);
+        if (!(map instanceof PlayerHand)) {
+          s.asList().forEach(this::apply);
+        }
+        else {
+          for (int i = 0; i < shapes.length; ++i) {
+            if (shapes[i].contains(pt)) {
+              apply(s.getPieceAt(i));
+              break;
+            }
+          }
+        }
       }
       return null;
     }
