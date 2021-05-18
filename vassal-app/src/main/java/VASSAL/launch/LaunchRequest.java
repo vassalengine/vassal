@@ -17,17 +17,22 @@
 
 package VASSAL.launch;
 
-import VASSAL.build.GameModule;
-import gnu.getopt.Getopt;
-import gnu.getopt.LongOpt;
-
 import java.io.File;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
+import org.apache.commons.lang3.SystemUtils;
+
 import VASSAL.Info;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.ExtensionMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -114,6 +119,18 @@ public class LaunchRequest implements Serializable {
     if (lr.autoext != null) this.autoext = new ArrayList<>(lr.autoext);
   }
 
+  private static boolean aboveFF(String s) {
+    return s.chars().anyMatch(c -> c > 0xFF);
+  }
+
+  private static String encodeArg(String a) {
+    return URLEncoder.encode(a, StandardCharsets.UTF_8);
+  }
+
+  private static File decodeArg(boolean encoded, String a) {
+    return new File(encoded ? URLDecoder.decode(a, StandardCharsets.UTF_8) : a);
+  }
+
   /**
    * Create an argument array equivalent to this <code>LaunchRequest</code>.
    *
@@ -135,7 +152,20 @@ public class LaunchRequest implements Serializable {
       args.add(sb.toString().replace(' ', '_'));
     }
 
+    final boolean needsEncoding = SystemUtils.IS_OS_WINDOWS && (
+      (module != null && aboveFF(module.getPath())) ||
+      (game != null && aboveFF(game.getPath())) ||
+      (extension != null && aboveFF(extension.getPath())) ||
+      (importFile != null && aboveFF(importFile.getPath()))
+    );
+
+    if (needsEncoding) {
+      args.add("--encoded-args");
+    }
+
     args.add("--");
+
+    final int enc_start = args.size();
 
     if (module != null) {
       args.add(module.getPath());
@@ -148,6 +178,12 @@ public class LaunchRequest implements Serializable {
     }
     else if (importFile != null) {
       args.add(importFile.getPath());
+    }
+
+    if (needsEncoding) {
+      for (int i = enc_start; i < args.size(); ++i) {
+        args.set(i, encodeArg(args.get(i)));
+      }
     }
 
     return args.toArray(new String[0]);
@@ -217,6 +253,7 @@ public class LaunchRequest implements Serializable {
     final int UPDATE_EXT = 9;
     final int UPDATE_GAME = 10;
     final int STANDALONE = 11;
+    final int ENCARGS = 12;
 
     final LongOpt[] longOpts = {
       new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'), //NON-NLS
@@ -236,11 +273,14 @@ public class LaunchRequest implements Serializable {
       new LongOpt("update-module", LongOpt.NO_ARGUMENT, null, UPDATE_MOD), //NON-NLS
       new LongOpt("update-extension", LongOpt.NO_ARGUMENT, null, UPDATE_EXT), //NON-NLS
       new LongOpt("update-game", LongOpt.NO_ARGUMENT, null, UPDATE_GAME), //NON-NLS
-      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE) //NON-NLS
+      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE), //NON-NLS
+      new LongOpt("encoded-args", LongOpt.NO_ARGUMENT, null, ENCARGS) //NON-NLS
     };
 
     final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts); //NON-NLS
     g.setOpterr(false);
+
+    boolean encargs = false;
 
     int c;
     while ((c = g.getopt()) != -1) {
@@ -278,6 +318,9 @@ public class LaunchRequest implements Serializable {
         break;
       case STANDALONE:
         // obsolete, does nothing
+        break;
+      case ENCARGS:
+        encargs = true;
         break;
       case 'a':
         lr.builtInModule = true;
@@ -336,7 +379,7 @@ public class LaunchRequest implements Serializable {
       break;
     case LOAD:
       while (i < args.length) {
-        final File file = new File(args[i++]);
+        final File file = decodeArg(encargs, args[i++]);
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
@@ -363,7 +406,7 @@ public class LaunchRequest implements Serializable {
       break;
     case IMPORT:
       if (i < args.length) {
-        lr.importFile = new File(args[i++]);
+        lr.importFile = decodeArg(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -372,7 +415,7 @@ public class LaunchRequest implements Serializable {
     case EDIT:
     case NEW_EXT:
       if (i < args.length) {
-        final File file = new File(args[i++]);
+        final File file = decodeArg(encargs, args[i++]);
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           lr.module = file;
@@ -387,7 +430,7 @@ public class LaunchRequest implements Serializable {
       break;
     case EDIT_EXT:
       while (i < args.length) {
-        final File file = new File(args[i++]);
+        final File file = decodeArg(encargs, args[i++]);
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
@@ -416,7 +459,7 @@ public class LaunchRequest implements Serializable {
       break;
     case UPDATE_MOD:
       if (i < args.length) {
-        lr.module = new File(args[i++]);
+        lr.module = decodeArg(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -424,7 +467,7 @@ public class LaunchRequest implements Serializable {
       break;
     case UPDATE_EXT:
       if (i < args.length) {
-        lr.extension = new File(args[i++]);
+        lr.extension = decodeArg(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -432,7 +475,7 @@ public class LaunchRequest implements Serializable {
       break;
     case UPDATE_GAME:
       if (i < args.length) {
-        lr.game = new File(args[i++]);
+        lr.game = decodeArg(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
