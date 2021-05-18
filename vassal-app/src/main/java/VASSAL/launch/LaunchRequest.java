@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2008-2010 by Joel Uckelman
+ * Copyright (c) 2008-2021 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,7 +47,6 @@ public class LaunchRequest implements Serializable {
   private static final long serialVersionUID = 1L;
 
   enum Mode {
-
     MANAGE("manage"), //NON-NLS
     LOAD("load"), //NON-NLS
     EDIT("edit"), //NON-NLS
@@ -81,8 +79,6 @@ public class LaunchRequest implements Serializable {
 
   public boolean builtInModule;
   public List<String> autoext;
-
-  public int port = -1;
 
   public long key;
 
@@ -129,8 +125,6 @@ public class LaunchRequest implements Serializable {
     args.add("--" + mode);
 
     if (builtInModule) args.add("--auto"); //NON-NLS
-
-    if (port >= 0) args.add("--port=" + port); //NON-NLS
 
     if (autoext != null) {
       final StringBuilder sb = new StringBuilder("--auto-extensions="); //NON-NLS
@@ -195,7 +189,6 @@ public class LaunchRequest implements Serializable {
       "  --auto-extensions   TODO\n" + //NON-NLS
       "  --edit-extension    " + Resources.getString("LaunchRequest.extension") + "\n" + //NON-NLS
       "  --new-extension     " + Resources.getString("LaunchRequest.new_extension") + "\n" + //NON-NLS
-      "  --port              " + Resources.getString("LaunchRequest.port") + "\n" + //NON-NLS
       "  --version           " + Resources.getString("LaunchRequest.version") + "\n" + //NON-NLS
       "  --                  " + Resources.getString("LaunchRequest.terminate") + "\n" + //NON-NLS
       "\n" +
@@ -265,16 +258,7 @@ public class LaunchRequest implements Serializable {
         setMode(lr, Mode.NEW_EXT);
         break;
       case PORT:
-        try {
-          lr.port = Integer.parseInt(g.getOptarg());
-        }
-        catch (NumberFormatException e) {
-          die("LaunchRequest.bad_port", g.getOptarg());
-        }
-
-        if (lr.port < 49152 || lr.port > 65535) {
-          die("LaunchRequest.bad_port", g.getOptarg());
-        }
+        // does nothing
         break;
       case VERSION:
         System.err.println("VASSAL " + Info.getVersion()); //NON-NLS
