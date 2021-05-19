@@ -19,17 +19,12 @@ package VASSAL.launch;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.URLEncoder;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-
-import org.apache.commons.lang3.SystemUtils;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -39,6 +34,7 @@ import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.io.ArgEncoding;
 
 /**
  * Encapsulates and parses command-line arguments.
@@ -119,18 +115,6 @@ public class LaunchRequest implements Serializable {
     if (lr.autoext != null) this.autoext = new ArrayList<>(lr.autoext);
   }
 
-  private static boolean aboveFF(String s) {
-    return s.chars().anyMatch(c -> c > 0xFF);
-  }
-
-  private static String encodeArg(String a) {
-    return URLEncoder.encode(a, StandardCharsets.UTF_8);
-  }
-
-  private static File decodeArg(boolean encoded, String a) {
-    return new File(encoded ? URLDecoder.decode(a, StandardCharsets.UTF_8) : a);
-  }
-
   /**
    * Create an argument array equivalent to this <code>LaunchRequest</code>.
    *
@@ -152,12 +136,11 @@ public class LaunchRequest implements Serializable {
       args.add(sb.toString().replace(' ', '_'));
     }
 
-    final boolean needsEncoding = SystemUtils.IS_OS_WINDOWS && (
-      (module != null && aboveFF(module.getPath())) ||
-      (game != null && aboveFF(game.getPath())) ||
-      (extension != null && aboveFF(extension.getPath())) ||
-      (importFile != null && aboveFF(importFile.getPath()))
-    );
+    final boolean needsEncoding =
+      (module != null && ArgEncoding.requires(module.getPath())) ||
+      (game != null && ArgEncoding.requires(game.getPath())) ||
+      (extension != null && ArgEncoding.requires(extension.getPath())) ||
+      (importFile != null && ArgEncoding.requires(importFile.getPath()));
 
     if (needsEncoding) {
       args.add("--encoded-args");
@@ -182,7 +165,7 @@ public class LaunchRequest implements Serializable {
 
     if (needsEncoding) {
       for (int i = enc_start; i < args.size(); ++i) {
-        args.set(i, encodeArg(args.get(i)));
+        args.set(i, ArgEncoding.encode(args.get(i)));
       }
     }
 
@@ -379,7 +362,7 @@ public class LaunchRequest implements Serializable {
       break;
     case LOAD:
       while (i < args.length) {
-        final File file = decodeArg(encargs, args[i++]);
+        final File file = ArgEncoding.decode(encargs, args[i++]);
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
@@ -406,7 +389,7 @@ public class LaunchRequest implements Serializable {
       break;
     case IMPORT:
       if (i < args.length) {
-        lr.importFile = decodeArg(encargs, args[i++]);
+        lr.importFile = ArgEncoding.decode(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -415,7 +398,7 @@ public class LaunchRequest implements Serializable {
     case EDIT:
     case NEW_EXT:
       if (i < args.length) {
-        final File file = decodeArg(encargs, args[i++]);
+        final File file = ArgEncoding.decode(encargs, args[i++]);
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           lr.module = file;
@@ -430,7 +413,7 @@ public class LaunchRequest implements Serializable {
       break;
     case EDIT_EXT:
       while (i < args.length) {
-        final File file = decodeArg(encargs, args[i++]);
+        final File file = ArgEncoding.decode(encargs, args[i++]);
         final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
         if (data instanceof ModuleMetaData) {
           if (lr.module != null)
@@ -459,7 +442,7 @@ public class LaunchRequest implements Serializable {
       break;
     case UPDATE_MOD:
       if (i < args.length) {
-        lr.module = decodeArg(encargs, args[i++]);
+        lr.module = ArgEncoding.decode(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -467,7 +450,7 @@ public class LaunchRequest implements Serializable {
       break;
     case UPDATE_EXT:
       if (i < args.length) {
-        lr.extension = decodeArg(encargs, args[i++]);
+        lr.extension = ArgEncoding.decode(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -475,7 +458,7 @@ public class LaunchRequest implements Serializable {
       break;
     case UPDATE_GAME:
       if (i < args.length) {
-        lr.game = decodeArg(encargs, args[i++]);
+        lr.game = ArgEncoding.decode(encargs, args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
