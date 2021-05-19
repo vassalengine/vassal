@@ -30,7 +30,8 @@
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>${CONF_DIR}/${LOG_FILE}</file>
-    <encoder>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <charset>UTF-8</charset>
       <pattern>%date [%pid-%thread] %-5level %logger - %msg%n</pattern>
     </encoder>
     <prudent>true</prudent>
