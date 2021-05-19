@@ -60,4 +60,12 @@
         <method>void main(java.lang.String[])</method>
         <justification>Removed useless main()</justification>
     </difference>
+
+    <difference>
+        <className>VASSAL/launch/LaunchRequest</className>
+        <differenceType>6001</differenceType>
+        <field>port</field>
+        <justification>Only internal things use launch package</justification>
+    </difference>
+
 </differences>
