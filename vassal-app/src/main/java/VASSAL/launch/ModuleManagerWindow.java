@@ -157,6 +157,8 @@ public class ModuleManagerWindow extends JFrame {
   private StringArrayConfigurer moduleConfig;
   private File selectedModule;
 
+  private List<ModuleInfo> moduleInfo;
+
   private final CardLayout modulePanelLayout;
   private final JPanel moduleView;
   private final SplitPane splitPane;
@@ -466,6 +468,10 @@ public class ModuleManagerWindow extends JFrame {
     setCursor(Cursor.getPredefinedCursor(
       wait ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR
     ));
+  }
+
+  public List<ModuleInfo> getModuleInfo() {
+    return moduleInfo;
   }
 
   protected void setPreferredDividerLocation(int i) {
@@ -865,9 +871,11 @@ public class ModuleManagerWindow extends JFrame {
 
   private void updateModuleList() {
     final List<String> l = new ArrayList<>();
+    moduleInfo = new ArrayList<>();
     for (int i = 0; i < rootNode.getChildCount(); i++) {
       final ModuleInfo module =
         (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
+      moduleInfo.add(module);
       l.add(module.encode());
     }
     recentModuleConfig.setValue(l.toArray(new String[0]));
@@ -1562,7 +1570,22 @@ public class ModuleManagerWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
           removeModule(file);
-          cleanupTileCache();
+
+          boolean safeToClean = true;
+          final String hstr = DigestUtils.sha1Hex(
+            metadata.getName() + "_" + metadata.getVersion()
+          );
+          for (final ModuleInfo otherModule : ModuleManagerWindow.getInstance().getModuleInfo()) {
+            final String hstr2 = DigestUtils.sha1Hex(otherModule.metadata.getName() + "_" + otherModule.metadata.getVersion());
+            if (hstr.equals(hstr2)) {
+              safeToClean = false;
+              break;
+            }
+          }
+
+          if (safeToClean) {
+            cleanupTileCache();
+          }
         }
       });
 
