@@ -151,7 +151,10 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       splitPane.toggleLeft();
     }
     else {
-      root.getTopLevelAncestor().setVisible(!root.getTopLevelAncestor().isVisible());
+      final Container tla = root.getTopLevelAncestor();
+      if (tla != null) {
+        tla.setVisible(!tla.isVisible());
+      }
     }
   }
 
