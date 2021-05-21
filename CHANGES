@@ -36,6 +36,7 @@
 * 14351: NPE when Player Roster deleted from module
 * 14337: Show/Hide Palette Hotkey shows but does not hide
 * 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
+* 14308: Bad encoding in errorLog, bug reports
 * 14286: Prevent bad expressions from returning null
 * 14271: Chat & Notes input panel(s) treat Hotkeys differently
 * 14261: StackOverflowError: Infinite loop caused by Text Label wasn't being
