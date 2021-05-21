@@ -48,6 +48,7 @@ import VASSAL.tools.image.FallbackImageTypeConverter;
 import VASSAL.tools.image.ImageIOImageLoader;
 import VASSAL.tools.image.ImageLoader;
 import VASSAL.tools.image.ImageTypeConverter;
+import VASSAL.tools.io.ArgEncoding;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.io.ZipArchive;
@@ -63,6 +64,15 @@ public class ZipFileImageTiler {
   private static final Logger logger =
     LoggerFactory.getLogger(ZipFileImageTiler.class);
 
+  private static String[] decodeArgs(String[] args) {
+    return "--encoded-args".equals(args[0]) ?  new String[] {
+      ArgEncoding.decode(args[1]),
+      ArgEncoding.decode(args[2]),
+      args[3],
+      args[4]
+    } : args;
+  }
+
   public static void main(String[] args) {
     try {
       logger.info("Starting"); //NON-NLS
@@ -73,6 +83,8 @@ public class ZipFileImageTiler {
       // Ensure that exceptions are logged.
       Thread.setDefaultUncaughtExceptionHandler(
         (thread, thrown) -> logger.error(thread.getName(), thrown));
+
+      args = decodeArgs(args);
 
       // Parse the arguments
       final String zpath = args[0];

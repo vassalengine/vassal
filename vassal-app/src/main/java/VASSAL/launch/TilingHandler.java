@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2010, 2011 by Joel Uckelman
+ * Copyright (c) 2010-2021 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,7 +32,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -49,6 +47,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.image.tilecache.TileUtils;
+import VASSAL.tools.io.ArgEncoding;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.FileStore;
 import VASSAL.tools.io.InputOutputStreamPump;
@@ -178,19 +177,30 @@ public class TilingHandler {
 
     final int port = ssock.getLocalPort();
 
-    final List<String> args = Arrays.asList(
+    final List<String> args = new ArrayList<>(List.of(
       Info.getJavaBinPath().getAbsolutePath(),
       "-classpath", //NON-NLS
       System.getProperty("java.class.path"),
       "-Xmx" + maxheap + "M", //NON-NLS
       "-Duser.home=" + System.getProperty("user.home"), //NON-NLS
       "-DVASSAL.port=" + port, //NON-NLS
-      "VASSAL.tools.image.tilecache.ZipFileImageTiler",
-      aname,
-      cdir.getAbsolutePath(),
-      String.valueOf(tdim.width),
-      String.valueOf(tdim.height)
-    );
+      "VASSAL.tools.image.tilecache.ZipFileImageTiler"
+    ));
+
+    final String cdirpath = cdir.getAbsolutePath();
+
+    if (ArgEncoding.requires(aname) || ArgEncoding.requires(cdirpath)) {
+      args.add("--encoded-args");
+      args.add(ArgEncoding.encode(aname));
+      args.add(ArgEncoding.encode(cdirpath));
+    }
+    else {
+      args.add(aname);
+      args.add(cdirpath);
+    }
+
+    args.add(String.valueOf(tdim.width));
+    args.add(String.valueOf(tdim.height));
 
     // get the progress dialog
     final ProgressDialog pd = ProgressDialog.createOnEDT(

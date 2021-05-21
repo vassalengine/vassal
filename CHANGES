@@ -36,6 +36,7 @@
 
 3.5.6 - ???
 
+* 14506: NPE in PieceWindow.launchButtonPressed()
 * 14505: Edit Extension menu item should be disabled when the extension is
     already being edited
 * 14504: Improved results for users who started with no password and then set
@@ -45,6 +46,7 @@
 * 14484: Module editing permanently disabled after editing associated Extension
 * 14477: MouseoverStackViewer: Show a single card when used in a PlayerHand
     window
+* 14469: Java's ProcessBuilder misencodes Unicode outside Latin1 on Windows
 * 14468: MouseoverStackViewer: corrected text centering problem with "extra
     space between" setting
 * 14461: NPE in TableInfo.getExpressionList()
@@ -71,6 +73,7 @@
 * 14351: NPE when Player Roster deleted from module
 * 14337: Show/Hide Palette Hotkey shows but does not hide
 * 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
+* 14308: Bad encoding in errorLog, bug reports
 * 14286: Prevent bad expressions from returning null
 * 14271: Chat & Notes input panel(s) treat Hotkeys differently
 * 14261: StackOverflowError: Infinite loop caused by Text Label wasn't being
