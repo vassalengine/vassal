@@ -1,5 +1,6 @@
 3.5.6 - ???
 
+* 14506: NPE in PieceWindow.launchButtonPressed()
 * 14505: Edit Extension menu item should be disabled when the extension is
     already being edited
 * 14504: Improved results for users who started with no password and then set
