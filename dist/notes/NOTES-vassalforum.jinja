@@ -17,6 +17,49 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
 [url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe]Windows (32-bit)[/url]
 [url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip]Other[/url]
 
+[size=150][b]Changes since 3.5.5[/b][/size]
+
+Bug fixes
+
+* 14518: Zoomer hotkeys should take effect only if their map is focused
+* 14506: NPE in PieceWindow.launchButtonPressed()
+* 14505: Edit Extension menu item should be disabled when the extension is already being edited
+* 14504: Improved results for users who started with no password and then set one later
+* 14503: Set errorLog encoding explicitly to UTF-8
+* 14502: Tailer misdecodes errorLog
+* 14484: Module editing permanently disabled after editing associated Extension
+* 14469: Java's ProcessBuilder misencodes Unicode outside Latin1 on Windows
+* 14468: MouseoverStackViewer: corrected text centering problem with "extra space between" setting
+* 14461: NPE in TableInfo.getExpressionList()
+* 14460: StackOverflowError when referencing _Level property in layer-following expression
+* 14456: ConcurrentModificationException in GameState.setup() when component setup() adds components
+* 14452: Catch PatternSyntaxException on user-provided regexes
+* 14440: Counter refresh function sometimes changes stacking order of pieces
+* 14422: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
+* 14418: MassPieceLoader: Copy/Paste of Modified Layer trait generates Standard Layer on Paste
+* 14401: Cancelling a predefined-setup load during setup wizard shouldn't show "Loaded..." message
+* 14393: Don't show that sending bug reports failed when they've succeeded
+* 14386: Editor was reporting module saved when the "confirm overwrite" dialog cancelled
+* 14370: NPE in BasicLogger.write() when there is no game state to write
+* 14368: Using String functions on property names containing double quotes in value causes Bad Module Data errors
+* 14351: NPE when Player Roster deleted from module
+* 14337: Show/Hide Palette Hotkey shows but does not hide
+* 14325: TileNotFoundException after second copy of a module in use is removed
+* 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
+* 14308: Bad encoding in errorLog, bug reports
+* 14286: Prevent bad expressions from returning null
+* 14271: Chat & Notes input panel(s) treat Hotkeys differently
+* 14261: StackOverflowError: Infinite loop caused by Text Label wasn't being caught properly
+* 10755: Infinite loop in RecursionLimiter.infiniteLoop()
+* 10114: ArrayIndexOutOfBoundsException in SecretNotesController.setup()
+*  2623: FreeRotator does not update masked image if sides change
+
+Other improvements
+
+* 14477: MouseoverStackViewer: Show a single card when used in a PlayerHand window
+* 14453: Improved error message on failure to load a deck
+* 14408: Lock logs and saves during writes to preempt locking by programs like Dropbox
+
 [size=150][b]Changes since 3.5.4[/b][/size]
 
 Bug fixes
@@ -46,76 +89,6 @@ Bug fixes
 Other improvements
 
 * 14282: Upgrade to Java 16 for Windows, Mac packages
-
-[size=150][b]Changes since 3.5.3[/b][/size]
-
-New features
-
-* 14228: Chess Clocks can now be manually reset (if manual reset is enabled for them by module designer)
-* 14217: MouseoverStackViewer - $countPieces$ will give the total number of pieces found in the stack (w/o having to create a property)
-* 14207: Improved translation features (Global Translatable Message component, Translatable Message trait, exposing current language/locale as property)
-* 14191: CurrentLanguage and CurrentLanguageName exposed as module properties
-
-Bug fixes
-
-* 14270: "maximum heap too large" message shown when maximum heap is too small
-* 14269: Poor Editor performance when using Fast Match
-* 14267: Game Refresher: Refresh Predefined Setups should clear any open game in the Player
-* 14256: LOS gets stuck on screen when replayed through logfile
-* 14255: Default autoreport text made -< instead of ->
-* 14246: Fast Match Global Key Commands were "dealing off the bottom of the deck" in certain cases
-* 14245: HTML in Tabbed Panes (charts, widgets): Work around apparent Swing bug in JTabbedPane
-* 14243: Game Piece Layer manipulation commands do not match described effect
-* 14227: Mark When Moved had Vertical offset mislabeled as Horizontal offset
-* 14226: Undo and Server buttons steal focus after being clicked
-* 14222: Editor Search output loses less-than symbols
-* 14219: Do not expand every prototype in a piece before searching it, just match the name of the prototype.
-* 14203: Global Key Commands should exit after displaying report if there is no key command to issue
-* 14200: Scenario names (Predefined Setup) should be displayed in translated language
-* 14199: Inventory text not translated
-* 14198: Translated private windows do not work when changing sides if module is translated
-* 14196: Right-click menu localization is not shown for some elements
-* 14192: Decks from previous saves and logs are retained in memory
-* 14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners (e.g. accepting double click AND drag from same mouse sequence)
-* 14178: Some weird systems lack awt.font.desktophints but aren't headless
-* 14168: Fix broken HTML in the 'not-allowed-in-multiplayer-games' message
-* 14164: Fast Match change persists despite Cancel
-* 14163: NPE due to File.listFiles() returning null for symlnks on Macs
-* 14159: Fast Search GKC ignores "Within a deck, apply to no pieces"
-* 14156: Loading a log file to continue a game shouldn't reset the map window
-* 14155: Search was showing duplicate entries for certain items
-* 14154: Search wasn't finding "Fast Match" fields
-* 14152: .vsav, .vlog should be appended to saves, logs when not present, instead of checking for '.'
-* 14149: Windows installer fails to run uninstallers for old versions
-* 14143: First character is 'eaten' when typing chat while over map
-* 14138: Turn Tracker mispopulates button tooltip field while running in editor
-* 14136: Module-level GKCs were not honoring fast match
-* 14131: String method calls in Beanshell don't return proper result unless GetProperty is used
-* 14124: Remove "(Optional)" from Send to Location Board Name hint text
-* 14112: In Dynamic Property List of values, cursor jumps after first character entered
-* 14088: Ensure image is updated on selection of new image with duplicate filename in the Editor
-* 14069: ArrayIndexOutOfBoundsException in StringArrayConfigurer due to race
-* 13796: Stacks after the first are unstacked when multiple stacks dragged to a snap-to map
-* 13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()
-* 13472: "Send to Deck" creates phantom cards in proportion to the number of game starts
-* 13145: Send Hot Key ignored by Deck
-* 12538: Decks report multiple shuffles after loading saved game
-
-Other improvements
-
-* 14258: "Logging" and "Replaying" should have priority over "Saved" in the title bar
-* 14240: Welcome Wizard: Put "enter your name" screen after the main welcome (so that option to turn off wizard is always on first screen viewed)
-* 14209: Write logs and saves to .part file to forestall copying of partially written files
-* 14205: Allow different images to be loaded based on currrent VASSAL language
-* 14201: Share immutable objects
-* 14193: Expressions should be cached
-* 14185: Distinguish tile loading errors from other image loading errors
-* 14182: Prevent duplication of FormattedString data and Expressions
-* 14167: Inefficient implementation of FilterOutputStream in ZipWriter
-* 14148: Module Editor Labels get truncated with '...'
-* 14139: Delete trait to set 'old...' properties prior to deleting piece
-* 14133: Better support for Mac Alt and Function keys
-* 14066: Remove Unused Images: Dialog sizing and file size display improvements
 
 See the [url=http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes]Release Notes[/url] for descriptions of the changes in {{version_feature}}.
 

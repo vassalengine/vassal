@@ -34,7 +34,7 @@
 * 13817: Default UI font size can be over-ridden in preferences
 *  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
 
-3.5.6 - ???
+3.5.6 - 25 May 2021
 
 * 14518: Zoomer hotkeys should take effect only if their map is focused
 * 14506: NPE in PieceWindow.launchButtonPressed()
@@ -64,7 +64,7 @@
 * 14408: Lock logs and saves during writes to preempt locking by programs like
     Dropbox
 * 14401: Cancelling a predefined-setup load during setup wizard shouldn't show
-    "Loaded..." message.
+    "Loaded..." message
 * 14393: Don't show that sending bug reports failed when they've succeeded
 * 14386: Editor was reporting module saved when the "confirm overwrite" dialog
     cancelled
