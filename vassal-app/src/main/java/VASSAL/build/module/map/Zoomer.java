@@ -244,17 +244,31 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
   }
 
+  private boolean fromThisWindow(ActionEvent e) {
+    return e.getSource() instanceof Component &&
+      SwingUtilities.getWindowAncestor((Component) e.getSource()) ==
+      SwingUtilities.getWindowAncestor(map.getView());
+  }
+
   public Zoomer() {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
 
-    final ActionListener zoomIn = e -> zoomIn();
+    final ActionListener zoomIn = e -> {
+      if (fromThisWindow(e)) {
+        zoomIn();
+      }
+    };
 
-    final ActionListener zoomOut = e -> zoomOut();
+    final ActionListener zoomOut = e -> {
+      if (fromThisWindow(e)) {
+        zoomOut();
+      }
+    };
 
     zoomMenu = new ZoomMenu();
 
     final ActionListener zoomPick = e -> {
-      if (zoomPickButton.isShowing()) {
+      if (zoomPickButton.isShowing() && fromThisWindow(e)) {
         zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
       }
     };
