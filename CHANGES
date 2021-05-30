@@ -34,6 +34,8 @@
 * 13817: Default UI font size can be over-ridden in preferences
 *  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
 
+3.5.7 - ???
+
 3.5.6 - 25 May 2021
 
 * 14518: Zoomer hotkeys should take effect only if their map is focused
