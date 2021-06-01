@@ -263,12 +263,29 @@ public class ArchiveWriter extends DataArchive {
     }
   }
 
+  public void save() throws IOException {
+    saveButVerify();
+  }
+
+  public void save(boolean notifyModuleManager) throws IOException {
+    saveButVerify(notifyModuleManager);
+  }
+
+  public void saveAs() throws IOException {
+    saveAsButVerify();
+  }
+
+  public void saveAs(boolean notifyModuleManager) throws IOException {
+    saveAsButVerify(notifyModuleManager);
+  }
+
+
   /**
    * Saves the archive, prompting for a name only if none has ever been provided.
    * @throws IOException IOException
    */
-  public boolean save() throws IOException {
-    return save(false);
+  public boolean saveButVerify() throws IOException {
+    return saveButVerify(false);
   }
 
   /**
@@ -276,9 +293,9 @@ public class ArchiveWriter extends DataArchive {
    * @param notifyModuleManager If true, notifies Module Manager that the save has occurred
    * @throws IOException IOException
    */
-  public boolean save(boolean notifyModuleManager) throws IOException {
+  public boolean saveButVerify(boolean notifyModuleManager) throws IOException {
     if (isTempArchive) {
-      return saveAs(notifyModuleManager);
+      return saveAsButVerify(notifyModuleManager);
     }
     else {
       write(archive, notifyModuleManager);
@@ -290,8 +307,8 @@ public class ArchiveWriter extends DataArchive {
    * Saves the archive, always prompting for a new filename.
    * @throws IOException IOException
    */
-  public boolean saveAs() throws IOException {
-    return saveAs(false);
+  public boolean saveAsButVerify() throws IOException {
+    return saveAsButVerify(false);
   }
 
   /**
@@ -312,7 +329,7 @@ public class ArchiveWriter extends DataArchive {
    * @return true if operation proceeded, false if it was cancelled by user at file chooser or confirmation dialog
    * @throws IOException IOException
    */
-  public boolean saveAs(boolean notifyModuleManager) throws IOException {
+  public boolean saveAsButVerify(boolean notifyModuleManager) throws IOException {
     final FileChooser fc = FileChooser.createFileChooser(
       GameModule.getGameModule().getPlayerWindow(),
       (DirectoryConfigurer) Prefs.getGlobalPrefs()
