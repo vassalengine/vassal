@@ -27,25 +27,25 @@
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
         <method>boolean save()</method>
-        <to>void save()</to>
+        <to>void</to>
     </difference>
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
         <method>boolean save(boolean)</method>
-        <to>void save(boolean)</to>
+        <to>void</to>
     </difference>
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
         <method>boolean save(boolean)</method>
-        <to>void save(boolean)</to>
+        <to>void</to>
     </difference>
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
         <method>boolean saveAs(boolean)</method>
-        <to>void saveAs(boolean)</to>
+        <to>void</to>
     </difference>
 
 
