@@ -1989,7 +1989,7 @@ public class GameModule extends AbstractConfigurable
 
       writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
-      final boolean actuallyDidStuff = saveAs ? writer.saveAs(true) : writer.save(true);
+      final boolean actuallyDidStuff = saveAs ? writer.saveAsButVerify(true) : writer.saveButVerify(true);
       if (actuallyDidStuff) {
         lastSavedConfiguration = save;
         warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
