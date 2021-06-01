@@ -38,7 +38,7 @@
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>boolean save(boolean)</method>
+        <method>boolean saveAs()</method>
         <to>void</to>
     </difference>
     <difference>
