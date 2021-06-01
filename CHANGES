@@ -37,6 +37,7 @@
 
 3.5.7 - ???
 
+* 14527: NoSuchMethodError when calling ArchiveWriter.save()
 * 14526: IllegalArgumentException when rendering empty labels
 * 14521: NPE in CounterDetailViewer when Stack shapes array is longer than the
     piece count
