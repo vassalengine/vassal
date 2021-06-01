@@ -91,6 +91,10 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public String myGetType() {
+    if (scale == 1.0) {
+      return OLD_ID + shapeSpec; // If module has not availed itself of 3.6 features, stay compatible with 3.5
+    }
+
     final SequenceEncoder se = new SequenceEncoder(';');
 
     se.append(scale)
@@ -364,6 +368,10 @@ public class NonRectangular extends Decorator implements EditablePiece {
             buffer.append(',');
           }
         }
+      }
+
+      if ("1.0".equals(scaleConfig.getValueString())) {
+        return OLD_ID + buffer.toString();
       }
 
       final SequenceEncoder se = new SequenceEncoder(';');
