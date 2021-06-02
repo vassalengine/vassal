@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.i18n.Resources;
 
 /**
  * Requires that at least one child of a given type
@@ -39,9 +40,12 @@ public class MandatoryComponent implements ValidityChecker {
     if (b == this.target &&
         target.getComponentsOf(requiredChildClass).isEmpty()) {
       report.addWarning(
-        ConfigureTree.getConfigureName(target) +
-        " must contain at least one " + //NON-NLS
-        ConfigureTree.getConfigureName(requiredChildClass));
+        Resources.getString("Editor.ValidityChecker.mandatory_warning",
+          ConfigureTree.getConfigureName(target),
+          ConfigureTree.getConfigureName(target.getClass()),
+          ConfigureTree.getConfigureName(requiredChildClass)
+        )
+      );
     }
   }
 }

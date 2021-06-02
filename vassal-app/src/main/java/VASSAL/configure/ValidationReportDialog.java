@@ -17,19 +17,19 @@
  */
 package VASSAL.configure;
 
-import java.awt.BorderLayout;
+import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ScrollPane;
+
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
-import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Dialog for reporting the results of validating a GameModule
@@ -42,34 +42,28 @@ public class ValidationReportDialog extends JDialog {
   public ValidationReportDialog(ValidationReport report, CallBack cb) {
     super(GameModule.getGameModule().getPlayerWindow(), false);
     setTitle(Resources.getString("Editor.ValidationReportDialog.problems"));
+    setLayout(new MigLayout("ins panel", "[fill,grow]"));
     this.callback = cb;
-    final Box reportBox = Box.createVerticalBox();
-    add(reportBox);
-    final JPanel buttonPanel = new JPanel();
-    add(buttonPanel, BorderLayout.SOUTH);
+
+    final JPanel buttonPanel = new JPanel(new MigLayout("", "push[]rel[]push"));
 
     final List<String> warnings = report.getWarnings();
     switch (warnings.size()) {
     case 0:
-      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.no_problems")));
+      add(new JLabel(Resources.getString("Editor.ValidationReportDialog.no_problems")), "wrap");
       buttonPanel.add(createOkButton());
-      break;
-    case 1:
-      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.a_problem")));
-      reportBox.add(new JLabel(warnings.get(0) + "."));
-      buttonPanel.add(createOkButton());
-      buttonPanel.add(createCancelButton());
       break;
     default:
-      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.following_problems")));
-      reportBox.add(new JLabel(Resources.getString("Editor.ValidationReportDialog.danger_will_robinson")));
+      add(new JLabel(Resources.getString("Editor.ValidationReportDialog.following_problems")), "wrap");
+      add(new JLabel(Resources.getString("Editor.ValidationReportDialog.danger_will_robinson")), "wrap");
       final JList<String> list = new JList<>(warnings.toArray(new String[0]));
       list.setVisibleRowCount(Math.min(list.getVisibleRowCount(), warnings.size()));
-      reportBox.add(new ScrollPane(list));
-      buttonPanel.add(createOkButton());
-      buttonPanel.add(createCancelButton());
+      add(new ScrollPane(list), "wrap");
+      buttonPanel.add(createOkButton(), "sg 1, tag ok");
+      buttonPanel.add(createCancelButton(), "sg 1, tag cancel");
     }
 
+    add(buttonPanel);
     pack();
     setLocationRelativeTo(null);
   }
