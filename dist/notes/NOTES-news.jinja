@@ -18,6 +18,16 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
   <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
 </ul>
 
+<h2>Changes since 3.5.6</h2>
+
+<h3>Bug fixes</h3>
+<ul>
+<li>14540: PgDn stopped scrolling maps downward</li>
+<li>14527: NoSuchMethodError when calling ArchiveWriter.save()</li>
+<li>14526: IllegalArgumentException when rendering empty labels</li>
+<li>14521: NPE in CounterDetailViewer when Stack shapes array is longer than the piece count</li>
+</ul>
+
 <h2>Changes since 3.5.5</h2>
 
 <h3>Bug fixes</h3>
@@ -61,38 +71,6 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
 <li>14477: MouseoverStackViewer: Show a single card when used in a PlayerHand window</li>
 <li>14453: Improved error message on failure to load a deck</li>
 <li>14408: Lock logs and saves during writes to preempt locking by programs like Dropbox</li>
-</ul>
-
-<h2>Changes since 3.5.4</h2>
-
-<h3>Bug fixes</h3>
-<ul>
-<li>14348: Invisible Trait UI conflated opacity with transparency</li>
-<li>14336: MouseoverStackViewer improperly excludes does-not-move pieces when "include move-when-selected" is unchecked</li>
-<li>14332: NullPointerException in Expression.resetCachedExpressions()</li>
-<li>14331: Additional Selection Highlighter fails to offset images</li>
-<li>14327: IllegalComponentStateException in ToolbarMenu.launch()</li>
-<li>14322: IllegalComponentStateException in TableInfo.myKeyEvent()</li>
-<li>14321: IllegalComponentStateException in PropertySheet.myKeyEvent()</li>
-<li>14317: NPE in ReturnToDeck.getDeckName()</li>
-<li>14310: Property Sheet options not saved</li>
-<li>14309: Missing Deck.deck translation key</li>
-<li>14301: GKC/GHK trigger actions out of order at remote end in online play</li>
-<li>14296: IndexOutOfBoundsException in BasicLogger.step() when holding down step key</li>
-<li>14291: IllegalArgumentException in PlayerRoster.resetListeners()</li>
-<li>14290: Online multi-player game is subject to a race condition that ends with corrupt decks</li>
-<li>14288: Deck Hotkey ignored from keyboard and Global Hotkey Trait in preset scenarios</li>
-<li>14285: IllegalArgumentException in PlayerRoster when moving items in Editor</li>
-<li>14284: Chess Clocks: fixed problem where "allow reset" option selection wouldn't "stick"</li>
-<li>14262: Missing Editor.GridEditor.command_arrow_keys translation key</li>
-<li>14225: Send Hotkey action corrupts target deck</li>
-<li>13837: Creating a Global Property with Null name causes NPE on Load Game</li>
-<li>13203: Refresh Counters causes Pieces within Decks to expand</li>
-</ul>
-
-<h3>Other improvements</h3>
-<ul>
-<li>14282: Upgrade to Java 16 for Windows, Mac packages</li>
 </ul>
 
 <p>
