@@ -35,7 +35,7 @@
 * 13817: Default UI font size can be over-ridden in preferences
 *  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
 
-3.5.7 - ???
+3.5.7 - 3 June 2021
 
 * 14540: PgDn stopped scrolling maps downward
 * 14527: NoSuchMethodError when calling ArchiveWriter.save()
