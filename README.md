@@ -12,7 +12,7 @@ VASSAL is a game engine for building and playing online adaptations of board gam
 
 ### Minimum Requirements
 
-VASSAL 3.4 requires Java 11 or later.
+VASSAL 3.5 requires Java 11 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with
 them, so there is no need to install Java separately on those operating
