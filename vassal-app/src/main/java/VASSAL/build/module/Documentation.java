@@ -17,28 +17,27 @@
  */
 package VASSAL.build.module;
 
-import java.io.File;
-import java.net.MalformedURLException;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-
-import VASSAL.build.module.documentation.BrowserPDFFile;
-import org.w3c.dom.Element;
-
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.BrowserHelpFile;
+import VASSAL.build.module.documentation.BrowserPDFFile;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.MenuManager;
+
+import java.io.File;
+import java.net.MalformedURLException;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+
+import org.w3c.dom.Element;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
@@ -80,8 +79,7 @@ public class Documentation extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable b) {
-    validator =
-      new SingleChildInstance(GameModule.getGameModule(), getClass());
+
   }
 
   @Override

@@ -17,21 +17,19 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
-import VASSAL.i18n.Resources;
 
 /**
  * Container for definitions of Generic Color Definitions
@@ -196,7 +194,7 @@ public class ColorManager extends AbstractConfigurable {
 
   @Override
   public void addTo(Buildable parent) {
-    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
+
   }
 
   @Override

@@ -52,7 +52,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.BasicPreference;
@@ -189,7 +188,6 @@ public class GlobalOptions extends AbstractConfigurable {
 
     final GameModule gm = GameModule.getGameModule();
     final Prefs prefs = gm.getPrefs();
-    validator = new SingleChildInstance(gm, getClass());
 
     /////////////////////
     // GENERAL TAB TAB //

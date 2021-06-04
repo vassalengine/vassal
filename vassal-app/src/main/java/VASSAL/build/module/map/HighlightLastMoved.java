@@ -17,13 +17,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.HashMap;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -32,11 +25,17 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
 
 public class HighlightLastMoved extends AbstractConfigurable implements Drawable, MouseListener, GameComponent {
   public static final String ENABLED = "enabled"; //NON-NLS
@@ -127,7 +126,6 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     instances.put(map, this);
-    validator = new SingleChildInstance(map, getClass());
   }
 
   @Override
