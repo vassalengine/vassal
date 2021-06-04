@@ -3,7 +3,7 @@
 # VASSAL
 > The open-source boardgame engine
 
-[![Build Status](https://github.com/vassalengine/vassal/actions/workflows/test.yml/badge.svg)](https://github.com/vassalengine/vassal/actions)
+[![Build Status](https://github.com/vassalengine/vassal/actions/workflows/package.yml/badge.svg)](https://github.com/vassalengine/vassal/actions)
 [![License: LGPL v2](https://img.shields.io/badge/License-LGPL%20v2-blue.svg)](https://www.gnu.org/licenses/lgpl-2.0)
 
 VASSAL is a game engine for building and playing online adaptations of board games and card games. Play live on the Internet or by email. VASSAL runs on all platforms, and is free, open-source software.
