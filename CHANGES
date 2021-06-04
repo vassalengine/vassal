@@ -30,6 +30,7 @@
     if Map is currently open.
 * 14257: Preference to reverse left-to-right order counters are shown in
     Mouseover Stack Viewer
+* 14238: Fix and improve module validity checking
 * 14207: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
 * 13817: Default UI font size can be over-ridden in preferences
