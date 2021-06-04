@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.i18n.Resources;
 
 /**
  * Ensures that at most a single instance of a given type
@@ -38,10 +39,11 @@ public class SingleChildInstance implements ValidityChecker {
   public void validate(Buildable b, ValidationReport report) {
     if (b == target && target.getComponentsOf(childClass).size() > 1) {
       report.addWarning(
-        "No more than one " + //NON-NLS
-        ConfigureTree.getConfigureName(childClass) +
-        " allowed in " + //NON-NLS
-        ConfigureTree.getConfigureName(target));
+        Resources.getString("Editor.ValidityChecker.single_warning",
+          ConfigureTree.getConfigureName(childClass),
+          ConfigureTree.getConfigureName(target),
+          ConfigureTree.getConfigureName(target.getClass())
+        ));
     }
   }
 }

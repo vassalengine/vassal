@@ -17,17 +17,12 @@
  */
 package VASSAL.build.module.map;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.JToolBar;
+import static VASSAL.counters.Stack.LAYER_NOT_SET;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
@@ -37,7 +32,11 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
-import static VASSAL.counters.Stack.LAYER_NOT_SET;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.JToolBar;
 
 /**
  * The optional "Game Piece Layers" component of a Map which allows pieces on the map to be assigned to an
@@ -120,7 +119,6 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   @Override
   public void addTo(Buildable parent) {
     map = (Map)parent;
-    validator = new SingleChildInstance(map, getClass());
     map.setPieceCollection(collection);
     if (tempToolBar != null) {
       tempToolBar.setDelegate(map);

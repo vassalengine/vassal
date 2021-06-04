@@ -17,6 +17,8 @@
 
 package VASSAL.i18n;
 
+import VASSAL.build.GameModule;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,9 +29,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.build.GameModule;
-import VASSAL.configure.SingleChildInstance;
 
 /**
  * Singleton class for managing the translation of a module into other languages
@@ -49,7 +48,6 @@ public class Localization extends Language {
     moduleBundle += ".properties"; //$NON-NLS-1$
     languageBundle += ".properties"; //$NON-NLS-1$
     countryBundle += ".properties"; //$NON-NLS-1$
-    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   public static Localization getInstance() {

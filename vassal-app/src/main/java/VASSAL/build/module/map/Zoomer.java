@@ -17,6 +17,25 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -64,26 +83,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.SingleChildInstance;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * Controls the zooming in/out of a {@link Map} window.
@@ -679,8 +678,6 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
     map = (Map) b;
-
-    validator = new SingleChildInstance(map, getClass());
 
     map.setZoomer(this);
     map.getToolBar().add(zoomInButton);
