@@ -111,7 +111,6 @@ public class CounterGlobalKeyCommand extends Decorator
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
-    globalCommand.setPropertySource(Decorator.getOutermost(this));
 
     command = null;
   }
@@ -252,7 +251,9 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   public Command apply() {
-    PieceFilter filter = propertiesFilter.getFilter(Decorator.getOutermost(this));
+    final GamePiece outer = Decorator.getOutermost(this);
+    globalCommand.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
+    PieceFilter filter = propertiesFilter.getFilter(outer);
     Command c = new NullCommand();
     if (restrictRange) {
       int r = range;

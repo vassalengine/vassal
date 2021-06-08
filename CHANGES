@@ -36,6 +36,12 @@
 * 13817: Default UI font size can be over-ridden in preferences
 *  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
 
+3.5.8 - ???
+
+* 14568: Counter Global Key Command expression does not see properties in
+    lower traits
+* 14479: GamePieceImages recognized by unused image removal tool
+
 3.5.7 - 3 June 2021
 
 * 14540: PgDn stopped scrolling maps downward
