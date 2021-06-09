@@ -38,6 +38,7 @@
 
 3.5.8 - ???
 
+* 14570: Longer cancel wizard text shifts wizard divider position
 * 14568: Counter Global Key Command expression does not see properties in
     lower traits
 * 14479: GamePieceImages recognized by unused image removal tool
