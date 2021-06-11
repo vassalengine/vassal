@@ -79,10 +79,8 @@ public class RemoveUnusedImagesDialog extends JDialog {
     Collections.addAll(keep, archive.getImageNames());
 
     for (final String filename : parent.getAllImageNames()) {
-      if (ImageUtils.hasImageSuffix(filename)) {
-        keep.remove(filename);
-      }
-      else {
+      keep.remove(filename);
+      if (!ImageUtils.hasImageSuffix(filename)) {
         keep.remove(filename + ImageUtils.GIF_SUFFIX);
       }
     }
