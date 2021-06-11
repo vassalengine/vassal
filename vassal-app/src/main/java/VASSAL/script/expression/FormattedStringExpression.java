@@ -17,12 +17,13 @@
  */
 package VASSAL.script.expression;
 
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
+
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
-
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * Report Format or old-style Formatted String expression containing at
@@ -40,6 +41,11 @@ public class FormattedStringExpression extends Expression {
    */
   @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
+    return evaluate(ps, properties, localized, null, null);
+  }
+
+  @Override
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) {
     final StringBuilder buffer = new StringBuilder();
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(getExpression(), '$');
     boolean isProperty = true;
@@ -55,6 +61,9 @@ public class FormattedStringExpression extends Expression {
         }
         else if (properties != null && properties.containsKey(token)) {
           final String value = properties.get(token);
+          if (audit != null) {
+            audit.addMessage("$" + token + "$=" + value);
+          }
           if (value != null) {
             buffer.append(value);
           }
@@ -62,6 +71,9 @@ public class FormattedStringExpression extends Expression {
         else if (ps != null) {
           final Object value =
             localized ? ps.getLocalizedProperty(token) : ps.getProperty(token);
+          if (audit != null) {
+            audit.addMessage("$" + token + "$=" + value);
+          }
           if (value != null) {
             buffer.append(value);
           }
@@ -75,6 +87,9 @@ public class FormattedStringExpression extends Expression {
       }
     }
 
+    if (audit != null) {
+      audit.addMessage(Resources.getString("Audit.updated_expression", buffer.toString()));
+    }
     return buffer.toString();
   }
 

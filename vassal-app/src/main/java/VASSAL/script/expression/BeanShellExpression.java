@@ -17,15 +17,17 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
+import VASSAL.i18n.Resources;
 import VASSAL.script.BeanShell;
 import VASSAL.script.ExpressionInterpreter;
 import VASSAL.tools.FormattedString;
+
+import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * A basic beanShell expression
@@ -44,13 +46,26 @@ public class BeanShellExpression extends Expression {
 
   /**
    * Evaluate this expression using a BeanShell Interpreter
+   *
+   * @param ps A property source to use to evaluate properties referenced in the expression
+   * @param properties A map of additional properties to use
+   * @param localized Use localized version of property values
+   * @param audit Audit Trail to record significant information for error reporting
+   *
+   * @return Evaluated expression value
+   * @throws ExpressionException If a catastrophic failure occurs in evaluation
    */
   @Override
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
     if (interpreter == null) {
       interpreter = new ExpressionInterpreter(strip(getExpression()));
     }
-    return interpreter.evaluate(ps, localized);
+    return interpreter.evaluate(ps, localized, owner, audit);
+  }
+
+  @Override
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
+    return evaluate(ps, properties, localized, null, null);
   }
 
   @Override
@@ -76,6 +91,11 @@ public class BeanShellExpression extends Expression {
    */
   @Override
   public PieceFilter getFilter(PropertySource ps) {
+    return getFilter(ps, null, null);
+  }
+
+  @Override
+  public PieceFilter getFilter(PropertySource ps, final Auditable owner, final AuditTrail audit) {
     /*
      * If this expression contains old-style $....$ variables, then we need
      * to evaluate these first on the source piece and return a filter using
@@ -84,25 +104,41 @@ public class BeanShellExpression extends Expression {
     if (isDynamic()) {
       // Strip the Beanshell braces so the expression just looks like a
       // string and evaluate the $...$ variables
-      final String s = new FormattedString(strip(getExpression())).getText(ps);
+      final String s = new FormattedString(strip(getExpression())).getText(ps, owner, audit);
 
       // Turn the result back into a Beanshell expression and create a filter.
-      return Expression.createExpression("{" + s + "}").getFilter();
+      return Expression.createExpression("{" + s + "}").getFilter(owner, audit);
     }
 
     // Non dynamic, return a standard filter based on the existing expression.
-    return piece -> {
-      String result = null;
-      try {
-        result = evaluate(piece);
-      }
-      catch (ExpressionException e) {
-        handleError(e);
-      }
-      return BeanShell.TRUE.equals(result);
-    };
+    return new BshFilter(owner, audit);
   }
 
+  public class BshFilter implements PieceFilter {
+    private final Auditable owningAuditable;
+    private final AuditTrail auditTrail;
+
+    public BshFilter(Auditable owner, AuditTrail auditTrail) {
+      this.owningAuditable = owner;
+      this.auditTrail = auditTrail;
+    }
+
+    @Override
+    public boolean accept(GamePiece piece) {
+      return accept(piece, owningAuditable, auditTrail);
+    }
+
+    @Override
+    public boolean accept(GamePiece piece, Auditable owner, String fieldKey) {
+      return accept(piece, owner, AuditTrail.create(owner, getExpression(), Resources.getString(fieldKey)));
+    }
+
+    @Override
+    public boolean accept(GamePiece piece, Auditable owner, AuditTrail audit) {
+      return BeanShell.TRUE.equals(tryEvaluate(piece, owner, audit));
+    }
+
+  }
   /**
    * Convert a Property name to its BeanShell equivalent.
    *

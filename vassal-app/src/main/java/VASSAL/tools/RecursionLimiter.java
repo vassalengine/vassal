@@ -17,6 +17,8 @@
  */
 package VASSAL.tools;
 
+import VASSAL.script.expression.Auditable;
+
 /**
  * Utility class to detect and report Infinite Loops within
  * Vassal components
@@ -59,8 +61,7 @@ public class RecursionLimiter {
     return reporting;
   }
 
-  public interface Loopable {
-    String getComponentTypeName();
-    String getComponentName();
+  public interface Loopable extends Auditable {
+
   }
 }

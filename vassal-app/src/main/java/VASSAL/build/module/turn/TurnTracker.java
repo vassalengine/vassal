@@ -559,7 +559,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       reportFormat.setProperty(OLD_TURN, savedTurn);
       reportFormat.setProperty(NEW_TURN, getTurnString());
 
-      final String s = updateString(reportFormat.getText(), new String[] { "\\n", "\\t" }, new String[] { " - ", " " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+      final String s = updateString(reportFormat.getText(this, "Editor.report_format"), new String[] { "\\n", "\\t" }, new String[] { " - ", " " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       final Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + s);
       c.execute();
       c.append(new SetTurn(this, savedState));
@@ -589,7 +589,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     for (int i = 0; i < levels.size(); i++) {
       turnFormat.setProperty(LEVEL + (i + 1), levels.get(i));
     }
-    return turnFormat.getText(GameModule.getGameModule());
+    return turnFormat.getText(GameModule.getGameModule(), this, "Editor.TurnTracker.turn_name_format");
   }
 
   /**
@@ -603,7 +603,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     for (int i = 0; i < 15; i++) {
       turnFormat.setProperty(LEVEL + (i + 1), i < turnDesc.size() ? turnDesc.get(i).getTurnString() : "");
     }
-    return turnFormat.getText(GameModule.getGameModule());
+    return turnFormat.getText(GameModule.getGameModule(), this, "Editor.TurnTracker.turn_name_format");
   }
 
   /**

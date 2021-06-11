@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-public class FormattedStringExpressionTest {
+public class FormattedStringExpressionTest implements Auditable {
 
   public static final String PROP1_KEY = "prop1";
   public static final String PROP1_VALUE = "prop1val";
@@ -49,32 +49,39 @@ public class FormattedStringExpressionTest {
 
     // Test 1 - Fallback behaviour Evaluation with no Property source should just strip the $'s.
     Expression e = new FormattedStringExpression(TEST1_EXPR);
-    String s = e.evaluate();
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    String s = e.evaluate(this, audit);
+
     assertThat ("Fallback behaviour failing", TEST1_RESULT, is(equalTo(s)));
 
     // Test 1B - Property source supplied, Property not found
     e = new FormattedStringExpression(TEST1_EXPR);
-    s = e.evaluate(source);
+    audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(source, this, audit);
     assertThat ("Fallback behaviour failing with Property Source", TEST1_RESULT, is(equalTo(s)));
 
     // Test 2 - Property Source, not localised.
     e = new FormattedStringExpression(TEST2_EXPR);
-    s = e.evaluate(source);
+    audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(source, this, audit);
     assertThat("Property Source lookup failed", TEST2_RESULT, is(equalTo(s)));
 
     // Test 3 - Property Source, localised.
     e = new FormattedStringExpression(TEST3_EXPR);
-    s = e.evaluate(source, true);
+    audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(source, true, this, audit);
     assertThat("Localised Property Source lookup failed", TEST3_RESULT, is(equalTo(s)));
 
     // Test 4 - Property Source and Property Map, not localised
     e = new FormattedStringExpression(TEST4_EXPR);
-    s = e.evaluate(source, props, false);
+    audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(source, props, false, this, audit);
     assertThat("Property Source plus Map lookup failed", TEST4_RESULT, is(equalTo(s)));
 
     // Test 5 - Property Source and Property Map, localised
     e = new FormattedStringExpression(TEST5_EXPR);
-    s = e.evaluate(source, props, true);
+    audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(source, props, true, this, audit);
     assertThat("Localised Property Source plus Map lookup failed", TEST5_RESULT, is(equalTo(s)));
 
   }

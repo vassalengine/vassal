@@ -17,14 +17,14 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.tools.FormattedString;
+
+import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An old-style Property Match expression.
@@ -43,11 +43,17 @@ public class PropertyMatchExpression extends Expression {
 
   @Override
   public PieceFilter getFilter(PropertySource ps) {
+    return getFilter(ps, null, null);
+  }
+
+  @Override
+  public PieceFilter getFilter(PropertySource ps, Auditable owner, AuditTrail audit) {
+
     if (filter != null) {
       return filter;
     }
 
-    final PieceFilter pf =  PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps));
+    final PieceFilter pf = PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(ps, owner, audit));
     if (!isDynamic()) {
       filter = pf;
     }

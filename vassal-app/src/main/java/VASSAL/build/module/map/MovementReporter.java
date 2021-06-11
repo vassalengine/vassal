@@ -17,13 +17,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
@@ -39,6 +32,13 @@ import VASSAL.counters.PieceAccess;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.tools.FormattedString;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Builds an auto-report message for a collection of Move Commands
@@ -181,14 +181,18 @@ public class MovementReporter {
       final Map fromMap = Map.getMapById(ms.getOldMapId());
       final Map toMap = Map.getMapById(ms.getNewMapId());
       format.clearProperties();
+      String sourceFieldKey;
       if (fromMap == null) {
         format.setFormat(toMap.getCreateFormat());
+        sourceFieldKey = "Editor.Map.report_created";
       }
       else if (fromMap != toMap) {
         format.setFormat(toMap.getMoveToFormat());
+        sourceFieldKey = "Editor.Map.report_move_to";
       }
       else {
         format.setFormat(toMap.getMoveWithinFormat());
+        sourceFieldKey = "Editor.Map.report_move_within";
       }
       if (format.getFormat().length() == 0) {
         break;
@@ -201,7 +205,7 @@ public class MovementReporter {
       }
       format.setProperty(Map.MAP_NAME, toMap.getLocalizedConfigureName());
 
-      final String moveText = format.getLocalizedText();
+      final String moveText = format.getLocalizedText(toMap, sourceFieldKey);
 
       if (moveText.length() > 0) {
         c = c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + moveText));

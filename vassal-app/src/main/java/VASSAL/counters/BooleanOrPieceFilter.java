@@ -17,6 +17,9 @@
  */
 package VASSAL.counters;
 
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
+
 /**
  * Boolean Or of two PieceFilters
  */
@@ -32,6 +35,18 @@ public class BooleanOrPieceFilter implements PieceFilter {
   @Override
   public boolean accept(GamePiece piece) {
     return filter1.accept(piece) || filter2.accept(piece);
+  }
+
+  @Override
+  public boolean accept(GamePiece piece, Auditable owner, String fieldKey) {
+    return PieceFilter.super.accept(piece, owner, fieldKey);
+  }
+
+  @Override
+  public boolean accept(GamePiece piece, Auditable owner, AuditTrail audit) {
+    final AuditTrail audit1 = audit == null ? null : new AuditTrail(audit);
+    final AuditTrail audit2 = audit == null ? null : new AuditTrail(audit);
+    return filter1.accept(piece, owner, audit1) || filter2.accept(piece, owner, audit2);
   }
 
   public PieceFilter getFilter1() {

@@ -18,6 +18,8 @@
 package VASSAL.counters;
 
 import VASSAL.configure.PropertyExpression;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 
 /**
  * A filter for GamePieces
@@ -33,5 +35,15 @@ import VASSAL.configure.PropertyExpression;
 @SuppressWarnings("JavadocReference")
 @FunctionalInterface
 public interface PieceFilter {
+  /** @deprecated */
+  @Deprecated(since = "2021-06-11")
   boolean accept(GamePiece piece);
+
+  default boolean accept(GamePiece piece, Auditable owner, AuditTrail audit) {
+    return accept(piece);
+  }
+
+  default boolean accept(GamePiece piece, Auditable owner, String fieldKey) {
+    return accept(piece);
+  }
 }

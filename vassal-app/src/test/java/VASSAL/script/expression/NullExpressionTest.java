@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.emptyString;
 
 import org.junit.jupiter.api.Test;
 
-public class NullExpressionTest {
+public class NullExpressionTest implements Auditable {
 
   @Test
   public void constructor() {
@@ -17,7 +17,8 @@ public class NullExpressionTest {
   @Test
   public void evaluate() throws ExpressionException {
     Expression e = NullExpression.instance();
-    String s = e.evaluate();
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    String s = e.evaluate(this, audit);
     assertThat(s, is(emptyString()));
   }
 

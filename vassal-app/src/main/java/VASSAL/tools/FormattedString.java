@@ -16,12 +16,6 @@
  */
 package VASSAL.tools;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -29,17 +23,30 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 import VASSAL.script.expression.Expression;
-import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * FormattedString.java
  *
  * A String that can include options of the form $optionName$. Option values
  * are maintained in a property list and getText returns the string will all
- * options replaced by their value
+ * options replaced by their value.
+ *
+ * FormattedStrings are ultimately evaluated using the Beanshell Interpreter, so
+ * a Formatted String can be specified as a valid BeanShell expression surrounded
+ * by {}'s. For this reason, full support is included for generating Expression Audit
+ * Trails to be parsed inward the the Expression interpreter.
+ *
  */
 public class FormattedString implements Loopable {
   private static final Map<Pair<String, PropertySource>, FSData> CACHE = new ConcurrentSoftHashMap<>();
@@ -117,26 +124,102 @@ public class FormattedString implements Loopable {
   }
 
   /**
-   * @return the resulting string after substituting properties
+   * Evaulate a formatted String and return unlocalized text
+   * Use the default property source to find property values
+   * 
+   * @deprecated Use {@link #getText(Auditable, String)}
+   * @return evaluated formatted String
    */
+  @Deprecated(since = "2021-06-11")
   public String getText() {
-    return getText(fsdata.defaultProperties, false);
-  }
-
-  public String getLocalizedText() {
-    return getText(fsdata.defaultProperties, true);
+    return getText(fsdata.defaultProperties, false, null, null);
   }
 
   /**
-   * Return the resulting string after substituting properties
+   * Evaulate a formatted String and return unlocalized text
+   * Use the default property source to find property values
+   * Create an AuditTrail object if expression auditing enabled
+   * 
+   * @param owner Owning component of this formatted string. 
+   * @param fieldKey Message key describing the editor field holding this formmated string
+   * @return evaluated formatted String
+   */
+  public String getText(Auditable owner, String fieldKey) {
+    return getText(fsdata.defaultProperties, false, owner, AuditTrail.create(owner, getFormat(), Resources.getString(fieldKey)));
+  }
+
+  /**
+   * Evaluate a Formatted String and return localized text   
+   * Use the default property source to find property values
+   * 
+   * @deprecated Use {@link #getLocalizedText(Auditable, String)}
+   * @return localized text
+   */
+  @Deprecated(since = "2021-06-11")
+  public String getLocalizedText() {
+    return getText(fsdata.defaultProperties, true, null, null);
+  }
+
+  /**
+   * Evaulate a formatted String and return localized text
+   * Use the default property source to find property values
+   * Create an AuditTrail object if expression auditing enabled
+   *
+   * @param owner Owning component of this formatted string. 
+   * @param fieldKey Message key describing the editor field holding this formmated string
+   * @return evaluated formatted String
+   */
+  public String getLocalizedText(Auditable owner, String fieldKey) {
+    return getText(fsdata.defaultProperties, true, owner, AuditTrail.create(owner, getFormat(), Resources.getString(fieldKey)));
+  }
+
+  /**
+   * Evaulate a formatted String and return unlocalized text
    * Also, if any property keys match a property in the given GamePiece,
    * substitute the value of that property
-   * @see GamePiece#getProperty
+   *
    * @param ps property source
    * @return Return the resulting string after substituting properties
+   * @deprecated Use {@link #getText(PropertySource, Auditable, String)}
    */
+  @Deprecated(since = "2021-06-11")
   public String getText(PropertySource ps) {
-    return getText(ps, false);
+    return getText(ps, false, null, null);
+  }
+
+  /**
+   * Evaulate a formatted String and return unlocalized text
+   * Use the supplied property source to find property values
+   * Create an AuditTrail object if expression auditing enabled
+   *
+   * @param owner Owning component of this formatted string.
+   * @param fieldKey Message key describing the editor field holding this formatted string
+   * @return evaluated formatted String
+   */
+  public String getText(PropertySource ps, Auditable owner, String fieldKey) {
+    return getText(ps, false, owner, AuditTrail.create(owner, fsdata.formatString, Resources.getString(fieldKey)));
+  }
+
+  /**
+   * Evaulate a formatted String and return unlocalized text
+   * Use the supplied property source to find property values
+   *
+   * @param ps Property source to supply property values
+   * @param owner Owning component of this formatted string.
+   * @param audit AuditTrail to use for expression auditing
+   * @return evaluated formatted String
+   */
+  public String getText(PropertySource ps, Auditable owner, AuditTrail audit) {
+    return getText(ps, false, owner, audit);
+  }
+
+  /**
+   * Evaulate a formatted String and return unlocalized text
+   * @deprecated Use {@link #getText(PropertySource, String, Auditable, String)}
+   */
+  @Deprecated(since = "2021-06-11")
+  public String getText(PropertySource ps, boolean localized) {
+    return getText(ps, localized, null, null);
   }
 
   /**
@@ -148,48 +231,101 @@ public class FormattedString implements Loopable {
    * @param ps Property source
    * @param def the default if the result is otherwise empty
    * @return Return the resulting string after substituting properties
+   * @deprecated Use {@link #getText(PropertySource, String, Auditable, String)} 
    */
+  @Deprecated(since = "2021-06-11")
   public String getText(PropertySource ps, String def) {
-    String s = getText(ps, false);
+    return getText(ps, def, null, (AuditTrail) null);
+  }
+
+  /**
+   * Evaulate a formatted String and return unlocalized text
+   * Use the supplied property source to find property values
+   * If any property value is found to be null, use the supplied default value instead
+   * Create an AuditTrail object if expression auditing enabled
+   *
+   * @param ps Property source to supply property values
+   * @param def Default value for properties with no value
+   * @param owner Owning component of this formatted string.
+   * @param fieldKey Message key describing the editor field holding this formatted string
+   * @return evaluated formatted String
+   */
+  public String getText(PropertySource ps, String def, Auditable owner, String fieldKey) {
+    return  getText(ps, def, owner, AuditTrail.create(owner, getFormat(), Resources.getString(fieldKey)));
+  }
+
+  /**
+   * Evaulate a formatted String and return unlocalized text
+   * Use the supplied property source to find property values
+   * If any property value is found to be null, use the supplied default value instead
+   *
+   * @param ps Property source to supply property values
+   * @param def Default value for properties with no value
+   * @param owner Owning component of this formatted string.
+   * @param audit AuditTrail to use for expression auditing
+   * @return evaluated formatted String
+   */
+  public String getText(PropertySource ps, String def, Auditable owner, AuditTrail audit) {
+    String s = getText(ps, false, owner, audit);
     if (s == null || s.length() == 0) {
       s = def;
     }
     return s;
   }
 
-  public String getLocalizedText(PropertySource ps) {
-    return getText(ps, true);
+  /**
+   * Evaulate a formatted String and return localized text
+   * Use the supplied property source to find property values
+   * Create an AuditTrail object if expression auditing enabled
+   *
+   * @param owner Owning component of this formatted string.
+   * @param fieldKey Message key describing the editor field holding this formatted string
+   * @return evaluated formatted String
+   */
+  public String getLocalizedText(PropertySource ps, Auditable owner, String fieldKey) {
+    return getText(ps, true, owner, AuditTrail.create(owner, fsdata.formatString, Resources.getString(fieldKey)));
   }
 
-  protected String getText(PropertySource ps, boolean localized) {
+  /**
+   * Evaulate a formatted String and return localized text
+   * Use the supplied property source to find property values
+   *
+   * @param ps Property source to supply property values
+   * @param owner Owning component of this formatted string.
+   * @param audit AuditTrail to use for expression auditing
+   * @return evaluated formatted String
+   */
+  public String getLocalizedText(PropertySource ps, Auditable owner, AuditTrail audit) {
+    return getText(ps, true, owner, audit);
+  }
+
+  /**
+   * Evaulate a formatted String and return localized text
+   * @deprecated Use {@link #getLocalizedText(PropertySource, Auditable, String)}
+   */
+  @Deprecated(since = "2021-06-11")
+  public String getLocalizedText(PropertySource ps) {
+    return getLocalizedText(ps, null, (AuditTrail) null);
+  }
+  
+  /**
+   * Core implementation of getText. All other call signatures should eventually call this version.
+   * 
+   * Evaluate the supplied Formmatted String, using the supplied property source to replace any property references.
+   * NOTE that evaluation is handled by the Beanshell Interpreter, so full Beanshell is supported in Formatted Strings (yikes!)
+   * Use the supplied owner and audit trail for error reporting purposes.
+   * 
+   * @param ps Property source to use to supply property values
+   * @param localized true if getLocalizedProperty() calls should be used to evaluate property values
+   * @param owner Auditable owner of this Formmatted String for reporting purposes
+   * @param audit Audit Trail for Expression evaluation error reporting (may be null) 
+   * @return Evaluated formatted string
+   */
+  public String getText(PropertySource ps, boolean localized, Auditable owner, AuditTrail audit) {
     final PropertySource source = ps == null ? fsdata.defaultProperties : ps;
     try {
       RecursionLimiter.startExecution(this);
-      try {
-        return fsdata.format.evaluate(source, props, localized);
-      }
-      catch (ExpressionException e) {
-        BadDataReport bdr;
-        final String msg = Resources.getString("Error.expression_error");
-        final String exp = fsdata.format.getExpression();
-
-        if (source instanceof EditablePiece) {
-          bdr = new BadDataReport(
-            (EditablePiece) source, msg, exp, e
-          );
-        }
-        else if (source instanceof AbstractConfigurable) {
-          bdr = new BadDataReport(
-            (AbstractConfigurable) source, msg, exp, e
-          );
-        }
-        else {
-          bdr = new BadDataReport(msg, exp, e);
-        }
-
-        ErrorDialog.dataWarning(bdr);
-        return "";
-      }
+      return fsdata.format.tryEvaluate(source, props, localized, owner, audit);
     }
     catch (RecursionLimitException e) {
       ErrorDialog.dataWarning(new BadDataReport(
@@ -211,7 +347,7 @@ public class FormattedString implements Loopable {
    */
   public int getTextAsInt(PropertySource ps, String description, EditablePiece source) {
     int result = 0;
-    final String value = getText(ps, "0");
+    final String value = getText(ps, "0", source, AuditTrail.create(source, fsdata.formatString, description));
     try {
       result = Integer.parseInt(value);
     }
@@ -227,7 +363,7 @@ public class FormattedString implements Loopable {
 
   public int getTextAsInt(PropertySource ps, String description, AbstractConfigurable source) {
     int result = 0;
-    final String value = getText(ps, "0");
+    final String value = getText(ps, "0", source, AuditTrail.create(source, fsdata.formatString, description));
     try {
       result = Integer.parseInt(value);
     }

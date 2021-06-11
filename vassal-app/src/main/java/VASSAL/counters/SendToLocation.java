@@ -43,6 +43,7 @@ import VASSAL.configure.TranslatingStringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
@@ -288,7 +289,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     }
     // Location/Zone/Region processing all use specified map
     else {
-      map = Map.getMapById(mapId.getText(outer));
+      map = Map.getMapById(mapId.getText(outer, this, "Editor.SendToLocation.map"));
       if (map == null) {
         map = getMap();
       }
@@ -296,12 +297,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         final Board b;
         switch (destination.charAt(0)) {
         case 'G':
-          b = map.getBoardByName(boardName.getText(outer));
+          b = map.getBoardByName(boardName.getText(outer, this, "Editor.SendToLocation.board"));
           if (b != null) {
             try {
               final MapGrid g = b.getGrid();
               if (g != null) { // Board may not have a grid assigned.
-                dest = g.getLocation(gridLocation.getText(outer));
+                dest = g.getLocation(gridLocation.getText(outer, this, "Editor.SendToLocation.grid_location"));
                 if (dest != null)  dest.translate(b.bounds().x, b.bounds().y);
               }
               else {
@@ -322,14 +323,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
           dest = new Point(xValue, yValue);
 
-          b = map.getBoardByName(boardName.getText(outer));
+          b = map.getBoardByName(boardName.getText(outer, this, "Editor.SendToLocation.board"));
           if (b != null) {
             dest.translate(b.bounds().x, b.bounds().y);
           }
           break;
 
         case 'Z':
-          final String zoneName = zone.getText(outer);
+          final String zoneName = zone.getText(outer, this, "Editor.SendToLocation.zone_name");
           final Zone z = map.findZone(zoneName);
           if (z == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone")); // NON-NLS
@@ -342,7 +343,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           break;
 
         case 'R':
-          final String regionName = region.getText(outer);
+          final String regionName = region.getText(outer, this, "Editor.SendToLocation.region_name");
           final Region r = map.findRegion(regionName);
           if (r == null) {
             reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region")); // NON-NLS
@@ -526,7 +527,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
 
   private int parse(String desc, FormattedString s, GamePiece outer) {
     int i = 0;
-    final String val = s.getText(outer, _0);
+    // Explicitly create an AuditTrail as we have a description, not a message key (both Strings)
+    final String val = s.getText(outer, _0, this, AuditTrail.create(this, s.getFormat(), desc));
     try {
       i = Integer.parseInt(val);
     }

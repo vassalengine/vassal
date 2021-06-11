@@ -21,6 +21,10 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
+import VASSAL.script.expression.ExpressionException;
 
 /**
  * General-purpose condition indicating that VASSAL has encountered data that's inconsistent with the current module.
@@ -35,9 +39,11 @@ import VASSAL.counters.EditablePiece;
  */
 public class BadDataReport {
   private String message;
-  private String data;
+  private String data; /** Data about the cause of the error. Usually the expression that causes the problem */
   private Throwable cause;
   private boolean reportable = true;
+  private AuditTrail auditTrail;
+  private Auditable owner;  /** Owning component or trait that generated the error */
 
   public BadDataReport() {
   }
@@ -50,9 +56,42 @@ public class BadDataReport {
    * @param cause Throwable that generated error
    */
   public BadDataReport(String message, String data, Throwable cause) {
+    this.message = message;
+    this.data = data;
+    setCause(cause);
+  }
+
+  /**
+   * BadDataReport for an Exception raised during Expression Execution
+   *
+   * @param message Message to display
+   * @param data Data causing error
+   * @param cause Throwable that generated error
+   */
+  public BadDataReport(String message, String data, ExpressionException cause) {
     this(null, null, message, data, cause);
   }
 
+  /**
+   * BadDataReport for a general exception raised during Expression Execution with supplied audit info
+   *
+   * @param message Message to display
+   * @param data Data causing error
+   * @param cause Throwable that generated error
+   * @param owner Owning component
+   * @param auditTrail Audit Trail of expression execution
+   */
+  public BadDataReport(String message, String data, Throwable cause, Auditable owner, AuditTrail auditTrail) {
+    this(null, null, message, data, cause);
+    this.owner = owner;
+    this.auditTrail = auditTrail;
+  }
+
+  /**
+   * Generic Bad Data Report, no exeption
+   * @param message Message to display
+   * @param data Data causing error
+   */
   public BadDataReport(String message, String data) {
     this(message, data, null);
   }
@@ -86,11 +125,12 @@ public class BadDataReport {
   public BadDataReport(String pieceName, String traitDesc, String message, String data, Throwable cause) {
     String m = ((pieceName != null && pieceName.length() > 0) ? pieceName + " " : "");
     m += ((traitDesc != null && traitDesc.length() > 0) ? "[" + traitDesc + "] " : "");
-    m += m.length() > 0 ? "- " : "";
-    m += message;
+    m += m.length() > 0 ? ". " : "";
+    m += message + ". " + getAuditMessage();
+
     this.message = m;
-    this.cause = cause;
     this.data = data;
+    setCause(cause);
   }
 
   /**
@@ -120,15 +160,18 @@ public class BadDataReport {
    * @param cause Throwable that generated error
    */
   public BadDataReport(AbstractConfigurable c, String message, String data, Throwable cause) {
-    this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass()) + "]: " + message;
-    this.cause = cause;
+    this.message = c.getConfigureName() + "[" + ConfigureTree.getConfigureName(c.getClass()) + "]: " + message + " " + getAuditMessage();
     this.data = data;
+    setCause(cause);
   }
 
   public BadDataReport(AbstractConfigurable c, String messageKey, String data) {
     this(c, messageKey, data, null);
   }
 
+  private String getAuditMessage() {
+    return (AuditTrail.isEnabled() ? Resources.getString("BadDataReport.see_errorlog") : Resources.getString("BadDataReport.enable_pref"));
+  }
   /**
    * Expanded Bad Data Report for PieceSlot
    * Display the name of the slot
@@ -139,8 +182,8 @@ public class BadDataReport {
    */
   public BadDataReport(PieceSlot slot, String message, String data) {
     this.message = slot.getName() + ": " + message;
-    this.cause = null;
-    this.data  = data;
+    this.data = data;
+    setCause(null);
   }
 
   /**
@@ -156,15 +199,55 @@ public class BadDataReport {
     this.reportable = reportable;
   }
 
+  /**
+   * Build a single line printable message for this Bad Data Report
+   * @return message
+   */
   public String getMessage() {
-    return message;
+    final StringBuilder sb = new StringBuilder();
+    if (owner != null) {
+      sb.append(getDescription(owner)).append(":");
+    }
+    if (data != null) {
+      sb.append(" ").append(Resources.getString("Audit.source", data));
+    }
+    sb.append(" ").append(Resources.getString("Audit.error", message));
+    return sb.toString();
+  }
+
+  private String getDescription(Auditable owner) {
+    return owner.getComponentName() + " " + owner.getComponentTypeName();
   }
 
   public Throwable getCause() {
     return cause;
   }
 
+  private void setCause(Throwable cause) {
+    this.cause = cause;
+    if (cause instanceof ExpressionException) {
+      auditTrail = ((ExpressionException) cause).getAuditTrail();
+      owner =  ((ExpressionException) cause).getOwner();
+    }
+  }
+
   public String getData() {
     return data;
+  }
+
+  public AuditTrail getAuditTrail() {
+    return auditTrail;
+  }
+
+  public String getAuditReport() {
+    return auditTrail == null ? "" : auditTrail.toString();
+  }
+
+  /**
+   * Return the full audit trail if it exi
+   * @return dull data message
+   */
+  public String getFullData() {
+    return auditTrail == null ? "" : ("\n" + auditTrail.toString());
   }
 }

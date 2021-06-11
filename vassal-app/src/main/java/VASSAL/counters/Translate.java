@@ -17,24 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -54,6 +36,25 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -381,18 +382,18 @@ public class Translate extends Decorator implements TranslatablePiece {
     final GamePiece outer = Decorator.getOutermost(this);
     final Board b = outer.getMap().findBoard(p);
 
-    final int Xdist = xDist.getTextAsInt(outer, "Xdistance", this); // NON-NLS
-    final int Xindex = xIndex.getTextAsInt(outer, "Xindex", this); // NON-NLS
-    final int Xoffset = xOffset.getTextAsInt(outer, "Xoffset", this); // NON-NLS
+    final int Xdist = xDist.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.distance_to_the_right"), this); // NON-NLS
+    final int Xindex = xIndex.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"), this); // NON-NLS
+    final int Xoffset = xOffset.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.times") + " X", this); // NON-NLS
 
     x = Xdist + Xindex * Xoffset;
     if (b != null) {
       x = (int)Math.round(b.getMagnification() * x);
     }
 
-    final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this); // NON-NLS
-    final int Yindex = yIndex.getTextAsInt(outer, "Yindex", this); // NON-NLS
-    final int Yoffset = yOffset.getTextAsInt(outer, "Yoffset", this); // NON-NLS
+    final int Ydist = yDist.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.distance_upwards"), this); // NON-NLS
+    final int Yindex = yIndex.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"), this); // NON-NLS
+    final int Yoffset = yOffset.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.times") + " Y", this); // NON-NLS
 
     y = Ydist + Yindex * Yoffset;
     if (b != null) {

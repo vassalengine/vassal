@@ -190,14 +190,14 @@ public class SetGlobalProperty extends DynamicProperty {
     for (final DynamicKeyCommand keyCommand : keyCommands) {
       if (keyCommand.matches(stroke)) {
         MutableProperty prop;
-        final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
+        final String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this), this, "Editor.DynamicProperty.property_name");
 
         final ArrayList<MutablePropertiesContainer> propertyContainers =
           new ArrayList<>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
-          final String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
+          final String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this), this, "Editor.SetGlobalProperty.name_of_map");
           map = Map.getMapById(mapName);
         }
         if (map != null) {
@@ -208,7 +208,7 @@ public class SetGlobalProperty extends DynamicProperty {
           z = getMap().findZone(getPosition());
         }
         else if (NAMED_ZONE.equals(propertyLevel) && getMap() != null) {
-          final String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
+          final String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this), this, "Editor.SetGlobalProperty.name_of_zone");
           z = getMap().findZone(zoneName);
         }
         if (z != null) {
@@ -228,7 +228,7 @@ public class SetGlobalProperty extends DynamicProperty {
           final String oldValue = prop.getPropertyValue();
           String newValue = keyCommand.propChanger.getNewValue(oldValue);
           format.setFormat(newValue);
-          newValue = format.getText(Decorator.getOutermost(this));
+          newValue = format.getText(Decorator.getOutermost(this), this, "Editor.PropertyChangeConfigurer.new_value");
           comm = prop.setPropertyValue(newValue);
         }
       }

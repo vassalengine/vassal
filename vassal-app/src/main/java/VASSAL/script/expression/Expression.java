@@ -16,18 +16,17 @@
  */
 package VASSAL.script.expression;
 
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import VASSAL.build.BadDataReport;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
+
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * An abstract class representing an expression that can be evaluated.
@@ -59,88 +58,153 @@ public class Expression {
   /**
    * Each subclass must implement evaluate() to evaluate itself
    *
+   * The default implementation just returns the expression itself, which works correctly for
+   * simple Expression types like NullExpression and IntExpression.
+   *
    * @param ps
    *          Property Source providing property values
    * @param properties
    *          default property values
    * @param localized
    *          localize property calls?
+   * @param audit
+   *           Audit trail to record expression evaluation info in
    * @return evaluated String.
    */
-  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
     return expr;
   }
 
-  public String evaluate() throws ExpressionException {
-    return evaluate(null, null, false);
+  public String evaluate(PropertySource ps, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
+    return evaluate(ps, null, localized, owner, audit);
   }
 
-  public String evaluate(PropertySource ps) throws ExpressionException {
-    return evaluate(ps, null, false);
+  public String evaluate(PropertySource ps, Auditable owner, AuditTrail audit) throws ExpressionException {
+    return evaluate(ps, null, false, owner, audit);
   }
 
+  public String evaluate(Auditable owner, AuditTrail audit) throws ExpressionException {
+    return evaluate(null, null, false, owner, audit);
+  }
+
+  /** @deprecated Use {@link #evaluate(PropertySource, Map, boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
+    return evaluate(ps, properties, localized, null, null);
+  }
+
+  /** @deprecated Use {@link #evaluate(PropertySource, boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   public String evaluate(PropertySource ps, boolean localized) throws ExpressionException {
-    return evaluate(ps, null, localized);
+    return evaluate(ps, null, localized, null, null);
   }
 
+  /** @deprecated Use {@link #evaluate(PropertySource, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
+  public String evaluate(PropertySource ps) throws ExpressionException {
+    return evaluate(ps, null, false, null, null);
+  }
+
+  /** @deprecated Use {@link #evaluate(boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   public String evaluate(boolean localized) throws ExpressionException {
-    return evaluate(null, null, localized);
+    return evaluate(null, null, localized, null, null);
+  }
+
+  /** @deprecated Use {@link #evaluate(Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
+  public String evaluate() throws ExpressionException {
+    return evaluate(null, null, false, null, null);
   }
 
   protected void handleError(ExpressionException e) {
-    ErrorDialog.dataWarning(new BadDataReport(
-      Resources.getString("Error.expression_error"),
-      "Expression=" + getExpression() + ", Error=" + e.getError(), //NON-NLS
-      e
-    ));
+    ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"), getExpression(), e));
   }
+
 
   /**
    * Evaluate an expression with data warning support built in
    * @param ps Property Source providing property values
+   * @param audit Audit trail to record expression evaluation info in
    * @return evaluated String
    */
+  public String tryEvaluate(PropertySource ps, Auditable owner, AuditTrail audit) {
+    return tryEvaluate(ps, null, false, owner, audit);
+  }
+
+  public String tryEvaluate(PropertySource ps, Auditable owner, String fieldKey) {
+    return tryEvaluate(ps, null, false, owner, AuditTrail.create(owner, getExpression(), Resources.getString(fieldKey)));
+  }
+
+  /** @deprecated Use {@link #tryEvaluate(PropertySource, Auditable, String)} */
+  @Deprecated(since = "2021-06-11")
   public String tryEvaluate(PropertySource ps) {
-    return tryEvaluate(ps, null, false);
+    return tryEvaluate(ps, null, false, null, null);
   }
 
   /**
    * Evaluate an expression with data warning support built in
+   * @param audit Audit trail to record expression evaluation info in
    * @return evaluated String
    */
+  public String tryEvaluate(Auditable owner, AuditTrail audit) {
+    return tryEvaluate(null, null, false, owner, audit);
+  }
+
+  /** @deprecated User {@link #tryEvaluate(Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   public String tryEvaluate() {
-    return tryEvaluate(null, null, false);
+    return tryEvaluate(null, null, false, null, null);
   }
 
   /**
    * Evaluate an expression with data warning support built in
    * @param ps Property Source providing property values
    * @param localized Localize property calls?
+   * @param audit Audit trail to record expression evaluation info in
    * @return evaluated String
    */
+  public String tryEvaluate(PropertySource ps, boolean localized, Auditable owner, AuditTrail audit) {
+    return tryEvaluate(ps, null, localized, owner, audit);
+  }
+
+  /** @deprecated Use {@link #tryEvaluate(PropertySource, boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   public String tryEvaluate(PropertySource ps, boolean localized) {
-    return tryEvaluate(ps, null, localized);
+    return tryEvaluate(ps, null, localized, null, null);
   }
 
   /**
    * Evaluate an expression with data warning support built in
    * @param localized Localize property calls?
+   * @param audit Audit trail to record expression evaluation info in
    * @return evaluated String
    */
+  public String tryEvaluate(boolean localized, Auditable owner, AuditTrail audit) {
+    return tryEvaluate(null, null, localized, owner, audit);
+  }
+
+  /** @deprecated Use {@link #tryEvaluate(boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   public String tryEvaluate(boolean localized) {
-    return tryEvaluate(null, null, localized);
+    return tryEvaluate(null, null, localized, null, null);
   }
 
   /**
+   * Core tryEvaluate implementation. All other call signatures end here.
+   *
    * Evaluate an expression with data warning support built in
+   * Use supplied owner and AuditTrail for Expression error reporting.
+   *
    * @param ps Property Source providing property values
    * @param properties Default property values
    * @param localized Localize property calls?
+   * @param audit Audit trail to record expression evaluation info in
    * @return evaluated String
    */
-  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
+  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) {
     try {
-      return evaluate(ps, properties, localized);
+      return evaluate(ps, properties, localized, owner, audit);
     }
     catch (ExpressionException e) {
       handleError(e);
@@ -148,18 +212,40 @@ public class Expression {
     }
   }
 
+  /** @deprecated Use {@link #tryEvaluate(PropertySource, Map, boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
+  public String tryEvaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
+    return tryEvaluate(ps, properties, localized, null, null);
+  }
+
   /**
    * Return a PieceFilter using the expression.
    *
+   * The default PieceFilter always returns true.
+   *
+   * Individual subclasses that are capable of selecting pieces MUST over-ride these defaults. Auditing
+   * functionality is supplied since creating a filter usually involves evaluating an Expression.
+   *
    * @param ps PropertySource to use as source of filter
+   * @param audit Audit trail to record expression evaluation info in
    * @return Created PieceFilter
    */
-  public PieceFilter getFilter(PropertySource ps) {
+  public PieceFilter getFilter(PropertySource ps, Auditable owner, AuditTrail audit) {
     return piece -> true;
   }
 
+  public PieceFilter getFilter(Auditable owner, AuditTrail audit) {
+    return getFilter(null, owner, audit);
+  }
+
+  @Deprecated(since = "2021-06-11")
+  public PieceFilter getFilter(PropertySource ps) {
+    return getFilter(ps, null, null);
+  }
+
+  @Deprecated(since = "2021-06-11")
   public PieceFilter getFilter() {
-    return getFilter(GameModule.getGameModule());
+    return getFilter((Auditable) null, null);
   }
 
   /**
@@ -274,4 +360,5 @@ public class Expression {
       }
     });
   }
+
 }
