@@ -250,6 +250,7 @@ include::{rootdir}Makefile[lines=258]
 * [ ] Upload maven artifacts to our repo: `rsync -avP releases/ vassal.org:/var/www/html/site/maven`
 * [ ] From `/var/www/html/site/javadoc/` on vassalengine.org: `mkdir x.y.z && cd x.y.z && unzip ../../maven/org/vassalengine/vassal-app/x.y.z/vassal-app-x.y.z-javadoc.jar`
 * [ ] Add x.y.z release in our Bugzilla.
+* [ ] Update the release branch in `.github/workflows/package.yml`.
 * [ ] Update the release notes in our wiki.
 * [ ] Post release announcements (see `tmp/notes-*`):
 ** Our news page: http://www.vassalengine.org/news/
