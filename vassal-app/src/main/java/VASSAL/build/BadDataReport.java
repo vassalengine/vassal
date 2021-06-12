@@ -244,8 +244,8 @@ public class BadDataReport {
   }
 
   /**
-   * Return the full audit trail if it exi
-   * @return dull data message
+   * Return the full audit trail if it exists
+   * @return full data message
    */
   public String getFullData() {
     return auditTrail == null ? "" : ("\n" + auditTrail.toString());

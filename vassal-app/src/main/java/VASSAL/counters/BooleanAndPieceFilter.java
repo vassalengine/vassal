@@ -32,6 +32,8 @@ public class BooleanAndPieceFilter implements PieceFilter {
     this.filter2 = filter2;
   }
 
+  /** @deprecated Use {@link #accept(GamePiece, Auditable, String)} */
+  @Deprecated(since = "2021-06-11")
   @Override
   public boolean accept(GamePiece piece) {
     return filter1.accept(piece) && filter2.accept(piece);

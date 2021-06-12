@@ -36,11 +36,15 @@ public class PropertyMatchExpression extends Expression {
     super(s);
   }
 
+  /** @deprecated  */
+  @Deprecated(since = "2021-06-11")
   @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) {
     return null;
   }
 
+  /** @deprecated  */
+  @Deprecated(since = "2021-06-11")
   @Override
   public PieceFilter getFilter(PropertySource ps) {
     return getFilter(ps, null, null);

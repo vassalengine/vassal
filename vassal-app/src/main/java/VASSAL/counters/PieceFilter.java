@@ -35,15 +35,37 @@ import VASSAL.script.expression.Auditable;
 @SuppressWarnings("JavadocReference")
 @FunctionalInterface
 public interface PieceFilter {
-  /** @deprecated */
-  @Deprecated(since = "2021-06-11")
+  /**
+   * Test if a piece matches the filter.
+   * This sig should only be used for filters that can not have Expressions as a component of the filter
+   * and thus have no Expression Auditing requirementts
+   *
+   * @param piece piece
+   * @return true if piece match filter
+   */
   boolean accept(GamePiece piece);
 
+  /**
+   * Test if a piece matches the filter and provide Expression auditing facilities
+   * @param piece piece to test
+   * @param owner owner of the filter
+   * @param fieldKey EMesage key of the field holding the filter expression
+   * @return
+   */
+  default boolean accept(GamePiece piece, Auditable owner, String fieldKey) {
+    return accept(piece);
+  }
+
+  /**
+   * Test if a piece matches the filter and provide Expression auditing facilities
+   * @param piece piece to test
+   * @param owner owner of the filter
+   * @param fieldKey Audit Trail to record evaluation of the filter
+   * @return
+   */
   default boolean accept(GamePiece piece, Auditable owner, AuditTrail audit) {
     return accept(piece);
   }
 
-  default boolean accept(GamePiece piece, Auditable owner, String fieldKey) {
-    return accept(piece);
-  }
+
 }

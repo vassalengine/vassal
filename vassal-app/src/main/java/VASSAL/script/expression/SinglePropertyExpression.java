@@ -31,6 +31,8 @@ public class SinglePropertyExpression extends Expression {
     super(ex.startsWith("$") && ex.endsWith("$") ? ex.substring(1, ex.length() - 1) : ex);
   }
 
+  /** @deprecated Use {@link #evaluate(PropertySource, Map, boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
     return evaluate(ps, properties, localized, null, null);

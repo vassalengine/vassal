@@ -32,6 +32,8 @@ public class BooleanOrPieceFilter implements PieceFilter {
     this.filter2 = filter2;
   }
 
+  /** @deprecated */
+  @Deprecated(since = "2021-06-11")
   @Override
   public boolean accept(GamePiece piece) {
     return filter1.accept(piece) || filter2.accept(piece);
