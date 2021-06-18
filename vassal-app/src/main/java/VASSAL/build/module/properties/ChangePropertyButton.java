@@ -17,11 +17,6 @@
  */
 package VASSAL.build.module.properties;
 
-import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
-
-
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -37,6 +32,11 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -88,7 +88,8 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
         report.setProperty(OLD_VALUE_FORMAT, oldValue);
         report.setProperty(NEW_VALUE_FORMAT, property.getPropertyValue());
         report.setProperty(DESCRIPTION_FORMAT, property.getDescription());
-        final Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText());
+        final Chatter.DisplayText chatCommand =
+          new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report.getLocalizedText(this, "Editor.report_format"));
         chatCommand.execute();
         c.append(chatCommand);
       }
@@ -99,7 +100,7 @@ public class ChangePropertyButton extends AbstractToolbarItem implements Propert
   protected String getNewValue() {
     String newValue = getPropertyChanger().getNewValue(property.getPropertyValue());
     format.setFormat(newValue);
-    newValue = format.getText(property);
+    newValue = format.getText(property, this, "Editor.PropertyChangeConfigurer.new_value");
     return newValue;
   }
 

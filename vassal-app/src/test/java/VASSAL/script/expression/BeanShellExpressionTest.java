@@ -1,7 +1,6 @@
 package VASSAL.script.expression;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -11,7 +10,7 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.PieceFilter;
 import org.junit.jupiter.api.Test;
 
-public class BeanShellExpressionTest {
+public class BeanShellExpressionTest implements Auditable {
 
   private static final String EXPR1 = "abc";
   private static final String EXPR2 = "$abc$";
@@ -45,11 +44,12 @@ public class BeanShellExpressionTest {
   public void getFilter() {
     BasicPiece bp1 = new BasicPiece();
     Expression e = BeanShellExpression.createExpression("{match==\"pickMe\"}");
-    PieceFilter f = e.getFilter();
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    PieceFilter f = e.getFilter(this, audit);
     bp1.setProperty("match", "pickMe");
-    assertThat(f.accept(bp1), is(true));
+    assertThat(f.accept(bp1, this, audit), is(true));
     bp1.setProperty("match", "dontPickMe");
-    assertThat(f.accept(bp1), is(false));
+    assertThat(f.accept(bp1, this, audit), is(false));
   }
 
   @Test

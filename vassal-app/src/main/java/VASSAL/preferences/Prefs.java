@@ -17,12 +17,22 @@
  */
 package VASSAL.preferences;
 
+import VASSAL.Info;
+import VASSAL.build.module.WizardSupport;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.ReadErrorDialog;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
@@ -36,16 +46,6 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import VASSAL.Info;
-import VASSAL.build.module.WizardSupport;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.ReadErrorDialog;
-
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
  * which is responsible for writing the preferences to disk.
@@ -56,6 +56,7 @@ public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //NON-NLS
   public static final String DISABLE_D3D = "disableD3d"; //NON-NLS
+  public static final String BAD_DATA_AUDIT_TRAILS = "badDataAuditTrails"; //NON-NLS
 
   public static final String MAIN_WINDOW_REMEMBER = "mainWindowRemember"; //NON-NLS
   public static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //NON-NLS
@@ -315,6 +316,14 @@ public class Prefs implements Closeable {
     );
 
     globalPrefs.addOption(wizardConf);
+
+    final BooleanConfigurer auditConf = new BooleanConfigurer(
+      BAD_DATA_AUDIT_TRAILS,
+      Resources.getString("Prefs.expression_auditing"),
+      Boolean.FALSE
+    );
+
+    globalPrefs.addOption(Resources.getString("Prefs.general_tab"), auditConf);
   }
 
   public static String sanitize(String str) {

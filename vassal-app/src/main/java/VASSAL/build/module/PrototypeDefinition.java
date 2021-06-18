@@ -157,7 +157,7 @@ public class PrototypeDefinition extends AbstractConfigurable
    * @return Created Piece
    */
   public GamePiece getPiece(PropertySource props) {
-    final String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
+    final String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props, this, "Editor.Prototype.component_type");
     return getPiece(def);
   }
 

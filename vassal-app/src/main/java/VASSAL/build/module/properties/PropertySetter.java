@@ -18,6 +18,7 @@
 package VASSAL.build.module.properties;
 
 import VASSAL.build.module.properties.PropertyChangerConfigurer.Constraints;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.tools.FormattedString;
 
 /**
@@ -47,7 +48,7 @@ public class PropertySetter implements PropertyChanger {
     String s = newValue;
     if (format != null) {
       format.setFormat(s);
-      s = format.getText(propSource.getPropertySource());
+      s = format.getText(propSource.getPropertySource(), propSource, AuditTrail.create(propSource, s));
     }
     return s;
   }

@@ -17,9 +17,16 @@
  */
 package VASSAL.build;
 
+import VASSAL.build.module.properties.PropertyNameSource;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.Localization;
+import VASSAL.i18n.Translatable;
+import VASSAL.script.expression.Auditable;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.tools.ProblemDialog;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,12 +37,6 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
-import VASSAL.build.module.properties.PropertyNameSource;
-import VASSAL.configure.ValidationReport;
-import VASSAL.configure.ValidityChecker;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.Translatable;
-
 /**
  * Abstract implementation of the {@link Buildable} interface. To make a Buildable component, in other words a component
  * which can be read from the XML buildFile along with a set of attributes, extend this class -- or more likely
@@ -43,7 +44,7 @@ import VASSAL.i18n.Translatable;
  * You'll need to implement the methods and specify the Buildable attributes of this class, and the build process is
  * handled automatically.
  */
-public abstract class AbstractBuildable extends AbstractImageFinder implements Buildable, ValidityChecker, PropertyNameSource {
+public abstract class AbstractBuildable extends AbstractImageFinder implements Buildable, ValidityChecker, PropertyNameSource, Auditable {
   protected List<Buildable> buildComponents = new ArrayList<>();
 
   // Sub-classes can set this reference to perform validity checking

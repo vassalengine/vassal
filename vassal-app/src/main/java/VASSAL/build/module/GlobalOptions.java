@@ -17,28 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.configure.IconConfigurer;
-import VASSAL.tools.ProblemDialog;
-import java.awt.Container;
-import java.awt.dnd.DragSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.swing.JLabel;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
-import org.apache.commons.lang3.SystemUtils;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -51,6 +29,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
@@ -64,7 +43,28 @@ import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.Container;
+import java.awt.dnd.DragSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.swing.JLabel;
+
+import org.apache.commons.lang3.SystemUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * GlobalOptions is a junction point for several flavors of "preferences"-related categories. It also configures the
@@ -770,7 +770,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public String getPlayerId() {
     playerIdFormat.setProperty(PLAYER_NAME, (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
     playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMyLocalizedSide());
-    return playerIdFormat.getText();
+    return playerIdFormat.getText(this, "Editor.GlobalOption.playerid_format");
   }
 
   /** @return whether specific hybrid preference is enabled (could be designer-forced setting, could be player preference) */

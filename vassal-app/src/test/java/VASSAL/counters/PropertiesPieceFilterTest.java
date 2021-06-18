@@ -6,13 +6,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-public class PropertiesPieceFilterTest {
+public class PropertiesPieceFilterTest implements Auditable {
 
 
   /**
@@ -34,26 +36,28 @@ public class PropertiesPieceFilterTest {
       bp1.setProperty("p_abc", "abc");
 
       PieceFilter filter;
+      final AuditTrail audit = null;
 
       // Test &&
       filter = PropertiesPieceFilter.parse("p_ab=ab && p_abc>ac");
-      assertThat("Check && Test 1", filter.accept(bp1), is(false));
+
+      assertThat("Check && Test 1", filter.accept(bp1, this, audit), is(false));
       filter = PropertiesPieceFilter.parse("p_ab=ab && p_abc<ac");
-      assertThat("Check && Test 2", filter.accept(bp1), is(true));
+      assertThat("Check && Test 2", filter.accept(bp1, this, audit), is(true));
       filter = PropertiesPieceFilter.parse("p_abc=ab && p_abc<ac");
-      assertThat("Check && Test 3", filter.accept(bp1), is(false));
+      assertThat("Check && Test 3", filter.accept(bp1, this, audit), is(false));
       filter = PropertiesPieceFilter.parse("p_abc=ab && p_abc>ac");
-      assertThat("Check && Test 4", filter.accept(bp1), is(false));
+      assertThat("Check && Test 4", filter.accept(bp1, this, audit), is(false));
 
       // Test ||
       filter = PropertiesPieceFilter.parse("p_ab=ab || p_abc>ac");
-      assertThat("Check || Test 1", filter.accept(bp1), is(true));
+      assertThat("Check || Test 1", filter.accept(bp1, this, audit), is(true));
       filter = PropertiesPieceFilter.parse("p_ab=ab || p_abc<ac");
-      assertThat("Check || Test 2", filter.accept(bp1), is(true));
+      assertThat("Check || Test 2", filter.accept(bp1, this, audit), is(true));
       filter = PropertiesPieceFilter.parse("p_abc=ab || p_abc<ac");
-      assertThat("Check || Test 3", filter.accept(bp1), is(true));
+      assertThat("Check || Test 3", filter.accept(bp1, this, audit), is(true));
       filter = PropertiesPieceFilter.parse("p_abc=ab || p_abc>ac");
-      assertThat("Check || Test 4", filter.accept(bp1), is(false));
+      assertThat("Check || Test 4", filter.accept(bp1, this, audit), is(false));
     }
   }
 

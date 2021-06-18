@@ -46,6 +46,7 @@ import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -170,14 +171,15 @@ public class MassKeyCommand extends AbstractToolbarItem
   }
 
   public void apply() {
-    buildFilter();
+    // getFilter() will build the expression and update the audit trail
+    final AuditTrail audit = AuditTrail.create(this, "", Resources.getString("Editor.MassKey.match"));
     if (singleMap) {
-      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter(), target));
+      GameModule.getGameModule().sendAndLog(globalCommand.apply(map, getFilter(audit), target, audit));
     }
     else {
       final List<Map> l = Map.getMapList();
       GameModule.getGameModule().sendAndLog(
-          globalCommand.apply(l.toArray(new Map[0]), getFilter(), target));
+          globalCommand.apply(l.toArray(new Map[0]), getFilter(audit), target, audit));
     }
   }
 
@@ -490,16 +492,23 @@ public class MassKeyCommand extends AbstractToolbarItem
   }
 
   public PieceFilter getFilter() {
-    buildFilter();
+    return getFilter(null);
+  }
+
+  public PieceFilter getFilter(AuditTrail trail) {
+    buildFilter(trail);
     return filter;
   }
 
-  private void buildFilter() {
+  private void buildFilter(AuditTrail audit) {
     if (checkValue != null) {
       propertiesFilter.setExpression(checkProperty + "=" + checkValue);
     }
     if (propertiesFilter != null) {
-      filter = propertiesFilter.getFilter(propertySource);
+      if (audit != null) {
+        audit.setExpression(propertiesFilter.getExpression());
+      }
+      filter = propertiesFilter.getFilter(propertySource, this, audit);
     }
     if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, piece -> {

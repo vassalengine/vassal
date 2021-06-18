@@ -17,14 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import VASSAL.search.HTMLImageFinder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -33,7 +25,15 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SpecialDie extends AbstractConfigurable {
 
@@ -149,7 +149,7 @@ public class SpecialDie extends AbstractConfigurable {
       format.setProperty(RESULT, aFace.getTextValue());
       format.setProperty(NUMERICAL_VALUE, Integer.toString(aFace.getIntValue()));
     }
-    return format.getLocalizedText();
+    return format.getLocalizedText(this, "Editor.SpecialDie.result_format");
   }
 
   public int getIntValue(int face) {

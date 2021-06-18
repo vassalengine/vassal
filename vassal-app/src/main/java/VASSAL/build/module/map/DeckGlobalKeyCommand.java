@@ -17,19 +17,8 @@
  */
 package VASSAL.build.module.map;
 
-
-
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
-import VASSAL.configure.GlobalCommandTargetConfigurer;
-import VASSAL.counters.CounterGlobalKeyCommand;
-import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -37,18 +26,28 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GlobalCommand;
+import VASSAL.counters.GlobalCommandTarget;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.Resources;
+import VASSAL.script.expression.Auditable;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.KeyStroke;
 
 /**
  * This version of {@link MassKeyCommand} is added to a {@link DrawPile} (which holds a {@link Deck})
@@ -65,6 +64,10 @@ import VASSAL.tools.SequenceEncoder;
  * Other important classes:
  * {@link GlobalCommandTarget}           - "Fast Match" parameters
  * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
+ *
+ * NOTE: There is no need to support AuditTrails in a DeckGlobalKeyCommand since there is no matching properties expression.
+ * Individual counters processing the GKC will generate their own internal audit trails.
+ *
  */
 public class DeckGlobalKeyCommand extends MassKeyCommand {
 
@@ -249,7 +252,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     }
 
     public Command apply(Deck d, PieceFilter filter) {
-      final String reportText = reportFormat.getText(source);
+      final String reportText = reportFormat.getText(source, (Auditable) this, "Editor.report_format");
       Command c;
       if (reportText.length() > 0) {
         c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);

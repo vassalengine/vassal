@@ -18,6 +18,48 @@
  */
 package VASSAL.build.module;
 
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.MenuDisplayer;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.GamePieceFormattedStringConfigurer;
+import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.BoundsTracker;
+import VASSAL.counters.Decorator;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceFilter;
+import VASSAL.counters.PieceIterator;
+import VASSAL.counters.Properties;
+import VASSAL.counters.PropertiesPieceFilter;
+import VASSAL.counters.PropertyExporter;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.preferences.PositionOption;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -61,48 +103,6 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import VASSAL.build.AbstractToolbarItem;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.MenuDisplayer;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.command.Command;
-import VASSAL.command.NullCommand;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.GamePieceFormattedStringConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PropertyExpression;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
-import VASSAL.configure.TranslatingStringEnumConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.counters.BasicPiece;
-import VASSAL.counters.BoundsTracker;
-import VASSAL.counters.Decorator;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceFilter;
-import VASSAL.counters.PieceIterator;
-import VASSAL.counters.Properties;
-import VASSAL.counters.PropertiesPieceFilter;
-import VASSAL.counters.PropertyExporter;
-import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.preferences.PositionOption;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.LaunchButton;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.NamedKeyStrokeListener;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.swing.SwingUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -1011,10 +1011,10 @@ public class Inventory extends AbstractToolbarItem
 
     @Override
     public String toString() {
-      return format.getLocalizedText(this);
+      return format.getLocalizedText(this, this, "Editor.Inventory.label_pieces");
     }
     public String toSortKey() {
-      return sortingFormat.getLocalizedText(this);
+      return sortingFormat.getLocalizedText(this, this, "Editor.Inventory.label_sort");
     }
 
     public String[] getPath() {

@@ -19,17 +19,6 @@ package VASSAL.build.module;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
-import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.swing.SwingUtils;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -48,9 +37,20 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This component places a button into the controls window toolbar.
@@ -235,7 +235,7 @@ public class DiceButton extends AbstractToolbarItem {
     reportFormat.setProperty(N_SIDES, Integer.toString(nSides));
     reportFormat.setProperty(PLUS, Integer.toString(plus));
     reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
-    final String text = reportFormat.getLocalizedText();
+    final String text = reportFormat.getLocalizedText(this, "Editor.report_format");
     String report = text;
     if (text.length() > 0) {
       report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

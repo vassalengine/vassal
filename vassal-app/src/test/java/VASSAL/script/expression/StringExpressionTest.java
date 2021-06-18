@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
-public class StringExpressionTest {
+public class StringExpressionTest implements Auditable {
 
   private static final String TEST = "xyzzy";
 
@@ -19,7 +19,8 @@ public class StringExpressionTest {
   @Test
   public void evaluate() throws ExpressionException {
     Expression e = StringExpression.instance(TEST);
-    String s = e.evaluate();
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    String s = e.evaluate(this, audit);
     assertThat(s, equalTo(TEST));
   }
 

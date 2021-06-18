@@ -47,8 +47,10 @@
         <method>boolean saveAs(boolean)</method>
         <to>void</to>
     </difference>
-
-
-
+    <difference>
+        <className>VASSAL/counters/CalculatedProperty</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String evaluate()</method>
+    </difference>
 
 </differences>

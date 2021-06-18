@@ -1,8 +1,15 @@
 package VASSAL.counters;
 
-import java.util.stream.Stream;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
+
+import java.util.stream.Stream;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,18 +18,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /**
  * Test basic Legacy Property Match functionality.
  * All operators are explicitly codes in VASSAL, so need to check them thoroughly.
  * NOTE: Only need to test that =~ and !~ work, no need to test Regexp functionality
  *       as this is provided by Java libraries.
  */
-public class PropertiesPieceFilterParameterizedTest {
+public class PropertiesPieceFilterParameterizedTest implements Auditable {
 
   private static final String TEST_PROPERTY = "p";
 
@@ -45,7 +47,7 @@ public class PropertiesPieceFilterParameterizedTest {
       final BasicPiece bp = new BasicPiece();
       bp.setProperty(TEST_PROPERTY, propertyValue);
       final PieceFilter filter = PropertiesPieceFilter.parse(expression);
-      assertThat(test, filter.accept(bp), is(expectedResult));
+      assertThat(test, filter.accept(bp, this, (AuditTrail) null), is(expectedResult));
     }
   }
 

@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.tools.ProblemDialog;
 import javax.swing.JOptionPane;
 
@@ -64,11 +65,12 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     for (int i = 0; i < finalValues.length; i++) {
       String value;
       try {
+        final AuditTrail audit = AuditTrail.create(constraints.getPropertySource(), valueExpressions[i].getExpression());
         if (propertySource == null) {
-          value = valueExpressions[i].evaluate();
+          value = valueExpressions[i].evaluate(propertySource.getPropertySource(), audit);
         }
         else {
-          value = valueExpressions[i].evaluate(propertySource.getPropertySource());
+          value = valueExpressions[i].evaluate(propertySource.getPropertySource(), propertySource.getPropertySource(), audit);
         }
       }
       catch (final ExpressionException e) {

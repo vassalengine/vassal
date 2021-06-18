@@ -16,10 +16,34 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ConfigurerLayout;
 import VASSAL.configure.DoubleConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PropertyNameExpressionConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.Expression;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ScaledImagePainter;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -44,31 +68,6 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ConfigurerLayout;
-import VASSAL.configure.FormattedExpressionConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PropertyNameExpressionConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.script.expression.Expression;
-import VASSAL.script.expression.ExpressionException;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -564,7 +563,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
       String val = "";
       try {
-        val = followPropertyExpression.evaluate(Decorator.getOutermost(this));
+        val = followPropertyExpression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.Embellishment.follow_expression");
         if (val == null || val.length() == 0)
           val = String.valueOf(firstLevelValue);
 
@@ -578,9 +577,6 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       }
       catch (NumberFormatException e) {
         reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e); // NON-NLS
-      }
-      catch (ExpressionException e) {
-        reportDataError(this, Resources.getString("Error.expression_error"), "followProperty[" + propertyName + "]", e); // NON-NLS
       }
     }
     catch (RecursionLimitException e) {
@@ -668,7 +664,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
 
       if (resetKey != null && resetKey.equals(stroke)) {
         final GamePiece outer = Decorator.getOutermost(this);
-        final String levelText = resetLevel.getText(outer);
+        final String levelText = resetLevel.getText(outer, this, "Editor.Embellishment.reset_to_level");
         try {
           final int level = Integer.parseInt(levelText);
           setValue(Math.abs(level) - 1);
@@ -987,18 +983,6 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     l.add(name + ACTIVE);
     l.add(name + NAME);
     return l;
-  }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
   }
 
   @Override

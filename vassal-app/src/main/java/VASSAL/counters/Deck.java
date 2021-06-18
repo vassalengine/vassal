@@ -17,6 +17,37 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.PlayerRoster;
+import VASSAL.build.module.map.DeckGlobalKeyCommand;
+import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.map.StackMetrics;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.command.AddPiece;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.i18n.Localization;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.Auditable;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ScrollPane;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.filechooser.FileChooser;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -51,36 +82,6 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
-import VASSAL.build.BadDataReport;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Chatter;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.PlayerRoster;
-import VASSAL.build.module.map.DeckGlobalKeyCommand;
-import VASSAL.build.module.map.DrawPile;
-import VASSAL.build.module.map.StackMetrics;
-import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.command.AddPiece;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.command.NullCommand;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.PropertyExpression;
-import VASSAL.i18n.Localization;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.NamedKeyStrokeListener;
-import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.ScrollPane;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.ProblemDialog;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
@@ -233,6 +234,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     propertySource = source;
   }
 
+  @Override
+  public String getComponentTypeName() {
+    return Resources.getString("Editor.DrawPile.deck");
+  }
+
+  @Override
+  public String getComponentName() {
+    return deckName;
+  }
+
   /**
    * Sets the Deck's property source
    * @param source PropertySource
@@ -350,7 +361,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final MutableProperty.Impl prop = expressionProperties.get(index);
       final FormattedString formatted =
         new FormattedString(countExpressions[index].getExpression());
-      final PieceFilter f = PropertiesPieceFilter.parse(formatted.getText());
+      final PieceFilter f = PropertiesPieceFilter.parse(formatted.getText((Auditable) this, "Editor.DrawPile.count_express"));
       if (f.accept(p)) {
         final String mapProperty = prop.getPropertyValue();
         if (mapProperty != null) {
@@ -1326,7 +1337,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final FormattedString reportFormat = new FormattedString(format);
     reportFormat.setProperty(DrawPile.DECK_NAME, getLocalizedDeckName());
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
-    final String rep = reportFormat.getLocalizedText();
+    final String rep = reportFormat.getLocalizedText(this, commandName);
     if (rep.length() > 0) {
       c = new Chatter.DisplayText(gameModule.getChatter(), "* " + rep); //$NON-NLS-1$
       c.execute();
@@ -1384,7 +1395,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
       @Override
       public String toString() {
-        return selectDisplayProperty.getText(piece);
+        return selectDisplayProperty.getText(piece, Deck.this, "Editor.DrawPile.list_cards");
       }
 
       @Override

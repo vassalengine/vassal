@@ -26,6 +26,8 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
@@ -79,6 +81,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   protected static final String MAGIC1 = "_xyzzy"; // NON-NLS
   protected static final String MAGIC2 = "_plugh"; // NON-NLS
   protected static final String MAGIC3 = "_plover"; // NON-NLS
+  protected static final String ERROR_PREFIX = " inline evaluation of: ``_xyzzy=_plugh();''";
 
   // Top-level static NameSpace shared between all ExpressionInterpreters
   // Loaded with utility methods available to all interpreters
@@ -230,6 +233,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public String evaluate(PropertySource ps, boolean localized) throws ExpressionException {
+    return evaluate(ps, localized, null, null);
+  }
+
+  public String evaluate(PropertySource ps, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
     if (getExpression().length() == 0) {
       return "";
     }
@@ -248,11 +255,15 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       // corresponding Vassal property. Allow for old-style $variable$ references
       for (final String var : variables) {
         String name = var;
+        final String origName = name;
         if (name.length() > 2 && name.startsWith("$") && name.endsWith("$")) {
           name = name.substring(1, name.length() - 1);
         }
         final Object prop = localized ? source.getLocalizedProperty(name) : source.getProperty(name);
         final String value = prop == null ? "" : prop.toString();
+        if (audit != null) {
+          audit.addMessage(origName + "=" + (value == null ? "" : value));
+        }
         if (value == null) {
           setVar(var, "");
         }
@@ -302,9 +313,16 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       }
       catch (EvalError e) {
         final String s = e.getRawMessage();
-        final String search = MAGIC2 + "();'' : ";
+        final String search = MAGIC2 + "();'' ";
         final int pos = s.indexOf(search);
-        throw new ExpressionException(getExpression(), s.substring(pos + search.length()));
+        String m = s.substring(pos + search.length());
+        if (m.startsWith(ERROR_PREFIX)) {
+          m = m.substring(ERROR_PREFIX.length() + 1);
+        }
+        if (audit != null) {
+          audit.addMessage(Resources.getString("Audit.error_trail", m));
+        }
+        throw new ExpressionException(getExpression(), s.substring(pos + search.length()), owner, audit);
       }
     }
     catch (RecursionLimitException e) {

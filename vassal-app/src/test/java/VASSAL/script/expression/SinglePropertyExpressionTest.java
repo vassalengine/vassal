@@ -5,13 +5,14 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
 
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.counters.BasicPiece;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 
-public class SinglePropertyExpressionTest {
+public class SinglePropertyExpressionTest implements Auditable {
 
   public static final String PROP1_KEY = "prop1";
   public static final String PROP1_VALUE = "prop1val";
@@ -40,19 +41,20 @@ public class SinglePropertyExpressionTest {
 
     String s;
     // Property Source property value
-    s = e.evaluate(source, null, false);
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(source, null, false, this, audit);
     assertThat(s, is(equalTo(PROP1_VALUE)));
 
     // Property Source localised property value
-    s = e.evaluate(source, null, true);
+    s = e.evaluate(source, null, true, this, audit);
     assertThat(s, is(equalTo(PROP1_LOCALISED_VALUE)));
 
     // Property Map property value
-    s = e.evaluate(null, props, false);
+    s = e.evaluate(null, props, false, this, audit);
     assertThat(s, is(equalTo(PROP1_VALUE)));
 
     // No value found
-    s = e.evaluate(null, null, false);
+    s = e.evaluate(null, null, false, this, audit);
     assertThat(s, is(equalTo("")));
   }
 

@@ -376,7 +376,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
-        final String text = counterReportFormat.getLocalizedText(piece);
+        final String text = counterReportFormat.getLocalizedText(piece, this, "Editor.MouseOverStackViewer.text_below");
         int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
         if (text.length() > 0) {
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
@@ -493,7 +493,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final Zone z = map.findZone(snapPt);
       final String zone = (z == null) ? "" : z.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
-      report = emptyHexReportFormat.getLocalizedText();
+      report = emptyHexReportFormat.getLocalizedText(this, "Editor.MouseOverStackViewer.text_empty");
       if (report.length() > 0) {
         if (centerAll) {
           x -= g.getFontMetrics().stringWidth(report) / 2;
@@ -505,7 +505,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final GamePiece topPiece = displayablePieces.get(0);
       final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
-      report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
+      report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces), this, "Editor.MouseOverStackViewer.summary_text");
       if (report.length() > 0) {
         if (graphicsVisible) {
           x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options

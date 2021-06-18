@@ -17,8 +17,6 @@
  */
 package VASSAL.build.module;
 
-import java.util.List;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
@@ -26,6 +24,10 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.GlobalCommandTarget;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+
+import java.util.List;
 
 /**
  * This version of {@link MassKeyCommand} is added directly to a {@link VASSAL.build.GameModule} and applies to all maps.
@@ -57,9 +59,10 @@ public class GlobalKeyCommand extends MassKeyCommand {
    */
   @Override
   public void apply() {
+    // getFilter() will build the expression and update the audit trail
+    final AuditTrail audit = AuditTrail.create(this, "", Resources.getString("Editor.MassKey.match"));
     final List<Map> l = Map.getMapList();
-    GameModule.getGameModule().sendAndLog(
-      globalCommand.apply(l.toArray(new Map[0]), getFilter(), target));
+    GameModule.getGameModule().sendAndLog(globalCommand.apply(l.toArray(new Map[0]), getFilter(audit), target, audit));
   }
 
   // Hide 'This Map only' option

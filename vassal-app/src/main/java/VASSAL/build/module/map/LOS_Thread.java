@@ -17,6 +17,38 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractFolder;
+import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.search.HTMLImageFinder;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.LaunchButton;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -33,40 +65,8 @@ import java.util.List;
 
 import javax.swing.KeyStroke;
 
-import VASSAL.build.AbstractFolder;
-import VASSAL.build.AbstractToolbarItem;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.TranslatableStringEnum;
-import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.LaunchButton;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.MapGrid;
-import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.counters.GamePiece;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A class that allows the user to draw a straight line on a Map (LOS
@@ -612,7 +612,7 @@ public class LOS_Thread extends AbstractToolbarItem implements
         reportFormat.setProperty(CHECK_COUNT, String.valueOf(getLosCheckCount()));
         reportFormat.setProperty(CHECK_LIST, getLosCheckList());
 
-        GameModule.getGameModule().getChatter().send(reportFormat.getLocalizedText());
+        GameModule.getGameModule().getChatter().send(reportFormat.getLocalizedText(this, "Editor.report_format"));
       }
     }
     ctrlWhenClick = false;

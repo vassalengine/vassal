@@ -157,7 +157,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   protected boolean matchesFilter() {
     final GamePiece outer = Decorator.getOutermost(this);
     if (!propertyMatch.isNull()) {
-      return propertyMatch.accept(outer);
+      return propertyMatch.accept(outer, this, "Editor.RestrictCommands.restrict_when_properties_match");
     }
     return true;
   }

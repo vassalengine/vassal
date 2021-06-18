@@ -32,6 +32,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -202,7 +203,9 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
           final OldAndNewPieceProperties properties = new OldAndNewPieceProperties(oldPiece, outer);
 
-          String reportText = format.getLocalizedText(properties);
+          // Create explicit Audit Trail as format is evaluated twice
+          final AuditTrail audit = AuditTrail.create(this, format.getFormat(), Resources.getString("Editor.ReportState.report_format_3"));
+          String reportText = format.getLocalizedText(properties, this, audit);
 
           if (getMap() != null) {
             format.setFormat(getMap().getChangeFormat(noSuppress));
@@ -214,7 +217,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
             format.setFormat("$" + Map.MESSAGE + "$");
           }
           format.setProperty(Map.MESSAGE, reportText);
-          reportText = format.getLocalizedText(properties);
+          reportText = format.getLocalizedText(properties, this, audit);
 
           if (reportText.length() > 0) {
             final Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);

@@ -19,10 +19,34 @@ package VASSAL.build.module;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.MutableProperty.Impl;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -45,30 +69,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.build.module.properties.MutableProperty.Impl;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.command.NullCommand;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.PlayerIdFormattedStringConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.KeyStrokeListener;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OwningOpMultiResolutionImage;
 
 /**
  * ...
@@ -179,7 +179,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       dialogLabel.setSize(new Dimension(resultsIcon.width, resultsIcon.height));
       dialogLabel.setMinimumSize(new Dimension(resultsIcon.width, resultsIcon.height));
       format.setFormat(windowTitleResultFormat);
-      dialog.setTitle(format.getLocalizedText());
+      dialog.setTitle(format.getLocalizedText(this, "Editor.SpecialDiceButton.window_title"));
       dialog.pack();
       dialog.setVisible(true);
       dialogLabel.repaint();
@@ -197,7 +197,7 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
       total += die.getIntValue(results[i]);
     }
     format.setFormat(chatResultFormat);
-    String msg = format.getLocalizedText();
+    String msg = format.getLocalizedText(this, "Editor.report_format");
     if (msg.length() > 0) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
         msg = "*" + msg; //$NON-NLS-1$

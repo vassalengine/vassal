@@ -17,6 +17,38 @@
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.HexGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
+import VASSAL.build.module.map.boardPicker.board.RegionGrid;
+import VASSAL.build.module.map.boardPicker.board.SquareGrid;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.PropertySource;
+import VASSAL.build.module.properties.ZoneProperty;
+import VASSAL.command.Command;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.script.expression.Auditable;
+import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -46,37 +78,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.HexGrid;
-import VASSAL.build.module.map.boardPicker.board.MapGrid;
-import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
-import VASSAL.build.module.map.boardPicker.board.RegionGrid;
-import VASSAL.build.module.map.boardPicker.board.SquareGrid;
-import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
-import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
-import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.build.module.properties.PropertySource;
-import VASSAL.build.module.properties.ZoneProperty;
-import VASSAL.command.Command;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.swing.SwingUtils;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name"; //NON-NLS
@@ -365,7 +366,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       gridLocation = getGrid().locationName(p);
     }
     format.setProperty(GRID_LOCATION, gridLocation);
-    return format.getText();
+    return format.getText((Auditable) this, "Editor.Zone.location_format");
   }
 
   public String localizedLocationName(Point p) {
@@ -376,7 +377,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       gridLocation = getGrid().localizedLocationName(p);
     }
     format.setProperty(GRID_LOCATION, gridLocation);
-    return format.getLocalizedText();
+    return format.getLocalizedText((Auditable) this, "Editor.Zone.location_format");
   }
 
   @Override

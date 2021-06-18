@@ -17,12 +17,14 @@
  */
 package VASSAL.build.module.properties;
 
+import VASSAL.script.expression.Auditable;
+
 /**
  * A PropertySource provides an interface to read properties (values), usually game- or UI-related, from various
  * game objects. {@link VASSAL.counters.GamePiece} is the "OG" of PropertySources, but all of the objects which provide
  * containers for Global Properties (e.g. Zones, Maps, and GameModule) implement it as well.
  */
-public interface PropertySource {
+public interface PropertySource extends Auditable {
 
   /**
    * When using this interface a piece's own properties are preferred to those of

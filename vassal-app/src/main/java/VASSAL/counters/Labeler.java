@@ -17,8 +17,35 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TranslatingStringEnumConfigurer;
+import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.search.HTMLImageFinder;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.LabelUtils;
+import VASSAL.tools.imageop.AbstractTileOpImpl;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.ScaledImagePainter;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -48,35 +75,9 @@ import javax.swing.KeyStroke;
 import javax.swing.plaf.basic.BasicHTML;
 
 import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.RecursionLimitException;
-import VASSAL.tools.RecursionLimiter;
-import VASSAL.tools.RecursionLimiter.Loopable;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.image.LabelUtils;
-import VASSAL.tools.swing.SwingUtils;
-import VASSAL.tools.imageop.AbstractTileOpImpl;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
  * Displays a text label, with content specified by the user at runtime.
@@ -254,7 +255,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       }
       try {
         RecursionLimiter.startExecution(this);
-        result = nameFormat.getText(Decorator.getOutermost(this));
+        result = nameFormat.getText(Decorator.getOutermost(this), this, "Editor.TextLabel.name_format");
       }
       catch (RecursionLimitException e) {
         RecursionLimiter.infiniteLoop(e);
@@ -276,7 +277,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
         new FormattedString(getTranslation(nameFormat.getFormat()));
       f.setProperty(PIECE_NAME, piece.getLocalizedName());
       f.setProperty(LABEL, getLocalizedLabel());
-      return f.getLocalizedText(Decorator.getOutermost(this));
+      return f.getLocalizedText(Decorator.getOutermost(this), this, "Editor.TextLabel.name_format");
     }
   }
 
@@ -640,13 +641,13 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   }
 
   public String getLabel() {
-    return labelFormat.getText(Decorator.getOutermost(this));
+    return labelFormat.getText(Decorator.getOutermost(this), this, "Editor.TextLabel.label_text");
   }
 
   public String getLocalizedLabel() {
     final FormattedString f =
       new FormattedString(getTranslation(labelFormat.getFormat()));
-    return f.getLocalizedText(Decorator.getOutermost(this));
+    return f.getLocalizedText(Decorator.getOutermost(this), this, "Editor.TextLabel.label_text");
   }
 
   @Override
@@ -988,17 +989,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
           Resources.getString("Editor.TextLabel.name_format"),
           Resources.getString("Editor.TextLabel.change_label_command")
         });
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentName() {
-    return getDescription();
   }
 
   /** @deprecated Use {@link VASSAL.tools.image.LabelUtils#drawLabel(Graphics, String, int, int, int, int, Color, Color)} instead. **/

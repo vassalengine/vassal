@@ -673,7 +673,7 @@ public class Interpreter
 				throw e;
 
             } catch ( InterpreterError e ) {
-                e.printStackTrace();
+                // e.printStackTrace(); // Do not print a stack trace here - Will be handled (if necessary) by Vassal at a higher level
                 throw new EvalError(
 					"Sourced file: "+sourceFileInfo+" internal Error: " 
 					+ e.getMessage(), node, callstack);
@@ -684,14 +684,14 @@ public class Interpreter
 				e.reThrow("Sourced file: "+sourceFileInfo);
             } catch ( EvalError e) {
                 if ( DEBUG)
-                    e.printStackTrace();
+									// e.printStackTrace(); // Do not print a stack trace here - Will be handled (if necessary) by Vassal at a higher level
 				// failsafe, set the Line as the origin of the error.
 				if ( e.getNode()==null )
 					e.setNode( node );
 				e.reThrow( "Sourced file: "+sourceFileInfo );
             } catch ( Exception e) {
                 if ( DEBUG)
-                	e.printStackTrace();
+									// e.printStackTrace(); // Do not print a stack trace here - Will be handled (if necessary) by Vassal at a higher level
                 throw new EvalError(
 					"Sourced file: "+sourceFileInfo+" unknown error: " 
 					+ e.getMessage(), node, callstack);

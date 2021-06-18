@@ -17,11 +17,6 @@
  */
 package VASSAL.build.module.properties;
 
-import java.beans.PropertyChangeListener;
-import java.util.List;
-
-import javax.swing.JToolBar;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
@@ -36,6 +31,11 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.TemporaryToolBar;
 import VASSAL.tools.ToolBarComponent;
+
+import java.beans.PropertyChangeListener;
+import java.util.List;
+
+import javax.swing.JToolBar;
 
 /**
  * Adds a global property to a Map or Module
@@ -333,7 +333,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     if (maxValue != null) {
       format.setFormat(maxValue);
       try {
-        max = Integer.parseInt(format.getText(this));
+        max = Integer.parseInt(format.getText(this, this, "Editor.GlobalProperty.minimum_value"));
       }
       catch (final NumberFormatException e) {
         // Use default value if formatted string is not a number
@@ -347,7 +347,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     if (minValue != null) {
       format.setFormat(minValue);
       try {
-        min = Integer.parseInt(format.getText(this));
+        min = Integer.parseInt(format.getText(this, this, "Editor.GlobalProperty.maximum_value"));
       }
       catch (final NumberFormatException e) {
         // Use default value if not a number

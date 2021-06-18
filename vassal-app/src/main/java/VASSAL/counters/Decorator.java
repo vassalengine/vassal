@@ -66,7 +66,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * So a full logical GamePiece (the thing you see on the board), may consist of many Decorator instances (one for each trait) wrapped around the
  * BasicPiece.
  */
-public abstract class Decorator extends AbstractImageFinder implements GamePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
+public abstract class Decorator extends AbstractImageFinder implements EditablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
   PropertyExporter, SearchTarget, ImageSearchTarget {
 
   protected GamePiece piece;
@@ -595,6 +595,7 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
 
   /** @return the configurer for this trait - the dialog which allows the editing the piece's type information. Default
    * configurer is a {@link SimplePieceEditor}, but many traits will want to provide custom versions. */
+  @Override
   public PieceEditor getEditor() {
     return new SimplePieceEditor(this);
   }
@@ -884,5 +885,21 @@ public abstract class Decorator extends AbstractImageFinder implements GamePiece
     PropertyExporter.super.getProperties(result);
     return piece == null ? result : ((PropertyExporter) piece).getProperties(result);
   }
+
+  @Override
+  public String getComponentTypeName() {
+    return Resources.getString("Audit.trait", getDescription());
+  }
+
+  /**
+   * Return the name of the GamePiece this Decorator is a part of.
+   * Return the name starting from the inner Decorator to this one to prevent infinite loops
+   * @return piece name
+   */
+  @Override
+  public String getComponentName() {
+    return Resources.getString("Audit.piece", piece.getName());
+  }
+
 }
 

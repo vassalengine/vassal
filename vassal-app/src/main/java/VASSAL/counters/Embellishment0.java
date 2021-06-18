@@ -546,7 +546,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           tracker = new ChangeTracker(this);
         }
         final GamePiece outer = Decorator.getOutermost(this);
-        final String levelText = resetLevel.getText(outer);
+        final String levelText = resetLevel.getText(outer, this, "Editor.Embellishment.reset_to_level");
         try {
           final int level = Integer.parseInt(levelText);
           setValue(Math.abs(level) - 1);
