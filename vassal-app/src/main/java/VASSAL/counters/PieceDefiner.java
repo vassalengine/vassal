@@ -706,9 +706,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private void doCopy() {
     final int index = inUseList.getSelectedIndex();
     if (index >= 0) {
-      pasteButton.setEnabled(true);
-      clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
+      copy(index);
     }
+  }
+
+  protected void copy(int index) {
+    pasteButton.setEnabled(true);
+    clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
   }
 
   private void doPaste() {
