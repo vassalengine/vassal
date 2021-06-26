@@ -17,13 +17,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
@@ -39,6 +32,13 @@ import VASSAL.counters.PieceAccess;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.tools.FormattedString;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Builds an auto-report message for a collection of Move Commands
@@ -257,8 +257,9 @@ public class MovementReporter {
         return ((Stack) target).asList().stream().anyMatch(gamePiecePredicate);
       }
       else {
-        return Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
-            || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS));
+        return Boolean.FALSE.equals(target.getProperty(Properties.INVISIBLE_DISABLE_AUTO_REPORT_MOVE))
+          && (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
+            || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)));
       }
     }
 

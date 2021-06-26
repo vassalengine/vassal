@@ -20,6 +20,7 @@ package VASSAL.counters;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -31,6 +32,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
+import javax.swing.KeyStroke;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -45,8 +47,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import javax.swing.KeyStroke;
-
 public class Hideable extends Decorator implements TranslatablePiece {
 
   public static final String ID = "hide;"; // NON-NLS
@@ -60,6 +60,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
   protected float transparency = 0.3f;
   protected Color bgColor;
+  protected boolean disableAutoReportMove;
 
   protected KeyCommand[] commands;
   protected KeyCommand hideCommand;
@@ -108,6 +109,9 @@ public class Hideable extends Decorator implements TranslatablePiece {
     else if (Properties.INVISIBLE_TO_OTHERS.equals(key)) {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
+    else if (Properties.INVISIBLE_DISABLE_AUTO_REPORT_MOVE.equals(key)) {
+      return disableAutoReportMove;
+    }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return Boolean.toString(invisibleToOthers()) + invisibleToMe() + piece.getProperty(key);
     }
@@ -135,6 +139,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     access = PieceAccessConfigurer.decode(st.nextToken(null));
     transparency = Math.max(0.0f, Math.min(1.0f, st.hasMoreTokens() ? (float) st.nextDouble(0.3) : 0.3f));
     description = st.nextToken("");
+    disableAutoReportMove = st.nextBoolean(false);
     commands = null;
   }
 
@@ -151,7 +156,8 @@ public class Hideable extends Decorator implements TranslatablePiece {
       .append(bgColor)
       .append(PieceAccessConfigurer.encode(access))
       .append(transparency)
-      .append(description);
+      .append(description)
+      .append(disableAutoReportMove);
     return ID + se.getValue();
   }
 
@@ -316,6 +322,9 @@ public class Hideable extends Decorator implements TranslatablePiece {
     if (! Objects.equals(bgColor, c.bgColor)) return false;
     if (! Objects.equals(PieceAccessConfigurer.encode(access), PieceAccessConfigurer.encode(c.access))) return false;
     if (! Objects.equals(transparency, c.transparency)) return false;
+    if (! Objects.equals(bgColor, c.bgColor)) return false;
+    if (! Objects.equals(disableAutoReportMove, c.disableAutoReportMove)) return false;
+
 
     return Objects.equals(hiddenBy, c.hiddenBy);
   }
@@ -325,6 +334,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
     protected StringConfigurer hideCommandInput;
     protected ColorConfigurer colorConfig;
     protected IntConfigurer transpConfig;
+    protected BooleanConfigurer disableAutoReportMoves;
     protected PieceAccessConfigurer accessConfig;
     protected TraitConfigPanel controls;
     private final StringConfigurer descInput;
@@ -349,6 +359,9 @@ public class Hideable extends Decorator implements TranslatablePiece {
       transpConfig = new IntConfigurer((int) (p.transparency * 100));
       controls.add("Editor.Hideable.opacity", transpConfig);
 
+      disableAutoReportMoves =  new BooleanConfigurer(p.disableAutoReportMove);
+      controls.add("Editor.Hideable.disable_auto_report_moves", disableAutoReportMoves);
+
       accessConfig = new PieceAccessConfigurer(p.access);
       controls.add("Editor.Hideable.can_be_hidden_by", accessConfig);
     }
@@ -368,7 +381,8 @@ public class Hideable extends Decorator implements TranslatablePiece {
         .append(colorConfig.getValue() == null ? "" : colorConfig.getValueString())
         .append(accessConfig.getValueString())
         .append(transp)
-        .append(descInput.getValueString());
+        .append(descInput.getValueString())
+        .append(disableAutoReportMoves.getValueString());
       return ID + se.getValue();
     }
 
