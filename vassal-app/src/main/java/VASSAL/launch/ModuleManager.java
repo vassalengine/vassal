@@ -334,7 +334,7 @@ public class ModuleManager {
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       512
     );
-    globalPrefs.addOption("Importer", maxHeapConf); //NON-NLS
+    globalPrefs.addOption("Converter", maxHeapConf); //NON-NLS
   }
 
   public void shutDown() throws IOException {
