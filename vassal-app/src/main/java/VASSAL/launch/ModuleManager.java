@@ -328,14 +328,6 @@ public class ModuleManager {
 
   private void importerHeapSetup(Prefs globalPrefs) {
     // FIXME: the importer heap size configurers don't belong here
-    // the initial heap size for the module importer
-    final IntConfigurer initHeapConf = new IntConfigurer(
-      INITIAL_HEAP,
-      Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
-      256
-    );
-    globalPrefs.addOption("Importer", initHeapConf);
-
     // the maximum heap size for the module importer
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
