@@ -14,6 +14,7 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 
 public class BugUtils {
+  private BugUtils() {}
 
   public static void sendBugReport(String email,
                                    String description,

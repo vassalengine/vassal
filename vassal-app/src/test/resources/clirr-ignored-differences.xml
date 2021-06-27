@@ -22,7 +22,6 @@
         <method>*</method>
     </difference>
 
-
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
@@ -47,8 +46,10 @@
         <method>boolean saveAs(boolean)</method>
         <to>void</to>
     </difference>
-
-
-
+    <difference>
+        <className>VASSAL/tools/BugUtils</className>
+        <differenceType>7009</differenceType>
+        <method>BugUtils()</method>
+    </difference>
 
 </differences>
