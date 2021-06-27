@@ -2,13 +2,18 @@ package VASSAL.tools;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -20,26 +25,36 @@ public class BugUtils {
                                    String description,
                                    String errorLog,
                                    Throwable t) throws IOException {
-    final HTTPPostBuilder pb = new HTTPPostBuilder();
+    // build the POST body
+    final MultipartEntityBuilder b = MultipartEntityBuilder.create();
+    b.setCharset(StandardCharsets.UTF_8);
 
-    final String url = "http://www.vassalengine.org/util/bug.php"; //NON-NLS
-    pb.setParameter("version", Info.getReportableVersion()); //NON-NLS
-    pb.setParameter("email", email); //NON-NLS
-    pb.setParameter("summary", getSummary(t)); //NON-NLS
-    pb.setParameter("description", getDescription(description, errorLog)); //NON-NLS
-    pb.setParameter("log", Info.getErrorLogPath().getName(), errorLog); //NON-NLS
+    b.addTextBody("version", Info.getReportableVersion()); //NON-NLS
+    b.addTextBody("email", email); //NON-NLS
+    b.addTextBody("summary", getSummary(t)); //NON-NLS
+    b.addTextBody("description", getDescription(description, errorLog)); //NON-NLS
+    b.addBinaryBody("log", errorLog.getBytes(StandardCharsets.UTF_8), ContentType.TEXT_PLAIN, Info.getErrorLogPath().getName()); //NON-NLS
 
-    try (InputStream in = pb.post(url)) {
-      final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
+    final String url = "http://www.vassalengine.org/util/abr";
+    final HttpPost httpPost = new HttpPost(url);
+    httpPost.setEntity(b.build());
 
-      // script should return zero on success, otherwise it failed
-      try {
-        if (Integer.parseInt(result) != 0) {
-          throw new NumberFormatException("Bad result: " + result); //NON-NLS
+    // send the POST
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
+      try (CloseableHttpResponse response = client.execute(httpPost)) {
+        if (response.getCode() != 201) {
+          final String msg = "Bug report failed: " + response.getCode();
+
+          String responseText = null;
+          try {
+            responseText = EntityUtils.toString(response.getEntity());
+          }
+          catch (ParseException e) {
+            throw new IOException(msg, e);
+          }
+
+          throw new IOException(msg + ": " + responseText);
         }
-      }
-      catch (NumberFormatException e) {
-        throw new IOException(e);
       }
     }
   }
@@ -73,14 +88,6 @@ public class BugUtils {
       if (t.getMessage() != null) {
         summary += ": " + t.getMessage();
       }
-/*
-      for (StackTraceElement e : t.getStackTrace()) {
-        if (e.getClassName().startsWith("VASSAL")) {
-          summary += " at "+e.getClassName()+"."+e.getMethodName()+" (line "+e.getLineNumber()+")";
-          break;
-        }
-      }
-*/
     }
     return summary;
   }

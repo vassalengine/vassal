@@ -35,7 +35,11 @@ import java.util.Random;
  *
  * @author Joel Uckelman
  * @since 3.1.0
+ *
+ * @deprecated Use Apache HttpComponents instead. See {@link BugUtils} for an
+ * example.
  */
+@Deprecated(since = "2021-06-28", forRemoval = true)
 public class HTTPPostBuilder {
   private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
   private final BufferedWriter bw =
