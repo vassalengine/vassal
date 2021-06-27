@@ -96,7 +96,7 @@ public class BugUtils {
   public static String getErrorLog() {
     final File f = Info.getErrorLogPath();
     try {
-      return Files.readString(f.toPath(),  Charset.defaultCharset());
+      return Files.readString(f.toPath(),  StandardCharsets.UTF_8);
     }
     catch (IOException e) {
       // Don't bother logging this---if we can't read the errorLog,
