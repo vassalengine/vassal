@@ -1,5 +1,7 @@
-3.5.8 - ???
+3.5.8 - 29 June 2021
 
+* 14600: Switch bug tracker to GitHub
+* 14599: Error logs should be read from disk as UTF-8
 * 14596: Removed initial heap setting for Importer, unused since 3.5.4
 * 14579: Mass Piece Loader cannot add 'standard' layer traits
 * 14570: Longer cancel wizard text shifts wizard divider position
