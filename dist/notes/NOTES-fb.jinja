@@ -5,11 +5,17 @@ Download: https://github.com/vassalengine/vassal/releases/tag/{{version}}
 
 Release notes: http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes
 
-Changes since 3.5.6:
+Changes since 3.5.7:
 
 Bug fixes
 
-* 14540: PgDn stopped scrolling maps downward
-* 14527: NoSuchMethodError when calling ArchiveWriter.save()
-* 14526: IllegalArgumentException when rendering empty labels
-* 14521: NPE in CounterDetailViewer when Stack shapes array is longer than the piece count
+* 14599: Error logs should be read from disk as UTF-8
+* 14596: Removed initial heap setting for Importer, unused since 3.5.4
+* 14579: Mass Piece Loader cannot add 'standard' layer traits
+* 14570: Longer cancel wizard text shifts wizard divider position
+* 14568: Counter Global Key Command expression does not see properties in lower traits
+* 14479: GamePieceImages recognized by unused image removal tool
+
+Other improvements
+
+* 14600: Switch bug tracker to GitHub
