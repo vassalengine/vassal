@@ -29,6 +29,8 @@ public interface Properties {
 
   String INVISIBLE_TO_OTHERS = "InvisibleToOthers"; // NON-NLS
 
+  String INVISIBLE_DISABLE_AUTO_REPORT_MOVE = "InvisibleDisableAutoReportMoves"; // NON-NLS
+
   /**
    * Return Boolean.TRUE if the piece's identity is not known to other players
    */
