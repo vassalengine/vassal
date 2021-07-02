@@ -1,3 +1,10 @@
+3.5.9 - ???
+
+* 4533: Make grid center dot display independent of grid display
+
+Issue numbers above this point are GitHub issue numbers, below this point
+are Bugzilla issue numbers (referenced in GitHub prefixed with "BZ").
+
 3.5.8 - 29 June 2021
 
 * 14600: Switch bug tracker to GitHub
