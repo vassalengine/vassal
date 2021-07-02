@@ -153,7 +153,7 @@ public class HexGrid extends AbstractConfigurable
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
-      return () -> visible;
+      return () -> (visible || dotsVisible);
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
       return () -> snapTo;
@@ -205,7 +205,7 @@ public class HexGrid extends AbstractConfigurable
 
   @Override
   public boolean isVisible() {
-    return visible || (numbering != null && numbering.isVisible());
+    return visible || dotsVisible || (numbering != null && numbering.isVisible());
   }
 
   public boolean isEdgesLegal() {
@@ -775,7 +775,7 @@ public class HexGrid extends AbstractConfigurable
   /** Draw the grid, if visible, and the accompanying numbering */
   @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double zoom, boolean reversed) {
-    if (visible) {
+    if (visible || dotsVisible) {
       forceDraw(g, bounds, visibleRect, zoom, reversed);
     }
     if (numbering != null) {
@@ -829,27 +829,7 @@ public class HexGrid extends AbstractConfigurable
     // x,y is the center of a hex
     for (float x = xmin; x < xmax; x += zoom * 2 * dx) {
       for (float y = ymin; y < ymax; y += zoom * dy) {
-        x1 = x - r;
-        y1 = y;
-        p1.setLocation(round(x1), round(y1));
-        x2 = x - 0.5F * r;
-        y2 = reversed ? y + 0.5F * deltaY : y - 0.5F * deltaY;
-        p2.setLocation(round(x2), round(y2));
-        x3 = x + 0.5F * r;
-        y3 = y2;
-        p3.setLocation(round(x3), round(y3));
-        x4 = x + r;
-        y4 = y;
-        p4.setLocation(round(x4), round(y4));
-        if (sideways) {
-          rotate(p1);
-          rotate(p2);
-          rotate(p3);
-          rotate(p4);
-        }
-        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
-        g2d.drawLine(p2.x, p2.y, p3.x, p3.y);
-        g2d.drawLine(p3.x, p3.y, p4.x, p4.y);
+        // Draw Center dots?
         if (dotsVisible) {
           center.setLocation(round(x), round(y));
           rotateIfSideways(center);
@@ -858,35 +838,60 @@ public class HexGrid extends AbstractConfigurable
           rotateIfSideways(center);
           g2d.fillRect(center.x, center.y, 2, 2);
         }
-        x1 += deltaX;
-        x2 += deltaX;
-        x3 += deltaX;
-        x4 += deltaX;
-        y1 += 0.5F * deltaY;
-        y2 += 0.5F * deltaY;
-        y3 += 0.5F * deltaY;
-        y4 += 0.5F * deltaY;
-        p1.setLocation(round(x1), round(y1));
-        p2.setLocation(round(x2), round(y2));
-        p3.setLocation(round(x3), round(y3));
-        p4.setLocation(round(x4), round(y4));
-        if (sideways) {
-          rotate(p1);
-          rotate(p2);
-          rotate(p3);
-          rotate(p4);
-        }
-        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
-        g2d.drawLine(p2.x, p2.y, p3.x, p3.y);
-        g2d.drawLine(p3.x, p3.y, p4.x, p4.y);
-        if (x == xmin) {
-          p1.setLocation(round(x - r), round(y));
-          p2.setLocation(round(x - r / 2), round(y + deltaY / 2));
+        // Draw Grid?
+        if (visible) {
+          x1 = x - r;
+          y1 = y;
+          p1.setLocation(round(x1), round(y1));
+          x2 = x - 0.5F * r;
+          y2 = reversed ? y + 0.5F * deltaY : y - 0.5F * deltaY;
+          p2.setLocation(round(x2), round(y2));
+          x3 = x + 0.5F * r;
+          y3 = y2;
+          p3.setLocation(round(x3), round(y3));
+          x4 = x + r;
+          y4 = y;
+          p4.setLocation(round(x4), round(y4));
           if (sideways) {
             rotate(p1);
             rotate(p2);
+            rotate(p3);
+            rotate(p4);
           }
           g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+          g2d.drawLine(p2.x, p2.y, p3.x, p3.y);
+          g2d.drawLine(p3.x, p3.y, p4.x, p4.y);
+
+          x1 += deltaX;
+          x2 += deltaX;
+          x3 += deltaX;
+          x4 += deltaX;
+          y1 += 0.5F * deltaY;
+          y2 += 0.5F * deltaY;
+          y3 += 0.5F * deltaY;
+          y4 += 0.5F * deltaY;
+          p1.setLocation(round(x1), round(y1));
+          p2.setLocation(round(x2), round(y2));
+          p3.setLocation(round(x3), round(y3));
+          p4.setLocation(round(x4), round(y4));
+          if (sideways) {
+            rotate(p1);
+            rotate(p2);
+            rotate(p3);
+            rotate(p4);
+          }
+          g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+          g2d.drawLine(p2.x, p2.y, p3.x, p3.y);
+          g2d.drawLine(p3.x, p3.y, p4.x, p4.y);
+          if (x == xmin) {
+            p1.setLocation(round(x - r), round(y));
+            p2.setLocation(round(x - r / 2), round(y + deltaY / 2));
+            if (sideways) {
+              rotate(p1);
+              rotate(p2);
+            }
+            g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+          }
         }
       }
     }
