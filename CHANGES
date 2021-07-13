@@ -1,6 +1,7 @@
 3.5.9 - ???
 
-* 4533: Make grid center dot display independent of grid display
+* 10228: Upgrade to Launch4j 3.14
+*  4533: Make grid center dot display independent of grid display
 
 Issue numbers above this point are GitHub issue numbers, below this point
 are Bugzilla issue numbers (referenced in GitHub prefixed with "BZ").
