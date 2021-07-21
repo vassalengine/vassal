@@ -146,6 +146,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected String helpCmd;
   protected String propertiesCmd;
   protected String translateCmd;
+  protected String duplicateCmd;
   protected KeyStroke cutKey;
   protected KeyStroke copyKey;
   protected KeyStroke pasteKey;
@@ -155,6 +156,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected KeyStroke helpKey;
   protected KeyStroke propertiesKey;
   protected KeyStroke translateKey;
+  protected KeyStroke duplicateKey;
   protected Action cutAction;
   protected Action copyAction;
   protected Action pasteAction;
@@ -164,6 +166,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action propertiesAction;
   protected Action translateAction;
   protected Action helpAction;
+  protected Action duplicateAction;
 
   protected JDialog searchDialog;
   protected JTextField searchField;
@@ -202,6 +205,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     propertiesCmd = Resources.getString("Editor.properties"); //$NON-NLS-1$
     translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
     helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
+    duplicateCmd = Resources.getString("Editor.duplicate");
     final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
     cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
     copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
@@ -212,6 +216,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     propertiesKey = KeyStroke.getKeyStroke(KeyEvent.VK_P, mask);
     translateKey = KeyStroke.getKeyStroke(KeyEvent.VK_T, mask);
     helpKey = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
+    duplicateKey = KeyStroke.getKeyStroke(KeyEvent.VK_D, mask);
     copyAction = new KeyAction(copyCmd, copyKey);
     pasteAction = new KeyAction(pasteCmd, pasteKey);
     cutAction = new KeyAction(cutCmd, cutKey);
@@ -221,6 +226,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     propertiesAction = new KeyAction(propertiesCmd, propertiesKey);
     translateAction = new KeyAction(translateCmd, translateKey);
     helpAction = new KeyAction(helpCmd, helpKey);
+    duplicateAction = new KeyAction(duplicateCmd, duplicateKey);
     /*
      * Cut, Copy and Paste will not work unless I add them to the JTree input and action maps. Why??? All the others
      * work fine.
@@ -229,10 +235,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     getInputMap().put(copyKey, copyCmd);
     getInputMap().put(pasteKey, pasteCmd);
     getInputMap().put(deleteKey, deleteCmd);
+    getInputMap().put(duplicateKey, duplicateCmd);
     getActionMap().put(cutCmd, cutAction);
     getActionMap().put(copyCmd, copyAction);
     getActionMap().put(pasteCmd, pasteAction);
     getActionMap().put(deleteCmd, deleteAction);
+    getActionMap().put(duplicateCmd, duplicateAction);
     this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
     searchParameters = new SearchParameters();
@@ -442,6 +450,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     l.add(buildCopyAction(target));
     l.add(buildPasteAction(target));
     l.add(buildMoveAction(target));
+
     addActionGroup(popup, l);
     final List<Action> inserts = new ArrayList<>();
     final List<Action> adds = buildAddActionsFor(target, inserts);
@@ -1281,6 +1290,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     mm.addAction("Editor.search", searchAction);
     mm.addAction("Editor.properties", propertiesAction);
     mm.addAction("Editor.ModuleEditor.translate", translateAction);
+    mm.addAction("Editor.duplicate", duplicateAction);
 
     updateEditMenu();
   }
@@ -1323,6 +1333,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       else if (helpCmd.equals(action)) {
         a = buildHelpAction(target);
       }
+      else if (duplicateCmd.equals(action)) {
+        final DefaultMutableTreeNode targetNode2 = getTreeNode(target);
+        if (targetNode2 != null) {
+          final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) targetNode2.getParent();
+          if (parentNode != null) {
+            a = buildAddAction((Configurable) parentNode.getUserObject(), target.getClass(), Resources.getString("Editor.duplicate"), parentNode.getIndex(targetNode2) + 1, target);
+          }
+        }
+      }
       if (a != null) {
         a.actionPerformed(null);
       }
@@ -1351,6 +1370,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     copyAction.setEnabled(selected != null);
     pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
     moveAction.setEnabled(selected != null);
+    duplicateAction.setEnabled(selected != null);
     searchAction.setEnabled(true);
     // Check the cached Configurer in the TreeNode, not the Configurable as Configurable.getConfigurer()
     // is very expensive and resets the Configurer causing label truncation issues in the JTree
