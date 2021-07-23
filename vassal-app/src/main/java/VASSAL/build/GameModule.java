@@ -679,7 +679,7 @@ public class GameModule extends AbstractConfigurable
     new PluginsLoader().addTo(this);
     if (e != null) {
       super.build(e);
-      ensureComponent(GamePieceImageDefinitions.class);
+      //ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
       ensureComponent(GlobalTranslatableMessages.class);
       ensureComponent(Language.class);
