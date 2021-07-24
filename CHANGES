@@ -1,5 +1,6 @@
 3.6.0 - ???
 
+* 10248: Invisible trait - Option to disable auto-report of moves
 * 10187: Duplicate key and menu item for Editor menu
 * 10075: Scaling factors for Layers and Non-Rectangular
 * 10066: Mats & Cargo - Cargo pieces stay attached to Mat piece when moving.
