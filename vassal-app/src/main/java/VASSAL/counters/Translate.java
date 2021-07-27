@@ -198,15 +198,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       if (!"".equals(matName)) {
         mat = (Mat) Decorator.getDecorator(outer, Mat.class);
         if (mat != null) {
-          //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
           contents = new ArrayList<>(mat.getContents());
-          offsets = new ArrayList<>();
-          for (final GamePiece piece : contents) {
-            final Point pt = piece.getPosition();
-            pt.x -= p.x;
-            pt.y -= p.y;
-            offsets.add(pt);
-          }
+          offsets = new ArrayList<>(mat.getOffsets(p.x, p.y));
         }
       }
     }

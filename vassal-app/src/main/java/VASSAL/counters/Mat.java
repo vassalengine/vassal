@@ -12,6 +12,7 @@ import VASSAL.tools.SequenceEncoder;
 import javax.swing.KeyStroke;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
@@ -85,6 +86,18 @@ public class Mat extends Decorator implements TranslatablePiece {
   public List<GamePiece> getContents() {
     return contents;
   }
+
+  public List<Point> getOffsets(int x, int y) {
+    List<Point> offsets = new ArrayList<>();
+    for (final GamePiece piece : getContents()) {
+      final Point pt = piece.getPosition();
+      pt.x -= x;
+      pt.y -= y;
+      offsets.add(pt);
+    }
+    return offsets;
+  }
+
 
   @Override
   public void mySetState(String newState) {
