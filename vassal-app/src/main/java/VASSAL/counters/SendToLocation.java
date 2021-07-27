@@ -388,8 +388,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         mat = (Mat) Decorator.getDecorator(outer, Mat.class);
         if (mat != null) {
           final Point basePt = outer.getPosition();
-          contents = new ArrayList<>(mat.getContents());
-          offsets = new ArrayList<>(mat.getOffsets(basePt.x, basePt.y));
+          contents = mat.getContents();
+          offsets = mat.getOffsets(basePt.x, basePt.y);
         }
       }
     }

@@ -198,8 +198,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       if (!"".equals(matName)) {
         mat = (Mat) Decorator.getDecorator(outer, Mat.class);
         if (mat != null) {
-          contents = new ArrayList<>(mat.getContents());
-          offsets = new ArrayList<>(mat.getOffsets(p.x, p.y));
+          contents = mat.getContents();
+          offsets  = mat.getOffsets(p.x, p.y);
         }
       }
     }
