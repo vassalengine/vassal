@@ -23,8 +23,6 @@ import java.util.Iterator;
 
 import VASSAL.build.module.Map;
 
-import static VASSAL.counters.Mat.MAT_NAME;
-
 /**
  * This interface defines selection criteria for finding a GamePiece in a Map
  */

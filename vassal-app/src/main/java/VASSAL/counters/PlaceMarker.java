@@ -22,7 +22,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.CardSlot;
