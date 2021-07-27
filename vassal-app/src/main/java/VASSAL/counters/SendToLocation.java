@@ -382,18 +382,21 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     Point dest = null;
 
     // If we're about to move a Mat, establish the initial relative positions of all its "contents"
-    if (GameModule.getGameModule().isMatSupport() && !"".equals(outer.getProperty(Mat.MAT_NAME))) {
-      mat = (Mat) Decorator.getDecorator(outer, Mat.class);
-      if (mat != null) {
-        //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
-        contents = new ArrayList<>(mat.getContents());
-        offsets = new ArrayList<>();
-        final Point basePt = outer.getPosition();
-        for (final GamePiece piece : contents) {
-          final Point pt = piece.getPosition();
-          pt.x -= basePt.x;
-          pt.y -= basePt.y;
-          offsets.add(pt);
+    if (GameModule.getGameModule().isMatSupport()) {
+      final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+      if (matName != null && !"".equals(matName)) {
+        mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+        if (mat != null) {
+          //BR// Should we ONLY take Cargo that are currently selected (in the KeyBuffer)?
+          contents = new ArrayList<>(mat.getContents());
+          offsets = new ArrayList<>();
+          final Point basePt = outer.getPosition();
+          for (final GamePiece piece : contents) {
+            final Point pt = piece.getPosition();
+            pt.x -= basePt.x;
+            pt.y -= basePt.y;
+            offsets.add(pt);
+          }
         }
       }
     }

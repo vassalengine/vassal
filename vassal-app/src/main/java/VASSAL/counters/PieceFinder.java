@@ -62,7 +62,8 @@ public interface PieceFinder {
   class MatOnly extends Movable {
     @Override
     public Object visitDefault(GamePiece piece) {
-      if (!"".equals(piece.getProperty(MAT_NAME))) {
+      final String matName = (String)piece.getProperty(Mat.MAT_NAME);
+      if (matName != null && !"".equals(matName)) {
         return super.visitDefault(piece);
       }
       return null;

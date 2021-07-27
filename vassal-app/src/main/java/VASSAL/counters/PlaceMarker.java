@@ -22,6 +22,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.CardSlot;
@@ -234,6 +235,17 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     }
     else {
       c = m.placeAt(marker, p);
+    }
+
+    // Mat support
+    if ((c != null) && GameModule.getGameModule().isMatSupport()) {
+      // If a cargo piece has been placed, find it a Mat if eligible
+      if ("true".equals(marker.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(marker, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+        }
+      }
     }
 
     if (afterBurnerKey != null && !afterBurnerKey.isNull()) {

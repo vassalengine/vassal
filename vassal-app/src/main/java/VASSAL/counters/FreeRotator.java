@@ -512,7 +512,8 @@ public class FreeRotator extends Decorator
 
     // check that we have a map and that the mat-ness is visible for us
     final GamePiece outer = getOutermost(this);
-    if (outer.getMap() == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
+    final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+    if (outer.getMap() == null || matName == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
       return command;
     }
 
