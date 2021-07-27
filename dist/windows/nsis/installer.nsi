@@ -22,11 +22,12 @@
 Unicode true
 CRCCheck on
 
-; Note: VERSION, NUMVERSION, ARCH, and TMPDIR are defined from the command line
-; in the Makefile. These are here as a reminder only.
+; Note: VERSION, NUMVERSION, ARCH, BITS, and TMPDIR are defined from the
+; command line in the Makefile. These are here as a reminder only.
 ;!define VERSION "3.1.0-svn3025"
 ;!define NUMVERSION "3.1.0"
-;!define ARCH 64
+;!define ARCH x86_64
+;!define BITS 64
 ;!define TMPDIR "/home/uckelman/projects/VASSAL/uckelman-working/tmp"
 
 !define INCDIR "${TMPDIR}/windows-${ARCH}-${VERSION}-build"
@@ -39,10 +40,24 @@ CRCCheck on
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows-${ARCH}.exe"
 
-!if ${ARCH} == 64
+!if ${BITS} == 64
   InstallDir "$PROGRAMFILES64\VASSAL-${VERSION}"
 !else
   InstallDir "$PROGRAMFILES\VASSAL-${VERSION}"
+!endif
+
+!define ARCH_PRETTY_X86_32 "x86 32-bit"
+!define ARCH_PRETTY_X86_64 "x86 64-bit"
+!define ARCH_PRETTY_AARCH64 "ARM 64-bit"
+
+!if ${ARCH} == "x86_64"
+  !define ARCH_PRETTY "${ARCH_PRETTY_X86_64}"
+!else if ${ARCH} == "x86_32"
+  !define ARCH_PRETTY "${ARCH_PRETTY_X86_32}"
+!else if ${ARCH} == "aarch64"
+  !define ARCH_PRETTY "${ARCH_PRETTY_AARCH64}"
+!else
+  !error "ARCH ${ARCH} unknown"
 !endif
 
 VIProductVersion ${NUMVERSION}.0
@@ -297,14 +312,16 @@ Function .onInit
   Push $0
 
   ${If} ${RunningX64}
-    StrCpy $0 64
+    StrCpy $0 "x86 64-bit"
+  ${ElseIf} ${IsNativeARM64}
+    StrCpy $0 "ARM 64-bit"
   ${Else}
-    StrCpy $0 32
+    StrCpy $0 "x86 32-bit"
   ${EndIf}
 
-  ${If} $0 != ${ARCH}
+  ${If} "$0" != "${ARCH_PRETTY}"
     # wrong package for your architecture
-    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires ${ARCH}-bit Windows.$\n$\nTo use VASSAL ${VERSION} on $0-bit Windows, please install the $0-bit Windows package."
+    MessageBox MB_OK|MB_ICONEXCLAMATION "This installer requires ${ARCH_PRETTY} Windows.$\n$\nTo use VASSAL ${VERSION} on $0 Windows, please install the $0 Windows package."
     Abort
   ${EndIf}
 
@@ -361,7 +378,7 @@ Function preUninstallOld
   SetRegView 32
   ${FindVASSALVersions}
 
-  ${If} ${ARCH} == 64
+  ${If} ${BITS} == 64
     SetRegView 64
     ${FindVASSALVersions}
   ${EndIf}
@@ -608,7 +625,7 @@ Section "-Application" Application
       DetailPrint "Uninstall: $1"
 
       ; look for 64-bit install
-      ${If} ${ARCH} == 64
+      ${If} ${BITS} == 64
         SetRegView 64
 
         ; get paths
@@ -646,7 +663,7 @@ Section "-Application" Application
     ${Loop}
   ${EndIf}
 
-  SetRegView ${ARCH}
+  SetRegView ${BITS}
 
   ; set the files to bundle
   !include "${INCDIR}/install_files.inc"
@@ -720,7 +737,7 @@ SectionEnd
 # Uninstall Section
 #
 Section Uninstall
-  SetRegView ${ARCH}
+  SetRegView ${BITS}
 
   ; delete the uninstaller
   Delete "$INSTDIR\uninst.exe"

@@ -17,33 +17,30 @@ JDKDIR=dist/jdks
 mkdir -p "$JDKDIR"
 pushd "$JDKDIR"
 
-for i in mac,x64 windows,x64 windows,x32 ; do
-  IFS=',' read os arch <<<"$i"
+# Windows x86_32
+curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-win_i686.zip'
+unzip zulu16.32.15-ca-jdk16.0.2-win_i686.zip
+mv zulu16.32.15-ca-jdk16.0.2-win_i686 windows-x86_32
 
-  real_url=$(curl -s -w '%{redirect_url}' -X GET "https://api.adoptopenjdk.net/v3/binary/version/${JDKVER}/${os}/${arch}/jdk/hotspot/normal/adoptopenjdk?project=jdk")
+# Windows x86_64
+curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-win_x64.zip'
+unzip zulu16.32.15-ca-jdk16.0.2-win_x64.zip
+mv zulu16.32.15-ca-jdk16.0.2-win_x64 windows-x86_64
 
-  real_filename=${real_url##*/}
-  if [ ! -f "$real_filename" ]; then
-    echo "Downloading $os $arch JDK..."
-    curl -X GET "$real_url" -L -o "$real_filename"
-  fi
+# Windows aarch64
+curl -O 'https://cdn.azul.com/zulu/bin/zulu16.30.17-ca-jdk16.0.1-win_aarch64.zip'
+unzip zulu16.30.17-ca-jdk16.0.1-win_aarch64.zip
+mv zulu16.30.17-ca-jdk16.0.1-win_aarch64 windows-aarch64
 
-  if [ ! -d "${os}_${arch}" ]; then
-    echo "Unpacking $real_filename..."
-    extract_dir="${os}_${arch}"
-    mkdir "$extract_dir"  
-    if [ "$os" = "windows" ]; then 
-      unzip -d "$extract_dir" "$real_filename"
-      # top-level directory in windows archives is the full version number;
-      # flatten that to get a predictable path
-      f=("$extract_dir"/*)
-      mv "$extract_dir"/*/* "$extract_dir"
-      rmdir "${f[@]}"
-    else
-      tar -C "$extract_dir" --strip-components=1 -xvf "$real_filename"
-    fi
-  fi
-done
+# Mac x86_64
+curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz'
+mkdir mac-x86_64
+tar -C mac-x86_64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz
+
+# Mac aarch64
+curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz'
+mkdir mac-aarch64
+tar -C mac-aarch64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz
 
 popd
 

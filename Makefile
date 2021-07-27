@@ -131,20 +131,20 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 # MacOS
 #
 
-$(TMPDIR)/macos-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/mac_x64
+$(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/mac-%
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp $(DISTDIR)/macos/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
-	jlink --module-path $(JDKDIR)/mac_x64/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	jlink --module-path $(JDKDIR)/mac-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
 	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
-$(TMPDIR)/macos-$(VERSION)-build: $(TMPDIR)/macos-$(VERSION)-build/VASSAL.app
+$(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app
 	ln -s /Applications $@/Applications
 	cp $(DISTDIR)/macos/.DS_Store $@
 	mkdir -p $@/.background
@@ -155,10 +155,10 @@ $(TMPDIR)/macos-$(VERSION)-build: $(TMPDIR)/macos-$(VERSION)-build/VASSAL.app
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/bin/{java,keytool}
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/lib/jspawnhelper
 
-$(TMPDIR)/VASSAL-$(VERSION)-macos-uncompressed.dmg: $(TMPDIR)/macos-$(VERSION)-build
+$(TMPDIR)/VASSAL-$(VERSION)-macos-%-uncompressed.dmg: $(TMPDIR)/macos-%-$(VERSION)-build
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<
 
-$(TMPDIR)/VASSAL-$(VERSION)-macos.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macos-uncompressed.dmg
+$(TMPDIR)/VASSAL-$(VERSION)-macos-%.dmg: $(TMPDIR)/VASSAL-$(VERSION)-macos-%-uncompressed.dmg
 	$(DMG) $< $@
 
 #
@@ -217,7 +217,7 @@ $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.ico: $(DISTDIR)/windows/VASSAL.ico |
 $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.exe: $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.l4j.xml $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.ico
 	$(LAUNCH4J) $(CURDIR)/$<
 
-$(TMPDIR)/windows-%-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.exe $(TMPDIR)/module_deps $(JDKDIR)/windows_x%
+$(TMPDIR)/windows-%-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL.exe $(TMPDIR)/module_deps $(JDKDIR)/windows-%
 	mkdir -p $@
 	mv $(TMPDIR)/windows-$(*)-$(VERSION)-build/VASSAL.exe $@
 	cp -a CHANGES $@/CHANGES.txt
@@ -228,7 +228,7 @@ $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar $(
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.exe
-	jlink --module-path $(JDKDIR)/windows_x$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
+	jlink --module-path $(JDKDIR)/windows-$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/jre
 
 $(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL-$(VERSION): $(TMPDIR)/windows-64-$(VERSION)-build/VASSAL-$(VERSION) $(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL.exe
 	cp -a $< $@
@@ -247,23 +247,31 @@ $(TMPDIR)/windows-%-$(VERSION)-build/uninstall_files.inc: $(TMPDIR)/windows-%-$(
 			-e 's/\//\\/g' <$< | \
 		tac	>$@
 
+$(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe: BITS:=32
+$(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe: BITS:=64
+$(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe: BITS:=64
+
 $(TMPDIR)/VASSAL-$(VERSION)-windows-%.exe: $(TMPDIR)/windows-%-$(VERSION)-build/VASSAL-$(VERSION) $(TMPDIR)/windows-%-$(VERSION)-build/install_files.inc $(TMPDIR)/windows-%-$(VERSION)-build/uninstall_files.inc
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DNUMVERSION=$(VNUM) -DTMPDIR=$(TMPDIR) -DARCH=$* $(DISTDIR)/windows/nsis/installer.nsi
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DNUMVERSION=$(VNUM) -DTMPDIR=$(TMPDIR) -DARCH=$* -DBITS=$(BITS) $(DISTDIR)/windows/nsis/installer.nsi
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip: $(TMPDIR)/windows-noinst-$(VERSION)-build/VASSAL-$(VERSION)
 	pushd $(TMPDIR)/windows-noinst-$(VERSION)-build ; zip -9rv ../../$@ VASSAL-$(VERSION) ; popd
 
+#
+# Packages
+#
+
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
-release-macos: $(TMPDIR)/VASSAL-$(VERSION)-macos.dmg
+release-macos: $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg
 
-release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe
+release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe
 
 release-windows-noinst: $(TMPDIR)/VASSAL-$(VERSION)-windows-noinst.zip
 
 release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
-$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+$(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(TMPDIR)/VASSAL-$(VERSION)-macos-x86_64.dmg $(TMPDIR)/VASSAL-$(VERSION)-macos-aarch64.dmg $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_64.exe $(TMPDIR)/VASSAL-$(VERSION)-windows-aarch64.exe $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 	pushd $(TMPDIR) ; sha256sum $(^F) >$(@F) ; popd
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
