@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ master, release-3.5.8 ]
+    branches: [ master, release-3.5.9 ]
   pull_request:
-    branches: [ master, release-3.5.8 ]
+    branches: [ master, release-3.5.9 ]
 
 jobs:
   package:
@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.8'
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.9'
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.

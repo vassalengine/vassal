@@ -261,8 +261,9 @@ public class MovementReporter {
         return ((Stack) target).asList().stream().anyMatch(gamePiecePredicate);
       }
       else {
-        return Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
-            || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS));
+        return Boolean.FALSE.equals(target.getProperty(Properties.INVISIBLE_DISABLE_AUTO_REPORT_MOVE))
+          && (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
+            || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)));
       }
     }
 

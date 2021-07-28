@@ -12,6 +12,21 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
 * <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe' target='_new'>Windows (32-bit)</a>
 * <a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a>
 
+<h3>Changes since 3.5.7</h3>
+
+Bug fixes
+
+* 14599: Error logs should be read from disk as UTF-8
+* 14596: Removed initial heap setting for Importer, unused since 3.5.4
+* 14579: Mass Piece Loader cannot add 'standard' layer traits
+* 14570: Longer cancel wizard text shifts wizard divider position
+* 14568: Counter Global Key Command expression does not see properties in lower traits
+* 14479: GamePieceImages recognized by unused image removal tool
+
+Other improvements
+
+* 14600: Switch bug tracker to GitHub
+
 <h3>Changes since 3.5.6</h3>
 
 Bug fixes
@@ -20,49 +35,6 @@ Bug fixes
 * 14527: NoSuchMethodError when calling ArchiveWriter.save()
 * 14526: IllegalArgumentException when rendering empty labels
 * 14521: NPE in CounterDetailViewer when Stack shapes array is longer than the piece count
-
-<h3>Changes since 3.5.5</h3>
-
-Bug fixes
-
-* 14518: Zoomer hotkeys should take effect only if their map is focused
-* 14506: NPE in PieceWindow.launchButtonPressed()
-* 14505: Edit Extension menu item should be disabled when the extension is already being edited
-* 14504: Improved results for users who started with no password and then set one later
-* 14503: Set errorLog encoding explicitly to UTF-8
-* 14502: Tailer misdecodes errorLog
-* 14484: Module editing permanently disabled after editing associated Extension
-* 14469: Java's ProcessBuilder misencodes Unicode outside Latin1 on Windows
-* 14468: MouseoverStackViewer: corrected text centering problem with "extra space between" setting
-* 14461: NPE in TableInfo.getExpressionList()
-* 14460: StackOverflowError when referencing _Level property in layer-following expression
-* 14456: ConcurrentModificationException in GameState.setup() when component setup() adds components
-* 14452: Catch PatternSyntaxException on user-provided regexes
-* 14440: Counter refresh function sometimes changes stacking order of pieces
-* 14422: ArrayIndexOutOfBoundsException in Embellishment.getProperty()
-* 14418: MassPieceLoader: Copy/Paste of Modified Layer trait generates Standard Layer on Paste
-* 14401: Cancelling a predefined-setup load during setup wizard shouldn't show "Loaded..." message
-* 14393: Don't show that sending bug reports failed when they've succeeded
-* 14386: Editor was reporting module saved when the "confirm overwrite" dialog cancelled
-* 14370: NPE in BasicLogger.write() when there is no game state to write
-* 14368: Using String functions on property names containing double quotes in value causes Bad Module Data errors
-* 14351: NPE when Player Roster deleted from module
-* 14337: Show/Hide Palette Hotkey shows but does not hide
-* 14325: TileNotFoundException after second copy of a module in use is removed
-* 14311: Cancelling edit where a Hotkey name was changed does not cancel changes
-* 14308: Bad encoding in errorLog, bug reports
-* 14286: Prevent bad expressions from returning null
-* 14271: Chat & Notes input panel(s) treat Hotkeys differently
-* 14261: StackOverflowError: Infinite loop caused by Text Label wasn't being caught properly
-* 10755: Infinite loop in RecursionLimiter.infiniteLoop()
-* 10114: ArrayIndexOutOfBoundsException in SecretNotesController.setup()
-*  2623: FreeRotator does not update masked image if sides change
-
-Other improvements
-
-* 14477: MouseoverStackViewer: Show a single card when used in a PlayerHand window
-* 14453: Improved error message on failure to load a deck
-* 14408: Lock logs and saves during writes to preempt locking by programs like Dropbox
 
 See the <a href="http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes">Release Notes</a> for descriptions of the changes in {{version_feature}}.
 

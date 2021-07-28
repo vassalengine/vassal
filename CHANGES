@@ -1,43 +1,57 @@
 3.6.0 - ???
 
-* 14464: Scaling factors for Layers and Non-Rectangular
-* 14455: Mats & Cargo - Cargo pieces stay attached to Mat piece when moving.
-* 14423: Newly added Layer traits will now default to 'Always active'
-* 14400: Added sub-folders to group components under Module, Maps, Decks,
+* 10248: Invisible trait - Option to disable auto-report of moves
+* 10187: Duplicate key and menu item for Editor menu
+* 10075: Scaling factors for Layers and Non-Rectangular
+* 10066: Mats & Cargo - Cargo pieces stay attached to Mat piece when moving.
+* 10041: Newly added Layer traits will now default to 'Always active'
+* 10021: Added sub-folders to group components under Module, Maps, Decks,
     At-Start Stacks, Prototypes and Global Properties folders
-* 14392: Remove ?s from checkbox preference strings
-* 14388: Add Scrollbars to Prefs Dialog when needed
-* 14377: Add Hotkeys to hide and show map windows.
+* 10015: Remove ?s from checkbox preference strings
+* 10011: Add Scrollbars to Prefs Dialog when needed
+* 10002: Add Hotkeys to hide and show map windows.
     Existing show/hide hotkey field is now always visible.
     Allow changes to hide/show Map button settings without needing Editor
     restart
-* 14376: Inventory window allows a hotkey for Refresh
-* 14374: First 'advanced search' on a module defaults to all boxes prechecked
-* 14373: 1944: Editor now has Drag and Drop support
-* 14372: Can duplicate and insert components in Editor, not just add to bottom
-* 14365: DeckPosition was reporting 1 higher than the actual position
-* 14364: Removed ignored 'button tooltip' field from Turn Tracker config
-* 14360: Less verbose window titles for sub-windows
-* 14359: CountStack() added to beanshell to count pieces in current Stack
-* 14358: ReportState checkbox overrides Global Key Command suppression of
+* 10001: Inventory window allows a hotkey for Refresh
+*  9999: First 'advanced search' on a module defaults to all boxes prechecked
+*  9998: Editor now has Drag and Drop support
+*  9997: Can duplicate and insert components in Editor, not just add to bottom
+*  9993: DeckPosition was reporting 1 higher than the actual position
+*  9992: Removed ignored 'button tooltip' field from Turn Tracker config
+*  9989: Less verbose window titles for sub-windows
+*  9988: CountStack() added to beanshell to count pieces in current Stack
+*  9987: ReportState checkbox overrides Global Key Command suppression of
     individual reports
-* 14346: Deck reports now suppressed during GKC report suppresssion
-* 14341: Ability to specify Return-to-Deck target as an expression
-* 14283: Global Options can be configured to let toolbar items on closed
+*  9975: Deck reports now suppressed during GKC report suppresssion
+*  9972: Ability to specify Return-to-Deck target as an expression
+*  9917: Global Options can be configured to let toolbar items on closed
     windows accept global hotkeys.
-* 14278: Increase number of default zomm levels in new Map Zoom Capability
-* 14276: Add Global property MapName_isVisible for each Map to allow checking
+*  9913: Increase number of default zomm levels in new Map Zoom Capability
+*  9912: Add Global property MapName_isVisible for each Map to allow checking
     if Map is currently open.
-* 14257: Preference to reverse left-to-right order counters are shown in
+*  9901: Preference to reverse left-to-right order counters are shown in
     Mouseover Stack Viewer
-* 14238: Fix and improve module validity checking
-* 14207: Improved translation features (Global Translatable Message component,
+*  9884: Fix and improve module validity checking
+*  9864: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
-* 13817: Default UI font size can be over-ridden in preferences
-*  1949: Added 'Stack Normally' option to 'Does Not Stack' trait
+*  9549: Default UI font size can be overridden in preferences
+*  4542: Added 'Stack Normally' option to 'Does Not Stack' trait
 
-3.5.8 - ???
+3.5.9 - ???
 
+* 10228: Upgrade to Launch4j 3.14
+*  4533: Make grid center dot display independent of grid display
+
+Issue numbers above this point are GitHub issue numbers, below this point
+are Bugzilla issue numbers (referenced in GitHub prefixed with "BZ").
+
+3.5.8 - 29 June 2021
+
+* 14600: Switch bug tracker to GitHub
+* 14599: Error logs should be read from disk as UTF-8
+* 14596: Removed initial heap setting for Importer, unused since 3.5.4
+* 14579: Mass Piece Loader cannot add 'standard' layer traits
 * 14570: Longer cancel wizard text shifts wizard divider position
 * 14568: Counter Global Key Command expression does not see properties in
     lower traits

@@ -4,6 +4,8 @@
 # Configuration
 #
 DMGDIR=dist/dmg
+
+L4JVER=3.14
 L4JDIR=dist/launch4j
 
 JDKVER="jdk-16.0.1+9"
@@ -51,8 +53,8 @@ popd
 mkdir -p "$L4JDIR"
 pushd "$L4JDIR"
 
-wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/3.13/launch4j-3.13-linux-x64.tgz
-tar -xvf launch4j-3.13-linux-x64.tgz
+wget https://downloads.sourceforge.net/project/launch4j/launch4j-3/${L4JVER}/launch4j-${L4JVER}-linux-x64.tgz
+tar -xvf launch4j-${L4JVER}-linux-x64.tgz
 
 popd
 

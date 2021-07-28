@@ -22,7 +22,6 @@
         <method>*</method>
     </difference>
 
-
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
@@ -51,6 +50,9 @@
         <className>VASSAL/counters/CalculatedProperty</className>
         <differenceType>7002</differenceType>
         <method>java.lang.String evaluate()</method>
+        <className>VASSAL/tools/BugUtils</className>
+        <differenceType>7009</differenceType>
+        <method>BugUtils()</method>
     </difference>
 
 </differences>

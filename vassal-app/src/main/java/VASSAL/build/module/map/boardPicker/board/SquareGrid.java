@@ -199,7 +199,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
-      return () -> visible;
+      return () -> (visible || dotsVisible);
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
       return () -> snapTo;
@@ -484,7 +484,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   @Override
   public boolean isVisible() {
-    return visible || (gridNumbering != null && gridNumbering.isVisible());
+    return visible || dotsVisible || (gridNumbering != null && gridNumbering.isVisible());
   }
 
   @Override
@@ -500,7 +500,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   /** Draw the grid, if visible, and accompanying numbering, if set */
   @Override
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    if (visible) {
+    if (visible || dotsVisible) {
       forceDraw(g, bounds, visibleRect, scale, reversed);
     }
     if (gridNumbering != null) {
@@ -537,15 +537,21 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     final Point p1 = new Point();
     final Point p2 = new Point();
     g2d.setColor(color);
-    // x is the location of a vertical line
-    for (double x = xmin; x < xmax; x += deltaX) {
-      p1.move((int) round(x), region.y);
-      p2.move((int) round(x), region.y + region.height);
-      g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+
+    // Draw Grid?
+    if (visible) {
+      // x is the location of a vertical line
+      for (double x = xmin; x < xmax; x += deltaX) {
+        p1.move((int) round(x), region.y);
+        p2.move((int) round(x), region.y + region.height);
+        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+      }
+      for (double y = ymin; y < ymax; y += deltaY) {
+        g2d.drawLine(region.x, (int) round(y), region.x + region.width, (int) round(y));
+      }
     }
-    for (double y = ymin; y < ymax; y += deltaY) {
-      g2d.drawLine(region.x, (int) round(y), region.x + region.width, (int) round(y));
-    }
+
+    // Draw center dots?
     if (dotsVisible) {
       xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX)
           : bounds.x + scale * origin.x + deltaX * round((region.x - bounds.x - scale * origin.x) / deltaX);
