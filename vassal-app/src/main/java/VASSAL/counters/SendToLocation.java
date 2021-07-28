@@ -457,7 +457,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if ((c != null) && GameModule.getGameModule().isMatSupport()) {
 
       // If a cargo piece has been "sent", find it a new Mat if needed.
-      if ("true".equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+      if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
         final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());

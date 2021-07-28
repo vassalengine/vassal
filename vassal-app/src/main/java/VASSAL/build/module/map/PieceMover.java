@@ -828,7 +828,7 @@ public class PieceMover extends AbstractBuildable
         // Support for Mats and Cargo
         if (GameModule.getGameModule().isMatSupport()) {
           // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
-          if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+          if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
             final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
             final GamePiece oldMat = cargo.getMat();
 

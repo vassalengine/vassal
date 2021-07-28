@@ -342,7 +342,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       }
     }
     else if (IS_CARGO.equals(key)) {
-      return "true"; //NON-NLS
+      return Boolean.TRUE;
     }
     return super.getProperty(key);
   }
@@ -355,7 +355,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       }
     }
     else if (IS_CARGO.equals(key)) {
-      return "true"; //NON-NLS
+      return Boolean.TRUE;
     }
     return super.getLocalizedProperty(key);
   }
