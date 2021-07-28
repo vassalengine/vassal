@@ -311,10 +311,10 @@ Function .onInit
   ; save registers
   Push $0
 
-  ${If} ${RunningX64}
-    StrCpy $0 "x86 64-bit"
-  ${ElseIf} ${IsNativeARM64}
+  ${If} ${IsNativeARM64}
     StrCpy $0 "ARM 64-bit"
+  ${ElseIf} ${RunningX64}
+    StrCpy $0 "x86 64-bit"
   ${Else}
     StrCpy $0 "x86 32-bit"
   ${EndIf}
