@@ -61,12 +61,7 @@ public class AuditTrail {
    * @return An AuditTrail object if auditing is enabled, otherwise null
    */
   public static AuditTrail create(Auditable source, String originalExpression, String comment) {
-    if (isEnabled()) {
-      return new AuditTrail(source, originalExpression, comment);
-    }
-    else {
-      return null;
-    }
+    return isEnabled() ? new AuditTrail(source, originalExpression, comment) : null;
   }
 
   /**

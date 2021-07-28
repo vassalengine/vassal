@@ -173,8 +173,7 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
         try {
           RecursionLimiter.startExecution(this);
 
-          result = expression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.CalculatedProperty.expression");
-          return result;
+          result = evaluate();
         }
         catch (RecursionLimitException e) {
           RecursionLimiter.infiniteLoop(e);
@@ -196,6 +195,17 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
     }
     return super.getLocalizedProperty(key);
   }
+
+  /**
+   * Evaluate the calculated property. Do not call Decorator.reportDataError as this will probably
+   * cause an infinite reporting loop.
+   *
+   * @return value
+   */
+  protected String evaluate() {
+    return expression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.CalculatedProperty.expression");
+  }
+
 
   @Override
   public boolean testEquals(Object o) {

@@ -170,7 +170,7 @@ public class BadDataReport {
   }
 
   private String getAuditMessage() {
-    return (AuditTrail.isEnabled() ? Resources.getString("BadDataReport.see_errorlog") : Resources.getString("BadDataReport.enable_pref"));
+    return Resources.getString(AuditTrail.isEnabled() ? "BadDataReport.see_errorlog" : "BadDataReport.enable_pref");
   }
   /**
    * Expanded Bad Data Report for PieceSlot
