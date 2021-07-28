@@ -494,7 +494,7 @@ public class FreeRotator extends Decorator
 
     if (GameModule.getGameModule().isMatSupport()) {
       // If a cargo piece has been "sent", find it a new Mat if needed.
-      if ("true".equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+      if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
         final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
         if (cargo != null) {
           c = c.append(cargo.findNewMat());
@@ -512,7 +512,8 @@ public class FreeRotator extends Decorator
 
     // check that we have a map and that the mat-ness is visible for us
     final GamePiece outer = getOutermost(this);
-    if (outer.getMap() == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
+    final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+    if (outer.getMap() == null || matName == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
       return command;
     }
 

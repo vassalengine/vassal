@@ -828,7 +828,7 @@ public class PieceMover extends AbstractBuildable
         // Support for Mats and Cargo
         if (GameModule.getGameModule().isMatSupport()) {
           // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
-          if ("true".equals(piece.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+          if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
             final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
             final GamePiece oldMat = cargo.getMat();
 
@@ -840,7 +840,7 @@ public class PieceMover extends AbstractBuildable
             // If the piece being moved is a Mat, check if any of our cargo is being "left behind"
             final Mat thisMat = (Mat)Decorator.getDecorator(piece, Mat.class);
             if (thisMat != null) {
-              final List<GamePiece> contents = new ArrayList<>(thisMat.getContents());
+              final List<GamePiece> contents = thisMat.getContents();
               for (final GamePiece cargo : contents) {
                 // If the cargo is being dragged with us, it isn't being left behind
                 if (draggedPieces.contains(cargo) || allDraggedPieces.contains(cargo) || DragBuffer.getBuffer().contains(cargo)) {

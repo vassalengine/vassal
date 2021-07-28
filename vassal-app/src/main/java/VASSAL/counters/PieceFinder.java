@@ -23,8 +23,6 @@ import java.util.Iterator;
 
 import VASSAL.build.module.Map;
 
-import static VASSAL.counters.Mat.MAT_NAME;
-
 /**
  * This interface defines selection criteria for finding a GamePiece in a Map
  */
@@ -62,7 +60,8 @@ public interface PieceFinder {
   class MatOnly extends Movable {
     @Override
     public Object visitDefault(GamePiece piece) {
-      if (!"".equals(piece.getProperty(MAT_NAME))) {
+      final String matName = (String)piece.getProperty(Mat.MAT_NAME);
+      if (matName != null && !"".equals(matName)) {
         return super.visitDefault(piece);
       }
       return null;
