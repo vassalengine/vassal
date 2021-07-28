@@ -840,7 +840,7 @@ public class PieceMover extends AbstractBuildable
             // If the piece being moved is a Mat, check if any of our cargo is being "left behind"
             final Mat thisMat = (Mat)Decorator.getDecorator(piece, Mat.class);
             if (thisMat != null) {
-              final List<GamePiece> contents = new ArrayList<>(thisMat.getContents());
+              final List<GamePiece> contents = thisMat.getContents();
               for (final GamePiece cargo : contents) {
                 // If the cargo is being dragged with us, it isn't being left behind
                 if (draggedPieces.contains(cargo) || allDraggedPieces.contains(cargo) || DragBuffer.getBuffer().contains(cargo)) {

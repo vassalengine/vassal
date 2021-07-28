@@ -84,7 +84,7 @@ public class Mat extends Decorator implements TranslatablePiece {
   }
 
   public List<GamePiece> getContents() {
-    return contents;
+    return new ArrayList<>(contents);
   }
 
   public List<Point> getOffsets(int x, int y) {
