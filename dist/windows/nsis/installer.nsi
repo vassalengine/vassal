@@ -311,6 +311,7 @@ Function .onInit
   ; save registers
   Push $0
 
+  ; Check ARM first, RunningX64 is true for 64-bit ARM (wtf?)
   ${If} ${IsNativeARM64}
     StrCpy $0 "ARM 64-bit"
   ${ElseIf} ${RunningX64}
