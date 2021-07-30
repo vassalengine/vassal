@@ -153,6 +153,7 @@ $(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.ap
 	find $@ -type d -exec chmod 755 \{\} \+
 	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/bin/{java,keytool}
+	file $@/VASSAL.app/Contents/MacOS/jre/bin/java
 	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/lib/jspawnhelper
 
 $(TMPDIR)/VASSAL-$(VERSION)-macos-%-uncompressed.dmg: $(TMPDIR)/macos-%-$(VERSION)-build
