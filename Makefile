@@ -131,13 +131,13 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 # MacOS
 #
 
-$(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/mac-%
+$(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/macos-%
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp $(DISTDIR)/macos/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
-	jlink --module-path $(JDKDIR)/mac-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	jlink --module-path $(JDKDIR)/macos-$(*)/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
 	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
 	cp -a $(LIBDIR) $@/Contents/Resources/Java
 	cp -a $(DOCDIR) $@/Contents/Resources/doc

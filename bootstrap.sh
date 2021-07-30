@@ -31,15 +31,15 @@ curl -O 'https://cdn.azul.com/zulu/bin/zulu16.30.17-ca-jdk16.0.1-win_aarch64.zip
 unzip zulu16.30.17-ca-jdk16.0.1-win_aarch64.zip
 mv zulu16.30.17-ca-jdk16.0.1-win_aarch64 windows-aarch64
 
-# Mac x86_64
+# MacOS x86_64
 curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz'
-mkdir mac-x86_64
-tar -C mac-x86_64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz
+mkdir macos-x86_64
+tar -C macos-x86_64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz
 
-# Mac aarch64
+# MacOS aarch64
 curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz'
-mkdir mac-aarch64
-tar -C mac-aarch64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz
+mkdir macos-aarch64
+tar -C macos-aarch64 --strip-components=1 -xvf zulu16.32.15-ca-jdk16.0.2-macosx_aarch64.tar.gz
 
 popd
 
