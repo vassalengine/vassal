@@ -8,7 +8,6 @@ DMGDIR=dist/dmg
 L4JVER=3.14
 L4JDIR=dist/launch4j
 
-JDKVER="jdk-16.0.1+9"
 JDKDIR=dist/jdks
 
 #
