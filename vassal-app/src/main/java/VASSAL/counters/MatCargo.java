@@ -424,8 +424,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     private final StringConfigurer descInput;
     private final BooleanConfigurer rotInput;
     private final TraitConfigPanel controls;
-    private final IntConfigurer XInput;
-    private final IntConfigurer YInput;
+    private final IntConfigurer xInput;
+    private final IntConfigurer yInput;
 
     public Ed(MatCargo p) {
       controls = new TraitConfigPanel();
@@ -437,11 +437,11 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       rotInput = new BooleanConfigurer(p.maintainRelativeFacing);
       controls.add("Editor.MatCargo.maintain_relative_facing", rotInput);
 
-      XInput = new IntConfigurer(p.detectionDistanceX);
-      controls.add("Editor.MatCargo.detection_distance_x", XInput);
+      xInput = new IntConfigurer(p.detectionDistanceX);
+      controls.add("Editor.MatCargo.detection_distance_x", xInput);
 
-      YInput = new IntConfigurer(p.detectionDistanceY);
-      controls.add("Editor.MatCargo.detection_distance_y", YInput);
+      yInput = new IntConfigurer(p.detectionDistanceY);
+      controls.add("Editor.MatCargo.detection_distance_y", yInput);
     }
 
     @Override
@@ -454,8 +454,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(descInput.getValueString())
         .append(rotInput.getValueBoolean())
-        .append(XInput.getIntValue(0))
-        .append(YInput.getIntValue(0));
+        .append(xInput.getIntValue(0))
+        .append(yInput.getIntValue(0));
 
       return ID + se.getValue();
     }
