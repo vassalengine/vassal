@@ -31,6 +31,10 @@ the Mat Cargo trait should be placed _below_ the graphical elements (e.g. Layer 
 potentially be rotated. A Mat Cargo piece does _not_ need a separate Can Rotate trait in order to be able to maintain
 relative facing, although it is permitted to have its own Can Rotate trait as well.
 
+*X Extra detection distance from center:* If non-zero, then VASSAL will look this distance to the left and right of the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
+
+*Y Extra detection distance from center:* If non-zero, then VASSAL will look this distance above and below the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
+
 |image:images/MatCargo.png[]
 
 image:images/Mat2.png[]
