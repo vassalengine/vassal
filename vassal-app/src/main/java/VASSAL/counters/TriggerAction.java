@@ -211,8 +211,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     // 5. Looping
 
     // Set up Index Property
-    indexValue = parse("Index Property Start Value", indexStart, outer); // NON-NLS Error onlu=y
-    final int step = parse("Index Property increment value", indexStep, outer); // NON-NLS Error only
+    indexValue = parse("Editor.LoopControl.index_start", indexStart, outer); // NON-NLS Error onlu=y
+    final int step = parse("Editor.LoopControl.index_step", indexStep, outer); // NON-NLS Error only
 
     // Issue the Pre-loop key
     c = c.append(executeKey(preLoopKey));
@@ -285,14 +285,14 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return c;
   }
 
-  private int parse(String desc, FormattedString s, GamePiece outer) {
+  private int parse(String fieldKey, FormattedString s, GamePiece outer) {
     int i = 0;
-    final String val = s.getText(outer, "0");
+    final String val = s.getText(outer, "0", this, fieldKey);
     try {
       i = Integer.parseInt(val);
     }
     catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
+      reportDataError(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, Resources.getString(fieldKey)), e);
     }
     return i;
   }
@@ -353,7 +353,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   protected boolean matchesFilter() {
     return propertyMatch.isNull() ||
-           propertyMatch.accept(Decorator.getOutermost(this));
+           propertyMatch.accept(Decorator.getOutermost(this), this, "Editor.TriggerAction.trigger_when_properties");
   }
 
   @Override
@@ -665,19 +665,6 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       return ID + se.getValue();
     }
   }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
-  }
-
 
   /**
    * @return a list of the Decorator's string/expression fields if any (for search)

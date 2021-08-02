@@ -16,16 +16,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
@@ -42,6 +32,16 @@ import VASSAL.tools.AudioClip;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.KeyStroke;
 
 /**
  * A trait that plays a sound clip
@@ -107,7 +107,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command c = null;
     if (command.matches(stroke)) {
-      final String clipName = format.getText(Decorator.getOutermost(this));
+      final String clipName = format.getText(Decorator.getOutermost(this), this, "Editor.PlaySound.sound_clip");
       c = new PlayAudioClipCommand(clipName);
       try {
         if (!GlobalOptions.getInstance().isSoundGlobalMute()) {

@@ -17,11 +17,11 @@
 
 package VASSAL.script.expression;
 
+import VASSAL.build.module.properties.PropertySource;
+
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
-
-import VASSAL.build.module.properties.PropertySource;
 
 /**
  * An expression consisting of a single property name
@@ -31,8 +31,15 @@ public class SinglePropertyExpression extends Expression {
     super(ex.startsWith("$") && ex.endsWith("$") ? ex.substring(1, ex.length() - 1) : ex);
   }
 
+  /** @deprecated Use {@link #evaluate(PropertySource, Map, boolean, Auditable, AuditTrail)} */
+  @Deprecated(since = "2021-06-11")
   @Override
   public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized) throws ExpressionException {
+    return evaluate(ps, properties, localized, null, null);
+  }
+
+  @Override
+  public String evaluate(PropertySource ps, Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) throws ExpressionException {
     String value = null;
     try {
       if (properties != null) {
@@ -48,7 +55,7 @@ public class SinglePropertyExpression extends Expression {
       }
     }
     catch (Exception ex) {
-      throw new ExpressionException(getExpression(), ex.getMessage());
+      throw new ExpressionException(getExpression(), ex.getMessage(), owner, audit);
     }
     return value == null ? "" : value;
   }

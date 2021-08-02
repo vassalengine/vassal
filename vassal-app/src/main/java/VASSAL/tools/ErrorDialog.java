@@ -18,6 +18,12 @@
 
 package VASSAL.tools;
 
+import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.bug.Bug2694Handler;
+import VASSAL.tools.bug.BugHandler;
+
 import java.awt.Component;
 import java.awt.Frame;
 import java.nio.file.FileSystemException;
@@ -33,12 +39,6 @@ import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import VASSAL.build.BadDataReport;
-import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.bug.Bug2694Handler;
-import VASSAL.tools.bug.BugHandler;
 
 /**
  * @author Joel Uckelman
@@ -357,16 +357,18 @@ public class ErrorDialog {
     if (!e.isReportable()) {
       return;
     }
-    logger.warn(e.getMessage() + ": " + e.getData());
-    if (e.getCause() != null) logger.error("", e.getCause());
 
     if (!reportedDataWarnings.contains(e.getData())) {
+
+      // Send a full report to the errorlog
+      logger.warn(e.getMessage() + " " + e.getFullData());
+
       reportedDataWarnings.add(e.getData());
 
-      // send a warning to the controls window
+      // send a simplified warning to the controls window
       final GameModule g = GameModule.getGameModule();
       if (g != null) {
-        g.warn(Resources.getString(msgKey, e.getMessage(), e.getData()));
+        g.warn(Resources.getString(msgKey, e.getMessage()));
       }
     }
   }

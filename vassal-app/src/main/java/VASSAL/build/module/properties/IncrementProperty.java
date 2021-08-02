@@ -19,6 +19,8 @@ package VASSAL.build.module.properties;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 
@@ -57,9 +59,11 @@ public class IncrementProperty implements PropertyChanger {
       return oldValue;
     }
 
-    try {
+    final AuditTrail audit = AuditTrail.create((Auditable) constraints, format.getFormat());
 
-      final int incr = Integer.parseInt(format.getText(constraints.getPropertySource()));
+    try {
+      final String s = format.getText(constraints.getPropertySource(), constraints, audit);
+      final int incr = Integer.parseInt(s);
       if (constraints.isWrap()) {
         if (value + incr > constraints.getMaximumValue()) {
           value = constraints.getMinimumValue() + (value + incr - constraints.getMaximumValue() - 1);
@@ -80,7 +84,7 @@ public class IncrementProperty implements PropertyChanger {
     }
     catch (final NumberFormatException e) {
       ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.non_number_error"),
-        "Increment " + prop.getName() + ": format=" + format.getFormat() + ", value=" + format.getText(constraints), e)); //NON-NLS
+        "Increment " + prop.getName() + ": format=" + format.getFormat() + ", value=" + format.getText(constraints, constraints, audit), e, constraints, audit)); //NON-NLS
       return oldValue;
     }
   }

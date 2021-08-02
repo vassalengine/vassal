@@ -18,51 +18,50 @@
 
 package VASSAL.build.module.map;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
-import java.util.Collection;
-import java.util.List;
-
+import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractFolder;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.BadDataReport;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.FlareCommand;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.FlareFormattedStringConfigurer;
 import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
+import VASSAL.tools.swing.SwingUtils;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.Map;
-import VASSAL.command.Command;
-import VASSAL.command.CommandEncoder;
-import VASSAL.command.FlareCommand;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.FlareFormattedStringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.swing.SwingUtils;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 /**
  * Allows a player to ping a location ("send up a flare") by clicking on a map with the correct modifier key
@@ -612,7 +611,7 @@ public class Flare extends AbstractConfigurable
     final Zone z = map.findZone(clickPoint);
     reportFormat.setProperty(FLARE_ZONE, (z != null) ? z.getName() : "");
     reportFormat.setProperty(FLARE_MAP, map.getMapName());
-    final String reportText = reportFormat.getLocalizedText(map); // Map and global properties also available (e.g. PlayerName, PlayerSide)
+    final String reportText = reportFormat.getLocalizedText(map, this, "Editor.report_format"); // Map and global properties also available (e.g. PlayerName, PlayerSide)
     if (!reportText.isBlank()) {
       c = new Chatter.DisplayText(mod.getChatter(), "* " + reportText);
       c.execute();

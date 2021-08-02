@@ -446,18 +446,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
     setGpId(gpidSupport.generateGpId());
   }
 
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
-  }
-
   @Override
   public boolean testEquals(Object o) {
     if (! (o instanceof PlaceMarker)) return false;

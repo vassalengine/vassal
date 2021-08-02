@@ -17,6 +17,20 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -32,20 +46,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.KeyStroke;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.RecursionLimitException;
-import VASSAL.tools.RecursionLimiter;
-import VASSAL.tools.RecursionLimiter.Loopable;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * A Trait (aka {@link Decorator} that acts like a button on a GamePiece, such that clicking on a
@@ -159,18 +159,6 @@ public class ActionButton extends Decorator implements EditablePiece, Loopable {
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("ActionButton.html"); // NON-NLS
-  }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
   }
 
   @Override

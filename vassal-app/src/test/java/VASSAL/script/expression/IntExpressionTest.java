@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
-public class IntExpressionTest {
+public class IntExpressionTest implements Auditable {
 
   private static final int TEST_INT = 42;
 
@@ -19,11 +19,13 @@ public class IntExpressionTest {
   @Test
   public void evaluate() throws ExpressionException {
     Expression e = IntExpression.instance(TEST_INT);
-    String s = e.evaluate();
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    String s = e.evaluate(this, audit);
     assertThat(s, is(equalTo(String.valueOf(TEST_INT))));
 
     e = IntExpression.instance(-TEST_INT);
-    s = e.evaluate();
+    audit = new AuditTrail(this, e.getExpression());
+    s = e.evaluate(this, audit);
     assertThat(s, is(equalTo(String.valueOf(-TEST_INT))));
   }
 
