@@ -1,10 +1,11 @@
-3.6.0 - ???
+3.6.0-beta1 - ???
 
 * 10277: When editing an IrregularGrid, start the map view somewhere near the
     grid or its parent Zone
 * 10276: Expose property if we're currently drawing Counter Detail Viewer
 * 10273: Mat Cargo can be set to detect mats way from their exact center
 * 10272: Don't auto-name new regions a long string
+* 10259: 64-bit ARM builds for Windows and Macs; switched bundled Java to Zulu
 * 10248: Invisible trait - Option to disable auto-report of moves
 * 10228: Upgrade to Launch4j 3.14
 * 10187: Duplicate key and menu item for Editor menu
