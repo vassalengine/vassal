@@ -6,6 +6,7 @@
 * 10273: Mat Cargo can be set to detect mats way from their exact center
 * 10272: Don't auto-name new regions a long string
 * 10248: Invisible trait - Option to disable auto-report of moves
+* 10228: Upgrade to Launch4j 3.14
 * 10187: Duplicate key and menu item for Editor menu
 * 10075: Scaling factors for Layers and Non-Rectangular
 * 10066: Mats & Cargo - Cargo pieces stay attached to Mat piece when moving.
@@ -29,7 +30,7 @@
 *  9987: ReportState checkbox overrides Global Key Command suppression of
     individual reports
 *  9975: Deck reports now suppressed during GKC report suppresssion
-* 9973: Deck supports configurable strings for Draw Multiple, Draw Specific,
+*  9973: Deck supports configurable strings for Draw Multiple, Draw Specific,
     Face Up, Face Down
 *  9972: Ability to specify Return-to-Deck target as an expression
 *  9917: Global Options can be configured to let toolbar items on closed
@@ -46,10 +47,6 @@
 *  9254: Expression audit trails preference - Improve error reporting when
      Beanshell expressions fail
 *  4542: Added 'Stack Normally' option to 'Does Not Stack' trait
-
-3.5.9 - ???
-
-* 10228: Upgrade to Launch4j 3.14
 *  4533: Make grid center dot display independent of grid display
 
 Issue numbers above this point are GitHub issue numbers, below this point
