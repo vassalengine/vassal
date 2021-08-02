@@ -21,6 +21,7 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
@@ -41,6 +42,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   protected String desc;
 
   protected boolean maintainRelativeFacing;
+  protected int detectionDistanceX;
+  protected int detectionDistanceY;
   protected GamePieceOp gpOp;
   protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
   protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
@@ -64,13 +67,17 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     desc = st.nextToken();
     maintainRelativeFacing = st.nextBoolean(true);
+    detectionDistanceX = st.nextInt(0);
+    detectionDistanceY = st.nextInt(0);
   }
 
   @Override
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(desc)
-      .append(maintainRelativeFacing);
+      .append(maintainRelativeFacing)
+      .append(detectionDistanceX)
+      .append(detectionDistanceY);
     return ID + se.getValue();
   }
 
@@ -163,7 +170,34 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public Command findNewMat(Map map, Point pt) {
     Command comm = new NullCommand();
     if (map != null) {
-      final GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
+      GamePiece newMat = map.findAnyPiece(pt, PieceFinder.MAT_ONLY);
+
+      if ((newMat == null) && (detectionDistanceX != 0) || (detectionDistanceY != 0)) {
+        final Point pt2 = new Point();
+
+        pt2.x = pt.x + detectionDistanceX;
+        pt2.y = pt.y + detectionDistanceY;
+        newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+        if (newMat == null) {
+          pt2.x = pt.x - detectionDistanceX;
+          pt2.y = pt.y + detectionDistanceY;
+          newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+          if (newMat == null) {
+            pt2.x = pt.x + detectionDistanceX;
+            pt2.y = pt.y - detectionDistanceY;
+            newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+
+            if (newMat == null) {
+              pt2.x = pt.x - detectionDistanceX;
+              pt2.y = pt.y - detectionDistanceY;
+              newMat = map.findAnyPiece(pt2, PieceFinder.MAT_ONLY);
+            }
+          }
+        }
+      }
+
       if (newMat != null) {
         final Mat mat = (Mat) Decorator.getDecorator(newMat, Mat.class);
         if (mat != null) {
@@ -390,6 +424,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     private final StringConfigurer descInput;
     private final BooleanConfigurer rotInput;
     private final TraitConfigPanel controls;
+    private final IntConfigurer xInput;
+    private final IntConfigurer yInput;
 
     public Ed(MatCargo p) {
       controls = new TraitConfigPanel();
@@ -400,6 +436,12 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
       rotInput = new BooleanConfigurer(p.maintainRelativeFacing);
       controls.add("Editor.MatCargo.maintain_relative_facing", rotInput);
+
+      xInput = new IntConfigurer(p.detectionDistanceX);
+      controls.add("Editor.MatCargo.detection_distance_x", xInput);
+
+      yInput = new IntConfigurer(p.detectionDistanceY);
+      controls.add("Editor.MatCargo.detection_distance_y", yInput);
     }
 
     @Override
@@ -411,7 +453,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(descInput.getValueString())
-        .append(rotInput.getValueBoolean());
+        .append(rotInput.getValueBoolean())
+        .append(xInput.getIntValue(0))
+        .append(yInput.getIntValue(0));
+
       return ID + se.getValue();
     }
 
