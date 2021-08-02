@@ -48,7 +48,6 @@ import VASSAL.preferences.Prefs;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
@@ -791,15 +790,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
 
     return l;
-  }
-
-  /**
-   * @deprecated Use {@link #buildAddActionsFor(Configurable)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Enumeration<Action> buildAddActions(final Configurable target) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return Collections.enumeration(buildAddActionsFor(target));
   }
 
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {

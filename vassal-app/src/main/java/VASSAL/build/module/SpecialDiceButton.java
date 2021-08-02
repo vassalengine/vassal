@@ -40,7 +40,6 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.ImageOp;
@@ -140,18 +139,6 @@ public class SpecialDiceButton extends AbstractToolbarItem implements CommandEnc
    */
   protected String getReportPrefix() {
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
-  /**
-   * The text reported after the results of the roll;
-   *
-   * @deprecated Handled by Message Format
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return " ***  &lt;" //$NON-NLS-1$
-        + GlobalOptions.getInstance().getPlayerId() + "&gt;"; //$NON-NLS-1$
   }
 
   /**

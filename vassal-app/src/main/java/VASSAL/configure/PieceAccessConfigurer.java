@@ -21,7 +21,6 @@ import VASSAL.counters.PieceAccess;
 import VASSAL.counters.PlayerAccess;
 import VASSAL.counters.SideAccess;
 import VASSAL.counters.SpecifiedSideAccess;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -160,13 +159,5 @@ public class PieceAccessConfigurer extends Configurer {
       s = PLAYER;
     }
     return s;
-  }
-
-  /**
-   * @deprecated no replacement
-   */
-  @Deprecated(since = "2020-08-05", forRemoval = true)
-  public void setPrompts(String[] prompts) {
-    ProblemDialog.showDeprecated("2020-08-05");
   }
 }

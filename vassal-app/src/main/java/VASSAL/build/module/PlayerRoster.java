@@ -38,7 +38,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -213,29 +212,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public void addPropertyChangeListener(PropertyChangeListener l) {
   }
 
-  /**
-   * @deprecated use {@link GameModule#addSideChangeListenerToPlayerRoster(SideChangeListener)}
-   */
-  @Deprecated(since = "2020-06-15", forRemoval = true)
-  public static void addSideChangeListener(SideChangeListener l) {
-    ProblemDialog.showDeprecated("2020-06-15");
-    GameModule.getGameModule().addSideChangeListenerToPlayerRoster(l);
-  }
-
   public void addSideChangeListenerToInstance(SideChangeListener l) {
     sideChangeListeners.add(l);
-  }
-
-  /**
-   * @deprecated use {@link GameModule#removeSideChangeListenerFromPlayerRoster(SideChangeListener)}
-   */
-  @Deprecated(since = "2020-06-15", forRemoval = true)
-  public static void removeSideChangeListener(SideChangeListener l) {
-    ProblemDialog.showDeprecated("2020-06-15");
-    final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
-    if (r != null) {
-      r.sideChangeListeners.remove(l);
-    }
   }
 
   public void removeSideChangeListenerFromInstance(SideChangeListener l) {

@@ -41,7 +41,6 @@ import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Component;
@@ -152,27 +151,6 @@ public class DiceButton extends AbstractToolbarItem {
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DiceButton.component_type"); //$NON-NLS-1$
-  }
-
-  /**
-   * The text reported before the results of the roll
-   * @deprecated No Replacement
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected String getReportPrefix() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
-  /**
-   * The text reported after the results of the roll;
-   * @deprecated No Replacement
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return " ***  <" //$NON-NLS-1$
-        + GlobalOptions.getInstance().getPlayerId() + ">"; //$NON-NLS-1$
   }
 
   /**

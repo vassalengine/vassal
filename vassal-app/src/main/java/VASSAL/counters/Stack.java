@@ -26,7 +26,6 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,9 +37,7 @@ import VASSAL.build.module.map.CompoundPieceCollection;
 import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
-import VASSAL.tools.EnumeratedIterator;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
@@ -103,18 +100,6 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   }
 
   /**
-   * @return an Enumeration of the pieces in the stack, from the bottom up This
-   *         is a clone of the contents so add/remove operations during read
-   *         won't affect it.
-   * @deprecated use {@link #asList()}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Enumeration<GamePiece> getPieces() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return new EnumeratedIterator<>(new AllPieceIterator());
-  }
-
-  /**
    * A list of the pieces in the stack.
    * @return a {@link List} which is a defensive copy of {@link GamePiece}s
    * contained in this {@link Stack}
@@ -128,18 +113,6 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   }
 
   /**
-   * Return an enumeration of the pieces in the start, from the top down
-   *
-   * @return Reverse order Enumerator
-   * @deprecated Use {@link #getPiecesInVisibleOrderIterator()}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Enumeration<GamePiece> getPiecesInReverseOrder() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return new EnumeratedIterator<>(new ReversePieceIterator());
-  }
-
-  /**
    * Returns pieces in the order in which they are visible to the player --
    * topmost first In other words, selected pieces first, then unselected pieces
    * from the top to the bottom.
@@ -148,19 +121,6 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
   public Iterator<GamePiece> getPiecesInVisibleOrderIterator() {
     return new VisibleOrderIterator();
   }
-
-  /**
-   * Returns pieces in the order in which they are visible to the player --
-   * topmost first In other words, selected pieces first, then unselected pieces
-   * from the top to the bottom.
-   * @deprecated Use {@link #getPiecesInVisibleOrderIterator()}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Enumeration<GamePiece> getPiecesInVisibleOrder() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return new EnumeratedIterator<>(new VisibleOrderIterator());
-  }
-
 
   /**
    * @return the visual layer we're bound to, or LAYER_NOT_SET if it we haven't been bound yet. Keeps the stack oriented to its correct Game Piece Layer - see {@link VASSAL.build.module.map.LayeredPieceCollection}

@@ -17,10 +17,7 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -127,21 +124,6 @@ public class EventLog extends AbstractBuildable
     };
   }
 
-  /** @deprecated Use {@link #decodedEvents(String)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static Enumeration<Event> decodeEvents(String s) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    final ArrayList<Event> l = new ArrayList<>();
-    final SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
-    while (se.hasMoreTokens()) {
-      final SequenceEncoder.Decoder sub =
-        new SequenceEncoder.Decoder(se.nextToken(), ',');
-      l.add(new Event(Long.parseLong(sub.nextToken()),
-                      sub.nextToken(), sub.nextToken()));
-    }
-    return Collections.enumeration(l);
-  }
-
   /**
    * Encodes a sequence of <code>Event</code>s into a <code>String</code>.
    *
@@ -155,22 +137,6 @@ public class EventLog extends AbstractBuildable
       sub.append(e.getTime())
          .append(e.getUser())
          .append(e.getAction());
-      se.append(sub.getValue());
-    }
-    return se.getValue();
-  }
-
-  /** @deprecated Use {@link #encodedEvents(Iterable)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static String encodeEvents(Enumeration<?> e) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    final SequenceEncoder se = new SequenceEncoder('|');
-    while (e.hasMoreElements()) {
-      final Event evt = (Event) e.nextElement();
-      final SequenceEncoder sub = new SequenceEncoder(',');
-      sub.append(evt.getTime())
-         .append(evt.getUser())
-         .append(evt.getAction());
       se.append(sub.getValue());
     }
     return se.getValue();

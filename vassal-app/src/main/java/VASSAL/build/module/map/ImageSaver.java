@@ -23,20 +23,15 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.swing.SwingUtils;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MediaTracker;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -48,9 +43,6 @@ import javax.imageio.event.IIOWriteProgressListener;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -71,9 +63,6 @@ import VASSAL.tools.swing.ProgressDialog;
  * a PNG file.
  */
 public class ImageSaver extends AbstractToolbarItem {
-  private static final Logger logger =
-    LoggerFactory.getLogger(ImageSaver.class);
-
   /** @deprecated use launch from the superclass */
   @Deprecated(since = "2021-04-03", forRemoval = true)
   protected LaunchButton launch;
@@ -446,62 +435,6 @@ public class ImageSaver extends AbstractToolbarItem {
         }
         else {
           ErrorDialog.bug(e);
-        }
-      }
-    }
-  }
-
-  /**
-   * Write a PNG-encoded snapshot of the map to the given OutputStreams,
-   * dividing the map into vertical sections, one per stream
-   *
-   * @deprecated Use {@link #writeMapAsImage()}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void writeImage(OutputStream[] out) throws IOException {
-    ProblemDialog.showDeprecated("2020-08-06");
-    final Dimension buffer = map.getEdgeBuffer();
-    final int totalWidth =
-      (int) ((map.mapSize().width - 2 * buffer.width) * map.getZoom());
-    final int totalHeight =
-      (int) ((map.mapSize().height - 2 * buffer.height) * map.getZoom());
-    for (int i = 0; i < out.length; ++i) {
-      int height = totalHeight / out.length;
-      if (i == out.length - 1) {
-        height = totalHeight - height * (out.length - 1);
-      }
-
-      final Image output = map.getView().createImage(totalWidth, height);
-      final Graphics2D gg = (Graphics2D) output.getGraphics();
-
-      map.paintRegion(gg, new Rectangle(
-        -(int) (map.getZoom() * buffer.width),
-        -(int) (map.getZoom() * buffer.height) + height * i,
-        totalWidth, totalHeight), null);
-      gg.dispose();
-      try {
-        final MediaTracker t = new MediaTracker(map.getView());
-        t.addImage(output, 0);
-        t.waitForID(0);
-      }
-      catch (Exception e) {
-        logger.error("", e);
-      }
-
-      try {
-        if (output instanceof RenderedImage) {
-          ImageIO.write((RenderedImage) output, "png", out[i]); //NON-NLS
-        }
-        else {
-          throw new IOException("Bad image type");
-        }
-      }
-      finally {
-        try {
-          out[i].close();
-        }
-        catch (IOException e) {
-          logger.error("", e);
         }
       }
     }

@@ -21,7 +21,6 @@ package VASSAL.tools;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.bug.Bug2694Handler;
 import VASSAL.tools.bug.BugHandler;
 
 import java.awt.Component;
@@ -51,9 +50,7 @@ public class ErrorDialog {
     LoggerFactory.getLogger(ErrorDialog.class);
 
   private static final List<BugHandler> BUG_HANDLERS =
-    Collections.synchronizedList(new ArrayList<>(
-      Collections.singletonList(new Bug2694Handler())
-    ));
+    Collections.synchronizedList(new ArrayList<>());
 
   public static void addBugHandler(BugHandler bh) {
     BUG_HANDLERS.add(bh);

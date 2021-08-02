@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Window;
 import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
@@ -27,7 +26,6 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -250,19 +248,6 @@ public class PrivateMap extends Map {
       edgeBuffer = surrogate.getEdgeBuffer();
     }
     super.setBoards(c);
-  }
-
-  /** @deprecated Use {@link #setBoards(Collection)} instead. */
-  @SuppressWarnings("removal")
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  @Override
-  public void setBoards(Enumeration<Board> boardList) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    if (surrogate != null) {
-      boardList = surrogate.getAllBoards();
-      edgeBuffer = surrogate.getEdgeBuffer();
-    }
-    super.setBoards(boardList);
   }
 
   public static String getConfigureTypeName() {

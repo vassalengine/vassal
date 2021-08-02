@@ -19,7 +19,6 @@ package VASSAL.build.module.documentation;
 
 import VASSAL.i18n.Resources;
 import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.ProblemDialog;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -162,13 +161,6 @@ public class HelpFile extends AbstractConfigurable {
     }
 
     return contents;
-  }
-
-  /** @deprecated Use {@link URLUtils#toURL(File)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static URL toURL(File f) throws MalformedURLException {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return URLUtils.toURL(f);
   }
 
   @Override

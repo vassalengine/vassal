@@ -51,14 +51,12 @@ import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceFinder;
-import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.image.LabelUtils;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -104,8 +102,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String PREFERRED_DELAY = "PreferredDelay";  //NON-NLS
 
   public static final String DELAY = "delay"; //NON-NLS
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static final String ALWAYS_SHOW_LOC = "alwaysshowloc"; //NON-NLS
   public static final String DRAW_PIECES = "showgraph"; //NON-NLS
   public static final String GRAPH_SINGLE_DEPRECATED = "showgraphsingle"; //NON-NLS
   public static final String MINIMUM_DISPLAYABLE = "minDisplayPieces"; //NON-NLS
@@ -163,8 +159,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   protected String desc = ""; //NON-NLS
   protected int minimumDisplayablePieces = 2;
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected boolean alwaysShowLoc = false;
   protected boolean drawPieces = true;
   protected boolean drawSingleDeprecated = false;
   protected boolean showText = false;
@@ -285,19 +279,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     drawingMouseOver = false;
-  }
-
-  /**
-   * @deprecated Use {@link #drawGraphics(Graphics, Point, JComponent, List)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
-  protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, PieceIterator pi) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    final ArrayList<GamePiece> a = new ArrayList<>();
-    while (pi.hasMoreElements()) {
-      a.add(pi.nextPiece());
-    }
-    drawGraphics(g, pt, comp, a);
   }
 
   protected void drawGraphics(Graphics g, @SuppressWarnings("unused") Point pt, JComponent comp, List<GamePiece> pieces) {
@@ -457,19 +438,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   /**
-   * @deprecated Use {@link #drawText(Graphics, Point, JComponent, List)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
-  protected void drawText(Graphics g, Point pt, JComponent comp, PieceIterator pi) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    final ArrayList<GamePiece> a = new ArrayList<>();
-    while (pi.hasMoreElements()) {
-      a.add(pi.nextPiece());
-    }
-    drawText(g, pt, comp, a);
-  }
-
-  /**
    * Label with the location If the counter viewer is being displayed, then
    * place the location name just above the left hand end of the counters. If
    * no counter viewer (i.e. single piece or expanded stack), then place the
@@ -533,15 +501,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         }
       }
     }
-  }
-
-  /**
-   * @deprecated Use {{@link #drawLabel(Graphics, Point, String, int, int)}}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true) // Required for backward compatibility
-  protected void drawLabel(Graphics g, Point pt, String label) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    drawLabel(g, pt, label, LabelUtils.RIGHT, LabelUtils.BOTTOM);
   }
 
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
@@ -742,12 +701,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     protected int insertPos = 0;
     protected Point foundPieceAt;
     protected boolean showingOverlap;
-
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public Visitor(Filter filter, Map map, Point pt) {
-      this(filter, map, pt, false);
-      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    }
 
     public Visitor(Filter filter, Map map, Point pt, boolean showOverlap) {
       super(map, pt);

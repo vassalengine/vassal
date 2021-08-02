@@ -46,7 +46,6 @@ import VASSAL.tools.IconButton;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
@@ -789,17 +788,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   public void replace(StringBuilder s, String from, String to) {
-    int i = s.indexOf(from);
-    while (i >= 0) {
-      s = s.replace(i, i + 2, to);
-      i = s.indexOf(from);
-    }
-  }
-
-  /** @deprecated Use {@link #replace(StringBuilder,String,String)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void replace(StringBuffer s, String from, String to) {
-    ProblemDialog.showDeprecated("2020-08-06");
     int i = s.indexOf(from);
     while (i >= 0) {
       s = s.replace(i, i + 2, to);

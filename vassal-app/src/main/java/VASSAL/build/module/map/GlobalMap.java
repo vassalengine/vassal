@@ -21,7 +21,6 @@ import VASSAL.build.AbstractFolder;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.search.ImageSearchTarget;
 import VASSAL.search.SearchTarget;
-import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -274,34 +273,6 @@ public class GlobalMap implements AutoConfigurable,
   @Override
   public boolean drawAboveCounters() {
     return true;
-  }
-
-  /**
-   * Transform a point from Map coordinates to coordinates in the overview
-   * window
-   *
-   * @param p Point
-   * @return Transformed Point
-   * @deprecated Use {@link #mapToComponent(Point)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Point componentCoordinates(Point p) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return mapToComponent(p);
-  }
-
-  /**
-   * Transform a point from coordinates in the overview window to Map
-   * coordinates
-   *
-   * @param p Point
-   * @return Transformed Point
-   * @deprecated Use {@link #componentToMap(Point)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Point mapCoordinates(Point p) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return componentToMap(p);
   }
 
   public Point componentToMap(Point p) {

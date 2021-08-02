@@ -17,9 +17,7 @@
  */
 package VASSAL.command;
 
-import VASSAL.tools.ProblemDialog;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
@@ -95,13 +93,6 @@ public class ConditionalCommand extends Command {
 
     public List<String> getValueList() {
       return Collections.unmodifiableList(allowed);
-    }
-
-    /** @deprecated Use {@link #getValueList()} instead. */
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public Enumeration<String> getValues() {
-      ProblemDialog.showDeprecated("2020-08-06");
-      return Collections.enumeration(allowed);
     }
 
     @Override

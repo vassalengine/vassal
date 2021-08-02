@@ -25,12 +25,10 @@ import VASSAL.i18n.Translatable;
 import VASSAL.script.expression.Auditable;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
-import VASSAL.tools.ProblemDialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.w3c.dom.Attr;
@@ -137,16 +135,6 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
 
   /**
    * @return all build components that are an instance of the given class
-   * @deprecated Use {@link #getComponentsOf(Class)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public <T> Enumeration<T> getComponents(Class<T> target) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return Collections.enumeration(getComponentsOf(target));
-  }
-
-  /**
-   * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
     final ArrayList<T> l = new ArrayList<>();
@@ -160,20 +148,6 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
       }
     }
     return l;
-  }
-
-  /**
-   * Recursively descend the build tree and return an enumeration of all
-   * components that are instances of the given class
-   *
-   * @param target Target class
-   * @return Results
-   * @deprecated Use {@link #getAllDescendantComponentsOf(Class)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public <T> Enumeration<T> getAllDescendantComponents(Class<T> target) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return Collections.enumeration(getAllDescendantComponentsOf(target));
   }
 
   /**
@@ -226,20 +200,6 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     if (b instanceof AbstractBuildable) {
       ((AbstractBuildable)b).setAncestor(this);
     }
-  }
-
-  /**
-   * @return an enumeration of Buildable objects which are the direct children
-   * of this object in the Buildable containment hierarchy. The
-   * {@link #getBuildElement} method uses these objects to construct the XML
-   * element from which this object can be built.
-   *
-   * @deprecated Use {@link #getBuildables()} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Enumeration<Buildable> getBuildComponents() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return Collections.enumeration(buildComponents);
   }
 
   /**

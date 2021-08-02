@@ -22,7 +22,6 @@ import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.KeyNamer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.i18n.Resources;
@@ -89,7 +88,7 @@ import net.miginfocom.swing.MigLayout;
  * This is the GamePiece designer dialog.  It appears when you edit
  * the properties of a "Single Piece" in the Configuration window.
  */
-public class PieceDefiner extends JPanel implements HelpWindowExtension {
+public class PieceDefiner extends JPanel {
   private static final long serialVersionUID = 1L;
 
   // A Preference for holding the maximum split size between the image and the trait list panel.
@@ -301,7 +300,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     refresh();
   }
 
-  @Override
   @Deprecated(since = "2020-09-12", forRemoval = true)
   public void setBaseWindow(HelpWindow w) {
     ProblemDialog.showDeprecated("2020-09-12");

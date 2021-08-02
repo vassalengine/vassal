@@ -702,9 +702,9 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    *
    * @param p Piece to set properties on
    */
-  @Deprecated(since = "20200906", forRemoval = true)
+  @Deprecated(since = "2020-09-06", forRemoval = true)
   public static void setOldProperties(GamePiece p) {
-    ProblemDialog.showDeprecated("20200906");
+    ProblemDialog.showDeprecated("2020-09-06");
     putOldProperties(p);
   }
 
@@ -751,16 +751,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
 
     return comm;
-  }
-
-  /**
-   * @deprecated
-   * Use {@link #setOldProperties(GamePiece)
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void setOldProperties() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    putOldProperties(this);
   }
 
   /**

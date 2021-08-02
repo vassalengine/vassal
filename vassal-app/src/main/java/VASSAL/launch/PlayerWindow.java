@@ -18,8 +18,6 @@
 package VASSAL.launch;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -36,7 +34,6 @@ import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ApplicationIcons;
-import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -178,41 +175,6 @@ public class PlayerWindow extends JFrame {
     controlPanel.setLayout(new BorderLayout());
     controlPanel.setPreferredSize(new Dimension(800, 600));
     add(controlPanel, BorderLayout.CENTER);
-  }
-
-  /**
-   * Create a new hideable panel beside the control panel.
-   *
-   * @param newComponent the hideable component
-   * @param hideablePosition the position of the hideable component, one of
-   * {@link ComponentSplitter.SplitPane#HIDE_TOP}, {@link ComponentSplitter.SplitPane#HIDE_RIGHT},
-   * {@link ComponentSplitter.SplitPane#HIDE_BOTTOM}, {@link ComponentSplitter.SplitPane#HIDE_LEFT}
-   * @param resize If true, the containing window will expand or shrink to an appropriate size when
-   *     the hideable component is shown or hidden
-   * @return the {@link ComponentSplitter.SplitPane} containing the two components
-   *
-   */
-  @SuppressWarnings("removal")
-  @Deprecated(since = "2020-07-28", forRemoval = true)
-  public ComponentSplitter.SplitPane splitControlPanel(Component newComponent, int hideablePosition, boolean resize) {
-    int index = -1;
-    final Container parent = controlPanel.getParent();
-    if (parent != null) {
-      final int n = parent.getComponentCount();
-      for (int i = 0; i < n; ++i) {
-        if (controlPanel == parent.getComponent(i)) {
-          index = i;
-          break;
-        }
-      }
-    }
-
-    final ComponentSplitter.SplitPane
-      split = new ComponentSplitter.SplitPane(newComponent, controlPanel, hideablePosition, resize);
-    if (index >= 0) {
-      parent.add(split, index);
-    }
-    return split;
   }
 
   public void addChatter(Chatter chatter) {

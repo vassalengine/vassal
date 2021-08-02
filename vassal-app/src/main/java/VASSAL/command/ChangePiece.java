@@ -48,17 +48,6 @@ public class ChangePiece extends Command {
   }
 
   /**
-   * When using this constructor, the previous state will be set
-   * to that of the piece when this Command is executed.
-   * @deprecated
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public ChangePiece(String id, String newState) {
-    this(id, null, newState);
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
-
-  /**
    * Changes the state of a {@link GamePiece} by invoking {@link GamePiece#setState}
    */
   @Override

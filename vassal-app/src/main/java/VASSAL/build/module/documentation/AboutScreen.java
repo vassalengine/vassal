@@ -17,8 +17,6 @@
  */
 package VASSAL.build.module.documentation;
 
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.image.ImageUtils;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -67,16 +65,6 @@ public class AboutScreen extends AbstractConfigurable {
     this();
     if (op == null) throw new IllegalArgumentException();
     this.op = op;
-  }
-
-  /**
-   * @deprecated Use {@link #AboutScreen(ImageOp)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public AboutScreen(Image i) {
-    this();
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    this.op = Op.load(ImageUtils.toBufferedImage(i));
   }
 
   public void launch() {

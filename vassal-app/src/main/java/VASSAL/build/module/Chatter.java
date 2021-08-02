@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -79,9 +78,6 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String GAME_MSG4_COLOR  = "HTMLgameMessage4Color";  //$NON-NLS-1$
   protected static final String GAME_MSG5_COLOR  = "HTMLgameMessage5Color";  //$NON-NLS-1$
   protected static final String SYS_MSG_COLOR    = "HTMLsystemMessageColor"; //$NON-NLS-1$
-
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected static final String GAME_MSG_COLOR = "gameMessageColor"; //NON-NLS
 
   protected Font myFont;
 
@@ -625,18 +621,5 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     f.add(chat);
     f.pack();
     f.setVisible(true);
-  }
-
-  /** @deprecated No Replacement */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void setHandle(@SuppressWarnings("unused") String s) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-  }
-
-  /** @deprecated use {@link GlobalOptions#getPlayerId()} */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public String getHandle() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return GlobalOptions.getInstance().getPlayerId();
   }
 }

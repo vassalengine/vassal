@@ -21,14 +21,9 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import java.io.File;
 
-import org.apache.commons.lang3.SystemUtils;
-
 import VASSAL.launch.Config;
 import VASSAL.launch.DummyConfig;
 import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.version.VassalVersionTokenizer;
-import VASSAL.tools.version.VersionFormatException;
-import VASSAL.tools.version.VersionTokenizer;
 import VASSAL.tools.version.VersionUtils;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -63,27 +58,6 @@ public final class Info {
    */
   public static String getVersion() {
     return CONFIG.getVersion();
-  }
-
-  /**
-   * @return The major/minor portion of the release version. If the version is a
-   * beta-release number, a 'beta' is appended. For example, the minor
-   * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
-   *
-   * @deprecated If you need the minor version number, get it from
-   * a {@link VersionTokenizer}.
-   */
-  @SuppressWarnings("removal")
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static String getMinorVersion() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    final VersionTokenizer tok = new VassalVersionTokenizer(getVersion());
-    try {
-      return tok.next() + "." + tok.next();
-    }
-    catch (VersionFormatException e) {
-      return null;
-    }
   }
 
   /**
@@ -145,27 +119,6 @@ public final class Info {
     return SwingUtils.getScreenBounds(c);
   }
 
-  /** @deprecated Use {@link SystemUtils#IS_OS_MAC} instead */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static boolean isMacOSX() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return SystemUtils.IS_OS_MAC;
-  }
-
-  /** @deprecated Use {@link SystemUtils#IS_OS_MAC} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static boolean isMacOsX() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return SystemUtils.IS_OS_MAC;
-  }
-
-  /** @deprecated Use {@link SystemUtils#IS_OS_WINDOWS} instead */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static boolean isWindows() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return SystemUtils.IS_OS_WINDOWS;
-  }
-
   public static boolean isModuleTooNew(String version) {
     return VersionUtils.compareVersions(
       VersionUtils.truncateToMinorVersion(version),
@@ -180,36 +133,6 @@ public final class Info {
     ) < 0;
   }
 
-  /**
-   * Compares VASSAL version strings. This method is guaranteed to
-   * correctly compare the current version string with any other
-   * version string. It is <em>not</em> guaranteed to correctly
-   * compare two arbitrary version strings.
-   *
-   * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
-   * zero if {@code v0 == v1} or if the ordering cannot be determined from
-   * the parsable parts of the two <code>String</code>s.
-   *
-   * @deprecated use {@link VersionUtils#compareVersions(String, String)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static int compareVersions(String v0, String v1) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return VersionUtils.compareVersions(v0, v1);
-  }
-
-  /**
-   * Returns the directory where the VASSAL documentation is installed.
-   *
-   * @return a {@link File} representing the directory
-   * @deprecated Use {@link #getDocDir()} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static File getDocsDir() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getDocDir();
-  }
-
   /** @deprecated Use {@link #getBaseDir()} instead. */
   @Deprecated(since = "2020-10-03", forRemoval = true)
   public static File getBinDir() {
@@ -222,25 +145,5 @@ public final class Info {
   public static File getHomeDir() {
     ProblemDialog.showDeprecated("2020-10-02");
     return getConfDir();
-  }
-
-  /**
-   * @return true if this platform supports Swing Drag and Drop
-   * @deprecated Check is no longer necessary since Java 1.4+ is required.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static boolean isDndEnabled() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return true;
-  }
-
-  /**
-   * @deprecated since Java 1.4 is now required
-   * @return true if this platform supports Java2D
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static boolean is2dEnabled() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return true;
   }
 }

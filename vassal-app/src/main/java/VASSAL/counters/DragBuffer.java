@@ -32,7 +32,6 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import VASSAL.build.module.Map;
-import VASSAL.tools.ProblemDialog;
 
 public class DragBuffer {
   private static final DragBuffer THE_BUFFER = new DragBuffer();
@@ -223,21 +222,5 @@ public class DragBuffer {
 
   public void sort(Comparator<GamePiece> comp) {
     pieces.sort(comp);
-  }
-
-  /**
-   * @deprecated Use {@link #sort(Comparator)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  @SuppressWarnings("unchecked")
-  public void sort(VASSAL.tools.Sort.Comparator comp) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    sort((Comparator<GamePiece>) comp);
-  }
-
-  /** @deprecated No Replacement */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static void init(@SuppressWarnings("unused") DragBuffer db) {
-    ProblemDialog.showDeprecated("2020-08-06");
   }
 }

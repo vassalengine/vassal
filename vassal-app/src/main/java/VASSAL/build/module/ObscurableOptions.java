@@ -27,7 +27,6 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.tools.SequenceEncoder;
-import java.util.Vector;
 
 /**
  * Determines whether players are allowed to unmask other players pieces.  The module designer may
@@ -224,13 +223,6 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     private final List<String> allowed;
 
     public SetAllowed(List<String> allowed) {
-      this.allowed = allowed;
-    }
-
-    /** @deprecated Use {@link #SetAllowed(List)} instead. */
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetAllowed(Vector<String> allowed) { //NOPMD
-      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.allowed = allowed;
     }
 

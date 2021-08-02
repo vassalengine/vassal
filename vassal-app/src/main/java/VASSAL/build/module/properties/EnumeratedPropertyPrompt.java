@@ -17,10 +17,9 @@
  */
 package VASSAL.build.module.properties;
 
-import VASSAL.script.expression.AuditTrail;
-import VASSAL.tools.ProblemDialog;
 import javax.swing.JOptionPane;
 
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.ExpressionException;
 
@@ -34,15 +33,6 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected Expression[] valueExpressions;
   protected DialogParent dialogParent;
   protected Constraints propertySource;
-
-  /**
-   * @deprecated Use {@link #EnumeratedPropertyPrompt(DialogParent, String, String[], Constraints)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues) {
-    this (dialogParent, prompt, validValues, null);
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
 
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, Constraints propertySource) {
     super(null, prompt);
