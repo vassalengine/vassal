@@ -43,7 +43,7 @@
 *  9864: Improved translation features (Global Translatable Message component,
     Translatable Message trait, exposing current language/locale as property)
 *  9549: Default UI font size can be overridden in preferences
-*  9254: Expression audit trails preference 0 Improve error reporting when
+*  9254: Expression audit trails preference - Improve error reporting when
      Beanshell expressions fail
 *  4542: Added 'Stack Normally' option to 'Does Not Stack' trait
 
