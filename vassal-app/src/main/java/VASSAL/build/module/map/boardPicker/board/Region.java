@@ -45,7 +45,7 @@ public class Region extends AbstractConfigurable {
   private boolean selected = false;
 
   public Region() {
-    setConfigureName(Resources.getString("Editor.Region.new_region")); //$NON-NLS-1$
+    setConfigureName("");
   }
 
   public Region(Point p) {
