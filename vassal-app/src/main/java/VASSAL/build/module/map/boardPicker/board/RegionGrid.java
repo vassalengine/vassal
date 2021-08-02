@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.datatransfer.StringSelection;
@@ -84,6 +85,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.EditPropertiesAction;
@@ -501,6 +503,34 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       bottomPanel.add(buttonPanel);
 
       add(bottomPanel, BorderLayout.SOUTH);
+
+      //BR// Scroll the possibly-8000-pixel-wide map to some semi-sensible place to start :)
+      if (!grid.regionList.isEmpty()) {
+        // If any regions have been defined, then use that list
+        Rectangle rect = null;
+        for (final Region r : grid.regionList.values()) {
+          final Point p = r.getOrigin();
+          if (rect == null) {
+            rect = new Rectangle(p);
+          }
+          else {
+            rect.add(p);
+          }
+        }
+        scroll.getViewport().scrollRectToVisible(rect);
+      }
+      else {
+        // If no regions yet, scroll to the Zone that we're in, if we're in a Zone
+        final Buildable ancestor = grid.getAncestor();
+        if (ancestor instanceof Zone) {
+          final Zone z = (Zone)ancestor;
+          final Rectangle polyBounds = z.getBounds();
+          final Point polyCenter = new Point(polyBounds.x + polyBounds.width / 2,
+            polyBounds.y + polyBounds.height / 2);
+          final Rectangle rect = new Rectangle(polyCenter);
+          scroll.getViewport().scrollRectToVisible(rect);
+        }
+      }
 
       scroll.revalidate();
       pack();
