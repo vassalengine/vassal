@@ -262,10 +262,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       WIDTH,
       HEIGHT,
       ALLOW_MULTIPLE,
+      DRAW_MULTIPLE_MESSAGE,
       ALLOW_SELECT,
+      DRAW_SPECIFIC_MESSAGE,
       SELECT_DISPLAY_PROPERTY,
       SELECT_SORT_PROPERTY,
       FACE_DOWN,
+      FACE_UP_MESSAGE,
+      FACE_DOWN_MESSAGE,
       DRAW_FACE_UP,
       FACE_DOWN_REPORT_FORMAT,
       SHUFFLE,                        // These commands match "Reshuffle" in the visible menus
@@ -290,11 +294,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       EXPRESSIONCOUNTING,
       COUNTEXPRESSIONS,
       RESTRICT_OPTION,
-      RESTRICT_EXPRESSION,
-      DRAW_MULTIPLE_MESSAGE,
-      DRAW_SPECIFIC_MESSAGE,
-      FACE_UP_MESSAGE,
-      FACE_DOWN_MESSAGE
+      RESTRICT_EXPRESSION
     };
   }
 
@@ -308,10 +308,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.width"), //$NON-NLS-1$
         Resources.getString("Editor.height"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.draw_multiple_message"), //NON-NLS
         Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.draw_specific_message"), //NON-NLS
         Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
+        Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
+        Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
         Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$        // Internally these match "SHUFFLE"
@@ -337,10 +341,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
         Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
         Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
-        Resources.getString("Editor.DrawPile.draw_multiple_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.draw_specific_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.face_up_message"), //NON-NLS
-        Resources.getString("Editor.DrawPile.face_down_message"), //NON-NLS
     };
   }
 
@@ -354,10 +354,14 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       Integer.class, // WIDTH
       Integer.class, // HEIGHT
       Boolean.class, // ALLOW_MULTIPLE
+      String.class, // DRAW MULTIPLE MESSAGE
       Boolean.class, // ALLOW_SELECT
+      String.class, // DRAW SPECIFIC MESSAGE
       PiecePropertyConfig.class, // SELECT_DISPLAY_PROPERTY
       String.class, // SELECT_SORT_PROPERTY
       Prompt.class, // FACE_DOWN
+      String.class, // FACE UP MESSAGE
+      String.class, // FACE DOWN MESSAGE
       Boolean.class, // DRAW_FACE_UP
       FormattedStringConfig.class, // FACE_DOWN_REPORT_FORMAT
       Prompt.class, // SHUFFLE                                    // These map to "re-shuffle"
@@ -383,10 +387,6 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       String[].class, // COUNTEXPRESSIONS
       Boolean.class, // RESTRICT_OPTION
       PropertyExpression.class, //RESTRICT_EXPRESSION
-      String.class,
-      String.class,
-      String.class,
-      String.class,
     };
   }
 
