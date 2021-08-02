@@ -207,6 +207,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   /** the JComponent which is repainted when the detail viewer changes */
   protected JComponent view;
 
+  private static boolean drawingMouseOver = false;
+
+  public static boolean isDrawingMouseOver() {
+    return drawingMouseOver;
+  }
+
   public CounterDetailViewer() {
     // Set up the timer; this isn't the real delay---we always check the
     // preferences for that.
@@ -268,6 +274,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.setFont(font.deriveFont((float)(fontSize * os_scale)));
 
+    drawingMouseOver = true;
+
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
     }
@@ -275,6 +283,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (textVisible) {
       drawText(g, pt, comp, displayablePieces);
     }
+
+    drawingMouseOver = false;
   }
 
   /**

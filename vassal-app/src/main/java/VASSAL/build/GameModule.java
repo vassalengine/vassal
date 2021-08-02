@@ -61,6 +61,7 @@ import VASSAL.build.module.gamepieceimage.ColorManager;
 import VASSAL.build.module.gamepieceimage.FontManager;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
@@ -216,6 +217,8 @@ public class GameModule extends AbstractConfigurable
 
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
+
+  public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
 
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
@@ -2105,6 +2108,9 @@ public class GameModule extends AbstractConfigurable
     }
     else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
+    }
+    else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
+      return CounterDetailViewer.isDrawingMouseOver();
     }
 
     //BR// MapName_isVisible property for each map window
