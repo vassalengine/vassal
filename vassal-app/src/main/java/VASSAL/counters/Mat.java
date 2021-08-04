@@ -30,7 +30,6 @@ import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP6;
 import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP7;
 import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP8;
 import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP9;
-import static VASSAL.counters.Properties.PIECE_ID;
 
 /**
  * Designates the piece as a "Mat" on which other pieces ("Cargo") can be placed.
