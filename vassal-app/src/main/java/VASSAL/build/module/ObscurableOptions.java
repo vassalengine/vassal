@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +101,6 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    */
   @Deprecated (since = "2020-10-27", forRemoval = true)
   public void setPrompt(String preferencesPrompt) {
-    ProblemDialog.showDeprecated("2020-10-27");
   }
 
   public void allowAll() {

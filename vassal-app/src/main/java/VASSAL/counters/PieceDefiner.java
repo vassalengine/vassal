@@ -28,7 +28,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
@@ -302,7 +301,6 @@ public class PieceDefiner extends JPanel {
 
   @Deprecated(since = "2020-09-12", forRemoval = true)
   public void setBaseWindow(HelpWindow w) {
-    ProblemDialog.showDeprecated("2020-09-12");
   }
 
   /**

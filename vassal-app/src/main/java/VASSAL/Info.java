@@ -23,7 +23,6 @@ import java.io.File;
 
 import VASSAL.launch.Config;
 import VASSAL.launch.DummyConfig;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.version.VersionUtils;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -115,7 +114,6 @@ public final class Info {
    */
   @Deprecated(since = "2020-10-03", forRemoval = true)
   public static Rectangle getScreenBounds(Component c) {
-    ProblemDialog.showDeprecated("2020-10-03");
     return SwingUtils.getScreenBounds(c);
   }
 
@@ -136,14 +134,12 @@ public final class Info {
   /** @deprecated Use {@link #getBaseDir()} instead. */
   @Deprecated(since = "2020-10-03", forRemoval = true)
   public static File getBinDir() {
-    ProblemDialog.showDeprecated("2020-10-03");
     return getBaseDir();
   }
 
   /** @deprecated Use {@link #getConfDir()} instead. */
   @Deprecated(since = "2020-10-02", forRemoval = true)
   public static File getHomeDir() {
-    ProblemDialog.showDeprecated("2020-10-02");
     return getConfDir();
   }
 }

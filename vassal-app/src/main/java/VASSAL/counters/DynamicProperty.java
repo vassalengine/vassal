@@ -42,7 +42,6 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Component;
@@ -565,7 +564,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
           target,
           new PropertyPrompt(target, Resources.getString("Editor.DynamicProperty.change_value_of", target.getKey()))));
 
-      ProblemDialog.showDeprecated("2020-12-06");
       commandConfig = new StringConfigurer(Resources.getString("Editor.DynamicProperty.change_value"));
       keyConfig = new NamedHotKeyConfigurer(NamedKeyStroke.of('V', InputEvent.CTRL_DOWN_MASK));
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
