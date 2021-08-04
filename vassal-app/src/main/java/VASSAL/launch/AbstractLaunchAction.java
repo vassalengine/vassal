@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -36,9 +37,11 @@ import java.util.zip.ZipFile;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingWorker;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +55,11 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.concurrent.FutureUtils;
+import VASSAL.tools.deprecation.RemovalAndDeprecationChecker;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
 import VASSAL.tools.io.ProcessLauncher;
@@ -254,6 +259,35 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         );
       }
 // end FIXME
+
+      // Check for usage of removed and deprecated classes, methods, fields
+      final RemovalAndDeprecationChecker rdc = new RemovalAndDeprecationChecker();
+      Pair<Map<String, Set<String>>, Map<String, Set<String>>> rd;
+      try (ZipFile zf = new ZipFile(lr.module.getAbsolutePath())) {
+        rd = rdc.check(zf);
+      }
+
+      final Map<String, Set<String>> deprecated = rd.getRight();
+      if (!deprecated.isEmpty()) {
+        final String deplist = RemovalAndDeprecationChecker.formatResult(deprecated);
+        FutureUtils.wait(ProblemDialog.showDetails(
+          JOptionPane.WARNING_MESSAGE,
+          deplist,
+          Resources.getString("Dialogs.deprecated_code")
+        ));
+      }
+
+      final Map<String, Set<String>> removed = rd.getLeft();
+      if (!removed.isEmpty()) {
+        final String remlist = RemovalAndDeprecationChecker.formatResult(removed);
+        FutureUtils.wait(ProblemDialog.showDetails(
+          JOptionPane.ERROR_MESSAGE,
+          remlist,
+          Resources.getString("Dialogs.removed_code")
+        ));
+        // Using anything removed is fatal
+        return null;
+      }
 
       // set default heap size
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
