@@ -52,6 +52,16 @@ A Mat Cargo trait exposes the following <<Properties.adoc#top,Properties>>:
 * _CurrentMat_ contains the name of any <<Mat.adoc#top,Mat>> that the Mat Cargo piece is currently sitting atop, taken from the
 Mat's _Mat Name_ field. If the piece is not sitting on any Mat, this property will contain the empty string "".
 
+* _CurrentMatID_ contains a unique string identifier for the Mat that the Mat Cargo piece is currently sitting atop. The string will be unique among even Mat pieces sharing the same Mat Name property. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatX_ contains the X position of the Mat that the Mat Cargo piece is currently sitting on. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatY_ contains the Y position of the Mat that the Mat Cargo piece is currently sitting on. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatOffsetX_ contains an offset from this piece's X position to the X position of the Mat that the Mat Cargo piece is currently sitting on. For example if the Mat is at 10 and the Cargo is at 20 then this property will contain -10. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatOffsetY_ contains an offset from this piece's Y position to the Y position of the Mat that the Mat Cargo piece is currently sitting on. For example if the Mat is at 10 and the Cargo is at 20 then this property will contain -10. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
 * _IsCargo_ will always contain the string _"true"_ for a Mat Cargo piece (it will contain an empty string, "" for a
 piece which does not have this trait).
 

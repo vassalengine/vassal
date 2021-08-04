@@ -36,8 +36,13 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public static final String ID = "matPiece;"; // NON-NLS
   public static final String NO_MAT = "noMat"; //NON-NLS
 
-  public static final String CURRENT_MAT = "CurrentMat"; //NON-NLS     // Exposed property giving our current mat or "null"
-  public static final String IS_CARGO    = "IsCargo"; //NON-NLS        // Exposed property returns "true"
+  public static final String CURRENT_MAT    = "CurrentMat"; //NON-NLS     // Exposed property giving our current mat or "null"
+  public static final String CURRENT_MAT_ID = "CurrentMatID"; //NON-NLS   // Exposed property giving our current mat + uniqueID or "null"
+  public static final String CURRENT_MAT_X  = "CurrentMatX"; //NON-NLS    // Exposed property giving X position of our current mat
+  public static final String CURRENT_MAT_Y  = "CurrentMatY"; //NON-NLS    // Exposed property giving Y position of our current mat
+  public static final String CURRENT_MAT_OFFSET_X  = "CurrentMatOffsetX"; //NON-NLS    // Exposed property giving X offset to our current mat
+  public static final String CURRENT_MAT_OFFSET_Y  = "CurrentMatOffsetY"; //NON-NLS    // Exposed property giving Y offset to our current mat
+  public static final String IS_CARGO       = "IsCargo"; //NON-NLS        // Exposed property returns "true"
 
   protected String desc;
 
@@ -375,6 +380,37 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return mat.getProperty(Mat.MAT_NAME);
       }
     }
+    else if (CURRENT_MAT_ID.equals(key)) {
+      if (mat != null) {
+        return mat.getProperty(Mat.MAT_ID);
+      }
+    }
+    else if (CURRENT_MAT_X.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        return p.x;
+      }
+    }
+    else if (CURRENT_MAT_Y.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        return p.y;
+      }
+    }
+    else if (CURRENT_MAT_OFFSET_X.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        final Point p2 = Decorator.getOutermost(this).getPosition();
+        return p.x - p2.x;
+      }
+    }
+    else if (CURRENT_MAT_OFFSET_Y.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        final Point p2 = Decorator.getOutermost(this).getPosition();
+        return p.y - p2.y;
+      }
+    }
     else if (IS_CARGO.equals(key)) {
       return Boolean.TRUE;
     }
@@ -386,6 +422,37 @@ public class MatCargo extends Decorator implements TranslatablePiece {
     if (CURRENT_MAT.equals(key)) {
       if (mat != null) {
         return mat.getLocalizedProperty(Mat.MAT_NAME);
+      }
+    }
+    else if (CURRENT_MAT_ID.equals(key)) {
+      if (mat != null) {
+        return mat.getProperty(Mat.MAT_ID);
+      }
+    }
+    else if (CURRENT_MAT_X.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        return p.x;
+      }
+    }
+    else if (CURRENT_MAT_Y.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        return p.y;
+      }
+    }
+    else if (CURRENT_MAT_OFFSET_X.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        final Point p2 = Decorator.getOutermost(this).getPosition();
+        return p.x - p2.x;
+      }
+    }
+    else if (CURRENT_MAT_OFFSET_Y.equals(key)) {
+      if (mat != null) {
+        final Point p = Decorator.getOutermost(mat).getPosition();
+        final Point p2 = Decorator.getOutermost(this).getPosition();
+        return p.y - p2.y;
       }
     }
     else if (IS_CARGO.equals(key)) {
@@ -417,7 +484,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(CURRENT_MAT);
+    return Arrays.asList(CURRENT_MAT, CURRENT_MAT_ID, IS_CARGO, CURRENT_MAT_X, CURRENT_MAT_Y, CURRENT_MAT_OFFSET_X, CURRENT_MAT_OFFSET_Y);
   }
 
   public static class Ed implements PieceEditor {

@@ -20,12 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static VASSAL.counters.Properties.PIECE_ID;
+
 /**
  * Designates the piece as a "Mat" on which other pieces ("Cargo") can be placed.
  */
 public class Mat extends Decorator implements TranslatablePiece {
   public static final String ID = "mat;"; // NON-NLS
   public static final String MAT_NAME = "MatName"; //NON-NLS
+  public static final String MAT_ID = "MatID"; //NON-NLS
   public static final String MAT_CONTENTS = "MatContents"; //NON-NLS
   public static final String MAT_NUM_CARGO = "MatNumCargo"; //NON-NLS
   protected String matName;
@@ -232,6 +235,9 @@ public class Mat extends Decorator implements TranslatablePiece {
     if (MAT_NAME.equals(key)) {
       return matName;
     }
+    if (MAT_ID.equals(key)) {
+      return matName + "_" + getProperty(PIECE_ID);
+    }
     else if (MAT_CONTENTS.equals(key)) {
       return new ArrayList<>(contents);
     }
@@ -248,6 +254,9 @@ public class Mat extends Decorator implements TranslatablePiece {
   public Object getLocalizedProperty(Object key) {
     if (MAT_NAME.equals(key)) {
       return matName;
+    }
+    if (MAT_ID.equals(key)) {
+      return matName + "_" + getProperty(PIECE_ID);
     }
     else if (MAT_NUM_CARGO.equals(key)) {
       return String.valueOf(contents.size());
@@ -287,7 +296,7 @@ public class Mat extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(MAT_NAME, MAT_NUM_CARGO);
+    return Arrays.asList(MAT_NAME, MAT_ID, MAT_NUM_CARGO);
   }
 
 
