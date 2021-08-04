@@ -385,11 +385,6 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return mat.getProperty(Mat.MAT_ID);
       }
     }
-    else if (CURRENT_MAT_ID.equals(key)) {
-      if (mat != null) {
-        return mat.getProperty(Mat.MAT_ID);
-      }
-    }
     else if (CURRENT_MAT_X.equals(key)) {
       if (mat != null) {
         return Decorator.getOutermost(mat).getPosition().x;
