@@ -20,6 +20,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP0;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP1;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP2;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP3;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP4;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP5;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP6;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP7;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP8;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP9;
 import static VASSAL.counters.Properties.PIECE_ID;
 
 /**
@@ -236,7 +246,7 @@ public class Mat extends Decorator implements TranslatablePiece {
       return matName;
     }
     if (MAT_ID.equals(key)) {
-      return matName + "_" + getProperty(PIECE_ID);
+      return matName + "_" + getProperty(BasicPiece.PIECE_UID);
     }
     else if (MAT_CONTENTS.equals(key)) {
       return new ArrayList<>(contents);
@@ -256,7 +266,7 @@ public class Mat extends Decorator implements TranslatablePiece {
       return matName;
     }
     if (MAT_ID.equals(key)) {
-      return matName + "_" + getProperty(PIECE_ID);
+      return matName + "_" + getProperty(BasicPiece.PIECE_UID);
     }
     else if (MAT_NUM_CARGO.equals(key)) {
       return String.valueOf(contents.size());
@@ -296,9 +306,8 @@ public class Mat extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(MAT_NAME, MAT_ID, MAT_NUM_CARGO);
+    return Arrays.asList(MAT_NAME, MAT_ID, MAT_NUM_CARGO, CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9);
   }
-
 
   public static class Ed implements PieceEditor {
     private final StringConfigurer matNameInput;

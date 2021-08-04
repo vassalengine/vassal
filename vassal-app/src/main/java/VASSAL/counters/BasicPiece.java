@@ -101,6 +101,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String DECK_POSITION = "DeckPosition"; // NON-NLS
   public static final String CLICKED_X = "ClickedX"; // NON-NLS
   public static final String CLICKED_Y = "ClickedY"; // NON-NLS
+  public static final String PIECE_UID = "PieceUID"; // NON-NLS
   public static Font POPUP_MENU_FONT = new Font(Font.DIALOG, Font.PLAIN, 11);
   protected JPopupMenu popup;
   protected Rectangle imageBounds;
@@ -295,6 +296,9 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     else if (CURRENT_Y.equals(key)) {
       return String.valueOf(getPosition().y);
     }
+    else if (PIECE_UID.equals(key)) {
+      return getId();
+    }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
@@ -354,6 +358,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
       DECK_NAME,
       CURRENT_X,
       CURRENT_Y,
+      PIECE_UID,
       Properties.VISIBLE_STATE
     ).contains(key)) {
       return getProperty(key);
@@ -1158,6 +1163,7 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(DECK_NAME);
     l.add(CLICKED_X);
     l.add(CLICKED_Y);
+    l.add(PIECE_UID);
     return l;
   }
 
