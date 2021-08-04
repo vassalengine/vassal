@@ -431,14 +431,15 @@ public class RemovalAndDeprecationChecker {
   }
 
   public static String formatResult(Map<String, Set<String>> dmap) {
+    // a => b
     final StringBuilder sb = new StringBuilder();
     final List<String> dependers = new ArrayList<>(dmap.keySet());
     Collections.sort(dependers);
     
-    for (String dhead: dependers) {
+    for (final String dhead: dependers) {
       final List<String> ds = new ArrayList<>(dmap.get(dhead));
       Collections.sort(ds);
-      for (String dtail: ds) {
+      for (final String dtail: ds) {
         sb.append(dhead).append(" => ").append(dtail).append('\n');
       }
     }

@@ -395,7 +395,7 @@ public class DependencyWalker {
 
   private void addMethodDesc(String desc) {
     addType(Type.getReturnType(desc));
-    for (Type t: Type.getArgumentTypes(desc)) {
+    for (final Type t: Type.getArgumentTypes(desc)) {
       addType(t);
     }
   }
@@ -416,7 +416,7 @@ public class DependencyWalker {
   }
 
   private void addInternalNames(String[] names) {
-    for (String n: names) {
+    for (final String n: names) {
       addInternalName(n);
     }
   }
@@ -433,7 +433,7 @@ public class DependencyWalker {
   }
 
   private void addConstants(Object[] cst) {
-    for (Object c: cst) {
+    for (final Object c: cst) {
       addConstant(c);
     }
   }
@@ -467,7 +467,7 @@ public class DependencyWalker {
 
   private void addMethod(String owner, String name, String desc) {
     final List<String> args = new ArrayList<>();
-    for (Type t: Type.getArgumentTypes(desc)) {
+    for (final Type t: Type.getArgumentTypes(desc)) {
       args.add(typeString(t));
     }
 
