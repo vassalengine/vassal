@@ -9,7 +9,6 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
-import org.apache.commons.lang3.ObjectUtils;
 
 import javax.swing.KeyStroke;
 import java.awt.Component;
