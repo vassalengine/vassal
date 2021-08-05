@@ -29,6 +29,13 @@ import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
 
+import static VASSAL.counters.BasicPiece.BASIC_NAME;
+import static VASSAL.counters.BasicPiece.CURRENT_BOARD;
+import static VASSAL.counters.BasicPiece.CURRENT_MAP;
+import static VASSAL.counters.BasicPiece.CURRENT_ZONE;
+import static VASSAL.counters.BasicPiece.LOCATION_NAME;
+import static VASSAL.counters.BasicPiece.PIECE_NAME;
+
 /**
  * Designates the piece as "Cargo", which can be placed on a "Mat" to move along with it
  */
@@ -36,8 +43,29 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   public static final String ID = "matPiece;"; // NON-NLS
   public static final String NO_MAT = "noMat"; //NON-NLS
 
-  public static final String CURRENT_MAT = "CurrentMat"; //NON-NLS     // Exposed property giving our current mat or "null"
-  public static final String IS_CARGO    = "IsCargo"; //NON-NLS        // Exposed property returns "true"
+  public static final String CURRENT_MAT    = "CurrentMat"; //NON-NLS     // Exposed property giving our current mat or "null"
+  public static final String CURRENT_MAT_ID = "CurrentMatID"; //NON-NLS   // Exposed property giving our current mat + uniqueID or "null"
+  public static final String CURRENT_MAT_X  = "CurrentMatX"; //NON-NLS    // Exposed property giving X position of our current mat
+  public static final String CURRENT_MAT_Y  = "CurrentMatY"; //NON-NLS    // Exposed property giving Y position of our current mat
+  public static final String CURRENT_MAT_OFFSET_X  = "CurrentMatOffsetX"; //NON-NLS    // Exposed property giving X offset to our current mat
+  public static final String CURRENT_MAT_OFFSET_Y  = "CurrentMatOffsetY"; //NON-NLS    // Exposed property giving Y offset to our current mat
+  public static final String CURRENT_MAT_PIECE_NAME = "CurrentMatPieceName"; // NON-NLS // Exposed property giving PieceName of our current mat
+  public static final String CURRENT_MAT_BASIC_NAME = "CurrentMatBasicName"; // NON-NLS // Exposed property giving BasicName of our current mat
+  public static final String CURRENT_MAT_LOCATION_NAME = "CurrentMatLocationName"; //NON-NLS
+  public static final String CURRENT_MAT_ZONE = "CurrentMatZone"; //NON-NLS
+  public static final String CURRENT_MAT_BOARD = "CurrentMatBoard"; //NON-NLS
+  public static final String CURRENT_MAT_MAP = "CurrentMatMap"; //NON-NLS
+  public static final String CURRENT_MAT_PROP0 = "CurrentMatProp0"; //NON-NLS // These expose identically named properties of the current mat (e.g. I would receive CurrentMatProp0 **of this piece's current map**
+  public static final String CURRENT_MAT_PROP1 = "CurrentMatProp1"; //NON-NLS
+  public static final String CURRENT_MAT_PROP2 = "CurrentMatProp2"; //NON-NLS
+  public static final String CURRENT_MAT_PROP3 = "CurrentMatProp3"; //NON-NLS
+  public static final String CURRENT_MAT_PROP4 = "CurrentMatProp4"; //NON-NLS
+  public static final String CURRENT_MAT_PROP5 = "CurrentMatProp5"; //NON-NLS
+  public static final String CURRENT_MAT_PROP6 = "CurrentMatProp6"; //NON-NLS
+  public static final String CURRENT_MAT_PROP7 = "CurrentMatProp7"; //NON-NLS
+  public static final String CURRENT_MAT_PROP8 = "CurrentMatProp8"; //NON-NLS
+  public static final String CURRENT_MAT_PROP9 = "CurrentMatProp9"; //NON-NLS
+  public static final String IS_CARGO       = "IsCargo"; //NON-NLS        // Exposed property returns "true"
 
   protected String desc;
 
@@ -370,9 +398,46 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
   @Override
   public Object getProperty(Object key) {
-    if (CURRENT_MAT.equals(key)) {
-      if (mat != null) {
+    if (mat != null) {
+      if (CURRENT_MAT.equals(key)) {
         return mat.getProperty(Mat.MAT_NAME);
+      }
+      else if (CURRENT_MAT_ID.equals(key)) {
+        return mat.getProperty(Mat.MAT_ID);
+      }
+      else if (CURRENT_MAT_X.equals(key)) {
+        return Decorator.getOutermost(mat).getPosition().x;
+      }
+      else if (CURRENT_MAT_Y.equals(key)) {
+        return Decorator.getOutermost(mat).getPosition().y;
+      }
+      else if (CURRENT_MAT_OFFSET_X.equals(key)) {
+        return Decorator.getOutermost(mat).getPosition().x - Decorator.getOutermost(this).getPosition().x;
+      }
+      else if (CURRENT_MAT_OFFSET_Y.equals(key)) {
+        return Decorator.getOutermost(mat).getPosition().y - Decorator.getOutermost(this).getPosition().y;
+      }
+      else if (CURRENT_MAT_BASIC_NAME.equals(key)) {
+        return Decorator.getOutermost(mat).getProperty(BASIC_NAME);
+      }
+      else if (CURRENT_MAT_PIECE_NAME.equals(key)) {
+        return Decorator.getOutermost(mat).getProperty(PIECE_NAME);
+      }
+      else if (CURRENT_MAT_LOCATION_NAME.equals(key)) {
+        return Decorator.getOutermost(mat).getProperty(LOCATION_NAME);
+      }
+      else if (CURRENT_MAT_ZONE.equals(key)) {
+        return Decorator.getOutermost(mat).getProperty(CURRENT_ZONE);
+      }
+      else if (CURRENT_MAT_BOARD.equals(key)) {
+        return Decorator.getOutermost(mat).getProperty(CURRENT_BOARD);
+      }
+      else if (CURRENT_MAT_MAP.equals(key)) {
+        return Decorator.getOutermost(mat).getProperty(CURRENT_MAP);
+      }
+      else if (List.of(CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9
+      ).contains(key)) {
+        return Decorator.getOutermost(mat).getProperty(key);
       }
     }
     else if (IS_CARGO.equals(key)) {
@@ -383,13 +448,42 @@ public class MatCargo extends Decorator implements TranslatablePiece {
 
   @Override
   public Object getLocalizedProperty(Object key) {
-    if (CURRENT_MAT.equals(key)) {
-      if (mat != null) {
+    if (mat != null) {
+      if (CURRENT_MAT.equals(key)) {
         return mat.getLocalizedProperty(Mat.MAT_NAME);
       }
+      else if (CURRENT_MAT_BASIC_NAME.equals(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(BASIC_NAME);
+      }
+      else if (CURRENT_MAT_PIECE_NAME.equals(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(PIECE_NAME);
+      }
+      else if (CURRENT_MAT_LOCATION_NAME.equals(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(LOCATION_NAME);
+      }
+      else if (CURRENT_MAT_ZONE.equals(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(CURRENT_ZONE);
+      }
+      else if (CURRENT_MAT_BOARD.equals(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(CURRENT_BOARD);
+      }
+      else if (CURRENT_MAT_MAP.equals(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(CURRENT_MAP);
+      }
+      else if (List.of(CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9
+      ).contains(key)) {
+        return Decorator.getOutermost(mat).getLocalizedProperty(key);
+      }
     }
-    else if (IS_CARGO.equals(key)) {
-      return Boolean.TRUE;
+    else if (List.of(
+      CURRENT_MAT_ID,
+      CURRENT_MAT_X,
+      CURRENT_MAT_Y,
+      CURRENT_MAT_OFFSET_X,
+      CURRENT_MAT_OFFSET_Y,
+      IS_CARGO
+    ).contains(key)) {
+      return getProperty(key);
     }
     return super.getLocalizedProperty(key);
   }
@@ -417,7 +511,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(CURRENT_MAT);
+    return Arrays.asList(CURRENT_MAT, CURRENT_MAT_ID, IS_CARGO, CURRENT_MAT_X, CURRENT_MAT_Y, CURRENT_MAT_OFFSET_X, CURRENT_MAT_OFFSET_Y, CURRENT_MAT_BASIC_NAME, CURRENT_MAT_PIECE_NAME, CURRENT_MAT_LOCATION_NAME, CURRENT_MAT_ZONE, CURRENT_MAT_BOARD, CURRENT_MAT_MAP, CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9);
   }
 
   public static class Ed implements PieceEditor {

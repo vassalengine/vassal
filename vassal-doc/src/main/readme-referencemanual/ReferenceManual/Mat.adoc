@@ -45,5 +45,9 @@ A Mat trait exposes the following <<Properties.adoc#top,Properties>>:
 
 * _MatName_ contains the name of the Mat, taken from the _Mat Name_ field.
 
+* _MatID_ contains a unique identifying string for the Mat piece: even two pieces sharing the same Mat Name will have different Mat ID's.
+
+* _MatNumCargo_ contains the number of Mat Cargo pieces currently sitting on this mat.
+
 
 

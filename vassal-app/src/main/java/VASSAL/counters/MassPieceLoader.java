@@ -97,6 +97,7 @@ public class MassPieceLoader {
   protected MassLoaderDialog dialog;
   private static final DirectoryConfigurer dirConfig = new DirectoryConfigurer(null, "");
   private static final BooleanConfigurer basicConfig = new BooleanConfigurer(null, "", Boolean.FALSE);
+  private static final BooleanConfigurer emptyLevelConfig = new BooleanConfigurer(null, "", Boolean.FALSE);
   private static final MassPieceDefiner definer = new MassPieceDefiner();
 
   public MassPieceLoader(ConfigureTree tree, Configurable target) {
@@ -148,6 +149,14 @@ public class MassPieceLoader {
       });
       add(new JLabel(Resources.getString("Editor.MassPieceLoader.no_basic_piece")));
       add(basicConfig.getControls());
+
+      emptyLevelConfig.addPropertyChangeListener(e -> {
+        if (e.getNewValue() != null) {
+          buildTree(dirConfig.getFileValue());
+        }
+      });
+      add(new JLabel(Resources.getString("Editor.MassPieceLoader.no_empty_level")));
+      add(emptyLevelConfig.getControls());
 
       defineDialog = new DefineDialog(this);
       final JButton defineButton = new JButton(Resources.getString("Editor.MassPieceLoader.edit_piece_template"));
@@ -1012,6 +1021,8 @@ public class MassPieceLoader {
       super(type, p);
     }
 
+
+
     public String[] getImageNames() {
       return imageName;
     }
@@ -1109,6 +1120,26 @@ public class MassPieceLoader {
           count++;
           builtImages.add(thisImage);
         }
+      }
+      if (emptyLevelConfig.getValueBoolean()) {
+        int j = 0;
+        int newLength = 0;
+        for (int i = 0; i < imageName.length; i++) {
+          if (imageName[i] != null) {
+            newLength++;
+          }
+        }
+        String[] imageNameTmp = new String[newLength];
+        String[] commonNameTmp = new String[newLength];
+        for (int i = 0; i < imageName.length; i++) {
+          if (imageName[i] != null) {
+            imageNameTmp[j] = imageName[i];
+            commonNameTmp[j] = commonName[i];
+            j++;
+          }
+        }
+        imageName = imageNameTmp;
+        commonName = commonNameTmp;
       }
       return count > 0;
     }

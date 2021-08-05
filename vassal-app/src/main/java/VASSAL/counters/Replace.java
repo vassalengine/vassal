@@ -17,6 +17,7 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
@@ -50,12 +51,33 @@ public class Replace extends PlaceMarker {
   }
 
   protected Command replacePiece() {
-    final Command c;
+    Command c;
     c = placeMarker();
     if (c == null) {
       reportDataError(this, Resources.getString("Error.bad_replace"));
     }
     else {
+      if (GameModule.getGameModule().isMatSupport()) {
+        final GamePiece outer = Decorator.getOutermost(this);
+
+        // If a cargo piece has been deleted remove it from any mat
+        if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+          if (cargo != null) {
+            c = c.append(cargo.makeClearMatCommand());
+          }
+        }
+
+        // If a mat has been deleted remove any cargo from it
+        final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+        if (matName != null && !"".equals(matName)) {
+          final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+          if (mat != null) {
+            c = c.append(mat.makeRemoveAllCargoCommand());
+          }
+        }
+      }
+
       final Command remove = new RemovePiece(Decorator.getOutermost(this));
       remove.execute();
       c.append(remove);
