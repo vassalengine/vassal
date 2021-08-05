@@ -167,6 +167,9 @@ public class Mat extends Decorator implements TranslatablePiece {
         final GamePiece mt = ((MatCargo)cargo).getMat();
         if ((mt != null) && (mt != Decorator.getOutermost(this))) {
           ct3 = new ChangeTracker(mt);
+
+          final Mat mat = (Mat)Decorator.getDecorator(mt, Mat.class);
+          mat.removeCargo(p);
         }
       }
     }
@@ -182,16 +185,12 @@ public class Mat extends Decorator implements TranslatablePiece {
   }
 
   /**
-   * Removes a MatCargo piece from our list of cargo
+   * Removes a MatCargo piece from our list of cargo. Does NOT clear MatCargo's reference to this mat - must be done separately.
    * @param p Cargo to remove
    */
   public void removeCargo(GamePiece p) {
     if ((p instanceof Decorator) && hasCargo(p)) {
       contents.remove(p);
-      final GamePiece mp = Decorator.getDecorator(p, MatCargo.class);
-      if (mp != null) {
-        ((MatCargo)mp).clearMat();
-      }
     }
   }
 
