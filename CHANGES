@@ -12,6 +12,8 @@
 * 10075: Scaling factors for Layers and Non-Rectangular
 * 10066: Mats & Cargo - Cargo pieces stay attached to Mat piece when moving.
 * 10041: Newly added Layer traits will now default to 'Always active'
+* 10034: Added option to Mass Piece Loader to not create empty levels in
+    layers when there is no matching image
 * 10021: Added sub-folders to group components under Module, Maps, Decks,
     At-Start Stacks, Prototypes and Global Properties folders
 * 10015: Remove ?s from checkbox preference strings
