@@ -17,6 +17,9 @@ This trait _also_ controls how players interact with the piece when clicking on 
 Note that any selection or movement limitations do not apply when the piece is moved automatically through the operation of one of its traits (e.g.
 a <<SendToLocation.adoc#top,Send To Location>> trait).
 
+The _Does not stack_ now has an option to over-ride its primary function and allow the piece to Stack normally,
+giving access to the selection, movevement and Ignore Grid options for Stackable pieces.
+
 *Select Piece:*  This option controls what happens when a player tries to select a piece, e.g.
 by clicking on it.
 Options are:
@@ -40,6 +43,14 @@ Options are:
 * _normally:_  The piece can be moved normally.
 * _only if selected:_  The piece can only by moved if it is selected.
 * _never_  The piece can never be moved manually by a player.
+
+*Piece can stack:* This option controls whether the piece can form Stacks with other pieces when moved. This option
+allows you to over-ride the primary _Does Not Stack_ behaviour of this trait, and apply the other options to Stacking pieces.
+Note that some combinations of the selection and movement options may not make much sense when used with a Stacking counter. The primary purpose
+of this option is to allow the _Ignore grid when moving?_ option to be applied to Stacking pieces:
+
+* _normally:_  The piece will stack normally.
+* _never_  The piece can never form stacks with other pieces (default).
 
 *Ignore grid when moving?*  Select this option to prevent the piece from snapping to the nearest grid location when it is moved.
 This overrides any setting configured in a <<HexGrid.adoc#top,Hex Grid>>, <<IrregularGrid.adoc#top,Irregular Grid>>, or <<RectangularGrid.adoc#top,Rectangular Grid>>.

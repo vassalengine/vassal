@@ -5,33 +5,17 @@ Download: https://github.com/vassalengine/vassal/releases/tag/{{version}}
 
 Release notes: http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes
 
-Changes since 3.5.4:
+Changes since 3.5.7:
 
 Bug fixes
 
-* 14348: Invisible Trait UI conflated opacity with transparency
-* 14336: MouseoverStackViewer improperly excludes does-not-move pieces when "include move-when-selected" is unchecked
-* 14332: NullPointerException in Expression.resetCachedExpressions()
-* 14331: Additional Selection Highlighter fails to offset images
-* 14327: IllegalComponentStateException in ToolbarMenu.launch()
-* 14322: IllegalComponentStateException in TableInfo.myKeyEvent()
-* 14321: IllegalComponentStateException in PropertySheet.myKeyEvent()
-* 14317: NPE in ReturnToDeck.getDeckName()
-* 14310: Property Sheet options not saved
-* 14309: Missing Deck.deck translation key
-* 14301: GKC/GHK trigger actions out of order at remote end in online play
-* 14296: IndexOutOfBoundsException in BasicLogger.step() when holding down step key
-* 14291: IllegalArgumentException in PlayerRoster.resetListeners()
-* 14290: Online multi-player game is subject to a race condition that ends with corrupt decks
-* 14288: Deck Hotkey ignored from keyboard and Global Hotkey Trait in preset scenarios
-* 14285: IllegalArgumentException in PlayerRoster when moving items in Editor
-* 14284: Chess Clocks: fixed problem where "allow reset" option selection wouldn't "stick"
-* 14262: Missing Editor.GridEditor.command_arrow_keys translation key
-* 14225: Send Hotkey action corrupts target deck
-* 13837: Creating a Global Property with Null name causes NPE on Load Game
-* 13203: Refresh Counters causes Pieces within Decks to expand
+* 14599: Error logs should be read from disk as UTF-8
+* 14596: Removed initial heap setting for Importer, unused since 3.5.4
+* 14579: Mass Piece Loader cannot add 'standard' layer traits
+* 14570: Longer cancel wizard text shifts wizard divider position
+* 14568: Counter Global Key Command expression does not see properties in lower traits
+* 14479: GamePieceImages recognized by unused image removal tool
 
 Other improvements
 
-* 14282: Upgrade to Java 16 for Windows, Mac packages
-
+* 14600: Switch bug tracker to GitHub

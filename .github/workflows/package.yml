@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ master, release-3.5.6 ]
+    branches: [ master, release-3.5.9 ]
   pull_request:
-    branches: [ master, release-3.5.6 ]
+    branches: [ master, release-3.5.9 ]
 
 jobs:
   package:
@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 1
 
       - name: Set branch
-        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.6'
+        if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/release-3.5.9'
         # Checking out a detached head for PR means we have to set the branch
         # name for it to show up later; shallow checkout means the branch
         # won't exist yet so there's no conflict.
@@ -66,11 +66,17 @@ jobs:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.bz2
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
 
-      - name: Archive MacOS
+      - name: Archive MacOS x86_64
         uses: actions/upload-artifact@v2
         with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos.dmg
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos.dmg
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-x86_64.dmg
+
+      - name: Archive MacOS aarch64
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-aarch64.dmg
 
       - name: Archive other
         uses: actions/upload-artifact@v2
@@ -78,17 +84,23 @@ jobs:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
-      - name: Archive Windows 32-bit
+      - name: Archive Windows x86_32
         uses: actions/upload-artifact@v2
         with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-32.exe
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-32.exe
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
 
-      - name: Archive Windows 64-bit
+      - name: Archive Windows x86_64
         uses: actions/upload-artifact@v2
         with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-64.exe
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-64.exe
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
+
+      - name: Archive Windows aarch64
+        uses: actions/upload-artifact@v2
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
 
       - name: Archive SHA256 hashes
         uses: actions/upload-artifact@v2

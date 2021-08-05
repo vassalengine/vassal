@@ -17,8 +17,7 @@
  */
 package VASSAL.counters;
 
-import javax.swing.KeyStroke;
-
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -28,6 +27,9 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.PropertyExpression;
+import VASSAL.i18n.Resources;
+import VASSAL.script.expression.AuditTrail;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
@@ -38,6 +40,9 @@ import java.awt.Point;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import javax.swing.KeyStroke;
 
 /**
  * The heart of all the different forms of Global Key Command, GlobalCommand handles sending a key command to
@@ -200,6 +205,19 @@ public class GlobalCommand {
    * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
    */
   public Command apply(Map[] maps, PieceFilter filter, GlobalCommandTarget fastMatch) {
+    return apply(maps, filter, fastMatch, null);
+  }
+
+  /**
+   * Apply the key command to all pieces that pass the given filter & our Fast Match {@link GlobalCommandTarget} parameters on all the given maps
+   *
+   * @param maps Array of Maps
+   * @param filter Filter to apply (created e.g. with {@link PropertyExpression#getFilter}
+   * @param fastMatch Fast matching parameters, or null. {@link GlobalCommandTarget} and {@link VASSAL.configure.GlobalCommandTargetConfigurer}
+   * @param audit Audit trail of evaluation of the filter so far
+   * @return the corresponding {@link Command} that would reproduce all the things this GKC just did, on another client.
+   */
+  public Command apply(Map[] maps, PieceFilter filter, GlobalCommandTarget fastMatch, AuditTrail audit) {
     Command command = new NullCommand(); // We will chronicle our exploits in this command, so that others may repeat them later.
     setTarget((fastMatch != null) ? fastMatch : new GlobalCommandTarget()); // Set our Fast Match parameters
 
@@ -211,7 +229,7 @@ public class GlobalCommand {
       RecursionLimiter.startExecution(owner); // Trap infinite loops of Global Key Commands
 
       // Send our report, if one is specified
-      final String reportText = reportFormat.getLocalizedText(source);
+      final String reportText = reportFormat.getLocalizedText(source, owner, "Editor.report_format");
       if (reportText.length() > 0) {
         command = new Chatter.DisplayText(
           GameModule.getGameModule().getChatter(), "*" + reportText); //NON-NLS
@@ -245,30 +263,30 @@ public class GlobalCommand {
           fastLocation = (curPiece != null) ? (String) curPiece.getProperty(BasicPiece.LOCATION_NAME) : "";
           break;
         case ZONE:
-          fastZone = target.targetZone.tryEvaluate(source);
+          fastZone = target.targetZone.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.zone_name");
           break;
         case DECK:
-          fastDeck = target.targetDeck.tryEvaluate(source);
+          fastDeck = target.targetDeck.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.deck_name");
           break;
         case LOCATION:
-          fastLocation = target.targetLocation.tryEvaluate(source);
+          fastLocation = target.targetLocation.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.location_name");
           break;
         case XY:
-          fastBoard = target.targetLocation.tryEvaluate(source);
-          fastX = target.targetX.tryEvaluate(source);
-          fastY = target.targetY.tryEvaluate(source);
+          fastBoard = target.targetLocation.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.board_name");
+          fastX = target.targetX.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.x_position");
+          fastY = target.targetY.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.y_position");
           break;
         }
 
         if (!target.targetType.isCurrent()) {
-          fastMap = target.targetMap.tryEvaluate(source);
+          fastMap = target.targetMap.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.map_name");
         }
       }
 
       // Evaluate any property-based expressions we will be using - these are evaluated w/r/t the SOURCE of the command, not target pieces.
       if (target.fastMatchProperty) {
-        fastProperty = target.targetProperty.tryEvaluate(source);
-        fastValue    = target.targetValue.tryEvaluate(source);
+        fastProperty = target.targetProperty.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.property_name");
+        fastValue    = target.targetValue.tryEvaluate(source, owner, "Editor.GlobalKeyCommand.property_compare");
         if ((target.targetCompare == GlobalCommandTarget.CompareMode.EQUALS) ||
             (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_EQUALS)) {
           fastIsNumber = false;
@@ -276,7 +294,13 @@ public class GlobalCommand {
         }
         else if ((target.targetCompare == GlobalCommandTarget.CompareMode.MATCH) ||
                  (target.targetCompare == GlobalCommandTarget.CompareMode.NOT_MATCH)) {
-          fastPattern  = Pattern.compile(fastValue);
+          try {
+            fastPattern = Pattern.compile(fastValue);
+          }
+          catch (PatternSyntaxException ex) {
+            ErrorDialog.dataWarning(new BadDataReport("Fast Match - syntax error in regex: ", target.targetValue.getExpression()));  //NON-NLS
+            fastPattern = Pattern.compile("bAdMoDuLeDaTa"); //NON-NLS // Give it "something" so it won't throw more exceptions later.
+          }
           fastIsNumber = false;
           fastNumber   = 0;
         }
@@ -287,7 +311,7 @@ public class GlobalCommand {
       }
 
       // This dispatcher will eventually handle applying the Beanshell filter and actually issuing the command to any pieces that match
-      final Visitor visitor = new Visitor(command, filter, keyStroke);
+      final Visitor visitor = new Visitor(command, filter, keyStroke, audit);
       final DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
       // If we're using "current stack or deck" then we simply iterate quickly through the members of the stack or deck that the current piece is in
@@ -547,18 +571,28 @@ public class GlobalCommand {
     return apply(new Map[]{map}, filter, fastMatch);
   }
 
+  public Command apply(Map map, PieceFilter filter, GlobalCommandTarget fastMatch, AuditTrail audit) {
+    return apply(new Map[]{map}, filter, fastMatch, audit);
+  }
+
   protected class Visitor implements DeckVisitor {
     private final Command command;
     private final BoundsTracker tracker;
     private final PieceFilter filter;
     private final KeyStroke stroke;
     private int selectedCount;
+    private AuditTrail auditSoFar = null;
 
     public Visitor(Command command, PieceFilter filter, KeyStroke stroke) {
+      this(command, filter, stroke, null);
+    }
+
+    public Visitor(Command command, PieceFilter filter, KeyStroke stroke, AuditTrail audit) {
       this.command = command;
       tracker = new BoundsTracker();
       this.filter = filter;
       this.stroke = stroke;
+      auditSoFar = audit;
     }
 
     public void setSelectedCount(int selectedCount) {
@@ -605,7 +639,18 @@ public class GlobalCommand {
     }
 
     private void apply(GamePiece p, boolean visitingDeck) {
-      if (filter == null || filter.accept(p)) {
+
+      /*
+        If an AuditTrail has been supplied for the evaulation history of the filter up to this point,
+        then clone it for applying to each individual piece.
+       */
+      AuditTrail audit = null;
+      if (auditSoFar != null) {
+        audit = new AuditTrail(auditSoFar);
+        audit.addMessage(Resources.getString("Audit.gkc_applied_to", p.getComponentName()));
+      }
+
+      if (filter == null || filter.accept(p, owner, audit)) {
         if (visitingDeck) {
           p.setProperty(Properties.OBSCURED_BY, p.getProperty(Properties.OBSCURED_BY_PRE_DRAW));  // Bug 13433 restore correct OBSCURED_BY after checking filter
         }

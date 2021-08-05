@@ -23,8 +23,11 @@ public class RecursionLimitException extends Exception {
   private static final long serialVersionUID = 1L;
   protected Loopable looper;
 
+  protected String additionalErrorMessage;
+
   public RecursionLimitException(Loopable l) {
     looper = l;
+    additionalErrorMessage = "";
   }
 
   public String getComponentTypeName() {
@@ -33,5 +36,13 @@ public class RecursionLimitException extends Exception {
 
   public String getComponentName() {
     return looper == null ? "" : looper.getComponentName();
+  }
+
+  public String getAdditionalErrorMessage() {
+    return additionalErrorMessage;
+  }
+
+  public void setAdditionalErrorMessage(String additionalErrorMessage) {
+    this.additionalErrorMessage = additionalErrorMessage;
   }
 }

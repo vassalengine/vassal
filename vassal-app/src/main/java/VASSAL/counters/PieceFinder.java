@@ -52,6 +52,27 @@ public interface PieceFinder {
    */
   PieceFinder MOVABLE = new Movable();
 
+  PieceFinder MAT_ONLY = new MatOnly();
+
+  /**
+   * Returns a Mat that overlaps this piece
+   */
+  class MatOnly extends Movable {
+    @Override
+    public Object visitDefault(GamePiece piece) {
+      final String matName = (String)piece.getProperty(Mat.MAT_NAME);
+      if (matName != null && !"".equals(matName)) {
+        return super.visitDefault(piece);
+      }
+      return null;
+    }
+
+    @Override
+    public Object visitStack(Stack s) {
+      return null;
+    }
+  }
+
   class StackOnly extends Movable {
     @Override
     public Object visitDefault(GamePiece piece) {
@@ -158,7 +179,6 @@ public interface PieceFinder {
       this.pt = pt;
       return (GamePiece) dispatcher.accept(piece);
     }
-
   }
 }
 

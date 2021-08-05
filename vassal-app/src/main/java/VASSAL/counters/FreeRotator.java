@@ -360,8 +360,8 @@ public class FreeRotator extends Decorator
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(validAngles.length);
     if (validAngles.length == 1) {
-      se.append(setAngleKey);
-      se.append(setAngleText);
+      se.append(setAngleKey)
+        .append(setAngleText);
     }
     else {
       se.append(rotateCWKey)
@@ -459,14 +459,98 @@ public class FreeRotator extends Decorator
     return commands;
   }
 
+  /*
+   * Move a single piece to a destination
+   */
+  protected Command movePiece(GamePiece gp, Point dest) {
+    // Is the piece on a map?
+    final Map map = gp.getMap();
+    if (map == null) {
+      return null;
+    }
+
+    // Set the Old... properties
+    Command c = putOldProperties(this);
+
+    // Mark the piece moved
+    final GamePiece outer = Decorator.getOutermost(gp);
+    final ChangeTracker comm = new ChangeTracker(outer);
+    outer.setProperty(Properties.MOVED, Boolean.TRUE);
+    c = c.append(comm.getChangeCommand());
+
+    // Move the piece
+    c = c.append(map.placeOrMerge(outer, dest));
+
+    // Apply after Move Key
+    if (map.getMoveKey() != null) {
+      c = c.append(outer.keyEvent(map.getMoveKey()));
+    }
+
+    // Unlink from Parent Stack (in case it is a Deck).
+    final Stack parent = outer.getParent();
+    if (parent != null) {
+      c = c.append(parent.pieceRemoved(outer));
+    }
+
+    if (GameModule.getGameModule().isMatSupport()) {
+      // If a cargo piece has been "sent", find it a new Mat if needed.
+      if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+        }
+      }
+    }
+
+    return c;
+  }
+
+  public Command rotateCargo(Command command, Point center, double dtheta) {
+    if (!GameModule.getGameModule().isMatSupport()) {
+      return command;
+    }
+
+    // check that we have a map and that the mat-ness is visible for us
+    final GamePiece outer = getOutermost(this);
+    final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+    if (outer.getMap() == null || matName == null || "".equals(outer.getProperty(Mat.MAT_NAME))) {
+      return command;
+    }
+
+    final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+    if (mat == null) {
+      return command;
+    }
+
+    final AffineTransform t = AffineTransform.getRotateInstance(dtheta * -PI_180, center.x, center.y);
+
+    // If a Mat has been rotated, make the contents orbit the center point
+    for (final GamePiece piece : mat.getContents()) {
+      final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+      if (cargo != null) {
+        // Rotate Cargo's current position to its destination
+        final Point dst = new Point();
+        t.transform(piece.getPosition(), dst);
+        command = command.append(movePiece(piece, dst));
+      }
+    }
+
+    return command;
+  }
+
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
-    Command c = null;
     if (setAngleCommand.matches(stroke)) {
       beginInteractiveRotate();
+      return null;
     }
-    else if (rotateCWCommand.matches(stroke)) {
+
+    Command c = null;
+
+    final double origAngle = getAngle();
+
+    if (rotateCWCommand.matches(stroke)) {
       final ChangeTracker tracker = new ChangeTracker(this);
       angleIndex = (angleIndex + 1) % validAngles.length;
       c = tracker.getChangeCommand();
@@ -493,6 +577,12 @@ public class FreeRotator extends Decorator
       c = tracker.getChangeCommand();
     }
     // end random rotation
+
+    // Mat Support
+    if (c != null) {
+      c = rotateCargo(c, getPosition(), getAngle() - origAngle);
+    }
+
     return c;
   }
 
@@ -571,18 +661,23 @@ public class FreeRotator extends Decorator
       }
 
       final Map m = getMap();
+      final GamePiece outer = getOutermost(this);
 
       try {
         final Point ghostPosition = getGhostPosition();
+
         Command c = null;
         final ChangeTracker tracker = new ChangeTracker(this);
         if (!getPosition().equals(ghostPosition)) {
-          final GamePiece outer = Decorator.getOutermost(this);
           outer.setProperty(Properties.MOVED, Boolean.TRUE);
           c = m.placeOrMerge(outer, m.snapTo(ghostPosition));
         }
+        final double origAngle = getAngle();
         setAngle(tempAngle);
         c = tracker.getChangeCommand().append(c);
+
+        // Mat Support
+        c = rotateCargo(c, getPosition(), tempAngle - origAngle);
 
         GameModule.getGameModule().sendAndLog(c);
       }
@@ -695,12 +790,20 @@ public class FreeRotator extends Decorator
 
   @Override
   public PieceI18nData getI18nData() {
-    return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText},
-                       new String[] {
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
-                         getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))});
+    return getI18nData(
+      new String[] {
+        setAngleText,
+        rotateCWText,
+        rotateCCWText,
+        rotateRNDText
+      },
+      new String[] {
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.set_angle_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_cw_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_ccw_command_description")),
+        getCommandDescription(name, Resources.getString("Editor.FreeRotator.rotate_random_command_description"))
+      }
+    );
   }
 
   /**

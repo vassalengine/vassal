@@ -17,24 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -54,6 +36,25 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -187,6 +188,23 @@ public class Translate extends Decorator implements TranslatablePiece {
     // Current Position
     Point p = getPosition();
 
+    Mat mat = null;
+    List<GamePiece> contents = null;
+    List<Point> offsets = null;
+
+    // Mat Support: if we're about to move a Mat, establish the initial relative positions of all its "contents"
+    final GamePiece outer = getOutermost(target);
+    if (GameModule.getGameModule().isMatSupport() && !(target instanceof Stack)) {
+      final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+      if (!"".equals(matName)) {
+        mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+        if (mat != null) {
+          contents = mat.getContents();
+          offsets  = mat.getOffsets(p.x, p.y);
+        }
+      }
+    }
+
     // Calculate the destination
     translate(p);
 
@@ -217,6 +235,26 @@ public class Translate extends Decorator implements TranslatablePiece {
     }
     else {
       c = c.append(movePiece(target, p));
+
+      // Mat Support
+      if (GameModule.getGameModule().isMatSupport() && (offsets != null)) {
+        // If a Mat has been sent, send all its contents, at an appropriate offset.
+        final Map ourMap = outer.getMap();
+        if (ourMap != null) {
+          for (int i = 0; i < contents.size(); i++) {
+            final GamePiece piece = contents.get(i);
+            final MatCargo cargo = (MatCargo) Decorator.getDecorator(piece, MatCargo.class);
+            if (cargo != null) {
+              // Get Cargo's pre-move offset from the Mat
+              final Point pt = new Point(p);
+              pt.x += offsets.get(i).x;
+              pt.y += offsets.get(i).y;
+
+              c = c.append(movePiece(piece, pt));
+            }
+          }
+        }
+      }
     }
 
     return c;
@@ -254,6 +292,16 @@ public class Translate extends Decorator implements TranslatablePiece {
     final Stack parent = outer.getParent();
     if (parent != null) {
       c = c.append(parent.pieceRemoved(outer));
+    }
+
+    if (GameModule.getGameModule().isMatSupport()) {
+      // If a cargo piece has been "sent", find it a new Mat if needed.
+      if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+        }
+      }
     }
 
     return c;
@@ -330,18 +378,18 @@ public class Translate extends Decorator implements TranslatablePiece {
     final GamePiece outer = Decorator.getOutermost(this);
     final Board b = outer.getMap().findBoard(p);
 
-    final int Xdist = xDist.getTextAsInt(outer, "Xdistance", this); // NON-NLS
-    final int Xindex = xIndex.getTextAsInt(outer, "Xindex", this); // NON-NLS
-    final int Xoffset = xOffset.getTextAsInt(outer, "Xoffset", this); // NON-NLS
+    final int Xdist = xDist.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.distance_to_the_right"), this); // NON-NLS
+    final int Xindex = xIndex.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.additional_offset_to_the_right"), this); // NON-NLS
+    final int Xoffset = xOffset.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.times") + " X", this); // NON-NLS
 
     x = Xdist + Xindex * Xoffset;
     if (b != null) {
       x = (int)Math.round(b.getMagnification() * x);
     }
 
-    final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this); // NON-NLS
-    final int Yindex = yIndex.getTextAsInt(outer, "Yindex", this); // NON-NLS
-    final int Yoffset = yOffset.getTextAsInt(outer, "Yoffset", this); // NON-NLS
+    final int Ydist = yDist.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.distance_upwards"), this); // NON-NLS
+    final int Yindex = yIndex.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.additional_offset_upwards"), this); // NON-NLS
+    final int Yoffset = yOffset.getTextAsInt(outer, Resources.getString("Editor.MoveFixedDistance.times") + " Y", this); // NON-NLS
 
     y = Ydist + Yindex * Yoffset;
     if (b != null) {
@@ -359,7 +407,7 @@ public class Translate extends Decorator implements TranslatablePiece {
         && !outer.getParent().isExpanded()) {
       // Only move entire stack if this is the top piece
       // Otherwise moves the stack too far if the whole stack is multi-selected
-      if (outer != outer.getParent().topPiece(GameModule.getUserId())) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
+      if (outer != outer.getParent().topPiece(GameModule.getActiveUserId())) {  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
         target = null;
       }
       else {

@@ -72,14 +72,14 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     GameModule.getGameModule().getPrefs().addOption(c);
     c.addPropertyChangeListener(evt -> {
       if (Boolean.TRUE.equals(evt.getNewValue())) {
-        ObscurableOptions.getInstance().allow(GameModule.getUserId());
+        ObscurableOptions.getInstance().allow(GameModule.getActiveUserId());
         final String side = PlayerRoster.getMySide();
         if (side != null) {
           ObscurableOptions.getInstance().allow(side);
         }
       }
       else {
-        ObscurableOptions.getInstance().disallow(GameModule.getUserId());
+        ObscurableOptions.getInstance().disallow(GameModule.getActiveUserId());
         final String side = PlayerRoster.getMySide();
         if (side != null) {
           ObscurableOptions.getInstance().disallow(side);
@@ -89,10 +89,10 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
                 .getServer().sendToOthers(new SetAllowed(instance.allowed));
     });
     if (Boolean.TRUE.equals(c.getValue())) {
-      allow(GameModule.getUserId());
+      allow(GameModule.getActiveUserId());
     }
     else {
-      disallow(GameModule.getUserId());
+      disallow(GameModule.getActiveUserId());
     }
   }
 
@@ -208,7 +208,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
     else if (Boolean.TRUE.equals(
                GameModule.getGameModule().getPrefs().getValue(PREFS_KEY))) {
-      allow(GameModule.getUserId());
+      allow(GameModule.getActiveUserId());
     }
   }
 

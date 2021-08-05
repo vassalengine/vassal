@@ -16,7 +16,34 @@
  */
 package VASSAL.counters;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
+import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ConfigurerLayout;
+import VASSAL.configure.DoubleConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PropertyNameExpressionConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.Expression;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ScaledImagePainter;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -42,31 +69,6 @@ import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.ChangeTracker;
-import VASSAL.command.Command;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ConfigurerLayout;
-import VASSAL.configure.FormattedExpressionConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PropertyNameExpressionConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.PieceI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatablePiece;
-import VASSAL.script.expression.Expression;
-import VASSAL.script.expression.ExpressionException;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.icon.IconFactory;
-import VASSAL.tools.icon.IconFamily;
-import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.ScaledImagePainter;
-
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
  * The current image is superimposed over the inner piece. The entire layer may
@@ -82,7 +84,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
  *    replaces this class with an Embellishment0 if Embellishment(type, inner) returns
  *    a version 0 Embellishment trait.
  */
-public class Embellishment extends Decorator implements TranslatablePiece {
+public class Embellishment extends Decorator implements TranslatablePiece, RecursionLimiter.Loopable {
   public static final String OLD_ID = "emb;"; // NON-NLS
   public static final String ID = "emb2;"; // New type encoding // NON-NLS
 
@@ -149,6 +151,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   protected String description = "";
 
+  protected double scale = 1.0;
+
   public Embellishment() {
     this(ID + Resources.getString("Editor.Embellishment.activate"), null);
   }
@@ -191,6 +195,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     else {
       s = s.substring(ID.length());
+
+      final boolean brandNew = Resources.getString("Editor.Embellishment.activate").equals(s);
+
       final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
       activateCommand = st.nextToken("");
       activateModifiers = st.nextInt(InputEvent.CTRL_DOWN_MASK);
@@ -228,16 +235,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       firstLevelValue = st.nextInt(1);
 
       version = st.nextInt(0);
-      alwaysActive = st.nextBoolean(false);
+      alwaysActive = st.nextBoolean(true);
       activateKeyStroke = st.nextNamedKeyStroke();
       increaseKeyStroke = st.nextNamedKeyStroke();
       decreaseKeyStroke = st.nextNamedKeyStroke();
 
       description = st.nextToken("");
 
+      scale = st.nextDouble(1.0);
+
       // Conversion?
       if (version == BASE_VERSION) {
-        alwaysActive = activateKey.length() == 0;
+        alwaysActive = brandNew || (activateKey.length() == 0);
 
         // Cannot convert if activate, up or down has more than 1 char specified
         if (activateKey.length() <= 1 && upKey.length() <= 1 && downKey.length() <= 1) {
@@ -368,6 +377,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       NamedKeyStroke.of(downKey.charAt(0), downModifiers);
 
     version = CURRENT_VERSION;
+
+    scale = 1.0;
   }
 
   @Override
@@ -457,7 +468,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       .append(activateKeyStroke)
       .append(increaseKeyStroke)
       .append(decreaseKeyStroke)
-      .append(description);
+      .append(description)
+      .append(scale);
 
     return ID + se.getValue();
   }
@@ -527,7 +539,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     if (i < imagePainter.length && imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
-      imagePainter[i].draw(g, x + (int)(zoom * r.x), y + (int)(zoom * r.y), zoom, obs);
+      final double myzoom = (scale == 1.0) ? zoom : zoom * scale; //BR// If we have our own personal scale factor, apply it
+      imagePainter[i].draw(g, x + (int)(zoom * r.x), y + (int)(zoom * r.y), myzoom, obs);
     }
 
     if (drawUnder) {
@@ -539,28 +552,39 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * Calculate the new level to display based on a property?
    */
   protected void checkPropertyLevel() {
-    if (!followProperty || propertyName.length() == 0) return;
-
-    if (followPropertyExpression == null) {
-      followPropertyExpression = Expression.createSimplePropertyExpression(propertyName);
-    }
-
-    String val = "";
     try {
-      val = followPropertyExpression.evaluate(Decorator.getOutermost(this));
-      if (val == null || val.length() == 0) val = String.valueOf(firstLevelValue);
+      RecursionLimiter.startExecution(this);
+      if (!followProperty || propertyName.length() == 0)
+        return;
 
-      int v = Integer.parseInt(val) - firstLevelValue + 1;
-      if (v <= 0) v = 1;
-      if (v > nValues) v = nValues;
+      if (followPropertyExpression == null) {
+        followPropertyExpression = Expression.createSimplePropertyExpression(propertyName);
+      }
 
-      value = isActive() ? v : -v;
+      String val = "";
+      try {
+        val = followPropertyExpression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.Embellishment.follow_expression");
+        if (val == null || val.length() == 0)
+          val = String.valueOf(firstLevelValue);
+
+        int v = Integer.parseInt(val) - firstLevelValue + 1;
+        if (v <= 0)
+          v = 1;
+        if (v > nValues)
+          v = nValues;
+
+        value = isActive() ? v : -v;
+      }
+      catch (NumberFormatException e) {
+        reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e); // NON-NLS
+      }
     }
-    catch (NumberFormatException e) {
-      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty[" + propertyName + "]=" + val, e); // NON-NLS
+    catch (RecursionLimitException e) {
+      e.setAdditionalErrorMessage(Resources.getString("Error.infinite_loop_layer"));
+      RecursionLimiter.infiniteLoop(e);
     }
-    catch (ExpressionException e) {
-      reportDataError(this, Resources.getString("Error.expression_error"), "followProperty[" + propertyName + "]", e); // NON-NLS
+    finally {
+      RecursionLimiter.endExecution();
     }
   }
 
@@ -640,7 +664,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       if (resetKey != null && resetKey.equals(stroke)) {
         final GamePiece outer = Decorator.getOutermost(this);
-        final String levelText = resetLevel.getText(outer);
+        final String levelText = resetLevel.getText(outer, this, "Editor.Embellishment.reset_to_level");
         try {
           final int level = Integer.parseInt(levelText);
           setValue(Math.abs(level) - 1);
@@ -710,6 +734,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (size[i] == null) {
         if (imagePainter[i] != null) {
           size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
+
+          //BR// If we have our own personal scale factor, apply it.
+          if (scale != 1.0) {
+            size[i].x = (int)(scale * size[i].x);
+            size[i].y = (int)(scale * size[i].y);
+            size[i].width = (int)(scale * size[i].width);
+            size[i].height = (int)(scale * size[i].height);
+          }
+
           size[i].translate(xOff, yOff);
         }
         else {
@@ -985,6 +1018,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (! Objects.equals(alwaysActive, c.alwaysActive)) return false;
     if (! Objects.equals(activateKeyStroke, c.activateKeyStroke)) return false;
     if (! Objects.equals(increaseKeyStroke, c.increaseKeyStroke)) return false;
+    if (! Objects.equals(scale, c.scale)) return false;
     return Objects.equals(decreaseKeyStroke, c.decreaseKeyStroke);
   }
 
@@ -1023,6 +1057,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private final IntConfigurer firstLevelConfig;
     private final StringConfigurer nameConfig;
     private final StringConfigurer descConfig;
+    private final DoubleConfigurer scaleConfig;
 
     private final JButton up;
     private final JButton down;
@@ -1079,6 +1114,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       offsetControls.add(yOffInput.getControls());
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.offset")));
       controls.add(offsetControls, "wrap"); // NON-NLS
+
+      controls.add(new JLabel(Resources.getString("Editor.Embellishment.scale")));
+      scaleConfig = new DoubleConfigurer(e.scale);
+      controls.add(scaleConfig.getControls(), "wrap"); //NON-NLS
 
       followConfig = new BooleanConfigurer(e.followProperty);
       controls.add(new JLabel(Resources.getString("Editor.Embellishment.levels_follow_expression_value")));
@@ -1418,7 +1457,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(activateConfig.getValueString())
         .append(increaseConfig.getValueString())
         .append(decreaseConfig.getValueString())
-        .append(descConfig.getValueString());
+        .append(descConfig.getValueString())
+        .append(scaleConfig.getValueString());
 
       return ID + se.getValue();
 
@@ -1457,6 +1497,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         names.add(s);
         isPrefix.add(is);
       }
+
+      scaleConfig.setValue(e.scale);
 
       alwaysActiveConfig.setValue(e.alwaysActive);
       drawUnderneath.setSelected(e.drawUnderneathWhenSelected);

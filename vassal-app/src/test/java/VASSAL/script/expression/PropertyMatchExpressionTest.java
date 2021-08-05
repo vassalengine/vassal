@@ -8,7 +8,7 @@ import VASSAL.counters.BasicPiece;
 import VASSAL.counters.PieceFilter;
 import org.junit.jupiter.api.Test;
 
-public class PropertyMatchExpressionTest {
+public class PropertyMatchExpressionTest implements Auditable {
 
   private static final String PROP1 = "Army";
   private static final String VALUE1 = "German";
@@ -27,35 +27,38 @@ public class PropertyMatchExpressionTest {
   public void getFilter() {
 
     Expression e = new PropertyMatchExpression(TEST1_EXPR);
-    PieceFilter filter = e.getFilter();
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    PieceFilter filter = e.getFilter(this, audit);
 
     // Test 1 - Basic expression, no $$ variables
     BasicPiece bp = new BasicPiece();
     bp.setProperty(PROP1, VALUE1);
-    assertThat(filter.accept(bp), is(true));
+    assertThat(filter.accept(bp, this, audit), is(true));
     bp.setProperty(PROP1, VALUE1 + "xxx");
-    assertThat(filter.accept(bp), is(false));
+    assertThat(filter.accept(bp, this, audit), is(false));
 
 
     // Test 2 - $$ variables
     e = new PropertyMatchExpression(TEST2_EXPR);
+    audit = new AuditTrail(this, e.getExpression());
     bp = new BasicPiece();
     bp.setProperty(PROP2, "2");
     bp.setProperty(PROP3, "2");
-    filter = e.getFilter(bp);
-    assertThat(filter.accept(bp), is(true));
+    filter = e.getFilter(bp, this, audit);
+    assertThat(filter.accept(bp, this, audit), is(true));
 
     bp.setProperty(PROP2, "3");
-    assertThat(filter.accept(bp), is(false));
+    assertThat(filter.accept(bp, this, audit), is(false));
 
     bp.setProperty(PROP2, "2");
     bp.setProperty(PROP3, "3");
-    filter = e.getFilter(bp);
-    assertThat(filter.accept(bp), is(false));
+    filter = e.getFilter(bp, this, audit);
+    assertThat(filter.accept(bp, this, audit), is(false));
   }
 
   @Test
   public void isDynamic() {
+
     PropertyMatchExpression e = new PropertyMatchExpression(TEST1_EXPR);
     assertThat(e.isDynamic(), is(false));
 
@@ -77,17 +80,22 @@ public class PropertyMatchExpressionTest {
 
     // Check boolean conversion
     Expression e = Expression.createExpression("{boolProp}");
-    assertThat("Auto convert boolean string to boolean type", e.evaluate(bp), is(equalTo("true")));
+    AuditTrail audit = new AuditTrail(this, e.getExpression());
+    assertThat("Auto convert boolean string to boolean type", e.evaluate(bp, this, audit), is(equalTo("true")));
+
     e = Expression.createExpression("{boolProp==true}");
-    assertThat("Auto convert boolean string to boolean type", e.evaluate(bp), is(equalTo("true")));
+    audit = new AuditTrail(this, e.getExpression());
+    assertThat("Auto convert boolean string to boolean type", e.evaluate(bp, this, audit), is(equalTo("true")));
 
     // Check Int conversion
     e = Expression.createExpression("{intProp==42}");
-    assertThat("Auto convert int string to int type", e.evaluate(bp), is(equalTo("true")));
+    audit = new AuditTrail(this, e.getExpression());
+    assertThat("Auto convert int string to int type", e.evaluate(bp, this, audit), is(equalTo("true")));
 
     // Check Float conversion
     e = Expression.createExpression("{floatProp==.75}");
-    assertThat("Auto convert float string to float type", e.evaluate(bp), is(equalTo("true")));
+    audit = new AuditTrail(this, e.getExpression());
+    assertThat("Auto convert float string to float type", e.evaluate(bp, this, audit), is(equalTo("true")));
 
   }
 }

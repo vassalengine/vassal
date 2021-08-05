@@ -321,7 +321,7 @@ public class WizardSupport {
         box.add(Box.createVerticalGlue());
         final BooleanConfigurer wizardConf = (BooleanConfigurer)
           Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
-        final JCheckBox show = new JCheckBox(wizardConf.getName() + " " + Resources.getString("WizardSupport.Bypass"));
+        final JCheckBox show = new JCheckBox("<html>" + wizardConf.getName() + "<br/>" + Resources.getString("WizardSupport.Bypass") + "</html>");
         show.setSelected(wizardConf.booleanValue());
         show.addActionListener(e -> wizardConf.setValue(show.isSelected()));
         box.add(show);
@@ -404,7 +404,7 @@ public class WizardSupport {
           if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
             controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
           }
-          else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
+          else if (pwd.getValue() == null) { //$NON-NLS-1$
             controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
           }
           else if (!pwd.getValue().equals(pwd2.getValue())) {
@@ -439,6 +439,15 @@ public class WizardSupport {
         box.add("WizardSupport.ConfirmPassword", pwd2);
         final JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
         box.add(l, "span 2,center"); // NON-NLS
+
+        box.add(Box.createVerticalGlue());
+        final BooleanConfigurer wizardConf = (BooleanConfigurer)
+          Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
+        final JCheckBox show = new JCheckBox(wizardConf.getName());
+        show.setSelected(wizardConf.booleanValue());
+        show.addActionListener(e -> wizardConf.setValue(show.isSelected()));
+        box.add(show);
+
         nameControls = box;
       }
       return nameControls;

@@ -1562,7 +1562,7 @@ public class ModuleManagerWindow extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
           removeModule(file);
-          cleanupTileCache();
+          //cleanupTileCache();  // Sometimes they might have another copy of same module in the list, and ended up with TileNotFound exceptions
         }
       });
 
@@ -1741,7 +1741,7 @@ public class ModuleManagerWindow extends JFrame {
 
       final Action editAction = new EditExtensionLaunchAction(
           ModuleManagerWindow.this, getFile(), getSelectedModule());
-      editAction.setEnabled(!tooNew);
+      editAction.setEnabled(editAction.isEnabled() && !tooNew);
       m.add(editAction);
 
       return m;
@@ -2073,7 +2073,7 @@ public class ModuleManagerWindow extends JFrame {
       incrementUsed(lr.module);
 
       // register that this extension is being edited
-      markEditing(lr.module);
+      markEditing(lr.extension);
 
       super.actionPerformed(e);
       setEnabled(false);

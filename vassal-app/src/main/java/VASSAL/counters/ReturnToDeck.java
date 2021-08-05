@@ -176,7 +176,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         pile = promptForDrawPile();
       }
       else {
-        final String evalName = deckExpression.getText(this);
+        final String evalName = deckExpression.getText(Decorator.getOutermost(this), this, "Editor.ReturnToDeck.deck_name");
         pile = DrawPile.findDrawPile(evalName);
         if (pile == null) {
           ErrorDialog.dataWarning(new BadDataReport("Deck Not Found for Return-to-Deck trait: " + evalName, deckExpression.getFormat())); //NON-NLS

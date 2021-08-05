@@ -19,8 +19,10 @@ package VASSAL.counters;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.ImageSelector;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 
@@ -45,6 +47,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -58,15 +61,18 @@ import org.apache.commons.lang3.tuple.Pair;
  * @see GamePiece#getShape
  */
 public class NonRectangular extends Decorator implements EditablePiece {
-  public static final String ID = "nonRect;"; // NON-NLS
+  public static final String ID = "nonRect2;"; //NON-NLS
+  public static final String OLD_ID = "nonRect;"; // NON-NLS
   private static final Map<String, Pair<String, Shape>> cache = new HashMap<>();
 
-  private String type;
+  private String shapeSpec;
   private Shape shape;
+  private Shape scaledShape = null;
   private String imageName = "";
+  private double scale = 1.0;
 
   public NonRectangular() {
-    this(ID, null);
+    this(ID + "1.0;", null);
   }
 
   public NonRectangular(String type, GamePiece inner) {
@@ -85,7 +91,16 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public String myGetType() {
-    return type;
+    if (scale == 1.0) {
+      return OLD_ID + shapeSpec; // If module has not availed itself of 3.6 features, stay compatible with 3.5
+    }
+
+    final SequenceEncoder se = new SequenceEncoder(';');
+
+    se.append(scale)
+      .append(shapeSpec);
+
+    return ID + se.getValue();
   }
 
   @Override
@@ -110,7 +125,25 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public Shape getShape() {
-    return shape != null ? shape : piece.getShape();
+    if (shape == null) return piece.getShape();
+
+    if (scale == 1.0) {
+      return shape;
+    }
+
+    //BR// Scale the shape based on our designated scale factor
+    if (scaledShape == null) {
+      final AffineTransform tx = new AffineTransform();
+      tx.scale(scale, scale);
+      scaledShape = tx.createTransformedShape(shape);
+    }
+
+    return scaledShape;
+  }
+
+  public void setScale(double scale) {
+    this.scale = scale;
+    scaledShape = null; //BR// Clear cached scaled-shape
   }
 
   @Override
@@ -125,8 +158,16 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   @Override
   public void mySetType(String type) {
-    this.type = type;
-    final String shapeSpec = type.substring(ID.length());
+    if (type.startsWith(OLD_ID)) {
+      setScale(1.0);
+      shapeSpec = type.substring(OLD_ID.length());
+    }
+    else {
+      type = type.substring(ID.length());
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+      setScale(st.nextDouble(1.0));
+      shapeSpec = st.getRemaining(); //BR// Everything else is our shape spec
+    }
     shape = buildPath(shapeSpec);
   }
 
@@ -181,7 +222,8 @@ public class NonRectangular extends Decorator implements EditablePiece {
   public boolean testEquals(Object o) {
     if (! (o instanceof NonRectangular)) return false;
     final NonRectangular c = (NonRectangular) o;
-    return Objects.equals(type, c.type);
+    if (!Objects.equals(scale, c.scale)) return false;
+    return Objects.equals(shapeSpec, c.shapeSpec);
   }
 
   @Override
@@ -193,10 +235,15 @@ public class NonRectangular extends Decorator implements EditablePiece {
     private Shape shape;
     private final JPanel controls;
     private final ImageSelector picker;
+    final DoubleConfigurer scaleConfig;
 
     private Ed(NonRectangular p) {
       shape = p.shape;
       controls = new JPanel(new MigLayout("ins 0", "[grow][]", "[grow]")); // NON-NLS
+
+      controls.add(new JLabel(Resources.getString("Editor.NonRectangular.scale")));
+      scaleConfig = new DoubleConfigurer(p.scale);
+      controls.add(scaleConfig.getControls(), "wrap"); //NON-NLS
 
       final JPanel shapePanel = new JPanel() {
         private static final long serialVersionUID = 1L;
@@ -322,7 +369,17 @@ public class NonRectangular extends Decorator implements EditablePiece {
           }
         }
       }
-      return ID + buffer;
+
+      if ("1.0".equals(scaleConfig.getValueString())) {
+        return OLD_ID + buffer.toString();
+      }
+
+      final SequenceEncoder se = new SequenceEncoder(';');
+
+      se.append(scaleConfig.getValueString())
+        .append(buffer.toString());
+
+      return ID + se.getValue();
     }
 
     @Override

@@ -53,6 +53,8 @@ import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
 import VASSAL.counters.Marker;
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
 import VASSAL.counters.TranslatableMessage;
 import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
@@ -164,6 +166,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(PropertySheet.ID, PropertySheet::new),
     Map.entry(FreeRotator.ID, FreeRotator::new),
     Map.entry(Pivot.ID, Pivot::new),
+    Map.entry(NonRectangular.OLD_ID, NonRectangular::new),
     Map.entry(NonRectangular.ID, NonRectangular::new),
     Map.entry(Marker.ID, Marker::new),
     Map.entry(TranslatableMessage.ID, TranslatableMessage::new),
@@ -191,7 +194,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     Map.entry(PlaySound.ID, PlaySound::new),
     Map.entry(ActionButton.ID, ActionButton::new),
     Map.entry(GlobalHotKey.ID, GlobalHotKey::new),
-    Map.entry(Deselect.ID, Deselect::new)
+    Map.entry(Deselect.ID, Deselect::new),
+    Map.entry(Mat.ID, Mat::new),
+    Map.entry(MatCargo.ID, MatCargo::new)
   );
 
   /**
@@ -368,7 +373,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       final int oldX = Integer.parseInt(st.nextToken());
       final int oldY = Integer.parseInt(st.nextToken());
       final String oldUnderId = unwrapNull(st.nextToken());
-      final String playerid = st.nextToken(GameModule.getUserId());
+      final String playerid = st.nextToken(GameModule.getActiveUserId());
       return new MovePiece(id, newMapId, new Point(newX, newY), newUnderId, oldMapId, new Point(oldX, oldY), oldUnderId, playerid);
     }
     else {

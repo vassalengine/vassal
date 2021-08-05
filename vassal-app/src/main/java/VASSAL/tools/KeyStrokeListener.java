@@ -20,6 +20,7 @@ import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -117,6 +118,22 @@ public class KeyStrokeListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       l.actionPerformed(e);
+    }
+
+    @Override
+    public boolean isEnabled() {
+      if (l instanceof Action) {
+        return ((Action) l).isEnabled();
+      }
+      else if (l instanceof AWTEventMulticaster) {
+        return Arrays.stream(
+          AWTEventMulticaster.getListeners(l, ActionListener.class)
+        ).anyMatch(el -> !(el instanceof Action) || ((Action) el).isEnabled());
+      }
+      else {
+        // non-actions are considered enabled
+        return true;
+      }
     }
   }
 

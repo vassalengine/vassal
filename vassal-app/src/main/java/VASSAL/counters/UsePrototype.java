@@ -17,15 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.List;
-
-import java.util.Objects;
-import javax.swing.KeyStroke;
-
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
@@ -36,6 +27,15 @@ import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.List;
+import java.util.Objects;
+
+import javax.swing.KeyStroke;
 
 /**
  * This trait is a placeholder for a pre-defined series of traits specified in a
@@ -259,17 +259,6 @@ public class UsePrototype extends Decorator implements EditablePiece, Loopable {
     public String getType() {
       return ID + nameConfig.getValueString();
     }
-  }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
   }
 
   /**

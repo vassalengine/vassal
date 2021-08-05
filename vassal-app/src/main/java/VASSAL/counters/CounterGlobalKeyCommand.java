@@ -33,6 +33,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.script.expression.AuditTrail;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
@@ -46,6 +47,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -83,6 +85,7 @@ public class CounterGlobalKeyCommand extends Decorator
   private KeyCommand myCommand;
   protected String description;
   protected GlobalCommandTarget target = new GlobalCommandTarget(GlobalCommandTarget.GKCtype.COUNTER);
+
   public CounterGlobalKeyCommand() {
     this(ID, null);
   }
@@ -111,7 +114,6 @@ public class CounterGlobalKeyCommand extends Decorator
     target.decode(st.nextToken(""));
     target.setGKCtype(GlobalCommandTarget.GKCtype.COUNTER);
     target.setCurPiece(this);
-    globalCommand.setPropertySource(Decorator.getOutermost(this));
 
     command = null;
   }
@@ -138,8 +140,8 @@ public class CounterGlobalKeyCommand extends Decorator
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       myCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
-      if (commandName.length() > 0 && key != null && ! key.isNull()) {
-        command = new KeyCommand[]{ myCommand };
+      if (commandName.length() > 0 && key != null && !key.isNull()) {
+        command = new KeyCommand[] {myCommand};
       }
       else {
         command = KeyCommand.NONE;
@@ -252,7 +254,10 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   public Command apply() {
-    PieceFilter filter = propertiesFilter.getFilter(Decorator.getOutermost(this));
+    final GamePiece outer = Decorator.getOutermost(this);
+    globalCommand.setPropertySource(outer); // Doing this here ensures trait is linked into GamePiece before finding source
+    final AuditTrail audit = AuditTrail.create(this, propertiesFilter.getExpression(), Resources.getString("Editor.GlobalKeyCommand.matching_properties"));
+    PieceFilter filter = propertiesFilter.getFilter(outer, this, audit);
     Command c = new NullCommand();
     if (restrictRange) {
       int r = range;
@@ -268,7 +273,7 @@ public class CounterGlobalKeyCommand extends Decorator
       filter = new BooleanAndPieceFilter(filter, new RangeFilter(getMap(), getPosition(), r));
     }
 
-    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target));
+    c = c.append(globalCommand.apply(Map.getMapList().toArray(new Map[0]), filter, target, audit));
 
     return c;
   }
@@ -280,20 +285,32 @@ public class CounterGlobalKeyCommand extends Decorator
 
   @Override
   public boolean testEquals(Object o) {
-    if (! (o instanceof CounterGlobalKeyCommand)) return false;
+    if (!(o instanceof CounterGlobalKeyCommand))
+      return false;
     final CounterGlobalKeyCommand trait = (CounterGlobalKeyCommand) o;
 
-    if (! Objects.equals(commandName, trait.commandName)) return false;
-    if (! Objects.equals(key, trait.key)) return false;
-    if (! Objects.equals(globalKey, trait.globalKey)) return false;
-    if (! Objects.equals(propertiesFilter.getExpression(), trait.propertiesFilter.getExpression())) return false;
-    if (! Objects.equals(restrictRange, trait.restrictRange)) return false;
-    if (! Objects.equals(range, trait.range)) return false;
-    if (! Objects.equals(globalCommand.isReportSingle(), trait.globalCommand.isReportSingle())) return false;
-    if (! Objects.equals(fixedRange, trait.fixedRange)) return false;
-    if (! Objects.equals(rangeProperty, trait.rangeProperty)) return false;
-    if (! Objects.equals(description, trait.description)) return false;
-    if (! Objects.equals(target, trait.target)) return false;
+    if (!Objects.equals(commandName, trait.commandName))
+      return false;
+    if (!Objects.equals(key, trait.key))
+      return false;
+    if (!Objects.equals(globalKey, trait.globalKey))
+      return false;
+    if (!Objects.equals(propertiesFilter.getExpression(), trait.propertiesFilter.getExpression()))
+      return false;
+    if (!Objects.equals(restrictRange, trait.restrictRange))
+      return false;
+    if (!Objects.equals(range, trait.range))
+      return false;
+    if (!Objects.equals(globalCommand.isReportSingle(), trait.globalCommand.isReportSingle()))
+      return false;
+    if (!Objects.equals(fixedRange, trait.fixedRange))
+      return false;
+    if (!Objects.equals(rangeProperty, trait.rangeProperty))
+      return false;
+    if (!Objects.equals(description, trait.description))
+      return false;
+    if (!Objects.equals(target, trait.target))
+      return false;
     return Objects.equals(globalCommand.getSelectFromDeck(), trait.globalCommand.getSelectFromDeck());
   }
 
@@ -412,17 +429,5 @@ public class CounterGlobalKeyCommand extends Decorator
     public String getState() {
       return "";
     }
-  }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
   }
 }

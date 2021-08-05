@@ -17,40 +17,6 @@
  */
 package VASSAL.counters;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -70,16 +36,52 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.script.expression.Auditable;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
+import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.ProblemDialog;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Random;
+
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
@@ -141,6 +143,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean restrictOption;
   protected PropertyExpression restrictExpression = new PropertyExpression();
   protected PropertySource propertySource;
+
+  protected String drawMultipleMessage;
+  protected String drawSpecificMessage;
+  protected String faceUpMessage;
+  protected String faceDownMessage;
 
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
@@ -230,6 +237,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public Deck(GameModule gameModule, String type, PropertySource source) {
     this(gameModule, type);
     propertySource = source;
+  }
+
+  @Override
+  public String getComponentTypeName() {
+    return Resources.getString("Editor.DrawPile.deck");
+  }
+
+  @Override
+  public String getComponentName() {
+    return deckName;
   }
 
   /**
@@ -349,7 +366,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final MutableProperty.Impl prop = expressionProperties.get(index);
       final FormattedString formatted =
         new FormattedString(countExpressions[index].getExpression());
-      final PieceFilter f = PropertiesPieceFilter.parse(formatted.getText());
+      final PieceFilter f = PropertiesPieceFilter.parse(formatted.getText((Auditable) this, "Editor.DrawPile.count_express"));
       if (f.accept(p)) {
         final String mapProperty = prop.getPropertyValue();
         if (mapProperty != null) {
@@ -527,6 +544,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     shuffleCommand = st.nextToken(Resources.getString("Deck.shuffle"));
     reverseCommand = st.nextToken(Resources.getString("Deck.reverse"));
     reverseKey = st.nextNamedKeyStroke(null);
+
+    drawMultipleMessage = st.nextToken(Resources.getString("Deck.draw_multiple"));
+    drawSpecificMessage = st.nextToken(Resources.getString("Deck.draw_specific"));
+    faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
+    faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
 
     final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
 
@@ -776,6 +798,38 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     this.reshuffleMsgFormat = reshuffleMsgFormat;
   }
 
+  public String getDrawMultipleMessage() {
+    return drawMultipleMessage;
+  }
+
+  public void setDrawMultipleMessage(String m) {
+    drawMultipleMessage = m;
+  }
+
+  public String getDrawSpecificMessage() {
+    return drawSpecificMessage;
+  }
+
+  public void setDrawSpecificMessage(String m) {
+    drawSpecificMessage = m;
+  }
+
+  public String getFaceUpMessage() {
+    return faceUpMessage;
+  }
+
+  public void setFaceUpMessage(String m) {
+    faceUpMessage = m;
+  }
+
+  public String getFaceDownMessage() {
+    return faceDownMessage;
+  }
+
+  public void setFaceDownMessage(String m) {
+    faceDownMessage = m;
+  }
+
   public boolean isHotkeyOnEmpty() {
     return hotkeyOnEmpty;
   }
@@ -868,7 +922,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(restrictExpression)
       .append(shuffleCommand)
       .append(reverseCommand)
-      .append(reverseKey);
+      .append(reverseKey)
+      .append(drawMultipleMessage)
+      .append(drawSpecificMessage)
+      .append(faceUpMessage)
+      .append(faceDownMessage);
     return ID + se.getValue();
   }
 
@@ -1228,7 +1286,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {
-        final KeyCommand faceDownAction = new KeyCommand(faceDown ? Resources.getString("Deck.face_up") : Resources.getString("Deck.face_down"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
+        final KeyCommand faceDownAction = new KeyCommand(faceDown ? faceUpMessage : faceDownMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1254,7 +1312,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (allowMultipleDraw) {
-        c = new KeyCommand(Resources.getString("Deck.draw_multiple"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(drawMultipleMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1265,7 +1323,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(c);
       }
       if (allowSelectDraw) {
-        c = new KeyCommand(Resources.getString("Deck.draw_specific"), NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
+        c = new KeyCommand(drawSpecificMessage, NamedKeyStroke.NULL_KEYSTROKE, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           @Override
@@ -1307,11 +1365,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
 
     for (final KeyCommand command : commands) {
-      if (Resources.getString("Deck.face_up").equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
+      if (faceUpMessage.equals(command.getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
+        command.putValue(Action.NAME, faceDownMessage); //$NON-NLS-1$
       }
-      else if (Resources.getString("Deck.face_down").equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
-        command.putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
+      else if (faceDownMessage.equals(command.getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
+        command.putValue(Action.NAME, faceUpMessage); //$NON-NLS-1$
       }
     }
     return commands;
@@ -1325,7 +1383,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final FormattedString reportFormat = new FormattedString(format);
     reportFormat.setProperty(DrawPile.DECK_NAME, getLocalizedDeckName());
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
-    final String rep = reportFormat.getLocalizedText();
+    final String rep = reportFormat.getLocalizedText(this, commandName);
     if (rep.length() > 0) {
       c = new Chatter.DisplayText(gameModule.getChatter(), "* " + rep); //$NON-NLS-1$
       c.execute();
@@ -1383,7 +1441,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
       @Override
       public String toString() {
-        return selectDisplayProperty.getText(piece);
+        return selectDisplayProperty.getText(piece, Deck.this, "Editor.DrawPile.list_cards");
       }
 
       @Override
@@ -1564,6 +1622,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, loadFile);
+    }
+    catch (NoSuchElementException e) {
+      JOptionPane.showMessageDialog(
+        GameModule.getGameModule().getPlayerWindow(),
+        Resources.getString("Deck.load_failed_title"),
+        Resources.getString("Deck.load_failed_text", (loadFile != null) ? loadFile.getName() : ""),
+        JOptionPane.ERROR_MESSAGE
+      );
     }
 
     return c;

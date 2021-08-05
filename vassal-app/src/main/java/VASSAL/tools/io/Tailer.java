@@ -21,6 +21,7 @@ package VASSAL.tools.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -177,6 +178,7 @@ public class Tailer {
   private class Monitor implements Runnable {
     @Override
     public void run() {
+      final byte[] buf = new byte[4096];
 
       RandomAccessFile raf = null;
       try {
@@ -192,15 +194,10 @@ public class Tailer {
             position = 0L;
           }
           else if (length > position) {
-            // new lines have been written, read them
+            // new bytes have been written, read them
             raf.seek(position);
-
-            String line;
-            while ((line = raf.readLine()) != null) {
-              // readLine strips newlines, we put them back
-              lsup.notify(line + "\n");
-            }
-
+            final int rlen = raf.read(buf);
+            lsup.notify(new String(buf, 0, rlen, StandardCharsets.UTF_8));
             position = raf.getFilePointer();
           }
 

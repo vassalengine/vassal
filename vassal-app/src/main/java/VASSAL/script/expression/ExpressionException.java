@@ -22,15 +22,23 @@ public class ExpressionException extends Exception {
 
   protected String expression;
   protected String error;
+  protected Auditable owner;
+  protected AuditTrail auditTrail;
 
   public ExpressionException(String s) {
     this(s, "");
   }
 
   public ExpressionException(String s, String e) {
+    this(s, e, null, null);
+  }
+
+  public ExpressionException(String s, String e, Auditable owner, AuditTrail auditTrail) {
     super();
     expression = s;
     error = e;
+    this.owner = owner;
+    this.auditTrail = auditTrail;
   }
 
   public String getExpression() {
@@ -40,4 +48,17 @@ public class ExpressionException extends Exception {
   public String getError() {
     return error;
   }
+
+  public Auditable getOwner() {
+    return owner;
+  }
+
+  public AuditTrail getAuditTrail() {
+    return auditTrail;
+  }
+
+  public String getAuditReport() {
+    return auditTrail == null ? "" : auditTrail.toString();
+  }
+
 }

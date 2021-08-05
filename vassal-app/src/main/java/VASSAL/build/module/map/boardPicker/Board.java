@@ -17,9 +17,36 @@
  */
 package VASSAL.build.module.map.boardPicker;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.board.GridOp;
+import VASSAL.build.module.map.boardPicker.board.HexGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.RegionGrid;
+import VASSAL.build.module.map.boardPicker.board.SolidColorOp;
+import VASSAL.build.module.map.boardPicker.board.SquareGrid;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.command.Command;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.SingleChildInstance;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageTileSource;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.Repainter;
+import VASSAL.tools.imageop.ScaleOp;
+import VASSAL.tools.imageop.SourceOp;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -46,33 +73,6 @@ import java.util.concurrent.Future;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Builder;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.board.GridOp;
-import VASSAL.build.module.map.boardPicker.board.HexGrid;
-import VASSAL.build.module.map.boardPicker.board.MapGrid;
-import VASSAL.build.module.map.boardPicker.board.RegionGrid;
-import VASSAL.build.module.map.boardPicker.board.SolidColorOp;
-import VASSAL.build.module.map.boardPicker.board.SquareGrid;
-import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.SingleChildInstance;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.ImageTileSource;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.Repainter;
-import VASSAL.tools.imageop.ScaleOp;
-import VASSAL.tools.imageop.SourceOp;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**

@@ -60,9 +60,12 @@ public class StackExpander extends MouseAdapter implements Buildable {
                         && SwingUtils.isMainMouseButtonDown(e)) {
       final GamePiece p = map.findPiece(e.getPoint(), PieceFinder.STACK_ONLY);
       if (p != null) {
-        KeyBuffer.getBuffer().clear();
-        ((Stack) p).setExpanded(!((Stack) p).isExpanded());
-        KeyBuffer.getBuffer().add(((Stack) p).topPiece());  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
+        final Stack s = (Stack)p;
+        if (s.nVisible() > 1) {
+          KeyBuffer.getBuffer().clear();
+          ((Stack) p).setExpanded(!((Stack) p).isExpanded());
+          KeyBuffer.getBuffer().add(((Stack) p).topPiece());  //NOTE: topPiece() returns the top VISIBLE piece (not hidden by Invisible trait)
+        }
       }
       e.consume();
     }

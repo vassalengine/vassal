@@ -21,9 +21,11 @@ To other players it will not appear at all.
 
 *Menu Text:* Text of the associated item on the piece's right-click context menu, or leave blank if no menu item is desired.
 
-*Background Color:* The background color that the owner sees the piece drawn against when invisible.
+*Background color:* The background color that the owner sees the piece drawn against when invisible.
 
 *Opacity(%):* The level of opacity that the owner sees when the piece is invisible to others (0% = completely transparent, 100% = full normal opacity)
+
+*Disable auto report of moves:* Setting this to true will disable any automatic move reporting defined at Map properties level. A use case for this could be a  Marker a side would use to take private, on map notes. Auto reporting of moves for hidden units appears in the format defined at Map level, but with the name of the unit and the from / to positions replaced by "?" symbols.
 
 *Can be hidden by:* Specifies who may hide this piece (and see it once hidden). _Any Player_ means that any player may hide this piece, including observers.
 _Any Side_ means that any player who has been assigned a <<GameModule.adoc#Definition_of_Player_Sides,side>> in a game (not an observer) can hide this piece.

@@ -171,6 +171,10 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     gpidSupport = s;
   }
 
+  protected int getInUseSelectedIndex() {
+    return inUseList.getSelectedIndex();
+  }
+
   protected static void addElement(GamePiece piece) {
     // Add piece to the standard model
     availableModel.addElement(piece);
@@ -221,6 +225,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       addElement(new SetGlobalProperty());
       addElement(new Deselect());
       addElement(new TranslatableMessage());
+      addElement(new Mat(""));
+      addElement(new MatCargo());
 
       // Generate a model sorted by description, in the current users language
       buildAlphaModel();
@@ -305,7 +311,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * The piece defined has been changed. It may have changed size, or image
    *
    */
-  private void refresh() {
+  protected void refresh() {
     if (inUseModel.getSize() > 0) {
       piece = inUseModel.lastElement();
     }
@@ -700,9 +706,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private void doCopy() {
     final int index = inUseList.getSelectedIndex();
     if (index >= 0) {
-      pasteButton.setEnabled(true);
-      clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
+      copy(index);
     }
+  }
+
+  protected void copy(int index) {
+    pasteButton.setEnabled(true);
+    clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
   }
 
   private void doPaste() {
@@ -884,7 +894,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     Object o = null;
     try {
       o = GameModule.getGameModule().getDataArchive()
-                    .loadClass(className).getConstructor().newInstance();
+        .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
       ReflectionUtils.handleImportClassFailure(t, className);
@@ -1068,7 +1078,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
    * @author rkinney
    *
    */
-  private static class TraitClipboard {
+  protected static class TraitClipboard {
     private final String type;
     private final String state;
     public TraitClipboard(Decorator copy) {

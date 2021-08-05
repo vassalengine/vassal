@@ -17,49 +17,9 @@
  */
 package VASSAL.build;
 
-import java.awt.Container;
-import java.awt.FileDialog;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
-import java.security.SecureRandom;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Deque;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-import VASSAL.build.module.folder.ModuleSubFolder;
-import VASSAL.build.module.properties.GlobalTranslatableMessages;
-import VASSAL.build.module.properties.TranslatableString;
-import VASSAL.build.module.properties.TranslatableStringContainer;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import org.slf4j.LoggerFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
+import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
 
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
@@ -96,15 +56,23 @@ import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.folder.ModuleSubFolder;
+import VASSAL.build.module.gamepieceimage.ColorManager;
+import VASSAL.build.module.gamepieceimage.FontManager;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
+import VASSAL.build.module.gamepieceimage.GamePieceLayoutsContainer;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.build.module.properties.GlobalTranslatableMessages;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.build.module.properties.TranslatableString;
+import VASSAL.build.module.properties.TranslatableStringContainer;
 import VASSAL.build.module.turn.TurnTracker;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.chat.AddressBookServerConfigurer;
@@ -124,18 +92,21 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.MandatoryComponent;
+import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.configure.ValidationReport;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.I18nResourcePathFinder;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.i18n.I18nResourcePathFinder;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
+import VASSAL.script.ScriptContainer;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.CRCUtils;
@@ -159,9 +130,43 @@ import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_HEIGHT;
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_WIDTH;
-import static VASSAL.preferences.Prefs.MAIN_WINDOW_REMEMBER;
+import java.awt.Container;
+import java.awt.FileDialog;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
+import java.security.SecureRandom;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -213,6 +218,8 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
 
+  public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
+
   private static final char COMMAND_SEPARATOR = KeyEvent.VK_ESCAPE;
 
   /**
@@ -257,6 +264,22 @@ public class GameModule extends AbstractConfigurable
   private FileDialog fileDialog;
   private final MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
+
+  private boolean matSupport = false; // If no Mats exist in the module, we don't need to spend any time doing mat-related calculations during moves/selects
+
+  /**
+   * @return True if there are any Mat or MatCargo objects in the module
+   */
+  public boolean isMatSupport() {
+    return matSupport;
+  }
+
+  /**
+   * @param matSupport true if a Mat or MatCargo trait has been added to the module (thus meaning we'll want to do those calculations during moves/selects)
+   */
+  public void setMatSupport(boolean matSupport) {
+    this.matSupport = matSupport;
+  }
 
   private final PropertyChangeListener repaintOnPropertyChange =
     evt -> {
@@ -538,7 +561,24 @@ public class GameModule extends AbstractConfigurable
 
     validator = new CompoundValidityChecker(
       new MandatoryComponent(this, Documentation.class),
-      new MandatoryComponent(this, GlobalOptions.class));
+      new MandatoryComponent(this, GlobalOptions.class))
+      .append(new SingleChildInstance(this, ChessClockControl.class))
+      .append(new SingleChildInstance(this, Documentation.class))
+      .append(new SingleChildInstance(this, GlobalOptions.class))
+      .append(new SingleChildInstance(this, PrototypesContainer.class))
+      .append(new SingleChildInstance(this, ColorManager.class))
+      .append(new SingleChildInstance(this, FontManager.class))
+      .append(new SingleChildInstance(this, GamePieceImageDefinitions.class))
+      .append(new SingleChildInstance(this, GamePieceLayoutsContainer.class))
+      .append(new SingleChildInstance(this, ScriptContainer.class))
+      .append(new SingleChildInstance(this, GlobalTranslatableMessages.class))
+      .append(new SingleChildInstance(this, GlobalProperties.class))
+      .append(new SingleChildInstance(this, Language.class))
+      .append(new SingleChildInstance(this, Documentation.class))
+      .append(new SingleChildInstance(this, PlayerRoster.class))
+      .append(new SingleChildInstance(this, Chatter.class))
+      .append(new SingleChildInstance(this, KeyNamer.class))
+      .append(new SingleChildInstance(this, Localization.class));
 
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
@@ -607,6 +647,13 @@ public class GameModule extends AbstractConfigurable
       "GameRefresher.refresh_counters", //NON-NLS
       gameRefresher.getRefreshAction()
     );
+
+    // Run a Validator and record any issues in the errorLog
+    final ValidationReport report = new ValidationReport();
+    validate(this, report);
+    for (final String warning : report.getWarnings()) {
+      log.warn(warning);
+    }
   }
 
   /**
@@ -635,7 +682,7 @@ public class GameModule extends AbstractConfigurable
     new PluginsLoader().addTo(this);
     if (e != null) {
       super.build(e);
-      ensureComponent(GamePieceImageDefinitions.class);
+      //ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
       ensureComponent(GlobalTranslatableMessages.class);
       ensureComponent(Language.class);
@@ -653,6 +700,7 @@ public class GameModule extends AbstractConfigurable
     initFrame();
   }
 
+
   /**
    * Associates our user identity with the module's preferences.
    */
@@ -662,7 +710,7 @@ public class GameModule extends AbstractConfigurable
     fullName.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
     final TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
     profile.addPropertyChangeListener(evt -> idChangeSupport.firePropertyChange(evt));
-    final ToggleablePasswordConfigurer user = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    final ToggleablePasswordConfigurer user = new ToggleablePasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(evt -> GameModule.setUserId((String) evt.getNewValue()));
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
     getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
@@ -1005,7 +1053,6 @@ public class GameModule extends AbstractConfigurable
       ModuleSubFolder.class,
       Map.class,
       PieceWindow.class,
-      PrototypesContainer.class,
       ToolbarMenu.class,
       MultiActionButton.class,
       DoActionButton.class,
@@ -1022,7 +1069,7 @@ public class GameModule extends AbstractConfigurable
       PlayerHand.class,
       NotesWindow.class,
       TurnTracker.class,
-      ChessClockControl.class
+      ChessClockControl.class,
     };
   }
 
@@ -1711,6 +1758,28 @@ public class GameModule extends AbstractConfigurable
     pausedCommands.clear();
   }
 
+
+  static String tempUserId = null;
+
+  /**
+   * @return the userId/password we're currently using, in case we're using one of our alternate defaults. Or if none explicitly picked, the actual contents of our password field.
+   */
+  public static String getActiveUserId() {
+    return (tempUserId == null) ? userId : tempUserId;
+  }
+
+  public static String getTempUserId() {
+    return tempUserId;
+  }
+
+  public static void setTempUserId(String id) {
+    tempUserId = id;
+  }
+
+  public static void clearTempUserId() {
+    tempUserId = null;
+  }
+
   /**
    * @return a String that uniquely identifies the user
    */
@@ -1970,7 +2039,7 @@ public class GameModule extends AbstractConfigurable
 
       writer.removeFile(BUILDFILE_OLD); // Don't leave old non-extension buildfile around if we successfully write the new one.
 
-      final boolean actuallyDidStuff = saveAs ? writer.saveAs(true) : writer.save(true);
+      final boolean actuallyDidStuff = saveAs ? writer.saveAsButVerify(true) : writer.saveButVerify(true);
       if (actuallyDidStuff) {
         lastSavedConfiguration = save;
         warn(Resources.getString("Editor.GameModule.saved", writer.getArchive().getFile().getName()));
@@ -2039,6 +2108,9 @@ public class GameModule extends AbstractConfigurable
     }
     else if (GameModule.MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
+    }
+    else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
+      return CounterDetailViewer.isDrawingMouseOver();
     }
 
     //BR// MapName_isVisible property for each map window

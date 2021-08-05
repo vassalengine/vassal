@@ -459,6 +459,10 @@ You can set a Stack Viewer to show the number of items contained in a stack.
 . Set a Marker Trait on all units you want to count. Name the Marker Trait _UnitCount_, and set the Value to 1.
 . Create a Stack Viewer for the Map Window. In *Summary Text Above Pieces*, select _$sum(PropertyName)$_. In the box, replace _PropertyName_ with _UnitCount_ (so it shows _$sum(UnitCount)$_). On mouseover, the Viewer will now display the total Unit Count of all pieces in the stack.
 
+=== Informing a GamePiece it is currently being drawn in the Mouseover Stack Viewer
+
+Occasionally pieces will want to "draw themselves differently" inside of a Mouseover Stack Viewer. For this purpose they can check the property `DrawingMouseover` in e.g. a Calculated Property or a Label's "Follows Expression Value" field.
+
 === Multiple Stack Viewers
 
 A Map Window can have any number of Stack Viewers, each with its own settings. You can use different Stack Viewers to view pieces of different types, on different Game Piece Layers, or with different attributes, and display them in different ways.

@@ -18,30 +18,26 @@
 
 package VASSAL.counters;
 
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.configure.BeanShellExpressionConfigurer;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.script.expression.BeanShellExpression;
+import VASSAL.script.expression.Expression;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.SequenceEncoder;
+
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Objects;
-import javax.swing.KeyStroke;
 
-import VASSAL.build.BadDataReport;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.command.Command;
-import VASSAL.configure.BeanShellExpressionConfigurer;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Resources;
-import VASSAL.script.expression.BeanShellExpression;
-import VASSAL.script.expression.Expression;
-import VASSAL.script.expression.ExpressionException;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.RecursionLimitException;
-import VASSAL.tools.RecursionLimiter;
-import VASSAL.tools.RecursionLimiter.Loopable;
-import VASSAL.tools.SequenceEncoder;
+import javax.swing.KeyStroke;
 
 /**
  * Conditional Marker
@@ -169,10 +165,15 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
         return "";
       }
       else {
+        // Don't potentially create more infinite loops while already reporting one
+        if (RecursionLimiter.isReportingInfiniteLoop()) {
+          return getExpression();
+        }
+
         try {
           RecursionLimiter.startExecution(this);
+
           result = evaluate();
-          return result;
         }
         catch (RecursionLimitException e) {
           RecursionLimiter.infiniteLoop(e);
@@ -202,15 +203,9 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
    * @return value
    */
   protected String evaluate() {
-    try {
-      return expression.evaluate(Decorator.getOutermost(this));
-    }
-    catch (ExpressionException e) {
-      ErrorDialog.dataWarning(new BadDataReport(Resources.getString("Error.expression_error"),
-        piece.getProperty(BasicPiece.BASIC_NAME) + "-Calculated Property[" + name + "]=" + getExpression() + ", Error=" + e.getError(), e)); // NON-NLS
-      return "";
-    }
+    return expression.tryEvaluate(Decorator.getOutermost(this), this, "Editor.CalculatedProperty.expression");
   }
+
 
   @Override
   public boolean testEquals(Object o) {
@@ -271,18 +266,6 @@ public class CalculatedProperty extends Decorator implements EditablePiece, Loop
         .append(descConfig.getValueString());
       return ID + se.getValue();
     }
-  }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
   }
 
   /**

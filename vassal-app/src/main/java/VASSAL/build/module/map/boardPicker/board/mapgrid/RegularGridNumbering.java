@@ -17,16 +17,6 @@
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Point;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.swing.JComponent;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -42,6 +32,16 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Point;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JComponent;
 
 /**
  * Abstract base class for grid numbering classes for hexagonal and rectangular grids
@@ -507,7 +507,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     format.setProperty(GRID_LOCATION, getName(row, col));
     format.setProperty(ROW, getName(row + vOff, vType, vLeading));
     format.setProperty(COLUMN, getName(col + hOff, hType, hLeading));
-    return format.getLocalizedText();
+    return format.getLocalizedText(this, "Editor.RegularGridNumbering.location_format");
   }
 
   @Override

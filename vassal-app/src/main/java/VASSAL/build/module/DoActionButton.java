@@ -17,15 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.GameModule;
@@ -41,6 +32,7 @@ import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringEnumConfigurer;
@@ -55,6 +47,15 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -626,14 +627,14 @@ public class DoActionButton extends AbstractToolbarItem
     try {
       RecursionLimiter.startExecution(this);
       if (doReport) {
-        final String report = "* " + reportFormat.getLocalizedText(); //$NON-NLS-1$
+        final String report = "* " + reportFormat.getLocalizedText(mod, this, "Editor.report_format");
         final Command c = new Chatter.DisplayText(mod.getChatter(), report);
         c.execute();
         mod.sendAndLog(c);
       }
 
       if (doSound) {
-        final String clipName = new FormattedString(soundClip).getText(mod);
+        final String clipName = new FormattedString(soundClip).getText(mod, this, "Editor.DoAction.sound_clip");
         final Command c = new PlayAudioClipCommand(clipName);
         c.execute();
         mod.sendAndLog(c);

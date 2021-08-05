@@ -56,6 +56,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected boolean neverBandSelect = false;
   protected boolean altToBandSelect = false;
   protected boolean altShiftToBandSelect = false;
+  protected boolean canStack = false;
   protected EventFilter selectFilter;
   protected EventFilter moveFilter;
   protected EventFilter bandselectFilter;
@@ -70,6 +71,8 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char NEVER_BAND_SELECT = 'Z';
   protected static final char ALT_BAND_SELECT = 'A';
   protected static final char ALT_SHIFT_BAND_SELECT = 'B';
+  protected static final char STACK_NORMAL = 'L';
+  protected static final char NEVER_STACK = 'R';
 
   public class UseShift implements EventFilter {
     @Override
@@ -127,10 +130,12 @@ public class Immobilized extends Decorator implements EditablePiece {
     neverBandSelect = false;
     altToBandSelect = false;
     altShiftToBandSelect = false;
+    canStack = false;
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     final String selectionOptions = st.nextToken("");
     final String movementOptions = st.nextToken("");
+    final String stackingOptions = st.nextToken(String.valueOf(NEVER_STACK));  // Compatibility - default to no Stacking
     if (selectionOptions.indexOf(SHIFT_SELECT) >= 0) {
       shiftToSelect = true;
       moveIfSelected = true;
@@ -204,6 +209,11 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       bandselectFilter = null;
     }
+
+    if (stackingOptions.charAt(0) == STACK_NORMAL) {
+      canStack = true;
+    }
+
   }
 
   @Override
@@ -224,7 +234,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   @Override
   public Object getLocalizedProperty(Object key) {
     if (Properties.NO_STACK.equals(key)) {
-      return Boolean.TRUE;
+      return canStack ? null : Boolean.TRUE; // Note for compatibility, return null if stacking allowed, not Boolean.FALSE.
     }
     else if (Properties.TERRAIN.equals(key)) {
       return moveIfSelected || neverMove;
@@ -252,7 +262,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   @Override
   public Object getProperty(Object key) {
     if (Properties.NO_STACK.equals(key)) {
-      return Boolean.TRUE;
+      return canStack ? null : Boolean.TRUE; // Note for compatibility, return null if stacking allowed, not Boolean.FALSE.
     }
     else if (Properties.TERRAIN.equals(key)) {
       return moveIfSelected || neverMove;
@@ -327,6 +337,13 @@ public class Immobilized extends Decorator implements EditablePiece {
     else {
       buffer.append(MOVE_NORMAL);
     }
+    buffer.append(';');
+    if (canStack) {
+      buffer.append(STACK_NORMAL);
+    }
+    else {
+      buffer.append(NEVER_STACK);
+    }
     return buffer.toString();
   }
 
@@ -379,6 +396,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     if (! Objects.equals(moveIfSelected, c.moveIfSelected)) return false;
     if (! Objects.equals(neverBandSelect, c.neverBandSelect)) return false;
     if (! Objects.equals(altShiftToBandSelect, c.altShiftToBandSelect)) return false;
+    if (! Objects.equals(canStack, c.canStack)) return false;
 
     return Objects.equals(altToBandSelect, c.altToBandSelect);
   }
@@ -387,6 +405,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     private final TranslatingStringEnumConfigurer selectionOption;
     private final TranslatingStringEnumConfigurer movementOption;
     private final TranslatingStringEnumConfigurer bandSelectOption;
+    private final TranslatingStringEnumConfigurer stackOption;
     private final BooleanConfigurer ignoreGridBox;
     private final TraitConfigPanel controls;
 
@@ -420,6 +439,13 @@ public class Immobilized extends Decorator implements EditablePiece {
     private static final String[] MOVE_KEYS = {
       "Editor.Immobilized.normally",
       "Editor.Immobilized.only_if_selected",
+      "Editor.Immobilized.never"
+    };
+
+    private static final String[] STACK_OPTIONS = { NORMAL, NEVER }; // NON-NLS
+
+    private static final String[] STACK_KEYS = {
+      "Editor.Immobilized.normally",
       "Editor.Immobilized.never"
     };
 
@@ -467,6 +493,15 @@ public class Immobilized extends Decorator implements EditablePiece {
         movementOption.setValue(NORMAL);
       }
       controls.add("Editor.Immobilized.move_piece", movementOption);
+
+      stackOption = new TranslatingStringEnumConfigurer(STACK_OPTIONS, STACK_KEYS);
+      if (p.canStack) {
+        stackOption.setValue(NORMAL);
+      }
+      else {
+        stackOption.setValue(NEVER);
+      }
+      controls.add("Editor.Immobilized.stack_piece", stackOption);
 
       ignoreGridBox = new BooleanConfigurer(p.ignoreGrid);
       controls.add("Editor.Immobilized.ignore_map_grid_when_moving", ignoreGridBox);
@@ -516,6 +551,17 @@ public class Immobilized extends Decorator implements EditablePiece {
         s += NEVER_MOVE;
         break;
       }
+
+      s += ';';
+      switch (stackOption.getValueString()) {
+      case NORMAL:
+        s += STACK_NORMAL;
+        break;
+      case NEVER:
+        s += NEVER_STACK;
+        break;
+      }
+
       return s;
     }
 

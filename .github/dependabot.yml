@@ -9,3 +9,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    pull-request-branch-name:
+      separator: "-"

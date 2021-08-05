@@ -1,10 +1,19 @@
 package VASSAL.build.module.dice;
 
+import VASSAL.build.GameModule;
+import VASSAL.build.module.DiceButton;
+import VASSAL.build.module.DieRoll;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.InternetDiceButton;
+import VASSAL.script.expression.Auditable;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.ProblemDialog;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -19,21 +28,13 @@ import javax.swing.SwingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.DiceButton;
-import VASSAL.build.module.DieRoll;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.InternetDiceButton;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.FormattedString;
-
 /**
  * Base DieServer Class
  * Does most of the work. Individual Die Servers just need to implement
  * {@link #buildInternetRollString} and {@link #parseInternetRollString}
  * methods.
  */
-public abstract class DieServer {
+public abstract class DieServer implements Auditable {
   private static final Logger logger = LoggerFactory.getLogger(DieServer.class);
 
   protected java.util.Random ran;
@@ -233,7 +234,7 @@ public abstract class DieServer {
   protected String formatResult(String description, String result, FormattedString format) {
     format.setProperty(DiceButton.RESULT, result);
     format.setProperty(InternetDiceButton.DETAILS, description);
-    final String text = format.getText();
+    final String text = format.getText(this, "Editor.report_format");
     return text.startsWith("*") ? "*" + text : "* " + text;
   }
 

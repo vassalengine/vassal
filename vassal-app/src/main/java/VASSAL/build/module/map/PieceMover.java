@@ -18,6 +18,8 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.counters.Mat;
+import VASSAL.counters.MatCargo;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
@@ -369,6 +371,21 @@ public class PieceMover extends AbstractBuildable
         else {
           dbuf.add(selected);
         }
+
+        // Mat Support: if we're dragging a Mat, bring its cargo too
+        if (GameModule.getGameModule().isMatSupport()) {
+          final List<GamePiece> checkDrag = new ArrayList<>(dbuf.asList());
+          for (final GamePiece piece : checkDrag) {
+            final List<GamePiece> cargoList = (List<GamePiece>) piece.getProperty(Mat.MAT_CONTENTS);
+            if (cargoList != null) {
+              for (final GamePiece cargo : cargoList) {
+                if (!dbuf.contains(cargo)) {
+                  dbuf.add(cargo);
+                }
+              }
+            }
+          }
+        }
         return null;
       }
     });
@@ -392,6 +409,7 @@ public class PieceMover extends AbstractBuildable
       }
     };
   }
+
 
   /**
    * Detects when a game is starting, for purposes of managing the mark-unmoved button.
@@ -806,6 +824,37 @@ public class PieceMover extends AbstractBuildable
       // Any piece we successfully moved, make sure is now considered a "selected piece" (i.e. a member of KeyBuffer)
       for (final GamePiece piece : draggedPieces) {
         KeyBuffer.getBuffer().add(piece);
+
+        // Support for Mats and Cargo
+        if (GameModule.getGameModule().isMatSupport()) {
+          // If this is a piece that can be placed on mats, look for an overlapping mat, and put it there.
+          if (Boolean.TRUE.equals(piece.getProperty(MatCargo.IS_CARGO))) {
+            final MatCargo cargo = (MatCargo)Decorator.getDecorator(piece, MatCargo.class);
+            final GamePiece oldMat = cargo.getMat();
+
+            if ((oldMat == null) || (!draggedPieces.contains(oldMat) && !allDraggedPieces.contains(oldMat) && !DragBuffer.getBuffer().contains(oldMat))) {
+              comm = comm.append(cargo.findNewMat(map, p));
+            }
+          }
+          else if (!"".equals(piece.getProperty(Mat.MAT_NAME))) {
+            // If the piece being moved is a Mat, check if any of our cargo is being "left behind"
+            final Mat thisMat = (Mat)Decorator.getDecorator(piece, Mat.class);
+            if (thisMat != null) {
+              final List<GamePiece> contents = thisMat.getContents();
+              for (final GamePiece cargo : contents) {
+                // If the cargo is being dragged with us, it isn't being left behind
+                if (draggedPieces.contains(cargo) || allDraggedPieces.contains(cargo) || DragBuffer.getBuffer().contains(cargo)) {
+                  continue;
+                }
+
+                final MatCargo theCargo = (MatCargo)Decorator.getDecorator(cargo, MatCargo.class);
+                if (theCargo != null) {
+                  comm = comm.append(theCargo.findNewMat(cargo.getMap(), cargo.getPosition()));
+                }
+              }
+            }
+          }
+        }
       }
 
       // Record each individual piece moved this iteration into our master list for this move
@@ -1510,6 +1559,16 @@ public class PieceMover extends AbstractBuildable
       );
 
       dge.getDragSource().addDragSourceMotionListener(this);
+
+      // Let our map's KeyBufferer know that this is now a drag not a click.
+      final Map map = dge.getComponent() instanceof Map.View ?
+        ((Map.View) dge.getComponent()).getMap() : null;
+      if (map != null) {
+        final KeyBufferer kb = map.getKeyBufferer();
+        if (kb != null) {
+          kb.dragStarted();
+        }
+      }
     }
 
     /**************************************************************************

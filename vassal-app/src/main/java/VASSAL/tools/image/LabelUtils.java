@@ -211,7 +211,13 @@ public class LabelUtils {
     final JLabel j = new JLabel(htmlString);
     j.setForeground(fgColor);
     j.setFont(f);
+
     final Dimension size = j.getPreferredSize();
+    if (size.width <= 0 || size.height <= 0) {
+      // If the label renders to nothing, bail out early.
+      return;
+    }
+
     j.setSize(size);
 
     x -= extraBorder;

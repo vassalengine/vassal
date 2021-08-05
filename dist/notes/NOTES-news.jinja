@@ -18,109 +18,31 @@ The VASSAL Team is happy to announce VASSAL {{version}}.
   <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
 </ul>
 
-<h2>Changes since 3.5.4</h2>
+<h2>Changes since 3.5.7</h2>
 
-<h3>Bug fixes/h3>
+<h3>Bug fixes</h3>
 <ul>
-<li>14348: Invisible Trait UI conflated opacity with transparency</li>
-<li>14336: MouseoverStackViewer improperly excludes does-not-move pieces when "include move-when-selected" is unchecked</li>
-<li>14332: NullPointerException in Expression.resetCachedExpressions()</li>
-<li>14331: Additional Selection Highlighter fails to offset images</li>
-<li>14327: IllegalComponentStateException in ToolbarMenu.launch()</li>
-<li>14322: IllegalComponentStateException in TableInfo.myKeyEvent()</li>
-<li>14321: IllegalComponentStateException in PropertySheet.myKeyEvent()</li>
-<li>14317: NPE in ReturnToDeck.getDeckName()</li>
-<li>14310: Property Sheet options not saved</li>
-<li>14309: Missing Deck.deck translation key</li>
-<li>14301: GKC/GHK trigger actions out of order at remote end in online play</li>
-<li>14296: IndexOutOfBoundsException in BasicLogger.step() when holding down step key</li>
-<li>14291: IllegalArgumentException in PlayerRoster.resetListeners()</li>
-<li>14290: Online multi-player game is subject to a race condition that ends with corrupt decks</li>
-<li>14288: Deck Hotkey ignored from keyboard and Global Hotkey Trait in preset scenarios</li>
-<li>14285: IllegalArgumentException in PlayerRoster when moving items in Editor</li>
-<li>14284: Chess Clocks: fixed problem where "allow reset" option selection wouldn't "stick"</li>
-<li>14262: Missing Editor.GridEditor.command_arrow_keys translation key</li>
-<li>14225: Send Hotkey action corrupts target deck</li>
-<li>13837: Creating a Global Property with Null name causes NPE on Load Game</li>
-<li>13203: Refresh Counters causes Pieces within Decks to expand</li>
+<li>14599: Error logs should be read from disk as UTF-8</li>
+<li>14596: Removed initial heap setting for Importer, unused since 3.5.4</li>
+<li>14579: Mass Piece Loader cannot add 'standard' layer traits</li>
+<li>14570: Longer cancel wizard text shifts wizard divider position</li>
+<li>14568: Counter Global Key Command expression does not see properties in lower traits</li>
+<li>14479: GamePieceImages recognized by unused image removal tool
 </ul>
 
 <h3>Other improvements</h3>
 <ul>
-<li>14282: Upgrade to Java 16 for Windows, Mac packages</li>
+<li>14600: Switch bug tracker to GitHub</li>
 </ul>
 
-<h2>Changes since 3.5.3</h2>
+<h2>Changes since 3.5.6</h2>
 
-<h3>New features</h3>
+<h3>Bug fixes</h3>
 <ul>
-<li>14228: Chess Clocks can now be manually reset (if manual reset is enabled for them by module designer)</li>
-<li>14217: MouseoverStackViewer - $countPieces$ will give the total number of pieces found in the stack (w/o having to create a property)</li>
-<li>14207: Improved translation features (Global Translatable Message component, Translatable Message trait, exposing current language/locale as property)</li>
-<li>14191: CurrentLanguage and CurrentLanguageName exposed as module properties</li>
-</ul>
-
-<h3>Bug fixes</h3></li>
-<ul>
-<li>14270: "maximum heap too large" message shown when maximum heap is too small</li>
-<li>14269: Poor Editor performance when using Fast Match</li>
-<li>14267: Game Refresher: Refresh Predefined Setups should clear any open game in the Player</li>
-<li>14256: LOS gets stuck on screen when replayed through logfile</li>
-<li>14255: Default autoreport text made -&lt; instead of -&gt;</li>
-<li>14246: Fast Match Global Key Commands were "dealing off the bottom of the deck" in certain cases</li>
-<li>14245: HTML in Tabbed Panes (charts, widgets): Work around apparent Swing bug in JTabbedPane</li>
-<li>14243: Game Piece Layer manipulation commands do not match described effect</li>
-<li>14227: Mark When Moved had Vertical offset mislabeled as Horizontal offset</li>
-<li>14226: Undo and Server buttons steal focus after being clicked</li>
-<li>14222: Editor Search output loses less-than symbols</li>
-<li>14219: Do not expand every prototype in a piece before searching it, just match the name of the prototype.</li>
-<li>14203: Global Key Commands should exit after displaying report if there is no key command to issue</li>
-<li>14200: Scenario names (Predefined Setup) should be displayed in translated language</li>
-<li>14199: Inventory text not translated</li>
-<li>14198: Translated private windows do not work when changing sides if module is translated</li>
-<li>14196: Right-click menu localization is not shown for some elements</li>
-<li>14192: Decks from previous saves and logs are retained in memory</li>
-<li>14187: Drag Thresholds shouldn't be violated by "deep legacy" mouse listeners (e.g. accepting double click AND drag from same mouse sequence)</li>
-<li>14178: Some weird systems lack awt.font.desktophints but aren't headless</li>
-<li>14168: Fix broken HTML in the 'not-allowed-in-multiplayer-games' message</li>
-<li>14164: Fast Match change persists despite Cancel</li>
-<li>14163: NPE due to File.listFiles() returning null for symlnks on Macs</li>
-<li>14159: Fast Search GKC ignores "Within a deck, apply to no pieces"</li>
-<li>14156: Loading a log file to continue a game shouldn't reset the map window</li>
-<li>14155: Search was showing duplicate entries for certain items</li>
-<li>14154: Search wasn't finding "Fast Match" fields</li>
-<li>14152: .vsav, .vlog should be appended to saves, logs when not present, instead of checking for '.'</li>
-<li>14149: Windows installer fails to run uninstallers for old versions</li>
-<li>14143: First character is 'eaten' when typing chat while over map</li>
-<li>14138: Turn Tracker mispopulates button tooltip field while running in editor</li>
-<li>14136: Module-level GKCs were not honoring fast match</li>
-<li>14131: String method calls in Beanshell don't return proper result unless GetProperty is used</li>
-<li>14124: Remove "(Optional)" from Send to Location Board Name hint text</li>
-<li>14112: In Dynamic Property List of values, cursor jumps after first character entered</li>
-<li>14088: Ensure image is updated on selection of new image with duplicate filename in the Editor</li>
-<li>14069: ArrayIndexOutOfBoundsException in StringArrayConfigurer due to race</li>
-<li>13796: Stacks after the first are unstacked when multiple stacks dragged to a snap-to map</li>
-<li>13793: ArrayIndexOutOfBoundsException in CompoundPieceCollection.indexOf()</li>
-<li>13472: "Send to Deck" creates phantom cards in proportion to the number of game starts</li>
-<li>13145: Send Hot Key ignored by Deck</li>
-<li>12538: Decks report multiple shuffles after loading saved game</li>
-</ul>
-
-<h3>Other improvements</h3>
-<ul>
-<li>14258: "Logging" and "Replaying" should have priority over "Saved" in the title bar</li>
-<li>14240: Welcome Wizard: Put "enter your name" screen after the main welcome (so that option to turn off wizard is always on first screen viewed)</li>
-<li>14209: Write logs and saves to .part file to forestall copying of partially written files</li>
-<li>14205: Allow different images to be loaded based on currrent VASSAL language</li>
-<li>14201: Share immutable objects</li>
-<li>14193: Expressions should be cached</li>
-<li>14185: Distinguish tile loading errors from other image loading errors</li>
-<li>14182: Prevent duplication of FormattedString data and Expressions</li>
-<li>14167: Inefficient implementation of FilterOutputStream in ZipWriter</li>
-<li>14148: Module Editor Labels get truncated with '...'</li>
-<li>14139: Delete trait to set 'old...' properties prior to deleting piece</li>
-<li>14133: Better support for Mac Alt and Function keys</li>
-<li>14066: Remove Unused Images: Dialog sizing and file size display improvements</li>
+<li>14540: PgDn stopped scrolling maps downward</li>
+<li>14527: NoSuchMethodError when calling ArchiveWriter.save()</li>
+<li>14526: IllegalArgumentException when rendering empty labels</li>
+<li>14521: NPE in CounterDetailViewer when Stack shapes array is longer than the piece count</li>
 </ul>
 
 <p>

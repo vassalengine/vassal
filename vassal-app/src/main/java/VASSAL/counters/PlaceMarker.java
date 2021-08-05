@@ -236,6 +236,21 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
       c = m.placeAt(marker, p);
     }
 
+    // Mat support
+    if ((c != null) && GameModule.getGameModule().isMatSupport()) {
+      // If a cargo piece has been placed, find it a Mat if eligible, and select it if the Mat is selected
+      if (Boolean.TRUE.equals(marker.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+        final MatCargo cargo = (MatCargo) Decorator.getDecorator(marker, MatCargo.class);
+        if (cargo != null) {
+          c = c.append(cargo.findNewMat());
+          final GamePiece mat = cargo.getMat();
+          if ((mat != null) && (mat.getProperty(Properties.SELECTED) == Boolean.TRUE)) {
+            KeyBuffer.getBuffer().add(marker);
+          }
+        }
+      }
+    }
+
     if (afterBurnerKey != null && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT, ((PropertyExporter) marker).getProperties());
       try {
@@ -429,18 +444,6 @@ public class PlaceMarker extends Decorator implements TranslatablePiece, Recursi
 
   public void updateGpId() {
     setGpId(gpidSupport.generateGpId());
-  }
-
-  // Implement Loopable
-  @Override
-  public String getComponentName() {
-    // Use inner name to prevent recursive looping when reporting errors.
-    return piece.getName();
-  }
-
-  @Override
-  public String getComponentTypeName() {
-    return getDescription();
   }
 
   @Override

@@ -488,7 +488,7 @@ public class MassPieceLoader {
         // Embellishment
         // has no matching images at all, do not add it to the new counter.
         for (final Decorator trait : traits) {
-          if (trait instanceof Emb) {
+          if (trait.getClass().equals(Emb.class)) {
             final Emb newLayer = new Emb(trait.myGetType(), null);
             if (newLayer.buildLayers(baseImage, levelImages)) {
               for (final String image : newLayer.getBuiltImageList()) {
@@ -574,6 +574,7 @@ public class MassPieceLoader {
     private static final long serialVersionUID = 1L;
 
     protected static DefaultListModel<GamePiece> newModel;
+    protected boolean copyIsEmb;  /** Is the current trait in the Clipboard an Emb trait? */
 
     public MassPieceDefiner() {
       super(GameModule.getGameModule().getGpIdSupport());
@@ -584,11 +585,9 @@ public class MassPieceLoader {
         newModel = new DefaultListModel<>();
         for (final Enumeration<?> e = availableModel.elements(); e.hasMoreElements();) {
           final Object o = e.nextElement();
+          newModel.addElement((GamePiece) o);
           if (o instanceof Embellishment) {
             newModel.addElement(new MassPieceLoader.Emb());
-          }
-          else {
-            newModel.addElement((GamePiece) o);
           }
         }
       }
@@ -597,6 +596,30 @@ public class MassPieceLoader {
       setPiece(null);
 
     }
+
+    @Override
+    protected void copy(int index) {
+      copyIsEmb = inUseModel.get(index).getClass().equals(Emb.class);
+      super.copy(index);
+    }
+
+    @Override
+    protected void paste() {
+      final String type = clipBoard.getType();
+      final Decorator c =  (type.startsWith(Embellishment.ID) && copyIsEmb) ?
+        new Emb(type, null) :
+        (Decorator) GameModule.getGameModule().createPiece(type, null);
+      if (c instanceof PlaceMarker) {
+        ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
+      }
+      final int selectedIndex = getInUseSelectedIndex();
+      c.setInner(inUseModel.lastElement());
+      inUseModel.addElement(c);
+      c.mySetState(clipBoard.getState());
+      moveDecorator(inUseModel.size() - 1, selectedIndex + 1);
+      refresh();
+    }
+
   }
 
   /**
@@ -1006,6 +1029,12 @@ public class MassPieceLoader {
 
     public String[] getLevelNames() {
       return commonName;
+    }
+
+    @Override
+    public String getDescription() {
+      return Resources.getString("Editor.MassPieceLoader.embellishment_trait_description") +
+        super.getDescription().substring(Resources.getString("Editor.Embellishment.trait_description").length());
     }
 
     // Return true if the specified file name matches the level

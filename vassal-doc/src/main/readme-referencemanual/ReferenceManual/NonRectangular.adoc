@@ -11,6 +11,8 @@
 |===
 |This trait allows you to specify an arbitrary shape for a Game Piece, so that the piece will only be selected when its image is clicked on precisely, rather than being selected whenever the player clicks anywhere inside its "bounding box".
 
+*Scale Factor:* A scale factor can be applied to the shape (mostly for use with original images that needed downscaling in a Layer trait: allows use of the original image as the "shape" for the piece without needing to separately scale it).
+
 The shape of a piece is used to determine where the player must click to drag a piece or bring up its popup menu.
 It also is used to highlight the outline of the piece when it has been selected.
 Ordinarily a _bounding box_ around the maximum rectangular limits of the image provides the shape for both the piece's selection boundaries and its highlight outline.

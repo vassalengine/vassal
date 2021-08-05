@@ -17,12 +17,6 @@
  */
 package VASSAL.build;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.VisibilityCondition;
@@ -31,6 +25,12 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.NamedKeyStroke;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An abstract implementation of the {@link Configurable} interface. To make a component which is both buildable from the buildFile (XML)

@@ -18,6 +18,50 @@
  */
 package VASSAL.build.module.map;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.PlayerHand;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.SumProperties;
+import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.StringEnum;
+import VASSAL.configure.TranslatableStringEnum;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.ColoredBorder;
+import VASSAL.counters.Deck;
+import VASSAL.counters.DeckVisitorDispatcher;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceFilter;
+import VASSAL.counters.PieceFinder;
+import VASSAL.counters.PieceIterator;
+import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.search.HTMLImageFinder;
+import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProblemDialog;
+import VASSAL.tools.image.LabelUtils;
+import VASSAL.tools.swing.SwingUtils;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -45,50 +89,6 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
-
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AbstractFolder;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.Map;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.boardPicker.Board;
-import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.SumProperties;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
-import VASSAL.configure.IntConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
-import VASSAL.configure.PropertyExpression;
-import VASSAL.configure.SingleChildInstance;
-import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnum;
-import VASSAL.configure.TranslatableStringEnum;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.counters.BasicPiece;
-import VASSAL.counters.ColoredBorder;
-import VASSAL.counters.Deck;
-import VASSAL.counters.DeckVisitorDispatcher;
-import VASSAL.counters.GamePiece;
-import VASSAL.counters.PieceFilter;
-import VASSAL.counters.PieceFinder;
-import VASSAL.counters.PieceIterator;
-import VASSAL.counters.Properties;
-import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
-import VASSAL.search.HTMLImageFinder;
-import VASSAL.tools.FormattedString;
-import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
-import VASSAL.tools.image.LabelUtils;
-import VASSAL.tools.swing.SwingUtils;
 
 /**
  * This is a {@link Drawable} class that draws the counters horizontally when
@@ -207,6 +207,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   /** the JComponent which is repainted when the detail viewer changes */
   protected JComponent view;
 
+  private static boolean drawingMouseOver = false;
+
+  public static boolean isDrawingMouseOver() {
+    return drawingMouseOver;
+  }
+
   public CounterDetailViewer() {
     // Set up the timer; this isn't the real delay---we always check the
     // preferences for that.
@@ -224,7 +230,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     map = (Map) b;
     view = map.getView();
-    validator = new SingleChildInstance(map, getClass());
     map.addDrawComponent(this);
     final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
@@ -269,6 +274,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     final double os_scale = g2d.getDeviceConfiguration().getDefaultTransform().getScaleX();
     g2d.setFont(font.deriveFont((float)(fontSize * os_scale)));
 
+    drawingMouseOver = true;
+
     if (graphicsVisible) {
       drawGraphics(g, pt, comp, displayablePieces);
     }
@@ -276,6 +283,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (textVisible) {
       drawText(g, pt, comp, displayablePieces);
     }
+
+    drawingMouseOver = false;
   }
 
   /**
@@ -377,7 +386,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
       // Draw text underneath counters if any is specified
       if (isTextUnderCounters()) {
-        final String text = counterReportFormat.getLocalizedText(piece);
+        final String text = counterReportFormat.getLocalizedText(piece, this, "Editor.MouseOverStackViewer.text_below");
         int y = dbounds.y + dbounds.height + 10 + extraTextPadding * 2;
         if (text.length() > 0) {
           // If this is our very first counter to have text, AND we're doing the "stretch the bottom all the way across" thing, then draw our "master box" now.
@@ -394,8 +403,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
           // Draw text label for this counter. If we already have a combine-o-rama box, don't draw an extra round of box & background
           if (!combineCounterSummary || !stretchWidthSummary || (pieces.size() != 1)) {
-            final int x = dbounds.x - (int) (pieceBounds.x * graphicsZoom * os_scale) + (int) (borderOffset * os_scale) + (int) (borderWidth * os_scale);
-            drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, 0, 0, 0, combineCounterSummary && stretchWidthSummary);
+            //BR// We now use the left-side position of the piece region and pass the full width of the piece to center
+            //BR// in (pieceBounds.width appropriately scaled), rather than the old method of scaling pieceBounds.x and
+            //BR// applying to the X position, because for whatever reason a 100x100 square piece can apparently return
+            //BR// values like "-46" for the pieceBounds.x. Which apparently causes the *piece* to get *drawn* in the
+            //BR// right place but is clearly NOT the way to center text beneath the piece. AIEEEEEEEEEEEEEEEEEEEEEE!!!
+            final int x = dbounds.x + (int) (borderOffset * os_scale);
+            drawLabel(g, new Point(x, y), text, LabelUtils.CENTER, LabelUtils.CENTER, (int)(pieceBounds.width * graphicsZoom * os_scale), 0, 0, combineCounterSummary && stretchWidthSummary);
           }
           anyUnderText = true;
         }
@@ -489,7 +503,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final Zone z = map.findZone(snapPt);
       final String zone = (z == null) ? "" : z.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
-      report = emptyHexReportFormat.getLocalizedText();
+      report = emptyHexReportFormat.getLocalizedText(this, "Editor.MouseOverStackViewer.text_empty");
       if (report.length() > 0) {
         if (centerAll) {
           x -= g.getFontMetrics().stringWidth(report) / 2;
@@ -501,7 +515,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final GamePiece topPiece = displayablePieces.get(0);
       final String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
-      report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
+      report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces), this, "Editor.MouseOverStackViewer.summary_text");
       if (report.length() > 0) {
         if (graphicsVisible) {
           x = (lastPieceBounds.x - 1); // We pass a clear picture of where our full piece-box is, to allow more options
@@ -776,7 +790,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       final boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
-        s.asList().forEach(this::apply);
+        if (!(map instanceof PlayerHand)) {
+          s.asList().forEach(this::apply);
+        }
+        else {
+          for (int i = 0; (i < shapes.length) && (i < s.getPieceCount()); ++i) {
+            if (shapes[i].contains(pt)) {
+              apply(s.getPieceAt(i));
+              break;
+            }
+          }
+        }
       }
       return null;
     }

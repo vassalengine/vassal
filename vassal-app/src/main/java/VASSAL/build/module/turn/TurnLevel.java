@@ -18,6 +18,18 @@
 
 package VASSAL.build.module.turn;
 
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.FormattedString;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -30,18 +42,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
-
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.properties.MutableProperty;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.FormattedString;
 
 public abstract class TurnLevel extends TurnComponent {
 
@@ -98,7 +98,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   protected String getLongestFormattedValue() {
     turnFormat.setProperty(LEVEL_VALUE, getLongestValueName());
-    return turnFormat.getText();
+    return turnFormat.getText(this, "Editor.TurnLevel.turn_level_format");
   }
 
   protected boolean hasSubLevelRolledOver() {
@@ -153,7 +153,7 @@ public abstract class TurnLevel extends TurnComponent {
   // Return the description of this turn
   public String getTurnString() {
     turnFormat.setProperty(LEVEL_VALUE, getValueString());
-    return turnFormat.getText();
+    return turnFormat.getText(this, "Editor.TurnLevel.turn_level_format");
   }
 
   public List<TurnLevel> getActiveChildLevels() {

@@ -65,7 +65,7 @@ import VASSAL.tools.WarningDialog;
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
 
-  private final Controls controls;
+  private Controls controls;
   private JPanel panel;
   private final List<SecretNote> notes;
   private List<SecretNote> lastSavedNotes;
@@ -118,7 +118,17 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       notes.clear();
-      controls.refresh();
+      rebuildControls();
+    }
+  }
+
+  private void rebuildControls() {
+    if (panel != null) {
+      panel.remove(controls);
+    }
+    controls = new Controls();
+    if (panel != null) {
+      panel.add(controls);
     }
   }
 
@@ -182,7 +192,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     else {
       notes.add(0, note);
     }
-    controls.refresh();
+    rebuildControls();
   }
 
 
@@ -233,7 +243,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public void restoreState() {
     notes.clear();
     notes.addAll(lastSavedNotes);
-    controls.refresh();
+    rebuildControls();
   }
 
   private class Controls extends JPanel implements ItemListener {
@@ -385,7 +395,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       final String selectedName = (String) table.getValueAt(selectedRow, COL_NAME);
       SecretNote note = getNoteForName(selectedName);
 
-      if (note.getOwner().equals(GameModule.getUserId())) {
+      if (note.getOwner().equals(GameModule.getActiveUserId())) {
         note = new SecretNote(note.getName(), note.getOwner(), note.getText(), false, note.getDate(), note.getHandle());
         if (note != null) {
           final int i = notes.indexOf(note);
@@ -426,7 +436,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       okButton.addActionListener(e -> {
         final SecretNote note = new SecretNote(
           name.getValueString(),
-          GameModule.getUserId(),
+          GameModule.getActiveUserId(),
           (String) text.getValue(),
           true
         );
@@ -477,7 +487,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       final SecretNote note = getNoteForName(selectedName);
 
       if (note != null) {
-        if (note.getOwner().equals(GameModule.getUserId())) {
+        if (note.getOwner().equals(GameModule.getActiveUserId())) {
           text.setText(note.getText());
           revealButton.setEnabled(note.isHidden());
         }

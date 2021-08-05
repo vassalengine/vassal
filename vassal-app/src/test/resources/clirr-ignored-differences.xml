@@ -25,39 +25,34 @@
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>void save()</method>
-        <to>boolean</to>
-        <justification>Editor method -- not a custom class target</justification>
+        <method>boolean save()</method>
+        <to>void</to>
     </difference>
-
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>void save(boolean)</method>
-        <to>boolean</to>
-        <justification>Editor method -- not a custom class target</justification>
+        <method>boolean save(boolean)</method>
+        <to>void</to>
     </difference>
-
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>void saveAs(boolean)</method>
-        <to>boolean</to>
-        <justification>Editor method -- not a custom class target</justification>
+        <method>boolean saveAs()</method>
+        <to>void</to>
     </difference>
-
     <difference>
         <className>VASSAL/tools/ArchiveWriter</className>
         <differenceType>7006</differenceType>
-        <method>void saveAs()</method>
-        <to>boolean</to>
-        <justification>Editor method -- not a custom class target</justification>
+        <method>boolean saveAs(boolean)</method>
+        <to>void</to>
     </difference>
-
-     <difference>
-        <className>VASSAL/tools/version/VersionUtils</className>
+    <difference>
+        <className>VASSAL/counters/CalculatedProperty</className>
         <differenceType>7002</differenceType>
-        <method>void main(java.lang.String[])</method>
-        <justification>Removed useless main()</justification>
+        <method>java.lang.String evaluate()</method>
+        <className>VASSAL/tools/BugUtils</className>
+        <differenceType>7009</differenceType>
+        <method>BugUtils()</method>
     </difference>
+
 </differences>
