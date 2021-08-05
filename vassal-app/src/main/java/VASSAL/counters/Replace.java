@@ -53,8 +53,6 @@ public class Replace extends PlaceMarker {
 
   protected Command replacePiece() {
     Command c;
-    Command c1 = null;
-    List<GamePiece> contents = null;
     c = placeMarker();
     if (c == null) {
       reportDataError(this, Resources.getString("Error.bad_replace"));
@@ -76,7 +74,6 @@ public class Replace extends PlaceMarker {
         if (matName != null && !"".equals(matName)) {
           final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
           if (mat != null) {
-            contents = mat.getContents();
             c = c.append(mat.makeRemoveAllCargoCommand());
           }
         }
