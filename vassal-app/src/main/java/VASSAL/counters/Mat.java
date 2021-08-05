@@ -5,9 +5,11 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
+import org.apache.commons.lang3.ObjectUtils;
 
 import javax.swing.KeyStroke;
 import java.awt.Component;
@@ -206,6 +208,19 @@ public class Mat extends Decorator implements TranslatablePiece {
     removeCargo(p);
 
     return ct.getChangeCommand().append(ct2.getChangeCommand());
+  }
+
+
+  /**
+   * Remove all cargo from this Mat, and returns a Command to duplicate the changes on another client
+   * @return Command to remove all cargo
+   */
+  public Command makeRemoveAllCargoCommand() {
+    Command c = new NullCommand();
+    for (final GamePiece p : getContents()) {
+      c = c.append(makeRemoveCargoCommand(p));
+    }
+    return c;
   }
 
 
