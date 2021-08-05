@@ -18,6 +18,7 @@
 package VASSAL.counters;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
@@ -726,6 +727,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     String boardName = ""; //$NON-NLS-1$
     String zoneName = ""; //$NON-NLS-1$
     String locationName = ""; //$NON-NLS-1$
+    String matName = "";
+    String matID = "";
     final Map m = p.getMap();
     final Point pos = p.getPosition();
     Command comm = new NullCommand();
@@ -741,6 +744,19 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
         zoneName = z.getName();
       }
       locationName = m.locationName(pos);
+
+      if (GameModule.getGameModule().isMatSupport()) {
+        if (Boolean.TRUE.equals(p.getProperty(MatCargo.IS_CARGO))) {
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(p, MatCargo.class);
+          if (cargo != null) {
+            final GamePiece mat = cargo.getMat();
+            if (mat != null) {
+              matName = mat.getName();
+              matID   = mat.getName() + "_" + Decorator.getInnermost(mat).getId();
+            }
+          }
+        }
+      }
     }
 
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_X, String.valueOf(pos.x)));
@@ -749,6 +765,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT, matName));
+    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
 
     return comm;
   }

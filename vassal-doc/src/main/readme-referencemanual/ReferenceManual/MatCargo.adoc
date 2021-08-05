@@ -79,5 +79,11 @@ Mat's _Mat Name_ field. If the piece is not sitting on any Mat, this property wi
 * _IsCargo_ will always contain the string _"true"_ for a Mat Cargo piece (it will contain an empty string, "" for a
 piece which does not have this trait).
 
+* _OldMat_ contains the previous Mat name, if any (former contents of CurrentMat).
+
+* _OldMatID_ contains the previous Mat unique ID, if any (former contents of CurrentMatID)
+
+
+
 
 
