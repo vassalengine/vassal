@@ -83,6 +83,11 @@ piece which does not have this trait).
 
 * _OldMatID_ contains the previous Mat unique ID, if any (former contents of CurrentMatID)
 
+* _OldMatPieceName_ contains the previous Mat's piece name, if any
+
+* _OldMatBasicName_ contains the previous Mat's basic name, if any
+
+
 
 
 

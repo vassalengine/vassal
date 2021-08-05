@@ -313,7 +313,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return 0.0;
     }
 
-    final FreeRotator mrot = (FreeRotator) Decorator.getDecorator(mat, FreeRotator.class);
+    final FreeRotator mrot = (FreeRotator) Decorator.getDecorator(getOutermost(mat), FreeRotator.class);
     return mrot == null ? 0.0 : mrot.getAngle();
   }
 

@@ -95,6 +95,8 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
   public static final String OLD_Y = "OldY"; // NON-NLS
   public static final String OLD_MAT = "OldMat"; //NON-NLS
   public static final String OLD_MAT_ID = "OldMatID"; //NON-NLS
+  public static final String OLD_MAT_PIECE_NAME = "OldMatPieceName"; //NON-NLS
+  public static final String OLD_MAT_BASIC_NAME = "OldMatBasicName"; //NON-NLS
   public static final String BASIC_NAME = "BasicName"; // NON-NLS
   public static final String PIECE_NAME = "PieceName"; // NON-NLS
   public static final String LOCALIZED_BASIC_NAME = "LocalizedBasicName"; //NON-NLS
@@ -1160,14 +1162,16 @@ public class BasicPiece extends AbstractImageFinder implements TranslatablePiece
     l.add(OLD_ZONE);
     l.add(OLD_X);
     l.add(OLD_Y);
-    l.add(OLD_MAT);
-    l.add(OLD_MAT_ID);
     l.add(BASIC_NAME);
     l.add(PIECE_NAME);
     l.add(DECK_NAME);
     l.add(CLICKED_X);
     l.add(CLICKED_Y);
     l.add(PIECE_UID);
+    l.add(OLD_MAT);
+    l.add(OLD_MAT_ID);
+    l.add(OLD_MAT_PIECE_NAME);
+    l.add(OLD_MAT_BASIC_NAME);
     return l;
   }
 

@@ -55,6 +55,9 @@ import javax.swing.KeyStroke;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import static VASSAL.counters.BasicPiece.BASIC_NAME;
+import static VASSAL.counters.BasicPiece.PIECE_NAME;
+
 /**
  * The abstract class describing a generic 'Trait' of a full GamePiece. Follows the <a href="https://en.wikipedia.org/wiki/Decorator_pattern"></a>Decorator design pattern</a>
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it. The
@@ -729,6 +732,9 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     String locationName = ""; //$NON-NLS-1$
     String matName = "";
     String matID = "";
+    String matPieceName = "";
+    String matBasicName = "";
+    boolean wasOnMat = false;
     final Map m = p.getMap();
     final Point pos = p.getPosition();
     Command comm = new NullCommand();
@@ -751,8 +757,14 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
+              wasOnMat = true;
+
               matName = mat.getName();
               matID   = mat.getName() + "_" + Decorator.getInnermost(mat).getId();
+
+              final GamePiece outer = getOutermost(mat);
+              matPieceName = (String)outer.getProperty(PIECE_NAME);
+              matBasicName = (String)outer.getProperty(BASIC_NAME);
             }
           }
         }
@@ -765,8 +777,12 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
-    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT, matName));
-    comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
+    if (wasOnMat) {
+      comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT, matName));
+      comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
+      comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_PIECE_NAME, matPieceName));
+      comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_BASIC_NAME, matBasicName));
+    }
 
     return comm;
   }

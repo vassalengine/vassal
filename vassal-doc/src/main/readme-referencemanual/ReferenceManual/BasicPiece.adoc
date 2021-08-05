@@ -58,6 +58,8 @@ The following <<Properties.adoc#top,Properties>> are defined after a piece is mo
 * _OldY_ contains the previous map Y coordinate
 * _OldMat_ contains the previous <<Mat.adoc#top,Mat>>, if this is a <<MatCargo.adoc#top, Mat Cargo>> piece.
 * _OldMatID_ contains the previous <<Mat.adoc#top,Mat>> ID, if this is a <<MatCargo.adoc#top, Mat Cargo>> piece.
+* _OldMatPieceName_ contains the previous Mat's Piece Name
+* _OldMatBasicName_ contains the previous Mat's Basic Name
 
 The following <<Properties.adoc#top,Properties>> are defined after the player has selected something from the piece's right-click context menu:
 
