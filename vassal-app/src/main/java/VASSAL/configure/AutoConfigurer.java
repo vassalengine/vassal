@@ -20,6 +20,7 @@ package VASSAL.configure;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReflectionUtils;
@@ -87,6 +88,22 @@ public class AutoConfigurer extends Configurer
       if (config != null) {
         config.addPropertyChangeListener(this);
         config.setValue(target.getAttributeValueString(name[i]));
+        // Add field hints for common labels
+        if (Resources.getString("Editor.menu_command").equals(prompt[i])) {
+          config.setHintKey("Editor.menu_command_hint");
+        }
+        else if (Resources.getString("Editor.description_label").equals(prompt[i])) {
+          config.setHintKey("Editor.description_component_hint");
+        }
+        else if (Resources.getString("Editor.report_format").equals(prompt[i])) {
+          config.setHintKey("Editor.report_format_hint");
+        }
+        else if (Resources.getString("Editor.button_text_label").equals(prompt[i])) {
+          config.setHintKey("Editor.button_text_hint");
+        }
+        else if (Resources.getString("Editor.tooltip_text_label").equals(prompt[i])) {
+          config.setHintKey("Editor.tooltip_text_hint");
+        }
         final JLabel label = new JLabel(prompt[i]);
         label.setLabelFor(config.getControls());
         labels.put(name[i], label);

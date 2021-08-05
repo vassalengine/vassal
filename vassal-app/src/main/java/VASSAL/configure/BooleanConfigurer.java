@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import java.awt.event.FocusListener;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -121,6 +122,20 @@ public class BooleanConfigurer extends Configurer {
     }
 
     return p;
+  }
+
+  @Override
+  public void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    getControls();
+    box.addFocusListener(listener);
+  }
+
+  @Override
+  public void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    getControls();
+    box.removeFocusListener(listener);
   }
 
   public Boolean booleanValue() {

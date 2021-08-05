@@ -17,17 +17,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.swing.JPopupMenu;
-
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -37,6 +26,8 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.DeckSubFolder;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.deck.DeckSendKeyCommand;
+import VASSAL.build.module.map.deck.DeckSortKeyCommand;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.CardSlot;
@@ -59,6 +50,17 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.JPopupMenu;
 
 public class DrawPile extends SetupStack implements PropertySource, PropertyNameSource {
   protected Deck dummy = new Deck(GameModule.getGameModule()); // Used for storing type information
@@ -780,7 +782,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   @Override
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class<?>[]{ DeckSubFolder.class, CardSlot.class, DeckGlobalKeyCommand.class };
+    return new Class<?>[]{ DeckSubFolder.class, CardSlot.class, DeckGlobalKeyCommand.class, DeckSortKeyCommand.class, DeckSendKeyCommand.class };
   }
 
   public Point getPosition() {

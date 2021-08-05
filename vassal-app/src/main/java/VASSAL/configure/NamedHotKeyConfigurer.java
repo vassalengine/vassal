@@ -210,6 +210,7 @@ public class NamedHotKeyConfigurer extends Configurer implements FocusListener {
       undoButton.setMaximumSize(new Dimension(size, size));
       undoButton.addActionListener(e -> undo());
       undoButton.setEnabled(false);
+      undoButton.setToolTipText(Resources.getString("Editor.undo"));
       panel.add(undoButton);
 
       controls.add(panel, "grow"); // NON-NLS
