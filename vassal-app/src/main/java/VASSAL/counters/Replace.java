@@ -26,7 +26,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 
 import javax.swing.KeyStroke;
-import java.util.List;
 
 /**
  * GamePiece trait that replaces a GamePiece with another one
