@@ -5,6 +5,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
@@ -20,12 +21,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP0;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP1;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP2;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP3;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP4;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP5;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP6;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP7;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP8;
+import static VASSAL.counters.MatCargo.CURRENT_MAT_PROP9;
+
 /**
  * Designates the piece as a "Mat" on which other pieces ("Cargo") can be placed.
  */
 public class Mat extends Decorator implements TranslatablePiece {
   public static final String ID = "mat;"; // NON-NLS
   public static final String MAT_NAME = "MatName"; //NON-NLS
+  public static final String MAT_ID = "MatID"; //NON-NLS
   public static final String MAT_CONTENTS = "MatContents"; //NON-NLS
   public static final String MAT_NUM_CARGO = "MatNumCargo"; //NON-NLS
   protected String matName;
@@ -197,6 +210,19 @@ public class Mat extends Decorator implements TranslatablePiece {
   }
 
 
+  /**
+   * Remove all cargo from this Mat, and returns a Command to duplicate the changes on another client
+   * @return Command to remove all cargo
+   */
+  public Command makeRemoveAllCargoCommand() {
+    Command c = new NullCommand();
+    for (final GamePiece p : getContents()) {
+      c = c.append(makeRemoveCargoCommand(p));
+    }
+    return c;
+  }
+
+
   @Override
   public Rectangle boundingBox() {
     return piece.boundingBox();
@@ -232,6 +258,9 @@ public class Mat extends Decorator implements TranslatablePiece {
     if (MAT_NAME.equals(key)) {
       return matName;
     }
+    if (MAT_ID.equals(key)) {
+      return matName + "_" + getProperty(BasicPiece.PIECE_UID);
+    }
     else if (MAT_CONTENTS.equals(key)) {
       return new ArrayList<>(contents);
     }
@@ -248,6 +277,9 @@ public class Mat extends Decorator implements TranslatablePiece {
   public Object getLocalizedProperty(Object key) {
     if (MAT_NAME.equals(key)) {
       return matName;
+    }
+    if (MAT_ID.equals(key)) {
+      return matName + "_" + getProperty(BasicPiece.PIECE_UID);
     }
     else if (MAT_NUM_CARGO.equals(key)) {
       return String.valueOf(contents.size());
@@ -287,9 +319,8 @@ public class Mat extends Decorator implements TranslatablePiece {
    */
   @Override
   public List<String> getPropertyNames() {
-    return Arrays.asList(MAT_NAME, MAT_NUM_CARGO);
+    return Arrays.asList(MAT_NAME, MAT_ID, MAT_NUM_CARGO, CURRENT_MAT_PROP0, CURRENT_MAT_PROP1, CURRENT_MAT_PROP2, CURRENT_MAT_PROP3, CURRENT_MAT_PROP4, CURRENT_MAT_PROP5, CURRENT_MAT_PROP6, CURRENT_MAT_PROP7, CURRENT_MAT_PROP8, CURRENT_MAT_PROP9);
   }
-
 
   public static class Ed implements PieceEditor {
     private final StringConfigurer matNameInput;

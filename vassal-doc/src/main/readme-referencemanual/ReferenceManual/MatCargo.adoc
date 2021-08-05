@@ -52,6 +52,30 @@ A Mat Cargo trait exposes the following <<Properties.adoc#top,Properties>>:
 * _CurrentMat_ contains the name of any <<Mat.adoc#top,Mat>> that the Mat Cargo piece is currently sitting atop, taken from the
 Mat's _Mat Name_ field. If the piece is not sitting on any Mat, this property will contain the empty string "".
 
+* _CurrentMatID_ contains a unique string identifier for the Mat that the Mat Cargo piece is currently sitting atop. The string will be unique among even Mat pieces sharing the same Mat Name property. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatX_ contains the X position of the Mat that the Mat Cargo piece is currently sitting on. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatY_ contains the Y position of the Mat that the Mat Cargo piece is currently sitting on. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatOffsetX_ contains an offset from this piece's X position to the X position of the Mat that the Mat Cargo piece is currently sitting on. For example if the Mat is at 10 and the Cargo is at 20 then this property will contain -10. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatOffsetY_ contains an offset from this piece's Y position to the Y position of the Mat that the Mat Cargo piece is currently sitting on. For example if the Mat is at 10 and the Cargo is at 20 then this property will contain -10. If the piece is not sitting on any Mat, this property will contain the empty string "".
+
+* _CurrentMatPieceName_ contains the PieceName of the Mat, if any
+
+* _CurrentMatBasicName_ contains the BasicName of the Mat, if any
+
+* _CurrentMatLocationName_ contains the LocationName of the Mat, if any
+
+* _CurrentMatZone_ contains the CurrentZone of the Mat, if any
+
+* _CurrentMatBoard_ contains the CurrentBoard of the Mat, if any
+
+* _CurrentMatMap_ contains the CurrentMap of the Mat, if any
+
+* _CurrentMatProp0_ - _CurrentMatProp9_ will contain the value of the identically named property __of the Mat__. For example if the __Mat__ contains a CalculatedProperty trait called "CurrentMatProp0" and that trait presently evaluates to 7, then CurrentMatProp0 on any Mat Cargo sitting on that mat will also return 7. The Mat can use a Marker, Dynamic Property, or Calculated Property to expose these values to its cargo.
+
 * _IsCargo_ will always contain the string _"true"_ for a Mat Cargo piece (it will contain an empty string, "" for a
 piece which does not have this trait).
 

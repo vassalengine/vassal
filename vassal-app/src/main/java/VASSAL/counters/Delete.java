@@ -101,6 +101,7 @@ public class Delete extends Decorator implements TranslatablePiece {
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
+    Command c1 = null;
     myGetKeyCommands();
     if (deleteCommand.matches(stroke)) {
       final GamePiece outer = Decorator.getOutermost(this);
@@ -119,10 +120,37 @@ public class Delete extends Decorator implements TranslatablePiece {
           SwingUtilities.invokeLater(runnable);
         }
       }
+
+      if (GameModule.getGameModule().isMatSupport()) {
+        // If a cargo piece has been deleted remove it from any mat
+        if (Boolean.TRUE.equals(outer.getProperty(MatCargo.IS_CARGO))) { //NON-NLS
+          final MatCargo cargo = (MatCargo) Decorator.getDecorator(outer, MatCargo.class);
+          if (cargo != null) {
+            c1 = cargo.makeClearMatCommand();
+          }
+        }
+
+        // If a mat has been deleted remove any cargo from it
+        final String matName = (String)outer.getProperty(Mat.MAT_NAME);
+        if (matName != null && !"".equals(matName)) {
+          final Mat mat = (Mat) Decorator.getDecorator(outer, Mat.class);
+          if (mat != null) {
+            c1 = mat.makeRemoveAllCargoCommand();
+          }
+        }
+      }
+
       c = putOldProperties(Decorator.getOutermost(this));
       c = c.append(new RemovePiece(outer));
+
       c.execute();
+
+      // Any Mat commands will have already executed, so we "pre-pend" them after we get finished executing the delete command.
+      if (c1 != null) {
+        c = c1.append(c);
+      }
     }
+
     return c;
   }
 
