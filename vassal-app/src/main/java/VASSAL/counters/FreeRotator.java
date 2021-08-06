@@ -272,7 +272,6 @@ public class FreeRotator extends Decorator
     // end for random rotation
     name = st.nextToken("");
     description = st.nextToken("");
-
     commands = null;
   }
 
@@ -859,6 +858,7 @@ public class FreeRotator extends Decorator
     private final StringConfigurer nameConfig;
     private final StringConfigurer descConfig;
     private final JLabel anyLabel;
+    private final FreeRotator rotator;
 
     private final StringConfigurer anyCommand;
     private final StringConfigurer cwCommand;
@@ -931,6 +931,10 @@ public class FreeRotator extends Decorator
       rndKeyConfig = new NamedHotKeyConfigurer(p.rotateRNDKey);
       panel.add(rndKeyConfig.getControls(), "wrap"); // NON-NLS
 
+      //BR// Make a copy of our original rotator (as the original will be getting written to before we can check its state later)
+      rotator = new FreeRotator(p.getType(), null);
+      rotator.mySetState(p.myGetState());
+
       anyConfig.addPropertyChangeListener(this);
       propertyChange(null);
     }
@@ -986,7 +990,14 @@ public class FreeRotator extends Decorator
 
     @Override
     public String getState() {
-      return "0";
+      //BR// If our "arbitrary rotations" checkbox and number of valid angles are the same as what we started with,
+      //BR// return the original state. Otherwise clear the state.
+      if ((Boolean.TRUE.equals(anyConfig.getValue()) == (rotator.validAngles.length == 1)) && facingsConfig.getIntValue(0) == rotator.validAngles.length) {
+        return rotator.myGetState();
+      }
+      else {
+        return "0";
+      }
     }
   }
 
