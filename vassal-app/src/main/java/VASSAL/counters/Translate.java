@@ -480,7 +480,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     private final NamedHotKeyConfigurer key;
     private final TraitConfigPanel controls;
     private final BooleanConfigurer moveStack;
-    @Deprecated (since = "2020-12-11", forRemoval = true)
+    @Deprecated(since = "2020-12-11", forRemoval = true)
     protected BooleanConfigurer advancedInput;
     protected FormattedExpressionConfigurer xIndexInput;
     protected FormattedExpressionConfigurer xOffsetInput;

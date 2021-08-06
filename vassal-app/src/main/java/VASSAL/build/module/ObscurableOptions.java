@@ -99,7 +99,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    * No longer required with new Configurers. Caused double-up label in config display.
    * @deprecated No replacement
    */
-  @Deprecated (since = "2020-10-27", forRemoval = true)
+  @Deprecated(since = "2020-10-27", forRemoval = true)
   public void setPrompt(String preferencesPrompt) {
   }
 

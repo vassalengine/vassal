@@ -34,11 +34,11 @@ public class LayerControl extends AbstractToolbarItem {
   public static final String CMD_RESET = "Reset All Layers"; //NON-NLS - yes, really
 
   // These 5 identical to AbstractToolbarItem and here for clirr purposes only
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //NON-NLS
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //NON-NLS
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //NON-NLS
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_ICON = "icon"; //NON-NLS
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; //NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String BUTTON_TEXT = "text"; //NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String BUTTON_ICON = "icon"; //NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String BUTTON_HOTKEY = "hotkey"; //NON-NLS
 
   /** @deprecated use launch from the superclass */
   @Deprecated(since = "2021-04-03", forRemoval = true)
