@@ -267,19 +267,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         rd = rdc.check(zf);
       }
 
-      final Map<String, Set<String>> deprecated = rd.getRight();
-      if (!deprecated.isEmpty()) {
-        final String deplist = RemovalAndDeprecationChecker.formatResult(deprecated);
-
-        logger.warn("Deprecated classes, methods, and fields:\n{}", deplist);
-
-        FutureUtils.wait(ProblemDialog.showDetails(
-          JOptionPane.WARNING_MESSAGE,
-          deplist,
-          Resources.getString("Dialogs.deprecated_code")
-        ));
-      }
-
       final Map<String, Set<String>> removed = rd.getLeft();
       if (!removed.isEmpty()) {
         final String remlist = RemovalAndDeprecationChecker.formatResult(removed);
@@ -291,6 +278,19 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         ));
         // Using anything removed is fatal
         return null;
+      }
+
+      final Map<String, Set<String>> deprecated = rd.getRight();
+      if (!deprecated.isEmpty()) {
+        final String deplist = RemovalAndDeprecationChecker.formatResult(deprecated);
+
+        logger.warn("Deprecated classes, methods, and fields:\n{}", deplist);
+
+        FutureUtils.wait(ProblemDialog.showDetails(
+          JOptionPane.WARNING_MESSAGE,
+          deplist,
+          Resources.getString("Dialogs.deprecated_code")
+        ));
       }
 
       // set default heap size
