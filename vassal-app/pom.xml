@@ -399,6 +399,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>3.0.0</version>
+              <executions>
+                <execution>
+                  <phase>test</phase>
+                  <goals>
+                    <goal>exec</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <executable>java</executable>
+                <arguments>
+                  <argument>-classpath</argument>
+                  <classpath/>
+                  <argument>VASSAL.tools.deprecation.DeprecationWriter</argument>
+                  <argument>${project.build.outputDirectory}/VASSAL</argument>
+                  <argument>${project.build.outputDirectory}/deprecated</argument>
+                </arguments>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

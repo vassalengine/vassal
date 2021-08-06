@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2021 by Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.tools.deprecation;
 
 import java.io.InputStream;
@@ -66,7 +83,7 @@ public class DependencyWalker {
 
     @Override
     public void visit(
-      int version, 
+      int version,
       int access,
       String name,
       String signature,
@@ -85,7 +102,7 @@ public class DependencyWalker {
         addSignature(signature);
       }
     }
-   
+
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
       addDesc(desc);
@@ -108,12 +125,12 @@ public class DependencyWalker {
       int access,
       String name,
       String desc,
-      String signature, 
+      String signature,
       Object value) {
 
       if (signature == null) {
         addDesc(desc);
-      } 
+      }
       else {
         addTypeSignature(signature);
       }
@@ -144,7 +161,7 @@ public class DependencyWalker {
         addInternalNames(exceptions);
       }
 
-      return new MethodDependencyVisitor(); 
+      return new MethodDependencyVisitor();
     }
   }
 
@@ -184,7 +201,7 @@ public class DependencyWalker {
 
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-      addDesc(desc); 
+      addDesc(desc);
       return new AnnotationDependencyVisitor();
     }
 
@@ -361,7 +378,7 @@ public class DependencyWalker {
     public SignatureDependencyVisitor() {
       super(Opcodes.ASM9);
     }
- 
+
     @Override
     public void visitClassType(String name) {
       signatureClassName = name;
@@ -457,7 +474,7 @@ public class DependencyWalker {
     case Type.DOUBLE:
       return "double";
     case Type.ARRAY:
-      return typeString(t.getElementType()) + "[]".repeat(t.getDimensions()); 
+      return typeString(t.getElementType()) + "[]".repeat(t.getDimensions());
     case Type.OBJECT:
       return t.getInternalName();
     default:
