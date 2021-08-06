@@ -777,7 +777,7 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_BOARD, boardName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_ZONE, zoneName));
     comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_LOCATION_NAME, locationName));
-    if (wasOnMat) {
+    if (GameModule.getGameModule().isMatSupport()) {
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT, matName));
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_ID, matID));
       comm = comm.append(container.setPersistentProperty(BasicPiece.OLD_MAT_PIECE_NAME, matPieceName));
