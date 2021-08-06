@@ -17,6 +17,7 @@
 
 package VASSAL.tools.deprecation;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,10 +37,45 @@ public class Processor {
 
   private static final byte[] ZIPSIG = { 0x50, 0x4B, 0x03, 0x04 };
 
+  // oh seriously?! these have to be cast?
+  private static final byte[] CLASSSIG = {
+    (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE
+  };
+
+  private static boolean checkSig(InputStream in, byte[] sig) {
+    try {
+      return Arrays.equals(in.readNBytes(sig.length), sig);
+    }
+    catch (IOException e) {
+      return false;
+    }
+  }
+
   private static boolean isZipArchive(Path p) {
     try (InputStream in = Files.newInputStream(p)) {
-      return Arrays.equals(in.readNBytes(4), ZIPSIG);
-    }             
+      return checkSig(in, ZIPSIG);
+    }
+    catch (IOException e) {
+      return false;
+    }
+  }
+
+  private static boolean isClassFile(Path p) {
+    try (InputStream in = Files.newInputStream(p)) {
+      return checkSig(in, CLASSSIG);
+    }
+    catch (IOException e) {
+      return false;
+    }
+  }
+
+  private static boolean isClassFile(InputStream in) {
+    try {
+      in.mark(CLASSSIG.length);
+      final boolean ret = checkSig(in, CLASSSIG);
+      in.reset();
+      return ret;
+    }
     catch (IOException e) {
       return false;
     }
@@ -60,8 +96,14 @@ public class Processor {
     while (entries.hasMoreElements()) {
       final ZipEntry ze = entries.nextElement();
       if (ze.getName().endsWith(".class")) {
-        try (InputStream in = zf.getInputStream(ze)) {
-          process(walker, in);
+        try (InputStream in = new BufferedInputStream(zf.getInputStream(ze))) {
+          if (isClassFile(in)) {
+            process(walker, in);
+          }
+        }
+        catch (IOException e) {
+          System.err.println("Failed reading " + ze.getName());
+          throw e;
         }
       }
     }
@@ -73,8 +115,16 @@ public class Processor {
                                .filter(Files::isRegularFile)) {
       for (final Path p: (Iterable<Path>)s::iterator) {
         if (p.getFileName().toString().endsWith(".class")) {
-          try (InputStream in = Files.newInputStream(p)) {
-            process(walker, in);
+          if (isClassFile(p)) {
+            try (InputStream in = new BufferedInputStream(Files.newInputStream(p))) {
+              if (isClassFile(in)) {
+                process(walker, in);
+              }
+            }
+            catch (IOException e) {
+              System.err.println("Failed reading " + p);
+              throw e;
+            }
           }
         }
         else if (isZipArchive(p)) {
