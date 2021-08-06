@@ -438,6 +438,15 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * @return the top-level frame of the controls window
+   * @deprecated use {@link #getPlayerWindow()}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = false)
+  public JFrame getFrame() {
+    return frame;
+  }
+
+  /**
    * @return String identifier for module
    */
   @Override
