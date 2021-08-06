@@ -1007,7 +1007,7 @@ public class FreeRotator extends Decorator
 
     @Override
     public String getState() {
-      return "0";
+      return startAngleConfig.getValueString();
     }
   }
 
