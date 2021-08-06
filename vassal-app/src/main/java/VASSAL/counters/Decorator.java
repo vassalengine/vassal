@@ -734,7 +734,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     String matID = "";
     String matPieceName = "";
     String matBasicName = "";
-    boolean wasOnMat = false;
     final Map m = p.getMap();
     final Point pos = p.getPosition();
     Command comm = new NullCommand();
@@ -757,8 +756,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
           if (cargo != null) {
             final GamePiece mat = cargo.getMat();
             if (mat != null) {
-              wasOnMat = true;
-
               matName = mat.getName();
               matID   = mat.getName() + "_" + Decorator.getInnermost(mat).getId();
 
