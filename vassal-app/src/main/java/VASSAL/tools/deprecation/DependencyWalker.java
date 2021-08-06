@@ -36,16 +36,22 @@ import org.objectweb.asm.TypePath;
 import org.objectweb.asm.signature.SignatureReader;
 import org.objectweb.asm.signature.SignatureVisitor;
 
-public class DependencyWalker {
-  private Consumer<String> thisClassCallback = s -> {};
+public class DependencyWalker implements Walker {
+  private Consumer<String> thisClassBeginCallback = s -> {};
+  private Consumer<String> thisClassEndCallback = s -> {};
   private Consumer<String> classCallback = s -> {};
   private Consumer<String> methodCallback = s -> {};
   private Consumer<String> fieldCallback = s -> {};
 
   private ClassReader reader;
+  private String thisClass;
 
-  public void setThisClassCallback(Consumer<String> cb) {
-    thisClassCallback = cb;
+  public void setThisClassBeginCallback(Consumer<String> cb) {
+    thisClassBeginCallback = cb;
+  }
+
+  public void setThisClassEndCallback(Consumer<String> cb) {
+    thisClassEndCallback = cb;
   }
 
   public void setClassCallback(Consumer<String> cb) {
@@ -60,18 +66,22 @@ public class DependencyWalker {
     fieldCallback = cb;
   }
 
+  @Override
   public void setInput(byte[] classFile) {
     reader = new ClassReader(classFile);
   }
 
+  @Override
   public void setInput(InputStream in) throws IOException {
     reader = new ClassReader(in);
   }
 
+  @Override
   public void setInput(String className) throws IOException {
     reader = new ClassReader(className);
   }
 
+  @Override
   public void walk() {
     reader.accept(new ClassDependencyVisitor(), 0);
   }
@@ -162,6 +172,11 @@ public class DependencyWalker {
       }
 
       return new MethodDependencyVisitor();
+    }
+
+    @Override
+    public void visitEnd() {
+      thisClassEndCallback.accept(thisClass);
     }
   }
 
@@ -425,7 +440,8 @@ public class DependencyWalker {
 
   private void addThisClassName(String name) {
     addInternalName(name);
-    thisClassCallback.accept(Type.getObjectType(name).getInternalName().replace('/', '.'));
+    thisClass = Type.getObjectType(name).getInternalName().replace('/', '.');
+    thisClassBeginCallback.accept(thisClass);
   }
 
   private void addInternalName(String name) {

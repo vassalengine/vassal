@@ -417,8 +417,9 @@
                   <argument>-classpath</argument>
                   <classpath/>
                   <argument>VASSAL.tools.deprecation.DeprecationWriter</argument>
-                  <argument>${project.build.outputDirectory}/VASSAL</argument>
+                  <argument>-o</argument>
                   <argument>${project.build.outputDirectory}/deprecated</argument>
+                  <argument>${project.build.outputDirectory}/VASSAL</argument>
                 </arguments>
               </configuration>
             </plugin>

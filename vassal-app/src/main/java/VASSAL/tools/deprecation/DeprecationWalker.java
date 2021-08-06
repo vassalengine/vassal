@@ -30,7 +30,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-public class DeprecationWalker {
+public class DeprecationWalker implements Walker {
 
   @FunctionalInterface
   public interface Callback {
@@ -47,18 +47,22 @@ public class DeprecationWalker {
 
   private ClassReader reader;
 
+  @Override
   public void setInput(byte[] classFile) {
     reader = new ClassReader(classFile);
   }
  
+  @Override
   public void setInput(InputStream in) throws IOException {
     reader = new ClassReader(in);
   }
 
+  @Override
   public void setInput(String className) throws IOException {
     reader = new ClassReader(className);
   }
 
+  @Override
   public void walk() {
     reader.accept(new ClassDependencyVisitor(), 0);
   }
