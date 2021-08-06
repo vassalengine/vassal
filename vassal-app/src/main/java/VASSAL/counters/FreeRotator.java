@@ -126,7 +126,7 @@ public class FreeRotator extends Decorator
 
   public FreeRotator() {
     // modified for random rotation (added two ; )
-    this(ID + "6;];[;" + Resources.getString("Editor.FreeRotator.default_rotate_cw_command") + ";" + Resources.getString("Editor.FreeRotator.default_rotate_ccw_command") + ";;;;;", null); //$NON-NLS-1$//
+    this(ID + "6;];[;" + Resources.getString("Editor.FreeRotator.default_rotate_cw_command") + ";" + Resources.getString("Editor.FreeRotator.default_rotate_ccw_command") + ";;;;", null); //$NON-NLS-1$//
   }
 
   public FreeRotator(String type, GamePiece inner) {
