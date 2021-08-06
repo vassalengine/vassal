@@ -28,7 +28,7 @@ import java.util.Arrays;
  * @deprecated Use {@link org.apache.commons.lang3.builder.HashCodeBuilder}
  * instead.
  */
-@Deprecated
+@Deprecated(since = "2021-08-06", forRemoval = true)
 public final class HashCode {
   private HashCode() {}
 

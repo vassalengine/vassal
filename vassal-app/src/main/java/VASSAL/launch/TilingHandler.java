@@ -75,7 +75,7 @@ public class TilingHandler {
   protected final int maxheap_limit;
 
   // Needed for VASL. Remove sometime after VASL 6.6.2
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
   protected final int pid = 42;
 
@@ -97,7 +97,7 @@ public class TilingHandler {
    * @deprecated Retained for VASL compatibility. Remove sometime after
    * VASL 6.6.2.
    */
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   @SuppressWarnings("PMD.UnusedFormalParameter")
   public TilingHandler(String aname, File cdir,
                        Dimension tdim, int mhlim, int pid) {

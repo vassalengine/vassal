@@ -181,7 +181,7 @@ public class KeyBuffer {
   }
 
   /** @deprecated Use {@link #getPiecesIterator()} instead. */
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPieces() {
     return Collections.enumeration(pieces);
   }

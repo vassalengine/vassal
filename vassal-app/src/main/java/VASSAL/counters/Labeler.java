@@ -118,7 +118,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   private ImageOp lastCachedOp;
   private ImageOp baseOp;
 
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   private char verticalJust = 'b';

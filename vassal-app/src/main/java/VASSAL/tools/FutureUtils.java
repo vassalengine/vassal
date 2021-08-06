@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /** @deprecated Moved to {@link VASSAL.tools.concurrent} package. */
-@Deprecated
+@Deprecated(since = "2021-08-06", forRemoval = true)
 public class FutureUtils {
   private FutureUtils() {}
 

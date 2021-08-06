@@ -97,10 +97,7 @@ public final class GeneralFilter {
 
   /**
    * A Hermite filter.
-   *
-   * @deprecated class is not used anywhere and will be removed
    */
-  @Deprecated
   public static final class HermiteFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -118,10 +115,7 @@ public final class GeneralFilter {
 
   /**
    * A box filter.
-   *
-   * @deprecated class is not used anywhere and will be removed
    */
-  @Deprecated
   public static final class BoxFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -137,10 +131,7 @@ public final class GeneralFilter {
 
   /**
    * A triangle, or bilinear, filter.
-   *
-   * @deprecated class is not used anywhere and will be removed
    */
-  @Deprecated
   public static final class TriangleFilter {
     public float apply(float t) {
       if (t < 0.0f) t = -t;
@@ -205,10 +196,7 @@ public final class GeneralFilter {
 
   /**
    * A Bell filter.
-   *
-   * @deprecated class is not used anywhere and will be removed
    */
-  @Deprecated
   public static final class BellFilter extends Filter {
     @Override
     public float apply(float t) {
@@ -230,10 +218,7 @@ public final class GeneralFilter {
 
   /**
    * A B-spline filter.
-   *
-   * @deprecated class is not used anywhere and will be removed
    */
-  @Deprecated
   public static final class BSplineFilter extends Filter {
     @Override
     public float apply(float t) {

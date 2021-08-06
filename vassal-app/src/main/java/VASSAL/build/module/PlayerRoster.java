@@ -291,7 +291,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   /**
    * @deprecated use {@link GameModule#getPlayerRoster()}
    */
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   protected static PlayerRoster getInstance() {
     return GameModule.getGameModule().getPlayerRoster();
   }

@@ -25,7 +25,7 @@ import VASSAL.tools.concurrent.SimpleFuture;
  * @since 3.1.0
  * @deprecated Use {@link org.slf4j.Logger} instead.
  */
-@Deprecated
+@Deprecated(since = "2021-08-06", forRemoval = true)
 public class Logger {
   private Logger() {}
 

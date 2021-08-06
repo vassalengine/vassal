@@ -30,7 +30,7 @@ import VASSAL.tools.ThrowableUtils;
  * @author Joel Uckelman
  * @since 3.1.0
  */
-@Deprecated
+@Deprecated(since = "2021-08-06", forRemoval = true)
 public class LogEntry implements Serializable {
   private static final long serialVersionUID = 1L;
 

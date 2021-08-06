@@ -19,7 +19,7 @@
 package VASSAL.tools.logging;
 
 @FunctionalInterface
-@Deprecated
+@Deprecated(since = "2021-08-06", forRemoval = true)
 public interface LogListener {
   void handle(LogEntry e);
 }
