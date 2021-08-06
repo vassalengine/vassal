@@ -110,16 +110,10 @@ public class MatCargo extends Decorator implements TranslatablePiece {
   }
 
   /**
-   * Clear our relationship with any Mat we're assigned to
+   * Clear our relationship with any Mat we're assigned to. Does NOT clear the Mat's reference to us -- must be done separately.
    */
   public void clearMat() {
-    if (mat != null) {
-      final GamePiece actualMat = Decorator.getDecorator(mat, Mat.class);
-      mat = null;
-      if (actualMat != null) {
-        ((Mat)actualMat).removeCargo(Decorator.getOutermost(this));
-      }
-    }
+    mat = null;
   }
 
   /**
@@ -319,7 +313,7 @@ public class MatCargo extends Decorator implements TranslatablePiece {
       return 0.0;
     }
 
-    final FreeRotator mrot = (FreeRotator) Decorator.getDecorator(mat, FreeRotator.class);
+    final FreeRotator mrot = (FreeRotator) Decorator.getDecorator(getOutermost(mat), FreeRotator.class);
     return mrot == null ? 0.0 : mrot.getAngle();
   }
 
@@ -440,7 +434,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return Decorator.getOutermost(mat).getProperty(key);
       }
     }
-    else if (IS_CARGO.equals(key)) {
+
+    if (IS_CARGO.equals(key)) {
       return Boolean.TRUE;
     }
     return super.getProperty(key);
@@ -475,7 +470,8 @@ public class MatCargo extends Decorator implements TranslatablePiece {
         return Decorator.getOutermost(mat).getLocalizedProperty(key);
       }
     }
-    else if (List.of(
+
+    if (List.of(
       CURRENT_MAT_ID,
       CURRENT_MAT_X,
       CURRENT_MAT_Y,
