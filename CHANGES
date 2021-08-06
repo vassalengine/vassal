@@ -1,5 +1,7 @@
 3.6.0-beta1 - ???
 
+* 10294: Can Rotate traits no longer lose any pre-defined starting rotation
+    when editing a Piece Slot
 * 10277: When editing an IrregularGrid, start the map view somewhere near the
     grid or its parent Zone
 * 10276: Expose property if we're currently drawing Counter Detail Viewer
