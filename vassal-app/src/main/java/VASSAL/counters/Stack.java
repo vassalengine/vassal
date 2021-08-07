@@ -108,7 +108,7 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
    * @deprecated use {@link #asList()}
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
-  @SuppressWarnings("deprecation")
+  @SuppressWarnings({"deprecation", "removal"})
   public Enumeration<GamePiece> getPieces() {
     return new EnumeratedIterator<>(new AllPieceIterator());
   }
