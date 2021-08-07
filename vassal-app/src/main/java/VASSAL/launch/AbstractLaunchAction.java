@@ -22,13 +22,14 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -262,33 +263,43 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // Check for usage of removed and deprecated classes, methods, fields
       final RemovalAndDeprecationChecker rdc = new RemovalAndDeprecationChecker();
-      Pair<Map<String, Set<String>>, Map<String, Set<String>>> rd;
+      Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
       try (ZipFile zf = new ZipFile(lr.module.getAbsolutePath())) {
         rd = rdc.check(zf);
       }
 
-      final Map<String, Set<String>> removed = rd.getLeft();
+      final Map<String, Map<String, String>> removed = rd.getLeft();
       if (!removed.isEmpty()) {
-        final String remlist = RemovalAndDeprecationChecker.formatResult(removed);
-        logger.error("Removed classes, methods, and fields:\n{}", remlist);
+        final String msg = "Removed classes, methods, and fields\n(used by => removed item, version when removed\n\n" + RemovalAndDeprecationChecker.formatResult(removed);
+
+        logger.error(msg);
+
         FutureUtils.wait(ProblemDialog.showDetails(
           JOptionPane.ERROR_MESSAGE,
-          remlist,
+          msg,
           Resources.getString("Dialogs.removed_code")
         ));
         // Using anything removed is fatal
         return null;
       }
 
-      final Map<String, Set<String>> deprecated = rd.getRight();
+      final Map<String, Map<String, String>> deprecated = rd.getRight();
       if (!deprecated.isEmpty()) {
-        final String deplist = RemovalAndDeprecationChecker.formatResult(deprecated);
+        // convert deprecation date to date elgible for removal (+1 year)
+        final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+        for (final Map.Entry<String, Map<String, String>> e1: deprecated.entrySet()) {
+          for (final Map.Entry<String, String> e2: e1.getValue().entrySet()) {
+            e2.setValue(LocalDate.parse(e2.getValue(), fmt).plusYears(1).toString());
+          }
+        }
 
-        logger.warn("Deprecated classes, methods, and fields:\n{}", deplist);
+        final String msg = "Deprecated classes, methods, and fields\n(used by => removed item, date eligible for removal)\n\n" + RemovalAndDeprecationChecker.formatResult(deprecated);
+
+        logger.warn(msg);
 
         FutureUtils.wait(ProblemDialog.showDetails(
           JOptionPane.WARNING_MESSAGE,
-          deplist,
+          msg,
           Resources.getString("Dialogs.deprecated_code")
         ));
       }

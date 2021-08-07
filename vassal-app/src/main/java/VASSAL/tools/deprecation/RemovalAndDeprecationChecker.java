@@ -21,11 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.zip.ZipFile;
 
@@ -33,8 +31,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class RemovalAndDeprecationChecker {
   private final DependencyWalker walker;
-  private final Set<String> removed;
-  private final Set<String> deprecated;
+  private final Map<String, String> removed;
+  private final Map<String, String> deprecated;
 
   public RemovalAndDeprecationChecker() throws IOException {
     walker = new DependencyWalker();
@@ -42,40 +40,46 @@ public class RemovalAndDeprecationChecker {
     deprecated = readDeprecated();
   }
 
-  private Set<String> readRemoved() throws IOException {
-    final Set<String> r = new HashSet<>();
+  private Map<String, String> readRemoved() throws IOException {
+    final Map<String, String> r = new HashMap<>();
     try (InputStream in = getClass().getResourceAsStream("/removed")) {
-      Processor.readCompSet(in, cols -> r.add(cols[0]));
+      // cols are item name, version when removed
+      Processor.readCompSet(in, cols -> r.put(cols[0], cols[1]));
     }
     return r;
   }
 
-  private Set<String> readDeprecated() throws IOException {
+  private Map<String, String> readDeprecated() throws IOException {
     // deprecated is tab-separated: name  since  forRemoval
-    final Set<String> d = new HashSet<>();
+    final Map<String, String> d = new HashMap<>();
     try (InputStream in = getClass().getResourceAsStream("/deprecated")) {
       Processor.readCompSet(in, cols -> {
         if ("true".equals(cols[2])) { // forRemoval
-          d.add(cols[0]);
+          // item name, deprecation date
+          d.put(cols[0], cols[1]);
         }
       });
     }
     return d;
   }
 
-  public Pair<Map<String, Set<String>>, Map<String, Set<String>>> check(ZipFile zf) throws IOException {
-    final Map<String, Set<String>> rmap = new HashMap<>();
-    final Map<String, Set<String>> dmap = new HashMap<>();
+  public Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> check(ZipFile zf) throws IOException {
+    final Map<String, Map<String, String>> rmap = new HashMap<>();
+    final Map<String, Map<String, String>> dmap = new HashMap<>();
 
-    final Set<String> removed_used = new HashSet<>();
-    final Set<String> deprecated_used = new HashSet<>();
+    final Map<String, String> removed_used = new HashMap<>();
+    final Map<String, String> deprecated_used = new HashMap<>();
 
     final Consumer<String> callback = s -> {
-      if (removed.contains(s)) {
-        removed_used.add(s);
+      final String version = removed.get(s);
+      if (version != null) {
+        removed_used.put(s, version);
       }
-      else if (deprecated.contains(s)) {
-        deprecated_used.add(s);
+      else {
+        final String when = deprecated.get(s);
+        if (when != null) {
+          deprecated_used.put(s, when);
+        }
       }
     };
 
@@ -90,11 +94,11 @@ public class RemovalAndDeprecationChecker {
 
     walker.setThisClassEndCallback(s -> {
       if (!removed_used.isEmpty()) {
-        rmap.put(s, new HashSet<>(removed_used));
+        rmap.put(s, new HashMap<>(removed_used));
       }
 
       if (!deprecated_used.isEmpty()) {
-        dmap.put(s, new HashSet<>(deprecated_used));
+        dmap.put(s, new HashMap<>(deprecated_used));
       }
     });
 
@@ -102,17 +106,18 @@ public class RemovalAndDeprecationChecker {
     return Pair.of(rmap, dmap);
   }
 
-  public static String formatResult(Map<String, Set<String>> dmap) {
+  public static String formatResult(Map<String, Map<String, String>> dmap) {
     // a => b
     final StringBuilder sb = new StringBuilder();
     final List<String> dependers = new ArrayList<>(dmap.keySet());
     Collections.sort(dependers);
 
     for (final String dhead: dependers) {
-      final List<String> ds = new ArrayList<>(dmap.get(dhead));
+      final Map<String, String> dtmap = dmap.get(dhead);
+      final List<String> ds = new ArrayList<>(dtmap.keySet());
       Collections.sort(ds);
       for (final String dtail: ds) {
-        sb.append(dhead).append(" => ").append(dtail).append('\n');
+        sb.append(dhead).append(" => ").append(dtail).append(", ").append(dtmap.get(dtail)).append('\n');
       }
     }
 
