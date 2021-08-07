@@ -29,7 +29,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
 /**
  * A label which word-wraps and fully justifies its text, and which
  * reflows the text when resized.

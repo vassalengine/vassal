@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.DialogUtils;
 
 /**
@@ -202,6 +203,7 @@ public class Dialogs {
     titleLabel.setFont(f.deriveFont(Font.BOLD, f.getSize() * 1.2f));
 
     final FlowLabel descriptionLabel = new FlowLabel(description);
+    descriptionLabel.addHyperlinkListener(BrowserSupport.getListener());
 
     final JPanel panel = new JPanel();
     final GroupLayout layout = new GroupLayout(panel);
