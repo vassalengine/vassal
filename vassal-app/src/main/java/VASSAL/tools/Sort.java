@@ -117,6 +117,7 @@ public class Sort {
    * @deprecated Use {@link java.util.Comparator} instead.
    */
   @FunctionalInterface
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   public interface Comparator {
     int compare(Object o1, Object o2);
   }
@@ -126,6 +127,7 @@ public class Sort {
    * @deprecated Use the natural ordering on Strings instead.
    * see java.lang.String.compareTo(String)
    */
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   public static class Alpha implements Comparator {
     @Override
     public int compare(Object o1, Object o2) {

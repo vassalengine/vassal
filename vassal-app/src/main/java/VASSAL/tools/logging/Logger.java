@@ -29,11 +29,17 @@ import VASSAL.tools.concurrent.SimpleFuture;
 public class Logger {
   private Logger() {}
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static final int MESSAGE = LogEntry.MESSAGE;
+  @SuppressWarnings({"deprecation", "removal"})
   public static final int WARNING = LogEntry.WARNING;
+  @SuppressWarnings({"deprecation", "removal"})
   public static final int ERROR =   LogEntry.ERROR;
+  @SuppressWarnings({"deprecation", "removal"})
   public static final int BUG =     LogEntry.BUG;
+  @SuppressWarnings({"deprecation", "removal"})
   public static final int DEBUG =   LogEntry.DEBUG;
+  @SuppressWarnings({"deprecation", "removal"})
   public static final int SYSTEM =  LogEntry.SYSTEM;
 
   public static void log(String message) {
@@ -56,6 +62,7 @@ public class Logger {
     log(thrown, null, type);
   }
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static void log(Throwable thrown, String message, int type) {
     enqueue(new LogEntry(type, thrown, message, false));
   }
@@ -80,23 +87,28 @@ public class Logger {
     return logAndWait(thrown, null, type);
   }
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static Future<?> logAndWait(Throwable thrown,
                                      String message, int type) {
     return enqueue(new LogEntry(type, thrown, message, true));
   }
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static Future<?> enqueue(final LogEntry entry) {
     final SimpleFuture<?> f = new SimpleFuture<>();
     f.set(null);
     return f;
   }
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static void addLogListener(LogListener l) {
   }
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static void removeLogListener(LogListener l) {
   }
 
+  @SuppressWarnings({"deprecation", "removal"})
   public static LogListener[] getLogListeners() {
     return new LogListener[0];
   }
