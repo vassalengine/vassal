@@ -57,6 +57,23 @@ public class SquareGridNumbering extends RegularGridNumbering {
           final AffineTransform orig_t = g2d.getTransform();
           g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
+          final double orig_dx = grid.getDx();
+          final double orig_dy = grid.getDy();
+          double new_dx = orig_dx;
+          double new_dy = orig_dy;
+
+          if (orig_dx > VISUALIZER_GRID_SIZE * 2 && orig_dx > orig_dy) {
+            new_dx = VISUALIZER_GRID_SIZE * 2;
+            new_dy = orig_dy * VISUALIZER_GRID_SIZE * 2 / orig_dx;
+          }
+          else if (orig_dy > VISUALIZER_GRID_SIZE * 2 && orig_dy > orig_dx) {
+            new_dy = VISUALIZER_GRID_SIZE * 2;
+            new_dx = orig_dx * VISUALIZER_GRID_SIZE * 2 / orig_dy;
+          }
+
+          grid.setDx(new_dx);
+          grid.setDy(new_dy);
+
           final Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
           bounds.x *= os_scale;
           bounds.y *= os_scale;
@@ -68,11 +85,13 @@ public class SquareGridNumbering extends RegularGridNumbering {
           forceDraw(g, bounds, bounds, os_scale, false);
 
           g2d.setTransform(orig_t);
+          grid.setDx(orig_dx);
+          grid.setDy(orig_dy);
         }
 
         @Override
         public Dimension getPreferredSize() {
-          return new Dimension(3 * (int) grid.getDx(), 3 * (int) grid.getDy());
+          return new Dimension(6 * (int) VISUALIZER_GRID_SIZE, 4 * (int) VISUALIZER_GRID_SIZE);
         }
       };
     }
