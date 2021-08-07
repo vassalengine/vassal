@@ -1188,6 +1188,41 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
+   * Translate a point from component coordinates (i.e., x,y position on
+   * the JPanel) to map coordinates (i.e., accounting for zoom factor).
+   *
+   * @see #componentCoordinates
+   * @deprecated Use {@link #componentToMap(Point)}
+   */
+  @Deprecated(since = "2020-08-05", forRemoval = true)
+  public Point mapCoordinates(Point p) {
+    return componentToMap(p);
+  }
+
+  /** @deprecated Use {@link #componentToMap(Rectangle)} */
+  @Deprecated(since = "2020-08-05", forRemoval = true)
+  public Rectangle mapRectangle(Rectangle r) {
+    return componentToMap(r);
+  }
+
+  /**
+   * Translate a point from map coordinates to component coordinates
+   *
+   * @see #mapCoordinates
+   * @deprecated {@link #mapToComponent(Point)}
+   */
+  @Deprecated(since = "2020-08-05", forRemoval = true)
+  public Point componentCoordinates(Point p) {
+    return mapToComponent(p);
+  }
+
+  /** @deprecated  Use {@link #mapToComponent(Rectangle)} */
+  @Deprecated(since = "2020-08-05", forRemoval = true)
+  public Rectangle componentRectangle(Rectangle r) {
+    return mapToComponent(r);
+  }
+
+  /**
    * Scales an integer value to a zoom factor
    * @param c value to be scaled
    * @param zoom zoom factor

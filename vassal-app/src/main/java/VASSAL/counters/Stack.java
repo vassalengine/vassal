@@ -26,6 +26,7 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import VASSAL.build.module.map.CompoundPieceCollection;
 import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
+import VASSAL.tools.EnumeratedIterator;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.search.AbstractImageFinder;
@@ -97,6 +99,18 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
 
   public Iterator<GamePiece> getPiecesIterator() {
     return new AllPieceIterator();
+  }
+
+  /**
+   * @return an Enumeration of the pieces in the stack, from the bottom up This
+   *         is a clone of the contents so add/remove operations during read
+   *         won't affect it.
+   * @deprecated use {@link #asList()}
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  @SuppressWarnings("deprecation")
+  public Enumeration<GamePiece> getPieces() {
+    return new EnumeratedIterator<>(new AllPieceIterator());
   }
 
   /**

@@ -21,6 +21,8 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import java.io.File;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import VASSAL.launch.Config;
 import VASSAL.launch.DummyConfig;
 import VASSAL.tools.version.VersionUtils;
@@ -115,6 +117,12 @@ public final class Info {
   @Deprecated(since = "2020-10-03", forRemoval = true)
   public static Rectangle getScreenBounds(Component c) {
     return SwingUtils.getScreenBounds(c);
+  }
+
+  /** @deprecated Use {@link SystemUtils#IS_OS_MAC} instead */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public static boolean isMacOSX() {
+    return SystemUtils.IS_OS_MAC;
   }
 
   public static boolean isModuleTooNew(String version) {

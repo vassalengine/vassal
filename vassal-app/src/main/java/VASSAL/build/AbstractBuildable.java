@@ -29,6 +29,7 @@ import VASSAL.search.ImageSearchTarget;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.w3c.dom.Attr;
@@ -200,6 +201,19 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     if (b instanceof AbstractBuildable) {
       ((AbstractBuildable)b).setAncestor(this);
     }
+  }
+
+  /**
+   * @return an enumeration of Buildable objects which are the direct children
+   * of this object in the Buildable containment hierarchy. The
+   * {@link #getBuildElement} method uses these objects to construct the XML
+   * element from which this object can be built.
+   *
+   * @deprecated Use {@link #getBuildables()} instead.
+   */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public Enumeration<Buildable> getBuildComponents() {
+    return Collections.enumeration(getBuildables());
   }
 
   /**

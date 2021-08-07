@@ -622,4 +622,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     f.pack();
     f.setVisible(true);
   }
+
+  /** @deprecated use {@link GlobalOptions#getPlayerId()} */
+  @Deprecated(since = "2020-08-06", forRemoval = true)
+  public String getHandle() {
+    return GlobalOptions.getInstance().getPlayerId();
+  }
 }
