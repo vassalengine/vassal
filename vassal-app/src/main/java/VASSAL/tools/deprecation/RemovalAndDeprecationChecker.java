@@ -63,45 +63,6 @@ public class RemovalAndDeprecationChecker {
     return d;
   }
 
-/*
-  private Pair<Set<String>, Set<String>> walk() {
-    final Set<String> removed_used = new HashSet<>();
-    final Set<String> deprecated_used = new HashSet<>();
-
-    final Consumer<String> callback = s -> {
-//      System.out.println(s);
-      if (removed.contains(s)) {
-        removed_used.add(s);
-      }
-      else if (deprecated.contains(s)) {
-        deprecated_used.add(s);
-      }
-    };
-
-    walker.setClassCallback(callback);
-    walker.setMethodCallback(callback);
-    walker.setFieldCallback(callback);
-
-    walker.walk();
-    return Pair.of(removed_used, deprecated_used);
-  }
-
-  public Pair<Set<String>, Set<String>> check(byte[] classFile) {
-    walker.setInput(classFile);
-    return walk();
-  }
-
-  public Pair<Set<String>, Set<String>> check(InputStream in) throws IOException {
-    walker.setInput(in);
-    return walk();
-  }
-
-  public Pair<Set<String>, Set<String>> check(String className) throws IOException {
-    walker.setInput(className);
-    return walk();
-  }
-*/
-
   public Pair<Map<String, Set<String>>, Map<String, Set<String>>> check(ZipFile zf) throws IOException {
     final Map<String, Set<String>> rmap = new HashMap<>();
     final Map<String, Set<String>> dmap = new HashMap<>();
