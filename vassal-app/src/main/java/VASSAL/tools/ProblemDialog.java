@@ -21,15 +21,9 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.awt.Frame;
 import java.nio.file.FileSystemException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Future;
-
-import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -387,67 +381,6 @@ public class ProblemDialog {
   private static Frame getFrame() {
     return GameModule.getGameModule() == null
       ? null : GameModule.getGameModule().getPlayerWindow();
-  }
-
-  private static final List<String> deprecatedMethods = new ArrayList<>();
-  /**
-   * Display a warning about the use of deprecated code in custom modules
-   *
-   * showDeprecated is called once for each use of a Deprecated Vassal method that has been
-   * marked for removal by the VASSAL development team.
-   *
-   * We handle the warnings as follows:
-   * 1. The Player will only see the first Deprecated warning message. It is displayed in the Chatter
-   *    and does not contain details, it refers to the Error log for more detail
-   * 2. The first warning message for EACH deprecated method is logged in error log with full details.
-   * 3. After the initial warning period (6 months after deprecation), the initial user message will
-   *    be displayed as a Disable-able dialog instead of in the Chatter.
-   *
-   * @param date YYYYMMDD date the method was deprecated
-   * @return A Future to allow closing of the Dialog box to be tracked.
-   */
-  public static Future<?> showDeprecated(String date) {
-
-    // Grab the Stack Frames above the one that called us
-    final List<StackWalker.StackFrame> frames =
-      StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE), 3)
-        .walk(f -> f.skip(1).limit(2).collect(Collectors.toList()));
-
-    final String method = frames.get(0).getClassName() + "." + frames.get(0).getMethodName();
-
-    // Ignore all but the first instance of each method
-    if (deprecatedMethods.contains(method)) {
-      return null;
-    }
-    deprecatedMethods.add(method);
-
-    final String callingMethod = frames.get(1).getClassName() + "." + frames.get(1).getMethodName();
-    final LocalDate deprecateFrom = LocalDate.parse(date, DateTimeFormatter.ofPattern("uuuu-M-d")); // NON-NLS
-    final LocalDate warnUntil = deprecateFrom.plusMonths(9);
-    final String expiry = deprecateFrom.plusYears(1).format(DateTimeFormatter.ofPattern("d-MMM-uuuu", Resources.getLocale())); // NON-NLS
-    final String expiryDetails = Resources.getString("Dialogs.deprecated.message",  expiry);
-
-    // Log the developer details to the Error log
-    logger.warn(Resources.getString("Dialogs.deprecated.detailed_message", method, callingMethod, expiry));
-
-    // Warn the user with a simplified message on the very first deprecated message only
-    if (deprecatedMethods.size() == 1) {
-      if (LocalDate.now().isBefore(warnUntil)) {
-        GameModule.getGameModule().warn("[" + Resources.getString("Dialogs.out_of_date") + "] " + expiryDetails);
-        GameModule.getGameModule().warn("[" + Resources.getString("Dialogs.out_of_date") + "] " + Resources.getString("Dialogs.check_for_updated_module"));
-        DialogUtils.setDisabled(expiryDetails, true);
-        return null;
-      }
-      else {
-        return showDisableable(JOptionPane.WARNING_MESSAGE,
-          null, null, method,
-          Resources.getString("Dialogs.out_of_date"),
-          Resources.getString("Dialogs.out_of_date"),
-          expiryDetails + "\n\n" + Resources.getString("Dialogs.check_for_updated_module")
-        );
-      }
-    }
-    return null;
   }
 
   public static Future<?> showOutdatedUsage(String usage) {

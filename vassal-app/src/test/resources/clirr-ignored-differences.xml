@@ -54,6 +54,12 @@
         <differenceType>7009</differenceType>
         <method>BugUtils()</method>
     </difference>
+    <difference>
+        <className>VASSAL/tools/ProblemDialog</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.concurrent.Future showDeprecated(java.lang.String)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
 
     <!-- The Great Deprececation Removal of 2021 -->
 
