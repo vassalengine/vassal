@@ -193,6 +193,59 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     fc.addChoosableFileFilter(new ModuleFileFilter());
   }
 
+  protected boolean checkRemovedAndDeprecated(File f) throws IOException {
+    // Check for usage of removed and deprecated classes, methods, fields
+    final RemovalAndDeprecationChecker rdc = new RemovalAndDeprecationChecker();
+    Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
+    try (ZipFile zf = new ZipFile(f.getAbsolutePath())) {
+      rd = rdc.check(zf);
+    }
+
+    final Map<String, Map<String, String>> removed = rd.getLeft();
+    if (!removed.isEmpty()) {
+      final String msg =
+        "Removed classes, methods, and fields in " + f.toString() +
+        "\n(used by => removed item, version when removed\n\n" +
+        RemovalAndDeprecationChecker.formatResult(removed);
+
+      logger.error(msg);
+
+      FutureUtils.wait(ProblemDialog.showDetails(
+        JOptionPane.ERROR_MESSAGE,
+        msg,
+        Resources.getString("Dialogs.removed_code")
+      ));
+      // Using anything removed is fatal
+      return false;
+    }
+
+    final Map<String, Map<String, String>> deprecated = rd.getRight();
+    if (!deprecated.isEmpty()) {
+      // convert deprecation date to date elgible for removal (+1 year)
+      final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+      for (final Map.Entry<String, Map<String, String>> e1: deprecated.entrySet()) {
+        for (final Map.Entry<String, String> e2: e1.getValue().entrySet()) {
+          e2.setValue(LocalDate.parse(e2.getValue(), fmt).plusYears(1).toString());
+        }
+      }
+
+      final String msg =
+        "Deprecated classes, methods, and fields in " + f.toString() +
+        "\n(used by => removed item, date eligible for removal)\n\n" +
+        RemovalAndDeprecationChecker.formatResult(deprecated);
+
+      logger.warn(msg);
+
+      FutureUtils.wait(ProblemDialog.showDetails(
+        JOptionPane.WARNING_MESSAGE,
+        msg,
+        Resources.getString("Dialogs.deprecated_code")
+      ));
+    }
+
+    return true;
+  }
+
   protected class LaunchTask extends SwingWorker<Void, Void> {
     // lr might be modified before the task is over, keep a local copy
     protected final LaunchRequest lr =
@@ -205,6 +258,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // send some basic information to the log
       if (lr.module != null) {
         logger.info("Loading module file {}", lr.module.getAbsolutePath()); //NON-NLS
+
+        // check for removed and deprecated elements
+        if (!checkRemovedAndDeprecated(lr.module)) {
+          return null;
+        }
+
+        final ExtensionsManager mgr = new ExtensionsManager(lr.module);
+        for (final File ext : mgr.getActiveExtensions()) {
+          if (!checkRemovedAndDeprecated(ext)) {
+            return null;
+          }
+        }
 
         // slice tiles for module
         final String aname = lr.module.getAbsolutePath();
@@ -230,7 +295,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
 
         // slice tiles for extensions
-        final ExtensionsManager mgr = new ExtensionsManager(lr.module);
         for (final File ext : mgr.getActiveExtensions()) {
           final TilingHandler eth = new TilingHandler(
             ext.getAbsolutePath(),
@@ -260,49 +324,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         );
       }
 // end FIXME
-
-      // Check for usage of removed and deprecated classes, methods, fields
-      final RemovalAndDeprecationChecker rdc = new RemovalAndDeprecationChecker();
-      Pair<Map<String, Map<String, String>>, Map<String, Map<String, String>>> rd;
-      try (ZipFile zf = new ZipFile(lr.module.getAbsolutePath())) {
-        rd = rdc.check(zf);
-      }
-
-      final Map<String, Map<String, String>> removed = rd.getLeft();
-      if (!removed.isEmpty()) {
-        final String msg = "Removed classes, methods, and fields\n(used by => removed item, version when removed\n\n" + RemovalAndDeprecationChecker.formatResult(removed);
-
-        logger.error(msg);
-
-        FutureUtils.wait(ProblemDialog.showDetails(
-          JOptionPane.ERROR_MESSAGE,
-          msg,
-          Resources.getString("Dialogs.removed_code")
-        ));
-        // Using anything removed is fatal
-        return null;
-      }
-
-      final Map<String, Map<String, String>> deprecated = rd.getRight();
-      if (!deprecated.isEmpty()) {
-        // convert deprecation date to date elgible for removal (+1 year)
-        final DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
-        for (final Map.Entry<String, Map<String, String>> e1: deprecated.entrySet()) {
-          for (final Map.Entry<String, String> e2: e1.getValue().entrySet()) {
-            e2.setValue(LocalDate.parse(e2.getValue(), fmt).plusYears(1).toString());
-          }
-        }
-
-        final String msg = "Deprecated classes, methods, and fields\n(used by => removed item, date eligible for removal)\n\n" + RemovalAndDeprecationChecker.formatResult(deprecated);
-
-        logger.warn(msg);
-
-        FutureUtils.wait(ProblemDialog.showDetails(
-          JOptionPane.WARNING_MESSAGE,
-          msg,
-          Resources.getString("Dialogs.deprecated_code")
-        ));
-      }
 
       // set default heap size
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
