@@ -51,6 +51,7 @@
 *  9549: Default UI font size can be overridden in preferences
 *  9254: Expression audit trails preference - Improve error reporting when
      Beanshell expressions fail
+*  6130: Grid Numbering dialog can appear blank when grid size is very large
 *  4542: Added 'Stack Normally' option to 'Does Not Stack' trait
 *  4533: Make grid center dot display independent of grid display
 
