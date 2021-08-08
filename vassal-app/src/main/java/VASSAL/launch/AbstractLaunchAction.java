@@ -213,7 +213,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       FutureUtils.wait(ProblemDialog.showDetails(
         JOptionPane.ERROR_MESSAGE,
         msg,
-        Resources.getString("Dialogs.removed_code")
+        "Dialogs.removed_code"
       ));
       // Using anything removed is fatal
       return false;
@@ -239,7 +239,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       FutureUtils.wait(ProblemDialog.showDetails(
         JOptionPane.WARNING_MESSAGE,
         msg,
-        Resources.getString("Dialogs.deprecated_code")
+        "Dialogs.deprecated_code"
       ));
     }
 
