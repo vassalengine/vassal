@@ -89,6 +89,8 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public static final String ROW = "row"; //NON-NLS
   public static final String COLUMN = "column"; //NON-NLS
 
+  public static final double VISUALIZER_GRID_SIZE = 100.0;
+
   @Override
   public String getAttributeValueString(String key) {
     if (FIRST.equals(key)) {
@@ -399,7 +401,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     for (final String value : s) {
       c.getConfigurer(value).addPropertyChangeListener(evt -> visualizer.repaint());
     }
-    ((Container) c.getControls()).add(getGridVisualizer());
+    ((Container) c.getControls()).add(getGridVisualizer(), "span 2, align left");
     return c;
   }
 

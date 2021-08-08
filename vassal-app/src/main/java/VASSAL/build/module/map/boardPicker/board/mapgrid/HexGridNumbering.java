@@ -305,6 +305,10 @@ public class HexGridNumbering extends RegularGridNumbering {
           final AffineTransform orig_t = g2d.getTransform();
           g2d.setTransform(SwingUtils.descaleTransform(orig_t));
 
+          final double orig_grid_size = grid.getHexSize();
+          final double orig_grid_width = grid.getHexWidth();
+          grid.setHexSize(VISUALIZER_GRID_SIZE);
+
           final Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
           bounds.x *= os_scale;
           bounds.y *= os_scale;
@@ -316,11 +320,13 @@ public class HexGridNumbering extends RegularGridNumbering {
           forceDraw(g, bounds, bounds, os_scale, false);
 
           g2d.setTransform(orig_t);
+          grid.setHexSize(orig_grid_size);
+          grid.setHexWidth(orig_grid_width);
         }
 
         @Override
         public Dimension getPreferredSize() {
-          return new Dimension(4 * (int) grid.getHexSize(), 4 * (int) grid.getHexWidth());
+          return new Dimension(6 * (int) VISUALIZER_GRID_SIZE, 4 * (int) VISUALIZER_GRID_SIZE);
         }
       };
     }
