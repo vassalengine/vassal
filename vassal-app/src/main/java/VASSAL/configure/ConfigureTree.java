@@ -857,6 +857,20 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                   ConfigureTree.this.remove(target, child);
                   dispose();
                 }
+
+                @Override
+                public void save() {
+                  //BR// If we've just created a new duplicate and saved it, then select the duplicate rather than leaving the original selected
+                  if (duplicate != null) {
+                    DefaultMutableTreeNode node = getTreeNode(child);
+                    if (node != null) {
+                      final TreePath path = new TreePath(node.getPath());
+                      setSelectionPath(path);
+                      scrollPathToVisible(path);
+                    }
+                  }
+                  super.save();
+                }
               };
               w.setVisible(true);
             }
