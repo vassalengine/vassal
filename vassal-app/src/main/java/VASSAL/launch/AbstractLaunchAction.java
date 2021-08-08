@@ -205,7 +205,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     if (!removed.isEmpty()) {
       final String msg =
         "Removed classes, methods, and fields in " + f.toString() +
-        "\n(used by => removed item, version when removed\n\n" +
+        "\n(used by => removed item, version when removed\n" +
         RemovalAndDeprecationChecker.formatResult(removed);
 
       logger.error(msg);
@@ -231,7 +231,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       final String msg =
         "Deprecated classes, methods, and fields in " + f.toString() +
-        "\n(used by => removed item, date eligible for removal)\n\n" +
+        "\n(used by => removed item, date eligible for removal)\n" +
         RemovalAndDeprecationChecker.formatResult(deprecated);
 
       logger.warn(msg);

@@ -117,7 +117,7 @@ public class RemovalAndDeprecationChecker {
       final List<String> ds = new ArrayList<>(dtmap.keySet());
       Collections.sort(ds);
       for (final String dtail: ds) {
-        sb.append(dhead).append(" => ").append(dtail).append(", ").append(dtmap.get(dtail)).append('\n');
+        sb.append('\n').append(dhead).append(" => ").append(dtail).append(", ").append(dtmap.get(dtail));
       }
     }
 
