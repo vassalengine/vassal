@@ -18,10 +18,16 @@
 package VASSAL.build.module.map.deck;
 
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.GameModule;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
+import VASSAL.counters.Deck;
+import VASSAL.counters.KeyCommand;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +38,7 @@ public class DeckSortKeyCommand extends AbstractDeckKeyCommand {
   public static final String SORT_PARAMETERS = "sortParameters";
 
   private List<SortParameter> sortParameters;
+  private NamedKeyStrokeListener sortListener;
 
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.DeckSortKeyCommand.component_type"); //$NON-NLS-1$
@@ -41,7 +48,7 @@ public class DeckSortKeyCommand extends AbstractDeckKeyCommand {
     if (sortParameters == null) {
       // Start with a default entry
       sortParameters = new ArrayList<>();
-      sortParameters.add(new SortParameter(true, "Property"));
+      sortParameters.add(new SortParameter("Property", false, false));
     }
     return sortParameters;
   }
@@ -81,6 +88,39 @@ public class DeckSortKeyCommand extends AbstractDeckKeyCommand {
     }
     else {
       return super.getAttributeValueString(key);
+    }
+  }
+
+  @Override
+  public List<KeyCommand> getKeyCommands(Deck deck) {
+    return List.of(new KeyCommand(getConfigureName(), NamedKeyStroke.NULL_KEYSTROKE, deck) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        doSort(deck);
+      }
+    });
+  }
+
+  private void doSort(Deck deck) {
+    GameModule.getGameModule().sendAndLog(deck.sort(sortParameters, reportFormat, getConfigureName()));
+    deck.repaintMap();
+  }
+
+  @Override
+  public void registerListeners(Deck deck) {
+    if (sortListener == null && keyStroke != null && !keyStroke.isNull()) {
+      sortListener =  new NamedKeyStrokeListener(e -> doSort(deck));
+      sortListener.setKeyStroke(keyStroke);
+      GameModule.getGameModule().addKeyStrokeListener(sortListener);
+    }
+  }
+
+  @Override
+  public void deregisterListeners() {
+    if (sortListener != null) {
+      GameModule.getGameModule().removeKeyStrokeListener(sortListener);
     }
   }
 

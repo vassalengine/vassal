@@ -36,7 +36,8 @@ public class SortParameterConfigurer extends Configurer {
 
   private JPanel controls;
   private StringConfigurer propertyConfig;
-  private BooleanConfigurer ascendingConfig;
+  private BooleanConfigurer descendingConfig;
+  private BooleanConfigurer numericConfig;
 
   public SortParameterConfigurer(String key, String name, Object val) {
     super(key, name, val);
@@ -65,13 +66,15 @@ public class SortParameterConfigurer extends Configurer {
     if (propertyConfig == null) {
       propertyConfig = new StringConfigurer("");
       propertyConfig.setHintKey("Editor.DeckSortKeyCommand.name_hint");
-      ascendingConfig = new BooleanConfigurer(true);
+      descendingConfig = new BooleanConfigurer(false);
+      numericConfig = new BooleanConfigurer(false);
     }
     setFrozen(true); // Prevent changes to the sub-configurers triggering further updates
     if (!noUpdate && o instanceof SortParameter) {
       final SortParameter param = (SortParameter) o;
       propertyConfig.setValue(param == null ? "" : param.getSortProperty());
-      ascendingConfig.setValue(param == null || param.isAscendingSort()); // Default to true
+      descendingConfig.setValue(param != null && param.isDescendingSort()); // Default to false
+      numericConfig.setValue(param != null && param.isNumericSort()); // Default to false
     }
     setFrozen(false);
     super.setValue(o);
@@ -81,26 +84,40 @@ public class SortParameterConfigurer extends Configurer {
   public void setFrozen(boolean val) {
     super.setFrozen(val);
     propertyConfig.setFrozen(val);
-    ascendingConfig.setFrozen(val);
+    descendingConfig.setFrozen(val);
+    numericConfig.setFrozen(val);
   }
 
   @Override
   public Component getControls() {
     if (controls == null) {
-      controls = new JPanel(new MigLayout("ins 2," + ConfigurerLayout.STANDARD_GAPY + ",hidemode 3", "[]rel[][]rel[]")); // NON-NLS
+      controls = new JPanel(new MigLayout("ins 2," + ConfigurerLayout.STANDARD_GAPY + ",hidemode 3", "[]rel[][]rel[][]rel[]")); // NON-NLS
       controls.setBorder(BorderFactory.createEtchedBorder());
-      controls.add(new JLabel(Resources.getString("Editor.DeckSortKeyCommand.name")));
+
+      final JLabel propertyLabel = new JLabel(Resources.getString("Editor.DeckSortKeyCommand.name"));
+      propertyLabel.setLabelFor(propertyConfig.getControls());
+      controls.add(propertyLabel);
       controls.add(propertyConfig.getControls());
-      controls.add(new JLabel(Resources.getString("Editor.DeckSortKeyCommand.sort_up")));
-      controls.add(ascendingConfig.getControls());
+
+      final JLabel descendingLabel = new JLabel(Resources.getString("Editor.DeckSortKeyCommand.descending"));
+      descendingLabel.setLabelFor(descendingConfig.getControls());
+      controls.add(descendingLabel);
+      controls.add(descendingConfig.getControls());
+
+      final JLabel numericLabel = new JLabel(Resources.getString("Editor.DeckSortKeyCommand.numeric"));
+      numericLabel.setLabelFor(numericConfig.getControls());
+      controls.add(numericLabel);
+      controls.add(numericConfig.getControls());
+
       propertyConfig.addPropertyChangeListener(e -> updateValue());
-      ascendingConfig.addPropertyChangeListener(e -> updateValue());
+      descendingConfig.addPropertyChangeListener(e -> updateValue());
+      numericConfig.addPropertyChangeListener(e -> updateValue());
     }
     return controls;
   }
   private void updateValue() {
     noUpdate = true;
-    setValue(new SortParameter(ascendingConfig.booleanValue(), propertyConfig.getValueString()));
+    setValue(new SortParameter(propertyConfig.getValueString(), descendingConfig.booleanValue(), numericConfig.booleanValue()));
     noUpdate = false;
   }
 
@@ -108,21 +125,24 @@ public class SortParameterConfigurer extends Configurer {
   public void setHighlighted(boolean highlighted) {
     super.setHighlighted(highlighted);
     propertyConfig.setHighlighted(highlighted);
-    ascendingConfig.setHighlighted(highlighted);
+    descendingConfig.setHighlighted(highlighted);
+    numericConfig.setHighlighted(highlighted);
   }
 
   @Override
   public void addFocusListener(FocusListener listener) {
     super.addFocusListener(listener);
     propertyConfig.addFocusListener(listener);
-    ascendingConfig.addFocusListener(listener);
+    descendingConfig.addFocusListener(listener);
+    numericConfig.addFocusListener(listener);
   }
 
   @Override
   public void removeFocusListener(FocusListener listener) {
     super.removeFocusListener(listener);
     propertyConfig.removeFocusListener(listener);
-    ascendingConfig.removeFocusListener(listener);
+    descendingConfig.removeFocusListener(listener);
+    numericConfig.removeFocusListener(listener);
   }
 
   @Override

@@ -25,6 +25,10 @@ import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.StackMetrics;
+import VASSAL.build.module.map.deck.DeckKeyCommand;
+import VASSAL.build.module.map.deck.DeckSendKeyCommand;
+import VASSAL.build.module.map.deck.SortParameter;
+import VASSAL.build.module.map.deck.SortablePiece;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.AddPiece;
@@ -148,6 +152,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String drawSpecificMessage;
   protected String faceUpMessage;
   protected String faceDownMessage;
+
+  /** The matching DrawPile that generated this Deck */
+  protected DrawPile myPile;
 
   /**
    * Special {@link CommandEncoder} to handle loading/saving Decks from files.
@@ -478,6 +485,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reverseListener.setKeyStroke(getReverseKey());
     }
 
+    // Add Listeners for DeckKeyCommands
+    if (myPile != null) {
+      for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
+        dkc.registerListeners(this);
+      }
+    }
+
     gameModule.addSideChangeListenerToPlayerRoster(this);
   }
 
@@ -495,6 +509,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (reverseListener != null) {
       gameModule.removeKeyStrokeListener(reverseListener);
       reverseListener = null;
+    }
+
+    // Remove listerners from DeckKeyCommands
+    if (myPile != null) {
+      for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
+        dkc.deregisterListeners();
+      }
     }
 
     gameModule.removeSideChangeListenerFromPlayerRoster(this);
@@ -550,7 +571,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     faceUpMessage       = st.nextToken(Resources.getString("Deck.face_up"));
     faceDownMessage     = st.nextToken(Resources.getString("Deck.face_down"));
 
-    final DrawPile myPile = DrawPile.findDrawPile(getDeckName());
+    // Find the DrawPile that defines this Deck to access the new Deck Key Commands.
+    // If the designed has removed the DrawPile, or changed the name of it, then myPile will
+    // be null. This will not stop the Deck continuing to work in 'Legacy', but it will not
+    // have access to the new-style Deck Key Commands.
+    myPile = DrawPile.findDrawPile(getDeckName());
 
     // If a New game/Load Game is starting, set this Deck into the matching DrawPile
     // If a Load Continuation is starting, ignore this Deck and let the DrawPile continue with the existing Deck.
@@ -1361,6 +1386,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         l.add(cmd.getKeyCommand(this));
       }
 
+      // Add KeyCommands attached to DeckKeyCommands
+      if (myPile != null) {
+        for (final DeckKeyCommand dkc : myPile.getDeckKeyCommands()) {
+          for (final KeyCommand kc : dkc.getKeyCommands(this)) {
+            l.add(kc);
+          }
+        }
+      }
+
       commands = l.toArray(new KeyCommand[0]);
     }
 
@@ -1372,18 +1406,28 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         command.putValue(Action.NAME, faceUpMessage); //$NON-NLS-1$
       }
     }
+
     return commands;
   }
 
-  /*
+
+  /**
    * Format command report as per module designers setup.
    */
   protected Command reportCommand(String format, String commandName) {
-    Command c = null;
     final FormattedString reportFormat = new FormattedString(format);
+    return reportCommand(reportFormat, commandName);
+  }
+
+  /**
+   * Format command report as per module designers setup. Use a supplied FormattedString
+   * with preset properties
+   */
+  protected Command reportCommand(FormattedString reportFormat, String commandName) {
     reportFormat.setProperty(DrawPile.DECK_NAME, getLocalizedDeckName());
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
     final String rep = reportFormat.getLocalizedText(this, commandName);
+    Command c = null;
     if (rep.length() > 0) {
       c = new Chatter.DisplayText(gameModule.getChatter(), "* " + rep); //$NON-NLS-1$
       c.execute();
@@ -1516,6 +1560,106 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     return c;
   }
+
+  /**
+   * Extended Send to Deck Command, based on the configuration of the supplied DeckSendKeyCommand
+   *  - Deck target can be variable
+   *  - Optional limit on number of cards to send
+   *  - Optionally limit selection of cards to those that match an expression
+   *  - Optionally stop sending cards when a specific card seen (match expression).
+   *
+   *  If anything goes wrong, leave the source Deck untouched and gernate a Bad Data Report
+   *
+   * @param dkc DeckKeyCommand command containing the Send configuration
+   * @return Commands executing the send
+   */
+  public Command extendedSend(DeckSendKeyCommand dkc) {
+    Command c = new NullCommand();
+
+    // Find the target Deck
+    String targetDeckName;
+    String data;
+    if (dkc.isVariableDeck()) {
+      targetDeckName = dkc.getDeckExpression().getText(this, dkc, "Editor.DeckSendKeyCommand.deck_expression");
+      data = targetDeckName + " from expression " + dkc.getDeckExpression();
+    }
+    else {
+      targetDeckName = dkc.getTargetDeck();
+      data = targetDeckName;
+    }
+
+    final DrawPile target = DrawPile.findDrawPile(targetDeckName);
+    if (target == null) {
+      ErrorDialog.dataWarning(new BadDataReport(dkc, Resources.getString("Editor.DeckSendKeyCommand.error_no_target"), data)); // NON-NLS
+      return c;
+    }
+
+    int sendLimit;
+    if (dkc.isLimitTotal()) {
+      try {
+        sendLimit = Integer.parseInt(dkc.getLimitExpression().getText(this, dkc, "Editor.DeckSendKeyCommand.limit_expression"));
+      }
+      catch (Exception ex) {
+        ErrorDialog.dataWarning(new BadDataReport(dkc, Resources.getString("Editor.Editor.DeckSendKeyCommand.error_invalid_send_limit"), dkc.getLimitExpression().getFormat())); // NON-NLS
+        sendLimit = -1;
+      }
+
+    }
+    else {
+      sendLimit = -1;
+    }
+
+    // Process the cards and create a list of those that will be sent
+    final List<GamePiece> sending = new ArrayList<>();
+
+    final int cnt = getPieceCount() - 1;
+    for (int i = cnt; i >= 0; i--) {
+      final GamePiece nextCard = getPieceAt(i);
+
+      // Is this a card we are not interested in?
+      if (dkc.isSendMatching()) {
+        final String result = dkc.getMatchExpression().getText(nextCard, dkc, "Editor.DeckSendKeyCommand.send_expression");
+        if (!"true".equals(result)) {
+          continue;
+        }
+      }
+
+      // Is this a stop card?
+      if (dkc.isStop()) {
+        final String result = dkc.getStopExpresson().getText(nextCard, dkc, "Editor.DeckSendKeyCommand.stop_expression");
+        if ("true".equals(result)) {
+          if (dkc.isStopInclude()) {
+            sending.add(nextCard);
+          }
+          break;
+        }
+      }
+
+      sending.add(nextCard);
+
+      // Send Limit reached?
+      if (sendLimit > 0 && sending.size() >= sendLimit) {
+        break;
+      }
+
+    }
+
+    // Send them
+    for (final GamePiece piece : sending) {
+      c = c.append(target.addToContents(piece));
+    }
+
+    // And add a report
+    if ((! dkc.getReportFormat().getFormat().isEmpty()) && Map.isChangeReportingEnabled()) {
+      final FormattedString report = dkc.getReportFormat();
+      report.setProperty(DeckSendKeyCommand.SENT_COUNT, String.valueOf(sending.size()));
+      report.setProperty(DeckSendKeyCommand.TARGET_DECK, targetDeckName);
+      c = c.append(reportCommand(report, dkc.getConfigureName()));
+    }
+
+    return c;
+  }
+
 
   @Override
   public boolean isExpanded() {
@@ -1653,9 +1797,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final Command[] sub = c.getSubCommands();
       c = new NullCommand();
       for (final Command command : sub) {
-        c.append(command);
+        c = c.append(command);
       }
-      c.append(t.getChangeCommand());
+      c = c.append(t.getChangeCommand());
       updateCountsAll();
     }
     else {
@@ -1769,9 +1913,51 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return selectSortProperty;
   }
 
-  protected void repaintMap() {
+  public void repaintMap() {
     if (map != null) {
       map.repaint();
     }
   }
+
+
+  /**
+   * Sort the Deck. Called from DeckSortKeyCommand
+   * @param sortParameters A list of parameters describing the sort
+   * @param reportFormat A report format to generate when sort performed
+   * @return Command encapsulating sort
+   */
+  public Command sort(List<SortParameter> sortParameters, FormattedString reportFormat, String menuCommand) {
+    Command c = new NullCommand();
+
+    // Do not even try unless there is at least one SortParameter with a non-null property name
+    if (sortParameters == null || sortParameters.isEmpty() || sortParameters.get(0).getSortProperty().isEmpty()) {
+      return c;
+    }
+
+    // Create a sortable list containing all the pieces
+    final SortablePiece[] pieces = new SortablePiece[getPieceCount()];
+    for (int i = 0; i < pieces.length; ++i) {
+      pieces[pieces.length - i - 1] = new SortablePiece(sortParameters, getPieceAt(i));
+    }
+
+    // Sort it!
+    Arrays.sort(pieces);
+
+    // Convert back to a list of GamePieces
+    final List<GamePiece> pieceList = new ArrayList<>();
+    for (final SortablePiece sp : pieces) {
+      pieceList.add(sp.getPiece());
+    }
+
+    // Replace the contents of the Deck with the sorted List
+    c = c.append(setContents(pieceList));
+
+    // Add the Chat message if reporting enabled
+    if (Map.isChangeReportingEnabled() && ! reportFormat.getFormat().isEmpty()) {
+      c = c.append(reportCommand(reportFormat, menuCommand));
+    }
+
+    return c;
+  }
+
 }

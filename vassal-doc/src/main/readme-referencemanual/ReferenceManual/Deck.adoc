@@ -170,6 +170,12 @@ A Card is identical to a Game Piece, but is initialized with a <<Mask.adoc#top,M
 Global Key Commands can be added to a Deck and will appear in the right-click context menu of the Deck.
 The resulting Global Key Command will be applied _only_ to pieces contained in the Deck.
 
+==== <<DeckSendKeyCommand.adoc#top,Deck Send Key Command>>
+A Deck Send Key Command adds a command to the right-click context menu of the Deck that provides extended options for sending cards in this Deck to another Deck.
+
+==== <<DeckSortKeyCommand.adoc#top,Deck Sort Key Command>>
+A Deck Sort Key Commands adds a command to the right-click context menu of the Deck that allows the Deck to be sorted based on the values of properties on the contained cards.
+
 |image:images/DeckAdd.png[] +
 |===
 

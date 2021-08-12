@@ -17,9 +17,12 @@
  */
 package VASSAL.build.module.map.deck;
 
+import VASSAL.tools.SequenceEncoder;
+
 public class SortParameter {
   private String sortProperty = "";
-  private boolean ascendingSort = true;
+  private boolean descendingSort = false;
+  private boolean numericSort;
 
   public SortParameter() {
 
@@ -30,13 +33,16 @@ public class SortParameter {
     decode(code);
   }
 
-  public SortParameter(boolean ascending, String property) {
+  public SortParameter(String property, boolean descending, boolean numeric) {
     setSortProperty(property);
-    setAscendingSort(ascending);
+    setDescendingSort(descending);
+    setNumericSort(numeric);
   }
 
   public String encode() {
-    return ascendingSort + "|" + sortProperty;
+    final SequenceEncoder se = new SequenceEncoder('|');
+    se.append(getSortProperty()).append(isDescendingSort()).append(isNumericSort());
+    return se.getValue();
   }
 
   @Override
@@ -45,31 +51,16 @@ public class SortParameter {
   }
 
   public void decode(String code) {
-    if (code == null) {
-      setAscendingSort(true);
-      setSortProperty("");
-      return;
-    }
-
-    if (code.startsWith("true|")) {
-      setAscendingSort(true);
-      setSortProperty(code.length() > 5 ? code.substring(5) : "");
-      return;
-    }
-    else if (code.startsWith("false|")) {
-      setAscendingSort(false);
-      setSortProperty(code.length() > 6 ? code.substring(6) : "");
-      return;
-    }
-
-    setAscendingSort(true);
-    setSortProperty("");
-
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, '|');
+    setSortProperty(sd.nextToken(""));
+    setDescendingSort(sd.nextBoolean(false));
+    setNumericSort(sd.nextBoolean(false));
   }
 
   public void setValue(SortParameter param) {
-    setAscendingSort(param.isAscendingSort());
+    setDescendingSort(param.isDescendingSort());
     setSortProperty(param.getSortProperty());
+    setNumericSort(param.isNumericSort());
   }
 
   public String getSortProperty() {
@@ -80,11 +71,19 @@ public class SortParameter {
     this.sortProperty = sortProperty;
   }
 
-  public boolean isAscendingSort() {
-    return ascendingSort;
+  public boolean isDescendingSort() {
+    return descendingSort;
   }
 
-  public void setAscendingSort(boolean ascendingSort) {
-    this.ascendingSort = ascendingSort;
+  public void setDescendingSort(boolean descendingSort) {
+    this.descendingSort = descendingSort;
+  }
+
+  public boolean isNumericSort() {
+    return numericSort;
+  }
+
+  public void setNumericSort(boolean numericSort) {
+    this.numericSort = numericSort;
   }
 }

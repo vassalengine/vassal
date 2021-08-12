@@ -26,6 +26,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.DeckSubFolder;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.deck.DeckKeyCommand;
 import VASSAL.build.module.map.deck.DeckSendKeyCommand;
 import VASSAL.build.module.map.deck.DeckSortKeyCommand;
 import VASSAL.build.module.properties.PropertyNameSource;
@@ -988,4 +989,13 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
       return Collections.emptyList();
     }
   }
+
+  /**
+   * Retrieve all child DeckKeyCommands
+   * @return List of DeckKeyCommands
+   */
+  public List<DeckKeyCommand> getDeckKeyCommands() {
+    return getAllDescendantComponentsOf(DeckKeyCommand.class);
+  }
+
 }

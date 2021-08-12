@@ -17,5 +17,34 @@
  */
 package VASSAL.build.module.map.deck;
 
+import VASSAL.counters.Deck;
+import VASSAL.counters.KeyCommand;
+
+import java.util.List;
+
 public interface DeckKeyCommand {
+
+  /**
+   * Return a list of KeyCommands provided by this DeckKeyCommand
+   * @param deck The Deck to perform the Commands on
+   * @return List of KeyCommands
+   */
+  List<KeyCommand> getKeyCommands(Deck deck);
+
+  /**
+   * Register any Listeners for Keystroke provided by this DeckKeyCommand
+   * @param deck The Deck to perform the actions on if KeyStroke seem
+   */
+  void registerListeners(Deck deck);
+
+  /**
+   * Remove any Listener previously registered for this DeckKeyCommand
+   */
+  void deregisterListeners();
+
+  /** Return an array of additional report parameters that can be used in the
+   * Report format message of a Deck Key Command
+   * @return Array of property names
+   */
+  String[] getAdditionalReportProperties();
 }

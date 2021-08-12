@@ -19,11 +19,14 @@ package VASSAL.build.module.map.deck;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AbstractFolder;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.map.DrawPile;
+import VASSAL.configure.Configurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 
@@ -32,15 +35,29 @@ import java.util.List;
 /**
  * Base class for additional Menu items (with Hotkeys) that can be added to a DrawPile/Deck
  */
-public class AbstractDeckKeyCommand extends AbstractConfigurable implements DeckKeyCommand {
+public abstract class AbstractDeckKeyCommand extends AbstractConfigurable implements DeckKeyCommand {
   public static final String DESCRIPTION = "description";
   public static final String MENU_TEXT = "menuText";
   public static final String REPORT_FORMAT = "reportFormat";
   public static final String HOTKEY = "hotkey";
+  public static final String COMMAND_NAME = "commandName";
+  public static final String DECK_NAME = "deckName";
 
   protected String description = "";
   protected NamedKeyStroke keyStroke = NamedKeyStroke.NULL_KEYSTROKE;
   protected FormattedString reportFormat = new FormattedString();
+
+  public String getDescription() {
+    return description;
+  }
+
+  public NamedKeyStroke getKeyStroke() {
+    return keyStroke;
+  }
+
+  public FormattedString getReportFormat() {
+    return reportFormat;
+  }
 
   @Override
   public String[] getAttributeNames() {
@@ -100,7 +117,7 @@ public class AbstractDeckKeyCommand extends AbstractConfigurable implements Deck
 
   @Override
   public Class<?>[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, NamedKeyStroke.class, DrawPile.FormattedStringConfig.class};
+    return new Class[] {String.class, String.class, NamedKeyStroke.class, DeckReportFormatConfig.class};
   }
 
   @Override
@@ -126,7 +143,6 @@ public class AbstractDeckKeyCommand extends AbstractConfigurable implements Deck
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-
 
   /**
    * {@link VASSAL.search.SearchTarget}
@@ -155,5 +171,18 @@ public class AbstractDeckKeyCommand extends AbstractConfigurable implements Deck
   @Override
   public List<String> getFormattedStringList() {
     return List.of(reportFormat.getFormat());
+  }
+
+  public static class DeckReportFormatConfig implements TranslatableConfigurerFactory {
+
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new PlayerIdFormattedStringConfigurer(key, name, ((DeckKeyCommand) c).getAdditionalReportProperties());
+    }
+  }
+
+  @Override
+  public String[] getAdditionalReportProperties() {
+    return new String[]{DECK_NAME, COMMAND_NAME};
   }
 }
