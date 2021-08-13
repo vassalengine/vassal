@@ -1,5 +1,6 @@
 3.6.0-beta1 - ???
 
+* 10301: Double max heap and retry when image tiler runs out of memory
 * 10294: Can Rotate traits no longer lose any pre-defined starting rotation
     when editing a Piece Slot
 * 10277: When editing an IrregularGrid, start the map view somewhere near the
