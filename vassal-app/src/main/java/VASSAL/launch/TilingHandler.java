@@ -74,6 +74,8 @@ public class TilingHandler {
   protected final Dimension tdim;
   protected final int maxheap_limit;
 
+  protected int retried = 0;
+
   // Needed for VASL. Remove sometime after VASL 6.6.2
   @Deprecated
   @SuppressWarnings("PMD.FinalFieldCouldBeStatic")
@@ -272,7 +274,6 @@ public class TilingHandler {
             throw new IllegalStateException("bad type: " + type);
           }
         }
-
       }
     }
     catch (IOException e) {
@@ -291,7 +292,19 @@ public class TilingHandler {
     try {
       final int retval = proc.future.get();
       if (retval != 0) {
-        throw new IOException("return value == " + retval);
+        pd.setVisible(false);
+        proc.future.cancel(true);
+
+        if (retval == 2 && retried < 2) {
+          // The tiler has an exit code of 2 on an OutOfMemoryError. Double
+          // the memory and try again, but no more than twice.
+          logger.info("Tiling ran out of memory. Retrying tiling with twice as much."); //NON-NLS
+          ++retried;
+          runSlicer(multi, tcount, 2 * maxheap);
+        }
+        else {
+          throw new IOException("return value == " + retval);
+        }
       }
     }
     catch (ExecutionException | InterruptedException e) {

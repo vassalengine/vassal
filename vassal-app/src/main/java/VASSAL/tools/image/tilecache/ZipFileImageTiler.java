@@ -31,8 +31,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,13 +42,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import VASSAL.tools.concurrent.DaemonThreadFactory;
-import VASSAL.tools.image.FallbackImageTypeConverter;
 import VASSAL.tools.image.ImageIOImageLoader;
 import VASSAL.tools.image.ImageLoader;
 import VASSAL.tools.image.ImageTypeConverter;
+import VASSAL.tools.image.MemoryImageTypeConverter;
 import VASSAL.tools.io.ArgEncoding;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.TemporaryFileFactory;
 import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.lang.Callback;
 
@@ -116,9 +113,7 @@ public class ZipFileImageTiler {
         new DaemonThreadFactory(ZipFileImageTiler.class.getSimpleName())
       );
 
-      final TemporaryFileFactory tfac = () -> Files.createTempFile(Path.of(tpath), "img_", "").toFile(); //NON-NLS
-
-      final ImageTypeConverter itc = new FallbackImageTypeConverter(tfac);
+      final ImageTypeConverter itc = new MemoryImageTypeConverter();
       final ImageLoader loader = new ImageIOImageLoader(itc);
 
       final TileSlicer slicer = new TileSlicerImpl();
@@ -134,6 +129,9 @@ public class ZipFileImageTiler {
         writeToSystemErr(zpath, tiler, tpath, tw, th, ipaths, exec,
           loader, slicer);
       }
+    }
+    catch (OutOfMemoryError e) {
+      System.exit(2);
     }
     finally {
       logger.info("Exiting"); //NON-NLS
