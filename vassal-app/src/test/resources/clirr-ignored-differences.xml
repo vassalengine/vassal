@@ -1054,4 +1054,66 @@
         <to>**</to>
         <justification>Deprecated for a year</justification>
     </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>BOTTOM</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>CENTER</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6001</differenceType>
+        <field>HORIZONTAL_ALIGNMENT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>LEFT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>RIGHT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>TOP</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6001</differenceType>
+        <field>VERTICAL_ALIGNMENT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VassalVersionTokenizer</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VassalVersionTokenizer$State</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VersionFormatException</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VersionTokenizer</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
 </differences>

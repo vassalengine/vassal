@@ -86,22 +86,6 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
   protected Color textBg = Color.black;
   protected Color textFg = Color.white;
 
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static final int CENTER = 0;
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static final int RIGHT = 1;
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static final int LEFT = 2;
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static final int TOP = 3;
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static final int BOTTOM = 4;
-
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static int HORIZONTAL_ALIGNMENT = CENTER;
-  @Deprecated(since = "2020-08-27", forRemoval = true)
-  public static int VERTICAL_ALIGNMENT = TOP;
-
   private String label = "";
   private String lastCachedLabel;
   private NamedKeyStroke labelKey;
