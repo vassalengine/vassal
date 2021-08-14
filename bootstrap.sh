@@ -27,9 +27,9 @@ unzip zulu16.32.15-ca-jdk16.0.2-win_x64.zip
 mv zulu16.32.15-ca-jdk16.0.2-win_x64 windows-x86_64
 
 # Windows aarch64
-curl -O 'https://cdn.azul.com/zulu/bin/zulu16.30.17-ca-jdk16.0.1-win_aarch64.zip'
-unzip zulu16.30.17-ca-jdk16.0.1-win_aarch64.zip
-mv zulu16.30.17-ca-jdk16.0.1-win_aarch64 windows-aarch64
+curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-win_aarch64.zip'
+unzip zulu16.32.15-ca-jdk16.0.2-win_aarch64.zip
+mv zulu16.32.15-ca-jdk16.0.2-win_aarch64 windows-aarch64
 
 # MacOS x86_64
 curl -O 'https://cdn.azul.com/zulu/bin/zulu16.32.15-ca-jdk16.0.2-macosx_x64.tar.gz'
