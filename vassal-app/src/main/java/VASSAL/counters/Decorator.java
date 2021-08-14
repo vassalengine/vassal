@@ -39,7 +39,6 @@ import VASSAL.search.ImageSearchTarget;
 import VASSAL.search.SearchTarget;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.swing.SwingUtils;
 
@@ -706,9 +705,8 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
    *
    * @param p Piece to set properties on
    */
-  @Deprecated(since = "20200906", forRemoval = true)
+  @Deprecated(since = "2020-09-06", forRemoval = true)
   public static void setOldProperties(GamePiece p) {
-    ProblemDialog.showDeprecated("20200906");
     putOldProperties(p);
   }
 
@@ -782,16 +780,6 @@ public abstract class Decorator extends AbstractImageFinder implements EditableP
     }
 
     return comm;
-  }
-
-  /**
-   * @deprecated
-   * Use {@link #setOldProperties(GamePiece)
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void setOldProperties() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    putOldProperties(this);
   }
 
   /**

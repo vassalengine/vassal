@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -69,8 +68,6 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   protected int x = 0;
   @Deprecated(since = "2021-04-05", forRemoval = true)
   protected int y = 0;
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Image image;
 
   protected VisibilityCondition visibilityCondition;
 

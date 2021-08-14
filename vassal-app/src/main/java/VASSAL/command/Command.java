@@ -17,7 +17,6 @@
  */
 package VASSAL.command;
 
-import VASSAL.tools.ProblemDialog;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -125,15 +124,6 @@ public abstract class Command {
    */
   public boolean isLoggable() {
     return !isNull();
-  }
-
-  /**
-   * @deprecated Use {@link #isAtomic()}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected boolean hasNullSubcommands() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return isAtomic();
   }
 
   /**

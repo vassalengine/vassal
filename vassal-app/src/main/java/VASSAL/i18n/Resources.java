@@ -40,7 +40,6 @@ import VASSAL.Info;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ProblemDialog;
 
 public class Resources {
 
@@ -311,61 +310,6 @@ public class Resources {
       vassalBundle = new BundleHelper(ResourceBundle.getBundle(VASSAL_BUNDLE, locale, bundleLoader)); //$NON-NLS-1$
     }
     return vassalBundle;
-  }
-
-  /**
-   * Localize a VASSAL user interface string
-   *
-   * @param id
-   *          String id
-   * @return Localized result
-   * @deprecated Use {@link #getString(String, Object...)} Instead
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static String getVassalString(String id) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getInstance().getVassalBundle().getString(id);
-  }
-
-  /**
-   * Localize a VASSAL Module Editor String
-   *
-   * @param id
-   *          String Id
-   * @return Localized Result
-   * @deprecated Use {@link #getString(String, Object...)} Instead
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static String getEditorString(String id) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getInstance().getEditorBundle().getString(id);
-  }
-
-  /**
-   * Localize a string using the supplied resource bundle
-   *
-   * @param bundle
-   *          Resource bundle
-   * @param id
-   *          String Id
-   * @return Localized result
-   * @deprecated Use {@link #getString(String, Object...)} Instead
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static String getString(ResourceBundle bundle, String id) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    String s = null;
-    try {
-      s = bundle.getString(id);
-    }
-    catch (Exception ex) {
-      System.err.println("No Translation: " + id); //$NON-NLS-1$
-    }
-    // 2. Worst case, return the key
-    if (s == null) {
-      s = id;
-    }
-    return s;
   }
 
   /**

@@ -1,6 +1,5 @@
 /*
- *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2021 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,24 +15,17 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.version;
+package VASSAL.tools.deprecation;
 
-/**
- * An {@link Exception} indicating a malformed VASSAL version string.
- *
- * @since 3.1.0
- * @author Joel Uckelman
- * @see VersionTokenizer
- */
-@Deprecated(since = "2020-08-28", forRemoval = true)
-public class VersionFormatException extends Exception {
-  private static final long serialVersionUID = 1L;
+import java.io.InputStream;
+import java.io.IOException;
 
-  /** {@inheritDoc} */
-  public VersionFormatException() { }
+public interface Walker {
+  void setInput(byte[] classFile); 
 
-  /** {@inheritDoc} */
-  public VersionFormatException(Throwable cause) {
-    super(cause);
-  }
+  void setInput(InputStream in) throws IOException; 
+
+  void setInput(String className) throws IOException; 
+
+  void walk(); 
 }

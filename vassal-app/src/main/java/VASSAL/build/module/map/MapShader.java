@@ -22,7 +22,6 @@ import VASSAL.build.AbstractFolder;
 import VASSAL.build.AbstractToolbarItem;
 import VASSAL.configure.TranslatableStringEnum;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -275,17 +274,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     }
   }
 
-  /**
-   * Get/Build the repeating rectangle used to generate the shade texture
-   * pattern.
-   * @deprecated Use {@link #getShadePattern(double)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected BufferedImage getShadePattern() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getShadePattern(1.0);
-  }
-
   protected BufferedImage getShadePattern(double zoom) {
     if (srcOp == null) {
       buildShadePattern();
@@ -294,15 +282,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     final BufferedImage src = (zoom == 1.0 ? srcOp : Op.scale(srcOp, zoom)).getImage();
     // Linux xrender apparently requires translucency and its own copy
     return ImageUtils.toType(src, ImageUtils.getCompatibleTranslucentImageType());
-  }
-
-  /**
-   * @deprecated Use {@link #getPatternRect(double)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Rectangle getPatternRect() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return patternRect;
   }
 
   protected Rectangle getPatternRect(double zoom) {
@@ -412,16 +391,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
     return borderColor;
   }
 
-  /**
-   * Get/Build the textured paint used to fill in the Shade
-   * @deprecated Use {@link #getTexture(double)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected TexturePaint getTexture() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getTexture(1.0);
-  }
-
   protected TexturePaint getTexture(double zoom) {
     final boolean usingScaledImage =
       scaleImage && imageName != null && pattern.equals(TYPE_IMAGE);
@@ -432,15 +401,6 @@ public class MapShader extends AbstractToolbarItem implements GameComponent, Dra
 
     texture = textures.computeIfAbsent(zoom, this::makeTexture);
     return texture;
-  }
-
-  /**
-   * @deprecated Use {@link #buildTexture(double)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected void buildTexture() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    buildTexture(1.0);
   }
 
   protected void buildTexture(double zoom) {

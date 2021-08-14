@@ -56,7 +56,6 @@ public class ImageItem extends Item {
 
   protected String imageSource = SRC_FIXED;
   protected String imageName = ""; //$NON-NLS-1$
-  @Deprecated(since = "2020-08-06", forRemoval = true) protected Image image = null;
   protected ImageOp srcOp;
   protected Rectangle imageBounds = new Rectangle();
 

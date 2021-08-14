@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -122,19 +121,6 @@ public class ArchiveWriter extends DataArchive {
     this(archive, null);
   }
 
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public ArchiveWriter(ZipFile archive) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    archiveName = archive.getName();
-    try {
-      this.archive = new ZipArchive(archiveName);
-    }
-    catch (IOException e) {
-      archive = null;
-      WriteErrorDialog.error(e, archiveName);
-    }
-  }
-
   /**
    * Add an image file to the archive. The file will be copied into an
    * "images" directory in the archive. Storing another image with the
@@ -186,17 +172,6 @@ public class ArchiveWriter extends DataArchive {
 
   public void addSound(String path, String fileName) {
     addFile(path, soundDir + fileName);
-  }
-
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public boolean isImageAdded(String name) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    try {
-      return archive.contains(imageDir + name);
-    }
-    catch (IOException e) {
-      return false;
-    }
   }
 
   public void removeImage(String name) {
@@ -367,23 +342,5 @@ public class ArchiveWriter extends DataArchive {
     }
 
     return true;
-  }
-
-  /**
-   * If the ArchiveWriter was initialized with non-null file name, then
-   * write the contents of the archive to the named archive. If it was
-   * initialized with a null name, prompt the user to select a new file
-   * into which to write archive.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void write() throws IOException {
-    ProblemDialog.showDeprecated("2020-08-06");
-    write(false);
-  }
-
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void write(boolean notifyModuleManager) throws IOException {
-    ProblemDialog.showDeprecated("2020-08-06");
-    save(notifyModuleManager);
   }
 }

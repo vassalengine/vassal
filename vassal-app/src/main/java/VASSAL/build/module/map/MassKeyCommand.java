@@ -105,12 +105,12 @@ public class MassKeyCommand extends AbstractToolbarItem
   // TODO: When these are removed, look for all of the "removal" warning
   // suppressions we added for them, and remove those.
   // These 3 identical to AbstractToolbarItem and here for clirr purposes only
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; // NON-NLS
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String NAME = "name"; // NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; // NON-NLS
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; // NON-NLS
 
   /** @deprecated use launch from the superclass */
-  @Deprecated (since = "2020-10-21", forRemoval = true)
+  @Deprecated(since = "2020-10-21", forRemoval = true)
   protected LaunchButton launch; // Exists for clirr - but use getLaunchButton()
 
   protected NamedKeyStroke stroke = NamedKeyStroke.NULL_KEYSTROKE;

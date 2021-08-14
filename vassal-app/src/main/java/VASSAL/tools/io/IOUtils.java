@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
-import VASSAL.tools.ProblemDialog;
-
 /**
  * General I/O stream manipulation utilities. This class provides static
  * utility methods to reduce boilerplate I/O code.
@@ -53,7 +51,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   @Deprecated(since = "2020-11-14", forRemoval = true)
   public static int copy(FileInputStream in, FileOutputStream out)
                                                            throws IOException {
-    ProblemDialog.showDeprecated("2020-11-14");
     final long count = copyLarge(in, out);
     return count > Integer.MAX_VALUE ? -1 : (int) count;
   }
@@ -72,7 +69,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   @Deprecated(since = "2020-11-14", forRemoval = true)
   public static long copyLarge(FileInputStream in, FileOutputStream out)
                                                            throws IOException {
-    ProblemDialog.showDeprecated("2020-11-14");
     final FileChannel inc = in.getChannel();
     return inc.transferTo(0L, inc.size(), out.getChannel());
   }
@@ -92,7 +88,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
   @Deprecated(since = "2020-11-14", forRemoval = true)
   public static int copy(InputStream in, OutputStream out, byte[] buffer)
                                                            throws IOException {
-    ProblemDialog.showDeprecated("2020-11-14");
     final long count = copyLarge(in, out, buffer);
     return count > Integer.MAX_VALUE ? -1 : (int) count;
   }
@@ -106,8 +101,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    */
   @Deprecated(since = "2020-11-14", forRemoval = true)
   public static void closeQuietly(AutoCloseable c) {
-    ProblemDialog.showDeprecated("2020-11-14");
-
     if (c == null) return;
 
     try {

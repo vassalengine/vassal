@@ -31,7 +31,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import java.awt.Color;
@@ -484,17 +483,6 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   /**
    * Return true if this piece can be masked/unmasked by the current player
-   * @param id ignored
-   * @deprecated
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public boolean isMaskableBy(@SuppressWarnings("unused") String id) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return isMaskable();
-  }
-
-  /**
-   * Return true if this piece can be masked/unmasked by the current player
    */
   public boolean isMaskable() {
     // Check if piece is owned by us. Returns true if we own the piece, or if it
@@ -577,23 +565,6 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   @Override
   public PieceEditor getEditor() {
     return new Ed(this);
-  }
-
-  /**
-   * If true, then all masked pieces are considered masked to all players.
-   * Used to temporarily draw pieces as they appear to other players
-   * @param allHidden True to hide all pieces
-   * @deprecated
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static void setAllHidden(boolean allHidden) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    if (allHidden) {
-      PieceAccess.GlobalAccess.hideAll();
-    }
-    else {
-      PieceAccess.GlobalAccess.revertAll();
-    }
   }
 
   @Override

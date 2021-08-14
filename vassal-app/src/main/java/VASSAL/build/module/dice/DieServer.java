@@ -3,12 +3,10 @@ package VASSAL.build.module.dice;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DieRoll;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.InternetDiceButton;
 import VASSAL.script.expression.Auditable;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.ProblemDialog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -141,54 +139,6 @@ public abstract class DieServer implements Auditable {
    */
   protected String getReportPrefix(String d) {
     return " *** " + d + " = "; //NON-NLS
-  }
-
-  /**
-   * The text reported after the results of the roll;
-   * @deprecated No Replacement, handled by Message format
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected String getReportSuffix() {
-    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
-    return " ***  &lt;" + GlobalOptions.getInstance().getPlayerId() + "&gt;";  //NON-NLS
-  }
-
-  /*
-   * Called by the Inbuilt server - Basically the same as the code
-   * in the original DiceButton
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void doInbuiltRoll(RollSet mroll) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    final DieRoll[] rolls = mroll.getDieRolls();
-    for (final DieRoll roll : rolls) {
-      final String desc = roll.getDescription();
-      final int nSides = roll.getNumSides();
-      final int nDice = roll.getNumDice();
-      final int plus = roll.getPlus();
-      final boolean reportTotal = roll.isReportTotal();
-
-      String val = getReportPrefix(desc);
-      int total = 0;
-      for (int j = 0; j < nDice; ++j) {
-        final int result = ran.nextInt(nSides) + 1 + plus;
-        if (reportTotal) {
-          total += result;
-        }
-        else {
-          val += result;
-          if (j < nDice - 1)
-            val += ",";
-        }
-
-        if (reportTotal)
-          val += total;
-
-        final String reportSuffix = " ***  &lt;" + GlobalOptions.getInstance().getPlayerId() + "&gt;"; //NON-NLS
-        val += reportSuffix;
-        GameModule.getGameModule().getChatter().send(val);
-      }
-    }
   }
 
   /*

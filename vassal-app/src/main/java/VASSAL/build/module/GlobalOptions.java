@@ -43,7 +43,6 @@ import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.swing.SwingUtils;
 
 import java.awt.Container;
@@ -339,13 +338,6 @@ public class GlobalOptions extends AbstractConfigurable {
   /** @param b sets the compatibility Move Fixed Distance preference */
   public void setUseClassicMoveFixedDistance(boolean b) {
     useClassicMoveFixedDistance = b;
-  }
-
-  /** @deprecated No replacement */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public boolean isAveragedScaling() {
-    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
-    return true;
   }
 
   /** @param b sets the Mac Legacy compatibility preference */

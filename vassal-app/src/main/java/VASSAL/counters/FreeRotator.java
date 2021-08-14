@@ -17,7 +17,6 @@
  */
 package VASSAL.counters;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -108,12 +107,8 @@ public class FreeRotator extends Decorator
   protected double[] validAngles = {0.0};
   protected int angleIndex = 0;
 
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected java.util.Map<Double, Image> images = new HashMap<>();
   protected java.util.Map<Double, Rectangle> bounds = new HashMap<>();
 
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected PieceImage unrotated;
   protected GamePieceOp gpOp;
   protected java.util.Map<Double, RotateScaleOp> rotOp = new HashMap<>();
 
@@ -219,13 +214,6 @@ public class FreeRotator extends Decorator
       final double ex = (-angle / 360) * validAngles.length;
       angleIndex = ((int) Math.round(ex)) % validAngles.length;
     }
-  }
-
-  /** @deprecated Use {@link #boundingBox()} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Rectangle getRotatedBounds() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return boundingBox();
   }
 
   @Override
@@ -751,25 +739,6 @@ public class FreeRotator extends Decorator
     if (hasPieceMoved()) {
       endInteractiveRotate();
     }
-  }
-
-  /**
-   * Return a full-scale cached image of this piece, rotated to the appropriate
-   * angle.
-   *
-   * @param angle Rotation angle
-   * @param obs Component observer
-   * @return Rotated Image
-   * @deprecated Use a {@link GamePieceOp} if you need this Image.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Image getRotatedImage(double angle, Component obs) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    if (gpOp == null) return null;
-
-    if (gpOp.isChanged()) gpOp = Op.piece(piece);
-
-    return Op.rotateScale(gpOp, angle, 1.0).getImage();
   }
 
   @Override

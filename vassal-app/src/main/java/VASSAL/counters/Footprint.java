@@ -30,7 +30,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.LabelUtils;
@@ -52,8 +51,6 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -126,13 +123,6 @@ public class Footprint extends MovementMarkable {
   public Footprint(String type, GamePiece p) {
     mySetType(type);
     setInner(p);
-  }
-
-  /** @deprecated Use {@link #pointList} directly. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Enumeration<Point> getPointList() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return Collections.enumeration(pointList);
   }
 
   @Override

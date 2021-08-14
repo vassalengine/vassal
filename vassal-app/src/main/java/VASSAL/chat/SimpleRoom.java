@@ -17,10 +17,8 @@
  */
 package VASSAL.chat;
 
-import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -114,13 +112,6 @@ public class SimpleRoom implements Room {
     else {
       return false;
     }
-  }
-
-  /** @deprecated Use {@link #getPlayerList()} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Iterator<Player> getPlayers() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return players.iterator();
   }
 
   @Override

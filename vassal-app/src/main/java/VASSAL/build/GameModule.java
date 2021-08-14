@@ -114,7 +114,6 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.QuickColors;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ReflectionUtils;
@@ -131,7 +130,6 @@ import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
 
 import java.awt.Container;
-import java.awt.FileDialog;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -261,7 +259,6 @@ public class GameModule extends AbstractConfigurable
   private String description = "";
   private String lastSavedConfiguration;
   private FileChooser fileChooser;
-  private FileDialog fileDialog;
   private final MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
   private final TranslatableStringContainer transContainer = new TranslatableStringContainer.Impl();
 
@@ -289,14 +286,6 @@ public class GameModule extends AbstractConfigurable
     };
 
   private final PlayerWindow frame = new PlayerWindow();
-
-  /**
-   * Will hold the main module toolbar
-   *
-   * @deprecated use {@link #getPlayerWindow()} and {@link PlayerWindow#getControlPanel()} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  private final JPanel controlPanel = frame.getControlPanel();
 
   /**
    * Reads/writes full game state; starts/stops gameplay.
@@ -448,15 +437,12 @@ public class GameModule extends AbstractConfigurable
     return loadingContinuationSemaphore;
   }
 
-
-
   /**
    * @return the top-level frame of the controls window
    * @deprecated use {@link #getPlayerWindow()}
    */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
+  @Deprecated(since = "2020-08-06", forRemoval = false)
   public JFrame getFrame() {
-    ProblemDialog.showDeprecated("2020-08-06");  //NON-NLS
     return frame;
   }
 
@@ -934,21 +920,6 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * A valid version format is "w.x.y[bz]", where
-   * 'w','x','y', and 'z' are integers.
-   * @return a negative number if <code>v2</code> is a later version
-   * the <code>v1</code>, a positive number if an earlier version,
-   * or zero if the versions are the same.
-   *
-   * @deprecated use {@link VersionUtils#compareVersions(String, String)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static int compareVersions(String v1, String v2) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return VersionUtils.compareVersions(v1, v2);
-  }
-
-  /**
    * Game Module is normally at the root of the hierarchy, so it doesn't expect to get added to anything.
    * @param b Notional "parent" of this GameModule
    */
@@ -1134,19 +1105,6 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * @deprecated use {@link #fireKeyStroke(NamedKeyStroke)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void fireKeyStroke(KeyStroke stroke) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    if (stroke != null) {
-      for (final KeyStrokeListener l : keyStrokeListeners) {
-        l.keyPressed(stroke);
-      }
-    }
-  }
-
-  /**
    * Invokes a {@link NamedKeyStroke} to all of our listeners.
    * @param stroke NamedKeyStroke to invoke
    */
@@ -1210,21 +1168,9 @@ public class GameModule extends AbstractConfigurable
     return preferences;
   }
 
-  /**
-   * A set of preferences that applies to all modules
-   * @deprecated use {@link Prefs#getGlobalPrefs()}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Prefs getGlobalPrefs() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return Prefs.getGlobalPrefs();
-  }
-
-
   public boolean isTranslatableSupport() {
     return true;
   }
-
 
   /**
    * GameModule holds the master list of CommandEncoders, and invokes them as appropriate when commands are sent and
@@ -1335,7 +1281,7 @@ public class GameModule extends AbstractConfigurable
   }
 
   public JComponent getControlPanel() {
-    return controlPanel;
+    return frame.getControlPanel();
   }
 
   /**
@@ -1364,15 +1310,6 @@ public class GameModule extends AbstractConfigurable
   public void setPrefs(Prefs p) {
     preferences = p;
     preferences.getEditor().initDialog(getPlayerWindow());
-  }
-
-  /**
-   *
-   * @deprecated no replacement
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void setGlobalPrefs(@SuppressWarnings("unused") Prefs p) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   /**
@@ -1477,26 +1414,6 @@ public class GameModule extends AbstractConfigurable
     }
 
     return fileChooser;
-  }
-
-  /**
-   * @deprecated Use {@link #getFileChooser} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public FileDialog getFileDialog() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    if (fileDialog == null) {
-      fileDialog = new FileDialog(getPlayerWindow());
-      final File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
-      if (f != null) {
-        fileDialog.setDirectory(f.getPath());
-      }
-      fileDialog.setModal(true);
-    }
-    else {
-      fileDialog.setDirectory(fileDialog.getDirectory());
-    }
-    return fileDialog;
   }
 
   /**

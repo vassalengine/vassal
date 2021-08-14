@@ -54,5 +54,1066 @@
         <differenceType>7009</differenceType>
         <method>BugUtils()</method>
     </difference>
+    <difference>
+        <className>VASSAL/tools/ProblemDialog</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.concurrent.Future showDeprecated(java.lang.String)</method>
+        <justification>Nothing external should use this</justification>
+    </difference>
 
+    <!-- The Great Deprececation Removal of 2021 -->
+
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>int compareVersions(java.lang.String, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>java.io.File getDocsDir()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getMinorVersion()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>boolean is2dEnabled()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isDndEnabled()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isMacOSX()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isMacOsX()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/Info</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isWindows()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/AbstractBuildable</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getAllDescendantComponents(java.lang.Class)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/AbstractBuildable</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getBuildComponents()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/AbstractBuildable</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getComponents(java.lang.Class)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>int compareVersions(java.lang.String, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>void fireKeyStroke(javax.swing.KeyStroke)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.FileDialog getFileDialog()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>javax.swing.JFrame getFrame()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.preferences.Prefs getGlobalPrefs()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/GameModule</className>
+        <differenceType>7002</differenceType>
+        <method>void setGlobalPrefs(VASSAL.preferences.Prefs)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Chatter</className>
+        <differenceType>6011</differenceType>
+        <field>GAME_MSG_COLOR</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Chatter</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getHandle()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Chatter</className>
+        <differenceType>7002</differenceType>
+        <method>void setHandle(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/DiceButton</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getReportPrefix()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/DiceButton</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getReportSuffix()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/EventLog</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration decodeEvents(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/EventLog</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String encodeEvents(java.util.Enumeration)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameState</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getGameComponentsEnum()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GameState</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getPieces()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/GlobalOptions</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isAveragedScaling()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Point componentCoordinates(java.awt.Point)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Rectangle componentRectangle(java.awt.Rectangle)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getAllBoards()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Iterator getAllMaps()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Point mapCoordinates(java.awt.Point)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Rectangle mapRectangle(java.awt.Rectangle)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>void reposition(VASSAL.counters.GamePiece, int)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/Map</className>
+        <differenceType>7002</differenceType>
+        <method>void setBoards(java.util.Enumeration)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/ObscurableOptions$SetAllowed</className>
+        <differenceType>7002</differenceType>
+        <method>ObscurableOptions$SetAllowed(java.util.Vector)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>7002</differenceType>
+        <method>void addSideChangeListener(VASSAL.build.module.PlayerRoster$SideChangeListener)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/PlayerRoster</className>
+        <differenceType>7002</differenceType>
+        <method>void removeSideChangeListener(VASSAL.build.module.PlayerRoster$SideChangeListener)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/PrivateMap</className>
+        <differenceType>7002</differenceType>
+        <method>void setBoards(java.util.Enumeration)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/PrototypeDefinition$Config$Definer</className>
+        <differenceType>4001</differenceType>
+        <to>**</to>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/SpecialDiceButton</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getReportSuffix()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/dice/DieServer</className>
+        <differenceType>7002</differenceType>
+        <method>void doInbuiltRoll(VASSAL.build.module.dice.RollSet)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/dice/DieServer</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getReportSuffix()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/documentation/AboutScreen</className>
+        <differenceType>7002</differenceType>
+        <method>AboutScreen(java.awt.Image)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/documentation/HelpFile</className>
+        <differenceType>7002</differenceType>
+        <method>java.net.URL toURL(java.io.File)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/documentation/HelpWindowExtension</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/ImageItem</className>
+        <differenceType>6001</differenceType>
+        <field>image</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/gamepieceimage/InstanceConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.ArrayList getValueArrayList()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/BoardPicker</className>
+        <differenceType>6001</differenceType>
+        <field>status</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/BoardPicker</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getCurrentBoards()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/BoardPicker</className>
+        <differenceType>7002</differenceType>
+        <method>void pack()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/BoardPicker</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Vector pickBoards()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/BoardPicker</className>
+        <differenceType>7002</differenceType>
+        <method>void setBoards(java.util.Enumeration)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/BoardPicker$SetBoards</className>
+        <differenceType>7002</differenceType>
+        <method>BoardPicker$SetBoards(VASSAL.build.module.map.BoardPicker, java.util.Vector)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/CounterDetailViewer</className>
+        <differenceType>6011</differenceType>
+        <field>ALWAYS_SHOW_LOC</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/CounterDetailViewer</className>
+        <differenceType>6001</differenceType>
+        <field>alwaysShowLoc</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/CounterDetailViewer</className>
+        <differenceType>7002</differenceType>
+        <method>void drawGraphics(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/CounterDetailViewer</className>
+        <differenceType>7002</differenceType>
+        <method>void drawLabel(java.awt.Graphics, java.awt.Point, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/CounterDetailViewer</className>
+        <differenceType>7002</differenceType>
+        <method>void drawText(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/CounterDetailViewer$Visitor</className>
+        <differenceType>7002</differenceType>
+        <method>CounterDetailViewer$Visitor(VASSAL.build.module.map.CounterDetailViewer$Filter, VASSAL.build.module.Map, java.awt.Point)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/GlobalMap</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Point componentCoordinates(java.awt.Point)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/GlobalMap</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Point mapCoordinates(java.awt.Point)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/ImageSaver</className>
+        <differenceType>7002</differenceType>
+        <method>void writeImage(java.io.OutputStream[])</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MapShader</className>
+        <differenceType>7002</differenceType>
+        <method>void buildTexture()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MapShader</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Rectangle getPatternRect()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MapShader</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.image.BufferedImage getShadePattern()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/MapShader</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.TexturePaint getTexture()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/PieceMover</className>
+        <differenceType>7002</differenceType>
+        <method>void applyKeyAfterMove(java.util.List, VASSAL.command.Command, javax.swing.KeyStroke)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/PieceMover</className>
+        <differenceType>7002</differenceType>
+        <method>void selectMovablePieces(java.awt.Point)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/PieceMover</className>
+        <differenceType>7002</differenceType>
+        <method>void setOldLocation(VASSAL.counters.GamePiece)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/SelectionHighlighter</className>
+        <differenceType>6001</differenceType>
+        <field>image</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/Zoomer</className>
+        <differenceType>6001</differenceType>
+        <field>maxZoom</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/Zoomer</className>
+        <differenceType>6001</differenceType>
+        <field>zoom</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/Zoomer</className>
+        <differenceType>6001</differenceType>
+        <field>zoomFactor</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/Zoomer</className>
+        <differenceType>6001</differenceType>
+        <field>zoomLevel</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/Zoomer</className>
+        <differenceType>6001</differenceType>
+        <field>zoomStart</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>6001</differenceType>
+        <field>boardImage</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>6001</differenceType>
+        <field>boardName</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>7002</differenceType>
+        <method>void cleanUp()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>7002</differenceType>
+        <method>void fixBounds()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>7002</differenceType>
+        <method>void fixImage(java.awt.Component)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>7002</differenceType>
+        <method>void fixImage()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getScaledImage(double, java.awt.Component)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/map/boardPicker/Board$Cleanup</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/EnumeratedPropertyPrompt</className>
+        <differenceType>7002</differenceType>
+        <method>EnumeratedPropertyPrompt(VASSAL.build.module.properties.PropertyPrompt$DialogParent, java.lang.String, java.lang.String[])</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/turn/TurnTracker</className>
+        <differenceType>7002</differenceType>
+        <method>void replace(java.lang.StringBuffer, java.lang.String, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/PrivateChatter</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getHandle()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/chat/SimpleRoom</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Iterator getPlayers()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/command/ChangePiece</className>
+        <differenceType>7002</differenceType>
+        <method>ChangePiece(java.lang.String, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/command/Command</className>
+        <differenceType>7002</differenceType>
+        <method>boolean hasNullSubcommands()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/command/ConditionalCommand$Eq</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getValues()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ConfigureTree</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration buildAddActions(VASSAL.build.Configurable)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/ModuleUpdaterDialog</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/configure/PieceAccessConfigurer</className>
+        <differenceType>7002</differenceType>
+        <method>void setPrompts(java.lang.String[])</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>7002</differenceType>
+        <method>Deck(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>7002</differenceType>
+        <method>Deck(java.lang.String, VASSAL.build.module.properties.PropertySource)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>7002</differenceType>
+        <method>javax.swing.KeyStroke getEmptyKey()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.command.Command setContents(java.util.Iterator)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Deck</className>
+        <differenceType>7002</differenceType>
+        <method>void setEmptyKey(javax.swing.KeyStroke)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Decorator</className>
+        <differenceType>7002</differenceType>
+        <method>void setOldProperties()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/DragBuffer</className>
+        <differenceType>7002</differenceType>
+        <method>void init(VASSAL.counters.DragBuffer)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/DragBuffer</className>
+        <differenceType>7002</differenceType>
+        <method>void sort(VASSAL.tools.Sort$Comparator)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Embellishment</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getCurrentImage()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Embellishment</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String oldGetType()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Embellishment0</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getCurrentImage()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Embellishment0</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String oldGetType()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Footprint</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getPointList()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/FreeRotator</className>
+        <differenceType>6001</differenceType>
+        <field>images</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/FreeRotator</className>
+        <differenceType>6001</differenceType>
+        <field>unrotated</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/FreeRotator</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Rectangle getRotatedBounds()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/FreeRotator</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getRotatedImage(double, java.awt.Component)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Obscurable</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isMaskableBy(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Obscurable</className>
+        <differenceType>7002</differenceType>
+        <method>void setAllHidden(boolean)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/PieceIterator</className>
+        <differenceType>7002</differenceType>
+        <method>PieceIterator(java.util.Enumeration)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Stack</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getPieces()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Stack</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getPiecesInReverseOrder()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Stack</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.Enumeration getPiecesInVisibleOrder()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/Resources</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getEditorString(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/Resources</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getString(java.util.ResourceBundle, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/i18n/Resources</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getVassalString(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/launch/PlayerWindow</className>
+        <differenceType>7002</differenceType>
+        <method>VASSAL.tools.ComponentSplitter$SplitPane splitControlPanel(java.awt.Component, int, boolean)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7002</differenceType>
+        <method>ArchiveWriter(java.util.zip.ZipFile)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isImageAdded(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7002</differenceType>
+        <method>void write()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ArchiveWriter</className>
+        <differenceType>7002</differenceType>
+        <method>void write(boolean)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>6011</differenceType>
+        <field>SOUNDS_DIR</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>6001</differenceType>
+        <field>imageNames</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>6001</differenceType>
+        <field>soundsDir</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>boolean addImageSource(java.lang.String, org.apache.xmlgraphics.image.loader.ImageSource)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void clearScaledImageCache()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void clearTransformedImageCache()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image findImage(java.io.File, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image findImage(java.io.File, java.lang.String, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.lang.String getArchiveURL()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>byte[] getBytes(java.io.InputStream)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getCachedImage(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.io.InputStream getFileStream(java.io.File, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.io.InputStream getFileStream(java.io.File, java.lang.String, java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.io.InputStream getFileStream(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.image.BufferedImage getImage(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getImage(java.io.InputStream)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Rectangle getImageBounds(java.awt.Image)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.io.InputStream getImageInputStream(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Dimension getImageSize(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.net.URL getImageURL(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getScaledImage(java.awt.Image, double, boolean, boolean)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getScaledImage(java.awt.Image, double)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getTransformedImage(java.awt.Image, double, double)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image getTransformedImage(java.awt.Image, double, double, boolean)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Image improvedScaling(java.awt.Image, int, int)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>boolean isNameCacheStale()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void listImageNames(java.util.Collection)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void removeImageSource(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.util.SortedSet setOfImageNames()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void unCacheImage(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/DataArchive</className>
+        <differenceType>7002</differenceType>
+        <method>void unCacheImage(java.awt.Image)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/JarArchive</className>
+        <differenceType>7002</differenceType>
+        <method>java.io.InputStream getFileStream(java.lang.String)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/ZipUpdater</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+   <difference>
+        <className>VASSAL/tools/bug/Bug2694Handler</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/ImageUtils</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.image.BufferedImage getImage(java.io.InputStream)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/ImageUtils</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.Dimension getImageSize(java.io.InputStream)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/ImageUtils</className>
+        <differenceType>7002</differenceType>
+        <method>void setHighQualityScaling(boolean)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/image/ImageUtils</className>
+        <differenceType>7002</differenceType>
+        <method>java.awt.image.BufferedImage transform(java.awt.image.BufferedImage, double, double, java.awt.RenderingHints, int)</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/menu/MenuScroller</className>
+        <differenceType>7002</differenceType>
+        <method>void dispose()</method>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/MassPieceDefiner</className>
+        <differenceType>4001</differenceType>
+        <to>**</to>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/PieceDefiner</className>
+        <differenceType>4001</differenceType>
+        <to>**</to>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>BOTTOM</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>CENTER</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6001</differenceType>
+        <field>HORIZONTAL_ALIGNMENT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>LEFT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>RIGHT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6011</differenceType>
+        <field>TOP</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/counters/Labeler</className>
+        <differenceType>6001</differenceType>
+        <field>VERTICAL_ALIGNMENT</field>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VassalVersionTokenizer</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VassalVersionTokenizer$State</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VersionFormatException</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/tools/version/VersionTokenizer</className>
+        <differenceType>8001</differenceType>
+        <justification>Deprecated for a year</justification>
+    </difference>
 </differences>

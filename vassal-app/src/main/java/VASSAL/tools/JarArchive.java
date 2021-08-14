@@ -79,12 +79,4 @@ public class JarArchive extends DataArchive {
   public String getName() {
     return prefix != null ? prefix : super.getName();
   }
-
-  /** @deprecated Use {@link #getInputStream(String)} instead. */
-  @SuppressWarnings("removal")
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  @Override
-  public InputStream getFileStream(String fileName) throws IOException {
-    return getInputStream(fileName);
-  }
 }

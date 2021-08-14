@@ -42,7 +42,6 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.SequenceEncoder;
 
 import VASSAL.tools.swing.SwingUtils;
@@ -57,10 +56,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Vector;
 import java.util.stream.Collectors;
 
 import javax.swing.Box;
@@ -70,7 +67,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
@@ -90,8 +86,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
   protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected JTextField status;
   protected JLabel statusLabel;
   protected Map map;
   protected JPanel slotPanel;
@@ -361,13 +355,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     }
   }
 
-  /** @deprecated Use {@link #setBoards(Collection)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void setBoards(Enumeration<Board> bdEnum) {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    setBoards(Collections.list(bdEnum));
-  }
-
   protected void selectBoards(Component c) {
     reset();
     final JDialog d = new JDialog(GameModule.getGameModule().getPlayerWindow(), true);
@@ -411,17 +398,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       return Collections.emptyList();
     }
     return currentBoards.stream().map(Board::getName).collect(Collectors.toList());
-  }
-
-  /**
-   * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
-   *         savefile
-   * @deprecated Use {@link #getSelectedBoards()} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Enumeration<Board> getCurrentBoards() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return Collections.enumeration(getSelectedBoards());
   }
 
   /**
@@ -562,15 +538,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     else if (clearButton == e.getSource()) {
       reset();
     }
-  }
-
-  /**
-   * @deprecated Use {@link #getBoardsFromControls()}.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Vector<Board> pickBoards() { //NOPMD
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return new Vector<>(getBoardsFromControls());
   }
 
   /**
@@ -769,14 +736,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       boards = bds;
     }
 
-    /** @deprecated Use {@link #SetBoards(BoardPicker,List)}. */
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetBoards(BoardPicker target, Vector<Board> boards) { //NOPMD
-      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-      this.target = target;
-      this.boards = boards;
-    }
-
     @Override
     protected void executeCommand() {
       target.currentBoards = boards;
@@ -899,14 +858,6 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     if (controls != null) {
       controls.repaint();
     }
-  }
-
-  /**
-   * @deprecated No replacement
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void pack() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
   }
 
   @Override  // PG-2011-09-24

@@ -18,18 +18,15 @@
  */
 package VASSAL.counters;
 
-import VASSAL.tools.ProblemDialog;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,7 +56,6 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
@@ -362,39 +358,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
     return ID + se.getValue();
   }
 
-  /** @deprecated No Replacement */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public String oldGetType() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    final SequenceEncoder se = new SequenceEncoder(';');
-    final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
-
-    se2.append(resetCommand)
-       .append(resetKey)
-       .append(String.valueOf(resetLevel));
-
-    se.append(se2.getValue())
-      .append(drawUnderneathWhenSelected ?
-        "_" + activateCommand : activateCommand)
-      .append(upKey)
-      .append(upCommand)
-      .append(downKey)
-      .append(downCommand)
-      .append(xOff)
-      .append(yOff);
-
-    for (int i = 0; i < nValues; ++i) {
-      if (commonName[i] != null) {
-        final SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
-        se.append(sub.append(commonName[i]).getValue());
-      }
-      else {
-        se.append(imageName[i]);
-      }
-    }
-    return ID + se.getValue();
-  }
-
   @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -577,21 +540,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
       }
     }
     return (char) 0;
-  }
-
-  /** @deprecated Use {@link ImageOp#getImage} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Image getCurrentImage() throws IOException {
-    ProblemDialog.showDeprecated("2020-08-06");
-    // nonpositive value means that layer is inactive
-    // null or empty imageName[value-1] means that this layer has no image
-    if (value <= 0 ||
-      imageName[value - 1] == null ||
-      imageName[value - 1].length() == 0 ||
-      imagePainter[value - 1] == null ||
-      imagePainter[value - 1].getSource() == null) return null;
-
-    return imagePainter[value - 1].getSource().getImage();
   }
 
   @Override
@@ -1131,71 +1079,6 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
       return ID + se.getValue();
 
-    }
-
-    /** @deprecated No Replacement */
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public String oldgetType() {
-      ProblemDialog.showDeprecated("2020-08-06");
-      final SequenceEncoder imageList = new SequenceEncoder(';');
-      int i = 0;
-      for (final String imageName : images.getImageNameList()) {
-        String commonName = names.get(i);
-        if (names.get(i) != null && commonName != null && commonName.length() > 0) {
-          final SequenceEncoder sub = new SequenceEncoder(imageName, ',');
-          if (PREFIX.equals(isPrefix.get(i))) {
-            commonName = new SequenceEncoder(commonName, '+').append("").getValue();
-          }
-          else if (SUFFIX.equals(isPrefix.get(i))) {
-            commonName = new SequenceEncoder("", '+').append(commonName).getValue();
-          }
-          else {
-            commonName = new SequenceEncoder(commonName, '+').getValue();
-          }
-          imageList.append(sub.append(commonName).getValue());
-        }
-        else {
-          imageList.append(imageName);
-        }
-        i++;
-      }
-
-      try {
-        Integer.parseInt(xOffInput.getText());
-      }
-      catch (NumberFormatException xNAN) {
-        // TODO use IntConfigurer
-        xOffInput.setText("0");
-      }
-      try {
-        Integer.parseInt(yOffInput.getText());
-      }
-      catch (NumberFormatException yNAN) {
-        yOffInput.setText("0");
-      }
-      String command = activateCommand.getText();
-      if (drawUnderneath.isSelected()) {
-        command = "_" + command;
-      }
-
-      final SequenceEncoder se2 =
-        new SequenceEncoder(activateKeyInput.getText(), ';');
-      se2.append(resetCommand.getText())
-         .append((KeyStroke) resetKey.getValue())
-         .append(resetLevel.getText());
-
-      final SequenceEncoder se = new SequenceEncoder(null, ';');
-      se.append(se2.getValue())
-        .append(command)
-        .append(upKeyInput.getText())
-        .append(upCommand.getText())
-        .append(downKeyInput.getText())
-        .append(downCommand.getText())
-        .append(xOffInput.getText())
-        .append(yOffInput.getText());
-
-      return ID + se.getValue() + ';'
-        + (imageList.getValue() == null ? "" : imageList.getValue());
     }
 
     @Override

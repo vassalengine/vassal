@@ -1,0 +1,164 @@
+VASSAL.build.AbstractBuildable.getAllDescendantComponents(java.lang.Class)	3.6.0
+VASSAL.build.AbstractBuildable.getComponents(java.lang.Class)	3.6.0
+VASSAL.build.GameModule.compareVersions(java.lang.String, java.lang.String)	3.6.0
+VASSAL.build.GameModule.fireKeyStroke(javax.swing.KeyStroke)	3.6.0
+VASSAL.build.GameModule.getFileDialog()	3.6.0
+VASSAL.build.GameModule.getGlobalPrefs()	3.6.0
+VASSAL.build.GameModule.setGlobalPrefs(VASSAL.preferences.Prefs)	3.6.0
+VASSAL.build.module.Chatter.GAME_MSG_COLOR	3.6.0
+VASSAL.build.module.Chatter.setHandle(java.lang.String)	3.6.0
+VASSAL.build.module.DiceButton.getReportPrefix()	3.6.0
+VASSAL.build.module.DiceButton.getReportSuffix()	3.6.0
+VASSAL.build.module.dice.DieServer.getReportSuffix()	3.6.0
+VASSAL.build.module.documentation.AboutScreen.AboutScreen(java.awt.Image)	3.6.0
+VASSAL.build.module.documentation.HelpFile.toURL(java.io.File)	3.6.0
+VASSAL.build.module.EventLog.decodeEvents(java.lang.String)	3.6.0
+VASSAL.build.module.EventLog.encodeEvents(java.util.Enumeration)	3.6.0
+VASSAL.build.module.gamepieceimage.ImageItem.image	3.6.0
+VASSAL.build.module.gamepieceimage.InstanceConfigurer.getValueArrayList()	3.6.0
+VASSAL.build.module.GameState.getGameComponentsEnum()	3.6.0
+VASSAL.build.module.GlobalOptions.isAveragedScaling()	3.6.0
+VASSAL.build.module.map.BoardPicker$SetBoards.BoardPicker$SetBoards(VASSAL.build.module.map.BoardPicker, java.util.Vector)	3.6.0
+VASSAL.build.module.map.boardPicker.Board$Cleanup	3.6.0
+VASSAL.build.module.map.boardPicker.Board.boardImage	3.6.0
+VASSAL.build.module.map.boardPicker.Board.boardName	3.6.0
+VASSAL.build.module.map.boardPicker.Board.cleanUp()	3.6.0
+VASSAL.build.module.map.boardPicker.Board.fixBounds()	3.6.0
+VASSAL.build.module.map.boardPicker.Board.fixImage()	3.6.0
+VASSAL.build.module.map.boardPicker.Board.fixImage(java.awt.Component)	3.6.0
+VASSAL.build.module.map.boardPicker.Board.getScaledImage(double, java.awt.Component)	3.6.0
+VASSAL.build.module.map.BoardPicker.getCurrentBoards()	3.6.0
+VASSAL.build.module.map.BoardPicker.pack()	3.6.0
+VASSAL.build.module.map.BoardPicker.pickBoards()	3.6.0
+VASSAL.build.module.map.BoardPicker.setBoards(java.util.Enumeration)	3.6.0
+VASSAL.build.module.map.BoardPicker.status	3.6.0
+VASSAL.build.module.map.CounterDetailViewer$Visitor.CounterDetailViewer$Visitor(VASSAL.build.module.map.CounterDetailViewer$Filter, VASSAL.build.module.Map, java.awt.Point), 	3.6.0
+VASSAL.build.module.map.CounterDetailViewer.alwaysShowLoc	3.6.0
+VASSAL.build.module.map.CounterDetailViewer.ALWAYS_SHOW_LOC	3.6.0
+VASSAL.build.module.map.CounterDetailViewer.drawGraphics(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)	3.6.0
+VASSAL.build.module.map.CounterDetailViewer.drawLabel(java.awt.Graphics, java.awt.Point, java.lang.String)	3.6.0
+VASSAL.build.module.map.CounterDetailViewer.drawText(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)	3.6.0
+VASSAL.build.module.Map.getAllBoards()	3.6.0
+VASSAL.build.module.Map.getAllMaps()	3.6.0
+VASSAL.build.module.map.GlobalMap.componentCoordinates(java.awt.Point)	3.6.0
+VASSAL.build.module.map.GlobalMap.mapCoordinates(java.awt.Point)	3.6.0
+VASSAL.build.module.map.ImageSaver.writeImage(java.io.OutputStream[])	3.6.0
+VASSAL.build.module.map.MapShader.buildTexture()	3.6.0
+VASSAL.build.module.map.MapShader.getPatternRect()	3.6.0
+VASSAL.build.module.map.MapShader.getShadePattern()	3.6.0
+VASSAL.build.module.map.MapShader.getTexture()	3.6.0
+VASSAL.build.module.map.PieceMover.applyKeyAfterMove(java.util.List, VASSAL.command.Command, javax.swing.KeyStroke)	3.6.0
+VASSAL.build.module.map.PieceMover.selectMovablePieces(java.awt.Point)	3.6.0
+VASSAL.build.module.map.PieceMover.setOldLocation(VASSAL.counters.GamePiece)	3.6.0
+VASSAL.build.module.Map.reposition(VASSAL.counters.GamePiece, int)	3.6.0
+VASSAL.build.module.map.SelectionHighlighter.image	3.6.0
+VASSAL.build.module.Map.setBoards(java.util.Enumeration)	3.6.0
+VASSAL.build.module.map.Zoomer.maxZoom	3.6.0
+VASSAL.build.module.map.Zoomer.zoom	3.6.0
+VASSAL.build.module.map.Zoomer.zoomFactor	3.6.0
+VASSAL.build.module.map.Zoomer.zoomLevel	3.6.0
+VASSAL.build.module.map.Zoomer.zoomStart	3.6.0
+VASSAL.build.module.ObscurableOptions$SetAllowed.ObscurableOptions$SetAllowed(java.util.Vector)	3.6.0
+VASSAL.build.module.PlayerRoster.addSideChangeListener(VASSAL.build.module.PlayerRoster.SideChangeListener)	3.6.0
+VASSAL.build.module.PlayerRoster.removeSideChangeListener(VASSAL.build.module.PlayerRoster.SideChangeListener)	3.6.0
+VASSAL.build.module.PrivateMap.setBoards(java.util.Enumeration)	3.6.0
+VASSAL.build.module.properties.EnumeratedPropertyPrompt.EnumeratedPropertyPrompt(VASSAL.build.module.properties.PropertyPrompt$DialogParent, java.lang.String, java.lang.String[])	3.6.0
+VASSAL.build.module.SpecialDiceButton.getReportSuffix()	3.6.0
+VASSAL.build.module.turn.TurnTracker.replace(java.lang.StringBuffer, java.lang.String, java.lang.String)	3.6.0
+VASSAL.chat.PrivateChatter.getHandle()	3.6.0
+VASSAL.chat.SimpleRoom.getPlayers()	3.6.0
+VASSAL.command.ChangePiece.ChangePiece(java.lang.String, java.lang.String)	3.6.0
+VASSAL.command.Command.hasNullSubcommands()	3.6.0
+VASSAL.command.ConditionalCommand$Eq.getValues()	3.6.0
+VASSAL.configure.ConfigureTree.buildAddActions(VASSAL.build.Configurable)	3.6.0
+VASSAL.configure.ModuleUpdaterDialog	3.6.0
+VASSAL.configure.PieceAccessConfigurer.setPrompts(java.lang.String[])	3.6.0
+VASSAL.counters.Deck.Deck(java.lang.String)	3.6.0
+VASSAL.counters.Deck.Deck(java.lang.String, VASSAL.build.module.properties.PropertySource)	3.6.0
+VASSAL.counters.Deck.getEmptyKey()	3.6.0
+VASSAL.counters.Deck.setContents(java.util.Iterator)	3.6.0
+VASSAL.counters.Deck.setEmptyKey(javax.swing.KeyStroke)	3.6.0
+VASSAL.counters.Decorator.setOldProperties()	3.6.0
+VASSAL.counters.DragBuffer.init(VASSAL.counters.DragBuffer)	3.6.0
+VASSAL.counters.DragBuffer.sort(VASSAL.tools.Sort$Comparator)	3.6.0
+VASSAL.counters.Embellishment0$Ed.oldgetType()	3.6.0
+VASSAL.counters.Embellishment0.getCurrentImage()	3.6.0
+VASSAL.counters.Embellishment0.oldgetType()	3.6.0
+VASSAL.counters.Embellishment0.oldGetType()	3.6.0
+VASSAL.counters.Embellishment.getCurrentImage()	3.6.0
+VASSAL.counters.Embellishment.oldGetType()	3.6.0
+VASSAL.counters.Footprint.getPointList()	3.6.0
+VASSAL.counters.FreeRotator.getRotatedBounds()	3.6.0
+VASSAL.counters.FreeRotator.getRotatedImage(double, java.awt.Component)	3.6.0
+VASSAL.counters.FreeRotator.images	3.6.0
+VASSAL.counters.FreeRotator.unrotated	3.6.0
+VASSAL.counters.Labeler.BOTTOM 3.6.0
+VASSAL.counters.Labeler.CENTER 3.6.0
+VASSAL.counters.Labeler.HORIZONTAL_ALIGNMENT 3.6.0
+VASSAL.counters.Labeler.LEFT 3.6.0
+VASSAL.counters.Labeler.RIGHT 3.6.0
+VASSAL.counters.Labeler.TOP 3.6.0
+VASSAL.counters.Labeler.VERTICAL_ALIGNMENT 3.6.0
+VASSAL.counters.Obscurable.isMaskableBy(java.lang.String)	3.6.0
+VASSAL.counters.Obscurable.setAllHidden(boolean)	3.6.0
+VASSAL.counters.PieceIterator.PieceIterator(java.util.Enumeration)	3.6.0
+VASSAL.counters.Stack.getPiecesInReverseOrder()	3.6.0
+VASSAL.counters.Stack.getPiecesInVisibleOrder()	3.6.0
+VASSAL.i18n.Resources.getEditorString(java.lang.String)	3.6.0
+VASSAL.i18n.Resources.getString(java.util.ResourceBundle, java.lang.String)	3.6.0
+VASSAL.i18n.Resources.getVassalString(java.lang.String)	3.6.0
+VASSAL.Info.compareVersions(java.lang.String, java.lang.String)	3.6.0
+VASSAL.Info.getDocsDir()	3.6.0
+VASSAL.Info.getMinorVersion()	3.6.0
+VASSAL.Info.is2dEnabled()	3.6.0
+VASSAL.Info.isDndEnabled()	3.6.0
+VASSAL.Info.isMacOsX()	3.6.0
+VASSAL.Info.isWindows()	3.6.0
+VASSAL.launch.PlayerWindow.splitControlPanel(java.awt.Component, int, boolean)	3.6.0
+VASSAL.tools.ArchiveWriter.ArchiveWriter(java.util.zip.ZipFile)	3.6.0
+VASSAL.tools.ArchiveWriter.isImageAdded(java.lang.String)	3.6.0
+VASSAL.tools.ArchiveWriter.write()	3.6.0
+VASSAL.tools.ArchiveWriter.write(boolean)	3.6.0
+VASSAL.tools.bug.Bug2694Handler	3.6.0
+VASSAL.tools.DataArchive.addImageSource(java.lang.String, VASSAL.tools.ImageSource)	3.6.0
+VASSAL.tools.DataArchive.clearScaledImageCache()	3.6.0
+VASSAL.tools.DataArchive.clearTransformedImageCache()	3.6.0
+VASSAL.tools.DataArchive.findImage(java.io.File, java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.findImage(java.io.File, java.lang.String, java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getArchiveURL()	3.6.0
+VASSAL.tools.DataArchive.getBytes(java.io.InputStream)	3.6.0
+VASSAL.tools.DataArchive.getCachedImage(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getFileStream(java.io.File, java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getFileStream(java.io.File, java.lang.String, java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getFileStream(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getImageBounds(java.awt.Image)	3.6.0
+VASSAL.tools.DataArchive.getImageInputStream(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getImage(java.io.InputStream)	3.6.0
+VASSAL.tools.DataArchive.getImage(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getImageSize(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getImageURL(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getScaledImage(java.awt.Image, double)	3.6.0
+VASSAL.tools.DataArchive.getScaledImage(java.awt.Image, double, boolean, boolean)	3.6.0
+VASSAL.tools.DataArchive.getTransformedImage(java.awt.Image, double, double)	3.6.0
+VASSAL.tools.DataArchive.getTransformedImage(java.awt.Image, double, double, boolean)	3.6.0
+VASSAL.tools.DataArchive.imageNames	3.6.0
+VASSAL.tools.DataArchive.imageSources	3.6.0
+VASSAL.tools.DataArchive.improvedScaling(java.awt.Image, int, int)	3.6.0
+VASSAL.tools.DataArchive.isNameCacheStale()	3.6.0
+VASSAL.tools.DataArchive.listImageNames(java.util.Collection)	3.6.0
+VASSAL.tools.DataArchive.removeImageSource(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.setOfImageNames()	3.6.0
+VASSAL.tools.DataArchive.soundsDir	3.6.0
+VASSAL.tools.DataArchive.SOUNDS_DIR	3.6.0
+VASSAL.tools.DataArchive.unCacheImage(java.awt.Image)	3.6.0
+VASSAL.tools.DataArchive.unCacheImage(java.lang.String)	3.6.0
+VASSAL.tools.image.ImageUtils.getImage(java.io.InputStream)	3.6.0
+VASSAL.tools.image.ImageUtils.getImageSize(java.io.InputStream)	3.6.0
+VASSAL.tools.image.ImageUtils.setHighQualityScaling(boolean), 	3.6.0
+VASSAL.tools.image.ImageUtils.transform(java.awt.image.BufferedImage, double, double, java.awt.RenderingHints, int)	3.6.0
+VASSAL.tools.JarArchive.getFileStream(java.lang.String)	3.6.0
+VASSAL.tools.menu.MenuScroller.dispose()	3.6.0
+VASSAL.tools.version.VassalVersionTokenizer 3.6.0
+VASSAL.tools.version.VersionFormatException 3.6.0
+VASSAL.tools.version.VersionTokenizer 3.6.0
+VASSAL.tools.ZipUpdater	3.6.0

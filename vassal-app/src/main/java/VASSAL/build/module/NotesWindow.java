@@ -60,9 +60,9 @@ public class NotesWindow extends AbstractToolbarItem
   public static final String BUTTON_TEXT = "buttonText"; //NON-NLS // non-standard legacy difference from AbstractToolbarItem
 
   // These three identical to AbstractToolbarItem, and are only here for "clirr purposes"
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
-  @Deprecated (since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String ICON = "icon"; //$NON-NLS-1$
+  @Deprecated(since = "2020-10-21", forRemoval = true) public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
 
   protected JDialog frame;
 

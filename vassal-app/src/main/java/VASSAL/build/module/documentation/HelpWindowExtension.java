@@ -22,8 +22,8 @@ package VASSAL.build.module.documentation;
  * @deprecated To be replaced
  */
 @FunctionalInterface
-@Deprecated(since = "2020-08-06")
+@Deprecated(since = "2020-08-06", forRemoval = true)
 public interface HelpWindowExtension {
-  @Deprecated(since = "2020-08-06")
+  @Deprecated(since = "2020-08-06", forRemoval = true)
   void setBaseWindow(HelpWindow w);
 }

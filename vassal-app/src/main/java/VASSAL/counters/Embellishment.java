@@ -34,20 +34,17 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.script.expression.Expression;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
@@ -474,39 +471,6 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     return ID + se.getValue();
   }
 
-  /** @deprecated No Replacement */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public String oldGetType() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    final SequenceEncoder se = new SequenceEncoder(';');
-    final SequenceEncoder se2 = new SequenceEncoder(activateKey, ';');
-
-    se2.append(resetCommand)
-       .append(resetKey)
-       .append(String.valueOf(resetLevel));
-
-    se.append(se2.getValue())
-      .append(drawUnderneathWhenSelected ?
-              "_" + activateCommand : activateCommand)
-      .append(upKey)
-      .append(upCommand)
-      .append(downKey)
-      .append(downCommand)
-      .append(xOff)
-      .append(yOff);
-
-    for (int i = 0; i < nValues; ++i) {
-      if (commonName[i] != null) {
-        final SequenceEncoder sub = new SequenceEncoder(imageName[i], ',');
-        se.append(sub.append(commonName[i]).getValue());
-      }
-      else {
-        se.append(imageName[i]);
-      }
-    }
-    return ID + se.getValue();
-  }
-
   @Override
   public String myGetState() {
     final SequenceEncoder se = new SequenceEncoder(';');
@@ -698,21 +662,6 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       val = loopLevels ? nValues : 1;
     }
     value = value > 0 ? val : -val;
-  }
-
-  /** @deprecated Use {@link ImageOp#getImage()} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Image getCurrentImage() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    // nonpositive value means that layer is inactive
-    // null or empty imageName[value-1] means that this layer has no image
-    if (value <= 0 ||
-        imageName[value - 1] == null ||
-        imageName[value - 1].length() == 0 ||
-        imagePainter[value - 1] == null ||
-        imagePainter[value - 1].getSource() == null) return null;
-
-    return imagePainter[value - 1].getSource().getImage();
   }
 
   @Override

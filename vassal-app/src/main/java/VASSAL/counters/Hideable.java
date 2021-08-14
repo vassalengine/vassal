@@ -287,7 +287,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
    * @param allHidden true if all pieces should be considered hidden
    * @deprecated
    */
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   public static void setAllHidden(boolean allHidden) {
     if (allHidden) {
       PieceAccess.GlobalAccess.hideAll();

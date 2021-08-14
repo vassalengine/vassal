@@ -21,7 +21,6 @@ package VASSAL.build.module.map;
 import VASSAL.counters.Mat;
 import VASSAL.counters.MatCargo;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ProblemDialog;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
@@ -558,16 +557,6 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * @deprecated  {@link #setOldLocations(GamePiece)} to return generated Commands
-   * @param p Piece
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected void setOldLocation(GamePiece p) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    setOldLocations(p);
-  }
-
-  /**
    * Populates the "OldLocations" properties (e.g. OldMap, OldZone, etc) for the piece (or for a stack, for all
    * the pieces contained in it), based on their present locations, in preparation for moving them to a new location.
    * @param p Piece (could be a stack)
@@ -883,15 +872,6 @@ public class PieceMover extends AbstractBuildable
   }
 
   /**
-   * @deprecated Use {@link #applyKeyAfterMove(List, KeyStroke)} to return Commands
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected void applyKeyAfterMove(List<GamePiece> pieces, Command comm, KeyStroke key) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    comm.append(applyKeyAfterMove(pieces, key));
-  }
-
-  /**
    * Applies a key command to each of a list of pieces.
    * @param pieces List of pieces
    * @param key keystroke to apply
@@ -942,17 +922,6 @@ public class PieceMover extends AbstractBuildable
     else {
       DragBuffer.getBuffer().clear();
     }
-    // show/hide selection boxes
-    map.repaint();
-  }
-
-  /** @deprecated Use {@link #selectMovablePieces(MouseEvent)}. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected void selectMovablePieces(Point point) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    final GamePiece p = map.findPiece(point, dragTargetSelector);
-    dragBegin = point;
-    selectionProcessor.accept(p);
     // show/hide selection boxes
     map.repaint();
   }

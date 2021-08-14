@@ -31,6 +31,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
+
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.DialogUtils;
 
 /**
@@ -58,6 +60,7 @@ public class DetailsDialog {
 
     // put together the paragraphs of the message
     final FlowLabel messageLabel = new FlowLabel(message);
+    messageLabel.addHyperlinkListener(BrowserSupport.getListener());
 
     // set up the details view
     final JTextArea detailsArea = new JTextArea(details, 25, 80);

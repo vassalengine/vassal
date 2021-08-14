@@ -27,7 +27,7 @@ import java.util.NoSuchElementException;
  * @author Joel Uckelman
  * @since 3.2.0
  */
-@Deprecated
+@Deprecated(since = "2021-08-06", forRemoval = true)
 public class ArrayIterator<T> implements Iterator<T> {
 
   private final T[] array;

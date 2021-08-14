@@ -56,7 +56,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -180,7 +179,6 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
@@ -1008,17 +1006,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * Set the boards for this map. Each map may contain more than one
-   * {@link Board}.
-   * @deprecated Use {@link #setBoards(Collection)} instead.
-   */
-  @Deprecated(since = "2020-08-05", forRemoval = true)
-  public synchronized void setBoards(Enumeration<Board> boardList) {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
-    setBoards(Collections.list(boardList));
-  }
-
-  /**
    * Since a map can have multiple boards in use at once (laid out above and beside each other), this
    * method accepts a {@link Point} in the map's coordinate space and will return the {@link Board} which
    * contains that point, or null if none.
@@ -1209,14 +1196,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point mapCoordinates(Point p) {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
     return componentToMap(p);
   }
 
   /** @deprecated Use {@link #componentToMap(Rectangle)} */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Rectangle mapRectangle(Rectangle r) {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
     return componentToMap(r);
   }
 
@@ -1228,14 +1213,12 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point componentCoordinates(Point p) {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
     return mapToComponent(p);
   }
 
   /** @deprecated  Use {@link #mapToComponent(Rectangle)} */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Rectangle componentRectangle(Rectangle r) {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
     return mapToComponent(r);
   }
 
@@ -2309,16 +2292,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   }
 
   /**
-   * @return an Enumeration of all {@link Board}s on the map
-   * @deprecated Use {@link #getBoards()} instead.
-   */
-  @Deprecated(since = "2020-08-05", forRemoval = true)
-  public Enumeration<Board> getAllBoards() {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
-    return Collections.enumeration(boards);
-  }
-
-  /**
    * @return number of Boards on this map
    */
   public int getBoardCount() {
@@ -2835,7 +2808,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     return null;
   }
 
-
   /**
    * @deprecated use {@link #updateTitleBar()}
    * @param s String to append to title
@@ -2996,17 +2968,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       p.setMap(this);
       theMap.repaint();
     }
-  }
-
-  /**
-   * Reorder the argument GamePiece to the new index. When painting the map, pieces are drawn in order of index
-   *
-   * @deprecated use {@link PieceCollection#moveToFront}
-   */
-  @SuppressWarnings("unused")
-  @Deprecated(since = "2020-08-05", forRemoval = true)
-  public void reposition(GamePiece s, int pos) {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
   }
 
   /**
@@ -3500,18 +3461,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       }
     }
     return l;
-  }
-
-  /**
-   * Utility method to return a list of all map components in the module
-   *
-   * @return Iterator over all maps
-   * @deprecated Use {@link #getMapList()} instead.
-   */
-  @Deprecated(since = "2020-08-05", forRemoval = true)
-  public static Iterator<Map> getAllMaps() {
-    ProblemDialog.showDeprecated("2020-08-05"); //NON-NLS
-    return getMapList().iterator();
   }
 
   /**

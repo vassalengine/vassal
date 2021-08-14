@@ -134,6 +134,11 @@
             <version>3.8.2</version>
         </dependency>
         <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.2</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>vassal-deprecation</artifactId>
             <version>${project.version}</version>
@@ -393,6 +398,30 @@
                         <phase>test</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>3.0.0</version>
+              <executions>
+                <execution>
+                  <phase>test</phase>
+                  <goals>
+                    <goal>exec</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <executable>java</executable>
+                <arguments>
+                  <argument>-classpath</argument>
+                  <classpath/>
+                  <argument>VASSAL.tools.deprecation.DeprecationWriter</argument>
+                  <argument>-o</argument>
+                  <argument>${project.build.outputDirectory}/deprecated</argument>
+                  <argument>${project.build.outputDirectory}/VASSAL</argument>
+                </arguments>
+              </configuration>
             </plugin>
         </plugins>
     </build>

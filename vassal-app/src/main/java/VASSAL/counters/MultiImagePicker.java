@@ -112,7 +112,7 @@ public class MultiImagePicker extends JPanel {
   }
 
   /** Use {@link #getImageNameList()} instead. */
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   public Enumeration<String> getImageNames() {
     return Collections.enumeration(getImageNameList());
   }

@@ -70,7 +70,6 @@ public class ComponentSplitter {
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitRight(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
-    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_RIGHT, resizeOnVisibilityChange);
   }
 
@@ -88,7 +87,6 @@ public class ComponentSplitter {
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitLeft(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
-    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_LEFT, resizeOnVisibilityChange);
   }
 
@@ -106,7 +104,6 @@ public class ComponentSplitter {
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitBottom(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
-    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_BOTTOM, resizeOnVisibilityChange);
   }
 
@@ -123,7 +120,6 @@ public class ComponentSplitter {
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitTop(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
-    ProblemDialog.showDeprecated("2020-11-07");
     return split(base, hideableComponent, SplitPane.HIDE_TOP, resizeOnVisibilityChange);
   }
 
@@ -138,7 +134,6 @@ public class ComponentSplitter {
    * @return the {@link SplitPane} ancestor, or the original component if none is found
    */
   public Component getSplitAncestor(Component c, int index) {
-    ProblemDialog.showDeprecated("2020-11-07");
     return splitAncestorOf(c, index);
   }
 
@@ -152,7 +147,6 @@ public class ComponentSplitter {
    * none is found
    */
   public static Component splitAncestorOf(Component c, int index) {
-    ProblemDialog.showDeprecated("2020-11-07");
     Component next = SwingUtilities.getAncestorOfClass(SplitPane.class, c);
     int count = -1;
     while (next != null && (index < 0 || count++ < index)) {
@@ -182,7 +176,6 @@ public class ComponentSplitter {
     int hideablePosition,
     boolean resize) {
 
-    ProblemDialog.showDeprecated("2020-11-07");
     int index = -1;
     final Container parent = base.getParent();
     if (base.getParent() != null) {
@@ -231,7 +224,6 @@ public class ComponentSplitter {
      */
     public SplitPane(Component hideableComponent, Component baseComponent, int hideablePosition, boolean resizeOnVisibilityChange) {
       super(HIDE_TOP == hideablePosition || HIDE_BOTTOM == hideablePosition ? VERTICAL_SPLIT : HORIZONTAL_SPLIT);
-      ProblemDialog.showDeprecated("2020-11-07");
       this.resizeOnVisibilityChange = resizeOnVisibilityChange;
       this.hideablePosition = hideablePosition;
       if (hideableComponent instanceof JComponent) {

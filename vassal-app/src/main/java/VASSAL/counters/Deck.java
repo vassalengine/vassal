@@ -41,7 +41,6 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
@@ -79,7 +78,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
@@ -187,27 +185,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    *
    * @deprecated use {@link #Deck(GameModule)}
    */
-  @Deprecated
+  @Deprecated(since = "2021-08-06", forRemoval = true)
   public Deck() {
     this(GameModule.getGameModule());
-  }
-
-  /**
-   * @deprecated use {@link #Deck(GameModule, String)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Deck(String type) {
-    this(GameModule.getGameModule(), type);
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
-
-  /**
-   * @deprecated use {@link #Deck(GameModule, String, PropertySource)}
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Deck(String type, PropertySource source) {
-    this(GameModule.getGameModule(), type, source);
-    ProblemDialog.showDeprecated("2020-08-06");
   }
 
   /**
@@ -838,20 +818,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
 
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public KeyStroke getEmptyKey() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return emptyKey.getKeyStroke();
-  }
-
   public NamedKeyStroke getNamedEmptyKey() {
     return emptyKey;
-  }
-
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void setEmptyKey(KeyStroke k) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    emptyKey = NamedKeyStroke.of(k);
   }
 
   public void setEmptyKey(NamedKeyStroke k) {
@@ -1033,22 +1001,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final ChangeTracker track = new ChangeTracker(this);
     removeAll();
     for (final GamePiece child : c) {
-      insertChild(child, pieceCount);
-    }
-    return track.getChangeCommand();
-  }
-
-  /**
-   * Set the contents of this Deck to an Iterator of GamePieces
-   * @deprecated Use {@link #setContents(Collection)} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected Command setContents(Iterator<GamePiece> it) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    final ChangeTracker track = new ChangeTracker(this);
-    removeAll();
-    while (it.hasNext()) {
-      final GamePiece child = it.next();
       insertChild(child, pieceCount);
     }
     return track.getChangeCommand();

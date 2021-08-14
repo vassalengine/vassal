@@ -17,7 +17,6 @@
  */
 package VASSAL.build.module;
 
-import VASSAL.tools.ProblemDialog;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.tools.SequenceEncoder;
-import java.util.Vector;
 
 /**
  * Determines whether players are allowed to unmask other players pieces.  The module designer may
@@ -101,9 +99,8 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
    * No longer required with new Configurers. Caused double-up label in config display.
    * @deprecated No replacement
    */
-  @Deprecated (since = "2020-10-27", forRemoval = true)
+  @Deprecated(since = "2020-10-27", forRemoval = true)
   public void setPrompt(String preferencesPrompt) {
-    ProblemDialog.showDeprecated("2020-10-27");
   }
 
   public void allowAll() {
@@ -224,13 +221,6 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     private final List<String> allowed;
 
     public SetAllowed(List<String> allowed) {
-      this.allowed = allowed;
-    }
-
-    /** @deprecated Use {@link #SetAllowed(List)} instead. */
-    @Deprecated(since = "2020-08-06", forRemoval = true)
-    public SetAllowed(Vector<String> allowed) { //NOPMD
-      ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
       this.allowed = allowed;
     }
 

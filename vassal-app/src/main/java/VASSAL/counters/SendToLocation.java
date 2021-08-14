@@ -648,9 +648,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     protected FormattedStringConfigurer xInput;
     protected JLabel yInputLabel;
     protected FormattedStringConfigurer yInput;
-    @Deprecated (since = "2020-12-11", forRemoval = true)
+    @Deprecated(since = "2020-12-11", forRemoval = true)
     protected JLabel advancedLabel;
-    @Deprecated (since = "2020-12-11", forRemoval = true)
+    @Deprecated(since = "2020-12-11", forRemoval = true)
     protected BooleanConfigurer advancedInput;
     protected JLabel xAdvancedLabel;
     protected JLabel yAdvancedLabel;

@@ -36,8 +36,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import VASSAL.tools.ProblemDialog;
-
 /**
  * A class that provides scrolling capabilities to a long menu dropdown or
  * popup menu.  A number of items can optionally be frozen at the top and/or
@@ -427,21 +425,6 @@ public class MenuScroller {
    */
   public void keepVisible(int index) {
     keepVisibleIndex = index;
-  }
-
-  /**
-   * Removes this MenuScroller from the associated menu and restores the
-   * default behavior of the menu.
-   *
-   * @deprecated will be removed without replacement.
-   */
-  @Deprecated(since = "2020-08-01", forRemoval = true)
-  public void dispose() {
-    ProblemDialog.showDeprecated("2020-08-01");
-    if (menu != null) {
-      menu.removePopupMenuListener(menuListener);
-      menu = null;
-    }
   }
 
   private void refreshMenu() {

@@ -264,17 +264,6 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * @return an enumeration of all {@link GameComponent} objects
-   * that have been added to this GameState
-   * @deprecated Use {@link #getGameComponents()} instead.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public Enumeration<GameComponent> getGameComponentsEnum() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return Collections.enumeration(gameComponents);
-  }
-
-  /**
    * @return a Collection of all {@link GameComponent} objects
    * that have been added to this GameState
    */
@@ -764,8 +753,7 @@ public class GameState implements CommandEncoder {
    */
   @Deprecated(since = "2020-08-06", forRemoval = true)
   public Enumeration<GamePiece> getPieces() {
-    ProblemDialog.showDeprecated("2020-08-06"); //NON-NLS
-    return Collections.enumeration(pieces.values());
+    return Collections.enumeration(getAllPieces());
   }
 
   /** @return a Collection of all {@link GamePiece}s in the game */

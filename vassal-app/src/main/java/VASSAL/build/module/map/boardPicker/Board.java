@@ -21,7 +21,6 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.GridOp;
@@ -32,13 +31,11 @@ import VASSAL.build.module.map.boardPicker.board.SolidColorOp;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
-import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ProblemDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageTileSource;
 import VASSAL.tools.imageop.ImageOp;
@@ -62,9 +59,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -98,9 +93,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected double magnification = 1.0;
 
   protected boolean cacheGrid = true;
-
-  @Deprecated(since = "2020-08-06", forRemoval = true) protected String boardName = "Board 1";  //NON-NLS
-  @Deprecated(since = "2020-08-06", forRemoval = true) protected Image boardImage;
 
   protected SourceOp boardImageOp;
   protected ScaleOp scaledImageOp;
@@ -514,22 +506,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-  /**
-   * @deprecated
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public synchronized Image getScaledImage(double zoom, @SuppressWarnings("unused") Component obs) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    try {
-      final ImageOp sop = Op.scale(boardImageOp, zoom);
-      return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
-    }
-    catch (final CancellationException | ExecutionException | InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    return null;
-  }
-
   public void setReversed(boolean val) {
     if (reversible) {
       if (reversed != val) {
@@ -614,22 +590,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return b;
   }
 
-  /**
-   * @deprecated Images are now fixed automagically using {@link ImageOp}s.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void fixImage(@SuppressWarnings("unused") Component map) {
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
-
- /**
-  * @deprecated Images are now fixed automagically using {@link ImageOp}s.
-  */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void fixImage() {
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
-
   public String locationName(Point p) {
     return grid == null ? null : grid.locationName(localCoordinates(p));
   }
@@ -679,14 +639,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * @deprecated Bounds are now fixed automagically by {@link ImageOp}s.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  protected void fixBounds() {
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
-
-  /**
    * Translate the location of the board by the given number of pixels
    *
    * @see #bounds()
@@ -707,76 +659,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Override
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Board.html"); //NON-NLS
-  }
-
-  /**
-   * Removes board images from the {@link VASSAL.tools.DataArchive} cache
-   * @deprecated Board images are removed automatically now, when under
-   * memory pressure.
-   */
-  @SuppressWarnings("removal")
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public void cleanUp() {
-    ProblemDialog.showDeprecated("2020-08-06");
-    if (imageFile != null) {
-      GameModule.getGameModule().getDataArchive().unCacheImage("images/" + imageFile);
-    }
-    if (boardImage != null) {
-      GameModule.getGameModule().getDataArchive().unCacheImage(boardImage);
-      boardImage = null;
-    }
-  }
-
-  /**
-   * Cleans up {@link Board}s (by invoking {@link Board#cleanUp}) when a
-   * game is closed
-   * @deprecated Only used to cleanup <code>Board</code> images, which
-   * is now handled automatically by the cache.
-   */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static class Cleanup implements GameComponent {
-    private static Cleanup instance;
-    private final Set<Board> toClean = new HashSet<>();
-    private boolean gameStarted = false;
-
-    public static void init() {
-      if (instance == null) {
-        instance = new Cleanup();
-      }
-    }
-
-    private Cleanup() {
-      GameModule.getGameModule().getGameState().addGameComponent(this);
-    }
-
-    public static Cleanup getInstance() {
-      return instance;
-    }
-
-    /**
-     * Mark this board as needing to be cleaned up when the game is closed
-     *
-     * @param b Board
-     */
-    public void addBoard(Board b) {
-      toClean.add(b);
-    }
-
-    @Override
-    public Command getRestoreCommand() {
-      return null;
-    }
-
-    @Override
-    public void setup(boolean gameStarting) {
-      if (gameStarted && !gameStarting) {
-        for (final Board board : toClean) {
-          board.cleanUp();
-        }
-        toClean.clear();
-      }
-      gameStarted = gameStarting;
-    }
   }
 
   public double getMagnification() {

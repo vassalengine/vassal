@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Map;
@@ -40,7 +39,6 @@ import javax.swing.ImageIcon;
 import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.TemporaryFileFactory;
-import VASSAL.tools.ProblemDialog;
 
 public class ImageUtils {
   private ImageUtils() {
@@ -61,12 +59,6 @@ public class ImageUtils {
     RenderingHints.KEY_ANTIALIASING,
     RenderingHints.VALUE_ANTIALIAS_ON
   );
-
-  /** @deprecated All scaling is done with the high-quality scaler now. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static void setHighQualityScaling(@SuppressWarnings("unused") boolean b) {
-    ProblemDialog.showDeprecated("2020-08-06");
-  }
 
   public static RenderingHints getDefaultHints() {
     return new RenderingHints(defaultHints);
@@ -184,16 +176,6 @@ public class ImageUtils {
     }
   }
 
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static BufferedImage transform(BufferedImage src,
-                                        double scale,
-                                        double angle,
-                                        RenderingHints hints,
-                                        @SuppressWarnings("unused") int quality) {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return transform(src, scale, angle, hints);
-  }
-
   public static BufferedImage coerceToIntType(BufferedImage img) {
     // ensure that img is a type which GeneralFilter can handle
     switch (img.getType()) {
@@ -229,13 +211,6 @@ public class ImageUtils {
                           d.height);
   }
 
-  /** @deprecated Use {@link #getImageSize(String,InputStream)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static Dimension getImageSize(InputStream in) throws IOException {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getImageSize("", in);
-  }
-
   private static final TemporaryFileFactory tfac = () -> Files.createTempFile(Info.getTempDir().toPath(), "img_", "").toFile();  //NON-NLS
 
   private static final ImageLoader loader =
@@ -244,13 +219,6 @@ public class ImageUtils {
   public static Dimension getImageSize(String name, InputStream in)
                                                       throws ImageIOException {
     return loader.size(name, in);
-  }
-
-  /** @deprecated Use {@link #getImage(String,InputStream)} instead. */
-  @Deprecated(since = "2020-08-06", forRemoval = true)
-  public static BufferedImage getImage(InputStream in) throws IOException {
-    ProblemDialog.showDeprecated("2020-08-06");
-    return getImage("", in);
   }
 
   public static BufferedImage getImageResource(String name)
