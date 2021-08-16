@@ -32,7 +32,7 @@ VASSAL.build.module.map.BoardPicker.pack()	3.6.0
 VASSAL.build.module.map.BoardPicker.pickBoards()	3.6.0
 VASSAL.build.module.map.BoardPicker.setBoards(java.util.Enumeration)	3.6.0
 VASSAL.build.module.map.BoardPicker.status	3.6.0
-VASSAL.build.module.map.CounterDetailViewer$Visitor.CounterDetailViewer$Visitor(VASSAL.build.module.map.CounterDetailViewer$Filter, VASSAL.build.module.Map, java.awt.Point), 	3.6.0
+VASSAL.build.module.map.CounterDetailViewer$Visitor.CounterDetailViewer$Visitor(VASSAL.build.module.map.CounterDetailViewer$Filter, VASSAL.build.module.Map, java.awt.Point) 	3.6.0
 VASSAL.build.module.map.CounterDetailViewer.alwaysShowLoc	3.6.0
 VASSAL.build.module.map.CounterDetailViewer.ALWAYS_SHOW_LOC	3.6.0
 VASSAL.build.module.map.CounterDetailViewer.drawGraphics(java.awt.Graphics, java.awt.Point, javax.swing.JComponent, VASSAL.counters.PieceIterator)	3.6.0
@@ -92,13 +92,13 @@ VASSAL.counters.FreeRotator.getRotatedBounds()	3.6.0
 VASSAL.counters.FreeRotator.getRotatedImage(double, java.awt.Component)	3.6.0
 VASSAL.counters.FreeRotator.images	3.6.0
 VASSAL.counters.FreeRotator.unrotated	3.6.0
-VASSAL.counters.Labeler.BOTTOM 3.6.0
-VASSAL.counters.Labeler.CENTER 3.6.0
-VASSAL.counters.Labeler.HORIZONTAL_ALIGNMENT 3.6.0
-VASSAL.counters.Labeler.LEFT 3.6.0
-VASSAL.counters.Labeler.RIGHT 3.6.0
-VASSAL.counters.Labeler.TOP 3.6.0
-VASSAL.counters.Labeler.VERTICAL_ALIGNMENT 3.6.0
+VASSAL.counters.Labeler.BOTTOM	3.6.0
+VASSAL.counters.Labeler.CENTER	3.6.0
+VASSAL.counters.Labeler.HORIZONTAL_ALIGNMENT	3.6.0
+VASSAL.counters.Labeler.LEFT	3.6.0
+VASSAL.counters.Labeler.RIGHT	3.6.0
+VASSAL.counters.Labeler.TOP	3.6.0
+VASSAL.counters.Labeler.VERTICAL_ALIGNMENT	3.6.0
 VASSAL.counters.Obscurable.isMaskableBy(java.lang.String)	3.6.0
 VASSAL.counters.Obscurable.setAllHidden(boolean)	3.6.0
 VASSAL.counters.PieceIterator.PieceIterator(java.util.Enumeration)	3.6.0
@@ -136,7 +136,7 @@ VASSAL.tools.DataArchive.getImageInputStream(java.lang.String)	3.6.0
 VASSAL.tools.DataArchive.getImage(java.io.InputStream)	3.6.0
 VASSAL.tools.DataArchive.getImage(java.lang.String)	3.6.0
 VASSAL.tools.DataArchive.getImageSize(java.lang.String)	3.6.0
-VASSAL.tools.DataArchive.getImageURL(java.lang.String)	3.6.0
+VASSAL.tools.DataArchive.getImageURL(jav.lang.String)	3.6.0
 VASSAL.tools.DataArchive.getScaledImage(java.awt.Image, double)	3.6.0
 VASSAL.tools.DataArchive.getScaledImage(java.awt.Image, double, boolean, boolean)	3.6.0
 VASSAL.tools.DataArchive.getTransformedImage(java.awt.Image, double, double)	3.6.0
@@ -158,7 +158,7 @@ VASSAL.tools.image.ImageUtils.setHighQualityScaling(boolean), 	3.6.0
 VASSAL.tools.image.ImageUtils.transform(java.awt.image.BufferedImage, double, double, java.awt.RenderingHints, int)	3.6.0
 VASSAL.tools.JarArchive.getFileStream(java.lang.String)	3.6.0
 VASSAL.tools.menu.MenuScroller.dispose()	3.6.0
-VASSAL.tools.version.VassalVersionTokenizer 3.6.0
-VASSAL.tools.version.VersionFormatException 3.6.0
-VASSAL.tools.version.VersionTokenizer 3.6.0
+VASSAL.tools.version.VassalVersionTokenizer	3.6.0
+VASSAL.tools.version.VersionFormatException	3.6.0
+VASSAL.tools.version.VersionTokenizer	3.6.0
 VASSAL.tools.ZipUpdater	3.6.0
