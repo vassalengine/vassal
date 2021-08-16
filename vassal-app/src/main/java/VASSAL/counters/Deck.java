@@ -29,7 +29,6 @@ import VASSAL.build.module.map.deck.DeckKeyCommand;
 import VASSAL.build.module.map.deck.DeckSendKeyCommand;
 import VASSAL.build.module.map.deck.SortParameter;
 import VASSAL.build.module.map.deck.SortParameterComparator;
-import VASSAL.build.module.map.deck.SortablePiece;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.AddPiece;
