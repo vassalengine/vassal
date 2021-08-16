@@ -97,15 +97,13 @@ public class SortParameterArrayConfigurer extends Configurer implements Configur
       params.add(new SortParameter());
       setValue(params);
       newEntry = getSortParameterListValue().size() - 1;
-      setSelectedEntryIndex(newEntry);
     }
     else {
       newEntry = pos + 1;
       params.add(pos, new SortParameter());
       setValue(params);
-      setSelectedEntryIndex(newEntry);
     }
-
+    setSelectedEntryIndex(newEntry);
     rebuildControls(newEntry);
   }
 

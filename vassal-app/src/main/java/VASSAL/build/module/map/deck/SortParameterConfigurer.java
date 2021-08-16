@@ -115,6 +115,7 @@ public class SortParameterConfigurer extends Configurer {
     }
     return controls;
   }
+
   private void updateValue() {
     noUpdate = true;
     setValue(new SortParameter(propertyConfig.getValueString(), descendingConfig.booleanValue(), numericConfig.booleanValue()));

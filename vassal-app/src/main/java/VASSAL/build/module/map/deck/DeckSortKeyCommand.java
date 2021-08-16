@@ -111,7 +111,7 @@ public class DeckSortKeyCommand extends AbstractDeckKeyCommand {
   @Override
   public void registerListeners(Deck deck) {
     if (sortListener == null && keyStroke != null && !keyStroke.isNull()) {
-      sortListener =  new NamedKeyStrokeListener(e -> doSort(deck));
+      sortListener = new NamedKeyStrokeListener(e -> doSort(deck));
       sortListener.setKeyStroke(keyStroke);
       GameModule.getGameModule().addKeyStrokeListener(sortListener);
     }

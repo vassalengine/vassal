@@ -28,6 +28,7 @@ import VASSAL.build.module.map.StackMetrics;
 import VASSAL.build.module.map.deck.DeckKeyCommand;
 import VASSAL.build.module.map.deck.DeckSendKeyCommand;
 import VASSAL.build.module.map.deck.SortParameter;
+import VASSAL.build.module.map.deck.SortParameterComparator;
 import VASSAL.build.module.map.deck.SortablePiece;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
@@ -1934,23 +1935,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return c;
     }
 
-    // Create a sortable list containing all the pieces
-    final SortablePiece[] pieces = new SortablePiece[getPieceCount()];
-    for (int i = 0; i < pieces.length; ++i) {
-      pieces[pieces.length - i - 1] = new SortablePiece(sortParameters, getPieceAt(i));
-    }
+    // Create a mutable list containing all the pieces
+    final List<GamePiece> pieces = new ArrayList<>(Arrays.asList(contents));
 
-    // Sort it!
-    Arrays.sort(pieces);
-
-    // Convert back to a list of GamePieces
-    final List<GamePiece> pieceList = new ArrayList<>();
-    for (final SortablePiece sp : pieces) {
-      pieceList.add(sp.getPiece());
-    }
+    // Sort using the supplied SortParameters
+    Collections.sort(pieces, new SortParameterComparator(sortParameters));
 
     // Replace the contents of the Deck with the sorted List
-    c = c.append(setContents(pieceList));
+    c = c.append(setContents(pieces));
 
     // Add the Chat message if reporting enabled
     if (Map.isChangeReportingEnabled() && ! reportFormat.getFormat().isEmpty()) {
