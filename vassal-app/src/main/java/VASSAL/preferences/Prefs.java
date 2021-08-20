@@ -55,6 +55,7 @@ public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //NON-NLS
   public static final String DISABLE_D3D = "disableD3d"; //NON-NLS
+  public static final String DISABLE_OGL_FBO = "disableOGLFBO"; //NON-NLS
   public static final String BAD_DATA_AUDIT_TRAILS = "badDataAuditTrails"; //NON-NLS
 
   public static final String MAIN_WINDOW_REMEMBER = "mainWindowRemember"; //NON-NLS
@@ -297,14 +298,25 @@ public class Prefs implements Closeable {
     );
     globalPrefs.addOption(null, windowHeight);
 
-    // Option to disable D3D pipeline
     if (SystemUtils.IS_OS_WINDOWS) {
+      // Option to disable D3D pipeline
       final BooleanConfigurer d3dConf = new BooleanConfigurer(
         DISABLE_D3D,
         Resources.getString("Prefs.disable_d3d"),
         Boolean.FALSE
       );
       globalPrefs.addOption(Resources.getString("Prefs.compatibility_tab"), d3dConf);
+    }
+    else if (SystemUtils.IS_OS_MAC) {
+      // Option to disable OpenGL FBOs
+      // M1 Macs need FBOs disabled in OpenGL, at least until Metal in Java 17;
+      // Intel Mac users probably want this turned off.
+      final BooleanConfigurer oglfboConf = new BooleanConfigurer(
+        DISABLE_OGL_FBO,
+        Resources.getString("Prefs.disable_ogl_fbo"),
+        "aarch64".equals(System.getProperty("os.arch"))
+      );
+      globalPrefs.addOption(Resources.getString("Prefs.compatibility_tab"), oglfboConf);
     }
 
     final BooleanConfigurer wizardConf = new BooleanConfigurer(

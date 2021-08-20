@@ -557,6 +557,14 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         result.add("-Xdock:name=" + d_name); //NON-NLS
         result.add("-Xdock:icon=" + d_icon); //NON-NLS
+
+        // M1 Macs need FBOs disabled in OpenGL, at least until Metal in Java 17
+        final Boolean disableOGLFBO =
+          (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_OGL_FBO);
+        if (Boolean.TRUE.equals(disableOGLFBO)) {
+          result.add("-Dsun.java2d.opengl=true"); //NON-NLS
+          result.add("-Dsun.java2d.opengl.fbobject=false"); //NON-NLS
+        }
       }
       else if (SystemUtils.IS_OS_WINDOWS) {
         // Disable the 2D to Direct3D pipeline?
