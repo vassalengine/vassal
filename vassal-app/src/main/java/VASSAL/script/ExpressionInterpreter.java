@@ -193,7 +193,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Read the Expression initialisation script into the top level namespace
     final URL ini = getClass().getResource(INIT_SCRIPT);
-    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // NON-NLS
+    // logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // No longer required
 
     try (InputStream is = ini.openStream();
          InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -687,14 +687,13 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private List<Map> getMapList(Object mapName, GamePiece sourcePiece) {
-    final List<Map> maps;
+    List<Map> maps = new ArrayList<>();
     if (mapName == null) {
       maps = Map.getMapList();
     }
     else {
-      maps = new ArrayList<>();
       // Shortcut - See if the parent piece for our source piece is the map we want (most likely)
-      if (sourcePiece != null && sourcePiece.getMap().getMapName().equals(mapName)) {
+      if (sourcePiece != null && sourcePiece.getMap() != null && sourcePiece.getMap().getMapName().equals(mapName)) {
         maps.add(sourcePiece.getMap());
       }
       // Otherwise, search all maps for the one we want

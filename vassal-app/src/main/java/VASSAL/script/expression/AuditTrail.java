@@ -35,10 +35,22 @@ public class AuditTrail {
 
   private Auditable source;
   private List<String> messages = new ArrayList<>();
+
+  /** Tracks the Auditing preference, true if auditing is enabled */
   private static Boolean enabled;
+
+  /** Set true when audit reporting is in progress to prevent infinite audit trail generation */
+  private static boolean reportingInProgress = false;
 
   public static boolean isEnabled() {
     // Since this will be called for every single Beanshell evaluation, make it as low overhead as possible.
+
+    // Do not create further AuditTrails during Audit reporting when the name of the component is evaluated
+    // as this may invoke a recursive cascade of Audit Trail creation
+    if (isReportingInProgress()) {
+      return false;
+    }
+
     // Keep a local copy of the pref value, updated via a property change listener.
     if (enabled == null) {
       final Configurer option = Prefs.getGlobalPrefs().getOption(Prefs.BAD_DATA_AUDIT_TRAILS);
@@ -49,7 +61,16 @@ public class AuditTrail {
       enabled = (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.BAD_DATA_AUDIT_TRAILS);
       option.addPropertyChangeListener(e -> enabled = (Boolean) e.getNewValue());
     }
+
     return enabled;
+  }
+
+  public static boolean isReportingInProgress() {
+    return reportingInProgress;
+  }
+
+  public static void setReportingInProgress(boolean reportingInProgress) {
+    AuditTrail.reportingInProgress = reportingInProgress;
   }
 
   /**
@@ -165,19 +186,6 @@ public class AuditTrail {
 
   public void setSource(Auditable source) {
     this.source = source;
-
-    // Add some source identification to the audit trail
-    if (source != null) {
-      if (source instanceof EditablePiece) {
-        addMessage(Resources.getString("Audit.source_type", "Piece Trait"));
-        addMessage(Resources.getString("Audit.source_name", source.getComponentName()));
-        addMessage(Resources.getString("Audit.source_description", source.getComponentTypeName()));
-      }
-      if (source instanceof AbstractConfigurable) {
-        addMessage(Resources.getString("Audit.source_type", source.getComponentTypeName()));
-        addMessage(Resources.getString("Audit.source_name", source.getComponentName()));
-      }
-    }
   }
 
   /**
@@ -189,9 +197,30 @@ public class AuditTrail {
   public String toString() {
     final StringBuilder sb = new StringBuilder("Expression Audit:");
 
+    // Add some source identification to the audit trail
+    if (source != null) {
+      // Calling getComponentName() on a GamePiece may cause further expression evaluations, which could fail.
+      // Set the reportingInProgress flag on which will prevent the creation of any more audit trails until
+      // this trail has completed reporting to prevent an infinite recursive cycle of Audit Trail creation.
+      final boolean origReportingState = isReportingInProgress();
+      setReportingInProgress(true);
+      if (source instanceof EditablePiece) {
+        sb.append("\n   ").append(Resources.getString("Audit.source_type", "Piece Trait"));
+        sb.append("\n   ").append(Resources.getString("Audit.source_name", source.getComponentName()));
+        sb.append("\n   ").append(Resources.getString("Audit.source_description", source.getComponentTypeName()));
+      }
+      if (source instanceof AbstractConfigurable) {
+        sb.append("\n   ").append(Resources.getString("Audit.source_type", source.getComponentTypeName()));
+        sb.append("\n   ").append(Resources.getString("Audit.source_name", source.getComponentName()));
+      }
+      setReportingInProgress(origReportingState);
+    }
+
+    // Add the stored messages
     for (final String message : messages) {
       sb.append("\n   ").append(message);
     }
+
     return sb.toString();
   }
 }

@@ -137,7 +137,7 @@ public class Expression {
   }
 
   public String quietEvaluate(PropertySource ps, Auditable owner, String fieldKey) {
-    return quietEvaluate(ps, null, false, owner, AuditTrail.create(owner, getExpression(), Resources.getString(fieldKey)));
+    return quietEvaluate(ps, null, false, owner, null);
   }
 
   /** @deprecated Use {@link #tryEvaluate(PropertySource, Auditable, String)} */
