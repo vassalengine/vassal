@@ -1,5 +1,6 @@
 3.6.0-beta1 - ???
 
+* 10326: Add option to disable OpenGL FBOs on Macs
 * 10301: Double max heap and retry when image tiler runs out of memory
 * 10294: Can Rotate traits no longer lose any pre-defined starting rotation
     when editing a Piece Slot
