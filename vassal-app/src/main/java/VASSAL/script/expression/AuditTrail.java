@@ -189,7 +189,7 @@ public class AuditTrail {
   }
 
   /**
-   * Override toString to return a formated Audit Report
+   * Override toString to return a formatted Audit Report
    *
    * @return Audit Report
    */
@@ -204,15 +204,22 @@ public class AuditTrail {
       // this trail has completed reporting to prevent an infinite recursive cycle of Audit Trail creation.
       final boolean origReportingState = isReportingInProgress();
       setReportingInProgress(true);
+
       if (source instanceof EditablePiece) {
-        sb.append("\n   ").append(Resources.getString("Audit.source_type", "Piece Trait"));
-        sb.append("\n   ").append(Resources.getString("Audit.source_name", source.getComponentName()));
-        sb.append("\n   ").append(Resources.getString("Audit.source_description", source.getComponentTypeName()));
+        sb.append("\n   ")
+          .append(Resources.getString("Audit.source_type", "Piece Trait"))
+          .append("\n   ")
+          .append(Resources.getString("Audit.source_name", source.getComponentName()))
+          .append("\n   ")
+          .append(Resources.getString("Audit.source_description", source.getComponentTypeName()));
       }
       if (source instanceof AbstractConfigurable) {
-        sb.append("\n   ").append(Resources.getString("Audit.source_type", source.getComponentTypeName()));
-        sb.append("\n   ").append(Resources.getString("Audit.source_name", source.getComponentName()));
+        sb.append("\n   ")
+          .append(Resources.getString("Audit.source_type", source.getComponentTypeName()))
+          .append("\n   ")
+          .append(Resources.getString("Audit.source_name", source.getComponentName()));
       }
+
       setReportingInProgress(origReportingState);
     }
 
