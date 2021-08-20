@@ -136,6 +136,10 @@ public class Expression {
     return tryEvaluate(ps, null, false, owner, AuditTrail.create(owner, getExpression(), Resources.getString(fieldKey)));
   }
 
+  public String quietEvaluate(PropertySource ps, Auditable owner, String fieldKey) {
+    return quietEvaluate(ps, null, false, owner, AuditTrail.create(owner, getExpression(), Resources.getString(fieldKey)));
+  }
+
   /** @deprecated Use {@link #tryEvaluate(PropertySource, Auditable, String)} */
   @Deprecated(since = "2021-06-11")
   public String tryEvaluate(PropertySource ps) {
@@ -208,6 +212,20 @@ public class Expression {
     }
     catch (ExpressionException e) {
       handleError(e);
+      return ""; // Return something that won't cause downstream code to throw exceptions, since we're basically dealing with "Bad Module Data".
+    }
+  }
+
+  /**
+   * A version of tryEvaluate the supresses error messages. Called by traits in the Game Piece Palette when an expression may fail
+   * due to properties not being accessible.
+   */
+  public String quietEvaluate(PropertySource ps, Map<String, String> properties, boolean localized, Auditable owner, AuditTrail audit) {
+    try {
+      return evaluate(ps, properties, localized, owner, audit);
+    }
+    catch (ExpressionException e) {
+      // We have been told not to issue an error message
       return ""; // Return something that won't cause downstream code to throw exceptions, since we're basically dealing with "Bad Module Data".
     }
   }
