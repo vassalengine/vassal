@@ -9,12 +9,12 @@
 
 [width="100%",cols="50%,50%",]
 |===
-|This trait adds an action that invokes a Hotkey, usually a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for a Toolbar button in the Module window or a Map Window, but it also works for other Hotkeys. For example, you can use it to shuffle a deck via a deck's "shuffle" Hotkey.
+|This trait adds an action that invokes a Hotkey, usually a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for a Toolbar button in the Module window or a Map Window, but it also works for other Hotkeys. For example, you can use it to shuffle a deck via a deck's "shuffle" Hotkey.
 
-*Menu Text:*  Right-click context menu text.
+*Menu Command:*  Right-click context menu text.
 If left blank, no context menu item will appear.
 
-*Key Command:*  A Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to initiate the action.
+*Key Command:*  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to initiate the action.
 
 *Global Hotkey:*  The Hotkey that will be applied. If it is on the Toolbar, then it is the Hotkey assigned to the Toolbar button you wish to activate.
 

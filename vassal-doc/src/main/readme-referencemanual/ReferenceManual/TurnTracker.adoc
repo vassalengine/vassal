@@ -42,12 +42,12 @@ Whether the controls are docked is remembered in the player's preferences.
 
 *Button Tooltip:*  Optional tooltip text for the <<Toolbar.adoc#top,Toolbar>> button.
 
-*Show/hide Hotkey:*  Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to hide or show the Turn Counter window when un-docked.
+*Show/hide Hotkey:*  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to hide or show the Turn Counter window when un-docked.
 
-*Next Turn Hotkey:*  Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to advance the Turn Counter one step.
+*Next Turn Hotkey:*  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to advance the Turn Counter one step.
 The turn can also be advanced by clicking the "+" button displayed to the right of the turn when the turn counter is visible.
 
-*Previous Turn Hotkey:*  Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to return the Turn Counter to the previous step.
+*Previous Turn Hotkey:*  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to return the Turn Counter to the previous step.
 The turn can also be moved back by clicking the "-" button displayed to the left of the turn when the turn counter is visible.
 
 *Turn Name Format:*  <<MessageFormat.adoc#top,Message Format>> to format the display of the current turn in the counter.
@@ -129,7 +129,7 @@ The Global Property will be updated whenever this level's value changes.
 [#Hotkey]
 ==== Global Hotkey
 
-A Global Hotkey sub-component of a Turn Counter fires a key command or <<NamedKeyCommand.adoc#top,Named Key Command>> whenever a certain state of the Turn Counter is reached.
+A Global Hotkey sub-component of a Turn Counter fires a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> whenever a certain state of the Turn Counter is reached.
 
 _Example:_  When the Refit phase is reached, a hotkey can fire that corresponds to the keyboard shortcut of a <<Map.adoc#GlobalKeyCommand,Global Key Command>> that removes all Damage counters from pieces on the map.
 
@@ -137,10 +137,10 @@ _Example:_  When the Refit phase is reached, a hotkey can fire that corresponds 
 |===
 |*Description:*  A brief description of this subcomponent, for display in the Editor's configuration window.
 
-*Global Hotkey:*  The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>>: to fire.
-The module will respond exactly as if one of the players had pressed this key or selected a menu item corresponding to a named key command.
+*Global Hotkey:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to fire.
+The module will respond exactly as if one of the players had pressed this key or selected a menu item corresponding to a Named Command.
 
-*Match Properties:*  A <<Properties.adoc#top,Property Expression>> that specifies when to fire the hotkey or Named Key Command.
+*Match Properties:*  A <<Properties.adoc#top,Property Expression>> that specifies when to fire the <<NamedKeyCommand.adoc#top,Keystroke or Named Command>>.
 If the expression is true after any level of the Turn Counter advances, the hotkey will fire.
 
 *Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that will be echoed to the chat log when the hotkey fires.

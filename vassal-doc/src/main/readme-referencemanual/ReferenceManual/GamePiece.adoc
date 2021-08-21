@@ -81,7 +81,7 @@ But if there's some particular graphic Layer or Text Label that you want to be d
 [width="100%",cols="50%,50%",]
 |===
 a|
-When a Key Command (or Named Key Command) is received by a Game Piece, the <<#Traits,Traits>> are visited in a particular order to see if they listen for that Key Command, and if they do have an entry for that Key Command the appropriate part of the Trait activates.
+When a Keystroke Command or a Named Command (Collectively known as _Key Commands_) is received by a Game Piece, the <<#Traits,Traits>> are visited in a particular order to see if they listen for that Key Command, and if they do have an entry for that Key Command the appropriate part of the Trait activates.
 When a Key Command arrives at a Game Piece, its behaviour is identical regardless of the "origin" of that Key Command.
 The Key Command could have come from the player pressing a real keyboard shortcut, from the player selecting the corresponding right-click context menu command, from a Global Key Command arriving from a completely different Game Piece or from the Toolbar, from an Action Button, or from a Trigger Action trait within the piece.
 
@@ -238,7 +238,7 @@ When this trait's Key Command or menu item is activated, the piece is deleted fr
 *Command:*  Text for the right-click context menu item that will delete the piece.
 If left blank, no context menu item will appear, but the piece can still be deleted with the Key Command.
 
-*Keyboard Command:*  The <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will cause the piece to be deleted.
+*Key Command:*  The <<NamedKeyCommand.adoc#top,Keystroke Command or Named Command>> that will cause the piece to be deleted.
 
 *NOTE:*  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
 This can prevent Report Action traits from reporting the deletion, because of the <<#TraitOrder,order>> traits are processed.
@@ -258,7 +258,7 @@ When this trait's Key Command or menu item is activated, an exact copy of the pi
 *Command:*  Text for the right-click context menu item that will clone the piece.
 If left blank, no context menu item will appear, but the piece can still be cloned with the Key Command.
 
-*Keyboard Command:*  The <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will cause the piece to be duplicated.
+*Key Command:*  The <<NamedKeyCommand.adoc#top,Keystroke Command or Named Command>> that will cause the piece to be duplicated.
 
 |image:images/Clone.png[]
 |===
@@ -317,7 +317,7 @@ Allows the piece to automatically report messages, state changes, and other game
 |image:images/TriggerAction.png[] a|
 ==== <<TriggerAction.adoc#top,Trigger Action>>
 
-Allows pieces to trigger Key Commands and Named Key Commands.
+Allows pieces to trigger Keystroke Commands and Named Commands.
 Triggers can be used to combine multiple commands into a single menu entry, place conditions on a command's execution, create repeating loops, and more.
 
 <<TriggerAction.adoc#top,See full article for details.>>
@@ -417,7 +417,7 @@ Adds a command that moves a piece directly to another location.
 |image:images/CounterGlobalKeyCommand.png[] a|
 ==== <<GlobalKeyCommand.adoc#top,Global Key Command>>
 
-Adds an action that applies a Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
+Adds an action that applies a Keystroke Command or <<NamedKeyCommand.adoc#top,Named Command>> to other pieces, similar to the <<Map.adoc#GlobalKeyCommand,Global Key Command>> component of a Map Window.
 Global Key Commands are the main avenue by which pieces can prompt action by other pieces.
 
 <<GlobalKeyCommand.adoc#top,See full article for details.>>

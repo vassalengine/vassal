@@ -15,7 +15,7 @@ To initialize the values in the table, select the piece in the <<PieceWindow.ado
 
 *Menu Command:*  Text for a right-click context menu item that will open the spreadsheet window.
 
-*Keyboard Command:*  The key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to open the spreadsheet.
+*Key Command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to open the spreadsheet.
 
 *Number of rows:*  The number of rows of data in the spreadsheet.
 

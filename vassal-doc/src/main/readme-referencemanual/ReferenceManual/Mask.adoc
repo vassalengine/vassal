@@ -24,7 +24,7 @@ A setting in the <<GlobalOptions.adoc#top,Global Options>> determines whether or
 If left blank, no context menu item will appear, but the piece can still be masked e.g.
 by the Key Command below.
 
-*Keyboard Command:*  The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to mask/unmask this piece.
+*Key Command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to mask/unmask this piece.
 
 *Can be masked by:*  Defines who may "own" this piece (i.e.
 mask it from other players). _Any Player_ means that any player may mask this piece, including observers.

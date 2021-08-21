@@ -17,7 +17,7 @@ Alternatively, you may prompt the players to choose a deck when the trait is act
 *Menu Text:* Text for the right-click context menu option that will move the piece to the Deck.
 If left blank, no context menu item will appear but the trait can still be activated by the Key Command.
 
-*Keyboard Command:* The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> that initiates moving this piece to the Deck.
+*Key Command:* The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that initiates moving this piece to the Deck.
 
 *Choose destination deck at game time?*  Check this option to let the player select a Deck to use at the time the trait is activated as opposed to predefining which Deck to return to beforehand.
 

@@ -10,9 +10,9 @@
 [width="100%",cols="50%,50%",]
 |===
 a|
-A Game Piece with this trait will report a configurable message to the <<ChatLog.adoc#top,Chat Log>> in the main window when any of a given set of Key Commands or <<NamedKeyCommand.adoc#top,Named Key Commands>> are either typed or activated by other traits.
+A Game Piece with this trait will report a configurable message to the <<ChatLog.adoc#top,Chat Log>> in the main window when any of a given set of <<NamedKeyCommand.adoc#top,Keystrokes or Named Commands>> are either typed or activated by other traits.
 
-*Report on these keystrokes:*  Specifies the key commands or <<NamedKeyCommand.adoc#top,Named Key Commands>> that this trait will respond to.
+*Report on these Key Commands:*  Specifies the <<NamedKeyCommand.adoc#top,Keystrokes or Named Key Commands>> that this trait will respond to.
 Hit the _Add_ button to specify more than one key command.
 
 *Cycle through different messages:* If left unchecked, the same message will be reported whenever any of the above key commands are received.

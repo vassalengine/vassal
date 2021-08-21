@@ -17,14 +17,14 @@ Helpful when distinguishing between several different Send to Location traits.
 Text for a right-click context menu that will cause the piece to be moved.
 If left blank, no context menu item will appear, but the trait can still be activated with the key command.
 
-*Keyboard command:*
-The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> which will activate this trait, causing the piece to be moved.
+*Key command:*
+The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> which will activate this trait, causing the piece to be moved.
 
 *Send Back Command Name:*
 The menu text for an "undo" command to return the piece to its original location.
 
-*Send Back Keyboard Command:*
-The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the "undo" command
+*Send Back Key Command:*
+The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the "undo" command
 
 *Destination:*
 

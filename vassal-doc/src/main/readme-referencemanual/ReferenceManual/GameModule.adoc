@@ -222,7 +222,7 @@ Clicking this button automatically invokes the actions of all the other buttons 
 |A Toolbar button that displays a message, plays a sound, and/or sends Hotkeys.
 
 An Action Button component places a button on the Toolbar of the main Module window which combines a number of different actions into a single button.
-When the button is clicked, or receives its Hotkey, it can display a message to the <<ChatLog.adoc#top,Chat Log>>, Play a sound, and/or send a list of Hotkeys or <<NamedKeyCommand.adoc#top,Named Key Commands>> to other components.
+When the button is clicked, or receives its Hotkey, it can display a message to the <<ChatLog.adoc#top,Chat Log>>, Play a sound, and/or send a list of <<NamedKeyCommand.adoc#top,KeyStroke or Named Commands>> to other components.
 
 <<DoActionButton.adoc#top,See full article for details.>>
 |===
@@ -257,7 +257,7 @@ Images defined in this component will appear in the drop-down menu for selecting
 ==== <<Map.adoc#GlobalKeyCommand,Global Key Command>>
 [width="100%",cols="50%,50%",]
 |===
-|Creates a button on the Toolbar that applies a given key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to many pieces at once.
+|Creates a button on the Toolbar that applies a given <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to many pieces at once.
 Applies to <<GamePiece.adoc#top,Game Pieces>> on all <<Map.adoc#top,Map Windows>> simultaneously.
 
 See full article for details.

@@ -41,7 +41,7 @@ For example, if a layer image is 40x40 pixels and you want it to be drawn so tha
 *Levels follow expression value:*  If selected, then you can enter an <<Expression.adoc#top,Expression>> that is evaluated to determine the active level, rather than having the trait respond directly to key commands.
 A typical case will reference the name of a <<DynamicProperty.adoc#top,Dynamic Property>>. You can also specify the numeric value of the Property that should correspond to the first level of this Layer.
 
-*Activate/Increase/Decrease:*  Specify the key commands (or <<NamedKeyCommand.adoc#top,Named Key Commands>>) and right-click context menu text that will activate the Layer and increase or decrease the current level.
+*Activate/Increase/Decrease:*  Specify the <<NamedKeyCommand.adoc#top,Keystroke or Named Command>>) and right-click context menu text that will activate the Layer and increase or decrease the current level.
 
 *Reset to level:*  Specifies a key command that resets the Layer to a level specified by an <<Expression.adoc#top,Expression>>.  Note: this does _not_ automatically _activate_ the Layer.
 
@@ -57,7 +57,7 @@ NOTE: each individual level has its own replace/prefix/suffix setting, which mus
 
 *NOTES:*
 
-* Leaving a _Menu Command_ field blank means no entry appears in the right-click context menu, but you can still use a keyboard shortcut or a <<NamedKeyCommand.adoc#top,Named Key Command>>.
+* Leaving a _Menu Command_ field blank means no entry appears in the right-click context menu, but you can still use a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>>.
 * Key commands can be the same as those used by other traits.
 Pressing the key will perform all corresponding actions.
 

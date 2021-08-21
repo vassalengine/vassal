@@ -13,10 +13,10 @@ You can add as many menu separators to a piece as you need: place them between t
 
 *Separator description:* Optional description of separator to appear in the Piece Definer window - no other effect.
 
-*Keystroke:* If the specified keystroke is hidden (by a <<RestrictCommands.adoc#top,Restrict Commands>> trait), then this separator will be hidden also.
+*If this Key Command is hidden, hide seperator:* If the specified Key Command is hidden (by a <<RestrictCommands.adoc#top,Restrict Commands>> trait), then this separator will be hidden also.
 This allows you to hide menu separators as desired when there are fewer options currently available in your context menu.
 The keystroke can be shared with another trait, or you can provide a unique one.
-<<NamedKeyCommands.adoc#top,Named Key Commands>> can also be used so as not to waste traditional keystrokes.
+<<NamedKeyCommands.adoc#top,Named Commands>> can also be used so as not to waste traditional keystrokes.
 
 image:images/MenuSeparator.png[]
 image:images/MenuSeparator2.png[]

@@ -15,7 +15,7 @@ This trait only functions if the piece also has a <<Rotate.adoc#top,Can Rotate>>
 *Command:* The right-click context menu entry to pivot the piece.
 If left blank, no context menu entry will appear but the piece can still be pivoted with the Key Command, below.
 
-*Keyboard command:*  The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> that will pivot the piece.
+*Key command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will pivot the piece.
 
 *Pivot Point:* The location, relative to the center of the piece and its current facing, around which the piece will rotate.
 Positive numbers are down and to the right.

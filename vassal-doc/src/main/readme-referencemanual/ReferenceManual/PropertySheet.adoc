@@ -17,7 +17,7 @@ a|
 *Menu Text:*  Text for right-click context menu item that will show the properties window during play.
 If left blank, no context menu item will appear, but the properties window can still be activated with the key command.
 
-*Keystroke:*  Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to show the properties window during play.
+*Key Command:*  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to show the properties window during play.
 
 When a player edits the properties window during play, there are three methods for committing  changes:
 

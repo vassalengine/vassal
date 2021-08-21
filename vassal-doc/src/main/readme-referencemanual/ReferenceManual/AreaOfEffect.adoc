@@ -31,7 +31,7 @@ Otherwise, it will be a circle with the given radius in pixels.
 *Toggle Visible Command:* If not always visible, this is the context menu command ("right click menu") to show/hide the highlighted area.
 
 *Toggle Visible Key Command:* If not always visible, the <<NamedKeyCommand.adoc#top,Key Command>> to show/hide the highlighted area.
-Can be a keystroke or a <<NamedKeyCommand.adoc#top,Named Key Command>>.
+Can be a <<NamedKeyCommand.adoc#top,KeyStroke Command or a Named Command>>.
 
 image:images/AreaOfEffectSample1.png[] +
 _Area of Effect applied to a Flat Top cloud counter.

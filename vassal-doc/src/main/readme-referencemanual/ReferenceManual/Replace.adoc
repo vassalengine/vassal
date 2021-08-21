@@ -17,7 +17,7 @@ You can select any existing piece for the replacement or define a new one from s
 *Command:*  The right-click context menu text for this trait.
 If left blank, no context menu item will appear, but the trait can still be activated with the Key Command.
 
-*Keyboard Command:*  The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to initiate this trait.
+*Key Command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to initiate this trait.
 
 *Define Replacement:*  Click the _Define Replacement_ button to open a Piece Definer to create a definition for the new piece from scratch (or to edit the definition you have already created).
 
@@ -38,7 +38,7 @@ If it's below, then it _will not_ change if the new game piece has the same mark
 
 *Place marker:*  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.
 
-*Keystroke to apply after placement:* Optional key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be applied automatically to the new piece immediately after being placed.
+*Keystroke to apply after placement:* Optional <<NamedKeyCommand.adoc#top,Ketstroke or Named Command>> to be applied automatically to the new piece immediately after being placed.
 
 *EXAMPLE:*  A unit that can be destroyed but still leaves a wreck behind can be given this trait to turn it into a wreck.
 This is more convenient than dragging a new piece from the Game Piece Palette and can't be accidentally undone, as a Layer trait could.

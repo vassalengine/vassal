@@ -17,7 +17,7 @@ This _Moved_ property can be toggled back to _false_ with the configured key com
 
 *Command:* Right-click context menu item that will clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Move Trails>>). If this item is left blank, no context menu entry will appear but the move history can still be cleared with the Key Command, below.
 
-*Keyboard command:* Key Command, or <<NamedKeyCommand.adoc#top,Named Key Command>> to clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Move Trails>>).
+*Key command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to clear the piece's move history (setting _Moved_ property back to _false_ and clearing any <<MovementTrail.adoc#top,Move Trails>>).
 
 *Marker Image:* Use the _Select_ button to load a new image or the _Default_ button to return to the default image.
 

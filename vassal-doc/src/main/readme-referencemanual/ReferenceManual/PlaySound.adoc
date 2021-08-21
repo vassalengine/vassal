@@ -11,10 +11,10 @@
 |===
 |This trait allows you to specify a command that plays an audible sound.
 
-*Menu Text:*  The name of the menu item in the right-click context menu.
+*Menu Command:*  The name of the menu item in the right-click context menu.
 If left blank, no context menu item will appear, but the sound can still be played by sending the Key Command.
 
-*Key Command:*  The keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> which will cause the sound to be played.
+*Key Command:*  The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> which will cause the sound to be played.
 
 *Sound Clip:*  Select a file in _.au, .aiff, .wav or .mp3_ format to add it to the module.
 The sound file specified in this field will be played when the menu item or Key Command is invoked.

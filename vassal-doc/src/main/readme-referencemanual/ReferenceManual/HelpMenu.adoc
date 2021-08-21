@@ -89,7 +89,7 @@ a|
 
 You may create a tutorial by writing a logfile and making it accessible from the help menu.
 
-*Menu Text:*  The menu item under the Help Menu
+*Menu Command:*  The menu item under the Help Menu
 
 *Logfile:*  The logfile that players will step through when they select the corresponding menu item.
 

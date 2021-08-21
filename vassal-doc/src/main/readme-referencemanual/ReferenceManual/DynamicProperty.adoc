@@ -32,7 +32,7 @@ For each command:
 
 *Menu Command:* Right-click context menu item that will initiate this operation (can be left blank if only the Key Command portion is to be used).
 
-*Key Command:* <<NamedKeyCommand.adoc#top,Key Command or Named Key Command>> that will initiate this operation.
+*Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will initiate this operation.
 
 *Type:* Select the way in which this command will change the property:
 

@@ -21,7 +21,7 @@ A new piece will be placed each time this trait is activated.
 *Command:*  The right-click context menu entry for this trait, if desired.
 If left blank, this trait will not produce a context menu item but may still be activated by the Key Command, below.
 
-*Keyboard Command:*  A keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> to initiate placing a new piece.
+*Key Command:*  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to initiate placing a new piece.
 
 *Define Marker:*  Use the _Define Marker_ button to open a <<GamePiece.adoc#top,Piece Definer>> to create a new definition of the marker from scratch.
 
@@ -38,7 +38,7 @@ Any value other than zero will prevent the new piece from stacking with the orig
 
 *Place marker:*  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom, or directly above/below the triggering piece.
 
-*Keystroke to apply after placement:*  Optional key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be applied automatically to the new piece immediately after being placed.
+*Keystroke to apply after placement:*  Optional <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to be applied automatically to the new piece immediately after being placed.
 This Key Command can be used to activate a trait in the new piece, for example to move it to a different location.
 
 *EXAMPLE:*  If a game uses a fortification counter to indicate fortified status of an army counter, this trait could be given to the army counter to place a fortification marker on the army with the right-click context menu or a keyboard shortcut, as an alternative to dragging the a fortification counter from the Game Piece Palette.

@@ -16,7 +16,7 @@ Clicking the button will open a window that organizes and summarizes the pieces 
 
 *Button Text:* Text for the button on the module's Toolbar.
 
-*Hotkey:* Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
+*Hotkey:* <<NamedKeyCommand.adoc#top,Keyboard or Named Command>> for the Toolbar button.
 
 *Tooltip:*  Mouse-over tooltip for the Toolbar button.
 
