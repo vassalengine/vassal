@@ -193,7 +193,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     // Read the Expression initialisation script into the top level namespace
     final URL ini = getClass().getResource(INIT_SCRIPT);
-    logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // NON-NLS
+    // logger.info("Attempting to load " + INIT_SCRIPT + " URI generated=" + ini); // No longer required
 
     try (InputStream is = ini.openStream();
          InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -686,28 +686,33 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return expr.replace("\\\"", "\"");
   }
 
+  /**
+   * Return a list of Maps of interest
+   * @param mapName Map Name to search for. If null, then return all maps
+   * @param sourcePiece A piece to use for a shortcut check for current map
+   * @return List of all maps, or specific map requested
+   */
   private List<Map> getMapList(Object mapName, GamePiece sourcePiece) {
-    final List<Map> maps;
+
     if (mapName == null) {
-      maps = Map.getMapList();
+      return Map.getMapList();
     }
+
+    // Shortcut - See if the parent piece for our source piece is the map we want (most likely)
+    if (sourcePiece != null && sourcePiece.getMap() != null && sourcePiece.getMap().getMapName().equals(mapName)) {
+      return List.of(sourcePiece.getMap());
+    }
+
+    // Otherwise, search all maps for the one we want
     else {
-      maps = new ArrayList<>();
-      // Shortcut - See if the parent piece for our source piece is the map we want (most likely)
-      if (sourcePiece != null && sourcePiece.getMap().getMapName().equals(mapName)) {
-        maps.add(sourcePiece.getMap());
-      }
-      // Otherwise, search all maps for the one we want
-      else {
-        for (final Map map : Map.getMapList()) {
-          if (map.getMapName().equals(mapName)) {
-            maps.add(map);
-            break;
-          }
+      for (final Map map : Map.getMapList()) {
+        if (map.getMapName().equals(mapName)) {
+          return List.of(map);
         }
       }
     }
-    return maps;
+
+    return new ArrayList<>();
   }
 
   private Map findVassalMap(String mapName) {
