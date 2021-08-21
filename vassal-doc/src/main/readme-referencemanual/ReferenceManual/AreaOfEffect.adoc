@@ -14,9 +14,9 @@ The _Area of Effect_ trait allows you to graphically highlight an area surroundi
 The area is shaded with a specified color and transparency.
 Alternatively, you can point to a <<Map.adoc#MapShading,Map Shading>> component, contributing to the area that it draws.
 
-*Use Map Shading:* If selected, then the area of this trait will be added to the area drawn by the named <<Map.adoc#MapShading,Map Shading>> component (or subtracted from that area if it is of type _Background_). If not selected, then each piece with this trait will draw its own area, with overlapping areas shaded darker.
+*Use map shading:* If selected, then the area of this trait will be added to the area drawn by the named <<Map.adoc#MapShading,Map Shading>> component (or subtracted from that area if it is of type _Background_). If not selected, then each piece with this trait will draw its own area, with overlapping areas shaded darker.
 
-*Fill Color:* The color of the area.
+*Fill color:* The color of the area.
 
 *Opacity:* The opacity of the area.
 100% is completely opaque.
@@ -26,12 +26,11 @@ Alternatively, you can point to a <<Map.adoc#MapShading,Map Shading>> component,
 If the piece is on a board with a <<RectangularGrid.adoc#top,Rectangular Grid>> or <<HexGrid.adoc#top,Hex Grid>>, this distance is in grid units and the shaded area will conform to the grid.
 Otherwise, it will be a circle with the given radius in pixels.
 
-*Always Visible:* If selected, the area is always highlighted when the piece is drawn on a Map.
+*Always visible:* If selected, the area is always highlighted when the piece is drawn on a Map.
 
-*Toggle Visible Command:* If not always visible, this is the context menu command ("right click menu") to show/hide the highlighted area.
+*Toggle visible command:* If not always visible, this is the context menu command ("right click menu") to show/hide the highlighted area.
 
-*Toggle Visible Key Command:* If not always visible, the <<NamedKeyCommand.adoc#top,Key Command>> to show/hide the highlighted area.
-Can be a <<NamedKeyCommand.adoc#top,KeyStroke Command or a Named Command>>.
+*Toggle visible key command:* If not always visible, the <<NamedKeyCommand.adoc#top,KeyStroke orNamed Command>> to show/hide the highlighted area.
 
 image:images/AreaOfEffectSample1.png[] +
 _Area of Effect applied to a Flat Top cloud counter.

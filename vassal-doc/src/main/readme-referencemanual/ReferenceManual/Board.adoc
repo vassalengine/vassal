@@ -12,7 +12,8 @@
 |A Board represents the physical board on which pieces are moved by the players.
 A Map Window can consist of multiple Boards laid out next to one another.
 
-If a board image is specified (a GIF, JPEG, or PNG image file that must be created beforehand with some external tool), then the size of the image determines the size of the board.
+If a board image is specified (a PNG, JPEG, SVG or GIF image file that must be created beforehand with some external tool), then the size of the image determines the size of the board.
+
 If the board image is set to null (by clicking the "Select" button and then canceling the file dialog), then no image is used for the board, and the size and color may be specified directly.
 
 To add a board to your map, use the Editor's configuration window to navigate to the _[Map Window]_ entry for your map.
