@@ -1,4 +1,4 @@
-3.6.0-beta1 - ???
+3.6.0-beta1 - 21 August 2021
 
 * 10326: Add option to disable OpenGL FBOs on Macs
 * 10301: Double max heap and retry when image tiler runs out of memory
