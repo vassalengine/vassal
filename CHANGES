@@ -38,6 +38,10 @@
 *  9988: CountStack() added to beanshell to count pieces in current Stack
 *  9987: ReportState checkbox overrides Global Key Command suppression of
     individual reports
+*  9979: Add Deck Sort Key Command component to allow sorting of cards in a
+    Deck by properties via menu or hotkey.
+    Add Deck Send Key Command component to provide additional commands
+    to send contents of one Deck to another via menu or hotkey.
 *  9975: Deck reports now suppressed during GKC report suppresssion
 *  9973: Deck supports configurable strings for Draw Multiple, Draw Specific,
     Face Up, Face Down
