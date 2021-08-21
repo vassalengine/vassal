@@ -280,12 +280,12 @@ $(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
 $(TMPDIR)/notes.json: $(DISTDIR)/notes/data.json | $(TMPDIR)
-	jinja2 -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
+	jinja2 --strict -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
 
 $(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja $(TMPDIR)/notes.json | $(TMPDIR)
-	jinja2 -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
+	jinja2 --strict -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
 
-release-announcements: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
+release-announcements: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb $(TMPDIR)/NOTES-gh
 
 release: clean release-other release-linux release-windows release-macos release-sha256
 
