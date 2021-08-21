@@ -533,7 +533,7 @@ The Global Key Command (GKC) Trait adds an action that applies a keyboard comman
 The Trait has these attributes:
 
 * *Description:* Description of the GKC Trait.
-* *Meun Command:* Menu text of the command to activate the GKC.
+* *Menu Command:* Menu text of the command to activate the GKC.
 * *Key Command:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> of the menu item that initiates the GKC.
 * *Global Key Command:* The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will be applied to other pieces.
 * *Matching Properties:* The key command will only be applied to pieces with the specified Properties.

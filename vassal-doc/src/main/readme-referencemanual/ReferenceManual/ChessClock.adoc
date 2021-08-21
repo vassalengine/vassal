@@ -28,6 +28,30 @@ Right-click it and select _Add Chess Clock Control_.
 After adding initial settings for your Chess Clock controller, you will find a _[Chess Clock Control]_ component at the very bottom of your module's list of components in the Editor window.
 You can then right-click the _[Chess Clock Control]_ component to _Add_ individual _[Chess Clock]_ components, although if you have already created your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> before adding the
 Chess Clock Control, individual clocks will be added by default, corresponding to each of your player sides.
+
+*Name:* The name of the Chess Clock Controller.
+
+*Button icon:* An image to use for the Chess Clock Controller toolbar button.
+
+*Button text:* Text to appear on the Chess Clock Controller toolbar button.
+
+*Tooltip text:* Tooltip text to display when the cursor is hovered over the Chess Clock Controller toolbar button.
+
+*Show clocks hotkey:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will show the component clocks.
+
+*Start next clock Hotkey:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will start the next clock running.
+
+*Pause all clocks Hotkey:* <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will pause all clocks.
+
+*Show tenths of seconds:* Select if tenths of seconds are displayed in component clocks.
+
+*Show seconds:* Select if seconds are displayed in component clocks.
+
+*Show hours:* Select if hours are displayed in component clocks.
+
+*Show days:* Select if days are displayed in component clocks.
+
+*Allows manual reset of Chess Clock timers:* If checked, then players can manually reset individual clocks by right-clicking on them and selecting the _Reset This Clock_ option.
 |image:images/ChessClockControl.png[]  +
 |===
 
@@ -35,7 +59,7 @@ Chess Clock Control, individual clocks will be added by default, corresponding t
 
 === Sub-Components
 
-[#ChessClock]##
+[#ChessClock]
 
 ==== Chess Clock
 
