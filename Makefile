@@ -48,6 +48,8 @@ JDOCDIR:=jdoc
 
 # numeric part of the version only
 VNUM:=3.6.0
+# major-minor part of the version
+V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
 #MAVEN_VERSION:=$(VNUM)-beta3
@@ -277,10 +279,13 @@ $(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
-$(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
-	jinja2 -Dversion=$(VERSION) -o $@ $<
+$(TMPDIR)/notes.json: $(DISTDIR)/notes/data.json | $(TMPDIR)
+	jinja2 -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
 
-release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
+$(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja $(TMPDIR)/notes.json | $(TMPDIR)
+	jinja2 -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
+
+release-announcements: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
 
 release: clean release-other release-linux release-windows release-macos release-sha256
 
