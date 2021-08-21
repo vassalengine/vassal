@@ -311,4 +311,4 @@ clean: clean-release
 # prevents make from trying to delete intermediate files
 .SECONDARY:
 
-.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set version-print
+.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
