@@ -7,11 +7,11 @@
 
 === Action Button
 
-[width="100%",cols="50%,50%",]
-|===
-|This trait allows you to place a virtual button within your piece.
+This trait allows you to place a virtual button within your piece.
 Clicking within the specified rectangular region on the piece will cause the specified Key Command to be sent to your piece as if it had been selected from the right-click menu.
-
+[width="100%",cols="50%a,50%a",]
+|===
+|
 *Invoke key command:*  The key command to be invoked.
 Can be a traditional Keystroke Command such as _Ctrl+C_ or a Named Command such as _PressedButton_.
 See <<NamedKeyCommand.adoc#top,KeyStroke and Named Commands>>

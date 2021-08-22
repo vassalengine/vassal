@@ -7,9 +7,7 @@
 
 === Chess Clock Control
 
-[cols=",",]
-|===
-|Adds a Chess Clock controller to your game, for use in timing multiplayer matches. Chess clocks in VASSAL count "up" rather than down, so you can agree to any desired time control with your opponent, without the need to re-configure clock values.
+Adds a Chess Clock controller to your game, for use in timing multiplayer matches. Chess clocks in VASSAL count "up" rather than down, so you can agree to any desired time control with your opponent, without the need to re-configure clock values.
 
 During play, clicking the main Chess Clock Control button will hide/reveal the individual clock buttons, if no clocks are running. Or, if any clocks are currently running, clicking
 the main Chess Clock Control button will switch to the next clock in the player sequence. To stop all clocks, one can right click on the Chess Clock Control button and select from the
@@ -29,7 +27,9 @@ After adding initial settings for your Chess Clock controller, you will find a _
 You can then right-click the _[Chess Clock Control]_ component to _Add_ individual _[Chess Clock]_ components, although if you have already created your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> before adding the
 Chess Clock Control, individual clocks will be added by default, corresponding to each of your player sides.
 
-*Name:* The name of the Chess Clock Controller.
+[width="100%",cols="50%a,50%a",]
+|===
+|*Name:* The name of the Chess Clock Controller.
 
 *Button icon:* An image to use for the Chess Clock Controller toolbar button.
 

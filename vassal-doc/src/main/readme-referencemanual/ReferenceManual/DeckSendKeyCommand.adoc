@@ -7,9 +7,7 @@
 
 === Deck Send Key Command
 
-[width="100%",cols="50%,50%",]
-|===
-a|This <<Deck.adoc#top,Deck>> Sub-Component adds an action that sends cards from this Deck to another Deck
+This <<Deck.adoc#top,Deck>> Sub-Component adds an action that sends cards from this Deck to another Deck
 
 The Send action can be initiated by a right-click menu action, or by a Global Hotkey sent from another Vassal trait or component.
 
@@ -20,7 +18,9 @@ Deck Send Key Commands can also be placed in a component Folder created under th
 
 When initiated, Cards will be sent one by one from the top of this Deck to the top of the target Deck. Options are available to limit which and how many cards are sent and to which Deck.
 
-*Description:* An optional description for your own reference.
+[width="100%",cols="50%a,50%a",]
+|===
+|*Description:* An optional description for your own reference.
 
 *Menu command:* Text for an entry in the Deck's right-click context menu that will activate the Deck Send Key Command. If no Menu Command is entered, the Send Command will not be available from the Deck's menu, but only by Hotkey.
 

@@ -7,13 +7,13 @@
 
 === Area of Effect Trait
 
-[width="100%",cols="50%,50%",]
-|===
-|
 The _Area of Effect_ trait allows you to graphically highlight an area surrounding a game piece.
 The area is shaded with a specified color and transparency.
 Alternatively, you can point to a <<Map.adoc#MapShading,Map Shading>> component, contributing to the area that it draws.
 
+[width="100%",cols="50%a,50%a",]
+|===
+|
 *Use map shading:* If selected, then the area of this trait will be added to the area drawn by the named <<Map.adoc#MapShading,Map Shading>> component (or subtracted from that area if it is of type _Background_). If not selected, then each piece with this trait will draw its own area, with overlapping areas shaded darker.
 
 *Fill color:* The color of the area.

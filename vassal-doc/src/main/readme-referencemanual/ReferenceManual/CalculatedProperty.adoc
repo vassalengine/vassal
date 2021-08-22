@@ -7,14 +7,13 @@
 
 === Calculated Property
 
-
-[cols=",",]
-|===
-|A Calculated Property defines a <<Properties.adoc#top,Property>> which has a _value_ that is calculated by a formula each time it is needed.
+A Calculated Property defines a <<Properties.adoc#top,Property>> which has a _value_ that is calculated by a formula each time it is needed.
 The property can be referred to by _name_ in other traits in the piece, either for creating <<MessageFormat.adoc#top,Message Formats>> to display messages or in e.g.
 <<PropertyMatchExpression.adoc#top,Property Match Expressions>>. Each place the property _name_ is referred to in an expression, the _value_ will be recalculated and substituted.
 
-*Description:* A brief description to help remind you of the purpose of this Calculated Property.
+[width="100%",cols="50%a,50%a",]
+|===
+|*Description:* A brief description to help remind you of the purpose of this Calculated Property.
 
 *Property name:* The name of the property that is used to access the formula value.
 

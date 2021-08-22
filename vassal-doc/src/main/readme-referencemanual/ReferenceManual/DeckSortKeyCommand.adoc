@@ -7,9 +7,7 @@
 
 === Deck Sort Key Command
 
-[width="100%",cols="50%,50%",]
-|===
-a|This <<Deck.adoc#top,Deck>> Sub-Component adds an action that sorts the cards in a Deck according to pre-defined sort parameters based on properties defined by the cards.
+This <<Deck.adoc#top,Deck>> Sub-Component adds an action that sorts the cards in a Deck according to pre-defined sort parameters based on properties defined by the cards.
 
 The Sort action can be initiated by a right-click menu action, or by a Global Hotkey sent from another Vassal trait or component.
 
@@ -18,7 +16,9 @@ Right-click on the _[Deck]_ entry and select _Add Deck Sort Key Command_.
 
 Deck Sort Key Commands can also be placed in a component Folder created under the Deck.
 
-*Description:* An optional description for your own reference.
+[width="100%",cols="50%a,50%a",]
+|===
+|*Description:* An optional description for your own reference.
 
 *Menu command:* Text for an entry in the Deck's right-click context menu that will activate the Deck Sort Key Command. If no Menu Command is entered, the Sort will not be available from the Deck's menu, but only by Hotkey.
 

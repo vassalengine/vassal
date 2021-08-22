@@ -25,108 +25,6 @@ You can then right-click on the _[Deck]_ entry and begin adding Cards and other 
 *NOTE:*  Because Decks are quite often used to hold "cards", the Game Pieces contained within a Deck will be frequently referred to in Vassal and in documentation as "cards". However keep in mind that a "card" is simply a type of Game Piece, and a Deck can be used to contain _any_ type of Game Piece.
 The difference between a "card" and a "piece" is only notional, and perhaps represented in the artwork and function of the piece/card.
 
-[width="100%",cols="50%,50%",]
-|===
-a|
-*Name:*  The name of a Deck is not used during game play.
-It is only used for identification in the Editor.
-The name should be unique.
-If multiple decks with the same name are created the return to deck trait will send cards to the first deck with that name.
-
-*Belongs to board:*  If a name is selected, the Deck will appear on that particular <<Board.adoc#top,Board>>. If a game does not use that Board, then the Deck will not appear.
-If "<any>" is selected, then the Deck will always appear at the given position, regardless of the boards in use.
-
-*X,Y position:*  The position in the Map Window of the center of the deck.
-If this Deck belongs to a Board, the position is relative to the Board's position in the Map Window.
-
-*Width, Height:*  The size of the "tray" holding the cards.
-If the Deck is empty, this determines the area into which players may drag cards to add them back to the Deck, as well as the box drawn if the _Draw Outline When Empty_ option is selected below.
-It should be set to approximately the same size as the cards the Deck will hold.
-
-*Allow Multiple Cards to be Drawn:*  Adds a right-click context menu entry to the Deck's context menu that prompts the user to specify the number of cards to be drawn from the Deck with the next drag.
-
-*Allow Specific Cards to be Drawn:*  Adds a right-click context menu entry to the Deck's context menu that allows the player to examine the Deck and select exactly which cards will be drawn from the deck with the next drag.
-
-*When selecting, list cards using:*  When the player is prompted to select specific cards from the Deck, individual cards will be listed using the specified <<MessageFormat.adoc#top,Message Format>>.
-
-*When selecting, sort cards by:*   When the player is prompted to select specific cards from the deck, the cards can optionally be sorted (alphabetically) using the listed property.
-Leave blank to list cards by their current position in the deck.
-*NOTE:* Unlike the previous field this field simply names a single property, and should not use $..$ markers. To sort by multiple fields a <<CalculatedProperty.adoc#top,Calculated Property>> trait e.g. _SortName_ can be created and serve to concatenate the various fields in an appropriate order.
-*Example:* cards in a deck can use a <<PropertyMarker.adoc#top,Marker>> trait to specify a card number (001,002, etc.) and always list cards in order of their assigned number: in this case simply fill _CardNum_ into the field, no $..$.
-
-*Contents are Face-down:*  Determines whether cards in the Deck are always drawn face-down, always drawn face-up, or can be switched from face-up to face-down with a right-click context menu entry.
-
-*Face Down Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Face Down_ menu item (if enabled above): _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
-
-*Draw new cards face up:*  If checked, then cards drawn from this Deck (e.g.
-by dragging them) will be placed face-up on the playing area.
-If unchecked, then cards from a face-down deck are drawn face down and owned by the drawing player.
-
-*Re-shuffle:*  If set to _Never_ then cards remain in their original order; cards are drawn from and added to the top.
-If set to _Always_ then cards are always drawn randomly from the deck.
-If set to _Via right-click menu_ then a _Shuffle_ entry is added to the Deck's right-click context menu.
-
-*Re-shuffle Menu Command:*  The right-click context menu entry for reshuffling the Deck.
-
-*Re-shuffle Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Shuffle_ menu item (if enabled above): _deckName_ is the name of this Deck, _commandName_ is the name of the context menu item.
-
-*Re-shuffle Hotkey:*  A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reshuffle.
-If left blank, a reshuffle can be caused only with the right-click context menu.
-
-*Reversible:*  Adds an entry to the right-click context menu that reverses the order of cards in the Deck.
-
-*Reverse Report Format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log window whenever a player selects the "Reverse" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
-
-*Draw Outline When Empty?*  Whether to draw the "tray" for the cards.
-The "tray" is a rectangle of size _width,height_ centered at _x,y_.
-Only drawn when there are no cards in the Deck, to indicate where to drag cards to place them back in the Deck.
-May not be necessary or desirable if the Map Window contains a board on which the tray is already shown.
-
-*Color:*  The color used to draw the rectangle representing the "tray" above.
-
-*Send Hotkey when empty?*  Select this option to send a Global Hotkey whenever the Deck is emptied.
-
-*Hot Key to send when Deck empties:*  Select the <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
-
-*Include command to send entire deck to another deck:*  If checked, the right-click context menu for this Deck will include a command that sends every Game Piece in this Deck to a different designated Deck.
-For example, this can be used to reshuffle a discard pile into its original deck.
-The following four attributes are used to configure this option.
-
-*Send Menu Command:*  The text for the right-click context menu item.
-
-*Report Format:*  A <<MessageFormat.adoc#top,Send Message Format>> that is echoed to the chat log window whenever a player selects the "send to another deck" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
-
-*Send Hot Key:*  Select a <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> that will cause the Deck contents to be moved to the target Deck.
-
-*Name of deck to send to:*  The name of the Deck that the contents of this Deck will be sent to.
-
-*Can be saved-to/loaded-from a file:*  If selected, the right-click context menu will include _Save_ and _Load_ actions.
-The _Save_ action saves the contents of a deck to a file.
-The _Load_ action replaces the contents of the deck with the cards specified in the file.
-Saved decks can be loaded into an entirely different game than the one used to save the deck.
-This option is useful for collectible card games, in which a player may prepare a deck offline in preparation for a game.
-
-*Maximum Cards to be Displayed in Stack:*  This defines the maximum number of cards to graphically display in the Deck.
-The default is 10.
-For example, if set to 10, a deck of 52 cards will appear to have 10 cards, until the actual number of contents drops below 10.
-Then the deck will visually start to shrink as cards are removed.
-If set to 1, the deck will always appear flat as if it held only a single card.
-
-*Perform Counting of property expressions:*  Enable processing of property expression counting.
-Expressions must be defined.
-
-*Expressions to count:*  Specify expressions to be counted within the deck.
-These can be whatever you like and must be in the format of:
-
-....
-<expression name> : <expression>
-....
-
-For each expression, a map-level property called __<deckName>_<expression name>__ is exposed.
-The exposed value is number of pieces for which that expression evaluates to _true_.
-An example of how to do this is provided below.
-NOTE: Currently the only "dynamic" property which can be used in counting expressions is _playerSide_.
-Other dynamic properties will most likely not update if they change after pieces move into a deck.
 
 *EXAMPLE:*  An ordinary deck of playing cards for, say, Crazy Eights would be set to: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Always_, _Re-shuffle = Always_, _Reversible = false_.
 The discard pile would be: _Allow Multiple = false_, _Allow Specific = false_, _Face Down = Never_, _Re-shuffle = Never_, _Reversible = false_.
@@ -148,6 +46,121 @@ Also give your cards a Marker trait named _value_ with the numeric value of the 
 Then, you can refer to the counts with the map-level properties of _<deckname>_red_, _<deckname>_black_, and _<deckname>_facecards_.
 The total number of cards currently in the deck can be referenced by the map-level property of _<deckname>_numPieces_.
 
+[width="100%",cols="50%,50%",]
+|===
+a|
+*Name:*  The name of a Deck is not used during game play.
+It is only used for identification in the Editor.
+The name should be unique.
+If multiple decks with the same name are created the return to deck trait will send cards to the first deck with that name.
+
+*Belongs to board:*  If a name is selected, the Deck will appear on that particular <<Board.adoc#top,Board>>. If a game does not use that Board, then the Deck will not appear.
+If "<any>" is selected, then the Deck will always appear at the given position, regardless of the boards in use.
+
+*X,Y position:*  The position in the Map Window of the center of the deck.
+If this Deck belongs to a Board, the position is relative to the Board's position in the Map Window.
+
+*Width, Height:*  The size of the "tray" holding the cards.
+If the Deck is empty, this determines the area into which players may drag cards to add them back to the Deck, as well as the box drawn if the _Draw Outline When Empty_ option is selected below.
+It should be set to approximately the same size as the cards the Deck will hold.
+
+*Allow multiple cards to be drawn:*  Adds a right-click context menu entry to the Deck's context menu that prompts the user to specify the number of cards to be drawn from the Deck with the next drag.
+
+*Menu command to draw multiple:* The text of the menu option to draw multiple cards from the deck when the draw multiple option is selected.
+
+*Allow specific cards to be drawn:*  Adds a right-click context menu entry to the Deck's context menu that allows the player to examine the Deck and select exactly which cards will be drawn from the deck with the next drag.
+
+*Menu command to draw specific:* The text of the menu option to draw specific cards from the deck when the draw specific option is selected.
+
+*When selecting, list cards using:*  When the player is prompted to select specific cards from the Deck, individual cards will be listed using the specified <<MessageFormat.adoc#top,Message Format>>.
+
+*When selecting, sort cards by:*   When the player is prompted to select specific cards from the deck, the cards can optionally be sorted (alphabetically) using the listed property.
+Leave blank to list cards by their current position in the deck.
+*NOTE:* Unlike the previous field this field simply names a single property, and should not use $..$ markers. To sort by multiple fields a <<CalculatedProperty.adoc#top,Calculated Property>> trait e.g. _SortName_ can be created and serve to concatenate the various fields in an appropriate order.
+*Example:* cards in a deck can use a <<PropertyMarker.adoc#top,Marker>> trait to specify a card number (001,002, etc.) and always list cards in order of their assigned number: in this case simply fill _CardNum_ into the field, no $..$.
+
+*Contents are face-down:*  Determines whether cards in the Deck are always drawn face-down, always drawn face-up, or can be switched from face-up to face-down with a right-click context menu entry.
+
+*Menu command to turn deck face up:* Text of the menu command to change the facing of subsequent cards drawn from the deck to face up.
+
+*Menu command to turn deck face down:* Text of the menu command to change the facing of subsequent cards drawn from the deck to face down.
+
+*Draw new cards face up:*  If checked, then cards drawn from this Deck (e.g. by dragging them) will be placed face-up on the playing area.
+If unchecked, then cards from a face-down deck are drawn face down and owned by the drawing player.
+
+*Face down report gormat:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Face Down_ menu item (if enabled above): _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
+
+*Re-shuffle:*  If set to _Never_ then cards remain in their original order; cards are drawn from and added to the top.
+If set to _Always_ then cards are always drawn randomly from the deck.
+If set to _Via right-click menu_ then a _Shuffle_ entry is added to the Deck's right-click context menu.
+
+*Re-shuffle menu command:*  The right-click context menu entry for reshuffling the Deck.
+
+*Re-shuffle report format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log whenever a player selects the _Shuffle_ menu item (if enabled above): _deckName_ is the name of this Deck, _commandName_ is the name of the context menu item.
+
+*Re-shuffle hotkey:*  A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reshuffle.
+If left blank, a reshuffle can be caused only with the right-click context menu.
+
+*Reversible:* Adds an entry to the right-click context menu that reverses the order of cards in the Deck.
+
+*Reverse menu command:*  The right-click context menu entry for reversing the Deck.
+
+*Reverse report format:*  A <<MessageFormat.adoc#top,Message Format>> that is echoed to the chat log window whenever a player selects the "Reverse" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
+
+*Reverse hotkey:* A <<NamedKeyStroke.adoc#top,Keystroke or Named Command>> that will cause a reverse.
+
+*Draw Outline When Empty?*  Whether to draw the "tray" for the cards.
+The "tray" is a rectangle of size _width,height_ centered at _x,y_.
+Only drawn when there are no cards in the Deck, to indicate where to drag cards to place them back in the Deck.
+May not be necessary or desirable if the Map Window contains a board on which the tray is already shown.
+
+*Color:*  The color used to draw the rectangle representing the "tray" above.
+
+*Hotkey to send when Deck empties*  Select this option to send a Global Hotkey whenever the Deck is emptied.
+
+*Hotkey to send when Deck empties:*  Select the <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> to send whenever enough cards are removed from the Deck to empty it.
+
+*Include command to send entire deck to another deck:*  If checked, the right-click context menu for this Deck will include a command that sends every Game Piece in this Deck to a different designated Deck.
+For example, this can be used to reshuffle a discard pile into its original deck.
+The following four attributes are used to configure this option.
+
+*Send menu command:*  The text for the right-click context menu item.
+
+*Send report format:*  A <<MessageFormat.adoc#top,Send Message Format>> that is echoed to the chat log window whenever a player selects the "send to another deck" menu item: _deckName_ is the name of this deck, _commandName_ is the name of the menu item.
+
+*Send Hotkey:*  Select a <<NamedKeyStroke.adoc#top,Keystroke Command or Named Command>> that will cause the Deck contents to be moved to the target Deck.
+
+*Name of deck to send to:*  The name of the Deck that the contents of this Deck will be sent to.
+
+*Can be saved-to/loaded-from a file:*  If selected, the right-click context menu will include _Save_ and _Load_ actions.
+The _Save_ action saves the contents of a deck to a file.
+The _Load_ action replaces the contents of the deck with the cards specified in the file.
+Saved decks can be loaded into an entirely different game than the one used to save the deck.
+This option is useful for collectible card games, in which a player may prepare a deck offline in preparation for a game.
+
+*Maximum cards to be displayed in stack:*  This defines the maximum number of cards to graphically display in the Deck.
+The default is 10.
+For example, if set to 10, a deck of 52 cards will appear to have 10 cards, until the actual number of contents drops below 10.
+Then the deck will visually start to shrink as cards are removed.
+If set to 1, the deck will always appear flat as if it held only a single card.
+
+*Perform counting of property expressions:*  Enable processing of property expression counting.
+Expressions must be defined.
+
+*Expressions to count:*  Specify expressions to be counted within the deck.
+These can be whatever you like and must be in the format of:
+
+....
+<expression name> : <expression>
+....
+
+For each expression, a map-level property called __<deckName>_<expression name>__ is exposed.
+The exposed value is number of pieces for which that expression evaluates to _true_.
+An example of how to do this is provided below.
+NOTE: Currently the only "dynamic" property which can be used in counting expressions is _playerSide_.
+Other dynamic properties will most likely not update if they change after pieces move into a deck.
+
+
 |image:images/Deck.png[]
 
 |===
@@ -158,7 +171,7 @@ The total number of cards currently in the deck can be referenced by the map-lev
 
 Sub-Components can be added to a Deck by right-clicking on the _[Deck]_ entry in the Module Editor and selecting the appropriate _Add_ option.
 
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,50%a",]
 |===
 a|
 ==== <<GamePiece.adoc#top,Card>>

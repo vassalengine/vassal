@@ -7,10 +7,11 @@
 
 === Basic Piece
 
-[width="100%",cols="50%,50%",]
-|===
-|The simplest game piece consists of an image and a name.
+The simplest game piece consists of an image and a name.
 
+[width="100%",cols="50%a,50%a",]
+|===
+|
 *Name:* Choose a unique name for this Game Piece.
 
 *Image:* Click on the _Add_ button to select an image for this Game Piece and to load it into the module.
