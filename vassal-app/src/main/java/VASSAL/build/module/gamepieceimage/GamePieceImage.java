@@ -18,6 +18,22 @@
 
 package VASSAL.build.module.gamepieceimage;
 
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.ConfigurerFactory;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.SourceOp;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -27,21 +43,13 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
 
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.AutoConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.SourceOp;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -57,6 +65,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   public static final String BG_COLOR = "bgColor"; //$NON-NLS-1$
   public static final String BORDER_COLOR = "borderColor"; //$NON-NLS-1$
+  public static final String VERSION = "version";
+  public static final String VERSION_0 = "0";
+  public static final String VERSION_1 = "1";
+  private static final String PNG_SUFFIX = ".png";
 
   protected List<ItemInstance> instances = new ArrayList<>();
   protected InstanceConfigurer defnConfig = null;
@@ -70,6 +82,8 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected Image visImage = null;
 
   protected SourceOp srcOp;
+  /** version number. Existing GPI's loaded from a module will be defaulted to version 0 */
+  protected String version = VERSION_0;
 
   public GamePieceImage() {
     super();
@@ -95,6 +109,15 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     this.instances.addAll(defn.getInstances());
   }
 
+  @Override
+  public void build(Element e) {
+    super.build(e);
+    // Newly created GPI, force to version 1
+    if (e == null) {
+      version = VERSION_1;
+    }
+  }
+
   /*
    * The Generic trait needs a deep copy of the Image Definition
    */
@@ -113,14 +136,15 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       Resources.getString("Editor.name_label"),
       Resources.getString("Editor.background_color"),
       Resources.getString("Editor.border_color"),
-      "" //$NON-NLS-1$
+      "",
+      ""
     };
   }
 
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
-      String.class,
+      ImageNameConfig.class,
       BgColorSwatchConfig.class,
       BorderColorSwatchConfig.class,
       DefnConfig.class
@@ -161,7 +185,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   @Override
   public String[] getAttributeNames() {
-    return new String[] {NAME, BG_COLOR, BORDER_COLOR, PROPS};
+    return new String[] {NAME, BG_COLOR, BORDER_COLOR, PROPS, VERSION};
   }
 
   public ColorSwatch getBgColor() {
@@ -170,6 +194,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   public ColorSwatch getBorderColor() {
     return borderColor;
+  }
+
+  public String getVersion() {
+    return version;
   }
 
   @Override
@@ -184,6 +212,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         w.addImage(newName, getEncodedImage((BufferedImage) visImage));
       }
       setConfigureName(newName);
+      // If the user manages to type in a proper V1 image name, flip it over to Version 1
+      if (! isVersion1() && isVersion1ImageName(newName)) {
+        version = VERSION_1;
+      }
     }
     else if (BG_COLOR.equals(key)) {
       if (value instanceof String) {
@@ -216,6 +248,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         defnConfig.repack();
       }
     }
+    else if (VERSION.equals(key)) {
+      version = (String) value;
+    }
     if (defnConfig != null) {
       rebuildVisualizerImage();
     }
@@ -234,6 +269,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
     else if (PROPS.equals(key)) {
       return InstanceConfigurer.PropertiesToString(instances);
+    }
+    else if (VERSION.equals(key)) {
+      return version;
     }
     else
       return null;
@@ -462,5 +500,168 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       defnConfig.setValue(instances);
     }
     rebuildVisualizerImage();
+  }
+
+  public boolean isVersion1() {
+    return VERSION_1.equals(version);
+  }
+
+  private boolean isVersion1ImageName(String name) {
+    return name != null && !name.isEmpty() && name.toLowerCase().endsWith(PNG_SUFFIX) && name.matches("^[a-zA-Z0-9$_]*\\.png$");
+  }
+
+  public static class ImageNameConfig implements ConfigurerFactory {
+    @Override
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new PngImageNameConfigurer(key, name, (GamePieceImage) c);
+    }
+  }
+
+  static class PngImageNameConfigurer extends StringConfigurer {
+
+    private final GamePieceImage gpi;
+
+    public PngImageNameConfigurer(String key, String name, GamePieceImage gpi) {
+      super(key, name, gpi.getConfigureName());
+      this.gpi = gpi;
+      setHintKey("Editor.GamePieceImage.png_image_name");
+      getControls();
+      ((AbstractDocument) nameField.getDocument()).setDocumentFilter(new ImageNameFilter(this));
+    }
+
+    public boolean isGpiVersion1() {
+      return gpi.isVersion1();
+    }
+
+    public void setCaretPosition(int pos) {
+      nameField.setCaretPosition(pos);
+    }
+  }
+
+  /**
+   * ImageNameFilter that controls how the user can change the Image Name
+   * If the GPI is still version 0, then no controls. Not we can't force an image
+   * name because other components may reference that image.
+   * Once the GPI is version 0, then enfore a .png suffix and
+   */
+  private static class ImageNameFilter extends DocumentFilter {
+    private final PngImageNameConfigurer config;
+
+    public ImageNameFilter(PngImageNameConfigurer config) {
+      this.config = config;
+    }
+
+    /** Return the current value of the text */
+    private String getText(FilterBypass fb) {
+      final Document doc = fb.getDocument();
+      if (doc == null || doc.getLength() == 0) {
+        return "";
+      }
+
+      String currentValue;
+      try {
+        currentValue = doc.getText(0, doc.getLength());
+      }
+      catch (BadLocationException ignored) {
+        currentValue = "";
+      }
+
+      return currentValue;
+    }
+
+    /** Does the current text end in '.png'? */
+    private boolean isPng(FilterBypass fb) {
+      return getText(fb).toUpperCase().endsWith(PNG_SUFFIX.toUpperCase());
+    }
+
+    /** Ensure the current value ends in '.png' */
+    private void fixPng(FilterBypass fb) throws BadLocationException {
+      fixPng(fb, 1);
+    }
+
+    private void fixPng(FilterBypass fb, int pos) throws BadLocationException {
+      if (!isPng(fb)) {
+        final String text = getText(fb);
+        if (text.endsWith(".")) {
+          super.replace(fb, text.length() - 1, 1, PNG_SUFFIX, null);
+          config.setCaretPosition(pos);
+        }
+        else if (text.toUpperCase().endsWith(".p")) {
+          super.replace(fb, text.length() - 2, 2, PNG_SUFFIX, null);
+          config.setCaretPosition(pos);
+        }
+        else if (text.toUpperCase().endsWith(".pn")) {
+          super.replace(fb, text.length() - 3, 3, PNG_SUFFIX, null);
+          config.setCaretPosition(pos);
+        }
+        else {
+          super.replace(fb, text.length(), 0, PNG_SUFFIX, null);
+          config.setCaretPosition(pos);
+        }
+      }
+
+    }
+
+    private String clean(String string) {
+      final StringBuilder sb = new StringBuilder();
+      for (int i = 0; i < string.length(); i++) {
+        final char c = string.charAt(i);
+        if (c == '$' || c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+          sb.append(c);
+        }
+      }
+      return sb.toString();
+    }
+
+    /** Don't let any of the '.png' at the end of the string be removed */
+    @Override
+    public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+      if (!config.isGpiVersion1()) {
+        super.remove(fb, offset, length);
+        return;
+      }
+
+      if (isPng(fb)) {
+        if ((offset + length) > (getText(fb).length() - PNG_SUFFIX.length())) {
+          return;
+        }
+      }
+      super.remove(fb, offset, length);
+      fixPng(fb);
+    }
+
+    /** Nothing to be inserted within the '.png' at the end */
+    @Override
+    public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+      if (!config.isGpiVersion1()) {
+        super.insertString(fb, offset, string, attr);
+        return;
+      }
+
+      if (isPng(fb)) {
+        if ((offset) >= (getText(fb).length() - PNG_SUFFIX.length())) {
+          return;
+        }
+      }
+      super.insertString(fb, offset, clean(string), attr);
+      fixPng(fb);
+    }
+
+    /** No part of '.png' at then end of the current text to be replaced */
+    @Override
+    public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+      if (!config.isGpiVersion1()) {
+        super.replace(fb, offset, length, text, attrs);
+        return;
+      }
+
+      if (isPng(fb)) {
+        if ((offset + length) > (getText(fb).length() - PNG_SUFFIX.length())) {
+          return;
+        }
+      }
+      super.replace(fb, offset, length, clean(text), attrs);
+      fixPng(fb);
+    }
   }
 }
