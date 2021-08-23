@@ -52,7 +52,7 @@ A named location on a map using the appropriate grid numbering (or the named loc
 No additional offset is available at this time, as it is intended that this be an offset in grid units instead of pixels, which is not yet implemented.
 |===
 
-*NOTE:* Because the fields below accept <<Expression.adoc#top,Expressions>>, they can be computed from other <<Properties.adoc#top,Properties>> of the piece, and/or <<GlobalProperties.adoc#top,Global Properties>>.
+NOTE: Because the fields below accept <<Expression.adoc#top,Expressions>>, they can be computed from other <<Properties.adoc#top,Properties>> of the piece, and/or <<GlobalProperties.adoc#top,Global Properties>>.
 
 *Map:*
 An <<Expression.adoc#top,Expression>> specifying the Map Window name that the piece will be sent to.

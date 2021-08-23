@@ -32,7 +32,7 @@ Be sure that your HTML content makes use of relative URLs.
 
 *Starting Page*:  The file within the Contents folder that the user's browser will be pointed to.
 
-__Note:  __You can launch an external URL in the user's browser by specifying the URL as the Starting Page and leaving the Contents set to null.
+NOTE: You can launch an external URL in the user's browser by specifying the URL as the Starting Page and leaving the Contents set to null.
 
 image:images/HtmlHelpFile.png[]
 

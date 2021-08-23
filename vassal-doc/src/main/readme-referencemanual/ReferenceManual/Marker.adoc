@@ -7,14 +7,14 @@
 
 === Place Marker
 
-[cols=",",]
+[cols="a,",]
 |===
 |
 A Game Piece with this trait will have a menu command that places a different piece (the "marker") on at the same location as this one.
 You can select any existing piece for the marker or define a new one from scratch.
 A new piece will be placed each time this trait is activated.
 
-*NOTE:*  This trait should not be confused with the <<PropertyMarker.adoc#top,Marker>> trait which allows a piece to be assigned a <<Properties.adoc#top,Property>> with a static constant value.
+NOTE:  This trait should not be confused with the <<PropertyMarker.adoc#top,Marker>> trait which allows a piece to be assigned a <<Properties.adoc#top,Property>> with a static constant value.
 
 *Description:*  A brief description of this trait that will appear in the <<GamePiece.adoc#top,Piece Definer>> window.
 

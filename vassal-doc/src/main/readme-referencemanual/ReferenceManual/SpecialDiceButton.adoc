@@ -7,7 +7,7 @@
 
 === Symbolic Dice Button
 
-[cols=",",]
+[cols="a,a",]
 |===
 |A Symbolic Dice Button places a button on the <<Toolbar.adoc#top,Toolbar>> which rolls dice that use graphical images to display their faces -- in simpler terms, "dice that look like dice". A Symbolic Dice Button can roll one or more individual dice, each represented by a _[Symbolic Die]_ component, each of which may in turn have any number of faces (represented by _[Symbolic Die Face]_ sub-components). When the button is clicked, a random face is selected for each Symbolic Die that this component contains.
 The results of the roll can be reported as text into the chat area, and/or graphically in a separate window and/or in the button itself.
@@ -31,7 +31,8 @@ Then, you will need to right-click each _[Symbolic Die]_ entry, and select _Add 
 *Report format:*  A <<MessageFormat.adoc#top,Message Format>> specifying the format for reporting text results: _$name$_ is the name of the button as specified above, __$result1$, $result2$, etc__is the result of the 1st, 2nd, etc.
 _[Symbolic Die]_ component.
 _$numericalTotal$_ is the sum of the numerical values all of the Symbolic Die rolls.
-*NOTE:*  as of Vassal 3.3.3 these reports can include HTML tags, including _<img>_ tags to place dice images directly into the chat log (see example below).
+
+NOTE:  as of Vassal 3.3.3 these reports can include HTML tags, including _<img>_ tags to place dice images directly into the chat log (see example below).
 
 *Show result in window:*  If true, show the results graphically in a standalone window.
 

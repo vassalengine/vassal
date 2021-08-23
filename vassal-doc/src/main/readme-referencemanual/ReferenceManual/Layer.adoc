@@ -43,7 +43,9 @@ A typical case will reference the name of a <<DynamicProperty.adoc#top,Dynamic P
 
 *Activate/Increase/Decrease:*  Specify the <<NamedKeyCommand.adoc#top,Keystroke or Named Command>>) and right-click context menu text that will activate the Layer and increase or decrease the current level.
 
-*Reset to level:*  Specifies a key command that resets the Layer to a level specified by an <<Expression.adoc#top,Expression>>.  Note: this does _not_ automatically _activate_ the Layer.
+*Reset to level:*  Specifies a key command that resets the Layer to a level specified by an <<Expression.adoc#top,Expression>>.
+
+NOTE: This does _not_ automatically _activate_ the Layer.
 
 *Randomize:*  Specifies a key command that sets the Layer to a random level.
 
@@ -53,7 +55,8 @@ Using transparency in the images can be very useful.
 
 *Level Name:*  Each level can be given an individual name, which is used to change the name of the piece for reporting purposes during play.
 The level's name either replaces the piece's normal name, or else modifies the piece's normal name as a prefix or suffix.
-NOTE: each individual level has its own replace/prefix/suffix setting, which must be configured separately.
+
+NOTE: Each individual level has its own replace/prefix/suffix setting, which must be configured separately.
 
 *NOTES:*
 

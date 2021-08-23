@@ -50,7 +50,8 @@ Tooltip text can also be configured for this button.
 
 *Include toolbar button to show/hide:*  If checked, then this map window will not be automatically shown when a game begins.
 Instead, a button to show/hide this window will be added to the main module Toolbar.
-*NOTE:* changing this option will not take effect until the module has been reloaded (exit from the Module Editor and restart it).
+
+NOTE: changing this option will not take effect until the module has been reloaded (exit from the Module Editor and restart it).
 
 *Button text:*  The name of the show/hide Toolbar button
 
@@ -61,7 +62,8 @@ Instead, a button to show/hide this window will be added to the main module Tool
 *Hotkey:*  The hotkey (or <<NamedKeyCommand.adoc#top,Named Key Command>>) for the show/hide Toolbar button
 
 *Auto-report format for movement within this map:*  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window:f _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
-*NOTE:* These reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
+
+NOTE: These reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
 
 *Auto-report format for movement to this map:*  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window: In addition to the properties noted for the above item, _$previousMap$_ is the name of the map from which the piece is being moved.
 
@@ -430,13 +432,13 @@ Can print a welcome message, or perform some other task that needs to be done wh
 [grid=none]
 [frame=none]
 |===
-|image:images/StartupGlobalKeyCommand.png[]|
+|image:images/StartupGlobalKeyCommand.png[] a|
 An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
 All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
 
 If multiple start-up commands need to be run in a particular order, they should be combined in a <<MultiActionButton.adoc#top,MultiAction Button>> and then launched from a single instance of Startup Global Key Command, as the sequence in which multiple instances of StartupGlobalKeyCommand are fired is undetermined.
 
-*NOTE:*  Startup Global Key Commands fire _every_ time the module starts up, whether it is to begin a new game or to load and continue an existing one.
+NOTE:  Startup Global Key Commands fire _every_ time the module starts up, whether it is to begin a new game or to load and continue an existing one.
 Thus if you need the Startup GKC to initiate an activity that should only be done once at the very _beginning_ of a game, then it would need to send a key command to a pre-designated piece, which could then check a Global Property (called, perhaps, "StartupDone") to determine whether the game had already been started -- if it hadn't, the piece could then perform those tasks and set "StartupDone" to true, which would prevent the actions from being taken on a subsequent load of a saved game.
 
 |===

@@ -16,7 +16,7 @@ There are two main flavors of Expression: <<#beanshell,BeanShell Expressions>> w
 When an expression (of either type) is used in e.g.
 a <<GlobalKeyCommand.adoc#top,Global Key Command>> to select which pieces to operate on by checking properties, it is called a <<PropertyMatchExpression.adoc#top,Property Match Expression>>.
 
-*NOTE:* Expressions should not be confused with <<MessageFormat.adoc#top,Message Formats>>, which are used by various <<GamePiece.adoc#Traits,traits>> and <<GameModule.adoc#SubComponents,components>> to generate messages.
+NOTE: Expressions should not be confused with <<MessageFormat.adoc#top,Message Formats>>, which are used by various <<GamePiece.adoc#Traits,traits>> and <<GameModule.adoc#SubComponents,components>> to generate messages.
 Message Formats are far more limited than Expressions.
 They only allow the inclusion of Property values, they do not allow any sort of calculations beyond potentially receiving the value of a Calculated Property.
 

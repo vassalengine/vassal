@@ -7,7 +7,7 @@
 
 === Report Action
 
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,50%a",]
 |===
 a|
 A Game Piece with this trait will report a configurable message to the <<ChatLog.adoc#top,Chat Log>> in the main window when any of a given set of <<NamedKeyCommand.adoc#top,Keystrokes or Named Commands>> are either typed or activated by other traits.
@@ -29,7 +29,8 @@ Each time one of the key commands is received, the next message in the list will
 experience odd behaviors such as chat log messages failing to appear (or seeming to be delayed until the next chat message is printed).
 
 *Additional Properties*:  _$menuCommand$_ inserts the name of the piece's right-click context menu command that corresponds to the key command received, _$oldPieceName$_ is the name of the piece before the action is applied, _$newPieceName$_ is the name of the piece after the action is applied, __$mapName$__is the name of the map where the piece is located, _$oldMapName$_ is the name of the map before the action, _$location$_ is the map location where the piece is located, _$oldLocation$_ is the location before the action is applied.
-_Note:_ if a piece is deleted or replaced as the result of an action, then the value of _oldLocation_ and _oldMapName_ will depend on the order of the traits, while _mapName_ and _location_ will be blank.
+
+NOTE: if a piece is deleted or replaced as the result of an action, then the value of _oldLocation_ and _oldMapName_ will depend on the order of the traits, while _mapName_ and _location_ will be blank.
 
 *Message Formats:*  A list of <<MessageFormat.adoc#top,Message Formats>> for cycling messages.
 Available properties are the same as above.

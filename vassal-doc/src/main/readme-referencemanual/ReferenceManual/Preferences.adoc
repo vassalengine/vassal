@@ -21,7 +21,7 @@ a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will f
 
 [#General]
 ==== General Preferences
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,50%a",]
 |===
 |The _General_ tab includes common preferences for configuring VASSAL's user interface.
 
@@ -48,11 +48,17 @@ a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will f
 *Use combined application window (requires restart)*: Check this option to have the first Map#top,Map>> in each module open as part of the same window
 that includes the ChatLog#top,Chat Log>> and main module menu. If unchecked, all Maps will have their own windows.
 
-*JVM maximum heap (in MB)*: This sets the maximum size (in megabytes) of the heap that Java uses to manage memory for the VASSAL applications. The two times you should consider increasing this value are: (1) if you receive an Out of Memory exception, and (2) you notice that map tiles are taking a really long time to paint. If either of these two things happens, try bumping it up by increments of 256 -- it is uncommon enough to need to adjust it at all, and e.g. 768 is often fine. 1024 handles even most very large modules, and we've never encountered a module in 20 years that needed more than 2048. Note that increasing this number in situations where it is not needed will end up disincentivizing Java from managing memory as tightly -- so don't increase this to massive numbers "just because you can". _NOTE: changing this value will have no effect until the next time you start the module in the VASSAL Player or Editor.
+*JVM maximum heap (in MB)*: This sets the maximum size (in megabytes) of the heap that Java uses to manage memory for the VASSAL applications. The two times you should consider increasing this value are: (1) if you receive an Out of Memory exception, and (2) you notice that map tiles are taking a really long time to paint. If either of these two things happens, try bumping it up by increments of 256 -- it is uncommon enough to need to adjust it at all, and e.g. 768 is often fine. 1024 handles even most very large modules, and we've never encountered a module in 20 years that needed more than 2048. Note that increasing this number in situations where it is not needed will end up disincentivizing Java from managing memory as tightly -- so don't increase this to massive numbers "just because you can".
 
-*Mouse Drag Threshold*: When VASSAL is distinguishing a mouse "click" from a mouse "drag", this is the minimum distance in pixels that the mouse must be moved (with a button pressed) in order to be considered a "drag". Smaller values will allow more sensitive drag detection, but can result in "clicks" being misinterpreted as drags. Larger numbers mean a piece will have to be dragged further before it begins "dragging". _NOTE:_ Pieces can be dragged to a position "inside" the drag threshold by first dragging them outside and then dragging them back (can be all in the same drag).
+NOTE: changing this value will have no effect until the next time you start the module in the VASSAL Player or Editor.
 
-*Center on opponents' moves*: If checked, whenever an opponent makes a move (either online or while replaying a PBEM log file), VASSAL will ensure that the position is visible on the screen, recentering if necessary. This is generally desirable behavior, but in online games where multiple players make moves simultaneously it can be annoying, and thus the ability to turn it off is provided. _NOTE:_ Previous versions of VASSAL had a feature which let the value of this preference be forced by a module's settings. This seemed to create problems, so it was removed as of VASSAL 3.4, and now this player preference is always available in every module.
+*Mouse Drag Threshold*: When VASSAL is distinguishing a mouse "click" from a mouse "drag", this is the minimum distance in pixels that the mouse must be moved (with a button pressed) in order to be considered a "drag". Smaller values will allow more sensitive drag detection, but can result in "clicks" being misinterpreted as drags. Larger numbers mean a piece will have to be dragged further before it begins "dragging".
+
+NOTE: Pieces can be dragged to a position "inside" the drag threshold by first dragging them outside and then dragging them back (can be all in the same drag).
+
+*Center on opponents' moves*: If checked, whenever an opponent makes a move (either online or while replaying a PBEM log file), VASSAL will ensure that the position is visible on the screen, recentering if necessary. This is generally desirable behavior, but in online games where multiple players make moves simultaneously it can be annoying, and thus the ability to turn it off is provided.
+
+NOTE: Previous versions of VASSAL had a feature which let the value of this preference be forced by a module's settings. This seemed to create problems, so it was removed as of VASSAL 3.4, and now this player preference is always available in every module.
 
 *Reverse left-to-right order of pieces in Stack Viewer*: When checked, the normal left-to-right ordering of pieces in the Mouse-over Stack Viewer is reversed.
 

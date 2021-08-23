@@ -7,7 +7,7 @@
 
 === Move Fixed Distance
 
-[cols=",",]
+[cols="a,a",]
 |===
 |Defines a command to move the piece a fixed X and Y distance using <<Expression.adoc#top,Expressions>> to control the amount of movement on each axis.
 
@@ -31,7 +31,7 @@ Otherwise, only this piece will be moved.
 *Advanced Options:*  Check this option to display additional options to give more control over the movement.
 The two numbers specified in the <<Expression.adoc#top,Expressions>> for movement right, and the two numbers for movement left are multiplied together and added to the left/up distances defined in the basic options.
 
-*IMPORTANT NOTE:*  If this piece has a <<Rotate.adoc#top,Can Rotate>> trait listed _before_ this trait, then the resulting direction will be relative to the current facing of the piece.
+NOTE:  If this piece has a <<Rotate.adoc#top,Can Rotate>> trait listed _before_ this trait, then the resulting direction will be relative to the current facing of the piece.
 _Example:_ If a piece has traits _Can Rotate_ followed by _Move Fixed Distance_ 60 upwards, then the move command will move the piece in whatever direction the top of the piece is facing.
 If a piece has traits _Move Fixed Distance_ 60 upwards followed by _Can Rotate_ then the move command will move the piece towards the top of the screen regardless of the facing of the piece.
 

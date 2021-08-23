@@ -11,24 +11,26 @@ A Calculated Property defines a <<Properties.adoc#top,Property>> which has a _va
 The property can be referred to by _name_ in other traits in the piece, either for creating <<MessageFormat.adoc#top,Message Formats>> to display messages or in e.g.
 <<PropertyMatchExpression.adoc#top,Property Match Expressions>>. Each place the property _name_ is referred to in an expression, the _value_ will be recalculated and substituted.
 
-[width="100%",cols="50%a,50%a",]
-|===
-|*Description:* A brief description to help remind you of the purpose of this Calculated Property.
-
-*Property name:* The name of the property that is used to access the formula value.
-
-*Expression:* A <<Expression.adoc#beanshell,BeanShell Expression>> that defines the formula that calculates the property value.
-Immediately to the right of the expression field, a green tick or a red cross appears as you are typing that tells you if your <<Expression.adoc#beanshell,BeanShell Expression>> is valid or not.
-
-*Insert:* Use the _Insert_ button to access the <<ExpressionBuilder.adoc#top,Expression Builder>> to add expression components such as property names, operators and functions.
-You can also type the formula in directly.
-
-Note: unlike many fields in VASSAL, Calculated Properties _exclusively_ support <<Expression.adoc#beanshell,BeanShell Expressions>>. Thus "Old Style VASSAL" comparisons e.g.
+NOTE: Unlike many fields in VASSAL, Calculated Properties _exclusively_ support <<Expression.adoc#beanshell,BeanShell Expressions>>. Thus "Old Style VASSAL" comparisons e.g.
 with single = sign, and the ~= operator, are not supported here.
 The traditional _{..}_ marks around BeanShell expressions also do not appear in this context.
 
 VASSAL will recalculate the value of the Expression _each and every_ time its value is asked for: whether it is referenced in another Calculated Property, an Expression or field in another type of trait, or is displayed in a message or a text field.
 This ensures the value will be kept accurately updated, though module designers should be aware that long complicated chains of Calculated Properties can therefore lead to "lag" and slower performance.
+
+[width="100%",cols="50%a,50%a",]
+|===
+|*Description:*:: A short description of this property for your own reference.
+
+*Property name:*:: The name of the property that is used to access the formula value.
+
+*Expression:*:: A <<Expression.adoc#beanshell,BeanShell Expression>> that defines the formula that calculates the property value.
+Immediately to the right of the expression field, a green tick or a red cross appears as you are typing that tells you if your <<Expression.adoc#beanshell,BeanShell Expression>> is valid or not.
+
+*Insert:*:: Use the _Insert_ button to access the <<ExpressionBuilder.adoc#top,Expression Builder>> to add expression components such as property names, operators and functions.
+You can also type the formula in directly.
+
+
 
 |image:images/CalculatedProperty.png[]
 

@@ -7,7 +7,7 @@
 
 === Invisible
 
-[cols=",",]
+[cols="a,",]
 |===
 |This trait gives a Game Piece the capability to be made invisible to opponents and other non-owning players.
 Specify the key which the user will press to make the piece invisible (or a <<NamedKeyCommand.adoc#top,Named Command>>) and the name for the command that will appear in the right-click context menu.
@@ -15,7 +15,7 @@ The same command turns the invisible piece visible again.
 To the player who turned it invisible, the piece will appear transparent against a background of the specified color.
 To other players it will not appear at all.
 
-*NOTE:*  _This trait actually only hides those traits which appear *before* it in the list of traits, so it should generally be the <<GamePiece.adoc#TraitOrder,last trait>> of a Game Piece._
+NOTE:  _This trait actually only hides those traits which appear *before* it in the list of traits, so it should generally be the <<GamePiece.adoc#TraitOrder,last trait>> of a Game Piece._
 
 *Key Command:* The <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to turn the piece invisible.
 

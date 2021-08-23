@@ -7,18 +7,19 @@
 
 === Game Piece Layers
 
-[cols=",",]
-|===
-|When added to a <<Map.adoc#top,Map>>, this component allows you to specify that certain Game Pieces will always be drawn on top of others.
+When added to a <<Map.adoc#top,Map>>, this component allows you to specify that certain Game Pieces will always be drawn on top of others.
 
 To add a _[Game Piece Layers]_ component to a map, navigate to the appropriate _[Map]_ component in the Editor.
 Right click on the _[Map]_ component and select _Add Game Piece Layers_.
 The new component will appear at the bottom of your map's list of sub-components.
 You can then optionally right-click the _[Game Piece Layers]_ component if you wish to add a _[Game Piece Layer Control]_ sub-component to allow layers to be hidden (see below).
 
-*Property name for layer:* The name of the Property of each Game Piece that determines the order.
+[width="100%",cols="50%a,50%a",]
+|===
+|*Property name for layer:* The name of the Property of each Game Piece that determines the order.
 Typically this will be specified with a <<PropertyMarker.adoc#top,Marker>> trait with the specified property name.
-  *Layer Order* lists the expected values for that property, in the order that they will be drawn on the map (pieces draw last will naturally appear on top of those drawn before).  Pieces assigned to different layers will never combine into a Stack.
+
+*Layer Order (Lowest first):* lists the expected values for that property, in the order that they will be drawn on the map (pieces draw last will naturally appear on top of those drawn before).  Pieces assigned to different layers will never combine into a Stack.
 Pieces with no value specified for the given property are placed in the topmost layer.
 
 *Example:*  A Map has a Game Piece Layer specified with property name _Layer_ and Layer Order _Terrain, Land, Air_.
@@ -34,7 +35,7 @@ The middle layer will contain Pieces with the value "Land" and the top layer wil
 [#GamePieceLayerControl]
 ==== Game Piece Layer Control
 
-[cols=",",]
+[width="100%",cols="50%a,50%a",]
 |===
 |This adds a button or buttons to the Map Window's Toolbar that allows you to activate/deactivate the Game Piece Layers for that map, and to change their relative order.
 Game Pieces belonging to Layers that have been deactivated are be hidden from view until the Layer is activated again.

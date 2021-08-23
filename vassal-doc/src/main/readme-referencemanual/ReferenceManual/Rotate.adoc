@@ -14,7 +14,7 @@ Alternatively, you can allow any arbitrary facing.
 In this case, selecting the _Rotate_ command will change the cursor and let the user drag the cursor to select the facing of the piece interactively.
 An optional additional command will rotate the piece to a random facing (in one of the valid facings, if applicable).
 
-*NOTE:*  The _Can Rotate_ trait will rotate only those traits that _appear above it_ in the list of traits for a Game Piece.
+NOTE:  The _Can Rotate_ trait will rotate only those traits that _appear above it_ in the list of traits for a Game Piece.
 Traits below the "Can Rotate" trait will be drawn on top of the rotated image.
 
 *Description:*  A descriptive name for this rotation trait.
@@ -34,7 +34,7 @@ If left blank no context menu item will appear.
 
 *Command to rotate randomly:* Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to select a random facing.
 
-*NOTE:*  Since the rotations are created on the fly from a bitmapped image, the image quality of a rotated counter may be lower than the unrotated version.
+NOTE:  Since the rotations are created on the fly from a bitmapped image, the image quality of a rotated counter may be lower than the unrotated version.
 Alternatively, you may get better image quality for your rotations by creating separate images for each rotation in an external paint program (If your images are based on vector objects, you can rotate them without degrading quality) and putting them into different levels of a <<Layer.adoc#top,Layer>>.
 
 image:images/Rotate.png[]

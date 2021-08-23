@@ -19,7 +19,7 @@ Pieces will snap to positions in the appropriate zone (if that is selected in th
 [#Zone]
 ==== Zone
 
-[cols=",",]
+[cols="a,a",]
 |===
 |Each Zone can have an arbitrary shape, which you specify in the _Define Shape_ dialog.
 Each Zone may also define its own grid.
@@ -31,6 +31,7 @@ A Zone may contain <<GlobalProperties.adoc#top,Properties>>. Zone Properties may
 This is how the Zone will be referred to elsewhere in the module, for example when using a <<SendToLocation.adoc#top,Send To Location>> trait to send a piece to a particular Zone.
 
 *Location Format:*  A <<MessageFormat.adoc#top,Message Format>> that will be used to populate the _LocationName_ <<Properties.adoc#top,Property>> of pieces in this zone.
+
 NOTE: This property is used not only for auto-reporting of moves, but _also_ by other traits such as the <<SendToLocation.adoc#top,Send To Location>> trait if a piece is sent to a Region in an <<IrregularGrid.adoc#top,Irregular Grid>>. The typical formats are _$name$_ to simply use name of this Zone for every location within the zone, or _$gridLocation$_ to use the location name according to this zone's grid.
 
 *Define Shape:* Click this button to bring up a dialog for defining the shape of this zone.

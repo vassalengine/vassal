@@ -7,7 +7,7 @@
 
 === Mat Cargo
 
-[cols=",",]
+[cols="a,a",]
 |===
 |A Mat Cargo piece has special capabilities when placed on top of a larger <<Mat.adoc#top,Mat>> piece: they will select automatically
 when their parent Mat is left clicked, and will attempt to move with it and even optionally maintain the same facing.
@@ -26,7 +26,9 @@ selected in the Mat Cargo trait.
 *Description:* Description of the trait - displayed only in the Editor, in the piece definer dialog.
 
 *Maintain facing relative to mat:* If checked, then the cargo piece will attempt to maintain its relative facing to any
-Mat it has been placed on, changing facing if/when the Mat rotates. **NOTE:** This means that like a Can Rotate trait,
+Mat it has been placed on, changing facing if/when the Mat rotates.
+
+NOTE: This means that like a Can Rotate trait,
 the Mat Cargo trait should be placed _below_ the graphical elements (e.g. Layer and Non-Rectangular Traits) to
 potentially be rotated. A Mat Cargo piece does _not_ need a separate Can Rotate trait in order to be able to maintain
 relative facing, although it is permitted to have its own Can Rotate trait as well.
