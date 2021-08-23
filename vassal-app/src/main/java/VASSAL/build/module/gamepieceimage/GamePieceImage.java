@@ -507,7 +507,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private boolean isVersion1ImageName(String name) {
-    return name != null && !name.isEmpty() && name.toLowerCase().endsWith(PNG_SUFFIX) && name.matches("^[a-zA-Z0-9$_]*\\.png$");
+    return name != null && !name.isEmpty() && name.toLowerCase().endsWith(PNG_SUFFIX) && name.matches("^[a-zA-Z0-9_]*\\.png$");
   }
 
   public static class ImageNameConfig implements ConfigurerFactory {
@@ -606,7 +606,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       final StringBuilder sb = new StringBuilder();
       for (int i = 0; i < string.length(); i++) {
         final char c = string.charAt(i);
-        if (c == '$' || c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+        if (c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
           sb.append(c);
         }
       }
