@@ -11,13 +11,13 @@ This component uses a layout created in a <<GamePieceLayouts.adoc#top,Game Piece
 Here, you specify the colors, text, and images to use in the layout, as well as the name under which this image will appear in the image-chooser drop-down.
 You can then begin adding this image to Game Pieces, either in their <<BasicPiece.adoc#top,Basic Piece>> component or in a <<Layer.adoc#top,Layer>>.
 
-[width="100%",cols="50%,<50%",]
+[width="100%",cols="50%a,50%a",]
 |===
 a|
-*Name:* Specify a name for the image definition.
+*Name:*:: Specify a name for the image definition.
 This is the name under which this image will appear in the image-chooser drop-down menu in a Game Piece trait's properties.
 
-*Background Color:* Select a background color for the image from the drop down list of available colors, or click the _Cancel_ button on that dialog to use a transparent background.
+*Background Color:*:: Select a background color for the image from the drop down list of available colors, or click the _Cancel_ button on that dialog to use a transparent background.
 
 The next section shows a visualization of what the finished image will look like with your choices.
 
@@ -30,43 +30,43 @@ There is a different display panel for each type of item.
 
 ==== Symbol Item Configuration
 
-[width="100%",cols="50%,<50%",]
+[width="100%",cols="50%a,<50%a",]
 |===
-|*Unit Size:* Select the Unit Size specifier from the drop-down menu.
+|*Unit Size:*:: Select the Unit Size specifier from the drop-down menu.
 
-*1st Symbol:* Select the primary symbol from the drop-down menu.
+*1st Symbol:*:: Select the primary symbol from the drop-down menu.
 
-*2nd Symbol:* Select the pecondary symbol from the drop-down menu.
+*2nd Symbol:*:: Select the pecondary symbol from the drop-down menu.
 
-*Symbol Color:* Select the color used to draw the symbol lines.
+*Symbol Color:*:: Select the color used to draw the symbol lines.
 
-*Background Color:* Select the color to use for the background of the symbol body.
+*Background Color:*:: Select the color to use for the background of the symbol body.
 
-*Size Color:* Select the color used to draw the Size Specifier drawn above the symbol body.
+*Size Color:*:: Select the color used to draw the Size Specifier drawn above the symbol body.
 |image:images/symbolinstance.png[image,width=313,height=168]
 |===
 
 ==== Label Item Configuration
 
-[width="100%",cols="50%,<50%",]
+[width="100%",cols="50%a,<50%a",]
 |===
-|*Value:* Enter the text to display on the image.
+|*Value:*:: Enter the text to display on the image.
 
-*Foreground Color:* Select the color to use to draw the text.
+*Foreground Color:*:: Select the color to use to draw the text.
 
-*Background Color:* Select the color to use to draw a box behind the text.
+*Background Color:*:: Select the color to use to draw a box behind the text.
 |image:images/textinstance.png[image,width=313,height=85]
 |===
 
 ==== Text Box Item Configuration
 
-[width="100%",cols="50%,<50%",]
+[width="100%",cols="50%a,<50%a",]
 |===
-|*Value:* Enter the text to display on the image.
+|*Value:*:: Enter the text to display on the image.
 
-*Text Color:* Select the color to use to draw the text.
+*Text Color:*:: Select the color to use to draw the text.
 
-*Background Color:* Select the color to use to draw a box behind the text.
+*Background Color:*:: Select the color to use to draw a box behind the text.
 |image:images/textboxinstance.png[]
 |===
 
@@ -76,10 +76,10 @@ Import an image to draw at the position specified in the layout.
 
 ==== Shape Item Configuration
 
-[width="100%",cols="50%,<50%",]
+[width="100%",cols="50%a,<50%a",]
 |===
-|*Foreground Color:* Select the fill color for the shape.
+|*Foreground Color:*:: Select the fill color for the shape.
 
-*Background Color:* Select the color for the shape's outline.
+*Background Color:*:: Select the color for the shape's outline.
 |image:images/ShapeItemInstance.png[]
 |===
