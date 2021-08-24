@@ -15,7 +15,7 @@ A standard hexagonal grid for regulating movement on a <<Board.adoc#top,Board>>.
 *Sideways (hexrows go horizontal):*::   Check this box to make the hexrows of the grid run right-to-left instead of top-to-bottom.
 This changes the hexagonal grid layout from "Flat Topped" to "Pointy Topped".
 
-NOTE: (Setting the grid to be sideways switches the meanings of horizontal/vertical and x/y below).
+NOTE: Setting the grid to be sideways switches the meanings of horizontal/vertical, Height/Width and X/Y below.
 
 *X,Y offset:*::  The horizontal and vertical position of the center of the first hex of the grid.
 

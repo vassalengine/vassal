@@ -134,7 +134,7 @@ image:_images/image13.png[image,width=348,height=324]
 
 == The [Module] Node
 
-You create new module components by right -licking on the *[Module]* node, the topmost node in the Configuration Window. The node is labeled with the module name and contains all the other nodes.
+You create new module components by right-clicking on the *[Module]* node, the topmost node in the Configuration Window. The node is labeled with the module name and contains all the other nodes.
 
 Using the menu from this node, you can create any of the following new components:
 

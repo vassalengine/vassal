@@ -7,9 +7,7 @@
 
 === Mat Cargo
 
-[cols="a,a",]
-|===
-|A Mat Cargo piece has special capabilities when placed on top of a larger <<Mat.adoc#top,Mat>> piece: they will select automatically
+A Mat Cargo piece has special capabilities when placed on top of a larger <<Mat.adoc#top,Mat>> piece: they will select automatically
 when their parent Mat is left clicked, and will attempt to move with it and even optionally maintain the same facing.
 
 When a <<GamePiece.adoc#top,Game Piece>> with the <<Mat.adoc#top,Mat>> trait is selected by left-clicking on it, any game pieces with the Mat Cargo
@@ -22,10 +20,13 @@ of it will follow.
 
 If a Mat piece is <<Rotate.adoc#top,rotated>> or <<Pivot.adoc#top,pivoted>>, any cargo pieces on top can also match their facing to the Mat, if that option is
 selected in the Mat Cargo trait.
+[width="100%",cols="50%a,50%a",]
+|===
+|
 
-*Description:* Description of the trait - displayed only in the Editor, in the piece definer dialog.
+*Description:*:: Description of the trait - displayed only in the Editor, in the piece definer dialog.
 
-*Maintain facing relative to mat:* If checked, then the cargo piece will attempt to maintain its relative facing to any
+*Maintain facing relative to mat:*:: If checked, then the cargo piece will attempt to maintain its relative facing to any
 Mat it has been placed on, changing facing if/when the Mat rotates.
 
 NOTE: This means that like a Can Rotate trait,
@@ -33,14 +34,14 @@ the Mat Cargo trait should be placed _below_ the graphical elements (e.g. Layer 
 potentially be rotated. A Mat Cargo piece does _not_ need a separate Can Rotate trait in order to be able to maintain
 relative facing, although it is permitted to have its own Can Rotate trait as well.
 
-*X Extra detection distance from center:* If non-zero, then VASSAL will look this distance to the left and right of the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
+*X Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance to the left and right of the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
 
-*Y Extra detection distance from center:* If non-zero, then VASSAL will look this distance above and below the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
+*Y Extra detection distance from center:*:: If non-zero, then VASSAL will look this distance above and below the piece's center when trying to attach it to a mat. Useful e.g. for cards that are tucked halfway under a mat surface, as it does not require the precise center of the card to be on the mat.
 
 |image:images/MatCargo.png[]
 
 image:images/Mat2.png[]
-*Above:* a <<Mat.adoc#top,Mat>> and its Mat Cargo pieces rotated 45 degrees in _Almoravid_
+_A <<Mat.adoc#top,Mat>> and its Mat Cargo pieces rotated 45 degrees in_ _Almoravid_
 
 |===
 

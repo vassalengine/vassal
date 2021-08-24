@@ -19,7 +19,7 @@ The text of the label can be fixed or specifiable by a player at game time.
 . Check if the entered label is a $$ Variable Substitution (defined by a string enclosed between $ characters). This allows <<Properties.adoc#top,Properties>> of the piece to be substituted with $..$ notation, as in a <<MessageFormat.adoc#top,Message Format>>
 . If no check is true the entered string is displayed.
 
-A know limitation of the evaluation order above is that if you enter a sequence of digits starting with 0s, these will be removed when the string is evaluated as interger.
+A known limitation of the evaluation order above is that if you enter a sequence of digits starting with 0s, these will be removed when the string is evaluated as integer.
 A workaround to this is to enter the same string via a Beanshell expression. For example to display a sequence of 3 zeroes as label text you can use *{"000"}*.
 Note that the Beanshell expressions should be preferred to $$ Variable Substitutions. The latter are only available for historical reasons.
 
@@ -34,9 +34,14 @@ with a line break +
 and [red]#different# [blue]#colors#
 ****
 
-*Name Format:*  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used.
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
 
-*Menu Command:*  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated.
+*Label text:*  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used.
+
+*Menu command:*::  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated.
 
 *Menu key command:*  If blank, the text of the label is permanent.
 If set, then gives the key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to update the text of the label.
@@ -63,4 +68,5 @@ Rotation is performed after the horizontal/vertical justification and positionin
 
 *Property Name:*  The value of this label will be exposed as a <<Properties.adoc#top,Property>> with the given name.
 
-image:images/Label.png[]
+|image:images/Label.png[]
+|===

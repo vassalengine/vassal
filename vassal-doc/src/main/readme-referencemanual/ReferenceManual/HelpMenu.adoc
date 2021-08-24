@@ -49,7 +49,7 @@ Adds an entry to the help menu. Selecting the menu item opens an external browse
 |
 *Menu command*:::  The menu item to be added to the Help menu.
 
-*PDF file*:::  A PDF file you select from your local file system. It will automatically be copied into the module and will be destributed with it.
+*PDF file*:::  A PDF file you select from your local file system. It will automatically be copied into the module and will be distributed with it.
 |image:images/HelpFilePDF.png[]
 |===
 

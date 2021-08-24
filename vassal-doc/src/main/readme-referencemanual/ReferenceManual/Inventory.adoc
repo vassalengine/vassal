@@ -65,7 +65,7 @@ Sorting by numeric is _['c-4', 'b2', 'a3']_.)
 *Forward key strokes to selected piece:*::  If selected, then any keys pressed in the window will be sent as key commands to the selected piece.
 Selecting a folder will send the command to all pieces within that folder.
 
-*Show right-click menu of piece:*::  If selected, then right-clicking on a piece in the tree with display its context menu, which can be used to modify the piece or give it a command.
+*Show right-click menu of piece:*::  If selected, then right-clicking on a piece in the tree will display its context menu, which can be used to modify the piece or give it a command.
 
 *Draw piece images:*::  If selected, the tree will draw reduced-size images of the piece at the specified zoom factor.
 

@@ -85,4 +85,5 @@ See the Properties article <<Properties.adoc#top,for a handy list of properties 
 *SEE ALSO:* <<ChatLog.adoc#top,Chat Log>>, <<ReportChanges.adoc#top,Report Action>>, <<Label.adoc#top,Text Label>>
 
 image:images/GlobalOptionsHTML.png[]
-Enabling <<ChatLog.adoc#top,Chat Log>> HTML Support in <<GlobalOptions.adoc#top,Global Options>>
+
+_Enabling <<ChatLog.adoc#top,Chat Log>> HTML Support in <<GlobalOptions.adoc#top,Global Options>>_

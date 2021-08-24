@@ -7,25 +7,9 @@
 
 === Multi-Action Button
 
-[cols=",",]
-|===
-|The Multi-Action Button combines buttons from the Toolbar into a single button.
+The Multi-Action Button combines buttons from the Toolbar into a single button.
 The named would-be buttons are removed from the Toolbar and a new button is added.
 Clicking this button automatically invokes the actions of all the removed & combined "buttons". +
-*Button Text:* The text of the button to be added to the Toolbar.
-
-*Tooltip Text:* Optional tooltip text for the Multi-Action Button.
-
-*Button Icon:* Icon for the Toolbar button.
-
-*Hotkey:* Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
-
-*Buttons:* Enter the exact Button Text of the Toolbar buttons that you wish to invoke as a result of clicking this button.
-They will be invoked in the order listed.
-After entering the text of a Button, click the _Add_ button to add it to the list.
-You can select a button from the list and _Remove_ it if needed.
-Use the _Insert_ button if you need to insert something into the middle of the list.
-Buttons will be invoked in the order listed.
 
 *EXAMPLE:*  A <<GlobalKeyCommand.adoc#top,Global Key Command>> is defined that resets the fatigue level of all armies on the map.
 A second Global Key Command returns them to their home base.
@@ -35,5 +19,27 @@ A Multi-Action Button can be used to combine both actions into a single Toolbar 
 Some Game Pieces are defined with a <<TriggerAction.adoc#top,Trigger Action>> trait that compares the level of a <<Layer.adoc#top,Layer>> (representing armor) with the _Damage_ property and deletes the piece if the level is below the _Damage_ value.
 A <<GlobalKeyCommand.adoc#top,Global Key Command>> invokes the Trigger Action.
 A Multi-Action Button is defined that invokes the Dice Button followed by the Global Key Command, resulting in the automatic deletion of any units with armor less than the random amount of damage.
+
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Description:*:: A short description of this trait for your own reference.
+
+*Button Text:*:: The text of the button to be added to the Toolbar.
+
+*Tooltip Text:*:: Optional tooltip text for the Multi-Action Button.
+
+*Button Icon:*:: Icon for the Toolbar button.
+
+*Hotkey:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button.
+
+*Menu entries:*:: Enter the exact _Button Text_ of the Toolbar buttons that you wish to invoke as a result of clicking this button.
+They will be invoked in the order listed.
++
+Buttons will be invoked in the order listed.
++
+NOTE: Enter the _Button Text_ of the Toolbar Buttons you want to invoke, NOT the Named Commands attached to the buttons.
+
+
 |image:images/MultiActionButton.png[] +
 |===

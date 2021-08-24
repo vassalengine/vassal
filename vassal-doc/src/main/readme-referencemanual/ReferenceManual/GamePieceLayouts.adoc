@@ -99,7 +99,7 @@ Each item type has a checkbox to enable a set of advanced options to better cont
 
 *Rotation (degrees):*:: Allows the item to be rotated about its center.
 
-*Anti-alias:*:: Turn on anti-aliasing ehen drawing the item. Can improve the look of the certain items, especially when they are small or contain narrow lines.
+*Anti-alias:*:: Turn on anti-aliasing when drawing the item. Can improve the look of the certain items, especially when they are small or contain narrow lines.
 
 |image:images/imagelayoutadvanced.png[]]
 |===
@@ -123,7 +123,7 @@ The only Symbol Set currently available is NATO Unit Symbols.
 
 *Height:*::  The height of the body of the symbol (not including the Size specifier) in pixels.
 
-*Line width:*:: The width of the line (in pixels)used to draw the symbol.
+*Line width:*:: The width of the line (in pixels) used to draw the symbol.
 Fractional line widths can be used.
 The lines are drawn with antialiasing turned on to produce smooth looking lines of any width.
 When using a small symbol size, a line width of 1.0 will usually give the best results.
@@ -181,7 +181,7 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 
 *Text option:*:: Select how the text is provided for each image created using this layout:
 +
-*Specified in individual imagaes* - Each image has its own version of the text
+*Specified in individual imagaes* - Each image has its own version of the text.
 +
 *Fixed for this layout* - All images created using this layout have the same text.
 
