@@ -10,7 +10,7 @@
 When added to a <<Map.adoc#top,Map>>, this component allows you to specify that certain Game Pieces will always be drawn on top of others.
 
 To add a _[Game Piece Layers]_ component to a map, navigate to the appropriate _[Map]_ component in the Editor.
-Right click on the _[Map]_ component and select _Add Game Piece Layers_.
+Right-click on the _[Map]_ component and select _Add Game Piece Layers_.
 The new component will appear at the bottom of your map's list of sub-components.
 You can then optionally right-click the _[Game Piece Layers]_ component if you wish to add a _[Game Piece Layer Control]_ sub-component to allow layers to be hidden (see below).
 

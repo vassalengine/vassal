@@ -12,7 +12,7 @@ This component contains all the layouts used to define a <<GamePieceImage.adoc#t
 A Game Piece Layout defines the general look and layout of the items used in drawing an image.
 Specific color and text information is defined later for individual piece images in the Game Piece Image properties.
 
-NOTE:  Once you have configured your new Game Piece Layout, you will need to right click on its _[Game Piece Layout]_ entry and select _Add Game Piece Image_ to create one or more individual images based on your layout.
+NOTE:  Once you have configured your new Game Piece Layout, you will need to right-click on its _[Game Piece Layout]_ entry and select _Add Game Piece Image_ to create one or more individual images based on your layout.
 
 An image is built up by drawing in order:
 
@@ -246,4 +246,4 @@ Items *MUST* be uniquely named within an Image Layout.
 
 An image created using this layout.
 You can create as many individual Game Piece Images as you'd like using each Game Piece Layout.
-To add a Game Piece Image, right click on the _[Game Piece Layout]_ component where you created the desired layout and select _Add Game Piece Image_.
+To add a Game Piece Image, right-click on the _[Game Piece Layout]_ component where you created the desired layout and select _Add Game Piece Image_.

@@ -29,7 +29,7 @@ Otherwise, it will be a circle with the given radius in pixels.
 
 *Always visible:*:: If selected, the area is always highlighted when the piece is drawn on a Map.
 
-*Toggle visible command:*:: If not always visible, this is the context menu command ("right click menu") to show/hide the highlighted area.
+*Toggle visible command:*:: If not always visible, this is the context menu command ("right-click menu") to show/hide the highlighted area.
 
 *Toggle visible key command:*:: If not always visible, the <<NamedKeyCommand.adoc#top,KeyStroke orNamed Command>> to show/hide the highlighted area.
 

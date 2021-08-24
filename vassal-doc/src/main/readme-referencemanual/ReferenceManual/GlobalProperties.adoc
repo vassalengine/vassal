@@ -49,7 +49,7 @@ Adds a button to the Toolbar of the Map Window or Module that changes the value 
 You can combine multiple buttons into a single drop-down menu using a <<ToolbarMenu.adoc#top,Toolbar Menu>>.
 
 To add a Change-Property Toolbar Button, locate the _[Global Property]_ component which you wish to be able to change -- in the Editor it will be inside the list of _[Global Properties_.
-Right click on the _[Global Property]_ component and select _Add Change-Property Toolbar Button_.
+Right-click on the _[Global Property]_ component and select _Add Change-Property Toolbar Button_.
 
 [width="100%",cols="50%a,50%a",]
 |===

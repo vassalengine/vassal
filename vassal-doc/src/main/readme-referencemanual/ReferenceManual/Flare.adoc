@@ -12,7 +12,7 @@ When added to a <<Map.adoc#top,Map>>, this component allows a player to "send up
 A <<Flare.adoc#top,Flare>> component is automatically added to every map, starting in VASSAL 3.5. Additional flares can be added if desired.
 
 To add a Flare component to a map, navigate to the appropriate _[Map]_ component in the Editor.
-Right click on the <<Map.adoc#top,Map>> component and select _Add Flare_.
+Right-click on the <<Map.adoc#top,Map>> component and select _Add Flare_.
 The new component will appear at the bottom of your map's list of sub-components. You can then
 edit the properties for your new Flare.
 

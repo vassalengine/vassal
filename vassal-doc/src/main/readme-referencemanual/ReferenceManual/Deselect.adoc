@@ -11,7 +11,8 @@ A <<GamePiece.adoc#top,Game Piece>> with this trait will have a command that cau
 
 [width="100%",cols="50%a,50%a",]
 |===
-|*Description:*:: A short description of this trait for your own reference.
+|
+*Description:*:: A short description of this trait for your own reference.
 
 *Menu Command:*:: Menu text for the _Deselect_ command for the right-click context menu. If left blank then no menu item will be displayed but the _Key Command_ can still be used.
 

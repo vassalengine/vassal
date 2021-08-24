@@ -43,7 +43,7 @@ a|
 === Sub-Components
 
 You may add your own arbitrary preference settings to the global options.
-To add your own preferences, right click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
+To add your own preferences, right-click on the _[Global Options]_ component in the Editor and select one of the _Add_ options.
 The different sub-components support different constraints on the values of the preference setting.
 The values of these preference setting are exposed as <<Properties.adoc#top,Properties>>.
 

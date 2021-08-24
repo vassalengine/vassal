@@ -11,7 +11,7 @@ A Turn Counter places a button and/or widget on the <<Toolbar.adoc#top,Toolbar>>
 of a game.
 Players can advance the turn forward or backward, or optionally jump directly to a turn.
 
-To add a Turn Counter to your module, right click on the _[Module]_ component at the very top of the Editor's configuration window list, and select _Add Turn Counter_.
+To add a Turn Counter to your module, right-click on the _[Module]_ component at the very top of the Editor's configuration window list, and select _Add Turn Counter_.
 Then, after configuring its fields appropriately, you will find your new component's _[Turn Counter]_ component entry at the bottom of the Module's list of components.
 You can right-click on the _[Turn Counter]_ component entry to add sub-components to represent levels within your Turn structure (see details and examples below).
 

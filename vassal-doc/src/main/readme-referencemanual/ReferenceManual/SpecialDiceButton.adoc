@@ -12,9 +12,9 @@
 |A Symbolic Dice Button places a button on the <<Toolbar.adoc#top,Toolbar>> which rolls dice that use graphical images to display their faces -- in simpler terms, "dice that look like dice". A Symbolic Dice Button can roll one or more individual dice, each represented by a _[Symbolic Die]_ component, each of which may in turn have any number of faces (represented by _[Symbolic Die Face]_ sub-components). When the button is clicked, a random face is selected for each Symbolic Die that this component contains.
 The results of the roll can be reported as text into the chat area, and/or graphically in a separate window and/or in the button itself.
 
-To add a Symbolic Dice Button to your module, right click on the main _[Module]_ entry at the very top of the Editor's configuration window, and select _Add Symbolic Dice Button_.
+To add a Symbolic Dice Button to your module, right-click on the main _[Module]_ entry at the very top of the Editor's configuration window, and select _Add Symbolic Dice Button_.
 Then, once you do the initial configuration of its options, navigate to the _[Symbolic Dice Button]_ component that will have been added at the very end of the Module's list of components.
-Right click on the _[Symbolic Dice Button]_ entry, and select _Add Symbolic Die_.
+Right-click on the _[Symbolic Dice Button]_ entry, and select _Add Symbolic Die_.
 If you wish this button to roll more than one die, you can also add more.
 Then, you will need to right-click each _[Symbolic Die]_ entry, and select _Add Symbolic Die Face_ once for each face of the desired die (so a 6-sided Symbolic Die would have six Symbolic Die Face sub-components). You can then configure each of the components and sub-components.
 

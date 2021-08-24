@@ -116,7 +116,7 @@ Each node displays a folder icon. Node types appear in brackets *[ ]*. The compo
 
 Click the arrow next to each folder icon to toggle the expanded folder view and view the various sub -components of the folder. Click the arrow again to contract the node.
 
-You can perform any the following operations on components by right clicking on the component node and selecting the operation from the menu.
+You can perform any the following operations on components by right-clicking on the component node and selecting the operation from the menu.
 
 image:_images/image13.png[image,width=348,height=324]
 
@@ -134,7 +134,7 @@ image:_images/image13.png[image,width=348,height=324]
 
 == The [Module] Node
 
-You create new module components by right clicking on the *[Module]* node, the topmost node in the Configuration Window. The node is labeled with the module name and contains all the other nodes.
+You create new module components by right -licking on the *[Module]* node, the topmost node in the Configuration Window. The node is labeled with the module name and contains all the other nodes.
 
 Using the menu from this node, you can create any of the following new components:
 

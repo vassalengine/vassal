@@ -11,8 +11,8 @@ An At-Start Stack is an ordinary stack of playing pieces that is initialized in 
 It can be used to place pieces in their starting positions (particularly when the starting positions are true regardless of scenario). It is also appropriate for any fixed pool of counters.
 When the game begins, the pieces are in place just as if they had been dragged from the Game Piece Palette, except that no more can be created during the course of the game.
 
-To add an _At-Start Stack_, navigate to the entry for your Map in the Editor, right click on the _[Map]_ component entry, and select _Add At-Start Stack_.
-Then, right click on the _[At-Start Stack]_ component entry created at the bottom of your Map's list of sub-components, and select _Add Single Piece_ to add a piece to the stack.
+To add an _At-Start Stack_, navigate to the entry for your Map in the Editor, right-click on the _[Map]_ component entry, and select _Add At-Start Stack_.
+Then, right-click on the _[At-Start Stack]_ component entry created at the bottom of your Map's list of sub-components, and select _Add Single Piece_ to add a piece to the stack.
 You can add as many pieces as you wish to each At-Start Stack.
 
 image:images/AtStartStack.png[]
@@ -56,6 +56,6 @@ Thus, General Benjamin "Spoons" Butler will appear on top of his stack.
 ==== <<GamePiece.adoc#top,Single Piece>>
 
 An At-Start Stack can contain any number of Game Pieces.
-Right click on the _[At-Start Stack]_ component in the Editor and select _Add Single Piece_ to add a piece to the At-Start Stack.
+Right-click on the _[At-Start Stack]_ component in the Editor and select _Add Single Piece_ to add a piece to the At-Start Stack.
 You can then open the properties for the _[Single Piece]_ to define it.
 Adding a <<UsePrototype.adoc#top,Prototype>> trait reference is often the quickest and most efficient way to define pieces.
