@@ -1,5 +1,7 @@
 3.6.0-beta2 - ???
 
+* 10341: Symbolic Dice Button tooltip is overwritten by description text
+
 3.6.0-beta1 - 21 August 2021
 
 * 10326: Add option to disable OpenGL FBOs on Macs
