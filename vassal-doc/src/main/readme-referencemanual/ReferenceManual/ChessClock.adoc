@@ -67,7 +67,7 @@ Each individual chess clock that you add can be configured in its own component 
 
 [width="100%",cols="50%a,50%a",]
 |===
-|*Player side for timer:*:: Select which of your the player sides from your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> will correspond to this clock.
+|*Player side for timer:*:: Select which of the player sides from your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> will correspond to this clock.
 
 *Timer button text:*:: Text to be displayed on this chess clock's toolbar button.
 

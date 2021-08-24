@@ -27,7 +27,7 @@ _Numeric_ - (1,2,3 ...).
 Two leading zeros mean use a minimum of three digits, etc.
 
 *Starting number in horizontal/vertical:*::  The number of the first cell ('A' is equivalent to 0 if using alphabetic numbering).
-NOTE: If you are creating a grid inside a <<ZonedGrid.adoc#top,Zone>> the first cell refers to the first zell if the grid was applied to the whole board. You will have to allow for how many cells between the board edge and the zone edge.
+NOTE: If you are creating a grid inside a <<ZonedGrid.adoc#top,Zone>> the first cell refers to the first cell if the grid was applied to the whole board. You will have to allow for how many cells are between the board edge and the zone edge.
 
 *Horizontal/Vertical numbering descending:*::  If checked, numbering of rows/columns begins on the bottom/right edge of the board and increases up/left.
 

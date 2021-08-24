@@ -26,11 +26,11 @@ An image is built up by drawing in order:
 
 *Name:*:: The name of the Image Layout.
 
-*Counter Width:*:: The width of all images created using this layout.
+*Counter width:*:: The width of all images created using this layout.
 
-*Counter Height:*:: The height of all images created using this layout.
+*Counter height:*:: The height of all images created using this layout.
 
-*Border Style:*:: The border style for all images created using this layout.
+*Border style:*:: The border style for all images created using this layout.
 Border styles currently available are:
 
 * [.li]#None - No Border#
@@ -39,8 +39,6 @@ Border styles currently available are:
 Mild 3D effect.#
 * [.li]#3D - A 3D-style shaded border.
 Two pixels wide, colour automatically determined from background color.#
-
-*Reduce Images to 256 Colors:*:: This option results in smaller module files and will not degrade image quality unless the counters use high-resolution photographic images
 
 |image:images/imagelayout.png[]
 
@@ -76,7 +74,8 @@ a|
 Use the buttons to add, remove or move items in the list.
 
 * [.li]#Symbol - Add a NATO Unit Symbol.#
-* [.li]#Text - Add a Text label.#
+* [.li]#Label - Add a Text label.#
+* [.li]#Text Box - Add a Text box.#
 * [.li]#Image - Add an image from the module images directory.#
 * [.li]#Shape - Draw and color fill a rectangle, rounded rectangle or oval.#
 * [.li]#Remove - Remove the selected item.#
@@ -88,6 +87,23 @@ draw later and thus "towards the front").#
 |image:images/imagelayoutbuttons.png[]
 |===
 
+==== Advanced Options
+Each item type has a checkbox to enable a set of advanced options to better control the position and display of the item.
+
+[width="100%",cols="50%a,<50%a",]
+|===
+|
+*Advanced options:*:: Display the advanced options.
+
+*X/Y offset:*:: How many pixels to move the item to the right/down from its default display position seleted in the Location option.
+
+*Rotation (degrees):*:: Allows the item to be rotated about its center.
+
+*Anti-alias:*:: Turn on anti-aliasing ehen drawing the item. Can improve the look of the certain items, especially when they are small or contain narrow lines.
+
+|image:images/imagelayoutadvanced.png[]]
+|===
+
 ==== Symbol Item
 A Symbol Item is a generic symbol to be drawn by the program.
 An Infantry symbol will be shown as a placeholder but the particular symbol is chosen later when configuring an individual <<GamePieceImage.adoc#top,Game Piece Image>>.
@@ -95,26 +111,24 @@ An Infantry symbol will be shown as a placeholder but the particular symbol is c
 [width="100%",cols="50%a,<50%a",]
 |===
 |
-
-
 *Name:*::  The name of the item.
 Items *MUST* be uniquely named within an Image Layout.
 
 *Location:*::  Select the location of the item on the counter.
 
-*Symbol Set:*::  Select the Symbol Set to use.
+*Symbol set:*::  Select the Symbol Set to use.
 The only Symbol Set currently available is NATO Unit Symbols.
 
 *Width:*::  The width of the body of the symbol in pixels.
 
 *Height:*::  The height of the body of the symbol (not including the Size specifier) in pixels.
 
-*Line Width:*:: The width of the line (in pixels)used to draw the symbol.
+*Line width:*:: The width of the line (in pixels)used to draw the symbol.
 Fractional line widths can be used.
 The lines are drawn with antialiasing turned on to produce smooth looking lines of any width.
 When using a small symbol size, a line width of 1.0 will usually give the best results.
 
-|image:images/symbolitem.png[image,width=458,height=168]
+|image:images/symbolitem.png[]]
 |===
 
 ==== Label Items
@@ -132,16 +146,21 @@ The location also determines the text justification, i.e.
 selecting Top Left ensures that the upper left corner of the text is in the upper left corner of the image.
 Once the justification is set by the Location, you can still use the X/Y offset in the advanced options to place the text in a different location.
 
-*Font Style:*::  Select the name of the Font Style to be used for this Text Item.
+*Font style:*::  Select the name of the Font Style to be used for this Text Item.
 
-*Text is:*::  Select whether the text is specified in this layout (i.e.
-right here) or in the individual Game Piece Images to be created from this layout.
+*Text option:*:: Select how the text is provided for each image created using this layout:
++
+*Specified in individual imagaes* - Each image has its own version of the text
++
+*Fixed for this layout* - All images created using this layout have the same text.
+
+*Text:*:: Enter the text to display on each image when the _Fixed for this layout_ Text option is selected.
 
 |image:images/imagelayouttext1.png[] +
 |===
 
 ==== Text Box Items
-A Text Box Item is multi-line area of text drawn in a particular font at a particular location.
+A Text Box Item is multi-line area of text drawn in a particular font at a particular location. The text in a Text Box will wrap to stay within the bounds of the box.
 The value of the text can be specified in the individual images or in the layout, in which case all images using this layout share the same value.
 
 [width="100%",cols="50%a,<50%a",]
@@ -158,9 +177,15 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 
 *Use HTML:*::  If selected, then the contents will be interpreted as HTML.
 
-*Font Style:*::  Select the name of the Font Style to be used for this Text Item.
+*Font style:*::  Select the name of the Font Style to be used for this Text Item.
 
-*Text is:*::  Select whether the text is specified right here in the layout or later in the individual Game Piece Image properties.
+*Text option:*:: Select how the text is provided for each image created using this layout:
++
+*Specified in individual imagaes* - Each image has its own version of the text
++
+*Fixed for this layout* - All images created using this layout have the same text.
+
+*Text:*:: Enter the text to display on each image when the _Fixed for this layout_ Text option is selected.
 
 |image:images/imagelayouttextbox.png[]
 |===
@@ -177,10 +202,12 @@ Items *MUST* be uniquely named within an Image Layout.
 
 *Location:*::  Select the location of the item on the counter.
 
-*Image is:*::  Specify whether the image is specified right here in this layout or later on in the Game Piece Image properties that use this layout.
+*Image option:*::  Specify whether the image is specified right here in this layout or later on in the Game Piece Image properties that use this layout.
 Use the File Open Dialog box to locate a copy of the image you wish to use on your PC.
 When you save the module, VASSAL will attempt to copy this image into the _images_ folder within the module zip file.
 You can also manually copy images into your images folder.
+
+*Image:*:: Select an image to load into the module when the _Fixed for this layout_ option is selected.
 
 |image:images/imageitem.png[]
 |===
@@ -201,6 +228,10 @@ Items *MUST* be uniquely named within an Image Layout.
 *Height:*::  Select the height of the shape.
 
 *Shape:*::  Select the type of shape.
++
+* *Rectangle* - A simple Rectangle of the given size.
+* *Rounded Rectangle* - A Rectangle with rounded corners.
+* *Oval* - A circle or oval shape that fills the given size.
 
 *Bevel:*::  For Rounded Rectangle shapes, larger bevel values mean rounder corners.
 

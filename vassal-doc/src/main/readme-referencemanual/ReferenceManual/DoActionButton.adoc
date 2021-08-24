@@ -76,7 +76,7 @@ _A complex example that does the following:_
 
 . _Send the Hotkey *StartHitting*_
 . _Set up a property name *Counter* with a value of 10 and repeat the following steps, incrementing *Counter* by 2 each time until *Counter* exceeds the value of the property *MaxCount*_
-.. _Display the message 'Oppenent Hit!!!' in the Chat area_
+.. _Display the message 'Opponent Hit!!!' in the Chat area_
 .. _Play the sound clip 'tada.mp3'_
 .. _Send the KeyStroke Hotkey Command *F2*_
 . _Send the Hotkey *StopHitting*_
