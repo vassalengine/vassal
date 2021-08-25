@@ -106,8 +106,8 @@ public class EnumPreference extends BasicPreference {
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new StringEnumConfigurer(getVariableName(), getDescription(), options);
-      config.setValue(defaultValue);
       config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
+      config.setValue(defaultValue);
     }
     return config;
   }
