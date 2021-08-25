@@ -577,25 +577,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     /** Ensure the current value ends in '.png' */
     private void fixPng(FilterBypass fb, int caretPos) throws BadLocationException {
       if (!isPng(fb)) {
-        final String text = getText(fb);
-        if (text.endsWith(".")) {
-          super.replace(fb, text.length() - 1, 1, PNG_SUFFIX, null);
-          config.setCaretPosition(caretPos);
-        }
-        else if (text.toUpperCase().endsWith(".p")) {
-          super.replace(fb, text.length() - 2, 2, PNG_SUFFIX, null);
-          config.setCaretPosition(caretPos);
-        }
-        else if (text.toUpperCase().endsWith(".pn")) {
-          super.replace(fb, text.length() - 3, 3, PNG_SUFFIX, null);
-          config.setCaretPosition(caretPos);
-        }
-        else {
-          super.replace(fb, text.length(), 0, PNG_SUFFIX, null);
-          config.setCaretPosition(caretPos);
-        }
+        super.replace(fb, getText(fb).length(), 0, PNG_SUFFIX, null);
+        config.setCaretPosition(caretPos);
       }
-
     }
 
     private String clean(String string) {
