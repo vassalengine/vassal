@@ -52,8 +52,9 @@ public class TextPreference extends BasicPreference {
   @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
-      config = new TextConfigurer(getVariableName(), getDescription(), defaultValue);
+      config = new TextConfigurer(getVariableName(), getDescription());
       config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
+      config.setValue(defaultValue);
     }
     return config;
   }

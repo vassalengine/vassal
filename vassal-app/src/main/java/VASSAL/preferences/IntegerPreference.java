@@ -55,9 +55,9 @@ public class IntegerPreference extends BasicPreference {
   @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
-      config =
-        new IntConfigurer(getVariableName(), getDescription(), defaultValue);
+      config = new IntConfigurer(getVariableName(), getDescription());
       config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
+      config.setValue(defaultValue);
     }
     return config;
   }

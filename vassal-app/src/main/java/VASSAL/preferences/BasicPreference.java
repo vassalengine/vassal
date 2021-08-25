@@ -149,9 +149,6 @@ public abstract class BasicPreference extends AbstractConfigurable {
       g.getPrefs().addOption(tabName, getPreferenceConfigurer());
     }
 
-    if (getVariableName().length() > 0) {
-      updateGlobalProperty(g.getPrefs().getStoredValue(getVariableName()));
-    }
   }
 
   protected void updateGlobalProperty(String newValue) {
