@@ -182,24 +182,33 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public Element getBuildElement(Document doc) {
     final Element el = doc.createElement(getClass().getName());
+
     String att = super.getAttributeValueString(BUTTON_TEXT);
-    if (att != null)
+    if (att != null) {
       el.setAttribute(BUTTON_TEXT, att);
+    }
+
     att = super.getAttributeValueString(BUTTON_ICON);
-    if (att != null)
+    if (att != null) {
       el.setAttribute(BUTTON_ICON, att);
+    }
+
     att = super.getAttributeValueString(TOOL_TIP);
-    if (att != null)
+    if (att != null) {
       el.setAttribute(TOOL_TIP, att);
+    }
+
     att = super.getAttributeValueString(BUTTON_KEYSTROKE);
     if (att != null) {
       el.setAttribute(BUTTON_KEYSTROKE, att);
     }
+
     for (final String s : sides) {
       final Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode(s));
       el.appendChild(sub);
     }
+
     return el;
   }
 
@@ -315,7 +324,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     );
   }
 
-
   protected static String getMySide(boolean localized) {
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
@@ -387,8 +395,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     final Add a = (Add) c;
     final SequenceEncoder se = new SequenceEncoder('\t');
-    se
-      .append(a.id)
+    se.append(a.id)
       .append(a.name)
       .append(a.side);
     return COMMAND_PREFIX + se.getValue();
