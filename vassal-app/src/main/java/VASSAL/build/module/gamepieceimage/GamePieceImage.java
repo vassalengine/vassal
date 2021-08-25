@@ -540,9 +540,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   /**
    * ImageNameFilter that controls how the user can change the Image Name.
-   * If the GPI is still version 0, then no controls. Note we can't force an image
+   * If the GPI is still version 0, then no controls. Note we can't force change an image
    * name because other components may reference that image.
-   * Once the GPI is version 0, then enfore a .png suffix and
+   * Once the GPI is version 1, then enforce a .png suffix
    */
   private static class ImageNameFilter extends DocumentFilter {
     private final PngImageNameConfigurer config;
