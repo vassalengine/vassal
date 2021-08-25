@@ -507,7 +507,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private boolean isVersion1ImageName(String name) {
-    return name != null && !name.isEmpty() && name.toLowerCase().endsWith(PNG_SUFFIX) && name.matches("^[a-zA-Z0-9_]*\\.png$");
+    return name != null && !name.isEmpty() && name.matches("^[\\w]*\\.png$");
   }
 
   public static class ImageNameConfig implements ConfigurerFactory {
@@ -539,8 +539,8 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   /**
-   * ImageNameFilter that controls how the user can change the Image Name
-   * If the GPI is still version 0, then no controls. Not we can't force an image
+   * ImageNameFilter that controls how the user can change the Image Name.
+   * If the GPI is still version 0, then no controls. Note we can't force an image
    * name because other components may reference that image.
    * Once the GPI is version 0, then enfore a .png suffix and
    */
@@ -575,45 +575,34 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
 
     /** Ensure the current value ends in '.png' */
-    private void fixPng(FilterBypass fb) throws BadLocationException {
-      fixPng(fb, 1);
-    }
-
-    private void fixPng(FilterBypass fb, int pos) throws BadLocationException {
+    private void fixPng(FilterBypass fb, int caretPos) throws BadLocationException {
       if (!isPng(fb)) {
         final String text = getText(fb);
         if (text.endsWith(".")) {
           super.replace(fb, text.length() - 1, 1, PNG_SUFFIX, null);
-          config.setCaretPosition(pos);
+          config.setCaretPosition(caretPos);
         }
         else if (text.toUpperCase().endsWith(".p")) {
           super.replace(fb, text.length() - 2, 2, PNG_SUFFIX, null);
-          config.setCaretPosition(pos);
+          config.setCaretPosition(caretPos);
         }
         else if (text.toUpperCase().endsWith(".pn")) {
           super.replace(fb, text.length() - 3, 3, PNG_SUFFIX, null);
-          config.setCaretPosition(pos);
+          config.setCaretPosition(caretPos);
         }
         else {
           super.replace(fb, text.length(), 0, PNG_SUFFIX, null);
-          config.setCaretPosition(pos);
+          config.setCaretPosition(caretPos);
         }
       }
 
     }
 
     private String clean(String string) {
-      final StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < string.length(); i++) {
-        final char c = string.charAt(i);
-        if (c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
-          sb.append(c);
-        }
-      }
-      return sb.toString();
+      return string.replaceAll("\\W+", "");
     }
 
-    /** Don't let any of the '.png' at the end of the string be removed */
+    /** Don't let any of the '.png' at the end of the string be removed and clean unwanted characters */
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
       if (!config.isGpiVersion1()) {
@@ -627,10 +616,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         }
       }
       super.remove(fb, offset, length);
-      fixPng(fb);
+      fixPng(fb, offset);
     }
 
-    /** Nothing to be inserted within the '.png' at the end */
+    /** Nothing to be inserted within the '.png' at the end and clean unwanted characters */
     @Override
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
       if (!config.isGpiVersion1()) {
@@ -644,10 +633,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         }
       }
       super.insertString(fb, offset, clean(string), attr);
-      fixPng(fb);
+      fixPng(fb, offset + clean(string).length());
     }
 
-    /** No part of '.png' at then end of the current text to be replaced */
+    /** No part of '.png' at then end of the current text to be replaced and clean unwanted characters */
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
       if (!config.isGpiVersion1()) {
@@ -661,7 +650,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         }
       }
       super.replace(fb, offset, length, clean(text), attrs);
-      fixPng(fb);
+      fixPng(fb, length + clean(text).length());
     }
   }
 }
