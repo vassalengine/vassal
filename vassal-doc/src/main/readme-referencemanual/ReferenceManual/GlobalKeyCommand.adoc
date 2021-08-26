@@ -12,7 +12,7 @@ Global Key Commands are the main avenue by which Pieces can prompt action by oth
 As such, they are very powerful, but they do come at the price of some performance lag, as each time one is issued Vassal must generally check it against every piece on the board.
 
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Description:*:: A short description of this trait for your own reference.
 

@@ -16,7 +16,7 @@ Simple piece images can be created from scratch within Vassal using <<GamePieceI
 To give a piece more complex behaviors, you can add more Traits to it in the <<GamePiece.adoc#top,Piece Definer>> dialog.
 For example you could omit or remove the image from the Basic Piece and instead add a <<Layer.adoc#top,Layer>> trait to allow the piece to use multiple images.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Name:*:: Choose a unique name for this Game Piece.

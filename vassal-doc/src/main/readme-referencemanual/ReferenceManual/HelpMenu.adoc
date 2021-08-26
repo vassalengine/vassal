@@ -23,7 +23,7 @@ of a rulebook, in your module (see <<#PDF,Using PDF Files>> , below).
 Adds an entry to the help menu.
 Selecting the menu item opens an external browser on the user's machine with HTML content that you specify.
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Menu command:*::  The menu item to be added to the Help menu.
@@ -44,7 +44,7 @@ NOTE: You can launch an external URL in the user's browser by specifying the URL
 ==== PDF Help File
 Adds an entry to the help menu. Selecting the menu item opens an external browser to view a specified PDF file.
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Menu command*:::  The menu item to be added to the Help menu.
@@ -58,7 +58,7 @@ Adds an entry to the help menu. Selecting the menu item opens an external browse
 Adds an entry to the Help menu in the main controls window.
 Selecting the menu displays a new window with the contents of a plain text file.
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 [#HelpFile]
@@ -80,7 +80,7 @@ The About Screen will always display the current version of both the VASSAL and 
 
 The About Screen image is also used as a "Splash Screen" when starting your module.
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Menu command:*::  The menu item to be added to the Help menu.
@@ -96,7 +96,7 @@ The About Screen image is also used as a "Splash Screen" when starting your modu
 
 You may create a tutorial by writing a logfile and making it accessible from the help menu.
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Menu command:*::  The menu item under the Help Menu

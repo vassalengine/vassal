@@ -73,7 +73,7 @@ the name of the player who owns a particular piece.
 
 _$playerSide$_ is the side chosen by the player from the <<GameModule.adoc#Definition_of_Player_Sides,Definition of Available Sides>>
 
-_$playerId$_ is a combination of playerName and playerSide specified in the <<GameModule.adoc#GlobalOptions,Global Options>>
+_$playerId$_ is a combination of playerName and playerSide specified in the <<GameModule.adoc#GlobalOptions#top,Global Options>>
 
 _$<<GlobalProperties.adoc#top,Global Property>>$_ names can also be referenced.
 

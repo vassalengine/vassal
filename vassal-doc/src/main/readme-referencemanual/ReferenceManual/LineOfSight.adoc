@@ -1,0 +1,79 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > *Line Of Sight Thread*#
+
+'''''
+
+=== Line Of Sight Thread
+
+The Line of Sight allows players to use the mouse to draw a line between 2 points on the map to check for the availability of a _Line of Sight_ between the two points.
+
+There is no automatic checking if a _Line of Sight_ exists by Vassal, this is up to the players to determine.
+
+The Line of Sight component adds a Toolbar button to initiate the LOS display.
+[width="100%",cols="50%a,50%a",]
+|===
+|
+*Description:*:: A brief description for your reference.
+
+*Button text:*::  The label on the Button in the Map Window's Toolbar
+
+*Tooltip text:*:: Tooltip text for the Toolbar button.
+
+*Button icon:*:: Icon for the Toolbar button.
+
+*Hotkey:*:: Specifies a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button.
+
+*Report format:*:: A <<MessageFormat.adoc#top,Message Format>> to display a message when a Line of Sight is finished being drawn. The following additional Properties can be used:
++
+_$FromLocation$_ - The grid location of start of the LOS.
++
+_$ToLocation$_ - The grid location of the end of
+the LOS.
++
+_$Range$_ - The length in grid units of the LOS.
++
+_$NumberOfLocationsChecked$_ - The number of different grid cells that the end of the LOS was dragged over.
++
+_$AllLocationsChecked$_ - A list of all of the grid locations of the different grid cells that the end of the LOS was dragged over.
+
+*Persistence:*:: Defines whether the LOS remains visible after the mouse is released to finish drawing the LOS. Options are:
++
+_Never_ - The LOS will never persist.
++
+_Always_ - The LOS will always persist
++
+_Ctrl+Click & drag_ - The LOS will persist if the Ctrl key is held down while drawing the LOS.
++
+NOTE: A persisting LOS can be cleared by clicking on the LOS toolbar button again.
+
+*Visible to opponent:*:: Controls whether a LOS one player draws is vissible to other players. Options are:
++
+_Never_ - The LOS is never visible to opponents.
++
+_Always_ - The LOS is always visible to opponents.
++
+_When persisiting_ - The LOS is visible to opponents if it is persisting.
+
+*Force start of thread to snap to grid:*:: If unchecked, the LOS will start where the mouse is clicked. If Checked, the LOS will start at the nearest snap point defined by the map grid.
+
+*Force end of thread to snap to grid:*:: If unchecked, the end of the LOS will follow the mouse cursor. If Checked, the end of the LOS will jump to the nearest snap point defined by the map grid.
+
+*Draw range:*:: If checked, draws the range between the two points, in the current grid units of the board (hexes, squares or pixels).
+
+*Pixels per range unit (0 to use Grid calculation):*::  If drawing the range on a board without a grid, this determines how many pixels on the screen equal a single unit of range.
+
+*Round fractions:*:: For distances that are a fraction of a range unit, specify whether to round fractions up, down, or to the nearest whole number.
+
+*Hide pieces while drawing:*::  If checked, then all game pieces in the map will be hidden (or transparent) while the thread is being drawn.
+
+*Opacity of hidden pieces (0-100%):*::  Set the transparency of game pieces while the thread is being drawn.
+0 is completely transparent, 100 is completely opaque.
+
+*Color:*::  Specifies the color of the LOS thread on the screen.
++
+If set to null (by clicking the "Select" button and then the "Cancel" button in the color-choosing dialog), then a Preferences option will determine the color of the thread at game time.
+
+|image:images/LOS_Thread.png[] +
+|===

@@ -27,7 +27,7 @@ After adding initial settings for your Chess Clock controller, you will find a _
 You can then right-click the _[Chess Clock Control]_ component to _Add_ individual _[Chess Clock]_ components, although if you have already created your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> before adding the
 Chess Clock Control, individual clocks will be added by default, corresponding to each of your player sides.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Name:*:: The name of the Chess Clock Controller.
 
@@ -65,7 +65,7 @@ Chess Clock Control, individual clocks will be added by default, corresponding t
 
 Each individual chess clock that you add can be configured in its own component here.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Player side for timer:*:: Select which of the player sides from your <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>> will correspond to this clock.
 

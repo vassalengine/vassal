@@ -18,7 +18,7 @@ You can then optionally right-click the _[Game Piece Layers]_ component if you w
 Then any piece with a <<PlaceMarker.adoc#top,Marker>> trait with property name "Layer" and value "Terrain" will be in the bottom-most layer.
 The middle layer will contain Pieces with the value "Land" and the top layer will contain Pieces with the value "Air".  Pieces with no value for the "Layer" property will be in their own layer above all three.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Property name for layer:*:: The name of the Property of each Game Piece that determines the order.
 Typically this will be specified with a <<PropertyMarker.adoc#top,Marker>> trait with the specified property name.
@@ -40,7 +40,7 @@ This adds a button or buttons to the Map Window's Toolbar that allows you to act
 Game Pieces belonging to Layers that have been deactivated are be hidden from view until the Layer is activated again.
 Each player can activate/deactivate Layers independently, and layer activation is not saved when the game is saved.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Button text:*:: The text displayed on the Toolbar Button added for this Control. Optional.
 

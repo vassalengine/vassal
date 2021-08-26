@@ -15,6 +15,7 @@ VASSAL's chat log offers many opportunities for you to create a useful log strea
 A well-designed chat log can make "important events" stand out from routine events -- notice in the example at right how changes in Victory Points are being announced in *Bold Bright Text* while game events are shown in _Italicized green text with *1* or *2* highlights._ This makes them stand out from the standard black text of more routine events.
 This article will help you design your own chat log reporting so that you can get the most out of this feature.
 
+[#quick]
 ==== Quick Colors
 
 VASSAL provides several "quick color" shortcuts to allow colored text to be put into the chat log by <<ReportChanges.adoc#top,Report Action>> traits and other <<MessageFormat.adoc#top,Message Formats>>. This is done by placing a special character as the first character of a message.
@@ -46,6 +47,7 @@ _EXAMPLE:_ If a <<ReportChanges.adoc#top,Report Action>> trait's message said _H
 image:images/ChatLog.png[]
 Chat Log with HTML Enabled
 
+[#html]
 ==== HTML in Chat Log
 
 VASSAL's chat log now supports HTML as well as regular text, as long you turn on the proper <<GlobalOptions.adoc#top,Global Options>> setting (this is to maintain compatibility with modules created with earlier versions of VASSAL that did not account for such support). To turn on HTML support for your module, in the Editor window navigate to the _[Global Options]_ component and open its _properties_ dialog.

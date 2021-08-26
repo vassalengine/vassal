@@ -17,7 +17,7 @@ This piece sets the <<Properties.adoc#top,Property>> _InvisibleToOthers=true_ wh
 NOTE:  _This trait actually only hides those traits which appear *before* it in the list of traits, so it should generally be the <<GamePiece.adoc#TraitOrder,last trait>> of a Game Piece._
 
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Description:*:: A short description of this trait for your own reference.

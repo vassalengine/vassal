@@ -9,7 +9,7 @@
 
 A standard hexagonal grid for regulating movement on a <<Board.adoc#top,Board>>. The default hexagonal grid layout is "Flat Topped".
 
-[width="100%",cols="50%a,50%"a,]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Sideways (hexrows go horizontal):*::   Check this box to make the hexrows of the grid run right-to-left instead of top-to-bottom.

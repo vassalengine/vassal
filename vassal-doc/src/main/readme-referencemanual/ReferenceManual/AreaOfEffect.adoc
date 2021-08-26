@@ -11,7 +11,7 @@ The _Area of Effect_ trait allows you to graphically highlight an area surroundi
 The area is shaded with a specified color and transparency.
 Alternatively, you can point to a <<Map.adoc#MapShading,Map Shading>> component, contributing to the area that it draws.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Description:*:: A short description of this trait for your own reference.
 
@@ -37,7 +37,7 @@ Otherwise, it will be a circle with the given radius in pixels.
 
 |
 image:images/AreaOfEffect.png[] +
-_Area of Effect property window._
+_A 1 hex radius, Purple, 40% Area of Effect._
 
 image:images/AreaOfEffectSample2.png[] +
 _Area of Effect applied to a VASL FFE counter.

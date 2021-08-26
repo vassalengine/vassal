@@ -12,7 +12,7 @@ This <<Deck.adoc#top,Deck>> Sub-Component adds an action that applies a key comm
 To add a Deck Global Key Command to one of your Decks, use the Editor's configuration window to navigate to the _[Deck]_ entry for the Deck you want to add it to.
 Right-click on the _[Deck]_ entry and select _Add Deck Global Key Command_.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Menu command:*:: Text for an entry in the Deck's right-click context menu that will activate the Deck Global Key Command.
 

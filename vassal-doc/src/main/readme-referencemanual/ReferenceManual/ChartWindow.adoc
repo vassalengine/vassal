@@ -17,7 +17,8 @@ Right-click it and select _Add Chart Window Menu_.
 After adding initial settings for your Chart Window, you will find a _[Chart Window Menu]_ component at the very bottom of your module's list of components in the Editor window.
 You can then right-click the _[Chart Window Menu]_ component to _Add_ any of the types of Sub-Component listed below, thus building out your Chart Window with as many charts as you need.
 
-[width="100%",cols="50%a,50%a",]
+image:images/ChartWindowConfig.png[]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 
@@ -31,7 +32,7 @@ You can then right-click the _[Chart Window Menu]_ component to _Add_ any of the
 
 *Hotkey:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will open or close this Chart Window.
 
-|image:images/ChartWindowConfig.png[]
+|
 
 image:images/ChartWindow.png[] +
 |===

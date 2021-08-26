@@ -10,7 +10,7 @@
 Places a button in the module's Toolbar.
 Clicking the button will open a window that organizes and summarizes the pieces in the game in a tree view (similar to browsing a file system, or indeed the VASSAL Editor). You can define exactly which pieces are included in the window and how they are organized.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Description:*:: A short description of this component for your own reference.

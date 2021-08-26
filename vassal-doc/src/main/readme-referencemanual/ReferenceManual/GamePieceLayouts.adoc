@@ -20,7 +20,7 @@ An image is built up by drawing in order:
 . [.li]#A border.#
 . [.li]#Each defined item in the order displayed in the Item panel.#
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 
@@ -47,7 +47,7 @@ image:images/GamePieceImageDefinitionsWhere.png[]
 
 ==== Visualizer
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |The next section contains a visualizer, showing you in actual size how your finished image will look.
 No colors or text have been defined yet, so sample text values and images placeholders are displayed.
@@ -56,7 +56,7 @@ No colors or text have been defined yet, so sample text values and images placeh
 
 ==== Item List
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |The Items panel shows the list of defined items for this Layout.
 Layout items are drawn onto the image in the order specified.
@@ -68,7 +68,7 @@ a|
 
 ==== Buttons
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 a|
 Use the buttons to add, remove or move items in the list.
@@ -90,7 +90,7 @@ draw later and thus "towards the front").#
 ==== Advanced Options
 Each item type has a checkbox to enable a set of advanced options to better control the position and display of the item.
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Advanced options:*:: Display the advanced options.
@@ -108,7 +108,7 @@ Each item type has a checkbox to enable a set of advanced options to better cont
 A Symbol Item is a generic symbol to be drawn by the program.
 An Infantry symbol will be shown as a placeholder but the particular symbol is chosen later when configuring an individual <<GamePieceImage.adoc#top,Game Piece Image>>.
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Name:*::  The name of the item.
@@ -135,7 +135,7 @@ When using a small symbol size, a line width of 1.0 will usually give the best r
 A Label Item is a text label drawn in a particular font at a particular location.
 The value of the text can be specified in the individual images or in the layout, in which case all images using this layout share the same value.
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Name:*::  The name of the item.
@@ -163,7 +163,7 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 A Text Box Item is multi-line area of text drawn in a particular font at a particular location. The text in a Text Box will wrap to stay within the bounds of the box.
 The value of the text can be specified in the individual images or in the layout, in which case all images using this layout share the same value.
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 
@@ -194,7 +194,7 @@ Once the justification is set by the Location, you can still use the X/Y offset 
 
 An Image item is an imported image.
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Name:*::  The name of the item.
@@ -215,7 +215,7 @@ You can also manually copy images into your images folder.
 ==== Shape Item
 A Shape Item is a simple geometric shape.
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Name:*::  The name of the item.

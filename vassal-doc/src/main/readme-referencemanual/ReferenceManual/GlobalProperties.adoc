@@ -20,7 +20,7 @@ Your new Global Property will be added to the bottom of the list.
 You can follow a similar procedure to add a Global Property to one of your maps or zones -- simply find the appropriate _[Map]_ or _[Zone]_ component and add to that.
 
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Name:*:: The name of the property.
 
@@ -51,7 +51,7 @@ You can combine multiple buttons into a single drop-down menu using a <<ToolbarM
 To add a Change-Property Toolbar Button, locate the _[Global Property]_ component which you wish to be able to change -- in the Editor it will be inside the list of _[Global Properties_.
 Right-click on the _[Global Property]_ component and select _Add Change-Property Toolbar Button_.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Button text:*::  The text of the Toolbar button.
 

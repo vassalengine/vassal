@@ -11,7 +11,7 @@ This component uses a layout created in a <<GamePieceLayouts.adoc#top,Game Piece
 Here, you specify the colors, text, and images to use in the layout, as well as the name under which this image will appear in the image-chooser drop-down.
 You can then begin using this image in any other Vassal component or trait as if you had loaded it in from an external source.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 a|
 *Name:*:: Specify a name for the image definition.
@@ -32,7 +32,7 @@ There is a different configuration panel for each type of item.
 
 ==== Symbol Item Configuration
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Unit Size:*:: Select the Unit Size specifier from the drop-down menu.
 
@@ -50,7 +50,7 @@ There is a different configuration panel for each type of item.
 
 ==== Label Item Configuration
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Value:*:: Enter the text to display on the image if the _Specified in individual images_ option was selected for this label in the Layout.
 
@@ -62,7 +62,7 @@ There is a different configuration panel for each type of item.
 
 ==== Text Box Item Configuration
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Value:*:: Enter the text to display on the image if the _Specified in individual images_ option was selected for this label in the Layout.
 
@@ -78,7 +78,7 @@ Import an image to draw at the position specified in the layout.
 
 ==== Shape Item Configuration
 
-[width="100%",cols="50%a,<50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Foreground color:*:: Select the fill color for the shape.
 

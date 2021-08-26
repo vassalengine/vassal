@@ -9,7 +9,7 @@
 
 Specifies how identifying names/numbers are assigned to cells in a <<HexGrid.adoc#top,Hex Grid>> or <<RectangularGrid.adoc#top,Rectangular Grid>> on a <<Board.adoc#top,Board>>, the format of those grid references, and whether the names are to be drawn on top of the board image.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 

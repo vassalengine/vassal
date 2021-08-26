@@ -16,7 +16,7 @@ Right-click on the <<Map.adoc#top,Map>> component and select _Add Flare_.
 The new component will appear at the bottom of your map's list of sub-components. You can then
 edit the properties for your new Flare.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Name:*:: The name for the Flare, used to distinguish it among any others you add. The Flare's
 name can also be referred to in the _Report Format_ field, below.

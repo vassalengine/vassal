@@ -26,55 +26,61 @@ module to know whether Global Hotkeys sent to that map's components will current
 They are designed for holding pieces and cards that are private to one player or side.
 
 
-[grid=none]
-[frame=none]
-[cols="a,a",]
+[width="100%",cols="50%a,50%a",]
 |===
-|*Map Name:*  The name of this map window.
+|*Map name:*::  The name of this map window.
 
-*Mark pieces that move:* If checked, then any pieces with the <<MarkMoved.adoc#top,Mark When Moved>> trait will be marked whenever being moved in this map window.
+*Mark pieces that move (if they possess the proper trait):*:: If checked, then any pieces with the <<MarkMoved.adoc#top,Mark When Moved>> trait will be marked whenever being moved in this map window.
 The module designer can also allow players to control this option in their preferences.
 
-*"Mark unmoved" button:*  Configuring _button text_ and/or a _button icon_ causes a button to appear on the map window's Toolbar; clicking this button clears the movement history for all Game Pieces on the map: this removes the movement "mark" from any such Game Pieces, and also clears their Movement Trails if they also contain a <<MovementTrail.adoc#top,Movement Trails>> trait.
-Tooltip text can also be configured for this button.
+*"Mark unmoved" button text:*::  Configuring _button text_ and/or a _button icon_ causes a button to appear on the map window's Toolbar; clicking this button clears the movement history for all Game Pieces on the map: this removes the movement "mark" from any such Game Pieces, and also clears their Movement Trails if they also contain a <<MovementTrail.adoc#top,Movement Trails>> trait.
 
-*Vertical/Horizontal padding:*  The amount of blank space surrounding the boards in the window.
+*"Mark unmoved" tooltip text:*:: Tooltip text for the Pap button.
 
-*Background color:*  The color to use in the blank space padding.
+*"Mark unmoved" button icon:*:: Icon for the Map button.
 
-*Can Contain Multiple Boards:*  If checked, this map window can contain several boards arranged into rows and columns.
+*Vertical/Horizontal padding:*::  The amount of blank space surrounding the boards in the window. This is empty space that is not on any Map and can be used to place pieces not currently being used.
 
-*Border color for selected counters:*  The color of the border to draw around pieces that have been selected.
+*Background color:*::  The color to use in the blank space padding.
 
-*Border thickness for selected counters:*  The thickness of the border to draw around pieces that have been selected.
+*Can contain multiple boards:*::  If checked, this map window can contain several boards arranged into rows and columns.
 
-*Include toolbar button to show/hide:*  If checked, then this map window will not be automatically shown when a game begins.
+*Border color for selected counters:*::  The color of the border to draw around pieces that have been selected.
+
+*Border thickness for selected counters:*::  The thickness of the border to draw around pieces that have been selected.
+
+*Include toolbar button to show/hide (Docking state won't change until module restarted):*::  If checked, then this map window will not be automatically shown when a game begins.
 Instead, a button to show/hide this window will be added to the main module Toolbar.
 
 NOTE: changing this option will not take effect until the module has been reloaded (exit from the Module Editor and restart it).
 
-*Button text:*  The name of the show/hide Toolbar button
+*Button text:*::  The name of the show/hide Toolbar button
 
-*Tooltip text:*  Optional tooltip text for the show/hide Toolbar button
+*Tooltip text:*::  Optional tooltip text for the show/hide Toolbar button
 
-*Button icon:*  An icon for the show/hide Toolbar button
+*Button icon:*::  An icon for the show/hide Toolbar button
 
-*Hotkey:*  The hotkey (or <<NamedKeyCommand.adoc#top,Named Key Command>>) for the show/hide Toolbar button
+*Hotkey to show/hide window:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that toggles the Map between showing and not showing.
 
-*Auto-report format for movement within this map:*  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window:f _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
+*Hotkey to show window:*:: A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that forces the map to be visible.
 
-NOTE: These reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
+*Hotkey to hide window:*:: A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that hides the window.
 
-*Auto-report format for movement to this map:*  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window: In addition to the properties noted for the above item, _$previousMap$_ is the name of the map from which the piece is being moved.
+NOTE: The following reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
 
-*Auto-report format for units created in this map:*  A <<MessageFormat.adoc#top,Message Format>> that will be used to report pieces that are dragged to this map window directly from a <<PieceWindow.adoc#top,Game Piece Palette>>: The properties mentioned in the previous two items may be referenced as appropriate.
+*Auto-report format for movement within this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window:f _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
 
-*Auto-report format for units modified on this map:*  When a <<ReportChanges.adoc#top,Report Action>> trait of a Game Piece on this map is activated, this <<MessageFormat.adoc#top,Message Format>> will be used to format the message that trait requests to display.
+*Auto-report format for movement to this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window: In addition to the properties noted for the above item, _$previousMap$_ is the name of the map from which the piece is being moved.
+
+*Auto-report format for units created in this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report pieces that are dragged to this map window directly from a <<PieceWindow.adoc#top,Game Piece Palette>>: The properties mentioned in the previous two items may be referenced as appropriate.
+
+*Auto-report format for units modified on this map:*::  When a <<ReportChanges.adoc#top,Report Action>> trait of a Game Piece on this map is activated, this <<MessageFormat.adoc#top,Message Format>> will be used to format the message that trait requests to display.
 _$message$_ is the text message from the Report Action trait.
 It could optionally be modified to include e.g.
 the name of this Map.
 
-*Key Command to apply to all units ending movement on this map:*  The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be automatically applied to each piece that ends movement on this map, whether it is moved by drag-and-drop or by a <<SendToLocation.adoc#top,Send To Location>> trait.
+*Key Command to apply to all units ending movement on this map:* :: The Key Command or <<NamedKeyCommand.adoc#top,Named Key Command>> to be automatically applied to each piece that ends movement on this map, whether it is moved by drag-and-drop or by a <<SendToLocation.adoc#top,Send To Location>> trait.
++
 This Key Command can be used, for example, to trigger actions that need to be taken when a piece enters or leaves a new space (for example maintaining piece type counts in a Zone -- see Example 4 in the <<TriggerAction.adoc#top,Trigger Action>> trait), or to generate more elaborate <<ReportChanges.adoc#top,Report Action>> chat log messages than can be created with the Auto-report format (for example, ensuring that the message is only displayed if the piece has actually changed regions rather than merely being adjusted in its space). |image:images/Map.png[]
 
 image:images/Map2.png[]
@@ -90,8 +96,8 @@ To add sub-components to a map, navigate to the _[Map Window]_ component entry i
 Once you configure it, your new sub-component will appear at the bottom of the Map's list of sub-components.
 
 
-[grid=none]
-[frame=none]
+
+
 |===
 |<<#SelectionHighlighter,Additional Selection Highlighters>> |<<SetupStack.adoc#top,At-Start Stack>> |<<Deck.adoc#top,Deck>> |<<Flare.adoc#top, Flare>>
 |<<GamePieceLayers.adoc#top,Game Piece Layers>> |<<#GlobalKeyCommand,Global Key Command>> |<<GlobalProperties.adoc#top,Global Properties>> |<<#HidePieces,Hide Pieces Button>>
@@ -105,26 +111,28 @@ Once you configure it, your new sub-component will appear at the bottom of the M
 [#MapBoards]
 ==== Map Boards
 
-
-[grid=none]
-[frame=none]
-|===
-|This component contains all the boards that may appear in this map window.
+This component contains all the boards that may appear in this map window.
 It contains <<Board.adoc#top,Board>> components and defines the dialog that is used to select boards when a new game is started.
 
-*Dialog Title:* The title of the dialog window for choosing boards on this map.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
 
-*"Select Boards" prompt:*  The prompt message in the drop-down menu for selecting boards
+*Dialog title:*:: The title of the dialog window for choosing boards on this map.
 
-*Cell scale factor:*  The relative size of the boards in the dialog compared to their final size during play.
+*"Select Boards" prompt:*::  The prompt message in the drop-down menu for selecting boards
 
-*Cell width:*  The width of a cell when no board has been selected.
+*Cell scale factor:*::  The relative size of the boards in the dialog compared to their final size during play.
 
-*Cell height:*  The height of a cell when no board has been selected.
+*Cell width:*::  The width of a cell when no board has been selected.
 
-*Default Board Setup:* Click this button to choose a default set of boards.
+*Cell height:*::  The height of a cell when no board has been selected.
+
+*Default Board Setup:*:: Click this button to choose a default set of boards.
++
 When a default has been set, the dialog will not be shown to players when a new game is begun.
 Instead, the game will always be started with the boards you select.
++
 If you click this button and then clear the boards, then dialog will again be shown at the start of each game.|image:images/BoardPicker.png[]
 |===
 
@@ -135,78 +143,60 @@ This component controls how stacking is handled in this Map Window.
 It may not be removed.
 
 
-[grid=none]
-[frame=none]
+[width="100%",cols="50%a,^50%a",]
 |===
-|image:images/StackingOptions.png[] |*Disable stacking:*  If checked, then pieces will never form stacks in this window
+|*Disable stacking:*::  If checked, then pieces will never form stacks in this window
 
-*Horizontal Separation when expanded:*  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
+*Horizontal separation when expanded:*::  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
 
-*Vertical Separation when expanded:*  The distance in pixels from the bottom edge (top edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
+*Vertical separation when expanded:*::  The distance in pixels from the bottom edge (top edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
 
-*Horizontal Separation when not expanded:*  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is compact.
+*Horizontal separation when not expanded:*::  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is compact.
 
-*Vertical Separation when not expanded:*  The distance in pixels from the bottom edge (top edge if negative) of a piece in a stack to the edge of the piece above it when the stack is compact.
+*Vertical separation when not expanded:*::  The distance in pixels from the bottom edge (top edge if negative) of a piece in a stack to the edge of the piece above it when the stack is compact.
 
-*Color of pieces when not expanded:*  If set, then pieces below the top piece in a compact stack will be drawn as plain squares of this color and a black border.
+*Color of pieces when not expanded:*::  If set, then pieces below the top piece in a compact stack will be drawn as plain squares of this color and a black border.
++
 If not set (click the "Select" button and cancel the color-selection dialog to "unset" this) then pieces will be drawn normally.
-
+|
+image:images/StackingOptions.png[]
 |===
 
 [#OverviewWindow]
-==== Overview Window, or "Mini Map"
+==== <<OverviewMap.adoc#top,Overview Window, or "Mini Map">>
 
-Adds a separate "Mini Map" subwindow that will be displayed whenever the Map Window is displayed.
-A Toolbar button to turn this subwindow on and off will be placed on the Map Window's toolbar - it can be configured with any combination button text, a button icon, and tooltip text.
-A hotkey or <<NamedKeyCommand.adoc#top,Named Key Command>> can also be supplied to open the mini map subwindow.
+The Overview window displays a separate "Mini Map" subwindow over the top of the main map display. The subwindow contains a view of the entire playing area at a smaller scale than displayed in the parent map window.
 
-The subwindow will contain a view of the entire playing area at a smaller scale than displayed in the parent map window.
-The area of the map currently visible in the map window is highlighted in the overview map with a colored rectangle.
+The area of the map currently visible in the main map window is highlighted in the overview map with a colored rectangle.
 A player may click on the Overview window to center the Map Window at the point clicked on.
 
-The scale of the overview window relative to the map window can be specified in the "Scale Factor" property.
-You may also specify the color of the rectangle indicating the area visible in the main Map Window.
+This component can be used by players to quckly get a high-level view of the whole map and scroll quickly to another area of the map.
 
-image:images/OverviewWindow.png[]
+See <<OverviewMap.adoc#top,full article>> for details.
 
+image:images/OverviewMapExample.png[]
 
+'''
 [#LOS]
-==== Line of Sight Thread
+==== <<LineOfSight.adoc#top,Line of Sight (LOS) Thread>>
+
+The Line of Sight (LOS) Thread is a component that allows players to use the mouse to draw lines between two points on the map.
+
+Options are provided to control color, snapping of thread ends, range display, reporting and visibility.
+
+See <<LineOfSight.adoc#top,full article>> for details.
 
 
-[grid=none]
-[frame=none]
-|===
-|image:images/LOS_Thread.png[] +|Adds a button to the Toolbar of the Map Window.
-Clicking the button will allow the player to drag the mouse between any two points in the window, drawing a line between those two points.
+image:images/losExample.png[]
 
-**Hotkey:  **Specifies a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for the Toolbar button.
-
-*Button text:*  The label on the Button in the Map Window's Toolbar
-
-*Draw Range:*  If checked, draws the range between the two points, in hexes or squares, as appropriate for the board in use.
-
-*Pixels per range unit:*  If drawing the range on a board without a grid, this determines how many pixels on the screen equal a single unit of range.
-
-*Round fractions:* For distances that are a fraction of a range unit, specify whether to round fractions up, down, or to the nearest whole number.
-
-*Hide Pieces while drawing:*  If checked, then all game pieces in the map will be hidden (or transparent) while the thread is being drawn.
-
-*Opacity of hidden pieces:*  Set the transparency of game pieces while the thread is being drawn.
-0 is completely transparent, 100 is completely opaque.
-
-*Thread color:*  Specifies the color the thread on the screen.
-If set to null (by clicking the "Select" button and then the "Cancel" button in the color-choosing dialog), then a Preferences option will determine the color of the thread at game time.
-
-|===
+'''
 
 ==== <<ToolbarMenu.adoc#top,Toolbar Menu>>
-
-[grid=none]
-[frame=none]
-|===
-|Groups buttons in the toolbar into a single drop-down menu.
+Groups buttons in the toolbar into a single drop-down menu.
 See <<ToolbarMenu.adoc#top,full article>> for details.
+[width="100%",cols="^.^50%a,50%a",]
+|===
+|
 
 image:images/ToolbarMenuExample.png[] |image:images/ToolbarMenu.png[]
 |===
@@ -217,19 +207,18 @@ image:images/ToolbarMenuExample.png[] |image:images/ToolbarMenu.png[]
 Adds a button to the Toolbar of the Map Window.
 Clicking the button will temporarily hide all pieces on the map, until the button is clicked again.
 
-[grid=none]
-[frame=none]
+[width="100%",cols="50%a,^50%a",]
 |===
-|image:images/HidePieces.png[]|**Button text:  **Specifies the button text for the Toolbar button
+|*Button text:*:: Specifies the button text for the Toolbar button
 
-*Tooltip text:* Specifies optional tooltip text for the Toolbar button
+*Tooltip text:*:: Specifies optional tooltip text for the Toolbar button
 
-*Hotkey:* Specifies a keyboard shortcut for the Toolbar button
+*Hotkey:*:: Specifies a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> for the Toolbar button
 
-*Icon when pieces are showing:*  Configures an icon which is shown when pieces on the map are currently visible.
+*Icon when pieces are showing:*::  Configures an icon which is shown when pieces on the map are currently visible.
 
-*Icon when pieces are hidden:*  Configures an icon which is shown when pieces on the map have currently been hidden by this button.
-
+*Icon when pieces are hidden:*::  Configures an icon which is shown when pieces on the map have currently been hidden by this button.
+|image:images/HidePieces.png[]
 |===
 
 [#Zoom]
@@ -238,52 +227,34 @@ Clicking the button will temporarily hide all pieces on the map, until the butto
 Adds the ability to zoom in and out of the Map.
 Toolbar buttons for "Zoom in", "Zoom out", and "Select Zoom Level" are added to the Map Window's toolbar.
 
+image:images/ZoomButtons.png[]
 
-[grid=none]
-[frame=none]
+NOTE: Zoom in and out can also be performed by holding the Control key down while using the mouse wheel.
+
+[width="100%",cols="50%a,^50%a",]
 |===
-|*Preset Zoom Levels:*  Configures a series of fractional scale factors for display of the Map Window.
-In the list on the right hand side, all of the currently configured scale factors are listed.
+|
+*Preset Zoom Levels:*::  Configures a series of fractional scale factors for display of the Map Window.
+In the list on the right-hand side, all of the currently configured scale factors are listed.
 The one with an asterisk (*) indicates the scale factor at which the Map Window will begin when the module is started.
 The other scale factors represent the settings along a range which clicking the "Zoom in" and "Zoom out" buttons will move the zoom level.
-
-  *Add:*  To add a new scale factor, type it into the blank and then click the "Add" button.
++
+*_Add:_*  To add a new scale factor, type it into the blank and then click the "Add" button.
 The new scale factor will appear in the list to the right.
-
-  *Remove:*  To remove an unwanted scale factor from the list, select it in the list at right and then click the "Remove" button.
-
-  *Set Initial:*  To select the scale factor at which the Map Window will begin when the module is started, select it from the list at right and click the "Set Initial" button.
++
+*_Remove:_*  To remove an unwanted scale factor from the list, select it in the list at right and then click the "Remove" button.
++
+*_Set Initial:_*  To select the scale factor at which the Map Window will begin when the module is started, select it from the list at right and click the "Set Initial" button.
 An asterisk (*) will appear next to the new at-start scale factor.
 
-*Zoom In:*  Configures a Toolbar button and/or hotkey that cause the Map Window scale factor to jump to the next higher magnification level.
+*Zoom in:*:: Configure the tooltip text, button text, button icon and hotkey for a Toolbar button and/or hotkey that causes the Map Window scale factor to jump to the next higher magnification level.
 
-  *Tooltip Text:*  Configures optional tooltip text for the Toolbar button.
 
-  *Button Text:*  Configures button text for the Toolbar button.
+*Zoom Select:*::  Configure the tooltip text, button text, button icon and hotkey for a Toolbar button and/or hotkey that will allow the player to pick a specific scale factor, including by typing in an arbitrary scale factor manually.
 
-  *Button Icon:*  Configures an icon for the Toolbar button.
+*Zoom Out:*:: Configure the tooltip text, button text, button icon and hotkey for a Toolbar button and/or hotkey that causes the Map Window scale factor to jump to the next smaller magnification level.
 
-  *Hotkey:*  Designates a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for zooming in.
-
-*Zoom Select:*  Configures a Toolbar button and/or hotkey that will allow the player to pick a specific scale factor, including by typing in an arbitrary scale factor manually.
-
-  *Tooltip Text:*  Configures optional tooltip text for the Toolbar button.
-
-  *Button Text:*  Configures button text for the Toolbar button.
-
-  *Button Icon:*  Configures an icon for the Toolbar button.
-
-  *Hotkey:*  Designates a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for selecting the zoom level.
-
-*Zoom Out:*  Configures a Toolbar button and/or hotkey that cause the Map Window scale factor to jump to the next smaller magnification level.
-
-  *Tooltip Text:*  Configures optional tooltip text for the Toolbar button.
-
-  *Button Text:*  Configures button text for the Toolbar button.
-
-  *Button Icon:*  Configures an icon for the Toolbar button.
-
-  *Hotkey:*  Designates a keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> for zooming out. |image:images/Zoomer.png[] +
+|image:images/Zoomer.png[] +
 |===
 
 [#StackViewer]
@@ -291,55 +262,74 @@ An asterisk (*) will appear next to the new at-start scale factor.
 
 Adds a tool that displays the contents of a stack when the player leaves the mouse resting over it, after a specified delay.
 
+NOTE: You can define multiple mouse-over stack viewers for the same map, each operating on a different selection of pieces.
 
-[grid=none]
-[frame=none]
+
+[width="100%",cols="50%a,^50%a",]
 |===
-|image:images/CounterDetailViewer.png[] |*Recommended Delay before display:*  When the mouse has been stationary for this many milliseconds, the viewer will appear.
+|
+*Description:*:: A brief description of this component for your reference.
+
+*Recommended Delay before display (ms):*::  When the mouse has been stationary for this many milliseconds, the viewer will appear.
 This can be overridden in the preferences.
 
-*Keyboard shortcut to display:*  Players may display the viewer without waiting by pressing this shortcut key.
+*Keyboard shortcut to display:*::  Players may display the viewer without waiting by pressing this shortcut key.
 This can be disabled in the preferences.
 
-*Background color:*  Pieces/text are drawn against a background of this color.
+*Background color:*::  Pieces/text are drawn against a background of this color.
 
-*Border/text color:*  Color of any text drawn and the border around the overall viewer.
+*Border/text color:*::  Color of any text drawn and the border around the overall viewer.
 
-*Display when at least this many pieces will be included:*  If set to 0, then the viewer will display even if the location is empty.
+*Display when at least this many pieces will be included:*::  If set to 0, then the viewer will display even if the location is empty.
 Otherwise, it will display only if 1 or 2 pieces have been included via the settings below.
 
-*Always display when zoom level is less than:*  Regardless of the above "at least this many" setting, the viewer will also display when the map's magnification factor is less than this number.
+*Always display when zoom level is less than:* :: Regardless of the above "at least this many" setting, the viewer will also display when the map's magnification factor is less than this number.
 
-*Draw pieces:*  If selected, then the included pieces will be draw in the viewer.
+*Draw pieces:*::  If selected, then the included pieces will be drawn in the viewer.
 
-*Draw pieces using zoom factor:*  The magnification factor to use to draw the pieces in the viewer.
+*Draw pieces using zoom factor:*::  The magnification factor to use to draw the pieces in the viewer.
 
-*Width of gap between pieces:*  Empty space in pixels to place between each drawn piece.
+*Width of gap between pieces:*::  Empty space in pixels to place between each drawn piece.
 
-*Display text:*  If selected, then the viewer will draw some summary text and some individualized text for each piece.
+*Display text:*::  If selected, then the viewer will draw some summary text and some individualized text for each piece.
 
-*Font size:* Fort size for the text drawn by the stack viewer.
+*Enable HTML and "Quick Colors" in text:*:: Enable the use of <<ChatLog.adoc#html,HTML>> and  <<ChatLog.adoc#quick,Quick Colors>> in the display text.
 
-*Summary text above pieces:*  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display above the drawn pieces in the viewer.
+*Center text over pieces:*:: When selected, the text displayed above each piece will be centered over the piece, otherwise it will be left-justified.
+
+*Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be teh same with as the display of pieces, even if it would normally be narrower.
+
+*Additional offset upward (summary text):*:: The number of pixel to adjust the summary text box upwards from its usual postion. Use negative numbers to adjust it down.
+
+*Font size:*:: Fort size for the text drawn by the stack viewer.
+
+*Summary text above pieces:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display above the drawn pieces in the viewer.
 In addition to standard <<Properties.adoc#top,Properties>>, you can include $countPieces$ to count the pieces included in the display. You can also include a property with the name _sum(propertyName)_ where _propertyName_ is a property defined on a Game Piece.
 The sum of the numeric values of this property for all included pieces will be substituted.
 
-*Text below each piece:*  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display below each included piece.
+*Text below each piece:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display below each included piece.
 
-*Text for empty location*:  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display when no pieces have been selected.
+*Text for empty location:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display when no pieces have been selected.
 
-*Include individual pieces:*  Specifies how pieces are to be selected for inclusion in the viewer.
+*Include individual pieces:*::  Specifies how pieces are to be selected for inclusion in the viewer.
 You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> that they belong.
 Alternatively, you may specify an <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
 
-*Include non-stacking pieces:*  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait are eligible for inclusion in the viewer.
-Otherwise they are excluded regardless of any other filters.
+*Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
+Otherwise, they are excluded regardless of any other filters.
 
-*Show pieces in unrotated state:*  If selected, then pieces that can rotate are drawn in the viewer as they look when not rotated.
+*Include move-when-selected pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may only mpve when selected are eligible for inclusion in the viewer.
+Otherwise, they are excluded regardless of any other filters.
 
-*Include top piece in Deck:* If selected, then the top piece of a <<Deck.adoc#top,Deck>> is eligible for inclusion.
+*Include non-movabe pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may not move are eligible for inclusion in the viewer.
+Otherwise, they are excluded regardless of any other filters.
 
-*Show all pieces overlapping the first piece found:* If selected, then all Game Pieces that overlap the mouse cursor location are eligible to be displayed; otherwise only pieces at the _exact_ X,Y position of the _top_ piece found are displayed.
+*Show pieces in unrotated state:*::  If selected, then pieces that can rotate are drawn in the viewer as they look when not rotated.
+
+*Include top piece in Deck:*:: If selected, then the top piece of a <<Deck.adoc#top,Deck>> is eligible for inclusion.
+
+*Show all pieces overlapping the first piece found:*:: If selected, then all Game Pieces that overlap the mouse cursor location are eligible to be displayed; otherwise only pieces at the _exact_ X,Y position of the _top_ piece found are displayed.
+|image:images/CounterDetailViewer.png[]
 |===
 
 [#LastMoveHighlighter]

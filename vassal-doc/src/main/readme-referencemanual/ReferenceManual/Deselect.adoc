@@ -9,7 +9,7 @@
 
 A <<GamePiece.adoc#top,Game Piece>> with this trait will have a command that causes the piece to be removed from any player selection (currently selected pieces, drag-selection, drag-and-drop grouping, etc.)
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Description:*:: A short description of this trait for your own reference.

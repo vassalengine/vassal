@@ -10,7 +10,7 @@ The Global Options component allows you to define your own custom preferences fo
 It also contains other settings that apply to the module as a whole, as well as providing a location to configure button images and hotkeys for some of the basic Toolbar buttons.
 If an option has a _Use Preferences Setting_ choice, selecting it will add an entry to the Preferences window to allow players to choose their own setting at game time.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Allow non-owners to unmask pieces:*::  By default, only the player who originally masked a piece (see the Mask trait for Game Pieces) is allowed to unmask it.
 This option allows other players to unmask a masked piece.
@@ -37,7 +37,7 @@ It is recommended that for new modules you set this option to _Always_, as the o
 
 '''''
 
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,^50%a",]
 |===
 a|
 === Sub-Components

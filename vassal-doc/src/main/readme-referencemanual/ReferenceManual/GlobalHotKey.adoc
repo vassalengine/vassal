@@ -15,7 +15,7 @@ NOTE: Sometimes you may have a deck of cards or pieces that you want shuffled at
 A Game Piece is given a Global Hotkey trait with Menu text _Roll Dice,_ Keyboard Command _CTRL+R_ and Global Hotkey _F2_.
 Now, selecting the piece and typing _CTRL+R_ or selecting _Roll Dice_ from the right-click context menu will roll the dice button just as if the player had clicked the button in the Toolbar or typed _F2_ from the keyboard.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Description:*:: A short description of this trait for your own reference.

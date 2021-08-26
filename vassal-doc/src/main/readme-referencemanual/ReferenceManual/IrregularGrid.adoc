@@ -14,7 +14,7 @@ The GridLocation of a piece on an irregular grid is reported as the name of the 
 
 NOTE: You can create multiple regions with the same name in different parts of a map area to cater for unusal shaped areas on the map.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 

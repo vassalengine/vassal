@@ -46,7 +46,7 @@ Also give your cards a Marker trait named _value_ with the numeric value of the 
 Then, you can refer to the counts with the map-level properties of _<deckname>_red_, _<deckname>_black_, and _<deckname>_facecards_.
 The total number of cards currently in the deck can be referenced by the map-level property of _<deckname>_numPieces_.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Name:*::  The name of a Deck is not used during game play.
 It is only used for identification in the Editor.
@@ -171,7 +171,7 @@ Other dynamic properties will most likely not update if they change after pieces
 
 Sub-Components can be added to a Deck by right-clicking on the _[Deck]_ entry in the Module Editor and selecting the appropriate _Add_ option.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 a|
 ==== <<GamePiece.adoc#top,Card>>

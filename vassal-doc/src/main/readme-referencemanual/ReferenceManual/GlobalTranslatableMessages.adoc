@@ -16,7 +16,7 @@ Right-click on the _[Global Translatable Messages]_ component and select _Add Gl
 Your new Global Translatable Message will be added to the bottom of the list.
 
 Global Translatable Messages are translated to other languages using the standard <<Translations.adoc#top, VASSAL translation tools>>
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Name:*::  The name of the property that will contain this message.
 

@@ -21,7 +21,7 @@ The image for the lowest level of the layer adds an icon for a self-destruct but
 An Action Button trait uses the boundaries of the button icon and invokes _Ctrl+Alt+T_.
 A <<TriggerAction.adoc#top,Trigger Action>> trait watches for _Ctrl+Alt+T_ and invokes the keyboard command for self-destruct when the properties match _{ Energy_Level == 1 }_.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Desription:*:: A short description of the button for your own reference.
 

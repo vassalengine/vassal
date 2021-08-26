@@ -7,7 +7,7 @@
 
 === Game Piece Image Definitions
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 The _[Game Piece Image Definitions]_ component can be found in the top layer of components under the Game Module, and provides a mechanism for building your own images for simple game counters without the need for an external art tool.
@@ -44,7 +44,7 @@ To predefine a color, right-click on the [Named Colors] component and select "Ad
 
 The fourteen standard built in colors are: Clear, White, Black, Light Gray, Dark Gray, Red, Green, Blue, Orange, Pink, Cyan, Magenta, and Yellow.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 
@@ -62,7 +62,7 @@ A default font style is always available, but you can create additional font sty
 
 A Font Style consists of a Font Family, size and style (plain, bold, italic, bold-italic). A default style is always defined.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 

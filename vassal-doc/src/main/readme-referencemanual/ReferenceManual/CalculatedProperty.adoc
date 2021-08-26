@@ -18,7 +18,7 @@ The traditional _{..}_ marks around BeanShell expressions also do not appear in 
 VASSAL will recalculate the value of the Expression _each and every_ time its value is asked for: whether it is referenced in another Calculated Property, an Expression or field in another type of trait, or is displayed in a message or a text field.
 This ensures the value will be kept accurately updated, though module designers should be aware that long complicated chains of Calculated Properties can therefore lead to "lag" and slower performance.
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |*Description:*:: A short description of this property for your own reference.
 

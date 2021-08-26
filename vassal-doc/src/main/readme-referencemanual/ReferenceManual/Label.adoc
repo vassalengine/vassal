@@ -34,39 +34,39 @@ with a line break +
 and [red]#different# [blue]#colors#
 ****
 
-[width="100%",cols="50%a,50%a",]
+[width="100%",cols="50%a,^50%a",]
 |===
 |
 *Description:*:: A short description of this trait for your own reference.
 
-*Label text:*  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used.
+*Label text:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the name of this piece will be reported: _pieceName_ is the name of the piece excluding the label, _label_ is the value of the label text (including, unfortunately, HTML tags). If the label is empty, then the default name of the piece is always used.
 
 *Menu command:*::  If not blank, gives the text of the corresponding menu item in the piece's right-click context menu, selection of which will result in the text of the label being updated.
 
-*Menu key command:*  If blank, the text of the label is permanent.
+*Menu command:*  If blank, the text of the label is permanent.
 If set, then gives the key command or <<NamedKeyCommand.adoc#top,Named Key Command>> to update the text of the label.
 
-*Font:*  The Text Label is drawn using this font.
+*Font:*::  The Text Label is drawn using this font.
 
-*Font size / Bold / Italic:*  The Text Label is drawn at this size, optionally in bold or italics.
+*Font size:: / Bold / Italic:*  The Text Label is drawn at this size, optionally in bold or italics.
 
-*Text Color:*  The Text Label is drawn using this color.
+*Text color:*::  The Text Label is drawn using this color.
 
-*Background Color:*  The Text Label is drawn within a solid rectangle of this color.
+*Background xolor:*::  The Text Label is drawn within a solid rectangle of this color.
 Click Select and then Cancel to use a transparent background.
 
-*Vertical Position:*  Draw the Text Label with the given offset from the top, bottom, or center of the piece.
+*Vertical Position:*::  Draw the Text Label with the given offset from the top, bottom, or center of the piece.
 
-*Horizontal Position:*  Draw the Text Label with the given offset from the left, right, or center of the piece.
+*Horizontal Position:*::  Draw the Text Label with the given offset from the left, right, or center of the piece.
 
-*Vertical justification:*  Whether the top edge, bottom edge, or center of the Text Label will be drawn at the Horizontal Position specified above.
+*Vertical justification:*::  Whether the top edge, bottom edge, or center of the Text Label will be drawn at the Horizontal Position specified above.
 
-*Horizontal justification:*  Whether the right edge, left edge, or center of the label will be drawn at the Vertical Position specified above.
+*Horizontal justification:*::  Whether the right edge, left edge, or center of the label will be drawn at the Vertical Position specified above.
 
-*Rotate Text:*  The text will be rotated clockwise by this angle.
+*Rotate Text:*::  The text will be rotated clockwise by this angle.
 Rotation is performed after the horizontal/vertical justification and positioning specified above.
 
-*Property Name:*  The value of this label will be exposed as a <<Properties.adoc#top,Property>> with the given name.
+*Property Name:*::  The value of this label will be exposed as a <<Properties.adoc#top,Property>> with the given name.
 
 |image:images/Label.png[]
 |===
