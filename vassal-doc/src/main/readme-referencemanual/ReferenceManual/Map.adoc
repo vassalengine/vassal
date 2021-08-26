@@ -68,7 +68,7 @@ NOTE: changing this option will not take effect until the module has been reload
 
 NOTE: The following reports are separate from, and in addition to, any reports the piece itself generates with <<ReportChanges.adoc#top,Report Action>> traits in response to the Key Command applied by the bottom field.
 
-*Auto-report format for movement within this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window:f _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
+*Auto-report format for movement within this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to automatically report movement of pieces completely within this map window: _$pieceName$_ is the name of the piece being moved, _$location$_ is the location to which the piece is being moved (in the format specified below), _$previousLocation$_ is the location from which the piece is being moved.
 
 *Auto-report format for movement to this map:*::  A <<MessageFormat.adoc#top,Message Format>> that will be used to report movement of pieces to this map window from another map window: In addition to the properties noted for the above item, _$previousMap$_ is the name of the map from which the piece is being moved.
 
@@ -145,7 +145,7 @@ It may not be removed.
 
 [width="100%",cols="50%a,^50%a",]
 |===
-|*Disable stacking:*::  If checked, then pieces will never form stacks in this window
+|*Disable stacking:*::  If checked, then pieces will never form stacks in this window.
 
 *Horizontal separation when expanded:*::  The distance in pixels from the left edge (right edge if negative) of a piece in a stack to the edge of the piece above it when the stack is expanded.
 
@@ -297,9 +297,9 @@ Otherwise, it will display only if 1 or 2 pieces have been included via the sett
 
 *Center text over pieces:*:: When selected, the text displayed above each piece will be centered over the piece, otherwise it will be left-justified.
 
-*Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be teh same with as the display of pieces, even if it would normally be narrower.
+*Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be the same with as the display of pieces, even if it would normally be narrower.
 
-*Additional offset upward (summary text):*:: The number of pixel to adjust the summary text box upwards from its usual postion. Use negative numbers to adjust it down.
+*Additional offset upward (summary text):*:: The number of pixels to adjust the summary text box upwards from its usual position. Use negative numbers to adjust it down.
 
 *Font size:*:: Fort size for the text drawn by the stack viewer.
 
@@ -312,16 +312,16 @@ The sum of the numeric values of this property for all included pieces will be s
 *Text for empty location:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display when no pieces have been selected.
 
 *Include individual pieces:*::  Specifies how pieces are to be selected for inclusion in the viewer.
-You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> that they belong.
-Alternatively, you may specify an <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> to which they belong.
+Alternatively, you may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
 
 *Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
 
-*Include move-when-selected pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may only mpve when selected are eligible for inclusion in the viewer.
+*Include move-when-selected pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may only move when selected are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
 
-*Include non-movabe pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may not move are eligible for inclusion in the viewer.
+*Include non-movable pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may not move are eligible for inclusion in the viewer.
 Otherwise, they are excluded regardless of any other filters.
 
 *Show pieces in unrotated state:*::  If selected, then pieces that can rotate are drawn in the viewer as they look when not rotated.

@@ -48,7 +48,7 @@ _Ctrl+Click & drag_ - The LOS will persist if the Ctrl key is held down while dr
 +
 NOTE: A persisting LOS can be cleared by clicking on the LOS toolbar button again.
 
-*Visible to opponent:*:: Controls whether a LOS one player draws is vissible to other players. Options are:
+*Visible to opponent:*:: Controls whether a LOS one player draws is visible to other players. Options are:
 +
 _Never_ - The LOS is never visible to opponents.
 +
