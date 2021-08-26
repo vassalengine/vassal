@@ -507,7 +507,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   private boolean isVersion1ImageName(String name) {
-    return name != null && !name.isEmpty() && name.matches("^[\\w]*\\.png$");
+    return name != null && !name.isEmpty() && name.matches("^\\w+\\.png$");
   }
 
   public static class ImageNameConfig implements ConfigurerFactory {
@@ -571,7 +571,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
     /** Does the current text end in '.png'? */
     private boolean isPng(FilterBypass fb) {
-      return getText(fb).toUpperCase().endsWith(PNG_SUFFIX.toUpperCase());
+      return getText(fb).toLowerCase().endsWith(PNG_SUFFIX);
     }
 
     /** Ensure the current value ends in '.png' */
