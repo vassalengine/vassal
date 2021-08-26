@@ -35,7 +35,7 @@ The module designer can also allow players to control this option in their prefe
 
 *"Mark unmoved" button text:*::  Configuring _button text_ and/or a _button icon_ causes a button to appear on the map window's Toolbar; clicking this button clears the movement history for all Game Pieces on the map: this removes the movement "mark" from any such Game Pieces, and also clears their Movement Trails if they also contain a <<MovementTrail.adoc#top,Movement Trails>> trait.
 
-*"Mark unmoved" tooltip text:*:: Tooltip text for the Pap button.
+*"Mark unmoved" tooltip text:*:: Tooltip text for the Map button.
 
 *"Mark unmoved" button icon:*:: Icon for the Map button.
 

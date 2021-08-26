@@ -52,7 +52,7 @@ If set, then gives the key command or <<NamedKeyCommand.adoc#top,Named Key Comma
 
 *Text color:*::  The Text Label is drawn using this color.
 
-*Background xolor:*::  The Text Label is drawn within a solid rectangle of this color.
+*Background color:*::  The Text Label is drawn within a solid rectangle of this color.
 Click Select and then Cancel to use a transparent background.
 
 *Vertical Position:*::  Draw the Text Label with the given offset from the top, bottom, or center of the piece.

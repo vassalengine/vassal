@@ -54,11 +54,11 @@ _Never_ - The LOS is never visible to opponents.
 +
 _Always_ - The LOS is always visible to opponents.
 +
-_When persisiting_ - The LOS is visible to opponents if it is persisting.
+_When persisting_ - The LOS is visible to opponents if it is persisting.
 
-*Force start of thread to snap to grid:*:: If unchecked, the LOS will start where the mouse is clicked. If Checked, the LOS will start at the nearest snap point defined by the map grid.
+*Force start of thread to snap to grid:*:: If unchecked, the LOS will start where the mouse is clicked. If checked, the LOS will start at the nearest snap point defined by the map grid.
 
-*Force end of thread to snap to grid:*:: If unchecked, the end of the LOS will follow the mouse cursor. If Checked, the end of the LOS will jump to the nearest snap point defined by the map grid.
+*Force end of thread to snap to grid:*:: If unchecked, the end of the LOS will follow the mouse cursor. If checked, the end of the LOS will jump to the nearest snap point defined by the map grid.
 
 *Draw range:*:: If checked, draws the range between the two points, in the current grid units of the board (hexes, squares or pixels).
 

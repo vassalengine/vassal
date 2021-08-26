@@ -35,7 +35,7 @@ See _Sub-Components_, below, for more details on grids.
 
 *Board height:*:: The height of the board in pixels if no image is used.
 
-*Color:*:: The color of the board is no image is used.
+*Color:*:: The color of the board if no image is used.
 
 |image:images/Board.png[]
 

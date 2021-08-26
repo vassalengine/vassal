@@ -73,7 +73,7 @@ experience odd behaviors such as chat log messages failing to appear (or seeming
 |<span style="color:#ff6666;">hex color text</span>
 |hex color text
 |<img src="d6-6-grey.png" width=14 height=14> dice image
-|image:images\d6-6-grey.png[image,width=14,height=14] dice image
+|image:images/d6-6-grey.png[image,width=14,height=14] dice image
 |===
 
 ==== Dice Images in the Chat Log

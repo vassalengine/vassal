@@ -64,7 +64,7 @@ image:images/DeckSendKeyCommand2.png[]
 A more complex example that sends all cards with a value of "Action" in the _Type_ property to the Deck whose name is stored in the _DestinationDeck_ Global Property. The Command is initiated by a right-click menu command and reported to the Chat window.
 
 image:images/DeckSendKeyCommand3.png[]
-A fully feature example that sends a maximum of 4 cards with a value of "Action" in the *Type* property to the Deck whose name is stored in the *DestinationDeck* Global Property, but stops sending if a card with a *Type* of *Interrupt* is seen. The *Interrupt* card is not sent to the target Deck. This command can be initiated by either the F7 Keystroke Hotkey, or a right-click menu command. The action is reported and includes the number of cards sent.
+A fully featured example that sends a maximum of 4 cards with a value of "Action" in the *Type* property to the Deck whose name is stored in the *DestinationDeck* Global Property, but stops sending if a card with a *Type* of *Interrupt* is seen. The *Interrupt* card is not sent to the target Deck. This command can be initiated by either the F7 Keystroke Hotkey, or a right-click menu command. The action is reported and includes the number of cards sent.
 
 |===
 
