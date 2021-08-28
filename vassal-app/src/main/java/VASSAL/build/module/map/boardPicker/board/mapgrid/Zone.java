@@ -170,6 +170,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       return new FormattedStringConfigurer(key, name, new String[]{NAME, GRID_LOCATION});
     }
   }
+
   public static class ShapeEditor implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
