@@ -952,7 +952,7 @@ image:_images/image138.png[image,width=216,height=115]
 
 * *Menu Text:* The name of the menu item in the Command Menu.
 * *Keyboard Command:* The keyboard shortcut for the command.
-* *Sound Clip:* Select a file in .au, .aiff, or .wav format to add it to the module. The sound file specified in this field will be played when the action is invoked. (MP3s are currently not supported.)
+* *Sound Clip:* Select a file in .au, .aiff, .mp3, or .wav format to add it to the module. The sound file specified in this field will be played when the action is invoked.
 * *Send Sound to Other Player:* If selected, then the sound will be echoed to other players when playing live or reading from a logfile. Otherwise, the sound is only audible to the player who invoked the command.
 
 === Playing a Sound with a Piece Action

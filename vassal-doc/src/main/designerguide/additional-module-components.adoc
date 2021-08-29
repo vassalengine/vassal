@@ -19,7 +19,7 @@ image:_images/image207.png[image,width=232,height=273]
 * *Report Format:* Message Format to report to the chat line.
 * *Play a Sound?* Select to play a sound clip when the button is activated.
 [loweralpha, start=15]
-. *Sound Clip:* The Sound clip file to be played. Select a file in .au, .aiff, or .wav format. The sound file specified in this field will be played when the action is invoked. (MP3s are currently not supported.)
+. *Sound Clip:* The Sound clip file to be played. Select a file in .au, .aiff, .mp3, or .wav format. The sound file specified in this field will be played when the action is invoked.
 
 * *Send Hotkeys?* Select to send hotkeys to other components when the button is activated.
 
