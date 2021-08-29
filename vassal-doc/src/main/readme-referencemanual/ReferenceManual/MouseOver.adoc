@@ -1,0 +1,76 @@
+== VASSAL Reference Manual
+[#top]
+
+[.small]#<<index.adoc#toc,Home>> > <<GameModule.adoc#top,Module>> > <<Map.adoc#top,Map>> > *Mouse-over Stack Viewer*#
+
+'''''
+
+=== Mouse-over Stack Viewer
+
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Description:*:: A brief description of this component for your reference.
+
+*Recommended Delay before display (ms):*::  When the mouse has been stationary for this many milliseconds, the viewer will appear.
+This can be overridden in the preferences.
+
+*Keyboard shortcut to display:*::  Players may display the viewer without waiting by pressing this shortcut key.
+This can be disabled in the preferences.
+
+*Background color:*::  Pieces/text are drawn against a background of this color.
+
+*Border/text color:*::  Color of any text drawn and the border around the overall viewer.
+
+*Display when at least this many pieces will be included:*::  If set to 0, then the viewer will display even if the location is empty.
+Otherwise, it will display only if 1 or 2 pieces have been included via the settings below.
+
+*Always display when zoom level is less than:* :: Regardless of the above "at least this many" setting, the viewer will also display when the map's magnification factor is less than this number.
+
+*Draw pieces:*::  If selected, then the included pieces will be drawn in the viewer.
+
+*Draw pieces using zoom factor:*::  The magnification factor to use to draw the pieces in the viewer.
+
+*Width of gap between pieces:*::  Empty space in pixels to place between each drawn piece.
+
+*Display text:*::  If selected, then the viewer will draw some summary text and some individualized text for each piece.
+
+*Enable HTML and "Quick Colors" in text:*:: Enable the use of <<ChatLog.adoc#html,HTML>> and  <<ChatLog.adoc#quick,Quick Colors>> in the display text.
+
+*Center text over pieces:*:: When selected, the text displayed above each piece will be centered over the piece, otherwise it will be left-justified.
+
+*Stretch summary text box to width of pieces:*:: Stretch the size of the summary text piece to be the same with as the display of pieces, even if it would normally be narrower.
+
+*Additional offset upward (summary text):*:: The number of pixels to adjust the summary text box upwards from its usual position. Use negative numbers to adjust it down.
+
+*Font size:*:: Fort size for the text drawn by the stack viewer.
+
+*Summary text above pieces:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display above the drawn pieces in the viewer.
+In addition to standard <<Properties.adoc#top,Properties>>, you can include $countPieces$ to count the pieces included in the display. You can also include a property with the name _sum(propertyName)_ where _propertyName_ is a property defined on a Game Piece.
+The sum of the numeric values of this property for all included pieces will be substituted.
+
+*Text below each piece:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display below each included piece.
+
+*Text for empty location:*::  A <<MessageFormat.adoc#top,Message Format>> specifying the text to display when no pieces have been selected.
+
+*Include individual pieces:*::  Specifies how pieces are to be selected for inclusion in the viewer.
+You may restrict the pieces according to the <<GamePieceLayers.adoc#top,Game Piece Layer>> to which they belong.
+Alternatively, you may specify a <<PropertyMatchExpression.adoc#top,Property Match Expression>> to match desired values of one or more <<Properties.adoc#top,Properties>> in order for a piece to be included.
+
+*Include non-stacking pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece does not Stack are eligible for inclusion in the viewer.
+Otherwise, they are excluded regardless of any other filters.
+
+*Include move-when-selected pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may only move when selected are eligible for inclusion in the viewer.
+Otherwise, they are excluded regardless of any other filters.
+
+*Include non-movable pieces:*::  If selected, then pieces with a <<NonStacking.adoc#top,Does not stack>> trait specifying the piece may not move are eligible for inclusion in the viewer.
+Otherwise, they are excluded regardless of any other filters.
+
+*Show pieces in unrotated state:*::  If selected, then pieces that can rotate are drawn in the viewer as they look when not rotated.
+
+*Include top piece in Deck:*:: If selected, then the top piece of a <<Deck.adoc#top,Deck>> is eligible for inclusion.
+
+*Show all pieces overlapping the first piece found:*:: If selected, then all Game Pieces that overlap the mouse cursor location are eligible to be displayed; otherwise only pieces at the _exact_ X,Y position of the _top_ piece found are displayed.
+|image:images/CounterDetailViewer.png[]
+|===
