@@ -723,6 +723,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.pack();
       final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
+      frame.setTitle(zone.getConfigureName());
       frame.setVisible(true);
     }
 
