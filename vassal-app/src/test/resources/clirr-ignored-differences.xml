@@ -1116,4 +1116,10 @@
         <differenceType>8001</differenceType>
         <justification>Deprecated for a year</justification>
     </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/EnumeratedPropertyPrompt</className>
+        <differenceType>6001</differenceType>
+        <field>propertySource</field>
+        <justification>Duplicate field</justification>
+    </difference>
 </differences>
