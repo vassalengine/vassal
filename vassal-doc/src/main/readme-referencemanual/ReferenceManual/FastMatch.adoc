@@ -47,5 +47,6 @@ You should aim to choose Fast-match conditions that exclude as many pieces as po
 
 *Property Value*::: Can be a simple string or number containing a specific value which will be compared to the value of the property specified above, _or_ an expression to be evaluated against the _source_ piece (the piece issuing the Global Key Command). The result of evaluating the expression is then used as the value to be compared against the property specified above using the comparison specified above.
 |
+image::images/FastMatch.png[]
 |===
 

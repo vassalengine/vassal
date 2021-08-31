@@ -260,7 +260,7 @@ An asterisk (*) will appear next to the new at-start scale factor.
 [#StackViewer]
 ==== <<MouseOver.adoc#top,Mouse-over Stack Viewer>>
 
-Adds a tool that displays the contents of current Map location when the player leaves the mouse resting over the map.
+Adds a tool that displays the contents of the current Map location when the player leaves the mouse resting over the map.
 
 The information displayed is highly configurable, including piece images, per piece text and summary text.
 

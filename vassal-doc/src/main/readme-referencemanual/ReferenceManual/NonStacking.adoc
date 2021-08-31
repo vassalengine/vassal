@@ -7,9 +7,6 @@
 
 === Does not stack
 
-[width="100%",cols="50%,50%",]
-|===
-a|
 The _Does not stack_ trait's primary function is that it prevents a piece from forming stacks with other pieces on the board.
 Pieces with this trait can be placed at any pixel location on a map, and they will simply overlap with and/or partially or completely obscure or be obscured by any pieces they are placed on top of or beneath.
 
@@ -20,7 +17,15 @@ a <<SendToLocation.adoc#top,Send To Location>> trait).
 The _Does not stack_ now has an option to over-ride its primary function and allow the piece to Stack normally,
 giving access to the selection, movevement and Ignore Grid options for Stackable pieces.
 
-*Select Piece:*  This option controls what happens when a player tries to select a piece, e.g.
+*EXAMPLE:* Use non-stacking pieces to represent playing cards in games that mix cards and counters, so that the cards can be placed on a map without interfering with stacks of counters.
+
+*EXAMPLE:* Pieces that represent map features, such as destroyed bridges or control markers, can use the _Move piece never_ option so that players do not inadvertently move them around.
+They could also be filtered out of band-selects, while still being allowed to be selected when clicked on directly, so that players can still modify and/or delete them as the game progresses.
+
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+*Select piece:*::  This option controls what happens when a player tries to select a piece, e.g.
 by clicking on it.
 Options are:
 
@@ -29,7 +34,7 @@ Options are:
 * _when alt-key down:_  A player must hold the Alt key down to select the piece.
 * _never:_  The piece can never be selected by a player.
 
-*Band-Select Piece:*  This option controls what happens when a player draws a band-select box or "lasso" around a group of pieces and this piece lies within the boundaries of the band-select.
+*Band-Select piece:*::  This option controls what happens when a player draws a band-select box or "lasso" around a group of pieces and this piece lies within the boundaries of the band-select.
 This can be used to prevent e.g.
 a certain class of terrain markers or immobile markers from being swept up in band-selects when only pieces are desired, but still allowing these markers to be clicked on directly and be selected.
 
@@ -37,28 +42,26 @@ a certain class of terrain markers or immobile markers from being swept up in ba
 * _when alt-key down:_  A player must hold the Alt key down when band-selecting in order for this piece to be added to the selection.
 * _never:_  The piece is never selected by band-selects.
 
-*Move Piece:* This option controls what happens when a player tries to move a selected piece by drag-and-drop.
+*Move Piece:*:: This option controls what happens when a player tries to move a selected piece by drag-and-drop.
 Options are:
 
 * _normally:_  The piece can be moved normally.
 * _only if selected:_  The piece can only by moved if it is selected.
 * _never_  The piece can never be moved manually by a player.
 
-*Piece can stack:* This option controls whether the piece can form Stacks with other pieces when moved. This option
+*Piece can stack:*:: This option controls whether the piece can form Stacks with other pieces when moved. This option
 allows you to over-ride the primary _Does Not Stack_ behaviour of this trait, and apply the other options to Stacking pieces.
-Note that some combinations of the selection and movement options may not make much sense when used with a Stacking counter. The primary purpose
++
+NOTE: Some combinations of the selection and movement options may not make much sense when used with a Stacking counter.
++
+The primary purpose
 of this option is to allow the _Ignore grid when moving?_ option to be applied to Stacking pieces:
 
 * _normally:_  The piece will stack normally.
 * _never_  The piece can never form stacks with other pieces (default).
 
-*Ignore grid when moving?*  Select this option to prevent the piece from snapping to the nearest grid location when it is moved.
+*Ignore grid when moving:*:: Select this option to prevent the piece from snapping to the nearest grid location when it is moved.
 This overrides any setting configured in a <<HexGrid.adoc#top,Hex Grid>>, <<IrregularGrid.adoc#top,Irregular Grid>>, or <<RectangularGrid.adoc#top,Rectangular Grid>>.
-
-*EXAMPLE:* Use non-stacking pieces to represent playing cards in games that mix cards and counters, so that the cards can be placed on a map without interfering with stacks of counters.
-
-*EXAMPLE:* Pieces that represent map features, such as destroyed bridges or control markers, can use the _Move piece never_ option so that players do not inadvertently move them around.
-They could also be filtered out of band-selects, while still being allowed to be selected when clicked on directly, so that players can still modify and/or delete them as the game progresses.
 
 |image:images/NonStacking.png[] +
 |===
