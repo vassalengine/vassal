@@ -1,49 +1,47 @@
-{%- from "common.jinja" import version_feature with context -%}
-<p>
-The VASSAL Team is happy to announce VASSAL {{version}}.
-</p>
+<p>{{headline}}</p>
 
 <h2>IMPORTANT</h2>
 <ul>
-  <li>Things may be broken which worked previously. If you find a new bug, please report it.</li>
-  <li>Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.</li>
+{% for item in important %}
+  <li>{{item}}</li>
+{% endfor %}
 </ul>
 
 <h2>Download</h2>
 <ul>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-linux.tar.bz2' target='_new'>Linux</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-macos.dmg' target='_new'>MacOS</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-64.exe' target='_new'>Windows (64-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe' target='_new'>Windows (32-bit)</a></li>
-  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip'  target='_new'>Other</a></li>
+{% for item in downloads -%}
+  <li><a href='https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}' target='_new'>{{item.display_name}}</a></li>
+{% endfor %}
 </ul>
 
-<h2>Changes since 3.5.7</h2>
+<h2>Changes since 3.5.8</h2>
 
+{% if new_features %}
+<h3>New features</h3>
+<ul>
+{% for item in new_features %}
+  <li>{{ item.num }}: {{ item.desc }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if bug_fixes %}
 <h3>Bug fixes</h3>
 <ul>
-<li>14599: Error logs should be read from disk as UTF-8</li>
-<li>14596: Removed initial heap setting for Importer, unused since 3.5.4</li>
-<li>14579: Mass Piece Loader cannot add 'standard' layer traits</li>
-<li>14570: Longer cancel wizard text shifts wizard divider position</li>
-<li>14568: Counter Global Key Command expression does not see properties in lower traits</li>
-<li>14479: GamePieceImages recognized by unused image removal tool
+{% for item in bug_fixes %}
+  <li>{{ item.num }}: {{ item.desc }}</li>
+{% endfor %}
 </ul>
+{% endif %}
 
+{% if other_improvements %}
 <h3>Other improvements</h3>
 <ul>
-<li>14600: Switch bug tracker to GitHub</li>
+{% for item in other_improvements %}
+  <li>{{ item.num }}: {{ item.desc }}</li>
+{% endfor %}
 </ul>
-
-<h2>Changes since 3.5.6</h2>
-
-<h3>Bug fixes</h3>
-<ul>
-<li>14540: PgDn stopped scrolling maps downward</li>
-<li>14527: NoSuchMethodError when calling ArchiveWriter.save()</li>
-<li>14526: IllegalArgumentException when rendering empty labels</li>
-<li>14521: NPE in CounterDetailViewer when Stack shapes array is longer than the piece count</li>
-</ul>
+{% endif %}
 
 <p>
 See the <a href="http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes">Release Notes</a> for descriptions of the changes in {{version_feature}}.
@@ -51,7 +49,7 @@ See the <a href="http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Rel
 
 <h2>Minimum Requirements</h2>
 <p>
-VASSAL {{release_feature}} requires Java 11 or later.
+VASSAL {{version_feature}} requires Java 11 or later.
 </p>
 <p>
 The Windows and MacOS packages have an appropriate version of Java bundled with them, so there is no need to install Java separately on those operating systems. On Linux, use your package manager to install Java 11 or later.

@@ -26,12 +26,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
-import VASSAL.configure.ComponentConfigPanel;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.IconConfigurer;
-import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
@@ -44,7 +39,6 @@ import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -182,30 +176,34 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public Element getBuildElement(Document doc) {
     final Element el = doc.createElement(getClass().getName());
+
     String att = super.getAttributeValueString(BUTTON_TEXT);
-    if (att != null)
+    if (att != null) {
       el.setAttribute(BUTTON_TEXT, att);
+    }
+
     att = super.getAttributeValueString(BUTTON_ICON);
-    if (att != null)
+    if (att != null) {
       el.setAttribute(BUTTON_ICON, att);
+    }
+
     att = super.getAttributeValueString(TOOL_TIP);
-    if (att != null)
+    if (att != null) {
       el.setAttribute(TOOL_TIP, att);
+    }
+
     att = super.getAttributeValueString(BUTTON_KEYSTROKE);
     if (att != null) {
       el.setAttribute(BUTTON_KEYSTROKE, att);
     }
+
     for (final String s : sides) {
       final Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode(s));
       el.appendChild(sub);
     }
-    return el;
-  }
 
-  @Override
-  public Configurer getConfigurer() {
-    return new Con();
+    return el;
   }
 
   @Override
@@ -238,7 +236,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     gm.addCommandEncoder(this);
     super.addTo(b);
   }
-
 
   /**
    * Called when the Launch Button for the player roster is clicked (i.e. the "Retire" or "Change Sides" button)
@@ -315,7 +312,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     );
   }
 
-
   protected static String getMySide(boolean localized) {
     final PlayerRoster r = GameModule.getGameModule().getPlayerRoster();
     if (r != null) {
@@ -387,8 +383,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
     final Add a = (Add) c;
     final SequenceEncoder se = new SequenceEncoder('\t');
-    se
-      .append(a.id)
+    se.append(a.id)
       .append(a.name)
       .append(a.side);
     return COMMAND_PREFIX + se.getValue();
@@ -522,7 +517,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
            Resources.getString("PlayerRoster.referee").equals(side);
   }
 
-
   /**
    * @return True if this is currently a multiPlayer game (either connected to a server, or more than one player side allocated)
    */
@@ -530,7 +524,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // NB. Intentionally not excluding observers.
     return players.size() > 1;
   }
-
 
   /**
    * Claims an existing slot for the current player, and sets our temporary user id appropriately
@@ -606,7 +599,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       claimSlot(indices.get(index));
     }
   }
-
 
   protected String promptForSide() {
     final ArrayList<String> availableSides = new ArrayList<>(sides);
@@ -719,63 +711,6 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
   }
 
-  private class Con extends Configurer {
-    private final StringArrayConfigurer sidesConfig;
-    private final IconConfigurer iconConfig;
-    private final StringConfigurer textConfig;
-    private final StringConfigurer tooltipConfig;
-    private final NamedHotKeyConfigurer keyConfig;
-    private final ComponentConfigPanel controls;
-
-    private Con() {
-      super(null, null);
-      controls = new ComponentConfigPanel();
-
-      sidesConfig = new StringArrayConfigurer(sides.toArray(new String[0])); //$NON-NLS-1$
-      sidesConfig.addPropertyChangeListener(evt -> {
-        sides.clear();
-        sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
-        //sidesConfig.updateViewable();
-        repack();
-      });
-      controls.add("Editor.PlayerRoster.sides_available", sidesConfig);
-
-      final LaunchButton b = getLaunchButton();
-
-      textConfig = new StringConfigurer(BUTTON_TEXT, "", b.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
-      textConfig.addPropertyChangeListener(evt -> b.setAttribute(BUTTON_TEXT, textConfig.getValueString()));
-      controls.add("Editor.PlayerRoster.retire_button_text", textConfig);
-
-      tooltipConfig = new StringConfigurer(TOOL_TIP, "", b.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
-      tooltipConfig.addPropertyChangeListener(evt -> b.setAttribute(TOOL_TIP, tooltipConfig.getValueString()));
-      controls.add("Editor.PlayerRoster.retire_button_tooltip", tooltipConfig);
-
-      iconConfig = new IconConfigurer(BUTTON_ICON, "", null); //$NON-NLS-1$
-      iconConfig.setValue(b.getIcon());
-      iconConfig.addPropertyChangeListener(evt -> b.setAttribute(BUTTON_ICON, iconConfig.getValueString()));
-      controls.add("Editor.PlayerRoster.retire_button_icon", iconConfig, "grow"); // NON-NLS
-
-      keyConfig = (NamedHotKeyConfigurer) b.getHotkeyConfigurer();
-      keyConfig.setName("");
-      keyConfig.addPropertyChangeListener(evt -> b.setAttribute(BUTTON_KEYSTROKE, keyConfig.getValueString()));
-      controls.add("Editor.PlayerRoster.retire_button_keystroke", keyConfig);
-    }
-
-    @Override
-    public String getValueString() {
-      return null;
-    }
-
-    @Override
-    public void setValue(String s) {
-    }
-
-    @Override
-    public Component getControls() {
-      return controls;
-    }
-  }
-
   /** Call-back interface for when a player changes sides during a game */
   @FunctionalInterface
   public interface SideChangeListener {
@@ -784,17 +719,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   protected StringEnumConfigurer sideConfig;
 
-  /**
-   * PlayerRoster is not a true AbstractConfigurable, it handles
-   * it's own configuration. Implement the rest of the AbstractConfigurable
-   * abstract classes for i18n.
-   */
   @Override
   public String[] getAttributeNames() {
     return new String[] {
+      SIDES,
       BUTTON_TEXT,
       TOOL_TIP,
-      SIDES,
+      BUTTON_ICON,
       BUTTON_KEYSTROKE,
     };
   }
@@ -802,9 +733,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {
+      String[].class,
       String.class,
       String.class,
-      String.class,
+      IconConfig.class,
       NamedKeyStroke.class,
     };
   }
@@ -824,7 +756,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public void setAttribute(String key, Object value) {
     if (SIDES.equals(key)) {
       untranslatedSides = sides.toArray(new String[0]);
-      final String[] s = StringArrayConfigurer.stringToArray((String) value);
+      final String[] s = (String[]) value;
       sides = new ArrayList<>(s.length);
       Collections.addAll(sides, s);
     }
@@ -869,10 +801,11 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   @Override
   public String[] getAttributeDescriptions() {
     return new String[] {
-      Resources.getString("Editor.button_text_label"),
-      Resources.getString("Editor.tooltip_text_label"),
       Resources.getString("Editor.PlayerRoster.sides_label"),
-      Resources.getString("Editor.hotkey_label")
+      Resources.getString("Editor.PlayerRoster.retire_button_text"),
+      Resources.getString("Editor.PlayerRoster.retire_button_tooltip"),
+      Resources.getString("Editor.PlayerRoster.retire_button_icon"),
+      Resources.getString("Editor.PlayerRoster.retire_button_keystroke")
     };
   }
 

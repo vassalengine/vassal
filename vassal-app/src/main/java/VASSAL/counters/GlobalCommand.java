@@ -29,6 +29,7 @@ import VASSAL.configure.GlobalCommandTargetConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.i18n.Resources;
 import VASSAL.script.expression.AuditTrail;
+import VASSAL.script.expression.Auditable;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
@@ -59,7 +60,7 @@ import javax.swing.KeyStroke;
  * {@link GlobalCommandTarget}           - "Fast Match" parameters
  * {@link GlobalCommandTargetConfigurer} - configurer for "Fast Match" parameters
  */
-public class GlobalCommand {
+public class GlobalCommand implements Auditable {
   protected KeyStroke keyStroke;        // Key Command we will issue
   protected boolean reportSingle;       // If true, we temporarily disable Report traits in any receiving pieces
   protected int selectFromDeck = -1;    // selectFromDeck = -1 means process all cards in Deck; > 0 means select that many cards from the Deck
@@ -83,6 +84,16 @@ public class GlobalCommand {
   public GlobalCommand(Loopable l, PropertySource p) {
     owner = l;
     source = p;
+  }
+
+  @Override
+  public String getComponentTypeName() {
+    return "Global Command";
+  }
+
+  @Override
+  public String getComponentName() {
+    return owner.getComponentTypeName();
   }
 
   public void setPropertySource(PropertySource ps) {

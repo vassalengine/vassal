@@ -234,7 +234,7 @@ include::{rootdir}Makefile[lines=258]
 
 == Release checklist
 
-* [ ] Update the release announcement Jinja templates in `dist/notes` with the changes for the new release.
+* [ ] Update the release announcement data `dist/notes/data.json` and Jinja templates in `dist/notes` with the changes for the new release.
 * [ ] Fill in the release date in `CHANGES`.
 * [ ] Set `MAVEN_VERSION` to `$(VNUM)` in the `Makefile`.
 * [ ] `make clean`
@@ -243,7 +243,7 @@ include::{rootdir}Makefile[lines=258]
 * [ ] `git tag -s -m 'The x.y.z release.' x.y.z`
 * [ ] `git push --tags`
 * [ ] `make release`
-* [ ] `make release-notes`
+* [ ] `make release-announcements`
 * [ ] Add a new release at GitHub. Upload the release pacakges. Paste in the change log.
 * [ ] Update `util/current-release` and `util/current-beta` with release version number and add release packages to `releases/` in `site` repo and push to GitHub.
 * [ ] Pull `site` repo (in `/var/www/html/site` on vassalengine.org).

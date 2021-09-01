@@ -56,9 +56,9 @@ public class DoublePreference extends BasicPreference {
   @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
-      config =
-        new DoubleConfigurer(getVariableName(), getDescription(), defaultValue);
+      config = new DoubleConfigurer(getVariableName(), getDescription());
       config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
+      config.setValue(defaultValue);
     }
     return config;
   }

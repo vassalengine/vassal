@@ -176,6 +176,9 @@ Try these two lines, in order, one at a time:
 -Dsun.java2d.opengl=false
 -----
 
+==== (Mac) Poor graphics performance
+If you are having poor graphics performance (slow scrolling, e.g.) on a Mac, and particularly on an Apple Silicon Mac, go to Vassal's preferences and check the box for Disable OpenGL FBOs.
+
 ==== (Mac) "VASSAL cannot be opened because the developer cannot be verified. MacOS cannot verify that this app is free from malware."
 If you have the current or a recent version of MacOS, Gatekeeper is probably active--MacOS will block VASSAL from running on the first attempt (because this isn't what Apple considers a code-signed app).
 

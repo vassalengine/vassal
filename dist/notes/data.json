@@ -1,0 +1,68 @@
+{
+  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.",
+  "important": [
+    "NEW! 64-bit ARM packages: There are now MacOS and Windows pacakges for 64-bit ARM processors. If you have a Mac with an Apple Silicon CPU (which is a 64-bit ARM processor), we recommend using the 64-bit ARM build.",
+    "Code deprecated more than a year ago has been removed. Modules using that code MUST be updated if they are to work with {{version_feature}}.",
+    "Things may be broken which worked previously. If you find a new bug, please report it.",
+    "Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction."
+  ],
+  "downloads": [
+    { "display_name": "Linux", "suffix": "linux.tar.bz2" },
+    { "display_name": "MacOS (64-bit ARM)", "suffix": "macos-aarch64.dmg" },
+    { "display_name": "MacOS (64-bit x86)", "suffix": "macos-x86_64.dmg" },
+    { "display_name": "Windows (64-bit ARM)", "suffix": "windows-aarch64.exe" },
+    { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
+    { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
+    { "display_name": "Other", "suffix": "other.zip" }
+  ],
+  "new_features": [
+    { "num": 10276, "desc": "Expose property if we're currently drawing Counter Detail Viewer" },
+    { "num": 10273, "desc": "Mat Cargo can be set to detect mats way from their exact center" },
+    { "num": 10248, "desc": "Invisible trait - Option to disable auto-report of moves" },
+    { "num": 10075, "desc": "Scaling factors for Layers and Non-Rectangular" },
+    { "num": 10066, "desc": "Mats & Cargo - Cargo pieces stay attached to Mat piece when moving." },
+    { "num": 10034, "desc": "Added option to Mass Piece Loader to not create empty levels in layers when there is no matching image" },
+    { "num": 10021, "desc": "Added sub-folders to group components under Module, Maps, Decks, At-Start Stacks, Prototypes and Global Properties folders" },
+    { "num": 10002, "desc": "Add Hotkeys to hide and show map windows. Existing show/hide hotkey field is now always visible. Allow changes to hide/show Map button settings without needing Editor restart" },
+    { "num": 10001, "desc": "Inventory window allows a hotkey for Refresh" },
+    { "num": 9998, "desc": "Editor now has Drag and Drop support" },
+    { "num": 9997, "desc": "Can duplicate and insert components in Editor, not just add to bottom" },
+    { "num": 9988, "desc": "CountStack() added to beanshell to count pieces in current Stack" },
+    { "num": 9987, "desc": "ReportState checkbox overrides Global Key Command suppression of individual reports" },
+    { "num": 9979, "desc": "Add Deck Sort Key Command component to allow sorting of cards in a Deck by properties via menu or hotkey. Add Deck Send Key Command component to provide additional commands to send contents of one Deck to another via menu or hotkey." },
+    { "num": 9973, "desc": "Deck supports configurable strings for Draw Multiple, Draw Specific, Face Up, Face Down" },
+    { "num": 9972, "desc": "Ability to specify Return-to-Deck target as an expression" },
+    { "num": 9917, "desc": "Global Options can be configured to let toolbar items on closed windows accept global hotkeys" },
+    { "num": 9912, "desc": "Add Global property MapName_isVisible for each Map to allow checking if Map is currently open" },
+    { "num": 9901, "desc": "Preference to reverse left-to-right order counters are shown in Mouseover Stack Viewer" },
+    { "num": 9864, "desc": "Improved translation features (Global Translatable Message component, Translatable Message trait, exposing current language/locale as property)" },
+    { "num": 9549, "desc": "Default UI font size can be overridden in preferences" },
+    { "num": 4542, "desc": "Added 'Stack Normally' option to 'Does Not Stack' trait" },
+    { "num": 4533, "desc": "Make grid center dot display independent of grid display" }
+  ],
+  "bug_fixes": [
+    { "num": 10326, "desc": "Add option to disable OpenGL FBOs on Macs" },
+    { "num": 10301, "desc": "Double max heap and retry when image tiler runs out of memory" },
+    { "num": 10294, "desc": "Can Rotate traits no longer lose any pre-defined starting rotation when editing a Piece Slot" },
+    { "num": 10187, "desc": "Duplicate key and menu item for Editor menu" },
+    { "num": 9993, "desc": "DeckPosition was reporting 1 higher than the actual position" },
+    { "num": 9884, "desc": "Fix and improve module validity checking" },
+    { "num": 6130, "desc": "Grid Numbering dialog can appear blank when grid size is very large" }
+  ],
+  "other_improvements": [
+    { "num": 10286, "desc": "Add removal/deprecation checker and remove anything deprecated a year ago" },
+    { "num": 10277, "desc": "When editing an IrregularGrid, start the map view somewhere near the grid or its parent Zone" },
+    { "num": 10272, "desc": "Don't auto-name new regions a long string" },
+    { "num": 10259, "desc": "64-bit ARM builds for Windows and Macs; switched bundled Java to Zulu" },
+    { "num": 10228, "desc": "Upgrade to Launch4j 3.14" },
+    { "num": 10041, "desc": "Newly added Layer traits will now default to 'Always active'" },
+    { "num": 10015, "desc": "Remove ?s from checkbox preference strings" },
+    { "num": 10011, "desc": "Add Scrollbars to Prefs Dialog when needed" },
+    { "num": 9999, "desc": "First 'advanced search' on a module defaults to all boxes prechecked" },
+    { "num": 9992, "desc": "Removed ignored 'button tooltip' field from Turn Tracker config" },
+    { "num": 9989, "desc": "Less verbose window titles for sub-windows" },
+    { "num": 9975, "desc": "Deck reports now suppressed during GKC report suppresssion" },
+    { "num": 9913, "desc": "Increase number of default zoom levels in new Map Zoom Capability" },
+    { "num": 9254, "desc": "Expression audit trails preference - Improve error reporting when Beanshell expressions fail. Suppress 'Bad Data in Module' errors generated by counters in Game Piece Palette." }
+  ]
+}

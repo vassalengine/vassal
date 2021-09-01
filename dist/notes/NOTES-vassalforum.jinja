@@ -1,45 +1,44 @@
-{%- from "common.jinja" import version_feature with context -%}
 [size=200][b]VASSAL {{version}} Released[/b][/size]
 
-The VASSAL Team is happy to announce VASSAL {{version}}.
+{{headline}}
 
 [size=150][b]IMPORTANT[/b][/size]
 
-* Things may be broken which worked previously. If you find a new bug, please report it.
-
-* Modules saved in {{version_feature}} are not openable by earlier versions of VASSAL. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.
+{% for item in important -%}
+* {{item}}
+{% endfor %}
 
 [size=150][b]Download[/b][/size]
 
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-linux.tar.bz2]Linux[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-macos.dmg]MacOS[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-64.exe]Windows (64-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-windows-32.exe]Windows (32-bit)[/url]
-[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-other.zip]Other[/url]
+{% for item in downloads -%}
+[url=https://github.com/vassalengine/vassal/releases/download/{{version}}/VASSAL-{{version}}-{{item.suffix}}]{{item.display_name}}[/url]
+{% endfor %}
 
-[size=150][b]Changes since 3.5.7[/b][/size]
+[size=150][b]Changes since 3.5.8[/b][/size]
 
+{% if new_features -%}
+New features
+
+{% for item in new_features -%}
+* {{ item.num }}: {{ item.desc }}
+{% endfor %}
+{% endif -%}
+
+{% if bug_fixes -%}
 Bug fixes
 
-* 14599: Error logs should be read from disk as UTF-8
-* 14596: Removed initial heap setting for Importer, unused since 3.5.4
-* 14579: Mass Piece Loader cannot add 'standard' layer traits
-* 14570: Longer cancel wizard text shifts wizard divider position
-* 14568: Counter Global Key Command expression does not see properties in lower traits
-* 14479: GamePieceImages recognized by unused image removal tool
+{% for item in bug_fixes -%}
+* {{ item.num }}: {{ item.desc }}
+{% endfor %}
+{% endif -%}
 
+{% if other_improvements -%}
 Other improvements
 
-* 14600: Switch bug tracker to GitHub
-
-[size=150][b]Changes since 3.5.6[/b][/size]
-
-Bug fixes
-
-* 14540: PgDn stopped scrolling maps downward
-* 14527: NoSuchMethodError when calling ArchiveWriter.save()
-* 14526: IllegalArgumentException when rendering empty labels
-* 14521: NPE in CounterDetailViewer when Stack shapes array is longer than the piece count
+{% for item in other_improvements -%}
+* {{ item.num }}: {{ item.desc }}
+{% endfor %}
+{% endif -%}
 
 See the [url=http://www.vassalengine.org/wiki/VASSAL_{{version_feature}}_Release_Notes]Release Notes[/url] for descriptions of the changes in {{version_feature}}.
 

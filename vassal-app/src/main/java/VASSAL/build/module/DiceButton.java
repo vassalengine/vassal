@@ -246,16 +246,16 @@ public class DiceButton extends AbstractToolbarItem {
       Resources.getString(Resources.NAME_LABEL),
       Resources.getString(Resources.BUTTON_TEXT),
       Resources.getString(Resources.TOOLTIP_TEXT),
-        Resources.getString(Resources.BUTTON_ICON),
-        Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
-        Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
-        Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
-        Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
-        Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
-        Resources.getString(Resources.HOTKEY_LABEL),
-        Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
-        Resources.getString("Editor.report_format"), //$NON-NLS-1$
-        Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
+      Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
+      Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
+      Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
+      Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
     };
   }
 

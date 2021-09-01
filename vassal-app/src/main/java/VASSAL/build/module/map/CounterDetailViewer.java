@@ -222,14 +222,29 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     if (b instanceof AbstractFolder) {
       b = ((AbstractFolder)b).getNonFolderAncestor();
     }
+
     map = (Map) b;
     view = map.getView();
     map.addDrawComponent(this);
     final String keyDesc = hotkey == null ? "" : "(" + HotKeyConfigurer.getString(hotkey) + ")"; //NON-NLS
-    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
-        new BooleanConfigurer(USE_KEYBOARD, Resources.getString("CounterDetailViewer.use_prompt", keyDesc), Boolean.FALSE));
-    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
-        new IntConfigurer(PREFERRED_DELAY, Resources.getString("CounterDetailViewer.delay_prompt"), delay));
+
+    GameModule.getGameModule().getPrefs().addOption(
+      Resources.getString("Prefs.general_tab"),
+      new BooleanConfigurer(
+        USE_KEYBOARD,
+        Resources.getString("CounterDetailViewer.use_prompt", keyDesc),
+        Boolean.FALSE
+      )
+    );
+
+    GameModule.getGameModule().getPrefs().addOption(
+      Resources.getString("Prefs.general_tab"),
+      new IntConfigurer(
+        PREFERRED_DELAY,
+        Resources.getString("CounterDetailViewer.delay_prompt"),
+        delay
+      )
+    );
 
     view.addMouseMotionListener(this);
     view.addMouseListener(this);

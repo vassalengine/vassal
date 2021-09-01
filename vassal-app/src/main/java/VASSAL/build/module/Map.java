@@ -1209,7 +1209,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    * Translate a point from map coordinates to component coordinates
    *
    * @see #mapCoordinates
-   * @deprecated {@link #mapToComponent(Point)}
+   * @deprecated Use {@link #mapToComponent(Point)}
    */
   @Deprecated(since = "2020-08-05", forRemoval = true)
   public Point componentCoordinates(Point p) {

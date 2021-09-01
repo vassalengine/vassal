@@ -1,4 +1,12 @@
-3.6.0-beta1 - ???
+3.6.0-beta2 - ???
+
+* 10371: Reset the Zone Editor title to match the Zone being edited
+* 10359: ClassCastException: DeckGlobalCommand cannot be cast to Auditable
+* 10351: Checkbox preference default value is ignored
+* 10341: Symbolic Dice Button tooltip is overwritten by description text
+* 10095: Definition of Player Sides - Retire/Switch Button image not showing in     editor
+
+3.6.0-beta1 - 21 August 2021
 
 * 10326: Add option to disable OpenGL FBOs on Macs
 * 10301: Double max heap and retry when image tiler runs out of memory
@@ -48,7 +56,7 @@
 *  9972: Ability to specify Return-to-Deck target as an expression
 *  9917: Global Options can be configured to let toolbar items on closed
     windows accept global hotkeys
-*  9913: Increase number of default zomm levels in new Map Zoom Capability
+*  9913: Increase number of default zoom levels in new Map Zoom Capability
 *  9912: Add Global property MapName_isVisible for each Map to allow checking
     if Map is currently open
 *  9901: Preference to reverse left-to-right order counters are shown in

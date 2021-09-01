@@ -251,6 +251,11 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       super(l);
     }
 
+    @Override
+    public String getComponentTypeName() {
+      return "Deck Global Command";
+    }
+
     public Command apply(Deck d, PieceFilter filter) {
       final String reportText = reportFormat.getText(source, (Auditable) this, "Editor.report_format");
       Command c;

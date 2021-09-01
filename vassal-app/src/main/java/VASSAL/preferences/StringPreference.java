@@ -52,8 +52,9 @@ public class StringPreference extends BasicPreference {
   @Override
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
-      config = new StringConfigurer(getVariableName(), getDescription(), defaultValue);
+      config = new StringConfigurer(getVariableName(), getDescription());
       config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
+      config.setValue(defaultValue);
     }
     return config;
   }

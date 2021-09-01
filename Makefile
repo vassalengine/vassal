@@ -48,9 +48,11 @@ JDOCDIR:=jdoc
 
 # numeric part of the version only
 VNUM:=3.6.0
+# major-minor part of the version
+V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
 MAVEN_VERSION:=$(VNUM)-SNAPSHOT
-#MAVEN_VERSION:=$(VNUM)-beta3
+#MAVEN_VERSION:=$(VNUM)-beta1
 #MAVEN_VERSION:=$(VNUM)
 
 JARNAME:=vassal-app-$(MAVEN_VERSION)
@@ -277,10 +279,13 @@ $(TMPDIR)/VASSAL-$(VERSION).sha256: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2 $(
 
 release-sha256: $(TMPDIR)/VASSAL-$(VERSION).sha256
 
-$(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja | $(TMPDIR)
-	jinja2 -Dversion=$(VERSION) -o $@ $<
+$(TMPDIR)/notes.json: $(DISTDIR)/notes/data.json | $(TMPDIR)
+	jinja2 --strict -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
 
-release-notes: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb
+$(TMPDIR)/NOTES-%: $(DISTDIR)/notes/NOTES-%.jinja $(TMPDIR)/notes.json | $(TMPDIR)
+	jinja2 --strict -Dversion=$(VERSION) -Dversion_feature=$(V_MAJ_MIN) -o $@ $^
+
+release-announcements: $(TMPDIR)/NOTES-bgg $(TMPDIR)/NOTES-csw $(TMPDIR)/NOTES-news $(TMPDIR)/NOTES-vassalforum $(TMPDIR)/NOTES-fb $(TMPDIR)/NOTES-gh
 
 release: clean release-other release-linux release-windows release-macos release-sha256
 
@@ -306,4 +311,4 @@ clean: clean-release
 # prevents make from trying to delete intermediate files
 .SECONDARY:
 
-.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-notes clean-release post-release javadoc jar clean-javadoc version-set version-print
+.PHONY: compile test clean release release-linux release-macos release-windows release-other release-sha256 release-announcements clean-release post-release javadoc jar clean-javadoc version-set version-print
