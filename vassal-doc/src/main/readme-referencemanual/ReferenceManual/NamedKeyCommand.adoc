@@ -41,8 +41,10 @@ image::images/KeyCommandEntry.png[]
 
 The standard Key Command configurer contains 3 parts::
 +
-*1:* Named Command entry. Type or paste the text of a Name Command in this section.
+*1:* Named Command entry. Type or paste the text of a Named Command in this section.
 +
 *2:* Keystroke Command entry. Click in this section, then press a Keyboard key or key combination. The name of the Keystroke Command will be displayed.
 +
 *3:* Undo Button. Clicking in this button will undo the last change you made in either of the Named or Keystroke Command entry fields.
+
+NOTE: A Key Command can ony consist of either a Named Command or a Keystroke Command, not both. So adding a value to either of the two input boxes will clear the contents of the other input box.

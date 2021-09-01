@@ -24,9 +24,9 @@ NOTE: For the most common case, a piece with a simple image that has some transp
 [width="100%",cols="50%a,50%a",]
 |===
 |
-*Scale Factor:*:: Applies a scale factor to the supplied image when creating the Non-Rectangular shape. A scale factor greater than 1 will make the shape larger than the image (e.g. 2 = double sized. A Scale factor less than 1 will make the shape smaller (e.g. 0.25 = quarter sized).
+*Scale Factor:*:: Applies a scale factor to the supplied image when creating the Non-Rectangular shape. A scale factor greater than 1 will make the shape larger than the image (e.g. 2 = double sized). A Scale factor less than 1 will make the shape smaller (e.g. 0.25 = quarter sized).
 
-*Image Block:*:: The left-hand side of the image area shows a representation of what the Non-Rectangular shape will be. The black shap shows the non-transparent parts of the source image and the shape of the generated image.
+*Image Block:*:: The left-hand side of the image area shows a representation of what the Non-Rectangular shape will be. The black shape shows the non-transparent parts of the source image and the shape of the generated image.
 +
 The right-hand size shows the actual selected image and allows you to select an existing module image from the drop-down, to load a new image into the module using the _Add_ button, or to clear the existing image using the _Clear_ button.
 

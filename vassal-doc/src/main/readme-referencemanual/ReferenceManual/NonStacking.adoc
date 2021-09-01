@@ -40,6 +40,7 @@ a certain class of terrain markers or immobile markers from being swept up in ba
 
 * _normally:_  The piece can be band-selected normally.
 * _when alt-key down:_  A player must hold the Alt key down when band-selecting in order for this piece to be added to the selection.
+* _when alt+shift keys down:_ A player must hold the Alt and Shift keys down when band-selecting in order for this piece to be added to the selection.
 * _never:_  The piece is never selected by band-selects.
 
 *Move Piece:*:: This option controls what happens when a player tries to move a selected piece by drag-and-drop.
@@ -47,7 +48,7 @@ Options are:
 
 * _normally:_  The piece can be moved normally.
 * _only if selected:_  The piece can only by moved if it is selected.
-* _never_  The piece can never be moved manually by a player.
+* _never:_  The piece can never be moved manually by a player.
 
 *Piece can stack:*:: This option controls whether the piece can form Stacks with other pieces when moved. This option
 allows you to over-ride the primary _Does Not Stack_ behaviour of this trait, and apply the other options to Stacking pieces.
@@ -58,7 +59,7 @@ The primary purpose
 of this option is to allow the _Ignore grid when moving?_ option to be applied to Stacking pieces:
 
 * _normally:_  The piece will stack normally.
-* _never_  The piece can never form stacks with other pieces (default).
+* _never:_  The piece can never form stacks with other pieces (default).
 
 *Ignore grid when moving:*:: Select this option to prevent the piece from snapping to the nearest grid location when it is moved.
 This overrides any setting configured in a <<HexGrid.adoc#top,Hex Grid>>, <<IrregularGrid.adoc#top,Irregular Grid>>, or <<RectangularGrid.adoc#top,Rectangular Grid>>.
