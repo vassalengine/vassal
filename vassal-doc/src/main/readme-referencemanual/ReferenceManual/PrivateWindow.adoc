@@ -6,21 +6,22 @@
 '''''
 
 === Private Window
-
-[cols=",",]
-|===
-|A Private Window behaves much like a normal <<Map.adoc#top,Map Window>>, but is designated as belonging to a particular side or sides.
+A Private Window behaves much like a normal <<Map.adoc#top,Map Window>>, but is designated as belonging to a particular side or sides.
 The owning side(s) must correspond to one or more of the sides defined in the Module's <<GameModule.adoc#Definition_of_Player_Sides,definition of player sides>>.
 
 A Private Window can be hidden from all players not playing one of the owning sides.
 Even if visible to them, players not playing the owning side may not manipulate pieces on the map: both mouse and keyboard events from non-owning players are ignored.
 
-*Belongs to side:*  To configure the owner(s) of this window, type the name of one of the player sides and then click the _Add_ button.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+
+*Belongs to side:*::  To configure the owner(s) of this window, type the name of one of the player sides and then click the _Add_ button.
 Sides can also be removed by selecting one and clicking the _Remove_ button.
 
-*Visible to all players:*  If selected, this window will be visible to all players; otherwise, it will only be visible to its owner(s).
+*Visible to all players:*::  If selected, this window will be visible to all players; otherwise, it will only be visible to its owner(s).
 
-*Use same boards as this map:*  A Private Window may designate another <<Map.adoc#top,Map Window>> and thereby automatically use the same Boards as that other Map Window.
+*Use same boards as this map:*::  A Private Window may designate another <<Map.adoc#top,Map Window>> and thereby automatically use the same Boards as that other Map Window.
 If this field is left blank, then the Private Window will use its own set of boards.
 
 Other properties are the same as for ordinary <<Map.adoc#top,Map Windows.>> + |image:images/PrivateMap.png[]

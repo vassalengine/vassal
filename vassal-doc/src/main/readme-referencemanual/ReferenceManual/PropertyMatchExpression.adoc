@@ -16,7 +16,8 @@ Just as there are two type of <<Expression.adoc#top,Expressions>>, there are two
 <<#old,Old-Style Expressions>> are identified by not being surrounded by the curly braces {}. Old-Style Expressions are less powerful than BeanShell expressions and are supported to provide compatibility with earlier versions of Vassal.
 If you are learning VASSAL for the first time, you will mainly want to learn about BeanShell expressions.
 
-*Comparing Properties For Global Key Commands:* When Property Match Expressions are used in a Global Key Command trait attached to a piece, any references to <<Properties.adoc#top,Properties>> normally refer to the properties of the piece being checked to see if it matches, i.e.
+==== Comparing Properties For Global Key Commands
+When Property Match Expressions are used in a Global Key Command trait attached to a piece, any references to <<Properties.adoc#top,Properties>> normally refer to the properties of the piece being checked to see if it matches, i.e.
 the potential "target" piece, rather than the piece that is issuing the Global Key Command.
 However, there is a special format which can be used to match properties in the potential _target pieces_ against properties in the _issuing piece_ that is generating the command.
 Any Property name enclosed in $ signs (e.g.

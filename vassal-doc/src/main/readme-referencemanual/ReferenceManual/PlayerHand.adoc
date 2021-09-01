@@ -6,10 +6,7 @@
 '''''
 
 === Player Hand
-
-[cols=",",]
-|===
-|A Player Hand is a specialized <<PrivateWindow.adoc#top,Private Window>> for containing a hand of cards.
+A Player Hand is a specialized <<PrivateWindow.adoc#top,Private Window>> for containing a hand of cards.
 It is designated as belonging to a particular side or sides.
 The owning sides must correspond to one or more of the sides defined in the <<GameModule.adoc#Definition_of_Player_Sides,definition of player sides>>.
 
@@ -19,15 +16,20 @@ Like a Private Window, a Player Hand can only be manipulated by the owning playe
 Cards can be manipulated in the hand (turned face up, etc.) and can be rearranged in order.
 Cards can be dragged into and out of the window to add/remove them from the hand.
 
-*Belongs to side:*  To configure the owner(s) of this window, type the name of one of the player sides and then click the _Add_ button.
+[width="100%",cols="50%a,^50%a",]
+|===
+|
+
+*Belongs to side:*::  To configure the owner(s) of this window, type the name of one of the player sides and then click the _Add_ button.
 Sides can also be removed by selecting one and clicking the _Remove_ button.
 
-*Visible to all players:*  If selected, this window will be visible to all players; otherwise, it will only be visible to its owner(s).
+*Visible to all players:*::  If selected, this window will be visible to all players; otherwise, it will only be visible to its owner(s).
 
-*Use same boards as this map:*  A Player Hand may designate another <<Map.adoc#top,Map Window>> and thereby automatically use the same Boards as that other Map Window.
+*Use same boards as this map:*::  A Player Hand may designate another <<Map.adoc#top,Map Window>> and thereby automatically use the same Boards as that other Map Window.
 If this field is left blank, then the Player Hand will use its own set of boards.
 
-All other properties are the same as for ordinary <<Map.adoc#top,Map Windows>>. + |image:images/PlayerHand.png[]+
+All other properties are the same as for an ordinary <<Map.adoc#top,Map Window>>.
+|image:images/PlayerHand.png[]
 |===
 
 '''''

@@ -11,24 +11,27 @@ This trait attaches an arbitrary set of editable <<Properties.adoc#top,propertie
 
 These properties are exposed by name as properties of the piece, and may be accessed by name from other traits.
 
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,^50%",]
 |===
-a|
-*Menu Text:*  Text for right-click context menu item that will show the properties window during play.
+|
+*Description:*:: A brief description of this trait for your reference.
+
+*Menu command:*::  Text for right-click context menu item that will show the properties window during play.
 If left blank, no context menu item will appear, but the properties window can still be activated with the key command.
 
-*Key Command:*  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to show the properties window during play.
+*Key command:*:: <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to show the properties window during play.
 
-When a player edits the properties window during play, there are three methods for committing  changes:
+*Commit changes on:*:: When a player edits the properties window during play, there are three methods for committing  changes:
 
 . *Commit on Every Keystroke* - Every keystroke and tick-mark click you make are immediately committed as you make them.
 Other players see your changes immediately.
 . *Commit on Apply Button or Enter Key* - Changes are not communicated to other players until you press the APPLY button at the bottom of the property sheet, or press the ENTER key on your keyboard, or close the Property Sheet window.
 . *Commit on Window Close or Enter Key* - Changes are not communicated to other players until you press the ENTER key or close the Property Sheet window.
 
+*Background color:*::
 You may customize the background color of each PropertySheet window, for example to use different colors for the pieces belonging to different sides.
 
-You may select from 8 different formats in which to display properties:
+You can select from 8 different formats in which to display properties:
 
 . *Text* - A simple, single-line field that accepts text.
 . *Multi-line text* - A field that accepts multi-line text.
