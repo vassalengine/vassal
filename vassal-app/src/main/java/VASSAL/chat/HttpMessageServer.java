@@ -44,9 +44,9 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   public HttpMessageServer(PeerPoolInfo info) {
     this(
-      "http://www.vassalengine.org/util/getMessages", //$NON-NLS-1$
-      "http://www.vassalengine.org/util/postMessage", //$NON-NLS-1$
-      "http://www.vassalengine.org/util/motd",        //$NON-NLS-1$
+      "https://vassalengine.org/util/getMessages", //$NON-NLS-1$
+      "https://vassalengine.org/util/postMessage", //$NON-NLS-1$
+      "https://vassalengine.org/util/motd",        //$NON-NLS-1$
       info
     );
   }

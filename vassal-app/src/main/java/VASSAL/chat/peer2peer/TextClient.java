@@ -106,7 +106,7 @@ public class TextClient {
     else {
       PeerPool pool;
       if ("CGI".equals(poolType)) {
-        pool = new CgiPeerPool(info, "http://www.vassalengine.org/util/");
+        pool = new CgiPeerPool(info, "https://vassalengine.org/util/");
       }
       else if ("Proxy".equals(poolType)) {
         pool = new ProxyPeerPool(info, host, port);

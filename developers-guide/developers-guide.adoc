@@ -201,7 +201,7 @@ mvn versions:display-plugin-updates
 
 ==== Configuration of dependent projects
 
-The project's public maven repository can be found at http://www.vassalengine.org/maven/
+The project's public maven repository can be found at https://vassalengine.org/maven/
 
 [source,xml]
 .Example configuration for dependent projects:
@@ -217,7 +217,7 @@ The project's public maven repository can be found at http://www.vassalengine.or
   <repositories>
     <repository>
       <id>vassal-releases</id>
-      <url>http://www.vassalengine.org/maven/</url>
+      <url>https://vassalengine.org/maven/</url>
     </repository>
   </repositories>
 </project>
@@ -250,10 +250,9 @@ include::{rootdir}Makefile[lines=258]
 * [ ] Upload maven artifacts to our repo: `rsync -avP releases/ vassal.org:/var/www/html/site/maven`
 * [ ] From `/var/www/html/site/javadoc/` on vassalengine.org: `mkdir x.y.z && cd x.y.z && unzip ../../maven/org/vassalengine/vassal-app/x.y.z/vassal-app-x.y.z-javadoc.jar`
 * [ ] Update the release branch in `.github/workflows/package.yml`.
-* [ ] Update the release notes in our wiki: http://www.vassalengine.org/wiki/VASSAL_3.5_Release_Notes
+* [ ] Update the release notes in our wiki: https://vassalengine.org/wiki/VASSAL_3.5_Release_Notes
 * [ ] Post release announcements (see `tmp/notes-*`):
-** Our news page: http://www.vassalengine.org/news/
-** Our forum: http://www.vassalengine.org/forum/viewforum.php?f=2 (Set the new post to be an Announcement; also set the previous release's post to be a Standard Topic post again.)
+** Our forum: https://forum.vassalengine.org/c/news/17 (Pin the new post, unpin the one for the previous release.)
 ** BGG Computer Based Board Gaming forum: https://www.boardgamegeek.com/forum/28/bgg/computer-based-board-gaming
 ** BGG Press Releases forum: https://www.boardgamegeek.com/forum/31/bgg/press-releases
 ** Our forum at ConsimWorld: http://talk.consimworld.com/WebX/.ee6f15c/10067

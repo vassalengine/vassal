@@ -6,7 +6,7 @@
   <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
-  <supportUrl>http://www.vassalengine.org/forum</supportUrl>
+  <supportUrl>https://forum.vassalengine.org</supportUrl>
   <stayAlive>false</stayAlive>
   <icon>VASSAL.ico</icon>
   <classPath>

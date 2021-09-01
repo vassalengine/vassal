@@ -35,7 +35,7 @@ public class BugUtils {
     b.addTextBody("description", getDescription(description, errorLog)); //NON-NLS
     b.addBinaryBody("log", errorLog.getBytes(StandardCharsets.UTF_8), ContentType.TEXT_PLAIN, Info.getErrorLogPath().getName()); //NON-NLS
 
-    final String url = "http://www.vassalengine.org/util/abr";
+    final String url = "https://vassalengine.org/util/abr";
     final HttpPost httpPost = new HttpPost(url);
     httpPost.setEntity(b.build());
 
