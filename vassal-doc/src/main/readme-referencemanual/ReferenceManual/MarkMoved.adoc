@@ -34,9 +34,9 @@ SEE ALSO: <<MovementTrail.adoc#top,Movement Trails>>)
 
 *Marker Image:*:: Use the _Select_ button to load a new image or the _Default_ button to return to the default image.
 
-*Horizontal Offset:*:: Specify how many pixels to the right of the centre of the piece to display the moved marker.
+*Horizontal Offset:*:: Specify how many pixels to the right of the center of the piece to display the moved marker.
 
-*Vertical Offset:*:: Specify how many pixels down from the centre of the piece to display the moved marker.
+*Vertical Offset:*:: Specify how many pixels down from the center of the piece to display the moved marker.
 
 |image:images/MarkMoved.png[] +
 |===

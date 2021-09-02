@@ -23,7 +23,7 @@ If left blank, no context menu item will appear, but the properties window can s
 
 *Commit changes on:*:: When a player edits the properties window during play, there are three methods for committing  changes:
 
-. *Commit on Every Keystroke* - Every keystroke and tick-mark click you make are immediately committed as you make them.
+. *Commit on Every Keystroke* - Every keystroke and tick-mark click you make is immediately committed as you make it.
 Other players see your changes immediately.
 . *Commit on Apply Button or Enter Key* - Changes are not communicated to other players until you press the APPLY button at the bottom of the property sheet, or press the ENTER key on your keyboard, or close the Property Sheet window.
 . *Commit on Window Close or Enter Key* - Changes are not communicated to other players until you press the ENTER key or close the Property Sheet window.

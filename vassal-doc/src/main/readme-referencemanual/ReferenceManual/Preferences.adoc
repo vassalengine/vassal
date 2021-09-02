@@ -19,7 +19,7 @@ a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will f
 * <<#ChatWindow,*Chat Window*>> - Fonts and colors for the <<ChatLog#top,Chat Log>>
 * <<#TurnCounter,*Turn Counter*>> - <<TurnTracker#top,Turn Tracker>> display configuration.
 
-Module can also define their own preference that will appear on module specific tabs.
+Modules can also define their own preference that will appear on module specific tabs.
 [#General]
 ==== General Preferences
 The _General_ tab includes common preferences for configuring VASSAL's user interface.
@@ -28,13 +28,13 @@ The _General_ tab includes common preferences for configuring VASSAL's user inte
 |===
 |
 
-*Language:*:: Sets the language the VASSAL will use, when localized translations are available. When none are available for a language, VASSAL will default to English.
+*Language:*:: Sets the language that VASSAL will use, when localized translations are available. When none are available for a language, VASSAL will default to English.
 
 *Override default font size (0 = default; restart required):*:: Sets the default font size to use for text in menus and buttons.
 
 *Remember main window size between sessions:*:: When checked, Vassal will save the size of the main window between different sessions.
 
-*Ask "Wizard" questions at startup*:*:: If checked, VASSAL modules will use "wizard-style" introductory screens when starting a new game. If unchecked, the main menu will appear when starting a new module, and the _New Game_, _Load Game_, etc options from the _File_ menu can be used to start a new game.
+*Ask "Wizard" questions at startup*:*:: If checked, VASSAL modules will use "wizard-style" introductory screens when starting a new game. If unchecked, the main menu will appear when starting a new module, and the _New Game_, _Load Game_, etc. options from the _File_ menu can be used to start a new game.
 
 *Generate audit trails in errorlog for 'Bad Data in Module' errors:*:: By default, 'Bad Data in Module' errors only generate a brief error message in the Chat Window and the error log. Checking this option will cause a detailed report to be written to the errorlog. Details will include the component or trait that generated the error and if it involved a Beanshell expression, then details of the values of any properties referenced in the Expression.
 +
@@ -71,17 +71,15 @@ NOTE: Previous versions of VASSAL had a feature which let the value of this pref
 
 *Scroll increment (pixels):*:: Sets the increment, in mapboard pixels, by which the map scrolls when using its scrollbars.
 
-*Use arrow keys to scroll:*:: If checked, the arrow keys will be mapped to scroll the currently focused Map#top, Map>> window.
+*Use arrow keys to scroll:*:: If checked, the arrow keys will be mapped to scroll the currently focused <<Map#top, Map>> window.
 
-*Disable automatic stack display - use configured control key (Ctrl+Space) instead:*:: If checked, Map#StackViewer, Mouseover Stack Viewers>> do not pop up automatically when holding the mouse over a piece or stack. Instead, the viewer appears only when _Ctrl+SPACE_ is then pressed.
+*Disable automatic stack display - use configured control key (Ctrl+Space) instead:*:: If checked, <<Map#StackViewer, Mouseover Stack Viewers>> do not pop up automatically when holding the mouse over a piece or stack. Instead, the viewer appears only when _Ctrl+SPACE_ is then pressed.
 
-*Delay before automatic stack display (ms):*:: Sets the number of milliseconds that the mouse must be held above a piece or stack to activate a Map#StackViewer, Mouseover Stack Viewer>>.
-
-*Delay scrolling when dragging at map edge (ms):*:: Sets the number of milliseconds of delay before scrolling the map when dragging a piece near to the edge of the view.
+*Delay before automatic stack display (ms):*:: Sets the number of milliseconds that the mouse must be held above a piece or stack to activate a <<Map#StackViewer, Mouseover Stack Viewer>>.
 
 *Disable animation of map flares:*:: When checked, the Map Flares are displayed with a static image instead of an animated target image.
 
-*Delay scrolling when dragging at map edge (ms):*:: Change the time delay before map scrolling starts when the cursor nears the edge of a Map.
+*Delay scrolling when dragging at map edge (ms):*:: Sets the number of milliseconds of delay before scrolling the map when dragging a piece near to the edge of the view.
 
 *Distance from edge of map to begin scrolling (when dragging):*:: Sets how close to the edge of a Map the cursor must be before scrolling is initiated.
 
@@ -104,9 +102,9 @@ NOTE: This preference will only appear on Mac systems.
 
 *Drag ghost bug correction? (Use if shadow image missing when dragging counters):*:: When dragging pieces on a map, the intended behavior involves semi-transparent images of the pieces being dragged. On some Windows machines these images don't appear -- in that case, select this option for an alternate drag image.
 
-*Use Classic Move Fixed Distance trait move batching:*:: The <<Translate#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a <<TriggerAction#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depend on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
+*Use Classic Move Fixed Distance trait move batching:*:: The <<Translate#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a <<TriggerAction#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depends on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
 
-NOTE: Use of this preference is *strongly* discouraged unless you have an old module that depend on it.
+NOTE: Use of this preference is *strongly* discouraged unless you have an old module that depends on it.
 
 *Warn when using Legacy Load Continuation:*:: If checked, then you will get a warning if you select the legacy 'Load continuation' menu option. Check this if you use this option regularly, understand the consequences and do not need to be warned.
 
@@ -150,7 +148,7 @@ NOTE: Choose a good password. If another player uses the same password as you, t
 Configure sounds options.
 [width="100%",cols="50%a,50%",]
 |===
-|*Send Wake-up:*:: Configure the "Wake-up" sounds that is played when another player send you a "Wake-up" in an on-line room.
+|*Send Wake-up:*:: Configure the "Wake-up" sound that is played when another player sends you a "Wake-up" in an on-line room.
 
 *Mute server "Wake Up" sounds:*:: Mute any "Wake-up" sounds being generated by other players when in an on-line room.
 
@@ -199,17 +197,17 @@ The _Chat Window_ tab lets you configure the font and colors for the <<ChatLog#t
 |===
 [#TurnCounter]
 ==== Turn Counter
-If your module contains a TurnTracker#top,Turn Counter>>, this tab will let you configure preferences about its appearance.
+If your module contains a <<TurnTracker#top,Turn Counter>>, this tab will let you configure preferences about its appearance.
 
 [width="100%",cols="50%a,^50%",]
 |===
 |
 
-*Font size Sets the size of the font used in the Turn Counter.
+*Font size:*:: Sets the size of the font used in the Turn Counter.
 
 *Bold:*:: Controls whether the Turn Counter uses bold text.
 
-*Dock into toolbar:*:: Controls whether the Turn Counter begins docked to the Toolbar#top,Toolbar>>.
+*Dock into toolbar:*:: Controls whether the Turn Counter begins docked to the <<Toolbar#top,Toolbar>>.
 |image:images/PreferencesTurn.png[]
 |===
 

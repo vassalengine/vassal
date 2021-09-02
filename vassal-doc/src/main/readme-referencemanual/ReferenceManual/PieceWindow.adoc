@@ -8,7 +8,7 @@
 === Game Piece Palette
 
 The Game Piece Palette is the root of a hierarchy of Game Piece Containers and Game Pieces.
-Game Pieces are always at the end (leaves) of the hierarchy. Game Piece Container can be nodes or leaves of the hierarchy.
+Individual Game Pieces are always at the end (leaves) of the hierarchy. Game Piece Containers can be nodes or leaves of the hierarchy.
 Note that since Vassal version 3.5.0 the topmost node of the Game Piece Palette must be a Game Piece Container.
 
 During a game players may drag to the playing area the Game Pieces contained inside Game Piece Palettes.

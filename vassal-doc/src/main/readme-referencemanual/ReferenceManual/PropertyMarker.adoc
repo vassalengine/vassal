@@ -10,7 +10,7 @@ In other words, it is like a _constant_ rather than a _variable_ in programming.
 
 Setting a property does not in itself give a game piece any particular behavior.
 The property must be recognized by some other trait or class in the module.
-Markers are can be referenced in <<Map.adoc#GlobalKeyCommand,Global Key Command's>> and <<Map.adoc#GamePieceLayers,Game Piece Layer>> traits and in many other traits within <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
+Markers can be referenced in <<Map.adoc#GlobalKeyCommand,Global Key Command>> traits and <<Map.adoc#GamePieceLayers,Game Piece Layer>> traits and in many other traits within <<Expression.adoc#top,Expressions>> and <<MessageFormat.adoc#top,Message Formats>>.
 
 [width="100%",cols="50%a,^50%a",]
 |===

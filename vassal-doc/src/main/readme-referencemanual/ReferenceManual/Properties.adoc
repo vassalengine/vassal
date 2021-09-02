@@ -66,7 +66,7 @@ the level in a <<Layer.adoc#Properties,Layer)>> you can use _<_, _<=_, _>_, and 
 |*CurrentX* |<<BasicPiece#top,Basic Piece>>|Current X-coordinate of the piece.
 |*CurrentY* |<<BasicPiece#top,Basic Piece>>|Current Y-coordinate of the piece.
 |*CurrentZone* |<<BasicPiece#top,Basic Piece>>|Current Zone name if the current map has a <<ZonedGrid.adoc#top,multi-zoned grid>>, or "" if the piece is not in any zone, or not on a map.
-|*DeckName* |Basic Piece |Current Deck name if stacked in a <<Deck.adoc#top,Deck>>, or "" if not in a Deck.
+|*DeckName* |<<BasicPiece#top,Basic Piece>>|Current Deck name if stacked in a <<Deck.adoc#top,Deck>>, or "" if not in a Deck.
 |*IgnoreGrid* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece ignores the map grid when moving.
 |*Immobile* |<<NonStacking.adoc#top,Does not stack>> |"true" if this piece cannot be moved by drag and drop.
 |*Invisible* |<<Hideable.adoc#top,Invisible>> |"true" if this piece is invisible to the current player.

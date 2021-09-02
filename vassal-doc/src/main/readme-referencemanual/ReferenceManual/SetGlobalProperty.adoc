@@ -11,33 +11,45 @@ This trait allows a <<GamePiece.adoc#top,Game Piece>> to change the value of a <
 
 image:images/SetGlobalProperty.png[]
 
-*Description:*  A brief description of this trait for reference in the editor (not used during play).
+*Description:*::  A brief description of this trait for reference in the editor (not used during play).
 
-*Global Property Name*  An <<Expression.adoc#top,Expression>> that defines the name of the property to be set.
+*Global Property Name:*::  An <<Expression.adoc#top,Expression>> that defines the name of the property to be set.
 Often, a specific Global Property is simply listed by name, but it is possible to compute the name of the Global Property to be changed based on other properties of the piece, e.g.
 _{ "Resources" + GetProperty("Side")_ }. In this case when the property Side holds the value "Allied" then the Global Property to be set will be _ResourcesAllied_.
 
-*Locate Property starting in the:*  You may name a Zone or Map containing the Global Property to be set, or you may set the property based on the piece's current location, looking for the occupied Zone or Map before defaulting to the Module.
-The name of the Zone or Map is defined using an <<Expression.adoc#top,Expression>>, and so again can be named directly or computed based on the values of Properties.
+*Locate Property starting in the:*:: Define how to locate the Global Property that will have its value changed
 
-*Is Numeric:*  If true, then changes to the value of the property will be restricted to integer values.
+_Current Zone/Current Map/Module_:::
+Look for the Global property first in the Zone the piece is currently on. If not found, then look for it in the Map the piece is currently in. If still not found, then check for a module level Global Property.
+_Named Zone_:::
+Look for the Global Property in the Named Zone on the Map the piece is currently on. If not found, look for a Map level Global Property on the current Map, then look for a module level Global Property.
+_Named Map_:::
+Look for the a Map level Global property on the Named Map. The piece does not have to be on this map. If not found, then look for a module level Global Property.
 
-*Minimum Value:*  Numeric values will be restricted to no less than this number.
+*Name of Zone containing property:*::
+An <<Expression.adoc#top,Expression>> defining the name of the Zone to look in for the Global Property.
 
-*Maximum Value:*  Numeric values will be restricted to no more than this number.
+*Name of Map containing property:*::
+An <<Expression.adoc#top,Expression>> defining the name of the Map to look in for the Global Property.
 
-*Wrap Around:*  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum and vice versa.
+*Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
 
-*Key Commands:*  Adds any number commands for this piece, each of which will set change the value of the designated property in the specified way.
-Click the _New_ button to add a new command and the _Remove_ button to remove one.
-For each command:
+*Minimum value:*::  Numeric values will be restricted to no less than this number when changed by this trait.
 
-*Menu Command:*  Right-click context menu text for the command, or leave blank to display no context menu item.
+*Maximum value:*::  Numeric values will be restricted to no more than this number when changed by this trait.
 
-*Key Command:*  Keyboard shortcut or <<NamedKeyCommand.adoc#top,Named Key Command>> which will activate this change.
+*Wrap Around:*::  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum and vice versa.
 
-*Type:*  Select the way in which this command will change the property:
+*Key Commands:*::  Adds any number commands for this piece, each of which will set change the value of the designated property in the specified way.
++
+For each Key Command:
 
+*Menu command:*:::  Right-click context menu text for the command, or leave blank to display no context menu item.
+
+*Key Command:*:::  <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> which will activate this change.
+
+*Type:*:::  Select the way in which this command will change the property:
++
 * _Set value directly:_  Set the property directly to the value of the <<Expression.adoc#top,Expression>> entered in the *New Value* field.
 * _Increment numeric value:_  Increment the value of the property by the value of the <<Expression.adoc#top,Expression>> entered in the *Increment by* field.
 To "decrement" the value, simple increment by a negative number.
