@@ -80,7 +80,7 @@ You can use the _Select_ button to select a Board currently defined in the modul
 
 *Zone:*::  An <<Expression.adoc#top,Expression>> specifying the Zone name that the piece will be sent to.
 
-*Region:*:: An <<Expression.adoc#top,Expression>> specifying the Region name that the piece will be sent to.In the case of <<ZonedGrid.adoc#top,Multi-Zone Grids>>, this format makes use of the _Location Format_ field in any <<ZonedGrid.adoc#top,Zone>>:
+*Region:*:: An <<Expression.adoc#top,Expression>> specifying the Region name that the piece will be sent to. In the case of <<ZonedGrid.adoc#top,Multi-Zone Grids>>, this format makes use of the _Location Format_ field in any <<ZonedGrid.adoc#top,Zone>>:
 +
 * for Zones whose Location Format is configured to _$name$_, the name of the Zone will be the name of the Region.
 * for Zones whose Location Format is configured to _$gridLocation$_, then the grid location inside the zone will be used.
@@ -97,7 +97,7 @@ In the case of an <<IrregularGrid.adoc#top,Irregular Grid>>, this is name of an 
 [#offsets]
 ===== Additional Offsets
 
-After the destination of the piece has been determined base on the _Destination_ type, the final position is further adjusted by the multiplied values of the two pairs of offset <<Expression.adoc#top,Expressions>>.
+After the destination of the piece has been determined based on the _Destination_ type, the final position is further adjusted by the multiplied values of the two pairs of offsets <<Expression.adoc#top,Expressions>>.
 
 Each pair of expressions (X and Y) will be evaluated, multiplied together, and then applied as offsets to the X,Y position calculated from the destination above to give the final destination for the piece.
 

@@ -102,7 +102,7 @@ NOTE: This preference will only appear on Mac systems.
 
 *Drag ghost bug correction? (Use if shadow image missing when dragging counters):*:: When dragging pieces on a map, the intended behavior involves semi-transparent images of the pieces being dragged. On some Windows machines these images don't appear -- in that case, select this option for an alternate drag image.
 
-*Use Classic Move Fixed Distance trait move batching:*:: The <<Translate#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a <<TriggerAction#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depends on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
+*Use Classic Move Fixed Distance trait move batching:*:: The <<Translate#top,Move Fixed Distance>> trait changed in VASSAL 3.3 to correct several old bugs. Part of the fix involved changing some behaviors of the trait when firing off multiple versions of the trait with a <<TriggerAction#top,Trigger Action>> trait. Check this box to use the old trait behavior with modules that depend on the old unintended behavior (in other words, if the bug was actually a "feature" for your module).
 
 NOTE: Use of this preference is *strongly* discouraged unless you have an old module that depends on it.
 

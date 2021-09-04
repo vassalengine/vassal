@@ -6,14 +6,14 @@
 '''''
 
 === Return to Deck
-The _Return to Deck_ is used to move a piece into a <<Deck.adoc#top,Deck>> when the designated key command is received or the right-click context menu item is selected.
+The _Return to Deck_ trait is used to move a piece into a <<Deck.adoc#top,Deck>> when the designated key command is received or the right-click context menu item is selected.
 If there is only one Deck in the module the piece will be added to it.
 If the module has more than one Deck, you may select the Deck that the piece will be placed in.
 Alternatively, you may prompt the players to choose a deck when the trait is activated.
 
 *EXAMPLE:* +
 For a game in which cards are drawn from a deck, used, and placed into a discard pile, both the deck and the discard pile will be represented by a Deck component.
-By adding a _Return to Deck_ trait to each card, with the text 'Discard' and the command _Ctrl+R_, then hitting _Ctrl+R_ on with a card selected will automatically send it to the discard pile.
+By adding a _Return to Deck_ trait to each card, with the text 'Discard' and the command _Ctrl+R_, then hitting _Ctrl+R_ with a card selected will automatically send it to the discard pile.
 [width="100%",cols="50%a,^50%a",]
 |===
 |
@@ -28,7 +28,7 @@ If left blank, no context menu item will appear but the trait can still be activ
 
 *Deck name:*:: Enter the name of the target Deck as a simple String or click the _Select_ button to select from a list of the Decks available in this module.
 +
-Alternatively you can enter an <<Expression.adoc#top,Expression>> to calculate the name of the taget Deck at the time the trait executes.
+Alternatively you can enter an <<Expression.adoc#top,Expression>> to calculate the name of the target Deck at the time the trait executes.
 
 *Prompt for destination deck:*::  Text to display when asking the player to select a Deck to return the piece to.
 

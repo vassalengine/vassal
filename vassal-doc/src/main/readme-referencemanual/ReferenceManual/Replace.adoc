@@ -40,7 +40,7 @@ Layers will be set to the same level, labels will be given the same value, rotat
 The state of a particular trait will carry over only if it has an exact match in the replacement, i.e.
 the properties settings of that trait are the same in both the original and replacement piece.
 
-*Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a <<PropertyMarker.adoc#top,Marker>> that's above this one _will_ change if the state in the new game piece.
+*Only match states above this trait:*::  If selected, VASSAL will only replace states in traits that appear above this one in the list of traits in the <<GamePiece.adoc#top,game piece editor>>. For example, the state of a <<PropertyMarker.adoc#top,Marker>> that's above this one _will_ change if the state in the new game piece changes.
 If it's below, then it _will not_ change if the new game piece has the same marker property.
 
 *Place marker:*::  Choose whether the new piece should be placed on the top of this piece's stack, on the bottom of the stack, or directly above/below the triggering piece.
