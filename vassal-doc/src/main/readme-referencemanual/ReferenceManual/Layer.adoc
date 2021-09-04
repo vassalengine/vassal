@@ -13,14 +13,11 @@ A Layer may be "active" or "inactive", and only active layers are drawn--a Layer
 The image from the current level will be drawn whenever the Layer is active.
 The Layer is drawn on top the traits that appear before it in the piece's list of traits.
 
-[width="100%",cols="50%,50%",]
+[width="100%",cols="50%a,^50%",]
 |===
 
-|image:images/Layer.png[]
-|image:images/Layer2.png[]
-
-|===
-
+|
+*Description:*:: A brief description of this trait for your reference.
 *Name:*::  The name of this Layer, used for reference during editing and as the prefix for the name of any <<Properties.adoc#top,Properties>> defined by this Layer.
 
 *Always active:*::  If checked, then this layer is always active, i.e.
@@ -42,13 +39,15 @@ For example, if a layer image is 40x40 pixels and you want it to be drawn so tha
 *Levels follow expression value:*::  If selected, then you can enter an <<Expression.adoc#top,Expression>> that is evaluated to determine the active level, rather than having the trait respond directly to key commands.
 A typical case will reference the name of a <<DynamicProperty.adoc#top,Dynamic Property>>. You can also specify the numeric value of the Property that should correspond to the first level of this Layer.
 
-*Activate/Increase/Decrease:*::  Specify the <<NamedKeyCommand.adoc#top,Keystroke or Named Command>>) and right-click context menu text that will activate the Layer and increase or decrease the current level.
+*Activate/Increase/Decrease:*::  Specify the right-click context menu text and <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> that will activate the Layer and increase or decrease the current level.
 
-*Reset to level:*::  Specifies a key command that resets the Layer to a level specified by an <<Expression.adoc#top,Expression>>.
+*Reset to level:*::  Specifies a key command that resets the Layer to a specific level.
 
-NOTE: This does _not_ automatically _activate_ the Layer.
+*Reset to level number:*:: An <<Expression.adoc#top,Expression>> that specifies the level that the _Reset to level_ command will set the current level to.
 
-*Randomize:*::  Specifies a key command that sets the Layer to a random level.
+NOTE: The _Reset to Level_ command does _not_ automatically _activate_ the Layer.
+
+*Randomize:*::  Specifies a right-click context menu text and <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> key command to set the Layer to a random level.
 
 *Level Images:*::  Specify the image to be shown for each level of the layer by double-clicking the image field to add a new image, or selecting an existing image from the drop-down menu.
 An image can be left blank to display nothing for that level.
@@ -59,6 +58,11 @@ The level's name either replaces the piece's normal name, or else modifies the p
 
 NOTE: Each individual level has its own replace/prefix/suffix setting, which must be configured separately.
 
+|image:images/Layer.png[]
+
+image:images/Layer2.png[]
+
+|===
 *NOTES:*
 
 * Leaving a _Menu Command_ field blank means no entry appears in the right-click context menu, but you can still use a <<NamedKeyCommand.adoc#top,Keystroke or Named Command>>.

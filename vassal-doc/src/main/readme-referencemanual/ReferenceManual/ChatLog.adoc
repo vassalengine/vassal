@@ -91,9 +91,9 @@ As a little added touch, you could add _<span style="color:#ffffff;">$result1$_ 
 This causes the die roll result to also be printed out in text, but in "white-on-white" so that it will normally be invisible -- _except_ if one of your players wants to cut-and-paste text out of the chat window.
 Since the dice images do not normally transfer to the clipboard, this ensures than even a cut-and-paste of the chat log will retain an accurate record of dice rolls.
 
-image:images/ChatLogDieConfig.png
+image:images/ChatLogDieConfig.png[]
 
-image:images/GlobalOptionsHTML.png
+image:images/GlobalOptionsHTML.png[]
 
 Enabling Chat Log HTML Support in <<GlobalOptions.adoc#top,Global Options>>
 

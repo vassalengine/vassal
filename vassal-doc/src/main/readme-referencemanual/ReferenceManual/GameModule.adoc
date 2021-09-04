@@ -260,7 +260,8 @@ Images defined in this component will appear in the drop-down menu for selecting
 |Creates a button on the Toolbar that applies a given <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> to many pieces at once.
 Applies to <<GamePiece.adoc#top,Game Pieces>> on all <<Map.adoc#top,Map Windows>> simultaneously.
 
-See full article for details.
+<<Map.adoc#GlobalKeyCommand,See full article for details.>>
+
 |image:images/GlobalKeyCommand.png[]
 |===
 
@@ -290,11 +291,13 @@ The results of the roll can be reported as text into the chat area, and/or graph
 
 [#DiceButton]
 ==== Dice Button
+A Toolbar button to generate random numbers in the <<ChatLog.adoc#top,Chat Log>>. You may add any number of buttons.
+Each button will roll a specified number of dice with a specified number of sides and report the result in the Chat Log.
+
 [width="100%",cols="40%,60%",]
 |===
 |image:images/DiceButton.png[]
-|A Toolbar button to generate random numbers in the <<ChatLog.adoc#top,Chat Log>>. You may add any number of buttons.
-Each button will roll a specified number of dice with a specified number of sides and report the result in the Chat Log.
+|
 *Name* is the text accompanying the resulting roll in the Chat Log.
 You may specify *Button Text* and *Tooltip Text* for the button and supply an image file to use as a *Button Icon*. You may also define a *Hotkey* that acts as a keyboard shortcut for pressing the button.
 Check the _Report Total_ box to report the sum of all dice (e.g.
@@ -323,28 +326,29 @@ If the values are numerical check the _Faces have numeric values_ box, which ena
 [#PredefinedSetup]
 ==== Pre-defined setup
 
-[width="100%",cols="^40%,60%",]
-|===
-|image:images/PredefinedSetup1.png[]
-
-image:images/PredefinedSetup2.png[]
-|Replaces the _New Game_ menu item in the _File_ menu of the main Module window with a new menu item that loads a saved game which you specify in advance.
-
-*Name:*  Text of the menu item.
-
-*Contains sub-menus:*  Instead of specifying a saved game, you can check this box to add a sub-menu with the given name to the _File_ menu.
-Then you can add more Pre-defined setups to this one to create entries in the sub-menu.
-
-*Use pre-defined file:*  If left unchecked, this menu entry will start a new game from scratch, like the normal _New Game_ action.
-
-*Saved Game:*  Select a saved game from your local hard drive.
-This game will be loaded when the menu item is selected.
-If the file does not exist, then the menu item behaves like the normal _New Game_ item.
+Replaces the _New Game_ menu item in the _File_ menu of the main Module window with a new menu item that loads a saved game which you specify in advance.
 
 _Example:_  Add a Pre-defined setup named "Play Scenario" to the module and check _contains sub-menus._ Then add another set of Pre-defined setups named _1939, 1940, 1941, 1942_ to the first and select a saved game file for each one.
 Players may now select _File->Play Scenario->1939_ to load the 1939 scenario, etc.
 
-*CAUTION*:  When creating a Pre-defined setup in a module with <<GameModule.adoc#Definition_of_Player_Sides,defined sides>>, always remember to click the _Retire_ button and switch to Observer status before saving.
+[width="100%",cols="^40%,60%a",]
+|===
+|image:images/PredefinedSetup1.png[]
+
+image:images/PredefinedSetup2.png[]
+|
+
+*Name:*::  Text of the menu item.
+
+*Parent menu:*::  When checked, this entry will create a sub-menu that other pre-defined setups can be added to.
+
+*Use pre-defined file:*::  If left unchecked, this menu entry will start a new game from scratch, like the normal _New Game_ action.
+
+*Saved game:*::  Select a saved game from your local hard drive.
+This game will be loaded when the menu item is selected.
+If the file does not exist, then the menu item behaves like the normal _New Game_ item.
+
+NOTE:  When creating a Pre-defined setup in a module with <<GameModule.adoc#Definition_of_Player_Sides,defined sides>>, always remember to click the _Retire_ button and switch to Observer status before saving.
 Otherwise, the side you chose when creating the game you will be permanently assigned to you.
 |===
 
