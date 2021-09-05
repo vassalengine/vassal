@@ -94,7 +94,7 @@ A List is a turn level that cycles through a specified list of text strings.
 *Property name:*::  The name of the global <<Properties.adoc#top,Property>> that will hold the value of this level.
 The Global Property will be updated whenever this level's value changes.
 
-*Turn level format:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the value of the _level1, level2,_ etc property will appear in the Turn Counter's Turn Name Format property.
+*Turn level format:*::  A <<MessageFormat.adoc#top,Message Format>> that specifies how the value of the _level1, level2,_ etc. property will appear in the Turn Counter's Turn Name Format property.
 
 *List of items:*::  A list of text strings that the level will cycle through.
 
@@ -121,7 +121,7 @@ It can optionally loop around when it reaches its maximum value.
 *Property name:*::  The name of the global <<Properties.adoc#top,Property>> that will hold the value of this level.
 The Global Property will be updated whenever this level's value changes.
 
-*Turn level format:*::  A <<MessageFormat.adoc#top,Message Format>> that configures how the value of the _level1, level2,_ etc property will appear in the Turn Counter's Turn Name Format property.
+*Turn level format:*::  A <<MessageFormat.adoc#top,Message Format>> that configures how the value of the _level1, level2,_ etc. property will appear in the Turn Counter's Turn Name Format property.
 
 *Start value:*::  The initial/minimum numeric value.
 

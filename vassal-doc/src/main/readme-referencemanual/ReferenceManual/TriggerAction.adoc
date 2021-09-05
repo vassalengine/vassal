@@ -30,7 +30,7 @@ Particularly useful in distinguishing multiple _Trigger Action_ traits from one 
 *Menu Command:*::  Adds an item to the piece's right-click context menu that will fire the triggered commands (provided the property expression is matched).
 
 *Key command:*::  A <<NamedKeyCommand.adoc#top,Keystroke or Named Command>> corresponding to the menu item.
-The only functional difference between putting a entering a command here and entering it in the _Watch for these Keystrokes_ field below is that if a regular keyboard shortcut is entered here it will appear alongside the _Menu Command_ text above in the right-click context menu item for this trait as the shortcut for that item.
+The only functional difference between entering a command here and entering it in the _Watch for these Keystrokes_ field below is that if a regular keyboard shortcut is entered here it will appear alongside the _Menu Command_ text above in the right-click context menu item for this trait as the shortcut for that item.
 Apart from that, use of this field is interchangeable with the _Watch for these Keystrokes_ field.
 
 *Watch for these Key Commands:*::  When any of these <<NamedKeyCommand.adoc#top,Keystrokes and/or Named Commands>> is detected, fires the keystrokes listed below (in _Perform these Keystrokes_), provided the property expression (if any) is matched.

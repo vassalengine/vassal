@@ -33,7 +33,6 @@ An <<Expression.adoc#top,Expression>> defining the name of the Zone to look in f
 An <<Expression.adoc#top,Expression>> defining the name of the Map to look in for the Global Property.
 
 *Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
-*Is numeric:*:: If true, then changes to the value of the property by this trait will be restricted to integer values.
 
 *Minimum value:*::  Numeric values will be restricted to no less than this number when changed by this trait.
 
@@ -41,7 +40,7 @@ An <<Expression.adoc#top,Expression>> defining the name of the Map to look in fo
 
 *Wrap:*::  If true, then when incrementing this numeric property, values will wrap around from the maximum to the minimum and vice versa.
 
-*Key commands:*::  Adds any number commands for this piece, each of which will change the value of the designated property in the specified way.
+*Key commands:*::  Adds any number of commands for this piece, each of which will change the value of the designated property in the specified way.
 +
 For each Key Command:
 
