@@ -20,13 +20,13 @@ systems. On Linux, use your package manager to install Java 11 or later.
 
 ### Releases
 
-Get the [current release](https://github.com/vassalengine/vassal/releases/latest). Read the [release notes](http://www.vassalengine.org/wiki/Release_Notes) to see what's new.
+Get the [current release](https://github.com/vassalengine/vassal/releases/latest). Read the [release notes](https://vassalengine.org/wiki/Release_Notes) to see what's new.
 
 ## Contributing
 
 #### Bug reports
 
-Please report bugs in the [Technical Support & Bugs](http://www.vassalengine.org/forum/viewforum.php?f=3) section of our forum.
+Please report bugs in the [Technical Support & Bugs](https://forum.vassalengine.org/c/technical-support-bugs/6) section of our forum.
 
 #### Developer's guide
 

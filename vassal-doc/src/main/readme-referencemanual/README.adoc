@@ -1,6 +1,6 @@
 == The VASSAL Engine
 
-http://www.vassalengine.org/[http://www.vassalengine.org]
+https://vassalengine.org/[https://vassalengine.org]
 
 == Overview
 
@@ -8,7 +8,7 @@ image:images/LibraryWindow.png[image]
 
 VASSAL is a general-purpose engine for building online versions of traditional turn-based games.
 To play a game using VASSAL, you must first have a module for that game.
-Many modules are available for download on the http://www.vassalengine.org/wiki/Category:Modules[VASSAL Modules page], although a module need not be hosted on the web site to be playable.
+Many modules are available for download on the https://vassalengine.org/wiki/Category:Modules[VASSAL Modules page], although a module need not be hosted on the web site to be playable.
 
 == Quick Start
 
@@ -26,9 +26,9 @@ VASSAL supports languages other than English. To change your preferred language,
 
 == Further Documentation
 
-Online documentation is available on the http://www.vassalengine.org/wiki[wiki]. 
+Online documentation is available on the https://vassalengine.org/wiki[wiki].
 
-* The http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started[Getting Started Guide] has instructions on how to load and play games online using VASSAL
+* The https://vassalengine.org/wiki/Getting_Started[Getting Started Guide] has instructions on how to load and play games online using VASSAL
 * The <<ReferenceManual/index.adoc#toc,Reference Manual>> has detailed instructions on how to build modules for VASSAL, including how to use its Java programming interface
 * See the <<versionHistory.adoc#vassal_version_history,version history>> for a list of recent changes.
 

@@ -9,7 +9,7 @@
 
     <name>Vassal Engine</name>
     <description>Vassal - the open-source boardgame engine</description>
-    <url>http://www.vassalengine.org</url>
+    <url>https://vassalengine.org</url>
     <inceptionYear>2001</inceptionYear>
     <licenses>
         <license>
@@ -55,7 +55,7 @@
         <!-- for clirr plugin -->
         <repository>
             <id>vassal-releases</id>
-            <url>http://www.vassalengine.org/maven/</url>
+            <url>https://vassalengine.org/maven/</url>
         </repository>
     </repositories>
 
