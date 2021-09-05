@@ -62,7 +62,7 @@ public class Server extends Thread {
     final Properties p = new ArgsParser(args).getProperties();
 
     final int port = Integer.parseInt(p.getProperty("port", "5050")); //$NON-NLS-1$ //$NON-NLS-2$
-    String reportURL = p.getProperty("URL", "http://www.vassalengine.org/util/"); //$NON-NLS-1$ //$NON-NLS-2$
+    String reportURL = p.getProperty("URL", "https://vassalengine.org/util/"); //$NON-NLS-1$ //$NON-NLS-2$
     if ("null".equals(reportURL)) { //$NON-NLS-1$
       reportURL = null;
     }

@@ -9,7 +9,7 @@ Version:	3.2.13
 Release:	2%dist
 Source0:	http://downloads.sourceforge.net/vassalengine/VASSAL-%{version}-src.zip
 Source1:	https://boblfoot.fedorapeople.org/vassal/vassal.1.gz
-URL:		http://www.vassalengine.org/
+URL:		https://vassalengine.org/
 BuildRequires:	java-devel
 BuildArch:	noarch
 Requires:	java

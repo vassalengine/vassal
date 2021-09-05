@@ -83,7 +83,7 @@ that includes the ChatLog#top,Chat Log>> and main module menu. If unchecked, all
 |===
 |Compatibility preferences are useful for troubleshooting certain rare platform-specific bugs. Others exist to maintain compatibility with very old modules.
 
-*Disable DirectX D3D pipeline? (Can resolve some graphics glitching issues)*: This option is worth a try if you are experiencing "tearing" in your maps while running on Windows. If this option doesn't help, or if you are not running on Windows, please refer to http://www.vassalengine.org/wiki/Troubleshooting_Common_Problems[additional steps to try] on the VASSAL wiki.
+*Disable DirectX D3D pipeline? (Can resolve some graphics glitching issues)*: This option is worth a try if you are experiencing "tearing" in your maps while running on Windows. If this option doesn't help, or if you are not running on Windows, please refer to https://vassalengine.org/wiki/Troubleshooting_Common_Problems[additional steps to try] on the VASSAL wiki.
 
 *Disable OpenGL FBOs (Recommended for M1 Macs)*: If you are having poor graphics performance (slow scrolling, e.g.) on a Mac, and particularly on a non-Intel, Apple Silicon Mac, go to Vassal's preferences and check the box for Disable OpenGL FBOs.
 
