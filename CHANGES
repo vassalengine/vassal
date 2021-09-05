@@ -5,6 +5,8 @@
 * 10375: NPE in EnumeratedPropertyPrompt.getNewValue()
 * 10371: Reset the Zone Editor title to match the Zone being edited
 * 10359: ClassCastException: DeckGlobalCommand cannot be cast to Auditable
+* 10357: Return To Deck Deck name can be lost when pre 3.6 module is edited
+    using 3.6
 * 10351: Checkbox preference default value is ignored
 * 10341: Symbolic Dice Button tooltip is overwritten by description text
 * 10095: Definition of Player Sides - Retire/Switch Button image not showing in     editor
