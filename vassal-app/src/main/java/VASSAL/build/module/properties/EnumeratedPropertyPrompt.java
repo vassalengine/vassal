@@ -32,17 +32,15 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
   protected String[] validValues;
   protected Expression[] valueExpressions;
   protected DialogParent dialogParent;
-  protected Constraints propertySource;
 
   public EnumeratedPropertyPrompt(DialogParent dialogParent, String prompt, String[] validValues, Constraints propertySource) {
-    super(null, prompt);
+    super(propertySource, prompt);
     this.validValues = validValues;
     valueExpressions = new Expression[validValues.length];
     for (int i = 0; i < validValues.length; i++) {
       valueExpressions[i] = Expression.createExpression(validValues[i]);
     }
     this.dialogParent = dialogParent;
-    this.propertySource = propertySource;
   }
 
   public Expression[] getValueExpressions() {
@@ -55,12 +53,12 @@ public class EnumeratedPropertyPrompt extends PropertyPrompt {
     for (int i = 0; i < finalValues.length; i++) {
       String value;
       try {
-        final AuditTrail audit = AuditTrail.create(constraints.getPropertySource(), valueExpressions[i].getExpression());
-        if (propertySource == null) {
-          value = valueExpressions[i].evaluate(propertySource.getPropertySource(), audit);
+        final AuditTrail audit = AuditTrail.create(constraints == null ? null : constraints.getPropertySource(), valueExpressions[i].getExpression());
+        if (constraints == null) {
+          value = valueExpressions[i].evaluate(constraints.getPropertySource(), audit);
         }
         else {
-          value = valueExpressions[i].evaluate(propertySource.getPropertySource(), propertySource.getPropertySource(), audit);
+          value = valueExpressions[i].evaluate(constraints.getPropertySource(), constraints.getPropertySource(), audit);
         }
       }
       catch (final ExpressionException e) {
