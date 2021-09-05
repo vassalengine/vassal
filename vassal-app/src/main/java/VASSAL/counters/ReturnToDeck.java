@@ -118,45 +118,16 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
       final int version = st.nextInt(0);
       if (version < 2) {
-        updateDeckName();
-
         //BR// if loading an "old ID" format trait, create values needed for new format.
+        //BE// deckId is deckName
         deckSelect = (deckId == null || deckId.isEmpty());
-        deckExpression.setFormat("");
-
-        if (deckId != null) {
-          final DrawPile p = DrawPile.findDrawPile(deckId);
-          if (p != null) {
-            final String name = p.getConfigureName();
-            if (name != null) {
-              deckExpression.setFormat(name);
-            }
-            else {
-              deckExpression.setFormat(deckId);
-            }
-          }
-        }
+        deckExpression.setFormat(deckId);
       }
       else {
         deckSelect = st.nextBoolean(true);
         deckExpression.setFormat(st.nextToken(""));
       }
     }
-  }
-
-  private static String getDeckName(String deckId) {
-    String dn = "[" + Resources.getString("Editor.ReturnToDeck.none") + "]";
-    if (deckId != null) {
-      final DrawPile p = DrawPile.findDrawPile(deckId);
-      if (p != null) {
-        dn = p.getConfigureName();
-      }
-    }
-    return dn != null ? dn.intern() : null;
-  }
-
-  private void updateDeckName() {
-    deckName = getDeckName(deckId);
   }
 
   @Override
