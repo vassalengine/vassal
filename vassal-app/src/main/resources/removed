@@ -59,8 +59,8 @@ VASSAL.build.module.map.Zoomer.zoomFactor	3.6.0
 VASSAL.build.module.map.Zoomer.zoomLevel	3.6.0
 VASSAL.build.module.map.Zoomer.zoomStart	3.6.0
 VASSAL.build.module.ObscurableOptions$SetAllowed.ObscurableOptions$SetAllowed(java.util.Vector)	3.6.0
-VASSAL.build.module.PlayerRoster.addSideChangeListener(VASSAL.build.module.PlayerRoster.SideChangeListener)	3.6.0
-VASSAL.build.module.PlayerRoster.removeSideChangeListener(VASSAL.build.module.PlayerRoster.SideChangeListener)	3.6.0
+VASSAL.build.module.PlayerRoster.addSideChangeListener(VASSAL.build.module.PlayerRoster$SideChangeListener)	3.6.0
+VASSAL.build.module.PlayerRoster.removeSideChangeListener(VASSAL.build.module.PlayerRoster$SideChangeListener)	3.6.0
 VASSAL.build.module.PrivateMap.setBoards(java.util.Enumeration)	3.6.0
 VASSAL.build.module.properties.EnumeratedPropertyPrompt.EnumeratedPropertyPrompt(VASSAL.build.module.properties.PropertyPrompt$DialogParent, java.lang.String, java.lang.String[])	3.6.0
 VASSAL.build.module.SpecialDiceButton.getReportSuffix()	3.6.0

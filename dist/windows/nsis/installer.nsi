@@ -675,8 +675,8 @@ Section "-Application" Application
   WriteRegStr HKLM "${UROOT}" "InstallLocation" "$INSTDIR"
   WriteRegStr HKLM "${UROOT}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${UROOT}" "Publisher" "vassalengine.org"
-  WriteRegStr HKLM "${UROOT}" "URLInfoAbout" "http://www.vassalengine.org"
-  WriteRegStr HKLM "${UROOT}" "URLUpdateInfo" "http://www.vassalengine.org"
+  WriteRegStr HKLM "${UROOT}" "URLInfoAbout" "https://vassalengine.org"
+  WriteRegStr HKLM "${UROOT}" "URLUpdateInfo" "https://vassalengine.org"
   WriteRegDWORD HKLM "${UROOT}" "NoModify" 0x00000001
   WriteRegDWORD HKLM "${UROOT}" "NoRepair" 0x00000001
 

@@ -1123,5 +1123,11 @@
         <field>**</field>
         <justification>Moved to superclass.</justification>
     </difference>
+    <difference>
+        <className>VASSAL/build/module/properties/EnumeratedPropertyPrompt</className>
+        <differenceType>6001</differenceType>
+        <field>propertySource</field>
+        <justification>Duplicate field</justification>
+    </difference>
 
 </differences>
