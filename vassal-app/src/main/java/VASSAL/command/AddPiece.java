@@ -22,6 +22,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.map.HighlightLastMoved;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 
@@ -56,19 +57,12 @@ public class AddPiece extends Command {
         HighlightLastMoved.setLastMoved(target);
         if (GlobalOptions.getInstance().centerOnOpponentsMove()
             && !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))) {
-          if (target instanceof Stack) {
-            // Do not center on an empty Stack
-            if (((Stack) target).getPieceCount() == 0) return;
-            // Do not center on a Stack of invisible pieces
-            int visibleCount = 0;
-            for (final GamePiece gp : ((Stack) target).asList()) {
-              if (!Boolean.TRUE.equals(gp.getProperty(Properties.INVISIBLE_TO_ME))) {
-                visibleCount++;
-                break;
-              }
-            }
-            if (visibleCount == 0) return;
+
+          // Do not centre on a Stack unless it has at least one visible piece
+          if (target instanceof Stack && !((Stack) target).asList().stream().anyMatch(PieceIterator.VISIBLE)) {
+            return;
           }
+
           target.getMap().ensureVisible(target.getMap().selectionBoundsOf(target));
           target.getMap().repaint();
         }
