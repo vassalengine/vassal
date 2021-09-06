@@ -22,7 +22,9 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.map.HighlightLastMoved;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
 
 /**
  * This Command adds a {@link GamePiece} to a game.  Its undo
@@ -55,6 +57,12 @@ public class AddPiece extends Command {
         HighlightLastMoved.setLastMoved(target);
         if (GlobalOptions.getInstance().centerOnOpponentsMove()
             && !Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))) {
+
+          // Do not centre on a Stack unless it has at least one visible piece
+          if (target instanceof Stack && !((Stack) target).asList().stream().anyMatch(PieceIterator.VISIBLE)) {
+            return;
+          }
+
           target.getMap().ensureVisible(target.getMap().selectionBoundsOf(target));
           target.getMap().repaint();
         }
